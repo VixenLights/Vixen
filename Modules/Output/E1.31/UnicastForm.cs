@@ -1,4 +1,5 @@
-﻿using Common.Controls.Theme;
+﻿using System;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Controller.E131
@@ -70,16 +71,23 @@ namespace VixenModules.Controller.E131
             updateChecked();
         }
 
-		private void buttonBackground_MouseHover(object sender, System.EventArgs e)
+		private void button_Paint(object sender, PaintEventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.OnPaint(sender, e, null);
 		}
 
-		private void buttonBackground_MouseLeave(object sender, System.EventArgs e)
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 	}
 }

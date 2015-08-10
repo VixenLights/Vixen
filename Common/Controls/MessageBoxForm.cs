@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 
 namespace Common.Controls
 {
 	public partial class MessageBoxForm : Form
 	{
+		public static Icon msgIcon;
+
 		public MessageBoxForm(string messageBoxData, string messageBoxTitle, bool buttonNoVisible, bool buttonCancelVisible)
 		{
 			InitializeComponent();
@@ -33,16 +36,39 @@ namespace Common.Controls
 			}
 		}
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.Properties.Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
+
+		private void messageIcon_Paint(object sender, PaintEventArgs e)
+		{
+			if (msgIcon != null)
+				e.Graphics.DrawIcon(msgIcon, 24, 24);
+		}
+
+		private void MessageBoxForm_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			msgIcon = null;
+		}
+
+		private void buttonOk_Click(object sender, EventArgs e)
+		{
+			Close();
 		}
 	}
 }

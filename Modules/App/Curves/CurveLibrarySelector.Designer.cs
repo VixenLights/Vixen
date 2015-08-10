@@ -42,6 +42,7 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -62,6 +63,7 @@
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -97,6 +99,7 @@
 			this.buttonEditCurve.Text = "Edit Curve";
 			this.buttonEditCurve.UseVisualStyleBackColor = false;
 			this.buttonEditCurve.Click += new System.EventHandler(this.buttonEditCurve_Click);
+			this.buttonEditCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEditCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -118,6 +121,7 @@
 			this.buttonDeleteCurve.Text = "Delete Curve";
 			this.buttonDeleteCurve.UseVisualStyleBackColor = false;
 			this.buttonDeleteCurve.Click += new System.EventHandler(this.buttonDeleteCurve_Click);
+			this.buttonDeleteCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDeleteCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -138,6 +142,7 @@
 			this.buttonNewCurve.Text = "New Curve";
 			this.buttonNewCurve.UseVisualStyleBackColor = false;
 			this.buttonNewCurve.Click += new System.EventHandler(this.buttonNewCurve_Click);
+			this.buttonNewCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNewCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

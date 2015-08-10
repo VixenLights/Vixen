@@ -517,6 +517,7 @@
 			this.buttonAddToPreview.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonAddToPreview.UseVisualStyleBackColor = true;
 			this.buttonAddToPreview.Click += new System.EventHandler(this.buttonAddToPreview_Click);
+			this.buttonAddToPreview.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddToPreview.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddToPreview.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

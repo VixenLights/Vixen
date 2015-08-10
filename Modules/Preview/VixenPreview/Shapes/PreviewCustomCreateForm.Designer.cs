@@ -37,61 +37,58 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 14);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(121, 20);
+			this.label1.Size = new System.Drawing.Size(82, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Template Name";
 			// 
 			// textBoxTemplateName
 			// 
-			this.textBoxTemplateName.Location = new System.Drawing.Point(150, 9);
-			this.textBoxTemplateName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.textBoxTemplateName.Location = new System.Drawing.Point(100, 6);
 			this.textBoxTemplateName.Name = "textBoxTemplateName";
-			this.textBoxTemplateName.Size = new System.Drawing.Size(270, 26);
+			this.textBoxTemplateName.Size = new System.Drawing.Size(181, 20);
 			this.textBoxTemplateName.TabIndex = 0;
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Location = new System.Drawing.Point(188, 60);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOK.Location = new System.Drawing.Point(125, 39);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(112, 35);
+			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(309, 60);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(206, 39);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(112, 35);
+			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Canel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// PreviewCustomCreateForm
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(447, 118);
+			this.ClientSize = new System.Drawing.Size(298, 77);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.textBoxTemplateName);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PreviewCustomCreateForm";

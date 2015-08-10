@@ -149,7 +149,8 @@ namespace VixenModules.App.LipSyncApp
 		
         private void buttonEditMap_Click(object sender, EventArgs e)
 		{
-            EditMap();			
+            EditMap();
+			Refresh();
 		}
 
         private void DeleteSelectedMapping()
@@ -246,6 +247,7 @@ namespace VixenModules.App.LipSyncApp
                 this.PopulateListWithMappings();
             }
 
+			Refresh();
         }
 
         private void listViewMappings_KeyDown(object sender, KeyEventArgs e)
@@ -269,21 +271,23 @@ namespace VixenModules.App.LipSyncApp
 
         }
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
     }
 }

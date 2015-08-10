@@ -23,6 +23,7 @@ using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module.App;
+using VixenApplication;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Media.Audio;
@@ -128,6 +129,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			cboAudioDevices.BackColor = ThemeColorTable.BackgroundColor;
+			cboAudioDevices.ForeColor = ThemeColorTable.ForeColor;
 			Icon = Resources.Icon_Vixen3;
 			toolStripButton_Start.Image = Tools.GetIcon(Resources.control_start_blue,24);
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;

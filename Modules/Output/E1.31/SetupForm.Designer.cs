@@ -140,7 +140,8 @@ namespace VixenModules.Output.E131
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(75, 23);
 			this.okButton.TabIndex = 199;
-			this.okButton.Text = "&OK";
+			this.okButton.Text = "OK";
+			this.okButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.okButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.okButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -152,7 +153,8 @@ namespace VixenModules.Output.E131
 			this.cancelButton.Name = "cancelButton";
 			this.cancelButton.Size = new System.Drawing.Size(75, 23);
 			this.cancelButton.TabIndex = 200;
-			this.cancelButton.Text = "&Cancel";
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.cancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.cancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

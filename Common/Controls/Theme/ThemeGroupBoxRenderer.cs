@@ -9,14 +9,14 @@ namespace Common.Controls.Theme
 
 		public static void GroupBoxesDrawBorder(object sender, PaintEventArgs e, Font font)
 		{
+			//used to draw the borders and text for the groupboxes to change the default box color.
 			GroupBox groupBox = sender as GroupBox;
 			if (groupBox == null) return;
 
-			//used to draw the borders and text for the groupboxes to change the default box color.
-			//get the text size in groupbox
+			//get the text size in groupbox and clears groupbox and adds new background color
 			Size tSize = TextRenderer.MeasureText(groupBox.Text, font);
-
 			e.Graphics.Clear(ThemeColorTable.BackgroundColor);
+
 			//draw the border
 			Rectangle borderRect = e.ClipRectangle;
 			borderRect.Y = (borderRect.Y + (tSize.Height / 2));

@@ -52,6 +52,9 @@ namespace VixenModules.App.LipSyncApp
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			lipSyncMapColorCtrl1.BackColor = BackColor = ThemeColorTable.BackgroundColor;
+			lipSyncMapColorCtrl1.panelColor.BackColor = Color.White;
+	        zoomTrackbar.BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
             LoadResourceBitmaps();
             dataTables = new Dictionary<PhonemeType, DataTable>();
@@ -527,6 +530,7 @@ namespace VixenModules.App.LipSyncApp
             dataGridView1.ClientSize = new Size(width + 2, height + 2);
 
             dataGridView1.Location = new Point(25, 150);
+			Refresh();
         }
 
         private void zoomTrackbar_ValueChanged(object sender, EventArgs e)
@@ -545,6 +549,7 @@ namespace VixenModules.App.LipSyncApp
             BuildMapDataFromDialog(); 
             assignNodes();
             updatedataGridView1();
+			Refresh();
         }
 
         private void assignNodes()
@@ -643,6 +648,7 @@ namespace VixenModules.App.LipSyncApp
 
                 BuildDialogFromMap(_newMapping);
                 updatedataGridView1();
+				Refresh();
             }
         }
 
@@ -690,6 +696,7 @@ namespace VixenModules.App.LipSyncApp
                 }
                 rawBitmap.Save(fileDlg.FileName);
             }
+			Refresh();
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -699,17 +706,25 @@ namespace VixenModules.App.LipSyncApp
             BuildMapDataFromDialog();
         }
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
+
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);

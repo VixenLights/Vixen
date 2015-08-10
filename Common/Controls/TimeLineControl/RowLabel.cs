@@ -164,13 +164,15 @@ namespace Common.Controls.Timeline
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			using (SolidBrush backgroundBrush = new SolidBrush(ThemeColorTable.BackgroundColor)) {
-				using (SolidBrush toggleBrush = new SolidBrush(ThemeColorTable.BackgroundColor))
+			using (SolidBrush backgroundBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
+			{
+				using (SolidBrush toggleBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
 				{
-					using (SolidBrush nodeIconBrush = new SolidBrush(ThemeColorTable.BackgroundColor))
+					using (SolidBrush nodeIconBrush = new SolidBrush(ThemeColorTable.TimeLineLabelBackColor))
 					{
-						using (SolidBrush textBrush = new SolidBrush(Color.Silver)) {
-							using (Pen wholeBorderPen = new Pen(Color.Black, 1)) {
+						using (SolidBrush textBrush = new SolidBrush(ThemeColorTable.TimeLineForeColor))
+						{
+							using (Pen wholeBorderPen = new Pen(ThemeColorTable.TimeLineGridColor, 1)) {
 								wholeBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 								using (Pen toggleBorderPen = new Pen(Color.DimGray, 1)) {
 									toggleBorderPen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;

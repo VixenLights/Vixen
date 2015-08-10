@@ -85,6 +85,7 @@
 			this.driverVersionButton.Text = "K8055 driver version";
 			this.driverVersionButton.UseVisualStyleBackColor = true;
 			this.driverVersionButton.Click += new System.EventHandler(this.driverVersionButton_Click);
+			this.driverVersionButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.driverVersionButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.driverVersionButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -97,6 +98,7 @@
 			this.searchDevicesButton.Text = "Search Devices";
 			this.searchDevicesButton.UseVisualStyleBackColor = true;
 			this.searchDevicesButton.Click += new System.EventHandler(this.searchDevicesButton_Click);
+			this.searchDevicesButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.searchDevicesButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.searchDevicesButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -241,6 +243,7 @@
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
+			this.cancelButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.cancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.cancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -254,6 +257,7 @@
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
+			this.okButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.okButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.okButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

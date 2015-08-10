@@ -31,7 +31,7 @@ namespace VixenApplication.Setup
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBoxElements = new System.Windows.Forms.GroupBox();
-			this.buttonUnpatchElements = new System.Windows.Forms.Button();
+			this.panel2 = new System.Windows.Forms.Panel();
 			this.labelFilterCount = new System.Windows.Forms.Label();
 			this.labelElementCount = new System.Windows.Forms.Label();
 			this.labelGroupCount = new System.Windows.Forms.Label();
@@ -46,13 +46,14 @@ namespace VixenApplication.Setup
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
+			this.buttonUnpatchElements = new System.Windows.Forms.Button();
 			this.checkBoxReverseElementOrder = new System.Windows.Forms.CheckBox();
 			this.groupBoxControllers = new System.Windows.Forms.GroupBox();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.labelLastOutput = new System.Windows.Forms.Label();
 			this.labelFirstOutput = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
-			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
 			this.labelUnpatchedOutputCount = new System.Windows.Forms.Label();
 			this.labelPatchedOutputCount = new System.Windows.Forms.Label();
 			this.labelOutputCount = new System.Windows.Forms.Label();
@@ -61,6 +62,7 @@ namespace VixenApplication.Setup
 			this.label16 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
+			this.buttonUnpatchControllers = new System.Windows.Forms.Button();
 			this.checkBoxReverseOutputOrder = new System.Windows.Forms.CheckBox();
 			this.groupBoxPatching = new System.Windows.Forms.GroupBox();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -75,17 +77,15 @@ namespace VixenApplication.Setup
 			this.buttonDoPatching = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.panel2 = new System.Windows.Forms.Panel();
 			this.groupBoxElements.SuspendLayout();
+			this.panel2.SuspendLayout();
 			this.groupBoxControllers.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.groupBoxPatching.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.groupBoxElementOptions.SuspendLayout();
 			this.groupBoxOutputOptions.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
-			this.panel1.SuspendLayout();
-			this.panel2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBoxElements
@@ -104,17 +104,26 @@ namespace VixenApplication.Setup
 			this.groupBoxElements.Text = "Selected Elements";
 			this.groupBoxElements.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
-			// buttonUnpatchElements
+			// panel2
 			// 
-			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 240);
-			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
-			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchElements.TabIndex = 22;
-			this.buttonUnpatchElements.Text = "Unpatch Elements";
-			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
-			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
-			this.buttonUnpatchElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUnpatchElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			this.panel2.Controls.Add(this.labelFilterCount);
+			this.panel2.Controls.Add(this.labelElementCount);
+			this.panel2.Controls.Add(this.labelGroupCount);
+			this.panel2.Controls.Add(this.labelItemCount);
+			this.panel2.Controls.Add(this.label4);
+			this.panel2.Controls.Add(this.label3);
+			this.panel2.Controls.Add(this.label2);
+			this.panel2.Controls.Add(this.label1);
+			this.panel2.Controls.Add(this.labelUnconnectedPatchPointCount);
+			this.panel2.Controls.Add(this.labelConnectedPatchPointCount);
+			this.panel2.Controls.Add(this.labelPatchPointCount);
+			this.panel2.Controls.Add(this.label7);
+			this.panel2.Controls.Add(this.label6);
+			this.panel2.Controls.Add(this.label5);
+			this.panel2.Location = new System.Drawing.Point(6, 18);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(208, 203);
+			this.panel2.TabIndex = 23;
 			// 
 			// labelFilterCount
 			// 
@@ -256,6 +265,19 @@ namespace VixenApplication.Setup
         "s are the outputs from any element or filter, but before it gets to the controll" +
         "ers.");
 			// 
+			// buttonUnpatchElements
+			// 
+			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
+			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchElements.TabIndex = 22;
+			this.buttonUnpatchElements.Text = "Unpatch Elements";
+			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
+			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
+			this.buttonUnpatchElements.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
+			this.buttonUnpatchElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonUnpatchElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
 			// checkBoxReverseElementOrder
 			// 
 			this.checkBoxReverseElementOrder.AutoSize = true;
@@ -284,6 +306,25 @@ namespace VixenApplication.Setup
 			this.groupBoxControllers.TabStop = false;
 			this.groupBoxControllers.Text = "Selected Controllers";
 			this.groupBoxControllers.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.labelLastOutput);
+			this.panel1.Controls.Add(this.labelFirstOutput);
+			this.panel1.Controls.Add(this.label9);
+			this.panel1.Controls.Add(this.label8);
+			this.panel1.Controls.Add(this.labelUnpatchedOutputCount);
+			this.panel1.Controls.Add(this.labelPatchedOutputCount);
+			this.panel1.Controls.Add(this.labelOutputCount);
+			this.panel1.Controls.Add(this.labelControllerCount);
+			this.panel1.Controls.Add(this.label15);
+			this.panel1.Controls.Add(this.label16);
+			this.panel1.Controls.Add(this.label20);
+			this.panel1.Controls.Add(this.label21);
+			this.panel1.Location = new System.Drawing.Point(12, 18);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(201, 195);
+			this.panel1.TabIndex = 34;
 			// 
 			// labelLastOutput
 			// 
@@ -322,18 +363,6 @@ namespace VixenApplication.Setup
 			this.label8.TabIndex = 30;
 			this.label8.Text = "First output:";
 			this.toolTip1.SetToolTip(this.label8, "The first output in the list of selected outputs (as will be used for patching).");
-			// 
-			// buttonUnpatchControllers
-			// 
-			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 240);
-			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
-			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
-			this.buttonUnpatchControllers.TabIndex = 28;
-			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
-			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
-			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
-			this.buttonUnpatchControllers.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonUnpatchControllers.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// labelUnpatchedOutputCount
 			// 
@@ -413,6 +442,19 @@ namespace VixenApplication.Setup
 			this.label21.TabIndex = 14;
 			this.label21.Text = "Controllers:";
 			this.toolTip1.SetToolTip(this.label21, "The number of controllers (or part thereof) selected.");
+			// 
+			// buttonUnpatchControllers
+			// 
+			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
+			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
+			this.buttonUnpatchControllers.TabIndex = 28;
+			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
+			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
+			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
+			this.buttonUnpatchControllers.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
+			this.buttonUnpatchControllers.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonUnpatchControllers.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// checkBoxReverseOutputOrder
 			// 
@@ -569,6 +611,7 @@ namespace VixenApplication.Setup
 			this.buttonDoPatching.Text = "Patch Elements";
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
 			this.buttonDoPatching.Click += new System.EventHandler(this.buttonDoPatching_Click);
+			this.buttonDoPatching.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDoPatching.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDoPatching.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -597,46 +640,6 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 511);
 			this.tableLayoutPanel1.TabIndex = 34;
 			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.labelLastOutput);
-			this.panel1.Controls.Add(this.labelFirstOutput);
-			this.panel1.Controls.Add(this.label9);
-			this.panel1.Controls.Add(this.label8);
-			this.panel1.Controls.Add(this.labelUnpatchedOutputCount);
-			this.panel1.Controls.Add(this.labelPatchedOutputCount);
-			this.panel1.Controls.Add(this.labelOutputCount);
-			this.panel1.Controls.Add(this.labelControllerCount);
-			this.panel1.Controls.Add(this.label15);
-			this.panel1.Controls.Add(this.label16);
-			this.panel1.Controls.Add(this.label20);
-			this.panel1.Controls.Add(this.label21);
-			this.panel1.Location = new System.Drawing.Point(12, 18);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(201, 195);
-			this.panel1.TabIndex = 34;
-			// 
-			// panel2
-			// 
-			this.panel2.Controls.Add(this.labelFilterCount);
-			this.panel2.Controls.Add(this.labelElementCount);
-			this.panel2.Controls.Add(this.labelGroupCount);
-			this.panel2.Controls.Add(this.labelItemCount);
-			this.panel2.Controls.Add(this.label4);
-			this.panel2.Controls.Add(this.label3);
-			this.panel2.Controls.Add(this.label2);
-			this.panel2.Controls.Add(this.label1);
-			this.panel2.Controls.Add(this.labelUnconnectedPatchPointCount);
-			this.panel2.Controls.Add(this.labelConnectedPatchPointCount);
-			this.panel2.Controls.Add(this.labelPatchPointCount);
-			this.panel2.Controls.Add(this.label7);
-			this.panel2.Controls.Add(this.label6);
-			this.panel2.Controls.Add(this.label5);
-			this.panel2.Location = new System.Drawing.Point(6, 18);
-			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(208, 203);
-			this.panel2.TabIndex = 23;
-			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -647,7 +650,11 @@ namespace VixenApplication.Setup
 			this.Size = new System.Drawing.Size(450, 550);
 			this.Load += new System.EventHandler(this.SetupPatchingSimple_Load);
 			this.groupBoxElements.ResumeLayout(false);
+			this.panel2.ResumeLayout(false);
+			this.panel2.PerformLayout();
 			this.groupBoxControllers.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.groupBoxPatching.ResumeLayout(false);
 			this.groupBoxPatching.PerformLayout();
 			this.tableLayoutPanel2.ResumeLayout(false);
@@ -658,10 +665,6 @@ namespace VixenApplication.Setup
 			this.groupBoxOutputOptions.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
-			this.panel2.ResumeLayout(false);
-			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

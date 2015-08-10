@@ -146,13 +146,13 @@ namespace Common.Controls.Timeline
 		private void InitializePanel1()
 		{
 			splitContainer.Panel1.SuspendLayout();
-			splitContainer.Panel1.BackColor = Color.FromArgb(51, 51, 51); ;//Color.FromArgb(200, 200, 200);
+			splitContainer.Panel1.BackColor = ThemeColorTable.TimeLinePanel1BackColor;
 
 			// Row List
 			timelineRowList = new RowList()
 			                  	{
 			                  		Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-			                  		DottedLineColor = Color.Black,
+			                  		DottedLineColor = ThemeColorTable.TimeLineGridColor,
 			                  		Name = "timelineRowList",
 			                  	};
 			splitContainer.Panel1.Controls.Add(timelineRowList);

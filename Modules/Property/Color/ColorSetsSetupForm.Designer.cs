@@ -34,16 +34,16 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBoxColorSet = new System.Windows.Forms.GroupBox();
+			this.panelColorSet = new System.Windows.Forms.Panel();
 			this.buttonAddColor = new System.Windows.Forms.Button();
 			this.buttonUpdate = new System.Windows.Forms.Button();
 			this.tableLayoutPanelColors = new System.Windows.Forms.TableLayoutPanel();
+			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.textBoxName = new System.Windows.Forms.TextBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.buttonRemoveColorSet = new System.Windows.Forms.Button();
 			this.buttonAddColorSet = new System.Windows.Forms.Button();
-			this.panelColorSet = new System.Windows.Forms.Panel();
 			this.groupBoxColorSet.SuspendLayout();
 			this.panelColorSet.SuspendLayout();
 			this.SuspendLayout();
@@ -94,6 +94,17 @@
 			this.groupBoxColorSet.Text = "Selected Color Set";
 			this.groupBoxColorSet.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
+			// panelColorSet
+			// 
+			this.panelColorSet.Controls.Add(this.buttonAddColor);
+			this.panelColorSet.Controls.Add(this.buttonUpdate);
+			this.panelColorSet.Controls.Add(this.tableLayoutPanelColors);
+			this.panelColorSet.Controls.Add(this.textBoxName);
+			this.panelColorSet.Location = new System.Drawing.Point(57, 18);
+			this.panelColorSet.Name = "panelColorSet";
+			this.panelColorSet.Size = new System.Drawing.Size(238, 172);
+			this.panelColorSet.TabIndex = 13;
+			// 
 			// buttonAddColor
 			// 
 			this.buttonAddColor.BackColor = System.Drawing.Color.Transparent;
@@ -116,6 +127,7 @@
 			this.buttonUpdate.Text = "Make New Color Set";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
+			this.buttonUpdate.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUpdate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUpdate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -135,6 +147,15 @@
 			this.tableLayoutPanelColors.Size = new System.Drawing.Size(160, 80);
 			this.tableLayoutPanelColors.TabIndex = 4;
 			// 
+			// textBoxName
+			// 
+			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxName.Location = new System.Drawing.Point(16, 8);
+			this.textBoxName.Name = "textBoxName";
+			this.textBoxName.Size = new System.Drawing.Size(130, 20);
+			this.textBoxName.TabIndex = 0;
+			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
+			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
@@ -153,15 +174,6 @@
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Name:";
 			// 
-			// textBoxName
-			// 
-			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxName.Location = new System.Drawing.Point(16, 8);
-			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(130, 20);
-			this.textBoxName.TabIndex = 0;
-			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
-			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -172,6 +184,7 @@
 			this.button1.TabIndex = 10;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -200,17 +213,6 @@
 			this.buttonAddColorSet.Text = "+";
 			this.buttonAddColorSet.UseVisualStyleBackColor = false;
 			this.buttonAddColorSet.Click += new System.EventHandler(this.buttonAddColorSet_Click);
-			// 
-			// panelColorSet
-			// 
-			this.panelColorSet.Controls.Add(this.buttonAddColor);
-			this.panelColorSet.Controls.Add(this.buttonUpdate);
-			this.panelColorSet.Controls.Add(this.tableLayoutPanelColors);
-			this.panelColorSet.Controls.Add(this.textBoxName);
-			this.panelColorSet.Location = new System.Drawing.Point(57, 18);
-			this.panelColorSet.Name = "panelColorSet";
-			this.panelColorSet.Size = new System.Drawing.Size(238, 172);
-			this.panelColorSet.TabIndex = 13;
 			// 
 			// ColorSetsSetupForm
 			// 

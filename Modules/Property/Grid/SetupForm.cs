@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace VixenModules.Property.Grid
 {
@@ -10,6 +11,9 @@ namespace VixenModules.Property.Grid
 		public SetupForm(int width, int height, int productRequired)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_Width = width;
 			_Height = height;
 			_ProductRequired = productRequired;
@@ -72,6 +76,25 @@ namespace VixenModules.Property.Grid
 		{
 			SelectedWidth = _Width;
 			SelectedHeight = _Height;
+		}
+
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 	}
 }

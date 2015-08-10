@@ -36,7 +36,6 @@
 			this.zoomTrackbar = new System.Windows.Forms.TrackBar();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.blackCheckBox = new System.Windows.Forms.CheckBox();
-			this.lipSyncMapColorCtrl1 = new VixenModules.App.LipSyncApp.LipSyncMapColorCtrl();
 			this.buttonAssign = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.buttonClear = new System.Windows.Forms.Button();
@@ -48,6 +47,7 @@
 			this.nextPhonemeButton = new System.Windows.Forms.Button();
 			this.prevPhonemeButton = new System.Windows.Forms.Button();
 			this.phonemePicture = new System.Windows.Forms.PictureBox();
+			this.lipSyncMapColorCtrl1 = new VixenModules.App.LipSyncApp.LipSyncMapColorCtrl();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.zoomTrackbar)).BeginInit();
 			this.groupBox3.SuspendLayout();
@@ -64,14 +64,15 @@
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(501, 143);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.buttonOK.Location = new System.Drawing.Point(752, 220);
+			this.buttonOK.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(74, 25);
+			this.buttonOK.Size = new System.Drawing.Size(111, 38);
 			this.buttonOK.TabIndex = 16;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -85,13 +86,14 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(500, 174);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.buttonCancel.Location = new System.Drawing.Point(750, 268);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(112, 38);
 			this.buttonCancel.TabIndex = 15;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -99,10 +101,10 @@
 			// 
 			this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Location = new System.Drawing.Point(25, 145);
-			this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.dataGridView1.Location = new System.Drawing.Point(38, 223);
+			this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(47, 24);
+			this.dataGridView1.Size = new System.Drawing.Size(70, 37);
 			this.dataGridView1.TabIndex = 18;
 			this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
 			this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
@@ -111,22 +113,23 @@
 			// 
 			this.label5.AutoSize = true;
 			this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label5.Location = new System.Drawing.Point(221, 97);
+			this.label5.Location = new System.Drawing.Point(332, 149);
+			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(34, 13);
+			this.label5.Size = new System.Drawing.Size(50, 20);
 			this.label5.TabIndex = 31;
 			this.label5.Text = "Zoom";
 			// 
 			// zoomTrackbar
 			// 
 			this.zoomTrackbar.AutoSize = false;
-			this.zoomTrackbar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.zoomTrackbar.Location = new System.Drawing.Point(259, 92);
-			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(1);
+			this.zoomTrackbar.BackColor = System.Drawing.SystemColors.Control;
+			this.zoomTrackbar.Location = new System.Drawing.Point(388, 142);
+			this.zoomTrackbar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.zoomTrackbar.Maximum = 25;
 			this.zoomTrackbar.Minimum = -50;
 			this.zoomTrackbar.Name = "zoomTrackbar";
-			this.zoomTrackbar.Size = new System.Drawing.Size(90, 23);
+			this.zoomTrackbar.Size = new System.Drawing.Size(135, 35);
 			this.zoomTrackbar.TabIndex = 30;
 			this.zoomTrackbar.TickStyle = System.Windows.Forms.TickStyle.None;
 			this.zoomTrackbar.ValueChanged += new System.EventHandler(this.zoomTrackbar_ValueChanged);
@@ -136,11 +139,11 @@
 			this.groupBox3.Controls.Add(this.blackCheckBox);
 			this.groupBox3.Controls.Add(this.lipSyncMapColorCtrl1);
 			this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox3.Location = new System.Drawing.Point(383, 14);
-			this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.groupBox3.Location = new System.Drawing.Point(574, 22);
+			this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.groupBox3.Size = new System.Drawing.Size(198, 91);
+			this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.groupBox3.Size = new System.Drawing.Size(297, 140);
 			this.groupBox3.TabIndex = 29;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Pen";
@@ -152,25 +155,13 @@
 			this.blackCheckBox.Checked = true;
 			this.blackCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.blackCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.blackCheckBox.Location = new System.Drawing.Point(14, 70);
+			this.blackCheckBox.Location = new System.Drawing.Point(21, 108);
+			this.blackCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.blackCheckBox.Name = "blackCheckBox";
-			this.blackCheckBox.Size = new System.Drawing.Size(123, 17);
+			this.blackCheckBox.Size = new System.Drawing.Size(179, 24);
 			this.blackCheckBox.TabIndex = 1;
 			this.blackCheckBox.Text = "Black is Transparent";
 			this.blackCheckBox.UseVisualStyleBackColor = true;
-			// 
-			// lipSyncMapColorCtrl1
-			// 
-			this.lipSyncMapColorCtrl1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.lipSyncMapColorCtrl1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.lipSyncMapColorCtrl1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.lipSyncMapColorCtrl1.HSVColor = ((Common.Controls.ColorManagement.ColorModels.HSV)(resources.GetObject("lipSyncMapColorCtrl1.HSVColor")));
-			this.lipSyncMapColorCtrl1.Intensity = 1D;
-			this.lipSyncMapColorCtrl1.Location = new System.Drawing.Point(4, 14);
-			this.lipSyncMapColorCtrl1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.lipSyncMapColorCtrl1.Name = "lipSyncMapColorCtrl1";
-			this.lipSyncMapColorCtrl1.Size = new System.Drawing.Size(188, 56);
-			this.lipSyncMapColorCtrl1.TabIndex = 0;
 			// 
 			// buttonAssign
 			// 
@@ -180,13 +171,15 @@
 			this.buttonAssign.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonAssign.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAssign.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonAssign.Location = new System.Drawing.Point(296, 28);
+			this.buttonAssign.Location = new System.Drawing.Point(444, 43);
+			this.buttonAssign.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonAssign.Name = "buttonAssign";
-			this.buttonAssign.Size = new System.Drawing.Size(75, 23);
+			this.buttonAssign.Size = new System.Drawing.Size(112, 35);
 			this.buttonAssign.TabIndex = 32;
 			this.buttonAssign.Text = "Assign";
 			this.buttonAssign.UseVisualStyleBackColor = true;
 			this.buttonAssign.Click += new System.EventHandler(this.buttonAssign_Click);
+			this.buttonAssign.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAssign.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAssign.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -194,9 +187,10 @@
 			// 
 			this.label6.AutoSize = true;
 			this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label6.Location = new System.Drawing.Point(240, 33);
+			this.label6.Location = new System.Drawing.Point(360, 51);
+			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(50, 13);
+			this.label6.Size = new System.Drawing.Size(76, 20);
 			this.label6.TabIndex = 33;
 			this.label6.Text = "Elements";
 			// 
@@ -209,13 +203,15 @@
 			this.buttonClear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonClear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonClear.Location = new System.Drawing.Point(500, 350);
+			this.buttonClear.Location = new System.Drawing.Point(750, 538);
+			this.buttonClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonClear.Name = "buttonClear";
-			this.buttonClear.Size = new System.Drawing.Size(75, 23);
+			this.buttonClear.Size = new System.Drawing.Size(112, 35);
 			this.buttonClear.TabIndex = 37;
 			this.buttonClear.Text = "Clear";
 			this.buttonClear.UseVisualStyleBackColor = true;
 			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			this.buttonClear.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonClear.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonClear.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -228,13 +224,15 @@
 			this.buttonImport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonImport.Location = new System.Drawing.Point(500, 256);
+			this.buttonImport.Location = new System.Drawing.Point(750, 394);
+			this.buttonImport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonImport.Name = "buttonImport";
-			this.buttonImport.Size = new System.Drawing.Size(75, 23);
+			this.buttonImport.Size = new System.Drawing.Size(112, 35);
 			this.buttonImport.TabIndex = 39;
 			this.buttonImport.Text = "Import";
 			this.buttonImport.UseVisualStyleBackColor = true;
 			this.buttonImport.Click += new System.EventHandler(this.buttonImport_Click);
+			this.buttonImport.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonImport.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonImport.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -247,13 +245,15 @@
 			this.buttonExport.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonExport.Location = new System.Drawing.Point(500, 285);
+			this.buttonExport.Location = new System.Drawing.Point(750, 438);
+			this.buttonExport.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonExport.Name = "buttonExport";
-			this.buttonExport.Size = new System.Drawing.Size(75, 23);
+			this.buttonExport.Size = new System.Drawing.Size(112, 35);
 			this.buttonExport.TabIndex = 40;
 			this.buttonExport.Text = "Export";
 			this.buttonExport.UseVisualStyleBackColor = true;
 			this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
+			this.buttonExport.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonExport.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonExport.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -262,27 +262,30 @@
 			this.nameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.nameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.nameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.nameTextBox.Location = new System.Drawing.Point(80, 26);
+			this.nameTextBox.Location = new System.Drawing.Point(120, 40);
+			this.nameTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.nameTextBox.Name = "nameTextBox";
-			this.nameTextBox.Size = new System.Drawing.Size(140, 20);
+			this.nameTextBox.Size = new System.Drawing.Size(209, 26);
 			this.nameTextBox.TabIndex = 42;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
 			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label1.Location = new System.Drawing.Point(24, 28);
+			this.label1.Location = new System.Drawing.Point(36, 43);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
+			this.label1.Size = new System.Drawing.Size(51, 20);
 			this.label1.TabIndex = 41;
 			this.label1.Text = "Name";
 			// 
 			// phonemeLabel
 			// 
 			this.phonemeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.phonemeLabel.Location = new System.Drawing.Point(81, 59);
+			this.phonemeLabel.Location = new System.Drawing.Point(122, 91);
+			this.phonemeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.phonemeLabel.Name = "phonemeLabel";
-			this.phonemeLabel.Size = new System.Drawing.Size(47, 18);
+			this.phonemeLabel.Size = new System.Drawing.Size(70, 28);
 			this.phonemeLabel.TabIndex = 46;
 			this.phonemeLabel.Text = "Phoneme";
 			this.phonemeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -292,9 +295,10 @@
 			this.nextPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.nextPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.nextPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.nextPhonemeButton.Location = new System.Drawing.Point(134, 92);
+			this.nextPhonemeButton.Location = new System.Drawing.Point(201, 142);
+			this.nextPhonemeButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.nextPhonemeButton.Name = "nextPhonemeButton";
-			this.nextPhonemeButton.Size = new System.Drawing.Size(36, 23);
+			this.nextPhonemeButton.Size = new System.Drawing.Size(54, 35);
 			this.nextPhonemeButton.TabIndex = 45;
 			this.nextPhonemeButton.Text = ">";
 			this.nextPhonemeButton.UseVisualStyleBackColor = true;
@@ -305,9 +309,10 @@
 			this.prevPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.prevPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.prevPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.prevPhonemeButton.Location = new System.Drawing.Point(38, 92);
+			this.prevPhonemeButton.Location = new System.Drawing.Point(57, 142);
+			this.prevPhonemeButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.prevPhonemeButton.Name = "prevPhonemeButton";
-			this.prevPhonemeButton.Size = new System.Drawing.Size(36, 23);
+			this.prevPhonemeButton.Size = new System.Drawing.Size(54, 35);
 			this.prevPhonemeButton.TabIndex = 44;
 			this.prevPhonemeButton.Text = "<";
 			this.prevPhonemeButton.UseVisualStyleBackColor = true;
@@ -315,21 +320,35 @@
 			// 
 			// phonemePicture
 			// 
-			this.phonemePicture.Location = new System.Drawing.Point(80, 78);
+			this.phonemePicture.Location = new System.Drawing.Point(120, 120);
+			this.phonemePicture.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.phonemePicture.Name = "phonemePicture";
-			this.phonemePicture.Size = new System.Drawing.Size(48, 48);
+			this.phonemePicture.Size = new System.Drawing.Size(72, 74);
 			this.phonemePicture.TabIndex = 43;
 			this.phonemePicture.TabStop = false;
+			// 
+			// lipSyncMapColorCtrl1
+			// 
+			this.lipSyncMapColorCtrl1.BackColor = System.Drawing.SystemColors.Control;
+			this.lipSyncMapColorCtrl1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lipSyncMapColorCtrl1.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.lipSyncMapColorCtrl1.HSVColor = ((Common.Controls.ColorManagement.ColorModels.HSV)(resources.GetObject("lipSyncMapColorCtrl1.HSVColor")));
+			this.lipSyncMapColorCtrl1.Intensity = 1D;
+			this.lipSyncMapColorCtrl1.Location = new System.Drawing.Point(6, 22);
+			this.lipSyncMapColorCtrl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.lipSyncMapColorCtrl1.Name = "lipSyncMapColorCtrl1";
+			this.lipSyncMapColorCtrl1.Size = new System.Drawing.Size(282, 86);
+			this.lipSyncMapColorCtrl1.TabIndex = 0;
 			// 
 			// LipSyncMapMatrixEditor
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(597, 403);
+			this.ClientSize = new System.Drawing.Size(896, 620);
 			this.Controls.Add(this.phonemeLabel);
 			this.Controls.Add(this.nextPhonemeButton);
 			this.Controls.Add(this.prevPhonemeButton);
@@ -347,8 +366,8 @@
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
-			this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.MinimumSize = new System.Drawing.Size(603, 424);
+			this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+			this.MinimumSize = new System.Drawing.Size(894, 622);
 			this.Name = "LipSyncMapMatrixEditor";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

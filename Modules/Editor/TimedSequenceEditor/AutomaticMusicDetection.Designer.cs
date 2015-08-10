@@ -2002,6 +2002,7 @@
 			this.buttonCancel.TabIndex = 22;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -2020,6 +2021,7 @@
 			this.btnOk.TabIndex = 23;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -2037,6 +2039,7 @@
 			this.btnPreviewAudio.Text = "Preview Audio";
 			this.btnPreviewAudio.UseVisualStyleBackColor = true;
 			this.btnPreviewAudio.Click += new System.EventHandler(this.btnPreviewAudio_Click);
+			this.btnPreviewAudio.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnPreviewAudio.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnPreviewAudio.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

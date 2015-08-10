@@ -34,12 +34,12 @@ namespace VixenApplication
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -79,6 +79,7 @@ namespace VixenApplication
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.labelVixen = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -286,6 +287,7 @@ namespace VixenApplication
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
 			this.buttonOpenSequence.Click += new System.EventHandler(this.buttonOpenSequence_Click);
+			this.buttonOpenSequence.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOpenSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOpenSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -303,6 +305,7 @@ namespace VixenApplication
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
 			this.buttonNewSequence.Click += new System.EventHandler(this.buttonNewSequence_Click);
+			this.buttonNewSequence.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNewSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -332,12 +335,12 @@ namespace VixenApplication
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4,
-            listViewItem5,
-            listViewItem6});
+            listViewItem13,
+            listViewItem14,
+            listViewItem15,
+            listViewItem16,
+            listViewItem17,
+            listViewItem18});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(11, 108);
 			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
@@ -392,6 +395,7 @@ namespace VixenApplication
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
 			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
+			this.buttonSetupDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSetupDisplay.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupDisplay.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -409,6 +413,7 @@ namespace VixenApplication
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
+			this.buttonSetupOutputPreviews.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -486,10 +491,23 @@ namespace VixenApplication
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
+			// labelVixen
+			// 
+			this.labelVixen.AutoSize = true;
+			this.labelVixen.BackColor = System.Drawing.Color.Transparent;
+			this.labelVixen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.labelVixen.Font = new System.Drawing.Font("Microsoft Sans Serif", 65F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelVixen.Location = new System.Drawing.Point(153, 31);
+			this.labelVixen.Name = "labelVixen";
+			this.labelVixen.Size = new System.Drawing.Size(265, 98);
+			this.labelVixen.TabIndex = 17;
+			this.labelVixen.Text = "Vixen";
+			// 
 			// VixenApplication
 			// 
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(456, 465);
+			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
@@ -563,6 +581,7 @@ namespace VixenApplication
 		private ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private ToolStripStatusLabel toolStripStatusLabel_memory;
 		private StatusStrip statusStrip;
+		private Label labelVixen;
 	}
 }
 

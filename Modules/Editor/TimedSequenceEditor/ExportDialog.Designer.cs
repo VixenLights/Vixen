@@ -72,6 +72,7 @@
 			this.buttonStart.Text = "Start";
 			this.buttonStart.UseVisualStyleBackColor = true;
 			this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+			this.buttonStart.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonStart.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonStart.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -194,6 +195,7 @@
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = false;
 			this.buttonStop.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonStop.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonStop.MouseEnter += new System.EventHandler(this.stopButton_MouseEnter);
 			this.buttonStop.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonStop.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

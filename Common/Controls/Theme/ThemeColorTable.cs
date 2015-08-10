@@ -5,11 +5,6 @@ namespace Common.Controls.Theme
 {
 	public class ThemeColorTable : ProfessionalColorTable
 	{
-
-
-		public static Bitmap newBackGroundImage = null;
-		public static Bitmap newBackGroundImageHover = null;
-
 		//Form
 		public static Color _backgroundColor;
 
@@ -42,6 +37,13 @@ namespace Common.Controls.Theme
 		//MenuStrips
 		public static Color _menuSelectedHighlightBackColor;
 		public static Color _highlightColor;
+
+		//Sequence TimeLine
+		public static Color _timeLinePanel1BackColor;
+		public static Color _timeLineGridColor;
+		public static Color _timeLineEffectsBackColor;
+		public static Color _timeLineForeColor;
+		public static Color _timeLineLabelBackColor;
 
 		//Forms
 		public static Color BackgroundColor
@@ -120,6 +122,32 @@ namespace Common.Controls.Theme
 		public static Color NumericBackColor
 		{
 			get { return _numericBackColor; }
+		}
+
+		//Timeline Element Panel1 Background
+		public static Color TimeLinePanel1BackColor
+		{
+			get { return _timeLinePanel1BackColor; }
+		}
+
+		public static Color TimeLineGridColor
+		{
+			get { return _timeLineGridColor; }
+		}
+
+		public static Color TimeLineEffectsBackColor
+		{
+			get { return _timeLineEffectsBackColor; }
+		}
+
+		public static Color TimeLineForeColor
+		{
+			get { return _timeLineForeColor; }
+		}
+
+		public static Color TimeLineLabelBackColor
+		{
+			get { return _timeLineLabelBackColor; }
 		}
 
 		//MenuStrips

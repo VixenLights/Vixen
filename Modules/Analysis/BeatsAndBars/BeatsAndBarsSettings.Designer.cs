@@ -86,6 +86,7 @@
 			this.GenerateButton.Text = "Generate";
 			this.GenerateButton.UseVisualStyleBackColor = true;
 			this.GenerateButton.Click += new System.EventHandler(this.GoButton_Click);
+			this.GenerateButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.GenerateButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.GenerateButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -104,6 +105,7 @@
 			this.CancelButton.TabIndex = 5;
 			this.CancelButton.Text = "Cancel";
 			this.CancelButton.UseVisualStyleBackColor = true;
+			this.CancelButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.CancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.CancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

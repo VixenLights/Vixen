@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Resources.Properties;
 using Vixen.Module.App;
 using Vixen.Services;
@@ -296,18 +297,23 @@ namespace VixenModules.App.Curves
 
 			while (dialog.ShowDialog() == DialogResult.OK) {
 				if (dialog.Response == string.Empty) {
-					MessageBox.Show("Please enter a name.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
+					messageBox.ShowDialog();
 					continue;
 				}
 
 				if (Library.Contains(dialog.Response)) {
-					DialogResult result = MessageBox.Show("There is already a curve with that name. Do you want to overwrite it?",
-					                                      "Overwrite curve?", MessageBoxButtons.YesNoCancel);
-					if (result == DialogResult.Yes) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK) {
 						Library.AddCurve(dialog.Response, new Curve(Curve));
 						break;
 					}
-					else if (result == DialogResult.Cancel) {
+					if (messageBox.DialogResult == DialogResult.Cancel) {
 						break;
 					}
 				}
@@ -373,16 +379,23 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 		}
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

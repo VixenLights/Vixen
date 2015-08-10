@@ -118,6 +118,7 @@ namespace VixenApplication
 			initializeEditorTypes();
 
 			InitializeTheme();
+			labelVixen.BackColor = Color.Transparent;
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
@@ -152,7 +153,7 @@ namespace VixenApplication
 			}
 			else
 			{
-				//This will only be run once to create the Theme file and add default Dark theme colors.
+				//This will only be run once if a Theme file is not found and will in turn create the Theme file and add default Dark theme colors.
 				ThemeLoadColors.DarkTheme();
 
 				var xmlsettings = new XmlWriterSettings
@@ -161,7 +162,7 @@ namespace VixenApplication
 					IndentChars = "\t",
 				};
 
-				//Create the file
+				//Create and save the Theme colors to file
 				DataContractSerializer dataSer = new DataContractSerializer(typeof (Color[]));
 				var dataWriter = XmlWriter.Create(ThemeMainForm._vixenThemePath, xmlsettings);
 				dataSer.WriteObject(dataWriter, ThemeLoadColors._vixenThemeColors);
@@ -180,7 +181,8 @@ namespace VixenApplication
 			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
-			Refresh(); //This is mainly used to initiate a redraw of the Groupbox theme
+			labelVixen.BackColor = Color.Transparent;
+			groupBoxSequences.Invalidate(); //This is used to initiate a redraw of the Groupbox theme
 		}
 		#endregion
 
@@ -214,11 +216,12 @@ namespace VixenApplication
 
 		private void CheckForTestBuild()
 		{
-			if (_devBuild) {
-				MessageBox.Show(
-					"Please be aware that this is a development version. Some parts of the software may not work, " +
-					"and data loss is possible! Please backup your data before using this version of the software.",
-					"Development/Test Software", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			if (_devBuild) 
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation;
+				var messageBox = new MessageBoxForm("Please be aware that this is a development version. Some parts of the software may not work, and data loss is possible! Please backup your data before using this version of the software.", "Development/Test Software", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -836,27 +839,32 @@ namespace VixenApplication
 
 		private void VixenApplication_Paint(object sender, PaintEventArgs e)
 		{
+			//draws divider lines
 			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
-
 			if (ActiveForm != null)
 			{
-	//			e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
-				e.Graphics.DrawLine(borderColor, 0, ActiveForm.Height - 50, ActiveForm.Width, ActiveForm.Height - 50);
+				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
+				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + 40), Width, Height - (statusStrip.Height + 40));
 			}
+		}
+
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 	}
-
-	
 }

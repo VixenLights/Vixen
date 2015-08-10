@@ -5,6 +5,7 @@ namespace Common.Controls.Theme
 {
 	public sealed class ThemePropertyGridRenderer
 	{
+		//Used on the Preview property grid
 		public static void PropertyGridRender(Object sender)
 		{
 			PropertyGrid propertyGrid = sender as PropertyGrid;

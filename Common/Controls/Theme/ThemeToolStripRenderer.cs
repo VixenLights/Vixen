@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace Common.Controls.Theme
 {
+	//used to render all tool/status/menu strips
 	public class ThemeToolStripRenderer : ToolStripProfessionalRenderer
 	{
 		public ThemeToolStripRenderer() : base(new ThemeColorTable()) { }
@@ -52,7 +53,6 @@ namespace Common.Controls.Theme
 			{
 				g.DrawRectangle(p, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
 			}
-
 		}
 	}
 }

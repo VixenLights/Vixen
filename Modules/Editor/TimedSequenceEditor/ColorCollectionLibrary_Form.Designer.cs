@@ -106,6 +106,7 @@
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = false;
 			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+			this.btnOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -126,6 +127,7 @@
 			this.btnCancel.TabIndex = 9;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
+			this.btnCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -201,6 +203,7 @@
 			this.buttonAddColor.UseVisualStyleBackColor = false;
 			this.buttonAddColor.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
+			this.buttonAddColor.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -221,6 +224,7 @@
 			this.buttonImportCollection.Text = "Import Collection";
 			this.buttonImportCollection.UseVisualStyleBackColor = false;
 			this.buttonImportCollection.Click += new System.EventHandler(this.buttonImportCollection_Click);
+			this.buttonImportCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonImportCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonImportCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -241,6 +245,7 @@
 			this.buttonExportCollection.Text = "Export Collection";
 			this.buttonExportCollection.UseVisualStyleBackColor = false;
 			this.buttonExportCollection.Click += new System.EventHandler(this.buttonExportCollection_Click);
+			this.buttonExportCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonExportCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonExportCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -262,6 +267,7 @@
 			this.buttonRemoveColor.UseVisualStyleBackColor = false;
 			this.buttonRemoveColor.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonRemoveColor.Click += new System.EventHandler(this.buttonRemoveColor_Click);
+			this.buttonRemoveColor.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonRemoveColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonRemoveColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

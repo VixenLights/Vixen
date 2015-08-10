@@ -30,11 +30,11 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GradientEditPanel));
 			this.grpStops = new System.Windows.Forms.GroupBox();
+			this.lblColorSelect = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.vColorLoc = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.btnDeleteColor = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.lblColorSelect = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.vColorLoc = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.edit = new VixenModules.App.ColorGradients.GradientEdit();
 			this.grpStops.SuspendLayout();
 			this.SuspendLayout();
@@ -52,32 +52,6 @@
 			this.grpStops.TabStop = false;
 			this.grpStops.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
-			// btnDeleteColor
-			// 
-			resources.ApplyResources(this.btnDeleteColor, "btnDeleteColor");
-			this.btnDeleteColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.btnDeleteColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnDeleteColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnDeleteColor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnDeleteColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnDeleteColor.Name = "btnDeleteColor";
-			this.btnDeleteColor.UseVisualStyleBackColor = false;
-			this.btnDeleteColor.Click += new System.EventHandler(this.btnDeleteColor_Click);
-			this.btnDeleteColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.btnDeleteColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
-			// 
-			// label5
-			// 
-			resources.ApplyResources(this.label5, "label5");
-			this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label5.Name = "label5";
-			// 
-			// label4
-			// 
-			resources.ApplyResources(this.label4, "label4");
-			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label4.Name = "label4";
-			// 
 			// lblColorSelect
 			// 
 			resources.ApplyResources(this.lblColorSelect, "lblColorSelect");
@@ -92,6 +66,33 @@
 			this.vColorLoc.Name = "vColorLoc";
 			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
 			this.vColorLoc.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
+			// 
+			// btnDeleteColor
+			// 
+			resources.ApplyResources(this.btnDeleteColor, "btnDeleteColor");
+			this.btnDeleteColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.btnDeleteColor.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnDeleteColor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnDeleteColor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnDeleteColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.btnDeleteColor.Name = "btnDeleteColor";
+			this.btnDeleteColor.UseVisualStyleBackColor = false;
+			this.btnDeleteColor.Click += new System.EventHandler(this.btnDeleteColor_Click);
+			this.btnDeleteColor.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
+			this.btnDeleteColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnDeleteColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
+			// label5
+			// 
+			resources.ApplyResources(this.label5, "label5");
+			this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.label5.Name = "label5";
+			// 
+			// label4
+			// 
+			resources.ApplyResources(this.label4, "label4");
+			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.label4.Name = "label4";
 			// 
 			// edit
 			// 

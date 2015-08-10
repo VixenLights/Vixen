@@ -62,10 +62,10 @@ namespace Common.Controls.Timeline
 			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
-			RowSeparatorColor = Color.Black;
-			MajorGridlineColor = Color.FromArgb(120, 120, 120);
+			RowSeparatorColor = ThemeColorTable.TimeLineGridColor;
+			MajorGridlineColor = ThemeColorTable.TimeLineGridColor;
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BackColor = ThemeColorTable.BackgroundColor;
+			BackColor = ThemeColorTable.TimeLineEffectsBackColor;
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
 			DrawColor = Color.FromArgb(100, 255, 255, 255);

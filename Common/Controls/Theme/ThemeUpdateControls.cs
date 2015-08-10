@@ -17,7 +17,8 @@ namespace Common.Controls.Theme
 {
 	public sealed class ThemeUpdateControls
 	{
-		//The following will move through each control and adjust each control properties as required.
+		//used to provide color to various controls.
+		//will move through each control and sub controls and adjust each control properties as required.
 		public static void UpdateControls(Control control)
 		{
 			foreach (Control c in control.Controls)
@@ -31,27 +32,7 @@ namespace Common.Controls.Theme
 				{
 					Button btn = c as Button;
 					btn.FlatStyle = FlatStyle.Flat;
-					btn.FlatAppearance.BorderColor = ThemeColorTable.ButtonBorderColor;
-					if (c.Width > 40)
-					{
-						btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
-						btn.BackgroundImageLayout = ImageLayout.Stretch;
-						// The following code is used to set the backcolor of the button. The reason this is done is because when a button is
-						// disabled it uses a darker shade of the backcolor to determine the disabled Text Color (Microsoft's fault)
-						// As such this is the easiest way to get a disabled color to be the same as the Forecolor that is darker but not too dark. Other way whould be to repaint.
-						// This also allows all button EnabledChanged events that were put in to be removed as they are no longer required.
-						float correctionFactor = 0.8f; //This factor is used to increases the shade of the color for the diabled text color.
-						float red = (255 - ThemeColorTable.ForeColor.R) * correctionFactor + ThemeColorTable.ForeColor.R;
-						float green = (255 - ThemeColorTable.ForeColor.G) * correctionFactor + ThemeColorTable.ForeColor.G;
-						float blue = (255 - ThemeColorTable.ForeColor.B) * correctionFactor + ThemeColorTable.ForeColor.B;
-						Color buttonForeColorDisabled = Color.FromArgb(ThemeColorTable.ForeColor.A, (int)red, (int)green, (int)blue);
-						btn.BackColor = buttonForeColorDisabled;
-					}
-					else
-					{
-						btn.FlatAppearance.BorderSize = 0;
-					}
-					c.ForeColor = ThemeColorTable.ForeColor;
+					btn.FlatAppearance.BorderSize = 0;
 				}
 				if (c is TextBox & !c.ToString().Contains("UpDown"))
 				{
@@ -95,7 +76,6 @@ namespace Common.Controls.Theme
 					UpdateControls(c);
 				}
 			}
-
 		}
 	}
 }

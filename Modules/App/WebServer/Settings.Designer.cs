@@ -39,6 +39,7 @@
 			this.lblDisclaimer = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.labelVixen = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -117,6 +118,7 @@
 			this.btnCancel.TabIndex = 8;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -129,6 +131,7 @@
 			this.btnOk.TabIndex = 9;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
+			this.btnOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -168,11 +171,22 @@
 			this.label4.TabIndex = 16;
 			this.label4.Text = "Turn off the web server when not in use to conserve resources.";
 			// 
+			// labelVixen
+			// 
+			this.labelVixen.AutoSize = true;
+			this.labelVixen.Font = new System.Drawing.Font("Microsoft Sans Serif", 50F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelVixen.Location = new System.Drawing.Point(116, 2);
+			this.labelVixen.Name = "labelVixen";
+			this.labelVixen.Size = new System.Drawing.Size(205, 76);
+			this.labelVixen.TabIndex = 18;
+			this.labelVixen.Text = "Vixen";
+			// 
 			// Settings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(314, 316);
+			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.lblDisclaimer);
 			this.Controls.Add(this.label3);
@@ -209,5 +223,6 @@
 		private System.Windows.Forms.Label lblDisclaimer;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label labelVixen;
 	}
 }

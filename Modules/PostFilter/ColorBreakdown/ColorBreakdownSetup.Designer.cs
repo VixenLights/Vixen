@@ -86,6 +86,7 @@
 			this.buttonApplyTemplate.Text = "Apply Template";
 			this.buttonApplyTemplate.UseVisualStyleBackColor = true;
 			this.buttonApplyTemplate.Click += new System.EventHandler(this.buttonApplyTemplate_Click);
+			this.buttonApplyTemplate.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonApplyTemplate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonApplyTemplate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -99,6 +100,7 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -112,6 +114,7 @@
 			this.buttonOK.TabIndex = 7;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -125,6 +128,7 @@
 			this.buttonAddColor.Text = "Add Color";
 			this.buttonAddColor.UseVisualStyleBackColor = true;
 			this.buttonAddColor.Click += new System.EventHandler(this.buttonAddColor_Click);
+			this.buttonAddColor.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

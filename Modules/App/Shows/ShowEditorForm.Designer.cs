@@ -74,7 +74,7 @@
 			// 
 			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
 			this.tabPageStartup.Name = "tabPageStartup";
-			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageStartup.Size = new System.Drawing.Size(319, 0);
 			this.tabPageStartup.TabIndex = 0;
 			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
@@ -85,7 +85,7 @@
 			// 
 			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
 			this.tabPageBackground.Name = "tabPageBackground";
-			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageBackground.Size = new System.Drawing.Size(319, 0);
 			this.tabPageBackground.TabIndex = 1;
 			this.tabPageBackground.Tag = "These items are always run in the background.";
@@ -194,6 +194,7 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -210,6 +211,7 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.Paint += new System.Windows.Forms.PaintEventHandler(this.buttonHelp_Paint);
 			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -289,13 +291,16 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Location = new System.Drawing.Point(716, 456);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 22);
 			this.buttonCancel.TabIndex = 66;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ShowEditorForm
 			// 

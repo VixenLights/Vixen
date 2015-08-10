@@ -20,12 +20,6 @@ namespace Common.Controls.Theme
 		public ThemeMainForm()
 		{
 			InitializeComponent();
-			ColorButtonChange();
-			if (ThemeLoadColors._vixenThemeColors[14] == Color.Black) //This is used as a test to see if the Dark Button background is used.
-			{
-				ThemeColorTable.newBackGroundImage = null; //Button Back Color
-				ThemeColorTable.newBackGroundImageHover = null; //Button Back Color hover
-			}
 			//Renders the theme to the form
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -35,7 +29,7 @@ namespace Common.Controls.Theme
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
 			textBox1.Text = "This is a Preview of the text";
 
-			comboBoxThemes.SelectedIndex = 3;
+			comboBoxThemes.SelectedIndex = comboBoxThemes.Items.Count - 1;
 			comboBox1.SelectedIndex = 0;
 		}
 
@@ -55,7 +49,7 @@ namespace Common.Controls.Theme
 			//adds the theme colors to the Color Panels on the form for users to see.
 			var i = 0;
 			var _colorPanel = new[] { pictureBox0, pictureBox1, pictureBox2, pictureBox3, pictureBox4,
-					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14 };
+					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18 };
 
 			foreach (var c in _colorPanel)
 			{
@@ -69,7 +63,7 @@ namespace Common.Controls.Theme
 		{
 			var i = 0;
 			var _colorPanel = new[] { pictureBox0, pictureBox1, pictureBox2, pictureBox3, pictureBox4,
-					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14  };
+					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18  };
 			foreach (var c in _colorPanel)
 			{
 				ThemeLoadColors._vixenThemeColors[i] = c.BackColor;
@@ -101,6 +95,11 @@ namespace Common.Controls.Theme
 			ThemeColorTable._buttonBackColorHover = ThemeLoadColors._vixenThemeColors[11];
 			ThemeColorTable._numericBackColor = ThemeLoadColors._vixenThemeColors[12];
 			ThemeColorTable._comboBoxHighlightColor = ThemeLoadColors._vixenThemeColors[13];
+			ThemeColorTable._timeLinePanel1BackColor = ThemeLoadColors._vixenThemeColors[14];
+			ThemeColorTable._timeLineGridColor = ThemeLoadColors._vixenThemeColors[15];
+			ThemeColorTable._timeLineEffectsBackColor = ThemeLoadColors._vixenThemeColors[16];
+			ThemeColorTable._timeLineForeColor = ThemeLoadColors._vixenThemeColors[17];
+			ThemeColorTable._timeLineLabelBackColor = ThemeLoadColors._vixenThemeColors[18];
 		}
 
 		private void comboBoxThemes_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,30 +112,22 @@ namespace Common.Controls.Theme
 					break;
 				case "Windows":
 					ThemeLoadColors.WindowsTheme();
-					ColorButtonChange();
 					ThemeChanged();
 					break;
-				case "Light":
-					ThemeLoadColors.LightTheme();
-					ColorButtonChange();
+				case "Christmas":
+					ThemeLoadColors.ChristmasTheme();
+					ThemeChanged();
+					break;
+				case "Halloween":
+					ThemeLoadColors.HalloweenTheme();
 					ThemeChanged();
 					break;
 			}
-			ThemeLoadColors._vixenThemeColors[14] = Color.White; //This is used as a test to see if the Dark Button background is used.
 		}
 
 		private void ThemeChanged()
 		{
 			loadTheme();
-			SaveTheme();
-			update();
-			Refresh();
-		}
-
-		private void colorChange(object sender, EventArgs e)
-		{
-			comboBoxThemes.SelectedIndex = 3;
-			ThemeLoadColors._vixenThemeColors[14] = Color.White; //This is used as a test to see if the Dark Button background is used.
 			SaveTheme();
 			update();
 			Refresh();
@@ -148,7 +139,7 @@ namespace Common.Controls.Theme
 			var _colorPanel = new[]
 				{
 					pictureBox0, pictureBox1, pictureBox2, pictureBox3, pictureBox4,
-					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14
+					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18
 				};
 			foreach (var c in _colorPanel)
 			{
@@ -163,60 +154,6 @@ namespace Common.Controls.Theme
 			loadTheme();
 		}
 
-		//Used to redraw the Background image for button a differnt color.
-		#region Redraw Background image for Button
-
-		private void colorButtonChange(object sender, EventArgs e)
-		{
-			comboBoxThemes.SelectedIndex = 3;
-			pictureBox14.BackColor = Color.White; //Button Default Background
-			update();
-			ColorButtonChange();
-			SaveTheme();
-			ThemeUpdateControls.UpdateControls(this);
-			label16.ForeColor = ThemeColorTable.ForeColorDisabled;
-		}
-
-		public static void ColorButtonChange()
-		{
-			Color color = ThemeLoadColors._vixenThemeColors[10]; //Your desired colour
-
-			byte r = color.R; //For Red colour
-			byte g = color.G; //For Red colour
-			byte b = color.B; //For Red colour
-
-			Bitmap bmp = new Bitmap(Resources.Properties.Resources.HeadingBackgroundImage);
-			for (int x = 0; x < bmp.Width; x++)
-			{
-				for (int y = 0; y < bmp.Height; y++)
-				{
-					Color gotColor = bmp.GetPixel(x, y);
-					gotColor = Color.FromArgb(r, g, b);
-					bmp.SetPixel(x, y, gotColor);
-				}
-			}
-			ThemeColorTable.newBackGroundImage = bmp;
-
-			Color color1 = ThemeLoadColors._vixenThemeColors[11]; //Your desired colour
-
-			byte r1 = color1.R; //For Red colour
-			byte g1 = color1.G; //For Red colour
-			byte b1 = color1.B; //For Red colour
-
-			Bitmap bmp1 = new Bitmap(Resources.Properties.Resources.HeadingBackgroundImage);
-			for (int x = 0; x < bmp1.Width; x++)
-			{
-				for (int y = 0; y < bmp1.Height; y++)
-				{
-					Color gotColor1 = bmp1.GetPixel(x, y);
-					gotColor1 = Color.FromArgb(r1, g1, b1);
-					bmp1.SetPixel(x, y, gotColor1);
-				}
-			}
-			ThemeColorTable.newBackGroundImageHover = bmp1;
-		}
-		#endregion
-
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
@@ -227,36 +164,31 @@ namespace Common.Controls.Theme
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.Properties.Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void selectColor_Click(object sender, EventArgs e)
 		{
 			colorPicker(sender, e);
-			ThemeLoadColors._vixenThemeColors[14] = Color.White; //This is used as a test to see if the Dark Button background is used.
 			SaveTheme();
 			update();
 			Refresh();
-		}
-
-		private void selectButtonColor_Click(object sender, EventArgs e)
-		{
-			colorPicker(sender, e);
-			pictureBox14.BackColor = Color.White; //Button Default Background
-			update();
-			ColorButtonChange();
-			SaveTheme();
-			ThemeUpdateControls.UpdateControls(this);
-			label16.ForeColor = ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void colorPicker(object sender, EventArgs e)
@@ -272,69 +204,8 @@ namespace Common.Controls.Theme
 
 				PictureBox btn = sender as PictureBox;
 				btn.BackColor = colorValue;
-				comboBoxThemes.SelectedIndex = 3;
+				comboBoxThemes.SelectedIndex = comboBoxThemes.Items.Count - 1;
 			}
-		}
-
-		private PushButtonState state = PushButtonState.Normal;
-		private void button2_Paint(object sender, PaintEventArgs e)
-		{
-			base.OnPaint(e);
-			var btn = sender as Button;
-			StringFormat _sf = new StringFormat();
-			_sf.Alignment = StringAlignment.Center;
-			_sf.LineAlignment = StringAlignment.Center;
-			Graphics g = e.Graphics;
-			Brush _paintBrush = new LinearGradientBrush(btn.ClientRectangle, Color.FromArgb(60,60,60), Color.FromArgb(15,15,15),
-					LinearGradientMode.Vertical);
-			g.FillRectangle(_paintBrush, btn.ClientRectangle);
-			PointF _centerPoint = new PointF(btn.Width / 2, btn.Height / 2);
-			g.DrawString(btn.Text, btn.Font, (new SolidBrush(ThemeColorTable.ForeColor)), _centerPoint.X, _centerPoint.Y, _sf);
-
-			paint_Border(btn, e);
-		}
-
-		private void paint_Border(Button btn, PaintEventArgs e)
-		{
-			if (e == null)
-				return;
-			if (e.Graphics == null)
-				return;
-			Pen pen = new Pen(ThemeColorTable.ButtonBorderColor, 1);
-			Point[] pts = border_Get(0, 0, btn.Width - 1, btn.Height - 1);
-			e.Graphics.DrawLines(pen, pts);
-			pen.Dispose();
-		}
-
-		private Point[] border_Get(int nLeftEdge, int nTopEdge, int nWidth, int nHeight)
-		{
-			int X = nWidth;
-			int Y = nHeight;
-			Point[] points =
-			{
-				new Point(1, 0),
-				new Point(X - 1, 0),
-				new Point(X - 1, 1),
-				new Point(X, 1),
-				new Point(X, Y - 1),
-				new Point(X - 1, Y - 1),
-				new Point(X - 1, Y),
-				new Point(1, Y),
-				new Point(1, Y - 1),
-				new Point(0, Y - 1),
-				new Point(0, 1),
-				new Point(1, 1)
-			};
-			for (int i = 0; i < points.Length; i++)
-			{
-				points[i].Offset(nLeftEdge, nTopEdge);
-			}
-			return points;
-		}
-
-		private void button2_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

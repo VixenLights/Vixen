@@ -42,6 +42,7 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -61,6 +62,7 @@
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -98,6 +100,7 @@
 			this.buttonEditMap.Text = "Edit";
 			this.buttonEditMap.UseVisualStyleBackColor = false;
 			this.buttonEditMap.Click += new System.EventHandler(this.buttonEditMap_Click);
+			this.buttonEditMap.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -118,6 +121,7 @@
 			this.buttonDeleteMap.Text = "Remove";
 			this.buttonDeleteMap.UseVisualStyleBackColor = false;
 			this.buttonDeleteMap.Click += new System.EventHandler(this.buttonDeleteMapping_Click);
+			this.buttonDeleteMap.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDeleteMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -137,6 +141,7 @@
 			this.buttonNewMap.Text = "New";
 			this.buttonNewMap.UseVisualStyleBackColor = false;
 			this.buttonNewMap.Click += new System.EventHandler(this.buttonNewMap_Click);
+			this.buttonNewMap.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNewMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -157,6 +162,7 @@
 			this.buttonCloneMap.Text = "Clone";
 			this.buttonCloneMap.UseVisualStyleBackColor = false;
 			this.buttonCloneMap.Click += new System.EventHandler(this.buttonCloneMap_Click);
+			this.buttonCloneMap.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCloneMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCloneMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

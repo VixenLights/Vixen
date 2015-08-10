@@ -57,9 +57,9 @@
 			// 
 			this.groupBox3.Controls.Add(this.chkSlow);
 			this.groupBox3.Controls.Add(this.chkBiDirectional);
-			this.groupBox3.Location = new System.Drawing.Point(399, 259);
+			this.groupBox3.Location = new System.Drawing.Point(399, 247);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(110, 76);
+			this.groupBox3.Size = new System.Drawing.Size(222, 45);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Options";
@@ -68,7 +68,7 @@
 			// chkSlow
 			// 
 			this.chkSlow.AutoSize = true;
-			this.chkSlow.Location = new System.Drawing.Point(9, 42);
+			this.chkSlow.Location = new System.Drawing.Point(120, 19);
 			this.chkSlow.Name = "chkSlow";
 			this.chkSlow.Size = new System.Drawing.Size(49, 17);
 			this.chkSlow.TabIndex = 1;
@@ -289,6 +289,7 @@
 			this.btnTX.TabIndex = 1;
 			this.btnTX.Text = "Send";
 			this.btnTX.Click += new System.EventHandler(this.btnTX_Click);
+			this.btnTX.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnTX.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnTX.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -334,12 +335,13 @@
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(512, 270);
+			this.button1.Location = new System.Drawing.Point(399, 298);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(109, 65);
+			this.button1.Size = new System.Drawing.Size(222, 34);
 			this.button1.TabIndex = 4;
 			this.button1.Text = "Save Configuration Settings";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

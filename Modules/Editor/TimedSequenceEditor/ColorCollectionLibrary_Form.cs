@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
+using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
@@ -95,10 +96,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_isDirty)
 			{
-				var warnResult = MessageBox.Show(@"You will loose any changes, do you wish to save them now ?", @"Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-				if (warnResult == DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("You will loose any changes, do you wish to save them now ?", "Warning", true, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 					DialogResult = DialogResult.OK;
-				if (warnResult == DialogResult.Cancel)
+				if (messageBox.DialogResult == DialogResult.Cancel)
 					e.Cancel = true;
 			}
 		}
@@ -243,9 +247,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (ColorCollections.Contains(colorCollection))
 						{
-							DialogResult result = MessageBox.Show(@"A collection with the name " + colorCollection.Name + @" already exists. Do you want to overwrite it?",
-										  @"Overwrite collection?", MessageBoxButtons.YesNoCancel);
-							if (result == DialogResult.Yes)
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("A collection with the name " + colorCollection.Name + @" already exists. Do you want to overwrite it?", "Overwrite collection?", true, false);
+							messageBox.ShowDialog();
+							if (messageBox.DialogResult == DialogResult.OK)
 							{
 								//Remove the collection to overwrite, we will add the new one below.
 								ColorCollections.Remove(colorCollection);
@@ -383,16 +389,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonNewCollection_Click(object sender, EventArgs e)

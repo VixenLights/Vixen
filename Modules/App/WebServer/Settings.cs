@@ -21,6 +21,7 @@ namespace VixenModules.App.WebServer
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			labelVixen.BackColor = Color.Transparent;
 			Icon = Resources.Icon_Vixen3;
 		}
 
@@ -78,16 +79,23 @@ namespace VixenModules.App.WebServer
 			System.Diagnostics.Process.Start(linkLabel1.Text);
 		}
 
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		private void button_Paint(object sender, PaintEventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.OnPaint(sender, e, null);
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 	}
 }

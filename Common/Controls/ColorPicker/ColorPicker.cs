@@ -167,6 +167,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
+			this.btnCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -182,6 +183,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnOK.Name = "btnOK";
 			this.btnOK.UseVisualStyleBackColor = false;
+			this.btnOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -976,25 +978,28 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			UpdatetbValue(null);
 		}
 
-		#region Draw GroupBox border
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-		
-		#endregion
+
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.Properties.Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.Properties.Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 	}
 }

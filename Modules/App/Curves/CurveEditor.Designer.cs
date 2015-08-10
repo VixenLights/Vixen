@@ -68,6 +68,7 @@ namespace VixenModules.App.Curves
 			this.buttonOK.TabIndex = 2;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -86,6 +87,7 @@ namespace VixenModules.App.Curves
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -142,6 +144,7 @@ namespace VixenModules.App.Curves
 			this.buttonEditLibraryCurve.Text = "Edit Library Curve";
 			this.buttonEditLibraryCurve.UseVisualStyleBackColor = false;
 			this.buttonEditLibraryCurve.Click += new System.EventHandler(this.buttonEditLibraryCurve_Click);
+			this.buttonEditLibraryCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEditLibraryCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditLibraryCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -160,6 +163,7 @@ namespace VixenModules.App.Curves
 			this.buttonUnlinkCurve.Text = "Unlink Curve";
 			this.buttonUnlinkCurve.UseVisualStyleBackColor = false;
 			this.buttonUnlinkCurve.Click += new System.EventHandler(this.buttonUnlinkCurve_Click);
+			this.buttonUnlinkCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUnlinkCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnlinkCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -187,6 +191,7 @@ namespace VixenModules.App.Curves
 			this.buttonSaveCurveToLibrary.Text = "Save Curve";
 			this.buttonSaveCurveToLibrary.UseVisualStyleBackColor = false;
 			this.buttonSaveCurveToLibrary.Click += new System.EventHandler(this.buttonSaveCurveToLibrary_Click);
+			this.buttonSaveCurveToLibrary.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSaveCurveToLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSaveCurveToLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -205,6 +210,7 @@ namespace VixenModules.App.Curves
 			this.buttonLoadCurveFromLibrary.Text = "Load Curve";
 			this.buttonLoadCurveFromLibrary.UseVisualStyleBackColor = false;
 			this.buttonLoadCurveFromLibrary.Click += new System.EventHandler(this.buttonLoadCurveFromLibrary_Click);
+			this.buttonLoadCurveFromLibrary.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonLoadCurveFromLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonLoadCurveFromLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -261,6 +267,7 @@ namespace VixenModules.App.Curves
 			this.btnUpdateCoordinates.Text = "Update";
 			this.btnUpdateCoordinates.UseVisualStyleBackColor = false;
 			this.btnUpdateCoordinates.Click += new System.EventHandler(this.btnUpdateCoordinates_Click);
+			this.btnUpdateCoordinates.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnUpdateCoordinates.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnUpdateCoordinates.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -312,6 +319,7 @@ namespace VixenModules.App.Curves
 			this.btnInvert.Text = "Invert Curve";
 			this.btnInvert.UseVisualStyleBackColor = false;
 			this.btnInvert.Click += new System.EventHandler(this.btnInvert_Click);
+			this.btnInvert.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnInvert.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnInvert.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -330,6 +338,7 @@ namespace VixenModules.App.Curves
 			this.btnReverse.Text = "Reverse Curve";
 			this.btnReverse.UseVisualStyleBackColor = false;
 			this.btnReverse.Click += new System.EventHandler(this.btnReverse_Click);
+			this.btnReverse.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnReverse.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnReverse.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

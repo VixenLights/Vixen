@@ -65,6 +65,7 @@
 			this.buttonSetupCurve.Text = "Setup Dimming Curve";
 			this.buttonSetupCurve.UseVisualStyleBackColor = true;
 			this.buttonSetupCurve.Click += new System.EventHandler(this.buttonSetupCurve_Click);
+			this.buttonSetupCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSetupCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -121,6 +122,7 @@
 			this.buttonCancel.TabIndex = 24;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -135,6 +137,7 @@
 			this.buttonOk.TabIndex = 23;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

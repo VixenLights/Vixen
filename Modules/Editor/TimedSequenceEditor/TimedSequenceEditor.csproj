@@ -59,6 +59,10 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Application\VixenApplication\VixenApplication.csproj">
+      <Project>{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}</Project>
+      <Name>VixenApplication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
       <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
       <Name>EffectEditor</Name>

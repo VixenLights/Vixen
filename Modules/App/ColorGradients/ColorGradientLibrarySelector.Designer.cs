@@ -52,6 +52,7 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
+			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -72,6 +73,7 @@
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
+			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -108,6 +110,7 @@
 			this.buttonEditColorGradient.Text = "Edit Gradient";
 			this.buttonEditColorGradient.UseVisualStyleBackColor = false;
 			this.buttonEditColorGradient.Click += new System.EventHandler(this.buttonEditColorGradient_Click);
+			this.buttonEditColorGradient.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEditColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -129,6 +132,7 @@
 			this.buttonDeleteColorGradient.Text = "Delete Gradient";
 			this.buttonDeleteColorGradient.UseVisualStyleBackColor = false;
 			this.buttonDeleteColorGradient.Click += new System.EventHandler(this.buttonDeleteColorGradient_Click);
+			this.buttonDeleteColorGradient.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDeleteColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -149,6 +153,7 @@
 			this.buttonNewColorGradient.Text = "New Gradient";
 			this.buttonNewColorGradient.UseVisualStyleBackColor = false;
 			this.buttonNewColorGradient.Click += new System.EventHandler(this.buttonNewColorGradient_Click);
+			this.buttonNewColorGradient.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNewColorGradient.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewColorGradient.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

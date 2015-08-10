@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources;
+using VixenApplication;
 using VixenModules.Sequence.Timed;
 using Vixen.Execution;
 using Vixen.Module.Timing;
@@ -20,7 +21,6 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
 using Common.Controls.Theme;
-using VixenModules.Editor.EffectEditor;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -257,6 +257,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonAddCollection_Click(object sender, EventArgs e)
 		{
 			AddNewCollection(ThemeColorTable.ForeColor);
+			ThemeButtonRenderer.ButtonHover = false;
+			Refresh();
 			//MarkCollection newCollection = new MarkCollection();
 			//newCollection.Name = "New Collection";
 			//MarkCollections.Add(newCollection);
@@ -1342,7 +1344,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			radioButtonPlayback.Checked = true;
 
 			panelColor.BackColor = color;
-
 			return newCollection;
 		}
 
@@ -1456,7 +1457,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							iMarkCollection++;
 					}
 				}
-
+				
 				saveFileDialog.DefaultExt = ".txt";
 				saveFileDialog.Filter = "Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -1474,45 +1475,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		#region Used to set the text color when buttons are disabled
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
-		}
-
 		private void panelMarkCollectionsButtons_EnabledChanged(object sender, EventArgs e)
 		{
 			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
-		#endregion
 
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		#endregion
-
-		#region Set button background for mouse hover and leave
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImageHover ?? Resources.HeadingBackgroundImageHover;
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = ThemeColorTable.newBackGroundImage ?? Resources.HeadingBackgroundImage;
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
 		}
-		#endregion
 
 		private void groupBoxOperations_EnabledChanged(object sender, EventArgs e)
 		{
