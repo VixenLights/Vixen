@@ -6,7 +6,7 @@ using Vixen.Sys;
 namespace Common.Controls.Timeline
 {
 	[Serializable]
-	public class Element : IComparable<Element>, ITimeRowLocation, IDisposable
+	public class Element : IComparable<Element>, ITimeRowLocation
 	{
 		private TimeSpan _startTime;
 		private TimeSpan _duration;
@@ -455,22 +455,6 @@ namespace Common.Controls.Timeline
 
 		#endregion
 
-		~Element()
-		{
-			Dispose(false);
-		}
-
-		protected void Dispose(bool disposing)
-		{
-			if (disposing) {
-				
-			}
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-		}
 	}
 
 
