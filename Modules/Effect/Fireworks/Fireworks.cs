@@ -282,7 +282,7 @@ namespace VixenModules.Effect.Fireworks
 		{
 			if (_fireworkBursts == null)
 			{
-				_fireworkBursts = new List<RgbFireworks>();
+				_fireworkBursts = new List<RgbFireworks>(20000);
 				for (int burstNum = 0; burstNum < 20000; burstNum++)
 				{
 					RgbFireworks firework = new RgbFireworks();

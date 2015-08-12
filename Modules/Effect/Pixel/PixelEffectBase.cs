@@ -108,7 +108,7 @@ namespace VixenModules.Effect.Pixel
 		protected IEnumerable<ElementNode> FindLeafParents()
 		{
 			var nodes = new List<ElementNode>();
-			var nonLeafElements = new List<ElementNode>();
+			var nonLeafElements = Enumerable.Empty<ElementNode>();
 
 			if (TargetNodes.FirstOrDefault() != null)
 			{
