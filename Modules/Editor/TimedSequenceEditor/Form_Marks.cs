@@ -180,7 +180,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MessageBoxForm.msgIcon = SystemIcons.Question; //adds a system icon to the message form.
 				var messageBox = new MessageBoxForm("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", true, false);
 				messageBox.ShowDialog();
-				if (messageBox.DialogResult == DialogResult.Yes)
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
 					{

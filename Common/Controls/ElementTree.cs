@@ -492,8 +492,11 @@ namespace Common.Controls
 					result.AddRange(
 						nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
 							name => AddNewNode(name, false, parent, true)));
-					if (result == null || result.Count() == 0) { 
-						MessageBox.Show("Could not create elements.  Ensure you use a valid name and try again.");
+					if (result == null || result.Count() == 0) {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
+						messageBox.ShowDialog();
 						return result;
 					}
 					PopulateNodeTree(result.FirstOrDefault());
@@ -560,8 +563,12 @@ namespace Common.Controls
 					string message = "Adding items to this element will convert it into a Group, which will remove any " +
 					                 "patches it may have. Are you sure you want to continue?";
 					string title = "Convert Element to Group?";
-					DialogResult result = MessageBox.Show(message, title, MessageBoxButtons.YesNoCancel);
-					if (result != DialogResult.Yes) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(message, title, true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult != DialogResult.OK)
+					{
 						return true;
 					}
 				}
@@ -877,12 +884,12 @@ namespace Common.Controls
 			// do our own deleting of items here
 			if (e.KeyCode == Keys.Delete) {
 				if (SelectedTreeNodes.Count > 0) {
-					if (MessageBox.Show(
-						"Delete selected items?",
-						"Delete items",
-						MessageBoxButtons.YesNo,
-						MessageBoxIcon.Exclamation,
-						MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Delete selected items?",
+						"Delete items", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						foreach (TreeNode tn in SelectedTreeNodes) {
 							DeleteNode(tn);

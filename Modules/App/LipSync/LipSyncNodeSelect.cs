@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Sys;
@@ -204,13 +205,15 @@ namespace VixenModules.App.LipSyncApp
         {
             if (_stringAreRows != StringsAreRows)
             {
-                DialogResult dr = 
-                    MessageBox.Show("Changing Matrix Orientation will modify existing matrix data!" +
-                    Environment.NewLine + "Press Cancel to keep existing matrix orientation" + 
-                    Environment.NewLine + "Press OK to continue", 
-                    "Warning!",  MessageBoxButtons.OKCancel);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Changing Matrix Orientation will modify existing matrix data!" +
+					Environment.NewLine + "Press Cancel to keep existing matrix orientation" +
+					Environment.NewLine + "Press OK to continue",
+					"Warning!", false, true);
+				messageBox.ShowDialog();
 
-                if (dr == DialogResult.Cancel)
+				if (messageBox.DialogResult == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                     StringsAreRows = _stringAreRows;

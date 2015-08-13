@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Dynamic;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -127,7 +128,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 				default:
 					Logging.Error("Color Breakdown Setup: got an unknown template to apply: " + template);
-					MessageBox.Show("Error applying template: Unknown template.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Error applying template: Unknown template.", "Error", false, false);
+					messageBox.ShowDialog();
 					break;
 			}
 		}

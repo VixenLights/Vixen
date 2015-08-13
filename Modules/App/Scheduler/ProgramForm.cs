@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BaseSequence;
+using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -160,8 +161,10 @@ namespace VixenModules.App.Scheduler
 			if (messages.Count > 0) {
 				messages.Insert(0, "The following problems need to be corrected:");
 				messages.Insert(1, Environment.NewLine);
-				MessageBox.Show(string.Join(Environment.NewLine, messages), "Vixen Program", MessageBoxButtons.OK,
-				                MessageBoxIcon.Stop);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(string.Join(Environment.NewLine, messages), "Vixen Program", false, false);
+				messageBox.ShowDialog();
 				return false;
 			}
 
@@ -197,7 +200,10 @@ namespace VixenModules.App.Scheduler
 					_originalProgram.Save(_ProgramName);
 				}
 				catch (Exception ex) {
-					MessageBox.Show(ex.Message, "Vixen Program", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(ex.Message, "Vixen Program", false, false);
+					messageBox.ShowDialog();
 				}
 				finally {
 					Cursor = Cursors.Default;

@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Factory;
@@ -95,7 +96,12 @@ namespace VixenApplication
 			}
 
 			if (listViewControllers.SelectedItems.Count > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, false, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputPreview oc = item.Tag as OutputPreview;
 						VixenSystem.Previews.Remove(oc);
@@ -200,11 +206,16 @@ namespace VixenApplication
 
 		private void ConfigPreviews_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			
+
 			if (_changesMade) {
 				if (DialogResult == DialogResult.Cancel) {
-					switch (
-						MessageBox.Show(this, "All changes will be lost if you continue, do you wish to continue?", "Are you sure?",
-						                MessageBoxButtons.YesNo, MessageBoxIcon.Question)) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("All changes will be lost if you continue, do you wish to continue?", "Are you sure?", true, false);
+					messageBox.ShowDialog();
+					switch (messageBox.DialogResult)
+					{
 						                	case DialogResult.No:
 						                		e.Cancel = true;
 						                		break;

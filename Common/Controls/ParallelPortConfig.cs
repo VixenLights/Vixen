@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Globalization;
@@ -59,13 +60,18 @@ namespace Common.Controls
 						Convert.ToUInt16(portTextBox.Text, 0x10);
 					}
 					catch {
-						MessageBox.Show("The port number is not a valid hexadecimal number.", "Parallel Port Setup", MessageBoxButtons.OK,
-						                MessageBoxIcon.Hand);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("The port number is not a valid hexadecimal number.", "Parallel Port Setup", false, false);
+						messageBox.ShowDialog();
 						base.DialogResult = DialogResult.None;
 					}
 				}
 				else {
-					MessageBox.Show("The port address is 0.", "Parallel Port Setup", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("The port address is 0.", "Parallel Port Setup", false, false);
+					messageBox.ShowDialog();
 					DialogResult = DialogResult.None;
 				}
 			}

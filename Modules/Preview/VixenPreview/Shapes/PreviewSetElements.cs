@@ -122,7 +122,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             ListViewItem item = listLinkedElements.GetItemAt(targetPoint.X, targetPoint.Y);
             if (item == null)
             {
-                MessageBox.Show("Elements must be dropped on a target.  Please try again.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Elements must be dropped on a target.  Please try again.", "Error", false, false);
+				messageBox.ShowDialog();
                 return;
             }
 
@@ -145,7 +148,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 else
                 {
-                    MessageBox.Show("treeNode==null!");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("treeNode==null!", "Error", false, false);
+					messageBox.ShowDialog();
                 }
             }
         }

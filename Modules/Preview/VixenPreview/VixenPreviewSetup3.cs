@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using Common.Controls;
 using Common.Controls.Theme;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
@@ -429,7 +430,10 @@ namespace VixenModules.Preview.VixenPreview {
                 }
                 else
                 {
-                    MessageBox.Show("An invalid image size was specified!", "Invalid Size", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("An invalid image size was specified!", "Invalid Size", false, true);
+					messageBox.ShowDialog();
                 }
             }
 		}
@@ -451,8 +455,11 @@ namespace VixenModules.Preview.VixenPreview {
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}
 				catch (Exception ex) {
-					MessageBox.Show("There was an error loading the template file (" + file + "): " + ex.Message,
-									"Error Loading Template", MessageBoxButtons.OKCancel);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There was an error loading the template file (" + file + "): " + ex.Message,
+									"Error Loading Template", false, true);
+					messageBox.ShowDialog();
 				}
 				finally {
 					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0) {
@@ -481,9 +488,12 @@ namespace VixenModules.Preview.VixenPreview {
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			if (templateItem != null) {
 				if (System.IO.File.Exists(templateItem.FileName)) {
-					if (
-						MessageBox.Show("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template",
-										MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
+					{
 						System.IO.File.Delete(templateItem.FileName);
 						PopulateTemplateList();
 					}
@@ -533,8 +543,12 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
-			var msg = MessageBox.Show("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", MessageBoxButtons.YesNo);
-			if (msg == System.Windows.Forms.DialogResult.Yes) {
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", true, false);
+			messageBox.ShowDialog();
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
 				Properties.Settings settings = new Properties.Settings();
 				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
 				settings.Save();

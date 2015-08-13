@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Common.Controls;
 
 namespace VixenApplication
 {
@@ -29,8 +31,11 @@ namespace VixenApplication
 
 				if (!result)
 				{
-					MessageBox.Show("Another instance is already running; please close that one before trying to start another.",
-									"Vixen 3 already active", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Another instance is already running; please close that one before trying to start another.",
+									"Vixen 3 already active", false, false);
+					messageBox.ShowDialog();
 					return;
 				}
 

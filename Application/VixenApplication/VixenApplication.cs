@@ -272,10 +272,13 @@ namespace VixenApplication
 				else
 				{
 					string name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
-					MessageBox.Show("Selected profile '" + name + "' data directory does not exist!" + Environment.NewLine + Environment.NewLine + 
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Selected profile '" + name + "' data directory does not exist!" + Environment.NewLine + Environment.NewLine +
 									directory + Environment.NewLine + Environment.NewLine +
 									"Select a different profile to load or use the Profile Editor to create a new profile.",
-									"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+									"Error", false, false);
+					messageBox.ShowDialog();
 				}
 			}
 
@@ -294,22 +297,22 @@ namespace VixenApplication
 						_rootDataDirectory = directory;
 						break;
 					}
-					MessageBox.Show(
-						"The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine + 
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine +
 						directory + Environment.NewLine + Environment.NewLine +
 						"Select a different profile to load or use the Profile Editor to create a new profile.",
-						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						"Error", false, false);
+					messageBox.ShowDialog();
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					DialogResult exit = MessageBox.Show(
-						Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
-						Application.ProductName,
-						MessageBoxButtons.YesNo,
-						MessageBoxIcon.None,
-						MessageBoxDefaultButton.Button2);
-					if (exit == DialogResult.Yes)
+						Application.ProductName, true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Environment.Exit(0);
 					}
@@ -415,8 +418,11 @@ namespace VixenApplication
 						IEditorUserInterface editor = EditorService.Instance.CreateEditor(fileType);
 						if (editor == null) {
 							Logging.Error("Can't find an appropriate editor to open file of type " + fileType);
-							MessageBox.Show("Can't find an editor to open this file type. (\"" + fileType + "\")",
-											"Error opening file", MessageBoxButtons.OK);
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + fileType + "\")",
+											"Error opening file", false, false);
+							messageBox.ShowDialog();
 						}
 						else {
 							_OpenEditor(editor);
@@ -457,12 +463,14 @@ namespace VixenApplication
 		private bool _CloseEditor(IEditorUserInterface editor)
 		{
 			if (editor.IsModified) {
-				DialogResult result = MessageBox.Show("Save changes to the sequence?", "Save Changes?",
-				                                      MessageBoxButtons.YesNoCancel);
-				if (result == System.Windows.Forms.DialogResult.Cancel)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Save changes to the sequence?", "Save Changes?", true, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.Cancel)
 					return false;
 
-				if (result == System.Windows.Forms.DialogResult.Yes)
+				if (messageBox.DialogResult == DialogResult.OK)
 					editor.Save();
 			}
 
@@ -529,8 +537,11 @@ namespace VixenApplication
 
 				if (editor == null) {
 					Logging.Error("Can't find an appropriate editor to open file " + filename);
-					MessageBox.Show("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")",
-					                "Error opening file", MessageBoxButtons.OK);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Can't find an editor to open this file type. (\"" + Path.GetFileName(filename) + "\")",
+									"Error opening file", false, false);
+					messageBox.ShowDialog();
 				}
 				else {
 					_OpenEditor(editor);
@@ -538,7 +549,10 @@ namespace VixenApplication
 			}
 			catch (Exception ex) {
 				Logging.Error("Error trying to open file '" + filename + "': ", ex);
-				MessageBox.Show("Error trying to open file '" + filename + "'.", "Error opening file", MessageBoxButtons.OK);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Error trying to open file '" + filename + "'.", "Error opening file", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -710,7 +724,10 @@ namespace VixenApplication
 				OpenSequenceFromFile(file);
 			}
 			else {
-				MessageBox.Show("Can't find selected sequence.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Can't find selected sequence.", "Error", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -793,7 +810,10 @@ namespace VixenApplication
 			DataProfileForm f = new DataProfileForm();
 			if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
 				// Do something...
-				MessageBox.Show("You must re-start Vixen for the changes to take effect.", "Profiles Changed", MessageBoxButtons.OK);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("You must re-start Vixen for the changes to take effect.", "Profiles Changed", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 

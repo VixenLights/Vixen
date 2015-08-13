@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BaseSequence;
+using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -196,7 +197,10 @@ namespace VixenModules.App.Scheduler
 					_Program = ApplicationServices.LoadProgram(value.FilePath);
 				}
 				catch (Exception ex) {
-					MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(ex.Message, CAPTION, false, false);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -208,7 +212,10 @@ namespace VixenModules.App.Scheduler
 				return SequenceService.Instance.Load(filePath);
 			}
 			catch (Exception ex) {
-				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(ex.Message, CAPTION, false, false);
+				messageBox.ShowDialog();
 				return null;
 			}
 			finally {
@@ -223,7 +230,10 @@ namespace VixenModules.App.Scheduler
 				return ApplicationServices.LoadProgram(filePath);
 			}
 			catch (Exception ex) {
-				MessageBox.Show(ex.Message, CAPTION, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(ex.Message, CAPTION, false, false);
+				messageBox.ShowDialog();
 				return null;
 			}
 			finally {
@@ -354,8 +364,10 @@ namespace VixenModules.App.Scheduler
 
 			if (messages.Count > 0) {
 				string message = string.Join(Environment.NewLine, messages.Select(x => "* " + x));
-				MessageBox.Show("The following needs to be resolved:" + Environment.NewLine + Environment.NewLine + message, CAPTION,
-				                MessageBoxButtons.OK, MessageBoxIcon.Stop);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The following needs to be resolved:" + Environment.NewLine + Environment.NewLine + message, CAPTION, false, false);
+				messageBox.ShowDialog();
 				return false;
 			}
 			return true;

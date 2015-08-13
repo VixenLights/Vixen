@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Collections.Generic;
+using Common.Controls;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -22,7 +24,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				List<PreviewBaseShape> shapes = value as List<PreviewBaseShape>;
 				if (shapes.Count < 1)
 				{
-					MessageBox.Show("Elements must have at least one shape. Remove the selected element.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Elements must have at least one shape. Remove the selected element.", "Error", false, false);
+					messageBox.ShowDialog();
 					if (value != null) return value;
 				}
 				PreviewSetElements elementsDialog = new PreviewSetElements(shapes);

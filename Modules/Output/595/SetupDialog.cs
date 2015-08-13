@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -28,9 +29,13 @@ namespace VixenModules.Output.Olsen595
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			if (_PortAddress == 0) {
-				MessageBox.Show("The port address is 0.", "595 Setup", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				DialogResult = DialogResult.None;
+			if (_PortAddress == 0) 
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The port address is 0.", "595 Setup", false, false);
+				messageBox.ShowDialog();
+				messageBox.DialogResult = DialogResult.None;
 			}
 			else {
 				_data.Port = _PortAddress;

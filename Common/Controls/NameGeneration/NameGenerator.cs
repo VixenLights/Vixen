@@ -280,7 +280,11 @@ namespace Common.Controls
 		private void buttonAddNewRule_Click(object sender, EventArgs e)
 		{
 			if (comboBoxRuleTypes.SelectedIndex < 0) {
-				MessageBox.Show("Select a rule type first.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Select a rule type first.",
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 

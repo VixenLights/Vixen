@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Services;
@@ -159,13 +160,14 @@ namespace VixenModules.App.LipSyncApp
             {
                 return;
             }
-                
-            DialogResult result =
-                MessageBox.Show("If you delete this mapping, ALL places it is used will be unlinked and will" +
-                                " revert to the default Mapping. Are you sure you want to continue?", "Delete the mapping?",
-                                MessageBoxButtons.YesNo);
 
-            if (result == System.Windows.Forms.DialogResult.Yes)
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("If you delete this mapping, ALL places it is used will be unlinked and will" +
+								" revert to the default Mapping. Are you sure you want to continue?", "Delete the mapping?", true, false);
+			messageBox.ShowDialog();
+
+			if (messageBox.DialogResult == DialogResult.OK)
             {
                 foreach (int j in listViewMappings.SelectedIndices)
                 {

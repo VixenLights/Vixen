@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Data.Value;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -236,8 +237,10 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (e.CloseReason == CloseReason.UserClosing)
 			{
-				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
-					MessageBoxButtons.OKCancel);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The preview can only be closed from the Preview Configuration dialog.", "Close", false, true);
+				messageBox.ShowDialog();
 				e.Cancel = true;
 			}
 

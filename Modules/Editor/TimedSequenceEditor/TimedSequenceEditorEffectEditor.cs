@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Effect;
@@ -32,10 +33,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EffectNode displayedEffect = effectNodes.First();
 				if (displayedEffect != null) {
 					foreach (EffectNode node in effectNodes) {
-						if (node.Effect.TypeId != displayedEffect.Effect.TypeId) {
-							MessageBox.Show("The selected effects contain multiple types. Once you finish editing, these values will " +
-							                "only be applied to the effects of type '" + displayedEffect.Effect.Descriptor.TypeName + "'.",
-							                "Warning", MessageBoxButtons.OK);
+						if (node.Effect.TypeId != displayedEffect.Effect.TypeId) 
+						{
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("The selected effects contain multiple types. Once you finish editing, these values will " +
+											"only be applied to the effects of type '" + displayedEffect.Effect.Descriptor.TypeName + "'.", "Warning", false, false);
+							messageBox.ShowDialog();
 							break;
 						}
 					}
@@ -173,7 +177,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (nodes.Count() > 1)
 				{
-					MessageBox.Show(changedEFfects + " effects modified.", "", MessageBoxButtons.OK);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(changedEFfects + " effects modified.", "Warning", false, false);
+					messageBox.ShowDialog();
 				}
 			}
 		}

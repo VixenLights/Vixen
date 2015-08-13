@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Vixen.Data.Value;
 using Vixen.Execution.Context;
@@ -340,8 +341,10 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					Background = null;
 					Logging.Error("There was error loading the preview background image.", ex);
-					MessageBox.Show(@"There was an error loading the background image: " + ex.Message, @"Error",
-									MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There was an error loading the background image: " + ex.Message, @"Error", false, true);
+					messageBox.ShowDialog();
 				}
 			}
 			else
@@ -1354,9 +1357,11 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			foreach (DisplayItem item in SelectedDisplayItems) {
 				if (item.Shape.GetType().ToString().Contains("PreviewCustom")) {
-					MessageBox.Show(
-						"You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
-						"Grouping Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
+						"Grouping Error", false, true);
+					messageBox.ShowDialog();
 					return null;
 				}
 			}
@@ -1542,7 +1547,10 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
                     {
-                        MessageBox.Show("You can only match the properties of like shapes.", "Match Properties", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", false, true);
+						messageBox.ShowDialog();
                         return;
                     }
                 }

@@ -41,6 +41,8 @@
 //
 //=====================================================================
 
+using System.Drawing;
+using Common.Controls;
 using Vixen.Sys;
 
 namespace VixenModules.Controller.E131
@@ -362,7 +364,10 @@ namespace VixenModules.Controller.E131
                     _data.Unicast = _data.Universes[0].Unicast;
                     _data.Multicast = _data.Universes[0].Multicast;
                     if(!_updateWarn){
-                        MessageBox.Show("The E1.31 plugin is importing data from an older version of the plugin. Please verify the new Streaming ACN (E1.31) configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("The E1.31 plugin is importing data from an older version of the plugin. Please verify the new Streaming ACN (E1.31) configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", false, false);
+						messageBox.ShowDialog();
                         _updateWarn = true;
                     }
                 }
@@ -462,7 +467,10 @@ namespace VixenModules.Controller.E131
                             NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to use nic " + _data.Multicast + " for multicasting.");
                             if (!_missingInterfaceWarning)
                             {
-                                MessageBox.Show("The Streaming ACN (E1.31) plugin could not find one or more of the multicast interfaces specified. Please verify your network and plugin configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+								//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+								MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+								var messageBox = new MessageBoxForm("The Streaming ACN (E1.31) plugin could not find one or more of the multicast interfaces specified. Please verify your network and plugin configuration.", "Vixen 3 Streaming ACN (E1.31) plugin", false, false);
+								messageBox.ShowDialog();
                                 _missingInterfaceWarning = true;
                             }
                             cleanStart = false;

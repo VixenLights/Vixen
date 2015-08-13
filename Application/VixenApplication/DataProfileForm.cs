@@ -85,9 +85,11 @@ namespace VixenApplication
 			{
 				if (item.Name == null || item.DataFolder == null)
 				{
-					MessageBox.Show(
-						@"One or more of your profile entries has a blank name or data folder. You must correct this before continuing.",
-						@"Warning - Blank Entries", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("One or more of your profile entries has a blank name or data folder. You must correct this before continuing.",
+						@"Warning - Blank Entries", false, false);
+					messageBox.ShowDialog();
 				}
 
 				if (checkName.Contains(item.Name))
@@ -115,14 +117,15 @@ namespace VixenApplication
 			if (duplicateName || duplicateDataFolder)
 			{
 				//Not pretty here, but works well on the dialog
-				var result =
-					MessageBox.Show(
-						@"A duplicate profile name, or data path exists." + Environment.NewLine + Environment.NewLine +
-						@"The duplicate items found were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine,duplicateItems) + Environment.NewLine + Environment.NewLine +
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("A duplicate profile name, or data path exists." + Environment.NewLine + Environment.NewLine +
+						@"The duplicate items found were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, duplicateItems) + Environment.NewLine + Environment.NewLine +
 						@"Click OK to accept and contine, or Cancel to go back and edit.",
-						@"Warning - Duplicate Entries", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-				
-				if (result != DialogResult.OK)
+						@"Warning - Duplicate Entries", false, true);
+				messageBox.ShowDialog();
+
+				if (messageBox.DialogResult != DialogResult.OK)
 				{
 					DialogResult = DialogResult.None;
 					return;
@@ -131,14 +134,15 @@ namespace VixenApplication
 
 			if (invalidDataPath)
 			{
-				var result =
-				MessageBox.Show(
-					@"An invalid profile data folder exists." + Environment.NewLine + Environment.NewLine +
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("An invalid profile data folder exists." + Environment.NewLine + Environment.NewLine +
 					@"The items with invalid paths were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, checkDataPath) + Environment.NewLine + Environment.NewLine +
 					@"Click OK to accept and contine, or Cancel to go back and edit.",
-					@"Warning - Invalid Data Path", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+					@"Warning - Invalid Data Path", false, true);
+				messageBox.ShowDialog();
 
-				if (result != DialogResult.OK)
+				if (messageBox.DialogResult != DialogResult.OK)
 				{
 					DialogResult = DialogResult.None;
 					return;
@@ -153,10 +157,12 @@ namespace VixenApplication
 				profile.PutSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", item.DataFolder);
 				if (!Directory.Exists(item.DataFolder))
 				{
-					DialogResult create = MessageBox.Show(
-						"The data directory '" + item.DataFolder + "' for profile '" + item.Name + "' does not exist.  Would you like to create it?",
-						Application.ProductName, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-					if (create == DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("The data directory '" + item.DataFolder + "' for profile '" + item.Name + "' does not exist.  Would you like to create it?",
+						Application.ProductName, true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						try
 						{
@@ -164,11 +170,13 @@ namespace VixenApplication
 						}
 						catch (Exception)
 						{
-							DialogResult result = MessageBox.Show(
-								"Could not create new profile directory: " + item.DataFolder + Environment.NewLine + Environment.NewLine +
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							messageBox = new MessageBoxForm("Could not create new profile directory: " + item.DataFolder + Environment.NewLine + Environment.NewLine +
 								"Click OK to ignore and continue, or Cancel to go back and edit.",
-								"Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
-							if (result == DialogResult.Cancel)
+								"Error", false, true);
+							messageBox.ShowDialog();
+							if (messageBox.DialogResult == DialogResult.Cancel)
 							{
 								DialogResult = DialogResult.None;
 								return;
@@ -262,12 +270,19 @@ namespace VixenApplication
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show(@"Profile name can not be blank.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Profile name can not be blank.",
+						"Error", false, false);
+					messageBox.ShowDialog();
 				}
 				
 				if (comboBoxProfiles.Items.Cast<ProfileItem>().Any(items => items.Name == dialog.Response))
 				{
-					MessageBox.Show(@"A profile with the name " + dialog.Response + @" already exists.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("A profile with the name " + dialog.Response + @" already exists.", "", false, false);
+					messageBox.ShowDialog();
 				}
 
 				if (dialog.Response != string.Empty && comboBoxProfiles.Items.Cast<ProfileItem>().All(items => items.Name != dialog.Response))
@@ -291,12 +306,13 @@ namespace VixenApplication
 			ProfileItem item = comboBoxProfiles.SelectedItem as ProfileItem;
 			if (item == null)
 				return;
-			
-			DialogResult result = MessageBox.Show(
-				@"Are you sure you want to delete this profile? The data folder and all its contents will remain and must be removed manually.",
-				@"Delete a Profile", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to delete this profile? The data folder and all its contents will remain and must be removed manually.",
+				@"Delete a Profile", true, true);
+			messageBox.ShowDialog();
 
-			if (result == DialogResult.Yes)
+			if (messageBox.DialogResult == DialogResult.OK)
 			{
 				comboBoxProfiles.Items.Remove(item);
 				if (comboBoxProfiles.Items.Count > 0)

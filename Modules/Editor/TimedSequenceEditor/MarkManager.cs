@@ -337,6 +337,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 				messageBox.ShowDialog();
 			}
@@ -390,6 +391,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -401,6 +403,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 3)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least three marks to space evenly.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -436,6 +439,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 2)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least two marks to generate times between.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -448,6 +452,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (int.TryParse(prompt.Response, out divisions))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Do you want to put the new marks into a different collection?", "Add to new collection?", true, true);
 					messageBox.ShowDialog();
 					if (messageBox.DialogResult == DialogResult.Cancel)
@@ -500,6 +505,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing number: please enter a whole number for the number of divisions.", "Error parsing number", false, false);
 					messageBox.ShowDialog();
 				}
@@ -574,6 +580,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 1)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least one mark to paste effects to.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -585,13 +592,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (totalPasted <= 0)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					var messageBox1 = new MessageBoxForm("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect", false, false);
-					messageBox1.ShowDialog();
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect", false, false);
+					messageBox.ShowDialog();
 					return;
 				}
 				count += totalPasted;
 			}
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 			var messageBox2 = new MessageBoxForm(string.Format("{0} effects pasted.", count), "Need an effect", false, false);
 			messageBox2.ShowDialog();
 		}
@@ -601,6 +610,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 1)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least one mark duplicate and offset.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -628,6 +638,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -637,6 +648,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonGenerateBeatMarks_Click(object sender, EventArgs e)
 		{
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm("This operation will determine the average beat from the selected marks, and apply them for the rest of the song. Do you want to continue?", "Information", true, false);
 			if (messageBox.ShowDialog() == DialogResult.No)
 				return;
@@ -644,6 +656,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 2)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				messageBox = new MessageBoxForm("Select at least two marks to be able to determine an average time interval.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -686,6 +699,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					int generatedMarks = (int) (duration.Ticks/interval.Ticks) - 1;
 
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					messageBox = new MessageBoxForm(string.Format("From the selected marks, a beat interval of {0:%s\\.ff} seconds was detected ({1:0.00} bpm). This will generate {2} marks. Do you want to continue?", interval,
 										 bpm, generatedMarks), "Confirmation", true, false);
 					if (messageBox.ShowDialog() == DialogResult.No)
@@ -705,6 +719,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -737,6 +752,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -1270,6 +1286,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
 					Logging.Error(msg);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", false, false);
 					messageBox.ShowDialog();
 				}
@@ -1321,6 +1338,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					string msg = "There was an error importing the Audacity bar marks: " + ex.Message;
 					Logging.Error(msg);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", false, false);
 					messageBox.ShowDialog();
 				}
@@ -1357,6 +1375,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 				messageBox.ShowDialog();
 			}
@@ -1381,6 +1400,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (MarkCollections.Count == 0)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Unable to find marks collection for export", "Warning", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -1395,7 +1415,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (bDialog.IsAudacitySelection)
 					ExportMarkCollections(null, "audacity");
 				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
-					MessageBox.Show("No export type selected");
+				{ 
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("No export type selected", "Warning", false, false);
+					messageBox.ShowDialog();
+				}
 			}
 		}
 

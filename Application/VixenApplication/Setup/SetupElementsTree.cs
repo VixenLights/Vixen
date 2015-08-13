@@ -163,7 +163,12 @@ namespace VixenApplication.Setup
 					message = "Are you sure you want to remove the selected properties from the element?";
 					title = "Remove Properties?";
 				}
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, false, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (ListViewItem item in listViewProperties.SelectedItems) {
 						foreach (ElementNode elementNode in SelectedElements) {
 							elementNode.Properties.Remove((item.Tag as IPropertyModuleInstance).Descriptor.TypeId);
@@ -218,7 +223,10 @@ namespace VixenApplication.Setup
 				if (act) {
 					IEnumerable<ElementNode> createdElements = template.GenerateElements(elementTree.SelectedElementNodes);
 					if (createdElements == null || createdElements.Count() == 0) {
-						MessageBox.Show("Could not create elements.  Ensure you use a valid name and try again.");
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
+						messageBox.ShowDialog();
 						return;
 					}
 					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
@@ -355,10 +363,12 @@ namespace VixenApplication.Setup
 		{
 			// TODO: need to consider the filters attached to a element. Hmm.
 
-			DialogResult dr = MessageBox.Show("Are you sure you want to delete these element(s)?", "Delete Elements?",
-			                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to delete these element(s)?", "Delete Elements?", true, false);
+			messageBox.ShowDialog();
 
-			if (dr != DialogResult.Yes)
+			if (messageBox.DialogResult != DialogResult.OK)
 				return;
 
 			// can't delete by ElementNode, as one element can be in multiple places :-(

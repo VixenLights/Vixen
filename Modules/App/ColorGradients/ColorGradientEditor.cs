@@ -154,8 +154,6 @@ namespace VixenModules.App.ColorGradients
 					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					messageBox.ShowDialog();
-					//DialogResult result = MessageBox.Show("There is already a gradient with that name. Do you want to overwrite it?",
-					//									  "Overwrite gradient?", MessageBoxButtons.YesNoCancel);
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Library.AddColorGradient(dialog.Response, new ColorGradient(Gradient));

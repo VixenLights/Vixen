@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Module.Timing;
@@ -253,7 +254,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
 
             buttonStart.Enabled = false;
-            MessageBox.Show("File saved to " + _outFileName);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("File saved to " + _outFileName, "File Saved?", false, false);
+			messageBox.ShowDialog();
             buttonStart.Enabled = true;
         }
 

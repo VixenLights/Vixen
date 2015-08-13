@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
@@ -102,8 +103,9 @@ namespace VixenModules.OutputFilter.DimmingCurve
 					modulesConfigured++;
 				}
 			}
-
-			MessageBox.Show(modulesCreated + " Dimming Curves created, " + modulesConfigured + " configured, and " + modulesSkipped +" skipped.");
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			var messageBox = new MessageBoxForm(modulesCreated + " Dimming Curves created, " + modulesConfigured + " configured, and " + modulesSkipped + " skipped.", "", false, false);
+			messageBox.ShowDialog();
 
 			return true;
 		}

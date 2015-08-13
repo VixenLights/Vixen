@@ -1093,8 +1093,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 				f.Close();
 			}
 			catch (Exception ex) {
-				MessageBox.Show("There was a problem converting " + movieFileName + ": " + ex.Message, "Error Converting Movie",
-				                MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("There was a problem converting " + movieFileName + ": " + ex.Message, "Error Converting Movie", false, true);
+				messageBox.ShowDialog();
 			}
 		}
 

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -117,7 +118,10 @@ namespace VixenModules.Output.K8055_Controller
 			}
 			if ((deviceNum & 15L) == 0L)
 			{
-				MessageBox.Show("No devices were found.", "Vixen", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("No devices were found.", "Vixen", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 

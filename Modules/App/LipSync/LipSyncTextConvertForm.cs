@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
@@ -110,7 +111,10 @@ namespace VixenModules.App.LipSyncApp
 
             if (LipSyncTextConvert.StandardDictExists() == false)
             {
-                MessageBox.Show("Unable to find Standard Phoneme Dictionary", "Error", MessageBoxButtons.OK);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to find Standard Phoneme Dictionary", "Error", false, false);
+				messageBox.ShowDialog();
                 return;
             }
 

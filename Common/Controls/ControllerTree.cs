@@ -395,7 +395,12 @@ namespace Common.Controls
 			}
 
 			if (controllers.Count() > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (OutputController oc in controllers) {
 						VixenSystem.OutputControllers.Remove(oc);
 					}

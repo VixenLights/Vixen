@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
@@ -132,8 +133,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//We are not going to allow the Device group effects in draw mode at this time
 				if (_mNode.Parent != null && _mNode.Parent.Name == "treeDevice")
 				{
-					MessageBox.Show(@"Currently, you must drag this item to the grid to place it.", @"Effect Selection",
-						MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Currently, you must drag this item to the grid to place it.", "Effect Selection", false, false);
+					messageBox.ShowDialog();
 					return;
 				}
 				

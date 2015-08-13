@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -88,7 +90,10 @@ namespace VixenModules.Output.ElexolEtherIO
 			}
 			else
 			{
-				MessageBox.Show("Invalid IP Address.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Invalid IP Address.", "Error", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -112,7 +117,10 @@ namespace VixenModules.Output.ElexolEtherIO
 
 				if (client.Available == 0)
 				{
-					MessageBox.Show("No Reply.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("No Reply.", "Error", false, false);
+					messageBox.ShowDialog();
 				}
 				else
 				{
@@ -120,11 +128,17 @@ namespace VixenModules.Output.ElexolEtherIO
 					byte[] rcvdPckt = client.Receive(ref rcvdEP);
 					if (arrayEqual(rcvdPckt, sendPckt))
 					{
-						MessageBox.Show("Connection Successful!");
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Connection Successful!", "Error", false, false);
+						messageBox.ShowDialog();
 					}
 					else
 					{
-						MessageBox.Show("Device replied, but with incorrect data:\n" + printBytes(sendPckt));
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Device replied, but with incorrect data:\n" + printBytes(sendPckt), "Error", false, false);
+						messageBox.ShowDialog();
 					}
 				}
 

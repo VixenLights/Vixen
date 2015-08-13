@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -177,7 +178,11 @@ namespace VixenModules.App.SuperScheduler
 			{
 				ListViewItem lvItem = listViewItems.SelectedItems[0];
 				ScheduleItem scheduleItem = lvItem.Tag as ScheduleItem;
-				if (MessageBox.Show("Are you sure you want to delete the selected schedule?", "Delete Schedule", MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Are you sure you want to delete the selected schedule?", "Delete Schedule", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					listViewItems.Items.Remove(lvItem);
 					Data.Items.Remove(scheduleItem);
@@ -214,7 +219,10 @@ namespace VixenModules.App.SuperScheduler
 				}
 				else
 				{
-					MessageBox.Show("The selected schedule does not have a show associated with it.", "Edit a Show", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("The selected schedule does not have a show associated with it.", "Edit a Show", false, true);
+					messageBox.ShowDialog();
 				}
 			}
 		}
