@@ -68,7 +68,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get 
             {
-                if (_name == null) _name = "";
+				if (_name == null) _name = VixenPreviewSetup3.DrawShape;
                 return _name; 
             }
 			set

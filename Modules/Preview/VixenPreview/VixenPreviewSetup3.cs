@@ -24,6 +24,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		public static string DrawShape;
 
 		public VixenPreviewData Data {
 			set {
@@ -204,43 +205,89 @@ namespace VixenModules.Preview.VixenPreview {
             // There must be a way to iterate through an enum so we don't have to do all this crap...
 
 			// Select Button
+	        DrawShape = "";
             if (button == buttonSelect)
                 previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
             else if (button == buttonDrawPixel)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
+            {
+	            DrawShape = "Pixel";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
+            }
             else if (button == buttonLine)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
+            {
+	            DrawShape = "Line";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
+            }
             else if (button == buttonSemiCircle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
+            {
+	            DrawShape = "Arch";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
+            }
             else if (button == buttonRectangle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
+            {
+	            DrawShape = "Rectangle";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
+            }
             else if (button == buttonEllipse)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
+            {
+	            DrawShape = "Ellipse";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
+            }
             else if (button == buttonTriangle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+            {
+	            DrawShape = "Triangle";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+            }
             else if (button == buttonNet)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
-            //else if (button == buttonFlood)
-            //    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
+            {
+	            DrawShape = "Net";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
+            }
+	            //else if (button == buttonFlood)
+	            //    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
             else if (button == buttonCane)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
+            {
+	            DrawShape = "Candy Cane";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
+            }
             else if (button == buttonStar)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
+            {
+	            DrawShape = "Star";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
+            }
             else if (button == buttonStarBurst)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
+            {
+	            DrawShape = "Star Burst";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
+            }
             else if (button == buttonHelp)
-                Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
+	            Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
             else if (button == buttonMegaTree)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
+            {
+	            DrawShape = "Mega Tree";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
+            }
             else if (button == buttonPixelGrid)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
+            {
+	            DrawShape = "Grid";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
+            }
             else if (button == buttonIcicle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
+            {
+	            DrawShape = "Icicle";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
+            }
             else if (button == buttonPolyLine)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PolyLine;
+            {
+	            DrawShape = "PolyLine";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PolyLine;
+            }
             else if (button == buttonMultiString)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
-            //button.Enabled = false;
+            {
+	            DrawShape = "Multi String";
+	            previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
+            }
+			//button.Enabled = false;
 			//button.BackColor = Color.Gainsboro;
 			//button.FlatAppearance.BorderColor = Color.Gainsboro;
 			//buttonSelect.Focus();
