@@ -239,7 +239,7 @@ namespace VixenModules.Editor.EffectEditor.Input
 
 		private static void DragStarted(UIElement uiElt)
 		{
-			if (uiElt == null) return;
+			if (uiElt == null || _draggedElt == null) return;
 			Mouse.Capture(uiElt);
 
 			DataObject data = CurrentDragSourceAdvisor.GetDataObject(_draggedElt);
