@@ -299,25 +299,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			WindowState = FormWindowState.Normal;
 
-			if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name),
-				"Normal").Equals("Maximized"))
+			var desktopBounds =
+				new Rectangle(
+					new Point(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
+					new Size(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+			if (IsVisibleOnAnyScreen(desktopBounds))
 			{
-				WindowState = FormWindowState.Maximized;
+				StartPosition = FormStartPosition.Manual;
+				DesktopBounds = desktopBounds;
+
+				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal").Equals("Maximized"))
+				{
+					WindowState = FormWindowState.Maximized;
+				}
 			}
 			else
 			{
-				var desktopBounds =
-					new Rectangle(
-						new Point(
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
-						new Size(
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
-							xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
-				if (IsVisibleOnAnyScreen(desktopBounds))
-				{
-					DesktopBounds = desktopBounds;
-				}
+				// this resets the upper left corner of the window to windows standards
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+
+				// we can still apply the saved size
+				Size = new Size(desktopBounds.Width, desktopBounds.Height);
 			}
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
