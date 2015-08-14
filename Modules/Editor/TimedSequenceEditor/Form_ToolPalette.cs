@@ -136,6 +136,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
+			tabControlEX1.SelectedTab = tabPageEX1;
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;

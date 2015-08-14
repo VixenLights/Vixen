@@ -135,7 +135,37 @@ namespace VixenApplication
 		}
 
 		#region Load or create default Theme file as required
+
 		private void InitializeTheme()
+		{
+			var xml = new XMLProfileSettings();
+			ThemeMainForm.ThemeName = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, "CurrentTheme", "Dark (Default)");
+			switch (ThemeMainForm.ThemeName)
+			{
+				case "Dark (Default)":
+					ThemeLoadColors.DarkTheme();
+					RenderTheme();
+					break;
+				case "Windows":
+					ThemeLoadColors.WindowsTheme();
+					RenderTheme();
+					break;
+				case "Christmas":
+					ThemeLoadColors.ChristmasTheme();
+					RenderTheme();
+					break;
+				case "Halloween":
+					ThemeLoadColors.HalloweenTheme();
+					RenderTheme();
+					break;
+				case "Custom":
+					CustomTheme();
+					RenderTheme();
+					break;
+			}
+		}
+
+		private void CustomTheme()
 		{
 			//Initializes Theme Colors
 			if (File.Exists(ThemeMainForm._vixenThemePath))
@@ -153,22 +183,15 @@ namespace VixenApplication
 			}
 			else
 			{
-				//This will only be run once if a Theme file is not found and will in turn create the Theme file and add default Dark theme colors.
+				//This will only run if a Custom Theme file is not found and will use the Default Dark Color Theme.
+				ThemeMainForm.ThemeName = "Dark (Default)";
 				ThemeLoadColors.DarkTheme();
-
-				var xmlsettings = new XmlWriterSettings
-				{
-					Indent = true,
-					IndentChars = "\t",
-				};
-
-				//Create and save the Theme colors to file
-				DataContractSerializer dataSer = new DataContractSerializer(typeof (Color[]));
-				var dataWriter = XmlWriter.Create(ThemeMainForm._vixenThemePath, xmlsettings);
-				dataSer.WriteObject(dataWriter, ThemeLoadColors._vixenThemeColors);
-				dataWriter.Close();
 			}
-			//Add the colors from the file to the Theme Color Table
+		}
+
+		private void RenderTheme()
+		{
+			//Add the Theme colors from the file to the Theme Color Table
 			ThemeLoadColors.InitialLoadTheme();
 			//Render the new Theme to the Vixen Application form.
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
@@ -661,17 +684,7 @@ namespace VixenApplication
 		{
 			var themeControl = new ThemeMainForm();
 			themeControl.ShowDialog();
-
-			menuStripMain.Renderer = new ThemeToolStripRenderer();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
-			statusStrip.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
+			RenderTheme();
 			Refresh();
 		}
 

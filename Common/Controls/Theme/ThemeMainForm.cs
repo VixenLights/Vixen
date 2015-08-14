@@ -8,6 +8,7 @@ using System.Windows.Forms.VisualStyles;
 using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Timeline;
 
 namespace Common.Controls.Theme
 {
@@ -17,36 +18,31 @@ namespace Common.Controls.Theme
 		public static string _vixenThemePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
 			"VixenTheme.xml");
 
+		public static string ThemeName;
+
 		public ThemeMainForm()
 		{
 			InitializeComponent();
+
+			Icon = Resources.Properties.Resources.Icon_Vixen3;
+			textBox1.Text = "This is a Preview of the text";
+			comboBoxThemes.SelectedItem = ThemeName;
+			comboBox1.SelectedIndex = 0;
+			loadTheme();
 			//Renders the theme to the form
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			label16.ForeColor = ThemeColorTable.ForeColorDisabled; //used to display a disabled label
-			
-			Icon = Resources.Properties.Resources.Icon_Vixen3;
-			textBox1.Text = "This is a Preview of the text";
-
-			comboBoxThemes.SelectedIndex = comboBoxThemes.Items.Count - 1;
-			comboBox1.SelectedIndex = 0;
-		}
-
-		private void ThemeControl_Load(object sender, EventArgs e)
-		{
-			loadTheme();
+			label16.ForeColor = ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			SaveTheme();
 			Close();
 		}
 
 		private void loadTheme()
 		{
-			//adds the theme colors to the Color Panels on the form for users to see.
 			var i = 0;
 			var _colorPanel = new[] { pictureBox0, pictureBox1, pictureBox2, pictureBox3, pictureBox4,
 					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18 };
@@ -70,16 +66,22 @@ namespace Common.Controls.Theme
 				i++;
 			}
 
-			var xmlsettings = new XmlWriterSettings
+			if (ThemeName == "Custom")
 			{
-				Indent = true,
-				IndentChars = "\t",
-			};
+				var xmlsettings = new XmlWriterSettings
+				{
+					Indent = true,
+					IndentChars = "\t",
+				};
 
-			DataContractSerializer dataSer = new DataContractSerializer(typeof(Color[]));
-			var dataWriter = XmlWriter.Create(_vixenThemePath, xmlsettings);
-			dataSer.WriteObject(dataWriter, ThemeLoadColors._vixenThemeColors);
-			dataWriter.Close();
+				DataContractSerializer dataSer = new DataContractSerializer(typeof (Color[]));
+				var dataWriter = XmlWriter.Create(_vixenThemePath, xmlsettings);
+				dataSer.WriteObject(dataWriter, ThemeLoadColors._vixenThemeColors);
+				dataWriter.Close();
+			}
+
+			var xml = new XMLProfileSettings();
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, "CurrentTheme", ThemeName);
 
 			ThemeColorTable._backgroundColor = ThemeLoadColors._vixenThemeColors[0];
 			ThemeColorTable._menuSelectedHighlightBackColor = ThemeLoadColors._vixenThemeColors[1];
@@ -100,6 +102,10 @@ namespace Common.Controls.Theme
 			ThemeColorTable._timeLineEffectsBackColor = ThemeLoadColors._vixenThemeColors[16];
 			ThemeColorTable._timeLineForeColor = ThemeLoadColors._vixenThemeColors[17];
 			ThemeColorTable._timeLineLabelBackColor = ThemeLoadColors._vixenThemeColors[18];
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			label16.ForeColor = ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void comboBoxThemes_SelectedIndexChanged(object sender, EventArgs e)
@@ -122,36 +128,32 @@ namespace Common.Controls.Theme
 					ThemeLoadColors.HalloweenTheme();
 					ThemeChanged();
 					break;
+				case "Custom":
+					var i = 0;
+						using (FileStream reader = new FileStream(_vixenThemePath, FileMode.Open, FileAccess.Read))
+						{
+							DataContractSerializer ser = new DataContractSerializer(typeof(Color[]));
+							foreach (Color _colors in (Color[])ser.ReadObject(reader))
+							{
+								ThemeLoadColors._vixenThemeColors[i] = _colors;
+								i++;
+							}
+						}
+					ThemeChanged();
+					break;
 			}
 		}
 
 		private void ThemeChanged()
 		{
+			ThemeName = comboBoxThemes.SelectedItem.ToString();
 			loadTheme();
 			SaveTheme();
-			update();
-			Refresh();
-		}
-
-		private void update()
-		{
-			var i = 0;
-			var _colorPanel = new[]
-				{
-					pictureBox0, pictureBox1, pictureBox2, pictureBox3, pictureBox4,
-					pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18
-				};
-			foreach (var c in _colorPanel)
+			if (comboBoxThemes.SelectedItem.ToString() == "Custom")
 			{
-				ThemeLoadColors._vixenThemeColors[i] = c.BackColor;
-
-				i++;
+				comboBoxThemes.SelectedItem = "Custom";
 			}
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			label16.ForeColor = ThemeColorTable.ForeColorDisabled;
-			loadTheme();
+			Refresh();
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
@@ -185,14 +187,17 @@ namespace Common.Controls.Theme
 
 		private void selectColor_Click(object sender, EventArgs e)
 		{
-			colorPicker(sender, e);
-			SaveTheme();
-			update();
-			Refresh();
-		}
-
-		private void colorPicker(object sender, EventArgs e)
-		{
+			if (comboBoxThemes.SelectedItem.ToString() != "Custom")
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //adds a system icon to the message form.
+				var messageBox = new MessageBoxForm("Changing a color within the standard Themes will over-ride the Custom Theme. Confirm over-ride of Custom Theme?", "Over-riding the Custom Theme", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No)
+				{
+					return;
+				}
+			}
 			var currentColor = sender as PictureBox;
 			using (ColorPicker cp = new ColorPicker())
 			{
@@ -201,10 +206,13 @@ namespace Common.Controls.Theme
 				DialogResult result = cp.ShowDialog();
 				if (result != DialogResult.OK) return;
 				Color colorValue = cp.Color.ToRGB().ToArgb();
-
 				PictureBox btn = sender as PictureBox;
 				btn.BackColor = colorValue;
-				comboBoxThemes.SelectedIndex = comboBoxThemes.Items.Count - 1;
+				ThemeName = "Custom";
+				SaveTheme();
+				loadTheme();
+				comboBoxThemes.SelectedItem = "Custom";
+				Refresh();
 			}
 		}
 	}

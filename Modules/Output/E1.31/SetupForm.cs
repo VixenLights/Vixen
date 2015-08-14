@@ -119,6 +119,7 @@ namespace VixenModules.Output.E131
 			}
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
+	        tabControlEX1.SelectedTab = tabPageEX1;
 			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
         }
 

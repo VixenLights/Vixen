@@ -58,49 +58,49 @@ namespace Common.Controls.Theme
 		public static void ChristmasTheme()
 		{
 			//This is a Christmas Theme
-			_vixenThemeColors[0] = Color.FromArgb(68, 68, 68); //BackGroundColor
-			_vixenThemeColors[3] = Color.FromArgb(110, 175, 112); //Foreground Color
-			_vixenThemeColors[2] = Color.FromArgb(68, 68, 68); //ForeColorDisabled
-			_vixenThemeColors[1] = Color.FromArgb(68, 68, 68); //Menu Selected Highlight Color
-			_vixenThemeColors[4] = Color.FromArgb(80, 80, 80); //TextBox BackGround Color
+			_vixenThemeColors[0] = Color.FromArgb(222, 255, 223); //BackGroundColor
+			_vixenThemeColors[3] = Color.FromArgb(0, 0, 0); //Foreground Color
+			_vixenThemeColors[2] = Color.FromArgb(126, 126, 126); //ForeColorDisabled
+			_vixenThemeColors[1] = Color.FromArgb(255, 121, 121); //Menu Selected Highlight Color
+			_vixenThemeColors[4] = Color.FromArgb(231, 252, 231); //TextBox BackGround Color
 			_vixenThemeColors[5] = Color.FromArgb(40, 40, 40); //Button Border
 			_vixenThemeColors[6] = Color.FromArgb(136, 136, 136); //GroupBox Border Color
-			_vixenThemeColors[7] = Color.FromArgb(90, 90, 90); //ComboBox Back Color
-			_vixenThemeColors[8] = Color.FromArgb(68, 68, 68); //ListBox Back Color
-			_vixenThemeColors[9] = Color.FromArgb(90, 90, 90); //Menu Back Color
-			_vixenThemeColors[10] = Color.FromArgb(20, 20, 20); //Button Back Color
-			_vixenThemeColors[11] = Color.FromArgb(80, 80, 80); //Button Back Color Hover
-			_vixenThemeColors[12] = Color.FromArgb(80, 80, 80); //Numeric Back Color
-			_vixenThemeColors[13] = Color.FromArgb(68, 68, 68); //ComboBox Highlight Color
-			_vixenThemeColors[14] = Color.FromArgb(90, 90, 90); //Time Line Element Background
+			_vixenThemeColors[7] = Color.FromArgb(231, 252, 231); //ComboBox Back Color
+			_vixenThemeColors[8] = Color.FromArgb(231, 252, 231); //ListBox Back Color
+			_vixenThemeColors[9] = Color.FromArgb(255, 220, 220); //Menu Back Color
+			_vixenThemeColors[10] = Color.FromArgb(255, 121, 121); //Button Back Color
+			_vixenThemeColors[11] = Color.FromArgb(255, 185, 185); //Button Back Color Hover
+			_vixenThemeColors[12] = Color.FromArgb(231, 252, 231); //Numeric Back Color
+			_vixenThemeColors[13] = Color.FromArgb(255, 121, 121); //ComboBox Highlight Color
+			_vixenThemeColors[14] = Color.FromArgb(231, 252, 231); //Time Line Element Background
 			_vixenThemeColors[15] = Color.FromArgb(0, 0, 0); //TimeLine Grid color
-			_vixenThemeColors[16] = Color.FromArgb(68, 68, 68); //TimeLine Effects Background
-			_vixenThemeColors[17] = Color.FromArgb(221, 221, 221); //TimeLine Text Forecolor
-			_vixenThemeColors[18] = Color.FromArgb(227, 227, 227); //TimeLine Label Background
+			_vixenThemeColors[16] = Color.FromArgb(255, 220, 220); //TimeLine Effects Background
+			_vixenThemeColors[17] = Color.FromArgb(0, 0, 0); //TimeLine Text Forecolor
+			_vixenThemeColors[18] = Color.FromArgb(255, 220, 220); //TimeLine Label Background
 		}
 
 		public static void HalloweenTheme()
 		{
 			//This is a Halloween Theme
-			_vixenThemeColors[0] = Color.FromArgb(68, 68, 68); //BackGroundColor
-			_vixenThemeColors[3] = Color.FromArgb(221, 221, 221); //Foreground Color
-			_vixenThemeColors[2] = Color.FromArgb(68, 68, 68); //ForeColorDisabled
-			_vixenThemeColors[1] = Color.FromArgb(68, 68, 68); //Menu Selected Highlight Color
-			_vixenThemeColors[4] = Color.FromArgb(80, 80, 80); //TextBox BackGround Color
+			_vixenThemeColors[0] = Color.FromArgb(255, 228, 190); //BackGroundColor
+			_vixenThemeColors[3] = Color.FromArgb(0, 0, 0); //Foreground Color
+			_vixenThemeColors[2] = Color.FromArgb(119, 119, 119); //ForeColorDisabled
+			_vixenThemeColors[1] = Color.FromArgb(232, 113, 113); //Menu Selected Highlight Color
+			_vixenThemeColors[4] = Color.FromArgb(243, 243, 234); //TextBox BackGround Color
 			_vixenThemeColors[5] = Color.FromArgb(40, 40, 40); //Button Border
 			_vixenThemeColors[6] = Color.FromArgb(136, 136, 136); //GroupBox Border Color
-			_vixenThemeColors[7] = Color.FromArgb(90, 90, 90); //ComboBox Back Color
-			_vixenThemeColors[8] = Color.FromArgb(68, 68, 68); //ListBox Back Color
-			_vixenThemeColors[9] = Color.FromArgb(90, 90, 90); //Menu Back Color
-			_vixenThemeColors[10] = Color.FromArgb(20, 20, 20); //Button Back Color
-			_vixenThemeColors[11] = Color.FromArgb(80, 80, 80); //Button Back Color Hover
-			_vixenThemeColors[12] = Color.FromArgb(80, 80, 80); //Numeric Back Color
-			_vixenThemeColors[13] = Color.FromArgb(68, 68, 68); //ComboBox Highlight Color
-			_vixenThemeColors[14] = Color.FromArgb(90, 90, 90); //Time Line Element Background
+			_vixenThemeColors[7] = Color.FromArgb(243, 243, 234); //ComboBox Back Color
+			_vixenThemeColors[8] = Color.FromArgb(243, 243, 234); //ListBox Back Color
+			_vixenThemeColors[9] = Color.FromArgb(255, 228, 190); //Menu Back Color
+			_vixenThemeColors[10] = Color.FromArgb(232, 113, 113); //Button Back Color
+			_vixenThemeColors[11] = Color.FromArgb(215, 147, 147); //Button Back Color Hover
+			_vixenThemeColors[12] = Color.FromArgb(243, 243, 234); //Numeric Back Color
+			_vixenThemeColors[13] = Color.FromArgb(255, 127, 127); //ComboBox Highlight Color
+			_vixenThemeColors[14] = Color.FromArgb(60, 60, 60); //Time Line Element Background
 			_vixenThemeColors[15] = Color.FromArgb(0, 0, 0); //TimeLine Grid color
-			_vixenThemeColors[16] = Color.FromArgb(68, 68, 68); //TimeLine Effects Background
-			_vixenThemeColors[17] = Color.FromArgb(221, 221, 221); //TimeLine Text Forecolor
-			_vixenThemeColors[18] = Color.FromArgb(227, 227, 227); //TimeLine Label Background
+			_vixenThemeColors[16] = Color.FromArgb(255, 228, 190); //TimeLine Effects Background
+			_vixenThemeColors[17] = Color.FromArgb(0, 0, 0); //TimeLine Text Forecolor
+			_vixenThemeColors[18] = Color.FromArgb(255, 228, 190); //TimeLine Label Background
 		}
 
 		public static void InitialLoadTheme()
