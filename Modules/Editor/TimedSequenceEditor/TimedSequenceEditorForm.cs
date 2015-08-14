@@ -3978,6 +3978,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					break;
+				case Keys.T:
+					TimelineControl.grid.ToggleSelectedRows(e.Control);
+					break;
 			}
 			// Prevents sending keystrokes to child controls. 
 			// This was causing serious slowdowns if random keys were pressed.

@@ -1903,6 +1903,42 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		public void ToggleSelectedRows(bool includeChildren)
+		{
+			SuppressInvalidate = true;
+			AllowGridResize = false;
+			if (SelectedRows.Any())
+			{
+				foreach (var selectedRow in SelectedRows)
+				{
+					if (includeChildren)
+					{
+						selectedRow.ToggleTree(!selectedRow.TreeOpen);
+					}
+					else
+					{
+						selectedRow.TreeOpen = !selectedRow.TreeOpen;
+					}
+				}
+			}
+			else if (ActiveRow != null)
+			{
+				if (includeChildren)
+				{
+					ActiveRow.ToggleTree(!ActiveRow.TreeOpen);
+				}
+				else
+				{
+					ActiveRow.TreeOpen = !ActiveRow.TreeOpen;
+				}
+			}
+
+			SuppressInvalidate = false;
+			AllowGridResize = true;
+			ResizeGridHeight();
+			Invalidate();
+		}
+
 		#endregion
 	
 		#region Drawing
