@@ -29,6 +29,13 @@ namespace VixenModules.App.Shows
 			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteItem.Text = "";
 			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			foreach (Control tab in tabControlShowItems.TabPages)
+			{
+				tab.BackColor = ThemeColorTable.ComboBoxBackColor;
+				tab.ForeColor = ThemeColorTable.ForeColor;
+			}
+			tabControlShowItems.SelectedTabColor = ThemeColorTable.ComboBoxBackColor;
+			tabControlShowItems.TabColor = ThemeColorTable.ComboBoxHighlightColor;
 
 			ShowData = show;
 		}
@@ -42,8 +49,6 @@ namespace VixenModules.App.Shows
 			LoadCurrentTab();
 			CheckButtons();
 
-			//tabControlShowItems.TabPages.Remove(tabPageBackground);
-			tabControlShowItems.TabPages.Remove(tabPageInput);
 		}
 
 		public Show ShowData { get; set; }
@@ -199,10 +204,10 @@ namespace VixenModules.App.Shows
 			{
 				currentShowItemType = ShowItemType.Sequential;
 			}
-			else if (tabControlShowItems.SelectedTab == tabPageInput)
-			{
-				currentShowItemType = ShowItemType.Input;
-			}
+			//else if (tabControlShowItems.SelectedTab == tabPageInput)
+			//{
+			//	currentShowItemType = ShowItemType.Input;
+			//}
 			else if (tabControlShowItems.SelectedTab == tabPageShutdown)
 			{
 				currentShowItemType = ShowItemType.Shutdown;
@@ -459,6 +464,16 @@ namespace VixenModules.App.Shows
 		private void buttonHelp_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeButtonRenderer.OnPaint(sender, e, Resources.help);
+		}
+
+		// The size of the X in each tab's upper right corner.
+		private int Xwid = 8;
+		private const int tab_margin = 0;
+
+		// Draw a tab.
+		private void tabMenu_DrawItem(object sender, DrawItemEventArgs e)
+		{
+
 		}
 	}
 }
