@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -63,9 +64,10 @@ namespace VixenModules.Effect.Pulse
 					LightingValue endValue;
 					if (color == null)
 					{
-						startValue = new LightingValue(colorGradient.GetColorAt(lastPosition),
-													   levelCurve.GetValue(lastPosition * 100) / 100);
-						endValue = new LightingValue(colorGradient.GetColorAt(position), levelCurve.GetValue(position * 100) / 100);
+						var startColor = colorGradient.GetColorAt(lastPosition);
+						var endColor = colorGradient.GetColorAt(position);
+						startValue = new LightingValue(startColor, HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100);
+						endValue = new LightingValue(endColor, HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100);
 					}
 					else
 					{
