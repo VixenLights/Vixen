@@ -134,6 +134,9 @@ namespace VixenApplication
 		private void VixenApplication_Shown(object sender, EventArgs e)
 		{
 			CheckForTestBuild();
+			//Try to make sure at load we are on top.
+			TopMost = true;
+			TopMost = false;
 		}
 
 		private void PopulateVersionStrings()
