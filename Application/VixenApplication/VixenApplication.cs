@@ -75,10 +75,6 @@ namespace VixenApplication
 			var myMenu = new AppCommand("Options", "Options...");
 			myMenu.Click += optionsToolStripMenuItem_Click;
 			toolsMenu.Add(myMenu);
-			myMenu = new AppCommand("Theme", "Themes");
-			myMenu.Click += themeSetupMenuItem_Click;
-			toolsMenu.Add(myMenu);
-
 		}
 
 		private void StartJITProfiler()
@@ -116,8 +112,16 @@ namespace VixenApplication
 		private void VixenApplication_Load(object sender, EventArgs e)
 		{
 			initializeEditorTypes();
-
-			InitializeTheme();
+			menuStripMain.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
+			statusStrip.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
 			labelVixen.BackColor = Color.Transparent;
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
@@ -133,81 +137,6 @@ namespace VixenApplication
 			}
 			PopulateRecentSequencesList();
 		}
-
-		#region Load or create default Theme file as required
-
-		private void InitializeTheme()
-		{
-			var xml = new XMLProfileSettings();
-			ThemeMainForm.ThemeName = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, "CurrentTheme", "Dark (Default)");
-			switch (ThemeMainForm.ThemeName)
-			{
-				case "Dark (Default)":
-					ThemeLoadColors.DarkTheme();
-					RenderTheme();
-					break;
-				case "Windows":
-					ThemeLoadColors.WindowsTheme();
-					RenderTheme();
-					break;
-				case "Christmas":
-					ThemeLoadColors.ChristmasTheme();
-					RenderTheme();
-					break;
-				case "Halloween":
-					ThemeLoadColors.HalloweenTheme();
-					RenderTheme();
-					break;
-				case "Custom":
-					CustomTheme();
-					RenderTheme();
-					break;
-			}
-		}
-
-		private void CustomTheme()
-		{
-			//Initializes Theme Colors
-			if (File.Exists(ThemeMainForm._vixenThemePath))
-			{
-				using (FileStream reader = new FileStream(ThemeMainForm._vixenThemePath, FileMode.Open, FileAccess.Read))
-				{
-					var i = 0;
-					DataContractSerializer ser = new DataContractSerializer(typeof (Color[]));
-					foreach (Color _colors in (Color[]) ser.ReadObject(reader))
-					{
-						ThemeLoadColors._vixenThemeColors[i] = _colors;
-						i++;
-					}
-				}
-			}
-			else
-			{
-				//This will only run if a Custom Theme file is not found and will use the Default Dark Color Theme.
-				ThemeMainForm.ThemeName = "Dark (Default)";
-				ThemeLoadColors.DarkTheme();
-			}
-		}
-
-		private void RenderTheme()
-		{
-			//Add the Theme colors from the file to the Theme Color Table
-			ThemeLoadColors.InitialLoadTheme();
-			//Render the new Theme to the Vixen Application form.
-			menuStripMain.Renderer = new ThemeToolStripRenderer();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
-			statusStrip.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
-			labelVixen.BackColor = Color.Transparent;
-			groupBoxSequences.Invalidate(); //This is used to initiate a redraw of the Groupbox theme
-		}
-		#endregion
 
 		private void VixenApplication_Shown(object sender, EventArgs e)
 		{
@@ -678,14 +607,6 @@ namespace VixenApplication
 			// so far the dialog box does it all, no real need for this check...
 			if( res != DialogResult.OK)
 				return;
-		}
-
-		private void themeSetupMenuItem_Click(object sender, EventArgs e)
-		{
-			var themeControl = new ThemeMainForm();
-			themeControl.ShowDialog();
-			RenderTheme();
-			Refresh();
 		}
 
 		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.

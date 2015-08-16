@@ -199,6 +199,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
+
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -1753,7 +1754,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_contextMenuStrip.Items.Clear();
 
-			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)");
+			ToolStripMenuItem contextMenuItemAddEffect = new ToolStripMenuItem("Add Effect(s)"){Image = Resources.effects};
 			IEnumerable<IEffectModuleDescriptor> effectDesriptors =
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>()
 					.Cast<IEffectModuleDescriptor>()
@@ -1805,7 +1806,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Effect Alignment Menu
 				ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment")
 				{
-					Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements)
+					Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements),
+					Image = Resources.alignment
 				};
 				//Disables the Alignment menu if too many effects are selected in a row.
 				if (!contextMenuItemAlignment.Enabled)
@@ -1815,7 +1817,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)")
 				{
-					ToolTipText = @"Holding shift will align the start times, while holding duration."
+					ToolTipText = @"Holding shift will align the start times, while holding duration.",
+					Image = Resources.alignStart
 				};
 				contextMenuItemAlignStart.Click +=
 					(mySender, myE) =>
@@ -1823,13 +1826,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times (shift)")
 				{
-					ToolTipText = @"Holding shift will align the end times, while holding duration."
+					ToolTipText = @"Holding shift will align the end times, while holding duration.",
+					Image = Resources.alignEnd
 				};
 				contextMenuItemAlignEnd.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
 
-				ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times");
+				ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times") { Image = Resources.alignBoth };
 				contextMenuItemAlignBoth.Click +=
 					(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
 
@@ -1865,7 +1869,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemDistDialog = new ToolStripMenuItem("Distribute Effects");
 				contextMenuItemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
 
-				ToolStripMenuItem contextMenuItemAlignCenter = new ToolStripMenuItem("Align Centerpoints");
+				ToolStripMenuItem contextMenuItemAlignCenter = new ToolStripMenuItem("Align Centerpoints") { Image = Resources.alignCenter };
 				contextMenuItemAlignCenter.Click +=
 					(mySender, myE) => TimelineControl.grid.AlignElementCenters(TimelineControl.SelectedElements, element);
 
@@ -1899,7 +1903,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					//Effect Manipulation Menu
 					ToolStripMenuItem contextMenuItemManipulation = new ToolStripMenuItem("Manipulation");
-					ToolStripMenuItem contextMenuItemManipulateDivide = new ToolStripMenuItem("Divide at cursor");
+					ToolStripMenuItem contextMenuItemManipulateDivide = new ToolStripMenuItem("Divide at cursor") { Image = Resources.divide };
 					contextMenuItemManipulateDivide.Click += (mySender, myE) =>
 					{
 						if (TimelineControl.SelectedElements.Any())
@@ -1915,7 +1919,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					};
 
-					ToolStripMenuItem contextMenuItemManipulationClone = new ToolStripMenuItem("Clone");
+					ToolStripMenuItem contextMenuItemManipulationClone = new ToolStripMenuItem("Clone") { Image = Resources.page_copy };
 					contextMenuItemManipulationClone.Click += (mySender, myE) =>
 					{
 						if (TimelineControl.SelectedElements.Any())
@@ -1928,7 +1932,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					};
 
-					ToolStripMenuItem contextMenuItemManipulationCloneToOther = new ToolStripMenuItem("Clone to selected effects");
+					ToolStripMenuItem contextMenuItemManipulationCloneToOther = new ToolStripMenuItem("Clone to selected effects") { Image = Resources.copySelect };
 					contextMenuItemManipulationCloneToOther.Click += (mySender, myE) =>
 					{
 						if (TimelineControl.SelectedElements.Any(elem => elem.EffectNode.Effect.TypeId != element.EffectNode.Effect.TypeId))
@@ -1958,7 +1962,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					contextMenuItemManipulation.DropDown.Items.Add(contextMenuItemManipulationClone);
 					contextMenuItemManipulation.DropDown.Items.Add(contextMenuItemManipulationCloneToOther);
 
-					ToolStripMenuItem contextMenuItemEditTime = new ToolStripMenuItem("Edit Time");
+					ToolStripMenuItem contextMenuItemEditTime = new ToolStripMenuItem("Edit Time") { Image = Resources.clock_edit };
 					contextMenuItemEditTime.Click += (mySender, myE) =>
 					{
 						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan);
@@ -1992,16 +1996,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ToolStripMenuItem contextMenuItemCopy = new ToolStripMenuItem("Copy", null, toolStripMenuItem_Copy_Click)
 			{
-				ShortcutKeyDisplayString = @"Ctrl+C"
+				ShortcutKeyDisplayString = @"Ctrl+C",
+				Image = Resources.page_copy
 			};
 			ToolStripMenuItem contextMenuItemCut = new ToolStripMenuItem("Cut", null, toolStripMenuItem_Cut_Click)
 			{
-				ShortcutKeyDisplayString = @"Ctrl+X"
+				ShortcutKeyDisplayString = @"Ctrl+X",
+				Image = Resources.cut
 			};
 			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
 			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click)
 			{
-				ShortcutKeyDisplayString = @"Ctrl+V",
+				ShortcutKeyDisplayString = @"Ctrl+V", Image = Resources.page_copy,
 				Enabled = ClipboardHasData()
 			};
 
@@ -2011,7 +2017,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//Add Delete/Collections
 				ToolStripMenuItem contextMenuItemDelete = new ToolStripMenuItem("Delete Effect(s)", null,
-					toolStripMenuItem_deleteElements_Click) {ShortcutKeyDisplayString = @"Del"};
+					toolStripMenuItem_deleteElements_Click) { ShortcutKeyDisplayString = @"Del", Image = Resources.delete };
 				_contextMenuStrip.Items.Add(contextMenuItemDelete);
 				AddContextCollectionsMenu();
 
@@ -2024,15 +2030,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddContextCollectionsMenu()
 		{
-			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections");
+			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections") { Image = Resources.collection };
 
 			if ((TimelineControl.SelectedElements.Count() > 1 
 				|| TimelineControl.SelectedElements.Count() == 1 && SupportsColorLists(TimelineControl.SelectedElements.FirstOrDefault())) 
 				&& _colorCollections.Any())
 			{
-				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors");
-				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random");
-				ToolStripMenuItem contextMenuItemSequentialColors = new ToolStripMenuItem("Sequential");
+				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors") { Image = Resources.colors };
+				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random") {Image = Resources.randomColors };
+				ToolStripMenuItem contextMenuItemSequentialColors = new ToolStripMenuItem("Sequential") { Image = Resources.sequentialColors };
 
 				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorCollections);
 				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemRandomColors);

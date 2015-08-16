@@ -91,7 +91,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Theme\ThemeButtonRenderer.cs" />
-    <Compile Include="Theme\ThemeLoadColors.cs" />
     <Compile Include="Theme\ThemePropertyGridRenderer.cs" />
     <Compile Include="Theme\ThemeComboBoxRenderer.cs" />
     <Compile Include="Theme\ThemeUpdateControls.cs" />
@@ -175,12 +174,6 @@
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
     <Compile Include="Theme\ThemeGroupBoxRenderer.cs" />
-    <Compile Include="Theme\ThemeMainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Theme\ThemeMainForm.Designer.cs">
-      <DependentUpon>ThemeMainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\Grid.cs">
@@ -410,9 +403,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Theme\ThemeMainForm.resx">
-      <DependentUpon>ThemeMainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\WizardForm.resx">
       <DependentUpon>WizardForm.cs</DependentUpon>

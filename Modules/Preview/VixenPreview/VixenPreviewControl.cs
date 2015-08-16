@@ -681,20 +681,20 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
 							{
-								contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Separate Template Items", Tag = "Separate" });
+								contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Separate Template Items", Tag = "Separate", Image = Common.Resources.Properties.Resources.Split });
 							}
 						}
 					}
 					else if (SelectedDisplayItems.Count > 1)
 					{
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Group...", Tag = "CreateGroup" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Group...", Tag = "CreateGroup", Image = Common.Resources.Properties.Resources.group });
 						contextMenuStrip1.Items.Add(new ToolStripSeparator());
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Template...", Tag = "CreateTemplate" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Create Template...", Tag = "CreateTemplate", Image = Common.Resources.Properties.Resources.document_font });
 					}
 					if (_selectedDisplayItem != null)
 					{
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Cut", Tag = "Cut" });
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Copy", Tag = "Copy" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Cut", Tag = "Cut", Image = Common.Resources.Properties.Resources.cut });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Copy", Tag = "Copy", Image = Common.Resources.Properties.Resources.page_copy });
 					}
 					if (ClipboardPopulated)
 					{
@@ -702,11 +702,11 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							contextMenuStrip1.Items.Add(new ToolStripSeparator());
 						}
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Paste", Tag = "Paste" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Paste", Tag = "Paste", Image = Common.Resources.Properties.Resources.paste_plain });
 					}
 					if (_selectedDisplayItem != null)
 					{
-						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Delete", Tag = "Delete" });
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Delete", Tag = "Delete", Image = Common.Resources.Properties.Resources.delete });
 					}
 					if (_selectedDisplayItem != null)
 					{

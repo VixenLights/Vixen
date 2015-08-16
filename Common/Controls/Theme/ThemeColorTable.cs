@@ -39,7 +39,7 @@ namespace Common.Controls.Theme
 		public static Color _highlightColor = Color.FromArgb(90, 90, 90);
 
 		//Sequence TimeLine
-		public static Color _timeLinePanel1BackColor = Color.FromArgb(90, 90, 90);
+		public static Color _timeLinePanel1BackColor = Color.FromArgb(40, 40, 40);
 		public static Color _timeLineGridColor = Color.FromArgb(0, 0, 0);
 		public static Color _timeLineEffectsBackColor = Color.FromArgb(68, 68, 68);
 		public static Color _timeLineForeColor = Color.FromArgb(221, 221, 221);

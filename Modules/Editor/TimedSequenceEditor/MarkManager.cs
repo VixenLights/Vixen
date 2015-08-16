@@ -50,6 +50,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
+			listViewMarks.BackColor = ThemeColorTable.BackgroundColor;
 			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
 			buttonPlay.Text = "";
 			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
@@ -237,9 +239,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			buttonRemoveCollection.Enabled = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonPlayback.Checked = true;
-			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void listViewMarks_SelectedIndexChanged(object sender, EventArgs e)

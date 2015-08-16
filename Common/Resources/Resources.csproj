@@ -242,9 +242,23 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="colors.png" />
+    <None Include="alignBoth.png" />
+    <None Include="alignCenter.png" />
+    <None Include="alignEnd.png" />
+    <None Include="alignStart.png" />
+    <None Include="divide.png" />
+    <None Include="copySelect.png" />
+    <None Include="collection.png" />
+    <None Include="alignment.png" />
+    <None Include="effects.png" />
     <Content Include="fill_gaps.png" />
     <None Include="Resources\HeadingBackgroundImage.jpg" />
     <None Include="Resources\HeadingBackgroundImageHover.jpg" />
+    <None Include="Split.png" />
+    <None Include="group.png" />
+    <None Include="sequentialColors.png" />
+    <None Include="randomColors.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
