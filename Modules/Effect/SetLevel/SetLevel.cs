@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
