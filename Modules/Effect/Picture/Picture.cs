@@ -353,14 +353,15 @@ namespace VixenModules.Effect.Picture
 					}
 					
 					break;
-				case EffectType.RenderPictureWiggle: 
-					xoffset = Convert.ToInt32(state % (BufferWi / 4 * speedfactor));
-					if (xoffset > BufferWi / 8 * speedfactor)
+				case EffectType.RenderPictureWiggle:
+					if (position >= 0.5)
 					{
-						xoffset = BufferWi / 4 * speedfactor - xoffset; //reverse direction
+						xoffset += (int)(BufferWi * ((1.0 - position) * 2.0 - 0.5));
 					}
-					xoffset -= BufferWi / 4; //* speedfactor; //center it on mid value
-					xoffset += (imgwidth - BufferWi) / 2; //add in original xoffset from above	
+					else
+					{
+						xoffset += (int)(BufferWi * (position * 2.0 - 0.5));
+					}
 					break;
 				case EffectType.RenderPicturePeekaboo90: //peekaboo 90
 				case EffectType.RenderPicturePeekaboo270: //peekaboo 270
@@ -494,7 +495,8 @@ namespace VixenModules.Effect.Picture
 
 			var newWidth = (int)(image.Width * ratio);
 			var newHeight = (int)(image.Height * ratio);
-
+			if (newHeight <= 0) newHeight = 1;
+			if (newWidth <= 0) newWidth = 1;
 			var newImage = new Bitmap(newWidth, newHeight);
 			Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
 			return newImage;

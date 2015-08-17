@@ -700,6 +700,8 @@ namespace FMOD {
 					m_sound = null;
 				}   
 		    }
+
+			GC.SuppressFinalize(this);
 		
 	    }
 

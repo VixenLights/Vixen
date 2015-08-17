@@ -114,6 +114,8 @@ namespace Vixen.Module.Input
 					_pause = null;
 				}	
 			}
+
+			GC.SuppressFinalize(this);
 			
 		}
 

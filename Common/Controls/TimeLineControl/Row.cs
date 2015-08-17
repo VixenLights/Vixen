@@ -150,8 +150,22 @@ namespace Common.Controls.Timeline
 					row.Visible = value;
 
 				m_treeOpen = value;
+				RowLabel.Invalidate();
+				_RowToggled();
 				_RowChanged();
 			}
+		}
+
+		public void ToggleTree(bool open = true)
+		{
+			TreeOpen = open;
+			foreach (Row row in ChildRows)
+			{
+				row.ToggleTree(open);	
+			}
+			RowLabel.Invalidate();
+			_RowToggled();
+			_RowChanged();
 		}
 
 		private bool m_visible = true;

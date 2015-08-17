@@ -55,22 +55,22 @@ namespace Common.Controls
 			// listViewNames
 			// 
 			this.listViewNames.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewNames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnHeader1,
-			this.columnHeader2});
+            this.columnHeader1,
+            this.columnHeader2});
 			this.listViewNames.FullRowSelect = true;
 			this.listViewNames.GridLines = true;
 			this.listViewNames.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.listViewNames.HideSelection = false;
-			this.listViewNames.Location = new System.Drawing.Point(414, 29);
-			this.listViewNames.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.listViewNames.Location = new System.Drawing.Point(276, 19);
 			this.listViewNames.MultiSelect = false;
 			this.listViewNames.Name = "listViewNames";
 			this.listViewNames.ShowGroups = false;
-			this.listViewNames.Size = new System.Drawing.Size(386, 764);
+			this.listViewNames.Size = new System.Drawing.Size(259, 498);
 			this.listViewNames.TabIndex = 1;
+			this.listViewNames.TabStop = false;
 			this.listViewNames.UseCompatibleStateImageBehavior = false;
 			this.listViewNames.View = System.Windows.Forms.View.Details;
 			this.listViewNames.Resize += new System.EventHandler(this.listViewNames_Resize);
@@ -89,11 +89,10 @@ namespace Common.Controls
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(638, 805);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(425, 523);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(135, 38);
-			this.buttonCancel.TabIndex = 28;
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			// 
@@ -101,18 +100,17 @@ namespace Common.Controls
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(454, 806);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(303, 524);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(135, 38);
-			this.buttonOk.TabIndex = 27;
+			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.TabIndex = 3;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			// 
 			// groupBoxSelectedNamingRule
 			// 
 			this.groupBoxSelectedNamingRule.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left)));
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBoxSelectedNamingRule.Controls.Add(this.comboBoxRuleTypes);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonAddNewRule);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonDeleteRule);
@@ -120,43 +118,40 @@ namespace Common.Controls
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonMoveRuleDown);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.buttonMoveRuleUp);
 			this.groupBoxSelectedNamingRule.Controls.Add(this.panelRuleConfig);
-			this.groupBoxSelectedNamingRule.Location = new System.Drawing.Point(27, 143);
-			this.groupBoxSelectedNamingRule.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSelectedNamingRule.Location = new System.Drawing.Point(18, 93);
 			this.groupBoxSelectedNamingRule.Name = "groupBoxSelectedNamingRule";
-			this.groupBoxSelectedNamingRule.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBoxSelectedNamingRule.Size = new System.Drawing.Size(378, 652);
-			this.groupBoxSelectedNamingRule.TabIndex = 31;
+			this.groupBoxSelectedNamingRule.Size = new System.Drawing.Size(252, 424);
+			this.groupBoxSelectedNamingRule.TabIndex = 2;
 			this.groupBoxSelectedNamingRule.TabStop = false;
 			this.groupBoxSelectedNamingRule.Text = "Naming Rules";
 			// 
 			// comboBoxRuleTypes
 			// 
 			this.comboBoxRuleTypes.FormattingEnabled = true;
-			this.comboBoxRuleTypes.Location = new System.Drawing.Point(14, 34);
-			this.comboBoxRuleTypes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.comboBoxRuleTypes.Location = new System.Drawing.Point(9, 22);
 			this.comboBoxRuleTypes.Name = "comboBoxRuleTypes";
-			this.comboBoxRuleTypes.Size = new System.Drawing.Size(217, 28);
-			this.comboBoxRuleTypes.TabIndex = 2;
+			this.comboBoxRuleTypes.Size = new System.Drawing.Size(146, 21);
+			this.comboBoxRuleTypes.TabIndex = 0;
 			this.comboBoxRuleTypes.SelectedIndexChanged += new System.EventHandler(this.comboBoxRuleTypes_SelectedIndexChanged);
 			// 
 			// buttonAddNewRule
 			// 
-			this.buttonAddNewRule.Location = new System.Drawing.Point(262, 32);
-			this.buttonAddNewRule.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonAddNewRule.Location = new System.Drawing.Point(175, 21);
 			this.buttonAddNewRule.Name = "buttonAddNewRule";
-			this.buttonAddNewRule.Size = new System.Drawing.Size(36, 37);
-			this.buttonAddNewRule.TabIndex = 3;
+			this.buttonAddNewRule.Size = new System.Drawing.Size(24, 24);
+			this.buttonAddNewRule.TabIndex = 6;
+			this.buttonAddNewRule.TabStop = false;
 			this.buttonAddNewRule.Text = "+";
 			this.buttonAddNewRule.UseVisualStyleBackColor = true;
 			this.buttonAddNewRule.Click += new System.EventHandler(this.buttonAddNewRule_Click);
 			// 
 			// buttonDeleteRule
 			// 
-			this.buttonDeleteRule.Location = new System.Drawing.Point(315, 32);
-			this.buttonDeleteRule.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonDeleteRule.Location = new System.Drawing.Point(210, 21);
 			this.buttonDeleteRule.Name = "buttonDeleteRule";
-			this.buttonDeleteRule.Size = new System.Drawing.Size(36, 37);
+			this.buttonDeleteRule.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteRule.TabIndex = 4;
+			this.buttonDeleteRule.TabStop = false;
 			this.buttonDeleteRule.Text = "-";
 			this.buttonDeleteRule.UseVisualStyleBackColor = true;
 			this.buttonDeleteRule.Click += new System.EventHandler(this.buttonDeleteRule_Click);
@@ -164,17 +159,17 @@ namespace Common.Controls
 			// listViewGenerators
 			// 
 			this.listViewGenerators.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left)));
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.listViewGenerators.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-			this.columnHeader3});
+            this.columnHeader3});
 			this.listViewGenerators.HideSelection = false;
-			this.listViewGenerators.Location = new System.Drawing.Point(9, 92);
-			this.listViewGenerators.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.listViewGenerators.Location = new System.Drawing.Point(6, 60);
 			this.listViewGenerators.MultiSelect = false;
 			this.listViewGenerators.Name = "listViewGenerators";
 			this.listViewGenerators.OwnerDraw = true;
-			this.listViewGenerators.Size = new System.Drawing.Size(288, 264);
+			this.listViewGenerators.Size = new System.Drawing.Size(193, 173);
 			this.listViewGenerators.TabIndex = 5;
+			this.listViewGenerators.TabStop = false;
 			this.listViewGenerators.UseCompatibleStateImageBehavior = false;
 			this.listViewGenerators.View = System.Windows.Forms.View.List;
 			this.listViewGenerators.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewGenerators_Highlight);
@@ -186,22 +181,22 @@ namespace Common.Controls
 			// 
 			// buttonMoveRuleDown
 			// 
-			this.buttonMoveRuleDown.Location = new System.Drawing.Point(312, 138);
-			this.buttonMoveRuleDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonMoveRuleDown.Location = new System.Drawing.Point(208, 90);
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
-			this.buttonMoveRuleDown.Size = new System.Drawing.Size(45, 38);
+			this.buttonMoveRuleDown.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleDown.TabIndex = 7;
+			this.buttonMoveRuleDown.TabStop = false;
 			this.buttonMoveRuleDown.Text = "D";
 			this.buttonMoveRuleDown.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleDown.Click += new System.EventHandler(this.buttonMoveRuleDown_Click);
 			// 
 			// buttonMoveRuleUp
 			// 
-			this.buttonMoveRuleUp.Location = new System.Drawing.Point(312, 92);
-			this.buttonMoveRuleUp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonMoveRuleUp.Location = new System.Drawing.Point(208, 60);
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
-			this.buttonMoveRuleUp.Size = new System.Drawing.Size(45, 38);
+			this.buttonMoveRuleUp.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleUp.TabIndex = 6;
+			this.buttonMoveRuleUp.TabStop = false;
 			this.buttonMoveRuleUp.Text = "U";
 			this.buttonMoveRuleUp.UseVisualStyleBackColor = true;
 			this.buttonMoveRuleUp.Click += new System.EventHandler(this.buttonMoveRuleUp_Click);
@@ -209,43 +204,41 @@ namespace Common.Controls
 			// panelRuleConfig
 			// 
 			this.panelRuleConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.panelRuleConfig.Location = new System.Drawing.Point(14, 368);
-			this.panelRuleConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.panelRuleConfig.Location = new System.Drawing.Point(9, 239);
 			this.panelRuleConfig.Name = "panelRuleConfig";
-			this.panelRuleConfig.Size = new System.Drawing.Size(346, 275);
-			this.panelRuleConfig.TabIndex = 30;
+			this.panelRuleConfig.Size = new System.Drawing.Size(231, 179);
+			this.panelRuleConfig.TabIndex = 1;
+			this.panelRuleConfig.TabStop = true;
 			// 
 			// numericUpDownItemCount
 			// 
-			this.numericUpDownItemCount.Location = new System.Drawing.Point(327, 29);
-			this.numericUpDownItemCount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownItemCount.Location = new System.Drawing.Point(218, 19);
 			this.numericUpDownItemCount.Maximum = new decimal(new int[] {
-			1000000,
-			0,
-			0,
-			0});
+            1000000,
+            0,
+            0,
+            0});
 			this.numericUpDownItemCount.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownItemCount.Name = "numericUpDownItemCount";
-			this.numericUpDownItemCount.Size = new System.Drawing.Size(78, 26);
+			this.numericUpDownItemCount.Size = new System.Drawing.Size(52, 20);
 			this.numericUpDownItemCount.TabIndex = 0;
 			this.numericUpDownItemCount.Value = new decimal(new int[] {
-			5,
-			0,
-			0,
-			0});
+            5,
+            0,
+            0,
+            0});
 			this.numericUpDownItemCount.ValueChanged += new System.EventHandler(this.numericUpDownItemCount_ValueChanged);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 29);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(12, 19);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(170, 20);
+			this.label1.Size = new System.Drawing.Size(114, 13);
 			this.label1.TabIndex = 35;
 			this.label1.Text = "Total Number of Items:";
 			// 
@@ -253,10 +246,9 @@ namespace Common.Controls
 			// 
 			this.comboBoxTemplates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.comboBoxTemplates.FormattingEnabled = true;
-			this.comboBoxTemplates.Location = new System.Drawing.Point(160, 812);
-			this.comboBoxTemplates.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.comboBoxTemplates.Location = new System.Drawing.Point(107, 528);
 			this.comboBoxTemplates.Name = "comboBoxTemplates";
-			this.comboBoxTemplates.Size = new System.Drawing.Size(246, 28);
+			this.comboBoxTemplates.Size = new System.Drawing.Size(165, 21);
 			this.comboBoxTemplates.TabIndex = 36;
 			this.comboBoxTemplates.Visible = false;
 			this.comboBoxTemplates.SelectedIndexChanged += new System.EventHandler(this.comboBoxTemplates_SelectedIndexChanged);
@@ -265,10 +257,9 @@ namespace Common.Controls
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(36, 814);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(24, 529);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(108, 20);
+			this.label2.Size = new System.Drawing.Size(72, 13);
 			this.label2.TabIndex = 37;
 			this.label2.Text = "Use template:";
 			this.label2.Visible = false;
@@ -276,41 +267,40 @@ namespace Common.Controls
 			// textBoxNameFormat
 			// 
 			this.textBoxNameFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left)));
-			this.textBoxNameFormat.Location = new System.Drawing.Point(135, 83);
-			this.textBoxNameFormat.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.textBoxNameFormat.Location = new System.Drawing.Point(90, 54);
 			this.textBoxNameFormat.Name = "textBoxNameFormat";
-			this.textBoxNameFormat.Size = new System.Drawing.Size(268, 26);
+			this.textBoxNameFormat.Size = new System.Drawing.Size(180, 20);
 			this.textBoxNameFormat.TabIndex = 1;
 			this.textBoxNameFormat.TextChanged += new System.EventHandler(this.textBoxNameFormat_TextChanged);
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(21, 88);
-			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Location = new System.Drawing.Point(14, 57);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(105, 20);
+			this.label3.Size = new System.Drawing.Size(70, 13);
 			this.label3.TabIndex = 39;
 			this.label3.Text = "Name format:";
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(148, 118);
-			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Location = new System.Drawing.Point(99, 77);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(242, 20);
+			this.label4.Size = new System.Drawing.Size(166, 13);
 			this.label4.TabIndex = 40;
 			this.label4.Text = "Example: \"Tree - <1> - <2> - <3>\"";
 			// 
 			// NameGenerator
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AcceptButton = this.buttonOk;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(820, 862);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(547, 560);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label3);
@@ -323,8 +313,7 @@ namespace Common.Controls
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.listViewNames);
 			this.DoubleBuffered = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.MinimumSize = new System.Drawing.Size(834, 891);
+			this.MinimumSize = new System.Drawing.Size(561, 592);
 			this.Name = "NameGenerator";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Create/Modify Multiple Items";

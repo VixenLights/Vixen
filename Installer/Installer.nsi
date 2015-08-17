@@ -273,6 +273,10 @@ Section "Application" SEC01
   Delete "$INSTDIR\Modules\EffectEditor\ChaseEffectEditor.dll"
   Delete "$INSTDIR\Modules\EffectEditor\WipeEditor.dll"
   Delete "$INSTDIR\Modules\Editor\VixenModules.Editor.EffectEditor.dll"
+  Delete "$INSTDIR\Modules\Editor\ScriptEditor.dll"
+  Delete "$INSTDIR\Modules\Script\CSharp.dll"
+  Delete "$INSTDIR\Modules\Script\VB.dll"
+  Delete "$INSTDIR\Modules\App\VirtualEffect.dll"
 
   ; only overwrite these if this installer has a newer version
   SetOverwrite ifnewer
