@@ -1506,16 +1506,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (skipElements)
 			{
-				MessageBox.Show(@"One or more effects were selected that do not support colors.\nAll effects that do were updated.");
-			}
-			SequenceModified();
-			if (strayElement)
-			{
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("One or more effects were selected that do not support curves.\nAll effects that do were updated.",
-									@"Warning", true, false);
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("One or more effects were selected that do not support colors.\nAll effects that do were updated.",
+									@"Information", true, false);
 				messageBox.ShowDialog();
 			}
+			SequenceModified();
 		}
 
 		#endregion

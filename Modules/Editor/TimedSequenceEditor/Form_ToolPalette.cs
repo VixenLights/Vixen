@@ -224,7 +224,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Graphics gfx = Graphics.FromImage(result);
 			using (SolidBrush brush = new SolidBrush(colorItem))
 			{
-				using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
 					gfx.FillRectangle(brush, 0, 0, 48, 48);
 					gfx.DrawRectangle(p, 0, 0, 48, 48);
@@ -238,7 +238,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
 				ImageKey = colorItem.ToString(),
 				Tag = colorItem,
-				ForeColor = DarkThemeColorTable.ForeColor
+				ForeColor = ThemeColorTable.ForeColor
 			};
 			return item;
 		}
@@ -263,7 +263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.Items.Clear();
 
 			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
 				{
@@ -282,7 +282,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Name = name,
 						ImageKey = name,
 						Tag = c,
-						ForeColor = DarkThemeColorTable.ForeColor
+						ForeColor = ThemeColorTable.ForeColor
 					};
 					listViewCurves.Items.Add(item);
 				}
@@ -303,7 +303,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewGradients.Items.Clear();
 
 			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
 				{
@@ -322,7 +322,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Name = name,
 						ImageKey = name,
 						Tag = gradient,
-						ForeColor = DarkThemeColorTable.ForeColor
+						ForeColor = ThemeColorTable.ForeColor
 					};
 
 					listViewGradients.Items.Add(item);

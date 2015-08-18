@@ -6,49 +6,57 @@ namespace Common.Controls.Theme
 	public class ThemeColorTable : ProfessionalColorTable
 	{
 		//Form
-		public static Color _backgroundColor = Color.FromArgb(68, 68, 68);
+		private static Color _backgroundColor = Color.FromArgb(68, 68, 68);
 
 		//Buttons
-		public static Color _buttonBorderColor = Color.FromArgb(40, 40, 40);
-		public static Color _buttonBackColor = Color.FromArgb(20, 20, 20);
-		public static Color _buttonBackColorHover = Color.FromArgb(40, 40, 40);
-		public static Color _buttonTextColor;
+		private static Color _buttonBorderColor = Color.FromArgb(40, 40, 40);
+		private static Color _buttonBackColor = Color.FromArgb(20, 20, 20);
+		private static Color _buttonBackColorHover = Color.FromArgb(40, 40, 40);
+		private static Color _buttonTextColor;
 
 		//Text
-		public static Color _foreColorDisabled = Color.FromArgb(119, 119, 119);
-		public static Color _foreColor = Color.FromArgb(221, 221, 221);
+		private static Color _foreColorDisabled = Color.FromArgb(119, 119, 119);
+		private static Color _foreColor = Color.FromArgb(221, 221, 221);
 
 		//TextBoxes
-		public static Color _textBoxBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _textBoxBackColor = Color.FromArgb(90, 90, 90);
 
 		//ComboBoxes
-		public static Color _comboBoxBackColor = Color.FromArgb(90, 90, 90);
-		public static Color _comboBoxHighlightColor = Color.FromArgb(68, 68, 68);
+		private static Color _comboBoxBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _comboBoxHighlightColor = Color.FromArgb(68, 68, 68);
 
 		//GroupBox
-		public static Color _groupBoxborderColor = Color.FromArgb(136, 136, 136);
+		private static Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		//ListBoxes
-		public static Color _listBoxBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _listBoxBackColor = Color.FromArgb(90, 90, 90);
 
 		//NumericBoxes
-		public static Color _numericBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _numericBackColor = Color.FromArgb(90, 90, 90);
 
 		//MenuStrips
-		public static Color _menuSelectedHighlightBackColor = Color.FromArgb(68, 68, 68);
-		public static Color _highlightColor = Color.FromArgb(90, 90, 90);
+		private static Color _menuSelectedHighlightBackColor = Color.FromArgb(68, 68, 68);
+		private static Color _highlightColor = Color.FromArgb(90, 90, 90);
 
 		//Sequence TimeLine
-		public static Color _timeLinePanel1BackColor = Color.FromArgb(40, 40, 40);
-		public static Color _timeLineGridColor = Color.FromArgb(0, 0, 0);
-		public static Color _timeLineEffectsBackColor = Color.FromArgb(68, 68, 68);
-		public static Color _timeLineForeColor = Color.FromArgb(221, 221, 221);
-		public static Color _timeLineLabelBackColor = Color.FromArgb(68, 68, 68);
+		private static Color _timeLinePanel1BackColor = Color.FromArgb(40, 40, 40);
+		private static Color _timeLineGridColor = Color.FromArgb(0, 0, 0);
+		private static Color _timeLineEffectsBackColor = Color.FromArgb(68, 68, 68);
+		private static Color _timeLineForeColor = Color.FromArgb(221, 221, 221);
+		private static Color _timeLineLabelBackColor = Color.FromArgb(68, 68, 68);
 
 		//Forms
 		public static Color BackgroundColor
 		{
 			get { return _backgroundColor; }
+		}
+
+		//General borders
+		public static Color BorderColor {
+			get
+			{
+				return _borderColor;
+			} 
 		}
 		
 		//Buttons
@@ -102,13 +110,13 @@ namespace Common.Controls.Theme
 
 		public static Color ComboBoxborderColor
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 		//GroupBoxes
 		public static Color GroupBoxBorderColor
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 
@@ -166,7 +174,7 @@ namespace Common.Controls.Theme
 		}
 		public override Color MenuItemBorder
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 		public override Color MenuStripGradientBegin
@@ -216,7 +224,7 @@ namespace Common.Controls.Theme
 
 		public override Color SeparatorLight
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 		public override Color StatusStripGradientBegin
@@ -231,7 +239,7 @@ namespace Common.Controls.Theme
 
 		public override Color ToolStripBorder
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 		public override Color ImageMarginGradientBegin
@@ -316,7 +324,7 @@ namespace Common.Controls.Theme
 
 		public override Color GripLight
 		{
-			get { return _groupBoxborderColor; }
+			get { return _borderColor; }
 		}
 
 		public override Color GripDark
