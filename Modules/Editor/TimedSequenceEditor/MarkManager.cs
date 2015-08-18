@@ -257,7 +257,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			AddNewCollection(ThemeColorTable.ForeColor);
 			ThemeButtonRenderer.ButtonHover = false;
-			Refresh();
+	//		Refresh();
 			//MarkCollection newCollection = new MarkCollection();
 			//newCollection.Name = "New Collection";
 			//MarkCollections.Add(newCollection);
@@ -776,13 +776,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPlayback.Stop();
 			_executionControl.Stop();
 			_playbackStarted = false;
-			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0) {
+			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0)
+			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Accept the new marks?", "", true, false);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
-					foreach (TimeSpan time in _newTappedMarks) {
+					foreach (TimeSpan time in _newTappedMarks)
+					{
 						if (!_displayedCollection.Marks.Contains(time))
 							_displayedCollection.Marks.Add(time);
 					}
@@ -790,8 +793,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 					_newTappedMarks.Clear();
 				}
-				else {
-					_newTappedMarks.Clear();
+				else
+				{
+					if (listViewMarks.Items.Count == 0)
+					{
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+						messageBox = new MessageBoxForm("The Mark Collection is empty, would you like to remove it?", "", true, false);
+						messageBox.ShowDialog();
+						if (messageBox.DialogResult == DialogResult.OK)
+						{
+							MarkCollections.RemoveAt(listViewMarkCollections.SelectedIndices[0]);
+							listViewMarkCollections.Items.Remove(listViewMarkCollections.SelectedItems[0]);
+						}
+					}
+					else
+					{
+						_newTappedMarks.Clear();
+					}
 				}
 			}
 		}
@@ -966,6 +985,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void _triggerResult()
 		{
 			if (_playbackStarted) {
+				if (listViewMarkCollections.SelectedItems.Count == 0)
+					AddNewCollection(ThemeColorTable.ForeColor);
 				// round the tapped time to the nearest millisecond
 				_newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
 				panelMarkView.BackColor = _displayedCollection.MarkColor;
@@ -991,10 +1012,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void radioButtonTapper_CheckedChanged(object sender, EventArgs e)
 		{
-			if (radioButtonTapper.Checked)
-				labelTapperInstructions.Visible = true;
-			else
-				labelTapperInstructions.Visible = false;
+			labelTapperInstructions.Visible = radioButtonTapper.Checked;
 		}
 
 		#endregion
@@ -1355,10 +1373,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// so that the displayed collection is remembered and selected in the list.
 			PopulateFormWithMarkCollection(newCollection);
 			PopulateMarkCollectionsList();
-
-			//enable Tapper as long as a collection is selected.
-			radioButtonTapper.AutoCheck = (listViewMarkCollections.SelectedItems.Count > 0);
-			radioButtonPlayback.Checked = true;
 
 			panelColor.BackColor = color;
 			return newCollection;
