@@ -57,7 +57,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					item.Text = item.Text.Substring(item.Text.LastIndexOf('.') + 1);
 				}
 				if (item.Text == "")
-					item.Text = "String Name not assigned to this object. Select and add name";
+					item.Text = "Unnamed String";
 				comboBoxStringToEdit.Items.Add(item);
 			}
 			if (comboBoxStringToEdit.Items.Count > 0) {
@@ -65,7 +65,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (Common.Controls.ComboBoxItem item in comboBoxStringToEdit.Items)
 					{
 						if (item.Text == "")
-							item.Text = "String Name not assigned to this object. Select and add name";
+							item.Text = "Unnamed String";
 						if ((item.Value as PreviewBaseShape) == selectedShape) {
 							comboBoxStringToEdit.SelectedItem = item;
 							return;
@@ -95,7 +95,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (item != null)
 			{
 				if (item.Text == "")
-					item.Text = "String Name not assigned to this object. Select and add name";
+					item.Text = "Unnamed String";
 				PreviewBaseShape shape = item.Value as PreviewBaseShape;
 				if (shape != null) {
 					ShowSetupControl(shape);
