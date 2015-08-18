@@ -75,6 +75,7 @@ namespace Common.Controls
 			this.listViewNames.ShowGroups = false;
 			this.listViewNames.Size = new System.Drawing.Size(311, 480);
 			this.listViewNames.TabIndex = 1;
+			this.listViewNames.TabStop = false;
 			this.listViewNames.UseCompatibleStateImageBehavior = false;
 			this.listViewNames.View = System.Windows.Forms.View.Details;
 			this.listViewNames.Resize += new System.EventHandler(this.listViewNames_Resize);
@@ -96,7 +97,7 @@ namespace Common.Controls
 			this.buttonCancel.Location = new System.Drawing.Point(477, 523);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
-			this.buttonCancel.TabIndex = 4;
+			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
@@ -110,7 +111,7 @@ namespace Common.Controls
 			this.buttonOk.Location = new System.Drawing.Point(355, 524);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
-			this.buttonOk.TabIndex = 3;
+			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
@@ -152,6 +153,7 @@ namespace Common.Controls
 			this.buttonAddNewRule.Name = "buttonAddNewRule";
 			this.buttonAddNewRule.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddNewRule.TabIndex = 3;
+			this.buttonAddNewRule.TabStop = false;
 			this.buttonAddNewRule.Text = "+";
 			this.buttonAddNewRule.UseVisualStyleBackColor = false;
 			this.buttonAddNewRule.Click += new System.EventHandler(this.buttonAddNewRule_Click);
@@ -165,6 +167,7 @@ namespace Common.Controls
 			this.buttonDeleteRule.Name = "buttonDeleteRule";
 			this.buttonDeleteRule.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteRule.TabIndex = 4;
+			this.buttonDeleteRule.TabStop = false;
 			this.buttonDeleteRule.Text = "-";
 			this.buttonDeleteRule.UseVisualStyleBackColor = false;
 			this.buttonDeleteRule.Click += new System.EventHandler(this.buttonDeleteRule_Click);
@@ -187,6 +190,7 @@ namespace Common.Controls
 			this.buttonMoveRuleDown.Name = "buttonMoveRuleDown";
 			this.buttonMoveRuleDown.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleDown.TabIndex = 7;
+			this.buttonMoveRuleDown.TabStop = false;
 			this.buttonMoveRuleDown.Text = "D";
 			this.buttonMoveRuleDown.UseVisualStyleBackColor = false;
 			this.buttonMoveRuleDown.Click += new System.EventHandler(this.buttonMoveRuleDown_Click);
@@ -200,6 +204,7 @@ namespace Common.Controls
 			this.buttonMoveRuleUp.Name = "buttonMoveRuleUp";
 			this.buttonMoveRuleUp.Size = new System.Drawing.Size(30, 25);
 			this.buttonMoveRuleUp.TabIndex = 6;
+			this.buttonMoveRuleUp.TabStop = false;
 			this.buttonMoveRuleUp.Text = "U";
 			this.buttonMoveRuleUp.UseVisualStyleBackColor = false;
 			this.buttonMoveRuleUp.Click += new System.EventHandler(this.buttonMoveRuleUp_Click);
@@ -227,6 +232,7 @@ namespace Common.Controls
 			this.listViewGenerators.OwnerDraw = true;
 			this.listViewGenerators.Size = new System.Drawing.Size(193, 173);
 			this.listViewGenerators.TabIndex = 5;
+			this.listViewGenerators.TabStop = false;
 			this.listViewGenerators.UseCompatibleStateImageBehavior = false;
 			this.listViewGenerators.View = System.Windows.Forms.View.List;
 			this.listViewGenerators.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewGenerators_Highlight);
@@ -236,15 +242,13 @@ namespace Common.Controls
 			// 
 			this.columnHeader3.Width = 120;
 			// 
-			this.buttonMoveRuleDown.TabStop = false;
-			this.buttonMoveRuleUp.TabStop = false;
 			// panelRuleConfig
 			// 
 			this.panelRuleConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.panelRuleConfig.Location = new System.Drawing.Point(9, 239);
 			this.panelRuleConfig.Name = "panelRuleConfig";
 			this.panelRuleConfig.Size = new System.Drawing.Size(231, 179);
-			this.panelRuleConfig.TabIndex = 30;
+			this.panelRuleConfig.TabIndex = 1;
 			this.panelRuleConfig.TabStop = true;
 			// 
 			// numericUpDownItemCount
@@ -354,7 +358,7 @@ namespace Common.Controls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(599, 560);
+			this.ClientSize = new System.Drawing.Size(599, 561);
 			this.Controls.Add(this.labelColumnHeader2);
 			this.Controls.Add(this.labelColumnHeader1);
 			this.Controls.Add(this.label4);
