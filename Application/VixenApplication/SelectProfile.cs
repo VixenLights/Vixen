@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Common.Controls;
 
@@ -18,6 +19,9 @@ namespace VixenApplication
 		public SelectProfile()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 		}
 
@@ -73,5 +77,24 @@ namespace VixenApplication
             if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 PopulateProfileList();
         }
+
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeButtonRenderer.OnPaint(sender, e, null);
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = true;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			ThemeButtonRenderer.ButtonHover = false;
+			var btn = sender as Button;
+			btn.Invalidate();
+		}
 	}
 }
