@@ -53,40 +53,41 @@
 			// 
 			// contextMenuStripTreeView
 			// 
+			this.contextMenuStripTreeView.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.contextMenuStripTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.configureToolStripMenuItem,
             this.channelCountToolStripMenuItem,
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(155, 92);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(201, 124);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// configureToolStripMenuItem
 			// 
 			this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
-			this.configureToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.configureToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.configureToolStripMenuItem.Text = "Configure";
 			this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
 			// 
 			// channelCountToolStripMenuItem
 			// 
 			this.channelCountToolStripMenuItem.Name = "channelCountToolStripMenuItem";
-			this.channelCountToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.channelCountToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.channelCountToolStripMenuItem.Text = "Channel Count";
 			this.channelCountToolStripMenuItem.Click += new System.EventHandler(this.channelCountToolStripMenuItem_Click);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.renameToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.renameToolStripMenuItem.Text = "Rename";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
@@ -108,10 +109,11 @@
 			this.treeview.ImageIndex = 0;
 			this.treeview.ImageList = this.treeIconsImageList;
 			this.treeview.Location = new System.Drawing.Point(0, 0);
+			this.treeview.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.treeview.Name = "treeview";
 			this.treeview.SelectedImageIndex = 0;
 			this.treeview.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeview.SelectedNodes")));
-			this.treeview.Size = new System.Drawing.Size(200, 400);
+			this.treeview.Size = new System.Drawing.Size(298, 613);
 			this.treeview.TabIndex = 13;
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.Deselected += new System.EventHandler(this.treeview_Deselected);
@@ -120,11 +122,12 @@
 			// 
 			// ControllerTree
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.treeview);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "ControllerTree";
-			this.Size = new System.Drawing.Size(200, 400);
+			this.Size = new System.Drawing.Size(300, 615);
 			this.Load += new System.EventHandler(this.ControllerTree_Load);
 			this.contextMenuStripTreeView.ResumeLayout(false);
 			this.ResumeLayout(false);
