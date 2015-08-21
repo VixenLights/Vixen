@@ -55,7 +55,6 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

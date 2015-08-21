@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Module.Effect;
@@ -50,7 +52,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorEffectEditor(EffectNode effectNode)
 		{
 			InitializeComponent();
-
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_effectNode = effectNode;
 			_effectNodes = null;
 			IEnumerable<IEffectEditorControl> controls =
@@ -183,6 +187,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					messageBox.ShowDialog();
 				}
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

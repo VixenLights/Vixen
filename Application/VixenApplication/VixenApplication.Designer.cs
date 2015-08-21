@@ -34,12 +34,12 @@ namespace VixenApplication
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -287,7 +287,6 @@ namespace VixenApplication
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
 			this.buttonOpenSequence.Click += new System.EventHandler(this.buttonOpenSequence_Click);
-			this.buttonOpenSequence.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOpenSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOpenSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -305,7 +304,6 @@ namespace VixenApplication
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
 			this.buttonNewSequence.Click += new System.EventHandler(this.buttonNewSequence_Click);
-			this.buttonNewSequence.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNewSequence.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNewSequence.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -335,12 +333,12 @@ namespace VixenApplication
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16,
-            listViewItem17,
-            listViewItem18});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(11, 108);
 			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
@@ -391,11 +389,10 @@ namespace VixenApplication
 			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
 			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupDisplay.TabIndex = 0;
+			this.buttonSetupDisplay.TabIndex = 3;
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
 			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
-			this.buttonSetupDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSetupDisplay.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupDisplay.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -409,11 +406,10 @@ namespace VixenApplication
 			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
 			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupOutputPreviews.TabIndex = 1;
+			this.buttonSetupOutputPreviews.TabIndex = 4;
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
-			this.buttonSetupOutputPreviews.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

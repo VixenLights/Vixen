@@ -33,6 +33,13 @@ namespace Common.Controls.Theme
 					Button btn = c as Button;
 					btn.FlatStyle = FlatStyle.Flat;
 					btn.FlatAppearance.BorderSize = 0;
+					if (btn.Width > 40)
+					{
+						btn.BackgroundImageLayout = ImageLayout.Stretch;
+						btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
+						btn.BackColor = Color.Transparent;
+						btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+					}
 				}
 				if (c is TextBox & !c.ToString().Contains("UpDown"))
 				{

@@ -106,23 +106,17 @@ namespace VixenApplication.Setup.ElementTemplates
 			count = Decimal.ToInt32(numericUpDownItemCount.Value);
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

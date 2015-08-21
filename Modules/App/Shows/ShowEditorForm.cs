@@ -420,23 +420,16 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
@@ -459,11 +452,6 @@ namespace VixenModules.App.Shows
 			{
 				DialogResult = DialogResult.No;
 			}
-		}
-
-		private void buttonHelp_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, Resources.help);
 		}
 
 		// The size of the X in each tab's upper right corner.

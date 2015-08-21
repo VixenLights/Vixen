@@ -10,6 +10,8 @@ using System.Collections;
 using System.Globalization;
 using System.Resources;
 using System.IO;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Module.EffectEditor;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -29,6 +31,9 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		public NutcrackerTypeEditorControl()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = new Bitmap(Common.Resources.Properties.Resources.help, new Size(16, 16));
 
 			NutcrackerDataValue = new NutcrackerData();
@@ -1338,5 +1343,17 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			base.Dispose(disposing);
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
 	}
 }

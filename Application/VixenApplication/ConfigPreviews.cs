@@ -162,7 +162,10 @@ namespace VixenApplication
 				buttonDeleteController.Enabled = false;
 				textBoxName.Enabled = false;
 				buttonUpdate.Enabled = false;
+				buttonUpdate.ForeColor = ThemeColorTable.ForeColorDisabled;
 				buttonConfigureController.Enabled = false;
+				buttonDeleteController.ForeColor = ThemeColorTable.ForeColorDisabled;
+				buttonConfigureController.ForeColor = ThemeColorTable.ForeColorDisabled;
 				label1.ForeColor = ThemeColorTable.ForeColorDisabled;
 				label2.ForeColor = ThemeColorTable.ForeColorDisabled;
 			}
@@ -171,7 +174,10 @@ namespace VixenApplication
 				buttonDeleteController.Enabled = true;
 				textBoxName.Enabled = true;
 				buttonUpdate.Enabled = true;
+				buttonUpdate.ForeColor = ThemeColorTable.ForeColor;
 				buttonConfigureController.Enabled = true;
+				buttonDeleteController.ForeColor = ThemeColorTable.ForeColor;
+				buttonConfigureController.ForeColor = ThemeColorTable.ForeColor;
 				label1.ForeColor = ThemeColorTable.ForeColor;
 				label2.ForeColor = ThemeColorTable.ForeColor;
 			}
@@ -236,23 +242,17 @@ namespace VixenApplication
 			}
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

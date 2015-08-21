@@ -90,7 +90,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Theme\ThemeButtonRenderer.cs" />
     <Compile Include="Theme\ThemePropertyGridRenderer.cs" />
     <Compile Include="Theme\ThemeComboBoxRenderer.cs" />
     <Compile Include="Theme\ThemeUpdateControls.cs" />

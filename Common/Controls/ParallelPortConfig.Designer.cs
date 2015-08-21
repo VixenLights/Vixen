@@ -96,7 +96,6 @@ namespace Common.Controls
 			this.OkButton.Text = "OK";
 			this.OkButton.UseVisualStyleBackColor = true;
 			this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
-			this.OkButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.OkButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.OkButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -109,7 +108,6 @@ namespace Common.Controls
 			this.canceButton.TabIndex = 2;
 			this.canceButton.Text = "Cancel";
 			this.canceButton.UseVisualStyleBackColor = true;
-			this.canceButton.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.canceButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.canceButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

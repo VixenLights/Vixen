@@ -274,7 +274,6 @@ namespace VixenApplication.Setup
 			this.buttonUnpatchElements.Text = "Unpatch Elements";
 			this.buttonUnpatchElements.UseVisualStyleBackColor = true;
 			this.buttonUnpatchElements.Click += new System.EventHandler(this.buttonUnpatchElements_Click);
-			this.buttonUnpatchElements.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUnpatchElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnpatchElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -452,7 +451,6 @@ namespace VixenApplication.Setup
 			this.buttonUnpatchControllers.Text = "Unpatch Controllers";
 			this.buttonUnpatchControllers.UseVisualStyleBackColor = true;
 			this.buttonUnpatchControllers.Click += new System.EventHandler(this.buttonUnpatchControllers_Click);
-			this.buttonUnpatchControllers.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUnpatchControllers.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnpatchControllers.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -611,7 +609,6 @@ namespace VixenApplication.Setup
 			this.buttonDoPatching.Text = "Patch Elements";
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
 			this.buttonDoPatching.Click += new System.EventHandler(this.buttonDoPatching_Click);
-			this.buttonDoPatching.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDoPatching.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDoPatching.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

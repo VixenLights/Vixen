@@ -380,6 +380,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadColorCollections();
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
+			Cursor.Current = Cursors.Default;
 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");

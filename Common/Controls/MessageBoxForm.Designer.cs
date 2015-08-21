@@ -61,7 +61,6 @@ namespace Common.Controls
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -79,7 +78,6 @@ namespace Common.Controls
 			this.buttonCancel.Text = "CANCEL";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Visible = false;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -97,14 +95,13 @@ namespace Common.Controls
 			this.buttonNo.Text = "NO";
 			this.buttonNo.UseVisualStyleBackColor = true;
 			this.buttonNo.Visible = false;
-			this.buttonNo.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonNo.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonNo.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// messageIcon
 			// 
 			this.messageIcon.Location = new System.Drawing.Point(5, 11);
-			this.messageIcon.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.messageIcon.Margin = new System.Windows.Forms.Padding(2);
 			this.messageIcon.Name = "messageIcon";
 			this.messageIcon.Size = new System.Drawing.Size(78, 69);
 			this.messageIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;

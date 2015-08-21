@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Property.Grid
 {
@@ -78,23 +79,17 @@ namespace VixenModules.Property.Grid
 			SelectedHeight = _Height;
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

@@ -73,7 +73,7 @@ namespace Common.Controls
 			this.listViewNames.MultiSelect = false;
 			this.listViewNames.Name = "listViewNames";
 			this.listViewNames.ShowGroups = false;
-			this.listViewNames.Size = new System.Drawing.Size(311, 480);
+			this.listViewNames.Size = new System.Drawing.Size(311, 478);
 			this.listViewNames.TabIndex = 1;
 			this.listViewNames.TabStop = false;
 			this.listViewNames.UseCompatibleStateImageBehavior = false;
@@ -94,13 +94,12 @@ namespace Common.Controls
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(477, 523);
+			this.buttonCancel.Location = new System.Drawing.Point(477, 521);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -108,13 +107,12 @@ namespace Common.Controls
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(355, 524);
+			this.buttonOk.Location = new System.Drawing.Point(355, 522);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -129,7 +127,7 @@ namespace Common.Controls
 			this.groupBoxSelectedNamingRule.Controls.Add(this.panelRuleConfig);
 			this.groupBoxSelectedNamingRule.Location = new System.Drawing.Point(18, 93);
 			this.groupBoxSelectedNamingRule.Name = "groupBoxSelectedNamingRule";
-			this.groupBoxSelectedNamingRule.Size = new System.Drawing.Size(252, 424);
+			this.groupBoxSelectedNamingRule.Size = new System.Drawing.Size(252, 422);
 			this.groupBoxSelectedNamingRule.TabIndex = 2;
 			this.groupBoxSelectedNamingRule.TabStop = false;
 			this.groupBoxSelectedNamingRule.Text = "Naming Rules";
@@ -230,7 +228,7 @@ namespace Common.Controls
 			this.listViewGenerators.MultiSelect = false;
 			this.listViewGenerators.Name = "listViewGenerators";
 			this.listViewGenerators.OwnerDraw = true;
-			this.listViewGenerators.Size = new System.Drawing.Size(193, 173);
+			this.listViewGenerators.Size = new System.Drawing.Size(193, 171);
 			this.listViewGenerators.TabIndex = 5;
 			this.listViewGenerators.TabStop = false;
 			this.listViewGenerators.UseCompatibleStateImageBehavior = false;
@@ -245,7 +243,7 @@ namespace Common.Controls
 			// panelRuleConfig
 			// 
 			this.panelRuleConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.panelRuleConfig.Location = new System.Drawing.Point(9, 239);
+			this.panelRuleConfig.Location = new System.Drawing.Point(9, 237);
 			this.panelRuleConfig.Name = "panelRuleConfig";
 			this.panelRuleConfig.Size = new System.Drawing.Size(231, 179);
 			this.panelRuleConfig.TabIndex = 1;
@@ -288,7 +286,7 @@ namespace Common.Controls
 			this.comboBoxTemplates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.comboBoxTemplates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxTemplates.FormattingEnabled = true;
-			this.comboBoxTemplates.Location = new System.Drawing.Point(107, 528);
+			this.comboBoxTemplates.Location = new System.Drawing.Point(107, 526);
 			this.comboBoxTemplates.Name = "comboBoxTemplates";
 			this.comboBoxTemplates.Size = new System.Drawing.Size(165, 21);
 			this.comboBoxTemplates.TabIndex = 36;
@@ -299,7 +297,7 @@ namespace Common.Controls
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(24, 529);
+			this.label2.Location = new System.Drawing.Point(24, 527);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(72, 13);
 			this.label2.TabIndex = 37;
@@ -358,7 +356,7 @@ namespace Common.Controls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(599, 561);
+			this.ClientSize = new System.Drawing.Size(599, 559);
 			this.Controls.Add(this.labelColumnHeader2);
 			this.Controls.Add(this.labelColumnHeader1);
 			this.Controls.Add(this.label4);
@@ -374,7 +372,7 @@ namespace Common.Controls
 			this.Controls.Add(this.listViewNames);
 			this.DoubleBuffered = true;
 			this.MaximumSize = new System.Drawing.Size(615, 900);
-			this.MinimumSize = new System.Drawing.Size(615, 599);
+			this.MinimumSize = new System.Drawing.Size(615, 598);
 			this.Name = "NameGenerator";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Create/Modify Multiple Items";

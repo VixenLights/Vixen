@@ -222,7 +222,6 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.Paint += new System.Windows.Forms.PaintEventHandler(this.buttonHelp_Paint);
 			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -246,7 +245,6 @@
 			this.buttonCancel.TabIndex = 12;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -261,7 +259,6 @@
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
-			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

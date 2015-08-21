@@ -23,7 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+			System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
 			this.groupBoxSelectedController = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonUpdate = new System.Windows.Forms.Button();
@@ -87,7 +87,6 @@
 			this.buttonUpdate.Text = "Update";
 			this.buttonUpdate.UseVisualStyleBackColor = false;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
-			this.buttonUpdate.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUpdate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUpdate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -127,7 +126,6 @@
 			this.buttonConfigureController.Text = "Configure Preview";
 			this.buttonConfigureController.UseVisualStyleBackColor = false;
 			this.buttonConfigureController.Click += new System.EventHandler(this.buttonConfigureController_Click);
-			this.buttonConfigureController.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonConfigureController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonConfigureController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -144,10 +142,10 @@
             this.columnHeader2});
 			this.listViewControllers.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.listViewControllers.FullRowSelect = true;
-			listViewGroup1.Header = "ListViewGroup";
-			listViewGroup1.Name = "listViewGroup1";
+			listViewGroup2.Header = "ListViewGroup";
+			listViewGroup2.Name = "listViewGroup1";
 			this.listViewControllers.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup2});
 			this.listViewControllers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewControllers.HideSelection = false;
 			this.listViewControllers.Location = new System.Drawing.Point(12, 30);
@@ -186,7 +184,6 @@
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
-			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -206,7 +203,6 @@
 			this.buttonDeleteController.Text = "Delete Selected";
 			this.buttonDeleteController.UseVisualStyleBackColor = false;
 			this.buttonDeleteController.Click += new System.EventHandler(this.buttonDeleteController_Click);
-			this.buttonDeleteController.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDeleteController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -227,7 +223,6 @@
 			this.buttonAddController.Text = "Add New Preview";
 			this.buttonAddController.UseVisualStyleBackColor = false;
 			this.buttonAddController.Click += new System.EventHandler(this.buttonAddController_Click);
-			this.buttonAddController.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddController.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddController.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -247,7 +242,6 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

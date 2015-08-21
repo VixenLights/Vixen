@@ -60,7 +60,6 @@
 			this.buttonConvert.Text = "Convert";
 			this.buttonConvert.UseVisualStyleBackColor = false;
 			this.buttonConvert.Click += new System.EventHandler(this.convertButton_Click);
-			this.buttonConvert.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonConvert.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonConvert.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

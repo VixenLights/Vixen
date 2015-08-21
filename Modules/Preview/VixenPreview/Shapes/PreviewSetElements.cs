@@ -421,33 +421,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
-		}
-
-		private void buttonHelp_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, Resources.help);
 		}
     }
 }

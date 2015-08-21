@@ -99,6 +99,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			listBoxMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
+			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
 			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
@@ -351,7 +354,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			txtDurationBetween.Enabled = (checkBoxAlignToBeatMarks.Checked ? false : true);
 			listBoxMarkCollections.Visible = !listBoxMarkCollections.Visible;
-			listBoxMarkCollections.Enabled = checkBoxFillDuration.Enabled = checkBoxSkipEOBeat.Enabled = checkBoxAlignToBeatMarks.Checked;
+			listBoxMarkCollections.Enabled = checkBoxFillDuration.AutoCheck = checkBoxSkipEOBeat.AutoCheck = checkBoxAlignToBeatMarks.Checked;
+			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
 				CalculatePossibleEffectsByBeatMarks();
@@ -508,23 +513,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

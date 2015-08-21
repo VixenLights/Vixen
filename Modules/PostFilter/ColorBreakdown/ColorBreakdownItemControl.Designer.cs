@@ -70,7 +70,6 @@
 			this.buttonDelete.Text = "Delete";
 			this.buttonDelete.UseVisualStyleBackColor = true;
 			this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
-			this.buttonDelete.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonDelete.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDelete.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

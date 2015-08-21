@@ -127,7 +127,6 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -144,7 +143,6 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.Paint += new System.Windows.Forms.PaintEventHandler(this.buttonHelp_Paint);
 			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -224,14 +222,13 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Location = new System.Drawing.Point(716, 456);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 22);
 			this.buttonCancel.TabIndex = 66;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -269,7 +266,7 @@
 			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
 			this.tabPageBackground.Margin = new System.Windows.Forms.Padding(1);
 			this.tabPageBackground.Name = "tabPageBackground";
-			this.tabPageBackground.Size = new System.Drawing.Size(319, 0);
+			this.tabPageBackground.Size = new System.Drawing.Size(321, -6);
 			this.tabPageBackground.TabIndex = 1;
 			this.tabPageBackground.Tag = "These items are always run in the background.";
 			this.tabPageBackground.Text = "Background";
@@ -280,7 +277,7 @@
 			this.tabPageSequential.Location = new System.Drawing.Point(4, 22);
 			this.tabPageSequential.Margin = new System.Windows.Forms.Padding(1);
 			this.tabPageSequential.Name = "tabPageSequential";
-			this.tabPageSequential.Size = new System.Drawing.Size(319, 0);
+			this.tabPageSequential.Size = new System.Drawing.Size(321, -6);
 			this.tabPageSequential.TabIndex = 2;
 			this.tabPageSequential.Tag = "These items are run, in order, and re-started while the show is running.";
 			this.tabPageSequential.Text = "Sequential";
@@ -291,7 +288,7 @@
 			this.tabPageShutdown.Location = new System.Drawing.Point(4, 22);
 			this.tabPageShutdown.Margin = new System.Windows.Forms.Padding(1);
 			this.tabPageShutdown.Name = "tabPageShutdown";
-			this.tabPageShutdown.Size = new System.Drawing.Size(319, 0);
+			this.tabPageShutdown.Size = new System.Drawing.Size(321, -6);
 			this.tabPageShutdown.TabIndex = 4;
 			this.tabPageShutdown.Tag = "These items are run, in order, at the end of the show.";
 			this.tabPageShutdown.Text = "Shutdown";

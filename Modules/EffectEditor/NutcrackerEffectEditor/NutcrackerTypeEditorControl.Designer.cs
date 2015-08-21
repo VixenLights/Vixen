@@ -23,19 +23,20 @@
 			this.comboBoxDisplayType = new System.Windows.Forms.ComboBox();
 			this.label22 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.chkFitToTime = new System.Windows.Forms.CheckBox();
-			this.checkBoxColor6 = new System.Windows.Forms.CheckBox();
-			this.checkBoxColor4 = new System.Windows.Forms.CheckBox();
-			this.panelColor6 = new System.Windows.Forms.Panel();
-			this.panelColor4 = new System.Windows.Forms.Panel();
-			this.checkBoxColor5 = new System.Windows.Forms.CheckBox();
-			this.checkBoxColor3 = new System.Windows.Forms.CheckBox();
+			this.groupBoxColors = new System.Windows.Forms.GroupBox();
 			this.panelColor5 = new System.Windows.Forms.Panel();
-			this.panelColor3 = new System.Windows.Forms.Panel();
 			this.checkBoxColor2 = new System.Windows.Forms.CheckBox();
+			this.panelColor3 = new System.Windows.Forms.Panel();
+			this.checkBoxColor6 = new System.Windows.Forms.CheckBox();
 			this.panelColor2 = new System.Windows.Forms.Panel();
 			this.checkBoxColor1 = new System.Windows.Forms.CheckBox();
+			this.checkBoxColor4 = new System.Windows.Forms.CheckBox();
+			this.checkBoxColor3 = new System.Windows.Forms.CheckBox();
 			this.panelColor1 = new System.Windows.Forms.Panel();
+			this.panelColor6 = new System.Windows.Forms.Panel();
+			this.checkBoxColor5 = new System.Windows.Forms.CheckBox();
+			this.panelColor4 = new System.Windows.Forms.Panel();
+			this.chkFitToTime = new System.Windows.Forms.CheckBox();
 			this.tabEffectProperties = new System.Windows.Forms.TabControl();
 			this.PictureTile = new System.Windows.Forms.TabPage();
 			this.textPictureTileFileName = new System.Windows.Forms.TextBox();
@@ -171,6 +172,8 @@
 			this.label11 = new System.Windows.Forms.Label();
 			this.trackColorWashCount = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.Fire = new System.Windows.Forms.TabPage();
+			this.labelFireHueShift = new System.Windows.Forms.Label();
+			this.trackFireHueShift = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.label12 = new System.Windows.Forms.Label();
 			this.trackFireHeight = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.Garlands = new System.Windows.Forms.TabPage();
@@ -205,11 +208,9 @@
 			this.scrollPixelSize = new Common.Controls.ControlsEx.ValueControls.HValueScrollBar();
 			this.label44 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.trackFireHueShift = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
-			this.labelFireHueShift = new System.Windows.Forms.Label();
-			this.groupBoxColors = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.groupBoxColors.SuspendLayout();
 			this.tabEffectProperties.SuspendLayout();
 			this.PictureTile.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericPictureTileScale)).BeginInit();
@@ -236,7 +237,6 @@
 			this.tabGlediator.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
 			this.groupBox3.SuspendLayout();
-			this.groupBoxColors.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// timerRender
@@ -307,74 +307,26 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Effect";
 			// 
-			// chkFitToTime
+			// groupBoxColors
 			// 
-			this.chkFitToTime.AutoSize = true;
-			this.chkFitToTime.Location = new System.Drawing.Point(295, 222);
-			this.chkFitToTime.Name = "chkFitToTime";
-			this.chkFitToTime.Size = new System.Drawing.Size(75, 17);
-			this.chkFitToTime.TabIndex = 15;
-			this.chkFitToTime.Text = "Fit to Time";
-			this.chkFitToTime.UseVisualStyleBackColor = true;
-			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
-			// 
-			// checkBoxColor6
-			// 
-			this.checkBoxColor6.AutoSize = true;
-			this.checkBoxColor6.Location = new System.Drawing.Point(5, 151);
-			this.checkBoxColor6.Name = "checkBoxColor6";
-			this.checkBoxColor6.Size = new System.Drawing.Size(15, 14);
-			this.checkBoxColor6.TabIndex = 13;
-			this.checkBoxColor6.UseVisualStyleBackColor = true;
-			this.checkBoxColor6.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
-			// 
-			// checkBoxColor4
-			// 
-			this.checkBoxColor4.AutoSize = true;
-			this.checkBoxColor4.Location = new System.Drawing.Point(5, 103);
-			this.checkBoxColor4.Name = "checkBoxColor4";
-			this.checkBoxColor4.Size = new System.Drawing.Size(15, 14);
-			this.checkBoxColor4.TabIndex = 13;
-			this.checkBoxColor4.UseVisualStyleBackColor = true;
-			this.checkBoxColor4.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
-			// 
-			// panelColor6
-			// 
-			this.panelColor6.BackColor = System.Drawing.Color.Black;
-			this.panelColor6.Location = new System.Drawing.Point(26, 149);
-			this.panelColor6.Name = "panelColor6";
-			this.panelColor6.Size = new System.Drawing.Size(26, 16);
-			this.panelColor6.TabIndex = 12;
-			this.panelColor6.Click += new System.EventHandler(this.panelColor_Click);
-			// 
-			// panelColor4
-			// 
-			this.panelColor4.BackColor = System.Drawing.Color.Yellow;
-			this.panelColor4.Location = new System.Drawing.Point(26, 101);
-			this.panelColor4.Name = "panelColor4";
-			this.panelColor4.Size = new System.Drawing.Size(26, 16);
-			this.panelColor4.TabIndex = 12;
-			this.panelColor4.Click += new System.EventHandler(this.panelColor_Click);
-			// 
-			// checkBoxColor5
-			// 
-			this.checkBoxColor5.AutoSize = true;
-			this.checkBoxColor5.Location = new System.Drawing.Point(5, 127);
-			this.checkBoxColor5.Name = "checkBoxColor5";
-			this.checkBoxColor5.Size = new System.Drawing.Size(15, 14);
-			this.checkBoxColor5.TabIndex = 11;
-			this.checkBoxColor5.UseVisualStyleBackColor = true;
-			this.checkBoxColor5.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
-			// 
-			// checkBoxColor3
-			// 
-			this.checkBoxColor3.AutoSize = true;
-			this.checkBoxColor3.Location = new System.Drawing.Point(5, 79);
-			this.checkBoxColor3.Name = "checkBoxColor3";
-			this.checkBoxColor3.Size = new System.Drawing.Size(15, 14);
-			this.checkBoxColor3.TabIndex = 11;
-			this.checkBoxColor3.UseVisualStyleBackColor = true;
-			this.checkBoxColor3.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
+			this.groupBoxColors.Controls.Add(this.panelColor5);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor2);
+			this.groupBoxColors.Controls.Add(this.panelColor3);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor6);
+			this.groupBoxColors.Controls.Add(this.panelColor2);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor1);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor4);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor3);
+			this.groupBoxColors.Controls.Add(this.panelColor1);
+			this.groupBoxColors.Controls.Add(this.panelColor6);
+			this.groupBoxColors.Controls.Add(this.checkBoxColor5);
+			this.groupBoxColors.Controls.Add(this.panelColor4);
+			this.groupBoxColors.Location = new System.Drawing.Point(290, 21);
+			this.groupBoxColors.Name = "groupBoxColors";
+			this.groupBoxColors.Size = new System.Drawing.Size(58, 189);
+			this.groupBoxColors.TabIndex = 16;
+			this.groupBoxColors.TabStop = false;
+			this.groupBoxColors.Text = "Colors:";
 			// 
 			// panelColor5
 			// 
@@ -385,15 +337,6 @@
 			this.panelColor5.TabIndex = 10;
 			this.panelColor5.Click += new System.EventHandler(this.panelColor_Click);
 			// 
-			// panelColor3
-			// 
-			this.panelColor3.BackColor = System.Drawing.Color.Blue;
-			this.panelColor3.Location = new System.Drawing.Point(26, 77);
-			this.panelColor3.Name = "panelColor3";
-			this.panelColor3.Size = new System.Drawing.Size(26, 16);
-			this.panelColor3.TabIndex = 10;
-			this.panelColor3.Click += new System.EventHandler(this.panelColor_Click);
-			// 
 			// checkBoxColor2
 			// 
 			this.checkBoxColor2.AutoSize = true;
@@ -403,6 +346,25 @@
 			this.checkBoxColor2.TabIndex = 9;
 			this.checkBoxColor2.UseVisualStyleBackColor = true;
 			this.checkBoxColor2.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
+			// 
+			// panelColor3
+			// 
+			this.panelColor3.BackColor = System.Drawing.Color.Blue;
+			this.panelColor3.Location = new System.Drawing.Point(26, 77);
+			this.panelColor3.Name = "panelColor3";
+			this.panelColor3.Size = new System.Drawing.Size(26, 16);
+			this.panelColor3.TabIndex = 10;
+			this.panelColor3.Click += new System.EventHandler(this.panelColor_Click);
+			// 
+			// checkBoxColor6
+			// 
+			this.checkBoxColor6.AutoSize = true;
+			this.checkBoxColor6.Location = new System.Drawing.Point(5, 151);
+			this.checkBoxColor6.Name = "checkBoxColor6";
+			this.checkBoxColor6.Size = new System.Drawing.Size(15, 14);
+			this.checkBoxColor6.TabIndex = 13;
+			this.checkBoxColor6.UseVisualStyleBackColor = true;
+			this.checkBoxColor6.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
 			// 
 			// panelColor2
 			// 
@@ -423,6 +385,26 @@
 			this.checkBoxColor1.UseVisualStyleBackColor = true;
 			this.checkBoxColor1.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
 			// 
+			// checkBoxColor4
+			// 
+			this.checkBoxColor4.AutoSize = true;
+			this.checkBoxColor4.Location = new System.Drawing.Point(5, 103);
+			this.checkBoxColor4.Name = "checkBoxColor4";
+			this.checkBoxColor4.Size = new System.Drawing.Size(15, 14);
+			this.checkBoxColor4.TabIndex = 13;
+			this.checkBoxColor4.UseVisualStyleBackColor = true;
+			this.checkBoxColor4.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
+			// 
+			// checkBoxColor3
+			// 
+			this.checkBoxColor3.AutoSize = true;
+			this.checkBoxColor3.Location = new System.Drawing.Point(5, 79);
+			this.checkBoxColor3.Name = "checkBoxColor3";
+			this.checkBoxColor3.Size = new System.Drawing.Size(15, 14);
+			this.checkBoxColor3.TabIndex = 11;
+			this.checkBoxColor3.UseVisualStyleBackColor = true;
+			this.checkBoxColor3.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
+			// 
 			// panelColor1
 			// 
 			this.panelColor1.BackColor = System.Drawing.Color.Red;
@@ -432,16 +414,55 @@
 			this.panelColor1.TabIndex = 6;
 			this.panelColor1.Click += new System.EventHandler(this.panelColor_Click);
 			// 
+			// panelColor6
+			// 
+			this.panelColor6.BackColor = System.Drawing.Color.Black;
+			this.panelColor6.Location = new System.Drawing.Point(26, 149);
+			this.panelColor6.Name = "panelColor6";
+			this.panelColor6.Size = new System.Drawing.Size(26, 16);
+			this.panelColor6.TabIndex = 12;
+			this.panelColor6.Click += new System.EventHandler(this.panelColor_Click);
+			// 
+			// checkBoxColor5
+			// 
+			this.checkBoxColor5.AutoSize = true;
+			this.checkBoxColor5.Location = new System.Drawing.Point(5, 127);
+			this.checkBoxColor5.Name = "checkBoxColor5";
+			this.checkBoxColor5.Size = new System.Drawing.Size(15, 14);
+			this.checkBoxColor5.TabIndex = 11;
+			this.checkBoxColor5.UseVisualStyleBackColor = true;
+			this.checkBoxColor5.CheckedChanged += new System.EventHandler(this.checkBoxColor_CheckedChanged);
+			// 
+			// panelColor4
+			// 
+			this.panelColor4.BackColor = System.Drawing.Color.Yellow;
+			this.panelColor4.Location = new System.Drawing.Point(26, 101);
+			this.panelColor4.Name = "panelColor4";
+			this.panelColor4.Size = new System.Drawing.Size(26, 16);
+			this.panelColor4.TabIndex = 12;
+			this.panelColor4.Click += new System.EventHandler(this.panelColor_Click);
+			// 
+			// chkFitToTime
+			// 
+			this.chkFitToTime.AutoSize = true;
+			this.chkFitToTime.Location = new System.Drawing.Point(295, 222);
+			this.chkFitToTime.Name = "chkFitToTime";
+			this.chkFitToTime.Size = new System.Drawing.Size(75, 17);
+			this.chkFitToTime.TabIndex = 15;
+			this.chkFitToTime.Text = "Fit to Time";
+			this.chkFitToTime.UseVisualStyleBackColor = true;
+			this.chkFitToTime.CheckedChanged += new System.EventHandler(this.chkFitToTime_CheckedChanged);
+			// 
 			// tabEffectProperties
 			// 
 			this.tabEffectProperties.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+			this.tabEffectProperties.Controls.Add(this.TextPage);
 			this.tabEffectProperties.Controls.Add(this.PictureTile);
 			this.tabEffectProperties.Controls.Add(this.Picture);
 			this.tabEffectProperties.Controls.Add(this.Movie);
 			this.tabEffectProperties.Controls.Add(this.TreePage);
 			this.tabEffectProperties.Controls.Add(this.Spirograph);
 			this.tabEffectProperties.Controls.Add(this.Spirals);
-			this.tabEffectProperties.Controls.Add(this.TextPage);
 			this.tabEffectProperties.Controls.Add(this.Twinkles);
 			this.tabEffectProperties.Controls.Add(this.Snowstorm);
 			this.tabEffectProperties.Controls.Add(this.Snowflakes);
@@ -707,6 +728,8 @@
 			this.buttonPictureSelect.Text = "Select File";
 			this.buttonPictureSelect.UseVisualStyleBackColor = true;
 			this.buttonPictureSelect.Click += new System.EventHandler(this.buttonPictureSelect_Click);
+			this.buttonPictureSelect.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonPictureSelect.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label37
 			// 
@@ -800,6 +823,8 @@
 			this.buttonMovieSelectFile.Text = "Select File";
 			this.buttonMovieSelectFile.UseVisualStyleBackColor = true;
 			this.buttonMovieSelectFile.Click += new System.EventHandler(this.buttonMovieSelectFile_Click);
+			this.buttonMovieSelectFile.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonMovieSelectFile.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label47
 			// 
@@ -1135,7 +1160,7 @@
 			// 
 			// textTextLine4
 			// 
-			this.textTextLine4.Location = new System.Drawing.Point(97, 73);
+			this.textTextLine4.Location = new System.Drawing.Point(96, 88);
 			this.textTextLine4.Name = "textTextLine4";
 			this.textTextLine4.Size = new System.Drawing.Size(167, 20);
 			this.textTextLine4.TabIndex = 38;
@@ -1143,7 +1168,7 @@
 			// 
 			// textTextLine3
 			// 
-			this.textTextLine3.Location = new System.Drawing.Point(97, 50);
+			this.textTextLine3.Location = new System.Drawing.Point(96, 62);
 			this.textTextLine3.Name = "textTextLine3";
 			this.textTextLine3.Size = new System.Drawing.Size(167, 20);
 			this.textTextLine3.TabIndex = 37;
@@ -1152,7 +1177,7 @@
 			// lblTextLine4
 			// 
 			this.lblTextLine4.AutoSize = true;
-			this.lblTextLine4.Location = new System.Drawing.Point(9, 80);
+			this.lblTextLine4.Location = new System.Drawing.Point(9, 91);
 			this.lblTextLine4.Name = "lblTextLine4";
 			this.lblTextLine4.Size = new System.Drawing.Size(39, 13);
 			this.lblTextLine4.TabIndex = 44;
@@ -1161,7 +1186,7 @@
 			// lblTextLine3
 			// 
 			this.lblTextLine3.AutoSize = true;
-			this.lblTextLine3.Location = new System.Drawing.Point(9, 57);
+			this.lblTextLine3.Location = new System.Drawing.Point(8, 65);
 			this.lblTextLine3.Name = "lblTextLine3";
 			this.lblTextLine3.Size = new System.Drawing.Size(39, 13);
 			this.lblTextLine3.TabIndex = 43;
@@ -1170,7 +1195,7 @@
 			// chkCenterStop
 			// 
 			this.chkCenterStop.AutoSize = true;
-			this.chkCenterStop.Location = new System.Drawing.Point(13, 129);
+			this.chkCenterStop.Location = new System.Drawing.Point(13, 142);
 			this.chkCenterStop.Name = "chkCenterStop";
 			this.chkCenterStop.Size = new System.Drawing.Size(82, 17);
 			this.chkCenterStop.TabIndex = 40;
@@ -1196,7 +1221,7 @@
             "Up",
             "Down",
             "None"});
-			this.comboBoxTextDirection.Location = new System.Drawing.Point(96, 100);
+			this.comboBoxTextDirection.Location = new System.Drawing.Point(96, 113);
 			this.comboBoxTextDirection.Name = "comboBoxTextDirection";
 			this.comboBoxTextDirection.Size = new System.Drawing.Size(167, 21);
 			this.comboBoxTextDirection.TabIndex = 39;
@@ -1205,7 +1230,7 @@
 			// label35
 			// 
 			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(9, 103);
+			this.label35.Location = new System.Drawing.Point(9, 116);
 			this.label35.Name = "label35";
 			this.label35.Size = new System.Drawing.Size(52, 13);
 			this.label35.TabIndex = 39;
@@ -1213,7 +1238,7 @@
 			// 
 			// textBoxTextFont
 			// 
-			this.textBoxTextFont.Location = new System.Drawing.Point(96, 180);
+			this.textBoxTextFont.Location = new System.Drawing.Point(96, 193);
 			this.textBoxTextFont.Name = "textBoxTextFont";
 			this.textBoxTextFont.ReadOnly = true;
 			this.textBoxTextFont.Size = new System.Drawing.Size(167, 20);
@@ -1222,17 +1247,19 @@
 			// 
 			// buttonTextFont
 			// 
-			this.buttonTextFont.Location = new System.Drawing.Point(12, 178);
+			this.buttonTextFont.Location = new System.Drawing.Point(12, 191);
 			this.buttonTextFont.Name = "buttonTextFont";
 			this.buttonTextFont.Size = new System.Drawing.Size(75, 23);
 			this.buttonTextFont.TabIndex = 42;
 			this.buttonTextFont.Text = "Font";
 			this.buttonTextFont.UseVisualStyleBackColor = true;
 			this.buttonTextFont.Click += new System.EventHandler(this.buttonTextFont_Click);
+			this.buttonTextFont.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonTextFont.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// textTextLine2
 			// 
-			this.textTextLine2.Location = new System.Drawing.Point(96, 30);
+			this.textTextLine2.Location = new System.Drawing.Point(96, 37);
 			this.textTextLine2.Name = "textTextLine2";
 			this.textTextLine2.Size = new System.Drawing.Size(167, 20);
 			this.textTextLine2.TabIndex = 36;
@@ -1240,7 +1267,7 @@
 			// 
 			// textTextLine1
 			// 
-			this.textTextLine1.Location = new System.Drawing.Point(96, 7);
+			this.textTextLine1.Location = new System.Drawing.Point(96, 11);
 			this.textTextLine1.Name = "textTextLine1";
 			this.textTextLine1.Size = new System.Drawing.Size(167, 20);
 			this.textTextLine1.TabIndex = 35;
@@ -1249,7 +1276,7 @@
 			// label34
 			// 
 			this.label34.AutoSize = true;
-			this.label34.Location = new System.Drawing.Point(9, 37);
+			this.label34.Location = new System.Drawing.Point(9, 41);
 			this.label34.Name = "label34";
 			this.label34.Size = new System.Drawing.Size(39, 13);
 			this.label34.TabIndex = 34;
@@ -1267,7 +1294,7 @@
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(9, 155);
+			this.label32.Location = new System.Drawing.Point(9, 168);
 			this.label32.Name = "label32";
 			this.label32.Size = new System.Drawing.Size(47, 13);
 			this.label32.TabIndex = 31;
@@ -1275,7 +1302,7 @@
 			// 
 			// trackTextTop
 			// 
-			this.trackTextTop.Location = new System.Drawing.Point(96, 152);
+			this.trackTextTop.Location = new System.Drawing.Point(96, 165);
 			this.trackTextTop.Name = "trackTextTop";
 			this.trackTextTop.Size = new System.Drawing.Size(167, 23);
 			this.trackTextTop.TabIndex = 41;
@@ -1973,6 +2000,25 @@
 			this.Fire.Text = "Fire";
 			this.Fire.UseVisualStyleBackColor = true;
 			// 
+			// labelFireHueShift
+			// 
+			this.labelFireHueShift.AutoSize = true;
+			this.labelFireHueShift.Location = new System.Drawing.Point(6, 34);
+			this.labelFireHueShift.Name = "labelFireHueShift";
+			this.labelFireHueShift.Size = new System.Drawing.Size(54, 13);
+			this.labelFireHueShift.TabIndex = 16;
+			this.labelFireHueShift.Text = "Hue Shift:";
+			// 
+			// trackFireHueShift
+			// 
+			this.trackFireHueShift.Location = new System.Drawing.Point(93, 34);
+			this.trackFireHueShift.Name = "trackFireHueShift";
+			this.trackFireHueShift.Size = new System.Drawing.Size(167, 23);
+			this.trackFireHueShift.TabIndex = 15;
+			this.trackFireHueShift.Text = "Hue Shift";
+			this.trackFireHueShift.Value = 1;
+			this.trackFireHueShift.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackFireHueShift_ValueChanged);
+			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
@@ -2193,6 +2239,8 @@
 			this.buttonGlediatorFile.Text = "File chooser";
 			this.buttonGlediatorFile.UseVisualStyleBackColor = true;
 			this.buttonGlediatorFile.Click += new System.EventHandler(this.buttonGlediatorFile_Click);
+			this.buttonGlediatorFile.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonGlediatorFile.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// textGlediatorFileName
 			// 
@@ -2322,46 +2370,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			// 
-			// trackFireHueShift
-			// 
-			this.trackFireHueShift.Location = new System.Drawing.Point(93, 34);
-			this.trackFireHueShift.Name = "trackFireHueShift";
-			this.trackFireHueShift.Size = new System.Drawing.Size(167, 23);
-			this.trackFireHueShift.TabIndex = 15;
-			this.trackFireHueShift.Text = "Hue Shift";
-			this.trackFireHueShift.Value = 1;
-			this.trackFireHueShift.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.trackFireHueShift_ValueChanged);
-			// 
-			// labelFireHueShift
-			// 
-			this.labelFireHueShift.AutoSize = true;
-			this.labelFireHueShift.Location = new System.Drawing.Point(6, 34);
-			this.labelFireHueShift.Name = "labelFireHueShift";
-			this.labelFireHueShift.Size = new System.Drawing.Size(54, 13);
-			this.labelFireHueShift.TabIndex = 16;
-			this.labelFireHueShift.Text = "Hue Shift:";
-			// 
-			// groupBoxColors
-			// 
-			this.groupBoxColors.Controls.Add(this.panelColor5);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor2);
-			this.groupBoxColors.Controls.Add(this.panelColor3);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor6);
-			this.groupBoxColors.Controls.Add(this.panelColor2);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor1);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor4);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor3);
-			this.groupBoxColors.Controls.Add(this.panelColor1);
-			this.groupBoxColors.Controls.Add(this.panelColor6);
-			this.groupBoxColors.Controls.Add(this.checkBoxColor5);
-			this.groupBoxColors.Controls.Add(this.panelColor4);
-			this.groupBoxColors.Location = new System.Drawing.Point(290, 21);
-			this.groupBoxColors.Name = "groupBoxColors";
-			this.groupBoxColors.Size = new System.Drawing.Size(58, 189);
-			this.groupBoxColors.TabIndex = 16;
-			this.groupBoxColors.TabStop = false;
-			this.groupBoxColors.Text = "Colors:";
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// NutcrackerTypeEditorControl
 			// 
@@ -2378,6 +2388,8 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBoxColors.ResumeLayout(false);
+			this.groupBoxColors.PerformLayout();
 			this.tabEffectProperties.ResumeLayout(false);
 			this.PictureTile.ResumeLayout(false);
 			this.PictureTile.PerformLayout();
@@ -2426,8 +2438,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
-			this.groupBoxColors.ResumeLayout(false);
-			this.groupBoxColors.PerformLayout();
 			this.ResumeLayout(false);
 
 		}

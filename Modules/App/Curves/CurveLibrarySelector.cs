@@ -22,8 +22,8 @@ namespace VixenModules.App.Curves
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
 			DoubleClickMode = Mode.Ok;
 		}
@@ -82,12 +82,16 @@ namespace VixenModules.App.Curves
 
 			buttonEditCurve.Enabled = false;
 			buttonDeleteCurve.Enabled = false;
+			buttonEditCurve.ForeColor = ThemeColorTable.ForeColorDisabled;
+			buttonDeleteCurve.ForeColor = ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void listViewCurves_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			buttonEditCurve.Enabled = (listViewCurves.SelectedIndices.Count == 1);
 			buttonDeleteCurve.Enabled = (listViewCurves.SelectedIndices.Count == 1);
+			buttonEditCurve.ForeColor = buttonEditCurve.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonDeleteCurve.ForeColor = buttonDeleteCurve.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		public Tuple<string, Curve> SelectedItem
@@ -224,23 +228,17 @@ namespace VixenModules.App.Curves
 			Edit
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

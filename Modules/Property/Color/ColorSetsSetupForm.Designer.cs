@@ -127,7 +127,6 @@
 			this.buttonUpdate.Text = "Make New Color Set";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
-			this.buttonUpdate.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUpdate.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUpdate.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -184,7 +183,6 @@
 			this.button1.TabIndex = 10;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

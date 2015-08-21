@@ -78,7 +78,6 @@
 			this.btnDeleteColor.Name = "btnDeleteColor";
 			this.btnDeleteColor.UseVisualStyleBackColor = false;
 			this.btnDeleteColor.Click += new System.EventHandler(this.btnDeleteColor_Click);
-			this.btnDeleteColor.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnDeleteColor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnDeleteColor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

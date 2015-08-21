@@ -111,7 +111,6 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.Paint += new System.Windows.Forms.PaintEventHandler(this.buttonHelp_Paint);
 			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -477,7 +476,6 @@
 			this.buttonLinkElements.Text = "Setup";
 			this.buttonLinkElements.UseVisualStyleBackColor = true;
 			this.buttonLinkElements.Click += new System.EventHandler(this.buttonLinkElements_Click);
-			this.buttonLinkElements.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonLinkElements.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonLinkElements.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

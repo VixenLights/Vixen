@@ -483,6 +483,26 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap ButtonBackgroundImage {
+            get {
+                object obj = ResourceManager.GetObject("ButtonBackgroundImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ButtonBackgroundImageHover {
+            get {
+                object obj = ResourceManager.GetObject("ButtonBackgroundImageHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap clipboard_empty {
             get {
                 object obj = ResourceManager.GetObject("clipboard_empty", resourceCulture);

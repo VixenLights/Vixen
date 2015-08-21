@@ -54,7 +54,6 @@
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -73,7 +72,6 @@
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -109,7 +107,6 @@
 			this.buttonEditLibraryItem.Text = "Edit Library Gradient";
 			this.buttonEditLibraryItem.UseVisualStyleBackColor = false;
 			this.buttonEditLibraryItem.Click += new System.EventHandler(this.buttonEditLibraryItem_Click);
-			this.buttonEditLibraryItem.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEditLibraryItem.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditLibraryItem.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -128,7 +125,6 @@
 			this.buttonUnlink.Text = "Unlink Gradient";
 			this.buttonUnlink.UseVisualStyleBackColor = false;
 			this.buttonUnlink.Click += new System.EventHandler(this.buttonUnlink_Click);
-			this.buttonUnlink.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonUnlink.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnlink.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -156,7 +152,6 @@
 			this.buttonSaveToLibrary.Text = "Save Preset";
 			this.buttonSaveToLibrary.UseVisualStyleBackColor = false;
 			this.buttonSaveToLibrary.Click += new System.EventHandler(this.buttonSaveToLibrary_Click);
-			this.buttonSaveToLibrary.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSaveToLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSaveToLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -175,7 +170,6 @@
 			this.buttonLoadFromLibrary.Text = "Load Preset";
 			this.buttonLoadFromLibrary.UseVisualStyleBackColor = false;
 			this.buttonLoadFromLibrary.Click += new System.EventHandler(this.buttonLoadFromLibrary_Click);
-			this.buttonLoadFromLibrary.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonLoadFromLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonLoadFromLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

@@ -186,7 +186,6 @@
 			this.buttonExportBeatMarks.Text = "Export Beat Marks";
 			this.buttonExportBeatMarks.UseVisualStyleBackColor = false;
 			this.buttonExportBeatMarks.Click += new System.EventHandler(this.buttonExportBeatMarks_Click);
-			this.buttonExportBeatMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonExportBeatMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonExportBeatMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -204,7 +203,6 @@
 			this.buttonRemoveCollection.Text = "Remove Collection";
 			this.buttonRemoveCollection.UseVisualStyleBackColor = false;
 			this.buttonRemoveCollection.Click += new System.EventHandler(this.buttonRemoveCollection_Click);
-			this.buttonRemoveCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonRemoveCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonRemoveCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -221,7 +219,6 @@
 			this.buttonImportAudacity.Text = "Import Beat Marks";
 			this.buttonImportAudacity.UseVisualStyleBackColor = false;
 			this.buttonImportAudacity.Click += new System.EventHandler(this.buttonImportAudacity_Click);
-			this.buttonImportAudacity.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonImportAudacity.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonImportAudacity.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -238,7 +235,6 @@
 			this.buttonAddCollection.Text = "Add Collection";
 			this.buttonAddCollection.UseVisualStyleBackColor = false;
 			this.buttonAddCollection.Click += new System.EventHandler(this.buttonAddCollection_Click);
-			this.buttonAddCollection.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -321,7 +317,6 @@
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
-			this.buttonOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -554,7 +549,6 @@
 			this.toolTip1.SetToolTip(this.buttonGenerateGrid, "Generate a \'grid\' of equally space marks across the sequence.");
 			this.buttonGenerateGrid.UseVisualStyleBackColor = false;
 			this.buttonGenerateGrid.Click += new System.EventHandler(this.buttonGenerateGrid_Click);
-			this.buttonGenerateGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonGenerateGrid.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateGrid.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -572,7 +566,6 @@
 			this.toolTip1.SetToolTip(this.buttonGenerateBeatMarks, "Generate more marks based on the frequency of the selected marks.");
 			this.buttonGenerateBeatMarks.UseVisualStyleBackColor = false;
 			this.buttonGenerateBeatMarks.Click += new System.EventHandler(this.buttonGenerateBeatMarks_Click);
-			this.buttonGenerateBeatMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonGenerateBeatMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateBeatMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -590,7 +583,6 @@
 			this.toolTip1.SetToolTip(this.buttonCopyAndOffsetMarks, "Duplicate the selected marks, offsetting the new ones by a fixed amount of time.");
 			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = false;
 			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
-			this.buttonCopyAndOffsetMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCopyAndOffsetMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCopyAndOffsetMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -609,7 +601,6 @@
         "d mark.");
 			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = false;
 			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
-			this.buttonPasteEffectsToMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonPasteEffectsToMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonPasteEffectsToMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -627,7 +618,6 @@
 			this.toolTip1.SetToolTip(this.buttonOffsetMarks, "Adjust selected marks left or right a fixed amount of time.");
 			this.buttonOffsetMarks.UseVisualStyleBackColor = false;
 			this.buttonOffsetMarks.Click += new System.EventHandler(this.buttonOffsetMarks_Click);
-			this.buttonOffsetMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOffsetMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOffsetMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -645,7 +635,6 @@
 			this.toolTip1.SetToolTip(this.buttonGenerateSubmarks, "Create new marks by subdividing regions of other marks (select at least 2).");
 			this.buttonGenerateSubmarks.UseVisualStyleBackColor = false;
 			this.buttonGenerateSubmarks.Click += new System.EventHandler(this.buttonGenerateSubmarks_Click);
-			this.buttonGenerateSubmarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonGenerateSubmarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateSubmarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -663,7 +652,6 @@
 			this.toolTip1.SetToolTip(this.buttonEvenlySpaceMarks, "Evenly space out the selected marks (choose at least 3 marks).");
 			this.buttonEvenlySpaceMarks.UseVisualStyleBackColor = false;
 			this.buttonEvenlySpaceMarks.Click += new System.EventHandler(this.buttonEvenlySpaceMarks_Click);
-			this.buttonEvenlySpaceMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonEvenlySpaceMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEvenlySpaceMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -717,7 +705,6 @@
 			this.buttonAddOrUpdateMark.Text = "Add";
 			this.buttonAddOrUpdateMark.UseVisualStyleBackColor = false;
 			this.buttonAddOrUpdateMark.Click += new System.EventHandler(this.buttonAddOrUpdateMark_Click);
-			this.buttonAddOrUpdateMark.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAddOrUpdateMark.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddOrUpdateMark.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -744,7 +731,6 @@
 			this.buttonSelectAllMarks.Text = "Select All";
 			this.buttonSelectAllMarks.UseVisualStyleBackColor = false;
 			this.buttonSelectAllMarks.Click += new System.EventHandler(this.buttonSelectAllMarks_Click);
-			this.buttonSelectAllMarks.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonSelectAllMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSelectAllMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -762,7 +748,6 @@
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -925,7 +910,6 @@
 			this.btnCreateCollections.Text = "Create";
 			this.btnCreateCollections.UseVisualStyleBackColor = false;
 			this.btnCreateCollections.Click += new System.EventHandler(this.btnCreateCollections_Click);
-			this.btnCreateCollections.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnCreateCollections.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCreateCollections.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -983,7 +967,6 @@
 			this.btnAutoDetectionSettings.Text = "Settings";
 			this.btnAutoDetectionSettings.UseVisualStyleBackColor = false;
 			this.btnAutoDetectionSettings.Click += new System.EventHandler(this.btnAutoDetectionSettings_Click);
-			this.btnAutoDetectionSettings.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnAutoDetectionSettings.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnAutoDetectionSettings.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -1190,6 +1173,7 @@
 			this.radioButtonPlayback.Name = "radioButtonPlayback";
 			this.radioButtonPlayback.Size = new System.Drawing.Size(69, 17);
 			this.radioButtonPlayback.TabIndex = 1;
+			this.radioButtonPlayback.TabStop = true;
 			this.radioButtonPlayback.Text = "Playback";
 			this.radioButtonPlayback.UseVisualStyleBackColor = false;
 			// 

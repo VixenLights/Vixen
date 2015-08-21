@@ -289,7 +289,6 @@
 			this.btnTX.TabIndex = 1;
 			this.btnTX.Text = "Send";
 			this.btnTX.Click += new System.EventHandler(this.btnTX_Click);
-			this.btnTX.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnTX.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnTX.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -341,7 +340,6 @@
 			this.button1.TabIndex = 4;
 			this.button1.Text = "Save Configuration Settings";
 			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

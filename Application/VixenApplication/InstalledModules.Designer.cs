@@ -24,6 +24,11 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.buttonCopyModuleId = new System.Windows.Forms.Button();
 			this.listViewModules = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -32,11 +37,6 @@
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonClose = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,24 +53,71 @@
 			this.panel1.Controls.Add(this.buttonCopyModuleId);
 			this.panel1.Controls.Add(this.listViewModules);
 			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(1150, 475);
+			this.panel1.Size = new System.Drawing.Size(767, 309);
 			this.panel1.TabIndex = 0;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(595, 10);
+			this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(23, 13);
+			this.label5.TabIndex = 6;
+			this.label5.Text = "File";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(503, 10);
+			this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(42, 13);
+			this.label4.TabIndex = 5;
+			this.label4.Text = "Version";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(405, 10);
+			this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(38, 13);
+			this.label3.TabIndex = 4;
+			this.label3.Text = "Author";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(167, 10);
+			this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(60, 13);
+			this.label2.TabIndex = 3;
+			this.label2.Text = "Description";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(16, 10);
+			this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(35, 13);
+			this.label1.TabIndex = 2;
+			this.label1.Text = "Name";
 			// 
 			// buttonCopyModuleId
 			// 
 			this.buttonCopyModuleId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonCopyModuleId.Enabled = false;
-			this.buttonCopyModuleId.Location = new System.Drawing.Point(18, 435);
-			this.buttonCopyModuleId.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCopyModuleId.Location = new System.Drawing.Point(12, 283);
 			this.buttonCopyModuleId.Name = "buttonCopyModuleId";
-			this.buttonCopyModuleId.Size = new System.Drawing.Size(158, 35);
+			this.buttonCopyModuleId.Size = new System.Drawing.Size(105, 23);
 			this.buttonCopyModuleId.TabIndex = 1;
 			this.buttonCopyModuleId.Text = "Copy Module Id";
 			this.buttonCopyModuleId.UseVisualStyleBackColor = true;
 			this.buttonCopyModuleId.Click += new System.EventHandler(this.buttonCopyModuleId_Click);
-			this.buttonCopyModuleId.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCopyModuleId.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCopyModuleId.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -87,11 +134,10 @@
             this.columnHeader5});
 			this.listViewModules.FullRowSelect = true;
 			this.listViewModules.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewModules.Location = new System.Drawing.Point(18, 41);
-			this.listViewModules.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.listViewModules.Location = new System.Drawing.Point(12, 27);
 			this.listViewModules.MultiSelect = false;
 			this.listViewModules.Name = "listViewModules";
-			this.listViewModules.Size = new System.Drawing.Size(1112, 383);
+			this.listViewModules.Size = new System.Drawing.Size(743, 250);
 			this.listViewModules.TabIndex = 0;
 			this.listViewModules.UseCompatibleStateImageBehavior = false;
 			this.listViewModules.View = System.Windows.Forms.View.Details;
@@ -125,73 +171,25 @@
 			// 
 			this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonClose.Location = new System.Drawing.Point(1020, 485);
-			this.buttonClose.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonClose.Location = new System.Drawing.Point(680, 315);
 			this.buttonClose.Name = "buttonClose";
-			this.buttonClose.Size = new System.Drawing.Size(112, 35);
+			this.buttonClose.Size = new System.Drawing.Size(75, 23);
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
-			this.buttonClose.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(24, 16);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(51, 20);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Name";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(251, 16);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(89, 20);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Description";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(608, 16);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(57, 20);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Author";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(754, 16);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(63, 20);
-			this.label4.TabIndex = 5;
-			this.label4.Text = "Version";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(892, 16);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(34, 20);
-			this.label5.TabIndex = 6;
-			this.label5.Text = "File";
 			// 
 			// InstalledModules
 			// 
 			this.AcceptButton = this.buttonClose;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1150, 538);
+			this.ClientSize = new System.Drawing.Size(771, 361);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.panel1);
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.MaximumSize = new System.Drawing.Size(1172, 894);
-			this.MinimumSize = new System.Drawing.Size(1172, 594);
+			this.MaximumSize = new System.Drawing.Size(787, 595);
+			this.MinimumSize = new System.Drawing.Size(787, 400);
 			this.Name = "InstalledModules";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Installed Modules";

@@ -167,7 +167,6 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
-			this.btnCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -183,7 +182,6 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.btnOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.btnOK.Name = "btnOK";
 			this.btnOK.UseVisualStyleBackColor = false;
-			this.btnOK.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -983,23 +981,17 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

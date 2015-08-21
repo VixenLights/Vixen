@@ -58,7 +58,6 @@
 			this.buttonOk.TabIndex = 0;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -76,7 +75,6 @@
 			this.buttonCancel.TabIndex = 1;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -106,7 +104,6 @@
 			this.buttonAdd.Text = "->";
 			this.buttonAdd.UseVisualStyleBackColor = true;
 			this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
-			this.buttonAdd.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonAdd.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAdd.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -124,7 +121,6 @@
 			this.buttonRemove.Text = "<-";
 			this.buttonRemove.UseVisualStyleBackColor = true;
 			this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
-			this.buttonRemove.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonRemove.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonRemove.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
@@ -142,7 +138,6 @@
 			this.buttonReset.Text = "Reset";
 			this.buttonReset.UseVisualStyleBackColor = true;
 			this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
-			this.buttonReset.Paint += new System.Windows.Forms.PaintEventHandler(this.button_Paint);
 			this.buttonReset.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonReset.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 

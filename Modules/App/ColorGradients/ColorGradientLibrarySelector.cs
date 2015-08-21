@@ -90,12 +90,17 @@ namespace VixenModules.App.ColorGradients
 
 			buttonEditColorGradient.Enabled = false;
 			buttonDeleteColorGradient.Enabled = false;
+			buttonEditColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
+			buttonDeleteColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
+			;
 		}
 
 		private void listViewColorGradients_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			buttonEditColorGradient.Enabled = (listViewColorGradients.SelectedIndices.Count == 1);
 			buttonDeleteColorGradient.Enabled = (listViewColorGradients.SelectedIndices.Count == 1);
+			buttonEditColorGradient.ForeColor = buttonEditColorGradient.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonDeleteColorGradient.ForeColor = buttonDeleteColorGradient.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		public Tuple<string, ColorGradient> SelectedItem
@@ -220,23 +225,17 @@ namespace VixenModules.App.ColorGradients
 			Edit
 		}
 
-		private void button_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeButtonRenderer.OnPaint(sender, e, null);
-		}
-
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = true;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			ThemeButtonRenderer.ButtonHover = false;
-			var btn = sender as Button;
-			btn.Invalidate();
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }
