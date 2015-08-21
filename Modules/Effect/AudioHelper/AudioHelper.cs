@@ -207,6 +207,7 @@ namespace VixenModules.Effect.AudioHelp
                         }
                     }
                     _audioChannel[x] = (double)(audioSum / _audioModule.Channels) / maxSize;
+                    if (_audioChannel[x] == 0) _audioChannel[x] = .0001;
                 });
 
             RecalculateVolume();

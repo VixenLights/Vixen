@@ -36,6 +36,7 @@ namespace VixenModules.Effect.AudioHelp
         protected EffectIntents _elementData = null;
         protected AudioHelper _audioHelper;
         protected Color[] _colors;
+        protected TimeSpan _lastRenderedStartTime;
 
         [Browsable(false)]
         public AudioHelper AudioHelper { get { return _audioHelper; } }
@@ -196,8 +197,7 @@ namespace VixenModules.Effect.AudioHelp
 
 
         public AudioPluginBase()
-        {
-        }
+        {}
 
         public Color GetColorAt(double pos)
         {
@@ -236,9 +236,33 @@ namespace VixenModules.Effect.AudioHelp
             }
         }
 
+        private EffectNode _thisEffectNode;
+        private TimeSpan _getEffectStartTime()
+        {
+            if (_thisEffectNode == null)
+            {
+                foreach (IContext context in VixenSystem.Contexts)
+                {
+                    if (context is ISequenceContext)
+                    {
+                        foreach (IDataNode dataNode in ((ISequenceContext)context).Sequence.SequenceData.EffectData)
+                            if (dataNode is EffectNode)
+                                if (((EffectNode)dataNode).Effect.InstanceId == InstanceId)
+                                    _thisEffectNode = (EffectNode)dataNode;
+                    }
+                }
+                if (_thisEffectNode == null)
+                    return new TimeSpan(0);
+            }
+
+            return _thisEffectNode.StartTime;
+        }
+
         protected override void _PreRender(CancellationTokenSource tokenSource = null)
         {
             _elementData = new EffectIntents();
+
+            _lastRenderedStartTime = _getEffectStartTime();
 
             _audioHelper.ReloadAudio();
 
@@ -251,6 +275,17 @@ namespace VixenModules.Effect.AudioHelp
                     RenderNode(node);
             }
         }
+
+        private bool hasMoved()
+        {
+            TimeSpan currentStartTime = _getEffectStartTime();
+            if (_lastRenderedStartTime == null || _lastRenderedStartTime != currentStartTime)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         protected override EffectIntents _Render()
 		{
@@ -275,7 +310,7 @@ namespace VixenModules.Effect.AudioHelp
 		{
 			get
 			{
-				return base.IsDirty;
+				return base.IsDirty || hasMoved();
 			}
 			protected set { base.IsDirty = value; }
 		}
