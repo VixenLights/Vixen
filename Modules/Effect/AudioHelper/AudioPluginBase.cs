@@ -46,6 +46,56 @@ namespace VixenModules.Effect.AudioHelp
         #region Attribute Accessors
 
         [Value]
+        public bool LowPass
+        {
+            get { return _data.LowPass; }
+            set {
+                _data.LowPass = value;
+                _audioHelper.LowPass = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(30,500,10)]
+        public int lowPassFreq
+        {
+            get { return _data.LowPassFreq; }
+            set {
+                _data.LowPassFreq = value;
+                _audioHelper.LowPassFreq = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        public bool highPass
+        {
+            get { return _data.HighPass; }
+            set
+            {
+                _data.HighPass = value;
+                _audioHelper.HighPass = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(30, 500, 10)]
+        public int highPassFreq
+        {
+            get { return _data.HighPassFreq; }
+            set
+            {
+                _data.HighPassFreq = value;
+                _audioHelper.HighPassFreq = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
         [ProviderCategory(@"Speed", 1)]
         [ProviderDisplayName(@"Decay Time")]
         [ProviderDescription(@"How quickly the meter falls from a volume peak")]
@@ -303,6 +353,10 @@ namespace VixenModules.Effect.AudioHelp
                 _audioHelper.Gain = _data.Gain;
                 _audioHelper.Normalize = _data.Normalize;
                 _audioHelper.ReloadAudio();
+                _audioHelper.LowPass = _data.LowPass;
+                _audioHelper.LowPassFreq = _data.LowPassFreq;
+                _audioHelper.HighPass = _data.HighPass;
+                _audioHelper.HighPassFreq = _data.HighPassFreq;
             }
 		}
 

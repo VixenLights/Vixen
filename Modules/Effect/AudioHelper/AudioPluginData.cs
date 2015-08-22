@@ -22,6 +22,10 @@ namespace VixenModules.Effect.AudioHelp
         int Range { get; set; }
         int GreenColorPosition { get; set; }
         int RedColorPosition { get; set; }
+        bool LowPass { get; set; }
+        int LowPassFreq { get; set; }
+        bool HighPass { get; set; }
+        int HighPassFreq { get; set; }
         ColorGradient MeterColorGradient { get; set; }
         MeterColorTypes MeterColorStyle { get; set; }
     }

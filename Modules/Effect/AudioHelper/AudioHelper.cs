@@ -73,6 +73,11 @@ namespace VixenModules.Effect.AudioHelp
         /// </summary>
         public int DecayTime { get; set; }
 
+        public bool LowPass { get; set; }
+        public int LowPassFreq { get; set; }
+        public bool HighPass { get; set; }
+        public int HighPassFreq { get; set; }
+
         private bool _audioLoaded;
 
         /// <summary>
@@ -88,6 +93,8 @@ namespace VixenModules.Effect.AudioHelp
             AttackTime = 300;
             DecayTime = 1000;
             Normalize = true;
+            LowPass = false;
+            LowPassFreq = 100;
             ReloadAudio();
         }
 
@@ -209,6 +216,11 @@ namespace VixenModules.Effect.AudioHelp
                     _audioChannel[x] = (double)(audioSum / _audioModule.Channels) / maxSize;
                     if (_audioChannel[x] == 0) _audioChannel[x] = .0001;
                 });
+
+            if (LowPass)
+                _audioChannel = audioFilters.lowPass(LowPassFreq, (int) _audioModule.Frequency, _audioChannel);
+            if (HighPass)
+                _audioChannel = audioFilters.highPass(HighPassFreq, (int)_audioModule.Frequency, _audioChannel);
 
             RecalculateVolume();
             _audioLoaded = true;

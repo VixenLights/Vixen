@@ -43,6 +43,18 @@ namespace VixenModules.Effect.VUMeter
         [DataMember]
         public MeterColorTypes MeterColorStyle {get; set;}
 
+        [DataMember]
+        public bool LowPass { get; set; }
+
+        [DataMember]
+        public int LowPassFreq { get; set; }
+
+        [DataMember]
+        public bool HighPass { get; set; }
+
+        [DataMember]
+        public int HighPassFreq { get; set; }
+
         public VUMeterData()
         {
             DecayTime = 1500;
@@ -53,6 +65,11 @@ namespace VixenModules.Effect.VUMeter
             RedColorPosition = 95;
             GreenColorPosition = 25;
             MeterColorStyle = MeterColorTypes.Linear;
+
+            LowPass = false;
+            LowPassFreq = 100;
+            HighPass = false;
+            HighPassFreq = 500;
 
             Color[] myColors = { Color.Lime, Color.Yellow, Color.Red };
             float[] myPositions = { (float)0.00000000000001, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
