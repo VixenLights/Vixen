@@ -47,6 +47,9 @@ namespace VixenModules.Effect.VerticalMeter
         public MeterColorTypes MeterColorStyle {get; set;}
 
         [DataMember]
+        public Curve IntensityCurve { get; set; }
+
+        [DataMember]
         public bool LowPass { get; set; }
 
         [DataMember]

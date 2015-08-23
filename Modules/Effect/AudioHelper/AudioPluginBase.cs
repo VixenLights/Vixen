@@ -46,6 +46,8 @@ namespace VixenModules.Effect.AudioHelp
         #region Attribute Accessors
 
         [Value]
+        [ProviderDisplayName(@"Low Pass Filter")]
+        [ProviderDescription(@"Ignores frequencies below a given frequency")]
         public bool LowPass
         {
             get { return _data.LowPass; }
@@ -58,7 +60,9 @@ namespace VixenModules.Effect.AudioHelp
 
         [Value]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(30,500,10)]
+        [ProviderDisplayName(@"Low Pass Frequency")]
+        [ProviderDescription(@"Ignore frequencies below this value")]
+        [NumberRange(30,15000,1)]
         public int lowPassFreq
         {
             get { return _data.LowPassFreq; }
@@ -70,6 +74,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderDisplayName(@"High Pass Filter")]
+        [ProviderDescription(@"Ignores frequencies above a given frequency")]
         public bool highPass
         {
             get { return _data.HighPass; }
@@ -83,7 +89,9 @@ namespace VixenModules.Effect.AudioHelp
 
         [Value]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(30, 500, 10)]
+        [ProviderDisplayName(@"High Pass Frequency")]
+        [ProviderDescription(@"Ignore frequencies above this value")]
+        [NumberRange(30, 15000, 1)]
         public int highPassFreq
         {
             get { return _data.HighPassFreq; }
@@ -224,6 +232,19 @@ namespace VixenModules.Effect.AudioHelp
             {
                 _data.MeterColorGradient = value;
                 updateColorGradient();
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [ProviderCategory(@"Color", 1)]
+        [ProviderDisplayName(@"Intensity Curve")]
+        public Curve MeterIntensityCurve
+        {
+            get { return _data.IntensityCurve; }
+            set
+            {
+                _data.IntensityCurve = value;
                 IsDirty = true;
             }
         }
