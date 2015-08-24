@@ -289,6 +289,12 @@
     <Compile Include="Shapes\PreviewBaseShape.cs" />
     <Compile Include="Shapes\PreviewTools.cs" />
     <Compile Include="TemplateComboBoxItem.cs" />
+    <Compile Include="Undo\ElementsMoveUndoAction.cs" />
+    <Compile Include="Undo\ElementsPasteUndoAction.cs" />
+    <Compile Include="Undo\ElementsCutUndoAction.cs" />
+    <Compile Include="Undo\ElementsAddedUndoAction.cs" />
+    <Compile Include="Undo\ElementsAddedRemovedUndoAction.cs" />
+    <Compile Include="Undo\ElementsRemovedUndoAction.cs" />
     <Compile Include="VixenPreviewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -475,6 +481,7 @@
   <ItemGroup>
     <None Include="Resources\Lips.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
