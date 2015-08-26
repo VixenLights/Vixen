@@ -115,12 +115,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public override int Right
         {
-            get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
         }
 
         public override int Bottom
         {
-            get { throw new NotImplementedException(); }
+			get
+			{
+				throw new NotImplementedException();
+			}
+			set
+			{
+				throw new NotImplementedException();
+			}
         }
 
         public override void Match(PreviewBaseShape matchShape)

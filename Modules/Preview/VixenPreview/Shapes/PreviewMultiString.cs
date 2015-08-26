@@ -143,7 +143,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //    r = Math.Min(r, p.X);
                 //}
                 //return r;
-            }
+			}
+			set
+			{
+				int currentRight = Right;
+				int delta = currentRight - value;
+				foreach (PreviewPoint p in _points)
+				{
+					p.X = p.X - delta;
+				}
+				Layout();
+			}
         }
 
         [Browsable(false)]
@@ -163,7 +173,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //    b = Math.Min(b, p.Y);
                 //}
                 //return b;
-            }
+			}
+			set
+			{
+				int currentBottom = Bottom;
+				int delta = currentBottom - value;
+				foreach (PreviewPoint p in _points)
+				{
+					p.Y = p.Y - delta;
+				}
+				Layout();
+			}
         }
 
         public override int Top

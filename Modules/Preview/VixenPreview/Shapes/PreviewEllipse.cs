@@ -129,18 +129,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             set
             {
-                int delta = Top - value;
-                if (_topLeft.Y == Top)
-                {
-                    _topLeft.Y = value;
-                    _bottomRight.Y -= delta;
-                }
-                else
-                {
-                    _topLeft.Y -= delta;
-                    _bottomRight.Y = value;
-                }
-                Layout();
+				if (!VixenPreviewSetup3.ResizeShape)
+	            {
+		            int delta = Top - value;
+		            if (_topLeft.Y == Top)
+		            {
+			            _topLeft.Y = value;
+			            _bottomRight.Y -= delta;
+		            }
+		            else
+		            {
+			            _topLeft.Y -= delta;
+			            _bottomRight.Y = value;
+		            }
+	            }
+				else
+				{
+					_topLeft.Y = value;
+				}
+	            Layout();
             }
         }
 
@@ -152,18 +159,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 			set 
             {
-                int delta = Left - value;
-                if (_topLeft.X == Left)
-                {
-                    _topLeft.X = value;
-                    _bottomRight.X -= delta;
-                }
-                else
-                {
-                    _topLeft.X -= delta;
-                    _bottomRight.X = value;
-                }
-                Layout();
+				if (!VixenPreviewSetup3.ResizeShape)
+	            {
+		            int delta = Left - value;
+		            if (_topLeft.X == Left)
+		            {
+			            _topLeft.X = value;
+			            _bottomRight.X -= delta;
+		            }
+		            else
+		            {
+			            _topLeft.X -= delta;
+			            _bottomRight.X = value;
+		            }
+	            }
+				else
+				{
+					_topLeft.X = value;
+				}
+	            Layout();
             }
 		}
 
@@ -173,6 +187,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Max(_topLeft.X, _bottomRight.X));
             }
+	        set
+	        {
+				if (VixenPreviewSetup3.ResizeShape)
+				{
+					_bottomRight.X = value;
+				}
+				Layout();
+	        }
         }
 
         public override int Bottom
@@ -180,7 +202,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_topLeft.Y, _bottomRight.Y));
-            }
+			}
+			set
+			{
+				if (VixenPreviewSetup3.ResizeShape)
+				{
+					_bottomRight.Y = value;
+				}
+
+				Layout();
+			}
         }
 
         public override void Match(PreviewBaseShape matchShape)

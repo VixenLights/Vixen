@@ -232,7 +232,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_topLeft.X, Math.Max(_topRight.X, Math.Max(_bottomLeft.X, _bottomRight.X)));
-            }
+			}
+			set
+			{
+				int delta = Right - value;
+				if (_topLeft.X == Right)
+				{
+					_topLeft.X = value;
+					_topRight.X -= delta;
+					_bottomLeft.X -= delta;
+					_bottomRight.X -= delta;
+				}
+				else if (_topRight.X == Right)
+				{
+					_topLeft.X -= delta;
+					_topRight.X = value;
+					_bottomLeft.X -= delta;
+					_bottomRight.X -= delta;
+				}
+				else if (_bottomLeft.X == Right)
+				{
+					_topLeft.X -= delta;
+					_topRight.X -= delta;
+					_bottomLeft.X = value;
+					_bottomRight.X -= delta;
+				}
+				else
+				{
+					_topLeft.X -= delta;
+					_topRight.X -= delta;
+					_bottomLeft.X -= delta;
+					_bottomRight.X = value;
+				}
+				Layout();
+			}
         }
 
         public override int Bottom
@@ -240,7 +273,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_topLeft.Y, Math.Max(_topRight.Y, Math.Max(_bottomLeft.Y, _bottomRight.Y))));
-            }
+			}
+			set
+			{
+				int delta = Bottom - value;
+				if (_topLeft.Y == Bottom)
+				{
+					_topLeft.Y = value;
+					_topRight.Y -= delta;
+					_bottomLeft.Y -= delta;
+					_bottomRight.Y -= delta;
+				}
+				else if (_topRight.Y == Bottom)
+				{
+					_topLeft.Y -= delta;
+					_topRight.Y = value;
+					_bottomLeft.Y -= delta;
+					_bottomRight.Y -= delta;
+				}
+				else if (_bottomLeft.Y == Bottom)
+				{
+					_topLeft.Y -= delta;
+					_topRight.Y -= delta;
+					_bottomLeft.Y = value;
+					_bottomRight.Y -= delta;
+				}
+				else
+				{
+					_topLeft.Y -= delta;
+					_topRight.Y -= delta;
+					_bottomLeft.Y -= delta;
+					_bottomRight.Y = value;
+				}
+				Layout();
+			}
         }
 
         public override void Match(PreviewBaseShape matchShape)

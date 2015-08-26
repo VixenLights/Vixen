@@ -202,18 +202,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             set
             {
-                if (_points[0].Y < _points[1].Y)
-                {
-                    int delta = _points[0].Y - value;
-                    _points[0].Y = value;
-                    _points[1].Y -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].Y - value;
-                    _points[0].Y -= delta;
-                    _points[1].Y = value;
-                }
+	            if (VixenPreviewControl.m_dragState != VixenPreviewControl.DragState.Resizing)
+	            {
+		            if (_points[0].Y < _points[1].Y)
+		            {
+			            int delta = _points[0].Y - value;
+			            _points[0].Y = value;
+			            _points[1].Y -= delta;
+		            }
+		            else
+		            {
+			            int delta = _points[1].Y - value;
+			            _points[0].Y -= delta;
+			            _points[1].Y = value;
+		            }
+	            }
+	            else
+	            {
+		            _points[0].Y = value;
+	            }
                 Layout();
             }
         }
@@ -226,19 +233,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             set
             {
-                if (_points[0].X < _points[1].X)
-                {
-                    int delta = _points[0].X - value;
-                    _points[0].X = value;
-                    _points[1].X -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].X - value;
-                    _points[0].X -= delta;
-                    _points[1].X = value;
-                }
-                Layout();
+	            if (VixenPreviewControl.m_dragState != VixenPreviewControl.DragState.Resizing)
+	            {
+		            if (_points[0].X < _points[1].X)
+		            {
+			            int delta = _points[0].X - value;
+			            _points[0].X = value;
+			            _points[1].X -= delta;
+		            }
+		            else
+		            {
+			            int delta = _points[1].X - value;
+			            _points[0].X -= delta;
+			            _points[1].X = value;
+		            }
+	            }
+	            else
+	            {
+		            _points[0].X = value;
+	            }
+	            Layout();
             }
         }
 
@@ -247,7 +261,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_points[0].X, _points[1].X));
-            }
+			}
+			set
+			{
+				if (VixenPreviewControl.m_dragState == VixenPreviewControl.DragState.Resizing)
+				{
+					_points[1].X = value;
+				}
+				Layout();
+			}
         }
 
         public override int Bottom
@@ -255,7 +277,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_points[0].Y, _points[1].Y));
-            }
+			}
+			set
+			{
+				if (VixenPreviewControl.m_dragState == VixenPreviewControl.DragState.Resizing)
+				{
+					_points[1].Y = value;
+				}
+
+				Layout();
+			}
         }
 
         public void AddPoint(PreviewPoint point)

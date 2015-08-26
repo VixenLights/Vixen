@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
+using Common.Controls.ControlsEx.ListControls;
 
 namespace Common.Controls
 {
@@ -20,7 +22,6 @@ namespace Common.Controls
          * to only reach the same maximum number of items.
          */
 		private Stack<UndoAction> m_redoable = new Stack<UndoAction>();
-
 
 		private const int DefaultMaxItems = 1000;
 
@@ -92,9 +93,9 @@ namespace Common.Controls
 				throw new ArgumentOutOfRangeException("n");
 
 			bool undo_changed = false;
-
 			for (int i = 0; i < n; i++) {
 				UndoAction item = m_redoable.Pop();
+				
 				item.Redo();
 
 				// Initially planned on not putting it back on the undo stack, and instead expecting

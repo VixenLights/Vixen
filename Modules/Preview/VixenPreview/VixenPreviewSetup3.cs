@@ -56,15 +56,22 @@ namespace VixenModules.Preview.VixenPreview {
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.ButtonType = UndoButtonType.RedoButton;
 
-			VixenPreviewControl.ElementsPreviewMovedNew += vixenpreviewControl_ElementsMovedNew;
+			VixenPreviewControl.ElementsPreviewMovedNew += vixenpreviewControl_ElementsPreviewMovedNew;
+			VixenPreviewControl.ElementsPreviewResizeNew += vixenpreviewControl_ElementsPreviewResizeNew;
 			Icon = Resources.Icon_Vixen3;
 			this.ShowInTaskbar = false;
 
 		}
 
-		public void vixenpreviewControl_ElementsMovedNew(object sender, ElementsChangedPreviewEventArgs e)
+		public void vixenpreviewControl_ElementsPreviewMovedNew(object sender, ElementsChangedPreviewEventArgs e)
 		{
 			 var action = new ElementsMoveUndoAction(this, e.PreviousTimes, e.Type);
+			_undoMgr.AddUndoAction(action);
+		}
+
+		public void vixenpreviewControl_ElementsPreviewResizeNew(object sender, ElementsResizePreviewEventArgs e)
+		{
+			var action = new ElementsResizeUndoAction(this, e.PreviousTimes, e.Type);
 			_undoMgr.AddUndoAction(action);
 		}
 
@@ -575,11 +582,13 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			_undoMgr.Undo();
 			previewForm.Preview.DeSelectSelectedDisplayItem();
+			VixenPreviewControl.m_dragState = VixenPreviewControl.DragState.Normal;
 		}
 
 		private void undoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
 		{
 			_undoMgr.Undo(e.NumItems);
+			VixenPreviewControl.m_dragState = VixenPreviewControl.DragState.Normal;
 		}
 
 		private void redoButton_ButtonClick(object sender, EventArgs e)
@@ -636,6 +645,8 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
+	    public static bool ResizeShape;
+
 		public static void SwapPlaces(DisplayItem lhs, VixenPreviewControl.ElementPositionInfo rhs)
 		{
 			int temp = lhs.Shape.Left;
@@ -645,12 +656,36 @@ namespace VixenModules.Preview.VixenPreview {
 			temp = lhs.Shape.Top;
 			lhs.Shape.Top = rhs.TopPosition;
 			rhs.TopPosition = temp;
+
+			temp = lhs.Shape.Bottom;
+			lhs.Shape.Bottom = rhs.BottomPosition;
+			rhs.BottomPosition = temp;
+
+			temp = lhs.Shape.Right;
+			lhs.Shape.Right = rhs.RightPosition;
+			rhs.RightPosition = temp;
 		}
 		#endregion
 	}
 	public class ElementsChangedPreviewEventArgs : EventArgs
 	{
 		public ElementsChangedPreviewEventArgs(VixenPreviewControl.ElementPreviewMoveInfo info, VixenPreviewControl.DisplayMoveType type)
+		{
+			if (info != null)
+			{
+				PreviousTimes = info.OriginalPreviewElements;
+				Type = type;
+			}
+		}
+
+		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> PreviousTimes { get; private set; }
+
+		public VixenPreviewControl.DisplayMoveType Type { get; private set; }
+	}
+
+	public class ElementsResizePreviewEventArgs : EventArgs
+	{
+		public ElementsResizePreviewEventArgs(VixenPreviewControl.ElementPreviewMoveInfo info, VixenPreviewControl.DisplayMoveType type)
 		{
 			if (info != null)
 			{
