@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Vixen.Sys;
@@ -9,7 +10,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 	public class ElementsAddedRemovedUndoAction : Common.Controls.UndoAction
 	{
 		private VixenPreviewControl m_form;
-		private IEnumerable<DisplayItem> m_elements;
+		public IEnumerable<DisplayItem> m_elements;
 		private int m_count;
 
 		public ElementsAddedRemovedUndoAction(VixenPreviewControl form, IEnumerable<DisplayItem> items)

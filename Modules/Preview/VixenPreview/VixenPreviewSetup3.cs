@@ -657,13 +657,13 @@ namespace VixenModules.Preview.VixenPreview {
 			lhs.Shape.Top = rhs.TopPosition;
 			rhs.TopPosition = temp;
 
-			temp = lhs.Shape.Bottom;
-			lhs.Shape.Bottom = rhs.BottomPosition;
-			rhs.BottomPosition = temp;
+			//temp = lhs.Shape.Bottom;
+			//lhs.Shape.Bottom = rhs.BottomPosition;
+			//rhs.BottomPosition = temp;
 
-			temp = lhs.Shape.Right;
-			lhs.Shape.Right = rhs.RightPosition;
-			rhs.RightPosition = temp;
+			//temp = lhs.Shape.Right;
+			//lhs.Shape.Right = rhs.RightPosition;
+			//rhs.RightPosition = temp;
 		}
 		#endregion
 	}

@@ -457,7 +457,7 @@ namespace VixenModules.Preview.VixenPreview
 			return false;
 		}
 
-		private void SelectItemUnderPoint(PreviewPoint point, bool addToSelection)
+		public void SelectItemUnderPoint(PreviewPoint point, bool addToSelection)
 		{
 			if (!_mouseCaptured)
 			{
@@ -483,6 +483,16 @@ namespace VixenModules.Preview.VixenPreview
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 					}
 				}
+			}
+		}
+
+		public void selectItem(PreviewPoint point)
+		{
+			_selectedDisplayItem = DisplayItemAtPoint(point);
+			if (_selectedDisplayItem != null)
+			{
+				_selectedDisplayItem.Shape.Select(true);
+				OnSelectDisplayItem(this, _selectedDisplayItem);
 			}
 		}
 
@@ -524,12 +534,6 @@ namespace VixenModules.Preview.VixenPreview
 								resize = true;
 								beginDragResize(translatedPoint, false, DisplayMoveType.Resize);
 								dragStart = translatedPoint.ToPoint();
-
-
-
-
-
-
 								_selectedDisplayItem.Shape.SetSelectPoint(selectedPoint);
 								Capture = true;
 								_mouseCaptured = true;
@@ -845,7 +849,11 @@ namespace VixenModules.Preview.VixenPreview
 					break;
 				case "Separate":
 					if (_selectedDisplayItem != null)
+					{
+						var action = new ElementsSeparateGroupUndoAction(this, SelectedDisplayItems, _selectedDisplayItem);
+						VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 						SeparateTemplateItems(_selectedDisplayItem);
+					}
 					break;
 				case "Cut":
 					Cut();
@@ -1175,15 +1183,6 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
-					//if (ElementsPreviewMovedNew != null && m_elemMoveInfo != null)
-					//{
-					//	ElementsPreviewMovedNew(this,
-					//		m_dragState == DragState.Moving
-					//			? new ElementsChangedPreviewEventArgs(m_elemMoveInfo, DisplayMoveType.Move)
-					//			: new ElementsChangedPreviewEventArgs(m_elemMoveInfo, DisplayMoveType.Resize));
-
-
-					//}
 					if ((ElementsPreviewMovedNew != null | ElementsPreviewMovedNew != null )&& m_elemMoveInfo != null)
 					{
 						if (resize)
@@ -1218,7 +1217,7 @@ namespace VixenModules.Preview.VixenPreview
 			ResetMouse();
 		}
 
-		private void ResetMouse()
+		public void ResetMouse()
 		{
 			_banding = false;
 			Capture = false;
@@ -1525,16 +1524,27 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			DisplayItem newDisplayItem;
+
+			addNewGroup(out newDisplayItem, null);
+
+			var action = new ElementsAddedGroupUndoAction(this, SelectedDisplayItems, newDisplayItem);
+			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+
+			return newDisplayItem;
+		}
+
+		public void addNewGroup(out DisplayItem newDisplayItem, List<DisplayItem> selectedShapes)
+		{
 			newDisplayItem = new DisplayItem();
 			newDisplayItem.Shape = new PreviewCustom(new PreviewPoint(100, 100), SelectedShapes());
 			AddDisplayItem(newDisplayItem);
+
 			foreach (DisplayItem item in SelectedDisplayItems)
 			{
 				DisplayItems.Remove(item);
 			}
-
-			return newDisplayItem;
 		}
+
 
 		public DisplayItem CreateTemplate()
 		{
@@ -1565,12 +1575,16 @@ namespace VixenModules.Preview.VixenPreview
 				if (newDisplayItem != null)
 				{
 					DeSelectSelectedDisplayItem();
+
 					AddDisplayItem(newDisplayItem);
 					_selectedDisplayItem = newDisplayItem;
 					OnSelectDisplayItem(this, _selectedDisplayItem);
 					_selectedDisplayItem.Shape.MoveTo(10, 10);
 					_selectedDisplayItem.Shape.Select(true);
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
+					List<DisplayItem> selected = new List<DisplayItem> {_selectedDisplayItem};
+					var action = new ElementsAddedUndoAction(this, selected);
+					VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 				}
 			}
 		}
@@ -1582,10 +1596,22 @@ namespace VixenModules.Preview.VixenPreview
 				DisplayItem newDisplayItem;
 				newDisplayItem = new DisplayItem();
 				newDisplayItem.Shape = shape;
-				AddDisplayItem(newDisplayItem);
+				DisplayItems.Add(newDisplayItem);
 			}
-			_selectedDisplayItem = displayItem;
-			Delete();
+			if (_selectedDisplayItem != null)
+			{
+				DisplayItems.Remove(_selectedDisplayItem);
+				DeSelectSelectedDisplayItem();
+			}
+			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
+			{
+				foreach (DisplayItem item in SelectedDisplayItems)
+				{
+					DisplayItems.Remove(item);
+					DeSelectSelectedDisplayItem();
+				}
+				SelectedDisplayItems.Clear();
+			}
 		}
 
 		#endregion
@@ -2029,10 +2055,9 @@ namespace VixenModules.Preview.VixenPreview
 		///Saves the pre-move information and begins update on all selected elements.</summary>
 		private void beginDragMove(PreviewPoint previewLocation, bool multi, DisplayMoveType type)
 		{
-	//		m_type = type;
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
-			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems); //, VisibleTimeStart);
+			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
 		}
@@ -2041,10 +2066,9 @@ namespace VixenModules.Preview.VixenPreview
 		///Saves the pre-move information and begins update on all selected elements.</summary>
 		private void beginDragResize(PreviewPoint previewLocation, bool multi, DisplayMoveType type)
 		{
-			//		m_type = type;
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
-			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems); //, VisibleTimeStart);
+			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
 		}
@@ -2052,7 +2076,6 @@ namespace VixenModules.Preview.VixenPreview
 		public class ElementPreviewMoveInfo
 		{
 			public ElementPreviewMoveInfo(PreviewPoint initGridLocation, List<DisplayItem> modifyingElements)
-				//, TimeSpan visibleTimeStart)
 			{
 				//			InitialGridLocation = initGridLocation;
 
@@ -2082,6 +2105,10 @@ namespace VixenModules.Preview.VixenPreview
 				BottomPosition = elem.Shape.Bottom;
 				RightPosition = elem.Shape.Right;
 			}
+
+			public List<int> SelectedPointX = new List<int>();
+
+			public List<int> SelectedPointY = new List<int>();
 
 			public int TopPosition { get; set; }
 			public int LeftPosition { get; set; }

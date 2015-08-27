@@ -128,16 +128,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			set
 			{
-				int delta = Bottom - value;
-				if (_topLeftPoint.Y == Bottom)
+				if (VixenPreviewControl.m_dragState == VixenPreviewControl.DragState.Resizing)
 				{
-					_topLeftPoint.Y = value;
-					_bottomRightPoint.Y -= delta;
-				}
-				else
-				{
-					_topLeftPoint.Y -= delta;
-					_bottomRightPoint.Y = value;
+		//			_points[1].Y = value;
 				}
 				Layout();
 			}
