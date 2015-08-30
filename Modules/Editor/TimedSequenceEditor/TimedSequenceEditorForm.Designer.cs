@@ -107,6 +107,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Paste = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.selectAllElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_deleteElements = new System.Windows.Forms.ToolStripMenuItem();
@@ -812,6 +815,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_Cut,
             this.toolStripMenuItem_Copy,
             this.toolStripMenuItem_Paste,
+            this.toolStripSeparator8,
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem,
             this.toolStripSeparator3,
             this.selectAllElementsToolStripMenuItem,
             this.toolStripMenuItem_deleteElements,
@@ -866,6 +872,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Paste.Size = new System.Drawing.Size(215, 22);
 			this.toolStripMenuItem_Paste.Text = "Paste";
 			this.toolStripMenuItem_Paste.Click += new System.EventHandler(this.toolStripMenuItem_Paste_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(212, 6);
+			// 
+			// undoToolStripMenuItem
+			// 
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.undoToolStripMenuItem.Text = "Undo";
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.redoToolStripMenuItem.Text = "Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
@@ -1635,5 +1662,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripMenuItem gridWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem effectEditorWindowToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 	}
 }

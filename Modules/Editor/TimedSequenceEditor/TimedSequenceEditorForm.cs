@@ -4014,24 +4014,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					else if (e.Control)
 						TimelineControl.Zoom(.8);
 					break;
-				case Keys.Z:
-					if (e.Control)
-					{
-						if (_undoMgr.NumUndoable > 0)
-						{
-							_undoMgr.Undo();	
-						}
-					}
-					break;
-				case Keys.Y:
-					if (e.Control)
-					{
-						if (_undoMgr.NumRedoable > 0)
-						{
-							_undoMgr.Redo();
-						}
-					}
-					break;
 				case Keys.T:
 					TimelineControl.grid.ToggleSelectedRows(e.Control);
 					break;
@@ -4305,6 +4287,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
 			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : TimelineControl.CursorPosition);
+		}
+
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_undoMgr.NumUndoable > 0)
+			{
+				_undoMgr.Undo();	
+			}
+		}
+
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_undoMgr.NumRedoable > 0)
+			{
+				_undoMgr.Redo();
+			}
 		}
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
@@ -4597,9 +4595,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
 
 			undoButton.Enabled = false;
+			undoToolStripMenuItem.Enabled = false;
 			undoButton.ItemChosen += undoButton_ItemChosen;
 
 			redoButton.Enabled = false;
+			redoToolStripMenuItem.Enabled = false;
 			redoButton.ItemChosen += redoButton_ItemChosen;
 		}
 
@@ -4630,10 +4630,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_undoMgr.NumUndoable == 0)
 			{
 				undoButton.Enabled = false;
+				undoToolStripMenuItem.Enabled = false;
 				return;
 			}
 
 			undoButton.Enabled = true;
+			undoToolStripMenuItem.Enabled = true;
 			undoButton.UndoItems.Clear();
 			foreach (var act in _undoMgr.UndoActions)
 				undoButton.UndoItems.Add(act.Description);
@@ -4644,10 +4646,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_undoMgr.NumRedoable == 0)
 			{
 				redoButton.Enabled = false;
+				redoToolStripMenuItem.Enabled = false;
 				return;
 			}
 
 			redoButton.Enabled = true;
+			redoToolStripMenuItem.Enabled = true;
 			redoButton.UndoItems.Clear();
 			foreach (var act in _undoMgr.RedoActions)
 				redoButton.UndoItems.Add(act.Description);
