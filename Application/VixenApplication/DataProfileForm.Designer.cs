@@ -74,6 +74,7 @@
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Profile to Use when Loading Vixen";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// comboBoxLoadThisProfile
 			// 
@@ -125,6 +126,7 @@
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Profiles:";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// buttonSetDataFolder
 			// 
@@ -207,6 +209,8 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -217,6 +221,8 @@
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonZipWizard
 			// 
@@ -227,6 +233,8 @@
 			this.buttonZipWizard.Text = "Zip Wizard";
 			this.buttonZipWizard.UseVisualStyleBackColor = true;
 			this.buttonZipWizard.Click += new System.EventHandler(this.buttonZipWizard_Click);
+			this.buttonZipWizard.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonZipWizard.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// DataProfileForm
 			// 
@@ -245,6 +253,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "DataProfileForm";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Data Profile";
 			this.Load += new System.EventHandler(this.DataProfileForm_Load);

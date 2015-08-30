@@ -5,11 +5,16 @@ using System.Data;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using VixenModules.Output.CommandController.Properties;
+using Common.Resources.Properties;
+using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.CommandController
 {
@@ -20,6 +25,9 @@ namespace VixenModules.Output.CommandController
 		public SetupForm(Data data)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			cboPortName.Items.Clear();
 
 			var ports =	SerialPort.GetPortNames().OrderBy(o => o).ToList();
@@ -225,15 +233,22 @@ namespace VixenModules.Output.CommandController
 			RdsData.PortNumber = int.Parse(cboPortName.SelectedItem.ToString().Replace("COM", ""));
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
 
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
+		}
 
-
-
-
-
-
-
-
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 	}
 }

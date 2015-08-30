@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Common.Controls;
 
 namespace Vixen.IO
 {

@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Threading;
+using Common.Controls;
 
 namespace ZedGraph
 {
@@ -122,7 +123,10 @@ namespace ZedGraph
 					}
 				}
 				catch (Exception exception) {
-					MessageBox.Show(exception.Message);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(exception.Message, "", false, false);
+					messageBox.Show();
 				}
 
 				return _pdSave;
@@ -163,7 +167,10 @@ namespace ZedGraph
 			}
 
 			catch (Exception exception) {
-				MessageBox.Show(exception.Message);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(exception.Message, "", false, false);
+				messageBox.Show();
 			}
 		}
 
@@ -187,7 +194,10 @@ namespace ZedGraph
 				}
 			}
 			catch (Exception exception) {
-				MessageBox.Show(exception.Message);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(exception.Message, "", false, false);
+				messageBox.Show();
 			}
 		}
 
@@ -210,7 +220,10 @@ namespace ZedGraph
 				}
 			}
 			catch (Exception exception) {
-				MessageBox.Show(exception.Message);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(exception.Message, "", false, false);
+				messageBox.Show();
 			}
 		}
 

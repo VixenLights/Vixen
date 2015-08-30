@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Rule;
 using Vixen.Sys;
 using VixenApplication.Setup;
@@ -33,8 +35,11 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
-			buttonHelp.Image = Common.Resources.Tools.GetIcon(Common.Resources.Properties.Resources.help, 16);
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
 
 			_elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
 			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
@@ -218,6 +223,19 @@ namespace VixenApplication
 			//Until we can fix up a better way to visualize unconnected filters, we will just clean them up from here.
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

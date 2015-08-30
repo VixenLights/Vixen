@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Rule.Name;
 
 namespace Common.Controls.NameGeneration
@@ -17,6 +18,9 @@ namespace Common.Controls.NameGeneration
 		public LetterCounterEditor(LetterCounter counter)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_counter = counter;
 		}
 

@@ -48,13 +48,13 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapMatrixEditor(LipSyncMapData mapData)
         {
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X - 150, ActiveForm.Location.Y - 100) : new Point(200, 100);
-            InitializeComponent();
-			buttonAssign.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonClear.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExport.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonImport.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			lipSyncMapColorCtrl1.BackColor = BackColor = ThemeColorTable.BackgroundColor;
+			lipSyncMapColorCtrl1.panelColor.BackColor = Color.White;
+	        zoomTrackbar.BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
             LoadResourceBitmaps();
             dataTables = new Dictionary<PhonemeType, DataTable>();
@@ -530,6 +530,7 @@ namespace VixenModules.App.LipSyncApp
             dataGridView1.ClientSize = new Size(width + 2, height + 2);
 
             dataGridView1.Location = new Point(25, 150);
+			Refresh();
         }
 
         private void zoomTrackbar_ValueChanged(object sender, EventArgs e)
@@ -548,6 +549,7 @@ namespace VixenModules.App.LipSyncApp
             BuildMapDataFromDialog(); 
             assignNodes();
             updatedataGridView1();
+			Refresh();
         }
 
         private void assignNodes()
@@ -646,6 +648,7 @@ namespace VixenModules.App.LipSyncApp
 
                 BuildDialogFromMap(_newMapping);
                 updatedataGridView1();
+				Refresh();
             }
         }
 
@@ -693,6 +696,7 @@ namespace VixenModules.App.LipSyncApp
                 }
                 rawBitmap.Save(fileDlg.FileName);
             }
+			Refresh();
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -705,21 +709,18 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-		#endregion
 	}
 }

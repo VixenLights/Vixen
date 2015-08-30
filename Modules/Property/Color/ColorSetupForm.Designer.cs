@@ -29,6 +29,7 @@
 		{
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.groupBoxOptions = new System.Windows.Forms.GroupBox();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.colorPanelSingleColor = new VixenModules.Property.Color.ColorPanel();
 			this.buttonColorSetsSetup = new System.Windows.Forms.Button();
 			this.comboBoxColorSet = new System.Windows.Forms.ComboBox();
@@ -36,43 +37,56 @@
 			this.radioButtonOptionMultiple = new System.Windows.Forms.RadioButton();
 			this.radioButtonOptionSingle = new System.Windows.Forms.RadioButton();
 			this.groupBoxOptions.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOk.BackColor = System.Drawing.SystemColors.Control;
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOk.Location = new System.Drawing.Point(305, 163);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 27;
 			this.buttonOk.Text = "OK";
-			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.UseVisualStyleBackColor = false;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBoxOptions
 			// 
 			this.groupBoxOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxOptions.Controls.Add(this.colorPanelSingleColor);
-			this.groupBoxOptions.Controls.Add(this.buttonColorSetsSetup);
-			this.groupBoxOptions.Controls.Add(this.comboBoxColorSet);
-			this.groupBoxOptions.Controls.Add(this.radioButtonOptionFullColor);
-			this.groupBoxOptions.Controls.Add(this.radioButtonOptionMultiple);
-			this.groupBoxOptions.Controls.Add(this.radioButtonOptionSingle);
+			this.groupBoxOptions.Controls.Add(this.panel1);
 			this.groupBoxOptions.Location = new System.Drawing.Point(12, 12);
 			this.groupBoxOptions.Name = "groupBoxOptions";
 			this.groupBoxOptions.Size = new System.Drawing.Size(383, 145);
 			this.groupBoxOptions.TabIndex = 29;
 			this.groupBoxOptions.TabStop = false;
 			this.groupBoxOptions.Text = "Element Color";
+			this.groupBoxOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.colorPanelSingleColor);
+			this.panel1.Controls.Add(this.buttonColorSetsSetup);
+			this.panel1.Controls.Add(this.comboBoxColorSet);
+			this.panel1.Controls.Add(this.radioButtonOptionFullColor);
+			this.panel1.Controls.Add(this.radioButtonOptionMultiple);
+			this.panel1.Controls.Add(this.radioButtonOptionSingle);
+			this.panel1.Location = new System.Drawing.Point(9, 16);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(368, 126);
+			this.panel1.TabIndex = 7;
 			// 
 			// colorPanelSingleColor
 			// 
 			this.colorPanelSingleColor.BackColor = System.Drawing.Color.Maroon;
 			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.colorPanelSingleColor.Color = System.Drawing.Color.Maroon;
-			this.colorPanelSingleColor.Location = new System.Drawing.Point(187, 24);
+			this.colorPanelSingleColor.Location = new System.Drawing.Point(178, 8);
 			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(4);
 			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
 			this.colorPanelSingleColor.Size = new System.Drawing.Size(60, 30);
@@ -81,19 +95,24 @@
 			// 
 			// buttonColorSetsSetup
 			// 
-			this.buttonColorSetsSetup.Location = new System.Drawing.Point(314, 67);
+			this.buttonColorSetsSetup.BackColor = System.Drawing.SystemColors.Control;
+			this.buttonColorSetsSetup.FlatAppearance.BorderSize = 0;
+			this.buttonColorSetsSetup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.buttonColorSetsSetup.Location = new System.Drawing.Point(305, 51);
+			this.buttonColorSetsSetup.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonColorSetsSetup.Name = "buttonColorSetsSetup";
-			this.buttonColorSetsSetup.Size = new System.Drawing.Size(25, 23);
+			this.buttonColorSetsSetup.Size = new System.Drawing.Size(34, 23);
 			this.buttonColorSetsSetup.TabIndex = 5;
-			this.buttonColorSetsSetup.Text = "...";
-			this.buttonColorSetsSetup.UseVisualStyleBackColor = true;
+			this.buttonColorSetsSetup.Text = "......";
+			this.buttonColorSetsSetup.UseVisualStyleBackColor = false;
 			this.buttonColorSetsSetup.Click += new System.EventHandler(this.buttonColorSetsSetup_Click);
 			// 
 			// comboBoxColorSet
 			// 
 			this.comboBoxColorSet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBoxColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxColorSet.FormattingEnabled = true;
-			this.comboBoxColorSet.Location = new System.Drawing.Point(187, 68);
+			this.comboBoxColorSet.Location = new System.Drawing.Point(178, 52);
 			this.comboBoxColorSet.Name = "comboBoxColorSet";
 			this.comboBoxColorSet.Size = new System.Drawing.Size(121, 21);
 			this.comboBoxColorSet.TabIndex = 4;
@@ -102,7 +121,7 @@
 			// radioButtonOptionFullColor
 			// 
 			this.radioButtonOptionFullColor.AutoSize = true;
-			this.radioButtonOptionFullColor.Location = new System.Drawing.Point(18, 109);
+			this.radioButtonOptionFullColor.Location = new System.Drawing.Point(9, 93);
 			this.radioButtonOptionFullColor.Name = "radioButtonOptionFullColor";
 			this.radioButtonOptionFullColor.Size = new System.Drawing.Size(168, 17);
 			this.radioButtonOptionFullColor.TabIndex = 2;
@@ -114,7 +133,7 @@
 			// radioButtonOptionMultiple
 			// 
 			this.radioButtonOptionMultiple.AutoSize = true;
-			this.radioButtonOptionMultiple.Location = new System.Drawing.Point(18, 69);
+			this.radioButtonOptionMultiple.Location = new System.Drawing.Point(9, 53);
 			this.radioButtonOptionMultiple.Name = "radioButtonOptionMultiple";
 			this.radioButtonOptionMultiple.Size = new System.Drawing.Size(157, 17);
 			this.radioButtonOptionMultiple.TabIndex = 1;
@@ -126,7 +145,7 @@
 			// radioButtonOptionSingle
 			// 
 			this.radioButtonOptionSingle.AutoSize = true;
-			this.radioButtonOptionSingle.Location = new System.Drawing.Point(18, 31);
+			this.radioButtonOptionSingle.Location = new System.Drawing.Point(9, 15);
 			this.radioButtonOptionSingle.Name = "radioButtonOptionSingle";
 			this.radioButtonOptionSingle.Size = new System.Drawing.Size(83, 17);
 			this.radioButtonOptionSingle.TabIndex = 0;
@@ -143,14 +162,18 @@
 			this.Controls.Add(this.groupBoxOptions);
 			this.Controls.Add(this.buttonOk);
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(423, 239);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(423, 239);
 			this.Name = "ColorSetupForm";
 			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Element Color";
 			this.Load += new System.EventHandler(this.ColorSetupForm_Load);
 			this.groupBoxOptions.ResumeLayout(false);
-			this.groupBoxOptions.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -165,5 +188,6 @@
 		private System.Windows.Forms.ComboBox comboBoxColorSet;
 		private System.Windows.Forms.Button buttonColorSetsSetup;
 		private ColorPanel colorPanelSingleColor;
+		private System.Windows.Forms.Panel panel1;
 	}
 }

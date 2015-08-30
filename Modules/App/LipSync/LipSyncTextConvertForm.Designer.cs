@@ -59,7 +59,6 @@
 			this.buttonConvert.TabIndex = 0;
 			this.buttonConvert.Text = "Convert";
 			this.buttonConvert.UseVisualStyleBackColor = false;
-			this.buttonConvert.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonConvert.Click += new System.EventHandler(this.convertButton_Click);
 			this.buttonConvert.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonConvert.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -88,7 +87,7 @@
 			this.markCollectionCombo.Size = new System.Drawing.Size(135, 21);
 			this.markCollectionCombo.Sorted = true;
 			this.markCollectionCombo.TabIndex = 4;
-			this.markCollectionCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxes_DrawItem);
+			this.markCollectionCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.markCollectionCombo.SelectedIndexChanged += new System.EventHandler(this.markCollectionCombo_SelectedIndexChanged);
 			this.markCollectionCombo.EnabledChanged += new System.EventHandler(this.markCollectionCombo_EnabledChanged);
 			// 
@@ -104,7 +103,7 @@
 			this.alignCombo.Name = "alignCombo";
 			this.alignCombo.Size = new System.Drawing.Size(135, 21);
 			this.alignCombo.TabIndex = 7;
-			this.alignCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxes_DrawItem);
+			this.alignCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// label3
 			// 
@@ -128,7 +127,7 @@
 			this.startOffsetCombo.Size = new System.Drawing.Size(135, 21);
 			this.startOffsetCombo.Sorted = true;
 			this.startOffsetCombo.TabIndex = 10;
-			this.startOffsetCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxes_DrawItem);
+			this.startOffsetCombo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.startOffsetCombo.DropDown += new System.EventHandler(this.startOffsetCombo_DropDown);
 			// 
 			// groupBox1

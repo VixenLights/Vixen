@@ -26,8 +26,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 		{
 			InitializeComponent();
 
-			CancelButton.BackgroundImage = Resources.HeadingBackgroundImage;
-			GenerateButton.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 
 			m_allowUpdates = false;
 
@@ -217,12 +218,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 			btn.BackgroundImage = Resources.HeadingBackgroundImage;
 		}
 
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-		#endregion
 	}
 }

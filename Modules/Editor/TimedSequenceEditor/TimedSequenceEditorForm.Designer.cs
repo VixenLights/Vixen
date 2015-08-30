@@ -596,6 +596,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.cboAudioDevices.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.cboAudioDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboAudioDevices.DropDownWidth = 220;
+			this.cboAudioDevices.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.cboAudioDevices.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.cboAudioDevices.Name = "cboAudioDevices";
 			this.cboAudioDevices.Size = new System.Drawing.Size(250, 23);
@@ -839,6 +840,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripMenuItem_Cut.Enabled = false;
 			this.toolStripMenuItem_Cut.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.toolStripMenuItem_Cut.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.toolStripMenuItem_Cut.Name = "toolStripMenuItem_Cut";
 			this.toolStripMenuItem_Cut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.toolStripMenuItem_Cut.Size = new System.Drawing.Size(215, 22);
@@ -1342,7 +1344,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel4.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(493, 17);
+			this.toolStripStatusLabel4.Size = new System.Drawing.Size(939, 17);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements

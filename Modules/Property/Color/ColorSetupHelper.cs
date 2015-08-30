@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.Effect;
 using Vixen.Module.OutputFilter;
@@ -20,6 +24,11 @@ namespace VixenModules.Property.Color
 		public ColorSetupHelper()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
+			colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
 		}
 
 		public string HelperName
@@ -70,16 +79,20 @@ namespace VixenModules.Property.Color
 			int colorPropertiesConfigured = 0;
 			int colorPropertiesSkipped = 0;
 
+			MessageBoxForm messageBox;
+
 			foreach (ElementNode leafElement in leafElementList) {
 				bool skip = false;
 				ColorModule existingProperty = null;
 
 				if (leafElement.Properties.Contains(ColorDescriptor.ModuleId)) {
 					if (!askedUserAboutExistingProperties) {
-						DialogResult mbr =
-							MessageBox.Show("Some elements already have color properties set up. Should these be overwritten?",
-							                "Color Setup", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-						overrideExistingProperties = (mbr == DialogResult.Yes);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+						messageBox = new MessageBoxForm("Some elements already have color properties set up. Should these be overwritten?",
+											"Color Setup", true, false);
+						messageBox.ShowDialog();
+						overrideExistingProperties = (messageBox.DialogResult == DialogResult.OK);
 						askedUserAboutExistingProperties = true;
 					}
 
@@ -131,10 +144,12 @@ namespace VixenModules.Property.Color
 
 				if (leaf.Component is ColorBreakdownModule) {
 					if (!askedUserAboutExistingFilters) {
-						DialogResult mbr =
-							MessageBox.Show("Some elements are already patched to color filters. Should these be overwritten?",
-							                "Color Setup", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-						overrideExistingFilters = (mbr == DialogResult.Yes);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+						messageBox = new MessageBoxForm("Some elements are already patched to color filters. Should these be overwritten?",
+											"Color Setup", true, false);
+						messageBox.ShowDialog();
+						overrideExistingFilters = (messageBox.DialogResult == DialogResult.OK);
 						askedUserAboutExistingFilters = true;
 					}
 
@@ -221,10 +236,14 @@ namespace VixenModules.Property.Color
 				}
 			}
 
-			MessageBox.Show("Color Properties:  " + colorPropertiesAdded + " added, " +
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			messageBox = new MessageBoxForm("Color Properties:  " + colorPropertiesAdded + " added, " +
 							colorPropertiesConfigured + " configured, " + colorPropertiesSkipped + " skipped. " +
-			                "Color Filters:  " + colorFiltersAdded + " added, " + colorFiltersConfigured + " configured, " +
-			                colorFiltersSkipped + " skipped.");
+							"Color Filters:  " + colorFiltersAdded + " added, " + colorFiltersConfigured + " configured, " +
+							colorFiltersSkipped + " skipped.",
+								"Color Setup", false, false);
+			messageBox.ShowDialog();
 
 			return true;
 		}
@@ -301,6 +320,16 @@ namespace VixenModules.Property.Color
 			}
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
 
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
 	}
 }

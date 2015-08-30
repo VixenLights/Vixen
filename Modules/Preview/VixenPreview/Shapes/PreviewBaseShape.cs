@@ -66,8 +66,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		 DisplayName("String Name")]
 		public string Name
 		{
-			get 
-            {
+			get
+			{
 				if (_name == null) _name = VixenPreviewSetup3.DrawShape;
                 return _name; 
             }

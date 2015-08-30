@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -14,6 +15,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewFloodSetupControl(PreviewBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			propertyGrid.SelectedObject = Shape;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}

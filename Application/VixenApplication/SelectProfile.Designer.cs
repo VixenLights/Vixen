@@ -61,6 +61,8 @@
 			this.buttonLoad.Text = "Load";
 			this.buttonLoad.UseVisualStyleBackColor = true;
 			this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+			this.buttonLoad.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonLoad.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonEditor
 			// 
@@ -71,20 +73,24 @@
 			this.buttonEditor.Text = "Profile Editor";
 			this.buttonEditor.UseVisualStyleBackColor = true;
 			this.buttonEditor.Click += new System.EventHandler(this.buttonEditor_Click);
+			this.buttonEditor.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonEditor.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// SelectProfile
 			// 
 			this.AcceptButton = this.buttonLoad;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(219, 169);
+			this.ClientSize = new System.Drawing.Size(223, 180);
 			this.Controls.Add(this.buttonEditor);
 			this.Controls.Add(this.buttonLoad);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.listBoxProfiles);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(239, 349);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(239, 219);
 			this.Name = "SelectProfile";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Select a Profile";

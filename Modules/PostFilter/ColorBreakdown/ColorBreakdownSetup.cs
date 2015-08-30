@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Dynamic;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.OutputFilter.ColorBreakdown
 {
@@ -17,6 +20,9 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownSetup(ColorBreakdownData breakdownData)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_data = breakdownData;
 		}
 
@@ -122,7 +128,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 				default:
 					Logging.Error("Color Breakdown Setup: got an unknown template to apply: " + template);
-					MessageBox.Show("Error applying template: Unknown template.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Error applying template: Unknown template.", "Error", false, false);
+					messageBox.ShowDialog();
 					break;
 			}
 		}
@@ -130,6 +139,24 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private void checkBoxMixColors_CheckedChanged(object sender, EventArgs e)
 		{
 			_data.MixColors = checkBoxMixColors.Checked;
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

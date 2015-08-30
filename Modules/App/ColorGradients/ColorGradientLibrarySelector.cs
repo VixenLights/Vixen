@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
@@ -20,12 +22,11 @@ namespace VixenModules.App.ColorGradients
 		public ColorGradientLibrarySelector()
 		{
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonDeleteColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEditColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonNewColorGradient.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listViewColorGradients.BackColor = ThemeColorTable.BackgroundColor;
+			Icon = Resources.Icon_Vixen3;
 			DoubleClickMode = Mode.Ok;
 		}
 
@@ -89,12 +90,17 @@ namespace VixenModules.App.ColorGradients
 
 			buttonEditColorGradient.Enabled = false;
 			buttonDeleteColorGradient.Enabled = false;
+			buttonEditColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
+			buttonDeleteColorGradient.ForeColor = ThemeColorTable.ForeColorDisabled;
+			;
 		}
 
 		private void listViewColorGradients_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			buttonEditColorGradient.Enabled = (listViewColorGradients.SelectedIndices.Count == 1);
 			buttonDeleteColorGradient.Enabled = (listViewColorGradients.SelectedIndices.Count == 1);
+			buttonEditColorGradient.ForeColor = buttonEditColorGradient.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonDeleteColorGradient.ForeColor = buttonDeleteColorGradient.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		public Tuple<string, ColorGradient> SelectedItem
@@ -117,22 +123,27 @@ namespace VixenModules.App.ColorGradients
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show("Please enter a name.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error;
+					var messageBox = new MessageBoxForm("Please enter a name.", "Color Gradient Name", false, false);
+					messageBox.ShowDialog();
 					continue;
 				}
 
 				if (Library.Contains(dialog.Response))
 				{
-					DialogResult result = MessageBox.Show("There is already a gradient with that name. Do you want to overwrite it?",
-														  "Overwrite gradient?", MessageBoxButtons.YesNoCancel);
-					if (result == System.Windows.Forms.DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
+					MessageBoxForm.msgIcon = SystemIcons.Question;
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Library.AddColorGradient(dialog.Response, new ColorGradient());
 						Library.EditLibraryItem(dialog.Response);
 						PopulateListWithColorGradients();
 						break;
 					}
-					else if (result == System.Windows.Forms.DialogResult.Cancel)
+					else if (messageBox.DialogResult == System.Windows.Forms.DialogResult.Cancel)
 					{
 						break;
 					}
@@ -162,12 +173,12 @@ namespace VixenModules.App.ColorGradients
 			if (listViewColorGradients.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result =
-				MessageBox.Show("If you delete this library gradient, ALL places it is used will be unlinked and will" +
-				                " become independent gradients. Are you sure you want to continue?", "Delete library gradient?",
-				                MessageBoxButtons.YesNoCancel);
-
-			if (result == System.Windows.Forms.DialogResult.Yes) {
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("If you delete this library gradient, ALL places it is used will be unlinked and will become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, false);
+			messageBox.ShowDialog();
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
 				Library.RemoveColorGradient(listViewColorGradients.SelectedItems[0].Name);
 				PopulateListWithColorGradients();
 			}
@@ -217,14 +228,14 @@ namespace VixenModules.App.ColorGradients
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
+		}
 	}
 }

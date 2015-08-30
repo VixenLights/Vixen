@@ -129,7 +129,9 @@
 			this.Controls.Add(this.btnOk);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(228, 206);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(228, 206);
 			this.Name = "EffectTimeEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "EffectTimeEditor";

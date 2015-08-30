@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
@@ -24,11 +25,13 @@ namespace VixenModules.App.LipSyncApp
         {
             InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			markCollectionLabel.ForeColor = Color.Gray;
 			markAlignmentLabel.ForeColor = Color.Gray;
 			markStartOffsetLabel.ForeColor = Color.Gray;
 			markCollectionRadio.ForeColor = Color.Gray;
-			buttonConvert.BackgroundImage = Resources.HeadingBackgroundImage;
 			Icon = Resources.Icon_Vixen3;
             unMarkedPhonemes = 0;
             _lastMarkIndex = -1;
@@ -108,7 +111,10 @@ namespace VixenModules.App.LipSyncApp
 
             if (LipSyncTextConvert.StandardDictExists() == false)
             {
-                MessageBox.Show("Unable to find Standard Phoneme Dictionary", "Error", MessageBoxButtons.OK);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to find Standard Phoneme Dictionary", "Error", false, false);
+				messageBox.ShowDialog();
                 return;
             }
 
@@ -304,7 +310,7 @@ namespace VixenModules.App.LipSyncApp
 
 				markCollectionRadio.AutoCheck = 
                     (markCollectionCombo.Items.Count > 0) && (startOffsetCombo.Items.Count > 0);
-	            markCollectionRadio.ForeColor = markCollectionRadio.AutoCheck ? DarkThemeColorTable.ForeColor : Color.Gray;
+	            markCollectionRadio.ForeColor = markCollectionRadio.AutoCheck ? ThemeColorTable.ForeColor : Color.Gray;
             }
 
 			
@@ -354,47 +360,30 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
-		}
-		#endregion
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
 		private void markCollectionCombo_EnabledChanged(object sender, EventArgs e)
 		{
-			markCollectionLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
-			markAlignmentLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
-			markStartOffsetLabel.ForeColor = markCollectionCombo.Enabled ? DarkThemeColorTable.ForeColor : Color.Gray;
+			markCollectionLabel.ForeColor = markCollectionCombo.Enabled ? ThemeColorTable.ForeColor : Color.Gray;
+			markAlignmentLabel.ForeColor = markCollectionCombo.Enabled ? ThemeColorTable.ForeColor : Color.Gray;
+			markStartOffsetLabel.ForeColor = markCollectionCombo.Enabled ? ThemeColorTable.ForeColor : Color.Gray;
 		}
 
-		private void comboBoxes_DrawItem(object sender, DrawItemEventArgs e)
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			var btn = (ComboBox)sender;
-			int index = e.Index;
-			if (index < 0)
-			{
-				return;
-			}
-			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
-			e.DrawBackground();
-			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 

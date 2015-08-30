@@ -6,6 +6,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Sys;
@@ -21,6 +24,9 @@ namespace VixenApplication.Setup
 		public SetupPatchingSimple()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet(), false);
 		}
 
@@ -373,7 +379,10 @@ namespace VixenApplication.Setup
 			OnPatchingUpdated();
 			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
 
-			MessageBox.Show("Patched " + max + " element patch points to controllers.", "Patching Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Patched " + max + " element patch points to controllers.", "Patching Complete", false, false);
+			messageBox.ShowDialog();
 		}
 
 		private void radioButtonPatching_CheckedChanged(object sender, EventArgs e)
@@ -392,9 +401,13 @@ namespace VixenApplication.Setup
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
-				DialogResult result = MessageBox.Show(message, "Unpatch Elements?", MessageBoxButtons.YesNo);
-				if (result == DialogResult.No)
-					return;
+
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, "Unpatch Elements?", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No)
+						return;
 			}
 			
 			List<IDataFlowComponent> directElementChildren = new List<IDataFlowComponent>();
@@ -418,14 +431,16 @@ namespace VixenApplication.Setup
 
 			bool removeFilters = false;
 			if (nonDirectElementChildren.Any(x => x is IOutputFilterModuleInstance)) {
-				DialogResult dr;
-				dr = MessageBox.Show("Some elements are patched to filters.  Should these filters be removed as well?",
-				                     "Remove Filters?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Some elements are patched to filters.  Should these filters be removed as well?",
+									 "Remove Filters?", true, true);
+				messageBox.ShowDialog();
 
-				if (dr == DialogResult.Cancel)
+				if (messageBox.DialogResult == DialogResult.Cancel)
 					return;
 
-				removeFilters = (dr == DialogResult.Yes);
+				removeFilters = (messageBox.DialogResult == DialogResult.OK);
 			}
 
 			foreach (IDataFlowComponent directElementChild in directElementChildren) {
@@ -455,8 +470,11 @@ namespace VixenApplication.Setup
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
-				DialogResult result = MessageBox.Show(message, "Unpatch Controllers?", MessageBoxButtons.YesNo);
-				if (result == DialogResult.No)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, "Unpatch Controllers?", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No)
 					return;
 			}
 
@@ -492,6 +510,24 @@ namespace VixenApplication.Setup
 		{
 			_reverseElementOrder = checkBoxReverseElementOrder.Checked;
 		} // end checkBoxReverseElementOrder_CheckedChanged
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 	}
 
 	public class PatchStatusItem<T>

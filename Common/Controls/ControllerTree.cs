@@ -7,6 +7,7 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Data.Flow;
 using Vixen.Factory;
 using Vixen.Module;
@@ -30,6 +31,7 @@ namespace Common.Controls
 		public ControllerTree()
 		{
 			InitializeComponent();
+			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
 		}
 
 		private void ControllerTree_Load(object sender, EventArgs e)
@@ -393,7 +395,12 @@ namespace Common.Controls
 			}
 
 			if (controllers.Count() > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.YesNo) == DialogResult.Yes) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (OutputController oc in controllers) {
 						VixenSystem.OutputControllers.Remove(oc);
 					}

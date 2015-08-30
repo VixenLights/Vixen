@@ -151,6 +151,36 @@
   <data name="WQ" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\WQ.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AI_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\AI_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="E_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\E_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="etc_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\etc_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FV_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\FV_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\L_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MBP_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\MBP_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="O_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\O_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rest_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\rest_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="U_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\U_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WQ_LightGray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\WQ_LightGray.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="standard_dictionary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\standard_dictionary;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

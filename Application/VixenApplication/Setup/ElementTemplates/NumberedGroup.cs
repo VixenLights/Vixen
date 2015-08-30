@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using NLog;
 using Vixen.Rule;
 using Vixen.Services;
@@ -24,6 +26,10 @@ namespace VixenApplication.Setup.ElementTemplates
 		public NumberedGroup()
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 
 			groupname = "Minitrees";
 			prefix = "Tree";
@@ -98,6 +104,19 @@ namespace VixenApplication.Setup.ElementTemplates
 			groupname = textBoxGroupName.Text;
 			prefix = textBoxItemPrefix.Text;
 			count = Decimal.ToInt32(numericUpDownItemCount.Value);
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

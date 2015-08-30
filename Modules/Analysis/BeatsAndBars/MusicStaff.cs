@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
@@ -24,11 +25,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 		public MusicStaff()
 		{
 			InitializeComponent();
+
 			BeatsPerBar = 4;
 			//NoteSize = 4;
-
-			BeatsPerBarLabel.BackColor = Color.Transparent;
-			NoteSizeLabel.BackColor = Color.Transparent;
 
 			BPMLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 			BarPeriodLabelVal.TextAlign = ContentAlignment.MiddleLeft;

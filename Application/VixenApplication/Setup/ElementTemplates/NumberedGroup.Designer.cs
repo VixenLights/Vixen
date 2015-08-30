@@ -42,106 +42,105 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(290, 186);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(193, 121);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(135, 38);
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(146, 186);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(97, 121);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(135, 38);
+			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 3;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(18, 43);
-			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label1.Location = new System.Drawing.Point(12, 28);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(104, 20);
+			this.label1.Size = new System.Drawing.Size(70, 13);
 			this.label1.TabIndex = 5;
 			this.label1.Text = "Group Name:";
 			// 
 			// textBoxGroupName
 			// 
 			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxGroupName.Location = new System.Drawing.Point(147, 38);
-			this.textBoxGroupName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxGroupName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxGroupName.Location = new System.Drawing.Point(98, 25);
 			this.textBoxGroupName.Name = "textBoxGroupName";
-			this.textBoxGroupName.Size = new System.Drawing.Size(276, 26);
+			this.textBoxGroupName.Size = new System.Drawing.Size(185, 20);
 			this.textBoxGroupName.TabIndex = 0;
 			this.textBoxGroupName.Text = "Minitrees";
 			// 
 			// textBoxItemPrefix
 			// 
 			this.textBoxItemPrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxItemPrefix.Location = new System.Drawing.Point(147, 85);
-			this.textBoxItemPrefix.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxItemPrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxItemPrefix.Location = new System.Drawing.Point(98, 55);
 			this.textBoxItemPrefix.Name = "textBoxItemPrefix";
-			this.textBoxItemPrefix.Size = new System.Drawing.Size(276, 26);
+			this.textBoxItemPrefix.Size = new System.Drawing.Size(185, 20);
 			this.textBoxItemPrefix.TabIndex = 1;
 			this.textBoxItemPrefix.Text = "Tree";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(18, 89);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(12, 58);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(88, 20);
+			this.label2.Size = new System.Drawing.Size(59, 13);
 			this.label2.TabIndex = 7;
 			this.label2.Text = "Item Prefix:";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(18, 129);
-			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Location = new System.Drawing.Point(12, 84);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(92, 20);
+			this.label3.Size = new System.Drawing.Size(61, 13);
 			this.label3.TabIndex = 9;
 			this.label3.Text = "Item Count:";
 			// 
 			// numericUpDownItemCount
 			// 
-			this.numericUpDownItemCount.Location = new System.Drawing.Point(147, 125);
-			this.numericUpDownItemCount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownItemCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownItemCount.Location = new System.Drawing.Point(98, 81);
 			this.numericUpDownItemCount.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownItemCount.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownItemCount.Name = "numericUpDownItemCount";
-			this.numericUpDownItemCount.Size = new System.Drawing.Size(117, 26);
+			this.numericUpDownItemCount.Size = new System.Drawing.Size(78, 20);
 			this.numericUpDownItemCount.TabIndex = 2;
 			this.numericUpDownItemCount.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			// 
 			// NumberedGroup
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(442, 243);
+			this.ClientSize = new System.Drawing.Size(295, 158);
 			this.Controls.Add(this.numericUpDownItemCount);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textBoxItemPrefix);
@@ -151,9 +150,10 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.DoubleBuffered = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(311, 197);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(311, 197);
 			this.Name = "NumberedGroup";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

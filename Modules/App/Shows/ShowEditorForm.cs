@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -19,11 +21,21 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonAddItem.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddItem.Text = "";
 			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 16);
 			buttonDeleteItem.Text = "";
 			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			foreach (Control tab in tabControlShowItems.TabPages)
+			{
+				tab.BackColor = ThemeColorTable.ComboBoxBackColor;
+				tab.ForeColor = ThemeColorTable.ForeColor;
+			}
+			tabControlShowItems.SelectedTabColor = ThemeColorTable.ComboBoxBackColor;
+			tabControlShowItems.TabColor = ThemeColorTable.ComboBoxHighlightColor;
 
 			ShowData = show;
 		}
@@ -37,19 +49,9 @@ namespace VixenModules.App.Shows
 			LoadCurrentTab();
 			CheckButtons();
 
-			//tabControlShowItems.TabPages.Remove(tabPageBackground);
-			tabControlShowItems.TabPages.Remove(tabPageInput);
 		}
 
 		public Show ShowData { get; set; }
-
-		private void buttonCancel_Click(object sender, EventArgs e)
-		{
-			if (MessageBox.Show("Are you sure you want to cancel? Any changes made to the show setup will be lost.", "Cancel Show setup changes", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
-			{
-				DialogResult = System.Windows.Forms.DialogResult.No;
-			}
-		}
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
@@ -133,7 +135,11 @@ namespace VixenModules.App.Shows
 				}
 				else
 				{
-					MessageBox.Show("SetCurrentEditor: SelectedShowItem == null");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("SetCurrentEditor: SelectedShowItem == null",
+										"Color Setup", false, false);
+					messageBox.ShowDialog();
 				}
 			}
 		}
@@ -175,11 +181,13 @@ namespace VixenModules.App.Shows
 		private void comboBoxActions_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			SetCurrentEditor(comboBoxActions.SelectedItem.ToString());
+			Refresh();
 		}
 
 		private void tabControlShowItems_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			LoadCurrentTab();
+			Refresh();
 		}
 
 		private void LoadCurrentTab()
@@ -196,10 +204,10 @@ namespace VixenModules.App.Shows
 			{
 				currentShowItemType = ShowItemType.Sequential;
 			}
-			else if (tabControlShowItems.SelectedTab == tabPageInput)
-			{
-				currentShowItemType = ShowItemType.Input;
-			}
+			//else if (tabControlShowItems.SelectedTab == tabPageInput)
+			//{
+			//	currentShowItemType = ShowItemType.Input;
+			//}
 			else if (tabControlShowItems.SelectedTab == tabPageShutdown)
 			{
 				currentShowItemType = ShowItemType.Shutdown;
@@ -215,8 +223,63 @@ namespace VixenModules.App.Shows
 		private void CheckButtons()
 		{
 			buttonDeleteItem.Enabled = (listViewShowItems.SelectedItems.Count > 0);
-			groupBoxItemEdit.Enabled = (listViewShowItems.SelectedItems.Count > 0);
-			groupBoxAction.Enabled = (listViewShowItems.SelectedItems.Count > 0);
+			comboBoxActions.Enabled = (listViewShowItems.SelectedItems.Count > 0);
+			label3.ForeColor = (listViewShowItems.SelectedItems.Count > 0) ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			if (SequenceTypeEditor._showItem != null)
+			{
+				if (listViewShowItems.SelectedItems.Count > 0)
+				{
+					SequenceTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
+					SequenceTypeEditor.ContolLabelSequence.ForeColor = ThemeColorTable.ForeColor;
+					SequenceTypeEditor.ContolTextBoxSequence.Enabled = true;
+					SequenceTypeEditor.ContolButtonSelectSequence.Enabled = true;
+				}
+				else
+				{
+					SequenceTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
+					SequenceTypeEditor.ContolLabelSequence.ForeColor = ThemeColorTable.ForeColorDisabled;
+					SequenceTypeEditor.ContolTextBoxSequence.Enabled = false;
+					SequenceTypeEditor.ContolButtonSelectSequence.Enabled = false;
+				}
+			}
+			if (PauseTypeEditor._showItem != null)
+			{
+				if (listViewShowItems.SelectedItems.Count > 0)
+				{
+					PauseTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
+					PauseTypeEditor.ContolNumericUpDownPauseSeconds.Enabled = true;
+				}
+				else
+				{
+					PauseTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
+					PauseTypeEditor.ContolNumericUpDownPauseSeconds.Enabled = false;
+				}
+			}
+			if (LaunchTypeEditor._showItem != null)
+			{
+				if (listViewShowItems.SelectedItems.Count > 0)
+				{
+					LaunchTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
+					LaunchTypeEditor.ContolLabel2.ForeColor = ThemeColorTable.ForeColor;
+					LaunchTypeEditor.ContolPanel1.Enabled = true;
+					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.AutoCheck = true;
+					LaunchTypeEditor.ContolCheckBoxWaitForExit.AutoCheck = true;
+					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.ForeColor = ThemeColorTable.ForeColor;
+					LaunchTypeEditor.ContolCheckBoxWaitForExit.ForeColor = ThemeColorTable.ForeColor;
+					
+				}
+				else
+				{
+					LaunchTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
+					LaunchTypeEditor.ContolLabel2.ForeColor = ThemeColorTable.ForeColorDisabled;
+					LaunchTypeEditor.ContolPanel1.Enabled = false;
+					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.AutoCheck = false;
+					LaunchTypeEditor.ContolCheckBoxWaitForExit.AutoCheck = false;
+					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.ForeColor = ThemeColorTable.ForeColorDisabled;
+					LaunchTypeEditor.ContolCheckBoxWaitForExit.ForeColor = ThemeColorTable.ForeColorDisabled;
+				}
+			}
+
 		}
 
 		private void SetHelpLabel()
@@ -355,6 +418,50 @@ namespace VixenModules.App.Shows
 				ShowItem item = e.Item.Tag as ShowItem;
 				e.Item.SubItems[0].Text = item.Name;
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
+
+		private void buttonCancel_Click(object sender, EventArgs e)
+		{
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to cancel? Any changes made to the show setup will be lost.", "Cancel Show setup changes", true, false);
+			messageBox.ShowDialog();
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
+				DialogResult = DialogResult.No;
+			}
+		}
+
+		// The size of the X in each tab's upper right corner.
+		private int Xwid = 8;
+		private const int tab_margin = 0;
+
+		// Draw a tab.
+		private void tabMenu_DrawItem(object sender, DrawItemEventArgs e)
+		{
+
 		}
 	}
 }

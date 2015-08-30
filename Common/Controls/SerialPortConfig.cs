@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Common.Controls.Theme;
 
 namespace Common.Controls
 {
@@ -14,6 +16,9 @@ namespace Common.Controls
 		{
             var logging = NLog.LogManager.GetCurrentClassLogger();
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
 
 			//lets try and open the serial port if it can't be opened then it
@@ -183,8 +188,11 @@ namespace Common.Controls
 				}
 
 				if (sb.Length > 0) {
-					MessageBox.Show(string.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb),
-					                "Serial Port", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(string.Format("The following items need to be resolved:{0}{0}{1}", Environment.NewLine, sb),
+					                "Serial Port", false, false);
+					messageBox.ShowDialog();
 					return false;
 				}
 				else {
@@ -208,13 +216,39 @@ namespace Common.Controls
 				//in the module classes
 				string port = comboBoxPortName.SelectedItem as string;
 				if (port.Contains("(IN USE)")) {
-					DialogResult result = MessageBox.Show("Serial Port may be in use, do you wish to continue?", "Warning",
-					                                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-					if (result == DialogResult.No) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Serial Port may be in use, do you wish to continue?", "Warning", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.No)
+					{
 						DialogResult = DialogResult.None;
 					}
 				}
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
+
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

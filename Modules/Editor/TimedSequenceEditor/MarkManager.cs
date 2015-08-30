@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources;
+using VixenApplication;
 using VixenModules.Sequence.Timed;
 using Vixen.Execution;
 using Vixen.Module.Timing;
@@ -20,7 +21,6 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
 using Common.Controls.Theme;
-using VixenModules.Editor.EffectEditor;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -47,6 +47,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
+			listViewMarks.BackColor = ThemeColorTable.BackgroundColor;
 			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
 			buttonPlay.Text = "";
 			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
@@ -60,24 +65,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			buttonIncreaseSelectedMarks.Text = "";
 			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDecreaseSelectedMarks.Text = "";
-			buttonImportAudacity.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExportBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCopyAndOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddOrUpdateMark.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEvenlySpaceMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateBeatMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOffsetMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonPasteEffectsToMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonSelectAllMarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateSubmarks.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonGenerateGrid.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnAutoDetectionSettings.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnCreateCollections.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 
 			labelTapperInstructions.Visible = false;
 
@@ -106,15 +94,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = true;
 				numHighPass.Enabled = true;
 				numLowPass.Enabled = true;
+				radioButtonTapper.AutoCheck = true;
 				radioButtonPlayback.AutoCheck = true;
-				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColor;
-				radioAll.ForeColor = DarkThemeColorTable.ForeColor;
-				radioSelected.ForeColor = DarkThemeColorTable.ForeColor;
-				chkHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				chkLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numHighPass.ForeColor = DarkThemeColorTable.ForeColor;
-				numLowPass.ForeColor = DarkThemeColorTable.ForeColor;
-				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
+				ChkAutoTapper.ForeColor = ThemeColorTable.ForeColor;
+				radioAll.ForeColor = ThemeColorTable.ForeColor;
+				radioSelected.ForeColor = ThemeColorTable.ForeColor;
+				chkHighPass.ForeColor = ThemeColorTable.ForeColor;
+				chkLowPass.ForeColor = ThemeColorTable.ForeColor;
+				numHighPass.ForeColor = ThemeColorTable.ForeColor;
+				numLowPass.ForeColor = ThemeColorTable.ForeColor;
+				radioButtonTapper.ForeColor = ThemeColorTable.ForeColor;
+				radioButtonPlayback.ForeColor = ThemeColorTable.ForeColor;
 			}
 			else
 			{
@@ -127,15 +117,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				chkLowPass.AutoCheck = false;
 				numHighPass.Enabled = false;
 				numLowPass.Enabled = false;
+				radioButtonTapper.AutoCheck = false;
 				radioButtonPlayback.AutoCheck = false;
-				ChkAutoTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioAll.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioSelected.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				chkHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				chkLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				numHighPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				numLowPass.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-				radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+				ChkAutoTapper.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioAll.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioSelected.ForeColor = ThemeColorTable.ForeColorDisabled;
+				chkHighPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				chkLowPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				numHighPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				numLowPass.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioButtonTapper.ForeColor = ThemeColorTable.ForeColorDisabled;
+				radioButtonPlayback.ForeColor = ThemeColorTable.ForeColorDisabled;
 			}
 		}
 
@@ -242,7 +234,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				panelColor.BackColor = DarkThemeColorTable.BackgroundColor;
+				panelColor.BackColor = ThemeColorTable.BackgroundColor;
 				PopulateFormWithMarkCollection(null);
 			}
 
@@ -263,7 +255,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void buttonAddCollection_Click(object sender, EventArgs e)
 		{
-			AddNewCollection(Color.Green);
+			AddNewCollection(ThemeColorTable.ForeColor);
+	//		Refresh();
 			//MarkCollection newCollection = new MarkCollection();
 			//newCollection.Name = "New Collection";
 			//MarkCollections.Add(newCollection);
@@ -342,6 +335,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 				messageBox.ShowDialog();
 			}
@@ -395,6 +389,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -406,6 +401,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 3)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least three marks to space evenly.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -441,6 +437,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 2)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least two marks to generate times between.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -453,6 +450,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (int.TryParse(prompt.Response, out divisions))
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Do you want to put the new marks into a different collection?", "Add to new collection?", true, true);
 					messageBox.ShowDialog();
 					if (messageBox.DialogResult == DialogResult.Cancel)
@@ -505,6 +503,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing number: please enter a whole number for the number of divisions.", "Error parsing number", false, false);
 					messageBox.ShowDialog();
 				}
@@ -579,6 +578,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 1)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least one mark to paste effects to.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -590,13 +590,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (totalPasted <= 0)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					var messageBox1 = new MessageBoxForm("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect", false, false);
-					messageBox1.ShowDialog();
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Copy an effect to paste to the clipboard in the sequence editor.", "Need an effect", false, false);
+					messageBox.ShowDialog();
 					return;
 				}
 				count += totalPasted;
 			}
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 			var messageBox2 = new MessageBoxForm(string.Format("{0} effects pasted.", count), "Need an effect", false, false);
 			messageBox2.ShowDialog();
 		}
@@ -606,6 +608,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 1)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Select at least one mark duplicate and offset.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -633,6 +636,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -642,6 +646,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonGenerateBeatMarks_Click(object sender, EventArgs e)
 		{
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm("This operation will determine the average beat from the selected marks, and apply them for the rest of the song. Do you want to continue?", "Information", true, false);
 			if (messageBox.ShowDialog() == DialogResult.No)
 				return;
@@ -649,6 +654,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewMarks.SelectedItems.Count < 2)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				messageBox = new MessageBoxForm("Select at least two marks to be able to determine an average time interval.", "Select more marks", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -691,6 +697,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					int generatedMarks = (int) (duration.Ticks/interval.Ticks) - 1;
 
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					messageBox = new MessageBoxForm(string.Format("From the selected marks, a beat interval of {0:%s\\.ff} seconds was detected ({1:0.00} bpm). This will generate {2} marks. Do you want to continue?", interval,
 										 bpm, generatedMarks), "Confirmation", true, false);
 					if (messageBox.ShowDialog() == DialogResult.No)
@@ -710,6 +717,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>', or leave empty", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -742,6 +750,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 					messageBox.ShowDialog();
 				}
@@ -766,13 +775,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPlayback.Stop();
 			_executionControl.Stop();
 			_playbackStarted = false;
-			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0) {
+			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0)
+			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Accept the new marks?", "", true, false);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
-					foreach (TimeSpan time in _newTappedMarks) {
+					foreach (TimeSpan time in _newTappedMarks)
+					{
 						if (!_displayedCollection.Marks.Contains(time))
 							_displayedCollection.Marks.Add(time);
 					}
@@ -780,14 +792,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateMarkCollectionInList(_displayedCollection);
 					_newTappedMarks.Clear();
 				}
-				else 
+				else
 				{
 					if (listViewMarks.Items.Count == 0)
 					{
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 						messageBox = new MessageBoxForm("The Mark Collection is empty, would you like to remove it?", "", true, false);
 						messageBox.ShowDialog();
 						if (messageBox.DialogResult == DialogResult.OK)
 						{
+							MarkCollections.RemoveAt(listViewMarkCollections.SelectedIndices[0]);
 							listViewMarkCollections.Items.Remove(listViewMarkCollections.SelectedItems[0]);
 						}
 					}
@@ -804,8 +819,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = false;
 			radioButtonTapper.AutoCheck = false;
 			radioButtonPlayback.AutoCheck = false;
-			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColorDisabled;
-			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColorDisabled;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = false;
 			numericUpDownWeight.Enabled = false;
 			panelColor.Enabled = false;
@@ -836,8 +851,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			checkBoxEnabled.AutoCheck = true;
 			radioButtonTapper.AutoCheck = true;
 			radioButtonPlayback.AutoCheck = true;
-			radioButtonTapper.ForeColor = DarkThemeColorTable.ForeColor;
-			radioButtonPlayback.ForeColor = DarkThemeColorTable.ForeColor;
+			radioButtonTapper.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			radioButtonPlayback.ForeColor = radioButtonTapper.AutoCheck ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			textBoxCollectionName.Enabled = true;
 			numericUpDownWeight.Enabled = true;
 			panelColor.Enabled = true;
@@ -868,7 +883,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timerMarkHit_Tick(object sender, EventArgs e)
 		{
-			panelMarkView.BackColor = DarkThemeColorTable.BackgroundColor;
+			panelMarkView.BackColor = ThemeColorTable.BackgroundColor;
 			timerMarkHit.Stop();
 		}
 
@@ -968,10 +983,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _triggerResult()
 		{
-			if (_playbackStarted)
-			{
+			if (_playbackStarted) {
 				if (listViewMarkCollections.SelectedItems.Count == 0)
-				AddNewCollection(Color.Green);
+					AddNewCollection(ThemeColorTable.ForeColor);
 				// round the tapped time to the nearest millisecond
 				_newTappedMarks.Add(TimeSpan.FromMilliseconds(Math.Round(_timingSource.Position.TotalMilliseconds)));
 				panelMarkView.BackColor = _displayedCollection.MarkColor;
@@ -1288,6 +1302,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					string msg = "There was an error importing the Audacity beat marks: " + ex.Message;
 					Logging.Error(msg);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", false, false);
 					messageBox.ShowDialog();
 				}
@@ -1339,6 +1354,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					string msg = "There was an error importing the Audacity bar marks: " + ex.Message;
 					Logging.Error(msg);
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", false, false);
 					messageBox.ShowDialog();
 				}
@@ -1358,7 +1374,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			PopulateMarkCollectionsList();
 
 			panelColor.BackColor = color;
-
 			return newCollection;
 		}
 
@@ -1372,6 +1387,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'", "Error parsing time", false, false);
 				messageBox.ShowDialog();
 			}
@@ -1396,6 +1412,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (MarkCollections.Count == 0)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Unable to find marks collection for export", "Warning", false, false);
 				messageBox.ShowDialog();
 				return;
@@ -1410,7 +1427,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (bDialog.IsAudacitySelection)
 					ExportMarkCollections(null, "audacity");
 				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
-					MessageBox.Show("No export type selected");
+				{ 
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("No export type selected", "Warning", false, false);
+					messageBox.ShowDialog();
+				}
 			}
 		}
 
@@ -1472,7 +1494,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							iMarkCollection++;
 					}
 				}
-
+				
 				saveFileDialog.DefaultExt = ".txt";
 				saveFileDialog.Filter = "Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -1490,52 +1512,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		#region Used to set the text color when buttons are disabled
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-		}
-
 		private void panelMarkCollectionsButtons_EnabledChanged(object sender, EventArgs e)
 		{
-			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			buttonExportBeatMarks.ForeColor = buttonExportBeatMarks.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonImportAudacity.ForeColor = buttonImportAudacity.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			buttonAddCollection.ForeColor = buttonAddCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
-		#endregion
 
-		#region Draw lines and GroupBox borders
-		
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-
-		#endregion
-
-		#region Set button background for mouse hover and leave
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
-		#endregion
 
 		private void groupBoxOperations_EnabledChanged(object sender, EventArgs e)
 		{
-			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label1.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label2.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-			label3.ForeColor = groupBoxOperations.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			checkBoxEnabled.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label1.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label2.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			label3.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 	}

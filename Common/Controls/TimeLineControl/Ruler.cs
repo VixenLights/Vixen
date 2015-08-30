@@ -78,7 +78,11 @@ namespace Common.Controls.Timeline
 				_drawMarks(e.Graphics);
 			}
 			catch (Exception ex) {
-				MessageBox.Show("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Exception in Timeline.Ruler.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace,
+					@"Error", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 

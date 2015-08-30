@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Xml;
+using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
@@ -35,12 +36,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public ColorCollectionLibrary_Form(List<ColorCollection> collections)
 		{
 			InitializeComponent();
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonAddColor.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonExportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonImportCollection.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonRemoveColor.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			buttonNewCollection.BackgroundImage = Tools.GetIcon(Resources.add, 25);
 			buttonNewCollection.Text = "";
 			buttonDeleteCollection.BackgroundImage = Tools.GetIcon(Resources.minus, 25);
@@ -97,10 +96,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_isDirty)
 			{
-				var warnResult = MessageBox.Show(@"You will loose any changes, do you wish to save them now ?", @"Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-				if (warnResult == DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("You will loose any changes, do you wish to save them now ?", "Warning", true, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 					DialogResult = DialogResult.OK;
-				if (warnResult == DialogResult.Cancel)
+				if (messageBox.DialogResult == DialogResult.Cancel)
 					e.Cancel = true;
 			}
 		}
@@ -245,9 +247,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (ColorCollections.Contains(colorCollection))
 						{
-							DialogResult result = MessageBox.Show(@"A collection with the name " + colorCollection.Name + @" already exists. Do you want to overwrite it?",
-										  @"Overwrite collection?", MessageBoxButtons.YesNoCancel);
-							if (result == DialogResult.Yes)
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("A collection with the name " + colorCollection.Name + @" already exists. Do you want to overwrite it?", "Overwrite collection?", true, false);
+							messageBox.ShowDialog();
+							if (messageBox.DialogResult == DialogResult.OK)
 							{
 								//Remove the collection to overwrite, we will add the new one below.
 								ColorCollections.Remove(colorCollection);
@@ -264,8 +268,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				PopulateCollectionList();
 				if (_currentCollection != null) comboBoxCollections.Text = _currentCollection.Name;
-				MessageBox.Show(@"Imported " + importCount + @" Color Collections.", @"Color Collections Import", MessageBoxButtons.OK,
-					MessageBoxIcon.Information);
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Imported " + importCount + @" Color Collections.", "Color Collections Import", false, false);
+					messageBox.ShowDialog();
+				}
 			}			
 		}
 
@@ -274,8 +282,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_currentCollection != null)
 			{
-				DialogResult result = MessageBox.Show(string.Format("Are you sure you want to delete the collection: {0} ?", _currentCollection.Name), @"Delete collection?", MessageBoxButtons.YesNo);
-				if (result == DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(string.Format("Are you sure you want to delete the collection: {0} ?", _currentCollection.Name), "Delete collection?", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					ColorCollections.Remove(_currentCollection);
 					listViewColors.Items.Clear();
@@ -294,15 +305,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show(@"Please enter a name.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Please enter a name.", "Color Collection Name", false, false);
+					messageBox.ShowDialog();
 					continue;
 				}
 				ColorCollection item = new ColorCollection {Name = dialog.Response};
 				if (ColorCollections.Contains(item))
 				{
-					DialogResult result = MessageBox.Show(@"A collection with the name " + item.Name + @" already exists. Do you want to overwrite it?",
-														  @"Overwrite collection?", MessageBoxButtons.YesNoCancel);
-					if (result == DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("A collection with the name " + item.Name + @" already exists. Do you want to overwrite it?", "Overwrite collection?", true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						ColorCollections.Remove(item);
 						ColorCollections.Add(item);
@@ -388,13 +404,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 
 		private void buttonNewCollection_Click(object sender, EventArgs e)
@@ -430,19 +447,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonTextColorChange(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
-		private void comboBoxCollections_DrawItem(object sender, DrawItemEventArgs e)
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			int index = e.Index;
-			if (index < 0)
-			{
-				return;
-			}
-			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
-			e.DrawBackground();
-			e.Graphics.DrawString(comboBoxCollections.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 	}
 }

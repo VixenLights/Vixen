@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.App.InstrumentationPanel
 {
-	partial class InstrumentationForm {
+	sealed partial class InstrumentationForm {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -58,6 +58,8 @@
 			this.btnClose.Text = "Close";
 			this.btnClose.UseVisualStyleBackColor = true;
 			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+			this.btnClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// btnReset
 			// 
@@ -69,6 +71,8 @@
 			this.btnReset.Text = "Reset";
 			this.btnReset.UseVisualStyleBackColor = true;
 			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+			this.btnReset.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnReset.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// InstrumentationForm
 			// 
@@ -79,6 +83,8 @@
 			this.Controls.Add(this.btnReset);
 			this.Controls.Add(this.btnClose);
 			this.Controls.Add(this.textBox1);
+			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "InstrumentationForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Instrumentation";

@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor

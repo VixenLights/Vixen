@@ -44,10 +44,10 @@ namespace VixenModules.App.Curves
 			this.grpCurve = new System.Windows.Forms.GroupBox();
 			this.btnUpdateCoordinates = new System.Windows.Forms.Button();
 			this.lblSelectedPoint = new System.Windows.Forms.Label();
-			this.btnInvert = new System.Windows.Forms.Button();
-			this.btnReverse = new System.Windows.Forms.Button();
 			this.txtYValue = new Common.Controls.NumericTextBox();
 			this.txtXValue = new Common.Controls.NumericTextBox();
+			this.btnInvert = new System.Windows.Forms.Button();
+			this.btnReverse = new System.Windows.Forms.Button();
 			this.zedGraphControl = new ZedGraph.ZedGraphControl();
 			this.groupBoxLibrary.SuspendLayout();
 			this.grpCurve.SuspendLayout();
@@ -141,7 +141,6 @@ namespace VixenModules.App.Curves
 			this.buttonEditLibraryCurve.TabIndex = 4;
 			this.buttonEditLibraryCurve.Text = "Edit Library Curve";
 			this.buttonEditLibraryCurve.UseVisualStyleBackColor = false;
-			this.buttonEditLibraryCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonEditLibraryCurve.Click += new System.EventHandler(this.buttonEditLibraryCurve_Click);
 			this.buttonEditLibraryCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditLibraryCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -160,7 +159,6 @@ namespace VixenModules.App.Curves
 			this.buttonUnlinkCurve.TabIndex = 3;
 			this.buttonUnlinkCurve.Text = "Unlink Curve";
 			this.buttonUnlinkCurve.UseVisualStyleBackColor = false;
-			this.buttonUnlinkCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonUnlinkCurve.Click += new System.EventHandler(this.buttonUnlinkCurve_Click);
 			this.buttonUnlinkCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonUnlinkCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -188,7 +186,6 @@ namespace VixenModules.App.Curves
 			this.buttonSaveCurveToLibrary.TabIndex = 1;
 			this.buttonSaveCurveToLibrary.Text = "Save Curve";
 			this.buttonSaveCurveToLibrary.UseVisualStyleBackColor = false;
-			this.buttonSaveCurveToLibrary.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonSaveCurveToLibrary.Click += new System.EventHandler(this.buttonSaveCurveToLibrary_Click);
 			this.buttonSaveCurveToLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSaveCurveToLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -207,7 +204,6 @@ namespace VixenModules.App.Curves
 			this.buttonLoadCurveFromLibrary.TabIndex = 0;
 			this.buttonLoadCurveFromLibrary.Text = "Load Curve";
 			this.buttonLoadCurveFromLibrary.UseVisualStyleBackColor = false;
-			this.buttonLoadCurveFromLibrary.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonLoadCurveFromLibrary.Click += new System.EventHandler(this.buttonLoadCurveFromLibrary_Click);
 			this.buttonLoadCurveFromLibrary.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonLoadCurveFromLibrary.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -264,7 +260,6 @@ namespace VixenModules.App.Curves
 			this.btnUpdateCoordinates.TabIndex = 15;
 			this.btnUpdateCoordinates.Text = "Update";
 			this.btnUpdateCoordinates.UseVisualStyleBackColor = false;
-			this.btnUpdateCoordinates.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.btnUpdateCoordinates.Click += new System.EventHandler(this.btnUpdateCoordinates_Click);
 			this.btnUpdateCoordinates.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnUpdateCoordinates.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -277,6 +272,30 @@ namespace VixenModules.App.Curves
 			this.lblSelectedPoint.Size = new System.Drawing.Size(76, 13);
 			this.lblSelectedPoint.TabIndex = 14;
 			this.lblSelectedPoint.Text = "Selected Point";
+			// 
+			// txtYValue
+			// 
+			this.txtYValue.AllowSpace = false;
+			this.txtYValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtYValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtYValue.Enabled = false;
+			this.txtYValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtYValue.Location = new System.Drawing.Point(347, 49);
+			this.txtYValue.Name = "txtYValue";
+			this.txtYValue.Size = new System.Drawing.Size(118, 20);
+			this.txtYValue.TabIndex = 13;
+			// 
+			// txtXValue
+			// 
+			this.txtXValue.AllowSpace = false;
+			this.txtXValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.txtXValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.txtXValue.Enabled = false;
+			this.txtXValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.txtXValue.Location = new System.Drawing.Point(347, 19);
+			this.txtXValue.Name = "txtXValue";
+			this.txtXValue.Size = new System.Drawing.Size(118, 20);
+			this.txtXValue.TabIndex = 12;
 			// 
 			// btnInvert
 			// 
@@ -313,30 +332,6 @@ namespace VixenModules.App.Curves
 			this.btnReverse.Click += new System.EventHandler(this.btnReverse_Click);
 			this.btnReverse.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnReverse.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
-			// 
-			// txtYValue
-			// 
-			this.txtYValue.AllowSpace = false;
-			this.txtYValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtYValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtYValue.Enabled = false;
-			this.txtYValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtYValue.Location = new System.Drawing.Point(347, 49);
-			this.txtYValue.Name = "txtYValue";
-			this.txtYValue.Size = new System.Drawing.Size(118, 20);
-			this.txtYValue.TabIndex = 13;
-			// 
-			// txtXValue
-			// 
-			this.txtXValue.AllowSpace = false;
-			this.txtXValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.txtXValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txtXValue.Enabled = false;
-			this.txtXValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtXValue.Location = new System.Drawing.Point(347, 19);
-			this.txtXValue.Name = "txtXValue";
-			this.txtXValue.Size = new System.Drawing.Size(118, 20);
-			this.txtXValue.TabIndex = 12;
 			// 
 			// zedGraphControl
 			// 

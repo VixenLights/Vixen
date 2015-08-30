@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Factory;
@@ -123,7 +124,12 @@ namespace VixenApplication
 			}
 
 			if (listViewControllers.SelectedItems.Count > 0) {
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, false, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputController oc = item.Tag as OutputController;
 						VixenSystem.OutputControllers.Remove(oc);

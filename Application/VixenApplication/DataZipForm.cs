@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Drawing;
+using System.Threading;
 using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -24,6 +26,10 @@ namespace VixenApplication
 		public DataZipForm()
 		{
 			InitializeComponent();
+			statusStrip1.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			buttonSetSaveFolder.Image = Tools.GetIcon(Resources.folder, 16);
 			_bw.WorkerReportsProgress=true;
@@ -158,18 +164,27 @@ namespace VixenApplication
 			if (_item == null)
 			{
 				//Oops.. Get outta here
-				MessageBox.Show(@"Unable to find datafolder for that profile.", @"Error");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to find datafolder for that profile.", @"Error", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
 			if (textBoxSaveFolder.Text == "")
 			{
-				MessageBox.Show(@"Please choose a folder to create the zip file in.", @"Missing save folder");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Please choose a folder to create the zip file in.", @"Missing save folder", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 			if (textBoxFileName.Text == "")
 			{
-				MessageBox.Show(@"Please choose a filename for the zip file.", @"Missing Zip file name");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Please choose a filename for the zip file.", @"Missing Zip file name", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -182,7 +197,11 @@ namespace VixenApplication
 
 			if (!Directory.Exists(textBoxSaveFolder.Text))
 			{
-				if (MessageBox.Show(@"The destination folder does not exist, would you like to create it ?", @"Folder not found", MessageBoxButtons.YesNo) == DialogResult.No)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The destination folder does not exist, would you like to create it ?", @"Folder not found", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No)
 				{
 					return;
 				}
@@ -191,7 +210,11 @@ namespace VixenApplication
 			}
 			else if (File.Exists(outPath))
 			{
-				if (MessageBox.Show(@"The file name you have enter already exists, do you wish to overwrite it ?", @"File exists", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The file name you have enter already exists, do you wish to overwrite it ?", @"File exists", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					File.Delete(outPath);
 				}
@@ -308,5 +331,22 @@ namespace VixenApplication
 			return true;
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 	}
 }

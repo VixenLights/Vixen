@@ -8,6 +8,7 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
+using VixenApplication;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 
@@ -19,14 +20,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			TimelineControl = timelineControl;
-			toolStrip1.Renderer = new DarkThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor; //Over-rides the default Listview background
 		}
 
 		private void Form_Marks_Load(object sender, EventArgs e)
 		{
 			var xml = new XMLProfileSettings();
 			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
-			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20); ;
+			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20);
 			//xml = null;
 		}
 
@@ -172,7 +176,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (listViewMarkCollections.SelectedItems.Count > 0)
 			{
-				if (MessageBox.Show("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //adds a system icon to the message form.
+				var messageBox = new MessageBoxForm("Are you sure you want to delete the selected Marks in the Collection?", "Delete Mark Collection", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
 					{
@@ -185,7 +193,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				MessageBox.Show("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //adds a system icon to the message form.
+				var messageBox = new MessageBoxForm("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 

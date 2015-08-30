@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Module.Effect;
 using VixenModules.Property.Color;
@@ -22,9 +23,10 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapColorSelect()
         {
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 250, ActiveForm.Location.Y + 100) : new Point(500, 200);
-            InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
         }
 
@@ -92,13 +94,13 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

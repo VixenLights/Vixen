@@ -47,7 +47,7 @@
 			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOK.Location = new System.Drawing.Point(577, 424);
+			this.buttonOK.Location = new System.Drawing.Point(686, 424);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(80, 25);
 			this.buttonOK.TabIndex = 16;
@@ -66,7 +66,7 @@
 			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.Location = new System.Drawing.Point(663, 424);
+			this.buttonCancel.Location = new System.Drawing.Point(772, 424);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
 			this.buttonCancel.TabIndex = 15;
@@ -81,7 +81,7 @@
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridView1.Location = new System.Drawing.Point(12, 59);
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(731, 336);
+			this.dataGridView1.Size = new System.Drawing.Size(840, 336);
 			this.dataGridView1.TabIndex = 18;
 			this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
 			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
@@ -141,7 +141,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(755, 461);
+			this.ClientSize = new System.Drawing.Size(864, 461);
 			this.Controls.Add(this.buttonAssign);
 			this.Controls.Add(this.nameTextBox);
 			this.Controls.Add(this.label2);
@@ -150,7 +150,8 @@
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.MinimumSize = new System.Drawing.Size(771, 500);
+			this.MaximumSize = new System.Drawing.Size(880, 900);
+			this.MinimumSize = new System.Drawing.Size(880, 500);
 			this.Name = "LipSyncMapEditor";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

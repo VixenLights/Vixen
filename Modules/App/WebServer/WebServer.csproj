@@ -171,6 +171,10 @@
       <Name>Controls</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
+      <Name>Resources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>

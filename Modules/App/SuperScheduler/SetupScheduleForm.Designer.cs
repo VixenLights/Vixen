@@ -74,6 +74,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -86,6 +88,8 @@
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -97,6 +101,8 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox1
 			// 
@@ -110,6 +116,7 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Dates:";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// dateStop
 			// 
@@ -159,6 +166,7 @@
 			this.groupBox2.TabIndex = 63;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Days:";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// checkSaturday
 			// 
@@ -243,6 +251,7 @@
 			this.groupBox3.TabIndex = 64;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Time:";
+			this.groupBox3.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// labelDuration
 			// 
@@ -302,6 +311,7 @@
 			this.groupBox4.TabIndex = 65;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Show";
+			this.groupBox4.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// label4
 			// 
@@ -316,13 +326,14 @@
 			// 
 			this.comboBoxShow.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.comboBoxShow.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxShow.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxShow.FormattingEnabled = true;
 			this.comboBoxShow.Location = new System.Drawing.Point(86, 19);
 			this.comboBoxShow.Name = "comboBoxShow";
 			this.comboBoxShow.Size = new System.Drawing.Size(211, 21);
 			this.comboBoxShow.TabIndex = 18;
-			this.comboBoxShow.SelectedIndexChanged += new System.EventHandler(this.comboBoxShow_SelectedIndexChanged);
+			this.comboBoxShow.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// checkEnabled
 			// 

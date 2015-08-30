@@ -64,6 +64,7 @@
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Shows";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// label1
 			// 
@@ -83,6 +84,8 @@
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
 			this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+			this.buttonClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox2
 			// 
@@ -97,6 +100,7 @@
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Scheduled Shows";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// buttonEditShow
 			// 
@@ -145,6 +149,7 @@
 			// 
 			// contextMenuStripList
 			// 
+			this.contextMenuStripList.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.contextMenuStripList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addAScheduledShowToolStripMenuItem,
             this.editTheSelectedScheduleToolStripMenuItem,
@@ -233,6 +238,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// SetupForm
 			// 

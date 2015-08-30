@@ -85,7 +85,7 @@
 			this.comboBoxCollections.Name = "comboBoxCollections";
 			this.comboBoxCollections.Size = new System.Drawing.Size(207, 21);
 			this.comboBoxCollections.TabIndex = 2;
-			this.comboBoxCollections.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBoxCollections_DrawItem);
+			this.comboBoxCollections.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxCollections.SelectedIndexChanged += new System.EventHandler(this.comboBoxCollections_SelectedIndexChanged);
 			// 
 			// btnOK

@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Output.Olsen595
 {
@@ -17,15 +20,22 @@ namespace VixenModules.Output.Olsen595
 		public SetupDialog(Data data)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_data = data;
 			_PortAddress = _data.Port;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			if (_PortAddress == 0) {
-				MessageBox.Show("The port address is 0.", "595 Setup", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				DialogResult = DialogResult.None;
+			if (_PortAddress == 0) 
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The port address is 0.", "595 Setup", false, false);
+				messageBox.ShowDialog();
+				messageBox.DialogResult = DialogResult.None;
 			}
 			else {
 				_data.Port = _PortAddress;
@@ -42,6 +52,19 @@ namespace VixenModules.Output.Olsen595
 				return value;
 			}
 			set { textBoxPortAddress.Text = value.ToString("X"); }
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 	}
 }

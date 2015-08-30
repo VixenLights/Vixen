@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -19,6 +21,9 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
 			
 			_scheduleItem = scheduleItem;
@@ -42,7 +47,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (dateStart.Value > dateStop.Value)
 			{
-				MessageBox.Show("The end date of a show must fall after the start date.", "Date Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The end date of a show must fall after the start date.", "Date Error", false, true);
+				messageBox.ShowDialog();
 				return;
 			}
 			_scheduleItem.StartDate = dateStart.Value;
@@ -137,10 +145,26 @@ namespace VixenModules.App.SuperScheduler
 			labelDuration.Text = "(the show will last " + t.Hours + " hours and " + t.Minutes + " minutes)";
 		}
 
-		private void comboBoxShow_SelectedIndexChanged(object sender, EventArgs e)
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
 	}
 }

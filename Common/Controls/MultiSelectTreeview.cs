@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms.Design;
+using Common.Controls.Theme;
 
 
 namespace Common.Controls
@@ -854,8 +855,8 @@ namespace Common.Controls
 				node.BackColor = SystemColors.Highlight;
 			}
 			else {
-				node.BackColor = SystemColors.HighlightText;
-				node.ForeColor = SystemColors.ControlText;
+				node.BackColor = ThemeColorTable.ListBoxBackColor;
+				node.ForeColor = ThemeColorTable.ForeColor;
 			}
 		}
 
@@ -1032,7 +1033,11 @@ namespace Common.Controls
 		{
 			// Perform some error handling here.
 			// We don't want to bubble errors to the CLR. 
-			MessageBox.Show(ex.Message);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm(ex.Message,
+				"Error", false, false);
+			messageBox.ShowDialog();
 		}
 
 		#endregion

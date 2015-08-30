@@ -147,7 +147,12 @@ namespace VixenApplication
 					message = "Are you sure you want to delete the selected element?";
 					title = "Delete Item?";
 				}
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, false, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (TreeNode tn in elementTree.SelectedTreeNodes) {
 						elementTree.DeleteNode(tn);
 					}
@@ -209,7 +214,12 @@ namespace VixenApplication
 					message = "Are you sure you want to remove the selected properties from the element?";
 					title = "Remove Properties?";
 				}
-				if (MessageBox.Show(message, title, MessageBoxButtons.OKCancel) == DialogResult.OK) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(message, title, false, true);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					foreach (ListViewItem item in listViewProperties.SelectedItems) {
 						_displayedNode.Properties.Remove((item.Tag as IPropertyModuleInstance).Descriptor.TypeId);
 					}

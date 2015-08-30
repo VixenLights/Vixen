@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -15,6 +18,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewCustomCreateForm()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public string TemplateName
@@ -24,20 +30,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			if (TemplateName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) {
-				MessageBox.Show(
-					"The template name must be a valid file name. Please ensure there are no invalid characters in the template name.",
-					"Invalid Template Name", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The template name must be a valid file name. Please ensure there are no invalid characters in the template name.",
+					"Invalid Template Name", false, true);
+				messageBox.ShowDialog();
+				DialogResult = messageBox.DialogResult;
 			}
 			else {
-				DialogResult = System.Windows.Forms.DialogResult.OK;
+				DialogResult = DialogResult.OK;
 				Close();
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

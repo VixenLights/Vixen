@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -15,8 +16,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public BeatMarkExportDialog()
 		{
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public bool IsVixen3Selection
@@ -43,13 +45,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			private void buttonBackground_MouseHover(object sender, EventArgs e)
 			{
 				var btn = (Button)sender;
-				btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+				btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 			}
 
 			private void buttonBackground_MouseLeave(object sender, EventArgs e)
 			{
 				var btn = (Button)sender;
-				btn.BackgroundImage = Resources.HeadingBackgroundImage;
+				btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 			}
 	}
 }

@@ -51,8 +51,8 @@
 			this.buttonOk.TabIndex = 22;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
-			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonOk_MouseLeave);
-			this.buttonOk.MouseHover += new System.EventHandler(this.buttonOk_MouseHover);
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonCancel
 			// 
@@ -71,8 +71,8 @@
 			this.buttonCancel.TabIndex = 23;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
-			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonCancel_MouseLeave);
-			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonCancel_MouseHover);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// listBoxItems
 			// 

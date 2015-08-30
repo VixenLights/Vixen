@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module;
 using Vixen.Module.OutputFilter;
@@ -24,7 +26,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
         public PreviewSetElements(List<PreviewBaseShape> shapes)
         {
-            InitializeComponent();
+			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             _shapes = shapes;
             connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
@@ -116,7 +122,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             ListViewItem item = listLinkedElements.GetItemAt(targetPoint.X, targetPoint.Y);
             if (item == null)
             {
-                MessageBox.Show("Elements must be dropped on a target.  Please try again.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Elements must be dropped on a target.  Please try again.", "Error", false, false);
+				messageBox.ShowDialog();
                 return;
             }
 
@@ -139,7 +148,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 else
                 {
-                    MessageBox.Show("treeNode==null!");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("treeNode==null!", "Error", false, false);
+					messageBox.ShowDialog();
                 }
             }
         }
@@ -408,5 +420,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 UpdateListLinkedElements();
             }
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
     }
 }

@@ -83,6 +83,56 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap alignBoth {
+            get {
+                object obj = ResourceManager.GetObject("alignBoth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignCenter {
+            get {
+                object obj = ResourceManager.GetObject("alignCenter", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignEnd {
+            get {
+                object obj = ResourceManager.GetObject("alignEnd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignment {
+            get {
+                object obj = ResourceManager.GetObject("alignment", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignStart {
+            get {
+                object obj = ResourceManager.GetObject("alignStart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap arrow_branch {
             get {
                 object obj = ResourceManager.GetObject("arrow_branch", resourceCulture);
@@ -433,6 +483,26 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap ButtonBackgroundImage {
+            get {
+                object obj = ResourceManager.GetObject("ButtonBackgroundImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ButtonBackgroundImageHover {
+            get {
+                object obj = ResourceManager.GetObject("ButtonBackgroundImageHover", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap clipboard_empty {
             get {
                 object obj = ResourceManager.GetObject("clipboard_empty", resourceCulture);
@@ -693,6 +763,26 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap collection {
+            get {
+                object obj = ResourceManager.GetObject("collection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap colors {
+            get {
+                object obj = ResourceManager.GetObject("colors", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap control_end {
             get {
                 object obj = ResourceManager.GetObject("control_end", resourceCulture);
@@ -843,6 +933,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap copySelect {
+            get {
+                object obj = ResourceManager.GetObject("copySelect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap cursor_arrow {
             get {
                 object obj = ResourceManager.GetObject("cursor_arrow", resourceCulture);
@@ -926,6 +1026,16 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap disk {
             get {
                 object obj = ResourceManager.GetObject("disk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap divide {
+            get {
+                object obj = ResourceManager.GetObject("divide", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1223,6 +1333,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap effects {
+            get {
+                object obj = ResourceManager.GetObject("effects", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap fill_gaps {
             get {
                 object obj = ResourceManager.GetObject("fill_gaps", resourceCulture);
@@ -1343,19 +1463,9 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap HeadingBackgroundImage {
+        public static System.Drawing.Bitmap group {
             get {
-                object obj = ResourceManager.GetObject("HeadingBackgroundImage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap HeadingBackgroundImageHover {
-            get {
-                object obj = ResourceManager.GetObject("HeadingBackgroundImageHover", resourceCulture);
+                object obj = ResourceManager.GetObject("group", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1713,6 +1823,26 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap randomColors {
+            get {
+                object obj = ResourceManager.GetObject("randomColors", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap sequentialColors {
+            get {
+                object obj = ResourceManager.GetObject("sequentialColors", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap sound {
             get {
                 object obj = ResourceManager.GetObject("sound", resourceCulture);
@@ -1766,6 +1896,16 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap sound_none {
             get {
                 object obj = ResourceManager.GetObject("sound_none", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Split {
+            get {
+                object obj = ResourceManager.GetObject("Split", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

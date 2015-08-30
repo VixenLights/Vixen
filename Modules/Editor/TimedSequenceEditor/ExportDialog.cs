@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Module.Timing;
@@ -42,8 +43,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             InitializeComponent();
 
-			buttonStart.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonStop.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             Icon = Resources.Icon_Vixen3;
             
             _sequence = sequence;
@@ -252,7 +254,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
 
             buttonStart.Enabled = false;
-            MessageBox.Show("File saved to " + _outFileName);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("File saved to " + _outFileName, "File Saved?", false, false);
+			messageBox.ShowDialog();
             buttonStart.Enabled = true;
         }
 
@@ -438,41 +443,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 
-		#region Draw lines and GroupBox borders
-	
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
-		#endregion
 
-		private void comboBoxes_DrawItem(object sender, DrawItemEventArgs e)
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			var btn = (ComboBox)sender;
-			int index = e.Index;
-			if (index < 0)
-			{
-				return;
-			}
-			var brush = new SolidBrush(DarkThemeColorTable.ForeColor);
-			e.DrawBackground();
-			e.Graphics.DrawString(btn.Items[index].ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault);
+			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
-		}
-
 	}
 }

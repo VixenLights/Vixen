@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 
 namespace VixenModules.App.Scheduler
 {
@@ -168,10 +169,13 @@ namespace VixenModules.App.Scheduler
 		private void SchedulerForm_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && scheduleDayView.SelectedItem != null) {
-				if (
-					MessageBox.Show(
-						"Delete scheduled run of \"" + System.IO.Path.GetFileName(scheduleDayView.SelectedItem.FilePath) + "\"?",
-						"Vixen Scheduler", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Delete scheduled run of \"" + System.IO.Path.GetFileName(scheduleDayView.SelectedItem.FilePath) + "\"?",
+						"Vixen Scheduler", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.OK)
+				{
 					IScheduleItem item = scheduleDayView.SelectedItem;
 					_data.Items.Remove(item);
 					_RefreshView();
