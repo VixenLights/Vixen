@@ -72,10 +72,10 @@ namespace VixenModules.Effect.Pulse
 					else
 					{
 						startValue = new LightingValue((Color)color,
-													   (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) *
+													   (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * HSV.FromRGB((Color)color).V *
 														levelCurve.GetValue(lastPosition * 100) / 100));
 						endValue = new LightingValue((Color)color,
-													 (colorGradient.GetProportionOfColorAt(position, (Color)color) *
+													 (colorGradient.GetProportionOfColorAt(position, (Color)color) * HSV.FromRGB((Color)color).V *
 													  levelCurve.GetValue(position * 100) / 100));
 					}
 
