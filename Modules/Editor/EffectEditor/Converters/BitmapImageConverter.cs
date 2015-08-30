@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -17,12 +16,7 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			{
 				return BitmapToMediaImage((Bitmap) value);
 			}
-			else
-			{
-				Debugger.Break();
-			}
-
-
+			
 			throw new NotSupportedException();
 		}
 

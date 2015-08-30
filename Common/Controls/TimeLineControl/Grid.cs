@@ -199,6 +199,8 @@ namespace Common.Controls.Timeline
 
 		public bool SupressRendering { get; set; }
 
+		public bool SupressSelectionEvents { get; set; }
+
 		public int VerticalOffset
 		{
 			get { return -AutoScrollPosition.Y; }
@@ -337,6 +339,7 @@ namespace Common.Controls.Timeline
 
 		private void _SelectionChanged()
 		{
+			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
 		}
