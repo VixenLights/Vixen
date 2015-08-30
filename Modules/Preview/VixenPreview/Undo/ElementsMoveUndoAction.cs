@@ -10,10 +10,8 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 	public class ElementsMoveUndoAction : UndoAction
 	{
 		private Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> m_changedElements;
-		public Preview.VixenPreview.VixenPreviewSetup3 m_form;
-		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> m_elements;
-		public static VixenPreviewControl.DisplayMoveType m_type;
-//		public VixenPreviewControl.DisplayMoveType type;
+		private Preview.VixenPreview.VixenPreviewSetup3 m_form;
+		private static VixenPreviewControl.DisplayMoveType m_type;
 
 		public ElementsMoveUndoAction(Preview.VixenPreview.VixenPreviewSetup3 form, Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> changedElements, VixenPreviewControl.DisplayMoveType type)
 		{

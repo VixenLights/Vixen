@@ -217,23 +217,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return Math.Max(_topLeftPoint.Y, _bottomRightPoint.Y);
             }
-			set
-			{
-				int delta = Bottom - value;
-				if (_topLeftPoint.Y == Bottom)
-				{
-					_topLeftPoint.Y = value;
-					_bottomRightPoint.Y -= delta;
-					_archLeftPoint.Y -= delta;
-				}
-				else
-				{
-					_topLeftPoint.Y -= delta;
-					_bottomRightPoint.Y = value;
-					_archLeftPoint.Y -= delta;
-				}
-				Layout();
-			}
         }
 
         public override int Right
@@ -242,23 +225,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return Math.Max(_topLeftPoint.X, _bottomRightPoint.X);
             }
-	        set
-	        {
-		        int delta = Right - value;
-		        if (_topLeftPoint.X == Right)
-		        {
-			        _topLeftPoint.X = value;
-			        _bottomRightPoint.X -= delta;
-			        _archLeftPoint.X -= delta;
-		        }
-		        else
-		        {
-			        _topLeftPoint.X -= delta;
-			        _bottomRightPoint.X = value;
-			        _archLeftPoint.X -= delta;
-		        }
-		        Layout();
-	        }
         }
 
         public override int Left

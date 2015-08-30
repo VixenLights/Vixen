@@ -119,19 +119,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				throw new NotImplementedException();
 			}
-			set
-			{
-				throw new NotImplementedException();
-			}
         }
 
         public override int Bottom
         {
 			get
-			{
-				throw new NotImplementedException();
-			}
-			set
 			{
 				throw new NotImplementedException();
 			}

@@ -219,14 +219,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return Math.Max(_topLeft.Y, _bottomRight.Y);
             }
-			set
-			{
-				int delta = Bottom - value;
-
-				_topLeft.Y -= delta;
-				_bottomRight.Y -= delta;
-				Layout();
-			}
         }
 
         public override int Left
@@ -251,13 +243,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return Math.Max(_topLeft.X, _bottomRight.X);
             }
-			set
-			{
-				int delta = Right - value;
-				_topLeft.X -= delta;
-				_bottomRight.X -= delta;
-				Layout();
-			}
         }
 
         public override void Match(PreviewBaseShape matchShape)

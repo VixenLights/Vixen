@@ -126,14 +126,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Max(_topLeftPoint.Y, _bottomRightPoint.Y));
 			}
-			set
-			{
-				if (VixenPreviewControl.m_dragState == VixenPreviewControl.DragState.Resizing)
-				{
-		//			_points[1].Y = value;
-				}
-				Layout();
-			}
         }
 
         public override int Top
@@ -164,21 +156,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_topLeftPoint.X, _bottomRightPoint.X));
-			}
-			set
-			{
-				int delta = Right - value;
-				if (_topLeftPoint.Y == Right)
-				{
-					_topLeftPoint.Y = value;
-					_bottomRightPoint.Y -= delta;
-				}
-				else
-				{
-					_topLeftPoint.Y -= delta;
-					_bottomRightPoint.Y = value;
-				}
-				Layout();
 			}
         }
 

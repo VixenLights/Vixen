@@ -127,6 +127,12 @@ namespace VixenModules.Preview.VixenPreview
 
 		#endregion
 
+		public void vixenpreviewControl_ElementsPreviewResizingNew(object sender, ElementsResizingPreviewEventArgs e)
+		{
+			var action = new ElementsResizingUndoAction(this, e.PreviousSize, e.Type);
+			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+		}
+
 		public bool ShowInfo { get; set; }
 
 		private double _zoomLevel = 1;
@@ -289,6 +295,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			InitializeComponent();
 
+			ElementsPreviewResizingNew += vixenpreviewControl_ElementsPreviewResizingNew;
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 		}
@@ -1187,7 +1194,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (resize)
 						{
-							ElementsPreviewResizeNew(this, new ElementsResizePreviewEventArgs(m_elemMoveInfo, DisplayMoveType.Resize));
+							ElementsPreviewResizingNew(this, new ElementsResizingPreviewEventArgs(m_elemMoveInfo, SelectedDisplayItems, DisplayMoveType.Resize));
 						}
 						else
 						{
@@ -1479,6 +1486,126 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
+		public void resizeUndoElement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		{
+			//Move the prop to the original position
+			SelectedDisplayItems.Clear();
+			foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
+			{
+				//Selects and removes the object so it can be replaced with previous object
+				PreviewPoint translatedPoint = new PreviewPoint(e.Key.Shape.Strings[0]._pixels[0].X, e.Key.Shape.Strings[0]._pixels[0].Y);
+				SelectItemUnderPoint(translatedPoint, false);
+				RemoveDisplayItem(_selectedDisplayItem);
+
+				//Gets the stored previous object and adds to the SelectedDisplay list
+				SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalElement[0]);
+			}
+
+			//Add the previous object as a new Display Item and then moves to previous location.
+			foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
+			{
+				AddDisplayItem(newDisplayItem);
+				newDisplayItem.ZoomLevel = ZoomLevel;
+			}
+			SelectedDisplayItems.Clear();
+		}
+
+		public void resizeRedoElement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		{
+			if (resizeUndoToClipBoard == null) return;
+			SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(resizeUndoFromClipBoard.Last());
+			resizeUndoToClipBoard.Add(resizeUndoFromClipBoard[resizeUndoFromClipBoard.Count - 1]);
+	//		resizeUndoToClipBoard.Add(resizeRedoFromClipBoard.Last());
+	//		resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
+
+			Point moveToPoint = new Point();
+			// move the prop to the original position
+
+			foreach (var item in SelectedDisplayItems)
+			{
+				PreviewPoint translatedPoint = new PreviewPoint(item.Shape.Strings[0]._pixels[0].X, item.Shape.Strings[0]._pixels[0].Y);
+				SelectItemUnderPoint(translatedPoint, false); //selects the current element to be resized back.
+				
+			}
+
+
+		//	foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
+		//	{
+				//PreviewPoint translatedPoint = new PreviewPoint(e.Key.Shape.Strings[0]._pixels[0].X, e.Key.Shape.Strings[0]._pixels[0].Y);
+				//SelectItemUnderPoint(translatedPoint, false); //selects the current element to be resized back.
+		//		e.Key.Shape.Top = e.Value.TopPosition;
+		//		e.Key.Shape.Left = e.Value.LeftPosition;
+		//		moveToPoint = new Point(e.Value.LeftPosition, e.Value.TopPosition);
+		//	}
+			RemoveDisplayItem(_selectedDisplayItem);
+			SelectedDisplayItems.Clear();
+			SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(resizeRedoFromClipBoard.Last());
+			resizeRedoToClipBoard.Add(resizeRedoFromClipBoard.Last());
+			resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
+			foreach (var item in SelectedDisplayItems)
+			{
+				moveToPoint = new Point(item.Shape.Left, item.Shape.Top);
+			}
+
+			if (SelectedDisplayItems != null)
+			{
+				DeSelectSelectedDisplayItem();
+				foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
+				{
+					AddDisplayItem(newDisplayItem);
+					newDisplayItem.ZoomLevel = ZoomLevel;
+				}
+				int top = int.MaxValue;
+				int left = int.MaxValue;
+				foreach (DisplayItem item in SelectedDisplayItems)
+				{
+					top = Math.Min(top, item.Shape.Top);
+					left = Math.Min(left, item.Shape.Left);
+				}
+				int deltaY = top - moveToPoint.Y;
+				int deltaX = left - moveToPoint.X;
+				foreach (DisplayItem item in SelectedDisplayItems)
+				{
+					item.Shape.Left -= deltaX;
+					item.Shape.Top -= deltaY;
+				}
+
+		//		resizeUndoToClipBoard.Add(PreviewTools.SerializeToString(SelectedDisplayItems));
+				SelectedDisplayItems.Clear();
+			}
+		//	resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
+		//	resizeUndoToClipBoard.RemoveAt(resizeUndoToClipBoard.Count - 2);
+		}
+
+		public void ResizeSwapPlaces(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		{
+			ResizeSwapElementPlacement(changedElements);
+		}
+
+		public void ResizeSwapElementPlacement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		{
+			foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
+			{
+				// Key is reference to actual element. Value is class with previous object data.
+				// Swap the element's Display data with the saved data from before the move, so we can restore them later in redo.
+				ResizeSwapPlaces(e.Key, e.Value);
+			}
+		}
+
+		public static void ResizeSwapPlaces(DisplayItem lhs, ElementPositionInfo rhs)
+		{
+			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalElement[0]);
+			foreach (var temp1 in displayItemTemp)
+			{
+				var temp = lhs;
+				var newObject = temp;
+				rhs.OriginalElement.Clear();
+				List<DisplayItem> newObjectList = new List<DisplayItem>();
+				newObjectList.Add(newObject);
+				rhs.OriginalElement.Add(PreviewTools.SerializeToString(newObjectList));
+				lhs.Shape = temp1.Shape;
+			}
+		}
 		#endregion
 
 		public void ResizeBackground(int width, int height)
@@ -2062,12 +2189,18 @@ namespace VixenModules.Preview.VixenPreview
 				SelectedDisplayItems.Clear();
 		}
 
+		public List<string> resizeUndoToClipBoard = new List<string>();
+		public List<string> resizeRedoFromClipBoard = new List<string>();
+		public List<string> resizeUndoFromClipBoard = new List<string>();
+		public List<string> resizeRedoToClipBoard = new List<string>();
+
 		///<summary>Called when any operation that moves element times (namely drag-move and hresize).
 		///Saves the pre-move information and begins update on all selected elements.</summary>
 		private void beginDragResize(PreviewPoint previewLocation, bool multi, DisplayMoveType type)
 		{
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
+//			resizeUndoToClipBoard.Add(PreviewTools.SerializeToString(SelectedDisplayItems));
 			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
@@ -2092,9 +2225,8 @@ namespace VixenModules.Preview.VixenPreview
 
 			///<summary>All elements being modified and their original parameters.</summary>
 			public Dictionary<DisplayItem, ElementPositionInfo> OriginalPreviewElements { get; private set; }
-
-//			public TimeSpan VisibleTimeStart { get; private set; }
 		}
+
 
 		public class ElementPositionInfo
 		{
@@ -2102,13 +2234,19 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				TopPosition = elem.Shape.Top;
 				LeftPosition = elem.Shape.Left;
-				BottomPosition = elem.Shape.Bottom;
-				RightPosition = elem.Shape.Right;
+				List<DisplayItem> temp = new List<DisplayItem>();
+				temp.Add(elem);
+				OriginalElement = new List<string>();
+				OriginalElement.Add(PreviewTools.SerializeToString(temp));
+		//		BottomPosition = elem.Shape.Bottom;
+		//		RightPosition = elem.Shape.Right;
 			}
 
 			public List<int> SelectedPointX = new List<int>();
 
 			public List<int> SelectedPointY = new List<int>();
+
+			public List<string> OriginalElement { get; set; }
 
 			public int TopPosition { get; set; }
 			public int LeftPosition { get; set; }
@@ -2119,8 +2257,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public static event EventHandler<ElementsChangedPreviewEventArgs> ElementsPreviewMovedNew;
 
-
-		public static event EventHandler<ElementsResizePreviewEventArgs> ElementsPreviewResizeNew;
+		public static event EventHandler<ElementsResizingPreviewEventArgs> ElementsPreviewResizingNew;
 	}
 
 	#endregion

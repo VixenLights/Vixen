@@ -289,8 +289,6 @@
     <Compile Include="Shapes\PreviewBaseShape.cs" />
     <Compile Include="Shapes\PreviewTools.cs" />
     <Compile Include="TemplateComboBoxItem.cs" />
-    <Compile Include="Undo\ElementsAddedResizingUndoAction.cs" />
-    <Compile Include="Undo\ElementsResizingUndoAction.cs" />
     <Compile Include="Undo\ElementsAddedSeparateGroupUndoAction.cs" />
     <Compile Include="Undo\ElementsAddedGroupUndoAction.cs" />
     <Compile Include="Undo\ElementsSeparateGroupUndoAction.cs" />

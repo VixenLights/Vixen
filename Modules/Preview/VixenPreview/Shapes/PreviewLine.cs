@@ -147,23 +147,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return Math.Max(_points[0].Y, _points[1].Y);
 			}
-			set
-			{
-				if (VixenPreviewSetup3.ResizeShape)
-				{
-					if (_points[0].Y > _points[1].Y)
-					{
-						_points[0].Y = value;
-					}
-					else
-					{
-						_points[1].Y = value;
-					}
-			//		_points[1].Y = value;
-				}
-
-				Layout();
-			}
         }
 
         public override int Top
@@ -172,37 +155,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].Y, _points[1].Y));
             }
-            set
-            {
-	            if (VixenPreviewSetup3.ResizeShape)
-	            {
-		            if (_points[0].Y < _points[1].Y)
-		            {
-			            _points[0].Y = value;
-		            }
-		            else
-		            {
-			            _points[1].Y = value;
-		            }
-		            //    _points[0].Y = value;
-	            }
-	            else
-	            {
-		            if (_points[0].Y < _points[1].Y)
-		            {
-			            int delta = _points[0].Y - value;
-			            _points[0].Y = value;
-			            _points[1].Y -= delta;
-		            }
-		            else
-		            {
-			            int delta = _points[1].Y - value;
-			            _points[0].Y -= delta;
-			            _points[1].Y = value;
-		            }
-	            }
-	            Layout();
-            }
+	        set
+	        {
+		        if (_points[0].Y < _points[1].Y)
+		        {
+			        _points[0].Y = value;
+		        }
+		        else
+		        {
+			        _points[1].Y = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override int Right
@@ -210,22 +174,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_points[0].X, _points[1].X);
-			}
-			set
-			{
-				if (VixenPreviewSetup3.ResizeShape)
-				{
-			//		_points[1].X = value;
-					if (_points[0].X > _points[1].X)
-					{
-						_points[0].X = value;
-					}
-					else
-					{
-						_points[1].X = value;
-					}
-				}
-				Layout();
 			}
         }
 
@@ -235,37 +183,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].X, _points[1].X));
             }
-            set
-            {
-	            if (VixenPreviewSetup3.ResizeShape)
-	            {
-		            if (_points[0].X < _points[1].X)
-		            {
-			            _points[0].X = value;
-		            }
-		            else
-		            {
-			            _points[1].X = value;
-		            }
-		            //		_points[0].X = value;
-	            }
-	            else
-	            {
-		            if (_points[0].X < _points[1].X)
-		            {
-			            int delta = _points[0].X - value;
-			            _points[0].X = value;
-			            _points[1].X -= delta;
-		            }
-		            else
-		            {
-			            int delta = _points[1].X - value;
-			            _points[0].X -= delta;
-			            _points[1].X = value;
-		            }
-	            }
-	            Layout();
-            }
+	        set
+	        {
+		        if (_points[0].X < _points[1].X)
+		        {
+			        _points[0].X = value;
+		        }
+		        else
+		        {
+			        _points[1].X = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override void Match(PreviewBaseShape matchShape)

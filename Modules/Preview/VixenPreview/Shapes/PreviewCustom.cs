@@ -146,14 +146,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 return x;
 			}
-			set
-			{
-				int delta = Right - value;
-				foreach (PreviewBaseShape shape in Strings)
-				{
-					shape.Right -= delta;
-				}
-			}
         }
 
         public override int Bottom
@@ -166,14 +158,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     x = Math.Max(x, shape.Bottom);
                 }
                 return x;
-			}
-			set
-			{
-				int delta = Bottom - value;
-				foreach (PreviewBaseShape shape in Strings)
-				{
-					shape.Bottom -= delta;
-				}
 			}
         }
         

@@ -14,14 +14,14 @@ namespace Common.Controls
          *    Top of stack == Front of list
          *    Bottom of stack == End of list.
          */
-		private LinkedList<UndoAction> m_undoable = new LinkedList<UndoAction>();
+		public LinkedList<UndoAction> m_undoable = new LinkedList<UndoAction>();
 
 		/*
          * The redo stack however, can be a simple Stack<T>. Because items can only
          * make it onto the redo stack if they came from the undo stack, we are guaranteed
          * to only reach the same maximum number of items.
          */
-		private Stack<UndoAction> m_redoable = new Stack<UndoAction>();
+		public Stack<UndoAction> m_redoable = new Stack<UndoAction>();
 
 		private const int DefaultMaxItems = 1000;
 
@@ -115,7 +115,7 @@ namespace Common.Controls
 
 		#region Private Methods
 
-		private void _pushOntoUndoStack(UndoAction action)
+		public void _pushOntoUndoStack(UndoAction action)
 		{
 			// Push the item onto the top of the stack.
 			m_undoable.AddFirst(action);

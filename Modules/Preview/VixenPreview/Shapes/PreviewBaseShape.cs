@@ -89,7 +89,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Bottom most pixel location
 		/// </summary>
         [Browsable(false)]
-        public abstract int Bottom { get; set; }
+        public abstract int Bottom { get; }
 
 		/// <summary>
 		/// Left most pixel location
@@ -101,7 +101,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// Right most pixel location
 		/// </summary>
         [Browsable(false)]
-        public abstract int Right { get; set; }
+        public abstract int Right { get; }
 
 		public abstract void Match(PreviewBaseShape matchShape);
 

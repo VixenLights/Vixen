@@ -296,25 +296,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				return _topRight.X;
 			}
-			set
-			{
-				int delta = Right - value;
-				//if (_topLeft.X == Left)
-				//{
-				_topLeft.X = delta;
-				_bottomLeft.X = delta;
-				_topRight.X -= value;
-				_bottomRight.X -= value;
-				//}
-				//else
-				//{
-				//    _topLeft.X -= delta;
-				//    _topRight.X -= delta;
-				//    _bottomRight.X = value;
-				//    _bottomRight.X = value;
-				//}
-				Layout();
-			}
 		}
 
 		public override int Bottom
@@ -322,23 +303,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get
 			{
 				return _bottomRight.Y;
-			}
-			set
-			{
-				int delta = Bottom - value;
-				//if (_topLeft.Y == Top)
-				//{
-				_topLeft.Y = delta;
-				_topRight.Y = delta;
-				_bottomLeft.Y -= value;
-				_bottomRight.Y -= value;
-				//}
-				//else
-				//{
-				//    _topLeft.Y -= delta;
-				//    _bottomRight.Y = value;
-				//}
-				Layout();
 			}
 		}
 

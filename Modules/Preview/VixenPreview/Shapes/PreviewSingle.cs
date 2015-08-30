@@ -101,10 +101,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return p1.X;
 			}
-			set
-			{
-				p1.X = value;
-			}
         }
 
         public override int Bottom
@@ -112,10 +108,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get 
             { 
                 return p1.Y;
-			}
-			set
-			{
-				p1.Y = value;
 			}
         }
 

@@ -208,16 +208,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 return xMax;
 			}
-			set
-			{
-				int currentRight = Right;
-				int delta = currentRight - value;
-				foreach (PreviewPoint p in _points)
-				{
-					p.X = p.X - delta;
-				}
-				Layout();
-			}
         }
 
         public override int Bottom
@@ -230,16 +220,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     yMax = Math.Max(yMax, p.Y);
                 }
                 return yMax;
-			}
-			set
-			{
-				int currentBottom = Bottom;
-				int delta = currentBottom - value;
-				foreach (PreviewPoint p in _points)
-				{
-					p.Y = p.Y - delta;
-				}
-				Layout();
 			}
         }
 

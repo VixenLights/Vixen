@@ -231,12 +231,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return _bottomRight.Y;
 			}
-			set
-			{
-				_bottomLeft.Y = value + (_bottomLeft.Y - _topRight.Y);
-				_topRight.Y = value;
-				Layout();
-			}
         }
 
         public override int Right
@@ -244,12 +238,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return _bottomRight.X;
-			}
-			set
-			{
-				_bottomLeft.Y = value + (_bottomLeft.Y - _topRight.Y);
-				_topRight.Y = value;
-				Layout();
 			}
         }
 

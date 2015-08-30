@@ -57,7 +57,6 @@ namespace VixenModules.Preview.VixenPreview {
 			redoButton.ButtonType = UndoButtonType.RedoButton;
 
 			VixenPreviewControl.ElementsPreviewMovedNew += vixenpreviewControl_ElementsPreviewMovedNew;
-			VixenPreviewControl.ElementsPreviewResizeNew += vixenpreviewControl_ElementsPreviewResizeNew;
 			Icon = Resources.Icon_Vixen3;
 			this.ShowInTaskbar = false;
 
@@ -65,15 +64,11 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public void vixenpreviewControl_ElementsPreviewMovedNew(object sender, ElementsChangedPreviewEventArgs e)
 		{
-			 var action = new ElementsMoveUndoAction(this, e.PreviousTimes, e.Type);
+			var action = new ElementsMoveUndoAction(this, e.PreviousMove, e.Type);
 			_undoMgr.AddUndoAction(action);
 		}
 
-		public void vixenpreviewControl_ElementsPreviewResizeNew(object sender, ElementsResizePreviewEventArgs e)
-		{
-			var action = new ElementsResizeUndoAction(this, e.PreviousTimes, e.Type);
-			_undoMgr.AddUndoAction(action);
-		}
+		
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
 			previewForm = new VixenPreviewSetupDocument();
@@ -601,9 +596,9 @@ namespace VixenModules.Preview.VixenPreview {
 			_undoMgr.Redo(e.NumItems);
 		}
 
-
 		private void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
 		{
+			
 			if (_undoMgr.NumUndoable == 0)
 			{
 				undoButton.Enabled = false;
@@ -613,21 +608,25 @@ namespace VixenModules.Preview.VixenPreview {
 			undoButton.Enabled = true;
 			undoButton.UndoItems.Clear();
 			foreach (var act in _undoMgr.UndoActions)
+			{
 				undoButton.UndoItems.Add(act.Description);
+			}
 		}
 
-		private void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
-		{
-			if (_undoMgr.NumRedoable == 0)
-			{
-				redoButton.Enabled = false;
-				return;
-			}
+	    private void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
+	    {
+		    if (_undoMgr.NumRedoable == 0)
+		    {
+			    redoButton.Enabled = false;
+			    return;
+		    }
 
-			redoButton.Enabled = true;
-			redoButton.UndoItems.Clear();
-			foreach (var act in _undoMgr.RedoActions)
+		    redoButton.Enabled = true;
+		    redoButton.UndoItems.Clear();
+		    foreach (var act in _undoMgr.RedoActions)
+		    {
 				redoButton.UndoItems.Add(act.Description);
+			}
 		}
 
 		public void SwapPlaces(Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> changedElements)
@@ -639,8 +638,8 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			foreach (KeyValuePair<DisplayItem, VixenPreviewControl.ElementPositionInfo> e in changedElements)
 			{
-				// Key is reference to actual element. Value is class with its times before move.
-				// Swap the element's times with the saved times from before the move, so we can restore them later in redo.
+				// Key is reference to actual element. Value is class with previous object data.
+				// Swap the element's Display data with the saved data from before the move, so we can restore them later in redo.
 				SwapPlaces(e.Key, e.Value);
 			}
 		}
@@ -656,16 +655,10 @@ namespace VixenModules.Preview.VixenPreview {
 			temp = lhs.Shape.Top;
 			lhs.Shape.Top = rhs.TopPosition;
 			rhs.TopPosition = temp;
-
-			//temp = lhs.Shape.Bottom;
-			//lhs.Shape.Bottom = rhs.BottomPosition;
-			//rhs.BottomPosition = temp;
-
-			//temp = lhs.Shape.Right;
-			//lhs.Shape.Right = rhs.RightPosition;
-			//rhs.RightPosition = temp;
 		}
+
 		#endregion
+
 	}
 	public class ElementsChangedPreviewEventArgs : EventArgs
 	{
@@ -673,28 +666,28 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			if (info != null)
 			{
-				PreviousTimes = info.OriginalPreviewElements;
+				PreviousMove = info.OriginalPreviewElements;
 				Type = type;
 			}
 		}
 
-		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> PreviousTimes { get; private set; }
+		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> PreviousMove { get; private set; }
 
 		public VixenPreviewControl.DisplayMoveType Type { get; private set; }
 	}
 
-	public class ElementsResizePreviewEventArgs : EventArgs
+	public class ElementsResizingPreviewEventArgs : EventArgs
 	{
-		public ElementsResizePreviewEventArgs(VixenPreviewControl.ElementPreviewMoveInfo info, VixenPreviewControl.DisplayMoveType type)
+		public ElementsResizingPreviewEventArgs(VixenPreviewControl.ElementPreviewMoveInfo info, List<DisplayItem> selectedDisplayItems, VixenPreviewControl.DisplayMoveType type)
 		{
 			if (info != null)
 			{
-				PreviousTimes = info.OriginalPreviewElements;
+				PreviousSize = info.OriginalPreviewElements;
 				Type = type;
 			}
 		}
 
-		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> PreviousTimes { get; private set; }
+		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> PreviousSize { get; private set; }
 
 		public VixenPreviewControl.DisplayMoveType Type { get; private set; }
 	}

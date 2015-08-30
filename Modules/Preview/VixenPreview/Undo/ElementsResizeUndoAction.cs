@@ -7,14 +7,14 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
-	public class ElementsResizeUndoAction : UndoAction
+	public class ElementsResizingUndoAction : UndoAction
 	{
 		private Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> m_changedElements;
-		public Preview.VixenPreview.VixenPreviewSetup3 m_form;
+		public VixenPreviewControl m_form;
 		public Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> m_elements;
 		public static VixenPreviewControl.DisplayMoveType m_type;
 
-		public ElementsResizeUndoAction(Preview.VixenPreview.VixenPreviewSetup3 form, Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> changedElements, VixenPreviewControl.DisplayMoveType type)
+		public ElementsResizingUndoAction(VixenPreviewControl form, Dictionary<DisplayItem, VixenPreviewControl.ElementPositionInfo> changedElements, VixenPreviewControl.DisplayMoveType type)
 		{
 			m_changedElements = changedElements;
 			m_form = form;
@@ -23,16 +23,17 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 
 		public override void Undo()
 		{
-			Preview.VixenPreview.VixenPreviewSetup3.ResizeShape = true;
-			m_form.SwapPlaces(m_changedElements);
-
+	//		m_form.SelectedDisplayItems.Clear();
+			m_form.resizeUndoElement(m_changedElements);
+			m_form.ResizeSwapPlaces(m_changedElements);
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			Preview.VixenPreview.VixenPreviewSetup3.ResizeShape = true;
-			m_form.SwapPlaces(m_changedElements);
+	//		m_form.SelectedDisplayItems.Clear();
+			m_form.resizeUndoElement(m_changedElements);
+			m_form.ResizeSwapPlaces(m_changedElements);
 			base.Redo();
 		}
 
@@ -40,7 +41,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 		{
 			get
 			{
-				return string.Format("Resize {0} ", m_changedElements.Count);
+				return string.Format("Resize {0}", m_changedElements.Count);
 			}
 		}
 	}
