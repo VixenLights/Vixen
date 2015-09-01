@@ -289,16 +289,16 @@
     <Compile Include="Shapes\PreviewBaseShape.cs" />
     <Compile Include="Shapes\PreviewTools.cs" />
     <Compile Include="TemplateComboBoxItem.cs" />
-    <Compile Include="Undo\ElementsAddedSeparateGroupUndoAction.cs" />
-    <Compile Include="Undo\ElementsAddedGroupUndoAction.cs" />
-    <Compile Include="Undo\ElementsSeparateGroupUndoAction.cs" />
-    <Compile Include="Undo\ElementsResizeUndoAction.cs" />
-    <Compile Include="Undo\ElementsMoveUndoAction.cs" />
-    <Compile Include="Undo\ElementsPasteUndoAction.cs" />
-    <Compile Include="Undo\ElementsCutUndoAction.cs" />
-    <Compile Include="Undo\ElementsAddedUndoAction.cs" />
-    <Compile Include="Undo\ElementsAddedRemovedUndoAction.cs" />
-    <Compile Include="Undo\ElementsRemovedUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsGroupAddedSeparateUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsGroupAddedUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsGroupSeparateAction.cs" />
+    <Compile Include="Undo\PreviewItemsResizeUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsMoveUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsPasteUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsCutUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsAddedUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsAddedRemovedUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemsRemovedUndoAction.cs" />
     <Compile Include="VixenPreviewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

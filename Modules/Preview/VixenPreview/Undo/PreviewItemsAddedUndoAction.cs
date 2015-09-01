@@ -5,9 +5,9 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
-	public class ElementsCutUndoAction : ElementsAddedRemovedUndoAction
+	public class PreviewItemsAddedUndoAction : PreviewItemsAddedRemovedUndoAction
 	{
-		public ElementsCutUndoAction(VixenPreviewControl form, IEnumerable<DisplayItem> items)
+		public PreviewItemsAddedUndoAction(VixenPreviewControl form, IEnumerable<DisplayItem> items)
 			: base(form, items)
 		{
 		}
@@ -26,7 +26,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 
 		public override string Description
 		{
-			get { return string.Format("Cut {0} ", Count); }
+			get { return string.Format("Added {0} ", Count); }
 		}
 	}
 }

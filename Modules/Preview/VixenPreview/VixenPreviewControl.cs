@@ -125,11 +125,21 @@ namespace VixenModules.Preview.VixenPreview
 
 		public ISequenceContext vixenContext = null;
 
+		public static event EventHandler<PreviewItemMoveEventArgs> PreviewItemsMovedNew;
+
+		public static event EventHandler<PreviewItemResizingEventArgs> PreviewItemsResizingNew;
+
 		#endregion
 
-		public void vixenpreviewControl_ElementsPreviewResizingNew(object sender, ElementsResizingPreviewEventArgs e)
+		public void vixenpreviewControl_PreviewItemsResizingNew(object sender, PreviewItemResizingEventArgs e)
 		{
-			var action = new ElementsResizingUndoAction(this, e.PreviousSize, e.Type);
+			var action = new PreviewItemsResizeUndoAction(this, e.PreviousSize);
+			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+		}
+
+		public void vixenpreviewControl_PreviewItemsMovedNew(object sender, PreviewItemMoveEventArgs e)
+		{
+			var action = new PreviewItemsMoveUndoAction(this, e.PreviousMove);
 			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 		}
 
@@ -295,7 +305,8 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			InitializeComponent();
 
-			ElementsPreviewResizingNew += vixenpreviewControl_ElementsPreviewResizingNew;
+			PreviewItemsResizingNew += vixenpreviewControl_PreviewItemsResizingNew;
+			PreviewItemsMovedNew += vixenpreviewControl_PreviewItemsMovedNew;
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 		}
@@ -537,9 +548,8 @@ namespace VixenModules.Preview.VixenPreview
 							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 							if (selectedPoint != null)
 							{
-								//Starts the Undo Process
 								resize = true;
-								beginDragResize(translatedPoint, false, DisplayMoveType.Resize);
+								beginDragResize(false);//Starts the Undo Process
 								dragStart = translatedPoint.ToPoint();
 								_selectedDisplayItem.Shape.SetSelectPoint(selectedPoint);
 								Capture = true;
@@ -548,9 +558,8 @@ namespace VixenModules.Preview.VixenPreview
 								// If we're not resizing, see if we're moving a single shape
 							else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 							{
-								//Starts the Undo Process
 								resize = false;
-								beginDragMove(translatedPoint, false, DisplayMoveType.Move);
+								beginDragMove(false);//Starts the Undo Process
 
 								StartMove(translatedPoint.X, translatedPoint.Y);
 							}
@@ -572,9 +581,8 @@ namespace VixenModules.Preview.VixenPreview
 							//}
 							if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
 							{
-								//Starts the Undo Process
 								resize = false;
-								beginDragMove(translatedPoint, true, DisplayMoveType.Move);
+								beginDragMove(true);//Starts the Undo Process
 								StartMove(translatedPoint.X, translatedPoint.Y);
 							}
 							else
@@ -719,7 +727,7 @@ namespace VixenModules.Preview.VixenPreview
 							dragStart = translatedPoint.ToPoint();
 							Capture = true;
 							_mouseCaptured = true;
-							var action = new ElementsAddedUndoAction(this, new List<DisplayItem> {_selectedDisplayItem});
+							var action = new PreviewItemsAddedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });
 							VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 						}
 					}
@@ -857,7 +865,7 @@ namespace VixenModules.Preview.VixenPreview
 				case "Separate":
 					if (_selectedDisplayItem != null)
 					{
-						var action = new ElementsSeparateGroupUndoAction(this, SelectedDisplayItems, _selectedDisplayItem);
+						var action = new PreviewItemsGroupSeparateAction(this, _selectedDisplayItem);
 						VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 						SeparateTemplateItems(_selectedDisplayItem);
 					}
@@ -940,7 +948,6 @@ namespace VixenModules.Preview.VixenPreview
 			if (_editMode)
 			{
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
-				PreviewPoint originalPoint = new PreviewPoint(e.X, e.Y);
 				Point zoomPoint = PointToZoomPoint(translatedPoint.ToPoint());
 				if (e.Button == System.Windows.Forms.MouseButtons.Middle)
 				{
@@ -1190,17 +1197,17 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
-					if ((ElementsPreviewMovedNew != null | ElementsPreviewMovedNew != null )&& m_elemMoveInfo != null)
+					if ((PreviewItemsMovedNew != null | PreviewItemsMovedNew != null) && m_previewItemMoveInfo != null)
 					{
-						if (resize)
+						if (resize) //Resizing
 						{
-							ElementsPreviewResizingNew(this, new ElementsResizingPreviewEventArgs(m_elemMoveInfo, SelectedDisplayItems, DisplayMoveType.Resize));
+							PreviewItemsResizingNew(this, new PreviewItemResizingEventArgs(m_previewItemMoveInfo));
 						}
-						else
+						else //Else we are moving
 						{
-							ElementsPreviewMovedNew(this, new ElementsChangedPreviewEventArgs(m_elemMoveInfo, DisplayMoveType.Move));
+							PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemMoveInfo));
 						}
-						m_elemMoveInfo = null;
+						m_previewItemMoveInfo = null;
 					}
 				}
 					// Ok, if this is true, we've got a rubber band and something is selected, now what?
@@ -1216,8 +1223,8 @@ namespace VixenModules.Preview.VixenPreview
 					}
 					else
 					{
-						if (ElementsPreviewMovedNew != null && m_elemMoveInfo != null)
-							ElementsPreviewMovedNew(this, new ElementsChangedPreviewEventArgs(m_elemMoveInfo, DisplayMoveType.Move));
+						if (PreviewItemsMovedNew != null && m_previewItemMoveInfo != null)
+							PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemMoveInfo));
 					}
 				}
 			}
@@ -1400,7 +1407,7 @@ namespace VixenModules.Preview.VixenPreview
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
 			if (SelectedDisplayItems.Count() > 0)
 			{
-				var action = new ElementsPasteUndoAction(this, selected);
+				var action = new PreviewItemsPasteUndoAction(this, selected);//Start Undo Action.
 				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 
 				DeSelectSelectedDisplayItem();
@@ -1439,22 +1446,20 @@ namespace VixenModules.Preview.VixenPreview
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
 			if (_selectedDisplayItem != null)
 			{
-				var action = new ElementsRemovedUndoAction(this, new List<DisplayItem> {_selectedDisplayItem});
+				var action = new PreviewItemsRemovedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
 				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
-				RemoveDisplayItem(_selectedDisplayItem);
 
-				//	DisplayItems.Remove(_selectedDisplayItem);
+				RemoveDisplayItem(_selectedDisplayItem);
 				DeSelectSelectedDisplayItem();
 			}
 			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
 			{
-				var action = new ElementsRemovedUndoAction(this, selected);
+				var action = new PreviewItemsRemovedUndoAction(this, selected);//Start Undo Action.
 				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+
 				foreach (DisplayItem item in SelectedDisplayItems)
 				{
-
 					RemoveDisplayItem(item);
-					//		DisplayItems.Remove(item);
 					DeSelectSelectedDisplayItem();
 				}
 				SelectedDisplayItems.Clear();
@@ -1485,106 +1490,49 @@ namespace VixenModules.Preview.VixenPreview
 				Clipboard.SetData(DataFormats.Text, xml);
 			}
 		}
+#endregion
 
-		public void resizeUndoElement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		#region PreviewItem Resize Undo/Redo Action
+		public void resizePreviewItems(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
 		{
-			//Move the prop to the original position
 			SelectedDisplayItems.Clear();
-			foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
+			foreach (KeyValuePair<DisplayItem, PreviewItemPositionInfo> e in ChangedPreviewItems)
 			{
 				//Selects and removes the object so it can be replaced with previous object
-				PreviewPoint translatedPoint = new PreviewPoint(e.Key.Shape.Strings[0]._pixels[0].X, e.Key.Shape.Strings[0]._pixels[0].Y);
+				_selectedDisplayItem = e.Key;
+				_selectedDisplayItem.ZoomLevel = ZoomLevel;
+				PreviewPoint translatedPoint = new PreviewPoint();
+				if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
+				{
+					translatedPoint = new PreviewPoint(_selectedDisplayItem.Shape.Strings[0].Strings[0]._pixels[0].X,
+					_selectedDisplayItem.Shape.Strings[0].Strings[0]._pixels[0].Y);
+				}
+				else
+				{
+					translatedPoint = new PreviewPoint(_selectedDisplayItem.Shape.Strings[0]._pixels[0].X,
+					_selectedDisplayItem.Shape.Strings[0]._pixels[0].Y);
+				}
+				
+				RemoveDisplayItem(_selectedDisplayItem);
 				SelectItemUnderPoint(translatedPoint, false);
 				RemoveDisplayItem(_selectedDisplayItem);
 
 				//Gets the stored previous object and adds to the SelectedDisplay list
-				SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalElement[0]);
-			}
-
-			//Add the previous object as a new Display Item and then moves to previous location.
-			foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
-			{
-				AddDisplayItem(newDisplayItem);
-				newDisplayItem.ZoomLevel = ZoomLevel;
+				SelectedDisplayItems.Add(PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalPreviewItem[0])[0]);
+				AddDisplayItem(PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalPreviewItem[0])[0]);
+				DisplayItems.Last().Shape.ZoomLevel = ZoomLevel;
 			}
 			SelectedDisplayItems.Clear();
 		}
 
-		public void resizeRedoElement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		public void ResizeSwapPlaces(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
 		{
-			if (resizeUndoToClipBoard == null) return;
-			SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(resizeUndoFromClipBoard.Last());
-			resizeUndoToClipBoard.Add(resizeUndoFromClipBoard[resizeUndoFromClipBoard.Count - 1]);
-	//		resizeUndoToClipBoard.Add(resizeRedoFromClipBoard.Last());
-	//		resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
-
-			Point moveToPoint = new Point();
-			// move the prop to the original position
-
-			foreach (var item in SelectedDisplayItems)
-			{
-				PreviewPoint translatedPoint = new PreviewPoint(item.Shape.Strings[0]._pixels[0].X, item.Shape.Strings[0]._pixels[0].Y);
-				SelectItemUnderPoint(translatedPoint, false); //selects the current element to be resized back.
-				
-			}
-
-
-		//	foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
-		//	{
-				//PreviewPoint translatedPoint = new PreviewPoint(e.Key.Shape.Strings[0]._pixels[0].X, e.Key.Shape.Strings[0]._pixels[0].Y);
-				//SelectItemUnderPoint(translatedPoint, false); //selects the current element to be resized back.
-		//		e.Key.Shape.Top = e.Value.TopPosition;
-		//		e.Key.Shape.Left = e.Value.LeftPosition;
-		//		moveToPoint = new Point(e.Value.LeftPosition, e.Value.TopPosition);
-		//	}
-			RemoveDisplayItem(_selectedDisplayItem);
-			SelectedDisplayItems.Clear();
-			SelectedDisplayItems = PreviewTools.DeSerializeToDisplayItemList(resizeRedoFromClipBoard.Last());
-			resizeRedoToClipBoard.Add(resizeRedoFromClipBoard.Last());
-			resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
-			foreach (var item in SelectedDisplayItems)
-			{
-				moveToPoint = new Point(item.Shape.Left, item.Shape.Top);
-			}
-
-			if (SelectedDisplayItems != null)
-			{
-				DeSelectSelectedDisplayItem();
-				foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
-				{
-					AddDisplayItem(newDisplayItem);
-					newDisplayItem.ZoomLevel = ZoomLevel;
-				}
-				int top = int.MaxValue;
-				int left = int.MaxValue;
-				foreach (DisplayItem item in SelectedDisplayItems)
-				{
-					top = Math.Min(top, item.Shape.Top);
-					left = Math.Min(left, item.Shape.Left);
-				}
-				int deltaY = top - moveToPoint.Y;
-				int deltaX = left - moveToPoint.X;
-				foreach (DisplayItem item in SelectedDisplayItems)
-				{
-					item.Shape.Left -= deltaX;
-					item.Shape.Top -= deltaY;
-				}
-
-		//		resizeUndoToClipBoard.Add(PreviewTools.SerializeToString(SelectedDisplayItems));
-				SelectedDisplayItems.Clear();
-			}
-		//	resizeRedoFromClipBoard.RemoveAt(resizeRedoFromClipBoard.Count - 1);
-		//	resizeUndoToClipBoard.RemoveAt(resizeUndoToClipBoard.Count - 2);
+			ResizeSwapElementPlacement(ChangedPreviewItems);
 		}
 
-		public void ResizeSwapPlaces(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
+		public void ResizeSwapElementPlacement(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
 		{
-			ResizeSwapElementPlacement(changedElements);
-		}
-
-		public void ResizeSwapElementPlacement(Dictionary<DisplayItem, ElementPositionInfo> changedElements)
-		{
-			foreach (KeyValuePair<DisplayItem, ElementPositionInfo> e in changedElements)
+			foreach (KeyValuePair<DisplayItem, PreviewItemPositionInfo> e in ChangedPreviewItems)
 			{
 				// Key is reference to actual element. Value is class with previous object data.
 				// Swap the element's Display data with the saved data from before the move, so we can restore them later in redo.
@@ -1592,17 +1540,17 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public static void ResizeSwapPlaces(DisplayItem lhs, ElementPositionInfo rhs)
+		public static void ResizeSwapPlaces(DisplayItem lhs, PreviewItemPositionInfo rhs)
 		{
-			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalElement[0]);
+			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalPreviewItem[0]);
 			foreach (var temp1 in displayItemTemp)
 			{
 				var temp = lhs;
 				var newObject = temp;
-				rhs.OriginalElement.Clear();
+				rhs.OriginalPreviewItem.Clear();
 				List<DisplayItem> newObjectList = new List<DisplayItem>();
 				newObjectList.Add(newObject);
-				rhs.OriginalElement.Add(PreviewTools.SerializeToString(newObjectList));
+				rhs.OriginalPreviewItem.Add(PreviewTools.SerializeToString(newObjectList));
 				lhs.Shape = temp1.Shape;
 			}
 		}
@@ -1653,10 +1601,9 @@ namespace VixenModules.Preview.VixenPreview
 			DisplayItem newDisplayItem;
 
 			addNewGroup(out newDisplayItem, null);
-
-			var action = new ElementsAddedGroupUndoAction(this, SelectedDisplayItems, newDisplayItem);
+			SelectedDisplayItems.Clear();
+			var action = new PreviewItemsGroupAddedUndoAction(this, newDisplayItem);//Start Undo Action.
 			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
-
 			return newDisplayItem;
 		}
 
@@ -1671,7 +1618,6 @@ namespace VixenModules.Preview.VixenPreview
 				DisplayItems.Remove(item);
 			}
 		}
-
 
 		public DisplayItem CreateTemplate()
 		{
@@ -1710,7 +1656,8 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.Select(true);
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
 					List<DisplayItem> selected = new List<DisplayItem> {_selectedDisplayItem};
-					var action = new ElementsAddedUndoAction(this, selected);
+
+					var action = new PreviewItemsAddedUndoAction(this, selected);//Start Undo Action.
 					VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 				}
 			}
@@ -2136,7 +2083,6 @@ namespace VixenModules.Preview.VixenPreview
 
 			// Zoom to the pointer location
 			zoomTo = MousePointToZoomPoint(e.Location);
-			;
 
 			ZoomLevel += delta;
 		}
@@ -2152,71 +2098,41 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public static DragState m_dragState = DragState.Normal; // the current dragging state
-		private ElementPreviewMoveInfo m_elemMoveInfo;
+		private PreviewItemMoveInfo m_previewItemMoveInfo;
 
-		public enum DragState
-		{
-			///<summary>Not dragging, mouse is up.</summary>
-			Normal = 0,
-
-			///<summary>Mouse down, but hasn't moved past threshold yet to be considered dragging.</summary>
-			Waiting,
-
-			///<summary>Actively dragging objects.</summary>
-			Moving,
-
-			///<summary>Like "Dragging", but dragging on the background, not an object.</summary>
-			Selecting,
-
-			///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
-			Resizing,
-
-			///<summary>Drawing, like "Dragging", but anywhere on timeline.</summary>
-			Drawing,
-		}
-
-		#region [Mouse Drag] (Move/Resize common)
+		#region [Mouse Drag] (Move/Resize)
 
 		///<summary>Called when any operation that moves element times (namely drag-move and hresize).
 		///Saves the pre-move information and begins update on all selected elements.</summary>
-		private void beginDragMove(PreviewPoint previewLocation, bool multi, DisplayMoveType type)
+		private void beginDragMove(bool multi)
 		{
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
-			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems);
+			m_previewItemMoveInfo = new PreviewItemMoveInfo(SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
 		}
 
-		public List<string> resizeUndoToClipBoard = new List<string>();
-		public List<string> resizeRedoFromClipBoard = new List<string>();
-		public List<string> resizeUndoFromClipBoard = new List<string>();
-		public List<string> resizeRedoToClipBoard = new List<string>();
-
 		///<summary>Called when any operation that moves element times (namely drag-move and hresize).
 		///Saves the pre-move information and begins update on all selected elements.</summary>
-		private void beginDragResize(PreviewPoint previewLocation, bool multi, DisplayMoveType type)
+		private void beginDragResize(bool multi)
 		{
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
-//			resizeUndoToClipBoard.Add(PreviewTools.SerializeToString(SelectedDisplayItems));
-			m_elemMoveInfo = new ElementPreviewMoveInfo(previewLocation, SelectedDisplayItems);
+			m_previewItemMoveInfo = new PreviewItemMoveInfo(SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
 		}
 
-		public class ElementPreviewMoveInfo
+		public class PreviewItemMoveInfo
 		{
-			public ElementPreviewMoveInfo(PreviewPoint initGridLocation, List<DisplayItem> modifyingElements)
+			public PreviewItemMoveInfo(List<DisplayItem> modifyingElements)
 			{
-				//			InitialGridLocation = initGridLocation;
+				OriginalPreviewItem = new Dictionary<DisplayItem, PreviewItemPositionInfo>();
 
-				OriginalPreviewElements = new Dictionary<DisplayItem, ElementPositionInfo>();
-
-				foreach (var elem in modifyingElements)
+				foreach (var previewItem in modifyingElements)
 				{
-					OriginalPreviewElements.Add(elem, new ElementPositionInfo(elem));
+					OriginalPreviewItem.Add(previewItem, new PreviewItemPositionInfo(previewItem));
 				}
 			}
 
@@ -2224,40 +2140,27 @@ namespace VixenModules.Preview.VixenPreview
 			//		public PreviewPoint InitialGridLocation { get; private set; }
 
 			///<summary>All elements being modified and their original parameters.</summary>
-			public Dictionary<DisplayItem, ElementPositionInfo> OriginalPreviewElements { get; private set; }
+			public Dictionary<DisplayItem, PreviewItemPositionInfo> OriginalPreviewItem { get; private set; }
 		}
 
-
-		public class ElementPositionInfo
+		public class PreviewItemPositionInfo
 		{
-			public ElementPositionInfo(DisplayItem elem)
+			public PreviewItemPositionInfo(DisplayItem previewItem)
 			{
-				TopPosition = elem.Shape.Top;
-				LeftPosition = elem.Shape.Left;
+				TopPosition = previewItem.Shape.Top;
+				LeftPosition = previewItem.Shape.Left;
 				List<DisplayItem> temp = new List<DisplayItem>();
-				temp.Add(elem);
-				OriginalElement = new List<string>();
-				OriginalElement.Add(PreviewTools.SerializeToString(temp));
-		//		BottomPosition = elem.Shape.Bottom;
-		//		RightPosition = elem.Shape.Right;
+				temp.Add(previewItem);
+				OriginalPreviewItem = new List<string>();
+				OriginalPreviewItem.Add(PreviewTools.SerializeToString(temp));
 			}
 
-			public List<int> SelectedPointX = new List<int>();
-
-			public List<int> SelectedPointY = new List<int>();
-
-			public List<string> OriginalElement { get; set; }
+			public List<string> OriginalPreviewItem { get; set; }
 
 			public int TopPosition { get; set; }
 			public int LeftPosition { get; set; }
-			public int BottomPosition { get; set; }
-			public int RightPosition { get; set; }
 
 		}
-
-		public static event EventHandler<ElementsChangedPreviewEventArgs> ElementsPreviewMovedNew;
-
-		public static event EventHandler<ElementsResizingPreviewEventArgs> ElementsPreviewResizingNew;
 	}
 
 	#endregion

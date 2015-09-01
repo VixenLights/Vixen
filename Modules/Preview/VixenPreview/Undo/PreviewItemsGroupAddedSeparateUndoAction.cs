@@ -6,16 +6,14 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
-	public class ElementsAddedSeparateGroupUndoAction : Common.Controls.UndoAction
+	public class PreviewItemsGroupAddedSeparateUndoAction : Common.Controls.UndoAction
 	{
 		private VixenPreviewControl m_form;
-		private List<DisplayItem> m_elements;
 		private DisplayItem m_newDisplay;
 
-		public ElementsAddedSeparateGroupUndoAction(VixenPreviewControl form, List<DisplayItem> items, DisplayItem newDisplayItem)
+		public PreviewItemsGroupAddedSeparateUndoAction(VixenPreviewControl form, DisplayItem newDisplayItem)
 		{
 			m_form = form;
-			m_elements = items;
 			m_newDisplay = newDisplayItem;
 		}
 

@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using Common.Controls;
+using Vixen.Sys;
+using VixenModules.Preview.VixenPreview;
+using VixenModules.Preview.VixenPreview.Shapes;
+
+namespace VixenModules.Editor.VixenPreviewSetup3.Undo
+{
+	public class PreviewItemsResizeUndoAction : UndoAction
+	{
+		private Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> m_changedPreviewItems;
+		private VixenPreviewControl m_form;
+
+		public PreviewItemsResizeUndoAction(VixenPreviewControl form, Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> ChangedPreviewItems)
+		{
+			m_changedPreviewItems = ChangedPreviewItems;
+			m_form = form;
+		}
+
+		public override void Undo()
+		{
+			m_form.resizePreviewItems(m_changedPreviewItems);
+			m_form.ResizeSwapPlaces(m_changedPreviewItems);
+			base.Undo();
+		}
+
+		public override void Redo()
+		{
+			m_form.resizePreviewItems(m_changedPreviewItems);
+			m_form.ResizeSwapPlaces(m_changedPreviewItems);
+			base.Redo();
+		}
+
+		public override string Description
+		{
+			get
+			{
+				return string.Format("Resize 1");
+			}
+		}
+	}
+}

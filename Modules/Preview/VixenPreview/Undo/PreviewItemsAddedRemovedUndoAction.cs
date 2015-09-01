@@ -7,13 +7,13 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
-	public class ElementsAddedRemovedUndoAction : Common.Controls.UndoAction
+	public class PreviewItemsAddedRemovedUndoAction : Common.Controls.UndoAction
 	{
 		private VixenPreviewControl m_form;
 		public IEnumerable<DisplayItem> m_elements;
 		private int m_count;
 
-		public ElementsAddedRemovedUndoAction(VixenPreviewControl form, IEnumerable<DisplayItem> items)
+		public PreviewItemsAddedRemovedUndoAction(VixenPreviewControl form, IEnumerable<DisplayItem> items)
 		{
 			m_form = form;
 			m_elements = items;

@@ -5,28 +5,28 @@ using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
-	public class ElementsAddedGroupUndoAction : ElementsAddedSeparateGroupUndoAction
+	public class PreviewItemsGroupSeparateAction : PreviewItemsGroupAddedSeparateUndoAction
 	{
-		public ElementsAddedGroupUndoAction(VixenPreviewControl form, List<DisplayItem> items, DisplayItem newDisplayItem)
-			: base(form, items, newDisplayItem)
+		public PreviewItemsGroupSeparateAction(VixenPreviewControl form, DisplayItem newDisplayItem)
+			: base(form, newDisplayItem)
 		{
 		}
 
 		public override void Undo()
 		{
-			removeEffects();
+			addGroupEffects();
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			addGroupEffects();
+			removeEffects();
 			base.Redo();
 		}
 
 		public override string Description
 		{
-			get { return string.Format("Added Group"); }
+			get { return string.Format("Separate Group"); }
 		}
 	}
 }
