@@ -36,6 +36,7 @@
 			this.textBoxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxOutput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxOutput.Location = new System.Drawing.Point(12, 12);
 			this.textBoxOutput.Multiline = true;
 			this.textBoxOutput.Name = "textBoxOutput";

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using Common.Controls.Theme;
 using Vixen.Module.Effect;
 using VixenModules.Property.Color;
 using Vixen.Sys;
@@ -22,7 +23,10 @@ namespace VixenModules.App.LipSyncApp
 
         public LipSyncMapColorCtrl()
         {
-            InitializeComponent();
+			InitializeComponent();
+
+	        intensityUpDown.BackColor = ThemeColorTable.NumericBackColor;
+	        intensityUpDown.ForeColor = ThemeColorTable.ForeColor;
             intensityUpDown.Items.AddRange(Enumerable.Range(0, 101).ToArray());
         }
 

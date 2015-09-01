@@ -348,7 +348,7 @@ namespace ZedGraph
 			/// <summary>
 			/// The default value for the color of the <see cref="GasGaugeRegion"/> border
 			/// </summary>
-			public static Color BorderColor = DarkThemeColorTable.BorderColor;
+			public static Color BorderColor = ThemeColorTable.GroupBoxBorderColor;
 
 			/// <summary>
 			/// The default value for the color of the <see cref="GasGaugeRegion"/> fill

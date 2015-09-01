@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
 using Vixen.Rule;
@@ -22,6 +25,9 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public DimmingCurveHelper()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			_curve = new Curve();
 		}
 
@@ -97,8 +103,9 @@ namespace VixenModules.OutputFilter.DimmingCurve
 					modulesConfigured++;
 				}
 			}
-
-			MessageBox.Show(modulesCreated + " Dimming Curves created, " + modulesConfigured + " configured, and " + modulesSkipped +" skipped.");
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			var messageBox = new MessageBoxForm(modulesCreated + " Dimming Curves created, " + modulesConfigured + " configured, and " + modulesSkipped + " skipped.", "", false, false);
+			messageBox.ShowDialog();
 
 			return true;
 		}
@@ -157,5 +164,17 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			AddNew
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
 	}
 }

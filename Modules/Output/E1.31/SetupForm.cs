@@ -26,8 +26,8 @@
 // or implied, of Joshua 1 Systems Inc.
 // =====================================================================
 
-namespace VixenModules.Output.E131
-{
+using Common.Controls;
+using Common.Controls.Theme;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -43,6 +43,8 @@ namespace VixenModules.Output.E131
     using System.Linq;
     using Vixen.Sys;
 
+namespace VixenModules.Output.E131
+{
     public partial class SetupForm : Form
     {
         // column indexes - must be changed if column addrange code is changed
@@ -106,7 +108,19 @@ namespace VixenModules.Output.E131
             btnAddUnicast.Image = Tools.GetIcon(Resources.add, 16);
             btnDeleteUnicast.Text = "";
             btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, 16);
-            SetDestinations();
+			SetDestinations();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			foreach (Control tab in tabControlEX1.TabPages)
+			{
+				tab.BackColor = ThemeColorTable.BackgroundColor;
+				tab.ForeColor = ThemeColorTable.ForeColor;
+			}
+			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
+			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
+	        tabControlEX1.SelectedTab = tabPageEX1;
+			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
         }
 
         public int EventRepeatCount
@@ -232,8 +246,11 @@ namespace VixenModules.Output.E131
 
                     // add it to available nicNames table
                     this.nicNames.Add("UNKNOWN", multicast);
-                    
-                    MessageBox.Show("The selected multicast interface was not found, be sure to verify your destination.");
+
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("The selected multicast interface was not found, be sure to verify your destination.", "", false, false);
+					messageBox.ShowDialog();
 
                     destination = "Multicast UNKNOWN";
                 }
@@ -343,11 +360,11 @@ namespace VixenModules.Output.E131
 
                 if (E131OutputPlugin.unicasts.ContainsKey(ipAddressText))
                 {
-                    MessageBox.Show(
-                        "Error - Duplicate IP Address",
-                        "IP Address Validation",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Error - Duplicate IP Address",
+						"IP Address Validation", false, false);
+					messageBox.ShowDialog();
                 }
                 else
                 {
@@ -635,8 +652,14 @@ namespace VixenModules.Output.E131
             {
                 if (!autoPopulateStart.Checked)
                 {
-                    if(!shownSortError)
-                        MessageBox.Show("Sorting is not available while Vixen manages the start values.");
+	                if (!shownSortError)
+	                {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("Sorting is not available while Vixen manages the start values.",
+							"", false, false);
+						messageBox.ShowDialog();
+	                }
                     shownSortError = true;
                 } else
                 {
@@ -752,11 +775,12 @@ namespace VixenModules.Output.E131
 
             if (e.Cancel)
             {
-                MessageBox.Show(
-                    this.univDGVN.Rows[e.RowIndex].ErrorText,
-                    "Cell Validation",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(
+					this.univDGVN.Rows[e.RowIndex].ErrorText,
+					"Cell Validation", false, false);
+				messageBox.ShowDialog();
             }
         }
 
@@ -844,8 +868,12 @@ namespace VixenModules.Output.E131
 
                             if ((r1LowerBound >= r2LowerBound && r1LowerBound <= r2UpperBound) || (r1UpperBound >= r2LowerBound && r1UpperBound <= r2UpperBound))
                             {
-                                DialogResult result = MessageBox.Show("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,MessageBoxDefaultButton.Button2);
-                                if (result == DialogResult.Yes){
+								//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+								MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+								var messageBox = new MessageBoxForm("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", true, false);
+								messageBox.ShowDialog();
+								if (messageBox.DialogResult == DialogResult.OK)
+								{
                                     e.Cancel = true;
                                     return;
                                 }
@@ -866,7 +894,10 @@ namespace VixenModules.Output.E131
                     int univ = ((string)r1.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
                     foreach(DataGridViewRow r2 in univDGVN.Rows){
                         if(r1 != r2 && univ == ((string)r2.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1)){
-                            MessageBox.Show(string.Format("Universe numbers must be unique."));
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("Universe numbers must be unique.", "Error", false, false);
+							messageBox.ShowDialog();
                             e.Cancel = true;
                             return;
                         }
@@ -899,7 +930,10 @@ namespace VixenModules.Output.E131
                             {
                                 if (usedUniverses.Contains(universe))
                                 {
-                                    MessageBox.Show(string.Format("Universe {0} already exists on another controller transmitting to the same device or network. Please configure a different universe to prevent hardware errors.", universe), "Existing Universe", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+									//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+									MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+									var messageBox = new MessageBoxForm(string.Format("Universe {0} already exists on another controller transmitting to the same device or network. Please configure a different universe to prevent hardware errors.", universe), "Existing Universe", false, false);
+									messageBox.ShowDialog();
                                     e.Cancel = true;
                                     return;
                                 }
@@ -1017,7 +1051,10 @@ namespace VixenModules.Output.E131
         {
             if (comboDestination.SelectedItem.ToString().StartsWith("Multicast"))
             {
-                MessageBox.Show("Multicast destinations cannot be removed.", "Streaming ACN (E1.31)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Multicast destinations cannot be removed.", "Streaming ACN (E1.31)", false, false);
+				messageBox.ShowDialog();
                 return;
             }
 
@@ -1033,7 +1070,10 @@ namespace VixenModules.Output.E131
 
                 if ((p.ModuleData as E131ModuleDataModel).Unicast == destination.Item1)
                 {
-                    MessageBox.Show("This destination is in use by another instance of the plugin and cannot be removed.", "Streaming ACN (E1.31)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("This destination is in use by another instance of the plugin and cannot be removed.", "Streaming ACN (E1.31)", false, false);
+					messageBox.ShowDialog();
                     return;
                 }
             }
@@ -1050,5 +1090,23 @@ namespace VixenModules.Output.E131
             else
                 btnDeleteUnicast.Enabled = true;
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
+		}
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
     }
 }

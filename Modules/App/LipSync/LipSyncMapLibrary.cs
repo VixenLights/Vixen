@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Module;
 using Vixen.Module.App;
 
@@ -181,13 +183,14 @@ namespace VixenModules.App.LipSyncApp
                 if ((name.Equals(editor.LibraryMappingName) == false) &&
                     (this.Contains(editor.LibraryMappingName) == true))
                 {
-                    DialogResult dr =
-                        MessageBox.Show("Overwrite existing " +
-                            editor.LibraryMappingName + " mapping?",
-                            "Map exists",
-                            MessageBoxButtons.YesNo);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Overwrite existing " +
+							editor.LibraryMappingName + " mapping?",
+							"Map exists", true, false);
+					messageBox.ShowDialog();
 
-                    doRemove = (dr == DialogResult.Yes) ? true : false;
+					doRemove = (messageBox.DialogResult == DialogResult.OK) ? true : false;
                 }
 
                 if (doRemove == true)
@@ -215,13 +218,14 @@ namespace VixenModules.App.LipSyncApp
                 if ((name.Equals(editor.LibraryMappingName) == false) &&
                     (this.Contains(editor.LibraryMappingName) == true))
                 {
-                    DialogResult dr =
-                        MessageBox.Show("Overwrite existing " +
-                            editor.LibraryMappingName + " mapping?",
-                            "Map exists",
-                            MessageBoxButtons.YesNo);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Overwrite existing " +
+							editor.LibraryMappingName + " mapping?",
+							"Map exists", true, false);
+					messageBox.ShowDialog();
 
-                    doRemove = (dr == DialogResult.Yes) ? true : false;
+					doRemove = (messageBox.DialogResult == DialogResult.OK) ? true : false;
                 }
 
                 if (doRemove == true)

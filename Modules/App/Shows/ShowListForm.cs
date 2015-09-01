@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -17,6 +19,9 @@ namespace VixenModules.App.Shows
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonAdd.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAdd.Text = "";
 			buttonDelete.Image = Tools.GetIcon(Resources.delete, 16);
@@ -118,7 +123,11 @@ namespace VixenModules.App.Shows
 
 				if (lvItem != null)
 				{
-					if (MessageBox.Show("Are you sure you want to delete the selected show?\r\n\r\n" + lvItem.Text + "\r\n\r\nYou CANNOT undo this!", "Delete Show", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Are you sure you want to delete the selected show?\r\n\r\n" + lvItem.Text + "\r\n\r\nYou CANNOT undo this!", "Delete Show", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						Data.Shows.Remove(lvItem.Tag as Show);
 						listViewShows.Items.Remove(lvItem);
@@ -140,5 +149,21 @@ namespace VixenModules.App.Shows
 			}
 		}
 
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 	}
 }

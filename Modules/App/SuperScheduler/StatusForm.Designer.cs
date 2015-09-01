@@ -68,16 +68,18 @@
 			this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(398, 49);
+			this.groupBox1.Size = new System.Drawing.Size(450, 49);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Show Status";
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// buttonStartScheduler
 			// 
 			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStartScheduler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStartScheduler.Location = new System.Drawing.Point(289, 16);
+			this.buttonStartScheduler.Location = new System.Drawing.Point(312, 16);
 			this.buttonStartScheduler.Name = "buttonStartScheduler";
 			this.buttonStartScheduler.Size = new System.Drawing.Size(24, 24);
 			this.buttonStartScheduler.TabIndex = 8;
@@ -89,8 +91,9 @@
 			// buttonViewLog
 			// 
 			this.buttonViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonViewLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonViewLog.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonViewLog.Location = new System.Drawing.Point(364, 16);
+			this.buttonViewLog.Location = new System.Drawing.Point(416, 16);
 			this.buttonViewLog.Name = "buttonViewLog";
 			this.buttonViewLog.Size = new System.Drawing.Size(24, 24);
 			this.buttonViewLog.TabIndex = 7;
@@ -102,8 +105,9 @@
 			// buttonNextSong
 			// 
 			this.buttonNextSong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonNextSong.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNextSong.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonNextSong.Location = new System.Drawing.Point(223, 15);
+			this.buttonNextSong.Location = new System.Drawing.Point(275, 15);
 			this.buttonNextSong.Name = "buttonNextSong";
 			this.buttonNextSong.Size = new System.Drawing.Size(24, 24);
 			this.buttonNextSong.TabIndex = 6;
@@ -115,8 +119,9 @@
 			// buttonPauseShow
 			// 
 			this.buttonPauseShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonPauseShow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPauseShow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPauseShow.Location = new System.Drawing.Point(193, 15);
+			this.buttonPauseShow.Location = new System.Drawing.Point(245, 15);
 			this.buttonPauseShow.Name = "buttonPauseShow";
 			this.buttonPauseShow.Size = new System.Drawing.Size(24, 24);
 			this.buttonPauseShow.TabIndex = 5;
@@ -128,8 +133,9 @@
 			// buttonStopGracefully
 			// 
 			this.buttonStopGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStopGracefully.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopGracefully.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopGracefully.Location = new System.Drawing.Point(339, 16);
+			this.buttonStopGracefully.Location = new System.Drawing.Point(381, 16);
 			this.buttonStopGracefully.Name = "buttonStopGracefully";
 			this.buttonStopGracefully.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopGracefully.TabIndex = 4;
@@ -141,8 +147,9 @@
 			// buttonStopNow
 			// 
 			this.buttonStopNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStopNow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopNow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopNow.Location = new System.Drawing.Point(314, 16);
+			this.buttonStopNow.Location = new System.Drawing.Point(347, 16);
 			this.buttonStopNow.Name = "buttonStopNow";
 			this.buttonStopNow.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopNow.TabIndex = 2;
@@ -157,7 +164,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelStatus.Location = new System.Drawing.Point(59, 21);
 			this.labelStatus.Name = "labelStatus";
-			this.labelStatus.Size = new System.Drawing.Size(211, 13);
+			this.labelStatus.Size = new System.Drawing.Size(263, 13);
 			this.labelStatus.TabIndex = 1;
 			this.labelStatus.Text = "Waiting to run next show...";
 			// 
@@ -178,7 +185,7 @@
 			this.groupBox2.Controls.Add(this.buttonPlayShowNow);
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.comboBoxShows);
-			this.groupBox2.Location = new System.Drawing.Point(416, 27);
+			this.groupBox2.Location = new System.Drawing.Point(468, 27);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(398, 53);
 			this.groupBox2.TabIndex = 1;
@@ -239,10 +246,11 @@
 			this.groupBoxLog.Controls.Add(this.listBoxLog);
 			this.groupBoxLog.Location = new System.Drawing.Point(12, 78);
 			this.groupBoxLog.Name = "groupBoxLog";
-			this.groupBoxLog.Size = new System.Drawing.Size(398, 0);
+			this.groupBoxLog.Size = new System.Drawing.Size(450, 0);
 			this.groupBoxLog.TabIndex = 2;
 			this.groupBoxLog.TabStop = false;
 			this.groupBoxLog.Text = "Log";
+			this.groupBoxLog.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// listBoxLog
 			// 
@@ -253,7 +261,7 @@
 			this.listBoxLog.IntegralHeight = false;
 			this.listBoxLog.Location = new System.Drawing.Point(6, 23);
 			this.listBoxLog.Name = "listBoxLog";
-			this.listBoxLog.Size = new System.Drawing.Size(386, 0);
+			this.listBoxLog.Size = new System.Drawing.Size(438, 0);
 			this.listBoxLog.TabIndex = 0;
 			// 
 			// imageButtons
@@ -271,11 +279,12 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(422, 74);
+			this.ClientSize = new System.Drawing.Size(474, 71);
 			this.Controls.Add(this.groupBoxLog);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.MaximizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(490, 110);
 			this.Name = "StatusForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Scheduler Status";

@@ -230,8 +230,8 @@
 			// 
 			// checkBoxFillDuration
 			// 
+			this.checkBoxFillDuration.AutoCheck = false;
 			this.checkBoxFillDuration.AutoSize = true;
-			this.checkBoxFillDuration.Enabled = false;
 			this.checkBoxFillDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxFillDuration.Location = new System.Drawing.Point(18, 49);
 			this.checkBoxFillDuration.Name = "checkBoxFillDuration";
@@ -377,8 +377,8 @@
 			// 
 			// checkBoxSkipEOBeat
 			// 
+			this.checkBoxSkipEOBeat.AutoCheck = false;
 			this.checkBoxSkipEOBeat.AutoSize = true;
-			this.checkBoxSkipEOBeat.Enabled = false;
 			this.checkBoxSkipEOBeat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.checkBoxSkipEOBeat.Location = new System.Drawing.Point(18, 26);
 			this.checkBoxSkipEOBeat.Name = "checkBoxSkipEOBeat";

@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
+using VixenModules.App.WebServer.Properties;
+using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.App.WebServer
 {
@@ -15,7 +18,11 @@ namespace VixenModules.App.WebServer
 		public Settings()
 		{
 			InitializeComponent();
-
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			labelVixen.BackColor = Color.Transparent;
+			Icon = Resources.Icon_Vixen3;
 		}
 
 		public Settings(Data _data)
@@ -35,8 +42,8 @@ namespace VixenModules.App.WebServer
 		}
 		private void setLinkLabel()
 		{
-			this.label3.Enabled = this.linkLabel1.Visible = WebServerEnabled;
-			this.linkLabel1.Text = string.Format("http://{0}:{1}/", System.Net.Dns.GetHostName(), Port);
+			label3.Visible = linkLabel1.Visible = WebServerEnabled;
+			linkLabel1.Text = string.Format("http://{0}:{1}/", System.Net.Dns.GetHostName(), Port);
 		}
 
 		public int Port
@@ -70,6 +77,18 @@ namespace VixenModules.App.WebServer
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start(linkLabel1.Text);
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }

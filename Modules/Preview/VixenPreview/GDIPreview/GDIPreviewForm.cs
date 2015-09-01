@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Data.Value;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using Common.Controls;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
 
@@ -24,6 +26,7 @@ namespace VixenModules.Preview.VixenPreview
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool needsUpdate = true;
+		private bool formLoading = true;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
@@ -41,6 +44,11 @@ namespace VixenModules.Preview.VixenPreview
 				myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
 				return myCp;
 			}
+		}
+
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 		public VixenPreviewData Data { get; set; }
@@ -191,50 +199,10 @@ namespace VixenModules.Preview.VixenPreview
 		public void Setup()
 		{
 			Reload();
-
-			var minX = Screen.AllScreens.Min(m => m.Bounds.X);
-			var maxX = Screen.AllScreens.Sum(m => m.Bounds.Width) + minX;
-
-			var minY = Screen.AllScreens.Min(m => m.Bounds.Y);
-			var maxY = Screen.AllScreens.Sum(m => m.Bounds.Height) + minY;
-
-			// avoid 0 with/height in case Data comes in 'bad' -- even small is bad,
-			// as it doesn't give a sizeable enough canvas to render on.
-			if (Data.Width < 300) {
-				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
-					Data.Width = gdiControl.Background.Width;
-				else
-					Data.Width = 400;
+			if (InvokeRequired)
+			{
+				BeginInvoke(new Action(RestoreWindowState));
 			}
-
-			if (Data.SetupWidth < 300) {
-				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
-					Data.SetupWidth = gdiControl.Background.Width;
-				else
-					Data.SetupWidth = 400;
-			}
-
-			if (Data.Height < 200) {
-				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
-					Data.Height = gdiControl.Background.Height;
-				else
-					Data.Height = 300;
-			}
-
-			if (Data.SetupHeight < 200) {
-				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
-					Data.SetupHeight = gdiControl.Background.Height;
-				else
-					Data.SetupHeight = 300;
-			}
-
-			if (Data.Left < minX || Data.Left > maxX)
-				Data.Left = 0;
-			if (Data.Top < minY || Data.Top > maxY)
-				Data.Top = 0;
-
-			SetDesktopLocation(Data.Left, Data.Top);
-			Size = new Size(Data.Width, Data.Height);
 		}
 
 		private void GDIPreviewForm_Move(object sender, EventArgs e)
@@ -248,6 +216,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Top = Top;
 			Data.Left = Left;
+			if(!formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_Resize(object sender, EventArgs e)
@@ -261,16 +230,92 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Width = Width;
 			Data.Height = Height;
+			if (!formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (e.CloseReason == CloseReason.UserClosing)
 			{
-				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
-								MessageBoxButtons.OKCancel);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("The preview can only be closed from the Preview Configuration dialog.", "Close", false, true);
+				messageBox.ShowDialog();
 				e.Cancel = true;
 			}
+
+			SaveWindowState();
+		}
+
+		private void SaveWindowState()
+		{
+			XMLProfileSettings xml = new XMLProfileSettings();
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name),
+				WindowState.ToString());
+		}
+
+		private void GDIPreviewForm_Load(object sender, EventArgs e)
+		{
+			formLoading = true;
+			RestoreWindowState();
+			formLoading = false;
+		}
+
+		private void RestoreWindowState()
+		{
+			WindowState = FormWindowState.Normal;
+			StartPosition = FormStartPosition.WindowsDefaultBounds;
+			XMLProfileSettings xml = new XMLProfileSettings();
+
+			var desktopBounds =
+				new Rectangle(
+					new Point(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
+					new Size(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+
+			if (desktopBounds.Width < 300)
+			{
+				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
+					desktopBounds.Width = gdiControl.Background.Width;
+				else
+					desktopBounds.Width = 400;
+			}
+
+			if (desktopBounds.Height < 200)
+			{
+				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
+					desktopBounds.Height = gdiControl.Background.Height;
+				else
+					desktopBounds.Height = 300;
+			}
+
+			if (IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopBounds = desktopBounds;
+
+				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal").Equals("Maximized"))
+				{
+					WindowState = FormWindowState.Maximized;
+				}
+			}
+			else
+			{
+				// this resets the upper left corner of the window to windows standards
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+
+				// we can still apply the saved size
+				Size = new Size(desktopBounds.Width,desktopBounds.Height);
+			}
+
+			
 		}
 	}
 }

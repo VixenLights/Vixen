@@ -62,10 +62,10 @@ namespace Common.Controls.Timeline
 			AllowGridResize = true;
 			AutoScrollMargin = new Size(24, 24);
 			TotalTime = TimeSpan.FromMinutes(1);
-			RowSeparatorColor = Color.Black;
-			MajorGridlineColor = Color.FromArgb(120, 120, 120);
+			RowSeparatorColor = ThemeColorTable.TimeLineGridColor;
+			MajorGridlineColor = ThemeColorTable.TimeLineGridColor;
 			GridlineInterval = TimeSpan.FromSeconds(1.0);
-			BackColor = DarkThemeColorTable.BackgroundColor;
+			BackColor = ThemeColorTable.TimeLineEffectsBackColor;
 			SelectionColor = Color.FromArgb(100, 40, 100, 160);
 			SelectionBorder = Color.Blue;
 			DrawColor = Color.FromArgb(100, 255, 255, 255);
@@ -198,6 +198,8 @@ namespace Common.Controls.Timeline
 		public bool SuppressInvalidate { get; set; }
 
 		public bool SupressRendering { get; set; }
+
+		public bool SupressSelectionEvents { get; set; }
 
 		public int VerticalOffset
 		{
@@ -337,6 +339,7 @@ namespace Common.Controls.Timeline
 
 		private void _SelectionChanged()
 		{
+			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
 				SelectionChanged(this, EventArgs.Empty);
 		}
@@ -703,7 +706,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -736,7 +743,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -769,7 +780,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -795,7 +810,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -819,7 +838,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -849,7 +872,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -878,7 +905,11 @@ namespace Common.Controls.Timeline
 		{
 			if (!OkToUseAlignmentHelper(elements))
 			{
-				MessageBox.Show(alignmentHelperWarning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm(alignmentHelperWarning,
+					"Warning", false, false);
+				messageBox.ShowDialog();
 				return;
 			}
 
@@ -921,9 +952,12 @@ namespace Common.Controls.Timeline
 		{
 			if (!SelectedElements.Any())
 			{
-				var result = MessageBox.Show(@"This action will apply to your entire sequence, are you sure ?",
-					@"Close element gaps", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-				if (result == DialogResult.No) return;
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("This action will apply to your entire sequence, are you sure ?",
+					@"Close element gaps", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No) return;
 			}
 
 			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
@@ -1903,6 +1937,42 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		public void ToggleSelectedRows(bool includeChildren)
+		{
+			SuppressInvalidate = true;
+			AllowGridResize = false;
+			if (SelectedRows.Any())
+			{
+				foreach (var selectedRow in SelectedRows)
+				{
+					if (includeChildren)
+					{
+						selectedRow.ToggleTree(!selectedRow.TreeOpen);
+					}
+					else
+					{
+						selectedRow.TreeOpen = !selectedRow.TreeOpen;
+					}
+				}
+			}
+			else if (ActiveRow != null)
+			{
+				if (includeChildren)
+				{
+					ActiveRow.ToggleTree(!ActiveRow.TreeOpen);
+				}
+				else
+				{
+					ActiveRow.TreeOpen = !ActiveRow.TreeOpen;
+				}
+			}
+
+			SuppressInvalidate = false;
+			AllowGridResize = true;
+			ResizeGridHeight();
+			Invalidate();
+		}
+
 		#endregion
 	
 		#region Drawing
@@ -2370,7 +2440,11 @@ namespace Common.Controls.Timeline
 				}
 				catch (Exception ex) {
 					Logging.Error("Exception in TimelineGrid.OnPaint()",ex);
-					MessageBox.Show(@"An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("An unexpected error occured while drawing the grid. Please notify the Vixen team and provide the error logs.",
+						@"Error", false, false);
+					messageBox.ShowDialog();
 				}
 		}
 

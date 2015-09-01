@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using VixenModules.Preview.VixenPreview.Direct2D;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -19,6 +20,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public VixenPreviewDisplayD2D() {
 			InitializeComponent();
+			BackColor = ThemeColorTable.BackgroundColor;
 			//direct2DControlWinForm1. = new DisplayScene(null, DisplayID);
 			Scene = new DisplayScene(null);
 			Scene.IsAnimating = true;

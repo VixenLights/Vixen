@@ -76,6 +76,8 @@
 			this.buttonCancel.TabIndex = 7;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -87,6 +89,8 @@
 			this.buttonOK.TabIndex = 6;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// tableLayoutPanelEffectEditors
 			// 

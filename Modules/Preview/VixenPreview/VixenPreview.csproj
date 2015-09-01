@@ -353,6 +353,9 @@
     <EmbeddedResource Include="ResizePreviewForm.resx">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\DisplayItemBaseControl.resx">
+      <DependentUpon>DisplayItemBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewCustomCreateForm.resx">
       <DependentUpon>PreviewCustomCreateForm.cs</DependentUpon>
     </EmbeddedResource>

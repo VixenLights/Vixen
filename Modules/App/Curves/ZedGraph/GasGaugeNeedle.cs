@@ -336,7 +336,7 @@ namespace ZedGraph
 			/// The default color for drawing frames around GasGaugeNeedle
 			/// (<see cref="ZedGraph.LineBase.Color"/> property).
 			/// </summary>
-			public static Color BorderColor = DarkThemeColorTable.BorderColor;
+			public static Color BorderColor = ThemeColorTable.GroupBoxBorderColor;
 
 			/// <summary>
 			/// The default fill type for filling the GasGaugeNeedle.

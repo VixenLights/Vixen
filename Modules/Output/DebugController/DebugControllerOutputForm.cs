@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Vixen.Commands;
 using Vixen.Sys;
 
@@ -27,6 +28,9 @@ namespace VixenModules.Output.DebugController
 		public DebugControllerOutputForm()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			chkVerbose.Checked = Verbose = false;
 			AppendText = false;
 

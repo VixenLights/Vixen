@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls
 {
@@ -19,8 +20,9 @@ namespace Common.Controls
 			_formTitle = formTitle;
 			_items = items;
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public Object SelectedItem
@@ -96,24 +98,17 @@ namespace Common.Controls
 			}
 		}
 
-		private void buttonOk_MouseHover(object sender, EventArgs e)
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
-			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImageHover;
 		}
 
-		private void buttonOk_MouseLeave(object sender, EventArgs e)
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
-			buttonOk.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
-		}
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
 
-		private void buttonCancel_MouseHover(object sender, EventArgs e)
-		{
-			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImageHover;
-		}
-
-		private void buttonCancel_MouseLeave(object sender, EventArgs e)
-		{
-			buttonCancel.BackgroundImage = Resources.Properties.Resources.HeadingBackgroundImage;
 		}
 	}
 }

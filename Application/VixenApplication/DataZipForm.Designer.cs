@@ -30,6 +30,7 @@
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.checkBoxUserSettings = new System.Windows.Forms.CheckBox();
 			this.checkBoxMedia = new System.Windows.Forms.CheckBox();
 			this.checkBoxLogs = new System.Windows.Forms.CheckBox();
 			this.checkBoxTemplate = new System.Windows.Forms.CheckBox();
@@ -48,9 +49,8 @@
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.folderBrowserSaveFolder = new System.Windows.Forms.FolderBrowserDialog();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-			this.checkBoxUserSettings = new System.Windows.Forms.CheckBox();
+			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
@@ -71,6 +71,7 @@
 			this.groupBox1.Size = new System.Drawing.Size(280, 250);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// groupBox2
 			// 
@@ -88,6 +89,19 @@
 			this.groupBox2.TabIndex = 19;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Profile artifacts to include";
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// checkBoxUserSettings
+			// 
+			this.checkBoxUserSettings.AutoSize = true;
+			this.checkBoxUserSettings.Checked = true;
+			this.checkBoxUserSettings.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBoxUserSettings.Location = new System.Drawing.Point(90, 65);
+			this.checkBoxUserSettings.Name = "checkBoxUserSettings";
+			this.checkBoxUserSettings.Size = new System.Drawing.Size(89, 17);
+			this.checkBoxUserSettings.TabIndex = 20;
+			this.checkBoxUserSettings.Text = "User Settings";
+			this.checkBoxUserSettings.UseVisualStyleBackColor = true;
 			// 
 			// checkBoxMedia
 			// 
@@ -242,6 +256,8 @@
 			this.buttonStartCancel.Text = "Start";
 			this.buttonStartCancel.UseVisualStyleBackColor = true;
 			this.buttonStartCancel.Click += new System.EventHandler(this.buttonStartCancel_Click);
+			this.buttonStartCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonStartCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonClose
 			// 
@@ -252,6 +268,8 @@
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
+			this.buttonClose.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonClose.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// statusStrip1
 			// 
@@ -264,11 +282,6 @@
 			this.statusStrip1.TabIndex = 11;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
-			// toolStripStatusLabel
-			// 
-			this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-			this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
-			// 
 			// toolStripProgressBar
 			// 
 			this.toolStripProgressBar.Name = "toolStripProgressBar";
@@ -276,17 +289,10 @@
 			this.toolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.toolStripProgressBar.Visible = false;
 			// 
-			// checkBoxUserSettings
+			// toolStripStatusLabel
 			// 
-			this.checkBoxUserSettings.AutoSize = true;
-			this.checkBoxUserSettings.Checked = true;
-			this.checkBoxUserSettings.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxUserSettings.Location = new System.Drawing.Point(90, 65);
-			this.checkBoxUserSettings.Name = "checkBoxUserSettings";
-			this.checkBoxUserSettings.Size = new System.Drawing.Size(89, 17);
-			this.checkBoxUserSettings.TabIndex = 20;
-			this.checkBoxUserSettings.Text = "User Settings";
-			this.checkBoxUserSettings.UseVisualStyleBackColor = true;
+			this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+			this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
 			// 
 			// DataZipForm
 			// 
@@ -303,6 +309,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "DataZipForm";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Profile Archive Wizard";
 			this.Load += new System.EventHandler(this.DataZipForm_Load);

@@ -1,11 +1,16 @@
-﻿namespace VixenApplication
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace VixenApplication
 {
 	partial class VixenApplication
 	{
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private IContainer components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -74,6 +79,7 @@
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.labelVixen = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
@@ -100,8 +106,9 @@
             this.vixenToolStripMenuItem});
 			this.menuStripMain.Location = new System.Drawing.Point(0, 0);
 			this.menuStripMain.Name = "menuStripMain";
+			this.menuStripMain.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
 			this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-			this.menuStripMain.Size = new System.Drawing.Size(461, 24);
+			this.menuStripMain.Size = new System.Drawing.Size(456, 25);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
 			// 
@@ -117,7 +124,7 @@
             this.exitToolStripMenuItem});
 			this.vixenToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.vixenToolStripMenuItem.Name = "vixenToolStripMenuItem";
-			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+			this.vixenToolStripMenuItem.Size = new System.Drawing.Size(57, 19);
 			this.vixenToolStripMenuItem.Text = "System";
 			// 
 			// logsToolStripMenuItem
@@ -259,7 +266,8 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(15, 100);
+			this.label2.Location = new System.Drawing.Point(8, 89);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(102, 13);
 			this.label2.TabIndex = 8;
@@ -271,10 +279,11 @@
 			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOpenSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOpenSequence.Location = new System.Drawing.Point(18, 59);
+			this.buttonOpenSequence.Location = new System.Drawing.Point(12, 54);
+			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
 			this.buttonOpenSequence.Size = new System.Drawing.Size(180, 30);
-			this.buttonOpenSequence.TabIndex = 1;
+			this.buttonOpenSequence.TabIndex = 2;
 			this.buttonOpenSequence.Text = "Open Sequence...";
 			this.buttonOpenSequence.UseVisualStyleBackColor = true;
 			this.buttonOpenSequence.Click += new System.EventHandler(this.buttonOpenSequence_Click);
@@ -287,10 +296,11 @@
 			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonNewSequence.Location = new System.Drawing.Point(18, 23);
+			this.buttonNewSequence.Location = new System.Drawing.Point(12, 17);
+			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonNewSequence.Name = "buttonNewSequence";
 			this.buttonNewSequence.Size = new System.Drawing.Size(180, 30);
-			this.buttonNewSequence.TabIndex = 0;
+			this.buttonNewSequence.TabIndex = 1;
 			this.buttonNewSequence.Text = "New Sequence...";
 			this.buttonNewSequence.UseVisualStyleBackColor = true;
 			this.buttonNewSequence.Click += new System.EventHandler(this.buttonNewSequence_Click);
@@ -304,9 +314,11 @@
 			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
 			this.groupBoxSequences.Controls.Add(this.label2);
 			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSequences.Location = new System.Drawing.Point(12, 200);
+			this.groupBoxSequences.Location = new System.Drawing.Point(13, 205);
+			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSequences.Name = "groupBoxSequences";
-			this.groupBoxSequences.Size = new System.Drawing.Size(218, 235);
+			this.groupBoxSequences.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSequences.Size = new System.Drawing.Size(206, 231);
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
@@ -327,14 +339,14 @@
             listViewItem4,
             listViewItem5,
             listViewItem6});
-			this.listViewRecentSequences.Location = new System.Drawing.Point(18, 116);
+			this.listViewRecentSequences.Location = new System.Drawing.Point(11, 108);
+			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
 			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 113);
-			this.listViewRecentSequences.TabIndex = 3;
+			this.listViewRecentSequences.TabIndex = 0;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
-			this.listViewRecentSequences.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listViewRecentSequences_DrawItem);
 			this.listViewRecentSequences.DoubleClick += new System.EventHandler(this.listViewRecentSequences_DoubleClick);
 			// 
 			// columnHeader1
@@ -345,9 +357,10 @@
 			// 
 			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelVersion.Location = new System.Drawing.Point(340, 134);
+			this.labelVersion.Location = new System.Drawing.Point(321, 129);
+			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(80, 25);
+			this.labelVersion.Size = new System.Drawing.Size(106, 38);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
 			// 
@@ -356,9 +369,11 @@
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupDisplay);
 			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
 			this.groupBoxSystemConfig.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSystemConfig.Location = new System.Drawing.Point(245, 200);
+			this.groupBoxSystemConfig.Location = new System.Drawing.Point(235, 205);
+			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(204, 103);
+			this.groupBoxSystemConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(208, 94);
 			this.groupBoxSystemConfig.TabIndex = 1;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
@@ -370,10 +385,11 @@
 			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupDisplay.Location = new System.Drawing.Point(12, 23);
+			this.buttonSetupDisplay.Location = new System.Drawing.Point(13, 17);
+			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
 			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupDisplay.TabIndex = 0;
+			this.buttonSetupDisplay.TabIndex = 3;
 			this.buttonSetupDisplay.Text = "Setup Display";
 			this.buttonSetupDisplay.UseVisualStyleBackColor = true;
 			this.buttonSetupDisplay.Click += new System.EventHandler(this.buttonSetupDisplay_Click);
@@ -386,10 +402,11 @@
 			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupOutputPreviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(12, 59);
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(13, 54);
+			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
 			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
-			this.buttonSetupOutputPreviews.TabIndex = 1;
+			this.buttonSetupOutputPreviews.TabIndex = 4;
 			this.buttonSetupOutputPreviews.Text = "Setup Previews";
 			this.buttonSetupOutputPreviews.UseVisualStyleBackColor = true;
 			this.buttonSetupOutputPreviews.Click += new System.EventHandler(this.buttonSetupOutputPreviews_Click);
@@ -399,9 +416,10 @@
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(33, 27);
+			this.pictureBox1.Location = new System.Drawing.Point(13, 30);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(393, 165);
+			this.pictureBox1.Size = new System.Drawing.Size(430, 165);
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -409,9 +427,10 @@
 			// 
 			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(342, 166);
+			this.labelDebugVersion.Location = new System.Drawing.Point(323, 161);
+			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(78, 22);
+			this.labelDebugVersion.Size = new System.Drawing.Size(117, 34);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
 			// 
@@ -421,13 +440,13 @@
 			this.toolStripStatusLabelExecutionLight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
 			this.toolStripStatusLabelExecutionLight.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionLight.Name = "toolStripStatusLabelExecutionLight";
-			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 25);
+			this.toolStripStatusLabelExecutionLight.Size = new System.Drawing.Size(22, 22);
 			// 
 			// toolStripStatusLabel1
 			// 
 			this.toolStripStatusLabel1.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 25);
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(13, 22);
 			this.toolStripStatusLabel1.Text = "  ";
 			// 
 			// toolStripStatusLabelExecutionState
@@ -436,7 +455,7 @@
 			this.toolStripStatusLabelExecutionState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabelExecutionState.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabelExecutionState.Name = "toolStripStatusLabelExecutionState";
-			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(119, 25);
+			this.toolStripStatusLabelExecutionState.Size = new System.Drawing.Size(119, 22);
 			this.toolStripStatusLabelExecutionState.Text = "Execution: Unknown";
 			// 
 			// toolStripStatusLabel_memory
@@ -445,7 +464,7 @@
 			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel_memory.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
-			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(292, 25);
+			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(279, 22);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -460,19 +479,31 @@
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 438);
+			this.statusStrip.Location = new System.Drawing.Point(0, 441);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(461, 27);
+			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+			this.statusStrip.Size = new System.Drawing.Size(456, 24);
 			this.statusStrip.SizingGrip = false;
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
+			// labelVixen
+			// 
+			this.labelVixen.AutoSize = true;
+			this.labelVixen.BackColor = System.Drawing.Color.Transparent;
+			this.labelVixen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.labelVixen.Font = new System.Drawing.Font("Microsoft Sans Serif", 65F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelVixen.Location = new System.Drawing.Point(153, 31);
+			this.labelVixen.Name = "labelVixen";
+			this.labelVixen.Size = new System.Drawing.Size(265, 98);
+			this.labelVixen.TabIndex = 17;
+			this.labelVixen.Text = "Vixen";
+			// 
 			// VixenApplication
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(461, 465);
+			this.ClientSize = new System.Drawing.Size(456, 465);
+			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
@@ -481,10 +512,11 @@
 			this.Controls.Add(this.menuStripMain);
 			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MainMenuStrip = this.menuStripMain;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(463, 422);
+			this.MaximumSize = new System.Drawing.Size(472, 504);
+			this.MinimumSize = new System.Drawing.Size(472, 504);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";
@@ -507,44 +539,45 @@
 
 		#endregion
 
-		private System.Windows.Forms.ContextMenuStrip contextMenuStripNewSequence;
-		private System.Windows.Forms.OpenFileDialog openFileDialog;
-		private System.Windows.Forms.MenuStrip menuStripMain;
-		private System.Windows.Forms.ToolStripMenuItem vixenToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem executionToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonOpenSequence;
-		private System.Windows.Forms.Button buttonNewSequence;
-		private System.Windows.Forms.GroupBox groupBoxSequences;
-		private System.Windows.Forms.GroupBox groupBoxSystemConfig;
-		private System.Windows.Forms.ToolStripMenuItem logsToolStripMenuItem;
-		private System.Windows.Forms.ListView listViewRecentSequences;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
-		private System.Windows.Forms.Label labelVersion;
-		private System.Windows.Forms.Button buttonSetupOutputPreviews;
-		private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.ToolStripMenuItem profilesToolStripMenuItem;
-		private System.Windows.Forms.Label labelDebugVersion;
-		private System.Windows.Forms.Button buttonSetupDisplay;
-		private System.Windows.Forms.ToolStripMenuItem systemConfigurationToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setupDisplayToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setupPreviewsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem oldConfigurationInterfacesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setupElementsGroupsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setupControllersToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem setupFiltersPatchingToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionLight;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelExecutionState;
-		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_memory;
-		private System.Windows.Forms.StatusStrip statusStrip;
+		private ContextMenuStrip contextMenuStripNewSequence;
+		private OpenFileDialog openFileDialog;
+		private MenuStrip menuStripMain;
+		private ToolStripMenuItem vixenToolStripMenuItem;
+		private ToolStripMenuItem executionToolStripMenuItem;
+		private ToolStripMenuItem startToolStripMenuItem;
+		private ToolStripMenuItem stopToolStripMenuItem;
+		private ToolStripSeparator toolStripSeparator1;
+		private ToolStripMenuItem exitToolStripMenuItem;
+		private Label label2;
+		private Button buttonOpenSequence;
+		private Button buttonNewSequence;
+		private GroupBox groupBoxSequences;
+		private GroupBox groupBoxSystemConfig;
+		private ToolStripMenuItem logsToolStripMenuItem;
+		private ListView listViewRecentSequences;
+		private ColumnHeader columnHeader1;
+		private ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
+		private Label labelVersion;
+		private Button buttonSetupOutputPreviews;
+		private PictureBox pictureBox1;
+        private ToolStripMenuItem profilesToolStripMenuItem;
+		private Label labelDebugVersion;
+		private Button buttonSetupDisplay;
+		private ToolStripMenuItem systemConfigurationToolStripMenuItem;
+		private ToolStripMenuItem setupDisplayToolStripMenuItem;
+		private ToolStripMenuItem setupPreviewsToolStripMenuItem;
+		private ToolStripSeparator toolStripSeparator2;
+		private ToolStripMenuItem oldConfigurationInterfacesToolStripMenuItem;
+		private ToolStripMenuItem setupElementsGroupsToolStripMenuItem;
+		private ToolStripMenuItem setupControllersToolStripMenuItem;
+		private ToolStripMenuItem setupFiltersPatchingToolStripMenuItem;
+		private ToolStripSeparator toolStripSeparator3;
+		private ToolStripStatusLabel toolStripStatusLabelExecutionLight;
+		private ToolStripStatusLabel toolStripStatusLabel1;
+		private ToolStripStatusLabel toolStripStatusLabelExecutionState;
+		private ToolStripStatusLabel toolStripStatusLabel_memory;
+		private StatusStrip statusStrip;
+		private Label labelVixen;
 	}
 }
 

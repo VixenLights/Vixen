@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using System.IO;
@@ -84,9 +85,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
-			toolStripColors.Renderer=new DarkThemeToolStripRenderer();
-			toolStripGradients.Renderer = new DarkThemeToolStripRenderer();
-			toolStripCurves.Renderer = new DarkThemeToolStripRenderer();
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Resources.pencil;
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -128,9 +126,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.AllowDrop = true;
 			listViewGradients.AllowDrop = true;
 
-			listViewColors.BackColor = DarkThemeColorTable.BackgroundColor;
-			listViewCurves.BackColor = DarkThemeColorTable.BackgroundColor;
-			listViewGradients.BackColor = DarkThemeColorTable.BackgroundColor;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			foreach (Control tab in tabControlEX1.TabPages)
+			{
+				tab.BackColor = ThemeColorTable.BackgroundColor;
+				tab.ForeColor = ThemeColorTable.ForeColor;
+			}
+			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
+			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
+			tabControlEX1.SelectedTab = tabPageEX1;
+			//Over-ride the auto theme listview back color
+			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
+			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
+			listViewGradients.BackColor = ThemeColorTable.BackgroundColor;
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -214,7 +224,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Graphics gfx = Graphics.FromImage(result);
 			using (SolidBrush brush = new SolidBrush(colorItem))
 			{
-				using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
 					gfx.FillRectangle(brush, 0, 0, 48, 48);
 					gfx.DrawRectangle(p, 0, 0, 48, 48);
@@ -228,7 +238,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
 				ImageKey = colorItem.ToString(),
 				Tag = colorItem,
-				ForeColor = DarkThemeColorTable.ForeColor
+				ForeColor = ThemeColorTable.ForeColor
 			};
 			return item;
 		}
@@ -253,7 +263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.Items.Clear();
 
 			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
 				{
@@ -272,7 +282,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Name = name,
 						ImageKey = name,
 						Tag = c,
-						ForeColor = DarkThemeColorTable.ForeColor
+						ForeColor = ThemeColorTable.ForeColor
 					};
 					listViewCurves.Items.Add(item);
 				}
@@ -293,7 +303,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewGradients.Items.Clear();
 
 			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
-			using (var p = new Pen(DarkThemeColorTable.BorderColor, 2))
+			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
 				{
@@ -312,7 +322,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Name = name,
 						ImageKey = name,
 						Tag = gradient,
-						ForeColor = DarkThemeColorTable.ForeColor
+						ForeColor = ThemeColorTable.ForeColor
 					};
 
 					listViewGradients.Items.Add(item);
@@ -377,9 +387,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewColors.SelectedItems == null)
 				return;
 
-			DialogResult result = MessageBox.Show(@"Are you sure you want to delete this color?", @"Delete color?", MessageBoxButtons.YesNoCancel);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to delete this color?", "Delete color?", true, true);
+			messageBox.ShowDialog();
 
-			if (result == DialogResult.Yes)
+			if (messageBox.DialogResult == DialogResult.OK)
 			{
 				_colors.Remove((Color)listViewColors.SelectedItems[0].Tag);
 			}
@@ -424,15 +437,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show(@"Please enter a name.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
+					messageBox.ShowDialog();
 					continue;
 				}
 
 				if (_curveLibrary.Contains(dialog.Response))
 				{
-					DialogResult result = MessageBox.Show(@"There is already a curve with that name. Do you want to overwrite it?",
-						@"Overwrite curve?", MessageBoxButtons.YesNoCancel);
-					if (result == DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						_curveLibrary.AddCurve(dialog.Response, c);
 						if (edit)
@@ -442,7 +459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 					}
 
-					if (result == DialogResult.Cancel)
+					if (messageBox.DialogResult == DialogResult.Cancel)
 					{
 						break;
 					}
@@ -465,10 +482,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewCurves.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result = MessageBox.Show(@"If you delete this library curve, ALL places it is used will be unlinked and will" +
-								@" become independent curves. Are you sure you want to continue?", @"Delete library curve?", MessageBoxButtons.YesNoCancel);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("If you delete this library curve, ALL places it is used will be unlinked and will" +
+								@" become independent curves. Are you sure you want to continue?", "Delete library curve?", true, true);
+			messageBox.ShowDialog();
 
-			if (result == DialogResult.Yes)
+			if (messageBox.DialogResult == DialogResult.OK)
 			{
 				_curveLibrary.RemoveCurve(listViewCurves.SelectedItems[0].Name);
 
@@ -516,15 +536,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (dialog.Response == string.Empty)
 				{
-					MessageBox.Show(@"Please enter a name.");
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Please enter a name.", "Warning", false, false);
+					messageBox.ShowDialog();
 					continue;
 				}
 
 				if (_colorGradientLibrary.Contains(dialog.Response))
 				{
-					DialogResult result = MessageBox.Show(@"There is already a gradient with that name. Do you want to overwrite it?",
-						@"Overwrite gradient?", MessageBoxButtons.YesNoCancel);
-					if (result == DialogResult.Yes)
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There is already a gradient with that name. Do you want to overwrite it?", "Overwrite gradient?", true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
 					{
 						_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 						if (edit)
@@ -534,7 +559,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 					}
 
-					if (result == DialogResult.Cancel)
+					if (messageBox.DialogResult == DialogResult.Cancel)
 					{
 						break;
 					}
@@ -556,12 +581,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (listViewGradients.SelectedItems.Count == 0)
 				return;
 
-			DialogResult result =
-				MessageBox.Show(@"If you delete this library gradient, ALL places it is used will be unlinked and will" +
-								@" become independent gradients. Are you sure you want to continue?", @"Delete library gradient?",
-								MessageBoxButtons.YesNoCancel);
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("If you delete this library gradient, ALL places it is used will be unlinked and will" +
+								@" become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, true);
+			messageBox.ShowDialog();
 
-			if (result == DialogResult.Yes)
+			if (messageBox.DialogResult == DialogResult.OK)
 			{
 				_colorGradientLibrary.RemoveColorGradient(listViewGradients.SelectedItems[0].Name);
 			}
@@ -783,7 +809,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("While exporting Favorite Colors: " + saveFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details", "Unable to export", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -817,8 +846,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("Invalid file while importing Favorite Colors: " + openFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Favorite Color data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Favorite Color data.", "Invalid file", false, false);
+				messageBox.ShowDialog();
 			}
 			PopulateColors();
 			Save_ColorPaletteFile();
@@ -858,7 +889,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("While exporting Curve Library: " + saveFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details", "Unable to export", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -901,8 +935,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("Invalid file while importing Curve Library: " + openFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Curve Library data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Curve Library data.", "Invalid file", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -941,7 +977,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("While exporting Color Gradient Library: " + saveFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Unable to export data, please check the error log for details", @"Unable to export", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Unable to export data, please check the error log for details.", "Unable to export", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -985,8 +1024,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			catch (Exception ex)
 			{
 				Logging.Error("Invalid file while importing Color Gradient Library: " + openFileDialog.FileName + " " + ex.InnerException);
-				MessageBox.Show(@"Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", @"Invalid file", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Sorry, we didn't reconize the data in that file as valid Color Gradient Library data.", "Invalid file", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
@@ -994,15 +1035,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_ToolPalette_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
-			_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+			}
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+			}
 		}
 
 		
 
 		#endregion
-
-		
-
 	}
 }

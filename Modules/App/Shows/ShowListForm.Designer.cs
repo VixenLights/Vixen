@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.listViewShows = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonDelete = new System.Windows.Forms.Button();
@@ -41,6 +42,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.listViewShows);
 			this.groupBox1.Controls.Add(this.buttonDelete);
 			this.groupBox1.Controls.Add(this.buttonEdit);
@@ -50,6 +52,16 @@
 			this.groupBox1.Size = new System.Drawing.Size(280, 210);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
+			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(16, 16);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(39, 13);
+			this.label1.TabIndex = 15;
+			this.label1.Text = "Shows";
 			// 
 			// listViewShows
 			// 
@@ -57,13 +69,13 @@
 			this.listViewShows.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
 			this.listViewShows.FullRowSelect = true;
-			this.listViewShows.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listViewShows.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewShows.HideSelection = false;
 			this.listViewShows.LabelEdit = true;
-			this.listViewShows.Location = new System.Drawing.Point(10, 16);
+			this.listViewShows.Location = new System.Drawing.Point(10, 33);
 			this.listViewShows.MultiSelect = false;
 			this.listViewShows.Name = "listViewShows";
-			this.listViewShows.Size = new System.Drawing.Size(260, 156);
+			this.listViewShows.Size = new System.Drawing.Size(260, 139);
 			this.listViewShows.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listViewShows.TabIndex = 0;
 			this.listViewShows.UseCompatibleStateImageBehavior = false;
@@ -119,6 +131,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -129,6 +143,8 @@
 			this.buttonOK.Text = "Close";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ShowListForm
 			// 
@@ -147,6 +163,7 @@
 			this.Text = "Shows";
 			this.Load += new System.EventHandler(this.ShowListForm_Load);
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -161,5 +178,6 @@
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.ListView listViewShows;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.Label label1;
 	}
 }

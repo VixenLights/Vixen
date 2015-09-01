@@ -27,6 +27,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 
 //using System.Diagnostics;
+using Common.Controls;
 
 namespace ZedGraph
 {
@@ -245,7 +246,10 @@ namespace ZedGraph
 				if (isShowMessage) {
 					string str = _resourceManager.GetString("copied_to_clip");
 					//MessageBox.Show( "Image Copied to ClipBoard" );
-					MessageBox.Show(str);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(str, "", false, false);
+					messageBox.Show();
 				}
 			}
 		}
@@ -289,7 +293,10 @@ namespace ZedGraph
 
 				if (isShowMessage) {
 					string str = _resourceManager.GetString("copied_to_clip");
-					MessageBox.Show(str);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm(str, "", false, false);
+					messageBox.Show();
 				}
 			}
 		}

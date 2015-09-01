@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Module.Controller;
 using Vixen.Commands;
 
@@ -43,7 +45,10 @@ namespace VixenModules.Controller.OpenDMX
 
 		public override bool Setup()
 		{
-			MessageBox.Show("Nothing to Setup");
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Nothing to Setup", "", false, false);
+			messageBox.ShowDialog();
 			return base.Setup();
 		}
 

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Services;
@@ -23,12 +24,9 @@ namespace VixenModules.App.LipSyncApp
         public LipSyncMapSelector()
 		{
 			InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonCloneMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonDeleteMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonEditMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonNewMap.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
             listViewMappings.Sorting = SortOrder.Ascending;
 			Icon = Resources.Icon_Vixen3;
             Changed = false;
@@ -152,7 +150,8 @@ namespace VixenModules.App.LipSyncApp
 		
         private void buttonEditMap_Click(object sender, EventArgs e)
 		{
-            EditMap();			
+            EditMap();
+			Refresh();
 		}
 
         private void DeleteSelectedMapping()
@@ -161,13 +160,14 @@ namespace VixenModules.App.LipSyncApp
             {
                 return;
             }
-                
-            DialogResult result =
-                MessageBox.Show("If you delete this mapping, ALL places it is used will be unlinked and will" +
-                                " revert to the default Mapping. Are you sure you want to continue?", "Delete the mapping?",
-                                MessageBoxButtons.YesNo);
 
-            if (result == System.Windows.Forms.DialogResult.Yes)
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("If you delete this mapping, ALL places it is used will be unlinked and will" +
+								" revert to the default Mapping. Are you sure you want to continue?", "Delete the mapping?", true, false);
+			messageBox.ShowDialog();
+
+			if (messageBox.DialogResult == DialogResult.OK)
             {
                 foreach (int j in listViewMappings.SelectedIndices)
                 {
@@ -249,6 +249,7 @@ namespace VixenModules.App.LipSyncApp
                 this.PopulateListWithMappings();
             }
 
+			Refresh();
         }
 
         private void listViewMappings_KeyDown(object sender, KeyEventArgs e)
@@ -275,19 +276,13 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
-
-		private void buttonTextColorChange(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.ForeColor = btn.Enabled ? DarkThemeColorTable.ForeColor : DarkThemeColorTable.ForeColorDisabled;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
     }
 }

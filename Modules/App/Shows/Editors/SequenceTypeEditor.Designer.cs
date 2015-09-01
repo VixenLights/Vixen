@@ -38,9 +38,10 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(1, 6);
+			this.label1.Location = new System.Drawing.Point(2, 9);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(59, 13);
+			this.label1.Size = new System.Drawing.Size(86, 20);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Sequence:";
 			// 
@@ -48,18 +49,20 @@
 			// 
 			this.textBoxSequence.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxSequence.Location = new System.Drawing.Point(66, 3);
+			this.textBoxSequence.Location = new System.Drawing.Point(99, 5);
+			this.textBoxSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxSequence.Name = "textBoxSequence";
-			this.textBoxSequence.Size = new System.Drawing.Size(193, 20);
+			this.textBoxSequence.Size = new System.Drawing.Size(288, 26);
 			this.textBoxSequence.TabIndex = 1;
 			this.textBoxSequence.TextChanged += new System.EventHandler(this.textBoxSequence_TextChanged);
 			// 
 			// buttonSelectSequence
 			// 
 			this.buttonSelectSequence.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSelectSequence.Location = new System.Drawing.Point(260, 3);
+			this.buttonSelectSequence.Location = new System.Drawing.Point(390, 5);
+			this.buttonSelectSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSelectSequence.Name = "buttonSelectSequence";
-			this.buttonSelectSequence.Size = new System.Drawing.Size(20, 20);
+			this.buttonSelectSequence.Size = new System.Drawing.Size(30, 31);
 			this.buttonSelectSequence.TabIndex = 6;
 			this.buttonSelectSequence.Text = "S";
 			this.buttonSelectSequence.UseVisualStyleBackColor = true;
@@ -73,22 +76,24 @@
 			// labelSequence
 			// 
 			this.labelSequence.AutoSize = true;
-			this.labelSequence.Location = new System.Drawing.Point(66, 25);
+			this.labelSequence.Location = new System.Drawing.Point(99, 38);
+			this.labelSequence.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelSequence.Name = "labelSequence";
-			this.labelSequence.Size = new System.Drawing.Size(87, 13);
+			this.labelSequence.Size = new System.Drawing.Size(128, 20);
 			this.labelSequence.TabIndex = 9;
 			this.labelSequence.Text = "Sequence Name";
 			// 
 			// SequenceTypeEditor
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.labelSequence);
 			this.Controls.Add(this.buttonSelectSequence);
 			this.Controls.Add(this.textBoxSequence);
 			this.Controls.Add(this.label1);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "SequenceTypeEditor";
-			this.Size = new System.Drawing.Size(285, 79);
+			this.Size = new System.Drawing.Size(428, 122);
 			this.Load += new System.EventHandler(this.SequenceTypeEditor_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -97,10 +102,10 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBoxSequence;
-		private System.Windows.Forms.Button buttonSelectSequence;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button buttonSelectSequence;
 		private System.Windows.Forms.Label labelSequence;
+		private System.Windows.Forms.TextBox textBoxSequence;
 	}
 }

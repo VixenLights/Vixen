@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -13,16 +14,29 @@ namespace VixenModules.App.Shows
 {
 	public partial class LaunchTypeEditor : TypeEditorBase
 	{
-		public ShowItem _showItem;
+		public static ShowItem _showItem;
+		public static Label ContolLabel1;
+		public static Label ContolLabel2;
+		public static Panel ContolPanel1;
+		public static CheckBox ContolCheckBoxShowCommandWindow;
+		public static CheckBox ContolCheckBoxWaitForExit;
 
 		public LaunchTypeEditor(ShowItem item)
 		{
 			InitializeComponent();
 
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, 16);
 			buttonSelectProgram.Text = "";
 			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
 			buttonTest.Text = "";
+			ContolLabel1 = label1;
+			ContolLabel2 = label2;
+			ContolPanel1 = panel1;
+			ContolCheckBoxShowCommandWindow = checkBoxShowCommandWindow;
+			ContolCheckBoxWaitForExit = checkBoxWaitForExit;
 
 			_showItem = item;
 		}

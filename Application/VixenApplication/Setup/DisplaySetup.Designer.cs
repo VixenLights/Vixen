@@ -70,8 +70,8 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(984, 662);
-			this.splitContainer1.SplitterDistance = 260;
+			this.splitContainer1.Size = new System.Drawing.Size(1034, 662);
+			this.splitContainer1.SplitterDistance = 273;
 			this.splitContainer1.TabIndex = 0;
 			// 
 			// label1
@@ -97,7 +97,7 @@
 			this.tableLayoutPanelElementSetup.RowCount = 1;
 			this.tableLayoutPanelElementSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanelElementSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelElementSetup.Size = new System.Drawing.Size(256, 623);
+			this.tableLayoutPanelElementSetup.Size = new System.Drawing.Size(269, 623);
 			this.tableLayoutPanelElementSetup.TabIndex = 4;
 			// 
 			// label2
@@ -107,7 +107,7 @@
 			this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.label2.Location = new System.Drawing.Point(5, 32);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(248, 2);
+			this.label2.Size = new System.Drawing.Size(261, 2);
 			this.label2.TabIndex = 3;
 			// 
 			// splitContainer2
@@ -134,8 +134,8 @@
 			this.splitContainer2.Panel2.Controls.Add(this.buttonOk);
 			this.splitContainer2.Panel2.Controls.Add(this.label6);
 			this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanelControllerSetup);
-			this.splitContainer2.Size = new System.Drawing.Size(720, 662);
-			this.splitContainer2.SplitterDistance = 460;
+			this.splitContainer2.Size = new System.Drawing.Size(757, 662);
+			this.splitContainer2.SplitterDistance = 482;
 			this.splitContainer2.TabIndex = 0;
 			// 
 			// tableLayoutPanelPatchingSetup
@@ -151,7 +151,7 @@
 			this.tableLayoutPanelPatchingSetup.RowCount = 1;
 			this.tableLayoutPanelPatchingSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanelPatchingSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelPatchingSetup.Size = new System.Drawing.Size(456, 600);
+			this.tableLayoutPanelPatchingSetup.Size = new System.Drawing.Size(478, 600);
 			this.tableLayoutPanelPatchingSetup.TabIndex = 7;
 			// 
 			// label4
@@ -161,7 +161,7 @@
 			this.label4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.label4.Location = new System.Drawing.Point(3, 32);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(448, 2);
+			this.label4.Size = new System.Drawing.Size(470, 2);
 			this.label4.TabIndex = 6;
 			// 
 			// radioButtonPatchingGraphical
@@ -212,7 +212,7 @@
 			// 
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(8, 623);
+			this.buttonHelp.Location = new System.Drawing.Point(23, 623);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(74, 25);
 			this.buttonHelp.TabIndex = 60;
@@ -222,6 +222,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label7
 			// 
@@ -230,31 +232,35 @@
 			this.label7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.label7.Location = new System.Drawing.Point(4, 611);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(244, 2);
+			this.label7.Size = new System.Drawing.Size(259, 2);
 			this.label7.TabIndex = 13;
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(168, 623);
+			this.buttonCancel.Location = new System.Drawing.Point(183, 623);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(74, 25);
 			this.buttonCancel.TabIndex = 12;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(88, 623);
+			this.buttonOk.Location = new System.Drawing.Point(103, 623);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(74, 25);
 			this.buttonOk.TabIndex = 11;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
 			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// label6
 			// 
@@ -263,7 +269,7 @@
 			this.label6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.label6.Location = new System.Drawing.Point(3, 32);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(244, 2);
+			this.label6.Size = new System.Drawing.Size(259, 2);
 			this.label6.TabIndex = 10;
 			// 
 			// tableLayoutPanelControllerSetup
@@ -279,7 +285,7 @@
 			this.tableLayoutPanelControllerSetup.RowCount = 1;
 			this.tableLayoutPanelControllerSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanelControllerSetup.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelControllerSetup.Size = new System.Drawing.Size(252, 573);
+			this.tableLayoutPanelControllerSetup.Size = new System.Drawing.Size(267, 573);
 			this.tableLayoutPanelControllerSetup.TabIndex = 8;
 			// 
 			// DisplaySetup
@@ -288,10 +294,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(984, 662);
+			this.ClientSize = new System.Drawing.Size(1034, 662);
 			this.Controls.Add(this.splitContainer1);
 			this.DoubleBuffered = true;
-			this.MinimumSize = new System.Drawing.Size(800, 600);
+			this.MinimumSize = new System.Drawing.Size(1050, 701);
 			this.Name = "DisplaySetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Display Setup";

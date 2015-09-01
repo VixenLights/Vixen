@@ -197,7 +197,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(434, 272);
+			this.ClientSize = new System.Drawing.Size(434, 271);
 			this.Controls.Add(this.gradientEditPanel);
 			this.Controls.Add(this.groupBoxLibrary);
 			this.Controls.Add(this.buttonCancel);

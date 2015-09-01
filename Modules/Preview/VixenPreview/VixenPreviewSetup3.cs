@@ -5,7 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using Common.Controls;
+using Common.Controls.Theme;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
 using Vixen.Data.Value;
@@ -15,6 +19,11 @@ using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using System.Windows.Forms.Design;
 using Common.Resources.Properties;
+using Button = System.Windows.Forms.Button;
+using ComboBox = System.Windows.Forms.ComboBox;
+using Control = System.Windows.Forms.Control;
+using Label = System.Windows.Controls.Label;
+using TextBox = System.Windows.Forms.TextBox;
 
 namespace VixenModules.Preview.VixenPreview {
     public partial class VixenPreviewSetup3 : Form
@@ -24,6 +33,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		public static string DrawShape;
 
 		public VixenPreviewData Data {
 			set {
@@ -44,8 +54,23 @@ namespace VixenModules.Preview.VixenPreview {
 		public VixenPreviewSetup3() {
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			this.ShowInTaskbar = false;
+			menuStrip.Renderer = new ThemeToolStripRenderer();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			panel10.BackColor = Color.Black;
+			foreach (Control c in panel10.Controls)
+			{
+				c.BackColor = Color.Black;
+			}
+			dockPanel.BackColor = ThemeColorTable.BackgroundColor;
+			label9.ForeColor = Color.Turquoise;
+			label10.ForeColor = Color.LimeGreen;
+			label11.ForeColor = Color.White;
+			label12.ForeColor = Color.HotPink;
+			label13.ForeColor = Color.Yellow;
 
+			this.ShowInTaskbar = false;
 		}
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
@@ -197,50 +222,98 @@ namespace VixenModules.Preview.VixenPreview {
             //buttonMultiString.FlatAppearance.BorderColor = buttonSelect.BackColor;
         }
 
-		private void toolbarButton_Click(object sender, EventArgs e) {
-			Button button = sender as Button;
-            //reenableToolButtons();
+	    private void toolbarButton_Click(object sender, EventArgs e)
+	    {
+		    Button button = sender as Button;
+		    buttonShapeSelected(button);
+		    //reenableToolButtons();
 
-            // There must be a way to iterate through an enum so we don't have to do all this crap...
+		    // There must be a way to iterate through an enum so we don't have to do all this crap...
 
-			// Select Button
-            if (button == buttonSelect)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
-            else if (button == buttonDrawPixel)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
-            else if (button == buttonLine)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
-            else if (button == buttonSemiCircle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
-            else if (button == buttonRectangle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
-            else if (button == buttonEllipse)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
-            else if (button == buttonTriangle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
-            else if (button == buttonNet)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
-            //else if (button == buttonFlood)
-            //    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
-            else if (button == buttonCane)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
-            else if (button == buttonStar)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
-            else if (button == buttonStarBurst)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
-            else if (button == buttonHelp)
-                Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
-            else if (button == buttonMegaTree)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
-            else if (button == buttonPixelGrid)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
-            else if (button == buttonIcicle)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
-            else if (button == buttonPolyLine)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PolyLine;
-            else if (button == buttonMultiString)
-                previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
-            //button.Enabled = false;
+		    // Select Button
+			DrawShape = "";
+			if (button == buttonSelect)
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
+			else if (button == buttonDrawPixel)
+			{
+				DrawShape = "Pixel";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
+			}
+			else if (button == buttonLine)
+			{
+				DrawShape = "Line";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.String;
+			}
+			else if (button == buttonSemiCircle)
+			{
+				DrawShape = "Arch";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Arch;
+			}
+			else if (button == buttonRectangle)
+			{
+				DrawShape = "Rectangle";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Rectangle;
+			}
+			else if (button == buttonEllipse)
+			{
+				DrawShape = "Ellipse";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Ellipse;
+			}
+			else if (button == buttonTriangle)
+			{
+				DrawShape = "Triangle";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Triangle;
+			}
+			else if (button == buttonNet)
+			{
+				DrawShape = "Net";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Net;
+			}
+			//else if (button == buttonFlood)
+			//    previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Flood;
+			else if (button == buttonCane)
+			{
+				DrawShape = "Candy Cane";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Cane;
+			}
+			else if (button == buttonStar)
+			{
+				DrawShape = "Star";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Star;
+			}
+			else if (button == buttonStarBurst)
+			{
+				DrawShape = "Star Burst";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
+			}
+			else if (button == buttonHelp)
+				Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
+			else if (button == buttonMegaTree)
+			{
+				DrawShape = "Mega Tree";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MegaTree;
+			}
+			else if (button == buttonPixelGrid)
+			{
+				DrawShape = "Grid";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PixelGrid;
+			}
+			else if (button == buttonIcicle)
+			{
+				DrawShape = "Icicle";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Icicle;
+			}
+			else if (button == buttonPolyLine)
+			{
+				DrawShape = "PolyLine";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.PolyLine;
+			}
+			else if (button == buttonMultiString)
+			{
+				DrawShape = "Multi String";
+				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
+			}
+			//button.Enabled = false;
 			//button.BackColor = Color.Gainsboro;
 			//button.FlatAppearance.BorderColor = Color.Gainsboro;
 			//buttonSelect.Focus();
@@ -357,7 +430,10 @@ namespace VixenModules.Preview.VixenPreview {
                 }
                 else
                 {
-                    MessageBox.Show("An invalid image size was specified!", "Invalid Size", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("An invalid image size was specified!", "Invalid Size", false, true);
+					messageBox.ShowDialog();
                 }
             }
 		}
@@ -379,8 +455,11 @@ namespace VixenModules.Preview.VixenPreview {
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}
 				catch (Exception ex) {
-					MessageBox.Show("There was an error loading the template file (" + file + "): " + ex.Message,
-									"Error Loading Template", MessageBoxButtons.OKCancel);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There was an error loading the template file (" + file + "): " + ex.Message,
+									"Error Loading Template", false, true);
+					messageBox.ShowDialog();
 				}
 				finally {
 					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0) {
@@ -409,9 +488,12 @@ namespace VixenModules.Preview.VixenPreview {
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			if (templateItem != null) {
 				if (System.IO.File.Exists(templateItem.FileName)) {
-					if (
-						MessageBox.Show("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template",
-										MessageBoxButtons.YesNoCancel) == System.Windows.Forms.DialogResult.Yes) {
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
+					{
 						System.IO.File.Delete(templateItem.FileName);
 						PopulateTemplateList();
 					}
@@ -461,8 +543,12 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
-			var msg = MessageBox.Show("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", MessageBoxButtons.YesNo);
-			if (msg == System.Windows.Forms.DialogResult.Yes) {
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", true, false);
+			messageBox.ShowDialog();
+			if (messageBox.DialogResult == DialogResult.OK)
+			{
 				Properties.Settings settings = new Properties.Settings();
 				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
 				settings.Save();
@@ -487,5 +573,41 @@ namespace VixenModules.Preview.VixenPreview {
             trackerZoom.Value = Convert.ToInt32(zoomPercent);
             trackerZoom.Invalidate();
         }
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private void buttonShapeSelected(Control selectedButton)
+	    {
+			foreach (Control c in panel3.Controls)
+			{
+				if (c is Button)
+				{
+					c.BackColor = ThemeColorTable.BackgroundColor;
+				}
+			}
+			foreach (Control c in panel4.Controls)
+			{
+				if (c is Button)
+				{
+					c.BackColor = ThemeColorTable.BackgroundColor;
+				}
+			}
+			selectedButton.BackColor = ThemeColorTable.TextBoxBackgroundColor;
+	    }
+
+		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
+		{
+			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
 	}
 }

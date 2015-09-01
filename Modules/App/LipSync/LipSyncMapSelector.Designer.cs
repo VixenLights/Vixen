@@ -97,7 +97,6 @@
 			this.buttonEditMap.TabIndex = 7;
 			this.buttonEditMap.Text = "Edit";
 			this.buttonEditMap.UseVisualStyleBackColor = false;
-			this.buttonEditMap.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonEditMap.Click += new System.EventHandler(this.buttonEditMap_Click);
 			this.buttonEditMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -118,7 +117,6 @@
 			this.buttonDeleteMap.TabIndex = 8;
 			this.buttonDeleteMap.Text = "Remove";
 			this.buttonDeleteMap.UseVisualStyleBackColor = false;
-			this.buttonDeleteMap.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonDeleteMap.Click += new System.EventHandler(this.buttonDeleteMapping_Click);
 			this.buttonDeleteMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -158,7 +156,6 @@
 			this.buttonCloneMap.TabIndex = 10;
 			this.buttonCloneMap.Text = "Clone";
 			this.buttonCloneMap.UseVisualStyleBackColor = false;
-			this.buttonCloneMap.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonCloneMap.Click += new System.EventHandler(this.buttonCloneMap_Click);
 			this.buttonCloneMap.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCloneMap.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

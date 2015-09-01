@@ -12,10 +12,10 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			if (value is Curve)
 			{
 				Curve curve = (Curve) value;
-				return BitmapImageConverter.BitmapToMediaImage(curve.GenerateGenericCurveImage(new System.Drawing.Size(50, 50)));
+				return BitmapImageConverter.BitmapToMediaImage(curve.GenerateGenericCurveImage(new System.Drawing.Size(25, 25)));
 			}
 
-			return BitmapImageConverter.BitmapToMediaImage(new Curve().GenerateGenericCurveImage(new System.Drawing.Size(50, 50), true));
+			return BitmapImageConverter.BitmapToMediaImage(new Curve().GenerateGenericCurveImage(new System.Drawing.Size(25, 25), true));
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

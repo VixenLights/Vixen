@@ -29,12 +29,6 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.tabControlShowItems = new System.Windows.Forms.TabControl();
-			this.tabPageStartup = new System.Windows.Forms.TabPage();
-			this.tabPageBackground = new System.Windows.Forms.TabPage();
-			this.tabPageSequential = new System.Windows.Forms.TabPage();
-			this.tabPageInput = new System.Windows.Forms.TabPage();
-			this.tabPageShutdown = new System.Windows.Forms.TabPage();
 			this.buttonDeleteItem = new System.Windows.Forms.Button();
 			this.buttonAddItem = new System.Windows.Forms.Button();
 			this.groupBoxAction = new System.Windows.Forms.GroupBox();
@@ -42,7 +36,6 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.groupBoxItemEdit = new System.Windows.Forms.GroupBox();
 			this.buttonOK = new System.Windows.Forms.Button();
-			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonHelp = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -51,76 +44,16 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelHelp = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.tabControlShowItems.SuspendLayout();
+			this.buttonCancel = new System.Windows.Forms.Button();
+			this.tabControlShowItems = new Dotnetrix.Controls.TabControlEX();
+			this.tabPageStartup = new Dotnetrix.Controls.TabPageEX();
+			this.tabPageBackground = new Dotnetrix.Controls.TabPageEX();
+			this.tabPageSequential = new Dotnetrix.Controls.TabPageEX();
+			this.tabPageShutdown = new Dotnetrix.Controls.TabPageEX();
 			this.groupBoxAction.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.tabControlShowItems.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// tabControlShowItems
-			// 
-			this.tabControlShowItems.Controls.Add(this.tabPageStartup);
-			this.tabControlShowItems.Controls.Add(this.tabPageBackground);
-			this.tabControlShowItems.Controls.Add(this.tabPageSequential);
-			this.tabControlShowItems.Controls.Add(this.tabPageInput);
-			this.tabControlShowItems.Controls.Add(this.tabPageShutdown);
-			this.tabControlShowItems.Location = new System.Drawing.Point(12, 56);
-			this.tabControlShowItems.Name = "tabControlShowItems";
-			this.tabControlShowItems.SelectedIndex = 0;
-			this.tabControlShowItems.Size = new System.Drawing.Size(327, 21);
-			this.tabControlShowItems.TabIndex = 0;
-			this.tabControlShowItems.SelectedIndexChanged += new System.EventHandler(this.tabControlShowItems_SelectedIndexChanged);
-			// 
-			// tabPageStartup
-			// 
-			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
-			this.tabPageStartup.Name = "tabPageStartup";
-			this.tabPageStartup.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageStartup.Size = new System.Drawing.Size(319, 0);
-			this.tabPageStartup.TabIndex = 0;
-			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
-			this.tabPageStartup.Text = "Startup";
-			this.tabPageStartup.UseVisualStyleBackColor = true;
-			// 
-			// tabPageBackground
-			// 
-			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
-			this.tabPageBackground.Name = "tabPageBackground";
-			this.tabPageBackground.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPageBackground.Size = new System.Drawing.Size(319, 0);
-			this.tabPageBackground.TabIndex = 1;
-			this.tabPageBackground.Tag = "These items are always run in the background.";
-			this.tabPageBackground.Text = "Background";
-			this.tabPageBackground.UseVisualStyleBackColor = true;
-			// 
-			// tabPageSequential
-			// 
-			this.tabPageSequential.Location = new System.Drawing.Point(4, 22);
-			this.tabPageSequential.Name = "tabPageSequential";
-			this.tabPageSequential.Size = new System.Drawing.Size(319, 0);
-			this.tabPageSequential.TabIndex = 2;
-			this.tabPageSequential.Tag = "These items are run, in order, and re-started while the show is running.";
-			this.tabPageSequential.Text = "Sequential";
-			this.tabPageSequential.UseVisualStyleBackColor = true;
-			// 
-			// tabPageInput
-			// 
-			this.tabPageInput.Location = new System.Drawing.Point(4, 22);
-			this.tabPageInput.Name = "tabPageInput";
-			this.tabPageInput.Size = new System.Drawing.Size(319, 0);
-			this.tabPageInput.TabIndex = 3;
-			this.tabPageInput.Tag = "These items are run when the specified input is triggered.";
-			this.tabPageInput.Text = "Input Triggers";
-			this.tabPageInput.UseVisualStyleBackColor = true;
-			// 
-			// tabPageShutdown
-			// 
-			this.tabPageShutdown.Location = new System.Drawing.Point(4, 22);
-			this.tabPageShutdown.Name = "tabPageShutdown";
-			this.tabPageShutdown.Size = new System.Drawing.Size(319, 0);
-			this.tabPageShutdown.TabIndex = 4;
-			this.tabPageShutdown.Tag = "These items are run, in order, at the end of the show.";
-			this.tabPageShutdown.Text = "Shutdown";
-			this.tabPageShutdown.UseVisualStyleBackColor = true;
 			// 
 			// buttonDeleteItem
 			// 
@@ -152,15 +85,18 @@
 			this.groupBoxAction.TabIndex = 11;
 			this.groupBoxAction.TabStop = false;
 			this.groupBoxAction.Text = "Action";
+			this.groupBoxAction.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// comboBoxActions
 			// 
+			this.comboBoxActions.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxActions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxActions.FormattingEnabled = true;
 			this.comboBoxActions.Location = new System.Drawing.Point(52, 19);
 			this.comboBoxActions.Name = "comboBoxActions";
 			this.comboBoxActions.Size = new System.Drawing.Size(121, 21);
 			this.comboBoxActions.TabIndex = 1;
+			this.comboBoxActions.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxActions.SelectedIndexChanged += new System.EventHandler(this.comboBoxActions_SelectedIndexChanged);
 			// 
 			// label3
@@ -180,6 +116,7 @@
 			this.groupBoxItemEdit.TabIndex = 1;
 			this.groupBoxItemEdit.TabStop = false;
 			this.groupBoxItemEdit.Text = "Item Information";
+			this.groupBoxItemEdit.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// buttonOK
 			// 
@@ -190,17 +127,8 @@
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-			// 
-			// buttonCancel
-			// 
-			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(712, 456);
-			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 2;
-			this.buttonCancel.Text = "Cancel";
-			this.buttonCancel.UseVisualStyleBackColor = true;
-			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonHelp
 			// 
@@ -215,6 +143,8 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
+			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// groupBox2
 			// 
@@ -225,6 +155,7 @@
 			this.groupBox2.Size = new System.Drawing.Size(775, 43);
 			this.groupBox2.TabIndex = 63;
 			this.groupBox2.TabStop = false;
+			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// label1
 			// 
@@ -248,13 +179,13 @@
 			this.listViewShowItems.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
 			this.listViewShowItems.FullRowSelect = true;
-			this.listViewShowItems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listViewShowItems.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewShowItems.HideSelection = false;
-			this.listViewShowItems.Location = new System.Drawing.Point(12, 78);
+			this.listViewShowItems.Location = new System.Drawing.Point(10, 90);
 			this.listViewShowItems.MultiSelect = false;
 			this.listViewShowItems.Name = "listViewShowItems";
 			this.listViewShowItems.OwnerDraw = true;
-			this.listViewShowItems.Size = new System.Drawing.Size(327, 337);
+			this.listViewShowItems.Size = new System.Drawing.Size(329, 325);
 			this.listViewShowItems.TabIndex = 64;
 			this.listViewShowItems.Tag = "";
 			this.toolTip1.SetToolTip(this.listViewShowItems, "Left click Sequence and drag to re-arrange show order");
@@ -288,24 +219,98 @@
 			this.toolTip1.InitialDelay = 300;
 			this.toolTip1.ReshowDelay = 60;
 			// 
+			// buttonCancel
+			// 
+			this.buttonCancel.Location = new System.Drawing.Point(716, 456);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2);
+			this.buttonCancel.Name = "buttonCancel";
+			this.buttonCancel.Size = new System.Drawing.Size(75, 22);
+			this.buttonCancel.TabIndex = 66;
+			this.buttonCancel.Text = "Cancel";
+			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
+			// tabControlShowItems
+			// 
+			this.tabControlShowItems.Controls.Add(this.tabPageStartup);
+			this.tabControlShowItems.Controls.Add(this.tabPageBackground);
+			this.tabControlShowItems.Controls.Add(this.tabPageSequential);
+			this.tabControlShowItems.Controls.Add(this.tabPageShutdown);
+			this.tabControlShowItems.ItemSize = new System.Drawing.Size(46, 18);
+			this.tabControlShowItems.Location = new System.Drawing.Point(10, 71);
+			this.tabControlShowItems.Margin = new System.Windows.Forms.Padding(1);
+			this.tabControlShowItems.Name = "tabControlShowItems";
+			this.tabControlShowItems.Padding = new System.Drawing.Point(2, 2);
+			this.tabControlShowItems.RightToLeft = System.Windows.Forms.RightToLeft.No;
+			this.tabControlShowItems.SelectedIndex = 0;
+			this.tabControlShowItems.Size = new System.Drawing.Size(329, 20);
+			this.tabControlShowItems.TabIndex = 0;
+			this.tabControlShowItems.UseVisualStyles = false;
+			this.tabControlShowItems.SelectedIndexChanged += new System.EventHandler(this.tabControlShowItems_SelectedIndexChanged);
+			// 
+			// tabPageStartup
+			// 
+			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
+			this.tabPageStartup.Margin = new System.Windows.Forms.Padding(1);
+			this.tabPageStartup.Name = "tabPageStartup";
+			this.tabPageStartup.Size = new System.Drawing.Size(321, 0);
+			this.tabPageStartup.TabIndex = 0;
+			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
+			this.tabPageStartup.Text = "Startup";
+			this.tabPageStartup.UseVisualStyleBackColor = true;
+			// 
+			// tabPageBackground
+			// 
+			this.tabPageBackground.Location = new System.Drawing.Point(4, 22);
+			this.tabPageBackground.Margin = new System.Windows.Forms.Padding(1);
+			this.tabPageBackground.Name = "tabPageBackground";
+			this.tabPageBackground.Size = new System.Drawing.Size(321, -6);
+			this.tabPageBackground.TabIndex = 1;
+			this.tabPageBackground.Tag = "These items are always run in the background.";
+			this.tabPageBackground.Text = "Background";
+			this.tabPageBackground.UseVisualStyleBackColor = true;
+			// 
+			// tabPageSequential
+			// 
+			this.tabPageSequential.Location = new System.Drawing.Point(4, 22);
+			this.tabPageSequential.Margin = new System.Windows.Forms.Padding(1);
+			this.tabPageSequential.Name = "tabPageSequential";
+			this.tabPageSequential.Size = new System.Drawing.Size(321, -6);
+			this.tabPageSequential.TabIndex = 2;
+			this.tabPageSequential.Tag = "These items are run, in order, and re-started while the show is running.";
+			this.tabPageSequential.Text = "Sequential";
+			this.tabPageSequential.UseVisualStyleBackColor = true;
+			// 
+			// tabPageShutdown
+			// 
+			this.tabPageShutdown.Location = new System.Drawing.Point(4, 22);
+			this.tabPageShutdown.Margin = new System.Windows.Forms.Padding(1);
+			this.tabPageShutdown.Name = "tabPageShutdown";
+			this.tabPageShutdown.Size = new System.Drawing.Size(321, -6);
+			this.tabPageShutdown.TabIndex = 4;
+			this.tabPageShutdown.Tag = "These items are run, in order, at the end of the show.";
+			this.tabPageShutdown.Text = "Shutdown";
+			this.tabPageShutdown.UseVisualStyleBackColor = true;
+			// 
 			// ShowEditorForm
 			// 
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(799, 491);
+			this.Controls.Add(this.tabControlShowItems);
+			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.labelHelp);
-			this.Controls.Add(this.listViewShowItems);
 			this.Controls.Add(this.groupBoxAction);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonDeleteItem);
 			this.Controls.Add(this.buttonHelp);
-			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonAddItem);
 			this.Controls.Add(this.buttonOK);
-			this.Controls.Add(this.tabControlShowItems);
 			this.Controls.Add(this.groupBoxItemEdit);
+			this.Controls.Add(this.listViewShowItems);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -313,25 +318,18 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Setup a Show";
 			this.Load += new System.EventHandler(this.ShowEditorForm_Load);
-			this.tabControlShowItems.ResumeLayout(false);
 			this.groupBoxAction.ResumeLayout(false);
 			this.groupBoxAction.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.tabControlShowItems.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabControlShowItems;
-		private System.Windows.Forms.TabPage tabPageStartup;
-		private System.Windows.Forms.TabPage tabPageBackground;
 		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Button buttonCancel;
-		private System.Windows.Forms.TabPage tabPageSequential;
-		private System.Windows.Forms.TabPage tabPageInput;
-		private System.Windows.Forms.TabPage tabPageShutdown;
 		private System.Windows.Forms.GroupBox groupBoxItemEdit;
 		private System.Windows.Forms.Button buttonDeleteItem;
 		private System.Windows.Forms.Button buttonAddItem;
@@ -345,6 +343,12 @@
 		private System.Windows.Forms.Label labelHelp;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox textBoxShowName;
-        private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.Button buttonCancel;
+		private Dotnetrix.Controls.TabControlEX tabControlShowItems;
+		private Dotnetrix.Controls.TabPageEX tabPageStartup;
+		private Dotnetrix.Controls.TabPageEX tabPageBackground;
+		private Dotnetrix.Controls.TabPageEX tabPageSequential;
+		private Dotnetrix.Controls.TabPageEX tabPageShutdown;
 	}
 }

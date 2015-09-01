@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.App.LipSyncApp
@@ -17,10 +18,10 @@ namespace VixenModules.App.LipSyncApp
 
         public LipSyncTextConvertFailForm()
         {
-            InitializeComponent();
-			buttonCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonClear.BackgroundImage = Resources.HeadingBackgroundImage;
-			buttonOk.BackgroundImage = Resources.HeadingBackgroundImage;
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
         }
 
@@ -116,14 +117,13 @@ namespace VixenModules.App.LipSyncApp
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
-
     }
 }

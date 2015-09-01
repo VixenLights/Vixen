@@ -45,6 +45,8 @@
 			this.button2.TabIndex = 3;
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
+			this.button2.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.button2.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// button1
 			// 
@@ -56,6 +58,8 @@
 			this.button1.TabIndex = 2;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// labelPrompt
 			// 
@@ -69,6 +73,7 @@
 			// numericUpDownChooser
 			// 
 			this.numericUpDownChooser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.numericUpDownChooser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownChooser.Location = new System.Drawing.Point(218, 25);
 			this.numericUpDownChooser.Name = "numericUpDownChooser";
 			this.numericUpDownChooser.Size = new System.Drawing.Size(84, 20);

@@ -214,6 +214,10 @@ namespace Vixen.Module.Effect
 
 		private void CalculateAffectedElements()
 		{
+			if (TargetNodes == null || TargetNodes.Length == 0)
+			{
+				EffectedElementIds = Enumerable.Empty<Guid>();
+			}
 			EffectedElementIds =
 				TargetNodes.SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id);
 		}

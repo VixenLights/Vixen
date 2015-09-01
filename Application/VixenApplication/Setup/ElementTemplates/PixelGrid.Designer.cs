@@ -43,122 +43,120 @@
 			// 
 			// numericUpDownRows
 			// 
-			this.numericUpDownRows.Location = new System.Drawing.Point(147, 74);
-			this.numericUpDownRows.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownRows.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownRows.Location = new System.Drawing.Point(98, 48);
 			this.numericUpDownRows.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownRows.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownRows.Name = "numericUpDownRows";
-			this.numericUpDownRows.Size = new System.Drawing.Size(117, 26);
+			this.numericUpDownRows.Size = new System.Drawing.Size(78, 20);
 			this.numericUpDownRows.TabIndex = 1;
 			this.numericUpDownRows.Value = new decimal(new int[] {
-			20,
-			0,
-			0,
-			0});
+            20,
+            0,
+            0,
+            0});
 			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(291, 263);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(194, 171);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(135, 38);
+			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(147, 263);
-			this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.buttonOk.Location = new System.Drawing.Point(98, 171);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(135, 38);
+			this.buttonOk.Size = new System.Drawing.Size(90, 25);
 			this.buttonOk.TabIndex = 5;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// numericUpDownColumns
 			// 
-			this.numericUpDownColumns.Location = new System.Drawing.Point(147, 120);
-			this.numericUpDownColumns.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.numericUpDownColumns.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.numericUpDownColumns.Location = new System.Drawing.Point(98, 78);
 			this.numericUpDownColumns.Maximum = new decimal(new int[] {
-			1000,
-			0,
-			0,
-			0});
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDownColumns.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.numericUpDownColumns.Name = "numericUpDownColumns";
-			this.numericUpDownColumns.Size = new System.Drawing.Size(117, 26);
+			this.numericUpDownColumns.Size = new System.Drawing.Size(78, 20);
 			this.numericUpDownColumns.TabIndex = 2;
 			this.numericUpDownColumns.Value = new decimal(new int[] {
-			32,
-			0,
-			0,
-			0});
+            32,
+            0,
+            0,
+            0});
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(18, 123);
-			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Location = new System.Drawing.Point(12, 80);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(75, 20);
+			this.label4.Size = new System.Drawing.Size(50, 13);
 			this.label4.TabIndex = 27;
 			this.label4.Text = "Columns:";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(18, 77);
-			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label5.Location = new System.Drawing.Point(12, 50);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(53, 20);
+			this.label5.Size = new System.Drawing.Size(37, 13);
 			this.label5.TabIndex = 26;
 			this.label5.Text = "Rows:";
 			// 
 			// textBoxName
 			// 
 			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxName.Location = new System.Drawing.Point(147, 26);
-			this.textBoxName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.textBoxName.Location = new System.Drawing.Point(98, 17);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(277, 26);
+			this.textBoxName.Size = new System.Drawing.Size(186, 20);
 			this.textBoxName.TabIndex = 0;
 			this.textBoxName.Text = "Grid";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(18, 31);
-			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label6.Location = new System.Drawing.Point(12, 20);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(89, 20);
+			this.label6.Size = new System.Drawing.Size(60, 13);
 			this.label6.TabIndex = 24;
 			this.label6.Text = "Grid Name:";
 			// 
 			// radioButtonRowsFirst
 			// 
 			this.radioButtonRowsFirst.AutoSize = true;
-			this.radioButtonRowsFirst.Location = new System.Drawing.Point(22, 171);
-			this.radioButtonRowsFirst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioButtonRowsFirst.Location = new System.Drawing.Point(15, 111);
 			this.radioButtonRowsFirst.Name = "radioButtonRowsFirst";
-			this.radioButtonRowsFirst.Size = new System.Drawing.Size(242, 24);
+			this.radioButtonRowsFirst.Size = new System.Drawing.Size(163, 17);
 			this.radioButtonRowsFirst.TabIndex = 3;
 			this.radioButtonRowsFirst.TabStop = true;
 			this.radioButtonRowsFirst.Text = "Generate rows, then columns";
@@ -167,10 +165,9 @@
 			// radioButtonColumnsFirst
 			// 
 			this.radioButtonColumnsFirst.AutoSize = true;
-			this.radioButtonColumnsFirst.Location = new System.Drawing.Point(22, 206);
-			this.radioButtonColumnsFirst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.radioButtonColumnsFirst.Location = new System.Drawing.Point(15, 134);
 			this.radioButtonColumnsFirst.Name = "radioButtonColumnsFirst";
-			this.radioButtonColumnsFirst.Size = new System.Drawing.Size(242, 24);
+			this.radioButtonColumnsFirst.Size = new System.Drawing.Size(163, 17);
 			this.radioButtonColumnsFirst.TabIndex = 4;
 			this.radioButtonColumnsFirst.TabStop = true;
 			this.radioButtonColumnsFirst.Text = "Generate columns, then rows";
@@ -178,9 +175,9 @@
 			// 
 			// PixelGrid
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(444, 320);
+			this.ClientSize = new System.Drawing.Size(296, 208);
 			this.Controls.Add(this.radioButtonColumnsFirst);
 			this.Controls.Add(this.radioButtonRowsFirst);
 			this.Controls.Add(this.numericUpDownRows);
@@ -192,12 +189,14 @@
 			this.Controls.Add(this.textBoxName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
-			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(312, 247);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(312, 247);
 			this.Name = "PixelGrid";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Pixel Grid Setup";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PixelGrid_FormClosed);

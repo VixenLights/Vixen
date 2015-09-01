@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using WeifenLuo.WinFormsUI.Docking;
 using Vixen.Data.Flow;
 using Vixen.Module;
@@ -23,6 +24,8 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewSetupElementsDocument(VixenPreviewControl preview)
 		{
 			InitializeComponent();
+			treeElements.BackColor = ThemeColorTable.BackgroundColor;
+			treeElements.ForeColor = ThemeColorTable.ForeColor;
 			_preview = preview;
 			_preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			_preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;

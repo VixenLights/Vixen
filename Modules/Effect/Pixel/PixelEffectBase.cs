@@ -108,7 +108,7 @@ namespace VixenModules.Effect.Pixel
 		protected IEnumerable<ElementNode> FindLeafParents()
 		{
 			var nodes = new List<ElementNode>();
-			var nonLeafElements = new List<ElementNode>();
+			var nonLeafElements = Enumerable.Empty<ElementNode>();
 
 			if (TargetNodes.FirstOrDefault() != null)
 			{
@@ -161,14 +161,14 @@ namespace VixenModules.Effect.Pixel
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
 
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
-			
-			int numElements = node.Count();
+
+			int bufferSize = StringPixelCounts.Sum();
 
 			TimeSpan startTime = TimeSpan.Zero;
 
 			// set up arrays to hold the generated colors
-			var pixels = new RGBValue[numElements][];
-			for (int eidx = 0; eidx < numElements; eidx++)
+			var pixels = new RGBValue[bufferSize][];
+			for (int eidx = 0; eidx < bufferSize; eidx++)
 				pixels[eidx] = new RGBValue[nFrames];
 
 			// generate all the pixels
@@ -206,6 +206,7 @@ namespace VixenModules.Effect.Pixel
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
 			List<Element> elements = node.ToList();
+			int numElements = node.Count();
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);

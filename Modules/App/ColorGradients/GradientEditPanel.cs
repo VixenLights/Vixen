@@ -29,7 +29,9 @@ namespace VixenModules.App.ColorGradients
 		public GradientEditPanel()
 		{
 			InitializeComponent();
-			btnDeleteColor.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 			edit.SelectionDoubleClicked += edit_SelectionDoubleClicked;
 			LockColorEditorHSV_Value = true;
 		}
@@ -142,7 +144,12 @@ namespace VixenModules.App.ColorGradients
 			}
 			else {
 				if (edit.Selection.Count > 1)
-					MessageBox.Show("Non-discrete color gradient, >1 selected point. oops! please report it.");
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Non-discrete color gradient, >1 selected point. oops! please report it.", "Delete library gradient?", false, false);
+					messageBox.ShowDialog();
+				}
 				ColorPoint pt = edit.Selection.FirstOrDefault() as ColorPoint;
 				if (pt == null)
 					return;
@@ -279,19 +286,20 @@ namespace VixenModules.App.ColorGradients
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+
 		}
 
 		#region Draw lines and GroupBox borders
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
-			DarkThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 		#endregion
 	}

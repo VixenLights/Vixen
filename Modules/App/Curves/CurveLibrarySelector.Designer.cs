@@ -96,7 +96,6 @@
 			this.buttonEditCurve.TabIndex = 7;
 			this.buttonEditCurve.Text = "Edit Curve";
 			this.buttonEditCurve.UseVisualStyleBackColor = false;
-			this.buttonEditCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonEditCurve.Click += new System.EventHandler(this.buttonEditCurve_Click);
 			this.buttonEditCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEditCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -118,7 +117,6 @@
 			this.buttonDeleteCurve.TabIndex = 8;
 			this.buttonDeleteCurve.Text = "Delete Curve";
 			this.buttonDeleteCurve.UseVisualStyleBackColor = false;
-			this.buttonDeleteCurve.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonDeleteCurve.Click += new System.EventHandler(this.buttonDeleteCurve_Click);
 			this.buttonDeleteCurve.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonDeleteCurve.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);

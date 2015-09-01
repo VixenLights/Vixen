@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -20,24 +21,25 @@ namespace VixenModules.App.SuperScheduler
 		{
 			InitializeComponent();
 
-			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, 16);
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, 24);
 			buttonPauseShow.Text = "";
-			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, 16);
+			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, 24);
 			buttonNextSong.Text = "";
-			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play, 16);
+			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play_blue, 24);
 			buttonStartScheduler.Text = "";
-			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop, 16);
+			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
 			buttonStopNow.Text = "";
-			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, 16);
+			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, 24);
 			buttonStopGracefully.Text = "";
-			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, 16);
+			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, 24);
 			buttonViewLog.Text = "";
-
-			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, 16);
+			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, 24);
 			buttonPlayShowNow.Text = "";
-			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, 16);
+			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, 24);
 			buttonPlayShowGracefully.Text = "";
-
 
 			ControlBox = false;
 			SchedulerData = data;
@@ -181,32 +183,32 @@ namespace VixenModules.App.SuperScheduler
 			buttonStopGracefully.Enabled = !Executor.ManuallyDisabled;
 			buttonStartScheduler.Enabled = Executor.ManuallyDisabled;
 
-			if (buttonStartScheduler.Enabled)
-			{
-				buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play.png"];
-			}
-			else
-			{
-				buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play_disabled.png"];
-			}
+			//if (buttonStartScheduler.Enabled)
+			//{
+			//	buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play.png"];
+			//}
+			//else
+			//{
+			//	buttonStartScheduler.BackgroundImage = imageButtons.Images["control_play_disabled.png"];
+			//}
 
-			if (buttonStopNow.Enabled)
-			{
-				buttonStopNow.BackgroundImage = imageButtons.Images["control_stop.png"];
-			}
-			else
-			{
-				buttonStopNow.BackgroundImage = imageButtons.Images["control_stop_disabled.png"];
-			}
+			//if (buttonStopNow.Enabled)
+			//{
+			//	buttonStopNow.BackgroundImage = imageButtons.Images["control_stop.png"];
+			//}
+			//else
+			//{
+			//	buttonStopNow.BackgroundImage = imageButtons.Images["control_stop_disabled.png"];
+			//}
 
-			if (buttonStopGracefully.Enabled)
-			{
-				buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop.png"];
-			}
-			else
-			{
-				buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop_disabled.png"];
-			}
+			//if (buttonStopGracefully.Enabled)
+			//{
+			//	buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop.png"];
+			//}
+			//else
+			//{
+			//	buttonStopGracefully.BackgroundImage = imageButtons.Images["clock_stop_disabled.png"];
+			//}
 		}
 
 		private void StatusForm_ResizeEnd(object sender, EventArgs e)
@@ -217,6 +219,11 @@ namespace VixenModules.App.SuperScheduler
 		{
 			groupBoxLog.Height = ClientSize.Height - groupBoxLog.Top - 10;
 			listBoxLog.Height = groupBoxLog.Height - listBoxLog.Top - 10;
+		}
+
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 	}
 }

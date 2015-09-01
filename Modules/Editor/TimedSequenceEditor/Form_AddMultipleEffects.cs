@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls;
+using Common.Controls.Theme;
 using VixenModules.Sequence.Timed;
 using Common.Resources.Properties;
 
@@ -94,8 +96,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_AddMultipleEffects()
 		{
 			InitializeComponent();
-			btnCancel.BackgroundImage = Resources.HeadingBackgroundImage;
-			btnOK.BackgroundImage = Resources.HeadingBackgroundImage;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			listBoxMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
+			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			btnShowBeatMarkOptions.Image = Resources.bullet_toggle_plus;
 			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
@@ -324,16 +330,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (txtEffectCount.Value == 0)
 			{
-				MessageBox.Show("OOPS! Your effect count is set to 0 (zero)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				this.DialogResult = DialogResult.None;
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("OOPS! Your effect count is set to 0 (zero)", "Warning", false, false);
+				messageBox.ShowDialog();
+				DialogResult = DialogResult.None;
 			}
 			//Double check for calculations
 			if (!TimeExistsForAddition() && !checkBoxAlignToBeatMarks.Checked && !checkBoxFillDuration.Checked )
 			{
-				DialogResult proceedDialog = MessageBox.Show("At least one effect would be placed beyond the sequence length, and will not be added.\n\nWould you like to proceed anyway?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-				if (proceedDialog == DialogResult.No)
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("At least one effect would be placed beyond the sequence length, and will not be added.\n\nWould you like to proceed anyway?", "Warning", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No)
 				{
-					this.DialogResult = DialogResult.None;
+					DialogResult = DialogResult.None;
 				}
 			}
 		}
@@ -342,7 +354,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			txtDurationBetween.Enabled = (checkBoxAlignToBeatMarks.Checked ? false : true);
 			listBoxMarkCollections.Visible = !listBoxMarkCollections.Visible;
-			listBoxMarkCollections.Enabled = checkBoxFillDuration.Enabled = checkBoxSkipEOBeat.Enabled = checkBoxAlignToBeatMarks.Checked;
+			listBoxMarkCollections.Enabled = checkBoxFillDuration.AutoCheck = checkBoxSkipEOBeat.AutoCheck = checkBoxAlignToBeatMarks.Checked;
+			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
 				CalculatePossibleEffectsByBeatMarks();
@@ -359,7 +373,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (!names.Add(mc.Name))
 					{
-						MessageBox.Show("You have Beat Mark collections with duplicate names.\nBecause of this, your results may not be as expected.", "Duplicate Names", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("You have Beat Mark collections with duplicate names.\nBecause of this, your results may not be as expected.", "Duplicate Names", false, false);
+						messageBox.ShowDialog();
 						break;
 					}
 				}
@@ -499,14 +516,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImageHover;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
 		}
 
 		private void buttonBackground_MouseLeave(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.HeadingBackgroundImage;
-		}
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
+		}
 	}
 }

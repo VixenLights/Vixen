@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Common.Controls;
 using GitSharp;
 
 namespace VersionControl
@@ -219,9 +220,11 @@ namespace VersionControl
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            var res = MessageBox.Show("Are you sure you want to restore this version?  \n\rIf you have not saved the current file, all changes will be lost!", "Restore File", MessageBoxButtons.YesNo, MessageBoxIcon.Hand);
-
-            if (res == DialogResult.Yes)
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Hand; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm("Are you sure you want to restore this version?  \n\rIf you have not saved the current file, all changes will be lost!", "Restore File", true, false);
+			messageBox.ShowDialog();
+			if (messageBox.DialogResult == DialogResult.OK)
             {
 
                 var commit = _repo.Get<Commit>(this.txtChangeHash.Text);

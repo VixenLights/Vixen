@@ -13,7 +13,7 @@ namespace VixenModules.Effect.Picture
 		public PictureData()
 		{
 			EffectType = EffectType.RenderPictureNone;
-			ScalePercent = 1;
+			ScalePercent = 100;
 			ScaleToGrid = false;
 			Speed = 1;
 			FileName = String.Empty;

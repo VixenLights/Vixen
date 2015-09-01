@@ -202,7 +202,6 @@
 			this.buttonRemoveCollection.TabIndex = 2;
 			this.buttonRemoveCollection.Text = "Remove Collection";
 			this.buttonRemoveCollection.UseVisualStyleBackColor = false;
-			this.buttonRemoveCollection.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonRemoveCollection.Click += new System.EventHandler(this.buttonRemoveCollection_Click);
 			this.buttonRemoveCollection.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonRemoveCollection.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -549,7 +548,6 @@
 			this.buttonGenerateGrid.Text = "Generate Grid";
 			this.toolTip1.SetToolTip(this.buttonGenerateGrid, "Generate a \'grid\' of equally space marks across the sequence.");
 			this.buttonGenerateGrid.UseVisualStyleBackColor = false;
-			this.buttonGenerateGrid.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonGenerateGrid.Click += new System.EventHandler(this.buttonGenerateGrid_Click);
 			this.buttonGenerateGrid.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateGrid.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -567,7 +565,6 @@
 			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
 			this.toolTip1.SetToolTip(this.buttonGenerateBeatMarks, "Generate more marks based on the frequency of the selected marks.");
 			this.buttonGenerateBeatMarks.UseVisualStyleBackColor = false;
-			this.buttonGenerateBeatMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonGenerateBeatMarks.Click += new System.EventHandler(this.buttonGenerateBeatMarks_Click);
 			this.buttonGenerateBeatMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateBeatMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -585,7 +582,6 @@
 			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
 			this.toolTip1.SetToolTip(this.buttonCopyAndOffsetMarks, "Duplicate the selected marks, offsetting the new ones by a fixed amount of time.");
 			this.buttonCopyAndOffsetMarks.UseVisualStyleBackColor = false;
-			this.buttonCopyAndOffsetMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonCopyAndOffsetMarks.Click += new System.EventHandler(this.buttonCopyAndOffsetMarks_Click);
 			this.buttonCopyAndOffsetMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCopyAndOffsetMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -604,7 +600,6 @@
 			this.toolTip1.SetToolTip(this.buttonPasteEffectsToMarks, "Place a copy of the effect currently in the paste buffer to begin at each selecte" +
         "d mark.");
 			this.buttonPasteEffectsToMarks.UseVisualStyleBackColor = false;
-			this.buttonPasteEffectsToMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonPasteEffectsToMarks.Click += new System.EventHandler(this.buttonPasteEffectsToMarks_Click);
 			this.buttonPasteEffectsToMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonPasteEffectsToMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -622,7 +617,6 @@
 			this.buttonOffsetMarks.Text = "Offset marks";
 			this.toolTip1.SetToolTip(this.buttonOffsetMarks, "Adjust selected marks left or right a fixed amount of time.");
 			this.buttonOffsetMarks.UseVisualStyleBackColor = false;
-			this.buttonOffsetMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonOffsetMarks.Click += new System.EventHandler(this.buttonOffsetMarks_Click);
 			this.buttonOffsetMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOffsetMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -640,7 +634,6 @@
 			this.buttonGenerateSubmarks.Text = "Generate submarks";
 			this.toolTip1.SetToolTip(this.buttonGenerateSubmarks, "Create new marks by subdividing regions of other marks (select at least 2).");
 			this.buttonGenerateSubmarks.UseVisualStyleBackColor = false;
-			this.buttonGenerateSubmarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonGenerateSubmarks.Click += new System.EventHandler(this.buttonGenerateSubmarks_Click);
 			this.buttonGenerateSubmarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonGenerateSubmarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -658,7 +651,6 @@
 			this.buttonEvenlySpaceMarks.Text = "Evenly space marks";
 			this.toolTip1.SetToolTip(this.buttonEvenlySpaceMarks, "Evenly space out the selected marks (choose at least 3 marks).");
 			this.buttonEvenlySpaceMarks.UseVisualStyleBackColor = false;
-			this.buttonEvenlySpaceMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonEvenlySpaceMarks.Click += new System.EventHandler(this.buttonEvenlySpaceMarks_Click);
 			this.buttonEvenlySpaceMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonEvenlySpaceMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -712,7 +704,6 @@
 			this.buttonAddOrUpdateMark.TabIndex = 2;
 			this.buttonAddOrUpdateMark.Text = "Add";
 			this.buttonAddOrUpdateMark.UseVisualStyleBackColor = false;
-			this.buttonAddOrUpdateMark.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonAddOrUpdateMark.Click += new System.EventHandler(this.buttonAddOrUpdateMark_Click);
 			this.buttonAddOrUpdateMark.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonAddOrUpdateMark.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -739,7 +730,6 @@
 			this.buttonSelectAllMarks.TabIndex = 3;
 			this.buttonSelectAllMarks.Text = "Select All";
 			this.buttonSelectAllMarks.UseVisualStyleBackColor = false;
-			this.buttonSelectAllMarks.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.buttonSelectAllMarks.Click += new System.EventHandler(this.buttonSelectAllMarks_Click);
 			this.buttonSelectAllMarks.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSelectAllMarks.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -919,7 +909,6 @@
 			this.btnCreateCollections.TabIndex = 4;
 			this.btnCreateCollections.Text = "Create";
 			this.btnCreateCollections.UseVisualStyleBackColor = false;
-			this.btnCreateCollections.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.btnCreateCollections.Click += new System.EventHandler(this.btnCreateCollections_Click);
 			this.btnCreateCollections.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCreateCollections.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -977,7 +966,6 @@
 			this.btnAutoDetectionSettings.TabIndex = 1;
 			this.btnAutoDetectionSettings.Text = "Settings";
 			this.btnAutoDetectionSettings.UseVisualStyleBackColor = false;
-			this.btnAutoDetectionSettings.EnabledChanged += new System.EventHandler(this.buttonTextColorChange);
 			this.btnAutoDetectionSettings.Click += new System.EventHandler(this.btnAutoDetectionSettings_Click);
 			this.btnAutoDetectionSettings.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnAutoDetectionSettings.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
@@ -1191,7 +1179,6 @@
 			// 
 			// radioButtonTapper
 			// 
-			this.radioButtonTapper.AutoCheck = false;
 			this.radioButtonTapper.AutoSize = true;
 			this.radioButtonTapper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.radioButtonTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
@@ -1224,7 +1211,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(734, 606);
+			this.ClientSize = new System.Drawing.Size(734, 605);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);

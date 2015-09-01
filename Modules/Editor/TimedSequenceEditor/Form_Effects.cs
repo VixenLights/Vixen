@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
@@ -21,6 +22,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			TimelineControl = timelineControl;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		private void Form_Effects_Load(object sender, EventArgs e)
@@ -57,7 +61,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
-				node.ForeColor = DarkThemeColorTable.ForeColor;
+				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
 				Image image = effectDesriptor.GetRepresentativeImage(48, 48);
@@ -129,8 +133,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//We are not going to allow the Device group effects in draw mode at this time
 				if (_mNode.Parent != null && _mNode.Parent.Name == "treeDevice")
 				{
-					MessageBox.Show(@"Currently, you must drag this item to the grid to place it.", @"Effect Selection",
-						MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Currently, you must drag this item to the grid to place it.", "Effect Selection", false, false);
+					messageBox.ShowDialog();
 					return;
 				}
 				

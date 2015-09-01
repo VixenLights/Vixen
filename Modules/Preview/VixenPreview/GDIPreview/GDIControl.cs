@@ -43,7 +43,7 @@ namespace VixenModules.Preview.VixenPreview
                 if (value == null)
                 {
                     DefaultBackground = true;
-                    _background = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
+                    _background = new Bitmap(Width>0?Width:1, Height>0?Height:1, PixelFormat.Format32bppPArgb);
 
                     Graphics gfx = Graphics.FromImage(_background);
                     gfx.Clear(Color.Black);
@@ -100,6 +100,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void CreateAlphaBackground()
 		{
+			if (Width <= 0 || Height <= 0)
+			{
+				return;
+			}
 			if (Background != null)
 			{
                 Color c;

@@ -39,14 +39,17 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.checkBoxShowCommandWindow = new System.Windows.Forms.CheckBox();
 			this.checkBoxWaitForExit = new System.Windows.Forms.CheckBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonSelectProgram
 			// 
 			this.buttonSelectProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonSelectProgram.Location = new System.Drawing.Point(267, 2);
+			this.buttonSelectProgram.Location = new System.Drawing.Point(276, 3);
+			this.buttonSelectProgram.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSelectProgram.Name = "buttonSelectProgram";
-			this.buttonSelectProgram.Size = new System.Drawing.Size(20, 20);
+			this.buttonSelectProgram.Size = new System.Drawing.Size(30, 31);
 			this.buttonSelectProgram.TabIndex = 12;
 			this.buttonSelectProgram.Text = "S";
 			this.toolTip1.SetToolTip(this.buttonSelectProgram, "Select a File");
@@ -57,18 +60,20 @@
 			// 
 			this.textBoxProgram.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxProgram.Location = new System.Drawing.Point(90, 2);
+			this.textBoxProgram.Location = new System.Drawing.Point(11, 3);
+			this.textBoxProgram.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxProgram.Name = "textBoxProgram";
-			this.textBoxProgram.Size = new System.Drawing.Size(176, 20);
+			this.textBoxProgram.Size = new System.Drawing.Size(262, 26);
 			this.textBoxProgram.TabIndex = 11;
 			this.textBoxProgram.TextChanged += new System.EventHandler(this.textBoxProgram_TextChanged);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 6);
+			this.label1.Location = new System.Drawing.Point(0, 9);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(84, 13);
+			this.label1.Size = new System.Drawing.Size(125, 20);
 			this.label1.TabIndex = 10;
 			this.label1.Text = "Program to Run:";
 			// 
@@ -76,27 +81,30 @@
 			// 
 			this.textBoxCommandLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxCommandLine.Location = new System.Drawing.Point(90, 28);
+			this.textBoxCommandLine.Location = new System.Drawing.Point(11, 43);
+			this.textBoxCommandLine.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.textBoxCommandLine.Name = "textBoxCommandLine";
-			this.textBoxCommandLine.Size = new System.Drawing.Size(176, 20);
+			this.textBoxCommandLine.Size = new System.Drawing.Size(262, 26);
 			this.textBoxCommandLine.TabIndex = 14;
 			this.textBoxCommandLine.TextChanged += new System.EventHandler(this.textBoxCommandLine_TextChanged);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(0, 32);
+			this.label2.Location = new System.Drawing.Point(0, 49);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(80, 13);
+			this.label2.Size = new System.Drawing.Size(120, 20);
 			this.label2.TabIndex = 13;
 			this.label2.Text = "Command Line:";
 			// 
 			// buttonTest
 			// 
 			this.buttonTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonTest.Location = new System.Drawing.Point(267, 28);
+			this.buttonTest.Location = new System.Drawing.Point(276, 43);
+			this.buttonTest.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonTest.Name = "buttonTest";
-			this.buttonTest.Size = new System.Drawing.Size(20, 20);
+			this.buttonTest.Size = new System.Drawing.Size(30, 31);
 			this.buttonTest.TabIndex = 15;
 			this.buttonTest.Text = "T";
 			this.toolTip1.SetToolTip(this.buttonTest, "Test");
@@ -106,9 +114,10 @@
 			// checkBoxShowCommandWindow
 			// 
 			this.checkBoxShowCommandWindow.AutoSize = true;
-			this.checkBoxShowCommandWindow.Location = new System.Drawing.Point(90, 54);
+			this.checkBoxShowCommandWindow.Location = new System.Drawing.Point(135, 83);
+			this.checkBoxShowCommandWindow.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBoxShowCommandWindow.Name = "checkBoxShowCommandWindow";
-			this.checkBoxShowCommandWindow.Size = new System.Drawing.Size(145, 17);
+			this.checkBoxShowCommandWindow.Size = new System.Drawing.Size(212, 24);
 			this.checkBoxShowCommandWindow.TabIndex = 16;
 			this.checkBoxShowCommandWindow.Text = "Show Command Window";
 			this.checkBoxShowCommandWindow.UseVisualStyleBackColor = true;
@@ -117,29 +126,41 @@
 			// checkBoxWaitForExit
 			// 
 			this.checkBoxWaitForExit.AutoSize = true;
-			this.checkBoxWaitForExit.Location = new System.Drawing.Point(90, 77);
+			this.checkBoxWaitForExit.Location = new System.Drawing.Point(135, 118);
+			this.checkBoxWaitForExit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.checkBoxWaitForExit.Name = "checkBoxWaitForExit";
-			this.checkBoxWaitForExit.Size = new System.Drawing.Size(83, 17);
+			this.checkBoxWaitForExit.Size = new System.Drawing.Size(120, 24);
 			this.checkBoxWaitForExit.TabIndex = 17;
 			this.checkBoxWaitForExit.Text = "Wait for Exit";
 			this.checkBoxWaitForExit.UseVisualStyleBackColor = true;
 			this.checkBoxWaitForExit.CheckedChanged += new System.EventHandler(this.checkBoxWaitForExit_CheckedChanged);
 			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.buttonTest);
+			this.panel1.Controls.Add(this.textBoxCommandLine);
+			this.panel1.Controls.Add(this.buttonSelectProgram);
+			this.panel1.Controls.Add(this.textBoxProgram);
+			this.panel1.Location = new System.Drawing.Point(124, 0);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(308, 79);
+			this.panel1.TabIndex = 18;
+			// 
 			// LaunchTypeEditor
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.checkBoxWaitForExit);
 			this.Controls.Add(this.checkBoxShowCommandWindow);
-			this.Controls.Add(this.buttonTest);
-			this.Controls.Add(this.textBoxCommandLine);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.buttonSelectProgram);
-			this.Controls.Add(this.textBoxProgram);
 			this.Controls.Add(this.label1);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "LaunchTypeEditor";
-			this.Size = new System.Drawing.Size(290, 150);
+			this.Size = new System.Drawing.Size(435, 231);
 			this.Load += new System.EventHandler(this.LaunchTypeEditor_Load);
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -157,5 +178,6 @@
 		private System.Windows.Forms.Button buttonTest;
 		private System.Windows.Forms.CheckBox checkBoxShowCommandWindow;
 		private System.Windows.Forms.CheckBox checkBoxWaitForExit;
+		private System.Windows.Forms.Panel panel1;
 	}
 }
