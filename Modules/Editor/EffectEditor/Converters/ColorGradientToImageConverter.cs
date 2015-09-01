@@ -13,12 +13,12 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			if (value is ColorGradient)
 			{
 				ColorGradient colorGradient = (ColorGradient) value;
-				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateColorGradientImage(new Size(50, 50), false));
+				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateColorGradientImage(new Size(25, 25), false));
 			}
 
 			return
 				BitmapImageConverter.BitmapToMediaImage(
-					new ColorGradient(Color.DimGray).GenerateColorGradientImage(new System.Drawing.Size(50, 50), false));
+					new ColorGradient(Color.DimGray).GenerateColorGradientImage(new Size(25, 25), false));
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -89,7 +89,8 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="TabControlEX">
-      <HintPath>..\..\..\Common\Controls\ControlsEx\TabControlEx\TabControlEX.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking">
       <HintPath>..\..\..\packages\DockPanelSuite.2.9.0.0\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
