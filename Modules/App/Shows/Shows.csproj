@@ -52,7 +52,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TabControlEX">
-      <HintPath>..\..\..\Common\Controls\ControlsEx\TabControlEx\TabControlEX.dll</HintPath>
+      <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
