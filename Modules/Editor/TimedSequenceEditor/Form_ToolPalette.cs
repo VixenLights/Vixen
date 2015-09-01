@@ -1035,8 +1035,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_ToolPalette_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
-			_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+			}
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+			}
 		}
 
 		
