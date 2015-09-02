@@ -194,12 +194,31 @@ namespace VixenModules.SequenceType.Vixen2x
 			var channelname = string.Empty;
 			if (version == 1)
 			{
-				channelname = element.FirstNode.ToString();
+				try
+				{
+					channelname = element.FirstNode.ToString();
+				}
+				catch (NullReferenceException)
+				{
+					//do nothing
+				}
 			}
 			//must be version 2.5 so get the channel name from attribute 'name'
 			else if (version == 2)
 			{
-				channelname = element.Attribute("name").Value;
+				try
+				{
+					channelname = element.Attribute("name").Value;
+				}
+				catch (NullReferenceException)
+				{
+					//do nothing
+				}
+			}
+			//If for some reason we don't have a channel name, fill one in
+			if (String.IsNullOrEmpty(channelname))
+			{
+				channelname = "Unnamed Output " + element.Attribute("output").Value;
 			}
 
 			mappings.Add(new ChannelMapping(channelname,
