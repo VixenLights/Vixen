@@ -7,6 +7,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
+using Common.Controls;
 using Common.Controls.ControlsEx.ListControls;
 using Common.Controls.Timeline;
 using Vixen.Data.Value;
@@ -43,7 +45,8 @@ namespace VixenModules.Preview.VixenPreview
 		private bool DefaultBackground = true;
 		private Point zoomTo;
 		private bool _displayItemsLoaded = false;
-		public static bool resize;
+		public static string modifyType;
+		private static bool ClipboardPopulated = false;
 
 		private Tools _currentTool = Tools.Select;
 
@@ -304,7 +307,7 @@ namespace VixenModules.Preview.VixenPreview
 			: base()
 		{
 			InitializeComponent();
-
+			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			PreviewItemsResizingNew += vixenpreviewControl_PreviewItemsResizingNew;
 			PreviewItemsMovedNew += vixenpreviewControl_PreviewItemsMovedNew;
 			SetStyle(ControlStyles.UserPaint, true);
@@ -381,8 +384,10 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					Background = null;
 					Logging.Error("There was error loading the preview background image.", ex);
-					MessageBox.Show(@"There was an error loading the background image: " + ex.Message, @"Error",
-						MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There was an error loading the background image: " + ex.Message, @"Error", false, true);
+					messageBox.ShowDialog();
 				}
 			}
 			else
@@ -548,8 +553,8 @@ namespace VixenModules.Preview.VixenPreview
 							PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 							if (selectedPoint != null)
 							{
-								resize = true;
-								beginDragResize(false);//Starts the Undo Process
+								modifyType = "Resize";
+								beginResize_Move(false); //Starts the Undo Process
 								dragStart = translatedPoint.ToPoint();
 								_selectedDisplayItem.Shape.SetSelectPoint(selectedPoint);
 								Capture = true;
@@ -558,8 +563,8 @@ namespace VixenModules.Preview.VixenPreview
 								// If we're not resizing, see if we're moving a single shape
 							else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 							{
-								resize = false;
-								beginDragMove(false);//Starts the Undo Process
+								modifyType = "Move";
+								beginResize_Move(false); //Starts the Undo Process
 
 								StartMove(translatedPoint.X, translatedPoint.Y);
 							}
@@ -581,8 +586,8 @@ namespace VixenModules.Preview.VixenPreview
 							//}
 							if (MouseOverSelectedDisplayItems(translatedPoint.X, translatedPoint.Y))
 							{
-								resize = false;
-								beginDragMove(true);//Starts the Undo Process
+								modifyType = "Move";
+								beginResize_Move(true); //Starts the Undo Process
 								StartMove(translatedPoint.X, translatedPoint.Y);
 							}
 							else
@@ -713,11 +718,9 @@ namespace VixenModules.Preview.VixenPreview
 							newDisplayItem.Shape = new PreviewMultiString(translatedPoint, translatedPoint,
 								elementsForm.SelectedNode, ZoomLevel);
 						}
-
 						// Now add the newely created display item to the screen.
 						if (newDisplayItem != null)
 						{
-
 							AddDisplayItem(newDisplayItem);
 							newDisplayItem.ZoomLevel = ZoomLevel;
 							_selectedDisplayItem = newDisplayItem;
@@ -727,16 +730,14 @@ namespace VixenModules.Preview.VixenPreview
 							dragStart = translatedPoint.ToPoint();
 							Capture = true;
 							_mouseCaptured = true;
-							var action = new PreviewItemsAddedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });
-							VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+
+							modifyType = "AddNew";
 						}
 					}
 				}
 				else if (e.Button == System.Windows.Forms.MouseButtons.Right)
 				{
-					ContextMenu menu = null;
-					MenuItem item;
-
+					contextMenuStrip1.Items.Clear();
 					SelectItemUnderPoint(translatedPoint, false);
 
 					if (_selectedDisplayItem != null)
@@ -744,109 +745,142 @@ namespace VixenModules.Preview.VixenPreview
 						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 						if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 						{
-							menu = new ContextMenu();
 							if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
 							{
-								item = new MenuItem("Separate Template Items", OnItemContextMenuClick);
-								item.Tag = "Separate";
-								menu.MenuItems.Add(item);
+								contextMenuStrip1.Items.Add(new ToolStripMenuItem
+								{
+									Text = "Separate Template Items",
+									Tag = "Separate",
+									Image = Common.Resources.Properties.Resources.Split
+								});
 							}
 						}
 					}
 					else if (SelectedDisplayItems.Count > 1)
 					{
-						menu = new ContextMenu();
-
-						item = new MenuItem("Create Group...", OnItemContextMenuClick);
-						item.Tag = "CreateGroup";
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("-");
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("Create Template...", OnItemContextMenuClick);
-						item.Tag = "CreateTemplate";
-						menu.MenuItems.Add(item);
-					}
-
-					if (menu != null)
-					{
-						if (menu.MenuItems.Count > 0)
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
-							item = new MenuItem("-");
-							menu.MenuItems.Add(item);
+							Text = "Create Group...",
+							Tag = "CreateGroup",
+							Image = Common.Resources.Properties.Resources.group
+						});
+						contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Create Template...",
+							Tag = "CreateTemplate",
+							Image = Common.Resources.Properties.Resources.document_font
+						});
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Cut",
+							Tag = "Cut",
+							Image = Common.Resources.Properties.Resources.cut
+						});
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Copy",
+							Tag = "Copy",
+							Image = Common.Resources.Properties.Resources.page_copy
+						});
+					}
+					if (ClipboardPopulated)
+					{
+						if (_selectedDisplayItem == null & SelectedDisplayItems.Count > 1)
+						{
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
 						}
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Paste",
+							Tag = "Paste",
+							Image = Common.Resources.Properties.Resources.paste_plain
+						});
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Delete",
+							Tag = "Delete",
+							Image = Common.Resources.Properties.Resources.delete
+						});
+					}
+					if (VixenPreviewSetup3._undoMgr.NumUndoable > 0)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Undo",
+							Tag = "Undo",
+							Image = Common.Resources.Properties.Resources.arrow_undo
+						});
+					}
+					if (VixenPreviewSetup3._undoMgr.NumRedoable > 0)
+					{
+						if (VixenPreviewSetup3._undoMgr.NumUndoable < 1)
+							contextMenuStrip1.Items.Add(new ToolStripSeparator());
+						contextMenuStrip1.Items.Add(new ToolStripMenuItem
+						{
+							Text = "Redo",
+							Tag = "Redo",
+							Image = Common.Resources.Properties.Resources.arrow_redo
+						});
+					}
+					if (_selectedDisplayItem != null)
+					{
+						contextMenuStrip1.Items.Add(new ToolStripSeparator());
 
-						item = new MenuItem("Cut", OnItemContextMenuClick);
-						item.Tag = "Cut";
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("Copy", OnItemContextMenuClick);
-						item.Tag = "Copy";
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("Paste", OnItemContextMenuClick);
-						item.Tag = "Paste";
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("Delete", OnItemContextMenuClick);
-						item.Tag = "Delete";
-						menu.MenuItems.Add(item);
-
-						item = new MenuItem("-");
-						menu.MenuItems.Add(item);
-
-						if (Data.SaveLocations)
+						if (Data.SaveLocations & _selectedDisplayItem != null)
 						{
 							// Z location menu
-							MenuItem locationItem = new MenuItem("Set Z Location to");
-							menu.MenuItems.Add(locationItem);
-							item = new MenuItem("0 Front", OnItemContextMenuClick);
-							item.Tag = "0";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("1", OnItemContextMenuClick);
-							item.Tag = "1";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("2", OnItemContextMenuClick);
-							item.Tag = "2";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("3", OnItemContextMenuClick);
-							item.Tag = "3";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("4 Middle", OnItemContextMenuClick);
-							item.Tag = "4";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("5", OnItemContextMenuClick);
-							item.Tag = "5";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("6", OnItemContextMenuClick);
-							item.Tag = "6";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("7", OnItemContextMenuClick);
-							item.Tag = "7";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("8", OnItemContextMenuClick);
-							item.Tag = "8";
-							locationItem.MenuItems.Add(item);
-							item = new MenuItem("9 Back", OnItemContextMenuClick);
-							item.Tag = "9";
-							locationItem.MenuItems.Add(item);
+							contextMenuStrip1.Items.Add(new ToolStripMenuItem {Text = "Set Z Location to"});
+							// Z sub menu items
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "0 Front", Tag = "0"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "1", Tag = "1"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "2", Tag = "2"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "3", Tag = "3"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "4 Middle", Tag = "4"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "5", Tag = "5"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "6", Tag = "6"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "7", Tag = "7"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "8", Tag = "8"});
+							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
+								new ToolStripMenuItem {Text = "9 Back", Tag = "9"});
 						}
-						menu.Show(this, e.Location);
+					}
+					if (contextMenuStrip1.Items.Count > 0)
+					{
+						contextMenuStrip1.Show(this, e.Location);
 					}
 				}
 				else if (e.Button == System.Windows.Forms.MouseButtons.Middle)
 				{
 					// Pan
 					zoomTo = MousePointToZoomPoint(e.Location);
+
 				}
 			}
 		}
 
-		public void OnItemContextMenuClick(Object sender, EventArgs e)
+		private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			string tag = (sender as MenuItem).Tag.ToString();
-			switch (tag)
+			var tag = e.ClickedItem.Tag;
+			if (e.ClickedItem.Tag == null)
+				return;
+			switch (tag.ToString())
 			{
 				case "CreateTemplate":
 					_selectedDisplayItem = CreateTemplate();
@@ -864,11 +898,7 @@ namespace VixenModules.Preview.VixenPreview
 					break;
 				case "Separate":
 					if (_selectedDisplayItem != null)
-					{
-						var action = new PreviewItemsGroupSeparateAction(this, _selectedDisplayItem);
-						VixenPreviewSetup3._undoMgr.AddUndoAction(action);
 						SeparateTemplateItems(_selectedDisplayItem);
-					}
 					break;
 				case "Cut":
 					Cut();
@@ -881,6 +911,13 @@ namespace VixenModules.Preview.VixenPreview
 					break;
 				case "Delete":
 					Delete();
+					break;
+				case "Undo":
+					VixenPreviewSetup3._undoMgr.Undo();
+					break;
+				case "Redo":
+
+					VixenPreviewSetup3._undoMgr.Redo();
 					break;
 				case "0":
 				case "1":
@@ -1116,12 +1153,14 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					if (_selectedDisplayItem.Shape is PreviewPolyLine && _selectedDisplayItem.Shape.Creating)
 					{
+						PreviewItemAddAction();
 						(_selectedDisplayItem.Shape as PreviewPolyLine).EndCreation();
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						ResetMouse();
 					}
 					else if (_selectedDisplayItem.Shape is PreviewMultiString && _selectedDisplayItem.Shape.Creating)
 					{
+						PreviewItemAddAction();
 						(_selectedDisplayItem.Shape as PreviewMultiString).EndCreation();
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						ResetMouse();
@@ -1197,17 +1236,23 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					_selectedDisplayItem.Shape.MouseUp(sender, e);
 					OnSelectDisplayItem(this, _selectedDisplayItem);
-					if ((PreviewItemsMovedNew != null | PreviewItemsMovedNew != null) && m_previewItemMoveInfo != null)
+					if ((PreviewItemsMovedNew != null | PreviewItemsResizingNew != null) && m_previewItemResizeMoveInfo != null | modifyType == "AddNew")
 					{
-						if (resize) //Resizing
+						switch (modifyType)
 						{
-							PreviewItemsResizingNew(this, new PreviewItemResizingEventArgs(m_previewItemMoveInfo));
+							case "Resize":
+								PreviewItemsResizingNew(this, new PreviewItemResizingEventArgs(m_previewItemResizeMoveInfo));
+								break;
+							case "Move":
+								PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemResizeMoveInfo));
+								break;
+							case "AddNew":
+								PreviewItemAddAction(); //starts Undo_Redo Action
+								DeSelectSelectedDisplayItem();
+								break;
 						}
-						else //Else we are moving
-						{
-							PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemMoveInfo));
-						}
-						m_previewItemMoveInfo = null;
+						modifyType = "None";
+						m_previewItemResizeMoveInfo = null;
 					}
 				}
 					// Ok, if this is true, we've got a rubber band and something is selected, now what?
@@ -1223,8 +1268,8 @@ namespace VixenModules.Preview.VixenPreview
 					}
 					else
 					{
-						if (PreviewItemsMovedNew != null && m_previewItemMoveInfo != null)
-							PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemMoveInfo));
+						if (PreviewItemsMovedNew != null && m_previewItemResizeMoveInfo != null)
+							PreviewItemsMovedNew(this, new PreviewItemMoveEventArgs(m_previewItemResizeMoveInfo));
 					}
 				}
 			}
@@ -1489,58 +1534,29 @@ namespace VixenModules.Preview.VixenPreview
 				string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
 				Clipboard.SetData(DataFormats.Text, xml);
 			}
+			ClipboardPopulated = true;
 		}
 #endregion
 
-		#region PreviewItem Resize Undo/Redo Action
-		public void resizePreviewItems(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
-		{
-			SelectedDisplayItems.Clear();
-			foreach (KeyValuePair<DisplayItem, PreviewItemPositionInfo> e in ChangedPreviewItems)
-			{
-				//Selects and removes the object so it can be replaced with previous object
-				_selectedDisplayItem = e.Key;
-				_selectedDisplayItem.ZoomLevel = ZoomLevel;
-				PreviewPoint translatedPoint = new PreviewPoint();
-				if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
-				{
-					translatedPoint = new PreviewPoint(_selectedDisplayItem.Shape.Strings[0].Strings[0]._pixels[0].X,
-					_selectedDisplayItem.Shape.Strings[0].Strings[0]._pixels[0].Y);
-				}
-				else
-				{
-					translatedPoint = new PreviewPoint(_selectedDisplayItem.Shape.Strings[0]._pixels[0].X,
-					_selectedDisplayItem.Shape.Strings[0]._pixels[0].Y);
-				}
-				
-				RemoveDisplayItem(_selectedDisplayItem);
-				SelectItemUnderPoint(translatedPoint, false);
-				RemoveDisplayItem(_selectedDisplayItem);
+		#region PreviewItem Resize/Move Undo/Redo Action
 
-				//Gets the stored previous object and adds to the SelectedDisplay list
-				SelectedDisplayItems.Add(PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalPreviewItem[0])[0]);
-				AddDisplayItem(PreviewTools.DeSerializeToDisplayItemList(e.Value.OriginalPreviewItem[0])[0]);
-				DisplayItems.Last().Shape.ZoomLevel = ZoomLevel;
-			}
-			SelectedDisplayItems.Clear();
+		public void Resize_MoveSwapPlaces(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
+		{
+			Resize_MoveSwapElementPlacement(ChangedPreviewItems);
 		}
 
-		public void ResizeSwapPlaces(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
-		{
-			ResizeSwapElementPlacement(ChangedPreviewItems);
-		}
-
-		public void ResizeSwapElementPlacement(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
+		public void Resize_MoveSwapElementPlacement(Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
 		{
 			foreach (KeyValuePair<DisplayItem, PreviewItemPositionInfo> e in ChangedPreviewItems)
 			{
 				// Key is reference to actual element. Value is class with previous object data.
 				// Swap the element's Display data with the saved data from before the move, so we can restore them later in redo.
-				ResizeSwapPlaces(e.Key, e.Value);
+				Resize_MoveSwapPlaces(e.Key, e.Value);
+				e.Key.Shape.ZoomLevel = ZoomLevel;
 			}
 		}
 
-		public static void ResizeSwapPlaces(DisplayItem lhs, PreviewItemPositionInfo rhs)
+		public static void Resize_MoveSwapPlaces(DisplayItem lhs, PreviewItemPositionInfo rhs)
 		{
 			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalPreviewItem[0]);
 			foreach (var temp1 in displayItemTemp)
@@ -1592,9 +1608,11 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (item.Shape.GetType().ToString().Contains("PreviewCustom"))
 				{
-					MessageBox.Show(
-						"You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
-						"Grouping Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
+						"Grouping Error", false, true);
+					messageBox.ShowDialog();
 					return null;
 				}
 			}
@@ -1657,8 +1675,7 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
 					List<DisplayItem> selected = new List<DisplayItem> {_selectedDisplayItem};
 
-					var action = new PreviewItemsAddedUndoAction(this, selected);//Start Undo Action.
-					VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+					PreviewItemAddAction(); //starts Undo_Redo Action
 				}
 			}
 		}
@@ -1694,13 +1711,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AlignLeft()
 		{
+			
 			foreach (PreviewBaseShape shape in SelectedShapes())
 			{
+				
 				if (shape != SelectedShapes()[0])
 				{
 					shape.Left = SelectedShapes()[0].Left;
 				}
 			}
+
 		}
 
 		public void AlignRight()
@@ -1806,28 +1826,29 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public void MatchProperties()
-		{
-			if (SelectedShapes().Count >= 2)
-			{
-				foreach (PreviewBaseShape shape in SelectedShapes())
-				{
-					if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
-					{
-						MessageBox.Show("You can only match the properties of like shapes.", "Match Properties",
-							MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
-						return;
-					}
-				}
-				foreach (PreviewBaseShape shape in SelectedShapes())
-				{
-					if (shape != SelectedShapes()[0])
-					{
-						shape.Match(SelectedShapes()[0]);
-					}
-				}
-			}
-		}
+        public void MatchProperties()
+        {
+            if (SelectedShapes().Count >= 2) { 
+                foreach (PreviewBaseShape shape in SelectedShapes())
+                {
+                    if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
+                    {
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", false, true);
+						messageBox.ShowDialog();
+                        return;
+                    }
+                }
+                foreach (PreviewBaseShape shape in SelectedShapes())
+                {
+                    if (shape != SelectedShapes()[0])
+                    {
+                        shape.Match(SelectedShapes()[0]);
+                    }
+                }
+            }
+        }
 
 		#endregion
 
@@ -2098,35 +2119,30 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		private PreviewItemMoveInfo m_previewItemMoveInfo;
+		public void PreviewItemAddAction()
+		{
+			var action = new PreviewItemsAddedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
+			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+		}
 
 		#region [Mouse Drag] (Move/Resize)
 
+		public PreviewItemResizeMoveInfo m_previewItemResizeMoveInfo;
+
 		///<summary>Called when any operation that moves element times (namely drag-move and hresize).
 		///Saves the pre-move information and begins update on all selected elements.</summary>
-		private void beginDragMove(bool multi)
+		public void beginResize_Move(bool multi)
 		{
 			if (!multi)
 				SelectedDisplayItems.Add(_selectedDisplayItem);
-			m_previewItemMoveInfo = new PreviewItemMoveInfo(SelectedDisplayItems);
+			m_previewItemResizeMoveInfo = new PreviewItemResizeMoveInfo(SelectedDisplayItems);
 			if (!multi)
 				SelectedDisplayItems.Clear();
 		}
 
-		///<summary>Called when any operation that moves element times (namely drag-move and hresize).
-		///Saves the pre-move information and begins update on all selected elements.</summary>
-		private void beginDragResize(bool multi)
+		public class PreviewItemResizeMoveInfo
 		{
-			if (!multi)
-				SelectedDisplayItems.Add(_selectedDisplayItem);
-			m_previewItemMoveInfo = new PreviewItemMoveInfo(SelectedDisplayItems);
-			if (!multi)
-				SelectedDisplayItems.Clear();
-		}
-
-		public class PreviewItemMoveInfo
-		{
-			public PreviewItemMoveInfo(List<DisplayItem> modifyingElements)
+			public PreviewItemResizeMoveInfo(List<DisplayItem> modifyingElements)
 			{
 				OriginalPreviewItem = new Dictionary<DisplayItem, PreviewItemPositionInfo>();
 
@@ -2159,7 +2175,6 @@ namespace VixenModules.Preview.VixenPreview
 
 			public int TopPosition { get; set; }
 			public int LeftPosition { get; set; }
-
 		}
 	}
 
