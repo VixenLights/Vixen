@@ -1627,8 +1627,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void addNewGroup(out DisplayItem newDisplayItem, List<DisplayItem> selectedShapes)
 		{
+			//Sets the start TopLeft point of the new group
+			List<int> topPoint = new List<int>();
+			List<int> leftPoint = new List<int>();
+			foreach (DisplayItem shape in SelectedDisplayItems)
+			{
+				topPoint.Add(shape.Shape.Top);
+				leftPoint.Add(shape.Shape.Left);
+			}
 			newDisplayItem = new DisplayItem();
-			newDisplayItem.Shape = new PreviewCustom(new PreviewPoint(100, 100), SelectedShapes());
+			newDisplayItem.Shape = new PreviewCustom(new PreviewPoint(leftPoint.Min(), topPoint.Min()), SelectedShapes());
 			AddDisplayItem(newDisplayItem);
 
 			foreach (DisplayItem item in SelectedDisplayItems)
