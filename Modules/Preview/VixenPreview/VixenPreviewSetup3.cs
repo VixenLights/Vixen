@@ -1,33 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Controls;
-using Common.Controls.Timeline;
 using Common.Resources;
-using Vixen.Execution.Context;
-using Vixen.Module.Preview;
-using Vixen.Data.Value;
 using System.IO;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
-using System.Windows.Forms.Design;
 using Common.Resources.Properties;
 using Button = System.Windows.Forms.Button;
-using ComboBox = System.Windows.Forms.ComboBox;
 using Control = System.Windows.Forms.Control;
-using Label = System.Windows.Controls.Label;
-using TextBox = System.Windows.Forms.TextBox;
-using Element = Vixen.Sys.Element;
 
 namespace VixenModules.Preview.VixenPreview {
     public partial class VixenPreviewSetup3 : Form
@@ -39,7 +24,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public static string DrawShape;
 		// Undo manager
-		public static UndoManager _undoMgr;
+		private UndoManager _undoMgr;
 
 		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
@@ -145,6 +130,10 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
 			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
 			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
+			_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
+			_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
+			undoButton.ItemChosen -= undoButton_ItemChosen;
+			redoButton.ItemChosen -= redoButton_ItemChosen;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -555,6 +544,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 			redoButton.Enabled = false;
 			redoButton.ItemChosen += redoButton_ItemChosen;
+			previewForm.Preview.UndoManager = _undoMgr;
 		}
 
 		private void undoButton_ButtonClick(object sender, EventArgs e)

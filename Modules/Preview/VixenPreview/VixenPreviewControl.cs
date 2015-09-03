@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class VixenPreviewControl : UserControl
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
+		
 		#region "Variables"
 
 		public VixenPreviewSetupElementsDocument elementsForm;
@@ -137,14 +137,16 @@ namespace VixenModules.Preview.VixenPreview
 		public void vixenpreviewControl_PreviewItemsResizingNew(object sender, PreviewItemResizingEventArgs e)
 		{
 			var action = new PreviewItemsResizeUndoAction(this, e.PreviousSize);
-			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+			UndoManager.AddUndoAction(action);
 		}
 
 		public void vixenpreviewControl_PreviewItemsMovedNew(object sender, PreviewItemMoveEventArgs e)
 		{
 			var action = new PreviewItemsMoveUndoAction(this, e.PreviousMove);
-			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+			UndoManager.AddUndoAction(action);
 		}
+
+		internal UndoManager UndoManager { get; set; }
 
 		public bool ShowInfo { get; set; }
 
@@ -810,7 +812,7 @@ namespace VixenModules.Preview.VixenPreview
 							Image = Common.Resources.Properties.Resources.delete
 						});
 					}
-					if (VixenPreviewSetup3._undoMgr.NumUndoable > 0)
+					if (UndoManager.NumUndoable > 0)
 					{
 						contextMenuStrip1.Items.Add(new ToolStripSeparator());
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
@@ -820,9 +822,9 @@ namespace VixenModules.Preview.VixenPreview
 							Image = Common.Resources.Properties.Resources.arrow_undo
 						});
 					}
-					if (VixenPreviewSetup3._undoMgr.NumRedoable > 0)
+					if (UndoManager.NumRedoable > 0)
 					{
-						if (VixenPreviewSetup3._undoMgr.NumUndoable < 1)
+						if (UndoManager.NumUndoable < 1)
 							contextMenuStrip1.Items.Add(new ToolStripSeparator());
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
@@ -914,11 +916,11 @@ namespace VixenModules.Preview.VixenPreview
 					Delete();
 					break;
 				case "Undo":
-					VixenPreviewSetup3._undoMgr.Undo();
+					UndoManager.Undo();
 					break;
 				case "Redo":
 
-					VixenPreviewSetup3._undoMgr.Redo();
+					UndoManager.Redo();
 					break;
 				case "0":
 				case "1":
@@ -1094,12 +1096,12 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			else if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
 			{
-				VixenPreviewSetup3._undoMgr.Undo();
+				UndoManager.Undo();
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Y && e.Modifiers == Keys.Control)
 			{
-				VixenPreviewSetup3._undoMgr.Redo();
+				UndoManager.Redo();
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Up)
@@ -1464,7 +1466,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (SelectedDisplayItems.Count() > 0)
 			{
 				var action = new PreviewItemsPasteUndoAction(this, selected);//Start Undo Action.
-				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+				UndoManager.AddUndoAction(action);
 
 				DeSelectSelectedDisplayItem();
 				foreach (DisplayItem newDisplayItem in SelectedDisplayItems)
@@ -1503,7 +1505,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (_selectedDisplayItem != null)
 			{
 				var action = new PreviewItemsRemovedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
-				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+				UndoManager.AddUndoAction(action);
 
 				RemoveDisplayItem(_selectedDisplayItem);
 				DeSelectSelectedDisplayItem();
@@ -1511,7 +1513,7 @@ namespace VixenModules.Preview.VixenPreview
 			else if (SelectedDisplayItems != null && SelectedDisplayItems.Count > 0)
 			{
 				var action = new PreviewItemsRemovedUndoAction(this, selected);//Start Undo Action.
-				VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+				UndoManager.AddUndoAction(action);
 
 				foreach (DisplayItem item in SelectedDisplayItems)
 				{
@@ -1632,7 +1634,7 @@ namespace VixenModules.Preview.VixenPreview
 			addNewGroup(out newDisplayItem, null);
 			SelectedDisplayItems.Clear();
 			var action = new PreviewItemsGroupAddedUndoAction(this, newDisplayItem);//Start Undo Action.
-			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+			UndoManager.AddUndoAction(action);
 			return newDisplayItem;
 		}
 
@@ -2141,7 +2143,7 @@ namespace VixenModules.Preview.VixenPreview
 		public void PreviewItemAddAction()
 		{
 			var action = new PreviewItemsAddedUndoAction(this, new List<DisplayItem> { _selectedDisplayItem });//Start Undo Action.
-			VixenPreviewSetup3._undoMgr.AddUndoAction(action);
+			UndoManager.AddUndoAction(action);
 		}
 
 		#region [Mouse Drag] (Move/Resize)
