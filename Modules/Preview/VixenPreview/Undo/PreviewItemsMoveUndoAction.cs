@@ -9,26 +9,24 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
 	public class PreviewItemsMoveUndoAction : UndoAction
 	{
-		private Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> m_changedPreviewItem;
+		private Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> m_changedPreviewItems;
 		private VixenPreviewControl m_form;
 
 		public PreviewItemsMoveUndoAction(VixenPreviewControl form, Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> ChangedPreviewItems)
 		{
-			m_changedPreviewItem = ChangedPreviewItems;
+			m_changedPreviewItems = ChangedPreviewItems;
 			m_form = form;
 		}
 
 		public override void Undo()
 		{
-			m_form.resizePreviewItems(m_changedPreviewItem);
-			m_form.ResizeSwapPlaces(m_changedPreviewItem);
+			m_form.Resize_MoveSwapPlaces(m_changedPreviewItems);
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			m_form.resizePreviewItems(m_changedPreviewItem);
-			m_form.ResizeSwapPlaces(m_changedPreviewItem);
+			m_form.Resize_MoveSwapPlaces(m_changedPreviewItems);
 			base.Redo();
 		}
 
@@ -36,7 +34,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 		{
 			get
 			{
-				return string.Format("Move {0} ", m_changedPreviewItem.Count);
+				return string.Format("Move {0} ", m_changedPreviewItems.Count);
 			}
 		}
 	}

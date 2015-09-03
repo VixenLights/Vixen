@@ -20,15 +20,13 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 
 		public override void Undo()
 		{
-			m_form.resizePreviewItems(m_changedPreviewItems);
-			m_form.ResizeSwapPlaces(m_changedPreviewItems);
+			m_form.Resize_MoveSwapPlaces(m_changedPreviewItems);
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			m_form.resizePreviewItems(m_changedPreviewItems);
-			m_form.ResizeSwapPlaces(m_changedPreviewItems);
+			m_form.Resize_MoveSwapPlaces(m_changedPreviewItems);
 			base.Redo();
 		}
 
