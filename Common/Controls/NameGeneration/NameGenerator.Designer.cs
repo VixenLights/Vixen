@@ -354,9 +354,12 @@ namespace Common.Controls
 			// 
 			// NameGenerator
 			// 
+			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(599, 559);
+			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(599, 560);
 			this.Controls.Add(this.labelColumnHeader2);
 			this.Controls.Add(this.labelColumnHeader1);
 			this.Controls.Add(this.label4);
@@ -371,7 +374,6 @@ namespace Common.Controls
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.listViewNames);
 			this.DoubleBuffered = true;
-			this.MaximumSize = new System.Drawing.Size(615, 900);
 			this.MinimumSize = new System.Drawing.Size(615, 598);
 			this.Name = "NameGenerator";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
