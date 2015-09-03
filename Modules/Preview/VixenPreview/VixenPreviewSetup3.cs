@@ -41,7 +41,7 @@ namespace VixenModules.Preview.VixenPreview {
 		// Undo manager
 		public static UndoManager _undoMgr;
 
-		public static event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
+		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
 		public VixenPreviewData Data {
 			set {
@@ -84,6 +84,9 @@ namespace VixenModules.Preview.VixenPreview {
 		    redoButton.Image = Tools.GetIcon(Resources.arrow_redo, 24);
 		    redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 		    redoButton.ButtonType = UndoButtonType.RedoButton;
+
+			undoToolStripMenuItem.Enabled = false;
+			redoToolStripMenuItem.Enabled = false;
 
 	    }
 
@@ -133,6 +136,15 @@ namespace VixenModules.Preview.VixenPreview {
                 trackerZoom.Maximum = 200;
             }
 			InitUndo();
+		}
+
+		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
+			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
+			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
+			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
+			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -571,10 +583,12 @@ namespace VixenModules.Preview.VixenPreview {
 			if (_undoMgr.NumUndoable == 0)
 			{
 				undoButton.Enabled = false;
+				undoToolStripMenuItem.Enabled = false;
 				return;
 			}
 
 			undoButton.Enabled = true;
+			undoToolStripMenuItem.Enabled = true;
 			undoButton.UndoItems.Clear();
 			foreach (var act in _undoMgr.UndoActions)
 			{
@@ -586,11 +600,13 @@ namespace VixenModules.Preview.VixenPreview {
 	    {
 		    if (_undoMgr.NumRedoable == 0)
 		    {
-			    redoButton.Enabled = false;
+				redoButton.Enabled = false;
+				redoToolStripMenuItem.Enabled = false;
 			    return;
 		    }
 
-		    redoButton.Enabled = true;
+			redoButton.Enabled = true;
+			redoToolStripMenuItem.Enabled = true;
 		    redoButton.UndoItems.Clear();
 		    foreach (var act in _undoMgr.RedoActions)
 		    {
@@ -635,6 +651,7 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
+
 	}
 
 

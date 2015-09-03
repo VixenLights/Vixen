@@ -312,6 +312,7 @@ namespace VixenModules.Preview.VixenPreview
 			PreviewItemsMovedNew += vixenpreviewControl_PreviewItemsMovedNew;
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
+			_selectedDisplayItem = null;
 		}
 
 		private VScrollBar vScroll = new VScrollBar();
@@ -1089,6 +1090,16 @@ namespace VixenModules.Preview.VixenPreview
 			else if (e.KeyCode == Keys.V && e.Modifiers == Keys.Control)
 			{
 				Paste();
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+			{
+				VixenPreviewSetup3._undoMgr.Undo();
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Y && e.Modifiers == Keys.Control)
+			{
+				VixenPreviewSetup3._undoMgr.Redo();
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Up)
