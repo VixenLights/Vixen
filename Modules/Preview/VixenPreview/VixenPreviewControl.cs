@@ -1096,12 +1096,18 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			else if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
 			{
-				UndoManager.Undo();
+				if (UndoManager.NumUndoable > 0)
+				{
+					UndoManager.Undo();
+				}
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Y && e.Modifiers == Keys.Control)
 			{
-				UndoManager.Redo();
+				if (UndoManager.NumRedoable > 0)
+				{
+					UndoManager.Redo();
+				}
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Up)
