@@ -550,25 +550,21 @@ namespace VixenModules.Preview.VixenPreview {
 		private void undoButton_ButtonClick(object sender, EventArgs e)
 		{
 			_undoMgr.Undo();
-			previewForm.Preview.DeSelectSelectedDisplayItem();
 		}
 
 		private void undoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
 		{
 			_undoMgr.Undo(e.NumItems);
-			previewForm.Preview.DeSelectSelectedDisplayItem();
 		}
 
 		private void redoButton_ButtonClick(object sender, EventArgs e)
 		{
 			_undoMgr.Redo();
-			previewForm.Preview.DeSelectSelectedDisplayItem();
 		}
 
 		private void redoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
 		{
 			_undoMgr.Redo(e.NumItems);
-			previewForm.Preview.DeSelectSelectedDisplayItem();
 		}
 
 		private void _undoMgr_UndoItemsChanged(object sender, EventArgs e)

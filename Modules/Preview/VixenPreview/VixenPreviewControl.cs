@@ -1574,6 +1574,8 @@ namespace VixenModules.Preview.VixenPreview
 				// Swap the element's Display data with the saved data from before the move, so we can restore them later in redo.
 				Resize_MoveSwapPlaces(e.Key, e.Value);
 				e.Key.Shape.ZoomLevel = ZoomLevel;
+				if (_selectedDisplayItem != null)
+				propertiesForm.ShowSetupControl(_selectedDisplayItem.Shape.GetSetupControl());
 			}
 		}
 
