@@ -230,7 +230,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return _bottomRight.Y;
-            }
+			}
         }
 
         public override int Right
@@ -238,7 +238,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return _bottomRight.X;
-            }
+			}
         }
 
 		public override int Top

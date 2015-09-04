@@ -143,7 +143,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //    r = Math.Min(r, p.X);
                 //}
                 //return r;
-            }
+			}
         }
 
         [Browsable(false)]
@@ -163,7 +163,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 //    b = Math.Min(b, p.Y);
                 //}
                 //return b;
-            }
+			}
         }
 
         public override int Top

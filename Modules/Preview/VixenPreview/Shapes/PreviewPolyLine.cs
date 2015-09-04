@@ -207,7 +207,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     xMax = Math.Max(xMax, p.X);
                 }
                 return xMax;
-            }
+			}
         }
 
         public override int Bottom
@@ -220,7 +220,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     yMax = Math.Max(yMax, p.Y);
                 }
                 return yMax;
-            }
+			}
         }
 
         public void AddPoint(PreviewPoint point)

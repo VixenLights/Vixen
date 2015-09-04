@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {

@@ -103,7 +103,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [Browsable(false)]
         public abstract int Right { get; }
 
-        public abstract void Match(PreviewBaseShape matchShape);
+		public abstract void Match(PreviewBaseShape matchShape);
 
 		public abstract void Layout();
 

@@ -98,22 +98,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-        public override int Right
-        {
-            get
-            {
-                return _topRight.X;
-            }
-        }
-
-        public override int Bottom
-        {
-            get
-            {
-                return _bottomRight.Y;
-            }
-        }
-
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
 		 DescriptionAttribute("Star Bursts are defined by 2 points. This is point 1.")]
@@ -304,6 +288,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 Layout();
             }
         }
+
+
+		public override int Right
+		{
+			get
+			{
+				return _topRight.X;
+			}
+		}
+
+		public override int Bottom
+		{
+			get
+			{
+				return _bottomRight.Y;
+			}
+		}
+
 
         public override void Match(PreviewBaseShape matchShape)
         {

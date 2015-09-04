@@ -5,7 +5,9 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using Common.Controls;
 using Vixen.Sys;
+using VixenModules.Editor.VixenPreviewSetup3.Undo;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -144,7 +146,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_points[0].Y, _points[1].Y);
-            }
+			}
         }
 
         public override int Top
@@ -153,22 +155,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].Y, _points[1].Y));
             }
-            set
-            {
-                if (_points[0].Y < _points[1].Y)
-                {
-                    int delta = _points[0].Y - value;
-                    _points[0].Y = value;
-                    _points[1].Y -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].Y - value;
-                    _points[0].Y -= delta;
-                    _points[1].Y = value;
-                }
-                Layout();
-            }
+	        set
+	        {
+		        if (_points[0].Y < _points[1].Y)
+		        {
+			        _points[0].Y = value;
+		        }
+		        else
+		        {
+			        _points[1].Y = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override int Right
@@ -176,7 +174,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_points[0].X, _points[1].X);
-            }
+			}
         }
 
         public override int Left
@@ -185,22 +183,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].X, _points[1].X));
             }
-            set
-            {
-                if (_points[0].X < _points[1].X)
-                {
-                    int delta = _points[0].X - value;
-                    _points[0].X = value;
-                    _points[1].X -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].X - value;
-                    _points[0].X -= delta;
-                    _points[1].X = value;
-                }
-                Layout();
-            }
+	        set
+	        {
+		        if (_points[0].X < _points[1].X)
+		        {
+			        _points[0].X = value;
+		        }
+		        else
+		        {
+			        _points[1].X = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override void Match(PreviewBaseShape matchShape)

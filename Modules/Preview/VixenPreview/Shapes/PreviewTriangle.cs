@@ -246,7 +246,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_point1.Y, Math.Max(_point2.Y, _point3.Y));
-            }
+			}
         }
 
         public override int Right
@@ -254,7 +254,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return Math.Max(_point2.X, Point3.X);
-            }
+			}
         }
 
         public override int Left

@@ -1,39 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using Common.Controls;
 using Common.Controls.Theme;
-using Vixen.Execution.Context;
-using Vixen.Module.Preview;
-using Vixen.Data.Value;
-using Vixen.Sys;
+using Common.Resources;
 using System.IO;
+using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
-using System.Windows.Forms.Design;
 using Common.Resources.Properties;
 using Button = System.Windows.Forms.Button;
-using ComboBox = System.Windows.Forms.ComboBox;
 using Control = System.Windows.Forms.Control;
-using Label = System.Windows.Controls.Label;
-using TextBox = System.Windows.Forms.TextBox;
 
 namespace VixenModules.Preview.VixenPreview {
     public partial class VixenPreviewSetup3 : Form
     {
         private VixenPreviewData _data;
-		private VixenPreviewSetupDocument previewForm;
+		public static VixenPreviewSetupDocument previewForm;
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public static string DrawShape;
+		// Undo manager
+		private UndoManager _undoMgr;
+
+		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
 		public VixenPreviewData Data {
 			set {
@@ -71,16 +64,26 @@ namespace VixenModules.Preview.VixenPreview {
 			label13.ForeColor = Color.Yellow;
 
 			this.ShowInTaskbar = false;
-		}
+		    undoButton.Image = Tools.GetIcon(Resources.arrow_undo, 24);
+		    undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+		    redoButton.Image = Tools.GetIcon(Resources.arrow_redo, 24);
+		    redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+		    redoButton.ButtonType = UndoButtonType.RedoButton;
 
-		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
+			undoToolStripMenuItem.Enabled = false;
+			redoToolStripMenuItem.Enabled = false;
+
+	    }
+
+	    private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
 			previewForm = new VixenPreviewSetupDocument();
 			if (!DesignMode && previewForm != null)
 				previewForm.Preview.Data = _data;
 			previewForm.Preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
 
-            previewForm.Preview.OnChangeZoomLevel += VixenPreviewSetup3_ChangeZoomLevel;
+			previewForm.Preview.OnChangeZoomLevel += VixenPreviewSetup3_ChangeZoomLevel;
+			PreviewItemsAlignNew += vixenpreviewControl_PreviewItemsAlignNew;
 
 			elementsForm = new VixenPreviewSetupElementsDocument(previewForm.Preview);
 			propertiesForm = new VixenPreviewSetupPropertiesDocument();
@@ -117,6 +120,20 @@ namespace VixenModules.Preview.VixenPreview {
             {
                 trackerZoom.Maximum = 200;
             }
+			InitUndo();
+		}
+
+		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
+			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
+			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
+			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
+			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
+			_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
+			_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
+			undoButton.ItemChosen -= undoButton_ItemChosen;
+			redoButton.ItemChosen -= redoButton_ItemChosen;
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -140,7 +157,6 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
 			propertiesForm.ShowSetupControl(null);
-			reenableToolButtons();
 		}
 
 		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
@@ -149,77 +165,11 @@ namespace VixenModules.Preview.VixenPreview {
 			if (setupControl != null) {
 				propertiesForm.ShowSetupControl(setupControl);
 			}
-			reenableToolButtons();
 		}
 
         private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
         {
             SetZoomTextAndTracker(zoomLevel);
-        }
-
-        private void EnableButton(Control.ControlCollection parent, VixenPreviewControl.Tools tool)
-        {
-            if (parent != null)
-            {
-                foreach (Control c in parent)
-                {
-                    if (c is Button && c.Tag != null && c.Tag.ToString() != "")
-                    {
-                        Button button = c as Button;
-                        if (c.Tag.ToString() == previewForm.Preview.CurrentTool.ToString())
-                        {
-                            button.BackColor = Color.Gainsboro;
-                            button.FlatAppearance.BorderColor = button.BackColor;
-                        }
-                        else
-                        {
-                            button.BackColor = Color.White;
-                            button.FlatAppearance.BorderColor = button.BackColor;
-                        }
-                    }
-                    EnableButton(c.Controls, tool);
-                }
-            }
-        }
-
-		private void reenableToolButtons()
-		{
-            EnableButton(this.Controls, previewForm.Preview.CurrentTool);
-
-            //buttonSelect.BackColor = Color.White;
-            //buttonSelect.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonCane.BackColor = buttonSelect.BackColor;
-            //buttonCane.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonDrawPixel.BackColor = buttonSelect.BackColor;
-            //buttonDrawPixel.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonLine.BackColor = buttonSelect.BackColor;
-            //buttonLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonSemiCircle.BackColor = buttonSelect.BackColor;
-            //buttonSemiCircle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonRectangle.BackColor = buttonSelect.BackColor;
-            //buttonRectangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonEllipse.BackColor = buttonSelect.BackColor;
-            //buttonEllipse.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonTriangle.BackColor = buttonSelect.BackColor;
-            //buttonTriangle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonNet.BackColor = buttonSelect.BackColor;
-            //buttonNet.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            ////buttonFlood.BackColor = buttonSelect.BackColor;
-            ////buttonFlood.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonStar.BackColor = buttonSelect.BackColor;
-            //buttonStar.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonStarBurst.BackColor = buttonSelect.BackColor;
-            //buttonStarBurst.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonMegaTree.BackColor = buttonSelect.BackColor;
-            //buttonMegaTree.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonPixelGrid.BackColor = buttonSelect.BackColor;
-            //buttonPixelGrid.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonIcicle.BackColor = buttonSelect.BackColor;
-            //buttonIcicle.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonPolyLine.BackColor = buttonSelect.BackColor;
-            //buttonPolyLine.FlatAppearance.BorderColor = buttonSelect.BackColor;
-            //buttonMultiString.BackColor = buttonSelect.BackColor;
-            //buttonMultiString.FlatAppearance.BorderColor = buttonSelect.BackColor;
         }
 
 	    private void toolbarButton_Click(object sender, EventArgs e)
@@ -313,15 +263,12 @@ namespace VixenModules.Preview.VixenPreview {
 				DrawShape = "Multi String";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
 			}
-			//button.Enabled = false;
-			//button.BackColor = Color.Gainsboro;
-			//button.FlatAppearance.BorderColor = Color.Gainsboro;
-			//buttonSelect.Focus();
-            reenableToolButtons();
         }
 
         private void toolbarAlignButton_Click(object sender, EventArgs e)
         {
+			VixenPreviewControl.modifyType = "Move";
+			previewForm.Preview.beginResize_Move(true); //Starts the Undo Process
             Button button = sender as Button;
             if (button == buttonAlignBottom)
             {
@@ -359,7 +306,17 @@ namespace VixenModules.Preview.VixenPreview {
             {
                 previewForm.Preview.MatchProperties();
             }
+
+			PreviewItemsAlignNew(this, new PreviewItemMoveEventArgs(previewForm.Preview.m_previewItemResizeMoveInfo));
+			previewForm.Preview.m_previewItemResizeMoveInfo = null;
         }
+
+		public void vixenpreviewControl_PreviewItemsAlignNew(object sender, PreviewItemMoveEventArgs e)
+		{
+			var action = new PreviewItemsMoveUndoAction(previewForm.Preview, e.PreviousMove);
+			_undoMgr.AddUndoAction(action);
+		}
+
 
         private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
@@ -574,6 +531,81 @@ namespace VixenModules.Preview.VixenPreview {
             trackerZoom.Invalidate();
         }
 
+		#region Undo/Redo Control
+
+		private void InitUndo()
+		{
+			_undoMgr = new UndoManager();
+			_undoMgr.UndoItemsChanged += _undoMgr_UndoItemsChanged;
+			_undoMgr.RedoItemsChanged += _undoMgr_RedoItemsChanged;
+
+			undoButton.Enabled = false;
+			undoButton.ItemChosen += undoButton_ItemChosen;
+
+			redoButton.Enabled = false;
+			redoButton.ItemChosen += redoButton_ItemChosen;
+			previewForm.Preview.UndoManager = _undoMgr;
+		}
+
+		private void undoButton_ButtonClick(object sender, EventArgs e)
+		{
+			_undoMgr.Undo();
+		}
+
+		private void undoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
+		{
+			_undoMgr.Undo(e.NumItems);
+		}
+
+		private void redoButton_ButtonClick(object sender, EventArgs e)
+		{
+			_undoMgr.Redo();
+		}
+
+		private void redoButton_ItemChosen(object sender, UndoMultipleItemsEventArgs e)
+		{
+			_undoMgr.Redo(e.NumItems);
+		}
+
+		private void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
+		{
+			
+			if (_undoMgr.NumUndoable == 0)
+			{
+				undoButton.Enabled = false;
+				undoToolStripMenuItem.Enabled = false;
+				return;
+			}
+
+			undoButton.Enabled = true;
+			undoToolStripMenuItem.Enabled = true;
+			undoButton.UndoItems.Clear();
+			foreach (var act in _undoMgr.UndoActions)
+			{
+				undoButton.UndoItems.Add(act.Description);
+			}
+		}
+
+	    private void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
+	    {
+		    if (_undoMgr.NumRedoable == 0)
+		    {
+				redoButton.Enabled = false;
+				redoToolStripMenuItem.Enabled = false;
+			    return;
+		    }
+
+			redoButton.Enabled = true;
+			redoToolStripMenuItem.Enabled = true;
+		    redoButton.UndoItems.Clear();
+		    foreach (var act in _undoMgr.RedoActions)
+		    {
+				redoButton.UndoItems.Add(act.Description);
+			}
+		}
+		#endregion
+
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;
@@ -609,5 +641,30 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
+
 	}
+
+
+	public class PreviewItemMoveEventArgs : EventArgs
+	{
+		public PreviewItemMoveEventArgs(VixenPreviewControl.PreviewItemResizeMoveInfo info)
+		{
+			if (info != null)
+				PreviousMove = info.OriginalPreviewItem;
+		}
+
+		public Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> PreviousMove { get; private set; }
+	}
+
+	public class PreviewItemResizingEventArgs : EventArgs
+	{
+		public PreviewItemResizingEventArgs(VixenPreviewControl.PreviewItemResizeMoveInfo info)
+		{
+			if (info != null)
+				PreviousSize = info.OriginalPreviewItem;
+		}
+
+		public Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> PreviousSize { get; private set; }
+	}
+
 }

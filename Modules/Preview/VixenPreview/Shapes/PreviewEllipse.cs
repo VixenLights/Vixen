@@ -127,22 +127,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_topLeft.Y, _bottomRight.Y));
             }
-            set
-            {
-                int delta = Top - value;
-                if (_topLeft.Y == Top)
-                {
-                    _topLeft.Y = value;
-                    _bottomRight.Y -= delta;
-                }
-                else
-                {
-                    _topLeft.Y -= delta;
-                    _bottomRight.Y = value;
-                }
-                Layout();
-            }
-        }
+			set
+			{
+				int delta = Top - value;
+				if (_topLeft.Y == Top)
+				{
+					_topLeft.Y = value;
+					_bottomRight.Y -= delta;
+				}
+				else
+				{
+					_topLeft.Y -= delta;
+					_bottomRight.Y = value;
+				}
+
+				Layout();
+			}
+		}
 
 		public override int Left
 		{
@@ -150,21 +151,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_topLeft.X, _bottomRight.X));
             }
-			set 
-            {
-                int delta = Left - value;
-                if (_topLeft.X == Left)
-                {
-                    _topLeft.X = value;
-                    _bottomRight.X -= delta;
-                }
-                else
-                {
-                    _topLeft.X -= delta;
-                    _bottomRight.X = value;
-                }
-                Layout();
-            }
+			set
+			{
+				int delta = Left - value;
+				if (_topLeft.X == Left)
+				{
+					_topLeft.X = value;
+					_bottomRight.X -= delta;
+				}
+				else
+				{
+					_topLeft.X -= delta;
+					_bottomRight.X = value;
+				}
+				_topLeft.X = value;
+
+				Layout();
+			}
 		}
 
         public override int Right
@@ -180,7 +183,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_topLeft.Y, _bottomRight.Y));
-            }
+			}
         }
 
         public override void Match(PreviewBaseShape matchShape)

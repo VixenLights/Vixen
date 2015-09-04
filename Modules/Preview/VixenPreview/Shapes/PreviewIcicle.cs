@@ -200,22 +200,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].Y, _points[1].Y));
             }
-            set
-            {
-                if (_points[0].Y < _points[1].Y)
-                {
-                    int delta = _points[0].Y - value;
-                    _points[0].Y = value;
-                    _points[1].Y -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].Y - value;
-                    _points[0].Y -= delta;
-                    _points[1].Y = value;
-                }
-                Layout();
-            }
+	        set
+	        {
+		        if (_points[0].Y < _points[1].Y)
+		        {
+			        int delta = _points[0].Y - value;
+			        _points[0].Y = value;
+			        _points[1].Y -= delta;
+		        }
+		        else
+		        {
+			        int delta = _points[1].Y - value;
+			        _points[0].Y -= delta;
+			        _points[1].Y = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override int Left
@@ -224,22 +224,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 return (Math.Min(_points[0].X, _points[1].X));
             }
-            set
-            {
-                if (_points[0].X < _points[1].X)
-                {
-                    int delta = _points[0].X - value;
-                    _points[0].X = value;
-                    _points[1].X -= delta;
-                }
-                else
-                {
-                    int delta = _points[1].X - value;
-                    _points[0].X -= delta;
-                    _points[1].X = value;
-                }
-                Layout();
-            }
+	        set
+	        {
+		        if (_points[0].X < _points[1].X)
+		        {
+			        int delta = _points[0].X - value;
+			        _points[0].X = value;
+			        _points[1].X -= delta;
+		        }
+		        else
+		        {
+			        int delta = _points[1].X - value;
+			        _points[0].X -= delta;
+			        _points[1].X = value;
+		        }
+		        Layout();
+	        }
         }
 
         public override int Right
@@ -247,7 +247,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_points[0].X, _points[1].X));
-            }
+			}
         }
 
         public override int Bottom
@@ -255,7 +255,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return (Math.Max(_points[0].Y, _points[1].Y));
-            }
+			}
         }
 
         public void AddPoint(PreviewPoint point)

@@ -145,7 +145,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     x = Math.Min(x, shape.Right);
                 }
                 return x;
-            }
+			}
         }
 
         public override int Bottom
@@ -158,7 +158,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     x = Math.Max(x, shape.Bottom);
                 }
                 return x;
-            }
+			}
         }
         
         public override void Match(PreviewBaseShape matchShape)

@@ -224,7 +224,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return _bottomRight.X; ;
-            }
+			}
         }
 
         public override int Bottom
@@ -232,7 +232,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get
             {
                 return _bottomRight.Y;
-            }
+			}
         }
 
 		public PreviewPoint BottomRight

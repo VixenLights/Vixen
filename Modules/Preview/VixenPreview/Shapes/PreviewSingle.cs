@@ -100,7 +100,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get 
             {
                 return p1.X;
-            }
+			}
         }
 
         public override int Bottom
@@ -108,7 +108,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             get 
             { 
                 return p1.Y;
-            }
+			}
         }
 
         public override void Match(PreviewBaseShape matchShape)
