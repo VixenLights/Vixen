@@ -22,8 +22,9 @@ namespace VixenModules.Effect.LipSync
 
         public LipSyncData()
         {
+	        LyricData = string.Empty;
             StaticPhoneme = PhonemeType.REST;
-            PhonemeMapping = "";
+            PhonemeMapping = string.Empty;
         }
 
         public override IModuleDataModel Clone()
