@@ -1175,6 +1175,7 @@ namespace VixenModules.Preview.VixenPreview
 						PreviewItemAddAction();
 						(_selectedDisplayItem.Shape as PreviewPolyLine).EndCreation();
 						OnSelectDisplayItem(this, _selectedDisplayItem);
+						DeSelectSelectedDisplayItem();
 						ResetMouse();
 					}
 					else if (_selectedDisplayItem.Shape is PreviewMultiString && _selectedDisplayItem.Shape.Creating)
@@ -1182,6 +1183,7 @@ namespace VixenModules.Preview.VixenPreview
 						PreviewItemAddAction();
 						(_selectedDisplayItem.Shape as PreviewMultiString).EndCreation();
 						OnSelectDisplayItem(this, _selectedDisplayItem);
+						DeSelectSelectedDisplayItem();
 						ResetMouse();
 					}
 					else
