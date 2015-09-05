@@ -71,28 +71,32 @@ namespace VixenModules.SequenceType.Vixen2x
 			ProfileName = root.Element("Profile").Value;
 			}
 
-			//If NO profile is set, parse channels from sequence (since the profile is flattened into 
-			if (String.IsNullOrEmpty(ProfileName))
+			//If in a rare case a profile name is set AND we have channels, discard the profile name so the import will use the sequence channel data
+			if (!String.IsNullOrEmpty(ProfileName) && root.Element("Channels").HasElements)
 			{
-				foreach (XElement e in root.Elements("Channels").Elements("Channel"))
-				{
-					XAttribute nameAttrib = e.Attribute("name");
-					XAttribute colorAttrib = e.Attribute("color");
+				ProfileName = string.Empty;
+			}
 
-					//This exists in the 2.5.x versions of Vixen
-					//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
-					if (nameAttrib != null)
-					{
-						CreateMappingList(e, 2);
-					}
-					//This exists in the older versions
-					//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
-					else if (colorAttrib != null)
-					{
-						CreateMappingList(e, 1);
-					}
+
+			foreach (XElement e in root.Elements("Channels").Elements("Channel"))
+			{
+				XAttribute nameAttrib = e.Attribute("name");
+				XAttribute colorAttrib = e.Attribute("color");
+				
+				//This exists in the 2.5.x versions of Vixen
+				//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
+				if (nameAttrib != null)
+				{
+					CreateMappingList(e, 2);
+				}
+				//This exists in the older versions
+				//<Channel color="-262330" output="0" id="633580705216250000" enabled="True">FenceIcicles-1</Channel>
+				else if (colorAttrib != null)
+				{
+					CreateMappingList(e, 1);
 				}
 			}
+
 
 			if (!String.IsNullOrEmpty(SongFileName))
 				MessageBox.Show(
