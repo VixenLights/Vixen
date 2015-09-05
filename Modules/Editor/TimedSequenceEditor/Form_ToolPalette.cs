@@ -349,7 +349,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			using (ColorPicker cp = new ColorPicker())
 			{
-				cp.LockValue_V = true;
+				cp.LockValue_V = false;
 				cp.Color = XYZ.FromRGB((Color)listViewColors.SelectedItems[0].Tag);
 				DialogResult result = cp.ShowDialog();
 				if (result != DialogResult.OK) return;
@@ -370,7 +370,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			using (ColorPicker cp = new ColorPicker())
 			{
-				cp.LockValue_V = true;
+				cp.LockValue_V = false;
 				cp.Color = XYZ.FromRGB(Color.White);
 				DialogResult result = cp.ShowDialog();
 				if (result != DialogResult.OK) return;

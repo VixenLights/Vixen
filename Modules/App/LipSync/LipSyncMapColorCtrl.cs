@@ -162,7 +162,7 @@ namespace VixenModules.App.LipSyncApp
             {
                 using (ColorPicker cp = new ColorPicker())
                 {
-                    cp.LockValue_V = true;
+                    cp.LockValue_V = false;
                     cp.Color = XYZ.FromRGB(Color);
                     DialogResult result = cp.ShowDialog();
                     if (result == DialogResult.OK)

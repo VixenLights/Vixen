@@ -183,7 +183,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			using (ColorPicker cp = new ColorPicker())
 			{
-				cp.LockValue_V = true;
+				cp.LockValue_V = false;
 				cp.Color = XYZ.FromRGB(_colorValue);
 				cp.StartPosition = FormStartPosition.Manual;
 				cp.Top = Top;
