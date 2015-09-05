@@ -884,7 +884,7 @@ namespace VixenModules.App.ColorGradients
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 
 			//Sample the colors out for more accuracy
-			for (double d = start; d < end; d += .1d)
+			for (double d = start; d < end; d += .2d)
 			{
 				var c = GetColorAt(d);
 				double scaledPos = (d - start) / range;
