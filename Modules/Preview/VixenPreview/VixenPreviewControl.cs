@@ -1503,7 +1503,7 @@ namespace VixenModules.Preview.VixenPreview
 					item.Shape.Left -= deltaX;
 					item.Shape.Top -= deltaY;
 				}
-				StartMove(moveToPoint.X, moveToPoint.Y);
+				StartMove(mousePoint.X, mousePoint.Y);
 			}
 		}
 
