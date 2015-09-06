@@ -3447,7 +3447,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 4);
 		}
 
-		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element)
+		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element, string type)
 		{
 			if (elementValues.Any())
 			{
@@ -3456,7 +3456,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.ClearSelectedElements();
 				TimelineControl.SelectElement(element);
 				UpdateToolStrip4(
-					string.Format("Gradient applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName), 30);
+					string.Format("{2} applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
 			}
 		}
 
@@ -3571,7 +3571,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Color");
 			
 		}
 
@@ -3674,7 +3674,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Curve");
 			
 		}
 
@@ -3819,7 +3819,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Gradient");
 
 		}
 
