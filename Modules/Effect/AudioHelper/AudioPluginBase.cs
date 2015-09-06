@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.ComponentModel;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -21,7 +22,6 @@ using Vixen.Execution;
 using Vixen.Execution.Context;
 using VixenModules.Effect.AudioHelp;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using Vixen.Attributes;
 
@@ -32,6 +32,7 @@ namespace VixenModules.Effect.AudioHelp
 
     public abstract class AudioPluginBase : EffectModuleInstanceBase
     {
+
         protected IAudioPluginData _data;
         protected EffectIntents _elementData = null;
         protected AudioHelper _audioHelper;
@@ -46,8 +47,10 @@ namespace VixenModules.Effect.AudioHelp
         #region Attribute Accessors
 
         [Value]
+        [ProviderCategory(@"Audio Sensitivity Range")]
         [ProviderDisplayName(@"Low Pass Filter")]
         [ProviderDescription(@"Ignores frequencies below a given frequency")]
+        [PropertyOrder(1)]
         public bool LowPass
         {
             get { return _data.LowPass; }
@@ -59,10 +62,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [PropertyEditor("SliderEditor")]
+        [ProviderCategory(@"Audio Sensitivity Range")]
         [ProviderDisplayName(@"Low Pass Frequency")]
         [ProviderDescription(@"Ignore frequencies below this value")]
-        [NumberRange(30,15000,1)]
+        [PropertyOrder(2)]
         public int lowPassFreq
         {
             get { return _data.LowPassFreq; }
@@ -74,8 +77,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
+        [ProviderCategory(@"Audio Sensitivity Range")]
         [ProviderDisplayName(@"High Pass Filter")]
         [ProviderDescription(@"Ignores frequencies above a given frequency")]
+        [PropertyOrder(3)]
         public bool highPass
         {
             get { return _data.HighPass; }
@@ -88,10 +93,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [PropertyEditor("SliderEditor")]
+        [ProviderCategory(@"Audio Sensitivity Range")]
         [ProviderDisplayName(@"High Pass Frequency")]
         [ProviderDescription(@"Ignore frequencies above this value")]
-        [NumberRange(30, 15000, 1)]
+        [PropertyOrder(4)]
         public int highPassFreq
         {
             get { return _data.HighPassFreq; }
@@ -104,61 +109,12 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Speed", 1)]
-        [ProviderDisplayName(@"Decay Time")]
-        [ProviderDescription(@"How quickly the meter falls from a volume peak")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 5000, 300)]
-        [PropertyOrder(2)]
-        public int DecayTime
-        {
-            get { return _data.DecayTime; }
-            set
-            {
-                _data.DecayTime = value;
-                _audioHelper.DecayTime = value;
-                IsDirty = true;
-            }
-        }
-
-        [Value]
-        [ProviderCategory(@"Speed", 1)]
-        [ProviderDisplayName(@"Attack Time")]
-        [ProviderDescription(@"How quickly the meter initially reacts to a volume peak")]
-        [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 300, 10)]
-        [PropertyOrder(3)]
-        public int AttackTime
-        {
-            get { return _data.AttackTime; }
-            set
-            {
-                _data.AttackTime = value;
-                _audioHelper.AttackTime = value;
-                IsDirty = true;
-            }
-        }
-
-        [Value]
-        [ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the meter")]
-        public bool Normalize
-        {
-            get { return _data.Normalize; }
-            set
-            {
-                _audioHelper.Normalize = value;
-                _data.Normalize = value;
-                IsDirty = true;
-            }
-        }
-
-        [Value]
-        [ProviderCategory(@"Speed", 1)]
+        [ProviderCategory(@"Audio Sensitivity Range")]
+        [PropertyOrder(5)]
         [ProviderDisplayName(@"Gain")]
         [ProviderDescription(@"Boosts the volume")]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 50, .5)]
-        [PropertyOrder(1)]
+        [NumberRange(0, 100, .5)]
         public int Gain
         {
             get { return _data.Gain; }
@@ -171,12 +127,12 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Speed", 1)]
+        [ProviderCategory(@"Audio Sensitivity Range")]
+        [PropertyOrder(6)]
         [ProviderDisplayName(@"Range")]
         [ProviderDescription(@"The range of the volume levels displayed by the meter")]
         [PropertyEditor("SliderEditor")]
         [NumberRange(0, 50, 1)]
-        [PropertyOrder(0)]
         public int Range
         {
             get { return _data.Range; }
@@ -188,7 +144,75 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color", 1)]
+        [ProviderCategory(@"Audio Sensitivity Range")]
+        [ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the meter")]
+        [PropertyOrder(7)]
+        public bool Normalize
+        {
+            get { return _data.Normalize; }
+            set
+            {
+                _audioHelper.Normalize = value;
+                _data.Normalize = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [ProviderCategory(@"Response Speed")]
+        [PropertyOrder(1)]
+        [ProviderDisplayName(@"Decay Time")]
+        [ProviderDescription(@"How quickly the meter falls from a volume peak")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 5000, 300)]
+        public int DecayTime
+        {
+            get { return _data.DecayTime; }
+            set
+            {
+                _data.DecayTime = value;
+                _audioHelper.DecayTime = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [ProviderCategory(@"Response Speed")]
+        [PropertyOrder(2)]
+        [ProviderDisplayName(@"Attack Time")]
+        [ProviderDescription(@"How quickly the meter initially reacts to a volume peak")]
+        [PropertyEditor("SliderEditor")]
+        [NumberRange(0, 300, 10)]
+        public int AttackTime
+        {
+            get { return _data.AttackTime; }
+            set
+            {
+                _data.AttackTime = value;
+                _audioHelper.AttackTime = value;
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(1)]
+        [ProviderDisplayName(@"Coloring Mode")]
+        [ProviderDescription(@"Coloring Mode")]
+        public MeterColorTypes MeterColorStyle
+        {
+            get { return _data.MeterColorStyle; }
+            set
+            {
+                _data.MeterColorStyle = value;
+                updateColorGradient();
+                IsDirty = true;
+            }
+        }
+
+        [Value]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(2)]
         [ProviderDisplayName(@"Green Gradient Position")]
         [ProviderDescription(@"Green Gradient Position")]
         [PropertyEditor("SliderEditor")]
@@ -205,7 +229,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color", 1)]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(3)]
         [ProviderDisplayName(@"Red Gradient Position")]
         [ProviderDescription(@"Red Gradient Position")]
         [PropertyEditor("SliderEditor")]
@@ -222,7 +247,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color", 1)]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(4)]
         [ProviderDisplayName(@"Custom Gradient")]
         [ProviderDescription(@"Custom Gradient")]
         public ColorGradient MeterColorGradient
@@ -237,7 +263,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color", 1)]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(5)]
         [ProviderDisplayName(@"Intensity Curve")]
         public Curve MeterIntensityCurve
         {
@@ -249,26 +276,10 @@ namespace VixenModules.Effect.AudioHelp
             }
         }
 
-        [Value]
-        [ProviderCategory(@"Color", 1)]
-        [ProviderDisplayName(@"Coloring Style")]
-        [ProviderDescription(@"Coloring Sytle")]
-        public MeterColorTypes MeterColorStyle
-        {
-            get { return _data.MeterColorStyle; }
-            set
-            {
-                _data.MeterColorStyle = value;
-                updateColorGradient();
-                IsDirty = true;
-            }
-        }
-
         #endregion
 
-
         public AudioPluginBase()
-        {}
+        {        }
 
         public Color GetColorAt(double pos)
         {

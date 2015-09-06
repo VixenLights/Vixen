@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Based off the algorithms and pseudo-code in dspguide.com Chapter 20.
+
 namespace VixenModules.Effect.AudioHelp
 {
     public class filterCoefs
@@ -14,14 +16,14 @@ namespace VixenModules.Effect.AudioHelp
 
     class audioFilters
     {
-        public static double[] highPass(int freq, int sampleRate, double[] data)
+        public static double[] highPass(double freq, int sampleRate, double[] data)
         {
             double fc = (double)freq / sampleRate;
             int numOfPoles = 0;
             if (fc <= .02) numOfPoles = 4;
             else if (fc <= .05) numOfPoles = 6;
             else if (fc <= .10) numOfPoles = 10;
-            else if (fc <= .25) numOfPoles = 20;
+            else if (fc <= .25) numOfPoles = 18;
             else if (fc <= .40) numOfPoles = 10;
             else if (fc <= .45) numOfPoles = 6;
             else numOfPoles = 4;
@@ -70,14 +72,14 @@ namespace VixenModules.Effect.AudioHelp
             return ret;
         }
 
-        public static double[] lowPass(int freq, int sampleRate, double[] data)
+        public static double[] lowPass(double freq, int sampleRate, double[] data)
         {
             double fc = (double)freq / sampleRate;
             int numOfPoles = 0;
             if (fc <= .02) numOfPoles = 4;
             else if (fc <= .05) numOfPoles = 6;
             else if (fc <= .10) numOfPoles = 10;
-            else if (fc <= .25) numOfPoles = 20;
+            else if (fc <= .25) numOfPoles = 18;
             else if (fc <= .40) numOfPoles = 10;
             else if (fc <= .45) numOfPoles = 6;
             else numOfPoles = 4;

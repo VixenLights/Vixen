@@ -76,8 +76,8 @@ namespace VixenModules.Effect.VUMeter
                         if (GradientPosition2 >= 1)
                             GradientPosition2 = .999;
 
-                        color1 = new LightingValue(GetColorAt(GradientPosition1));
-                        color2 = new LightingValue(GetColorAt(GradientPosition2));
+                        color1 = new LightingValue(GetColorAt(GradientPosition1), MeterIntensityCurve.GetValue(GradientPosition1 * 100) / 100);
+                        color2 = new LightingValue(GetColorAt(GradientPosition2), MeterIntensityCurve.GetValue(GradientPosition2 * 100) / 100);
 
                         TimeSpan startTime = TimeSpan.FromMilliseconds(i * spacing);
                         TimeSpan endTime = TimeSpan.FromMilliseconds((i + 1) * spacing);

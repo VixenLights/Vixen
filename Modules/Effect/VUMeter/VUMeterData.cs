@@ -44,6 +44,9 @@ namespace VixenModules.Effect.VUMeter
         public MeterColorTypes MeterColorStyle {get; set;}
 
         [DataMember]
+        public Curve IntensityCurve { get; set; }
+
+        [DataMember]
         public bool LowPass { get; set; }
 
         [DataMember]
@@ -64,18 +67,30 @@ namespace VixenModules.Effect.VUMeter
             Range = 10;
             RedColorPosition = 95;
             GreenColorPosition = 25;
-            MeterColorStyle = MeterColorTypes.Linear;
+            MeterColorStyle = MeterColorTypes.Custom;
 
             LowPass = false;
             LowPassFreq = 100;
             HighPass = false;
             HighPassFreq = 500;
 
+            /*
             Color[] myColors = { Color.Lime, Color.Yellow, Color.Red };
             float[] myPositions = { (float)0.00000000000001, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
             ColorBlend linearBlend = new ColorBlend();
             linearBlend.Colors = myColors;
+            linearBlend.Positions = myPositions;*/
+
+            Color[] myColors = { Color.White, Color.White };
+            float[] myPositions = { (float)0.00000000000001, (float)98 / 100 };
+            ColorBlend linearBlend = new ColorBlend();
+            linearBlend.Colors = myColors;
             linearBlend.Positions = myPositions;
+
+            IntensityCurve = new Curve();
+            IntensityCurve.Points.Clear();
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(0, 0));
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(100, 100));
 
             ColorGradient linearGradient = new ColorGradient(linearBlend);
             MeterColorGradient = linearGradient;

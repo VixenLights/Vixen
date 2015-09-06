@@ -32,6 +32,9 @@ namespace VixenModules.Effect.Waveform
 	{
 
         [Value]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(6)]
+        [ProviderDisplayName(@"Reverse")]
         public bool Inverted
         {
             get { return ((WaveformData)_data).Inverted; }
@@ -43,7 +46,7 @@ namespace VixenModules.Effect.Waveform
         }
 
         [Value]
-        [ProviderCategory(@"Speed", 1)]
+        [ProviderCategory(@"Response Speed")]
         [ProviderDisplayName(@"Scroll Speed")]
         [ProviderDescription(@"How fast the effect goes. Lower is faster")]
         [PropertyEditor("SliderEditor")]
@@ -126,8 +129,8 @@ namespace VixenModules.Effect.Waveform
                             if (GradientPosition2 >= 1)
                                 GradientPosition2 = .999;
 
-                            color1 = new LightingValue(GetColorAt(GradientPosition1));
-                            color2 = new LightingValue(GetColorAt(GradientPosition2));
+                            color1 = new LightingValue(GetColorAt(GradientPosition1), MeterIntensityCurve.GetValue(GradientPosition1*100)/100);
+                            color2 = new LightingValue(GetColorAt(GradientPosition2), MeterIntensityCurve.GetValue(GradientPosition2*100)/100);
 
                             IIntent intent = new LightingIntent(color1, color2, TimeSpan.FromMilliseconds(spacing));
 

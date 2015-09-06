@@ -85,6 +85,12 @@ namespace VixenModules.Effect.VerticalMeter
             linearBlend.Positions = myPositions;
 
             ColorGradient linearGradient = new ColorGradient(linearBlend);
+
+            IntensityCurve = new Curve();
+            IntensityCurve.Points.Clear();
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(0, 100));
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(100, 100));
+
             MeterColorGradient = linearGradient;
         }
 

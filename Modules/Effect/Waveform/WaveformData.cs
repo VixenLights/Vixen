@@ -47,6 +47,9 @@ namespace VixenModules.Effect.Waveform
         public ColorGradient MeterColorGradient { get; set; }
 
         [DataMember]
+        public Curve IntensityCurve { get; set; }
+
+        [DataMember]
         public MeterColorTypes MeterColorStyle {get; set;}
 
         [DataMember]
@@ -84,6 +87,11 @@ namespace VixenModules.Effect.Waveform
             ColorBlend linearBlend = new ColorBlend();
             linearBlend.Colors = myColors;
             linearBlend.Positions = myPositions;
+
+            IntensityCurve = new Curve();
+            IntensityCurve.Points.Clear();
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(0, 100));
+            IntensityCurve.Points.Add(new ZedGraph.PointPair(100, 100));
 
             ColorGradient linearGradient = new ColorGradient(linearBlend);
             MeterColorGradient = linearGradient;

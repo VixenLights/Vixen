@@ -74,9 +74,9 @@ namespace VixenModules.Effect.AudioHelp
         public int DecayTime { get; set; }
 
         public bool LowPass { get; set; }
-        public int LowPassFreq { get; set; }
+        public double LowPassFreq { get; set; }
         public bool HighPass { get; set; }
-        public int HighPassFreq { get; set; }
+        public double HighPassFreq { get; set; }
 
         private bool _audioLoaded;
 

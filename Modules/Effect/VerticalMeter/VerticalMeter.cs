@@ -31,6 +31,10 @@ namespace VixenModules.Effect.VerticalMeter
     public class VerticalMeter : AudioPluginBase
     {
 
+        [Value]
+        [ProviderCategory(@"Color")]
+        [PropertyOrder(6)]
+        [ProviderDisplayName(@"Flip")]
         public bool Inverted
         {
             get { return ((VerticalMeterData)_data).Inverted; }
@@ -102,7 +106,8 @@ namespace VixenModules.Effect.VerticalMeter
                         threshold = (((double)currentElement) / ElementCount - 1) * _data.Range;
                         
                     }
-                    color = new LightingValue(GetColorAt(GradientPosition));
+                    color = new LightingValue(GetColorAt(GradientPosition), MeterIntensityCurve.GetValue(GradientPosition*100)/100);
+                   
                     lastValue = _audioHelper.VolumeAtTime(0) >= threshold;
 
                     for(int i = 1;i<(int)(TimeSpan.TotalMilliseconds/spacing);i++)
