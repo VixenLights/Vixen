@@ -3046,17 +3046,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debug.WriteLine("{0}   RemoveEffectNodeAndElement(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 
 			// Lookup this effect node's Timeline Element
-			TimedSequenceElement tse = (TimedSequenceElement)_effectNodeToElement[node];
+			if (_effectNodeToElement.ContainsKey(node))
+			{
+				TimedSequenceElement tse = (TimedSequenceElement) _effectNodeToElement[node];
 
-			foreach (Row row in TimelineControl) // Remove the element from all rows
-				row.RemoveElement(tse);
+				foreach (Row row in TimelineControl) // Remove the element from all rows
+					row.RemoveElement(tse);
 
-			// TODO: Unnecessary?
-			tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
-			tse.TimeChanged -= ElementTimeChangedHandler;
+				// TODO: Unnecessary?
+				tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
+				tse.TimeChanged -= ElementTimeChangedHandler;
 
-			_effectNodeToElement.Remove(node); // Remove the effect node from the map
-			_sequence.RemoveData(node); // Remove the effect node from sequence
+				_effectNodeToElement.Remove(node); // Remove the effect node from the map
+				_sequence.RemoveData(node); // Remove the effect node from sequence
+			}
+			else
+			{
+				MessageBox.Show("Node not found!");
+			}
 		}
 
 
@@ -4071,8 +4078,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					if (cutElements)
 					{
-						row.RemoveElement(elem);
-						_sequence.RemoveData(elem.EffectNode);
+						RemoveEffectNodeAndElement(elem.EffectNode);
+						TimelineControl.grid.ClearSelectedElements();
 						SequenceModified();
 					}
 				}
