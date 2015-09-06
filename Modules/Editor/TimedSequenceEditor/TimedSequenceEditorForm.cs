@@ -3062,7 +3062,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				MessageBox.Show("Node not found!");
+				Logging.Error("Missing node on remove attempt in RemoveEffectNodeAndElement.");
+				MessageBox.Show("Node to remove not found, the editor is  in a bad state! Please close the editor and restart it.");
 			}
 		}
 
