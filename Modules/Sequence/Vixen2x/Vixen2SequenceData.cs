@@ -71,11 +71,18 @@ namespace VixenModules.SequenceType.Vixen2x
 			ProfileName = root.Element("Profile").Value;
 			}
 
+			//If in a rare case a profile name is set AND we have channels, discard the profile name so the import will use the sequence channel data
+			if (!String.IsNullOrEmpty(ProfileName) && root.Element("Channels").HasElements)
+			{
+				ProfileName = string.Empty;
+			}
+
+
 			foreach (XElement e in root.Elements("Channels").Elements("Channel"))
 			{
 				XAttribute nameAttrib = e.Attribute("name");
 				XAttribute colorAttrib = e.Attribute("color");
-
+				
 				//This exists in the 2.5.x versions of Vixen
 				//<Channel name="Mini Tree Red 1" color="-65536" output="0" id="5576725746726704001" enabled="True" />
 				if (nameAttrib != null)
@@ -89,6 +96,7 @@ namespace VixenModules.SequenceType.Vixen2x
 					CreateMappingList(e, 1);
 				}
 			}
+
 
 			if (!String.IsNullOrEmpty(SongFileName))
 				MessageBox.Show(
