@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -19,7 +20,15 @@ namespace VixenModules.Effect.Candle
 			MaxLevel = 1;
 			FlickerFrequencyDeviationCap = 0.25f;
 			ChangePercentageDeviationCap = 0.5f;
+			Color = Color.White;
+			GroupLevel = 1;
 		}
+
+		[DataMember]
+		public Color Color { get; set; }
+
+		[DataMember]
+		public int GroupLevel { get; set; }
 
 		[DataMember]
 		public int FlickerFrequency { get; set; }
@@ -39,6 +48,20 @@ namespace VixenModules.Effect.Candle
 
 		[DataMember]
 		public float ChangePercentageDeviationCap { get; set; }
+
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			//Ensure defaults for new fields that might not be in older effects.
+			if (GroupLevel <= 0)
+			{
+				GroupLevel = 1;
+			}
+			if (Color.IsEmpty)
+			{
+				Color = Color.White;
+			}
+		}
 
 		public override IModuleDataModel Clone()
 		{

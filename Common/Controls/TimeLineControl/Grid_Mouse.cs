@@ -97,28 +97,28 @@ namespace Common.Controls.Timeline
 									SelectElementsBetween(m_lastSingleSelectedElementLocation, gridLocation);
 								}
 							}
-							else
-							{
-								//Unselect everything and make this the new selection
+							//else
+							//{
+							//	//Unselect everything and make this the new selection
 								
-								SupressSelectionEvents = true;
-								ClearSelectedElements();
-								ClearSelectedRows();
-								ClearActiveRows();
-								SupressSelectionEvents = false;
+							//	SupressSelectionEvents = true;
+							//	ClearSelectedElements();
+							//	ClearSelectedRows();
+							//	ClearActiveRows();
+							//	SupressSelectionEvents = false;
 								
-								if (_ElementsSelected(m_mouseDownElements))
-								{
-									foreach (Element element in m_mouseDownElements)
-									{
-										element.Selected = true;
-									}
-									m_lastSingleSelectedElementLocation = gridLocation;
+							//	if (_ElementsSelected(m_mouseDownElements))
+							//	{
+							//		foreach (Element element in m_mouseDownElements)
+							//		{
+							//			element.Selected = true;
+							//		}
+							//		m_lastSingleSelectedElementLocation = gridLocation;
 									
-								}
+							//	}
 
-								_SelectionChanged();
-							}
+							//	_SelectionChanged();
+							//}
 						}
 					}
 					else {
@@ -148,13 +148,13 @@ namespace Common.Controls.Timeline
 								}
 								m_lastSingleSelectedElementLocation = gridLocation;
 								Row row = rowAt(gridLocation);
-								if(row!=null)row.Active = true;
+								if (row != null) row.Active = true;
 								_SelectionChanged();
 							}
-							else if(!CtrlPressed)
+							else if (!CtrlPressed)
 							{
 								_SelectionChanged();
-							}	
+							}
 						}
 						
 					}
@@ -221,16 +221,18 @@ namespace Common.Controls.Timeline
 						endAllDrag();
 						// If we're not dragging on mouse up, it could be a click on one of multiple
 						// selected elements. (In which case we select only that one)
-						//if (m_mouseDownElements != null && m_mouseDownElements.Any()  && !CtrlPressed && !ShiftPressed) {
-						//	ClearSelectedElements();
-						//	if (_ElementsSelected(m_mouseDownElements)) {
-						//		m_mouseDownElements.First().Selected = true;
-						//		m_lastSingleSelectedElementLocation = gridLocation;
-						//		_SelectionChanged();
-						//		Row row = rowAt(gridLocation);
-						//		if(row!=null)row.Active = true;
-						//	}
-						//}
+						if (m_mouseDownElements != null && m_mouseDownElements.Any() && !CtrlPressed && !ShiftPressed)
+						{
+							ClearSelectedElements();
+							if (_ElementsSelected(m_mouseDownElements))
+							{
+								m_mouseDownElements.First().Selected = true;
+								m_lastSingleSelectedElementLocation = gridLocation;
+								_SelectionChanged();
+								Row row = rowAt(gridLocation);
+								if (row != null) row.Active = true;
+							}
+						}
 						if (m_mouseDownElements != null && m_mouseDownElements.Any() && ShiftPressed ||
 							m_mouseDownElements != null && m_mouseDownElements.Any() && CtrlPressed)
 						{

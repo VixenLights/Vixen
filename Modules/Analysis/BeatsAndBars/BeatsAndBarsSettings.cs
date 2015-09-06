@@ -28,7 +28,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			var excludes = new List<Control>();
+			excludes.Add(BarsColorPanel);
+			excludes.Add(BeatCountsColorPanel);
+			excludes.Add(AllColorPanel);
+			excludes.Add(BeatSplitsColorPanel);
+			ThemeUpdateControls.UpdateControls(this, excludes);
 
 			m_allowUpdates = false;
 

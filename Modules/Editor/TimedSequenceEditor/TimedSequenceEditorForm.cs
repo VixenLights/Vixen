@@ -3046,17 +3046,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Debug.WriteLine("{0}   RemoveEffectNodeAndElement(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
 
 			// Lookup this effect node's Timeline Element
-			TimedSequenceElement tse = (TimedSequenceElement)_effectNodeToElement[node];
+			if (_effectNodeToElement.ContainsKey(node))
+			{
+				TimedSequenceElement tse = (TimedSequenceElement) _effectNodeToElement[node];
 
-			foreach (Row row in TimelineControl) // Remove the element from all rows
-				row.RemoveElement(tse);
+				foreach (Row row in TimelineControl) // Remove the element from all rows
+					row.RemoveElement(tse);
 
-			// TODO: Unnecessary?
-			tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
-			tse.TimeChanged -= ElementTimeChangedHandler;
+				// TODO: Unnecessary?
+				tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
+				tse.TimeChanged -= ElementTimeChangedHandler;
 
-			_effectNodeToElement.Remove(node); // Remove the effect node from the map
-			_sequence.RemoveData(node); // Remove the effect node from sequence
+				_effectNodeToElement.Remove(node); // Remove the effect node from the map
+				_sequence.RemoveData(node); // Remove the effect node from sequence
+			}
+			else
+			{
+				Logging.Error("Missing node on remove attempt in RemoveEffectNodeAndElement.");
+				MessageBox.Show("Node to remove not found, the editor is  in a bad state! Please close the editor and restart it.");
+			}
 		}
 
 
@@ -3439,7 +3447,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 4);
 		}
 
-		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element)
+		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element, string type)
 		{
 			if (elementValues.Any())
 			{
@@ -3448,7 +3456,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.ClearSelectedElements();
 				TimelineControl.SelectElement(element);
 				UpdateToolStrip4(
-					string.Format("Gradient applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName), 30);
+					string.Format("{2} applied to {0} {1} effect(s).", elementValues.Count(), element.EffectNode.Effect.EffectName, type), 30);
 			}
 		}
 
@@ -3563,7 +3571,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Color");
 			
 		}
 
@@ -3666,7 +3674,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Curve");
 			
 		}
 
@@ -3811,7 +3819,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 			}
-			CompleteDrop(elementValues, element);
+			CompleteDrop(elementValues, element, "Gradient");
 
 		}
 
@@ -4071,8 +4079,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					if (cutElements)
 					{
-						row.RemoveElement(elem);
-						_sequence.RemoveData(elem.EffectNode);
+						RemoveEffectNodeAndElement(elem.EffectNode);
+						TimelineControl.grid.ClearSelectedElements();
 						SequenceModified();
 					}
 				}

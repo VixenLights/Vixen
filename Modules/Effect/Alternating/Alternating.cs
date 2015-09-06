@@ -128,7 +128,7 @@ namespace VixenModules.Effect.Alternating
 		}
 
 		[Value]
-		[ProviderCategory(@"Config", 10)]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"GroupLevel")]
 		[ProviderDescription(@"GroupLevel")]
 		[NumberRange(1, 5000, 1)]

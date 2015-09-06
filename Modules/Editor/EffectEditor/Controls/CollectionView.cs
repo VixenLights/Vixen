@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,10 +21,18 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void CanExecuteDelete(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
 		{
-			if (canExecuteRoutedEventArgs.Parameter.Equals(PropertyValue))
+			if (canExecuteRoutedEventArgs.Parameter != null)
 			{
-				canExecuteRoutedEventArgs.CanExecute = Items.Count > 1 && SelectedItems.Count > 0;
-				canExecuteRoutedEventArgs.Handled = true;	
+				if (canExecuteRoutedEventArgs.Parameter.Equals(PropertyValue))
+				{
+					canExecuteRoutedEventArgs.CanExecute = Items.Count > 1 && SelectedItems.Count > 0;
+					canExecuteRoutedEventArgs.Handled = true;
+				}
+			}
+			else
+			{
+				canExecuteRoutedEventArgs.CanExecute = false;
+				canExecuteRoutedEventArgs.Handled = true;
 			}
 		}
 
