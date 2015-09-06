@@ -157,15 +157,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 	        set
 	        {
-		        if (_points[0].Y < _points[1].Y)
-		        {
-			        _points[0].Y = value;
-		        }
-		        else
-		        {
-			        _points[1].Y = value;
-		        }
-		        Layout();
+				if (_points[0].Y < _points[1].Y)
+				{
+					int delta = _points[0].Y - value;
+					_points[0].Y = value;
+					_points[1].Y -= delta;
+				}
+				else
+				{
+					int delta = _points[1].Y - value;
+					_points[0].Y -= delta;
+					_points[1].Y = value;
+				}
+				Layout();
 	        }
         }
 
@@ -185,15 +189,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 	        set
 	        {
-		        if (_points[0].X < _points[1].X)
-		        {
-			        _points[0].X = value;
-		        }
-		        else
-		        {
-			        _points[1].X = value;
-		        }
-		        Layout();
+				if (_points[0].X < _points[1].X)
+				{
+					int delta = _points[0].X - value;
+					_points[0].X = value;
+					_points[1].X -= delta;
+				}
+				else
+				{
+					int delta = _points[1].X - value;
+					_points[0].X -= delta;
+					_points[1].X = value;
+				}
+				Layout();
 	        }
         }
 
