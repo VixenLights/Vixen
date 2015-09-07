@@ -15,7 +15,7 @@ namespace Common.Controls
 		private ToolStripControlHost m_toolHost = null;
 		private UndoDropDownControl m_dropControl = null;
 
-		private const int SetWidth = 140;
+		private const int SetWidth = 200;
 		private const int SetHeight = 200;
 
 		public UndoButton()
