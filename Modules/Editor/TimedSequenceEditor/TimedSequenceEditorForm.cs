@@ -3979,15 +3979,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 
 				case Keys.Space:
-					if (!_context.IsRunning)
-						PlaySequence();
-					else
-					{
-						if (_context.IsPaused)
-							PlaySequence();
-						else
-							StopSequence();
-					}
+					HandleSpacebarAction();
 					break;
 
 				case Keys.Left:
@@ -4030,6 +4022,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// This was causing serious slowdowns if random keys were pressed.
 			//e.SuppressKeyPress = true;
 			base.OnKeyDown(e);
+		}
+
+		internal void HandleSpacebarAction()
+		{
+			if (!_context.IsRunning)
+				PlaySequence();
+			else
+			{
+				if (_context.IsPaused)
+					PlaySequence();
+				else
+					StopSequence();
+			}
 		}
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
