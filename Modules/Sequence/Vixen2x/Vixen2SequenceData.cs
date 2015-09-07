@@ -189,17 +189,30 @@ namespace VixenModules.SequenceType.Vixen2x
 
 		private void CreateMappingList(XElement element, int version)
 		{
+			var channelname = string.Empty;
 			//if version == 1 then we have an old profile that we are dealing with so we have
 			//to get the node value for the channel name
-			var channelname = string.Empty;
 			if (version == 1)
 			{
-				channelname = element.FirstNode.ToString();
+				try
+				{
+					channelname = element.FirstNode.ToString();
+				}
+				catch (NullReferenceException)
+				{
+					//do nothing
+				}
 			}
 			//must be version 2.5 so get the channel name from attribute 'name'
 			else if (version == 2)
 			{
-				channelname = element.Attribute("name").Value;
+					channelname = element.Attribute("name").Value;
+			}
+
+			//If for some reason we don't have a channel name, fill one in
+			if (String.IsNullOrEmpty(channelname))
+			{
+				channelname = "Unnamed Output " + element.Attribute("output").Value;
 			}
 
 			mappings.Add(new ChannelMapping(channelname,
