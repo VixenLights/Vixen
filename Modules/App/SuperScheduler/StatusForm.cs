@@ -48,10 +48,33 @@ namespace VixenModules.App.SuperScheduler
 
 		private void StatusForm_Load(object sender, EventArgs e)
 		{
-			Location = SchedulerData.StatusForm_Position;
+			RestoreScreenLocation(SchedulerData.StatusForm_Position);
 			PopulateShowList();
 			CheckButtons();
 		}
+
+		private void RestoreScreenLocation(Point location)
+		{
+			WindowState = FormWindowState.Normal;
+
+			var desktopBounds = new Rectangle(location, Size);
+			if (IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopBounds = desktopBounds;
+			}
+			else
+			{
+				// this resets the upper left corner of the window to windows standards
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+			}
+		}
+
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+		}
+
 
 		private void PopulateShowList()
 		{
