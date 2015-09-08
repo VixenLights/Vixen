@@ -3063,7 +3063,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				Logging.Error("Missing node on remove attempt in RemoveEffectNodeAndElement.");
-				MessageBox.Show("Node to remove not found, the editor is  in a bad state! Please close the editor and restart it.");
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("Node to remove not found, the editor is in a bad state! Please close the editor and restart it.", "Error", false, false);
+				messageBox.ShowDialog();
 			}
 		}
 
