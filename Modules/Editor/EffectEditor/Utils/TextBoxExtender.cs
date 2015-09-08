@@ -25,6 +25,53 @@ namespace VixenModules.Editor.EffectEditor.Utils
 	/// </summary>
 	public static class TextBoxExtender
 	{
+
+		#region CommitOnFocusLost
+
+		/// <summary>
+		/// </summary>
+		public static readonly DependencyProperty CommitOnFocusLostProperty = DependencyProperty.RegisterAttached(
+			"CommitOnFocusLost", typeof(bool), typeof(TextBoxExtender),
+			new FrameworkPropertyMetadata(false, OnCommitOnFocusLostChanged));
+
+		private static void OnCommitOnFocusLostChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
+
+			var wasBound = (bool)(e.OldValue);
+			var needToBind = (bool)(e.NewValue);
+
+			if (wasBound)
+				textbox.LostFocus -= TextBoxFocusLostCommitValue;
+
+			if (needToBind)
+				textbox.LostFocus += TextBoxFocusLostCommitValue;
+		}
+
+		private static void TextBoxFocusLostCommitValue(object sender, RoutedEventArgs e)
+		{
+			var textbox = sender as TextBox;
+			if (textbox == null) return;
+
+			var expression = textbox.GetBindingExpression(TextBox.TextProperty);
+			if (expression != null) expression.UpdateSource();
+			e.Handled = true;
+			
+		}
+
+		public static void SetCommitOnFocusLost(TextBox target, bool value)
+		{
+			target.SetValue(CommitOnFocusLostProperty, value);
+		}
+
+		public static bool GetCommitOnFocusLost(TextBox target)
+		{
+			return (bool)target.GetValue(CommitOnFocusLostProperty);
+		}
+
+		#endregion
+
 		#region CommitOnEnter
 
 		/// <summary>

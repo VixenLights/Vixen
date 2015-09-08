@@ -62,6 +62,7 @@
 					<DataTemplate>
 						<TextBox Margin="2 7 7 5" Text="{Binding StringValue, Mode=TwoWay,UpdateSourceTrigger=Explicit}" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"
 								 utils:TextBoxExtender.CommitOnEnter="true"
+								 utils:TextBoxExtender.CommitOnFocusLost="true"
 								 utils:TextBoxExtender.RollbackOnEscape="true"
 			                     utils:TextBoxExtender.CommitOnTyping="false" />
 					</DataTemplate>
