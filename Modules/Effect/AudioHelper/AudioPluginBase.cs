@@ -114,14 +114,14 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDisplayName(@"Gain")]
         [ProviderDescription(@"Boosts the volume")]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 100, .5)]
+        [NumberRange(0, 200, .5)]
         public int Gain
         {
-            get { return _data.Gain; }
+            get { return _data.Gain*10; }
             set
             {
-                _data.Gain = value;
-                _audioHelper.Gain = value;
+                _data.Gain = value/10;
+                _audioHelper.Gain = value/10;
                 IsDirty = true;
             }
         }
@@ -129,16 +129,16 @@ namespace VixenModules.Effect.AudioHelp
         [Value]
         [ProviderCategory(@"Audio Sensitivity Range")]
         [PropertyOrder(6)]
-        [ProviderDisplayName(@"Range")]
+        [ProviderDisplayName(@"Zoom")]
         [ProviderDescription(@"The range of the volume levels displayed by the meter")]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 50, 1)]
+        [NumberRange(0, 20, 1)]
         public int Range
         {
-            get { return _data.Range; }
+            get { return 20 - _data.Range; }
             set
             {
-                _data.Range = value;
+                _data.Range = 20 - value;
                 IsDirty = true;
             }
         }
@@ -396,7 +396,9 @@ namespace VixenModules.Effect.AudioHelp
 		{
 			get
 			{
-				return base.IsDirty || hasMoved();
+                if (_audioHelper.checkForNewAudio())
+                    PreRender();
+                return base.IsDirty || hasMoved();
 			}
 			protected set { base.IsDirty = value; }
 		}

@@ -96,7 +96,7 @@ namespace VixenModules.Effect.VerticalMeter
                         GradientPosition = .999;
 
                     //Audio max is at 0db. The threshold gets shifted from 0 to 1 to -1 to 0 and then scaled.
-                    if (((VerticalMeterData)_data).Inverted)
+                    if (!((VerticalMeterData)_data).Inverted)
                     {
                         threshold = (((double)(ElementCount - currentElement)) / ElementCount - 1) * _data.Range;
                         GradientPosition = 1 - GradientPosition;

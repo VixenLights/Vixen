@@ -54,10 +54,10 @@ namespace VixenModules.Effect.Waveform
         [PropertyOrder(0)]
         public int ScrollSpeed
         {
-            get { return ((WaveformData)_data).ScrollSpeed; }
+            get { return 50 - ((WaveformData)_data).ScrollSpeed; }
             set
             {
-                ((WaveformData)_data).ScrollSpeed = value;
+                ((WaveformData)_data).ScrollSpeed = 50 - value;
                 IsDirty = true;
             }
         }

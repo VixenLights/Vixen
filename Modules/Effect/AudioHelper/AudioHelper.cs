@@ -31,6 +31,10 @@ namespace VixenModules.Effect.AudioHelp
         private Audio _audioModule;
         private TimeSpan _mediaStartTime;
         private float _audioSampleRate;
+
+        /// <summary>
+        /// Calculated volume level at a given sample
+        /// </summary>
         private double[] _volume;
 
         /// <summary>
@@ -38,7 +42,14 @@ namespace VixenModules.Effect.AudioHelp
         /// </summary>
         public double Gain { get; set; }
 
+        /// <summary>
+        /// Lowest volume in the loaded track
+        /// </summary>
         private double _volumeFloor;
+
+        /// <summary>
+        /// Highest voluem in the loaded track
+        /// </summary>
         private double _volumeCeiling;
 
         /// <summary>
@@ -73,9 +84,24 @@ namespace VixenModules.Effect.AudioHelp
         /// </summary>
         public int DecayTime { get; set; }
 
+        /// <summary>
+        /// Enables the low pass filter
+        /// </summary>
         public bool LowPass { get; set; }
+
+        /// <summary>
+        /// THe frequency of the low pass filter
+        /// </summary>
         public double LowPassFreq { get; set; }
+
+        /// <summary>
+        /// Enables the high pass filter
+        /// </summary>
         public bool HighPass { get; set; }
+
+        /// <summary>
+        /// The frequency of the high pass filter
+        /// </summary>
         public double HighPassFreq { get; set; }
 
         private bool _audioLoaded;
@@ -151,6 +177,8 @@ namespace VixenModules.Effect.AudioHelp
             {
                 if (module is Audio)
                 {
+                    if ((module as Audio).Channels == 0)
+                        return false;
                     _audioModule = module as Audio;
                     _mediaStartTime = _effectNode.StartTime;
                     _audioSampleRate = _audioModule.Frequency;
@@ -161,6 +189,32 @@ namespace VixenModules.Effect.AudioHelp
 
             return false;
 
+        }
+
+        public bool checkForNewAudio()
+        {
+            if (_effectSequence == null)
+                return false;
+            if (_effectSequence.Sequence.SequenceData.Media == null)
+                return false;
+
+            foreach (IMediaModuleInstance module in _effectSequence.Sequence.SequenceData.Media)
+            {
+                if (module is Audio)
+                {
+                    if (_audioModule != module)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+
+            if (_audioModule == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
 
         private static int Bytes2Int(byte b1, byte b2, byte b3)
@@ -182,7 +236,7 @@ namespace VixenModules.Effect.AudioHelp
         private void LoadAudioIntoMemory()
         {
             int startSample = (int)(_audioSampleRate * _mediaStartTime.TotalSeconds);
-            int totalSamples = (int)(_audioSampleRate * _effectNode.TimeSpan.TotalSeconds) + _audioModule.Channels * (int)_audioSampleRate;
+            int totalSamples = (int)(_audioSampleRate * _effectNode.TimeSpan.TotalSeconds);
 
             byte[] _audioRawData = _audioModule.GetSamples(startSample, totalSamples);
             _audioChannel = new double[_audioRawData.Length / _audioModule.BytesPerSample];
