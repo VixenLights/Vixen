@@ -114,6 +114,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private static Random rnd = new Random();
 		private PreCachingSequenceEngine _preCachingSequenceEngine;
 
+		//Used for setting a mouse location to do repeat actions on.
+		private Point _mouseOriginalPoint = new Point(0,0);
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -3392,11 +3395,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			FormParameterPicker parameterPicker = new FormParameterPicker(parameterPickerControls)
 			{
 				StartPosition = FormStartPosition.Manual,
-				Top = MousePosition.Y
+				Top = _mouseOriginalPoint.Y
 			};
-			parameterPicker.Left = ((MousePosition.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
-				? MousePosition.X
-				: MousePosition.X - parameterPicker.Width;
+			parameterPicker.Left = ((_mouseOriginalPoint.X + parameterPicker.Width) < Screen.FromControl(this).Bounds.Width)
+				? _mouseOriginalPoint.X
+				: _mouseOriginalPoint.X - parameterPicker.Width;
 			return parameterPicker;
 		}
 
@@ -3468,6 +3471,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void HandleColorDrop(Element element, Color color)
 		{
+			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
+
 			var elements = GetElementsForDrop(element);
 
 			if (ValidateMultipleEffects(element, elements)) return;	
@@ -3478,6 +3483,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void HandleColorDropOnElements(IEnumerable<Element> elements, Color color)
 		{
 			if (elements == null || !elements.Any()) return;
+
 			var element = elements.First();
 
 			var properties = MetadataRepository.GetProperties(element.EffectNode.Effect).Where(x => (x.PropertyType == typeof(Color)) && x.IsBrowsable);
@@ -3591,6 +3597,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 		private void HandleCurveDrop(Element element, Curve curve)
 		{
+			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
+
 			var elements = GetElementsForDrop(element);
 
 			if (ValidateMultipleEffects(element, elements)) return;	
@@ -3708,6 +3716,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void HandleGradientDrop(Element element, ColorGradient color)
 		{
+			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
+
 			var elements = GetElementsForDrop(element);
 
 			if (ValidateMultipleEffects(element, elements)) return;	
