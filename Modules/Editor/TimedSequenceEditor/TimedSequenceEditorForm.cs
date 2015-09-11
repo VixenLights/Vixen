@@ -3956,6 +3956,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			Element element;
 			// do anything special we want to here: keyboard shortcuts that are in
 			// the menu will be handled by them instead.
 			switch (e.KeyCode)
@@ -3997,12 +3998,44 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				case Keys.Left:
 					if (e.Control)
+					{
 						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(-2));
+					}
+					
 					break;
 
 				case Keys.Right:
 					if (e.Control)
+					{
 						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(2));
+					}
+					
+					break;
+				
+				case Keys.S:
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, e.Shift);
+					}
+					break;
+				case Keys.E:
+					
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, e.Shift);
+					}
+					break;
+					
+				case Keys.B:
+					
+					element = TimelineControl.grid.ElementAtPosition(MousePosition);
+					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
+					{
+						TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
+					}
+					
 					break;
 
 				case Keys.Escape:
