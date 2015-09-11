@@ -122,8 +122,6 @@ namespace VixenModules.Controller.E131
 			this.Text = "New Unicast Destination";
 			this.TopMost = true;
 			this.Load += new System.EventHandler(this.UnicastForm_Load);
-			this.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

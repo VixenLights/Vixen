@@ -89,6 +89,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Base Color Intensity.
+        /// </summary>
+        internal static string BaseBrightness {
+            get {
+                return ResourceManager.GetString("BaseBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Base Color.
         /// </summary>
         internal static string BaseColor {

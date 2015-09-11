@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 
 namespace VixenModules.Effect.Text
@@ -27,13 +28,21 @@ namespace VixenModules.Effect.Text
 			GradientMode = GradientMode.AcrossElement;
 			Orientation=StringOrientation.Vertical;
 			Font = new SerializableFont(new Font("Arial", 8));
+			LevelCurve = new Curve(CurveType.Flat100);
+			BaseLevelCurve = new Curve(CurveType.Flat100);
 		}
 
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
 
 		[DataMember]
+		public Curve LevelCurve { get; set; }
+
+		[DataMember]
 		public Color BaseColor { get; set; }
+
+		[DataMember]
+		public Curve BaseLevelCurve { get; set; }
 
 		[DataMember]
 		public bool UseBaseColor { get; set; }
@@ -71,6 +80,21 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			//Ensure defaults for new fields that might not be in older effects.
+			if (LevelCurve == null)
+			{
+				LevelCurve = new Curve(CurveType.Flat100);
+			}
+
+			if (BaseLevelCurve == null)
+			{
+				BaseLevelCurve = new Curve(CurveType.Flat100);
+			}
+		}
+
 		public override IModuleDataModel Clone()
 		{
 			TextData result = new TextData
@@ -88,7 +112,9 @@ namespace VixenModules.Effect.Text
 				CenterText = CenterText,
 				UseBaseColor = UseBaseColor,
 				BaseColor = BaseColor,
-				Font = new SerializableFont(Font.FontValue)
+				Font = new SerializableFont(Font.FontValue),
+				LevelCurve = LevelCurve,
+				BaseLevelCurve = BaseLevelCurve
 			};
 			return result;
 		}

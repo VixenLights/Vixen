@@ -6,11 +6,13 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Pixel;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
@@ -276,7 +278,6 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"BaseColor")]
 		[ProviderDescription(@"BaseColor")]
-		[Browsable(true)]
 		[PropertyOrder(3)]
 		public override Color BaseColor
 		{
@@ -284,6 +285,38 @@ namespace VixenModules.Effect.Text
 			set
 			{
 				_data.BaseColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 4)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"TextBrightness")]
+		[PropertyOrder(0)]
+		public Curve LevelCurve
+		{
+			get { return _data.LevelCurve; }
+			set
+			{
+				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 4)]
+		[ProviderDisplayName(@"BaseBrightness")]
+		[ProviderDescription(@"BaseBrightness")]
+		[PropertyOrder(1)]
+		public override Curve BaseLevelCurve
+		{
+			get { return _data.BaseLevelCurve; }
+			set
+			{
+				_data.BaseLevelCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -311,9 +344,10 @@ namespace VixenModules.Effect.Text
 
 		private void UpdateBaseColorAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
 			{
-				{"BaseColor", UseBaseColor}
+				{"BaseColor", UseBaseColor},
+				{"BaseLevelCurve", UseBaseColor}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -372,8 +406,6 @@ namespace VixenModules.Effect.Text
 					}
 					_maxTextSize = Convert.ToInt32(textsize.Width*.95);
 					int maxht = Convert.ToInt32(textsize.Height * numberLines);
-					int xlimit = (BufferWi + _maxTextSize) * 8 + 1;
-					int ylimit = (BufferHt + maxht) * 8 + 1;
 					int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + Position) / 2;
 					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
 					double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
@@ -423,16 +455,19 @@ namespace VixenModules.Effect.Text
 							DrawText(text, graphics, point);
 							break;
 					}
-
+					
 					// copy to frameBuffer
 					for (int x = 0; x < BufferWi; x++)
 					{
 						for (int y = 0; y < BufferHt; y++)
 						{
 							Color color = bitmap.GetPixel(x, BufferHt - y - 1);
+							
 							if (!EmptyColor.Equals(color))
 							{
-								frameBuffer.SetPixel(x, y, color);	
+								var hsv = HSV.FromRGB(color);
+								hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+								frameBuffer.SetPixel(x, y, hsv);	
 							}
 							
 						}

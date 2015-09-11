@@ -372,4 +372,7 @@
   <data name="UseBaseColor" xml:space="preserve">
     <value>Use Base Color</value>
   </data>
+  <data name="BaseBrightness" xml:space="preserve">
+    <value>Base Color Intensity</value>
+  </data>
 </root>

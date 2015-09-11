@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Pixel
@@ -23,6 +25,7 @@ namespace VixenModules.Effect.Pixel
 		private EffectIntents _elementData;
 		private int _stringCount;
 		private int _maxPixelsPerString;
+		private static Curve _baseLevelCurve = new Curve(CurveType.Flat100);
 
 		protected override EffectIntents _Render()
 		{
@@ -88,7 +91,18 @@ namespace VixenModules.Effect.Pixel
 		}
 
 		[Browsable(false)]
+		public virtual Curve BaseLevelCurve {
+			get
+			{
+				return _baseLevelCurve;
+			} 
+			set{} 
+		}
+
+		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }
+
+		
 		
 		private void CalculatePixelsPerString()
 		{
@@ -174,7 +188,16 @@ namespace VixenModules.Effect.Pixel
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
-				buffer.ClearBuffer();
+				if (UseBaseColor)
+				{
+					var level = BaseLevelCurve.GetValue(GetEffectTimeIntervalPosition(frameNum)*100)/100;
+					buffer.ClearBuffer(level);
+				}
+				else
+				{
+					buffer.ClearBuffer();
+				}
+				
 				RenderEffect(frameNum, ref buffer);
 				// peel off this frames pixels...
 				if (StringOrientation == StringOrientation.Horizontal)

@@ -43,6 +43,19 @@ namespace VixenModules.Effect.Pixel
 			}
 		}
 
+		public void ClearBuffer(double level)
+		{
+			var hsv = HSV.FromRGB(_baseColor);
+			hsv.V = hsv.V * level;
+			for (int i = 0; i < _bufferWi; i++)
+			{
+				for (int z = 0; z < _bufferHt; z++)
+				{
+					_pixels[i][z] = hsv.ToRGB();
+				}
+			}
+		}
+
 		// 0,0 is lower left
 		public void SetPixel(int x, int y, Color color)
 		{

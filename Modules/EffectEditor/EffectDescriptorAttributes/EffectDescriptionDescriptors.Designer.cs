@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the brightness of the base color of the effect..
+        /// </summary>
+        internal static string BaseBrightness {
+            get {
+                return ResourceManager.GetString("BaseBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the base color that will be used for the background of the effect..
         /// </summary>
         internal static string BaseColor {
@@ -643,6 +652,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the brightness of the text in the effect..
+        /// </summary>
+        internal static string TextBrightness {
+            get {
+                return ResourceManager.GetString("TextBrightness", resourceCulture);
             }
         }
         
