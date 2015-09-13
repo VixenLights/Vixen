@@ -25,7 +25,7 @@ namespace VixenModules.Effect.Pixel
 		private EffectIntents _elementData;
 		private int _stringCount;
 		private int _maxPixelsPerString;
-		private static Curve _baseLevelCurve = new Curve(CurveType.Flat100);
+		private Curve _baseLevelCurve = new Curve(CurveType.Flat100);
 
 		protected override EffectIntents _Render()
 		{
@@ -92,18 +92,13 @@ namespace VixenModules.Effect.Pixel
 
 		[Browsable(false)]
 		public virtual Curve BaseLevelCurve {
-			get
-			{
-				return _baseLevelCurve;
-			} 
-			set{} 
+			get { return _baseLevelCurve; }
+			set { }
 		}
 
 		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }
 
-		
-		
 		private void CalculatePixelsPerString()
 		{
 			IEnumerable<ElementNode> nodes = FindLeafParents();

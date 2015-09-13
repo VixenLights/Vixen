@@ -984,7 +984,13 @@ namespace Common.Controls.Timeline
 	{
 		Move,
 		Resize,
-		Align,
+		AlignStart,
+		AlignEnd,
+		AlignBoth,
+		AlignDurations,
+		AlignStartToEnd,
+		AlignEndToStart,
+		AlignCenters,
 		Distribute
 	}
 }

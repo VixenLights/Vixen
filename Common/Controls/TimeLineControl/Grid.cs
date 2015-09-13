@@ -730,7 +730,7 @@ namespace Common.Controls.Timeline
 						: new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, selectedElement.EndTime));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignStart);
 		}
 
 		/// <summary>
@@ -767,7 +767,7 @@ namespace Common.Controls.Timeline
 						: new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, referenceElement.EndTime));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignEnd);
 		}
 
 		/// <summary>
@@ -798,7 +798,7 @@ namespace Common.Controls.Timeline
 						: new Tuple<TimeSpan, TimeSpan>(selectedElement.StartTime, selectedElement.StartTime + referenceElement.Duration));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignDurations);
 		}
 
 		/// <summary>
@@ -825,7 +825,7 @@ namespace Common.Controls.Timeline
 				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(referenceElement.StartTime, referenceElement.EndTime));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignBoth);
 		}
 
 		/// <summary>
@@ -859,7 +859,7 @@ namespace Common.Controls.Timeline
 				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignStartToEnd);
 		}
 
 		/// <summary>
@@ -893,7 +893,7 @@ namespace Common.Controls.Timeline
 				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(startTime, endTime));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignEndToStart);
 		}
 
 		/// <summary>
@@ -922,7 +922,7 @@ namespace Common.Controls.Timeline
 				elementsToAlign.Add(selectedElement, new Tuple<TimeSpan, TimeSpan>(TimeSpan.FromSeconds(thisStartTime), TimeSpan.FromSeconds(thisStartTime) + selectedElement.Duration));
 			}
 
-			MoveResizeElements(elementsToAlign, ElementMoveType.Align);
+			MoveResizeElements(elementsToAlign, ElementMoveType.AlignCenters);
 		}
 
 		/// <summary>

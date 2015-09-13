@@ -44,8 +44,20 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 						return string.Format("Moved {0} effect{1}", m_changedElements.Count, s);
 					case ElementMoveType.Resize:
 						return string.Format("Resize {0} effect{1}", m_changedElements.Count, s);
-					case ElementMoveType.Align:
-						return string.Format("Aligned {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignStart:
+						return string.Format("Start Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignEnd:
+						return string.Format("End Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignBoth:
+						return string.Format("Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignDurations:
+						return string.Format("Duration Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignStartToEnd:
+						return string.Format("Start to End Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignEndToStart:
+						return string.Format("End to Start Align {0} effect{1}", m_changedElements.Count, s);
+					case ElementMoveType.AlignCenters:
+						return string.Format("Center Align {0} effect{1}", m_changedElements.Count, s);
 					case ElementMoveType.Distribute:
 						return string.Format("Distributed {0} effect{1}", m_changedElements.Count, s);
 					default:
