@@ -168,7 +168,7 @@ namespace VixenModules.Effect.Pixel
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
-
+			if (nFrames <= 0) return effectIntents;
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 
 			int bufferSize = StringPixelCounts.Sum();
