@@ -36,7 +36,7 @@ namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 				m_form.SelectItemUnderPoint(translatedPoint, nextShape);
 				nextShape = true;
 			}
-			m_form.addNewGroup(out selectDisplayItem, m_form.SelectedDisplayItems);
+			m_form.AddNewGroup(out selectDisplayItem, m_form.SelectedDisplayItems);
 		}
 	}
 }

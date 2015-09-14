@@ -1,22 +1,14 @@
-﻿//#define OLDWAY
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
-using System.Drawing;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Concurrent;
 using System.ComponentModel;
-using System.Diagnostics;
-using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Nutcracker
 {
@@ -200,6 +192,7 @@ namespace VixenModules.Effect.Nutcracker
 				ht = MaxPixelsPerString;
 			}
 			int nFrames = (int)(TimeSpan.TotalMilliseconds / frameMs);
+			if (nFrames <= 0) return;
 			var nccore = new NutcrackerEffects(_data.NutcrackerData) {Duration = TimeSpan};
 			nccore.InitBuffer( wid, ht);
 			int numElements = node.Count();
@@ -214,7 +207,6 @@ namespace VixenModules.Effect.Nutcracker
 			var pixels = new RGBValue[numElements][];
 			for (int eidx = 0; eidx < numElements; eidx++)
 				pixels[eidx] = new RGBValue[nFrames];
-			List<ElementNode> nodes = FindLeafParents().ToList();
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
