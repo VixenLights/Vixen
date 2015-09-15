@@ -4131,7 +4131,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (cutElements)
 					{
 						RemoveEffectNodeAndElement(elem.EffectNode);
-						TimelineControl.grid.ClearSelectedElements();
 						SequenceModified();
 					}
 				}
