@@ -1,3 +1,77 @@
+Vixen Release Note - 3.2u1
+
+Features / Fixes
+
+General
+o Improved logging by rotating files daily. The V2 import gets its own log file to keep things more organized. NAming convention improved.
+o Finished the dark theme work in the remainder of the application.
+
+Sequencer
+o New shortcut key to toggle the element tree open. T will open/close the selected Element. Ctrl T will traverse down opening/closing the full tree from the selected element.
+o Add shortcut keys for three of the context menu alignment functions. These will work when more than one element is selected in the time line and the mouse is hovered over one of the selected elements.
+      S         Align Start times of the selected elements to the key element under the hover.
+      S + Shift Align Start times of the selected elements holding the duration to the key element under the hover.
+      E         Align End times of the selected elements to the key element under the hover.
+      E + Shift Align End times of the selected elements holding the duration to the key element under the hover.
+      B         Align both start and end times of the selected elements to the key element under the hover.
+* Fixes to the status message on Curve, Color, Gradient drop operations.
+* Fixes to certain undo operations that could cause effects to not delete correctly.
+* Make the Undo/Redo shortcut keys respond across the editor and not just when the timeline has focus.
+* Improvments to the alignment tags in the undo descriptions to be more descriptive. 
+* Fixes to the window location saving routines to better handle multiple monitors and minimize situations.
+* Fixes to the new effect editor for effects that have text entry in collectiosn like the Text effect to update on pressing enter.
+* Fix to the editor form to allow the spacebar to activate the play/stop function when it has focus as it does on other forms.
+* Performance improvements when clicking from effect to effect because of unnecessary events firing and causing the new editor to refresh numerous times.
+
+Effects
+o Enabled basic color support beyond the default white in the Candle Flicker effect.
+o Add level curves for the text color and the base color in the new Text effect.
+* Fix a bug in the Launcher effect that would cause errors if it was not dropped on a leaf element.
+* Fix a bug in the Nutcracker Glediator that was not picking up the proper file path.
+* Fix initialization bug in the lyric value that can cause a null exception in the editor.
+
+Scheduler
+* Fix issue with the status window not being visible on the screen.
+
+Display Setup
+* Fixes to the name generator for to solve the issue with the buttons being cut off on some laptops.
+
+Display Preview
+o Introduction of basic undo/redo support.
+* Fix an issue that would cause a crash if no items are selected and the create template was selected.
+
+Installer
+* Changes to try and remove old modules that are no longer used to prevent issues when upgrading from an older version.
+
+
+Bug Fixes / Features by ticket
+* VIX-848 Dev build 131 configure display
+* VIX-847 Update Undo/Redo Button Dropdown to the new theme.
+* VIX-845 Issue when copying and pasting a line.
+* VIX-844 When zoomed in or out pasting an object will not paste to the mouse position
+* VIX-842 Vixen 2 Ch. Mapping: Duplicate Channels when importing sequence containing both Channels and Profile entries
+* VIX-841 Very Slow Response after working on sequence, Constant Not Responding Message
+* VIX-840 Ok/cancel buttons don't show on add/edit multiple on low res monitors
+* VIX-839 Importing Vixen 2.1 Sequence or Profile with missing channel names fails
+* VIX-834 When selecting the different strings within a Group, strings with no name are displayed as blank,
+* VIX-833 Apply color collection bug
+* VIX-831 Beat Manager - Tapping Beat crashes Vixen
+* VIX-830 Program crashes when trying to manipulate multiple,identical effects across multiple elements
+* VIX-829 Default gradient in new butterfly effect has invalid color setup.
+* VIX-828 Color gradient add crash, repeat of VIX-809
+* VIX-824 Display setup, checking patch points no longer works.
+* VIX-819 Bars effect, 3D and highlight missing when set.
+* VIX-816 Rework Color Theme on all Vixen Forms and add user selectable/custom Themes.
+* VIX-811 Crash creating new curve
+* VIX-808 Rework color scheme on various forms of the Setup Preview to be an interim solution to the darker theme.
+* VIX-788 Vixen sequence page segfaults tries to recover faults again
+* VIX-743 Opening app, Admin window should be on top.
+* VIX-282 Add undo to the preview setup
+
+
+
+
+
 Vixen Release Notes – 3.2
 
 Features

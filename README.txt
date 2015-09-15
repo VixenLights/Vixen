@@ -19,23 +19,23 @@ Conventions for module development:
  
   
 - The build output directory should be relative to the solution directory, in an
-  'Output' directory for debug builds, and a 'Release' directory for release builds.
+  'Release' directory for x86 release builds, and a 'Release64' directory for x64 release builds.
   It will also depend on the type of module. For example:
   
-  Vixen Modules (Debug):              $(SolutionDir)\Output\Modules\<ModuleType>\
-  Vixen Modules (Release):            $(SolutionDir)\Release\Modules\<ModuleType>\
-  Vixen Common assemblies (Debug):    $(SolutionDir)\Output\Common\
-  Vixen Common assemblies (Release):  $(SolutionDir)\Release\Common\
-  Vixen Applications (Debug):         $(SolutionDir)\Output\
-  Vixen Applications (Release):       $(SolutionDir)\Release\
+  Vixen Modules (Release):              $(SolutionDir)\Release\Modules\<ModuleType>\
+  Vixen Modules (Release64):            $(SolutionDir)\Release64\Modules\<ModuleType>\
+  Vixen Common assemblies (Release):    $(SolutionDir)\Release\Common\
+  Vixen Common assemblies (Release64):  $(SolutionDir)\Release64\Common\
+  Vixen Applications (Release):         $(SolutionDir)\Release\
+  Vixen Applications (Release64):       $(SolutionDir)\Release64\
 
   Note: the $(SolutionDir) text will need to be edited in the .csproj file directly
         (ie. outside of Visual Studio), as VS escapes the '$()' macros.
 
   If you're unsure, look at another existing project, and copy the OutputPath for both
-  Debug and Release, eg.:
-  <OutputPath>$(SolutionDir)\Output\Modules\Controller\</OutputPath>
+  Release and Release64, eg.:
   <OutputPath>$(SolutionDir)\Release\Modules\Controller\</OutputPath>
+  <OutputPath>$(SolutionDir)\Release64\Modules\Controller\</OutputPath>
   
  
 - To reference the vixen project (or any other projects that are needed), make sure you
