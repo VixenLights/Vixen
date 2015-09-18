@@ -1,4 +1,6 @@
-﻿namespace VixenModules.Output.E131.Controls
+﻿using Common.Controls.Theme;
+
+namespace VixenModules.Output.E131.Controls
 {
 	using System.Drawing;
 	using System.Windows.Forms;
@@ -43,7 +45,7 @@
 
 			// this brush will be used to draw the row number string on the
 			// row header cell using the system's current ControlText color
-			Brush b = SystemBrushes.ControlText;
+			Brush b = new SolidBrush(ThemeColorTable.ForeColor);
 
 			// draw the row number string on the current row header cell using
 			// the brush defined above and the DataGridView's default font
