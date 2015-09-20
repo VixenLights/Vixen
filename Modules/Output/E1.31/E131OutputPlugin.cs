@@ -162,6 +162,8 @@ namespace VixenModules.Controller.E131
                 if (setupForm.ShowDialog() == DialogResult.OK)
                 {
 
+                    running = false; //prevent updates
+                    this.Stop();
 
                     _data.Warnings = setupForm.WarningsOption;
                     _data.Statistics = setupForm.StatisticsOption;
@@ -207,10 +209,6 @@ namespace VixenModules.Controller.E131
                         }
                     }
 
-                    running = false; //prevent updates
-
-                    // update in memory table to match xml
-                    this.Stop();
                     this.Start();
                 }
             }
@@ -245,7 +243,7 @@ namespace VixenModules.Controller.E131
             //so just close the first/only one.
             if (_data.Unicast != null)
             {
-                if (_data.Universes != null && _data.Universes[0].Socket != null)
+                if (_data.Universes != null && _data.Universes.Count > 0 && _data.Universes[0].Socket != null)
                 {
                     _data.Universes[0].Socket.Shutdown(SocketShutdown.Both);
                     _data.Universes[0].Socket.Close();
