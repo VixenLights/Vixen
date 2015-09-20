@@ -421,13 +421,12 @@ namespace VixenModules.Output.E131
 			// 
 			this.AcceptButton = this.okButton;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(381, 480);
+			this.ClientSize = new System.Drawing.Size(381, 485);
 			this.Controls.Add(this.tabControlEX1);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximumSize = new System.Drawing.Size(397, 519);
 			this.Menu = this.mainMenu;
 			this.MinimumSize = new System.Drawing.Size(397, 519);
 			this.Name = "SetupForm";

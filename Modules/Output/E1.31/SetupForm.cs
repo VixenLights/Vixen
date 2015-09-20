@@ -111,7 +111,7 @@ namespace VixenModules.Output.E131
 			SetDestinations();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{univDGVN}));
 			foreach (Control tab in tabControlEX1.TabPages)
 			{
 				tab.BackColor = ThemeColorTable.BackgroundColor;
@@ -120,9 +120,26 @@ namespace VixenModules.Output.E131
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
 	        tabControlEX1.SelectedTab = tabPageEX1;
+			univDGVN.EnableHeadersVisualStyles = false;
 			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
+			univDGVN.ForeColor = ThemeColorTable.ForeColor;
+	        univDGVN.DefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
+	        univDGVN.DefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
+	        univDGVN.DefaultCellStyle.SelectionBackColor = ThemeColorTable.HighlightColor;
+			univDGVN.DefaultCellStyle.SelectionForeColor = ThemeColorTable.ForeColor;
+			univDGVN.RowsDefaultCellStyle.BackColor = Color.Empty;
+			univDGVN.RowsDefaultCellStyle.ForeColor = Color.Empty;
+			univDGVN.ColumnHeadersDefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
+			univDGVN.ColumnHeadersDefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
+	        univDGVN.RowHeadersDefaultCellStyle.BackColor = Color.Empty;
+	        univDGVN.RowHeadersDefaultCellStyle.ForeColor = Color.Empty;
+			univDGVN.RowHeadersDefaultCellStyle.SelectionForeColor = Color.Empty;
+			univDGVN.RowHeadersDefaultCellStyle.SelectionBackColor = Color.Empty;
+			autoPopulateStateUpdate();
+
         }
 
+		
         public int EventRepeatCount
         {
             get
@@ -971,13 +988,17 @@ namespace VixenModules.Output.E131
 
             if (!autoPopulateStart.Checked)
             {
-                univDGVN.Columns[START_COLUMN].DefaultCellStyle.BackColor = Color.LightGray;
-                univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
+	            var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
+				style.BackColor = ThemeColorTable.HighlightColor;
+				style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
+	            univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }
             else
             {
-                univDGVN.Columns[START_COLUMN].DefaultCellStyle.BackColor = Color.White;
-                univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Regular);
+				var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
+				style.BackColor = ThemeColorTable.BackgroundColor;
+                style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Regular);
+				univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }
 
             updateDgvnStartValues();
