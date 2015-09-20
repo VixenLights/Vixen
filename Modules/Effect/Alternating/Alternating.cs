@@ -59,12 +59,20 @@ namespace VixenModules.Effect.Alternating
 			var validColors = new HashSet<Color>();
 			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
 
-			//We need to beable to modify the list in the loop, since a collection used in foreach is immuatable we need to use a for loop
-			for (int i = 0; i < Colors.Count; i++)
+			if (validColors.Any())
 			{
-				if (validColors.Any() && !Colors[i].ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				bool changed = false;
+				foreach (GradientLevelPair t in Colors)
 				{
-					Colors[i].ColorGradient = new ColorGradient(validColors.First());
+					if (!t.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+					{
+						t.ColorGradient = new ColorGradient(validColors.First());
+						changed = true;
+					}
+				}
+				if (changed)
+				{
+					OnPropertyChanged("Colors");
 				}
 			}
 

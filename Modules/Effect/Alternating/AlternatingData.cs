@@ -36,8 +36,7 @@ namespace VixenModules.Effect.Alternating {
 		}
 
 		public override IModuleDataModel Clone() {
-			var gradientLevelList = new List<GradientLevelPair>();
-			gradientLevelList.AddRange(Colors.ToList());
+			var gradientLevelList = Colors.Select(glp => new GradientLevelPair(new ColorGradient(glp.ColorGradient), new Curve(glp.Curve))).ToList();
 			var result = new AlternatingData
 			{
 				Colors = gradientLevelList,
