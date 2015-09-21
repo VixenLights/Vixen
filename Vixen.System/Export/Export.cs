@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Vixen.Cache.Sequence;
 using Vixen.Commands;
 using Vixen.Data.Flow;
-using Vixen.Module;
-using Vixen.Module.Controller;
-using Vixen.Module.Timing;
-using Vixen.Module.App;
-using Vixen.Services;
-using Vixen.Execution;
-using Vixen.Execution.Context;
-using Vixen.Factory;
 using Vixen.Sys;
 using Vixen.Sys.Output;
-using NLog;
 
 namespace Vixen.Export
 {
@@ -36,19 +24,16 @@ namespace Vixen.Export
 
     public class Export
     {
-        Guid _controllerTypeId = new Guid("{F79764D7-5153-41C6-913C-2321BC2E1819}");
-        List<OutputController> _nonExportControllers = null;
-
         private IExportWriter _output;
-        private Dictionary<string, IExportWriter> _writers = null;
-        private Dictionary<string, string> _exportFileTypes = null;
+        private readonly Dictionary<string, IExportWriter> _writers;
+        private readonly Dictionary<string, string> _exportFileTypes;
 
-        private bool _exporting = false;
-        private bool _cancelling = false;
-        private string _exportDir = null;
-		private SequenceIntervalGenerator _generator = null;
-        private ExportCommandHandler _exporterCommandHandler = null;
-        private List<byte> _eventData = null;
+        private bool _exporting;
+        private bool _cancelling;
+        private string _exportDir;
+		private SequenceIntervalGenerator _generator;
+        private readonly ExportCommandHandler _exporterCommandHandler;
+        private readonly List<byte> _eventData;
 	    private List<ControllerExportInfo> _controllerExportInfos; 
 
         public delegate void SequenceEventHandler(ExportNotifyType notify);
@@ -102,7 +87,7 @@ namespace Vixen.Export
             set
             {
                 _exportDir = value;
-                checkExportdir();
+                CheckExportdir();
             }
         }
 
@@ -138,21 +123,6 @@ namespace Vixen.Export
 
 		public List<Guid> ExportControllerList { get; set; } 
 
-		//public TimeSpan ExportPosition
-		//{
-		//	get
-		//	{
-		//		if (_preCachingSequenceEngine != null)
-		//		{
-		//			return _preCachingSequenceEngine.Position;
-		//		}
-		//		else
-		//		{
-		//			return new TimeSpan(0);
-		//		}
-		//	}
-		//}
-
         public decimal SavePosition { get; set; }
 
         public List<ControllerExportInfo> ControllerExportInfo
@@ -171,7 +141,7 @@ namespace Vixen.Export
 			SystemControllers.ForEach(x => _controllerExportInfos.Add(new ControllerExportInfo(x, index++)));
 		}
 
-        private bool checkExportdir()
+        private bool CheckExportdir()
         {
             if (!Directory.Exists(_exportDir))
             {
@@ -242,8 +212,6 @@ namespace Vixen.Export
                 if (_writers.TryGetValue(fileType, out _output))
                 {
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
-					SavePosition = 0;
-                    SequenceNotify(ExportNotifyType.EXPORTING);
                     WriteControllerInfo(sequence);
 					Task.Factory.StartNew(ProcessExport);
                 }
@@ -302,13 +270,13 @@ namespace Vixen.Export
         List<string> BuildChannelNames(IEnumerable<Guid> outIds)
         {
             List<string> retVal = new List<string>();
-            string chanName = null;
-            IEnumerable<OutputController> outControllers = VixenSystem.OutputControllers.GetAll();
+	        IEnumerable<OutputController> outControllers = VixenSystem.OutputControllers.GetAll();
             foreach (OutputController oc in outControllers)
             {
                 for (int j = 0; j < oc.OutputCount; j++)
                 {
-                    if (oc.Outputs[j].Source != null)
+	                string chanName;
+	                if (oc.Outputs[j].Source != null)
                     {
                         chanName = ReverseBuildChannelName(oc.Outputs[j].Source.Component, oc.Outputs[j].Source.OutputIndex);
                     }
@@ -326,10 +294,11 @@ namespace Vixen.Export
         private void ProcessExport()
         {
             SequenceSessionData sessionData = new SequenceSessionData();
-			SequenceNotify(ExportNotifyType.SAVING);
-
+			
             if (_exporting)
-            {   
+            {
+				SavePosition = 0;
+				SequenceNotify(ExportNotifyType.SAVING);
              	_generator.BeginGeneration();
                 List<ICommand> commandList = new List<ICommand>();
 	            OutputStateListAggregator outAggregator = null; //_preCachingSequenceEngine.Cache.OutputStateListAggregator;
@@ -368,11 +337,7 @@ namespace Vixen.Export
 			                foreach (var controller in controllerOutputs)
 			                {
 				                //Grab commands for each output
-				                foreach (Guid guid in controller)
-				                {
-					                commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(0));
-				                }
-
+				                commandList.AddRange(controller.Select(guid => outAggregator.GetCommandsForOutput(guid).ElementAt(0)));
 			                }
 
 			                UpdateState(commandList.ToArray());
@@ -392,9 +357,6 @@ namespace Vixen.Export
 		                _generator.EndGeneration();
 	                }
 
-
-                    //_preCachingSequenceEngine.SequenceCacheEnded -= SequenceCacheEnded;
-                    //_preCachingSequenceEngine.SequenceCacheStarted -= SequenceCacheStarted;
                 }
 
                 if (SequenceNotify != null)
