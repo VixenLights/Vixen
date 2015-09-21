@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Vixen.Cache.Sequence;
@@ -45,7 +46,7 @@ namespace Vixen.Export
         private bool _exporting = false;
         private bool _cancelling = false;
         private string _exportDir = null;
-        PreCachingSequenceEngine _preCachingSequenceEngine = null;
+		private SequenceIntervalGenerator _generator = null;
         private ExportCommandHandler _exporterCommandHandler = null;
         private List<byte> _eventData = null;
 	    private List<ControllerExportInfo> _controllerExportInfos; 
@@ -137,20 +138,20 @@ namespace Vixen.Export
 
 		public List<Guid> ExportControllerList { get; set; } 
 
-        public TimeSpan ExportPosition
-        {
-            get
-            {
-                if (_preCachingSequenceEngine != null)
-                {
-                    return _preCachingSequenceEngine.Position;
-                }
-                else
-                {
-                    return new TimeSpan(0);
-                }
-            }
-        }
+		//public TimeSpan ExportPosition
+		//{
+		//	get
+		//	{
+		//		if (_preCachingSequenceEngine != null)
+		//		{
+		//			return _preCachingSequenceEngine.Position;
+		//		}
+		//		else
+		//		{
+		//			return new TimeSpan(0);
+		//		}
+		//	}
+		//}
 
         public decimal SavePosition { get; set; }
 
@@ -240,14 +241,11 @@ namespace Vixen.Export
             {
                 if (_writers.TryGetValue(fileType, out _output))
                 {
-                    _preCachingSequenceEngine = new PreCachingSequenceEngine(UpdateInterval);
-                    _preCachingSequenceEngine.Sequence = sequence;
-                    _preCachingSequenceEngine.SequenceCacheEnded += SequenceCacheEnded;
-                    _preCachingSequenceEngine.SequenceCacheStarted += SequenceCacheStarted;
-                    _preCachingSequenceEngine.Start();
-
+					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
+					SavePosition = 0;
                     SequenceNotify(ExportNotifyType.EXPORTING);
                     WriteControllerInfo(sequence);
+					Task.Factory.StartNew(ProcessExport);
                 }
             }
         }
@@ -255,7 +253,7 @@ namespace Vixen.Export
         public void Cancel()
         {
             _cancelling = true;
-            _preCachingSequenceEngine.Stop();
+			_generator.EndGeneration();
         }
 
         private void UpdateState(ICommand[] outputStates)
@@ -279,15 +277,7 @@ namespace Vixen.Export
         #endregion
 
         #region Events
-        void SequenceCacheStarted(object sender, Vixen.Cache.Event.CacheStartedEventArgs e)
-        {
-            SavePosition = 0;
-            if (SequenceNotify != null)
-            {
-                SequenceNotify(ExportNotifyType.LOADING);
-            }
-        }
-
+       
         string ReverseBuildChannelName(IDataFlowComponent component, int outIndex)
         {
             string nameVal = component.Outputs[outIndex].Name ?? "";
@@ -333,67 +323,78 @@ namespace Vixen.Export
             return retVal;
         }
 
-        void SequenceCacheEnded(object sender, Vixen.Cache.Event.CacheEventArgs e)
+        private void ProcessExport()
         {
             SequenceSessionData sessionData = new SequenceSessionData();
+			SequenceNotify(ExportNotifyType.SAVING);
 
             if (_exporting)
-            {                
+            {   
+             	_generator.BeginGeneration();
                 List<ICommand> commandList = new List<ICommand>();
-                OutputStateListAggregator outAggregator = _preCachingSequenceEngine.Cache.OutputStateListAggregator;
+	            OutputStateListAggregator outAggregator = null; //_preCachingSequenceEngine.Cache.OutputStateListAggregator;
+	            if (_generator.HasCommands())
+	            {
+		            outAggregator = _generator.NextInterval();
+	            }
+	            if (outAggregator == null) return;
 	            IEnumerable<Guid> outIds = outAggregator.GetOutputIds();
-                int periods = outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
+	            int periods = (int)_generator.Sequence.Length.TotalMilliseconds / _generator.Interval;//outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
 
 				//Get a list of controller ids by index order
 				IEnumerable<Guid> controllers = ControllerExportInfo.OrderBy(x => x.Index).Select(i => i.Id);
 
 				//Now assemble a all their outputs by controller order.
-				List<List<Guid>> controllerOutputs = new List<List<Guid>>();
-	            foreach (var controller in controllers)
-	            {
-		            controllerOutputs.Add(VixenSystem.OutputControllers.GetController(controller).Outputs.Select(x => x.Id).ToList());
-	            }
+				List<List<Guid>> controllerOutputs = controllers.Select(controller => VixenSystem.OutputControllers.GetController(controller).Outputs.Select(x => x.Id).ToList()).ToList();
 
-                if (_cancelling == false)
+	            if (_cancelling == false)
                 {
                     SequenceNotify(ExportNotifyType.SAVING);
                     sessionData.OutFileName = OutFileName;
                     sessionData.NumPeriods = periods;
                     sessionData.PeriodMS = UpdateInterval;
                     sessionData.ChannelNames = BuildChannelNames(outIds);
-                    sessionData.TimeMS = _preCachingSequenceEngine.Sequence.Length.TotalMilliseconds;
+                    sessionData.TimeMS = _generator.Sequence.Length.TotalMilliseconds;
                     sessionData.AudioFileName = AudioFilename;
-                    try
-                    {
-                        _output.OpenSession(sessionData);
-                        for (int j = 0; j < periods; j++)
-                        {
-                            SavePosition = Decimal.Round(((Decimal)j / (Decimal)periods) * 100, 2);
-                            commandList.Clear();
-							//Iterate the controller output groups.
-	                        foreach (var controller in controllerOutputs)
-	                        {
-								//Grab commands for each output
-								foreach (Guid guid in controller)
-								{
-									commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(j));
-								}
-								  
-	                        }
+	                try
+	                {
+		                _output.OpenSession(sessionData);
+		                int j = 0;
+		                while (_generator.HasCommands())
+		                {
+			                SavePosition = Decimal.Round(((Decimal) j/periods)*100, 2);
+			                commandList.Clear();
+			                //Iterate the controller output groups.
+			                foreach (var controller in controllerOutputs)
+			                {
+				                //Grab commands for each output
+				                foreach (Guid guid in controller)
+				                {
+					                commandList.Add(outAggregator.GetCommandsForOutput(guid).ElementAt(0));
+				                }
 
-                            UpdateState(commandList.ToArray());
-                        }
-                        
-                        _output.CloseSession();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Save Error!");
-                        throw ex;
-                    }
+			                }
 
-                    _preCachingSequenceEngine.SequenceCacheEnded -= SequenceCacheEnded;
-                    _preCachingSequenceEngine.SequenceCacheStarted -= SequenceCacheStarted;
+			                UpdateState(commandList.ToArray());
+			                outAggregator = _generator.NextInterval();
+			                j++;
+		                }
+
+		                _output.CloseSession();
+	                }
+	                catch (Exception ex)
+	                {
+		                MessageBox.Show(ex.Message, @"Save Error!");
+		                throw ex;
+	                }
+	                finally
+	                {
+		                _generator.EndGeneration();
+	                }
+
+
+                    //_preCachingSequenceEngine.SequenceCacheEnded -= SequenceCacheEnded;
+                    //_preCachingSequenceEngine.SequenceCacheStarted -= SequenceCacheStarted;
                 }
 
                 if (SequenceNotify != null)

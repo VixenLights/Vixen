@@ -87,12 +87,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 Thread.Sleep(25); 
                 switch (_currentState)
                 {
-                    case ExportNotifyType.EXPORTING:
-                    {
-                        backgroundWorker1_Exporting(sender,e);
-                        break;
-                    }
-
+                   
                     case ExportNotifyType.SAVING:
                     {
                         backgroundWorker1_Saving(sender, e);
@@ -107,20 +102,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
             this.UseWaitCursor = false;
 			backgroundWorker1.ReportProgress(0);
-        }
-
-        private void backgroundWorker1_Exporting(object sender, DoWorkEventArgs e)
-        {
-            _curPos = _exportOps.ExportPosition;
-            currentTimeLabel.Text = string.Format("{0:D2}:{1:D2}.{2:D3}",
-                                                    _curPos.Minutes,
-                                                    _curPos.Seconds,
-                                                    _curPos.Milliseconds);
-            _percentComplete =
-                (_curPos.TotalMilliseconds /
-                (double)_sequence.Length.TotalMilliseconds) * 100;
-
-            backgroundWorker1.ReportProgress((int)_percentComplete);
         }
 
         private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
@@ -210,6 +191,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 return;
             }
 
+			_doProgressUpdate = true;
+			backgroundWorker1.RunWorkerAsync();
+
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
@@ -217,8 +201,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.AudioFilename = _audioFileName;
 
 
-            _doProgressUpdate = true;
-            backgroundWorker1.RunWorkerAsync();
+           
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
