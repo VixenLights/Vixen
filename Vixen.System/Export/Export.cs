@@ -301,13 +301,8 @@ namespace Vixen.Export
 				SequenceNotify(ExportNotifyType.SAVING);
              	_generator.BeginGeneration();
                 List<ICommand> commandList = new List<ICommand>();
-	            OutputStateListAggregator outAggregator = null; //_preCachingSequenceEngine.Cache.OutputStateListAggregator;
-	            if (_generator.HasCommands())
-	            {
-		            outAggregator = _generator.NextInterval();
-	            }
-	            if (outAggregator == null) return;
-	            IEnumerable<Guid> outIds = outAggregator.GetOutputIds();
+	            
+	            IEnumerable<Guid> outIds = _generator.State.GetOutputIds();
 	            int periods = (int)_generator.Sequence.Length.TotalMilliseconds / _generator.Interval;//outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
 
 				//Get a list of controller ids by index order
@@ -329,7 +324,7 @@ namespace Vixen.Export
 	                {
 		                _output.OpenSession(sessionData);
 		                int j = 0;
-		                while (_generator.HasCommands())
+		                while (_generator.HasNextInterval())
 		                {
 			                SavePosition = Decimal.Round(((Decimal) j/periods)*100, 2);
 			                commandList.Clear();
@@ -337,11 +332,11 @@ namespace Vixen.Export
 			                foreach (var controller in controllerOutputs)
 			                {
 				                //Grab commands for each output
-				                commandList.AddRange(controller.Select(guid => outAggregator.GetCommandsForOutput(guid).ElementAt(0)));
+				                commandList.AddRange(controller.Select(guid => _generator.State.GetCommandForOutput(guid)));
 			                }
 
 			                UpdateState(commandList.ToArray());
-			                outAggregator = _generator.NextInterval();
+			                _generator.NextInterval();
 			                j++;
 		                }
 

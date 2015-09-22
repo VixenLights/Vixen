@@ -324,6 +324,7 @@
     <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />
     <Compile Include="Sys\Managers\OutputDeviceFacade.cs" />
     <Compile Include="Sys\Managers\SmartOutputControllerManager.cs" />
+    <Compile Include="Sys\OutputStateList.cs" />
     <Compile Include="Sys\OutputStateListAggregator.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
     <Compile Include="Services\EditorService.cs" />

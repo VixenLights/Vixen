@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -13,7 +14,7 @@ namespace Vixen.Cache.Sequence
 		private bool _lastUpdateClearedStates;
 		private PreCachingSequenceContext _context;
 		private IEnumerable<IContext> _runningContexts = Enumerable.Empty<IContext>();
-
+		
 		#region Contructors
 
 		/// <summary>
@@ -21,6 +22,7 @@ namespace Vixen.Cache.Sequence
 		/// </summary>
 		public SequenceIntervalGenerator()
 		{	
+			State = new OutputStateList();
 			TimingSource = new FixedIntervalManualTiming();
 		}
 
@@ -78,29 +80,31 @@ namespace Vixen.Cache.Sequence
 
 		#region Operational
 
-		public bool HasCommands()
+		public bool HasNextInterval()
 		{
-			return TimingSource.Position <= Sequence.Length;
+			return TimingSource.Position + TimeSpan.FromMilliseconds(TimingSource.Interval) <= Sequence.Length;
 		}
+
+		public OutputStateList State { get; set; }
 
 		/// <summary>
 		/// Gets the command outputs for the current interval and then increments the timing source.
 		/// </summary>
 		/// <returns>Command outputs or null if there are no more intervals.</returns>
-		public OutputStateListAggregator NextInterval()
+		public void NextInterval()
 		{
-			OutputStateListAggregator outputCommands = null;
-			if (HasCommands())
+			//Advance the timing
+			TimingSource.Increment();
+			UpdateState();
+		}
+
+		private void UpdateState()
+		{
+			if (HasNextInterval())
 			{
-				outputCommands = new OutputStateListAggregator();
 				List<CommandOutput> commands = _UpdateState(TimingSource.Position);
-				outputCommands.AddCommands(commands);
-				//Advance the timing
-				TimingSource.Increment();
+				State.AddCommands(commands);
 			}
-
-			return outputCommands;
-
 		}
 
 		/// <summary>
@@ -121,6 +125,7 @@ namespace Vixen.Cache.Sequence
 			_context.Sequence = Sequence;
 			TimingSource.Start();
 			_context.Start();
+			UpdateState();
 		}
 
 		/// <summary>
