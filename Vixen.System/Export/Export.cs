@@ -15,9 +15,6 @@ namespace Vixen.Export
 {
     public enum ExportNotifyType
     {
-        NETSAVE,
-        LOADING,
-        EXPORTING,
         SAVING,
         COMPLETE
     };
@@ -221,7 +218,6 @@ namespace Vixen.Export
         public void Cancel()
         {
             _cancelling = true;
-			_generator.EndGeneration();
         }
 
         private void UpdateState(ICommand[] outputStates)
@@ -313,7 +309,6 @@ namespace Vixen.Export
 
 	            if (_cancelling == false)
                 {
-                    SequenceNotify(ExportNotifyType.SAVING);
                     sessionData.OutFileName = OutFileName;
                     sessionData.NumPeriods = periods;
                     sessionData.PeriodMS = UpdateInterval;
@@ -324,7 +319,7 @@ namespace Vixen.Export
 	                {
 		                _output.OpenSession(sessionData);
 		                int j = 0;
-		                while (_generator.HasNextInterval())
+		                while (_generator.HasNextInterval() && _cancelling == false)
 		                {
 			                SavePosition = Decimal.Round(((Decimal) j/periods)*100, 2);
 			                commandList.Clear();

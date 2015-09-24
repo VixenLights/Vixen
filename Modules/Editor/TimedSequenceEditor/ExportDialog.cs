@@ -81,8 +81,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         #region Background Thread
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
 		{
-            TimeSpan renderCheck = new TimeSpan(0, 0, 0, 0, 250);
-            while (_doProgressUpdate)
+           while (_doProgressUpdate)
             {
                 Thread.Sleep(25); 
                 switch (_currentState)
@@ -93,6 +92,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                         backgroundWorker1_Saving(sender, e);
                         break;
                     }
+
 
                     default:
                     {
@@ -210,11 +210,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_exportOps.Cancel();
         }
 
-        private void ExportForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
-
         private void stopButton_MouseEnter(object sender, EventArgs e)
         {
             this.UseWaitCursor = false;
@@ -314,36 +309,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         #region Events
 
-        private void SequenceNotify(Vixen.Export.ExportNotifyType notifyType)
+        private void SequenceNotify(ExportNotifyType notifyType)
         {
             _currentState = notifyType;
             switch(notifyType)
             {
-                case ExportNotifyType.NETSAVE:
-                {
-                    SequenceNetSave();
-                    break;
-                }
-
-                case ExportNotifyType.LOADING:
-                {
-                    SequenceLoading();
-                    break;
-                }
-
                 case ExportNotifyType.SAVING:
                 {
                     SequenceSaving();
                     break;
                 }
 
-                case ExportNotifyType.EXPORTING:
-                {
-                    SequenceExporting();
-                    break;
-                }
-
-                case ExportNotifyType.COMPLETE:
+				case ExportNotifyType.COMPLETE:
                 {
                     SequenceEnded();
                     break;
@@ -389,7 +366,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
             else
             {
-                setWorkingState("Saving: ", true, false);
+                setWorkingState("Saving: ", true, true);
             }
         }
 
