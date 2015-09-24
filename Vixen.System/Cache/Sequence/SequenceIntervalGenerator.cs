@@ -134,6 +134,7 @@ namespace Vixen.Cache.Sequence
 		public void EndGeneration()
 		{
 			TimingSource.Stop();
+			VixenSystem.Elements.ClearStates();
 			if (_context != null)
 			{
 				_context.Stop();
