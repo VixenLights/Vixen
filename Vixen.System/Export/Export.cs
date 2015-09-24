@@ -15,7 +15,8 @@ namespace Vixen.Export
 {
     public enum ExportNotifyType
     {
-        SAVING,
+        NONE,
+		SAVING,
         COMPLETE
     };
 
