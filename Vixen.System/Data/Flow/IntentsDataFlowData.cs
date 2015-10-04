@@ -10,7 +10,7 @@ namespace Vixen.Data.Flow
 			Value = intentStates;
 		}
 
-		public IEnumerable<IIntentState> Value { get; private set; }
+		public IEnumerable<IIntentState> Value { get; set; }
 
 		object IDataFlowData.Value
 		{
