@@ -31,7 +31,7 @@ namespace Vixen.Export
         private string _exportDir;
 		private SequenceIntervalGenerator _generator;
         private readonly ExportCommandHandler _exporterCommandHandler;
-        private readonly List<byte> _eventData;
+        private List<byte> _eventData;
 	    private List<ControllerExportInfo> _controllerExportInfos; 
 
         public delegate void SequenceEventHandler(ExportNotifyType notify);
@@ -57,7 +57,6 @@ namespace Vixen.Export
 
             UpdateInterval = VixenSystem.DefaultUpdateInterval;  //Default the UpdateInterval to the global interval
 
-            _eventData = new List<byte>();
             _exporterCommandHandler = new ExportCommandHandler();
 
             _exporting = false;
@@ -297,8 +296,7 @@ namespace Vixen.Export
 				SavePosition = 0;
 				SequenceNotify(ExportNotifyType.SAVING);
              	_generator.BeginGeneration();
-                List<ICommand> commandList = new List<ICommand>();
-	            
+                
 	            IEnumerable<Guid> outIds = _generator.State.GetOutputIds();
 	            int periods = (int)_generator.Sequence.Length.TotalMilliseconds / _generator.Interval;//outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
 
@@ -307,6 +305,9 @@ namespace Vixen.Export
 
 				//Now assemble a all their outputs by controller order.
 				List<List<Guid>> controllerOutputs = controllers.Select(controller => VixenSystem.OutputControllers.GetController(controller).Outputs.Select(x => x.Id).ToList()).ToList();
+
+				List<ICommand> commandList = new List<ICommand>(controllerOutputs.Count);
+	            _eventData = new List<byte>(controllerOutputs.Count);
 
 	            if (_cancelling == false)
                 {
