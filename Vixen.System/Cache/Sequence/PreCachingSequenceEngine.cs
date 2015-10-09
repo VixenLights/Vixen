@@ -20,10 +20,11 @@ namespace Vixen.Cache.Sequence
 	/// </summary>
 	public class PreCachingSequenceEngine 
 	{
-		private bool _lastUpdateClearedStates;
+		private bool _statesClear;
 		private ISequence _sequence;
 		private static bool _isRunning; //static to prevent more than one instance from running at the same time.
 		private Thread _cacheThread;
+		private int _outputCount;
 
 		public event EventHandler<CacheStartedEventArgs> SequenceCacheStarted;
 		public event EventHandler<CacheEventArgs> SequenceCacheEnded;
@@ -184,6 +185,7 @@ namespace Vixen.Cache.Sequence
 			{
 				runningContext.Pause();
 			}
+			_outputCount = VixenSystem.OutputControllers.GetAll().Sum(x => x.OutputCount);
 			VixenSystem.Elements.ClearStates();
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			PreCachingSequenceContext context = VixenSystem.Contexts.GetCacheCompileContext();
@@ -226,7 +228,7 @@ namespace Vixen.Cache.Sequence
 
 		private List<CommandOutput> _UpdateState(TimeSpan time)
 		{
-			var outputCommands = new List<CommandOutput>();
+			var outputCommands = new List<CommandOutput>(_outputCount);
 			
 			//Advance our context to specified time and do all the normal update stuff
 			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
@@ -234,17 +236,17 @@ namespace Vixen.Cache.Sequence
 			if (elementsAffected != null && elementsAffected.Any())
 			{
 				VixenSystem.Elements.Update(elementsAffected);
-				_lastUpdateClearedStates = false;
+				_statesClear = false;
 				VixenSystem.Filters.Update();
 			}
-			else if(!_lastUpdateClearedStates)
+			else if(!_statesClear)
 			{
 				//Nothing is happening so clear out the states instead of sampling empty context interval
 				VixenSystem.Elements.ClearStates();
-				_lastUpdateClearedStates = true;
+				_statesClear = true;
 				VixenSystem.Filters.Update();
 			}
-				
+
 			//Now walk the outputs and collect our data
 			foreach (OutputController outputController in VixenSystem.OutputControllers.GetAll())
 			{

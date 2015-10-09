@@ -11,9 +11,10 @@ namespace Vixen.Cache.Sequence
 {
 	public class SequenceIntervalGenerator
 	{
-		private bool _lastUpdateClearedStates;
+		private bool _statesClear;
 		private PreCachingSequenceContext _context;
 		private IEnumerable<IContext> _runningContexts = Enumerable.Empty<IContext>();
+		private int _outputCount;
 		
 		#region Contructors
 
@@ -119,6 +120,7 @@ namespace Vixen.Cache.Sequence
 			{
 				runningContext.Pause();
 			}
+			_outputCount = VixenSystem.OutputControllers.GetAll().Sum(x => x.OutputCount);
 			VixenSystem.Elements.ClearStates();
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			_context = VixenSystem.Contexts.GetCacheCompileContext();
@@ -150,7 +152,7 @@ namespace Vixen.Cache.Sequence
 
 		private List<CommandOutput> _UpdateState(TimeSpan time)
 		{
-			var outputCommands = new List<CommandOutput>();
+			var outputCommands = new List<CommandOutput>(_outputCount);
 
 			//Advance our context to specified time and do all the normal update stuff
 			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
@@ -158,14 +160,14 @@ namespace Vixen.Cache.Sequence
 			if (elementsAffected != null && elementsAffected.Any())
 			{
 				VixenSystem.Elements.Update(elementsAffected);
-				_lastUpdateClearedStates = false;
+				_statesClear = false;
 				VixenSystem.Filters.Update();
 			}
-			else if (!_lastUpdateClearedStates)
+			else if (!_statesClear)
 			{
 				//Nothing is happening so clear out the states instead of sampling empty context interval
 				VixenSystem.Elements.ClearStates();
-				_lastUpdateClearedStates = true;
+				_statesClear = true;
 				VixenSystem.Filters.Update();
 			}
 
