@@ -25,6 +25,7 @@ namespace Vixen.Cache.Sequence
 		private static bool _isRunning; //static to prevent more than one instance from running at the same time.
 		private Thread _cacheThread;
 		private int _outputCount;
+		private PreCachingSequenceContext _context;
 
 		public event EventHandler<CacheStartedEventArgs> SequenceCacheStarted;
 		public event EventHandler<CacheEventArgs> SequenceCacheEnded;
@@ -207,6 +208,8 @@ namespace Vixen.Cache.Sequence
 			{
 				runningContext.Resume();
 			}
+
+			VixenSystem.Contexts.ReleaseContext(_context);
 			//restart the devices
 			VixenSystem.OutputDeviceManagement.ResumeAll();
 			IsRunning = false;
@@ -231,7 +234,7 @@ namespace Vixen.Cache.Sequence
 			var outputCommands = new List<CommandOutput>(_outputCount);
 			
 			//Advance our context to specified time and do all the normal update stuff
-			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
+			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time, _context);
 			//Check to see if any elements are affected
 			if (elementsAffected != null && elementsAffected.Any())
 			{

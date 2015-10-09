@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
+using System.Threading;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Sys;
@@ -125,8 +125,9 @@ namespace Vixen.Cache.Sequence
 			//Special context to pre cache commands. We don't need all the other fancy executor or timing as we will advance it ourselves
 			_context = VixenSystem.Contexts.GetCacheCompileContext();
 			_context.Sequence = Sequence;
-			TimingSource.Start();
 			_context.Start();
+			TimingSource.Start();
+			Thread.Sleep(5);  //Give things a chance to start up.
 			UpdateState();
 		}
 
@@ -139,7 +140,7 @@ namespace Vixen.Cache.Sequence
 			VixenSystem.Elements.ClearStates();
 			if (_context != null)
 			{
-				_context.Stop();
+				VixenSystem.Contexts.ReleaseContext(_context);
 			}
 			foreach (var runningContext in _runningContexts)
 			{
@@ -155,7 +156,7 @@ namespace Vixen.Cache.Sequence
 			var outputCommands = new List<CommandOutput>(_outputCount);
 
 			//Advance our context to specified time and do all the normal update stuff
-			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time);
+			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time, _context);
 			//Check to see if any elements are affected
 			if (elementsAffected != null && elementsAffected.Any())
 			{
