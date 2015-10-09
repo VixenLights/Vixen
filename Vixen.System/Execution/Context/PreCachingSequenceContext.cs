@@ -16,7 +16,7 @@ namespace Vixen.Execution.Context
 	{
 
 		private readonly string _name;
-		private EffectNodeBuffer _dataSource; //Maybe use  
+		private SequenceDataPump _dataSource; //Maybe use  
 		private ISequence _sequence;
 		private ISequenceExecutor _sequenceExecutor;
 
@@ -31,7 +31,8 @@ namespace Vixen.Execution.Context
 			set
 			{
 				_sequence = value;
-				_dataSource = new EffectNodeBuffer(_sequence.SequenceData.EffectData);
+				_dataSource = new SequenceDataPump();
+				_dataSource.Sequence = _sequence;
 			}
 		}
 
