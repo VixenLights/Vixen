@@ -1,44 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
-using Vixen.Module.Timing;
-using Vixen.Services;
+using NLog;
 using Vixen.Export;
 using Vixen.Sys;
-using Vixen.Cache.Sequence;
-using Vixen.Sys.Output;
-using Vixen.Module.Controller;
-using VixenModules.Editor.EffectEditor;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 
     public partial class ExportDialog : Form
     {
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
         private string _outFileName;
-        private ISequence _sequence;
-        private Export _exportOps;
+        private readonly ISequence _sequence;
+        private readonly Export _exportOps;
         private bool _doProgressUpdate;
-        private const int RENDER_TIME_DELTA = 250;
-        private string _sequenceFileName = "";
-        private string _audioFileName = "";
+	    private readonly string _sequenceFileName;
+        private readonly string _audioFileName;
         private ExportNotifyType _currentState;
-        private double _percentComplete = 0;
-        private TimeSpan _curPos;
-        private bool _cancelled;
+	    private bool _cancelled;
 
-        #region Contructor
+        #region Constructor
         public ExportDialog(ISequence sequence)
         {
             InitializeComponent();
@@ -49,7 +39,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             Icon = Resources.Icon_Vixen3;
             
             _sequence = sequence;
-            _exportOps = new Export();
+	        _exportOps = new Export();
             _exportOps.SequenceNotify += SequenceNotify;
             
             _sequenceFileName = _sequence.FilePath;
@@ -61,7 +51,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                  select media.MediaFilePath);
 
             _audioFileName = "";
-            if (mediaFileNames.Count() > 0)
+            if (mediaFileNames.Any())
             {
                 _audioFileName = mediaFileNames.First();
             }
@@ -73,26 +63,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-
-
         }
         #endregion
 
         #region Background Thread
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
 		{
-            TimeSpan renderCheck = new TimeSpan(0, 0, 0, 0, 250);
-            while (_doProgressUpdate)
+           while (_doProgressUpdate)
             {
                 Thread.Sleep(25); 
                 switch (_currentState)
                 {
-                    case ExportNotifyType.EXPORTING:
-                    {
-                        backgroundWorker1_Exporting(sender,e);
-                        break;
-                    }
-
+                   
                     case ExportNotifyType.SAVING:
                     {
                         backgroundWorker1_Saving(sender, e);
@@ -105,42 +87,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     }
                 }
             }
-            this.UseWaitCursor = false;
+            UseWaitCursor = false;
 			backgroundWorker1.ReportProgress(0);
-        }
-
-        private void backgroundWorker1_Exporting(object sender, DoWorkEventArgs e)
-        {
-            _curPos = _exportOps.ExportPosition;
-            currentTimeLabel.Text = string.Format("{0:D2}:{1:D2}.{2:D3}",
-                                                    _curPos.Minutes,
-                                                    _curPos.Seconds,
-                                                    _curPos.Milliseconds);
-            _percentComplete =
-                (_curPos.TotalMilliseconds /
-                (double)_sequence.Length.TotalMilliseconds) * 100;
-
-            backgroundWorker1.ReportProgress((int)_percentComplete);
         }
 
         private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
-                backgroundWorker1.ReportProgress((int)_exportOps.SavePosition);
-            }
-            catch (Exception ex) { }
+	        try
+	        {
+		        currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
+		        backgroundWorker1.ReportProgress((int) _exportOps.SavePosition);
+	        }
+	        catch (Exception ex)
+	        {
+		        Logging.Error("An error occured while updating the progress in the export.", ex);
+	        }
             
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
         {
-            try
-            {
-                exportProgressBar.Value = args.ProgressPercentage;
-            }
-            catch (Exception e) { }
+	        try
+	        {
+		        exportProgressBar.Value = args.ProgressPercentage;
+	        }
+	        catch (Exception e)
+	        {
+				Logging.Error("An error occured while updating the progress percentage in the export.", e);
+	        }
             
         }
         #endregion
@@ -183,12 +157,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            this.UseWaitCursor = true;
+            
             _cancelled = false;
 
             if (string.IsNullOrWhiteSpace(_sequenceFileName))
             {
-                this.UseWaitCursor = false;
+                UseWaitCursor = false;
                 return;
             }
 
@@ -206,9 +180,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
             DialogResult dr = saveDialog.ShowDialog();
             if (dr != DialogResult.OK)
             {
-                this.UseWaitCursor = false;
+                UseWaitCursor = false;
                 return;
             }
+			UseWaitCursor = true;
+			_doProgressUpdate = true;
+			backgroundWorker1.RunWorkerAsync();
 
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
@@ -217,8 +194,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             _exportOps.AudioFilename = _audioFileName;
 
 
-            _doProgressUpdate = true;
-            backgroundWorker1.RunWorkerAsync();
+           
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -227,19 +203,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_exportOps.Cancel();
         }
 
-        private void ExportForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
-
         private void stopButton_MouseEnter(object sender, EventArgs e)
         {
-            this.UseWaitCursor = false;
-        }
-
-        private void stopButton_MouseLeave(object sender, EventArgs e)
-        {
-            this.UseWaitCursor = _doProgressUpdate;
+            UseWaitCursor = false;
         }
 
         #endregion
@@ -247,9 +213,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
         #region Operational
         public void ShowDestinationMB()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action(this.ShowDestinationMB));
+                BeginInvoke(new Action(ShowDestinationMB));
                 return;
             }
 
@@ -281,7 +247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
         }
 
-        private string setToolbarStatus(string progressText, bool showLiveProgress)
+        private string SetToolbarStatus(string progressText, bool showLiveProgress)
 		{
 			string prevVal = progressLabel.Text;
 			progressLabel.Text = progressText;
@@ -291,19 +257,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return prevVal;
 		}
 
-        private string getAbbreviatedSequenceName(string prefix, string suffix)
+        private string GetAbbreviatedSequenceName(string prefix, string suffix)
         {
             return prefix  +
                 Path.GetFileNameWithoutExtension(_sequenceFileName) +
                 suffix;
         }
 
-        private void setWorkingState(string message, bool isWorking)
+        private void SetWorkingState(string message, bool isWorking)
         {
-            setWorkingState(message, isWorking, isWorking);
+            SetWorkingState(message, isWorking, isWorking);
         }
 
-        private void setWorkingState(string message, bool isWorking, bool allowStop)
+        private void SetWorkingState(string message, bool isWorking, bool allowStop)
         {
             string newStatus = "";
             buttonStart.Enabled = !isWorking;
@@ -317,7 +283,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             if (isWorking)
             {
                 newStatus =
-                    getAbbreviatedSequenceName(message, "");
+                    GetAbbreviatedSequenceName(message, "");
             }
             else
             {
@@ -325,42 +291,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 backgroundWorker1.CancelAsync();
             }
 
-            setToolbarStatus(newStatus, isWorking);
+            SetToolbarStatus(newStatus, isWorking);
         }
         #endregion
 
         #region Events
 
-        private void SequenceNotify(Vixen.Export.ExportNotifyType notifyType)
+        private void SequenceNotify(ExportNotifyType notifyType)
         {
             _currentState = notifyType;
             switch(notifyType)
             {
-                case ExportNotifyType.NETSAVE:
-                {
-                    SequenceNetSave();
-                    break;
-                }
-
-                case ExportNotifyType.LOADING:
-                {
-                    SequenceLoading();
-                    break;
-                }
-
                 case ExportNotifyType.SAVING:
                 {
                     SequenceSaving();
                     break;
                 }
 
-                case ExportNotifyType.EXPORTING:
-                {
-                    SequenceExporting();
-                    break;
-                }
-
-                case ExportNotifyType.COMPLETE:
+				case ExportNotifyType.COMPLETE:
                 {
                     SequenceEnded();
                     break;
@@ -373,60 +321,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
         }
 
-        private void SequenceLoading()
-        {
-            //PlaceHolder Stub
-        }
-
-        private void SequenceNetSave()
-        {
-            //Placeholder Stub
-        }
-
-        private void SequenceExporting()
-        {
-            if (this.InvokeRequired)
-            {
-                this.BeginInvoke(new Action(SequenceExporting));
-                return;
-            }
-            else
-            {
-                setWorkingState("Exporting: ", true);
-            }
-
-        }
-
         private void SequenceSaving()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action(SequenceSaving));
-                return;
+               BeginInvoke(new Action(SequenceSaving));
             }
             else
             {
-                setWorkingState("Saving: ", true, false);
+                SetWorkingState("Saving: ", true, true);
             }
         }
 
         private void SequenceEnded()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.BeginInvoke(new Action(SequenceEnded));
-                return;
+                BeginInvoke(new Action(SequenceEnded));
             }
             else
             {
-                if (_cancelled == true)
-                {
-                    setWorkingState("Export Canceled", false);
-                }
-                else
-                {
-                    setWorkingState("Export Complete", false);
-                } 
+	            SetWorkingState(_cancelled ? "Export Canceled" : "Export Complete", false);
             }
         }
 
@@ -450,7 +365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
+			UseWaitCursor = _currentState == ExportNotifyType.SAVING;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

@@ -192,13 +192,14 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public DimmingCurveOutput(Curve curve)
 		{
+			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
 			_curve = curve;
 			_filter = new DimmingCurveFilter(_curve);
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
-			Data = new IntentsDataFlowData(data.Value.Select(_filter.Filter));
+			Data.Value = data.Value.Any() ? data.Value.Select(_filter.Filter).ToArray() : Enumerable.Empty<IIntentState>();
 		}
 
 		public IntentsDataFlowData Data { get; private set; }

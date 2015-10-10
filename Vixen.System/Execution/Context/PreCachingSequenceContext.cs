@@ -16,10 +16,9 @@ namespace Vixen.Execution.Context
 	{
 
 		private readonly string _name;
-		private EffectNodeBuffer _dataSource; //Maybe use  
+		private SequenceDataPump _dataSource; //Maybe use  
 		private ISequence _sequence;
-		private ISequenceExecutor _sequenceExecutor;
-
+		
 		public PreCachingSequenceContext(string name)
 		{
 			_name = name;
@@ -31,7 +30,7 @@ namespace Vixen.Execution.Context
 			set
 			{
 				_sequence = value;
-				_dataSource = new EffectNodeBuffer(_sequence.SequenceData.EffectData);
+				_dataSource = new SequenceDataPump {Sequence = _sequence};
 			}
 		}
 
@@ -62,7 +61,7 @@ namespace Vixen.Execution.Context
 
 		protected override ITiming _SequenceTiming
 		{
-			get { return _sequenceExecutor != null ? _sequenceExecutor.TimingSource : null; }
+			get { return null; }
 		}
 
 		public override IExecutor Executor

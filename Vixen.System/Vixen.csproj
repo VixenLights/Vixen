@@ -101,6 +101,7 @@
     <Compile Include="Cache\Sequence\ISequenceCache.cs" />
     <Compile Include="Cache\Sequence\PreCachingSequenceEngine.cs" />
     <Compile Include="Cache\Sequence\FixedIntervalManualTiming.cs" />
+    <Compile Include="Cache\Sequence\SequenceIntervalGenerator.cs" />
     <Compile Include="Commands\16BitCommand.cs" />
     <Compile Include="Commands\32BitCommand.cs" />
     <Compile Include="Commands\64BitCommand.cs" />
@@ -323,6 +324,7 @@
     <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />
     <Compile Include="Sys\Managers\OutputDeviceFacade.cs" />
     <Compile Include="Sys\Managers\SmartOutputControllerManager.cs" />
+    <Compile Include="Sys\OutputStateList.cs" />
     <Compile Include="Sys\OutputStateListAggregator.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
     <Compile Include="Services\EditorService.cs" />

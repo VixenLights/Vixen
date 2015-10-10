@@ -23,8 +23,7 @@ namespace Vixen.Sys.Managers
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
 		private readonly HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
-		private PreCachingSequenceContext _preCachingSequenceContext;
-
+		
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
 
@@ -45,15 +44,10 @@ namespace Vixen.Sys.Managers
 
 		public PreCachingSequenceContext GetCacheCompileContext()
 		{
-			if (_preCachingSequenceContext == null)
-			{
-				_preCachingSequenceContext = new PreCachingSequenceContext("Compiler");
-				_AddContext(_preCachingSequenceContext);
-			}else if (!_instances.ContainsKey(_preCachingSequenceContext.Id))
-			{
-				_AddContext(_preCachingSequenceContext);
-			}
-			return _preCachingSequenceContext;
+			var	preCachingSequenceContext = new PreCachingSequenceContext("Compiler");
+			_AddContext(preCachingSequenceContext);
+			
+			return preCachingSequenceContext;
 		}
 
 		public IProgramContext CreateProgramContext(ContextFeatures contextFeatures, IProgram program)
@@ -106,13 +100,13 @@ namespace Vixen.Sys.Managers
 			_contextInstances = _instances.Values.ToList().AsReadOnly();
 		}
 
-		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time)
+		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time, IContext context)
 		{
 			HashSet<Guid> elementsAffected = null;
 			_stopwatch.Restart();
 			try
 			{
-				elementsAffected =_preCachingSequenceContext.UpdateElementStates(time);
+				elementsAffected =context.UpdateElementStates(time);
 			} catch (Exception ee)
 			{
 				Logging.Error(ee.Message, ee);
