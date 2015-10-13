@@ -146,7 +146,7 @@ namespace VixenModules.Effect.Alternating
 			get { return _data.GroupLevel; }
 			set
 			{
-				_data.GroupLevel = value;
+				_data.GroupLevel = value>0?value:1;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
