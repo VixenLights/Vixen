@@ -1,10 +1,13 @@
-﻿using Vixen.Sys;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Vixen.Sys;
 
 namespace Vixen.Data.Flow
 {
 	internal class ElementDataFlowOutputAdapter : IDataFlowOutput<IntentsDataFlowData>
 	{
-		private Element _element;
+		private readonly Element _element;
+		private readonly IntentsDataFlowData _data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
 
 		public ElementDataFlowOutputAdapter(Element element)
 		{
@@ -13,7 +16,11 @@ namespace Vixen.Data.Flow
 
 		public IntentsDataFlowData Data
 		{
-			get { return new IntentsDataFlowData(_element.State); }
+			get
+			{
+				_data.Value = _element.State;
+				return _data;
+			}
 		}
 
 		public string Name
