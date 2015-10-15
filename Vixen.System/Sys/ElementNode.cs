@@ -34,6 +34,11 @@ namespace Vixen.Sys
 				VixenSystem.Nodes.SetElementNode(id, this);
 			}
 			Id = id;
+			if (element != null)
+			{
+				//Ensure the element name matches the ElementNode name as there is some code that expects that.
+				element.Name = name;
+			}
 			Element = element;
 			Properties = new PropertyManager(this);
 		}
