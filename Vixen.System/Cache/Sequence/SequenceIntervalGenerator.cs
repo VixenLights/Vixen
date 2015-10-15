@@ -127,7 +127,6 @@ namespace Vixen.Cache.Sequence
 			_context.Sequence = Sequence;
 			_context.Start();
 			TimingSource.Start();
-			Thread.Sleep(5);  //Give things a chance to start up.
 			UpdateState();
 		}
 

@@ -24,6 +24,11 @@ namespace Vixen.Execution.DataSource
 
 			if (!IsRunning) {
 				_StartThread();
+				while (!IsRunning)
+				{
+					//wait until the thread is running
+					Thread.Sleep(1);
+				}
 			}
 		}
 
