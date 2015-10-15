@@ -9,8 +9,8 @@ namespace Vixen.Commands
 		public _64BitCommand(ulong value)
 		{
 			CommandValue = value;
-			SignedValue = (long) value;
-			UnsignedValue = value;
+			//SignedValue = (long) value;
+			//UnsignedValue = value;
 		}
 
 		public _64BitCommand(byte value)
@@ -40,9 +40,9 @@ namespace Vixen.Commands
 
 		public ulong CommandValue { get; set; }
 
-		public long SignedValue { get; private set; }
+		//public long SignedValue { get; private set; }
 
-		public ulong UnsignedValue { get; private set; }
+		//public ulong UnsignedValue { get; private set; }
 
 		object ICommand.CommandValue
 		{

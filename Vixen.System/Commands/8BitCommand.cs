@@ -9,8 +9,8 @@ namespace Vixen.Commands
 		public _8BitCommand(byte value)
 		{
 			CommandValue = value;
-			SignedValue = (sbyte) value;
-			UnsignedValue = value;
+			//SignedValue = (sbyte) value;
+			//UnsignedValue = value;
 		}
 
 		public _8BitCommand(short value)
@@ -40,9 +40,9 @@ namespace Vixen.Commands
 
 		public byte CommandValue { get; set; }
 
-		public sbyte SignedValue { get; private set; }
+		//public sbyte SignedValue { get; private set; }
 
-		public byte UnsignedValue { get; private set; }
+		//public byte UnsignedValue { get; private set; }
 
 		object ICommand.CommandValue
 		{
