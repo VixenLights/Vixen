@@ -12,9 +12,7 @@ namespace Vixen.Data.Combinator._8Bit
 				CombinatorValue = obj;
 			}
 			else {
-				byte value1 = (CombinatorValue as _8BitCommand).CommandValue;
-				byte value2 = obj.CommandValue;
-				CombinatorValue = new _8BitCommand(Math.Max(value1, value2));
+				CombinatorValue = obj.Max((_8BitCommand) CombinatorValue);
 			}
 		}
 
