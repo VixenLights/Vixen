@@ -23,7 +23,7 @@ namespace Vixen.Services
 
 			ElementNode elementNode = VixenSystem.Nodes.AddNode(name, parentNode, uniquifyName);
 
-			Element element = createElement ? _CreateElement(name) : null;
+			Element element = createElement ? _CreateElement(elementNode.Name) : null;
 			elementNode.Element = element;
 			VixenSystem.Elements.AddElement(element);
 
@@ -55,7 +55,7 @@ namespace Vixen.Services
 
 		public void Rename(ElementNode elementNode, string name)
 		{
-			elementNode.Name = name;
+			VixenSystem.Nodes.RenameNode(elementNode, name);
 		}
 
 		private Element _CreateElement(string name)
