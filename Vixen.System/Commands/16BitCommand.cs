@@ -9,8 +9,8 @@ namespace Vixen.Commands
 		public _16BitCommand(ushort value)
 		{
 			CommandValue = value;
-			SignedValue = (short) value;
-			UnsignedValue = value;
+			//SignedValue = (short) value;
+			//UnsignedValue = value;
 		}
 
 		public _16BitCommand(byte value)
@@ -35,9 +35,9 @@ namespace Vixen.Commands
 
 		public ushort CommandValue { get; set; }
 
-		public short SignedValue { get; private set; }
+		//public short SignedValue { get; private set; }
 
-		public ushort UnsignedValue { get; private set; }
+		//public ushort UnsignedValue { get; private set; }
 
 		object ICommand.CommandValue
 		{

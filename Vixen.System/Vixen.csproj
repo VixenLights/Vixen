@@ -107,6 +107,7 @@
     <Compile Include="Commands\64BitCommand.cs" />
     <Compile Include="Commands\8BitCommand.cs" />
     <Compile Include="Commands\ColorCommand.cs" />
+    <Compile Include="Commands\CommandExtensions.cs" />
     <Compile Include="Commands\UnknownValueCommand.cs" />
     <Compile Include="Common\ColorSpaces.cs" />
     <Compile Include="Common\ColorSpaceTypeConverter.cs" />

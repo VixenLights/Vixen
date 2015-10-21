@@ -9,8 +9,8 @@ namespace Vixen.Commands
 		public _32BitCommand(uint value)
 		{
 			CommandValue = value;
-			SignedValue = (int) value;
-			UnsignedValue = value;
+			//SignedValue = (int) value;
+			//UnsignedValue = value;
 		}
 
 		public _32BitCommand(byte value)
@@ -40,9 +40,9 @@ namespace Vixen.Commands
 
 		public uint CommandValue { get; set; }
 
-		public int SignedValue { get; private set; }
+		//public int SignedValue { get; private set; }
 
-		public uint UnsignedValue { get; private set; }
+		//public uint UnsignedValue { get; private set; }
 
 		object ICommand.CommandValue
 		{

@@ -24,6 +24,11 @@ namespace Vixen.Execution.DataSource
 
 			if (!IsRunning) {
 				_StartThread();
+				while (!IsRunning)
+				{
+					//wait until the thread is running
+					Thread.Sleep(1);
+				}
 			}
 		}
 
@@ -61,19 +66,12 @@ namespace Vixen.Execution.DataSource
 
 		private void _DataPumpThread()
 		{
-			IsRunning = true;
-
 			IEnumerator<IDataNode> dataEnumerator = Sequence.SequenceData.EffectData.GetEnumerator();
+			IsRunning = true;
 			try {
-				//while (IsRunning) {
-					while (IsRunning && dataEnumerator.MoveNext()) {
-						_effectNodeQueue.Add((IEffectNode) dataEnumerator.Current);
-					}
-
-					// Wait a bit before checking for more data.
-					//*** Look up a better way than an arbitrary sleep.
-				//	Thread.Sleep(5);
-				//}
+				while (IsRunning && dataEnumerator.MoveNext()) {
+					_effectNodeQueue.Add((IEffectNode) dataEnumerator.Current);
+				}
 			}
 			finally {
 				dataEnumerator.Dispose();
