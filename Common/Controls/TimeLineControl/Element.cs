@@ -302,18 +302,31 @@ namespace Common.Controls.Timeline
 			// Draw it!
 			using (Pen border = new Pen(redBorder ? Color.Red : BorderColor,borderWidth))
 			{	
-				g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Right, borderRectangle.Top);
-				g.DrawLine(border, borderRectangle.Left, borderRectangle.Bottom, borderRectangle.Right, borderRectangle.Bottom);
-
-				if (includeRight)
+				DrawBorder(g, includeLeft, includeRight, border, borderRectangle);
+				if (drawSelected)
 				{
-					g.DrawLine(border, borderRectangle.Right, borderRectangle.Top, borderRectangle.Right, borderRectangle.Bottom+1);
+					//border.DashCap = DashCap.Flat;
+					//border.DashStyle = DashStyle.Dot;
+					border.Width = 1;
+					border.DashPattern = new float[] { 1.0F, 2.0F};
+					border.Color = Color.FromArgb(221,221,221);
+					DrawBorder(g, includeLeft, includeRight, border, borderRectangle);
 				}
-				if (includeLeft)
-				{
-					g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Left, borderRectangle.Bottom);
-				}	
-			
+			}
+		}
+
+		private static void DrawBorder(Graphics g, bool includeLeft, bool includeRight, Pen border, Rectangle borderRectangle)
+		{
+			g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Right, borderRectangle.Top);
+			g.DrawLine(border, borderRectangle.Left, borderRectangle.Bottom, borderRectangle.Right, borderRectangle.Bottom);
+
+			if (includeRight)
+			{
+				g.DrawLine(border, borderRectangle.Right, borderRectangle.Top, borderRectangle.Right, borderRectangle.Bottom + 1);
+			}
+			if (includeLeft)
+			{
+				g.DrawLine(border, borderRectangle.Left, borderRectangle.Top, borderRectangle.Left, borderRectangle.Bottom);
 			}
 		}
 
