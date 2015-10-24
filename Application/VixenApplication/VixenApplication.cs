@@ -220,6 +220,8 @@ namespace VixenApplication
 				if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
 				{
 					_rootDataDirectory = directory;
+					string profileName = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
+					UpdateTitleWithProfileName(profileName);
 				}
 				else
 				{
@@ -247,6 +249,7 @@ namespace VixenApplication
 					if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
 					{
 						_rootDataDirectory = directory;
+						UpdateTitleWithProfileName(selectProfile.ProfileName);
 						break;
 					}
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -277,6 +280,11 @@ namespace VixenApplication
 			}
 
 			SetLogFilePaths();
+		}
+
+		private void UpdateTitleWithProfileName(string profileName)
+		{
+			Text = string.Format("Vixen Administration - {0} Profile", profileName);
 		}
 
 		/// <summary>
