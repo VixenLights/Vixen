@@ -35,8 +35,17 @@ namespace Common.Controls.Theme
 		private static Color _numericBackColor = Color.FromArgb(90, 90, 90);
 
 		//MenuStrips
-		private static Color _menuSelectedHighlightBackColor = Color.FromArgb(68, 68, 68);
+		private static Color _menuMenuSelectedHighlightBackColor = Color.FromArgb(68, 68, 68);
 		private static Color _highlightColor = Color.FromArgb(90, 90, 90);
+
+		private static Color _selectionHighlightColor = _foreColor;
+
+		private static Color _buttonSelectionGradientBegin = _highlightColor;
+		private static Color _buttonSelectionGradientEnd = _highlightColor;
+
+		private static Color _buttonPressedGradientBegin = _foreColor;
+		private static Color _buttonPressedGradientEnd = _backgroundColor;
+
 
 		//Sequence TimeLine
 		private static Color _timeLinePanel1BackColor = Color.FromArgb(40, 40, 40);
@@ -187,6 +196,22 @@ namespace Common.Controls.Theme
 			get { return _backgroundColor; }
 		}
 
+		//MenuItemPressed is active on hover
+		public override Color MenuItemPressedGradientBegin
+		{
+			get { return _highlightColor; }
+		}
+
+		public override Color MenuItemPressedGradientMiddle
+		{
+			get { return _highlightColor; }
+		}
+
+		public override Color MenuItemPressedGradientEnd
+		{
+			get { return _highlightColor; }
+		}
+
 		public override Color ToolStripGradientBegin
 		{
 			get { return _backgroundColor; }
@@ -257,20 +282,6 @@ namespace Common.Controls.Theme
 			get { return _highlightColor; }
 		}
 
-		public override Color MenuItemPressedGradientBegin
-		{
-			get { return _highlightColor; }
-		}
-
-		public override Color MenuItemPressedGradientMiddle
-		{
-			get { return _highlightColor; }
-		}
-
-		public override Color MenuItemPressedGradientEnd
-		{
-			get { return _highlightColor; }
-		}
 		public override Color ToolStripDropDownBackground
 		{
 			get { return _highlightColor; }
@@ -281,22 +292,43 @@ namespace Common.Controls.Theme
 			get { return _highlightColor; }
 		}
 
-		public override Color ButtonSelectedHighlight
-		{
-			get { return _highlightColor; }
-		}
-
 		public override Color CheckSelectedBackground
 		{
 			get { return _backgroundColor; }
 		}
 
-		public override Color ButtonPressedHighlight
-		{
-			get { return _highlightColor; }
-		}
 
 		public override Color CheckPressedBackground
+		{
+			get { return _backgroundColor; }
+		}
+
+		//Button pressed is for hover highlight
+		/// <summary>
+		/// Hover highlight solid color
+		/// </summary>
+		public override Color ButtonPressedHighlight
+		{
+			get { return _buttonPressedGradientBegin; }
+		}
+
+		/// <summary>
+		/// Hover highlight gradient colors
+		/// </summary>
+		public override Color ButtonPressedGradientBegin
+		{
+			get { return _buttonPressedGradientBegin; }
+		}
+
+		/// <summary>
+		/// Hover highlight gradient colors
+		/// </summary>
+		public override Color ButtonPressedGradientEnd
+		{
+			get { return _buttonPressedGradientEnd; }
+		}
+
+		public override Color ButtonPressedBorder
 		{
 			get { return _backgroundColor; }
 		}
@@ -304,22 +336,27 @@ namespace Common.Controls.Theme
 		public override Color ButtonCheckedHighlight
 		{
 
-			get { return _highlightColor; }
+			get { return _selectionHighlightColor; }
 		}
 
 		public override Color ButtonSelectedBorder
 		{
-			get { return _menuSelectedHighlightBackColor; }
+			get { return _menuMenuSelectedHighlightBackColor; }
+		}
+
+		public override Color ButtonSelectedHighlight
+		{
+			get { return _buttonSelectionGradientBegin; }
 		}
 
 		public override Color ButtonSelectedGradientBegin
 		{
-			get { return _highlightColor; }
+			get { return _buttonSelectionGradientBegin; }
 		}
 
 		public override Color ButtonSelectedGradientEnd
 		{
-			get { return _highlightColor; }
+			get { return _buttonSelectionGradientEnd; }
 		}
 
 		public override Color GripLight
@@ -332,14 +369,15 @@ namespace Common.Controls.Theme
 			get { return _backgroundColor; }
 		}
 
-		public static Color SelectedHighlightColor
+		public static Color MenuSelectedHighlightColor
 		{
-			get { return _menuSelectedHighlightBackColor; }
+			get { return _menuMenuSelectedHighlightBackColor; }
 		}
 
 		public static Color HighlightColor
 		{
-			get { return _highlightColor; }
+			get { return _selectionHighlightColor; }
 		}
+
 	}
 }

@@ -43,7 +43,7 @@ namespace Common.Controls.Theme
 						btn.BackgroundImageLayout = ImageLayout.Stretch;
 						btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
 						btn.BackColor = Color.Transparent;
-						btn.ForeColor = btn.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+						btn.ForeColor = ThemeColorTable.ForeColor;
 					}
 				}
 				if (c is TextBox & !c.ToString().Contains("UpDown"))
