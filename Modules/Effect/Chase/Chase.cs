@@ -479,7 +479,7 @@ namespace VixenModules.Effect.Chase
 			if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if(lightingIntent != null && lightingIntent.EndValue.Intensity > 0){
-				var newCurve = new Curve(CurveType.Flat100);
+				var newCurve = new Curve(lightingIntent.EndValue.Intensity*100);
 				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor), TimeSpan - intentNode.EndTime);
 				result.OffsetAllCommandsByTime(intentNode.EndTime);
 				_elementData.Add(result);
@@ -492,7 +492,7 @@ namespace VixenModules.Effect.Chase
 			var lightingIntent = intentNode.Intent as LightingIntent;
 			if (lightingIntent!= null && lightingIntent.StartValue.Intensity > 0)
 			{
-				var newCurve = new Curve(CurveType.Flat100);
+				var newCurve = new Curve(lightingIntent.StartValue.Intensity*100);
 				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime);
 				_elementData.Add(result);
 			}

@@ -59,6 +59,15 @@ namespace VixenModules.App.Curves
 			}
 		}
 
+		/// <summary>
+		/// Creates a flat curve of the given intensity
+		/// </summary>
+		/// <param name="intensity"></param>
+		public Curve(double intensity)
+		{
+			Points = new PointPairList(new[] { 0.0, 100.0 }, new[] { intensity, intensity });	
+		}
+
 
 		private PointPairList _points;
 
