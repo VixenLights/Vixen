@@ -15,7 +15,7 @@ using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 
 namespace VixenModules.Preview.VixenPreview {
-    public partial class VixenPreviewSetup3 : Form
+	public partial class VixenPreviewSetup3 : BaseForm
     {
         private VixenPreviewData _data;
 		public static VixenPreviewSetupDocument previewForm;

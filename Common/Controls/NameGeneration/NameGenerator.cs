@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace Common.Controls
 {
-	public partial class NameGenerator : Form
+	public partial class NameGenerator : BaseForm
 	{
 		private List<string> OldNames { get; set; }
 

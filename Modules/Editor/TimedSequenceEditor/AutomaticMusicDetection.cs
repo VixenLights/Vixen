@@ -11,11 +11,12 @@ using Common.Resources.Properties;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Common.Controls;
 using Common.Controls.Theme;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class AutomaticMusicDetection : Form
+	public partial class AutomaticMusicDetection : BaseForm
 	{
 		public AutomaticMusicDetection(Audio audio)
 		{

@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.DummyLighting
 {
-	public partial class DummyLightingSetup : Form
+	public partial class DummyLightingSetup : BaseForm
 	{
 		public DummyLightingSetup(RenderStyle renderStyle, string formTitle)
 		{

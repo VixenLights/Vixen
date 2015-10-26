@@ -7,12 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class InvalidAudioPathDialog : Form
+	public partial class InvalidAudioPathDialog : BaseForm
 	{
 		public InvalidAudioDialogResult InvalidAudioDialogResult { get; set; }
 		

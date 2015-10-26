@@ -14,7 +14,7 @@ namespace Common.Controls.Timeline
 		private static readonly Color Gray = Color.FromArgb(122, 122, 122);
 		private static readonly Color BorderColor = Color.Black;
 		private bool _selected;
-		private static readonly Font TextFont = new Font("Arial", 7);
+		private static readonly Font TextFont = new Font(SystemFonts.MessageBoxFont.FontFamily, 7);
 		private static readonly Color TextColor = Color.FromArgb(255, 255, 255);
 		private static readonly Brush InfoBrush = new SolidBrush(Color.FromArgb(128,0,0,0));
 		protected internal bool SuspendEvents = false;

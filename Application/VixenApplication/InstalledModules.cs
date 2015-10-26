@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Services;
@@ -14,7 +15,7 @@ using Vixen.Module;
 
 namespace VixenApplication
 {
-	public partial class InstalledModules : Form
+	public partial class InstalledModules : BaseForm
 	{
 		private const string NOT_PROVIDED = "(Not Provided)";
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -7,7 +8,7 @@ namespace VixenModules.Controller.E131
 	using System.Windows.Forms;
     using System.Net;
 
-	public partial class UnicastForm : Form
+	public partial class UnicastForm : BaseForm
 	{
 		public UnicastForm()
 		{

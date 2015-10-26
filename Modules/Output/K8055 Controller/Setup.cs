@@ -12,7 +12,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Output.K8055_Controller
 {
-	public partial class Setup : Form
+	public partial class Setup : BaseForm
 	{
 		private K8055ControlModule[] _modules;
 		private K8055Data _data;

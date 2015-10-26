@@ -16,7 +16,7 @@ using Vixen.Module.EffectEditor;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class TimedSequenceEditorEffectEditor : Form
+	public partial class TimedSequenceEditorEffectEditor : BaseForm
 	{
 		private EffectNode _effectNode;
 		private IEnumerable<EffectNode> _effectNodes;

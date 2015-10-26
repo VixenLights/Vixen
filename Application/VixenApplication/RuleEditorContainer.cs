@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Resources.Properties;
 
 namespace VixenApplication
 {
-	public partial class RuleEditorContainer : Form
+	public partial class RuleEditorContainer : BaseForm
 	{
 		public RuleEditorContainer(Control control)
 		{

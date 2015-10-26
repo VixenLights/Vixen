@@ -55,9 +55,9 @@
 			this.comboBoxProfiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxProfiles.FormattingEnabled = true;
-			this.comboBoxProfiles.Location = new System.Drawing.Point(59, 18);
+			this.comboBoxProfiles.Location = new System.Drawing.Point(69, 21);
 			this.comboBoxProfiles.Name = "comboBoxProfiles";
-			this.comboBoxProfiles.Size = new System.Drawing.Size(272, 21);
+			this.comboBoxProfiles.Size = new System.Drawing.Size(317, 24);
 			this.comboBoxProfiles.TabIndex = 0;
 			this.comboBoxProfiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxProfiles.SelectedIndexChanged += new System.EventHandler(this.comboBoxProfiles_SelectedIndexChanged);
@@ -68,9 +68,9 @@
 			this.groupBox1.Controls.Add(this.comboBoxLoadThisProfile);
 			this.groupBox1.Controls.Add(this.radioButtonLoadThisProfile);
 			this.groupBox1.Controls.Add(this.radioButtonAskMe);
-			this.groupBox1.Location = new System.Drawing.Point(15, 139);
+			this.groupBox1.Location = new System.Drawing.Point(17, 160);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(400, 56);
+			this.groupBox1.Size = new System.Drawing.Size(467, 65);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Profile to Use when Loading Vixen";
@@ -81,18 +81,18 @@
 			this.comboBoxLoadThisProfile.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
 			this.comboBoxLoadThisProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxLoadThisProfile.FormattingEnabled = true;
-			this.comboBoxLoadThisProfile.Location = new System.Drawing.Point(239, 22);
+			this.comboBoxLoadThisProfile.Location = new System.Drawing.Point(279, 25);
 			this.comboBoxLoadThisProfile.Name = "comboBoxLoadThisProfile";
-			this.comboBoxLoadThisProfile.Size = new System.Drawing.Size(148, 21);
+			this.comboBoxLoadThisProfile.Size = new System.Drawing.Size(172, 24);
 			this.comboBoxLoadThisProfile.TabIndex = 2;
 			this.comboBoxLoadThisProfile.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// radioButtonLoadThisProfile
 			// 
 			this.radioButtonLoadThisProfile.AutoSize = true;
-			this.radioButtonLoadThisProfile.Location = new System.Drawing.Point(130, 23);
+			this.radioButtonLoadThisProfile.Location = new System.Drawing.Point(152, 27);
 			this.radioButtonLoadThisProfile.Name = "radioButtonLoadThisProfile";
-			this.radioButtonLoadThisProfile.Size = new System.Drawing.Size(107, 17);
+			this.radioButtonLoadThisProfile.Size = new System.Drawing.Size(116, 19);
 			this.radioButtonLoadThisProfile.TabIndex = 1;
 			this.radioButtonLoadThisProfile.TabStop = true;
 			this.radioButtonLoadThisProfile.Text = "Load This Profile:";
@@ -101,9 +101,9 @@
 			// radioButtonAskMe
 			// 
 			this.radioButtonAskMe.AutoSize = true;
-			this.radioButtonAskMe.Location = new System.Drawing.Point(7, 23);
+			this.radioButtonAskMe.Location = new System.Drawing.Point(8, 27);
 			this.radioButtonAskMe.Name = "radioButtonAskMe";
-			this.radioButtonAskMe.Size = new System.Drawing.Size(117, 17);
+			this.radioButtonAskMe.Size = new System.Drawing.Size(125, 19);
 			this.radioButtonAskMe.TabIndex = 0;
 			this.radioButtonAskMe.TabStop = true;
 			this.radioButtonAskMe.Text = "Ask Me Every Time";
@@ -120,9 +120,9 @@
 			this.groupBox2.Controls.Add(this.buttonAddProfile);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.comboBoxProfiles);
-			this.groupBox2.Location = new System.Drawing.Point(15, 12);
+			this.groupBox2.Location = new System.Drawing.Point(17, 14);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(400, 121);
+			this.groupBox2.Size = new System.Drawing.Size(467, 140);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Profiles:";
@@ -130,9 +130,9 @@
 			// 
 			// buttonSetDataFolder
 			// 
-			this.buttonSetDataFolder.Location = new System.Drawing.Point(364, 87);
+			this.buttonSetDataFolder.Location = new System.Drawing.Point(425, 100);
 			this.buttonSetDataFolder.Name = "buttonSetDataFolder";
-			this.buttonSetDataFolder.Size = new System.Drawing.Size(23, 23);
+			this.buttonSetDataFolder.Size = new System.Drawing.Size(27, 27);
 			this.buttonSetDataFolder.TabIndex = 9;
 			this.buttonSetDataFolder.Text = "FOLDER";
 			this.buttonSetDataFolder.UseVisualStyleBackColor = true;
@@ -140,42 +140,42 @@
 			// 
 			// textBoxDataFolder
 			// 
-			this.textBoxDataFolder.Location = new System.Drawing.Point(100, 88);
+			this.textBoxDataFolder.Location = new System.Drawing.Point(117, 102);
 			this.textBoxDataFolder.Name = "textBoxDataFolder";
-			this.textBoxDataFolder.Size = new System.Drawing.Size(261, 20);
+			this.textBoxDataFolder.Size = new System.Drawing.Size(304, 23);
 			this.textBoxDataFolder.TabIndex = 7;
 			// 
 			// textBoxProfileName
 			// 
-			this.textBoxProfileName.Location = new System.Drawing.Point(100, 62);
+			this.textBoxProfileName.Location = new System.Drawing.Point(117, 72);
 			this.textBoxProfileName.Name = "textBoxProfileName";
-			this.textBoxProfileName.Size = new System.Drawing.Size(137, 20);
+			this.textBoxProfileName.Size = new System.Drawing.Size(159, 23);
 			this.textBoxProfileName.TabIndex = 6;
 			this.textBoxProfileName.Leave += new System.EventHandler(this.textBoxProfileName_Leave);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(29, 91);
+			this.label3.Location = new System.Drawing.Point(34, 105);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(65, 13);
+			this.label3.Size = new System.Drawing.Size(70, 15);
 			this.label3.TabIndex = 5;
 			this.label3.Text = "Data Folder:";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(24, 65);
+			this.label2.Location = new System.Drawing.Point(28, 75);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(70, 13);
+			this.label2.Size = new System.Drawing.Size(79, 15);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Profile Name:";
 			// 
 			// buttonDeleteProfile
 			// 
-			this.buttonDeleteProfile.Location = new System.Drawing.Point(363, 17);
+			this.buttonDeleteProfile.Location = new System.Drawing.Point(423, 20);
 			this.buttonDeleteProfile.Name = "buttonDeleteProfile";
-			this.buttonDeleteProfile.Size = new System.Drawing.Size(23, 23);
+			this.buttonDeleteProfile.Size = new System.Drawing.Size(27, 27);
 			this.buttonDeleteProfile.TabIndex = 3;
 			this.buttonDeleteProfile.Text = "-";
 			this.buttonDeleteProfile.UseVisualStyleBackColor = true;
@@ -183,9 +183,9 @@
 			// 
 			// buttonAddProfile
 			// 
-			this.buttonAddProfile.Location = new System.Drawing.Point(337, 17);
+			this.buttonAddProfile.Location = new System.Drawing.Point(393, 20);
 			this.buttonAddProfile.Name = "buttonAddProfile";
-			this.buttonAddProfile.Size = new System.Drawing.Size(23, 23);
+			this.buttonAddProfile.Size = new System.Drawing.Size(27, 27);
 			this.buttonAddProfile.TabIndex = 2;
 			this.buttonAddProfile.Text = "+";
 			this.buttonAddProfile.UseVisualStyleBackColor = true;
@@ -194,17 +194,17 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(14, 21);
+			this.label1.Location = new System.Drawing.Point(16, 24);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(39, 13);
+			this.label1.Size = new System.Drawing.Size(44, 15);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Profile:";
 			// 
 			// buttonOK
 			// 
-			this.buttonOK.Location = new System.Drawing.Point(262, 206);
+			this.buttonOK.Location = new System.Drawing.Point(306, 238);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 5;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -215,9 +215,9 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(343, 206);
+			this.buttonCancel.Location = new System.Drawing.Point(400, 238);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -226,9 +226,9 @@
 			// 
 			// buttonZipWizard
 			// 
-			this.buttonZipWizard.Location = new System.Drawing.Point(15, 206);
+			this.buttonZipWizard.Location = new System.Drawing.Point(17, 238);
 			this.buttonZipWizard.Name = "buttonZipWizard";
-			this.buttonZipWizard.Size = new System.Drawing.Size(75, 23);
+			this.buttonZipWizard.Size = new System.Drawing.Size(87, 27);
 			this.buttonZipWizard.TabIndex = 8;
 			this.buttonZipWizard.Text = "Zip Wizard";
 			this.buttonZipWizard.UseVisualStyleBackColor = true;
@@ -239,10 +239,10 @@
 			// DataProfileForm
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(430, 240);
+			this.ClientSize = new System.Drawing.Size(507, 282);
 			this.ControlBox = false;
 			this.Controls.Add(this.buttonZipWizard);
 			this.Controls.Add(this.buttonCancel);

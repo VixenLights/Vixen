@@ -18,7 +18,7 @@ using Pen = System.Drawing.Pen;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class ColorCollectionLibrary_Form : Form
+	public partial class ColorCollectionLibrary_Form : BaseForm
 	{
 		#region Member Variables
 
@@ -27,7 +27,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ColorCollection _currentCollection;
 		private Color _colorValue;
 		private string _lastFolder;
-		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
+		private readonly Pen _borderPen = new Pen(ThemeColorTable.BorderColor, 2);
 
 		#endregion
 
@@ -40,11 +40,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
-			buttonNewCollection.BackgroundImage = Tools.GetIcon(Resources.add, 25);
+			buttonNewCollection.Image = Tools.GetIcon(Resources.add, 24);
 			buttonNewCollection.Text = "";
-			buttonDeleteCollection.BackgroundImage = Tools.GetIcon(Resources.minus, 25);
+			buttonDeleteCollection.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDeleteCollection.Text = "";
-			Icon = Common.Resources.Properties.Resources.Icon_Vixen3;
+			Icon = Resources.Icon_Vixen3;
 			ColorCollections = collections;
 			PopulateCollectionList();
 			_isDirty = false;

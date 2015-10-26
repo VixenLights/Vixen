@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Property.Grid
 {
-	internal partial class SetupForm : Form
+	internal partial class SetupForm : BaseForm
 	{
 		private int _productRequired;
 

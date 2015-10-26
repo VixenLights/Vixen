@@ -45,7 +45,7 @@ using Common.Controls.Theme;
 
 namespace VixenModules.Output.E131
 {
-    public partial class SetupForm : Form
+	public partial class SetupForm : BaseForm
     {
         // column indexes - must be changed if column addrange code is changed
         // could refactor to a variable and initialize it at column add time

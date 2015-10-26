@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Rule;
@@ -15,7 +16,7 @@ using VixenApplication.Setup.ElementTemplates;
 
 namespace VixenApplication
 {
-	public partial class DisplaySetup : Form
+	public partial class DisplaySetup : BaseForm
 	{
 		private SetupElementsTree _setupElementsTree;
 

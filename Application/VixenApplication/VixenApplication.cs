@@ -21,7 +21,7 @@ using Common.Controls.Theme;
 
 namespace VixenApplication
 {
-	public partial class VixenApplication : Form, IApplication
+	public partial class VixenApplication : BaseForm, IApplication
 	{
 		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -38,10 +38,13 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
+			labelVersion.Font = new Font(Font.FontFamily, 14);
+			labelDebugVersion.Font = new Font(Font.FontFamily, 7);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
+			statusStrip.Font = SystemFonts.StatusFont;
 
 			Icon = Resources.Icon_Vixen3;
 

@@ -179,7 +179,7 @@ namespace Common.Controls.Timeline
 
 									int fontHeight = 12;
 									fontHeight = Math.Min(fontHeight, (int) (Height*0.4));
-									using (Font font = new Font("Arial", fontHeight)) {
+									using (Font font = new Font(Font.FontFamily, fontHeight)) {
 										IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
 										LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
 

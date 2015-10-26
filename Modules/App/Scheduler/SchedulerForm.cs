@@ -10,7 +10,7 @@ using Common.Controls;
 
 namespace VixenModules.App.Scheduler
 {
-	internal partial class SchedulerForm : Form
+	internal partial class SchedulerForm : BaseForm
 	{
 		private SchedulerData _data;
 		private ScheduleService _scheduleService;

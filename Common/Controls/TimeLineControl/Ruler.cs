@@ -229,7 +229,7 @@ namespace Common.Controls.Timeline
 
 			if (m_font != null)
 				m_font.Dispose();
-			m_font = new Font("Arial", desiredPixelHeight, GraphicsUnit.Pixel);
+			m_font = new Font(Font.FontFamily, desiredPixelHeight, GraphicsUnit.Pixel);
 
 			if (m_textBrush != null)
 				m_textBrush.Dispose();

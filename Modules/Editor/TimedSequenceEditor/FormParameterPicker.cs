@@ -8,7 +8,7 @@ using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class FormParameterPicker : Form
+	public partial class FormParameterPicker : BaseForm
 	{
 		private readonly Timer _timer = new Timer();
 

@@ -14,7 +14,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class Form_AddMultipleEffects : Form
+	public partial class Form_AddMultipleEffects : BaseForm
 	{
 		#region Member Variables
 

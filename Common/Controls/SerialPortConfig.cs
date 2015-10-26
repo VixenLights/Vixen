@@ -9,7 +9,7 @@ using Common.Controls.Theme;
 
 namespace Common.Controls
 {
-	public partial class SerialPortConfig : Form
+	public partial class SerialPortConfig : BaseForm
 	{
 		public SerialPortConfig(SerialPort serialPort, bool allowPortEdit = true, bool allowBaudEdit = true,
 		                        bool allowParityEdit = true, bool allowDataEdit = true, bool allowStopEdit = true)

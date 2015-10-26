@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.ElexolUSBIO
 {
-	public partial class SetupDialog : Form
+	public partial class SetupDialog : BaseForm
 	{
 		private int _minIntensity = 1;
 		private ElexolUSBData _data;

@@ -10,7 +10,7 @@ using Common.Controls.Theme;
 
 namespace Common.Controls
 {
-	public partial class ListSelectDialog : Form
+	public partial class ListSelectDialog : BaseForm
 	{
 		private string _formTitle;
 		private List<KeyValuePair<string, object>> _items;

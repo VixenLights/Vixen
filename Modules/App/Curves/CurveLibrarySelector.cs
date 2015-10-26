@@ -15,7 +15,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.Curves
 {
-	public partial class CurveLibrarySelector : Form
+	public partial class CurveLibrarySelector : BaseForm
 	{
 		public CurveLibrarySelector()
 		{

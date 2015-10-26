@@ -25,7 +25,7 @@ using Common.Controls.Theme;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class MarkManager : Form
+	public partial class MarkManager : BaseForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 

@@ -40,6 +40,8 @@
 //
 // =====================================================================
 
+using Common.Controls;
+
 namespace VixenModules.Controller.E131.J1Sys
 {
 	using System;
@@ -47,7 +49,7 @@ namespace VixenModules.Controller.E131.J1Sys
 	using System.Reflection;
 	using System.Windows.Forms;
 
-	public class J1MsgBox : Form
+	public class J1MsgBox : BaseForm
 	{
 		private static Icon _messageBoxIconExclamation;
 

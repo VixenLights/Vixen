@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using NLog;
@@ -16,7 +17,7 @@ using Vixen.Module.App;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
-    public partial class LipSync : Form, IElementTemplate
+	public partial class LipSync : BaseForm, IElementTemplate
     {
         private static Logger Logging = LogManager.GetCurrentClassLogger();
         private static string[] templateStrings = { "Outline", "Eyes Open", "Eyes Closed", "Mouth Top", "Mouth Middle", "Mouth Bottom", "Mouth Narrow", "Mouth O" };

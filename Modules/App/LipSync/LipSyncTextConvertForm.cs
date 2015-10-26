@@ -13,7 +13,7 @@ using VixenModules.Sequence.Timed;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncTextConvertForm : Form
+	public partial class LipSyncTextConvertForm : BaseForm
     {
         public event EventHandler<NewTranslationEventArgs> NewTranslation = null;
         public event EventHandler<TranslateFailureEventArgs> TranslateFailure = null;

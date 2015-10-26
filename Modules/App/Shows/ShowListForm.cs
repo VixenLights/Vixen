@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.App.Shows
 {
-	public partial class ShowListForm : Form
+	public partial class ShowListForm : BaseForm
 	{
 		public ShowListForm(ShowsData data)
 		{

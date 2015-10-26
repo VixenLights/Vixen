@@ -9,7 +9,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class ConfigControllersOutputs : Form
+	public partial class ConfigControllersOutputs : BaseForm
 	{
 		private readonly OutputController _controller;
 		private int _selectedOutputIndex;

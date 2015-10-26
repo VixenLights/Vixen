@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.OutputFilter.ColorBreakdown
 {
-	public partial class ColorBreakdownSetup : Form
+	public partial class ColorBreakdownSetup : BaseForm
 	{
 		private readonly ColorBreakdownData _data;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();

@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class BeatMarkExportDialog : Form
+	public partial class BeatMarkExportDialog : BaseForm
 	{
 		public BeatMarkExportDialog()
 		{

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Common.Controls
 {
-	public partial class DiscreteColorPicker : Form
+	public partial class DiscreteColorPicker : BaseForm
 	{
 		public DiscreteColorPicker()
 		{

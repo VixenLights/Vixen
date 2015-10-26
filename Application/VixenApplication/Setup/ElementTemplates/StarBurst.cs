@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using NLog;
@@ -15,7 +16,7 @@ using Vixen.Sys;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
-	public partial class Starburst : Form, IElementTemplate
+	public partial class Starburst : BaseForm, IElementTemplate
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 

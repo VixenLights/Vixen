@@ -16,7 +16,7 @@ using Vixen.Sys;
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 
-    public partial class ExportDialog : Form
+    public partial class ExportDialog : BaseForm
     {
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
         private string _outFileName;

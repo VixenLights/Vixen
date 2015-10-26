@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.Renard
 {
-	public partial class SetupDialog : Form
+	public partial class SetupDialog : BaseForm
 	{
 		private Data _data;
 		private SerialPort _port;

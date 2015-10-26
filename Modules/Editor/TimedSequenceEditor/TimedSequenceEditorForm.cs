@@ -48,7 +48,7 @@ using VixenModules.Property.Color;
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 
-	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, ITiming
+	public partial class TimedSequenceEditorForm : BaseForm, IEditorUserInterface, ITiming
 	{
 
 		#region Member Variables

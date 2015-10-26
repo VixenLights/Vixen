@@ -11,7 +11,7 @@ using Common.Resources.Properties;
 
 namespace Common.Controls
 {
-	public partial class TextDialog : Form
+	public partial class TextDialog : BaseForm
 	{
 		public TextDialog(string prompt)
 		{

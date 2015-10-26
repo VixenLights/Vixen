@@ -12,7 +12,7 @@ using Common.Controls;
 
 namespace VixenApplication
 {
-	public partial class SelectProfile : Form
+	public partial class SelectProfile : BaseForm
 	{
 		private string _dataFolder = string.Empty;
 

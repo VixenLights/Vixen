@@ -7,7 +7,7 @@ namespace Common.Controls.Wizard
 {
 	// Wizard displaying form. Expects to be given a Wizard to work with, and just wraps it with a UI and
 	// the needed navigation. Calls into the wizard to get the current stage, back/forward movement, etc.
-	public partial class WizardForm : Form
+	public partial class WizardForm : BaseForm
 	{
 		private readonly Wizard _wizard;
 		private WizardStage _currentStage;

@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Property.Color
 {
-	public partial class ColorSetsSetupForm : Form
+	public partial class ColorSetsSetupForm : BaseForm
 	{
 		private ColorStaticData _data;
 

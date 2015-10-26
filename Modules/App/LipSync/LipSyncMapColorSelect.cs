@@ -17,7 +17,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncMapColorSelect : Form
+	public partial class LipSyncMapColorSelect : BaseForm
     {
 
         public LipSyncMapColorSelect()

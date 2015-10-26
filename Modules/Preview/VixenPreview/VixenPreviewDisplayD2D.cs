@@ -9,13 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using VixenModules.Preview.VixenPreview.Direct2D;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview {
-	public partial class VixenPreviewDisplayD2D : Form, IDisplayForm {
+	public partial class VixenPreviewDisplayD2D : BaseForm, IDisplayForm
+	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public VixenPreviewDisplayD2D() {

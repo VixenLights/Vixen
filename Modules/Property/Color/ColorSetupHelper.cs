@@ -17,7 +17,7 @@ using VixenModules.OutputFilter.ColorBreakdown;
 
 namespace VixenModules.Property.Color
 {
-	public partial class ColorSetupHelper : Form, IElementSetupHelper
+	public partial class ColorSetupHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 

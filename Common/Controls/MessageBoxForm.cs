@@ -12,7 +12,7 @@ using Common.Resources.Properties;
 
 namespace Common.Controls
 {
-	public partial class MessageBoxForm : Form
+	public partial class MessageBoxForm : BaseForm
 	{
 		public static Icon msgIcon;
 

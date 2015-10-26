@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Execution;
 using Vixen.Module.Timing;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class MarkTapper : Form
+	public partial class MarkTapper : BaseForm
 	{
 		private IExecutionControl _executionControl;
 		private ITiming _timingSource;

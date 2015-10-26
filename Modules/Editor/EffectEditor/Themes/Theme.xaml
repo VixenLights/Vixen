@@ -51,7 +51,7 @@
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="Foreground" Value="#DDD"/>
-    <Setter Property="FontSize" Value="7.5pt"/>
+    <!--<Setter Property="FontSize" Value="7.5pt"/>-->
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -818,7 +818,7 @@
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="Foreground" Value="#DDD"/>
-    <Setter Property="FontSize" Value="7.5pt"/>
+    <!--<Setter Property="FontSize" Value="7.5pt"/>-->
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="MinWidth" Value="20"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -1028,8 +1028,8 @@
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="CheckedForeground" Value="#DDD"/>
 		<Setter Property="CornerRadius" Value="3"/>
-		<Setter Property="FontSize" Value="7.5pt"/>
-		<Setter Property="FontWeight" Value="Normal"/>
+		<!--<Setter Property="FontSize" Value="7.5pt"/>
+		<Setter Property="FontWeight" Value="Normal"/>-->
 		<Setter Property="ThumbBorderThickness" Value="1"/>
 		<Setter Property="ThumbCornerRadius" Value="3"/>
 		<Setter Property="ThumbGlowColor" Value="#FCFCF6"/>

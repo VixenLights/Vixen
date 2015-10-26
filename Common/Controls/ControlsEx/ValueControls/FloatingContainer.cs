@@ -9,7 +9,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 	/// encapsulates a popup form
 	/// </summary>
 	[ToolboxItem(false)]
-	public class PopupForm : Form
+	public class PopupForm : BaseForm
 	{
 		#region types
 

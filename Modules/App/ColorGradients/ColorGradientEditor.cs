@@ -15,7 +15,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	public partial class ColorGradientEditor : Form
+	public partial class ColorGradientEditor : BaseForm
 	{
 		private bool _discreteColors;
 		private IEnumerable<Color> _validDiscreteColors;

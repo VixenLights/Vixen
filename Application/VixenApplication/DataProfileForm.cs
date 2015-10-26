@@ -11,7 +11,7 @@ using Common.Controls;
 
 namespace VixenApplication
 {
-	public partial class DataProfileForm : Form
+	public partial class DataProfileForm : BaseForm
 	{
 		private readonly string _defaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
 		private ProfileItem _currentItem;

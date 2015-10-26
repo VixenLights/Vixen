@@ -19,7 +19,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class ConfigControllers : Form
+	public partial class ConfigControllers : BaseForm
 	{
 		private OutputController _displayedController;
 		private bool _internal;

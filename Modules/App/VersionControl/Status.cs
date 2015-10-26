@@ -6,11 +6,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Sys;
 
 namespace VersionControl
 {
-    public partial class Status : Form
+	public partial class Status : BaseForm
     {
         public Status()
         {

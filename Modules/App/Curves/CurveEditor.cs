@@ -12,7 +12,7 @@ using Common.Controls.Theme;
 
 namespace VixenModules.App.Curves
 {
-	public partial class CurveEditor : Form
+	public partial class CurveEditor : BaseForm
 	{
 		public CurveEditor()
 		{

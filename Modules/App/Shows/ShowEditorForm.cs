@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.App.Shows
 {
-	public partial class ShowEditorForm : Form
+	public partial class ShowEditorForm : BaseForm
 	{
 		ShowItemType currentShowItemType;
 

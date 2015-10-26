@@ -64,7 +64,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				int margin = 1;
 				string info;
 				info = "Z:" + Shape.Pixels[0].Z;
-				Font font = new Font("Arial", 7);
+				Font font = new Font(SystemFonts.MessageBoxFont.FontFamily, 7);
 				SizeF textSize = g.MeasureString(info, font);
 				Rectangle rect = new Rectangle(Shape.Left, Shape.Top, (int)textSize.Width + (margin * 2), (int)textSize.Height + (margin * 2));
 
