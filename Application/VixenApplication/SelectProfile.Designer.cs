@@ -55,7 +55,8 @@
 			// 
 			// buttonLoad
 			// 
-			this.buttonLoad.Location = new System.Drawing.Point(153, 157);
+			this.buttonLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonLoad.Location = new System.Drawing.Point(154, 158);
 			this.buttonLoad.Name = "buttonLoad";
 			this.buttonLoad.Size = new System.Drawing.Size(87, 27);
 			this.buttonLoad.TabIndex = 2;
@@ -67,7 +68,8 @@
 			// 
 			// buttonEditor
 			// 
-			this.buttonEditor.Location = new System.Drawing.Point(14, 157);
+			this.buttonEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonEditor.Location = new System.Drawing.Point(14, 158);
 			this.buttonEditor.Name = "buttonEditor";
 			this.buttonEditor.Size = new System.Drawing.Size(87, 27);
 			this.buttonEditor.TabIndex = 3;
@@ -82,7 +84,8 @@
 			this.AcceptButton = this.buttonLoad;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(260, 209);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(261, 210);
 			this.Controls.Add(this.buttonEditor);
 			this.Controls.Add(this.buttonLoad);
 			this.Controls.Add(this.label1);

@@ -136,7 +136,7 @@
     <value>NoControl</value>
   </data>
   <data name="lblColorSelect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>51, 21</value>
+    <value>52, 21</value>
   </data>
   <data name="lblColorSelect.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 25</value>
@@ -163,7 +163,7 @@
     <value>False</value>
   </data>
   <data name="vColorLoc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>179, 21</value>
+    <value>180, 19</value>
   </data>
   <data name="vColorLoc.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 25</value>
@@ -199,7 +199,7 @@
     <value>NoControl</value>
   </data>
   <data name="btnDeleteColor.Location" type="System.Drawing.Point, System.Drawing">
-    <value>263, 21</value>
+    <value>264, 21</value>
   </data>
   <data name="btnDeleteColor.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 25</value>
@@ -229,7 +229,7 @@
     <value>NoControl</value>
   </data>
   <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>115, 21</value>
+    <value>116, 21</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 20</value>
@@ -262,7 +262,7 @@
     <value>NoControl</value>
   </data>
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 21</value>
+    <value>7, 21</value>
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>39, 20</value>
@@ -292,10 +292,10 @@
     <value>False</value>
   </data>
   <data name="grpStops.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 72</value>
+    <value>0, 75</value>
   </data>
   <data name="grpStops.Size" type="System.Drawing.Size, System.Drawing">
-    <value>355, 54</value>
+    <value>356, 54</value>
   </data>
   <data name="grpStops.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -322,7 +322,7 @@
     <value>0, 3</value>
   </data>
   <data name="edit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>354, 63</value>
+    <value>355, 66</value>
   </data>
   <data name="edit.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -352,7 +352,7 @@
     <value>357, 120</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>357, 126</value>
+    <value>358, 129</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>GradientEditPanel</value>

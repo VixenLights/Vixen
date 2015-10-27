@@ -379,5 +379,13 @@ namespace Common.Controls.Theme
 			get { return _selectionHighlightColor; }
 		}
 
+		public static Color ListBoxHighLightColor 
+		{
+			get
+			{
+				return _highlightColor;
+			}
+		}
+
 	}
 }

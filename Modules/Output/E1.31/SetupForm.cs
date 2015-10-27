@@ -125,7 +125,7 @@ namespace VixenModules.Output.E131
 			univDGVN.ForeColor = ThemeColorTable.ForeColor;
 	        univDGVN.DefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
 	        univDGVN.DefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
-	        univDGVN.DefaultCellStyle.SelectionBackColor = ThemeColorTable.HighlightColor;
+	        univDGVN.DefaultCellStyle.SelectionBackColor = ThemeColorTable.ListBoxHighLightColor;
 			univDGVN.DefaultCellStyle.SelectionForeColor = ThemeColorTable.ForeColor;
 			univDGVN.RowsDefaultCellStyle.BackColor = Color.Empty;
 			univDGVN.RowsDefaultCellStyle.ForeColor = Color.Empty;
@@ -989,7 +989,7 @@ namespace VixenModules.Output.E131
             if (!autoPopulateStart.Checked)
             {
 	            var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
-				style.BackColor = ThemeColorTable.HighlightColor;
+				style.BackColor = ThemeColorTable.ListBoxHighLightColor;
 				style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
 	            univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }

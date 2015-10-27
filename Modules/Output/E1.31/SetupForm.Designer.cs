@@ -69,17 +69,17 @@ namespace VixenModules.Output.E131
 			this.chkBoxTransmitBlind = new System.Windows.Forms.CheckBox();
 			this.tabControlEX1 = new Dotnetrix.Controls.TabControlEX();
 			this.tabPageEX1 = new Dotnetrix.Controls.TabPageEX();
+			this.tabPageEX2 = new Dotnetrix.Controls.TabPageEX();
 			this.univDGVN = new VixenModules.Output.E131.Controls.DataGridViewNumbered();
 			this.startColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.activeColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 			this.universeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.sizeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.tabPageEX2 = new Dotnetrix.Controls.TabPageEX();
 			((System.ComponentModel.ISupportInitialize)(this.numericPriority)).BeginInit();
 			this.tabControlEX1.SuspendLayout();
 			this.tabPageEX1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.univDGVN)).BeginInit();
 			this.tabPageEX2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.univDGVN)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// rowManipulationContextMenuStrip
@@ -97,7 +97,7 @@ namespace VixenModules.Output.E131
 			this.warningsCheckBox.AutoSize = true;
 			this.warningsCheckBox.Location = new System.Drawing.Point(35, 38);
 			this.warningsCheckBox.Name = "warningsCheckBox";
-			this.warningsCheckBox.Size = new System.Drawing.Size(241, 17);
+			this.warningsCheckBox.Size = new System.Drawing.Size(262, 19);
 			this.warningsCheckBox.TabIndex = 51;
 			this.warningsCheckBox.Text = "Display ALL Warnings/Errors and wait For OK";
 			// 
@@ -106,7 +106,7 @@ namespace VixenModules.Output.E131
 			this.statisticsCheckBox.AutoSize = true;
 			this.statisticsCheckBox.Location = new System.Drawing.Point(35, 64);
 			this.statisticsCheckBox.Name = "statisticsCheckBox";
-			this.statisticsCheckBox.Size = new System.Drawing.Size(240, 17);
+			this.statisticsCheckBox.Size = new System.Drawing.Size(263, 19);
 			this.statisticsCheckBox.TabIndex = 52;
 			this.statisticsCheckBox.Text = "Gather statistics and display at end of session";
 			// 
@@ -116,7 +116,7 @@ namespace VixenModules.Output.E131
 			this.eventRepeatCountTextBox.Location = new System.Drawing.Point(42, 162);
 			this.eventRepeatCountTextBox.MaxLength = 2;
 			this.eventRepeatCountTextBox.Name = "eventRepeatCountTextBox";
-			this.eventRepeatCountTextBox.Size = new System.Drawing.Size(30, 20);
+			this.eventRepeatCountTextBox.Size = new System.Drawing.Size(30, 23);
 			this.eventRepeatCountTextBox.TabIndex = 55;
 			this.eventRepeatCountTextBox.Text = "0";
 			this.eventRepeatCountTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -127,7 +127,7 @@ namespace VixenModules.Output.E131
 			this.label.AutoSize = true;
 			this.label.Location = new System.Drawing.Point(78, 162);
 			this.label.Name = "label";
-			this.label.Size = new System.Drawing.Size(177, 78);
+			this.label.Size = new System.Drawing.Size(192, 90);
 			this.label.TabIndex = 5;
 			this.label.Text = "Max Repeat Count\r\n\r\nSet to 0 to send all events (even 0s)\r\nto each universe, Set " +
     "to >0 to stop\r\nrepeating frames after N duplicates\r\nare sent.";
@@ -138,7 +138,7 @@ namespace VixenModules.Output.E131
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.okButton.Location = new System.Drawing.Point(188, 447);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(75, 25);
 			this.okButton.TabIndex = 199;
 			this.okButton.Text = "OK";
 			this.okButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -150,7 +150,7 @@ namespace VixenModules.Output.E131
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancelButton.Location = new System.Drawing.Point(281, 448);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(75, 25);
 			this.cancelButton.TabIndex = 200;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -162,7 +162,7 @@ namespace VixenModules.Output.E131
 			this.eventSuppressCountTextBox.Location = new System.Drawing.Point(42, 276);
 			this.eventSuppressCountTextBox.MaxLength = 2;
 			this.eventSuppressCountTextBox.Name = "eventSuppressCountTextBox";
-			this.eventSuppressCountTextBox.Size = new System.Drawing.Size(30, 20);
+			this.eventSuppressCountTextBox.Size = new System.Drawing.Size(30, 23);
 			this.eventSuppressCountTextBox.TabIndex = 56;
 			this.eventSuppressCountTextBox.Text = "0";
 			this.eventSuppressCountTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -173,7 +173,7 @@ namespace VixenModules.Output.E131
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(78, 276);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(162, 78);
+			this.label1.Size = new System.Drawing.Size(182, 90);
 			this.label1.TabIndex = 104;
 			this.label1.Text = "Max Suppress Count\r\n\r\nOnly used if Max Repeat Count\r\nis not  0. Set to >0 to allo" +
     "w every\r\nNth duplicate frame in a universe\r\nto go out.";
@@ -183,7 +183,7 @@ namespace VixenModules.Output.E131
 			this.autoPopulateStart.AutoSize = true;
 			this.autoPopulateStart.Location = new System.Drawing.Point(35, 15);
 			this.autoPopulateStart.Name = "autoPopulateStart";
-			this.autoPopulateStart.Size = new System.Drawing.Size(169, 17);
+			this.autoPopulateStart.Size = new System.Drawing.Size(186, 19);
 			this.autoPopulateStart.TabIndex = 50;
 			this.autoPopulateStart.Text = "Manually manage start values.";
 			this.autoPopulateStart.CheckedChanged += new System.EventHandler(this.autoPopulateStart_CheckedChanged);
@@ -192,7 +192,7 @@ namespace VixenModules.Output.E131
 			// 
 			this.btnDeleteUnicast.FlatAppearance.BorderSize = 0;
 			this.btnDeleteUnicast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnDeleteUnicast.Location = new System.Drawing.Point(261, 342);
+			this.btnDeleteUnicast.Location = new System.Drawing.Point(261, 337);
 			this.btnDeleteUnicast.Name = "btnDeleteUnicast";
 			this.btnDeleteUnicast.Size = new System.Drawing.Size(27, 28);
 			this.btnDeleteUnicast.TabIndex = 7;
@@ -204,7 +204,7 @@ namespace VixenModules.Output.E131
 			// 
 			this.btnAddUnicast.FlatAppearance.BorderSize = 0;
 			this.btnAddUnicast.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnAddUnicast.Location = new System.Drawing.Point(228, 342);
+			this.btnAddUnicast.Location = new System.Drawing.Point(228, 337);
 			this.btnAddUnicast.Name = "btnAddUnicast";
 			this.btnAddUnicast.Size = new System.Drawing.Size(27, 28);
 			this.btnAddUnicast.TabIndex = 6;
@@ -240,7 +240,7 @@ namespace VixenModules.Output.E131
 			// 
 			this.lblDestination.AutoSize = true;
 			this.lblDestination.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblDestination.Location = new System.Drawing.Point(15, 344);
+			this.lblDestination.Location = new System.Drawing.Point(15, 339);
 			this.lblDestination.Name = "lblDestination";
 			this.lblDestination.Size = new System.Drawing.Size(102, 24);
 			this.lblDestination.TabIndex = 3;
@@ -252,9 +252,9 @@ namespace VixenModules.Output.E131
 			this.comboDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboDestination.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboDestination.FormattingEnabled = true;
-			this.comboDestination.Location = new System.Drawing.Point(19, 373);
+			this.comboDestination.Location = new System.Drawing.Point(19, 368);
 			this.comboDestination.Name = "comboDestination";
-			this.comboDestination.Size = new System.Drawing.Size(269, 21);
+			this.comboDestination.Size = new System.Drawing.Size(269, 24);
 			this.comboDestination.TabIndex = 5;
 			this.comboDestination.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboDestination.SelectedIndexChanged += new System.EventHandler(this.comboDestination_SelectedIndexChanged);
@@ -264,7 +264,7 @@ namespace VixenModules.Output.E131
 			this.lblPriority.AutoSize = true;
 			this.lblPriority.Location = new System.Drawing.Point(102, 119);
 			this.lblPriority.Name = "lblPriority";
-			this.lblPriority.Size = new System.Drawing.Size(70, 13);
+			this.lblPriority.Size = new System.Drawing.Size(81, 15);
 			this.lblPriority.TabIndex = 108;
 			this.lblPriority.Text = "sACN priority.";
 			// 
@@ -278,7 +278,7 @@ namespace VixenModules.Output.E131
             0,
             0});
 			this.numericPriority.Name = "numericPriority";
-			this.numericPriority.Size = new System.Drawing.Size(49, 20);
+			this.numericPriority.Size = new System.Drawing.Size(49, 23);
 			this.numericPriority.TabIndex = 54;
 			this.numericPriority.Value = new decimal(new int[] {
             100,
@@ -291,7 +291,7 @@ namespace VixenModules.Output.E131
 			this.chkBoxTransmitBlind.AutoSize = true;
 			this.chkBoxTransmitBlind.Location = new System.Drawing.Point(35, 88);
 			this.chkBoxTransmitBlind.Name = "chkBoxTransmitBlind";
-			this.chkBoxTransmitBlind.Size = new System.Drawing.Size(118, 17);
+			this.chkBoxTransmitBlind.Size = new System.Drawing.Size(132, 19);
 			this.chkBoxTransmitBlind.TabIndex = 53;
 			this.chkBoxTransmitBlind.Text = "Transmit blind data.";
 			this.chkBoxTransmitBlind.UseVisualStyleBackColor = true;
@@ -323,6 +323,25 @@ namespace VixenModules.Output.E131
 			this.tabPageEX1.TabIndex = 0;
 			this.tabPageEX1.Text = "Universes";
 			this.tabPageEX1.UseVisualStyleBackColor = true;
+			// 
+			// tabPageEX2
+			// 
+			this.tabPageEX2.Controls.Add(this.lblPriority);
+			this.tabPageEX2.Controls.Add(this.autoPopulateStart);
+			this.tabPageEX2.Controls.Add(this.numericPriority);
+			this.tabPageEX2.Controls.Add(this.warningsCheckBox);
+			this.tabPageEX2.Controls.Add(this.chkBoxTransmitBlind);
+			this.tabPageEX2.Controls.Add(this.eventSuppressCountTextBox);
+			this.tabPageEX2.Controls.Add(this.label);
+			this.tabPageEX2.Controls.Add(this.statisticsCheckBox);
+			this.tabPageEX2.Controls.Add(this.label1);
+			this.tabPageEX2.Controls.Add(this.eventRepeatCountTextBox);
+			this.tabPageEX2.Location = new System.Drawing.Point(4, 22);
+			this.tabPageEX2.Name = "tabPageEX2";
+			this.tabPageEX2.Size = new System.Drawing.Size(343, 398);
+			this.tabPageEX2.TabIndex = 1;
+			this.tabPageEX2.Text = "Advanced Options";
+			this.tabPageEX2.UseVisualStyleBackColor = true;
 			// 
 			// univDGVN
 			// 
@@ -398,30 +417,11 @@ namespace VixenModules.Output.E131
 			this.sizeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
 			this.sizeColumn.Width = 60;
 			// 
-			// tabPageEX2
-			// 
-			this.tabPageEX2.Controls.Add(this.lblPriority);
-			this.tabPageEX2.Controls.Add(this.autoPopulateStart);
-			this.tabPageEX2.Controls.Add(this.numericPriority);
-			this.tabPageEX2.Controls.Add(this.warningsCheckBox);
-			this.tabPageEX2.Controls.Add(this.chkBoxTransmitBlind);
-			this.tabPageEX2.Controls.Add(this.eventSuppressCountTextBox);
-			this.tabPageEX2.Controls.Add(this.label);
-			this.tabPageEX2.Controls.Add(this.statisticsCheckBox);
-			this.tabPageEX2.Controls.Add(this.label1);
-			this.tabPageEX2.Controls.Add(this.eventRepeatCountTextBox);
-			this.tabPageEX2.Location = new System.Drawing.Point(4, 22);
-			this.tabPageEX2.Name = "tabPageEX2";
-			this.tabPageEX2.Size = new System.Drawing.Size(343, 398);
-			this.tabPageEX2.TabIndex = 1;
-			this.tabPageEX2.Text = "Advanced Options";
-			this.tabPageEX2.UseVisualStyleBackColor = true;
-			// 
 			// SetupForm
 			// 
 			this.AcceptButton = this.okButton;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(381, 485);
+			this.ClientSize = new System.Drawing.Size(382, 485);
 			this.Controls.Add(this.tabControlEX1);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
@@ -437,9 +437,9 @@ namespace VixenModules.Output.E131
 			this.tabControlEX1.ResumeLayout(false);
 			this.tabPageEX1.ResumeLayout(false);
 			this.tabPageEX1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
 			this.tabPageEX2.ResumeLayout(false);
 			this.tabPageEX2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.univDGVN)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
