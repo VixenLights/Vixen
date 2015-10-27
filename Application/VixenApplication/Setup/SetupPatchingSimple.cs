@@ -23,10 +23,18 @@ namespace VixenApplication.Setup
 
 		public SetupPatchingSimple()
 		{
+			Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9);
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			
+			labelPatchPointCount.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
+			label5.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
+			labelOutputCount.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
+			label20.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
+			buttonDoPatching.Font = new Font(Font.FontFamily, 12F);
+			labelPatchWarning.ForeColor = Color.FromArgb(255,0,0);
 			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet(), false);
 		}
 

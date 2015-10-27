@@ -223,17 +223,16 @@ namespace VixenApplication.Setup
 			// labelPatchPointCount
 			// 
 			this.labelPatchPointCount.AutoSize = true;
-			this.labelPatchPointCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelPatchPointCount.Location = new System.Drawing.Point(131, 17);
 			this.labelPatchPointCount.Name = "labelPatchPointCount";
-			this.labelPatchPointCount.Size = new System.Drawing.Size(14, 13);
+			this.labelPatchPointCount.Size = new System.Drawing.Size(13, 13);
 			this.labelPatchPointCount.TabIndex = 11;
 			this.labelPatchPointCount.Text = "0";
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(28, 57);
+			this.label7.Location = new System.Drawing.Point(8, 57);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(75, 13);
 			this.label7.TabIndex = 6;
@@ -244,7 +243,7 @@ namespace VixenApplication.Setup
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(28, 37);
+			this.label6.Location = new System.Drawing.Point(8, 37);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(62, 13);
 			this.label6.TabIndex = 5;
@@ -255,10 +254,9 @@ namespace VixenApplication.Setup
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(8, 17);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(116, 13);
+			this.label5.Size = new System.Drawing.Size(97, 13);
 			this.label5.TabIndex = 4;
 			this.label5.Text = "Total Patch Points:";
 			this.toolTip1.SetToolTip(this.label5, "The total number of Patch Points connected to the selected elements.  Patch Point" +
@@ -366,7 +364,7 @@ namespace VixenApplication.Setup
 			// labelUnpatchedOutputCount
 			// 
 			this.labelUnpatchedOutputCount.AutoSize = true;
-			this.labelUnpatchedOutputCount.Location = new System.Drawing.Point(104, 57);
+			this.labelUnpatchedOutputCount.Location = new System.Drawing.Point(87, 57);
 			this.labelUnpatchedOutputCount.Name = "labelUnpatchedOutputCount";
 			this.labelUnpatchedOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelUnpatchedOutputCount.TabIndex = 27;
@@ -375,7 +373,7 @@ namespace VixenApplication.Setup
 			// labelPatchedOutputCount
 			// 
 			this.labelPatchedOutputCount.AutoSize = true;
-			this.labelPatchedOutputCount.Location = new System.Drawing.Point(104, 37);
+			this.labelPatchedOutputCount.Location = new System.Drawing.Point(87, 37);
 			this.labelPatchedOutputCount.Name = "labelPatchedOutputCount";
 			this.labelPatchedOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelPatchedOutputCount.TabIndex = 26;
@@ -384,10 +382,9 @@ namespace VixenApplication.Setup
 			// labelOutputCount
 			// 
 			this.labelOutputCount.AutoSize = true;
-			this.labelOutputCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelOutputCount.Location = new System.Drawing.Point(103, 17);
+			this.labelOutputCount.Location = new System.Drawing.Point(87, 17);
 			this.labelOutputCount.Name = "labelOutputCount";
-			this.labelOutputCount.Size = new System.Drawing.Size(14, 13);
+			this.labelOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelOutputCount.TabIndex = 22;
 			this.labelOutputCount.Text = "0";
 			// 
@@ -403,7 +400,7 @@ namespace VixenApplication.Setup
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(28, 57);
+			this.label15.Location = new System.Drawing.Point(8, 57);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(63, 13);
 			this.label15.TabIndex = 20;
@@ -413,7 +410,7 @@ namespace VixenApplication.Setup
 			// label16
 			// 
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(28, 37);
+			this.label16.Location = new System.Drawing.Point(8, 37);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(50, 13);
 			this.label16.TabIndex = 19;
@@ -424,10 +421,9 @@ namespace VixenApplication.Setup
 			// label20
 			// 
 			this.label20.AutoSize = true;
-			this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label20.Location = new System.Drawing.Point(8, 17);
 			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(55, 13);
+			this.label20.Size = new System.Drawing.Size(47, 13);
 			this.label20.TabIndex = 15;
 			this.label20.Text = "Outputs:";
 			this.toolTip1.SetToolTip(this.label20, "The total number of controller outputs selected.");
@@ -601,7 +597,6 @@ namespace VixenApplication.Setup
 			// buttonDoPatching
 			// 
 			this.buttonDoPatching.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.buttonDoPatching.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.buttonDoPatching.Location = new System.Drawing.Point(152, 171);
 			this.buttonDoPatching.Name = "buttonDoPatching";
 			this.buttonDoPatching.Size = new System.Drawing.Size(143, 31);

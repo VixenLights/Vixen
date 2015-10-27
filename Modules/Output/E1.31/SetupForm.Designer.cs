@@ -239,7 +239,6 @@ namespace VixenModules.Output.E131
 			// lblDestination
 			// 
 			this.lblDestination.AutoSize = true;
-			this.lblDestination.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblDestination.Location = new System.Drawing.Point(15, 339);
 			this.lblDestination.Name = "lblDestination";
 			this.lblDestination.Size = new System.Drawing.Size(102, 24);

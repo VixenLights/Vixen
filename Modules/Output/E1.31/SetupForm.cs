@@ -74,6 +74,7 @@ namespace VixenModules.Output.E131
         /// </summary>
         public SetupForm()
         {
+			
             // get all the nics
             var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var networkInterface in networkInterfaces)
@@ -99,6 +100,7 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             InitializeComponent();
+			lblDestination.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 14.25F);
             btnAddUniverse.Text = "";
             btnAddUniverse.Image = Tools.GetIcon(Resources.add, 16);
             btnDeleteUniverse.Text = "";

@@ -41,6 +41,9 @@ namespace VixenApplication
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
+			label1.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			label3.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			label5.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 
 			_elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
 			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();

@@ -70,7 +70,6 @@
 			// 
 			this.BeatsPerBarLabel.AutoSize = true;
 			this.BeatsPerBarLabel.BackColor = System.Drawing.Color.LightGray;
-			this.BeatsPerBarLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BeatsPerBarLabel.ForeColor = System.Drawing.Color.Black;
 			this.BeatsPerBarLabel.Location = new System.Drawing.Point(88, 48);
 			this.BeatsPerBarLabel.Name = "BeatsPerBarLabel";
@@ -83,7 +82,6 @@
 			// 
 			this.NoteSizeLabel.AutoSize = true;
 			this.NoteSizeLabel.BackColor = System.Drawing.Color.LightGray;
-			this.NoteSizeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.NoteSizeLabel.ForeColor = System.Drawing.Color.Black;
 			this.NoteSizeLabel.Location = new System.Drawing.Point(88, 68);
 			this.NoteSizeLabel.Name = "NoteSizeLabel";
@@ -109,7 +107,6 @@
 			this.BPMLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BPMLabel.AutoSize = true;
-			this.BPMLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BPMLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BPMLabel.Location = new System.Drawing.Point(70, 14);
 			this.BPMLabel.Name = "BPMLabel";
@@ -134,7 +131,6 @@
 			this.BarPeriodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BarPeriodLabel.AutoSize = true;
-			this.BarPeriodLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BarPeriodLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.BarPeriodLabel.Location = new System.Drawing.Point(226, 15);
 			this.BarPeriodLabel.Name = "BarPeriodLabel";
@@ -159,7 +155,6 @@
 			this.DivTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.DivTimeLabel.AutoSize = true;
-			this.DivTimeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.DivTimeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.DivTimeLabel.Location = new System.Drawing.Point(128, 14);
 			this.DivTimeLabel.Name = "DivTimeLabel";

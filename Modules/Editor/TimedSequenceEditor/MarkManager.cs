@@ -49,7 +49,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			
 			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
 			listViewMarks.BackColor = ThemeColorTable.BackgroundColor;
 			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
@@ -66,7 +66,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 24);
 			buttonDecreaseSelectedMarks.Text = "";
 			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
-
+			ThemeUpdateControls.UpdateControls(this);
 			labelTapperInstructions.Visible = false;
 
 			MarkCollections = markCollections;

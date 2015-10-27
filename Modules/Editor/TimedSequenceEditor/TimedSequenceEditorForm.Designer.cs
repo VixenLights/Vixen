@@ -183,7 +183,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripOperations.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.toolStripOperations.ClickThrough = true;
 			this.toolStripOperations.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStripOperations.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.toolStripOperations.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.toolStripOperations.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton_Start,
@@ -1280,7 +1279,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// statusStrip
 			// 
 			this.statusStrip.AutoSize = false;
-			this.statusStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
 			this.statusStrip.ImageScalingSize = new System.Drawing.Size(22, 22);
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
