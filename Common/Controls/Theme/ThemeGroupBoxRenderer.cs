@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace Common.Controls.Theme
 {
@@ -7,30 +8,24 @@ namespace Common.Controls.Theme
 	{
 		#region Draw GroupBox borders and Text
 
-		public static void GroupBoxesDrawBorder(object sender, PaintEventArgs e, Font font)
+		public static void GroupBoxesDrawBorder(object sender, PaintEventArgs e, Font f)
 		{
-			//used to draw the borders and text for the groupboxes to change the default box color.
+			//We have visual styles enabled so we can just use the built in stuff to draw with our own colors.
 			GroupBox groupBox = sender as GroupBox;
 			if (groupBox == null) return;
 
-			//get the text size in groupbox and clears groupbox and adds new background color
-			Size tSize = TextRenderer.MeasureText(groupBox.Text, font);
-			e.Graphics.Clear(ThemeColorTable.BackgroundColor);
+			GroupBoxState gbState = groupBox.Enabled ? GroupBoxState.Normal : GroupBoxState.Disabled; 
+			TextFormatFlags textFlags = TextFormatFlags.Default | TextFormatFlags.TextBoxControl | TextFormatFlags.WordBreak | TextFormatFlags.PreserveGraphicsTranslateTransform | TextFormatFlags.PreserveGraphicsClipping;
 
-			//draw the border
-			Rectangle borderRect = e.ClipRectangle;
-			borderRect.Y = (borderRect.Y + (tSize.Height / 2));
-			borderRect.Height = (borderRect.Height - (tSize.Height / 2));
-			ControlPaint.DrawBorder(e.Graphics, borderRect, ThemeColorTable.GroupBoxBorderColor, ButtonBorderStyle.Solid);
+			if (groupBox.RightToLeft == RightToLeft.Yes) {
+				textFlags |= (TextFormatFlags.Right | TextFormatFlags.RightToLeft); 
+			}
 
-			//draw the text
-			Rectangle textRect = e.ClipRectangle;
-			textRect.X = (textRect.X + 6);
-			textRect.Width = tSize.Width + 12;
-			textRect.Height = tSize.Height;
-			e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.BackgroundColor), textRect);
-			e.Graphics.DrawString(groupBox.Text, font, new SolidBrush(ThemeColorTable.ForeColor), textRect);
+			Color textcolor = groupBox.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled; 
+			GroupBoxRenderer.DrawGroupBox(e.Graphics, new Rectangle(0, 0, groupBox.Width, groupBox.Height), groupBox.Text, f, textcolor, textFlags, gbState);
+			
 		}
+
 		#endregion
 	}
 }
