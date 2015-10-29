@@ -86,7 +86,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public bool AlignToBeatMarks { get { return checkBoxAlignToBeatMarks.Checked; } }
 		public bool FillDuration { get { return checkBoxFillDuration.Checked; }	}
 		public bool SelectEffects {	get { return checkBoxSelectEffects.Checked; } }
-		public bool EditEffects	{ get { return checkBoxEditEffects.Checked; } }
 		public bool SkipEOBeat { get { return checkBoxSkipEOBeat.Checked; } }
 
 		#endregion
@@ -98,7 +97,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
 			listBoxMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
 			checkBoxSkipEOBeat.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			checkBoxFillDuration.ForeColor = checkBoxAlignToBeatMarks.Checked ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
@@ -106,6 +104,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			btnShowBeatMarkOptions.Text = "";
 			btnHideBeatMarkOptions.Image = Resources.bullet_toggle_minus;
 			btnHideBeatMarkOptions.Text = "";
+			ThemeUpdateControls.UpdateControls(this);
 			panelBeatAlignment.Visible = false;
 		}
 

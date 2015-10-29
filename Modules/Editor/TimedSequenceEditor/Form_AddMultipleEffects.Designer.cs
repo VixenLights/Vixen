@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
@@ -38,13 +37,12 @@
 			this.txtStartTime = new System.Windows.Forms.MaskedTextBox();
 			this.txtDuration = new System.Windows.Forms.MaskedTextBox();
 			this.txtDurationBetween = new System.Windows.Forms.MaskedTextBox();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTip = new System.Windows.Forms.ToolTip();
 			this.txtEffectCount = new System.Windows.Forms.NumericUpDown();
 			this.lblPossibleEffects = new System.Windows.Forms.Label();
 			this.listBoxMarkCollections = new System.Windows.Forms.ListView();
 			this.checkBoxAlignToBeatMarks = new System.Windows.Forms.CheckBox();
 			this.checkBoxFillDuration = new System.Windows.Forms.CheckBox();
-			this.checkBoxEditEffects = new System.Windows.Forms.CheckBox();
 			this.checkBoxSelectEffects = new System.Windows.Forms.CheckBox();
 			this.btnShowBeatMarkOptions = new System.Windows.Forms.Button();
 			this.lblShowBeatMarkOptions = new System.Windows.Forms.Label();
@@ -67,9 +65,9 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label1.Location = new System.Drawing.Point(15, 39);
+			this.label1.Location = new System.Drawing.Point(17, 45);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(124, 13);
+			this.label1.Size = new System.Drawing.Size(140, 15);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Number of effects to add";
 			// 
@@ -77,9 +75,9 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(15, 65);
+			this.label2.Location = new System.Drawing.Point(17, 75);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(65, 13);
+			this.label2.Size = new System.Drawing.Size(75, 15);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Starting time";
 			// 
@@ -87,9 +85,9 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label3.Location = new System.Drawing.Point(15, 117);
+			this.label3.Location = new System.Drawing.Point(17, 135);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(47, 13);
+			this.label3.Size = new System.Drawing.Size(53, 15);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Duration";
 			// 
@@ -97,9 +95,9 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label4.Location = new System.Drawing.Point(15, 143);
+			this.label4.Location = new System.Drawing.Point(17, 165);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(91, 13);
+			this.label4.Size = new System.Drawing.Size(101, 15);
 			this.label4.TabIndex = 6;
 			this.label4.Text = "Duration between";
 			// 
@@ -113,9 +111,9 @@
 			this.btnOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnOK.Location = new System.Drawing.Point(15, 26);
+			this.btnOK.Location = new System.Drawing.Point(17, 30);
 			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(75, 23);
+			this.btnOK.Size = new System.Drawing.Size(87, 27);
 			this.btnOK.TabIndex = 13;
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
@@ -133,9 +131,9 @@
 			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnCancel.Location = new System.Drawing.Point(170, 26);
+			this.btnCancel.Location = new System.Drawing.Point(198, 30);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 14;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
@@ -147,9 +145,9 @@
 			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtStartTime.Location = new System.Drawing.Point(145, 62);
+			this.txtStartTime.Location = new System.Drawing.Point(169, 72);
 			this.txtStartTime.Name = "txtStartTime";
-			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
+			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
 			this.txtStartTime.TabIndex = 2;
 			this.txtStartTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtStartTime_MaskInputRejected);
 			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
@@ -160,9 +158,9 @@
 			this.txtDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtDuration.Location = new System.Drawing.Point(145, 114);
+			this.txtDuration.Location = new System.Drawing.Point(169, 132);
 			this.txtDuration.Name = "txtDuration";
-			this.txtDuration.Size = new System.Drawing.Size(100, 20);
+			this.txtDuration.Size = new System.Drawing.Size(116, 23);
 			this.txtDuration.TabIndex = 4;
 			this.txtDuration.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtDuration_MaskInputRejected);
 			this.txtDuration.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDuration_KeyDown);
@@ -173,9 +171,9 @@
 			this.txtDurationBetween.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtDurationBetween.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtDurationBetween.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtDurationBetween.Location = new System.Drawing.Point(145, 140);
+			this.txtDurationBetween.Location = new System.Drawing.Point(169, 162);
 			this.txtDurationBetween.Name = "txtDurationBetween";
-			this.txtDurationBetween.Size = new System.Drawing.Size(100, 20);
+			this.txtDurationBetween.Size = new System.Drawing.Size(116, 23);
 			this.txtDurationBetween.TabIndex = 5;
 			this.txtDurationBetween.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtDurationBetween_MaskInputRejected);
 			this.txtDurationBetween.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDurationBetween_KeyDown);
@@ -186,18 +184,18 @@
 			this.txtEffectCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtEffectCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtEffectCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtEffectCount.Location = new System.Drawing.Point(145, 36);
+			this.txtEffectCount.Location = new System.Drawing.Point(169, 42);
 			this.txtEffectCount.Name = "txtEffectCount";
-			this.txtEffectCount.Size = new System.Drawing.Size(100, 20);
+			this.txtEffectCount.Size = new System.Drawing.Size(117, 23);
 			this.txtEffectCount.TabIndex = 1;
 			// 
 			// lblPossibleEffects
 			// 
 			this.lblPossibleEffects.AutoSize = true;
 			this.lblPossibleEffects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.lblPossibleEffects.Location = new System.Drawing.Point(76, 9);
+			this.lblPossibleEffects.Location = new System.Drawing.Point(89, 10);
 			this.lblPossibleEffects.Name = "lblPossibleEffects";
-			this.lblPossibleEffects.Size = new System.Drawing.Size(92, 13);
+			this.lblPossibleEffects.Size = new System.Drawing.Size(101, 15);
 			this.lblPossibleEffects.TabIndex = 15;
 			this.lblPossibleEffects.Text = "n effects possible.";
 			this.lblPossibleEffects.DoubleClick += new System.EventHandler(this.lblPossibleEffects_DoubleClick);
@@ -207,9 +205,9 @@
 			this.listBoxMarkCollections.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listBoxMarkCollections.CheckBoxes = true;
 			this.listBoxMarkCollections.Enabled = false;
-			this.listBoxMarkCollections.Location = new System.Drawing.Point(18, 72);
+			this.listBoxMarkCollections.Location = new System.Drawing.Point(21, 83);
 			this.listBoxMarkCollections.Name = "listBoxMarkCollections";
-			this.listBoxMarkCollections.Size = new System.Drawing.Size(215, 119);
+			this.listBoxMarkCollections.Size = new System.Drawing.Size(250, 137);
 			this.listBoxMarkCollections.TabIndex = 10;
 			this.listBoxMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listBoxMarkCollections.View = System.Windows.Forms.View.List;
@@ -220,9 +218,9 @@
 			// 
 			this.checkBoxAlignToBeatMarks.AutoSize = true;
 			this.checkBoxAlignToBeatMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxAlignToBeatMarks.Location = new System.Drawing.Point(18, 3);
+			this.checkBoxAlignToBeatMarks.Location = new System.Drawing.Point(21, 3);
 			this.checkBoxAlignToBeatMarks.Name = "checkBoxAlignToBeatMarks";
-			this.checkBoxAlignToBeatMarks.Size = new System.Drawing.Size(116, 17);
+			this.checkBoxAlignToBeatMarks.Size = new System.Drawing.Size(129, 19);
 			this.checkBoxAlignToBeatMarks.TabIndex = 7;
 			this.checkBoxAlignToBeatMarks.Text = "Align to beat marks";
 			this.checkBoxAlignToBeatMarks.UseVisualStyleBackColor = true;
@@ -233,36 +231,24 @@
 			this.checkBoxFillDuration.AutoCheck = false;
 			this.checkBoxFillDuration.AutoSize = true;
 			this.checkBoxFillDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxFillDuration.Location = new System.Drawing.Point(18, 49);
+			this.checkBoxFillDuration.Location = new System.Drawing.Point(21, 57);
 			this.checkBoxFillDuration.Name = "checkBoxFillDuration";
-			this.checkBoxFillDuration.Size = new System.Drawing.Size(154, 17);
+			this.checkBoxFillDuration.Size = new System.Drawing.Size(172, 19);
 			this.checkBoxFillDuration.TabIndex = 9;
 			this.checkBoxFillDuration.Text = "Fill duration between marks";
 			this.checkBoxFillDuration.UseVisualStyleBackColor = true;
 			this.checkBoxFillDuration.CheckedChanged += new System.EventHandler(this.checkBoxFillDuration_CheckStateChanged);
-			// 
-			// checkBoxEditEffects
-			// 
-			this.checkBoxEditEffects.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.checkBoxEditEffects.AutoSize = true;
-			this.checkBoxEditEffects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxEditEffects.Location = new System.Drawing.Point(166, 3);
-			this.checkBoxEditEffects.Name = "checkBoxEditEffects";
-			this.checkBoxEditEffects.Size = new System.Drawing.Size(79, 17);
-			this.checkBoxEditEffects.TabIndex = 12;
-			this.checkBoxEditEffects.Text = "Edit effects";
-			this.checkBoxEditEffects.UseVisualStyleBackColor = true;
 			// 
 			// checkBoxSelectEffects
 			// 
 			this.checkBoxSelectEffects.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxSelectEffects.AutoSize = true;
 			this.checkBoxSelectEffects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxSelectEffects.Location = new System.Drawing.Point(18, 3);
+			this.checkBoxSelectEffects.Location = new System.Drawing.Point(21, 4);
 			this.checkBoxSelectEffects.Name = "checkBoxSelectEffects";
-			this.checkBoxSelectEffects.Size = new System.Drawing.Size(91, 17);
+			this.checkBoxSelectEffects.Size = new System.Drawing.Size(126, 19);
 			this.checkBoxSelectEffects.TabIndex = 11;
-			this.checkBoxSelectEffects.Text = "Select effects";
+			this.checkBoxSelectEffects.Text = "Select / Edit effects";
 			this.checkBoxSelectEffects.UseVisualStyleBackColor = true;
 			// 
 			// btnShowBeatMarkOptions
@@ -271,9 +257,9 @@
 			this.btnShowBeatMarkOptions.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnShowBeatMarkOptions.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnShowBeatMarkOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnShowBeatMarkOptions.Location = new System.Drawing.Point(15, 166);
+			this.btnShowBeatMarkOptions.Location = new System.Drawing.Point(17, 192);
 			this.btnShowBeatMarkOptions.Name = "btnShowBeatMarkOptions";
-			this.btnShowBeatMarkOptions.Size = new System.Drawing.Size(24, 23);
+			this.btnShowBeatMarkOptions.Size = new System.Drawing.Size(28, 27);
 			this.btnShowBeatMarkOptions.TabIndex = 21;
 			this.btnShowBeatMarkOptions.Text = "+";
 			this.btnShowBeatMarkOptions.UseVisualStyleBackColor = true;
@@ -283,9 +269,9 @@
 			// 
 			this.lblShowBeatMarkOptions.AutoSize = true;
 			this.lblShowBeatMarkOptions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.lblShowBeatMarkOptions.Location = new System.Drawing.Point(45, 171);
+			this.lblShowBeatMarkOptions.Location = new System.Drawing.Point(52, 197);
 			this.lblShowBeatMarkOptions.Name = "lblShowBeatMarkOptions";
-			this.lblShowBeatMarkOptions.Size = new System.Drawing.Size(169, 13);
+			this.lblShowBeatMarkOptions.Size = new System.Drawing.Size(192, 15);
 			this.lblShowBeatMarkOptions.TabIndex = 22;
 			this.lblShowBeatMarkOptions.Text = "Show beat mark alignment options";
 			// 
@@ -296,9 +282,9 @@
 			this.btnHideBeatMarkOptions.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnHideBeatMarkOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnHideBeatMarkOptions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnHideBeatMarkOptions.Location = new System.Drawing.Point(15, 166);
+			this.btnHideBeatMarkOptions.Location = new System.Drawing.Point(17, 192);
 			this.btnHideBeatMarkOptions.Name = "btnHideBeatMarkOptions";
-			this.btnHideBeatMarkOptions.Size = new System.Drawing.Size(24, 23);
+			this.btnHideBeatMarkOptions.Size = new System.Drawing.Size(28, 27);
 			this.btnHideBeatMarkOptions.TabIndex = 6;
 			this.btnHideBeatMarkOptions.Text = "+";
 			this.btnHideBeatMarkOptions.UseVisualStyleBackColor = true;
@@ -317,7 +303,7 @@
 			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(275, 470);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(321, 542);
 			this.flowLayoutPanel1.TabIndex = 25;
 			// 
 			// panelMain
@@ -338,16 +324,16 @@
 			this.panelMain.Controls.Add(this.txtEffectCount);
 			this.panelMain.Location = new System.Drawing.Point(3, 3);
 			this.panelMain.Name = "panelMain";
-			this.panelMain.Size = new System.Drawing.Size(260, 192);
+			this.panelMain.Size = new System.Drawing.Size(303, 222);
 			this.panelMain.TabIndex = 0;
 			// 
 			// lblEndingTime
 			// 
 			this.lblEndingTime.AutoSize = true;
 			this.lblEndingTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.lblEndingTime.Location = new System.Drawing.Point(15, 91);
+			this.lblEndingTime.Location = new System.Drawing.Point(17, 105);
 			this.lblEndingTime.Name = "lblEndingTime";
-			this.lblEndingTime.Size = new System.Drawing.Size(62, 13);
+			this.lblEndingTime.Size = new System.Drawing.Size(71, 15);
 			this.lblEndingTime.TabIndex = 24;
 			this.lblEndingTime.Text = "Ending time";
 			// 
@@ -356,9 +342,9 @@
 			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtEndTime.Location = new System.Drawing.Point(145, 88);
+			this.txtEndTime.Location = new System.Drawing.Point(169, 102);
 			this.txtEndTime.Name = "txtEndTime";
-			this.txtEndTime.Size = new System.Drawing.Size(100, 20);
+			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
 			this.txtEndTime.TabIndex = 3;
 			this.txtEndTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtEndTime_MaskInputRejected);
 			this.txtEndTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyDown);
@@ -370,9 +356,9 @@
 			this.panelBeatAlignment.Controls.Add(this.checkBoxAlignToBeatMarks);
 			this.panelBeatAlignment.Controls.Add(this.checkBoxFillDuration);
 			this.panelBeatAlignment.Controls.Add(this.listBoxMarkCollections);
-			this.panelBeatAlignment.Location = new System.Drawing.Point(3, 201);
+			this.panelBeatAlignment.Location = new System.Drawing.Point(3, 231);
 			this.panelBeatAlignment.Name = "panelBeatAlignment";
-			this.panelBeatAlignment.Size = new System.Drawing.Size(260, 194);
+			this.panelBeatAlignment.Size = new System.Drawing.Size(303, 224);
 			this.panelBeatAlignment.TabIndex = 1;
 			// 
 			// checkBoxSkipEOBeat
@@ -380,9 +366,9 @@
 			this.checkBoxSkipEOBeat.AutoCheck = false;
 			this.checkBoxSkipEOBeat.AutoSize = true;
 			this.checkBoxSkipEOBeat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxSkipEOBeat.Location = new System.Drawing.Point(18, 26);
+			this.checkBoxSkipEOBeat.Location = new System.Drawing.Point(21, 30);
 			this.checkBoxSkipEOBeat.Name = "checkBoxSkipEOBeat";
-			this.checkBoxSkipEOBeat.Size = new System.Drawing.Size(127, 17);
+			this.checkBoxSkipEOBeat.Size = new System.Drawing.Size(136, 19);
 			this.checkBoxSkipEOBeat.TabIndex = 8;
 			this.checkBoxSkipEOBeat.Text = "Skip every other beat";
 			this.checkBoxSkipEOBeat.UseVisualStyleBackColor = true;
@@ -392,23 +378,22 @@
 			// 
 			this.panelOKCancel.Controls.Add(this.checkBoxSelectEffects);
 			this.panelOKCancel.Controls.Add(this.btnOK);
-			this.panelOKCancel.Controls.Add(this.checkBoxEditEffects);
 			this.panelOKCancel.Controls.Add(this.btnCancel);
-			this.panelOKCancel.Location = new System.Drawing.Point(3, 401);
+			this.panelOKCancel.Location = new System.Drawing.Point(3, 461);
 			this.panelOKCancel.Name = "panelOKCancel";
-			this.panelOKCancel.Size = new System.Drawing.Size(260, 57);
+			this.panelOKCancel.Size = new System.Drawing.Size(303, 66);
 			this.panelOKCancel.TabIndex = 2;
 			// 
 			// Form_AddMultipleEffects
 			// 
 			this.AcceptButton = this.btnOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(275, 470);
+			this.ClientSize = new System.Drawing.Size(321, 542);
 			this.ControlBox = false;
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -446,7 +431,6 @@
 		private System.Windows.Forms.ListView listBoxMarkCollections;
 		private System.Windows.Forms.CheckBox checkBoxAlignToBeatMarks;
 		private System.Windows.Forms.CheckBox checkBoxFillDuration;
-		private System.Windows.Forms.CheckBox checkBoxEditEffects;
 		private System.Windows.Forms.CheckBox checkBoxSelectEffects;
 		private System.Windows.Forms.Button btnShowBeatMarkOptions;
 		private System.Windows.Forms.Label lblShowBeatMarkOptions;
