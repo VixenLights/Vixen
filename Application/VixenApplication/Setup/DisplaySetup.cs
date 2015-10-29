@@ -52,23 +52,23 @@ namespace VixenApplication
 		private void DisplaySetup_Load(object sender, EventArgs e)
 		{
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
-			_setupElementsTree.Dock = DockStyle.Fill;
+			//_setupElementsTree.Dock = DockStyle.Fill;
 			_setupElementsTree.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
-			_setupPatchingSimple.Dock = DockStyle.Fill;
+			//_setupPatchingSimple.Dock = DockStyle.Fill;
 			_setupPatchingSimple.MasterForm = this;
 			_setupPatchingGraphical = new SetupPatchingGraphical();
-			_setupPatchingGraphical.Dock = DockStyle.Fill;
+			//_setupPatchingGraphical.Dock = DockStyle.Fill;
 			_setupPatchingGraphical.MasterForm = this;
 
 			_setupControllersSimple = new SetupControllersSimple();
-			_setupControllersSimple.Dock = DockStyle.Fill;
+			//_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
 
 			activateControllersControl(_setupControllersSimple);
 			activateElementControl(_setupElementsTree);
-
+			
 			radioButtonPatchingSimple.Checked = true;
 		}
 

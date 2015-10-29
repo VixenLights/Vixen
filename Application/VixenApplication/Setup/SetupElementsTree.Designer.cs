@@ -303,6 +303,7 @@
 			this.elementTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.elementTree.AutoSize = true;
 			this.elementTree.Location = new System.Drawing.Point(3, 46);
 			this.elementTree.Name = "elementTree";
 			this.elementTree.Size = new System.Drawing.Size(244, 303);

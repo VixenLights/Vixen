@@ -23,7 +23,6 @@ namespace VixenApplication.Setup
 
 		public SetupPatchingSimple()
 		{
-			Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9);
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -535,6 +534,11 @@ namespace VixenApplication.Setup
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void groupBoxPatching_Enter(object sender, EventArgs e)
+		{
+
 		}
 	}
 
