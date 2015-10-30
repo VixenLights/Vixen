@@ -15,7 +15,8 @@ namespace Common.Controls
 		public BaseForm()
 		{
 			//need to work on the broken layouts so we can just use the system font size.
-			Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9);//SystemFonts.MessageBoxFont;
+			//Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9);
+			Font = SystemFonts.MessageBoxFont;
 		}
 	}
 }
