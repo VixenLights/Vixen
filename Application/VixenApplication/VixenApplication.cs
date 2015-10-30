@@ -38,8 +38,8 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
-			labelVersion.Font = new Font(Font.FontFamily, 14);
-			labelDebugVersion.Font = new Font(Font.FontFamily, 7);
+			labelVersion.Font = new Font("Segoe UI", 14);
+			labelDebugVersion.Font = new Font("Segoe UI", 7);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
@@ -266,6 +266,7 @@ namespace VixenApplication
 				else if (result == DialogResult.Cancel)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning;
 					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
 						Application.ProductName, true, false);
