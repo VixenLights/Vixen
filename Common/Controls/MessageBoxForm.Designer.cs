@@ -40,7 +40,7 @@ namespace Common.Controls
 			// 
 			this.labelPrompt.AutoSize = true;
 			this.labelPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelPrompt.Location = new System.Drawing.Point(107, 18);
+			this.labelPrompt.Location = new System.Drawing.Point(106, 27);
 			this.labelPrompt.MaximumSize = new System.Drawing.Size(350, 200);
 			this.labelPrompt.Name = "labelPrompt";
 			this.labelPrompt.Size = new System.Drawing.Size(15, 15);
@@ -56,7 +56,7 @@ namespace Common.Controls
 			this.buttonOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOk.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.buttonOk.Location = new System.Drawing.Point(175, 105);
+			this.buttonOk.Location = new System.Drawing.Point(91, 91);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(93, 29);
 			this.buttonOk.TabIndex = 2;
@@ -73,7 +73,7 @@ namespace Common.Controls
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonCancel.Location = new System.Drawing.Point(395, 105);
+			this.buttonCancel.Location = new System.Drawing.Point(311, 91);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(93, 29);
 			this.buttonCancel.TabIndex = 3;
@@ -90,7 +90,7 @@ namespace Common.Controls
 			this.buttonNo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNo.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonNo.Location = new System.Drawing.Point(287, 105);
+			this.buttonNo.Location = new System.Drawing.Point(203, 91);
 			this.buttonNo.Name = "buttonNo";
 			this.buttonNo.Size = new System.Drawing.Size(93, 29);
 			this.buttonNo.TabIndex = 4;
@@ -115,20 +115,20 @@ namespace Common.Controls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(512, 164);
+			this.ClientSize = new System.Drawing.Size(416, 132);
 			this.Controls.Add(this.messageIcon);
 			this.Controls.Add(this.buttonNo);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.labelPrompt);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(528, 198);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(528, 198);
 			this.Name = "MessageBoxForm";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
