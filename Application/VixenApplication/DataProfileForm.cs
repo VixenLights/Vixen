@@ -21,7 +21,6 @@ namespace VixenApplication
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			buttonAddProfile.Image = Tools.GetIcon(Resources.add, 16);
 			buttonAddProfile.Text = "";
@@ -29,6 +28,7 @@ namespace VixenApplication
 			buttonDeleteProfile.Text = "";
 			buttonSetDataFolder.Image = Tools.GetIcon(Resources.folder, 16);
 			buttonSetDataFolder.Text = "";
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		private void DataProfileForm_Load(object sender, EventArgs e)
