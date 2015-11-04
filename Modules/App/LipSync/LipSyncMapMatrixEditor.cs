@@ -6,13 +6,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Resources;
 using System.Reflection;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncMapMatrixEditor : Form
+	public partial class LipSyncMapMatrixEditor : BaseForm
     {
         private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
         private LipSyncMapData _origMapping;

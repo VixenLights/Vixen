@@ -18,7 +18,7 @@ using VixenModules.App.Curves;
 
 namespace VixenModules.OutputFilter.DimmingCurve
 {
-	public partial class DimmingCurveHelper : Form, IElementSetupHelper
+	public partial class DimmingCurveHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Rule;
@@ -15,7 +16,7 @@ using VixenApplication.Setup.ElementTemplates;
 
 namespace VixenApplication
 {
-	public partial class DisplaySetup : Form
+	public partial class DisplaySetup : BaseForm
 	{
 		private SetupElementsTree _setupElementsTree;
 
@@ -40,6 +41,9 @@ namespace VixenApplication
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
+			label1.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			label3.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			label5.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 
 			_elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
 			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
@@ -48,23 +52,23 @@ namespace VixenApplication
 		private void DisplaySetup_Load(object sender, EventArgs e)
 		{
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
-			_setupElementsTree.Dock = DockStyle.Fill;
+			//_setupElementsTree.Dock = DockStyle.Fill;
 			_setupElementsTree.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
-			_setupPatchingSimple.Dock = DockStyle.Fill;
+			//_setupPatchingSimple.Dock = DockStyle.Fill;
 			_setupPatchingSimple.MasterForm = this;
 			_setupPatchingGraphical = new SetupPatchingGraphical();
-			_setupPatchingGraphical.Dock = DockStyle.Fill;
+			//_setupPatchingGraphical.Dock = DockStyle.Fill;
 			_setupPatchingGraphical.MasterForm = this;
 
 			_setupControllersSimple = new SetupControllersSimple();
-			_setupControllersSimple.Dock = DockStyle.Fill;
+			//_setupControllersSimple.Dock = DockStyle.Fill;
 			_setupControllersSimple.MasterForm = this;
 
 			activateControllersControl(_setupControllersSimple);
 			activateElementControl(_setupElementsTree);
-
+			
 			radioButtonPatchingSimple.Checked = true;
 		}
 

@@ -6,14 +6,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using VixenModules.App.WebServer.Properties;
 using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.App.WebServer
 {
-	
-	public partial class Settings : Form
+
+	public partial class Settings : BaseForm
 	{
 		public Settings()
 		{

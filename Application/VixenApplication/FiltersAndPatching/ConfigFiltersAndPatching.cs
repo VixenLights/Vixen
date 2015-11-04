@@ -28,7 +28,7 @@ using VixenApplication.FiltersAndPatching;
 
 namespace VixenApplication
 {
-	public partial class ConfigFiltersAndPatching : Form
+	public partial class ConfigFiltersAndPatching : BaseForm
 	{
 		// map of data types, to the shape(s) that represent them. There should only be (potentially) multiple
 		// shapes to represent a given element node; this is because a node can be in multiple groups, and may

@@ -21,7 +21,7 @@ using Common.Controls.Theme;
 
 namespace VixenApplication
 {
-	public partial class VixenApplication : Form, IApplication
+	public partial class VixenApplication : BaseForm, IApplication
 	{
 		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
 
@@ -38,10 +38,13 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
+			labelVersion.Font = new Font("Segoe UI", 14);
+			labelDebugVersion.Font = new Font("Segoe UI", 7);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
 			statusStrip.Padding.Top, statusStrip.Padding.Left, statusStrip.Padding.Bottom);
+			statusStrip.Font = SystemFonts.StatusFont;
 
 			Icon = Resources.Icon_Vixen3;
 
@@ -220,6 +223,8 @@ namespace VixenApplication
 				if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
 				{
 					_rootDataDirectory = directory;
+					string profileName = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
+					UpdateTitleWithProfileName(profileName);
 				}
 				else
 				{
@@ -247,6 +252,7 @@ namespace VixenApplication
 					if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
 					{
 						_rootDataDirectory = directory;
+						UpdateTitleWithProfileName(selectProfile.ProfileName);
 						break;
 					}
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -260,6 +266,7 @@ namespace VixenApplication
 				else if (result == DialogResult.Cancel)
 				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Warning;
 					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
 						Application.ProductName, true, false);
@@ -277,6 +284,11 @@ namespace VixenApplication
 			}
 
 			SetLogFilePaths();
+		}
+
+		private void UpdateTitleWithProfileName(string profileName)
+		{
+			Text = string.Format("Vixen Administration - {0} Profile", profileName);
 		}
 
 		/// <summary>

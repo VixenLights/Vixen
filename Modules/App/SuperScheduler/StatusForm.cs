@@ -6,13 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
-	public partial class StatusForm : Form
+	public partial class StatusForm : BaseForm
 	{
 		private SuperSchedulerData SchedulerData;
 		private ScheduleExecutor Executor;

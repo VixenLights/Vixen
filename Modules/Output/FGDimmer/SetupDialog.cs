@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO.Ports;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.FGDimmer
 {
-	internal partial class SetupDialog : Form
+	internal partial class SetupDialog : BaseForm
 	{
 		private SerialPort _serialPort;
 		private FGDimmerControlModule[] _modules;

@@ -32,6 +32,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 			BPMLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 			BarPeriodLabelVal.TextAlign = ContentAlignment.MiddleLeft;
 			DivTimeLabelVal.TextAlign = ContentAlignment.MiddleLeft;
+			BeatsPerBarLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
+			NoteSizeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F, FontStyle.Bold);
+			BPMLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
+			BarPeriodLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
+			DivTimeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
 
 		}
 

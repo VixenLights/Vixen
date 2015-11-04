@@ -6,10 +6,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-	public partial class CoversionProgressForm : Form
+	public partial class CoversionProgressForm : BaseForm
 	{
 		public string StatusLineLabel
 		{

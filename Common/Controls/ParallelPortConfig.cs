@@ -8,7 +8,7 @@ using Common.Controls.Theme;
 
 namespace Common.Controls
 {
-	public partial class ParallelPortConfig : Form
+	public partial class ParallelPortConfig : BaseForm
 	{
 		private int _OtherAddressIndex;
 		private int _DefaultPort;

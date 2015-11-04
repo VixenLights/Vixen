@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.Scheduler
 {
-	public partial class ProgramForm : Form
+	public partial class ProgramForm : BaseForm
 	{
 		private Program _originalProgram;
 		private Program _editingProgram;

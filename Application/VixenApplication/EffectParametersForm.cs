@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Resources.Properties;
 using Vixen.Module.EffectEditor;
 using Vixen.Services;
@@ -8,7 +9,7 @@ using Vixen.Sys;
 
 namespace VixenApplication
 {
-	public partial class EffectParametersForm : Form
+	public partial class EffectParametersForm : BaseForm
 	{
 		public EffectParametersForm(Guid effectModuleId)
 		{

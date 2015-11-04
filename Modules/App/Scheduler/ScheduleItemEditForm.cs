@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.Scheduler
 {
-	internal partial class ScheduleItemEditForm : Form
+	internal partial class ScheduleItemEditForm : BaseForm
 	{
 		private ScheduleItem _scheduleItem;
 		private bool _internal;

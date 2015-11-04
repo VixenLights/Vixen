@@ -66,6 +66,7 @@ namespace VixenApplication
 			this.buttonOpenSequence = new System.Windows.Forms.Button();
 			this.buttonNewSequence = new System.Windows.Forms.Button();
 			this.groupBoxSequences = new System.Windows.Forms.GroupBox();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.listViewRecentSequences = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.labelVersion = new System.Windows.Forms.Label();
@@ -80,11 +81,14 @@ namespace VixenApplication
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.labelVixen = new System.Windows.Forms.Label();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.statusStrip.SuspendLayout();
+			this.flowLayoutPanel2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenuStripNewSequence
@@ -266,10 +270,10 @@ namespace VixenApplication
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(8, 89);
+			this.label2.Location = new System.Drawing.Point(4, 80);
 			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(102, 13);
+			this.label2.Size = new System.Drawing.Size(105, 15);
 			this.label2.TabIndex = 8;
 			this.label2.Text = "Recent Sequences:";
 			// 
@@ -279,7 +283,7 @@ namespace VixenApplication
 			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOpenSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOpenSequence.Location = new System.Drawing.Point(12, 54);
+			this.buttonOpenSequence.Location = new System.Drawing.Point(4, 45);
 			this.buttonOpenSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonOpenSequence.Name = "buttonOpenSequence";
 			this.buttonOpenSequence.Size = new System.Drawing.Size(180, 30);
@@ -296,7 +300,7 @@ namespace VixenApplication
 			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonNewSequence.Location = new System.Drawing.Point(12, 17);
+			this.buttonNewSequence.Location = new System.Drawing.Point(4, 5);
 			this.buttonNewSequence.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonNewSequence.Name = "buttonNewSequence";
 			this.buttonNewSequence.Size = new System.Drawing.Size(180, 30);
@@ -309,26 +313,39 @@ namespace VixenApplication
 			// 
 			// groupBoxSequences
 			// 
-			this.groupBoxSequences.Controls.Add(this.listViewRecentSequences);
-			this.groupBoxSequences.Controls.Add(this.buttonNewSequence);
-			this.groupBoxSequences.Controls.Add(this.buttonOpenSequence);
-			this.groupBoxSequences.Controls.Add(this.label2);
+			this.groupBoxSequences.AutoSize = true;
+			this.groupBoxSequences.Controls.Add(this.flowLayoutPanel1);
 			this.groupBoxSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSequences.Location = new System.Drawing.Point(13, 205);
 			this.groupBoxSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSequences.Name = "groupBoxSequences";
 			this.groupBoxSequences.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBoxSequences.Size = new System.Drawing.Size(206, 231);
+			this.groupBoxSequences.Size = new System.Drawing.Size(203, 271);
 			this.groupBoxSequences.TabIndex = 0;
 			this.groupBoxSequences.TabStop = false;
 			this.groupBoxSequences.Text = "Sequences";
 			this.groupBoxSequences.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.AutoSize = true;
+			this.flowLayoutPanel1.Controls.Add(this.buttonNewSequence);
+			this.flowLayoutPanel1.Controls.Add(this.buttonOpenSequence);
+			this.flowLayoutPanel1.Controls.Add(this.label2);
+			this.flowLayoutPanel1.Controls.Add(this.listViewRecentSequences);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(4, 21);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(195, 245);
+			this.flowLayoutPanel1.TabIndex = 18;
 			// 
 			// listViewRecentSequences
 			// 
 			this.listViewRecentSequences.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewRecentSequences.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewRecentSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -339,11 +356,11 @@ namespace VixenApplication
             listViewItem4,
             listViewItem5,
             listViewItem6});
-			this.listViewRecentSequences.Location = new System.Drawing.Point(11, 108);
+			this.listViewRecentSequences.Location = new System.Drawing.Point(4, 100);
 			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
 			this.listViewRecentSequences.Name = "listViewRecentSequences";
-			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 113);
+			this.listViewRecentSequences.Size = new System.Drawing.Size(180, 130);
 			this.listViewRecentSequences.TabIndex = 0;
 			this.listViewRecentSequences.UseCompatibleStateImageBehavior = false;
 			this.listViewRecentSequences.View = System.Windows.Forms.View.Details;
@@ -355,7 +372,6 @@ namespace VixenApplication
 			// 
 			// labelVersion
 			// 
-			this.labelVersion.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelVersion.Location = new System.Drawing.Point(321, 129);
 			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -366,14 +382,14 @@ namespace VixenApplication
 			// 
 			// groupBoxSystemConfig
 			// 
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupDisplay);
-			this.groupBoxSystemConfig.Controls.Add(this.buttonSetupOutputPreviews);
+			this.groupBoxSystemConfig.AutoSize = true;
+			this.groupBoxSystemConfig.Controls.Add(this.flowLayoutPanel2);
 			this.groupBoxSystemConfig.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBoxSystemConfig.Location = new System.Drawing.Point(235, 205);
 			this.groupBoxSystemConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.groupBoxSystemConfig.Name = "groupBoxSystemConfig";
 			this.groupBoxSystemConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.groupBoxSystemConfig.Size = new System.Drawing.Size(208, 94);
+			this.groupBoxSystemConfig.Size = new System.Drawing.Size(205, 116);
 			this.groupBoxSystemConfig.TabIndex = 1;
 			this.groupBoxSystemConfig.TabStop = false;
 			this.groupBoxSystemConfig.Text = "System Configuration";
@@ -385,7 +401,7 @@ namespace VixenApplication
 			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupDisplay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupDisplay.Location = new System.Drawing.Point(13, 17);
+			this.buttonSetupDisplay.Location = new System.Drawing.Point(4, 5);
 			this.buttonSetupDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupDisplay.Name = "buttonSetupDisplay";
 			this.buttonSetupDisplay.Size = new System.Drawing.Size(180, 30);
@@ -402,7 +418,7 @@ namespace VixenApplication
 			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSetupOutputPreviews.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(13, 54);
+			this.buttonSetupOutputPreviews.Location = new System.Drawing.Point(4, 45);
 			this.buttonSetupOutputPreviews.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.buttonSetupOutputPreviews.Name = "buttonSetupOutputPreviews";
 			this.buttonSetupOutputPreviews.Size = new System.Drawing.Size(180, 30);
@@ -425,7 +441,6 @@ namespace VixenApplication
 			// 
 			// labelDebugVersion
 			// 
-			this.labelDebugVersion.Font = new System.Drawing.Font("Arial", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.labelDebugVersion.Location = new System.Drawing.Point(323, 161);
 			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -479,7 +494,7 @@ namespace VixenApplication
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 441);
+			this.statusStrip.Location = new System.Drawing.Point(0, 496);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
 			this.statusStrip.Size = new System.Drawing.Size(456, 24);
@@ -499,24 +514,36 @@ namespace VixenApplication
 			this.labelVixen.TabIndex = 17;
 			this.labelVixen.Text = "Vixen";
 			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.AutoSize = true;
+			this.flowLayoutPanel2.Controls.Add(this.buttonSetupDisplay);
+			this.flowLayoutPanel2.Controls.Add(this.buttonSetupOutputPreviews);
+			this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(4, 21);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(197, 90);
+			this.flowLayoutPanel2.TabIndex = 18;
+			// 
 			// VixenApplication
 			// 
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(456, 465);
+			this.ClientSize = new System.Drawing.Size(456, 520);
+			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
 			this.Controls.Add(this.groupBoxSystemConfig);
-			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.menuStripMain);
 			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
 			this.MainMenuStrip = this.menuStripMain;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(472, 504);
-			this.MinimumSize = new System.Drawing.Size(472, 504);
+			this.MinimumSize = new System.Drawing.Size(472, 525);
 			this.Name = "VixenApplication";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Vixen Administration";
@@ -528,10 +555,14 @@ namespace VixenApplication
 			this.menuStripMain.PerformLayout();
 			this.groupBoxSequences.ResumeLayout(false);
 			this.groupBoxSequences.PerformLayout();
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel1.PerformLayout();
 			this.groupBoxSystemConfig.ResumeLayout(false);
+			this.groupBoxSystemConfig.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
+			this.flowLayoutPanel2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -578,6 +609,8 @@ namespace VixenApplication
 		private ToolStripStatusLabel toolStripStatusLabel_memory;
 		private StatusStrip statusStrip;
 		private Label labelVixen;
+		private FlowLayoutPanel flowLayoutPanel1;
+		private FlowLayoutPanel flowLayoutPanel2;
 	}
 }
 

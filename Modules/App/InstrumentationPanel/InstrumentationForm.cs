@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Sys;
 
 namespace VixenModules.App.InstrumentationPanel
 {
-	public partial class InstrumentationForm : Form
+	public partial class InstrumentationForm : BaseForm
 	{
 		public InstrumentationForm()
 		{

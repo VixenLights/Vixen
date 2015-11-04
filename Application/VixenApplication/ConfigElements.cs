@@ -17,7 +17,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class ConfigElements : Form
+	public partial class ConfigElements : BaseForm
 	{
 		private ElementNode _displayedNode;
 		private bool _changesMade;

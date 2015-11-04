@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace VixenApplication
 {
-	public partial class DataZipForm : Form
+	public partial class DataZipForm : BaseForm
 	{
 		private bool _working;
 		private ProfileItem _item;

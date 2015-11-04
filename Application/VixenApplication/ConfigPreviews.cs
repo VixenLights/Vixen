@@ -21,7 +21,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public partial class ConfigPreviews : Form
+	public partial class ConfigPreviews : BaseForm
 	{
 		private OutputPreview _displayedController;
 		private bool _changesMade;

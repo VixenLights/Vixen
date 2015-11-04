@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.App.SuperScheduler
 {
-	public partial class SetupScheduleForm : Form
+	public partial class SetupScheduleForm : BaseForm
 	{
 		ScheduleItem _scheduleItem;
 

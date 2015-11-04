@@ -7,12 +7,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class BulkEffectMoveForm : Form
+	public partial class BulkEffectMoveForm : BaseForm
 	{
 		private const string TimeFormat = @"mm\:ss\.fff";
 		public BulkEffectMoveForm():this(TimeSpan.Zero)

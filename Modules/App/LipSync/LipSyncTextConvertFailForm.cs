@@ -8,12 +8,13 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncTextConvertFailForm : Form
+	public partial class LipSyncTextConvertFailForm : BaseForm
     {
 
         public LipSyncTextConvertFailForm()

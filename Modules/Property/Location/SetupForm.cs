@@ -6,11 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Property.Location {
-	public partial class SetupForm : Form {
+	public partial class SetupForm : BaseForm
+	{
 		public SetupForm(LocationData data) {
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;

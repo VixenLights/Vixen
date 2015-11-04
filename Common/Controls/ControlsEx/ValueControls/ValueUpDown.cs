@@ -175,7 +175,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 			this._textbox.Location = new Point(2, 2);
 			this._textbox.BorderStyle = BorderStyle.FixedSingle;
 			this._textbox.Text = this.Minimum.ToString();
-			this._textbox.BackColor = ThemeColorTable.HighlightColor;
+			this._textbox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
 			this._textbox.ForeColor = ThemeColorTable.ForeColor;
 			this._textbox.MaxLength = 5;
 			this._textbox.KeyDown += new KeyEventHandler(_textbox_KeyDown);
@@ -192,7 +192,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 			#endregion
 
-			this.Size = new Size(72, 25);
+			this.Size = new Size(72, 28);
 			this.SetStyle(ControlStyles.ResizeRedraw |
 						  ControlStyles.FixedHeight |
 						  ControlStyles.DoubleBuffer, true);
@@ -293,7 +293,7 @@ namespace Common.Controls.ControlsEx.ValueControls
 
 				#region background, dropdown button
 
-				Win32.RECT rct = new Win32.RECT(0, 0, this.Width, 22);
+				Win32.RECT rct = new Win32.RECT(0, 0, this.Width, this.Height);
 				Win32.DrawThemeBackground2(data, hdc, 0, _mouseentered ? 2 : 1, ref rct);
 				rct.Left = rct.Right - 15;
 				rct.Top += 2;

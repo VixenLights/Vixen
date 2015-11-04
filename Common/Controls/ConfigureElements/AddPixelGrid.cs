@@ -4,7 +4,7 @@ using Common.Controls.Theme;
 
 namespace Common.Controls.ConfigureElements
 {
-	public partial class AddPixelGrid : Form
+	public partial class AddPixelGrid : BaseForm
 	{
 		public AddPixelGrid()
 		{

@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-	public partial class PreviewCustomCreateForm : Form
+	public partial class PreviewCustomCreateForm : BaseForm
 	{
 		public PreviewCustomCreateForm()
 		{

@@ -48,7 +48,7 @@ using VixenModules.Property.Color;
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 
-	public partial class TimedSequenceEditorForm : Form, IEditorUserInterface, ITiming
+	public partial class TimedSequenceEditorForm : BaseForm, IEditorUserInterface, ITiming
 	{
 
 		#region Member Variables
@@ -2213,12 +2213,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				if (newEffects.Count > 0)
 				{
-					if (eDialog.SelectEffects || eDialog.EditEffects) SelectEffectNodes(newEffects);
-					if (eDialog.EditEffects && TimelineControl.SelectedElements.Any())
-					{
-						EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
-					}
-
+					if (eDialog.SelectEffects) SelectEffectNodes(newEffects);
 				}
 			}
 		}
@@ -3032,12 +3027,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void SelectEffectNodes(IEnumerable<EffectNode> nodes)
 		{
 			TimelineControl.grid.ClearSelectedElements();
-
-			foreach (EffectNode element in nodes)
-			{
-				TimedSequenceElement tse = (TimedSequenceElement)_effectNodeToElement[element];
-				tse.Selected = true;
-			}
+			TimelineControl.grid.SelectElements(nodes.Select(x => _effectNodeToElement[x]));
 		}
 		
 		/// <summary>

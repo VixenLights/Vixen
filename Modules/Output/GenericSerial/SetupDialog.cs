@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.GenericSerial
 {
-	public partial class SetupDialog : Form
+	public partial class SetupDialog : BaseForm
 	{
 		private Data _data;
 		private SerialPort _serialPort = null;

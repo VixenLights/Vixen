@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Sys;
 
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-	public partial class Vixen2xSequenceImporterForm : Form
+	public partial class Vixen2xSequenceImporterForm : BaseForm
 	{
 		public ISequence Sequence { get; set; }
 

@@ -12,7 +12,7 @@ using Common.Controls;
 
 namespace VixenApplication
 {
-	public partial class SelectProfile : Form
+	public partial class SelectProfile : BaseForm
 	{
 		private string _dataFolder = string.Empty;
 
@@ -30,6 +30,8 @@ namespace VixenApplication
 			get { return _dataFolder; }
 			set { _dataFolder = value; }
 		}
+
+		public string ProfileName { get; set; }
 
 		private void SelectProfile_Load(object sender, EventArgs e)
 		{
@@ -61,6 +63,7 @@ namespace VixenApplication
 			if (listBoxProfiles.SelectedIndex >= 0) {
 				ProfileItem item = listBoxProfiles.SelectedItem as ProfileItem;
 				DataFolder = item.DataFolder;
+				ProfileName = item.Name;
 				DialogResult = System.Windows.Forms.DialogResult.OK;
 				Close();
 			}

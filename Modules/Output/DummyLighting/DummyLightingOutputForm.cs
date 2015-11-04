@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls;
 using Vixen.Commands;
 
 namespace VixenModules.Output.DummyLighting
 {
-	public partial class DummyLightingOutputForm : Form
+	public partial class DummyLightingOutputForm : BaseForm
 	{
 		private byte[] _values = new byte[0];
 		private Color[] _colorValues = new Color[0];

@@ -1931,6 +1931,12 @@ namespace Common.Controls.Timeline
 			_SelectionChanged();
 		}
 
+		public void SelectElements(IEnumerable<Element> elements)
+		{
+			elements.All(x => x.Selected = true);
+			_SelectionChanged();
+		}
+
 		public void ToggleElementSelection(Element element)
 		{
 			element.Selected = !element.Selected;

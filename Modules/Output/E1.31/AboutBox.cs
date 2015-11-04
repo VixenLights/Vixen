@@ -27,13 +27,15 @@
 // or implied, of Joshua 1 Systems Inc.
 // =====================================================================
 
+using Common.Controls;
+
 namespace VixenModules.Controller.E131
 {
 	using System.IO;
 	using System.Reflection;
 	using System.Windows.Forms;
 
-	internal partial class AboutBox : Form
+	internal partial class AboutBox : BaseForm
 	{
 		public AboutBox()
 		{

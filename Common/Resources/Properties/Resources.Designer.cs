@@ -503,6 +503,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap check_mark {
+            get {
+                object obj = ResourceManager.GetObject("check_mark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap clipboard_empty {
             get {
                 object obj = ResourceManager.GetObject("clipboard_empty", resourceCulture);

@@ -18,7 +18,7 @@ using Vixen.Sys.Output;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    public partial class PreviewSetElements : Form
+	public partial class PreviewSetElements : BaseForm
     {
         private List<PreviewSetElementString> _strings = new List<PreviewSetElementString>();
         private List<PreviewBaseShape> _shapes;

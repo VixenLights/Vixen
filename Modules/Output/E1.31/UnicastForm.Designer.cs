@@ -92,7 +92,6 @@ namespace VixenModules.Controller.E131
 			// 
 			// ipTextBox
 			// 
-			this.ipTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ipTextBox.Location = new System.Drawing.Point(45, 18);
 			this.ipTextBox.Name = "ipTextBox";
 			this.ipTextBox.Size = new System.Drawing.Size(139, 20);

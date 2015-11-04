@@ -13,7 +13,7 @@ using GitSharp;
 
 namespace VersionControl
 {
-    public partial class Versioning : Form
+	public partial class Versioning : BaseForm
     {
         Data _data;
 

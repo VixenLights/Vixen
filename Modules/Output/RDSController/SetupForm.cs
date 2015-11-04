@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using VixenModules.Output.CommandController.Properties;
 using Common.Resources.Properties;
@@ -18,7 +19,7 @@ using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.CommandController
 {
-	public partial class SetupForm : Form
+	public partial class SetupForm : BaseForm
 	{
 		public Data RdsData { get; set; }
 

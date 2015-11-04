@@ -13,7 +13,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Output.Olsen595
 {
-	internal partial class SetupDialog : Form
+	internal partial class SetupDialog : BaseForm
 	{
 		private Data _data;
 

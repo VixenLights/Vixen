@@ -162,6 +162,11 @@ namespace VixenModules.Output.ElexolEtherIO
 			}
 		}
 
+		public override bool HasSetup
+		{
+			get { return true; }
+		}
+
 	}
 
 }

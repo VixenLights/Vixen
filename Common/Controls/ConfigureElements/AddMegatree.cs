@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Common.Controls.ConfigureElements
 {
-	public partial class AddMegatree : Form
+	public partial class AddMegatree : BaseForm
 	{
 		public AddMegatree()
 		{

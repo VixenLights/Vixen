@@ -12,7 +12,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Output.ElexolEtherIO
 {
-	public partial class SetupDialog : Form
+	public partial class SetupDialog : BaseForm
 	{
 		private int m_MinIntensity = 1;
 		private IPAddress m_IPAddress = null;

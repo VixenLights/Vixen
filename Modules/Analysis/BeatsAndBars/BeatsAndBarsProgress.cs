@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
-	public partial class BeatsAndBarsProgress : Form
+	public partial class BeatsAndBarsProgress : BaseForm
 	{
 		private int m_lastValue = -1;
 		public BeatsAndBarsProgress()

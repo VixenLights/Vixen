@@ -93,7 +93,7 @@ namespace VixenApplication
 		public virtual string Title { get; set; }
 
 		private Font _customFont = null;
-		private static readonly Font _defaultFont = new Font("Arial", 11, GraphicsUnit.Pixel);
+		private static readonly Font _defaultFont = new Font(SystemFonts.MessageBoxFont.FontFamily, 11, GraphicsUnit.Pixel);
 
 		protected Font _font
 		{
@@ -141,7 +141,7 @@ namespace VixenApplication
 
 			while (stringSize.Width > (Width*0.9) && (_font.Size > 6)) {
 				float newSize = (float) (_font.Size*0.9);
-				_font = new Font("Arial", newSize, GraphicsUnit.Pixel);
+				_font = new Font(SystemFonts.MessageBoxFont.FontFamily, newSize, GraphicsUnit.Pixel);
 				stringSize = graphics.MeasureString(Title, _font);
 			}
 

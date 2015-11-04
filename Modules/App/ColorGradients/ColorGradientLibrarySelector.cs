@@ -15,7 +15,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.ColorGradients
 {
-	public partial class ColorGradientLibrarySelector : Form
+	public partial class ColorGradientLibrarySelector : BaseForm
 	{
 		private readonly Pen _borderPen = new Pen(Color.FromArgb(136, 136, 136), 2);
 

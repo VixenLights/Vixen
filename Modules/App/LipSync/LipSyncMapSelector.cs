@@ -17,7 +17,7 @@ using Vixen.Module.App;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncMapSelector : Form
+	public partial class LipSyncMapSelector : BaseForm
     {
         private Bitmap _iconBitmap;
 

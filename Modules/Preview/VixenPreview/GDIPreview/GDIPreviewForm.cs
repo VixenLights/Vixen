@@ -22,7 +22,7 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview
 {
-	public partial class GDIPreviewForm : Form, IDisplayForm
+	public partial class GDIPreviewForm : BaseForm, IDisplayForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool needsUpdate = true;

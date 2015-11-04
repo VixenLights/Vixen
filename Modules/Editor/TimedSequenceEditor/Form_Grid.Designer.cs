@@ -53,7 +53,6 @@
 			this.CloseButton = false;
 			this.CloseButtonVisible = false;
 			this.Controls.Add(this.timelineControl);
-			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "Form_Grid";
 			this.Text = "Timeline";
 			this.ResumeLayout(false);

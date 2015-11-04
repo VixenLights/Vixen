@@ -45,7 +45,7 @@ using Common.Controls.Theme;
 
 namespace VixenModules.Output.E131
 {
-    public partial class SetupForm : Form
+	public partial class SetupForm : BaseForm
     {
         // column indexes - must be changed if column addrange code is changed
         // could refactor to a variable and initialize it at column add time
@@ -74,6 +74,7 @@ namespace VixenModules.Output.E131
         /// </summary>
         public SetupForm()
         {
+			
             // get all the nics
             var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
             foreach (var networkInterface in networkInterfaces)
@@ -99,6 +100,7 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             InitializeComponent();
+			lblDestination.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 14.25F);
             btnAddUniverse.Text = "";
             btnAddUniverse.Image = Tools.GetIcon(Resources.add, 16);
             btnDeleteUniverse.Text = "";
@@ -125,7 +127,7 @@ namespace VixenModules.Output.E131
 			univDGVN.ForeColor = ThemeColorTable.ForeColor;
 	        univDGVN.DefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
 	        univDGVN.DefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
-	        univDGVN.DefaultCellStyle.SelectionBackColor = ThemeColorTable.HighlightColor;
+	        univDGVN.DefaultCellStyle.SelectionBackColor = ThemeColorTable.ListBoxHighLightColor;
 			univDGVN.DefaultCellStyle.SelectionForeColor = ThemeColorTable.ForeColor;
 			univDGVN.RowsDefaultCellStyle.BackColor = Color.Empty;
 			univDGVN.RowsDefaultCellStyle.ForeColor = Color.Empty;
@@ -989,7 +991,7 @@ namespace VixenModules.Output.E131
             if (!autoPopulateStart.Checked)
             {
 	            var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
-				style.BackColor = ThemeColorTable.HighlightColor;
+				style.BackColor = ThemeColorTable.ListBoxHighLightColor;
 				style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
 	            univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }

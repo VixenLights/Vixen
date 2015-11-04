@@ -10,7 +10,7 @@ using Common.Controls.Theme;
 
 namespace Common.Controls
 {
-	public partial class NumberDialog : Form
+	public partial class NumberDialog : BaseForm
 	{
 		public NumberDialog(string title, string prompt, int value, int minimum = 0, int maximum = int.MaxValue)
 		{

@@ -10,7 +10,7 @@ using Common.Controls;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
-	public partial class Vixen2xSequenceImporterChannelMapper : Form
+	public partial class Vixen2xSequenceImporterChannelMapper : BaseForm
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 

@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class EffectTimeEditor : Form
+	public partial class EffectTimeEditor : BaseForm
 	{
 		private const string timeFormat = @"mm\:ss\.fff";
 		public EffectTimeEditor(TimeSpan start, TimeSpan duration)

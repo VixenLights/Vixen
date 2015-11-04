@@ -90,15 +90,12 @@ namespace VixenApplication.Setup
 			// 
 			// groupBoxElements
 			// 
-			this.groupBoxElements.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxElements.AutoSize = true;
 			this.groupBoxElements.Controls.Add(this.panel2);
 			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
 			this.groupBoxElements.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxElements.Name = "groupBoxElements";
-			this.groupBoxElements.Size = new System.Drawing.Size(219, 284);
+			this.groupBoxElements.Size = new System.Drawing.Size(220, 284);
 			this.groupBoxElements.TabIndex = 0;
 			this.groupBoxElements.TabStop = false;
 			this.groupBoxElements.Text = "Selected Elements";
@@ -223,17 +220,16 @@ namespace VixenApplication.Setup
 			// labelPatchPointCount
 			// 
 			this.labelPatchPointCount.AutoSize = true;
-			this.labelPatchPointCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelPatchPointCount.Location = new System.Drawing.Point(131, 17);
 			this.labelPatchPointCount.Name = "labelPatchPointCount";
-			this.labelPatchPointCount.Size = new System.Drawing.Size(14, 13);
+			this.labelPatchPointCount.Size = new System.Drawing.Size(13, 13);
 			this.labelPatchPointCount.TabIndex = 11;
 			this.labelPatchPointCount.Text = "0";
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(28, 57);
+			this.label7.Location = new System.Drawing.Point(8, 57);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(75, 13);
 			this.label7.TabIndex = 6;
@@ -244,7 +240,7 @@ namespace VixenApplication.Setup
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(28, 37);
+			this.label6.Location = new System.Drawing.Point(8, 37);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(62, 13);
 			this.label6.TabIndex = 5;
@@ -255,10 +251,9 @@ namespace VixenApplication.Setup
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label5.Location = new System.Drawing.Point(8, 17);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(116, 13);
+			this.label5.Size = new System.Drawing.Size(97, 13);
 			this.label5.TabIndex = 4;
 			this.label5.Text = "Total Patch Points:";
 			this.toolTip1.SetToolTip(this.label5, "The total number of Patch Points connected to the selected elements.  Patch Point" +
@@ -292,13 +287,10 @@ namespace VixenApplication.Setup
 			// 
 			// groupBoxControllers
 			// 
-			this.groupBoxControllers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxControllers.AutoSize = true;
 			this.groupBoxControllers.Controls.Add(this.panel1);
 			this.groupBoxControllers.Controls.Add(this.buttonUnpatchControllers);
-			this.groupBoxControllers.Location = new System.Drawing.Point(228, 3);
+			this.groupBoxControllers.Location = new System.Drawing.Point(229, 3);
 			this.groupBoxControllers.Name = "groupBoxControllers";
 			this.groupBoxControllers.Size = new System.Drawing.Size(219, 284);
 			this.groupBoxControllers.TabIndex = 1;
@@ -322,7 +314,7 @@ namespace VixenApplication.Setup
 			this.panel1.Controls.Add(this.label21);
 			this.panel1.Location = new System.Drawing.Point(12, 18);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(201, 195);
+			this.panel1.Size = new System.Drawing.Size(201, 203);
 			this.panel1.TabIndex = 34;
 			// 
 			// labelLastOutput
@@ -366,7 +358,7 @@ namespace VixenApplication.Setup
 			// labelUnpatchedOutputCount
 			// 
 			this.labelUnpatchedOutputCount.AutoSize = true;
-			this.labelUnpatchedOutputCount.Location = new System.Drawing.Point(104, 57);
+			this.labelUnpatchedOutputCount.Location = new System.Drawing.Point(87, 57);
 			this.labelUnpatchedOutputCount.Name = "labelUnpatchedOutputCount";
 			this.labelUnpatchedOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelUnpatchedOutputCount.TabIndex = 27;
@@ -375,7 +367,7 @@ namespace VixenApplication.Setup
 			// labelPatchedOutputCount
 			// 
 			this.labelPatchedOutputCount.AutoSize = true;
-			this.labelPatchedOutputCount.Location = new System.Drawing.Point(104, 37);
+			this.labelPatchedOutputCount.Location = new System.Drawing.Point(87, 37);
 			this.labelPatchedOutputCount.Name = "labelPatchedOutputCount";
 			this.labelPatchedOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelPatchedOutputCount.TabIndex = 26;
@@ -384,10 +376,9 @@ namespace VixenApplication.Setup
 			// labelOutputCount
 			// 
 			this.labelOutputCount.AutoSize = true;
-			this.labelOutputCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelOutputCount.Location = new System.Drawing.Point(103, 17);
+			this.labelOutputCount.Location = new System.Drawing.Point(87, 17);
 			this.labelOutputCount.Name = "labelOutputCount";
-			this.labelOutputCount.Size = new System.Drawing.Size(14, 13);
+			this.labelOutputCount.Size = new System.Drawing.Size(13, 13);
 			this.labelOutputCount.TabIndex = 22;
 			this.labelOutputCount.Text = "0";
 			// 
@@ -403,7 +394,7 @@ namespace VixenApplication.Setup
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(28, 57);
+			this.label15.Location = new System.Drawing.Point(8, 57);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(63, 13);
 			this.label15.TabIndex = 20;
@@ -413,7 +404,7 @@ namespace VixenApplication.Setup
 			// label16
 			// 
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(28, 37);
+			this.label16.Location = new System.Drawing.Point(8, 37);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(50, 13);
 			this.label16.TabIndex = 19;
@@ -424,10 +415,9 @@ namespace VixenApplication.Setup
 			// label20
 			// 
 			this.label20.AutoSize = true;
-			this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label20.Location = new System.Drawing.Point(8, 17);
 			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(55, 13);
+			this.label20.Size = new System.Drawing.Size(47, 13);
 			this.label20.TabIndex = 15;
 			this.label20.Text = "Outputs:";
 			this.toolTip1.SetToolTip(this.label20, "The total number of controller outputs selected.");
@@ -467,8 +457,6 @@ namespace VixenApplication.Setup
 			// 
 			// groupBoxPatching
 			// 
-			this.groupBoxPatching.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanel1.SetColumnSpan(this.groupBoxPatching, 2);
 			this.groupBoxPatching.Controls.Add(this.tableLayoutPanel2);
 			this.groupBoxPatching.Controls.Add(this.labelPatchWarning);
@@ -476,7 +464,7 @@ namespace VixenApplication.Setup
 			this.groupBoxPatching.Controls.Add(this.buttonDoPatching);
 			this.groupBoxPatching.Location = new System.Drawing.Point(3, 293);
 			this.groupBoxPatching.Name = "groupBoxPatching";
-			this.groupBoxPatching.Size = new System.Drawing.Size(444, 214);
+			this.groupBoxPatching.Size = new System.Drawing.Size(442, 211);
 			this.groupBoxPatching.TabIndex = 2;
 			this.groupBoxPatching.TabStop = false;
 			this.groupBoxPatching.Text = "Patching Options";
@@ -488,28 +476,27 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel2.ColumnCount = 2;
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel2.Controls.Add(this.groupBoxElementOptions, 0, 0);
 			this.tableLayoutPanel2.Controls.Add(this.groupBoxOutputOptions, 1, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+			this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(438, 107);
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(436, 107);
 			this.tableLayoutPanel2.TabIndex = 5;
 			// 
 			// groupBoxElementOptions
 			// 
-			this.groupBoxElementOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxElementOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.groupBoxElementOptions.AutoSize = true;
 			this.groupBoxElementOptions.Controls.Add(this.checkBoxReverseElementOrder);
 			this.groupBoxElementOptions.Controls.Add(this.radioButtonAllAvailablePatchPoints);
 			this.groupBoxElementOptions.Controls.Add(this.radioButtonUnconnectedPatchPointsOnly);
-			this.groupBoxElementOptions.Location = new System.Drawing.Point(3, 3);
+			this.groupBoxElementOptions.Location = new System.Drawing.Point(5, 3);
 			this.groupBoxElementOptions.Name = "groupBoxElementOptions";
-			this.groupBoxElementOptions.Size = new System.Drawing.Size(213, 101);
+			this.groupBoxElementOptions.Size = new System.Drawing.Size(207, 101);
 			this.groupBoxElementOptions.TabIndex = 1;
 			this.groupBoxElementOptions.TabStop = false;
 			this.groupBoxElementOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
@@ -540,15 +527,14 @@ namespace VixenApplication.Setup
 			// 
 			// groupBoxOutputOptions
 			// 
-			this.groupBoxOutputOptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxOutputOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.groupBoxOutputOptions.AutoSize = true;
 			this.groupBoxOutputOptions.Controls.Add(this.radioButtonAllOutputs);
 			this.groupBoxOutputOptions.Controls.Add(this.radioButtonUnpatchedOutputsOnly);
 			this.groupBoxOutputOptions.Controls.Add(this.checkBoxReverseOutputOrder);
-			this.groupBoxOutputOptions.Location = new System.Drawing.Point(222, 3);
+			this.groupBoxOutputOptions.Location = new System.Drawing.Point(225, 3);
 			this.groupBoxOutputOptions.Name = "groupBoxOutputOptions";
-			this.groupBoxOutputOptions.Size = new System.Drawing.Size(213, 101);
+			this.groupBoxOutputOptions.Size = new System.Drawing.Size(204, 101);
 			this.groupBoxOutputOptions.TabIndex = 2;
 			this.groupBoxOutputOptions.TabStop = false;
 			this.groupBoxOutputOptions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
@@ -582,7 +568,7 @@ namespace VixenApplication.Setup
 			this.labelPatchWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.labelPatchWarning.AutoSize = true;
 			this.labelPatchWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
-			this.labelPatchWarning.Location = new System.Drawing.Point(86, 149);
+			this.labelPatchWarning.Location = new System.Drawing.Point(85, 149);
 			this.labelPatchWarning.Name = "labelPatchWarning";
 			this.labelPatchWarning.Size = new System.Drawing.Size(277, 13);
 			this.labelPatchWarning.TabIndex = 4;
@@ -592,7 +578,7 @@ namespace VixenApplication.Setup
 			// 
 			this.labelPatchSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.labelPatchSummary.AutoSize = true;
-			this.labelPatchSummary.Location = new System.Drawing.Point(76, 129);
+			this.labelPatchSummary.Location = new System.Drawing.Point(75, 129);
 			this.labelPatchSummary.Name = "labelPatchSummary";
 			this.labelPatchSummary.Size = new System.Drawing.Size(298, 13);
 			this.labelPatchSummary.TabIndex = 3;
@@ -601,10 +587,9 @@ namespace VixenApplication.Setup
 			// buttonDoPatching
 			// 
 			this.buttonDoPatching.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.buttonDoPatching.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.buttonDoPatching.Location = new System.Drawing.Point(152, 171);
+			this.buttonDoPatching.Location = new System.Drawing.Point(151, 171);
 			this.buttonDoPatching.Name = "buttonDoPatching";
-			this.buttonDoPatching.Size = new System.Drawing.Size(143, 31);
+			this.buttonDoPatching.Size = new System.Drawing.Size(143, 28);
 			this.buttonDoPatching.TabIndex = 0;
 			this.buttonDoPatching.Text = "Patch Elements";
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
@@ -623,18 +608,18 @@ namespace VixenApplication.Setup
 			// 
 			this.tableLayoutPanel1.AutoSize = true;
 			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.Controls.Add(this.groupBoxElements, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.groupBoxPatching, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.groupBoxControllers, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.groupBoxPatching, 0, 1);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 221F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 511);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 507);
 			this.tableLayoutPanel1.TabIndex = 34;
 			// 
 			// SetupPatchingSimple

@@ -8,12 +8,13 @@ using System.Resources;
 using System.Text;
 using System.Windows.Forms;
 using System.Net;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Output.BlinkyLinky
 {
-	public partial class BlinkyLinkySetup : Form
+	public partial class BlinkyLinkySetup : BaseForm
 	{
 		public BlinkyLinkySetup(BlinkyLinkyData data)
 		{

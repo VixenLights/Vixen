@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview
 {
-	public partial class ResizePreviewForm : Form
+	public partial class ResizePreviewForm : BaseForm
 	{
 		private int _origWidth, _origHeight;
 		private int _newWidth, _newHeight;

@@ -13,7 +13,7 @@ using Vixen.Sys;
 
 namespace VixenModules.App.LipSyncApp
 {
-    public partial class LipSyncNodeSelect : Form
+	public partial class LipSyncNodeSelect : BaseForm
     {
         private bool _userAdd;
         private bool _stringAreRows;
