@@ -28,10 +28,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("1234");
-			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("asdf");
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("zxcv");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("1234");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("qwer qwer qwer asdf zxcv zxcv asdf qwerd qwer ");
+			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdf");
+			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("zxcv");
 			this.label1 = new System.Windows.Forms.Label();
 			this.comboBoxNewItemType = new System.Windows.Forms.ComboBox();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
@@ -189,10 +189,10 @@
 			this.listViewProperties.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewProperties.HideSelection = false;
 			this.listViewProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
+            listViewItem5,
+            listViewItem6,
+            listViewItem7,
+            listViewItem8});
 			this.listViewProperties.Location = new System.Drawing.Point(63, 45);
 			this.listViewProperties.Name = "listViewProperties";
 			this.listViewProperties.Size = new System.Drawing.Size(160, 58);

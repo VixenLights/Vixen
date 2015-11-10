@@ -40,9 +40,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(95, 154);
+			this.buttonCancel.Location = new System.Drawing.Point(111, 178);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -53,9 +53,9 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(14, 154);
+			this.buttonOK.Location = new System.Drawing.Point(16, 178);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 5;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -64,74 +64,74 @@
 			// 
 			// numericUpDownXPosition
 			// 
-			this.numericUpDownXPosition.Location = new System.Drawing.Point(91, 46);
+			this.numericUpDownXPosition.Location = new System.Drawing.Point(106, 53);
 			this.numericUpDownXPosition.Maximum = new decimal(new int[] {
             276447231,
             23283,
             0,
             0});
 			this.numericUpDownXPosition.Name = "numericUpDownXPosition";
-			this.numericUpDownXPosition.Size = new System.Drawing.Size(71, 20);
+			this.numericUpDownXPosition.Size = new System.Drawing.Size(83, 23);
 			this.numericUpDownXPosition.TabIndex = 7;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(13, 48);
+			this.label1.Location = new System.Drawing.Point(15, 55);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(54, 13);
+			this.label1.Size = new System.Drawing.Size(60, 15);
 			this.label1.TabIndex = 8;
 			this.label1.Text = "X Position";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(13, 78);
+			this.label2.Location = new System.Drawing.Point(15, 90);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(54, 13);
+			this.label2.Size = new System.Drawing.Size(60, 15);
 			this.label2.TabIndex = 10;
 			this.label2.Text = "Y Position";
 			// 
 			// numericUpDownYPosition
 			// 
-			this.numericUpDownYPosition.Location = new System.Drawing.Point(91, 76);
+			this.numericUpDownYPosition.Location = new System.Drawing.Point(106, 88);
 			this.numericUpDownYPosition.Maximum = new decimal(new int[] {
             276447231,
             23283,
             0,
             0});
 			this.numericUpDownYPosition.Name = "numericUpDownYPosition";
-			this.numericUpDownYPosition.Size = new System.Drawing.Size(71, 20);
+			this.numericUpDownYPosition.Size = new System.Drawing.Size(83, 23);
 			this.numericUpDownYPosition.TabIndex = 9;
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(13, 108);
+			this.label3.Location = new System.Drawing.Point(15, 125);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(54, 13);
+			this.label3.Size = new System.Drawing.Size(60, 15);
 			this.label3.TabIndex = 12;
 			this.label3.Text = "Z Position";
 			// 
 			// numericUpDownZPosition
 			// 
-			this.numericUpDownZPosition.Location = new System.Drawing.Point(91, 106);
+			this.numericUpDownZPosition.Location = new System.Drawing.Point(106, 122);
 			this.numericUpDownZPosition.Maximum = new decimal(new int[] {
             276447231,
             23283,
             0,
             0});
 			this.numericUpDownZPosition.Name = "numericUpDownZPosition";
-			this.numericUpDownZPosition.Size = new System.Drawing.Size(71, 20);
+			this.numericUpDownZPosition.Size = new System.Drawing.Size(83, 23);
 			this.numericUpDownZPosition.TabIndex = 11;
 			// 
 			// SetupForm
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(182, 189);
+			this.ClientSize = new System.Drawing.Size(212, 218);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.numericUpDownZPosition);
 			this.Controls.Add(this.label2);
@@ -143,6 +143,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SetupForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Location Setup";
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownXPosition)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownYPosition)).EndInit();

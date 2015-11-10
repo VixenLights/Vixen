@@ -27,21 +27,21 @@ namespace VixenApplication.Setup
 		{
 			InitializeComponent();
 
-			buttonAddTemplate.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddTemplate.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAddTemplate.Text = "";
-			buttonRunHelperSetup.Image = Tools.GetIcon(Resources.cog_go, 16);
+			buttonRunHelperSetup.Image = Tools.GetIcon(Resources.cog_go, 24);
 			buttonRunHelperSetup.Text = "";
-			buttonAddProperty.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddProperty.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAddProperty.Text = "";
-			buttonRemoveProperty.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonRemoveProperty.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonRemoveProperty.Text = "";
-			buttonConfigureProperty.Image = Tools.GetIcon(Resources.cog, 16);
+			buttonConfigureProperty.Image = Tools.GetIcon(Resources.cog, 24);
 			buttonConfigureProperty.Text = "";
-			buttonDeleteElements.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteElements.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonDeleteElements.Text = "";
-			buttonRenameElements.Image = Tools.GetIcon(Resources.pencil, 16);
+			buttonRenameElements.Image = Tools.GetIcon(Resources.pencil, 24);
 			buttonRenameElements.Text = "";
-			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, 16);
+			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, 24);
 			buttonSelectDestinationOutputs.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

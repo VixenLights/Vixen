@@ -41,9 +41,9 @@ namespace VixenApplication
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
-			label1.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
-			label3.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
-			label5.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			elementLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			patchingHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
+			controllersHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 
 			_elementTemplates = Vixen.Services.ApplicationServices.GetAllElementTemplates();
 			_elementSetupHelpers = Vixen.Services.ApplicationServices.GetAllElementSetupHelpers();
@@ -70,6 +70,8 @@ namespace VixenApplication
 			activateElementControl(_setupElementsTree);
 			
 			radioButtonPatchingSimple.Checked = true;
+			splitContainer1.SplitterDistance = elementPanelFlowLayoutPanel.Width + 10;
+			splitContainer2.SplitterDistance = patchingPaneFlowLayoutPanel.Width + 6;
 		}
 
 
