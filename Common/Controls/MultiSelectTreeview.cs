@@ -399,8 +399,8 @@ namespace Common.Controls
 			// including navigation, selection, etc.
 
 			base.OnKeyDown(e);
-
-			if (e.KeyCode == Keys.ShiftKey) return;
+			
+			if (e.Control || e.Shift) return;
 
 			//BeginUpdate();
 			bool bShift = (ModifierKeys == Keys.Shift);
