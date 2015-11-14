@@ -619,7 +619,7 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 507);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 507);
 			this.tableLayoutPanel1.TabIndex = 34;
 			// 
 			// SetupPatchingSimple
@@ -629,7 +629,7 @@ namespace VixenApplication.Setup
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.DoubleBuffered = true;
 			this.Name = "SetupPatchingSimple";
-			this.Size = new System.Drawing.Size(450, 550);
+			this.Size = new System.Drawing.Size(451, 550);
 			this.Load += new System.EventHandler(this.SetupPatchingSimple_Load);
 			this.groupBoxElements.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);

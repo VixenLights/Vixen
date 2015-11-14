@@ -33,7 +33,7 @@ namespace VixenApplication.Setup
 			labelOutputCount.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 			label20.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 			buttonDoPatching.Font = new Font(Font.FontFamily, 12F);
-			labelPatchWarning.ForeColor = Color.FromArgb(255,0,0);
+			labelPatchWarning.ForeColor = Color.FromArgb(255,255,0);
 			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet(), false);
 		}
 
@@ -536,10 +536,6 @@ namespace VixenApplication.Setup
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
 		}
 
-		private void groupBoxPatching_Enter(object sender, EventArgs e)
-		{
-
-		}
 	}
 
 	public class PatchStatusItem<T>

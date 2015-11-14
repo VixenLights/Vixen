@@ -75,15 +75,15 @@ namespace VixenApplication.Setup
 		{
 			InitializeComponent();
 
-			buttonAddFilter.Image = Tools.GetIcon(Resources.add, 16);
+			buttonAddFilter.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAddFilter.Text = "";
-			buttonDeleteFilter.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteFilter.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonDeleteFilter.Text = "";
-			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, 16);
+			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, 24);
 			buttonZoomIn.Text = "";
-			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, 16);
+			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, 24);
 			buttonZoomOut.Text = "";
-			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, 16);
+			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, 24);
 			buttonZoomFit.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

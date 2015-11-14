@@ -630,6 +630,7 @@ namespace Common.Controls
 		private void contextMenuStripTreeView_Opening(object sender, CancelEventArgs e)
 		{
 			// temporarily disable Cut function till we can keep the underlying Elements around
+			//When this gets fixed enable the keydown event handler as well
 			cutNodesToolStripMenuItem.Enabled = false; // (SelectedTreeNodes.Count > 0);
 			copyNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			pasteNodesToolStripMenuItem.Enabled = (_clipboardNodes != null);
@@ -651,9 +652,15 @@ namespace Common.Controls
 
 		private void cutNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			CutNodesToClipboard();
+		}
+
+		private void CutNodesToClipboard()
+		{
 			List<ElementNode> cutNodes = new List<ElementNode>();
 
-			foreach (TreeNode treenode in SelectedTreeNodes) {
+			foreach (TreeNode treenode in SelectedTreeNodes)
+			{
 				cutNodes.Add(treenode.Tag as ElementNode);
 				DeleteNode(treenode);
 			}
@@ -666,9 +673,15 @@ namespace Common.Controls
 
 		private void copyNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			CopyNodesToClipboard();
+		}
+
+		private void CopyNodesToClipboard()
+		{
 			List<ElementNode> copiedNodes = new List<ElementNode>();
 
-			foreach (TreeNode treenode in SelectedTreeNodes) {
+			foreach (TreeNode treenode in SelectedTreeNodes)
+			{
 				copiedNodes.Add(treenode.Tag as ElementNode);
 			}
 
@@ -677,45 +690,10 @@ namespace Common.Controls
 
 		private void pasteNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (_clipboardNodes == null)
-				return;
-
-			ElementNode destinationNode = null;
-			TreeNode selectedTreeNode = treeview.SelectedNode;
-
-			if (selectedTreeNode != null)
-				destinationNode = selectedTreeNode.Tag as ElementNode;
-
-			IEnumerable<ElementNode> invalidNodesForTarget;
-			if (destinationNode == null)
-				invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
-			else
-				invalidNodesForTarget = destinationNode.InvalidChildren();
-
-			IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
-            if (invalidSourceNodes.Any())
-            {
-				SystemSounds.Hand.Play();
-			}
-			else {
-				// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
-				// group instead of a leaf node with a element/patches). Prompt the user first.
-				if (CheckAndPromptIfNodeWillLosePatches(destinationNode))
-					return;
-
-				foreach (ElementNode cn in _clipboardNodes) {
-					VixenSystem.Nodes.AddChildToParent(cn, destinationNode);
-				}
-
-				if (selectedTreeNode != null)
-					selectedTreeNode.Expand();
-
-				PopulateNodeTree();
-				OnElementsChanged();
-			}
+			PasteNodes();
 		}
 
-		private void pasteNodesAsNewToolStripMenuItem_Click(object sender, EventArgs e)
+		private void PasteNodes(bool pasteAsNew = false)
 		{
 			if (_clipboardNodes == null)
 				return;
@@ -725,29 +703,61 @@ namespace Common.Controls
 
 			if (selectedTreeNode != null)
 				destinationNode = selectedTreeNode.Tag as ElementNode;
-
-			if (destinationNode!= null && destinationNode.IsLeaf)
+			if (!pasteAsNew)
 			{
-				SystemSounds.Hand.Play();
+				IEnumerable<ElementNode> invalidNodesForTarget;
+				if (destinationNode == null)
+				{
+					invalidNodesForTarget = VixenSystem.Nodes.InvalidRootNodes;
+				}
+				else
+				{
+					invalidNodesForTarget = destinationNode.InvalidChildren();
+				}
+				IEnumerable<ElementNode> invalidSourceNodes = invalidNodesForTarget.Intersect(_clipboardNodes);
+				if (invalidSourceNodes.Any())
+				{
+					SystemSounds.Hand.Play();
+					return;
+				}
 			}
 			else
 			{
-				// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
-				// group instead of a leaf node with a element/patches). Prompt the user first.
-				if (CheckAndPromptIfNodeWillLosePatches(destinationNode))
+				if (destinationNode != null && destinationNode.IsLeaf)
+				{
+					SystemSounds.Hand.Play();
 					return;
+				}
+			}
+			
+			// Check to see if the new parent node would be 'losing' the Element (ie. becoming a
+			// group instead of a leaf node with a element/patches). Prompt the user first.
+			if (CheckAndPromptIfNodeWillLosePatches(destinationNode))
+				return;
 
-				foreach (ElementNode cn in _clipboardNodes)
+			foreach (ElementNode cn in _clipboardNodes)
+			{
+				if (pasteAsNew)
 				{
 					DuplicateNodes(cn, destinationNode);
 				}
-
-				if (selectedTreeNode != null)
-					selectedTreeNode.Expand();
-
-				PopulateNodeTree();
-				OnElementsChanged();
+				else
+				{
+					VixenSystem.Nodes.AddChildToParent(cn, destinationNode);
+				}
 			}
+
+			if (selectedTreeNode != null)
+				selectedTreeNode.Expand();
+
+			PopulateNodeTree();
+			OnElementsChanged();
+			
+		}
+
+		private void pasteNodesAsNewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PasteNodes(true);
 
 		}
 
@@ -882,16 +892,20 @@ namespace Common.Controls
 		private void treeview_KeyDown(object sender, KeyEventArgs e)
 		{
 			// do our own deleting of items here
-			if (e.KeyCode == Keys.Delete) {
-				if (SelectedTreeNodes.Count > 0) {
+			if (e.KeyCode == Keys.Delete)
+			{
+				if (SelectedTreeNodes.Count > 0)
+				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Exclamation; //this is used if you want to add a system icon to the message form.
+					MessageBoxForm.msgIcon = SystemIcons.Exclamation;
+						//this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Delete selected items?",
 						"Delete items", true, false);
 					messageBox.ShowDialog();
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
-						foreach (TreeNode tn in SelectedTreeNodes) {
+						foreach (TreeNode tn in SelectedTreeNodes)
+						{
 							DeleteNode(tn);
 						}
 
@@ -900,6 +914,27 @@ namespace Common.Controls
 					}
 				}
 			}
+			else if(e.KeyCode == Keys.C && e.Control)
+			{
+				CopyNodesToClipboard();
+				e.SuppressKeyPress = true;
+			}
+			else if (e.KeyCode == Keys.V && e.Control && e.Shift)
+			{
+				PasteNodes(true);
+				e.SuppressKeyPress = true;
+			}
+			else if (e.KeyCode == Keys.V && e.Control)
+			{
+				PasteNodes();
+				e.SuppressKeyPress = true;
+			}
+			// temporarily disable Cut function till we can keep the underlying Elements around
+			//else if (e.KeyCode == Keys.X && e.Control)
+			//{
+			//	CutNodesToClipboard();
+			//	e.SuppressKeyPress = true;
+			//}
 		}
 	}
 }
