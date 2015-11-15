@@ -32,6 +32,7 @@ namespace VixenApplication
 		private bool _devBuild = false;
 		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
+		private bool _perfCountersAvailable;
 
 		private VixenApplicationData _applicationData;
 
@@ -737,12 +738,21 @@ namespace VixenApplication
 		private const int StatsUpdateInterval = 1000; // ms
 		private Timer _statsTimer;
 		private Process _thisProc;
+		private PerformanceCounter _committedRamCounter;
+		private PerformanceCounter _reservedRamCounter;
+		
 
 		private void InitStats()
 		{
 			_thisProc = Process.GetCurrentProcess();
 			_cpuUsage = new CpuUsage();
-
+			if (PerformanceCounterCategory.Exists(".NET CLR Memory"))
+			{
+				_committedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total committed Bytes", _thisProc.ProcessName);
+				_reservedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total reserved Bytes", _thisProc.ProcessName);
+				_perfCountersAvailable = true;
+			}
+			
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;
 			_statsTimer.Tick += statsTimer_Tick;
@@ -752,11 +762,25 @@ namespace VixenApplication
 
 		private void statsTimer_Tick(object sender, EventArgs e)
 		{
-			long memUsage = _thisProc.PrivateMemorySize64/1024/1024;
-			long sharedMem = _thisProc.VirtualMemorySize64/1024/1024;
+			long memUsage;
+			long reservedMemUsage;
+
+			if (_perfCountersAvailable)
+			{
+				memUsage = Convert.ToInt32(_committedRamCounter.NextValue()/1024/1024);
+				reservedMemUsage = Convert.ToInt32(_reservedRamCounter.NextValue()/1024/1024);
+			}
+			else
+			{
+				memUsage = _thisProc.PrivateMemorySize64 / 1024 / 1024;
+				reservedMemUsage = _thisProc.VirtualMemorySize64 / 1024 / 1024;
+			}
+
+			
+			
 
 			toolStripStatusLabel_memory.Text = String.Format("Mem: {0}/{2} MB   CPU: {1}%",
-			                                                 memUsage, _cpuUsage.GetUsage(), sharedMem);
+			                                                 memUsage, _cpuUsage.GetUsage(), reservedMemUsage);
 		}
 
 		#endregion
