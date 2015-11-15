@@ -35,7 +35,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{textBox1}));
+	        textBox1.BackColor = ThemeColorTable.BackgroundColor;
+	        textBox1.ForeColor = ThemeColorTable.ForeColor;
             Icon = Resources.Icon_Vixen3;
             
             _sequence = sequence;
