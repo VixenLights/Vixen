@@ -23,9 +23,11 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
 			
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+
+			ThemeUpdateControls.UpdateControls(this);
+
 			_scheduleItem = scheduleItem;
 		}
 

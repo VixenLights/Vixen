@@ -21,17 +21,18 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, 16);
+			
+			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAddSchedule.Text = "";
-			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonDeleteSchedule.Text = "";
-			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, 16);
+			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, 24);
 			buttonEditSchedule.Text = "";
-			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, 16);
+			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, 24);
 			buttonEditShow.Text = "";
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
 
+			ThemeUpdateControls.UpdateControls(this);
 			
 			Data = data;
 		}

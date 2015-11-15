@@ -66,9 +66,9 @@
 			this.groupBox1.Controls.Add(this.labelStatus);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(14, 14);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(450, 49);
+			this.groupBox1.Size = new System.Drawing.Size(525, 57);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Show Status";
@@ -79,9 +79,9 @@
 			this.buttonStartScheduler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStartScheduler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStartScheduler.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStartScheduler.Location = new System.Drawing.Point(312, 16);
+			this.buttonStartScheduler.Location = new System.Drawing.Point(364, 18);
 			this.buttonStartScheduler.Name = "buttonStartScheduler";
-			this.buttonStartScheduler.Size = new System.Drawing.Size(24, 24);
+			this.buttonStartScheduler.Size = new System.Drawing.Size(28, 28);
 			this.buttonStartScheduler.TabIndex = 8;
 			this.buttonStartScheduler.Text = "Start";
 			this.toolTip1.SetToolTip(this.buttonStartScheduler, "Start/Enable the Scheduler");
@@ -93,9 +93,9 @@
 			this.buttonViewLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonViewLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonViewLog.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonViewLog.Location = new System.Drawing.Point(416, 16);
+			this.buttonViewLog.Location = new System.Drawing.Point(485, 18);
 			this.buttonViewLog.Name = "buttonViewLog";
-			this.buttonViewLog.Size = new System.Drawing.Size(24, 24);
+			this.buttonViewLog.Size = new System.Drawing.Size(28, 28);
 			this.buttonViewLog.TabIndex = 7;
 			this.buttonViewLog.Text = "Log";
 			this.toolTip1.SetToolTip(this.buttonViewLog, "View Log");
@@ -107,9 +107,9 @@
 			this.buttonNextSong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonNextSong.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNextSong.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonNextSong.Location = new System.Drawing.Point(275, 15);
+			this.buttonNextSong.Location = new System.Drawing.Point(321, 17);
 			this.buttonNextSong.Name = "buttonNextSong";
-			this.buttonNextSong.Size = new System.Drawing.Size(24, 24);
+			this.buttonNextSong.Size = new System.Drawing.Size(28, 28);
 			this.buttonNextSong.TabIndex = 6;
 			this.buttonNextSong.Text = "Next";
 			this.toolTip1.SetToolTip(this.buttonNextSong, "Skip to the Next Item");
@@ -121,9 +121,9 @@
 			this.buttonPauseShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPauseShow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonPauseShow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPauseShow.Location = new System.Drawing.Point(245, 15);
+			this.buttonPauseShow.Location = new System.Drawing.Point(286, 17);
 			this.buttonPauseShow.Name = "buttonPauseShow";
-			this.buttonPauseShow.Size = new System.Drawing.Size(24, 24);
+			this.buttonPauseShow.Size = new System.Drawing.Size(28, 28);
 			this.buttonPauseShow.TabIndex = 5;
 			this.buttonPauseShow.Text = "Pause";
 			this.toolTip1.SetToolTip(this.buttonPauseShow, "Pause the Current Show");
@@ -135,9 +135,9 @@
 			this.buttonStopGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStopGracefully.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopGracefully.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopGracefully.Location = new System.Drawing.Point(381, 16);
+			this.buttonStopGracefully.Location = new System.Drawing.Point(444, 18);
 			this.buttonStopGracefully.Name = "buttonStopGracefully";
-			this.buttonStopGracefully.Size = new System.Drawing.Size(24, 24);
+			this.buttonStopGracefully.Size = new System.Drawing.Size(28, 28);
 			this.buttonStopGracefully.TabIndex = 4;
 			this.buttonStopGracefully.Text = "Stop Gracefully";
 			this.toolTip1.SetToolTip(this.buttonStopGracefully, "Stop Show Gracefully");
@@ -149,9 +149,9 @@
 			this.buttonStopNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonStopNow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonStopNow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonStopNow.Location = new System.Drawing.Point(347, 16);
+			this.buttonStopNow.Location = new System.Drawing.Point(405, 18);
 			this.buttonStopNow.Name = "buttonStopNow";
-			this.buttonStopNow.Size = new System.Drawing.Size(24, 24);
+			this.buttonStopNow.Size = new System.Drawing.Size(28, 28);
 			this.buttonStopNow.TabIndex = 2;
 			this.buttonStopNow.Text = "Stop";
 			this.toolTip1.SetToolTip(this.buttonStopNow, "Stop Show Immediately");
@@ -162,9 +162,9 @@
 			// 
 			this.labelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelStatus.Location = new System.Drawing.Point(59, 21);
+			this.labelStatus.Location = new System.Drawing.Point(69, 24);
 			this.labelStatus.Name = "labelStatus";
-			this.labelStatus.Size = new System.Drawing.Size(263, 13);
+			this.labelStatus.Size = new System.Drawing.Size(307, 15);
 			this.labelStatus.TabIndex = 1;
 			this.labelStatus.Text = "Waiting to run next show...";
 			// 
@@ -172,7 +172,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(6, 21);
+			this.label1.Location = new System.Drawing.Point(7, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(47, 13);
 			this.label1.TabIndex = 0;
@@ -185,9 +185,9 @@
 			this.groupBox2.Controls.Add(this.buttonPlayShowNow);
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.comboBoxShows);
-			this.groupBox2.Location = new System.Drawing.Point(468, 27);
+			this.groupBox2.Location = new System.Drawing.Point(546, 31);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(398, 53);
+			this.groupBox2.Size = new System.Drawing.Size(464, 61);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Show Control";
@@ -197,9 +197,9 @@
 			// 
 			this.buttonPlayShowGracefully.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPlayShowGracefully.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPlayShowGracefully.Location = new System.Drawing.Point(364, 18);
+			this.buttonPlayShowGracefully.Location = new System.Drawing.Point(425, 21);
 			this.buttonPlayShowGracefully.Name = "buttonPlayShowGracefully";
-			this.buttonPlayShowGracefully.Size = new System.Drawing.Size(24, 24);
+			this.buttonPlayShowGracefully.Size = new System.Drawing.Size(28, 28);
 			this.buttonPlayShowGracefully.TabIndex = 6;
 			this.toolTip1.SetToolTip(this.buttonPlayShowGracefully, "Stop the Current Show Gracefully and Run the Selected Show");
 			this.buttonPlayShowGracefully.UseVisualStyleBackColor = true;
@@ -208,9 +208,9 @@
 			// 
 			this.buttonPlayShowNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonPlayShowNow.Cursor = System.Windows.Forms.Cursors.Default;
-			this.buttonPlayShowNow.Location = new System.Drawing.Point(339, 18);
+			this.buttonPlayShowNow.Location = new System.Drawing.Point(395, 21);
 			this.buttonPlayShowNow.Name = "buttonPlayShowNow";
-			this.buttonPlayShowNow.Size = new System.Drawing.Size(24, 24);
+			this.buttonPlayShowNow.Size = new System.Drawing.Size(28, 28);
 			this.buttonPlayShowNow.TabIndex = 5;
 			this.toolTip1.SetToolTip(this.buttonPlayShowNow, "Stop the Current Show Immediately and Run the Selected Show");
 			this.buttonPlayShowNow.UseVisualStyleBackColor = true;
@@ -220,7 +220,7 @@
 			// 
 			this.label5.AutoSize = true;
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label5.Location = new System.Drawing.Point(9, 24);
+			this.label5.Location = new System.Drawing.Point(10, 28);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(48, 13);
 			this.label5.TabIndex = 1;
@@ -232,9 +232,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.comboBoxShows.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxShows.FormattingEnabled = true;
-			this.comboBoxShows.Location = new System.Drawing.Point(63, 21);
+			this.comboBoxShows.Location = new System.Drawing.Point(73, 24);
 			this.comboBoxShows.Name = "comboBoxShows";
-			this.comboBoxShows.Size = new System.Drawing.Size(270, 21);
+			this.comboBoxShows.Size = new System.Drawing.Size(314, 23);
 			this.comboBoxShows.TabIndex = 0;
 			this.comboBoxShows.DropDown += new System.EventHandler(this.comboBoxShows_DropDown);
 			// 
@@ -244,9 +244,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxLog.Controls.Add(this.listBoxLog);
-			this.groupBoxLog.Location = new System.Drawing.Point(12, 78);
+			this.groupBoxLog.Location = new System.Drawing.Point(14, 90);
 			this.groupBoxLog.Name = "groupBoxLog";
-			this.groupBoxLog.Size = new System.Drawing.Size(450, 0);
+			this.groupBoxLog.Size = new System.Drawing.Size(525, 0);
 			this.groupBoxLog.TabIndex = 2;
 			this.groupBoxLog.TabStop = false;
 			this.groupBoxLog.Text = "Log";
@@ -259,9 +259,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listBoxLog.FormattingEnabled = true;
 			this.listBoxLog.IntegralHeight = false;
-			this.listBoxLog.Location = new System.Drawing.Point(6, 23);
+			this.listBoxLog.ItemHeight = 15;
+			this.listBoxLog.Location = new System.Drawing.Point(7, 27);
 			this.listBoxLog.Name = "listBoxLog";
-			this.listBoxLog.Size = new System.Drawing.Size(438, 0);
+			this.listBoxLog.Size = new System.Drawing.Size(510, 0);
 			this.listBoxLog.TabIndex = 0;
 			// 
 			// imageButtons
@@ -277,14 +278,15 @@
 			// 
 			// StatusForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(474, 71);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(553, 83);
 			this.Controls.Add(this.groupBoxLog);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(490, 110);
+			this.MinimumSize = new System.Drawing.Size(569, 121);
 			this.Name = "StatusForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Scheduler Status";
