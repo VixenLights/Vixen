@@ -290,7 +290,7 @@
 			this.buttonRenameElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
 			this.buttonRenameElements.Name = "buttonRenameElements";
-			this.buttonRenameElements.Size = new System.Drawing.Size(24, 24);
+			this.buttonRenameElements.Size = new System.Drawing.Size(25, 24);
 			this.buttonRenameElements.TabIndex = 43;
 			this.buttonRenameElements.Text = "R";
 			this.toolTip1.SetToolTip(this.buttonRenameElements, "Rename Elements");

@@ -47,8 +47,8 @@
 			this.controllersHeaderLabel = new System.Windows.Forms.Label();
 			this.controllerHeaderLineDivider = new System.Windows.Forms.Label();
 			this.tableLayoutPanelControllerSetup = new System.Windows.Forms.TableLayoutPanel();
-			this.controllerFooterLineDivider = new System.Windows.Forms.Label();
 			this.formOkCancelTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.controllerFooterLineDivider = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
@@ -84,7 +84,7 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(1181, 737);
+			this.splitContainer1.Size = new System.Drawing.Size(1184, 737);
 			this.splitContainer1.SplitterDistance = 309;
 			this.splitContainer1.SplitterWidth = 5;
 			this.splitContainer1.TabIndex = 0;
@@ -168,8 +168,8 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.contollerPaneFlowLayoutPanel);
 			this.splitContainer2.Panel2.Controls.Add(this.formOkCancelTableLayoutPanel);
-			this.splitContainer2.Size = new System.Drawing.Size(867, 737);
-			this.splitContainer2.SplitterDistance = 522;
+			this.splitContainer2.Size = new System.Drawing.Size(870, 737);
+			this.splitContainer2.SplitterDistance = 523;
 			this.splitContainer2.SplitterWidth = 5;
 			this.splitContainer2.TabIndex = 0;
 			// 
@@ -209,7 +209,7 @@
 			// 
 			this.patchingHeaderLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.patchingHeaderLabel.AutoSize = true;
-			this.patchingHeaderLabel.Location = new System.Drawing.Point(88, 0);
+			this.patchingHeaderLabel.Location = new System.Drawing.Point(90, 0);
 			this.patchingHeaderLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
 			this.patchingHeaderLabel.Name = "patchingHeaderLabel";
 			this.patchingHeaderLabel.Size = new System.Drawing.Size(54, 15);
@@ -352,18 +352,6 @@
 			this.tableLayoutPanelControllerSetup.Size = new System.Drawing.Size(142, 0);
 			this.tableLayoutPanelControllerSetup.TabIndex = 65;
 			// 
-			// controllerFooterLineDivider
-			// 
-			this.controllerFooterLineDivider.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.controllerFooterLineDivider.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.formOkCancelTableLayoutPanel.SetColumnSpan(this.controllerFooterLineDivider, 3);
-			this.controllerFooterLineDivider.Location = new System.Drawing.Point(3, 0);
-			this.controllerFooterLineDivider.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
-			this.controllerFooterLineDivider.Name = "controllerFooterLineDivider";
-			this.controllerFooterLineDivider.Size = new System.Drawing.Size(330, 2);
-			this.controllerFooterLineDivider.TabIndex = 66;
-			// 
 			// formOkCancelTableLayoutPanel
 			// 
 			this.formOkCancelTableLayoutPanel.AutoSize = true;
@@ -381,14 +369,26 @@
 			this.formOkCancelTableLayoutPanel.RowCount = 2;
 			this.formOkCancelTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.formOkCancelTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.formOkCancelTableLayoutPanel.Size = new System.Drawing.Size(336, 54);
+			this.formOkCancelTableLayoutPanel.Size = new System.Drawing.Size(338, 54);
 			this.formOkCancelTableLayoutPanel.TabIndex = 67;
+			// 
+			// controllerFooterLineDivider
+			// 
+			this.controllerFooterLineDivider.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.controllerFooterLineDivider.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.formOkCancelTableLayoutPanel.SetColumnSpan(this.controllerFooterLineDivider, 3);
+			this.controllerFooterLineDivider.Location = new System.Drawing.Point(3, 0);
+			this.controllerFooterLineDivider.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+			this.controllerFooterLineDivider.Name = "controllerFooterLineDivider";
+			this.controllerFooterLineDivider.Size = new System.Drawing.Size(332, 2);
+			this.controllerFooterLineDivider.TabIndex = 66;
 			// 
 			// buttonHelp
 			// 
 			this.buttonHelp.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 15);
+			this.buttonHelp.Location = new System.Drawing.Point(13, 15);
 			this.buttonHelp.Margin = new System.Windows.Forms.Padding(3, 3, 3, 10);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(86, 29);
@@ -405,7 +405,7 @@
 			// 
 			this.buttonOk.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(124, 15);
+			this.buttonOk.Location = new System.Drawing.Point(125, 15);
 			this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 3, 3, 10);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(86, 29);
@@ -420,7 +420,7 @@
 			// 
 			this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(236, 15);
+			this.buttonCancel.Location = new System.Drawing.Point(238, 15);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 3, 3, 10);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(86, 29);
@@ -437,7 +437,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(1181, 737);
+			this.ClientSize = new System.Drawing.Size(1184, 737);
 			this.Controls.Add(this.splitContainer1);
 			this.DoubleBuffered = true;
 			this.Name = "DisplaySetup";
