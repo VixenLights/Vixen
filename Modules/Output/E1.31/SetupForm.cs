@@ -887,13 +887,12 @@ namespace VixenModules.Output.E131
 
                             if ((r1LowerBound >= r2LowerBound && r1LowerBound <= r2UpperBound) || (r1UpperBound >= r2LowerBound && r1UpperBound <= r2UpperBound))
                             {
-								//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-								MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-								var messageBox = new MessageBoxForm("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", true, false);
+
+								var messageBox = new MessageBoxForm("The start values seem to be setup in an unusual way. You are sending identical lighting values to multiple sACN outputs. The start value column refers to where a given universe starts reading values in from the list of output channel data from Vixen. For example, setting Universe 1's start value to 5 will map Channel 1 in Universe 1 to output channel #5 in the Vixen controller setup. Would you like to review your settings?", "Warning", MessageBoxButtons.OKCancel, SystemIcons.Warning);
 								messageBox.ShowDialog();
 								if (messageBox.DialogResult == DialogResult.OK)
 								{
-                                    e.Cancel = true;
+                                    e.Cancel = false;
                                     return;
                                 }
                                 overlapWarning = true;
