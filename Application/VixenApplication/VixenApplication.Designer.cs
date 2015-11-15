@@ -401,7 +401,7 @@ namespace VixenApplication
 			// 
 			this.labelDebugVersion.AutoSize = true;
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(321, 158);
+			this.labelDebugVersion.Location = new System.Drawing.Point(319, 166);
 			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelDebugVersion.Name = "labelDebugVersion";
 			this.labelDebugVersion.Size = new System.Drawing.Size(39, 15);

@@ -47,6 +47,15 @@ namespace VixenApplication
 			statusStrip.Font = SystemFonts.StatusFont;
 
 			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
+			statusStrip.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
+			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
 
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args) {
@@ -116,16 +125,7 @@ namespace VixenApplication
 		{
 			initializeEditorTypes();
 			menuStripMain.Renderer = new ThemeToolStripRenderer();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			statusStrip.BackColor = ThemeColorTable.BackgroundColor;
-			statusStrip.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel1.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
-			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
-	
+			
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.
@@ -165,7 +165,16 @@ namespace VixenApplication
 				}
 			}
 
-			labelDebugVersion.Text = string.Format("Build #{0}", version.Build);
+			if (version.Build > 0)
+			{
+				labelDebugVersion.Text = string.Format("Build #{0}", version.Build);
+			}
+			else
+			{
+				labelDebugVersion.Text = @"Test Build";
+				labelDebugVersion.ForeColor = Color.Yellow;
+			}
+			
 			labelDebugVersion.Visible = true;
 		}
 
