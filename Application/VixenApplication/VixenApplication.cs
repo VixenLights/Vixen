@@ -125,7 +125,7 @@ namespace VixenApplication
 			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
-			labelVixen.BackColor = Color.Transparent;
+	
 			openFileDialog.InitialDirectory = SequenceService.SequenceDirectory;
 
 			// Add menu items for the logs.

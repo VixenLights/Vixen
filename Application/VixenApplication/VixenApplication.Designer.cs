@@ -34,12 +34,12 @@ namespace VixenApplication
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("asdfadsa");
-			System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("rewqrewq");
-			System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
-			System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
-			System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("ytreyre");
-			System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("asdfadsa");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("rewqrewq");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("vbcbxvxc");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("gfdsgfsd");
+			System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("ytreyre");
+			System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("xvcbxvcx");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenApplication));
 			this.contextMenuStripNewSequence = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -75,7 +75,6 @@ namespace VixenApplication
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
-			this.labelVixen = new System.Windows.Forms.Label();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -296,12 +295,12 @@ namespace VixenApplication
 			this.listViewRecentSequences.FullRowSelect = true;
 			this.listViewRecentSequences.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewRecentSequences.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4,
+            listViewItem5,
+            listViewItem6});
 			this.listViewRecentSequences.Location = new System.Drawing.Point(4, 100);
 			this.listViewRecentSequences.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.listViewRecentSequences.MultiSelect = false;
@@ -318,11 +317,12 @@ namespace VixenApplication
 			// 
 			// labelVersion
 			// 
+			this.labelVersion.AutoSize = true;
 			this.labelVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelVersion.Location = new System.Drawing.Point(321, 129);
+			this.labelVersion.Location = new System.Drawing.Point(319, 137);
 			this.labelVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelVersion.Name = "labelVersion";
-			this.labelVersion.Size = new System.Drawing.Size(106, 38);
+			this.labelVersion.Size = new System.Drawing.Size(39, 15);
 			this.labelVersion.TabIndex = 1;
 			this.labelVersion.Text = "[0.0.0]";
 			// 
@@ -399,11 +399,12 @@ namespace VixenApplication
 			// 
 			// labelDebugVersion
 			// 
+			this.labelDebugVersion.AutoSize = true;
 			this.labelDebugVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelDebugVersion.Location = new System.Drawing.Point(323, 161);
+			this.labelDebugVersion.Location = new System.Drawing.Point(321, 158);
 			this.labelDebugVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelDebugVersion.Name = "labelDebugVersion";
-			this.labelDebugVersion.Size = new System.Drawing.Size(117, 34);
+			this.labelDebugVersion.Size = new System.Drawing.Size(39, 15);
 			this.labelDebugVersion.TabIndex = 16;
 			this.labelDebugVersion.Text = "[0.0.0]";
 			// 
@@ -460,25 +461,14 @@ namespace VixenApplication
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
-			// labelVixen
-			// 
-			this.labelVixen.AutoSize = true;
-			this.labelVixen.BackColor = System.Drawing.Color.Transparent;
-			this.labelVixen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.labelVixen.Font = new System.Drawing.Font("Microsoft Sans Serif", 65F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelVixen.Location = new System.Drawing.Point(153, 31);
-			this.labelVixen.Name = "labelVixen";
-			this.labelVixen.Size = new System.Drawing.Size(265, 98);
-			this.labelVixen.TabIndex = 17;
-			this.labelVixen.Text = "Vixen";
-			// 
 			// VixenApplication
 			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(456, 520);
 			this.Controls.Add(this.groupBoxSequences);
-			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.labelVersion);
@@ -548,7 +538,6 @@ namespace VixenApplication
 		private ToolStripStatusLabel toolStripStatusLabelExecutionState;
 		private ToolStripStatusLabel toolStripStatusLabel_memory;
 		private StatusStrip statusStrip;
-		private Label labelVixen;
 		private FlowLayoutPanel flowLayoutPanel1;
 		private FlowLayoutPanel flowLayoutPanel2;
 	}
