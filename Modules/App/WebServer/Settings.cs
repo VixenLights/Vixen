@@ -22,7 +22,6 @@ namespace VixenModules.App.WebServer
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			labelVixen.BackColor = Color.Transparent;
 			Icon = Resources.Icon_Vixen3;
 		}
 

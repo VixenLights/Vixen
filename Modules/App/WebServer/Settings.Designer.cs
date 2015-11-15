@@ -39,7 +39,6 @@
 			this.lblDisclaimer = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.label4 = new System.Windows.Forms.Label();
-			this.labelVixen = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -170,22 +169,11 @@
 			this.label4.TabIndex = 16;
 			this.label4.Text = "Turn off the web server when not in use to conserve resources.";
 			// 
-			// labelVixen
-			// 
-			this.labelVixen.AutoSize = true;
-			this.labelVixen.Font = new System.Drawing.Font("Microsoft Sans Serif", 55F, System.Drawing.FontStyle.Bold);
-			this.labelVixen.Location = new System.Drawing.Point(136, 9);
-			this.labelVixen.Name = "labelVixen";
-			this.labelVixen.Size = new System.Drawing.Size(227, 85);
-			this.labelVixen.TabIndex = 18;
-			this.labelVixen.Text = "Vixen";
-			// 
 			// Settings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(366, 366);
-			this.Controls.Add(this.labelVixen);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.lblDisclaimer);
 			this.Controls.Add(this.label3);
@@ -222,6 +210,5 @@
 		private System.Windows.Forms.Label lblDisclaimer;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label labelVixen;
 	}
 }

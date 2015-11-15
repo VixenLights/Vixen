@@ -39,7 +39,7 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			labelVersion.Font = new Font("Segoe UI", 14);
-			labelDebugVersion.Font = new Font("Segoe UI", 7);
+			labelDebugVersion.Font = new Font("Segoe UI", 9);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
