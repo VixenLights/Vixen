@@ -1,29 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls.Theme;
-using Common.Resources;
-using Common.Resources.Properties;
 
 namespace Common.Controls
 {
 	public partial class MessageBoxForm : BaseForm
 	{
+
+		//This whole thing needs rewritten. It needs to act like the real messagebox.
 		public static Icon msgIcon;
 
 		public MessageBoxForm(string messageBoxData, string messageBoxTitle, bool buttonNoVisible, bool buttonCancelVisible)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			labelPrompt.Text = messageBoxData;
-			this.Text = messageBoxTitle;
+			InitMessageBox(messageBoxData, messageBoxTitle);
 			buttonNo.Visible = buttonNoVisible;
 			buttonCancel.Visible = buttonCancelVisible;
 			if (!buttonCancelVisible & !buttonNoVisible)
@@ -34,6 +27,53 @@ namespace Common.Controls
 			{
 				buttonOk.Text = "YES";
 			}
+		}
+
+		/// <summary>
+		/// Create a messagebox with the specific buttons. This is a temporary addition until this can be rewritten.
+		/// </summary>
+		/// <param name="messageBoxData"></param>
+		/// <param name="messageBoxTitle"></param>
+		/// <param name="buttons"></param>
+		/// <param name="icon"></param>
+		public MessageBoxForm(string messageBoxData, string messageBoxTitle, MessageBoxButtons buttons, Icon icon)
+		{
+			if (icon != null)
+			{
+				msgIcon = icon;
+			}
+			InitializeComponent();
+			InitMessageBox(messageBoxData, messageBoxTitle);
+
+			if (buttons == MessageBoxButtons.OKCancel)
+			{
+				buttonOk.Location = buttonNo.Location;
+				buttonCancel.Visible = true;
+			}
+			else if(buttons == MessageBoxButtons.YesNo)
+			{
+				buttonCancel.Visible = false;
+				buttonOk.Text = @"YES";
+			}
+			else if (buttons == MessageBoxButtons.YesNoCancel)
+			{
+				buttonCancel.Visible = true;
+				buttonOk.Visible = true;
+				buttonNo.Visible = true;
+				buttonOk.Text = @"YES";
+			}
+			
+		}
+
+		private void InitMessageBox(string messageBoxData, string messageBoxTitle)
+		{
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
+			txtMessage.BackColor = ThemeColorTable.BackgroundColor; //override theme as we are using this as a label.
+			txtMessage.ForeColor = ThemeColorTable.ForeColor;
+			txtMessage.Text = messageBoxData;
+			Text = messageBoxTitle;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

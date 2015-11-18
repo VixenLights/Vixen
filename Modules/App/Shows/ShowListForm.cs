@@ -21,14 +21,15 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			buttonAdd.Image = Tools.GetIcon(Resources.add, 16);
+			
+			buttonAdd.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAdd.Text = "";
-			buttonDelete.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDelete.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonDelete.Text = "";
-			buttonEdit.Image = Tools.GetIcon(Resources.pencil, 16);
+			buttonEdit.Image = Tools.GetIcon(Resources.pencil, 24);
 			buttonEdit.Text = "";
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+			ThemeUpdateControls.UpdateControls(this);
 
 			Data = data;
 		}

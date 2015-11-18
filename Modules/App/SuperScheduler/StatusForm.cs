@@ -24,7 +24,7 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			
 			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, 24);
 			buttonPauseShow.Text = "";
 			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, 24);
@@ -41,6 +41,8 @@ namespace VixenModules.App.SuperScheduler
 			buttonPlayShowNow.Text = "";
 			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, 24);
 			buttonPlayShowGracefully.Text = "";
+
+			ThemeUpdateControls.UpdateControls(this);
 
 			ControlBox = false;
 			SchedulerData = data;

@@ -99,9 +99,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TabControlEX">
-      <HintPath>..\..\Common\Controls\ControlsEx\TabControlEx\TabControlEX.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigControllersOutputs.cs">

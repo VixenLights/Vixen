@@ -28,25 +28,13 @@ namespace Common.Controls
 		/// </summary>
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageBoxForm));
-			this.labelPrompt = new System.Windows.Forms.Label();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonNo = new System.Windows.Forms.Button();
 			this.messageIcon = new System.Windows.Forms.PictureBox();
+			this.txtMessage = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.messageIcon)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// labelPrompt
-			// 
-			this.labelPrompt.AutoSize = true;
-			this.labelPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelPrompt.Location = new System.Drawing.Point(106, 27);
-			this.labelPrompt.MaximumSize = new System.Drawing.Size(350, 200);
-			this.labelPrompt.Name = "labelPrompt";
-			this.labelPrompt.Size = new System.Drawing.Size(15, 15);
-			this.labelPrompt.TabIndex = 0;
-			this.labelPrompt.Text = "[]";
-			this.labelPrompt.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// buttonOk
 			// 
@@ -111,6 +99,20 @@ namespace Common.Controls
 			this.messageIcon.TabStop = false;
 			this.messageIcon.Paint += new System.Windows.Forms.PaintEventHandler(this.messageIcon_Paint);
 			// 
+			// txtMessage
+			// 
+			this.txtMessage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.txtMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.txtMessage.Cursor = System.Windows.Forms.Cursors.Default;
+			this.txtMessage.Location = new System.Drawing.Point(91, 13);
+			this.txtMessage.Multiline = true;
+			this.txtMessage.Name = "txtMessage";
+			this.txtMessage.ReadOnly = true;
+			this.txtMessage.Size = new System.Drawing.Size(313, 69);
+			this.txtMessage.TabIndex = 6;
+			this.txtMessage.TabStop = false;
+			this.txtMessage.Text = "{ Message }";
+			// 
 			// MessageBoxForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -118,11 +120,11 @@ namespace Common.Controls
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(416, 132);
+			this.Controls.Add(this.txtMessage);
 			this.Controls.Add(this.messageIcon);
 			this.Controls.Add(this.buttonNo);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
-			this.Controls.Add(this.labelPrompt);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
@@ -143,10 +145,10 @@ namespace Common.Controls
 
 		#endregion
 
-		private System.Windows.Forms.Label labelPrompt;
 		private System.Windows.Forms.Button buttonOk;
 		private Button buttonCancel;
 		private Button buttonNo;
 		private PictureBox messageIcon;
+		private TextBox txtMessage;
 	}
 }

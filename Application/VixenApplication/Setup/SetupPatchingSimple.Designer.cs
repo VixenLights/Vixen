@@ -103,6 +103,7 @@ namespace VixenApplication.Setup
 			// 
 			// panel2
 			// 
+			this.panel2.AutoSize = true;
 			this.panel2.Controls.Add(this.labelFilterCount);
 			this.panel2.Controls.Add(this.labelElementCount);
 			this.panel2.Controls.Add(this.labelGroupCount);
@@ -262,6 +263,7 @@ namespace VixenApplication.Setup
 			// 
 			// buttonUnpatchElements
 			// 
+			this.buttonUnpatchElements.AutoSize = true;
 			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 240);
 			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
 			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
@@ -300,6 +302,7 @@ namespace VixenApplication.Setup
 			// 
 			// panel1
 			// 
+			this.panel1.AutoSize = true;
 			this.panel1.Controls.Add(this.labelLastOutput);
 			this.panel1.Controls.Add(this.labelFirstOutput);
 			this.panel1.Controls.Add(this.label9);
@@ -434,6 +437,7 @@ namespace VixenApplication.Setup
 			// 
 			// buttonUnpatchControllers
 			// 
+			this.buttonUnpatchControllers.AutoSize = true;
 			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 240);
 			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
 			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
@@ -457,6 +461,9 @@ namespace VixenApplication.Setup
 			// 
 			// groupBoxPatching
 			// 
+			this.groupBoxPatching.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxPatching.AutoSize = true;
 			this.tableLayoutPanel1.SetColumnSpan(this.groupBoxPatching, 2);
 			this.groupBoxPatching.Controls.Add(this.tableLayoutPanel2);
 			this.groupBoxPatching.Controls.Add(this.labelPatchWarning);
@@ -464,7 +471,7 @@ namespace VixenApplication.Setup
 			this.groupBoxPatching.Controls.Add(this.buttonDoPatching);
 			this.groupBoxPatching.Location = new System.Drawing.Point(3, 293);
 			this.groupBoxPatching.Name = "groupBoxPatching";
-			this.groupBoxPatching.Size = new System.Drawing.Size(442, 211);
+			this.groupBoxPatching.Size = new System.Drawing.Size(445, 231);
 			this.groupBoxPatching.TabIndex = 2;
 			this.groupBoxPatching.TabStop = false;
 			this.groupBoxPatching.Text = "Patching Options";
@@ -484,7 +491,7 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(436, 107);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(439, 107);
 			this.tableLayoutPanel2.TabIndex = 5;
 			// 
 			// groupBoxElementOptions
@@ -494,7 +501,7 @@ namespace VixenApplication.Setup
 			this.groupBoxElementOptions.Controls.Add(this.checkBoxReverseElementOrder);
 			this.groupBoxElementOptions.Controls.Add(this.radioButtonAllAvailablePatchPoints);
 			this.groupBoxElementOptions.Controls.Add(this.radioButtonUnconnectedPatchPointsOnly);
-			this.groupBoxElementOptions.Location = new System.Drawing.Point(5, 3);
+			this.groupBoxElementOptions.Location = new System.Drawing.Point(6, 3);
 			this.groupBoxElementOptions.Name = "groupBoxElementOptions";
 			this.groupBoxElementOptions.Size = new System.Drawing.Size(207, 101);
 			this.groupBoxElementOptions.TabIndex = 1;
@@ -532,7 +539,7 @@ namespace VixenApplication.Setup
 			this.groupBoxOutputOptions.Controls.Add(this.radioButtonAllOutputs);
 			this.groupBoxOutputOptions.Controls.Add(this.radioButtonUnpatchedOutputsOnly);
 			this.groupBoxOutputOptions.Controls.Add(this.checkBoxReverseOutputOrder);
-			this.groupBoxOutputOptions.Location = new System.Drawing.Point(225, 3);
+			this.groupBoxOutputOptions.Location = new System.Drawing.Point(227, 3);
 			this.groupBoxOutputOptions.Name = "groupBoxOutputOptions";
 			this.groupBoxOutputOptions.Size = new System.Drawing.Size(204, 101);
 			this.groupBoxOutputOptions.TabIndex = 2;
@@ -568,7 +575,7 @@ namespace VixenApplication.Setup
 			this.labelPatchWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.labelPatchWarning.AutoSize = true;
 			this.labelPatchWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(255)))));
-			this.labelPatchWarning.Location = new System.Drawing.Point(85, 149);
+			this.labelPatchWarning.Location = new System.Drawing.Point(86, 149);
 			this.labelPatchWarning.Name = "labelPatchWarning";
 			this.labelPatchWarning.Size = new System.Drawing.Size(277, 13);
 			this.labelPatchWarning.TabIndex = 4;
@@ -578,7 +585,7 @@ namespace VixenApplication.Setup
 			// 
 			this.labelPatchSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
 			this.labelPatchSummary.AutoSize = true;
-			this.labelPatchSummary.Location = new System.Drawing.Point(75, 129);
+			this.labelPatchSummary.Location = new System.Drawing.Point(76, 129);
 			this.labelPatchSummary.Name = "labelPatchSummary";
 			this.labelPatchSummary.Size = new System.Drawing.Size(298, 13);
 			this.labelPatchSummary.TabIndex = 3;
@@ -586,10 +593,10 @@ namespace VixenApplication.Setup
 			// 
 			// buttonDoPatching
 			// 
-			this.buttonDoPatching.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.buttonDoPatching.Location = new System.Drawing.Point(151, 171);
+			this.buttonDoPatching.AutoSize = true;
+			this.buttonDoPatching.Location = new System.Drawing.Point(150, 180);
 			this.buttonDoPatching.Name = "buttonDoPatching";
-			this.buttonDoPatching.Size = new System.Drawing.Size(143, 28);
+			this.buttonDoPatching.Size = new System.Drawing.Size(143, 32);
 			this.buttonDoPatching.TabIndex = 0;
 			this.buttonDoPatching.Text = "Patch Elements";
 			this.buttonDoPatching.UseVisualStyleBackColor = true;
@@ -619,7 +626,7 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 507);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 527);
 			this.tableLayoutPanel1.TabIndex = 34;
 			// 
 			// SetupPatchingSimple
@@ -632,9 +639,11 @@ namespace VixenApplication.Setup
 			this.Size = new System.Drawing.Size(451, 550);
 			this.Load += new System.EventHandler(this.SetupPatchingSimple_Load);
 			this.groupBoxElements.ResumeLayout(false);
+			this.groupBoxElements.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
 			this.groupBoxControllers.ResumeLayout(false);
+			this.groupBoxControllers.PerformLayout();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.groupBoxPatching.ResumeLayout(false);

@@ -54,10 +54,11 @@
 			// 
 			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBoxSelectedController.AutoSize = true;
 			this.groupBoxSelectedController.Controls.Add(this.panel1);
-			this.groupBoxSelectedController.Location = new System.Drawing.Point(3, 398);
+			this.groupBoxSelectedController.Location = new System.Drawing.Point(3, 410);
 			this.groupBoxSelectedController.Name = "groupBoxSelectedController";
-			this.groupBoxSelectedController.Size = new System.Drawing.Size(244, 99);
+			this.groupBoxSelectedController.Size = new System.Drawing.Size(249, 112);
 			this.groupBoxSelectedController.TabIndex = 32;
 			this.groupBoxSelectedController.TabStop = false;
 			this.groupBoxSelectedController.Text = "Selected Controller";
@@ -220,7 +221,7 @@
 			this.buttonAddController.Enabled = false;
 			this.buttonAddController.FlatAppearance.BorderSize = 0;
 			this.buttonAddController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddController.Location = new System.Drawing.Point(214, 10);
+			this.buttonAddController.Location = new System.Drawing.Point(219, 10);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddController.TabIndex = 35;
@@ -239,7 +240,7 @@
 			this.comboBoxNewControllerType.FormattingEnabled = true;
 			this.comboBoxNewControllerType.Location = new System.Drawing.Point(47, 12);
 			this.comboBoxNewControllerType.Name = "comboBoxNewControllerType";
-			this.comboBoxNewControllerType.Size = new System.Drawing.Size(152, 21);
+			this.comboBoxNewControllerType.Size = new System.Drawing.Size(157, 21);
 			this.comboBoxNewControllerType.TabIndex = 34;
 			this.comboBoxNewControllerType.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
@@ -266,7 +267,7 @@
 			this.buttonSelectSourceElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.buttonSelectSourceElements.FlatAppearance.BorderSize = 0;
 			this.buttonSelectSourceElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonSelectSourceElements.Location = new System.Drawing.Point(9, 368);
+			this.buttonSelectSourceElements.Location = new System.Drawing.Point(11, 380);
 			this.buttonSelectSourceElements.Name = "buttonSelectSourceElements";
 			this.buttonSelectSourceElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonSelectSourceElements.TabIndex = 40;
@@ -283,7 +284,7 @@
 			this.controllerTree.AutoSize = true;
 			this.controllerTree.Location = new System.Drawing.Point(3, 45);
 			this.controllerTree.Name = "controllerTree";
-			this.controllerTree.Size = new System.Drawing.Size(244, 317);
+			this.controllerTree.Size = new System.Drawing.Size(249, 329);
 			this.controllerTree.TabIndex = 36;
 			// 
 			// SetupControllersSimple
@@ -300,7 +301,7 @@
 			this.Controls.Add(this.groupBoxSelectedController);
 			this.DoubleBuffered = true;
 			this.Name = "SetupControllersSimple";
-			this.Size = new System.Drawing.Size(250, 500);
+			this.Size = new System.Drawing.Size(255, 525);
 			this.groupBoxSelectedController.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();

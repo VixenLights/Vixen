@@ -23,12 +23,15 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			buttonAddItem.Image = Tools.GetIcon(Resources.add, 16);
+			
+			buttonAddItem.Image = Tools.GetIcon(Resources.add, 24);
 			buttonAddItem.Text = "";
-			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 24);
 			buttonDeleteItem.Text = "";
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 16);
+			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+
+			ThemeUpdateControls.UpdateControls(this);
+
 			foreach (Control tab in tabControlShowItems.TabPages)
 			{
 				tab.BackColor = ThemeColorTable.ComboBoxBackColor;

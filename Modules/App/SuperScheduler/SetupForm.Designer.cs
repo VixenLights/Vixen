@@ -58,9 +58,9 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(14, 14);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(660, 66);
+			this.groupBox1.Size = new System.Drawing.Size(770, 76);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Shows";
@@ -68,18 +68,18 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(6, 16);
+			this.label1.Location = new System.Drawing.Point(7, 18);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(648, 45);
+			this.label1.Size = new System.Drawing.Size(756, 52);
 			this.label1.TabIndex = 0;
 			this.label1.Text = resources.GetString("label1.Text");
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// buttonClose
 			// 
-			this.buttonClose.Location = new System.Drawing.Point(591, 377);
+			this.buttonClose.Location = new System.Drawing.Point(689, 435);
 			this.buttonClose.Name = "buttonClose";
-			this.buttonClose.Size = new System.Drawing.Size(75, 23);
+			this.buttonClose.Size = new System.Drawing.Size(87, 27);
 			this.buttonClose.TabIndex = 6;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
@@ -94,9 +94,9 @@
 			this.groupBox2.Controls.Add(this.buttonDeleteSchedule);
 			this.groupBox2.Controls.Add(this.buttonEditSchedule);
 			this.groupBox2.Controls.Add(this.buttonAddSchedule);
-			this.groupBox2.Location = new System.Drawing.Point(12, 84);
+			this.groupBox2.Location = new System.Drawing.Point(14, 97);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(660, 282);
+			this.groupBox2.Size = new System.Drawing.Size(770, 325);
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Scheduled Shows";
@@ -105,9 +105,9 @@
 			// buttonEditShow
 			// 
 			this.buttonEditShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditShow.Location = new System.Drawing.Point(9, 252);
+			this.buttonEditShow.Location = new System.Drawing.Point(10, 291);
 			this.buttonEditShow.Name = "buttonEditShow";
-			this.buttonEditShow.Size = new System.Drawing.Size(24, 24);
+			this.buttonEditShow.Size = new System.Drawing.Size(28, 28);
 			this.buttonEditShow.TabIndex = 10;
 			this.toolTip1.SetToolTip(this.buttonEditShow, "Edit Selected Show");
 			this.buttonEditShow.UseVisualStyleBackColor = true;
@@ -124,10 +124,10 @@
             this.columnStatus});
 			this.listViewItems.ContextMenuStrip = this.contextMenuStripList;
 			this.listViewItems.FullRowSelect = true;
-			this.listViewItems.Location = new System.Drawing.Point(9, 19);
+			this.listViewItems.Location = new System.Drawing.Point(10, 22);
 			this.listViewItems.MultiSelect = false;
 			this.listViewItems.Name = "listViewItems";
-			this.listViewItems.Size = new System.Drawing.Size(645, 227);
+			this.listViewItems.Size = new System.Drawing.Size(752, 261);
 			this.listViewItems.TabIndex = 8;
 			this.listViewItems.UseCompatibleStateImageBehavior = false;
 			this.listViewItems.View = System.Windows.Forms.View.Details;
@@ -195,9 +195,9 @@
 			// buttonDeleteSchedule
 			// 
 			this.buttonDeleteSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDeleteSchedule.Location = new System.Drawing.Point(630, 252);
+			this.buttonDeleteSchedule.Location = new System.Drawing.Point(735, 291);
 			this.buttonDeleteSchedule.Name = "buttonDeleteSchedule";
-			this.buttonDeleteSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonDeleteSchedule.Size = new System.Drawing.Size(28, 28);
 			this.buttonDeleteSchedule.TabIndex = 7;
 			this.toolTip1.SetToolTip(this.buttonDeleteSchedule, "Delete the Selected Schedule");
 			this.buttonDeleteSchedule.UseVisualStyleBackColor = true;
@@ -206,9 +206,9 @@
 			// buttonEditSchedule
 			// 
 			this.buttonEditSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonEditSchedule.Location = new System.Drawing.Point(605, 252);
+			this.buttonEditSchedule.Location = new System.Drawing.Point(706, 291);
 			this.buttonEditSchedule.Name = "buttonEditSchedule";
-			this.buttonEditSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonEditSchedule.Size = new System.Drawing.Size(28, 28);
 			this.buttonEditSchedule.TabIndex = 6;
 			this.toolTip1.SetToolTip(this.buttonEditSchedule, "Edit the Selected Schedule");
 			this.buttonEditSchedule.UseVisualStyleBackColor = true;
@@ -217,9 +217,9 @@
 			// buttonAddSchedule
 			// 
 			this.buttonAddSchedule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonAddSchedule.Location = new System.Drawing.Point(580, 252);
+			this.buttonAddSchedule.Location = new System.Drawing.Point(677, 291);
 			this.buttonAddSchedule.Name = "buttonAddSchedule";
-			this.buttonAddSchedule.Size = new System.Drawing.Size(24, 24);
+			this.buttonAddSchedule.Size = new System.Drawing.Size(28, 28);
 			this.buttonAddSchedule.TabIndex = 5;
 			this.toolTip1.SetToolTip(this.buttonAddSchedule, "Add a New Scheduled Show");
 			this.buttonAddSchedule.UseVisualStyleBackColor = true;
@@ -228,9 +228,9 @@
 			// buttonHelp
 			// 
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 377);
+			this.buttonHelp.Location = new System.Drawing.Point(14, 435);
 			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+			this.buttonHelp.Size = new System.Drawing.Size(70, 27);
 			this.buttonHelp.TabIndex = 61;
 			this.buttonHelp.Tag = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-eff" +
     "ects/";
@@ -238,14 +238,12 @@
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// SetupForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(684, 412);
+			this.ClientSize = new System.Drawing.Size(798, 475);
 			this.Controls.Add(this.buttonHelp);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonClose);

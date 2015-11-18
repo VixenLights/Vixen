@@ -7,8 +7,7 @@ namespace Common.Controls.Theme
 {
 	public sealed class ThemeGroupBoxRenderer
 	{
-		private const int boxHeaderWidth = 7;
-
+		
 		#region Draw GroupBox borders and Text
 
 		public static void GroupBoxesDrawBorder(object sender, PaintEventArgs e, Font f)
@@ -19,11 +18,9 @@ namespace Common.Controls.Theme
 			
 			Color textColor = groupBox.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 
-
-			Brush textBrush = new SolidBrush(textColor);
 			Brush borderBrush = new SolidBrush(ThemeColorTable.GroupBoxBorderColor);
 			Pen borderPen = new Pen(borderBrush);
-			SizeF strSize = g.MeasureString(groupBox.Text, groupBox.Font);
+			SizeF strSize = TextRenderer.MeasureText(groupBox.Text, groupBox.Font);
 			Rectangle rect = new Rectangle(groupBox.ClientRectangle.X,
 										   groupBox.ClientRectangle.Y + (int)(strSize.Height / 2),
 										   groupBox.ClientRectangle.Width - 2,
@@ -32,9 +29,8 @@ namespace Common.Controls.Theme
 			// Clear text and border
 			g.Clear(groupBox.BackColor);
 
-			// Draw text
-			g.DrawString(groupBox.Text, groupBox.Font, textBrush, groupBox.Padding.Left, 0);
-
+			TextRenderer.DrawText(g,groupBox.Text,groupBox.Font,new Point(groupBox.Padding.Left,0), textColor);
+			
 			// Drawing Border
 			//Left
 			g.DrawLine(borderPen, rect.Location, new Point(rect.X, rect.Y + rect.Height));

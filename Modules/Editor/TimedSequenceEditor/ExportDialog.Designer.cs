@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -65,9 +65,9 @@
 			this.buttonStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStart.Location = new System.Drawing.Point(118, 377);
+			this.buttonStart.Location = new System.Drawing.Point(138, 435);
 			this.buttonStart.Name = "buttonStart";
-			this.buttonStart.Size = new System.Drawing.Size(89, 23);
+			this.buttonStart.Size = new System.Drawing.Size(104, 27);
 			this.buttonStart.TabIndex = 8;
 			this.buttonStart.Text = "Start";
 			this.buttonStart.UseVisualStyleBackColor = true;
@@ -79,9 +79,9 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label3.Location = new System.Drawing.Point(16, 24);
+			this.label3.Location = new System.Drawing.Point(19, 28);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(77, 13);
+			this.label3.Size = new System.Drawing.Size(89, 15);
 			this.label3.TabIndex = 9;
 			this.label3.Text = "Output Format:";
 			// 
@@ -93,9 +93,9 @@
 			this.outputFormatComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.outputFormatComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.outputFormatComboBox.FormattingEnabled = true;
-			this.outputFormatComboBox.Location = new System.Drawing.Point(99, 21);
+			this.outputFormatComboBox.Location = new System.Drawing.Point(115, 24);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
-			this.outputFormatComboBox.Size = new System.Drawing.Size(121, 21);
+			this.outputFormatComboBox.Size = new System.Drawing.Size(140, 24);
 			this.outputFormatComboBox.TabIndex = 10;
 			this.outputFormatComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
@@ -103,9 +103,9 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label4.Location = new System.Drawing.Point(235, 24);
+			this.label4.Location = new System.Drawing.Point(274, 28);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(82, 13);
+			this.label4.Size = new System.Drawing.Size(93, 15);
 			this.label4.TabIndex = 11;
 			this.label4.Text = "Resolution (ms):";
 			// 
@@ -121,22 +121,23 @@
             "25",
             "50",
             "100"});
-			this.resolutionComboBox.Location = new System.Drawing.Point(323, 21);
+			this.resolutionComboBox.Location = new System.Drawing.Point(377, 24);
 			this.resolutionComboBox.Name = "resolutionComboBox";
-			this.resolutionComboBox.Size = new System.Drawing.Size(53, 21);
+			this.resolutionComboBox.Size = new System.Drawing.Size(61, 24);
 			this.resolutionComboBox.TabIndex = 12;
 			this.resolutionComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.AutoSize = true;
 			this.groupBox1.Controls.Add(this.resolutionComboBox);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.outputFormatComboBox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox1.Location = new System.Drawing.Point(8, 51);
+			this.groupBox1.Location = new System.Drawing.Point(9, 59);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(404, 61);
+			this.groupBox1.Size = new System.Drawing.Size(471, 70);
 			this.groupBox1.TabIndex = 13;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Settings";
@@ -150,9 +151,10 @@
             this.progressLabel,
             this.exportProgressBar,
             this.currentTimeLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 415);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 480);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(442, 22);
+			this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+			this.statusStrip1.Size = new System.Drawing.Size(516, 24);
 			this.statusStrip1.TabIndex = 14;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -160,19 +162,19 @@
 			// 
 			this.progressLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.progressLabel.Name = "progressLabel";
-			this.progressLabel.Size = new System.Drawing.Size(0, 17);
+			this.progressLabel.Size = new System.Drawing.Size(0, 19);
 			// 
 			// exportProgressBar
 			// 
 			this.exportProgressBar.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.exportProgressBar.Name = "exportProgressBar";
-			this.exportProgressBar.Size = new System.Drawing.Size(100, 16);
+			this.exportProgressBar.Size = new System.Drawing.Size(117, 18);
 			// 
 			// currentTimeLabel
 			// 
 			this.currentTimeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.currentTimeLabel.Name = "currentTimeLabel";
-			this.currentTimeLabel.Size = new System.Drawing.Size(55, 17);
+			this.currentTimeLabel.Size = new System.Drawing.Size(55, 19);
 			this.currentTimeLabel.Text = "00:00.000";
 			// 
 			// buttonStop
@@ -187,9 +189,9 @@
 			this.buttonStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStop.Location = new System.Drawing.Point(208, 377);
+			this.buttonStop.Location = new System.Drawing.Point(243, 435);
 			this.buttonStop.Name = "buttonStop";
-			this.buttonStop.Size = new System.Drawing.Size(89, 23);
+			this.buttonStop.Size = new System.Drawing.Size(104, 27);
 			this.buttonStop.TabIndex = 15;
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = false;
@@ -203,14 +205,15 @@
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.AutoSize = true;
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.label2);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.networkListView);
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox2.Location = new System.Drawing.Point(8, 129);
+			this.groupBox2.Location = new System.Drawing.Point(9, 149);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(418, 233);
+			this.groupBox2.Size = new System.Drawing.Size(488, 269);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
@@ -219,27 +222,27 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(266, 19);
+			this.label5.Location = new System.Drawing.Point(310, 22);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(48, 13);
+			this.label5.Size = new System.Drawing.Size(55, 15);
 			this.label5.TabIndex = 4;
 			this.label5.Text = "Mapping";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(187, 19);
+			this.label2.Location = new System.Drawing.Point(218, 22);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(51, 13);
+			this.label2.Size = new System.Drawing.Size(56, 15);
 			this.label2.TabIndex = 3;
 			this.label2.Text = "Channels";
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 19);
+			this.label1.Location = new System.Drawing.Point(10, 22);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(51, 13);
+			this.label1.Size = new System.Drawing.Size(60, 15);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Controller";
 			// 
@@ -259,11 +262,11 @@
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
-			this.networkListView.Location = new System.Drawing.Point(6, 35);
+            listViewItem3});
+			this.networkListView.Location = new System.Drawing.Point(7, 40);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
-			this.networkListView.Size = new System.Drawing.Size(406, 192);
+			this.networkListView.Size = new System.Drawing.Size(473, 221);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -293,10 +296,10 @@
 			this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBox1.Location = new System.Drawing.Point(14, 13);
+			this.textBox1.Location = new System.Drawing.Point(16, 15);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(398, 37);
+			this.textBox1.Size = new System.Drawing.Size(464, 43);
 			this.textBox1.TabIndex = 17;
 			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
     "atched in the Display Setup for the export to produce correct results..";
@@ -304,19 +307,20 @@
 			// ExportDialog
 			// 
 			this.AcceptButton = this.buttonStart;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonStop;
-			this.ClientSize = new System.Drawing.Size(442, 437);
+			this.ClientSize = new System.Drawing.Size(516, 504);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonStop);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonStart);
-			this.MaximumSize = new System.Drawing.Size(458, 747);
-			this.MinimumSize = new System.Drawing.Size(458, 470);
+			this.MaximumSize = new System.Drawing.Size(532, 856);
+			this.MinimumSize = new System.Drawing.Size(532, 536);
 			this.Name = "ExportDialog";
 			this.Text = "Export Sequence";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportDialog_FormClosed);

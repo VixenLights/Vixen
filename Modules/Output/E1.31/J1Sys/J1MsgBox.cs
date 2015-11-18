@@ -524,10 +524,12 @@ namespace VixenModules.Controller.E131.J1Sys
 			// 
 			// J1MsgBox
 			// 
+			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Name = "J1MsgBox";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.ResumeLayout(false);
+
 		}
 	}
 }
