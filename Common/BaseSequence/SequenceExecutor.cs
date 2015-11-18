@@ -213,7 +213,7 @@ namespace BaseSequence
 			
 			//Reset our position. No need to stop the source, we will just reset its position.
 			TimingSource.Position = StartTime;
-			
+			TimingSource.Start();
 			OnSequenceReStarted(new SequenceStartedEventArgs(Sequence, TimingSource, StartTime, EndTime));
 			
 			while (TimingSource.Position == StartTime)
