@@ -30,7 +30,7 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			
 			ContolLabel1 = label1;
 			ContolLabelSequence = labelSequence;
 			ContolTextBoxSequence = textBoxSequence;
@@ -38,7 +38,7 @@ namespace VixenModules.App.Shows
 			
 			buttonSelectSequence.Image = Tools.GetIcon(Resources.folder_explore, 16);
 			buttonSelectSequence.Text = "";
-
+			ThemeUpdateControls.UpdateControls(this);
 			_showItem = showItem;
 		}
 

@@ -77,11 +77,12 @@
 			// 
 			// groupBoxAction
 			// 
+			this.groupBoxAction.AutoSize = true;
 			this.groupBoxAction.Controls.Add(this.comboBoxActions);
 			this.groupBoxAction.Controls.Add(this.label3);
 			this.groupBoxAction.Location = new System.Drawing.Point(402, 82);
 			this.groupBoxAction.Name = "groupBoxAction";
-			this.groupBoxAction.Size = new System.Drawing.Size(516, 60);
+			this.groupBoxAction.Size = new System.Drawing.Size(516, 68);
 			this.groupBoxAction.TabIndex = 11;
 			this.groupBoxAction.TabStop = false;
 			this.groupBoxAction.Text = "Action";
@@ -242,7 +243,7 @@
 			this.tabControlShowItems.Name = "tabControlShowItems";
 			this.tabControlShowItems.Padding = new System.Drawing.Point(2, 2);
 			this.tabControlShowItems.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.tabControlShowItems.SelectedIndex = 0;
+			this.tabControlShowItems.SelectedIndex = 3;
 			this.tabControlShowItems.Size = new System.Drawing.Size(384, 23);
 			this.tabControlShowItems.TabIndex = 0;
 			this.tabControlShowItems.UseVisualStyles = false;
@@ -253,7 +254,7 @@
 			this.tabPageStartup.Location = new System.Drawing.Point(4, 22);
 			this.tabPageStartup.Margin = new System.Windows.Forms.Padding(1);
 			this.tabPageStartup.Name = "tabPageStartup";
-			this.tabPageStartup.Size = new System.Drawing.Size(376, 0);
+			this.tabPageStartup.Size = new System.Drawing.Size(376, -3);
 			this.tabPageStartup.TabIndex = 0;
 			this.tabPageStartup.Tag = "These items are run once, in order, during startup.";
 			this.tabPageStartup.Text = "Startup";
@@ -286,7 +287,7 @@
 			this.tabPageShutdown.Location = new System.Drawing.Point(4, 22);
 			this.tabPageShutdown.Margin = new System.Windows.Forms.Padding(1);
 			this.tabPageShutdown.Name = "tabPageShutdown";
-			this.tabPageShutdown.Size = new System.Drawing.Size(376, -3);
+			this.tabPageShutdown.Size = new System.Drawing.Size(376, 0);
 			this.tabPageShutdown.TabIndex = 4;
 			this.tabPageShutdown.Tag = "These items are run, in order, at the end of the show.";
 			this.tabPageShutdown.Text = "Shutdown";
@@ -323,6 +324,7 @@
 			this.groupBox2.PerformLayout();
 			this.tabControlShowItems.ResumeLayout(false);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
