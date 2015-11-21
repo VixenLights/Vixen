@@ -27,7 +27,7 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			
 			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, 16);
 			buttonSelectProgram.Text = "";
 			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
@@ -37,7 +37,7 @@ namespace VixenModules.App.Shows
 			ContolPanel1 = panel1;
 			ContolCheckBoxShowCommandWindow = checkBoxShowCommandWindow;
 			ContolCheckBoxWaitForExit = checkBoxWaitForExit;
-
+			ThemeUpdateControls.UpdateControls(this);
 			_showItem = item;
 		}
 

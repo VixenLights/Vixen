@@ -132,7 +132,7 @@ namespace VixenModules.App.Shows
 					SelectedShowItem.Action = ActionStringToAction(action);
 					currentEditor = SelectedShowItem.Editor;
 					currentEditor.Location = new Point(4, 16);
-					currentEditor.Width = groupBoxItemEdit.Width - (currentEditor.Left * 2);
+					currentEditor.Dock=DockStyle.Fill;
 					currentEditor.OnTextChanged += OnTextChanged;
 					groupBoxItemEdit.Controls.Add(currentEditor);
 				}
@@ -461,10 +461,5 @@ namespace VixenModules.App.Shows
 		private int Xwid = 8;
 		private const int tab_margin = 0;
 
-		// Draw a tab.
-		private void tabMenu_DrawItem(object sender, DrawItemEventArgs e)
-		{
-
-		}
 	}
 }
