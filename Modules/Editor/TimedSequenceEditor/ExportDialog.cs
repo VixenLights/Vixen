@@ -97,7 +97,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
 	        try
 	        {
-		        currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
+		        //currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
 		        backgroundWorker1.ReportProgress((int) _exportOps.SavePosition);
 	        }
 	        catch (Exception ex)
@@ -112,6 +112,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	        try
 	        {
 		        exportProgressBar.Value = args.ProgressPercentage;
+				currentTimeLabel.Text = string.Format("{0}%", args.ProgressPercentage);
 	        }
 	        catch (Exception e)
 	        {
