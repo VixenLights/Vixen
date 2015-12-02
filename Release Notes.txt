@@ -1,4 +1,29 @@
-Vixen Release Note - 3.2u1
+Vixen Release Notes - 3.2u2
+
+Features / Fixes
+
+General
+
+o Improvments to the dark theme including using the OS font and forms that had some background colors missed or set incorrectly. 
+o Changes to the memory use calculation on the main admin form to better reflect CLR memory use.
+o Add profile name to the main form. 
+o Some basic work to help support larger fonts and DPI scaling. 
+o Enable Ctrl-C and Ctrl-V shortcuts in the display setup element tree.
+o Improve memory usage in the export process.
+o Fix missing sections in the export files. 
+o Improvments in the output filter chain to reduce the number of new objects created. This improves overall performance and throughput.
+
+Bug Fixes / Features by ticket
+
+* VIX-878	crash when deleting "gradient stop"
+* VIX-866	Lipsync crashes with more than 1 grouped elements
+* VIX-860	Export Very Slow
+* VIX-856	Dark Theme on streaming acn form needs more adjustment
+* VIX-851	Vixen crashes when deleting Universes from controller
+* VIX-849	Export to fseq
+
+
+Vixen Release Notes - 3.2u1
 
 Features / Fixes
 
