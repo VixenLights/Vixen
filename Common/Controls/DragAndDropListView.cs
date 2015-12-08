@@ -157,5 +157,20 @@ namespace Common.Controls
 			}
 			base.DoDragDrop(REORDER, DragDropEffects.Move);
 		}
+
+		public void ColumnAutoSize()
+		{
+			AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			ColumnHeaderCollection cc = Columns;
+			for (int i = 0; i < cc.Count; i++)
+			{
+				int colWidth = TextRenderer.MeasureText(cc[i].Text, Font).Width + 20;
+				if (colWidth > cc[i].Width)
+				{
+					cc[i].Width = colWidth;
+				}
+			}
+		}
+
 	}
 }

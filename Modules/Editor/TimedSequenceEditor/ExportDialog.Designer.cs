@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -41,9 +41,6 @@
 			this.currentTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttonStop = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
 			this.networkListView = new Common.Controls.ListViewEx();
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -206,9 +203,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.AutoSize = true;
-			this.groupBox2.Controls.Add(this.label5);
-			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.networkListView);
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.groupBox2.Location = new System.Drawing.Point(9, 149);
@@ -218,33 +212,6 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
 			this.groupBox2.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(310, 22);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(55, 15);
-			this.label5.TabIndex = 4;
-			this.label5.Text = "Mapping";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(218, 22);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(56, 15);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Channels";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(10, 22);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(60, 15);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Controller";
 			// 
 			// networkListView
 			// 
@@ -260,16 +227,21 @@
             this.channelsColumn,
             this.mappingColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3});
-			this.networkListView.Location = new System.Drawing.Point(7, 40);
+            listViewItem1});
+			this.networkListView.Location = new System.Drawing.Point(7, 22);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
-			this.networkListView.Size = new System.Drawing.Size(473, 221);
+			this.networkListView.OwnerDraw = true;
+			this.networkListView.Size = new System.Drawing.Size(473, 238);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
+			this.networkListView.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.networkListView_ColumnWidthChanged);
+			this.networkListView.DrawColumnHeader += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.networkListView_DrawColumnHeader);
+			this.networkListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.networkListView_DrawItem);
+			this.networkListView.DrawSubItem += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.networkListView_DrawSubItem);
 			// 
 			// controllerColumn
 			// 
@@ -330,7 +302,6 @@
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -356,8 +327,5 @@
 		private System.Windows.Forms.ColumnHeader controllerColumn;
 		private System.Windows.Forms.ColumnHeader channelsColumn;
 		private System.Windows.Forms.ColumnHeader mappingColumn;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
     }
 }

@@ -137,6 +137,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			networkListView.DragDrop += networkListView_DragDrop;
             //networkListView.Enabled = false;
 
+			networkListView.Layout += delegate
+            {
+                this.SetLastColumnWidth();
+            };
+
             UpdateNetworkList();
 
         }
@@ -248,7 +253,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 
                 startChan += info.Channels;
             }
+
+	        networkListView.ColumnAutoSize();
+			SetLastColumnWidth();
         }
+
+		private void SetLastColumnWidth()
+		{
+			// Force the last ListView column width to occupy all the
+			// available space.
+			networkListView.Columns[networkListView.Columns.Count - 1].Width = -2;
+		}
+
+		private void networkListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+		{
+			// Fill header background with solid color.
+			e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.BackgroundColor), e.Bounds);
+			// Let ListView draw everything else.
+			TextRenderer.DrawText(e.Graphics,e.Header.Text,networkListView.Font,e.Bounds,ThemeColorTable.ForeColor,ThemeColorTable.BackgroundColor, TextFormatFlags.VerticalCenter);
+			//e.DrawText(TextFormatFlags.VerticalCenter);
+		}
+
+		private void networkListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+		{
+			e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.TextBoxBackgroundColor), e.Bounds);
+			TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, ThemeColorTable.TextBoxBackgroundColor, TextFormatFlags.VerticalCenter);
+		}
+
+		private void networkListView_DrawItem(object sender, DrawListViewItemEventArgs e)
+		{
+			//e.DrawDefault = true;
+			e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.TextBoxBackgroundColor), e.Bounds);
+			TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, ThemeColorTable.TextBoxBackgroundColor, TextFormatFlags.VerticalCenter);
+		}
+
 
         private string SetToolbarStatus(string progressText, bool showLiveProgress)
 		{
@@ -380,5 +418,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
+
+		private void networkListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+		{
+			SetLastColumnWidth();
+		}
+
+		
 	}
 }
