@@ -746,13 +746,21 @@ namespace VixenApplication
 		{
 			_thisProc = Process.GetCurrentProcess();
 			_cpuUsage = new CpuUsage();
-			if (PerformanceCounterCategory.Exists(".NET CLR Memory"))
+
+			try
 			{
-				_committedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total committed Bytes", _thisProc.ProcessName);
-				_reservedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total reserved Bytes", _thisProc.ProcessName);
-				_perfCountersAvailable = true;
+				if (PerformanceCounterCategory.Exists(".NET CLR Memory"))
+				{
+					_committedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total committed Bytes", _thisProc.ProcessName);
+					_reservedRamCounter = new PerformanceCounter(".NET CLR Memory", "# Total reserved Bytes", _thisProc.ProcessName);
+					_perfCountersAvailable = true;
+				}
 			}
-			
+			catch (Exception ex)
+			{
+				Logging.Error("Cannot access performance counters. Refresh the counter list with lodctr /R");
+			}
+
 			_statsTimer = new Timer();
 			_statsTimer.Interval = StatsUpdateInterval;
 			_statsTimer.Tick += statsTimer_Tick;
