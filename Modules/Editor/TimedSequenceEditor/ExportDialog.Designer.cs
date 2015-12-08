@@ -239,9 +239,6 @@
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
 			this.networkListView.ColumnWidthChanged += new System.Windows.Forms.ColumnWidthChangedEventHandler(this.networkListView_ColumnWidthChanged);
-			this.networkListView.DrawColumnHeader += new System.Windows.Forms.DrawListViewColumnHeaderEventHandler(this.networkListView_DrawColumnHeader);
-			this.networkListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.networkListView_DrawItem);
-			this.networkListView.DrawSubItem += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.networkListView_DrawSubItem);
 			// 
 			// controllerColumn
 			// 

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls
 {
@@ -39,6 +40,14 @@ namespace Common.Controls
 			: base()
 		{
 			this.AllowRowReorder = true;
+			DrawItem += List_DrawItem;
+			DrawColumnHeader += List_DrawColumnHeader;
+			DrawSubItem += List_DrawSubItem;
+		
+			Layout += delegate
+			{
+				SetLastColumnWidth();
+			};
 		}
 
 		protected override void OnDragDrop(DragEventArgs e)
@@ -170,6 +179,56 @@ namespace Common.Controls
 					cc[i].Width = colWidth;
 				}
 			}
+		}
+
+		public void SetLastColumnWidth()
+		{
+			// Force the last ListView column width to occupy all the
+			// available space.
+			Columns[Columns.Count - 1].Width = -2;
+		}
+
+		private void List_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+		{
+			// Fill header background with solid color.
+			e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.BackgroundColor), e.Bounds);
+			TextRenderer.DrawText(e.Graphics, e.Header.Text, Font, e.Bounds, ThemeColorTable.ForeColor, ThemeColorTable.BackgroundColor, TextFormatFlags.VerticalCenter);
+		}
+
+		private void List_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+		{
+			var backgroundColor = ThemeColorTable.TextBoxBackgroundColor;
+			if ((e.ItemState & ListViewItemStates.Selected) != 0)
+			{
+				// Draw the background and focus rectangle for a selected item.
+				backgroundColor = ThemeColorTable.BackgroundColor;
+				e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
+			}
+			else
+			{
+				e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.TextBoxBackgroundColor), e.Bounds);
+			}
+			
+			TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);
+		}
+
+		private void List_DrawItem(object sender, DrawListViewItemEventArgs e)
+		{
+
+			var backgroundColor = ThemeColorTable.TextBoxBackgroundColor;
+			if ((e.State & ListViewItemStates.Selected) != 0)
+			{
+				// Draw the background and focus rectangle for a selected item.
+				backgroundColor = ThemeColorTable.BackgroundColor;
+				e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
+				e.DrawFocusRectangle();
+			}
+			else
+			{
+				e.Graphics.FillRectangle(new SolidBrush(ThemeColorTable.TextBoxBackgroundColor), e.Bounds);
+			}
+
+			TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);
 		}
 
 	}

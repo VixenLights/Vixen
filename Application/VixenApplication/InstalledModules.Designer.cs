@@ -24,18 +24,13 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.listViewModules = new Common.Controls.ListViewEx();
+			this.nameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.descriptionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.authorHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.versionHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.fileHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCopyModuleId = new System.Windows.Forms.Button();
-			this.listViewModules = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -45,75 +40,61 @@
 			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.Controls.Add(this.label5);
-			this.panel1.Controls.Add(this.label4);
-			this.panel1.Controls.Add(this.label3);
-			this.panel1.Controls.Add(this.label2);
-			this.panel1.Controls.Add(this.label1);
-			this.panel1.Controls.Add(this.buttonCopyModuleId);
 			this.panel1.Controls.Add(this.listViewModules);
+			this.panel1.Controls.Add(this.buttonCopyModuleId);
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(767, 309);
+			this.panel1.Size = new System.Drawing.Size(895, 357);
 			this.panel1.TabIndex = 0;
 			// 
-			// label5
+			// listViewModules
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(595, 10);
-			this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(23, 13);
-			this.label5.TabIndex = 6;
-			this.label5.Text = "File";
+			this.listViewModules.AllowDrop = true;
+			this.listViewModules.AllowRowReorder = true;
+			this.listViewModules.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nameHeader,
+            this.descriptionHeader,
+            this.authorHeader,
+            this.versionHeader,
+            this.fileHeader});
+			this.listViewModules.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listViewModules.Location = new System.Drawing.Point(14, 12);
+			this.listViewModules.Name = "listViewModules";
+			this.listViewModules.OwnerDraw = true;
+			this.listViewModules.Size = new System.Drawing.Size(873, 309);
+			this.listViewModules.TabIndex = 2;
+			this.listViewModules.UseCompatibleStateImageBehavior = false;
+			this.listViewModules.View = System.Windows.Forms.View.Details;
+			this.listViewModules.SelectedIndexChanged += new System.EventHandler(this.listViewModules_SelectedIndexChanged);
 			// 
-			// label4
+			// nameHeader
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(503, 10);
-			this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(42, 13);
-			this.label4.TabIndex = 5;
-			this.label4.Text = "Version";
+			this.nameHeader.Text = "Name";
 			// 
-			// label3
+			// descriptionHeader
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(405, 10);
-			this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(38, 13);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "Author";
+			this.descriptionHeader.Text = "Description";
 			// 
-			// label2
+			// authorHeader
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(167, 10);
-			this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(60, 13);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Description";
+			this.authorHeader.Text = "Author";
 			// 
-			// label1
+			// versionHeader
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(16, 10);
-			this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Name";
+			this.versionHeader.Text = "Version";
+			// 
+			// fileHeader
+			// 
+			this.fileHeader.Text = "File";
+			this.fileHeader.Width = 629;
 			// 
 			// buttonCopyModuleId
 			// 
 			this.buttonCopyModuleId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonCopyModuleId.Enabled = false;
-			this.buttonCopyModuleId.Location = new System.Drawing.Point(12, 283);
+			this.buttonCopyModuleId.Location = new System.Drawing.Point(14, 327);
 			this.buttonCopyModuleId.Name = "buttonCopyModuleId";
-			this.buttonCopyModuleId.Size = new System.Drawing.Size(105, 23);
+			this.buttonCopyModuleId.Size = new System.Drawing.Size(122, 27);
 			this.buttonCopyModuleId.TabIndex = 1;
 			this.buttonCopyModuleId.Text = "Copy Module Id";
 			this.buttonCopyModuleId.UseVisualStyleBackColor = true;
@@ -121,59 +102,13 @@
 			this.buttonCopyModuleId.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCopyModuleId.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// listViewModules
-			// 
-			this.listViewModules.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listViewModules.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
-			this.listViewModules.FullRowSelect = true;
-			this.listViewModules.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.listViewModules.Location = new System.Drawing.Point(12, 27);
-			this.listViewModules.MultiSelect = false;
-			this.listViewModules.Name = "listViewModules";
-			this.listViewModules.Size = new System.Drawing.Size(743, 250);
-			this.listViewModules.TabIndex = 0;
-			this.listViewModules.UseCompatibleStateImageBehavior = false;
-			this.listViewModules.View = System.Windows.Forms.View.Details;
-			this.listViewModules.SelectedIndexChanged += new System.EventHandler(this.listViewModules_SelectedIndexChanged);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "Name";
-			this.columnHeader1.Width = 150;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "Description";
-			this.columnHeader2.Width = 240;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Author";
-			this.columnHeader3.Width = 100;
-			// 
-			// columnHeader4
-			// 
-			this.columnHeader4.Text = "Version";
-			// 
-			// columnHeader5
-			// 
-			this.columnHeader5.Text = "File";
-			this.columnHeader5.Width = 100;
-			// 
 			// buttonClose
 			// 
 			this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonClose.Location = new System.Drawing.Point(680, 315);
+			this.buttonClose.Location = new System.Drawing.Point(793, 363);
 			this.buttonClose.Name = "buttonClose";
-			this.buttonClose.Size = new System.Drawing.Size(75, 23);
+			this.buttonClose.Size = new System.Drawing.Size(87, 27);
 			this.buttonClose.TabIndex = 1;
 			this.buttonClose.Text = "Close";
 			this.buttonClose.UseVisualStyleBackColor = true;
@@ -183,19 +118,18 @@
 			// InstalledModules
 			// 
 			this.AcceptButton = this.buttonClose;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(771, 361);
+			this.ClientSize = new System.Drawing.Size(899, 418);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.panel1);
-			this.MaximumSize = new System.Drawing.Size(787, 595);
-			this.MinimumSize = new System.Drawing.Size(787, 400);
+			this.MaximumSize = new System.Drawing.Size(915, 681);
+			this.MinimumSize = new System.Drawing.Size(915, 456);
 			this.Name = "InstalledModules";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Installed Modules";
 			this.Load += new System.EventHandler(this.InstalledModules_Load);
 			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -205,16 +139,11 @@
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button buttonClose;
 		private System.Windows.Forms.Button buttonCopyModuleId;
-		private System.Windows.Forms.ListView listViewModules;
-		private System.Windows.Forms.ColumnHeader columnHeader1;
-		private System.Windows.Forms.ColumnHeader columnHeader2;
-		private System.Windows.Forms.ColumnHeader columnHeader3;
-		private System.Windows.Forms.ColumnHeader columnHeader4;
-		private System.Windows.Forms.ColumnHeader columnHeader5;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
+		private Common.Controls.ListViewEx listViewModules;
+		private System.Windows.Forms.ColumnHeader nameHeader;
+		private System.Windows.Forms.ColumnHeader descriptionHeader;
+		private System.Windows.Forms.ColumnHeader authorHeader;
+		private System.Windows.Forms.ColumnHeader versionHeader;
+		private System.Windows.Forms.ColumnHeader fileHeader;
 	}
 }
