@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
+using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources;
@@ -1043,6 +1044,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								Logging.Info("TimedSequenceEditor: <SaveSequence> - Incorrect extension provided for timed sequence, appending one.");
 							}
 							_sequence.Save(name);
+							SetTitleBarText();
 						}
 						else
 						{
@@ -1058,6 +1060,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					_sequence.Save(filePath);
+					SetTitleBarText();
 				}
 
 			}

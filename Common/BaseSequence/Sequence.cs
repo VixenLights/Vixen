@@ -29,6 +29,8 @@ namespace BaseSequence
 		public void Save(string filePath)
 		{
 			SequenceService.Instance.Save(this, filePath);
+			//update our file path.
+			FilePath = filePath;
 		}
 
 		public void Save()
