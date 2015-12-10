@@ -32,13 +32,30 @@ namespace VixenModules.App.Shows
 
 			ThemeUpdateControls.UpdateControls(this);
 
+			tabControlShowItems.AutoSize = true;
+			tabControlShowItems.SizeMode = TabSizeMode.Fixed;
+			
+			var tabWidth = 0;
+			var tabHeight = 0;
 			foreach (Control tab in tabControlShowItems.TabPages)
 			{
 				tab.BackColor = ThemeColorTable.ComboBoxBackColor;
 				tab.ForeColor = ThemeColorTable.ForeColor;
+				Graphics g = tab.CreateGraphics();
+				SizeF s = g.MeasureString(tab.Text, tab.Font);
+				tabWidth = Math.Max(tabWidth, (int)s.Width+10);
+				tabHeight = Math.Max(tabHeight, (int)s.Height);
 			}
+
+			tabWidth = Math.Min(tabControlShowItems.Width - 10/tabControlShowItems.TabPages.Count, tabWidth);
+
+			tabControlShowItems.ItemSize = new Size(tabWidth, tabHeight);
+
 			tabControlShowItems.SelectedTabColor = ThemeColorTable.ComboBoxBackColor;
 			tabControlShowItems.TabColor = ThemeColorTable.ComboBoxHighlightColor;
+
+			
+
 
 			ShowData = show;
 		}
