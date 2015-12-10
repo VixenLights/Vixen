@@ -464,9 +464,7 @@ namespace VixenModules.App.Shows
 
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Are you sure you want to cancel? Any changes made to the show setup will be lost.", "Cancel Show setup changes", true, false);
+			var messageBox = new MessageBoxForm("Are you sure you want to cancel? Any changes made to the show setup will be lost.", "Cancel Show setup changes",MessageBoxButtons.YesNo, SystemIcons.Warning);
 			messageBox.ShowDialog();
 			if (messageBox.DialogResult == DialogResult.OK)
 			{

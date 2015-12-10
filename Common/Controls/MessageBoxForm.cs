@@ -54,6 +54,7 @@ namespace Common.Controls
 			{
 				buttonCancel.Visible = false;
 				buttonOk.Text = @"YES";
+				buttonNo.Visible = true;
 			}
 			else if (buttons == MessageBoxButtons.YesNoCancel)
 			{
@@ -70,6 +71,7 @@ namespace Common.Controls
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
+			txtMessage.AutoSize = true;
 			txtMessage.BackColor = ThemeColorTable.BackgroundColor; //override theme as we are using this as a label.
 			txtMessage.ForeColor = ThemeColorTable.ForeColor;
 			txtMessage.Text = messageBoxData;
@@ -103,6 +105,18 @@ namespace Common.Controls
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		private void txtMessage_TextChanged(object sender, EventArgs e)
+		{
+			// amount of padding to add
+			const int padding = 3;
+			// get number of lines (first line is 0, so add 1)
+			int numLines = txtMessage.GetLineFromCharIndex(txtMessage.TextLength) + 1;
+			// get border thickness
+			int border = txtMessage.Height - txtMessage.ClientSize.Height;
+			// set height (height of one line * number of lines + spacing)
+			txtMessage.Height = txtMessage.Font.Height * numLines + padding + border;
 		}
 	}
 }
