@@ -50,14 +50,17 @@
 			this.tabPageBackground = new Dotnetrix.Controls.TabPageEX();
 			this.tabPageSequential = new Dotnetrix.Controls.TabPageEX();
 			this.tabPageShutdown = new Dotnetrix.Controls.TabPageEX();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.groupBoxAction.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabControlShowItems.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonDeleteItem
 			// 
-			this.buttonDeleteItem.Location = new System.Drawing.Point(367, 486);
+			this.buttonDeleteItem.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.buttonDeleteItem.Location = new System.Drawing.Point(318, 4);
 			this.buttonDeleteItem.Name = "buttonDeleteItem";
 			this.buttonDeleteItem.Size = new System.Drawing.Size(28, 28);
 			this.buttonDeleteItem.TabIndex = 7;
@@ -67,7 +70,8 @@
 			// 
 			// buttonAddItem
 			// 
-			this.buttonAddItem.Location = new System.Drawing.Point(338, 486);
+			this.buttonAddItem.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.buttonAddItem.Location = new System.Drawing.Point(352, 4);
 			this.buttonAddItem.Name = "buttonAddItem";
 			this.buttonAddItem.Size = new System.Drawing.Size(28, 28);
 			this.buttonAddItem.TabIndex = 5;
@@ -134,7 +138,7 @@
 			// buttonHelp
 			// 
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(14, 526);
+			this.buttonHelp.Location = new System.Drawing.Point(3, 40);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(70, 27);
 			this.buttonHelp.TabIndex = 62;
@@ -205,9 +209,9 @@
 			// 
 			// labelHelp
 			// 
-			this.labelHelp.Location = new System.Drawing.Point(14, 482);
+			this.labelHelp.Location = new System.Drawing.Point(3, 0);
 			this.labelHelp.Name = "labelHelp";
-			this.labelHelp.Size = new System.Drawing.Size(318, 40);
+			this.labelHelp.Size = new System.Drawing.Size(309, 32);
 			this.labelHelp.TabIndex = 65;
 			this.labelHelp.Text = "Help";
 			// 
@@ -293,6 +297,24 @@
 			this.tabPageShutdown.Text = "Shutdown";
 			this.tabPageShutdown.UseVisualStyleBackColor = true;
 			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.ColumnCount = 3;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.Controls.Add(this.buttonHelp, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.labelHelp, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.buttonDeleteItem, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.buttonAddItem, 2, 0);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 484);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(383, 75);
+			this.tableLayoutPanel1.TabIndex = 67;
+			// 
 			// ShowEditorForm
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -300,14 +322,11 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(932, 567);
+			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.tabControlShowItems);
 			this.Controls.Add(this.buttonCancel);
-			this.Controls.Add(this.labelHelp);
 			this.Controls.Add(this.groupBoxAction);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.buttonDeleteItem);
-			this.Controls.Add(this.buttonHelp);
-			this.Controls.Add(this.buttonAddItem);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.groupBoxItemEdit);
 			this.Controls.Add(this.listViewShowItems);
@@ -323,6 +342,7 @@
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.tabControlShowItems.ResumeLayout(false);
+			this.tableLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -351,5 +371,6 @@
 		private Dotnetrix.Controls.TabPageEX tabPageBackground;
 		private Dotnetrix.Controls.TabPageEX tabPageSequential;
 		private Dotnetrix.Controls.TabPageEX tabPageShutdown;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 	}
 }

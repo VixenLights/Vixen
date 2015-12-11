@@ -26,6 +26,7 @@ namespace VixenApplication
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
+			listViewModules.AllowRowReorder = false;
 		}
 
 		private void InstalledModules_Load(object sender, EventArgs e)
@@ -48,6 +49,8 @@ namespace VixenApplication
 						listViewModules.Items.Add(item);
 					}
 				}
+
+				listViewModules.ColumnAutoSize();
 			}
 			catch (Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -110,5 +113,6 @@ namespace VixenApplication
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
 		}
+
 	}
 }

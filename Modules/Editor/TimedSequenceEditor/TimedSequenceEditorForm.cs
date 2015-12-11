@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
+using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources;
@@ -233,15 +234,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (File.Exists(_settingsPath))
 			{
-				dockPanel.LoadFromXml(_settingsPath, DockingPanels_GetContentFromPersistString);
+				try
+				{
+					//Try to load the dock settings fro ma file. Somehow users manage to corrupt this file, so if it can be used
+					//Then just reconfigure to the defaults.
+					dockPanel.LoadFromXml(_settingsPath, DockingPanels_GetContentFromPersistString);
+				}
+				catch (Exception ex)
+				{
+					Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
+					SetDockDefaults();
+				}
 			}
 			else
 			{
-				GridForm.Show(dockPanel, DockState.Document);
-				ToolsForm.Show(dockPanel, DockState.DockLeft);
-				MarksForm.Show(dockPanel, DockState.DockLeft);
-				EffectsForm.Show(dockPanel, DockState.DockLeft);
-				EffectEditorForm.Show(dockPanel, DockState.DockRight);
+				SetDockDefaults();
 			}
 
 			if (GridForm.IsHidden)
@@ -392,7 +399,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 #endif
 		}
 
-		
+		private void SetDockDefaults()
+		{
+			GridForm.Show(dockPanel, DockState.Document);
+			ToolsForm.Show(dockPanel, DockState.DockLeft);
+			MarksForm.Show(dockPanel, DockState.DockLeft);
+			EffectsForm.Show(dockPanel, DockState.DockLeft);
+			EffectEditorForm.Show(dockPanel, DockState.DockRight);
+		}
+
+
 #if DEBUGDataDropped
 		private void b_Click(object sender, EventArgs e)
 		{
@@ -1028,6 +1044,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								Logging.Info("TimedSequenceEditor: <SaveSequence> - Incorrect extension provided for timed sequence, appending one.");
 							}
 							_sequence.Save(name);
+							SetTitleBarText();
 						}
 						else
 						{
@@ -1043,6 +1060,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 				{
 					_sequence.Save(filePath);
+					SetTitleBarText();
 				}
 
 			}

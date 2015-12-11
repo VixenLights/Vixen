@@ -137,7 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			networkListView.DragDrop += networkListView_DragDrop;
             //networkListView.Enabled = false;
 
-            UpdateNetworkList();
+			UpdateNetworkList();
 
         }
 
@@ -248,9 +248,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 
                 startChan += info.Channels;
             }
+
+	        networkListView.ColumnAutoSize();
+			networkListView.SetLastColumnWidth();
         }
 
-        private string SetToolbarStatus(string progressText, bool showLiveProgress)
+		private string SetToolbarStatus(string progressText, bool showLiveProgress)
 		{
 			string prevVal = progressLabel.Text;
 			progressLabel.Text = progressText;
@@ -380,5 +383,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
+
+		private void networkListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs e)
+		{
+			networkListView.SetLastColumnWidth();
+		}
+
+		
 	}
 }

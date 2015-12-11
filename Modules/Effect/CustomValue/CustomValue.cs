@@ -27,7 +27,7 @@ namespace VixenModules.Effect.CustomValue
 
 		public override EffectGroups EffectGroup
 		{
-			get { return EffectGroups.Basic; }
+			get { return EffectGroups.Device; }
 		}
 
 		public override Guid TypeId
@@ -194,11 +194,15 @@ namespace VixenModules.Effect.CustomValue
 
 			foreach (ElementNode node in TargetNodes)
 			{
-				if (tokenSource != null && tokenSource.IsCancellationRequested)
-					return;
+				foreach (var leafNode in node.GetLeafEnumerator())
+				{
+					if (tokenSource != null && tokenSource.IsCancellationRequested)
+						return;
 
-				IIntent intent = new CommandIntent(value, TimeSpan);
-				_elementData.AddIntentForElement(node.Element.Id, intent, TimeSpan.Zero);
+					IIntent intent = new CommandIntent(value, TimeSpan);
+					_elementData.AddIntentForElement(leafNode.Element.Id, intent, TimeSpan.Zero);
+				}
+				
 			}
 		}
 
