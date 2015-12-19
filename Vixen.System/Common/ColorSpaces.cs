@@ -431,6 +431,39 @@ namespace Common.Controls.ColorManagement.ColorModels
 			return ret;
 		}
 
+		public static void FromRGB(RGB col, out double hue, out double saturation, out double value)
+		{
+			double
+				min = Math.Min(Math.Min(col.R, col.G), col.B),
+				max = Math.Max(Math.Max(col.R, col.G), col.B),
+				delta_max = max - min;
+
+			var s = 0.0d;
+			var h = 0.0d;
+
+			if (delta_max != 0.0)
+			{
+				s = delta_max / max;
+
+				double del_R = (((max - col.R) / 6.0) + (delta_max / 2.0)) / delta_max;
+				double del_G = (((max - col.G) / 6.0) + (delta_max / 2.0)) / delta_max;
+				double del_B = (((max - col.B) / 6.0) + (delta_max / 2.0)) / delta_max;
+
+				if (col.R == max) h = del_B - del_G;
+				else if (col.G == max) h = (1.0 / 3.0) + del_R - del_B;
+				else if (col.B == max) h = (2.0 / 3.0) + del_G - del_R;
+
+				if (h < 0.0) h += 1.0;
+				if (h > 1.0) h -= 1.0;
+				
+			}
+
+			hue = h;
+			saturation = s;
+			value = max;
+		}
+
+
 		#endregion
 
 		#region operators
@@ -468,47 +501,55 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public RGB ToRGB()
 		{
-			if (_s == 0.0) {
-				return new RGB(_v, _v, _v);
+			return ToRGB(_h, _s, _v);
+		}
+
+		public static RGB ToRGB(double hue, double saturation, double value)
+		{
+			if (saturation == 0.0)
+			{
+				return new RGB(value, value, value);
 			}
-			else {
-				double h = _h*6.0;
+			else
+			{
+				double h = hue * 6.0;
 				if (h == 6.0) h = 0.0;
-				int h_i = (int) Math.Floor(h);
+				int h_i = (int)Math.Floor(h);
 				double
-					var_1 = _v*(1.0 - _s),
-					var_2 = _v*(1.0 - _s*(h - h_i)),
-					var_3 = _v*(1.0 - _s*(1.0 - (h - h_i)));
+					var_1 = value * (1.0 - saturation),
+					var_2 = value * (1.0 - saturation * (h - h_i)),
+					var_3 = value * (1.0 - saturation * (1.0 - (h - h_i)));
 
 				double r, g, b;
-				switch (h_i) {
+				switch (h_i)
+				{
 					case 0:
-						r = _v;
+						r = value;
 						g = var_3;
 						b = var_1;
 						break;
 					case 1:
 						r = var_2;
-						g = _v;
+						g = value;
 						b = var_1;
 						break;
 					case 2:
 						r = var_1;
-						g = _v;
+						g = value;
 						b = var_3;
 						break;
 					case 3:
 						r = var_1;
 						g = var_2;
-						b = _v;
+						b = value;
 						break;
 					case 4:
 						r = var_3;
 						g = var_1;
-						b = _v;
+						b = value;
 						break;
 					default:
-						r = _v;
+						r = value;
 						g = var_1;
 						b = var_2;
 						break;

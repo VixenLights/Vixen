@@ -6,9 +6,13 @@ namespace Vixen.Data.Value
 {
 	public struct LightingValue : IIntentDataType
 	{
+		private double _hue;
+		private double _saturation;
+		private double _value;
+
 		public LightingValue(Color color)
 		{
-			hsv = HSV.FromRGB(color);
+			HSV.FromRGB(color, out _hue, out _saturation, out _value);
 		}
 
 		public LightingValue(Color color, double intensity)
@@ -19,19 +23,18 @@ namespace Vixen.Data.Value
 
 		public LightingValue(double h, double s, double i)
 		{
-			hsv = new HSV(h, s, i);
+			_hue = XYZ.ClipValue(h, 0.0, 1.0);
+			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
+			_value = XYZ.ClipValue(i, 0.0, 1.0);
 		}
-
-		// TODO: make a new color class and use that, instead of these color models.
-		public HSV hsv;
 
 		/// <summary>
 		/// Percentage value between 0 and 1.
 		/// </summary>
 		public double Hue
 		{
-			get { return hsv.H; }
-			set { hsv.H = value; }
+			get { return _hue; }
+			set { _hue = value; }
 		}
 
 		/// <summary>
@@ -39,8 +42,8 @@ namespace Vixen.Data.Value
 		/// </summary>
 		public double Saturation
 		{
-			get { return hsv.S; }
-			set { hsv.S = value; }
+			get { return _saturation; }
+			set { _saturation = value; }
 		}
 
 		/// <summary>
@@ -48,8 +51,8 @@ namespace Vixen.Data.Value
 		/// </summary>
 		public double Intensity
 		{
-			get { return hsv.V; }
-			set { hsv.V = value; }
+			get { return _value; }
+			set { _value = value; }
 		}
 
 		/// <summary>
@@ -58,8 +61,8 @@ namespace Vixen.Data.Value
 		/// </summary>
 		public Color FullColor
 		{
-			get { return hsv.ToRGB().ToArgb(); }
-			set { hsv = HSV.FromRGB(value); }
+			get { return HSV.ToRGB(_hue, _saturation, _value).ToArgb(); }
+			//set { hsv = HSV.FromRGB(value); }
 		}
 
 		/// <summary>
@@ -95,18 +98,15 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				double i = Intensity;
-				Intensity = 1;
-				Color rv = hsv.ToRGB().ToArgb();
-				Intensity = i;
+				Color rv = HSV.ToRGB(_hue, _saturation, 1).ToArgb();
 				return rv;
 			}
-			set
-			{
-				HSV newValue = HSV.FromRGB(value);
-				hsv.H = newValue.H;
-				hsv.S = newValue.S;
-			}
+			//set
+			//{
+			//	HSV newValue = HSV.FromRGB(value);
+			//	hsv.H = newValue.H;
+			//	hsv.S = newValue.S;
+			//}
 		}
 	}
 }

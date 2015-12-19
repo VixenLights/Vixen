@@ -285,17 +285,35 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 	{
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
-
+		private static readonly List<IIntentState> EmptyState = Enumerable.Empty<IIntentState>().ToList(); 
+		
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
+			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
-			Data.Value = data.Value.Any() ? data.Value.Select(_filter.Filter).ToArray() : Enumerable.Empty<IIntentState>();
+			//Very important!!! 
+			//using foreach here instead of linq to reduce iterator allocations
+			//If we had better control over our update cycle, we could possibly eliminate the new list 
+			//and just update the contents. But other things could be iterating this on other threads.
+			if (data.Value.Count > 0)
+			{
+				var states = new List<IIntentState>(data.Value.Count);
+				foreach (var intentState in data.Value)
+				{
+					states.Add(_filter.Filter(intentState));
+				}
+
+				Data.Value = states;
+			}
+			else
+			{
+				Data.Value = EmptyState;
+			}
 		}
 
 		public IntentsDataFlowData Data { get; private set; }

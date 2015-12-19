@@ -4,14 +4,14 @@ using Vixen.Sys;
 
 namespace Vixen.Data.Flow
 {
-	public class CommandsDataFlowData : Dispatchable<CommandsDataFlowData>, IDataFlowData<IEnumerable<ICommand>>
+	public class CommandsDataFlowData : Dispatchable<CommandsDataFlowData>, IDataFlowData<List<ICommand>>
 	{
-		public CommandsDataFlowData(IEnumerable<ICommand> commands)
+		public CommandsDataFlowData(List<ICommand> commands)
 		{
 			Value = commands;
 		}
 
-		public IEnumerable<ICommand> Value { get; private set; }
+		public List<ICommand> Value { get; private set; }
 
 		object IDataFlowData.Value
 		{

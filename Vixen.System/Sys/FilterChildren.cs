@@ -68,7 +68,7 @@ namespace Vixen.Sys
 			}
 		}
 
-		public IEnumerable<IOutputFilterModuleInstance> GetChildren(IOutputFilterModuleInstance filter)
+		public HashSet<IOutputFilterModuleInstance> GetChildren(IOutputFilterModuleInstance filter)
 		{
 			return _GetChildren(filter);
 		}

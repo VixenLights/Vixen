@@ -21,6 +21,7 @@ namespace Vixen.Data.Policy
 		private ICommand _commandResult;
 		private IEvaluator _evaluator;
 		private ICombinator _combinator;
+		private readonly List<ICommand> _commands = new List<ICommand>(4);
 
 		public ICommand GenerateCommand(IDataFlowData dataFlowData)
 		{
@@ -48,17 +49,24 @@ namespace Vixen.Data.Policy
 		public override void Handle(IntentsDataFlowData obj)
 		{
 			if (obj != null) {
-				IEnumerable<ICommand> intentStates = EvaluateIntentStates(obj.Value);
+				List<ICommand> intentStates = EvaluateIntentStates(obj.Value);
 				_commandResult = CombineCommands(intentStates);
 			}
 		}
 
-		protected internal virtual IEnumerable<ICommand> EvaluateIntentStates(IEnumerable<IIntentState> intentStates)
+		protected internal virtual List<ICommand> EvaluateIntentStates(List<IIntentState> intentStates)
 		{
-			return intentStates.Select(_GetEvaluator().Evaluate);
+			//return intentStates.Select(_GetEvaluator().Evaluate);
+			_commands.Clear();
+			foreach (var intentState in intentStates)
+			{
+				_commands.Add(_GetEvaluator().Evaluate(intentState));
+			}
+
+			return _commands;
 		}
 
-		protected internal virtual ICommand CombineCommands(IEnumerable<ICommand> commands)
+		protected internal virtual ICommand CombineCommands(List<ICommand> commands)
 		{
 			return _GetCombinator().Combine(commands);
 		}

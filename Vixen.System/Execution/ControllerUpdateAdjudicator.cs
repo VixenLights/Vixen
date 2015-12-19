@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Vixen.Sys;
 
 namespace Vixen.Execution
 {
@@ -9,6 +10,7 @@ namespace Vixen.Execution
 		private int _threshold;
 		private Stopwatch _stopwatch;
 		private bool _firstTime;
+		
 
 		public ControllerUpdateAdjudicator(int thresholdInMilliseconds)
 		{
@@ -26,19 +28,21 @@ namespace Vixen.Execution
 			bool result = false;
 
 			// no sense in allowing faster updates than the fastest controller...
-			int minUpdateInterval = 200;   // slowly in case of no controllers..
-			foreach (var oc in Vixen.Sys.VixenSystem.OutputControllers)
-				if (oc.UpdateInterval < minUpdateInterval)
-					minUpdateInterval = oc.UpdateInterval;
+			//int _minUpdateInterval = 200;   // slowly in case of no controllers..
+			//foreach (var oc in Vixen.Sys.VixenSystem.OutputControllers)
+			//	if (oc.UpdateInterval < _minUpdateInterval)
+			//		_minUpdateInterval = oc.UpdateInterval;
+
+			
 
 			// 3 to allow if 3ms early (this is not an exact science)
 			long ms = _stopwatch.ElapsedMilliseconds;
-			if (_firstTime || ms+3 >= System.Math.Max(_threshold,minUpdateInterval)) {
+			if (_firstTime || ms+3 >= System.Math.Max(_threshold,VixenSystem.DefaultUpdateInterval)) {
 				_firstTime = false;
 				_stopwatch.Restart();
 				result = true;
-				if (ms > minUpdateInterval + 10)
-					Logging.Debug("late petition: {0} ms", ms-minUpdateInterval);
+				if (ms > VixenSystem.DefaultUpdateInterval + 10)
+					Logging.Debug("late petition: {0} ms", ms - VixenSystem.DefaultUpdateInterval);
 			}
 			//Logging.Debug("petition: {0} ms, {1}", ms, result ? "allowed" : "denied");
 			return result;

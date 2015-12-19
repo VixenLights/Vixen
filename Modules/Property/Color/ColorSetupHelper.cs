@@ -20,6 +20,9 @@ namespace VixenModules.Property.Color
 	public partial class ColorSetupHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private const string Red = "Red";
+		private const string Green = "Green";
+		private const string Blue = "Blue";
 
 		public ColorSetupHelper()
 		{
@@ -181,17 +184,17 @@ namespace VixenModules.Property.Color
 							// TODO: really, RGB isn't the only option for 'full color': some people use white as well.  We should allow for that.
 							cbi = new ColorBreakdownItem();
 							cbi.Color = System.Drawing.Color.Red;
-							cbi.Name = "Red";
+							cbi.Name = Red;
 							newBreakdownItems.Add(cbi);
 
 							cbi = new ColorBreakdownItem();
 							cbi.Color = System.Drawing.Color.Lime;
-							cbi.Name = "Green";
+							cbi.Name = Green;
 							newBreakdownItems.Add(cbi);
 
 							cbi = new ColorBreakdownItem();
 							cbi.Color = System.Drawing.Color.Blue;
-							cbi.Name = "Blue";
+							cbi.Name = Blue;
 							newBreakdownItems.Add(cbi);
 
 							break;

@@ -3,14 +3,14 @@ using Vixen.Sys;
 
 namespace Vixen.Data.Flow
 {
-	public class IntentsDataFlowData : Dispatchable<IntentsDataFlowData>, IDataFlowData<IEnumerable<IIntentState>>
+	public class IntentsDataFlowData : Dispatchable<IntentsDataFlowData>, IDataFlowData<List<IIntentState>>
 	{
-		public IntentsDataFlowData(IEnumerable<IIntentState> intentStates)
+		public IntentsDataFlowData(List<IIntentState> intentStates)
 		{
 			Value = intentStates;
 		}
 
-		public IEnumerable<IIntentState> Value { get; set; }
+		public List<IIntentState> Value { get; set; }
 
 		object IDataFlowData.Value
 		{

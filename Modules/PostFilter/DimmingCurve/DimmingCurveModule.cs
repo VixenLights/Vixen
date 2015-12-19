@@ -171,7 +171,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			LightingValue lightingValue = obj.GetValue();
 			double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.hsv.H, lightingValue.hsv.S, newIntensity));
+			_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(lightingValue.Hue, lightingValue.Saturation, newIntensity));
 		}
 
 		public override void Handle(IIntentState<RGBValue> obj)
@@ -189,17 +189,34 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	{
 		private readonly Curve _curve;
 		private readonly DimmingCurveFilter _filter;
+		private static readonly List<IIntentState> EmptyState = Enumerable.Empty<IIntentState>().ToList(); 
 
 		public DimmingCurveOutput(Curve curve)
 		{
-			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
+			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
 			_curve = curve;
 			_filter = new DimmingCurveFilter(_curve);
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
-			Data.Value = data.Value.Any() ? data.Value.Select(_filter.Filter).ToArray() : Enumerable.Empty<IIntentState>();
+			//Very important!!! 
+			//using foreach here instead of linq to reduce iterator allocations
+			//If we had better control over our update cycle, we could possibly eliminate the new list.
+			if (data.Value.Count > 0)
+			{
+				var states = new List<IIntentState>(data.Value.Count);
+				foreach (var intentState in data.Value)
+				{
+					states.Add(_filter.Filter(intentState));
+				}
+
+				Data.Value = states;
+			}
+			else
+			{
+				Data.Value = EmptyState;
+			}
 		}
 
 		public IntentsDataFlowData Data { get; private set; }

@@ -121,23 +121,26 @@ namespace Vixen.Sys.Managers
 			_stopwatch.Restart();
 			_affectedElements.Clear();
 			
-			foreach (var context in _contextInstances.Where(x => x.IsRunning))
+			foreach (var context in _contextInstances)
 			{
-				try
+				if (context.IsRunning)
 				{
-					// Get a snapshot time value for this update.
-					TimeSpan contextTime = context.GetTimeSnapshot();
-					var contextAffectedElements = context.UpdateElementStates(contextTime);
-					if (contextAffectedElements != null)
+					try
 					{
-						//Aggregate the effected elements so we can do more selective work downstream
-						_affectedElements.AddRange(contextAffectedElements);
-					}
+						// Get a snapshot time value for this update.
+						TimeSpan contextTime = context.GetTimeSnapshot();
+						var contextAffectedElements = context.UpdateElementStates(contextTime);
+						if (contextAffectedElements != null)
+						{
+							//Aggregate the effected elements so we can do more selective work downstream
+							_affectedElements.AddRange(contextAffectedElements);
+						}
 
-				}
-				catch (Exception ee)
-				{
-					Logging.Error(ee.Message, ee);
+					}
+					catch (Exception ee)
+					{
+						Logging.Error(ee.Message, ee);
+					}
 				}
 			}
 			

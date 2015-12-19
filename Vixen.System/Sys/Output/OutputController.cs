@@ -21,6 +21,7 @@ namespace Vixen.Sys.Output
 		private IOutputModuleConsumer<IControllerModuleInstance> _outputModuleConsumer;
 		private int? _updateInterval;
 		private IOutputDataPolicyProvider _dataPolicyProvider;
+		private ICommand[] commands;
 
 		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator,
 		                          IHardware executionControl,
@@ -211,7 +212,7 @@ namespace Vixen.Sys.Output
 						// it is in that chain.
 						long t1 = sw.ElapsedMilliseconds;
 						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
-						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller).ToArray();
+						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller);
 						long t2 = sw.ElapsedMilliseconds;
 						controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
 						long t3 = sw.ElapsedMilliseconds;
@@ -278,11 +279,12 @@ namespace Vixen.Sys.Output
 			{
 				CommandOutputFactory outputFactory = new CommandOutputFactory();
 				while (OutputCount < value) {
-					AddOutput(outputFactory.CreateOutput(string.Format("Output {0}", OutputCount + 1), OutputCount));
+					AddOutput(outputFactory.CreateOutput(string.Format("Output {0}", (OutputCount + 1).ToString()), OutputCount));
 				}
 				while (OutputCount > value) {
 					RemoveOutput(Outputs[OutputCount - 1]);
 				}
+				commands = null;
 			}
 		}
 
@@ -292,6 +294,7 @@ namespace Vixen.Sys.Output
 			IDataFlowComponent component = _adapterFactory.GetAdapter(output);
 			VixenSystem.DataFlow.AddComponent(component);
 			VixenSystem.OutputControllers.AddControllerOutputForDataFlowComponent(component, this, output.Index);
+			commands = null;
 		}
 
 		public void AddOutput(Output output)
@@ -305,6 +308,7 @@ namespace Vixen.Sys.Output
 			IDataFlowComponent component = _adapterFactory.GetAdapter(output);
 			VixenSystem.DataFlow.RemoveComponent(component);
 			VixenSystem.OutputControllers.RemoveControllerOutputForDataFlowComponent(component);
+			commands = null;
 		}
 
 		public void RemoveOutput(Output output)
@@ -327,9 +331,20 @@ namespace Vixen.Sys.Output
 			return Name;
 		}
 
-		private IEnumerable<ICommand> _ExtractCommandsFromOutputs(OutputController controller)
+		private ICommand[]_ExtractCommandsFromOutputs(OutputController controller)
 		{
-			return controller.Outputs.Select(x => x.Command);
+			if (commands == null)
+			{
+				commands = new ICommand[OutputCount];
+			}
+
+			for (int i=0; i < controller.Outputs.Length; i++)
+			{
+				commands[i] = controller.Outputs[i].Command;
+			}
+			//return controller.Outputs.Select(x => x.Command);
+
+			return commands;
 		}
 
 		private ICommand _GenerateOutputCommand(CommandOutput output)

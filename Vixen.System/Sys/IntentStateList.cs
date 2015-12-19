@@ -25,5 +25,10 @@ namespace Vixen.Sys
 		{
 			AddRange(intentStates);
 		}
+
+		public virtual List<IIntentState> AsIIntentStateList()
+		{
+			return this;
+		} 
 	}
 }
