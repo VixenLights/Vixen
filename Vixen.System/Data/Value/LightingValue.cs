@@ -6,9 +6,9 @@ namespace Vixen.Data.Value
 {
 	public struct LightingValue : IIntentDataType
 	{
-		private double _hue;
-		private double _saturation;
-		private double _value;
+		private readonly double _hue;
+		private readonly double _saturation;
+		private readonly double _value;
 
 		public LightingValue(Color color)
 		{
@@ -18,7 +18,7 @@ namespace Vixen.Data.Value
 		public LightingValue(Color color, double intensity)
 			: this(color)
 		{
-			Intensity = intensity;
+			_value = intensity;
 		}
 
 		public LightingValue(double h, double s, double i)
@@ -34,7 +34,6 @@ namespace Vixen.Data.Value
 		public double Hue
 		{
 			get { return _hue; }
-			set { _hue = value; }
 		}
 
 		/// <summary>
@@ -43,7 +42,6 @@ namespace Vixen.Data.Value
 		public double Saturation
 		{
 			get { return _saturation; }
-			set { _saturation = value; }
 		}
 
 		/// <summary>
@@ -52,7 +50,6 @@ namespace Vixen.Data.Value
 		public double Intensity
 		{
 			get { return _value; }
-			set { _value = value; }
 		}
 
 		/// <summary>
@@ -62,7 +59,6 @@ namespace Vixen.Data.Value
 		public Color FullColor
 		{
 			get { return HSV.ToRGB(_hue, _saturation, _value).ToArgb(); }
-			//set { hsv = HSV.FromRGB(value); }
 		}
 
 		/// <summary>
@@ -101,12 +97,6 @@ namespace Vixen.Data.Value
 				Color rv = HSV.ToRGB(_hue, _saturation, 1).ToArgb();
 				return rv;
 			}
-			//set
-			//{
-			//	HSV newValue = HSV.FromRGB(value);
-			//	hsv.H = newValue.H;
-			//	hsv.S = newValue.S;
-			//}
 		}
 	}
 }
