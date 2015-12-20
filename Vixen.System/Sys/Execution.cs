@@ -174,7 +174,7 @@ namespace Vixen.Sys
 				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 				if (allowUpdate) {
 					HashSet<Guid> elementsAffected = VixenSystem.Contexts.Update();
-					if (elementsAffected.Any())
+					if (elementsAffected.Count>0)
 					{
 						VixenSystem.Elements.Update(elementsAffected);
 						lastUpdateClearedStates = false;

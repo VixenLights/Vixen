@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Vixen.Factory;
 using Vixen.Data.Flow;
@@ -22,6 +23,7 @@ namespace Vixen.Sys.Output
 		private int? _updateInterval;
 		private IOutputDataPolicyProvider _dataPolicyProvider;
 		private ICommand[] commands;
+		private Stopwatch _updateStopwatch = new Stopwatch();
 
 		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator,
 		                          IHardware executionControl,
@@ -176,7 +178,7 @@ namespace Vixen.Sys.Output
 	
 		public void Update()
 		{
-			var sw = System.Diagnostics.Stopwatch.StartNew();
+			_updateStopwatch.Restart();
 			if (VixenSystem.ControllerLinking.IsRootController(this) && _ControllerChainModule != null) {
 				_outputMediator.LockOutputs();
 				try {
@@ -199,7 +201,7 @@ namespace Vixen.Sys.Output
 						//}
 					}
 
-					_generateMs = sw.ElapsedMilliseconds;
+					_generateMs = _updateStopwatch.ElapsedMilliseconds;
 					_extractMs = 0;
 					_deviceMs = 0;
 
@@ -210,19 +212,22 @@ namespace Vixen.Sys.Output
 						// A single port may be used to service multiple physical controllers,
 						// such as daisy-chained Renard controllers.  Tell the module where
 						// it is in that chain.
-						long t1 = sw.ElapsedMilliseconds;
+						long t1 = _updateStopwatch.ElapsedMilliseconds;
 						int chainIndex = VixenSystem.ControllerLinking.GetChainIndex(controller.Id);
 						ICommand[] outputStates = _ExtractCommandsFromOutputs(controller);
-						long t2 = sw.ElapsedMilliseconds;
+						long t2 = _updateStopwatch.ElapsedMilliseconds;
 						controller._ControllerChainModule.UpdateState(chainIndex, outputStates);
-						long t3 = sw.ElapsedMilliseconds;
+						long t3 = _updateStopwatch.ElapsedMilliseconds;
 						_extractMs += t2 - t1;
 						_deviceMs += t3 - t2;
+						
 					}
 				}
 				finally {
 					_outputMediator.UnlockOutputs();
 				}
+
+				_updateStopwatch.Stop();
 			}
 		}
 
