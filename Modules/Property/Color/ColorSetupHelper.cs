@@ -20,9 +20,9 @@ namespace VixenModules.Property.Color
 	public partial class ColorSetupHelper : BaseForm, IElementSetupHelper
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private const string Red = "Red";
-		private const string Green = "Green";
-		private const string Blue = "Blue";
+		private static readonly string Red = "Red";
+		private static readonly string Green = "Green";
+		private static readonly string Blue = "Blue";
 
 		public ColorSetupHelper()
 		{
