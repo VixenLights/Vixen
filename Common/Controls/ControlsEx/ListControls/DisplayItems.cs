@@ -17,11 +17,13 @@ namespace Common.Controls.ControlsEx.ListControls
 
 		#endregion
 
-		public DisplayItem() : this(null, null)
+		public DisplayItem()
+			: this(null, null)
 		{
 		}
 
-		public DisplayItem(string text) : this(text, null)
+		public DisplayItem(string text)
+			: this(text, null)
 		{
 		}
 
@@ -31,8 +33,19 @@ namespace Common.Controls.ControlsEx.ListControls
 			this._tag = tag;
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing) { }
+
+		}
+		~DisplayItem()
+		{
+			Dispose(false);
 		}
 
 		#region controller
@@ -133,22 +146,27 @@ namespace Common.Controls.ControlsEx.ListControls
 			this._img = img;
 		}
 
-		public ImageDisplayItem(Image img, string text) : this(img, text, null)
+		public ImageDisplayItem(Image img, string text)
+			: this(img, text, null)
 		{
 		}
 
-		public ImageDisplayItem(Image img) : this(img, null, null)
+		public ImageDisplayItem(Image img)
+			: this(img, null, null)
 		{
 		}
 
-		public ImageDisplayItem() : this(null, null, null)
+		public ImageDisplayItem()
+			: this(null, null, null)
 		{
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (_img != null)
-				_img.Dispose();
+			if (disposing)
+				if (_img != null)
+					_img.Dispose();
+			base.Dispose(disposing);
 		}
 
 		#endregion
@@ -214,24 +232,30 @@ namespace Common.Controls.ControlsEx.ListControls
 			this._icn = icn;
 		}
 
-		public IconDisplayItem(Icon icn, string text) : this(icn, text, null)
+		public IconDisplayItem(Icon icn, string text)
+			: this(icn, text, null)
 		{
 		}
 
-		public IconDisplayItem(Icon icn) : this(icn, null, null)
+		public IconDisplayItem(Icon icn)
+			: this(icn, null, null)
 		{
 		}
 
-		public IconDisplayItem() : this(null, null, null)
+		public IconDisplayItem()
+			: this(null, null, null)
 		{
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (_icn != null)
-				_icn.Dispose();
+			if (disposing)
+			{
+				if (_icn != null)
+					_icn.Dispose();
+			}
+			base.Dispose(disposing);
 		}
-
 		#endregion
 
 		protected override void OnDraw(Graphics gr, Rectangle rct)
@@ -246,14 +270,14 @@ namespace Common.Controls.ControlsEx.ListControls
 			//draw the icon with the right size
 			if (_icn != null)
 				gr.DrawIcon(this._icn, GetTransformedBounds(gr.Transform,
-				                                            new Rectangle(x, y, this._icn.Width, this._icn.Height)));
+															new Rectangle(x, y, this._icn.Width, this._icn.Height)));
 		}
 
 		private Rectangle GetTransformedBounds(System.Drawing.Drawing2D.Matrix transform, Rectangle rct)
 		{
 			return new Rectangle(rct.X, rct.Y,
-			                     (int) ((float) rct.Width*transform.Elements[0]),
-			                     (int) ((float) rct.Height*transform.Elements[3]));
+								 (int)((float)rct.Width * transform.Elements[0]),
+								 (int)((float)rct.Height * transform.Elements[3]));
 		}
 
 		#region properties

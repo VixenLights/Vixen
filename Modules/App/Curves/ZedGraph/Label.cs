@@ -33,7 +33,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.2 $ $Date: 2007-03-11 02:08:16 $ </version>
 	[Serializable]
-	public class Label : ICloneable, ISerializable
+	public class Label : ICloneable, ISerializable, IDisposable
 	{
 		/// <summary>
 		/// private field that stores the <see cref="string" /> text for this label
@@ -197,6 +197,24 @@ namespace ZedGraph
 			info.AddValue("text", _text);
 			info.AddValue("isVisible", _isVisible);
 			info.AddValue("fontSpec", _fontSpec);
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fontSpec != null) _fontSpec.Dispose();
+
+			}
 		}
 
 		#endregion

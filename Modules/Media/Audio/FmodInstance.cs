@@ -341,6 +341,8 @@ namespace VixenModules.Media.Audio
 					_audioSystem.Shutdown();
 					_audioSystem = null;
 				}
+				if (_channel != null)
+					_channel.Dispose();
 			}
 
 			

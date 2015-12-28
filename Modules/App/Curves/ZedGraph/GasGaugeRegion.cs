@@ -585,5 +585,22 @@ namespace ZedGraph
 		}
 
 		#endregion
+		#region IDisposable Members
+
+	
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_slicePath != null) _slicePath.Dispose();
+				if (_border != null) _border.Dispose();
+				if (_label != null) _label.Dispose();
+				if (_labelDetail != null) _labelDetail.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		#endregion
 	}
 }

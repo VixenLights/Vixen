@@ -581,6 +581,8 @@ namespace ZedGraph
 				if (disposing) {
 					if (components != null)
 						components.Dispose();
+
+					if (_masterPane != null) _masterPane.Dispose();
 				}
 				base.Dispose(disposing);
 

@@ -37,7 +37,7 @@ namespace ZedGraph
 	/// <author> John Champion modified by Jerry Vos </author>
 	/// <version> $Revision: 3.76 $ $Date: 2008-02-16 23:21:48 $ </version>
 	[Serializable]
-	public abstract class Axis : ISerializable, ICloneable
+	public abstract class Axis : ISerializable, ICloneable, IDisposable
 	{
 		#region Class Fields
 
@@ -1428,6 +1428,24 @@ namespace ZedGraph
 				return _scale.MakeLabel(pane, index, dVal);
 			else
 				return "?";
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_title != null) _title.Dispose();
+				if (_scale != null) _scale.Dispose();
+			}
 		}
 
 		#endregion

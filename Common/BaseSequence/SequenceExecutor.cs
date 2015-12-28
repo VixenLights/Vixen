@@ -16,6 +16,7 @@ namespace BaseSequence
 	public class SequenceExecutor : ISequenceExecutor
 	{
 		private System.Timers.Timer _endCheckTimer;
+		private object _endCheckTimerLockObj = new object();
 		private SynchronizationContext _syncContext;
 		private bool _isRunning;
 		private bool _isPaused;
@@ -216,7 +217,7 @@ namespace BaseSequence
 		private void _loopPlay()
 		{
 			// Stop whatever is driving this crazy train.
-			lock (_endCheckTimer)
+			lock (_endCheckTimerLockObj)
 			{
 				_endCheckTimer.Enabled=false;
 			}
@@ -339,7 +340,8 @@ namespace BaseSequence
 			if (!IsRunning) return;
 
 			// Stop whatever is driving this crazy train.
-			lock (_endCheckTimer) {
+			lock (_endCheckTimerLockObj)
+			{
 				_endCheckTimer.Enabled = false;
 			}
 
@@ -371,7 +373,8 @@ namespace BaseSequence
 			// timer message being posted and acted upon.
 			if (_endCheckTimer == null || !_endCheckTimer.Enabled) return;
 
-			lock (_endCheckTimer) {
+			lock (_endCheckTimerLockObj)
+			{
 
 				_endCheckTimer.Enabled = false;
 

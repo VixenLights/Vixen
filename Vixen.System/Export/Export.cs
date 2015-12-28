@@ -342,7 +342,7 @@ namespace Vixen.Export
 	                catch (Exception ex)
 	                {
 		                MessageBox.Show(ex.Message, @"Save Error!");
-		                throw ex;
+		                throw ;
 	                }
 	                finally
 	                {

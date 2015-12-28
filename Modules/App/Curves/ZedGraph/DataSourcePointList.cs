@@ -35,7 +35,7 @@ namespace ZedGraph {
 	/// <author>John Champion</author> 
 	/// <version> $Revision: 3.7 $ $Date: 2007-11-05 04:33:26 $ </version> 
 	[Serializable]
-	public class DataSourcePointList : IPointList {
+	public class DataSourcePointList : IPointList, IDisposable {
 		private BindingSource _bindingSource;
 
 		//private object _dataSource = null; 
@@ -275,6 +275,23 @@ namespace ZedGraph {
 				throw new System.Exception(string.Format("Can't find DataMember '{0}' in DataSource", dataMember));
 
 			return val;
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing) {
+				if (_bindingSource != null)
+					_bindingSource.Dispose();
+			}
 		}
 
 		#endregion

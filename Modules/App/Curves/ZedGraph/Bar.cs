@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.30 $ $Date: 2007-11-03 04:41:28 $ </version>
 	[Serializable]
-	public class Bar : ICloneable, ISerializable
+	public class Bar : ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -528,6 +528,24 @@ namespace ZedGraph
 					this.Draw(g, pane, pixLowVal, pixHiVal, pixSide, pixSide + barWidth,
 					          scaleFactor, true, curve.IsSelected,
 					          curve.Points[index]);
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_border != null) _border.Dispose();
 			}
 		}
 

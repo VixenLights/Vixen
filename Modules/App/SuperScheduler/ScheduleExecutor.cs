@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace VixenModules.App.SuperScheduler
 {
-	public class ScheduleExecutor
+	public class ScheduleExecutor : IDisposable
 	{
 		private System.Timers.Timer _scheduleCheckTimer = null;
 		private SynchronizationContext _synchronizationContext;
@@ -29,7 +29,7 @@ namespace VixenModules.App.SuperScheduler
 		private SuperSchedulerData Data { get; set; }
 
 		static List<string> log = new List<string>();
-		static public void AddSchedulerLogEntry(string showName, string logEntry) 
+		static public void AddSchedulerLogEntry(string showName, string logEntry)
 		{
 			if (log == null)
 				log = new List<string>();
@@ -45,7 +45,7 @@ namespace VixenModules.App.SuperScheduler
 		}
 
 		private bool _enabled = false;
-		public bool Enabled 
+		public bool Enabled
 		{
 			get
 			{
@@ -56,7 +56,7 @@ namespace VixenModules.App.SuperScheduler
 				_enabled = value;
 				ShowStatusForm(_enabled);
 
-				Logging.Info(_enabled  ? "Schedule Enabled" : "Schedule Disabled");
+				Logging.Info(_enabled ? "Schedule Enabled" : "Schedule Disabled");
 
 			}
 		}
@@ -204,8 +204,25 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Start()
 		{
-			
+
 			ManuallyDisabled = false;
 		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_scheduleCheckTimer != null) _scheduleCheckTimer.Dispose();
+
+			}
+		}
+		#endregion
 	}
 }

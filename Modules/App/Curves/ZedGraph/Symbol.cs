@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.37 $ $Date: 2007-09-19 06:41:56 $ </version>
 	[Serializable]
-	public class Symbol : ICloneable, ISerializable
+	public class Symbol : ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -688,6 +688,24 @@ namespace ZedGraph
 				}
 
 				g.SmoothingMode = sModeSave;
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_border != null) _border.Dispose();
 			}
 		}
 

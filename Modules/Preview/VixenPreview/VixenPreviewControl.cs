@@ -29,7 +29,7 @@ namespace VixenModules.Preview.VixenPreview
 	public partial class VixenPreviewControl : UserControl
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		
+
 		#region "Variables"
 
 		public VixenPreviewSetupElementsDocument elementsForm;
@@ -372,16 +372,15 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				try
 				{
-					using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+					var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+
+					using (var loadedBitmap = new Bitmap(fs))
 					{
-						using (var loadedBitmap = new Bitmap(fs))
-						{
-							Background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
-								PixelFormat.Format32bppPArgb);
-						}
-						fs.Close();
-						DefaultBackground = false;
+						Background = loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height),
+							PixelFormat.Format32bppPArgb);
 					}
+					DefaultBackground = false;
+
 				}
 				catch (Exception ex)
 				{
@@ -413,8 +412,8 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (_background != null)
 			{
-				int newWidth = Convert.ToInt32(_background.Width*ZoomLevel);
-				int newHeight = Convert.ToInt32(_background.Height*ZoomLevel);
+				int newWidth = Convert.ToInt32(_background.Width * ZoomLevel);
+				int newHeight = Convert.ToInt32(_background.Height * ZoomLevel);
 
 				_alphaBackground = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppPArgb);
 
@@ -563,7 +562,7 @@ namespace VixenModules.Preview.VixenPreview
 								Capture = true;
 								_mouseCaptured = true;
 							}
-								// If we're not resizing, see if we're moving a single shape
+							// If we're not resizing, see if we're moving a single shape
 							else if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 							{
 								modifyType = "Move";
@@ -571,14 +570,14 @@ namespace VixenModules.Preview.VixenPreview
 
 								StartMove(translatedPoint.X, translatedPoint.Y);
 							}
-								// If we get here, we're outside the shape, deselect
+							// If we get here, we're outside the shape, deselect
 							else
 							{
 								DeSelectSelectedDisplayItem();
 							}
 						}
-							// Are there multiple items selected?
-							// If so, we're moving, can't resize them...
+						// Are there multiple items selected?
+						// If so, we're moving, can't resize them...
 						else if (SelectedDisplayItems.Count > 1 && !controlPressed)
 						{
 							//if (MouseOverSelectedDisplayItems(e.X, e.Y)) {
@@ -616,7 +615,7 @@ namespace VixenModules.Preview.VixenPreview
 					}
 
 					else if (_selectedDisplayItem != null && _selectedDisplayItem.Shape.PointInShape(translatedPoint) &&
-					         !_selectedDisplayItem.Shape.Creating)
+							 !_selectedDisplayItem.Shape.Creating)
 					{
 						StartMove(translatedPoint.X, translatedPoint.Y);
 					}
@@ -840,28 +839,28 @@ namespace VixenModules.Preview.VixenPreview
 						if (Data.SaveLocations & _selectedDisplayItem != null)
 						{
 							// Z location menu
-							contextMenuStrip1.Items.Add(new ToolStripMenuItem {Text = "Set Z Location to"});
+							contextMenuStrip1.Items.Add(new ToolStripMenuItem { Text = "Set Z Location to" });
 							// Z sub menu items
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "0 Front", Tag = "0"});
+								new ToolStripMenuItem { Text = "0 Front", Tag = "0" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "1", Tag = "1"});
+								new ToolStripMenuItem { Text = "1", Tag = "1" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "2", Tag = "2"});
+								new ToolStripMenuItem { Text = "2", Tag = "2" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "3", Tag = "3"});
+								new ToolStripMenuItem { Text = "3", Tag = "3" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "4 Middle", Tag = "4"});
+								new ToolStripMenuItem { Text = "4 Middle", Tag = "4" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "5", Tag = "5"});
+								new ToolStripMenuItem { Text = "5", Tag = "5" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "6", Tag = "6"});
+								new ToolStripMenuItem { Text = "6", Tag = "6" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "7", Tag = "7"});
+								new ToolStripMenuItem { Text = "7", Tag = "7" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "8", Tag = "8"});
+								new ToolStripMenuItem { Text = "8", Tag = "8" });
 							(contextMenuStrip1.Items[contextMenuStrip1.Items.Count - 1] as ToolStripMenuItem).DropDownItems.Add(
-								new ToolStripMenuItem {Text = "9 Back", Tag = "9"});
+								new ToolStripMenuItem { Text = "9 Back", Tag = "9" });
 						}
 					}
 					if (contextMenuStrip1.Items.Count > 0)
@@ -1007,7 +1006,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						_selectedDisplayItem.Shape.MouseMove(dragCurrent.X, dragCurrent.Y, changeX, changeY);
 					}
-						// If we get here, we're drwing a rubber band
+					// If we get here, we're drwing a rubber band
 					else if (_banding)
 					{
 						int X1 = Math.Min(dragStart.X, dragStart.X + changeX);
@@ -1035,7 +1034,7 @@ namespace VixenModules.Preview.VixenPreview
 							}
 						}
 					}
-						// Are we moving a group of display items?
+					// Are we moving a group of display items?
 					else if (_mouseCaptured && _selectedDisplayItem == null && SelectedDisplayItems.Count() > 0)
 					{
 						foreach (DisplayItem item in SelectedDisplayItems)
@@ -1078,7 +1077,7 @@ namespace VixenModules.Preview.VixenPreview
 				Delete();
 				e.Handled = true;
 			}
-				// Copy
+			// Copy
 			else if (e.KeyCode == Keys.C && e.Modifiers == Keys.Control)
 			{
 				Copy();
@@ -1230,18 +1229,18 @@ namespace VixenModules.Preview.VixenPreview
 					//}
 					//else 
 					if (_selectedDisplayItem != null &&
-					    _currentTool == Tools.PolyLine &&
-					    e.Button == System.Windows.Forms.MouseButtons.Left &&
-					    _selectedDisplayItem.Shape.Creating)
+						_currentTool == Tools.PolyLine &&
+						e.Button == System.Windows.Forms.MouseButtons.Left &&
+						_selectedDisplayItem.Shape.Creating)
 					{
 						// If we are drawing a PolyLine, we want all the mouse events to be passed to the shape
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
 						return;
 					}
 					else if (_selectedDisplayItem != null &&
-					         _currentTool == Tools.MultiString &&
-					         e.Button == System.Windows.Forms.MouseButtons.Left &&
-					         _selectedDisplayItem.Shape.Creating)
+							 _currentTool == Tools.MultiString &&
+							 e.Button == System.Windows.Forms.MouseButtons.Left &&
+							 _selectedDisplayItem.Shape.Creating)
 					{
 						// If we are drawing a MultiString, we want all the mouse events to be passed to the shape
 						_selectedDisplayItem.Shape.MouseUp(sender, e);
@@ -1276,7 +1275,7 @@ namespace VixenModules.Preview.VixenPreview
 						m_previewItemResizeMoveInfo = null;
 					}
 				}
-					// Ok, if this is true, we've got a rubber band and something is selected, now what?
+				// Ok, if this is true, we've got a rubber band and something is selected, now what?
 				else if (SelectedDisplayItems.Count > 0)
 				{
 					// If we only have one item, just select it and go on.
@@ -1469,7 +1468,7 @@ namespace VixenModules.Preview.VixenPreview
 		public void Paste()
 		{
 			string xml = Clipboard.GetText();
-			SelectedDisplayItems = (List<DisplayItem>) PreviewTools.DeSerializeToDisplayItemList(xml);
+			SelectedDisplayItems = (List<DisplayItem>)PreviewTools.DeSerializeToDisplayItemList(xml);
 			List<DisplayItem> selected = new List<DisplayItem>(SelectedDisplayItems.ToArray());
 			if (SelectedDisplayItems.Count() > 0)
 			{
@@ -1557,7 +1556,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			ClipboardPopulated = true;
 		}
-#endregion
+		#endregion
 
 		#region PreviewItem Resize/Move Undo/Redo Action
 
@@ -1575,7 +1574,7 @@ namespace VixenModules.Preview.VixenPreview
 				Resize_MoveSwapPlaces(e.Key, e.Value);
 				e.Key.Shape.ZoomLevel = ZoomLevel;
 				if (_selectedDisplayItem != null)
-				propertiesForm.ShowSetupControl(_selectedDisplayItem.Shape.GetSetupControl());
+					propertiesForm.ShowSetupControl(_selectedDisplayItem.Shape.GetSetupControl());
 			}
 		}
 
@@ -1597,7 +1596,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void ResizeBackground(int width, int height)
 		{
-			double aspect = width/(double) _background.Width;
+			double aspect = width / (double)_background.Width;
 			Bitmap newBackground = PreviewTools.ResizeBitmap(new Bitmap(_background), new Size(width, height));
 			// Copy the file to the Vixen folder
 			string imageFileName = Guid.NewGuid() + ".jpg";
@@ -1695,7 +1694,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				// Read the entire template file (stoopid waste of resources, but how else?)
 				string xml = System.IO.File.ReadAllText(fileName);
-				DisplayItem newDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof (DisplayItem));
+				DisplayItem newDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
 				if (newDisplayItem != null)
 				{
 					DeSelectSelectedDisplayItem();
@@ -1706,7 +1705,7 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.MoveTo(10, 10);
 					_selectedDisplayItem.Shape.Select(true);
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
-					List<DisplayItem> selected = new List<DisplayItem> {_selectedDisplayItem};
+					List<DisplayItem> selected = new List<DisplayItem> { _selectedDisplayItem };
 
 					PreviewItemAddAction(); //starts Undo_Redo Action
 				}
@@ -1744,10 +1743,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		public void AlignLeft()
 		{
-			
+
 			foreach (PreviewBaseShape shape in SelectedShapes())
 			{
-				
+
 				if (shape != SelectedShapes()[0])
 				{
 					shape.Left = SelectedShapes()[0].Left;
@@ -1789,8 +1788,8 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (shape != SelectedShapes()[0])
 				{
-					int matchMidPoint = SelectedShapes()[0].Top + ((SelectedShapes()[0].Bottom - SelectedShapes()[0].Top)/2);
-					shape.Top = matchMidPoint - ((shape.Bottom - shape.Top)/2);
+					int matchMidPoint = SelectedShapes()[0].Top + ((SelectedShapes()[0].Bottom - SelectedShapes()[0].Top) / 2);
+					shape.Top = matchMidPoint - ((shape.Bottom - shape.Top) / 2);
 				}
 			}
 		}
@@ -1801,8 +1800,8 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (shape != SelectedShapes()[0])
 				{
-					int matchMidPoint = SelectedShapes()[0].Left + ((SelectedShapes()[0].Right - SelectedShapes()[0].Left)/2);
-					shape.Left = matchMidPoint - ((shape.Right - shape.Left)/2);
+					int matchMidPoint = SelectedShapes()[0].Left + ((SelectedShapes()[0].Right - SelectedShapes()[0].Left) / 2);
+					shape.Left = matchMidPoint - ((shape.Right - shape.Left) / 2);
 				}
 			}
 		}
@@ -1822,11 +1821,11 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (spaceToFill > 0)
 				{
-					float shapeSpacing = (float) spaceToFill/(float) (shapeCount - 1);
+					float shapeSpacing = (float)spaceToFill / (float)(shapeCount - 1);
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						shapes[shapeNum].Left = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						shapes[shapeNum].Left = shapes[0].Right + propSpaceSoFar + (Convert.ToInt32(shapeSpacing * (float)shapeNum));
 						propSpaceSoFar += shapes[shapeNum].Right - shapes[shapeNum].Left;
 					}
 				}
@@ -1848,40 +1847,41 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (spaceToFill > 0)
 				{
-					float shapeSpacing = (float) spaceToFill/(float) (shapeCount - 1);
+					float shapeSpacing = (float)spaceToFill / (float)(shapeCount - 1);
 					int propSpaceSoFar = 0;
 					for (int shapeNum = 1; shapeNum < shapeCount - 1; shapeNum++)
 					{
-						shapes[shapeNum].Top = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing*(float) shapeNum));
+						shapes[shapeNum].Top = shapes[0].Bottom + propSpaceSoFar + (Convert.ToInt32(shapeSpacing * (float)shapeNum));
 						propSpaceSoFar += shapes[shapeNum].Bottom - shapes[shapeNum].Top;
 					}
 				}
 			}
 		}
 
-        public void MatchProperties()
-        {
-            if (SelectedShapes().Count >= 2) { 
-                foreach (PreviewBaseShape shape in SelectedShapes())
-                {
-                    if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
-                    {
+		public void MatchProperties()
+		{
+			if (SelectedShapes().Count >= 2)
+			{
+				foreach (PreviewBaseShape shape in SelectedShapes())
+				{
+					if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
+					{
 						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", false, true);
 						messageBox.ShowDialog();
-                        return;
-                    }
-                }
-                foreach (PreviewBaseShape shape in SelectedShapes())
-                {
-                    if (shape != SelectedShapes()[0])
-                    {
-                        shape.Match(SelectedShapes()[0]);
-                    }
-                }
-            }
-        }
+						return;
+					}
+				}
+				foreach (PreviewBaseShape shape in SelectedShapes())
+				{
+					if (shape != SelectedShapes()[0])
+					{
+						shape.Match(SelectedShapes()[0]);
+					}
+				}
+			}
+		}
 
 		#endregion
 
@@ -1945,7 +1945,7 @@ namespace VixenModules.Preview.VixenPreview
 			CancellationTokenSource tokenSource = new CancellationTokenSource();
 			if (!_paused)
 			{
-				Bitmap clone = (Bitmap) _alphaBackground.Clone();
+				Bitmap clone = (Bitmap)_alphaBackground.Clone();
 				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
 				{
 					try
@@ -2098,17 +2098,17 @@ namespace VixenModules.Preview.VixenPreview
 					if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
 						p.Node.Properties.Add(LocationDescriptor._typeId);
 					var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					((LocationData) prop.ModuleData).X = p.X;
-					((LocationData) prop.ModuleData).Y = p.Y;
-					((LocationData) prop.ModuleData).Y = p.Z;
+					((LocationData)prop.ModuleData).X = p.X;
+					((LocationData)prop.ModuleData).Y = p.Y;
+					((LocationData)prop.ModuleData).Y = p.Z;
 				}
 			}
 		}
 
 		public Point PointToZoomPoint(Point p)
 		{
-			int xDif = p.X - Convert.ToInt32(p.X/ZoomLevel);
-			int yDif = p.Y - Convert.ToInt32(p.Y/ZoomLevel);
+			int xDif = p.X - Convert.ToInt32(p.X / ZoomLevel);
+			int yDif = p.Y - Convert.ToInt32(p.Y / ZoomLevel);
 			Point newP = new Point(p.X - xDif, p.Y - yDif);
 			return newP;
 		}
@@ -2117,23 +2117,23 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			int x = p.X + hScroll.Value;
 			int y = p.Y + vScroll.Value;
-			int xDif = p.X - Convert.ToInt32(x/ZoomLevel);
-			int yDif = p.Y - Convert.ToInt32(y/ZoomLevel);
+			int xDif = p.X - Convert.ToInt32(x / ZoomLevel);
+			int yDif = p.Y - Convert.ToInt32(y / ZoomLevel);
 			Point newP = new Point(p.X - xDif, p.Y - yDif);
 			return newP;
 		}
 
 		public Point ZoomPointToBackgroundPoint(Point p)
 		{
-			int x = Convert.ToInt32(p.X*ZoomLevel);
-			int y = Convert.ToInt32(p.Y*ZoomLevel);
+			int x = Convert.ToInt32(p.X * ZoomLevel);
+			int y = Convert.ToInt32(p.Y * ZoomLevel);
 			Point newP = new Point(x, y);
 			return newP;
 		}
 
 		private void VixenPreviewControl_MouseWheel(object sender, MouseEventArgs e)
 		{
-			double delta = Convert.ToDouble(e.Delta)/1000;
+			double delta = Convert.ToDouble(e.Delta) / 1000;
 
 			// Zoom to the pointer location
 			zoomTo = MousePointToZoomPoint(e.Location);
@@ -2144,9 +2144,9 @@ namespace VixenModules.Preview.VixenPreview
 		private void VixenPreviewControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyCode == Keys.Left ||
-			    e.KeyCode == Keys.Right ||
-			    e.KeyCode == Keys.Up ||
-			    e.KeyCode == Keys.Down)
+				e.KeyCode == Keys.Right ||
+				e.KeyCode == Keys.Up ||
+				e.KeyCode == Keys.Down)
 			{
 				e.IsInputKey = true;
 			}
@@ -2218,5 +2218,5 @@ namespace VixenModules.Preview.VixenPreview
 		}
 	}
 
-	#endregion
+		#endregion
 }

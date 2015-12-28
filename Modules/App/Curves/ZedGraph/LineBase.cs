@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.2 $ $Date: 2007-03-17 18:43:44 $ </version>
 	[Serializable]
-	public class LineBase : ICloneable, ISerializable
+	public class LineBase : ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -474,6 +474,23 @@ namespace ZedGraph
 			}
 
 			return pen;
+		}
+
+		#endregion
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_gradientFill != null) _gradientFill.Dispose();
+
+			}
 		}
 
 		#endregion

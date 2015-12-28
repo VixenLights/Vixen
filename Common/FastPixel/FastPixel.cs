@@ -289,8 +289,11 @@ namespace FastPixel
 				}
 			}
 		}
-
-		protected void Dispose(bool disposing)
+	
+		~FastPixel() {
+			Dispose(false);
+		}
+		protected virtual void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_bitmap != null)

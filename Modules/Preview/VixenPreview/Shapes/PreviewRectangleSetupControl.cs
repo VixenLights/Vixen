@@ -23,11 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			propertyGrid.SelectedObject = Shape;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}
-
-		~PreviewRectangleSetupControl()
-		{
-			Shape.OnPropertiesChanged -= OnPropertiesChanged;
-		}
+ 
 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{

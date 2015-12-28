@@ -581,7 +581,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return setupControl;
 		}
 
-		protected void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_selectPoints != null)

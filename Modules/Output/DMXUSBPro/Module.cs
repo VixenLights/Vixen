@@ -27,10 +27,13 @@ namespace VixenModules.Output.DmxUsbPro
 
 		public override bool Setup()
 		{
-			using (var portConfig = new SerialPortConfig(this._serialPort)) {
-				if (portConfig.ShowDialog() == DialogResult.OK) {
+			using (var portConfig = new SerialPortConfig(this._serialPort))
+			{
+				if (portConfig.ShowDialog() == DialogResult.OK)
+				{
 					this._serialPort = portConfig.SelectedPort;
-					if (_serialPort != null) {
+					if (_serialPort != null)
+					{
 						this._serialPort.Handshake = Handshake.None;
 						this._serialPort.Encoding = Encoding.UTF8;
 
@@ -51,7 +54,8 @@ namespace VixenModules.Output.DmxUsbPro
 
 		public override void Start()
 		{
-			if (this._dmxUsbProSender != null) {
+			if (this._dmxUsbProSender != null)
+			{
 				this._dmxUsbProSender.Dispose();
 			}
 
@@ -70,20 +74,23 @@ namespace VixenModules.Output.DmxUsbPro
 					if (_serialPort.IsOpen)
 					{
 						_serialPort.Close();
-						_serialPort.Dispose();
-						_serialPort = null;
 					}
-				}	
+					_serialPort.Dispose();
+					_serialPort = null;
+				}
+				if (_dmxUsbProSender != null) _dmxUsbProSender.Dispose();
 			}
-			
+
 			base.Dispose(disposing);
 		}
 
 		public override void Stop()
 		{
 			this._dmxUsbProSender.Stop();
-			if (this._serialPort != null) {
-				if (this._serialPort.IsOpen) {
+			if (this._serialPort != null)
+			{
+				if (this._serialPort.IsOpen)
+				{
 					this._serialPort.Close();
 					this._serialPort.Dispose();
 					this._serialPort = null;
@@ -100,24 +107,26 @@ namespace VixenModules.Output.DmxUsbPro
 
 		private Data GetModuleData()
 		{
-			return (Data) this.ModuleData;
+			return (Data)this.ModuleData;
 		}
 
 		private void InitializePort()
 		{
 			// Recreate serial port based on setup data
-			if (this._serialPort != null && this._serialPort.IsOpen) {
+			if (this._serialPort != null && this._serialPort.IsOpen)
+			{
 				this._serialPort.Close();
 				this._serialPort.Dispose();
 			}
 
 			var data = this.GetModuleData();
-			if (data.PortName != null) {
+			if (data.PortName != null)
+			{
 				this._serialPort = new SerialPort(data.PortName, data.BaudRate, data.Partity, data.DataBits, data.StopBits)
-				                   	{
-				                   		Handshake = Handshake.None,
-				                   		Encoding = Encoding.UTF8
-				                   	};
+									{
+										Handshake = Handshake.None,
+										Encoding = Encoding.UTF8
+									};
 			}
 		}
 	}

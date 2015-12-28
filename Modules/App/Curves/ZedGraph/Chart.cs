@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.1 $ $Date: 2006-06-24 20:26:44 $ </version>
 	[Serializable]
-	public class Chart : ICloneable, ISerializable
+	public class Chart : ICloneable, ISerializable, IDisposable
 	{
 		/// <summary>
 		/// The rectangle that contains the area bounded by the axes, in pixel units
@@ -257,6 +257,26 @@ namespace ZedGraph
 			/// to show the border border, false to omit the border
 			/// </summary>
 			public static bool IsBorderVisible = true;
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null)
+					_fill.Dispose();
+				if (_border != null)
+					_border.Dispose();
+			}
 		}
 
 		#endregion

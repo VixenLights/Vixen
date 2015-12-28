@@ -27,6 +27,7 @@ namespace ZedGraph
 	///
 	/// <author> Jerry Vos modified by John Champion</author>
 	/// <version> $Revision: 3.2 $ $Date: 2006-06-24 20:26:44 $ </version>
+	[Serializable]
 	public class ZedGraphException : System.ApplicationException
 	{
 		/// <summary>
@@ -38,7 +39,7 @@ namespace ZedGraph
 		/// <param name="context">The <see cref="System.Runtime.Serialization.StreamingContext"/>
 		/// instance that contains contextual information about the source or destination.</param>
 		protected ZedGraphException(System.Runtime.Serialization.SerializationInfo info,
-		                            System.Runtime.Serialization.StreamingContext context)
+									System.Runtime.Serialization.StreamingContext context)
 			: base(info, context)
 		{
 		}

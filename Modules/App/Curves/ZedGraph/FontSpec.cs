@@ -37,7 +37,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.24 $ $Date: 2007-01-25 07:56:08 $ </version>
 	[Serializable]
-	public class FontSpec : ICloneable, ISerializable
+	public class FontSpec : ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -1524,6 +1524,24 @@ namespace ZedGraph
 			matrix.TransformPoints(pts);
 
 			return pts;
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_border != null) _border.Dispose();
+			}
 		}
 
 		#endregion

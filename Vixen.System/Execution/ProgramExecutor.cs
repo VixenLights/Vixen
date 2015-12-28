@@ -273,25 +273,25 @@ namespace Vixen.Execution
 			_sequenceExecutor.Error -= _SequenceExecutorError;
 		}
 
-		~ProgramExecutor()
-		{
-			Dispose(false);
-		}
 
 		public void Dispose()
 		{
 			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		public virtual void Dispose(bool disposing)
 		{
-			Stop();
-			if (_sequenceEnumerator != null) {
-				_sequenceEnumerator.Dispose();
-				_sequenceEnumerator = null;
+			if (disposing)
+			{
+				Stop();
+				if (_sequenceEnumerator != null)
+				{
+					_sequenceEnumerator.Dispose();
+					_sequenceEnumerator = null;
+				}
+				_DisposeSequenceExecutor();
 			}
-			_DisposeSequenceExecutor();
-			GC.SuppressFinalize(this);
 		}
 	}
 }

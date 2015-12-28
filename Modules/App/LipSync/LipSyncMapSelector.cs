@@ -220,6 +220,7 @@ namespace VixenModules.App.LipSyncApp
 			if (disposing && (components != null)) {
 				listViewMappings.Dispose();
 				components.Dispose();
+				if (_iconBitmap != null) _iconBitmap.Dispose();
 			}
 
 			base.Dispose(disposing);

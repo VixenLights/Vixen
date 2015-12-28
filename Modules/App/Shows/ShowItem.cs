@@ -35,7 +35,7 @@ namespace VixenModules.App.Shows
 
 	[DataContract,
 	Serializable]
-	public class ShowItem
+	public class ShowItem: IDisposable
 	{
 		public ShowItem(ShowItemType showType, string itemName, Guid currenShowID)
 		{
@@ -184,5 +184,23 @@ namespace VixenModules.App.Shows
 			}
 			currentAction = null;
 		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (currentEditor != null) currentEditor.Dispose();
+				if (currentAction != null) currentAction.Dispose();
+			}
+		}
+
+		#endregion
 	}
 }

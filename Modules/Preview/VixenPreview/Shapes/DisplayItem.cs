@@ -86,13 +86,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 		}
 
-		protected void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_shape != null)
 					_shape.Dispose();
 			}
 			_shape = null;
+			
 		}
 
 		public void Dispose()

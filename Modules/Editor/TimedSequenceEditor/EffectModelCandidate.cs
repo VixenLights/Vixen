@@ -12,7 +12,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	/// Class to hold effect data to allow it to be placed on the clipboard and be reconstructed when later pasted
 	/// </summary>
 	[Serializable]
-	public class EffectModelCandidate
+	public class EffectModelCandidate : IDisposable
 	{
 		private readonly Type _moduleDataClass;
 		private readonly MemoryStream _effectData;
@@ -41,5 +41,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(effectDataIn, XmlDictionaryReaderQuotas.Max))
 				return (IModuleDataModel)ds.ReadObject(r);
 		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_effectData != null) _effectData.Dispose();
+			}
+		}
+
+		#endregion
 	}
 }

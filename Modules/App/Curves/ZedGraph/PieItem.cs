@@ -33,7 +33,8 @@ namespace ZedGraph {
 	/// <author> Bob Kaye </author>
 	/// <version> $Revision: 1.32 $ $Date: 2007-07-30 05:26:23 $ </version>
 	[Serializable]
-	public class PieItem : CurveItem, ICloneable, ISerializable {
+	public class PieItem : CurveItem, ICloneable, ISerializable 
+	{
 		#region Fields
 
 		/*
@@ -1034,6 +1035,25 @@ namespace ZedGraph {
 				coords += string.Format(j > count ? "{0:f0},{1:f0}" : "{0:f0},{1:f0},", pts[j].X, pts[j].Y);
 
 			return true;
+		}
+
+		#endregion
+	
+		#region IDisposable Members
+
+		
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_slicePath != null) _slicePath.Dispose();
+				if (_border != null) _border.Dispose();
+				if (_label != null) _label.Dispose();
+				if (_labelDetail != null) _labelDetail.Dispose();
+			}
+			base.Dispose(disposing);
 		}
 
 		#endregion

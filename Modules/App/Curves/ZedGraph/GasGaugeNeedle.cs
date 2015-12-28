@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> Jay Mistry </author>
 	/// <version> $Revision: 1.2 $ $Date: 2007-08-11 14:37:47 $ </version>
 	[Serializable]
-	public class GasGaugeNeedle : CurveItem, ICloneable, ISerializable
+	public class GasGaugeNeedle : CurveItem, ICloneable, ISerializable 
 	{
 		#region Fields
 
@@ -578,6 +578,23 @@ namespace ZedGraph
 			}
 
 			return nonExpRect;
+		}
+
+		#endregion
+		#region IDisposable Members
+
+	 
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_slicePath != null) _slicePath.Dispose();
+				if (_border != null) _border.Dispose();
+				if (_label != null) _label.Dispose();
+				if (_labelDetail != null) _labelDetail.Dispose();
+			}
+			base.Dispose(disposing);
 		}
 
 		#endregion

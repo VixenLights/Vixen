@@ -25,13 +25,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		~PreviewCustomSetupControl()
-		{
-			foreach (PreviewBaseShape stringShape in Shape._strings) {
-				stringShape.OnPropertiesChanged -= OnPropertiesChanged;
-			}
-		}
-
+	 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
 			PopulatePropList((comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem).Value as PreviewBaseShape);

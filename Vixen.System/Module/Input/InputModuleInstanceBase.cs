@@ -10,7 +10,7 @@ namespace Vixen.Module.Input
 	public abstract class InputModuleInstanceBase : ModuleInstanceBase, IInputModuleInstance,
 	                                                IEquatable<InputModuleInstanceBase>, IEquatable<IInputModuleInstance>,
 	                                                IEqualityComparer<IInputModuleInstance>,
-	                                                IEqualityComparer<InputModuleInstanceBase>
+	                                                IEqualityComparer<InputModuleInstanceBase> 
 	{
 		//private Thread _stateUpdateThread;
 		private ManualResetEvent _pause = new ManualResetEvent(true);
@@ -112,17 +112,13 @@ namespace Vixen.Module.Input
 				{
 					_pause.Dispose();
 					_pause = null;
-				}	
+				}
+			 
 			}
-
-			GC.SuppressFinalize(this);
-			
+			base.Dispose(disposing);
+			 
 		}
 
-		~InputModuleInstanceBase()
-		{
-			Dispose(false);
-		}
 
 		private void _InputValueChanged(object sender, EventArgs e)
 		{

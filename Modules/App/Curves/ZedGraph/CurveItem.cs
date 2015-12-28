@@ -40,7 +40,7 @@ namespace ZedGraph
 	/// modified by Jerry Vos </author>
 	/// <version> $Revision: 3.43 $ $Date: 2007-11-03 04:41:28 $ </version>
 	[Serializable]
-	public abstract class CurveItem : ISerializable, ICloneable
+	public abstract class CurveItem : ISerializable, ICloneable, IDisposable
 	{
 		#region Fields
 
@@ -1217,6 +1217,24 @@ namespace ZedGraph
 		}
 
 #endif
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_label != null) _label.Dispose();
+
+			}
+		}
 
 		#endregion
 	}

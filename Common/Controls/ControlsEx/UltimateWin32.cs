@@ -447,14 +447,22 @@ namespace Common.Controls.ControlsEx
 
 			public void Dispose()
 			{
-				//render
-				this._targetgraphics.DrawImageUnscaled(this._membitmap, Point.Empty);
-				//dispose
-				this._memgraphics.Dispose();
-				this._membitmap.Dispose();
-				this._targetgraphics.Dispose();
+				Dispose(true);
+				GC.SuppressFinalize(this);
 			}
 
+			protected virtual void Dispose(bool disposing)
+			{
+				if (disposing)
+				{
+					//render
+					this._targetgraphics.DrawImageUnscaled(this._membitmap, Point.Empty);
+					//dispose
+					this._memgraphics.Dispose();
+					this._membitmap.Dispose();
+					this._targetgraphics.Dispose();
+				}
+			}
 			/// <summary>
 			/// gets the graphics buffer to render on
 			/// </summary>

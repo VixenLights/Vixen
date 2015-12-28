@@ -37,6 +37,7 @@ namespace ZedGraph
 	/// <see cref="PointPair.Z" /> are not related (as they are in the
 	/// <see cref="PointPair" />).
 	/// </summary>
+	[Serializable]
 	public class PointPairCV : PointPair
 	{
 		#region Properties

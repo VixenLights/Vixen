@@ -269,7 +269,7 @@ namespace Common.Controls.ControlsEx
 			get { return false; }
 		}
 
-		bool IList.IsFixedSize
+		 bool IList.IsFixedSize
 		{
 			get { return false; }
 		}

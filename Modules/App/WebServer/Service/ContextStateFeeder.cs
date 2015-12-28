@@ -15,24 +15,24 @@ using VixenModules.App.WebServer.Model;
 
 namespace VixenModules.App.WebServer.Service
 {
-	public class ContextStateFeeder
+	public class ContextStateFeeder : IDisposable
 	{
 		// Singleton instance
 		private readonly static Lazy<ContextStateFeeder> _instance = new Lazy<ContextStateFeeder>(() => new ContextStateFeeder(GlobalHost.ConnectionManager.GetHubContext<ContextHub>().Clients));
 
-		private readonly List<ContextStatus> _contextStatuses = new List<ContextStatus>(); 
+		private readonly List<ContextStatus> _contextStatuses = new List<ContextStatus>();
 		private readonly Timer _timer;
 		private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(1000);
 
 		private ContextStateFeeder(IHubConnectionContext<dynamic> clients)
-        {
-            Clients = clients;
+		{
+			Clients = clients;
 
 			UpdateContextStatus(null);
-			
+
 			_timer = new Timer(UpdateContextStatus, null, _updateInterval, _updateInterval);
 
-        }
+		}
 
 		public static ContextStateFeeder Instance
 		{
@@ -42,12 +42,12 @@ namespace VixenModules.App.WebServer.Service
 			}
 		}
 
-		private IHubConnectionContext<dynamic> Clients{ get; set; }
+		private IHubConnectionContext<dynamic> Clients { get; set; }
 
 		public IEnumerable<ContextStatus> GetAllStates()
 		{
 			return _contextStatuses.Where(x => x.State.Equals(ContextStatus.States.Playing) ||
-			                                   x.State.Equals(ContextStatus.States.Paused));
+											   x.State.Equals(ContextStatus.States.Paused));
 		}
 
 		private void UpdateContextStatus(object state)
@@ -61,12 +61,12 @@ namespace VixenModules.App.WebServer.Service
 					continue;
 				}
 
-				
+
 				var status = new ContextStatus()
 				{
 					Sequence = new Sequence()
 					{
-						Name = context.Name	
+						Name = context.Name
 					},
 					Position = context.GetTimeSnapshot()
 				};
@@ -74,7 +74,7 @@ namespace VixenModules.App.WebServer.Service
 				var sequenceContext = context as ISequenceContext;
 				if (sequenceContext != null)
 				{
-					status.Sequence.FileName =  Path.GetFileName(sequenceContext.Sequence.FilePath);
+					status.Sequence.FileName = Path.GetFileName(sequenceContext.Sequence.FilePath);
 				}
 
 				if (context.IsPaused)
@@ -107,5 +107,22 @@ namespace VixenModules.App.WebServer.Service
 			Clients.All.updatePlayingContextStates(_contextStatuses.Where(x => x.State.Equals(ContextStatus.States.Playing) ||
 				x.State.Equals(ContextStatus.States.Paused)));
 		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+
+			if (disposing)
+			{
+				if (_timer != null) _timer.Dispose();
+			}
+		}
+		#endregion
 	}
 }

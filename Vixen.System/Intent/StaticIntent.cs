@@ -6,7 +6,7 @@ using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
-	public class StaticIntent<TypeOfValue> : Dispatchable<StaticIntent<TypeOfValue>>, IIntent<TypeOfValue>
+	public class StaticIntent<TypeOfValue> : Dispatchable<StaticIntent<TypeOfValue>>, IIntent<TypeOfValue>, IDisposable
 		where TypeOfValue : IIntentDataType
 	{
 		public StaticIntent(TypeOfValue value, TimeSpan timeSpan)

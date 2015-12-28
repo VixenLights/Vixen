@@ -13,10 +13,16 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+			if (disposing)
+			{
+				if (components != null) components.Dispose();
+			}
+			else {
+				foreach (PreviewBaseShape stringShape in Shape._strings)
+				{
+					stringShape.OnPropertiesChanged -= OnPropertiesChanged;
+				}
+			}
             base.Dispose(disposing);
         }
 

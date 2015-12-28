@@ -13,10 +13,14 @@
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
+			if (disposing)
 			{
-				components.Dispose();
+				if (components != null) components.Dispose();
+				if (_fastPixel != null) _fastPixel.Dispose();
+				if (_backgroundAlphaImage != null) _backgroundAlphaImage.Dispose();
+				if (_background != null) _background.Dispose();
 			}
+
 			base.Dispose(disposing);
 		}
 
@@ -28,17 +32,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.SuspendLayout();
-            // 
-            // GDIControl
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.Name = "GDIControl";
-            this.Size = new System.Drawing.Size(626, 379);
-            this.Resize += new System.EventHandler(this.GDIControl_Resize);
-            this.ResumeLayout(false);
+			this.SuspendLayout();
+			// 
+			// GDIControl
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+			this.Name = "GDIControl";
+			this.Size = new System.Drawing.Size(626, 379);
+			this.Resize += new System.EventHandler(this.GDIControl_Resize);
+			this.ResumeLayout(false);
 
 		}
 

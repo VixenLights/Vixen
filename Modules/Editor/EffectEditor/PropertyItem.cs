@@ -67,8 +67,9 @@ namespace VixenModules.Editor.EffectEditor
 				{
 					_descriptor.RemoveValueChanged(_component, ComponentValueChanged);
 				}
-				base.Dispose(disposing);
+				
 			}
+			base.Dispose(disposing);
 		}
 
 		#region Public helpers

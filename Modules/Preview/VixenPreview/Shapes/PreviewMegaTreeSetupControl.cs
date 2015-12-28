@@ -24,11 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}
 
-		~PreviewMegaTreeSetupControl()
-		{
-			Shape.OnPropertiesChanged -= OnPropertiesChanged;
-		}
-
+	 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
 			propertyGrid.Refresh();

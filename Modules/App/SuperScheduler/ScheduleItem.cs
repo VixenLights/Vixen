@@ -23,7 +23,7 @@ namespace VixenModules.App.SuperScheduler
 	}
 
 	[DataContract]
-	public class ScheduleItem: IDisposable
+	public class ScheduleItem : IDisposable
 	{
 		#region Data Members
 
@@ -80,8 +80,9 @@ namespace VixenModules.App.SuperScheduler
 		}
 
 		private Shows.Show _show = null;
-		public Shows.Show Show {
-			get 
+		public Shows.Show Show
+		{
+			get
 			{
 				if (_show == null)
 					_show = Shows.ShowsData.GetShow(ShowID);
@@ -203,7 +204,7 @@ namespace VixenModules.App.SuperScheduler
 
 		#region Utilities
 
-		private int CompareTodaysDate(DateTime date) 
+		private int CompareTodaysDate(DateTime date)
 		{
 			DateTime now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 			return now.CompareTo(date);
@@ -281,15 +282,19 @@ namespace VixenModules.App.SuperScheduler
 			if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
 				tokenSourcePreProcessAll.Cancel(false);
 
-			if (graceful) {
+			if (graceful)
+			{
 				State = StateType.Shutdown;
 				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopping gracefully");
-			} else {
+			}
+			else
+			{
 				State = StateType.Waiting;
 				int runningCount = RunningActions.Count();
 
 				ItemQueue.Clear();
-				for (int i = 0; i < runningCount; i++) {
+				for (int i = 0; i < runningCount; i++)
+				{
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
 					RunningActions[i].Stop();
 				}
@@ -338,19 +343,20 @@ namespace VixenModules.App.SuperScheduler
 
 			//Show.GetItems(Shows.ShowItemType.All).AsParallel().WithCancellation(tokenSourcePreProcessAll.Token).ForAll(
 			//	item => {
-				foreach (ShowItem item in Show.GetItems(ShowItemType.All))
+			foreach (ShowItem item in Show.GetItems(ShowItemType.All))
+			{
+				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
+				var action = item.GetAction();
+
+				if (!action.PreProcessingCompleted)
 				{
-					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-processing: " + item.Name);
-					var action = item.GetAction();
-
-					if (!action.PreProcessingCompleted) {
-						action.PreProcess(tokenSourcePreProcessAll);
-					}
-					//if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
-					//	return;
-					//};	
-
+					action.PreProcess(tokenSourcePreProcessAll);
 				}
+				//if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.IsCancellationRequested)
+				//	return;
+				//};	
+
+			}
 
 		}
 
@@ -385,25 +391,31 @@ namespace VixenModules.App.SuperScheduler
 				}
 			}
 		}
-		
+
+		private void RunNextItemInQueue()
+		{
+		}
+
 		#endregion // Show Control
 
 		#region Startup Items
 
 		public void BeginStartup()
 		{
-			if (Show != null) {
+			if (Show != null)
+			{
 				// Sort the items
 				Show.Items.Sort((item1, item2) => item1.ItemOrder.CompareTo(item2.ItemOrder));
-				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup)) {
+				foreach (Shows.ShowItem item in Show.GetItems(Shows.ShowItemType.Startup))
+				{
 					ItemQueue.Enqueue(item);
 				}
-				 
+
 				ExecuteNextStartupItem();
 			}
 		}
 
-		public void ExecuteNextStartupItem() 
+		public void ExecuteNextStartupItem()
 		{
 			if (State == StateType.Running)
 			{
@@ -427,7 +439,8 @@ namespace VixenModules.App.SuperScheduler
 		public void OnStartupActionComplete(object sender, EventArgs e)
 		{
 			var action = (sender as Shows.Action);
-			if (action != null) {
+			if (action != null)
+			{
 				action.ActionComplete -= OnStartupActionComplete;
 				RunningActions.Remove(action);
 
@@ -470,7 +483,7 @@ namespace VixenModules.App.SuperScheduler
 			LogScheduleInfoEntry("ExecuteNextSequentialItem");
 			if (State == StateType.Running)
 			{
-				if (ItemQueue.Any() )
+				if (ItemQueue.Any())
 				{
 					LogScheduleInfoEntry("ExecuteNextSequentialItem: Dequeue next item");
 					_currentItem = ItemQueue.Dequeue();
@@ -559,14 +572,15 @@ namespace VixenModules.App.SuperScheduler
 					action.Stop();
 				}
 				action.Dispose();
-			}	
+			}
 		}
 
 		#endregion // Background Items
 
 		#region Shutdown Items
 
-		public bool StartShutdownIfRequested() {
+		public bool StartShutdownIfRequested()
+		{
 			if (State == StateType.Shutdown || CheckForShutdown())
 			{
 				LogScheduleInfoEntry("Shutdown IS requested");
@@ -604,7 +618,7 @@ namespace VixenModules.App.SuperScheduler
 
 		public void ExecuteNextShutdownItem()
 		{
-			if (ItemQueue.Any() )
+			if (ItemQueue.Any())
 			{
 				_currentItem = ItemQueue.Dequeue();
 				Shows.Action action = _currentItem.GetAction();
@@ -633,10 +647,24 @@ namespace VixenModules.App.SuperScheduler
 
 		public void Dispose()
 		{
-			if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
-				tokenSourcePreProcess.Cancel();
-			if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
-				tokenSourcePreProcessAll.Cancel();
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (tokenSourcePreProcess != null && tokenSourcePreProcess.Token.CanBeCanceled)
+				{
+					tokenSourcePreProcess.Cancel();
+					tokenSourcePreProcess.Dispose();
+				}
+				if (tokenSourcePreProcessAll != null && tokenSourcePreProcessAll.Token.CanBeCanceled)
+				{
+					tokenSourcePreProcessAll.Cancel();
+					tokenSourcePreProcessAll.Dispose();
+				}
+			}
 		}
 	}
 }

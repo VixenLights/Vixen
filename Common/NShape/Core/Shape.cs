@@ -36,13 +36,20 @@ namespace Dataweb.NShape
 		/// <ToBeCompleted></ToBeCompleted>
 		~Shape()
 		{
-			Dispose();
+			Dispose(false);
 		}
 
 		#region IDisposable Members
 
 		/// <override></override>
-		public abstract void Dispose();
+		public virtual void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing) {
+			if (disposing)
+			{ }
+		}
 
 		#endregion
 

@@ -14,7 +14,7 @@ using Vixen.Sys.Output;
 
 namespace VixenApplication
 {
-	public abstract class FilterSetupShapeBase : RoundedBox, IDisposable
+	public abstract class FilterSetupShapeBase : RoundedBox 
 	{
 		protected virtual void _init()
 		{
@@ -327,7 +327,7 @@ namespace VixenApplication
 			Dispose(false);
 		}
 
-		protected void Dispose(bool disposing)
+		protected  void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_customFont != null) _customFont.Dispose();
@@ -337,11 +337,12 @@ namespace VixenApplication
 				_customTextBrush = null;
 				_customFont = null;
 			}
+			base.Dispose(disposing);
 		}
-
-		void IDisposable.Dispose()
+		public override void Dispose()
 		{
 			Dispose(true);
+			base.Dispose();
 		}
 	}
 

@@ -192,9 +192,7 @@ namespace BaseSequence
 		~Sequence() {
 			Dispose(false);
 		}
-
-		
-		protected void Dispose(bool disposing) {
+		protected virtual void Dispose(bool disposing) {
 			if (disposing)
 			{
 				var sequenceMedia = GetAllMedia();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Vixen.Preview
 {
+	[Serializable]
 	public class PreviewElementIntentStates : Dictionary<Vixen.Sys.Element, Vixen.Sys.IIntentStates>
 	{
 		public PreviewElementIntentStates()

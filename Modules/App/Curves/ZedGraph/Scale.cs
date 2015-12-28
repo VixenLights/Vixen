@@ -41,7 +41,7 @@ namespace ZedGraph
 	/// <author> John Champion  </author>
 	/// <version> $Revision: 1.33 $ $Date: 2007-09-19 06:41:56 $ </version>
 	[Serializable]
-	public abstract class Scale : ISerializable
+	public abstract class Scale : ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -2976,6 +2976,24 @@ namespace ZedGraph
 				return Math.Pow(x, exponent);
 			else
 				return 0.0;
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fontSpec != null) _fontSpec.Dispose();
+
+			}
 		}
 
 		#endregion

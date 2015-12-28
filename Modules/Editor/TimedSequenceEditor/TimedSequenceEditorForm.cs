@@ -594,23 +594,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (_loadingTask != null && !_loadingTask.IsCompleted && !_loadingTask.IsFaulted && !_loadingTask.IsCanceled)
+			if (disposing)
 			{
-				_cancellationTokenSource.Cancel();
-			}
+				if (_loadingTask != null && !_loadingTask.IsCompleted && !_loadingTask.IsFaulted && !_loadingTask.IsCanceled)
+				{
+					_cancellationTokenSource.Cancel();
+				}
 
 
-			//TimelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
+				//TimelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
 
-			TimelineControl.ElementChangedRows -= ElementChangedRowsHandler;
-			TimelineControl.ElementsMovedNew -= timelineControl_ElementsMovedNew;
-			TimelineControl.ElementDoubleClicked -= ElementDoubleClickedHandler;
-			//TimelineControl.DataDropped -= timelineControl_DataDropped;
-			TimelineControl.grid.DragOver -= TimelineControlGrid_DragOver;
-			TimelineControl.grid.DragEnter -= TimelineControlGrid_DragEnter;
-			TimelineControl.grid.DragDrop -= TimelineControlGrid_DragDrop;
+				TimelineControl.ElementChangedRows -= ElementChangedRowsHandler;
+				TimelineControl.ElementsMovedNew -= timelineControl_ElementsMovedNew;
+				TimelineControl.ElementDoubleClicked -= ElementDoubleClickedHandler;
+				//TimelineControl.DataDropped -= timelineControl_DataDropped;
+				TimelineControl.grid.DragOver -= TimelineControlGrid_DragOver;
+				TimelineControl.grid.DragEnter -= TimelineControlGrid_DragEnter;
+				TimelineControl.grid.DragDrop -= TimelineControlGrid_DragDrop;
 
-			TimelineControl.PlaybackCurrentTimeChanged -= timelineControl_PlaybackCurrentTimeChanged;
+				TimelineControl.PlaybackCurrentTimeChanged -= timelineControl_PlaybackCurrentTimeChanged;
 
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
@@ -619,10 +621,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.MarkNudge -= timelineControl_MarkNudge;
 			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
-			if (_effectsForm != null && !_effectsForm.IsDisposed)
-			{
-				EffectsForm.Dispose();
-			}
+				if (_effectsForm != null && !_effectsForm.IsDisposed)
+				{
+					EffectsForm.Dispose();
+				}
 
 			if (_effectEditorForm != null && !_effectEditorForm.IsDisposed)
 			{
@@ -655,58 +657,67 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
-			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
-			_autoSaveTimer.Stop();
-			_autoSaveTimer.Tick -= AutoSaveEventProcessor;
+				TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
+				TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
+				TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
+				TimelineControl.CursorMoved -= CursorMovedHandler;
+				TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
+				TimelineControl.ContextSelected -= timelineControl_ContextSelected;
+				TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
+				//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
-			if (_curveLibrary != null)
-			{
-				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
-			}
+				Execution.ExecutionStateChanged -= OnExecutionStateChanged;
+				_autoSaveTimer.Stop();
+				_autoSaveTimer.Tick -= AutoSaveEventProcessor;
 
-			if (_colorGradientLibrary != null)
-			{
-				_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
-			}
-
-			//GRRR - make the color collections a library at some mouseLocation
-
-			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
-			{
-				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
-				if (toolStripMenuItem != null)
+				if (_curveLibrary != null)
 				{
-					toolStripMenuItem.Click -= toolStripButtonSnapToStrength_MenuItem_Click;
+					_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
 				}
+
+				if (_colorGradientLibrary != null)
+				{
+					_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
+				}
+
+				//GRRR - make the color collections a library at some mouseLocation
+
+				foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
+				{
+					var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+					if (toolStripMenuItem != null)
+					{
+						toolStripMenuItem.Click -= toolStripButtonSnapToStrength_MenuItem_Click;
+					}
+				}
+
+				if (disposing && (components != null))
+				{
+					components.Dispose();
+					TimelineControl.Dispose();
+					GridForm.Dispose();
+				}
+
+				if (_effectNodeToElement != null)
+				{
+					_effectNodeToElement.Clear();
+					_effectNodeToElement = null;
+				}
+
+				if (_elementNodeToRows != null)
+				{
+					_elementNodeToRows.Clear();
+					_elementNodeToRows = null;
+				}
+
+				if (_sequence != null)
+				{
+					_sequence.Dispose();
+					_sequence = null;
+				}
+				_cancellationTokenSource.Dispose();
+				dockPanel.Dispose();
 			}
-
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-				TimelineControl.Dispose();
-				GridForm.Dispose();
-			}
-
-			if (_effectNodeToElement != null)
-			{
-				_effectNodeToElement.Clear();
-				_effectNodeToElement = null;
-			}
-
-			if (_elementNodeToRows != null)
-			{
-				_elementNodeToRows.Clear();
-				_elementNodeToRows = null;
-			}
-
-			if (_sequence != null)
-			{
-				_sequence.Dispose();
-				_sequence = null;
-			}
-
-			dockPanel.Dispose();
-
 			base.Dispose(disposing);
 			
 		}

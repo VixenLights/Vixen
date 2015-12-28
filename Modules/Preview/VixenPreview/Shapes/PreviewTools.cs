@@ -211,7 +211,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public static string SerializeToString(object obj)
 		{
 			var serializer = new DataContractSerializer(obj.GetType());
-			using (var backing = new System.IO.StringWriter())
+			var backing = new System.IO.StringWriter();
 			using (var writer = new System.Xml.XmlTextWriter(backing)) {
 				serializer.WriteObject(writer, obj);
 				return backing.ToString();

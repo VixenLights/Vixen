@@ -54,10 +54,10 @@ namespace Vixen.Export
                 _outfs = File.Create(fileName, numChannels * 2, FileOptions.None);
                 _dataOut = new BinaryWriter(_outfs);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _dataOut = null;
-                throw e;
+                throw ;
             }
         }
 
@@ -80,10 +80,10 @@ namespace Vixen.Export
                     }
                     _dataOut.Write(System.Environment.NewLine.ToCharArray());
                 }
-                catch (Exception e)
+                catch (Exception )
                 {
                     _dataOut = null;
-                    throw e;
+                    throw ;
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace Vixen.Export
                 {
                     _dataOut = null;
                     _outfs = null;
-                    throw e;
+                    throw;
                 }
             }
         }

@@ -1,33 +1,39 @@
 ﻿namespace VixenModules.Preview.VixenPreview.Shapes
 {
-    partial class PreviewCaneSetupControl
-    {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class PreviewCaneSetupControl
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing )
+			{
+				if (components != null) components.Dispose();
+			}
+			else
+			{
+				Shape.OnPropertiesChanged -= OnPropertiesChanged;
+			}
 
-        #region Component Designer generated code
+			base.Dispose(disposing);
+		}
+	
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		#region Component Designer generated code
+
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewCaneSetupControl));
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.buttonHelp = new System.Windows.Forms.Button();
@@ -68,11 +74,11 @@
 			this.Title = "Candy Cane Properties";
 			this.ResumeLayout(false);
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.PropertyGrid propertyGrid;
-        private System.Windows.Forms.Button buttonHelp;
-    }
+		private System.Windows.Forms.PropertyGrid propertyGrid;
+		private System.Windows.Forms.Button buttonHelp;
+	}
 }

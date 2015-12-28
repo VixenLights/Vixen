@@ -23,10 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}
 
-		~PreviewFloodSetupControl()
-		{
-			Shape.OnPropertiesChanged -= OnPropertiesChanged;
-		}
+	 
 
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{

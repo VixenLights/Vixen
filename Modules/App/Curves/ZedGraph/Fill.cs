@@ -35,7 +35,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.22 $ $Date: 2007-01-26 09:01:49 $ </version>
 	[Serializable]
-	public class Fill : ISerializable, ICloneable
+	public class Fill : ISerializable, ICloneable, IDisposable
 	{
 		#region Fields
 
@@ -1132,6 +1132,25 @@ namespace ZedGraph
 				using (Brush brush = this.MakeBrush(rect, pt)) {
 					g.FillRectangle(brush, rect);
 				}
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_brush != null) _brush.Dispose();
+				if (_image != null) _image.Dispose();
+				if (_gradientBM != null) _gradientBM.Dispose();
 			}
 		}
 

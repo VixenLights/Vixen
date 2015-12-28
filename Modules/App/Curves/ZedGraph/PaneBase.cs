@@ -40,7 +40,7 @@ namespace ZedGraph
 	/// 
 	/// <author>John Champion</author>
 	/// <version> $Revision: 3.32 $ $Date: 2007-11-05 18:28:56 $ </version>
-	public abstract class PaneBase : ICloneable
+	public abstract class PaneBase : ICloneable, IDisposable
 	{
 		#region Fields
 
@@ -1208,6 +1208,26 @@ namespace ZedGraph
 			}
 
 			return ptPix;
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fill != null) _fill.Dispose();
+				if (_border != null) _border.Dispose();
+				if (_legend != null) _legend.Dispose();
+				if (_title != null) _title.Dispose();
+			}
 		}
 
 		#endregion

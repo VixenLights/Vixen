@@ -57,7 +57,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			get
 			{
-				object[] o = new object[] {NutcrackerDataValue};
+				object[] o = new object[] { NutcrackerDataValue };
 				Data = o[0] as NutcrackerData;
 				return o;
 			}
@@ -68,10 +68,13 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			effect.RenderNextEffect(Data.CurrentEffect);
 			int stringCount = StringCount;
-			if (displayItem != null && displayItem.Shape != null) {
-				if (displayItem.Shape is PreviewMegaTree) {
+			if (displayItem != null && displayItem.Shape != null)
+			{
+				if (displayItem.Shape is PreviewMegaTree)
+				{
 					PreviewMegaTree tree = displayItem.Shape as PreviewMegaTree;
-					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
+					for (int stringNum = 0; stringNum < stringCount; stringNum++)
+					{
 						PreviewBaseShape treeString = tree._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < treeString.Pixels.Count; pixelNum++)
 						{
@@ -79,26 +82,32 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 						}
 					}
 				}
-				if (displayItem.Shape is PreviewPixelGrid) {
+				if (displayItem.Shape is PreviewPixelGrid)
+				{
 					PreviewPixelGrid grid = displayItem.Shape as PreviewPixelGrid;
-					for (int stringNum = 0; stringNum < stringCount; stringNum++) {
+					for (int stringNum = 0; stringNum < stringCount; stringNum++)
+					{
 						PreviewBaseShape gridString = grid._strings[stringNum];
 						for (int pixelNum = 0; pixelNum < gridString.Pixels.Count; pixelNum++)
 						{
 							gridString.Pixels[pixelNum].PixelColor = grid.StringOrientation == PreviewPixelGrid.StringOrientations.Horizontal ? effect.Pixels[pixelNum][stringNum] : effect.Pixels[stringNum][pixelNum];
-							
+
 						}
 					}
 				}
-				else if (displayItem.Shape is PreviewArch) {
+				else if (displayItem.Shape is PreviewArch)
+				{
 					PreviewArch arch = displayItem.Shape as PreviewArch;
-					for (int pixelNum = 0; pixelNum < arch.PixelCount; pixelNum++) {
-						arch.Pixels[pixelNum].PixelColor = Data.StringOrienation==NutcrackerEffects.StringOrientations.Vertical?effect.Pixels[0][pixelNum]:effect.Pixels[pixelNum][0];
+					for (int pixelNum = 0; pixelNum < arch.PixelCount; pixelNum++)
+					{
+						arch.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
 					}
 				}
-				else if (displayItem.Shape is PreviewLine) {
+				else if (displayItem.Shape is PreviewLine)
+				{
 					PreviewLine line = displayItem.Shape as PreviewLine;
-					for (int pixelNum = 0; pixelNum < line.PixelCount; pixelNum++) {
+					for (int pixelNum = 0; pixelNum < line.PixelCount; pixelNum++)
+					{
 						line.Pixels[pixelNum].PixelColor = Data.StringOrienation == NutcrackerEffects.StringOrientations.Vertical ? effect.Pixels[0][pixelNum] : effect.Pixels[pixelNum][0];
 					}
 				}
@@ -113,7 +122,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 				preview.RenderInForeground();
 			}
-			
+
 		}
 
 		private void PopulateEffectComboBox()
@@ -172,7 +181,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void LoadColors()
 		{
-			for (int colorNum = 0; colorNum < effect.Palette.Colors.Count(); colorNum++) {
+			for (int colorNum = 0; colorNum < effect.Palette.Colors.Count(); colorNum++)
+			{
 				Color color = effect.Palette.Colors[colorNum];
 				//Console.WriteLine("cnum:" + colorNum + " clr:" + color);
 				CheckBox checkBox =
@@ -212,8 +222,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void SetCurrentEffect(string effectName)
 		{
-			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof (NutcrackerEffects.Effects))) {
-				if (nutcrackerEffect.ToString() == effectName) {
+			foreach (NutcrackerEffects.Effects nutcrackerEffect in Enum.GetValues(typeof(NutcrackerEffects.Effects)))
+			{
+				if (nutcrackerEffect.ToString() == effectName)
+				{
 					SetCurrentEffect(nutcrackerEffect);
 				}
 			}
@@ -221,8 +233,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void SetCurrentTab(string tabName)
 		{
-			foreach (TabPage tab in tabEffectProperties.TabPages) {
-				if (tab.Text == tabName) {
+			foreach (TabPage tab in tabEffectProperties.TabPages)
+			{
+				if (tab.Text == tabName)
+				{
 					tabEffectProperties.SelectedTab = tab;
 					if (tab.Text.Equals("Fire"))
 					{
@@ -256,7 +270,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void DeletePreviewDisplayItem()
 		{
-			if (preview.DisplayItems != null && preview.DisplayItems.Count > 0) {
+			if (preview.DisplayItems != null && preview.DisplayItems.Count > 0)
+			{
 				preview.DisplayItems.RemoveAt(0);
 			}
 		}
@@ -266,12 +281,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			get
 			{
 				int childCount = 0;
-				foreach (ElementNode node in TargetEffect.TargetNodes.FirstOrDefault().Children) {
-					if (!node.IsLeaf) {
+				foreach (ElementNode node in TargetEffect.TargetNodes.FirstOrDefault().Children)
+				{
+					if (!node.IsLeaf)
+					{
 						childCount++;
 					}
 				}
-				if (childCount == 0 && TargetEffect.TargetNodes.FirstOrDefault().Children.Any() ) {
+				if (childCount == 0 && TargetEffect.TargetNodes.FirstOrDefault().Children.Any())
+				{
 					childCount = 1;
 				}
 				if (childCount == 0)
@@ -295,20 +313,25 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			// if no groups are children, then return nChildren
 			// otherwise return the size of the first group
 			ElementNode firstGroup = null;
-			foreach (ElementNode node in parentNode.Children) {
-				if (node.IsLeaf) {
+			foreach (ElementNode node in parentNode.Children)
+			{
+				if (node.IsLeaf)
+				{
 					leafCount++;
 				}
-				else {
+				else
+				{
 					groupCount++;
 					if (firstGroup == null)
 						firstGroup = node;
 				}
 			}
-			if (groupCount == 0) {
+			if (groupCount == 0)
+			{
 				pps = leafCount;
 			}
-			else {
+			else
+			{
 				// this needs to be called on a group, first might be an element
 				//pps = PixelsPerStringx(parentNode.Children.FirstOrDefault());
 				// this is marginally better but its not clear what to do about further nesting
@@ -360,8 +383,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			arch.PixelCount = PixelsPerString();
 			arch.PixelSize = Data.PixelSize;
 			arch.PixelColor = Color.White;
-			arch.TopLeft = new Point(10, preview.Height/2);
-			arch.BottomRight = new Point((int) (preview.Width - 10), (int) (preview.Height - 10));
+			arch.TopLeft = new Point(10, preview.Height / 2);
+			arch.BottomRight = new Point((int)(preview.Width - 10), (int)(preview.Height - 10));
 			arch.Layout();
 			displayItem.Shape = arch;
 
@@ -375,13 +398,15 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			preview.BackgroundAlpha = 0;
 			displayItem = new DisplayItem();
 			PreviewPoint p1, p2;
-			if (horizontal) {
-				p1 = new PreviewPoint(10, preview.Height/2);
-				p2 = new PreviewPoint(preview.Width - 10, preview.Height/2);
+			if (horizontal)
+			{
+				p1 = new PreviewPoint(10, preview.Height / 2);
+				p2 = new PreviewPoint(preview.Width - 10, preview.Height / 2);
 			}
-			else {
-				p1 = new PreviewPoint(preview.Width/2, preview.Height - 10);
-				p2 = new PreviewPoint(preview.Width/2, 10);
+			else
+			{
+				p1 = new PreviewPoint(preview.Width / 2, preview.Height - 10);
+				p2 = new PreviewPoint(preview.Width / 2, 10);
 			}
 			PreviewLine line = new PreviewLine(p1, p2, PixelsPerString(), null, 1);
 
@@ -403,7 +428,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			displayItem = new DisplayItem();
 
 			PreviewPixelGrid grid = new PreviewPixelGrid(new PreviewPoint(10, 10), null, 1);
-			
+
 			grid.StringType = PreviewBaseShape.StringTypes.Pixel;
 			grid.StringCount = StringCount;
 			grid.LightsPerString = PixelsPerString();
@@ -423,7 +448,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			{
 				grid.BottomRight = new Point(preview.Width-10,preview.Height-10);
 			}
-			
+
 			grid.Layout();
 			displayItem.Shape = grid;
 
@@ -461,7 +486,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			int wid;
 			int ht;
 
-			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal) 
+			if (Data.StringOrienation == NutcrackerEffects.StringOrientations.Horizontal)
 			{
 				wid = PixelsPerString();
 				ht = StringCount;
@@ -473,7 +498,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			}
 			effect.InitBuffer(wid, ht);
 
-			switch (Data.PreviewType) {
+			switch (Data.PreviewType)
+			{
 				case NutcrackerEffects.PreviewType.Tree90:
 					SetupMegaTree(90);
 					break;
@@ -509,8 +535,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void comboBoxDisplayType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			foreach (NutcrackerEffects.PreviewType previewType in Enum.GetValues(typeof (NutcrackerEffects.PreviewType))) {
-				if (previewType.ToString() == comboBoxDisplayType.SelectedItem.ToString()) {
+			foreach (NutcrackerEffects.PreviewType previewType in Enum.GetValues(typeof(NutcrackerEffects.PreviewType)))
+			{
+				if (previewType.ToString() == comboBoxDisplayType.SelectedItem.ToString())
+				{
 					Data.PreviewType = previewType;
 					break;
 				}
@@ -520,7 +548,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void LoadPreview()
 		{
-			foreach (NutcrackerEffects.PreviewType previewType in Enum.GetValues(typeof (NutcrackerEffects.PreviewType))) {
+			foreach (NutcrackerEffects.PreviewType previewType in Enum.GetValues(typeof(NutcrackerEffects.PreviewType)))
+			{
 				comboBoxDisplayType.Items.Add(previewType.ToString());
 			}
 
@@ -538,12 +567,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			if (loading) return;
 			CheckBox checkBox = sender as CheckBox;
 			string colorNum = checkBox.Name.Substring(checkBox.Name.Length - 1);
-			if (checkBox.Checked) {
+			if (checkBox.Checked)
+			{
 				string panelName = "panelColor" + colorNum;
 				Panel colorPanel = this.Controls.Find(panelName, true).FirstOrDefault() as Panel;
 				effect.Palette.SetColor(Convert.ToInt32(colorNum), colorPanel.BackColor);
 			}
-			else {
+			else
+			{
 				effect.Palette.ColorsActive[Convert.ToInt32(colorNum) - 1] = false;
 			}
 			effect.SetNextState(true);
@@ -553,7 +584,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			Panel colorPanel = sender as Panel;
 			colorDialog.Color = colorPanel.BackColor;
-			if (colorDialog.ShowDialog() == DialogResult.OK) {
+			if (colorDialog.ShowDialog() == DialogResult.OK)
+			{
 				colorPanel.BackColor = colorDialog.Color;
 				string colorNum = colorPanel.Name.Substring(colorPanel.Name.Length - 1);
 				effect.Palette.SetColor(Convert.ToInt32(colorNum), colorPanel.BackColor, false);
@@ -585,7 +617,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackBarPaletteRepeat_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                                Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+														Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			Bars_ParametersChanged(sender, EventArgs.Empty);
 		}
@@ -604,7 +636,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Butterfly_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                    Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Butterfly_Style = trackButterflyStyle.Value;
@@ -637,7 +669,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackColorWashCount_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                              Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+													  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			Data.ColorWash_Count = trackColorWashCount.Value;
 			effect.SetNextState(true);
@@ -671,7 +703,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackFireHeight_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                          Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+												  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			Data.Fire_Height = trackFireHeight.Value;
 		}
@@ -687,7 +719,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Garlands_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                   Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+										   Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Garland_Type = trackBarGarlandType.Value;
@@ -706,7 +738,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Life_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                               Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+									   Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Life_CellsToStart = trackLifeCellsToStart.Value;
@@ -728,7 +760,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void comboBoxMeteorColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (loading) return;
-			switch (comboBoxMeteorColors.SelectedItem.ToString()) {
+			switch (comboBoxMeteorColors.SelectedItem.ToString())
+			{
 				case "Rainbow":
 					Data.Meteor_Colors = 0;
 					break;
@@ -742,7 +775,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Meteor_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                 Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+										 Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Meteor_Count = trackMeteorCount.Value;
@@ -762,7 +795,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Fireworks_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                    Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Fireworks_Explosions = trackFireworkNumberOfExplosions.Value;
@@ -782,7 +815,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Snowflake_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                    Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Snowflakes_Max = trackSnowflakeMax.Value;
@@ -800,7 +833,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Snowstorm_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                    Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Snowstorm_TrailLength = trackSnowstormTrailLength.Value;
@@ -822,7 +855,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Spirals_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+										  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Spirals_Direction = trackSpiralsDirection.Value;
@@ -850,7 +883,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackTwinkleCount_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                            Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+													Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Twinkles_Count = trackTwinkleCount.Value;
@@ -896,7 +929,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackTextTop_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                       Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											   Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Text_Top = trackTextTop.Value;
@@ -905,7 +938,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void buttonTextFont_Click(object sender, EventArgs e)
 		{
 			fontDialog.Font = Data.Text_Font;
-			if (fontDialog.ShowDialog() == DialogResult.OK) {
+			if (fontDialog.ShowDialog() == DialogResult.OK)
+			{
 				Data.Text_Font = fontDialog.Font;
 				textBoxTextFont.Text = String.Format("{0} {1} pt", fontDialog.Font.Name, fontDialog.Font.SizeInPoints);
 			}
@@ -922,7 +956,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			Data.Text_Direction = comboBoxTextDirection.SelectedIndex;
 		}
-		
+
 		#endregion // Text
 
 		#region Curtain
@@ -957,7 +991,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Curtain_SwagWidth = trackCurtainSwagWidth.Value;
 			effect.SetNextState(true);
 		}
-		
+
 
 
 		#endregion
@@ -966,7 +1000,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void LoadPicture()
 		{
-			textPictureFileName.Text = Path.Combine(NutcrackerDescriptor.ModulePath, Data.Picture_FileName); 
+			textPictureFileName.Text = Path.Combine(NutcrackerDescriptor.ModulePath, Data.Picture_FileName);
 			comboBoxPictureDirection.SelectedIndex = Data.Picture_Direction;
 			trackPictureGifSpeed.Value = Data.Picture_GifSpeed;
 			trackPictureGifSpeed.Enabled = true;
@@ -979,12 +1013,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void buttonPictureSelect_Click(object sender, EventArgs e)
 		{
 			fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
-			if (fileDialog.ShowDialog() == DialogResult.OK) {
+			if (fileDialog.ShowDialog() == DialogResult.OK)
+			{
 				// Copy the file to the Vixen folder
 				var imageFile = new FileInfo(fileDialog.FileName);
 				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
 				var sourceFileName = imageFile.FullName;
-				if (sourceFileName != destFileName) {
+				if (sourceFileName != destFileName)
+				{
 					File.Copy(sourceFileName, destFileName, true);
 				}
 
@@ -1001,7 +1037,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackPictureGifSpeed_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                               Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+													   Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Picture_GifSpeed = trackPictureGifSpeed.Value;
@@ -1019,7 +1055,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			Data.Picture_ScalePercent = trackPictureScalePercent.Value;
 		}
 
-		
+
 
 		#endregion // Picture
 
@@ -1040,7 +1076,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Spirograph_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                     Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											 Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Spirograph_Distance = trackSpirographDistance.Value;
@@ -1058,7 +1094,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void trackTreeBranches_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                            Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+													Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Tree_Branches = trackTreeBranches.Value;
@@ -1078,24 +1114,28 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			System.IO.DirectoryInfo folderInfo = new System.IO.DirectoryInfo(folder);
 
-			foreach (System.IO.FileInfo file in folderInfo.GetFiles()) {
+			foreach (System.IO.FileInfo file in folderInfo.GetFiles())
+			{
 				file.Delete();
 			}
-			foreach (System.IO.DirectoryInfo dir in folderInfo.GetDirectories()) {
+			foreach (System.IO.DirectoryInfo dir in folderInfo.GetDirectories())
+			{
 				dir.Delete(true);
 			}
 		}
 
 		private void ProcessMovie(string movieFileName, string destinationFolder)
 		{
-			try {
+			try
+			{
 				NutcrackerProcessingMovie f = new NutcrackerProcessingMovie();
 				f.Show();
 				ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(movieFileName);
 				converter.MakeThumbnails(50, 50, destinationFolder);
 				f.Close();
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("There was a problem converting " + movieFileName + ": " + ex.Message, "Error Converting Movie", false, true);
@@ -1106,14 +1146,17 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void buttonMovieSelectFile_Click(object sender, EventArgs e)
 		{
 			fileDialog.Filter = "All Files|*.*";
-			if (fileDialog.ShowDialog() == DialogResult.OK) {
+			if (fileDialog.ShowDialog() == DialogResult.OK)
+			{
 				// If this effect doesn't have working folder make one.
 				// TODO: delete the folder if the effect is removed from the timeline?
-				if (Data.Movie_DataPath.Length == 0) {
+				if (Data.Movie_DataPath.Length == 0)
+				{
 					Data.Movie_DataPath = Guid.NewGuid().ToString();
 				}
 				var destFolder = System.IO.Path.Combine(NutcrackerDescriptor.ModulePath, Data.Movie_DataPath);
-				if (!System.IO.Directory.Exists(destFolder)) {
+				if (!System.IO.Directory.Exists(destFolder))
+				{
 					System.IO.Directory.CreateDirectory(destFolder);
 				}
 				DeleteExistingMovieFiles(destFolder);
@@ -1123,7 +1166,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void Movie_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+										Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.Movie_PlaybackSpeed = trackMoviePlaybackSpeed.Value;
@@ -1198,7 +1241,8 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		{
 			if (loading) return;
 			PictureComboBoxItem item = comboBoxPictureTileFileName.SelectedItem as PictureComboBoxItem;
-			if (item != null) {
+			if (item != null)
+			{
 				//FileInfo file = item.File;
 				//Data.PictureTile_FileName = file.FullName;
 				Data.PictureTile_FileName = item.ResourceName;
@@ -1207,7 +1251,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		}
 
 		private void PictureTile_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                      Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+											  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			if (loading) return;
 			Data.PictureTile_Direction = trackPictureTileMovementDirection.Value;
@@ -1231,12 +1275,14 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 		private void buttonPictureTileSelect_Click(object sender, EventArgs e)
 		{
 			fileDialog.Filter = "All Files|*.*|jpg|*.jpg|jpeg|*.jpeg|gif|.gif|png|*.png|bmp|*.bmp";
-			if (fileDialog.ShowDialog() == DialogResult.OK) {
+			if (fileDialog.ShowDialog() == DialogResult.OK)
+			{
 				// Copy the file to the Vixen folder
 				var imageFile = new FileInfo(fileDialog.FileName);
 				var destFileName = Path.Combine(NutcrackerDescriptor.ModulePath, imageFile.Name);
 				var sourceFileName = imageFile.FullName;
-				if (sourceFileName != destFileName) {
+				if (sourceFileName != destFileName)
+				{
 					File.Copy(sourceFileName, destFileName, true);
 				}
 
@@ -1277,11 +1323,11 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Effect_Nutcracker);	
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Effect_Nutcracker);
 		}
 
 		private void scrollPixelSize_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender,
-		                                          Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+												  Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
 		{
 			Data.PixelSize = scrollPixelSize.Value;
 			// the 2D preview types, when string cnt < 2, can return without setting this
@@ -1301,7 +1347,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					checkBoxColorWashHorizontalFade.Checked = false;
 					checkBoxColorWashHorizontalFade.Enabled = false;
 				}
-				
+
 				checkBoxColorWashVerticalFade.Enabled = true;
 				SetupPreview();
 			}
@@ -1317,7 +1363,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 					checkBoxColorWashVerticalFade.Checked = false;
 					checkBoxColorWashVerticalFade.Enabled = false;
 				}
-				
+
 				checkBoxColorWashHorizontalFade.Enabled = true;
 				SetupPreview();
 			}
@@ -1333,10 +1379,10 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			{
 				components.Dispose();
 			}
-
-			if (effect != null)
+			if (disposing)
 			{
-				effect.Dispose();
+				if (effect != null) effect.Dispose();
+				if (displayItem != null) displayItem.Dispose();
 			}
 			base.Dispose(disposing);
 		}

@@ -34,7 +34,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.4 $ $Date: 2007-01-25 07:56:09 $ </version>
 	[Serializable]
-	public class TextObj : GraphObj, ICloneable, ISerializable
+	public class TextObj : GraphObj, ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -452,6 +452,24 @@ namespace ZedGraph
 			coords = string.Format("{0:f0},{1:f0},{2:f0},{3:f0},{4:f0},{5:f0},{6:f0},{7:f0},",
 			                       pts[0].X, pts[0].Y, pts[1].X, pts[1].Y,
 			                       pts[2].X, pts[2].Y, pts[3].X, pts[3].Y);
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_fontSpec != null) _fontSpec.Dispose();
+
+			}
 		}
 
 		#endregion

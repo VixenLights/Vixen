@@ -345,5 +345,20 @@ namespace ZedGraph
 		}
 
 		#endregion
+
+		#region IDisposable Members
+
+		 
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_stick != null) _stick.Dispose();
+
+			}
+			base.Dispose(disposing);
+		}
+
+		#endregion
 	}
 }

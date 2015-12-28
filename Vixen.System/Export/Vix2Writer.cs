@@ -44,10 +44,10 @@ namespace Vixen.Export
             {
                 _outfs = File.Create(_sessionData.OutFileName, _sessionData.ChannelNames.Count * 2, FileOptions.None);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 _outfs = null;
-                throw e;
+                throw ;
             }
 			_xmlData = new Vix2XMLData();
             _xmlData.Channels = new List<Vix2Channel>();
@@ -134,10 +134,10 @@ namespace Vixen.Export
                 _outfs = null;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _outfs = null;
-                throw e;
+                throw ;
             }
 
         }

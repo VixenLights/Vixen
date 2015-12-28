@@ -204,7 +204,7 @@ namespace Common.Controls.ControlsEx.ListControls
 	/// <summary>
 	/// action item allowing designer support
 	/// </summary>
-	[ToolboxItem(false),
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly"), ToolboxItem(false),
 	 DesignTimeVisible(false)]
 	public class Action : ImageDisplayItem, IComponent
 	{
@@ -221,11 +221,13 @@ namespace Common.Controls.ControlsEx.ListControls
 			if (clicked != null)
 				Clicked += clicked;
 		}
-
-		public override void Dispose()
-		{
-			if (Disposed != null)
-				Disposed(this, EventArgs.Empty);
+ 
+		protected virtual void Dispose(bool disposing) {
+			if (disposing)
+			{
+				if (Disposed != null)
+					Disposed(this, EventArgs.Empty);
+			}
 			base.Dispose();
 		}
 

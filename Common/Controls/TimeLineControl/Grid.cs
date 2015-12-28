@@ -109,41 +109,49 @@ namespace Common.Controls.Timeline
 
 		protected override void Dispose(bool disposing)
 		{
-			// Cancel/complete the rendering background worker
-			_blockingElementQueue.CompleteAdding();
-
-			if (renderWorker != null)
+			if (disposing)
 			{
-				// wait up to a few seconds for it to finish rendering
-				renderWorkerFinished.Wait(5000);
+				// Cancel/complete the rendering background worker
+				_blockingElementQueue.CompleteAdding();
 
-				if (!renderWorkerFinished.IsSet) {
-					Logging.Error("Grid: background rendering didn't finish. Forcibly killing.");
-					renderWorker.CancelAsync();
-					// this really shouldn't be using DoEvents. Actually, it shouldn't be a background worker: we're
-					// treating it like a thread, so should probably just _make_ it a thread.
-					while (renderWorker.IsBusy) {
-						Application.DoEvents();
+				if (renderWorker != null)
+				{
+					// wait up to a few seconds for it to finish rendering
+					renderWorkerFinished.Wait(5000);
+
+					if (!renderWorkerFinished.IsSet)
+					{
+						Logging.Error("Grid: background rendering didn't finish. Forcibly killing.");
+						renderWorker.CancelAsync();
+						// this really shouldn't be using DoEvents. Actually, it shouldn't be a background worker: we're
+						// treating it like a thread, so should probably just _make_ it a thread.
+						while (renderWorker.IsBusy)
+						{
+							Application.DoEvents();
+						}
 					}
 				}
+
+				if (m_rows != null)
+				{
+					m_rows.Clear();
+					m_rows = null;
+					m_rows = new List<Row>();
+				}
+
+				Row.RowChanged -= RowChangedHandler;
+				Row.RowSelectedChanged -= RowSelectedChangedHandler;
+				Row.RowToggled -= RowToggledHandler;
+				Row.RowHeightChanged -= RowHeightChangedHandler;
+
+				TimeInfo = null;
+
+				_blockingElementQueue.Dispose();
+				_blockingElementQueue = null;
+				Context = null;
+				if (renderWorkerFinished != null)
+					renderWorkerFinished.Dispose();
 			}
-
-			if (m_rows != null) {
-				m_rows.Clear();
-				m_rows=null;
-				m_rows=new List<Row>();
-			}
-
-			Row.RowChanged -= RowChangedHandler;
-			Row.RowSelectedChanged -= RowSelectedChangedHandler;
-			Row.RowToggled -= RowToggledHandler;
-			Row.RowHeightChanged -= RowHeightChangedHandler;
-
-			TimeInfo= null;
-
-			_blockingElementQueue.Dispose();
-			_blockingElementQueue= null;
-			Context=null;
 			base.Dispose(disposing);
 		}
 

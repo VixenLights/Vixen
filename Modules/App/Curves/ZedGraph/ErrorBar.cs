@@ -43,7 +43,7 @@ namespace ZedGraph
 	/// <author> John Champion </author>
 	/// <version> $Revision: 3.21 $ $Date: 2007-08-10 16:22:54 $ </version>
 	[Serializable]
-	public class ErrorBar : ICloneable, ISerializable
+	public class ErrorBar : ICloneable, ISerializable, IDisposable
 	{
 		#region Fields
 
@@ -394,6 +394,24 @@ namespace ZedGraph
 						}
 					}
 				}
+			}
+		}
+
+		#endregion
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (_symbol != null) _symbol.Dispose();
+
 			}
 		}
 
