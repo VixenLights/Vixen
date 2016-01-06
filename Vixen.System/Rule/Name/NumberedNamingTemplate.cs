@@ -16,7 +16,7 @@ namespace Vixen.Rule.Name
 				NumericCounter counter = new NumericCounter();
 				counter.StartNumber = 1;
 				counter.EndNumber = 5;
-				counter.Endless = false;
+				counter.Endless = true;
 				counter.Step = 1;
 				result[0] = counter;
 

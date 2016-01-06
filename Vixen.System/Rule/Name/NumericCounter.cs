@@ -12,7 +12,7 @@ namespace Vixen.Rule.Name
 			StartNumber = 1;
 			EndNumber = 5;
 			Step = 1;
-			Endless = false;
+			Endless = true;
 		}
 
 		public string Name
