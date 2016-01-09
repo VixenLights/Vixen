@@ -33,7 +33,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			if (log == null)
 				log = new List<string>();
-			string logString = /*DateTime.Now.ToLongDateString() + " @ " + */DateTime.Now.ToLongTimeString() + " (" + showName + ") " + logEntry;
+			string logString = DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " (" + showName + ") " + logEntry;
 			Logging.Info("(" + showName + ") " + logEntry);
 			//Logging.Log(NLog.LogLevel.FromString("Scheduler"), logEntry);
 			statusForm.AddLogEntry(logString);
