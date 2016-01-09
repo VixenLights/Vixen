@@ -1085,7 +1085,6 @@
 			this.trackBarPlayBack.Size = new System.Drawing.Size(703, 45);
 			this.trackBarPlayBack.TabIndex = 2;
 			this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
-			this.trackBarPlayBack.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseDown);
 			this.trackBarPlayBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseUp);
 			// 
 			// textBoxTimingSpeed
