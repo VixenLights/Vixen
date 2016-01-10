@@ -26,7 +26,7 @@ namespace Vixen.Rule.Name
 
 		public string Format
 		{
-			get { return "NewName-<1>"; }
+			get { return "-<1>"; }
 		}
 
 		public string Name
