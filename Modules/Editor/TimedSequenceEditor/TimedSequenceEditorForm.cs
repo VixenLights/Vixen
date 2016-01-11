@@ -1830,7 +1830,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Disables the Alignment menu if too many effects are selected in a row.
 				if (!contextMenuItemAlignment.Enabled)
 				{
-					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
+					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
 				}
 
 				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)")
@@ -2001,7 +2001,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					contextMenuItemEditTime.Tag = tse;
 					contextMenuItemEditTime.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
 					if (!contextMenuItemEditTime.Enabled)
-						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
+						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
 					_contextMenuStrip.Items.Add(contextMenuItemEditTime);
 
 				}
