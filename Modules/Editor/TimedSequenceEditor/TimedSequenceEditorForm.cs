@@ -1127,7 +1127,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					foreach (TimeSpan time in mc.Marks)
 					{
-						TimelineControl.AddSnapTime(time, mc.Level, mc.MarkColor);
+						TimelineControl.AddSnapTime(time, mc.Level, mc.MarkColor, mc.Bold, mc.SolidLine);
 					}
 				}
 			}

@@ -412,10 +412,10 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddSnapTime(TimeSpan time, int level, Color color)
+		public void AddSnapTime(TimeSpan time, int level, Color color, bool lineBold, bool solidLine)
 		{
-			grid.AddSnapPoint(time, level, color);
-			ruler.AddSnapPoint(time, level, color);
+			grid.AddSnapPoint(time, level, color, lineBold, solidLine);
+			ruler.AddSnapPoint(time, level, color, lineBold, solidLine);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)

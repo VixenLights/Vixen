@@ -42,22 +42,28 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.boldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dottedSolidToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.changeColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStandardNudge)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSuperNudge)).BeginInit();
 			this.panel1.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
+			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditMarkCollection,
             this.toolStripButtonAddMarkCollection,
             this.toolStripButtonDeleteMarkCollection});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(256, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(256, 27);
 			this.toolStrip1.TabIndex = 4;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -67,7 +73,7 @@
 			this.toolStripButtonEditMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonEditMarkCollection.Image")));
 			this.toolStripButtonEditMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonEditMarkCollection.Name = "toolStripButtonEditMarkCollection";
-			this.toolStripButtonEditMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonEditMarkCollection.Size = new System.Drawing.Size(24, 24);
 			this.toolStripButtonEditMarkCollection.Text = "toolStripButtonEditMarkCollections";
 			this.toolStripButtonEditMarkCollection.ToolTipText = "Edit Mark Collections";
 			this.toolStripButtonEditMarkCollection.Click += new System.EventHandler(this.toolStripButtonEditMarkCollection_Click);
@@ -78,7 +84,7 @@
 			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
 			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
-			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(24, 24);
 			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
 			this.toolStripButtonAddMarkCollection.Click += new System.EventHandler(this.toolStripButtonAddMarkCollection_Click);
 			// 
@@ -88,7 +94,7 @@
 			this.toolStripButtonDeleteMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteMarkCollection.Image")));
 			this.toolStripButtonDeleteMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonDeleteMarkCollection.Name = "toolStripButtonDeleteMarkCollection";
-			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(24, 24);
 			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
 			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
 			this.toolStripButtonDeleteMarkCollection.Click += new System.EventHandler(this.toolStripButtonDeleteMarkCollection_Click);
@@ -102,7 +108,7 @@
             0,
             0});
 			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
-			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 23);
 			this.numericUpDownStandardNudge.TabIndex = 1;
 			this.toolTip1.SetToolTip(this.numericUpDownStandardNudge, "Standard Nudge in Miniseconds");
 			this.numericUpDownStandardNudge.ValueChanged += new System.EventHandler(this.numericUpDownStandardNudge_ValueChanged);
@@ -116,7 +122,7 @@
             0,
             0});
 			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
-			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 20);
+			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 23);
 			this.numericUpDownSuperNudge.TabIndex = 3;
 			this.toolTip1.SetToolTip(this.numericUpDownSuperNudge, "Super Nudge in Miliseconds");
 			this.numericUpDownSuperNudge.ValueChanged += new System.EventHandler(this.numericUpDownSuperNudge_ValueChanged);
@@ -151,7 +157,7 @@
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label2.Location = new System.Drawing.Point(56, 23);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(12, 13);
+			this.label2.Size = new System.Drawing.Size(12, 17);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "/";
 			// 
@@ -161,15 +167,16 @@
 			this.listViewMarkCollections.CheckBoxes = true;
 			this.listViewMarkCollections.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewMarkCollections.ContextMenuStrip = this.contextMenuStrip1;
 			this.listViewMarkCollections.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewMarkCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
-			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
+			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 27);
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 331);
+			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 329);
 			this.listViewMarkCollections.TabIndex = 8;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
@@ -182,9 +189,45 @@
 			this.columnHeader1.Text = "Mark Collections";
 			this.columnHeader1.Width = 999;
 			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.boldToolStripMenuItem,
+            this.dottedSolidToolStripMenuItem,
+            this.changeColorToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.ShowImageMargin = false;
+			this.contextMenuStrip1.Size = new System.Drawing.Size(172, 104);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+			// 
+			// boldToolStripMenuItem
+			// 
+			this.boldToolStripMenuItem.Name = "boldToolStripMenuItem";
+			this.boldToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.boldToolStripMenuItem.Text = "Normal/Bold Line";
+			this.boldToolStripMenuItem.ToolTipText = "Toggles the Selected Mark Collection";
+			this.boldToolStripMenuItem.Click += new System.EventHandler(this.boldToolStripMenuItem_Click);
+			// 
+			// dottedSolidToolStripMenuItem
+			// 
+			this.dottedSolidToolStripMenuItem.Name = "dottedSolidToolStripMenuItem";
+			this.dottedSolidToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.dottedSolidToolStripMenuItem.Text = "Dotted/Solid Line";
+			this.dottedSolidToolStripMenuItem.ToolTipText = "Toggles the Selected Mark Collection";
+			this.dottedSolidToolStripMenuItem.Click += new System.EventHandler(this.dottedSolidToolStripMenuItem_Click);
+			// 
+			// changeColorToolStripMenuItem
+			// 
+			this.changeColorToolStripMenuItem.Name = "changeColorToolStripMenuItem";
+			this.changeColorToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.changeColorToolStripMenuItem.Text = "Change Color";
+			this.changeColorToolStripMenuItem.ToolTipText = "Change Mark Collection color";
+			this.changeColorToolStripMenuItem.Click += new System.EventHandler(this.changeColorToolStripMenuItem_Click);
+			// 
 			// Form_Marks
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
@@ -193,6 +236,7 @@
 			this.Controls.Add(this.listViewMarkCollections);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStrip1);
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form_Marks";
 			this.Text = "Marks";
@@ -204,6 +248,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownSuperNudge)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -223,5 +268,9 @@
 		private System.Windows.Forms.ListView listViewMarkCollections;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem boldToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem dottedSolidToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem changeColorToolStripMenuItem;
 	}
 }

@@ -23,6 +23,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor; //Over-rides the default Listview background
 		}
 
@@ -32,6 +33,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
 			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20);
 			//xml = null;
+			ResizeColumnHeaders();
 		}
 
 		public TimelineControl TimelineControl { get; set; }
@@ -198,6 +200,57 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var messageBox = new MessageBoxForm("Please select a Mark Collection to delete and press the delete button again.", "Delete Mark Collection", false, false);
 				messageBox.ShowDialog();
 			}
+		}
+
+		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			e.Cancel = (listViewMarkCollections.SelectedItems.Count == 0);
+			boldToolStripMenuItem.Enabled = true;
+			dottedSolidToolStripMenuItem.Enabled = true;
+		}
+
+		private void boldToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var menuAction = sender;
+			changeMarkCollection(menuAction);
+		}
+
+		private void dottedSolidToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var menuAction = sender;
+			changeMarkCollection(menuAction);
+		}
+
+		private void changeColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var menuAction = sender;
+			changeMarkCollection(menuAction);
+		}
+
+		private void changeMarkCollection(object menuAction)
+		{
+			ListViewItem item = listViewMarkCollections.SelectedItems[0];
+			MarkCollection mc = item.Tag as MarkCollection;
+			switch (menuAction.ToString())
+			{
+				case "Normal/Bold Line":
+					mc.Bold = !mc.Bold;
+					break;
+				case "Dotted/Solid Line":
+					mc.SolidLine = !mc.SolidLine;
+					break;
+				case "Change Color":
+					Common.Controls.ColorManagement.ColorPicker.ColorPicker picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
+
+					DialogResult result = picker.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						mc.MarkColor = picker.Color.ToRGB().ToArgb();
+						item.ForeColor = picker.Color.ToRGB().ToArgb();
+					}
+					break;
+			}
+			OnMarkCollectionChecked(new MarkCollectionArgs(mc));
 		}
 
 	}
