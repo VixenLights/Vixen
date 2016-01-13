@@ -962,11 +962,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			textBoxPosition.Text = TimeSpan.FromMilliseconds(trackBarPlayBack.Value).ToString(@"m\:ss\.fff");
 		}
 
-		private void trackBarPlayBack_MouseDown(object sender, MouseEventArgs e)
-		{
-			sequenceStop();
-		}
-
 		private void trackBarPlayBack_MouseUp(object sender, MouseEventArgs e)
 		{
 			//if sequence was previously playing resume
