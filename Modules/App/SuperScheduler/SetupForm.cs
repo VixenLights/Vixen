@@ -70,9 +70,9 @@ namespace VixenModules.App.SuperScheduler
 			string daySt = String.Empty;
 			if (item.Monday && item.Tuesday && item.Wednesday && item.Thursday && item.Friday && item.Saturday && item.Sunday)
 				daySt = "Everyday";
-			else if (item.Monday && item.Tuesday && item.Wednesday && item.Thursday && item.Friday && !(item.Saturday && item.Sunday))
+			else if (item.Monday && item.Tuesday && item.Wednesday && item.Thursday && item.Friday && !(item.Saturday || item.Sunday))
 				daySt = "Weekdays";
-			else if (item.Saturday && item.Sunday && !(item.Monday && item.Tuesday && item.Wednesday && item.Thursday && item.Friday))
+			else if (item.Saturday && item.Sunday && !(item.Monday || item.Tuesday || item.Wednesday || item.Thursday || item.Friday))
 				daySt = "Weekends";
 			else
 			{
