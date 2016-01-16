@@ -34,6 +34,7 @@ namespace VixenApplication.Setup
 		}
 	}
 
+	[Serializable]
 	public class ControllersAndOutputsSet : Dictionary<IControllerDevice, HashSet<int>>
 	{
 	}

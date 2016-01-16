@@ -52,6 +52,7 @@ namespace Dataweb.NShape.Advanced
 					else connectionInfos[i].OtherShape.Disconnect(connectionInfos[i].OtherPointId);
 				}
 			}
+			base.Dispose();
 		}
 
 		#region Shape Members

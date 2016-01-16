@@ -321,13 +321,7 @@ namespace VixenApplication
 			Other
 		}
 
-
-		~FilterSetupShapeBase()
-		{
-			Dispose(false);
-		}
-
-		protected  void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (disposing) {
 				if (_customFont != null) _customFont.Dispose();
@@ -339,11 +333,7 @@ namespace VixenApplication
 			}
 			base.Dispose(disposing);
 		}
-		public override void Dispose()
-		{
-			Dispose(true);
-			base.Dispose();
-		}
+	 
 	}
 
 

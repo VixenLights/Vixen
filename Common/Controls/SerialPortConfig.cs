@@ -30,6 +30,7 @@ namespace Common.Controls
 			        {
 			            checkPort.Open();
 			            checkPort.Close();
+						
 			        }
 			        comboBoxPortName.Items.Add(s);
 			    }
