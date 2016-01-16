@@ -13,12 +13,20 @@ namespace VixenModules.Sequence.Timed
 		public List<MarkCollection> MarkCollections { get; set; }
 
 		[DataMember]
+		public List<RowSetting> RowSettings { get; set; }
+
+		[DataMember]
 		public TimeSpan TimePerPixel { get; set; }
+
+		[DataMember]
+		public int DefaultRowHeight { get; set; }
 	
 		public TimedSequenceData()
 		{
 			MarkCollections = new List<MarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
+			RowSettings = new List<RowSetting>();
+			DefaultRowHeight = 32;
 		}
 
 		public override IModuleDataModel Clone()

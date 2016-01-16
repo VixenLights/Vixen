@@ -298,7 +298,7 @@ namespace Common.Controls.Timeline
 
 		protected void HeightResizedHandler(object sender, EventArgs e)
 		{
-			_RowHeightResized();	
+			_RowHeightResized();
 		}
 
 		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)

@@ -58,6 +58,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// the sequence.
 		private TimedSequence _sequence;
+		public TimedSequence _rowData;
 
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ISequenceContext _context;
@@ -1010,6 +1011,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_sequence != null)
 			{
+
+				_sequence.RowSettings = new List<RowSetting>();
 				if (filePath == null | forcePrompt)
 				{
 					if (_sequence.FilePath.Trim() == "" || forcePrompt)
@@ -1055,6 +1058,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
+						_sequence.DefaultRowHeight = TimelineControl.rowHeight;
+						foreach (Row row in TimelineControl.Rows)
+						{
+							if (row.Height != TimelineControl.rowHeight)
+							{
+								RowSetting newCollection = new RowSetting { RowHeight = row.Height, RowIndex = row.Name };
+								_sequence.RowSettings.Add(newCollection);
+							}
+							
+						}
 						_sequence.Save();
 					}
 				}
@@ -3313,9 +3326,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
 		private void AddNodeAsRow(ElementNode node, Row parentRow)
 		{
+			TimelineControl.rowHeight =  _sequence.DefaultRowHeight;
+			if (TimelineControl.rowHeight == 0)
+				TimelineControl.rowHeight = 32;
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
-			Row newRow = TimelineControl.AddRow(label, parentRow, 32);
+			
+			Row newRow = TimelineControl.AddRow(label, parentRow, TimelineControl.rowHeight);
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
@@ -5050,6 +5067,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
 			LoadSequence(_sequence);
+
+			//Adjusts Row heights based on saved row height settings.
+			if (_sequence.RowSettings != null)
+				foreach (RowSetting rowSettings in _sequence.RowSettings)
+				{
+					foreach (Row row in TimelineControl.Rows)
+					{
+						if (row.Name == rowSettings.RowIndex)
+						{
+							row.Height = rowSettings.RowHeight;
+						}
+					}
+				}
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)

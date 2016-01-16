@@ -13,6 +13,12 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
 		}
 
+		public List<RowSetting> RowSettings
+		{
+			get { return ((TimedSequenceData)SequenceData).RowSettings; }
+			set { ((TimedSequenceData)SequenceData).RowSettings = value; }
+		}
+
 		public override string FileExtension
 		{
 			get { return Extension; }
@@ -22,6 +28,12 @@ namespace VixenModules.Sequence.Timed
 		{
 			get { return ((TimedSequenceData) SequenceData).TimePerPixel; }
 			set { ((TimedSequenceData)SequenceData).TimePerPixel = value; }
+		}
+
+		public int DefaultRowHeight
+		{
+			get { return ((TimedSequenceData)SequenceData).DefaultRowHeight; }
+			set { ((TimedSequenceData)SequenceData).DefaultRowHeight = value; }
 		}
 	}
 }

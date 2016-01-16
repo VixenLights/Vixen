@@ -35,7 +35,7 @@ namespace Common.Controls.Timeline
 
 		private bool _sequenceLoading = false;
 
-		public bool ZoomToMousePosition { get; set; }
+		public int rowHeight;
 
 		public bool SequenceLoading
 		{
@@ -353,6 +353,7 @@ namespace Common.Controls.Timeline
 				return;
 			grid.BeginDraw();
 
+			rowHeight = (int)(rowHeight * scale);
 			foreach (Row r in Rows)
 			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
@@ -655,6 +656,16 @@ namespace Common.Controls.Timeline
 		private void RowHeightResizedHandler(object sender, EventArgs e)
 		{
 			Invalidate();
+
+			//resizes all other copies of the same element
+			var selectedRow = sender as Row;
+			foreach (Row row in Rows)
+			{
+				if (row.Name == selectedRow.Name)
+				{
+					row.Height = selectedRow.Height;
+				}
+			}
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)
