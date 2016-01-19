@@ -112,6 +112,13 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+			this.panel12 = new System.Windows.Forms.Panel();
+			this.btnAddCustomObject = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button3 = new System.Windows.Forms.Button();
+			this.button4 = new System.Windows.Forms.Button();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.label15 = new System.Windows.Forms.Label();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panelToolbar.SuspendLayout();
@@ -127,11 +134,13 @@
 			this.menuStrip.SuspendLayout();
 			this.panel9.SuspendLayout();
 			this.panel10.SuspendLayout();
+			this.panel12.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panelToolbar
 			// 
 			this.panelToolbar.BackColor = System.Drawing.Color.White;
+			this.panelToolbar.Controls.Add(this.panel12);
 			this.panelToolbar.Controls.Add(this.panel11);
 			this.panelToolbar.Controls.Add(this.panel8);
 			this.panelToolbar.Controls.Add(this.panel6);
@@ -1276,6 +1285,107 @@
 			this.viewHelpToolStripMenuItem.Text = "&View Help";
 			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
 			// 
+			// panel12
+			// 
+			this.panel12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel12.Controls.Add(this.btnAddCustomObject);
+			this.panel12.Controls.Add(this.button2);
+			this.panel12.Controls.Add(this.button3);
+			this.panel12.Controls.Add(this.button4);
+			this.panel12.Controls.Add(this.comboBox1);
+			this.panel12.Controls.Add(this.label15);
+			this.panel12.Location = new System.Drawing.Point(808, 4);
+			this.panel12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.panel12.Name = "panel12";
+			this.panel12.Size = new System.Drawing.Size(168, 84);
+			this.panel12.TabIndex = 32;
+			// 
+			// btnAddCustomObject
+			// 
+			this.btnAddCustomObject.BackColor = System.Drawing.Color.Transparent;
+			this.btnAddCustomObject.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnAddCustomObject.BackgroundImage")));
+			this.btnAddCustomObject.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnAddCustomObject.FlatAppearance.BorderSize = 0;
+			this.btnAddCustomObject.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.btnAddCustomObject.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnAddCustomObject.Location = new System.Drawing.Point(137, 3);
+			this.btnAddCustomObject.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.btnAddCustomObject.Name = "btnAddCustomObject";
+			this.btnAddCustomObject.Size = new System.Drawing.Size(26, 26);
+			this.btnAddCustomObject.TabIndex = 31;
+			this.btnAddCustomObject.Tag = "";
+			this.btnAddCustomObject.UseVisualStyleBackColor = false;
+			this.btnAddCustomObject.Click += new System.EventHandler(this.btnAddCustomObject_Click);
+			// 
+			// button2
+			// 
+			this.button2.BackColor = System.Drawing.Color.Transparent;
+			this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
+			this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.button2.FlatAppearance.BorderSize = 0;
+			this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button2.Location = new System.Drawing.Point(137, 55);
+			this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(26, 26);
+			this.button2.TabIndex = 29;
+			this.button2.Tag = "";
+			this.button2.UseVisualStyleBackColor = false;
+			// 
+			// button3
+			// 
+			this.button3.BackColor = System.Drawing.Color.Transparent;
+			this.button3.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button3.BackgroundImage")));
+			this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.button3.FlatAppearance.BorderSize = 0;
+			this.button3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button3.Location = new System.Drawing.Point(137, 30);
+			this.button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(26, 26);
+			this.button3.TabIndex = 28;
+			this.button3.Tag = "";
+			this.button3.UseVisualStyleBackColor = false;
+			// 
+			// button4
+			// 
+			this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
+			this.button4.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.button4.Location = new System.Drawing.Point(7, 32);
+			this.button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(124, 26);
+			this.button4.TabIndex = 30;
+			this.button4.Text = "Add to Preview";
+			this.button4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.button4.UseVisualStyleBackColor = true;
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(7, 6);
+			this.comboBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(124, 24);
+			this.comboBox1.TabIndex = 26;
+			// 
+			// label15
+			// 
+			this.label15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label15.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.label15.Location = new System.Drawing.Point(0, 60);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(166, 22);
+			this.label15.TabIndex = 0;
+			this.label15.Text = "Custom Objects";
+			this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// VixenPreviewSetup3
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1317,6 +1427,7 @@
 			this.panel9.PerformLayout();
 			this.panel10.ResumeLayout(false);
 			this.panel10.PerformLayout();
+			this.panel12.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1408,5 +1519,13 @@
 		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
+		private System.Windows.Forms.Panel panel12;
+		private System.Windows.Forms.Button btnAddCustomObject;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button button4;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.Label label15;
+
 	}
 }

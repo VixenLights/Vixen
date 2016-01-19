@@ -23,7 +23,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
@@ -93,6 +93,10 @@
       <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
       <Name>Location</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\VixenPreview.CustomProp\VixenPreview.CustomProp.csproj">
+      <Project>{c38cac0d-4fe2-4ee0-b82c-d91c51bc8e29}</Project>
+      <Name>VixenPreview.CustomProp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
