@@ -161,7 +161,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				DialogResult result = cp.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-				 
+
 					item.ItemColor = cp.Color;
 
 				}
@@ -199,8 +199,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			else
 			{
-				var serializer = new SharpSerializer();
-				var prop = serializer.Deserialize(_fileName) as Prop;
+				var prop = Prop.FromFile(_fileName);
+
 
 				if (prop != null)
 				{
@@ -236,8 +236,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				{
 
 					var serializer = new SharpSerializer();
-					var prop = serializer.Deserialize(dlg.FileName) as Prop;
-
+					var prop = Prop.FromFile(dlg.FileName);
+					
 					if (prop != null)
 					{
 						_prop = new Prop(panel1, prop);

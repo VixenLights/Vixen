@@ -13,29 +13,31 @@ using Vixen.Module.OutputFilter;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenModules.Preview.VixenPreview.Shapes.CustomProp;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-	[Serializable] 
+	[Serializable]
 	[DataContract]
-	[KnownType(typeof (PreviewLine))]
-	[KnownType(typeof (PreviewEllipse))]
-	[KnownType(typeof (PreviewArch))]
-	[KnownType(typeof (PreviewRectangle))]
-	[KnownType(typeof (PreviewSingle))]
-	[KnownType(typeof (PreviewEllipse))]
-	[KnownType(typeof (PreviewTriangle))]
-	[KnownType(typeof (PreviewNet))]
-	[KnownType(typeof (PreviewFlood))]
-	[KnownType(typeof (PreviewCane))]
-	[KnownType(typeof (PreviewStar))]
-    [KnownType(typeof (PreviewStarBurst))]
-    [KnownType(typeof (PreviewMegaTree))]
-	[KnownType(typeof (PreviewCustom))]
-	[KnownType(typeof (PreviewPixelGrid))]
-    [KnownType(typeof (PreviewIcicle))]
-    [KnownType(typeof(PreviewPolyLine))]
-    [KnownType(typeof(PreviewMultiString))]
+	[KnownType(typeof(PreviewLine))]
+	[KnownType(typeof(PreviewEllipse))]
+	[KnownType(typeof(PreviewArch))]
+	[KnownType(typeof(PreviewRectangle))]
+	[KnownType(typeof(PreviewSingle))]
+	[KnownType(typeof(PreviewEllipse))]
+	[KnownType(typeof(PreviewTriangle))]
+	[KnownType(typeof(PreviewNet))]
+	[KnownType(typeof(PreviewFlood))]
+	[KnownType(typeof(PreviewCane))]
+	[KnownType(typeof(PreviewStar))]
+	[KnownType(typeof(PreviewStarBurst))]
+	[KnownType(typeof(PreviewMegaTree))]
+	[KnownType(typeof(PreviewCustom))]
+	[KnownType(typeof(PreviewPixelGrid))]
+	[KnownType(typeof(PreviewIcicle))]
+	[KnownType(typeof(PreviewPolyLine))]
+	[KnownType(typeof(PreviewMultiString))]
+	[KnownType(typeof(PreviewCustomProp))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>
 	{
 		private PreviewBaseShape _shape;
@@ -59,7 +61,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void DrawInfo(Graphics g)
 		{
-			if (Shape.Pixels.Count > 0) 
+			if (Shape.Pixels.Count > 0)
 			{
 				int margin = 1;
 				string info;
@@ -72,7 +74,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				g.DrawRectangle(Pens.LightBlue, propRect);
 
 				g.FillRectangle(Brushes.White, rect);
-				g.DrawString(info, font, Brushes.Black, new PointF(Shape.Left+margin, Shape.Top+margin));
+				g.DrawString(info, font, Brushes.Black, new PointF(Shape.Left + margin, Shape.Top + margin));
 			}
 		}
 
@@ -88,12 +90,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (disposing) {
+			if (disposing)
+			{
 				if (_shape != null)
 					_shape.Dispose();
 			}
 			_shape = null;
-			
+
 		}
 
 		public void Dispose()

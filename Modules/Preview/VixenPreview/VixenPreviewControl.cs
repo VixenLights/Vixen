@@ -1711,7 +1711,30 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 		}
+		public void AddCustomObjectToPreview(string fileName)
+		{
+			if (System.IO.File.Exists(fileName))
+			{
 
+				DisplayItem newDisplayItem =  VixenModules.Preview.VixenPreview.Shapes.CustomProp.Prop.FromFile(fileName).ToDisplayItem() ;
+				if (newDisplayItem != null)
+				{
+					DeSelectSelectedDisplayItem();
+
+					AddDisplayItem(newDisplayItem);
+					_selectedDisplayItem = newDisplayItem;
+					OnSelectDisplayItem(this, _selectedDisplayItem);
+					_selectedDisplayItem.Shape.MoveTo(10, 10);
+					_selectedDisplayItem.Shape.Select(true);
+					_selectedDisplayItem.Shape.SetSelectPoint(null);
+					List<DisplayItem> selected = new List<DisplayItem> { _selectedDisplayItem };
+
+					PreviewItemAddAction(); //starts Undo_Redo Action
+				}
+			}
+		
+		
+		}
 		public void SeparateTemplateItems(DisplayItem displayItem)
 		{
 			foreach (PreviewBaseShape shape in displayItem.Shape._strings)

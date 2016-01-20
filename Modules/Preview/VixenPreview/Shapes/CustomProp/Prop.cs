@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -14,12 +15,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private int _width;
 		private int _height;
 		public Square[,] Squares { get; set; }
-		
+
 		public Prop() { }
 
 		public Prop(Panel panel, int width, int height)
 		{
-			
+
 			_panel = panel;
 			_width = width;
 			_height = height;
@@ -34,7 +35,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			this.Height = obj.Height;
 			this.Width = obj.Width;
 			GenerateGrid(obj.Squares);
-		 
+
 		}
 
 		public void UpdateGrid(int height, int width)
@@ -86,7 +87,43 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Panel.ResumeLayout();
 			Panel.Parent.ResumeLayout();
 		}
+		public static Prop FromFile(string fileName)
+		{
+			var serializer = new SharpSerializer();
+			try
+			{
+				return serializer.Deserialize(fileName) as Prop;
+			}
+			catch
+			{
+			}
+			return null;
 
+		}
+
+
+		public DisplayItem ToDisplayItem()
+		{
+			//Theres got to be a better way to do this... LOL
+			return (DisplayItem)PreviewTools.DeSerializeToDisplayItem(PreviewTools.SerializeToString(new PreviewCustomProp(new PreviewPoint(10, 10), null, 1, this)), typeof(DisplayItem));
+		}
+
+
+		public List<Square> GetSelectedSquares()
+		{
+			int width = Squares.GetLength(0);
+			int height = Squares.GetLength(1);
+			List<Square> ret = new List<Square>(width * height);
+			Parallel.For(0, width, a =>
+			{
+				Parallel.For(0, height, b =>
+				{
+					if (Squares[a, b].ChannelID > 0) ret.Add(Squares[a, b]);
+				});
+			});
+
+			return ret.OrderBy(a => a.X).ThenBy(b => b.Y).ToList();
+		}
 
 		public int Height
 		{

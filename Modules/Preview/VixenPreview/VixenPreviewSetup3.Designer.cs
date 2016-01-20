@@ -30,27 +30,29 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
-			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
-			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin2 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient8 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient9 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient5 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient10 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient11 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient12 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient6 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient13 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient14 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
 			this.panelToolbar = new System.Windows.Forms.Panel();
 			this.panel12 = new System.Windows.Forms.Panel();
 			this.btnAddCustomObject = new System.Windows.Forms.Button();
 			this.btnDeleteCustomObject = new System.Windows.Forms.Button();
 			this.btnAddCustomObjectToPreview = new System.Windows.Forms.Button();
 			this.comboBoxCustomObjects = new System.Windows.Forms.ComboBox();
+			this.contextMenuStripCustomObjects = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.label15 = new System.Windows.Forms.Label();
 			this.panel11 = new System.Windows.Forms.Panel();
 			this.label14 = new System.Windows.Forms.Label();
@@ -133,12 +135,11 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-			this.contextMenuStripCustomObjects = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panelToolbar.SuspendLayout();
 			this.panel12.SuspendLayout();
+			this.contextMenuStripCustomObjects.SuspendLayout();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.panel8.SuspendLayout();
@@ -151,7 +152,6 @@
 			this.menuStrip.SuspendLayout();
 			this.panel9.SuspendLayout();
 			this.panel10.SuspendLayout();
-			this.contextMenuStripCustomObjects.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panelToolbar
@@ -233,6 +233,7 @@
 			this.btnAddCustomObjectToPreview.Text = "Add to Preview";
 			this.btnAddCustomObjectToPreview.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.btnAddCustomObjectToPreview.UseVisualStyleBackColor = true;
+			this.btnAddCustomObjectToPreview.Click += new System.EventHandler(this.btnAddCustomObjectToPreview_Click);
 			// 
 			// comboBoxCustomObjects
 			// 
@@ -247,6 +248,20 @@
 			this.comboBoxCustomObjects.Size = new System.Drawing.Size(124, 24);
 			this.comboBoxCustomObjects.TabIndex = 26;
 			this.comboBoxCustomObjects.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
+			// 
+			// contextMenuStripCustomObjects
+			// 
+			this.contextMenuStripCustomObjects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem});
+			this.contextMenuStripCustomObjects.Name = "contextMenuStripCustomObjects";
+			this.contextMenuStripCustomObjects.Size = new System.Drawing.Size(95, 26);
+			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+			this.openToolStripMenuItem.Text = "&Edit";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
 			// 
 			// label15
 			// 
@@ -1372,7 +1387,7 @@
 			this.dockPanel.Size = new System.Drawing.Size(1276, 503);
 			this.dockPanel.TabIndex = 20;
 			// 
-			// contextMenuStripCustomObjects
+			
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1390,7 +1405,7 @@
 			this.viewHelpToolStripMenuItem.Text = "&View Help";
 			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
 			// 
-			// panel12
+			// contextMenuStripCustomObjects
 			// 
 			this.contextMenuStripCustomObjects.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem});
@@ -1427,6 +1442,7 @@
 			this.Resize += new System.EventHandler(this.VixenPreviewSetup3_Resize);
 			this.panelToolbar.ResumeLayout(false);
 			this.panelToolbar.PerformLayout();
+			this.contextMenuStripCustomObjects.ResumeLayout(false);
 			this.panel11.ResumeLayout(false);
 			this.panel11.PerformLayout();
 			this.toolStripUndo.ResumeLayout(false);
@@ -1445,7 +1461,6 @@
 			this.panel9.PerformLayout();
 			this.panel10.ResumeLayout(false);
 			this.panel10.PerformLayout();
-			this.contextMenuStripCustomObjects.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
