@@ -12,7 +12,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 	public class Square
 	{
 
-		private Button _button;
+		private Button _label;
 		private Prop _prop;
 
 		public Square() { }
@@ -21,26 +21,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			_prop = prop;
 			X = x;
 			Y = y;
-			_button = new Button();
-
+			_label = new Button();
+			_label.Paint += button_Paint;
 			int w = _prop.Panel.Width / _prop.Width;
 			int h = _prop.Panel.Height / _prop.Height;
 			ChannelID = id;
 
 
-			_button.Width = w + 1;
-			_button.Height = h + 1;
-			_button.Left = w * X;
-			_button.Top = h * Y;
-			_button.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			_button.MouseDown += new MouseEventHandler(ButtonClick);
+			_label.Width = w + 1;
+			_label.Height = h + 1;
+			_label.Left = w * X;
+			_label.Top = h * Y;
+			_label.MouseDown += new MouseEventHandler(ButtonClick);
 			setButtonData();
 			_prop.Panel.Controls.Add(Button);
 		}
 
 		public Button Button
 		{
-			get { return (this._button); }
+			get { return (this._label); }
 		}
 
 		private void setButtonData()
@@ -48,6 +47,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Button.Text = ChannelID > 0 ? ChannelID.ToString() : string.Empty;
 			Button.ForeColor = ChannelID == 0 ? ThemeColorTable.ButtonTextColor : ThemeColorTable.ButtonBackColor;
 			Button.BackColor = ChannelID == 0 ? ThemeColorTable.ButtonBackColor : Color.White;
+			Button.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+
+		}
+
+
+		private void button_Paint(object sender, PaintEventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(Button.Text)) return;
+			float fontSize = NewFontSize(e.Graphics, Button.Bounds.Size, Button.Font, Button.Text);
+			Font f = new Font("Arial", fontSize, FontStyle.Bold);
+			Button.Font = f;
+		}
+		public static float NewFontSize(Graphics graphics, Size size, Font font, string str)
+		{
+			SizeF stringSize = graphics.MeasureString(str, font);
+			float wRatio = (size.Width - 5) / stringSize.Width;			//The subtraction of the width/height values will account for the border 
+			float hRatio = (size.Height - 5) / stringSize.Height;		//that was otherwise being ignored and the text size was wrong
+			float ratio = Math.Min(hRatio, wRatio);
+			return font.Size * ratio;
 		}
 
 		private void ButtonClick(object sender, MouseEventArgs e)
@@ -71,10 +89,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		public void Open()
-		{
-
-		}
 
 		public int ChannelID { get; set; }
 
@@ -97,8 +111,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public void RemoveEvents()
 		{
-			if (_button != null)
-				_button.MouseDown -= new MouseEventHandler(ButtonClick);
+			if (_label != null)
+				_label.MouseDown -= new MouseEventHandler(ButtonClick);
 		}
 
 
