@@ -50,7 +50,7 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.panel1 = new DoubleBufferedPanel();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();

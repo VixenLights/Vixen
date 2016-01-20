@@ -702,7 +702,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void btnAddCustomObject_Click(object sender, EventArgs e)
 		{
-			CustomProp.CustomPropForm frm = new CustomProp.CustomPropForm();
+			VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm();
 			frm.ShowDialog();
 			PopulateTemplateList();
 		}
@@ -735,7 +735,7 @@ namespace VixenModules.Preview.VixenPreview
 			TemplateComboBoxItem templateItem = comboBoxCustomObjects.SelectedItem as TemplateComboBoxItem;
 			if (templateItem != null)
 			{
-				CustomProp.CustomPropForm frm = new CustomProp.CustomPropForm(templateItem.FileName);
+				VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm(templateItem.FileName);
 				frm.ShowDialog();
 				PopulateTemplateList();
 			}

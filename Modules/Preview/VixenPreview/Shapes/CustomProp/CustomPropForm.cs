@@ -22,6 +22,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public CustomPropForm()
 		{
 			InitializeComponent();
+			this.DoubleBuffered = true;
 			this.textBox1.Enabled = true;
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;

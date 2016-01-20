@@ -19,7 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public Prop(Panel panel, int width, int height)
 		{
-
+			
 			_panel = panel;
 			_width = width;
 			_height = height;
@@ -56,7 +56,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			Panel.Controls.Clear();
 			Panel.SuspendLayout();
-
+			Panel.Parent.SuspendLayout();
 			Squares = new Square[Width, Height];
 
 			for (int x = 0; x < Width; x++)
@@ -84,6 +84,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 			Panel.ResumeLayout();
+			Panel.Parent.ResumeLayout();
 		}
 
 
