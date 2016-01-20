@@ -392,12 +392,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				return destFolder;
 			}
 		}
+		public static string PropsFolder
+		{
+			get
+			{
+				string destFolder = System.IO.Path.Combine(VixenPreviewDescriptor.ModulePath, "CustomProps");
+				if (!System.IO.Directory.Exists(destFolder))
+				{
+					System.IO.Directory.CreateDirectory(destFolder);
+				}
+				return destFolder;
+			}
+		}
 
 		public static string TemplateWithFolder(string templateName)
 		{
 			return System.IO.Path.Combine(TemplateFolder, templateName);
 		}
-
+		public static string CustomPropWithFolder(string templateName)
+		{
+			return System.IO.Path.Combine(PropsFolder, templateName);
+		}
         public static Point CalculatePointOnLine(Vector2 a, Vector2 b, int distance)
         {
             Vector2 vectorAB = a - b;

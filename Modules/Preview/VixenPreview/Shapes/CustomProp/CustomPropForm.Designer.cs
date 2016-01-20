@@ -39,18 +39,18 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.toolStripMenuItem_Add = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuChannels = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.changeChannelColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.listBox1 = new System.Windows.Forms.ListBox();
 			this.btnUpdateChannelCount = new System.Windows.Forms.Button();
 			this.numGridWidth = new System.Windows.Forms.NumericUpDown();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.btnOpen = new System.Windows.Forms.Button();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.btnOpen = new System.Windows.Forms.Button();
-			this.changeChannelColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();
@@ -154,8 +154,20 @@
             this.toolStripMenuItem_Remove,
             this.toolStripMenuItem_Rename});
 			this.contextMenuChannels.Name = "contextMenuChannels";
-			this.contextMenuChannels.Size = new System.Drawing.Size(196, 148);
+			this.contextMenuChannels.Size = new System.Drawing.Size(196, 126);
 			this.contextMenuChannels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuChannels_Opening);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
+			// 
+			// changeChannelColorToolStripMenuItem
+			// 
+			this.changeChannelColorToolStripMenuItem.Name = "changeChannelColorToolStripMenuItem";
+			this.changeChannelColorToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.changeChannelColorToolStripMenuItem.Text = "Change Channel Color";
+			this.changeChannelColorToolStripMenuItem.Click += new System.EventHandler(this.changeChannelColorToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
@@ -225,6 +237,23 @@
 			this.splitContainer2.SplitterDistance = 203;
 			this.splitContainer2.TabIndex = 0;
 			// 
+			// btnOpen
+			// 
+			this.btnOpen.Location = new System.Drawing.Point(20, 134);
+			this.btnOpen.Name = "btnOpen";
+			this.btnOpen.Size = new System.Drawing.Size(97, 29);
+			this.btnOpen.TabIndex = 12;
+			this.btnOpen.Text = "Open / Import";
+			this.btnOpen.UseVisualStyleBackColor = true;
+			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(83, 9);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(151, 20);
+			this.textBox1.TabIndex = 11;
+			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
@@ -260,35 +289,6 @@
 			this.panel1.Size = new System.Drawing.Size(664, 500);
 			this.panel1.TabIndex = 1;
 			this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
-			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(83, 9);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(151, 20);
-			this.textBox1.TabIndex = 11;
-			// 
-			// btnOpen
-			// 
-			this.btnOpen.Location = new System.Drawing.Point(20, 134);
-			this.btnOpen.Name = "btnOpen";
-			this.btnOpen.Size = new System.Drawing.Size(97, 29);
-			this.btnOpen.TabIndex = 12;
-			this.btnOpen.Text = "Open / Import";
-			this.btnOpen.UseVisualStyleBackColor = true;
-			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
-			// 
-			// changeChannelColorToolStripMenuItem
-			// 
-			this.changeChannelColorToolStripMenuItem.Name = "changeChannelColorToolStripMenuItem";
-			this.changeChannelColorToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.changeChannelColorToolStripMenuItem.Text = "Change Channel Color";
-			this.changeChannelColorToolStripMenuItem.Click += new System.EventHandler(this.changeChannelColorToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
 			// 
 			// CustomPropForm
 			// 

@@ -78,6 +78,7 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
@@ -94,10 +95,6 @@
       <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\VixenPreview.CustomProp\VixenPreview.CustomProp.csproj">
-      <Project>{c38cac0d-4fe2-4ee0-b82c-d91c51bc8e29}</Project>
-      <Name>VixenPreview.CustomProp</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
@@ -106,6 +103,11 @@
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Polenter.SharpSerializer, Version=2.20.0.0, Culture=neutral, PublicKeyToken=8f4f20011571ee5f, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\SharpSerializer.2.20\lib\net20\Polenter.SharpSerializer.dll</HintPath>
+      <Private>True</Private>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -170,6 +172,28 @@
     </Compile>
     <Compile Include="Shapes\DiscreteIntentHandler.cs" />
     <Compile Include="Shapes\FullColorIntentHandler.cs" />
+    <Compile Include="Shapes\CustomProp\AddMultipleChannels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\AddMultipleChannels.Designer.cs">
+      <DependentUpon>AddMultipleChannels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\ChannelNaming.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\ChannelNaming.Designer.cs">
+      <DependentUpon>ChannelNaming.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\CustomPropForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\CustomPropForm.Designer.cs">
+      <DependentUpon>CustomPropForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\CustomProp\PreviewCustomProp.cs" />
+    <Compile Include="Shapes\CustomProp\Prop.cs" />
+    <Compile Include="Shapes\CustomProp\PropChannel.cs" />
+    <Compile Include="Shapes\CustomProp\Square.cs" />
     <Compile Include="Shapes\PreviewCustom.cs" />
     <Compile Include="Shapes\PreviewCustomCreateForm.cs">
       <SubType>Form</SubType>
@@ -394,6 +418,15 @@
     </Compile>
     <EmbeddedResource Include="ResizePreviewForm.resx">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\CustomProp\AddMultipleChannels.resx">
+      <DependentUpon>AddMultipleChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\CustomProp\ChannelNaming.resx">
+      <DependentUpon>ChannelNaming.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\CustomProp\CustomPropForm.resx">
+      <DependentUpon>CustomPropForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\DisplayItemBaseControl.resx">
       <DependentUpon>DisplayItemBaseControl.cs</DependentUpon>

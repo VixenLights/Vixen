@@ -18,10 +18,11 @@ using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 
-namespace VixenModules.Preview.VixenPreview {
+namespace VixenModules.Preview.VixenPreview
+{
 	public partial class VixenPreviewSetup3 : BaseForm
-    {
-        private VixenPreviewData _data;
+	{
+		private VixenPreviewData _data;
 		public static VixenPreviewSetupDocument previewForm;
 		private VixenPreviewSetupElementsDocument elementsForm;
 		private VixenPreviewSetupPropertiesDocument propertiesForm;
@@ -32,23 +33,27 @@ namespace VixenModules.Preview.VixenPreview {
 
 		public event EventHandler<PreviewItemMoveEventArgs> PreviewItemsAlignNew;
 
-		public VixenPreviewData Data {
-			set {
+		public VixenPreviewData Data
+		{
+			set
+			{
 				_data = value;
 				if (!DesignMode && previewForm != null)
 					previewForm.Preview.Data = _data;
 			}
 			get
 			{
-				if (_data == null) {
+				if (_data == null)
+				{
 					Logging.Warn("VixenPreviewSetup3: access of null Data. (Thread ID: " +
-					                            System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
+												System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				}
 				return _data;
 			}
 		}
 
-		public VixenPreviewSetup3() {
+		public VixenPreviewSetup3()
+		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
 			menuStrip.Renderer = new ThemeToolStripRenderer();
@@ -82,9 +87,10 @@ namespace VixenModules.Preview.VixenPreview {
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
 
-	    }
+		}
 
-	    private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
+		private void VixenPreviewSetup3_Load(object sender, EventArgs e)
+		{
 			previewForm = new VixenPreviewSetupDocument();
 			if (!DesignMode && previewForm != null)
 				previewForm.Preview.Data = _data;
@@ -104,8 +110,8 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.elementsForm = elementsForm;
 			previewForm.Preview.propertiesForm = propertiesForm;
 
-			previewForm.Preview.LoadBackground();	
-			
+			previewForm.Preview.LoadBackground();
+
 			trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
 			previewForm.Preview.Reload();
 
@@ -125,10 +131,10 @@ namespace VixenModules.Preview.VixenPreview {
 			// Choose the select tool to start
 			toolbarButton_Click(buttonSelect, new EventArgs());
 
-            if (IntPtr.Size != 8)
-            {
-                trackerZoom.Maximum = 200;
-            }
+			if (IntPtr.Size != 8)
+			{
+				trackerZoom.Maximum = 200;
+			}
 			InitUndo();
 		}
 
@@ -146,14 +152,17 @@ namespace VixenModules.Preview.VixenPreview {
 			CloseSetup();
 		}
 
-		private void buttonSetBackground_Click(object sender, EventArgs e) {
-			if (dialogSelectBackground.ShowDialog() == DialogResult.OK) {
+		private void buttonSetBackground_Click(object sender, EventArgs e)
+		{
+			if (dialogSelectBackground.ShowDialog() == DialogResult.OK)
+			{
 				// Copy the file to the Vixen folder
 				var imageFile = new FileInfo(dialogSelectBackground.FileName);
-                string imageFileName = Guid.NewGuid() + Path.GetExtension(dialogSelectBackground.FileName);
-                var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
+				string imageFileName = Guid.NewGuid() + Path.GetExtension(dialogSelectBackground.FileName);
+				var destFileName = Path.Combine(VixenPreviewDescriptor.ModulePath, imageFileName);
 				var sourceFileName = imageFile.FullName;
-				if (sourceFileName != destFileName) {
+				if (sourceFileName != destFileName)
+				{
 					File.Copy(sourceFileName, destFileName, true);
 				}
 
@@ -165,32 +174,35 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
+		private void OnDeSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
+		{
 			propertiesForm.ShowSetupControl(null);
 		}
 
-		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem) {
+		private void OnSelectDisplayItem(object sender, Shapes.DisplayItem displayItem)
+		{
 			Shapes.DisplayItemBaseControl setupControl = displayItem.Shape.GetSetupControl();
 
-			if (setupControl != null) {
+			if (setupControl != null)
+			{
 				propertiesForm.ShowSetupControl(setupControl);
 			}
 		}
 
-        private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
-        {
-            SetZoomTextAndTracker(zoomLevel);
-        }
+		private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel)
+		{
+			SetZoomTextAndTracker(zoomLevel);
+		}
 
-	    private void toolbarButton_Click(object sender, EventArgs e)
-	    {
-		    Button button = sender as Button;
-		    buttonShapeSelected(button);
-		    //reenableToolButtons();
+		private void toolbarButton_Click(object sender, EventArgs e)
+		{
+			Button button = sender as Button;
+			buttonShapeSelected(button);
+			//reenableToolButtons();
 
-		    // There must be a way to iterate through an enum so we don't have to do all this crap...
+			// There must be a way to iterate through an enum so we don't have to do all this crap...
 
-		    // Select Button
+			// Select Button
 			DrawShape = "";
 			if (button == buttonSelect)
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
@@ -271,53 +283,53 @@ namespace VixenModules.Preview.VixenPreview {
 				DrawShape = "Multi String";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.MultiString;
 			}
-        }
+		}
 
-        private void toolbarAlignButton_Click(object sender, EventArgs e)
-        {
+		private void toolbarAlignButton_Click(object sender, EventArgs e)
+		{
 			VixenPreviewControl.modifyType = "Move";
 			previewForm.Preview.beginResize_Move(true); //Starts the Undo Process
-            Button button = sender as Button;
-            if (button == buttonAlignBottom)
-            {
-                previewForm.Preview.AlignBottom();
-            }
-            else if (button == buttonAlignHorizMid)
-            {
-                previewForm.Preview.AlignHorizontal();
-            }
-            else if (button == buttonAlignLeft)
-            {
-                previewForm.Preview.AlignLeft();
-            }
-            else if (button == buttonAlignRight)
-            {
-                previewForm.Preview.AlignRight();
-            }
-            else if (button == buttonAlignTop)
-            {
-                previewForm.Preview.AlignTop();
-            }
-            else if (button == buttonAlignVertMid)
-            {
-                previewForm.Preview.AlignVertical();
-            }
-            else if (button == buttonDistributeHorizontal)
-            {
-                previewForm.Preview.DistributeHorizontal();
-            }
-            else if (button == buttonDistributeVertical)
-            {
-                previewForm.Preview.DistributeVertical();
-            }
-            else if (button == buttonMatchProperties)
-            {
-                previewForm.Preview.MatchProperties();
-            }
+			Button button = sender as Button;
+			if (button == buttonAlignBottom)
+			{
+				previewForm.Preview.AlignBottom();
+			}
+			else if (button == buttonAlignHorizMid)
+			{
+				previewForm.Preview.AlignHorizontal();
+			}
+			else if (button == buttonAlignLeft)
+			{
+				previewForm.Preview.AlignLeft();
+			}
+			else if (button == buttonAlignRight)
+			{
+				previewForm.Preview.AlignRight();
+			}
+			else if (button == buttonAlignTop)
+			{
+				previewForm.Preview.AlignTop();
+			}
+			else if (button == buttonAlignVertMid)
+			{
+				previewForm.Preview.AlignVertical();
+			}
+			else if (button == buttonDistributeHorizontal)
+			{
+				previewForm.Preview.DistributeHorizontal();
+			}
+			else if (button == buttonDistributeVertical)
+			{
+				previewForm.Preview.DistributeVertical();
+			}
+			else if (button == buttonMatchProperties)
+			{
+				previewForm.Preview.MatchProperties();
+			}
 
 			PreviewItemsAlignNew(this, new PreviewItemMoveEventArgs(previewForm.Preview.m_previewItemResizeMoveInfo));
 			previewForm.Preview.m_previewItemResizeMoveInfo = null;
-        }
+		}
 
 		public void vixenpreviewControl_PreviewItemsAlignNew(object sender, PreviewItemMoveEventArgs e)
 		{
@@ -326,11 +338,13 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 
-        private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e) {
+		private void trackBarBackgroundAlpha_ValueChanged(object sender, EventArgs e)
+		{
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 		}
 
-		public void Setup() {
+		public void Setup()
+		{
 			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
 			Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
@@ -342,8 +356,10 @@ namespace VixenModules.Preview.VixenPreview {
 		    previewForm.Close();
 	    }
 
-	    private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
-			if (Data == null) {
+		private void VixenPreviewSetup3_Move(object sender, EventArgs e)
+		{
+			if (Data == null)
+			{
 				Logging.Warn("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
@@ -353,8 +369,10 @@ namespace VixenModules.Preview.VixenPreview {
 			Data.SetupLeft = Left;
 		}
 
-		private void VixenPreviewSetup3_Resize(object sender, EventArgs e) {
-			if (Data == null) {
+		private void VixenPreviewSetup3_Resize(object sender, EventArgs e)
+		{
+			if (Data == null)
+			{
 				Logging.Warn("VixenPreviewSetup3_Resize: Data is null. abandoning resize. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
 				return;
@@ -364,95 +382,125 @@ namespace VixenModules.Preview.VixenPreview {
 			Data.SetupHeight = Height;
 		}
 
-		private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.Cut();
 		}
 
-		private void copyToolStripMenuItem1_Click(object sender, EventArgs e) {
+		private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.Copy();
 		}
 
-		private void pasteToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.Paste();
 		}
 
-		private void deleteToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.Delete();
 		}
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			Close();
 		}
 
-		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void backgroundPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			ResizePreviewForm resizeForm = new ResizePreviewForm(previewForm.Preview.Background.Width,
 																 previewForm.Preview.Background.Height);
-			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                if (resizeForm.Height > 10 && resizeForm.Width > 10)
-                {
-                    previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
-                    previewForm.Refresh();
-                }
-                else
-                {
+			if (resizeForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				if (resizeForm.Height > 10 && resizeForm.Width > 10)
+				{
+					previewForm.Preview.ResizeBackground(resizeForm.Width, resizeForm.Height);
+					previewForm.Refresh();
+				}
+				else
+				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("An invalid image size was specified!", "Invalid Size", false, true);
 					messageBox.ShowDialog();
-                }
-            }
+				}
+			}
 		}
 
 		#region Templates
 
-		private void PopulateTemplateList() {
+		private void PopulateTemplateList()
+		{
 			TemplateComboBoxItem selectedTemplateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
 			comboBoxTemplates.Items.Clear();
-
+			comboBoxCustomObjects.Items.Clear();
 			IEnumerable<string> files = System.IO.Directory.EnumerateFiles(PreviewTools.TemplateFolder, "*.xml");
-			foreach (string file in files) {
+			foreach (string file in files)
+			{
 				string fileName = PreviewTools.TemplateWithFolder(file);
-				try {
+				try
+				{
 					// Read the entire template file (stoopid waste of resources, but how else?)
 					string xml = System.IO.File.ReadAllText(fileName);
 					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
 					TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
 					comboBoxTemplates.Items.Add(newTemplateItem);
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("There was an error loading the template file (" + file + "): " + ex.Message,
 									"Error Loading Template", false, true);
 					messageBox.ShowDialog();
 				}
-				finally {
-					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0) {
+				finally
+				{
+					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0)
+					{
 						comboBoxTemplates.SelectedItem = selectedTemplateItem;
 					}
-					if (comboBoxTemplates.SelectedItem == null && comboBoxTemplates.Items.Count > 0) {
+					if (comboBoxTemplates.SelectedItem == null && comboBoxTemplates.Items.Count > 0)
+					{
 						comboBoxTemplates.SelectedIndex = 0;
 					}
 				}
 			}
+
+			files = System.IO.Directory.EnumerateFiles(PreviewTools.PropsFolder, "*.prop");
+			foreach (string file in files)
+			{
+				string fileName = PreviewTools.CustomPropWithFolder(file);
+				var fi = new FileInfo(fileName);
+				TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(fi.Name.Replace(fi.Extension, string.Empty), fileName);
+
+				comboBoxCustomObjects.Items.Add(newTemplateItem);
+			}
 		}
 
-		private void buttonAddTemplate_Click(object sender, EventArgs e) {
+		private void buttonAddTemplate_Click(object sender, EventArgs e)
+		{
 			previewForm.Preview.CreateTemplate();
 			PopulateTemplateList();
 		}
 
-		private void buttonAddToPreview_Click(object sender, EventArgs e) {
+		private void buttonAddToPreview_Click(object sender, EventArgs e)
+		{
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
-			if (templateItem != null) {
+			if (templateItem != null)
+			{
 				previewForm.Preview.AddTtemplateToPreview(templateItem.FileName);
 			}
 		}
 
-		private void buttonDeleteTemplate_Click(object sender, EventArgs e) {
+		private void buttonDeleteTemplate_Click(object sender, EventArgs e)
+		{
 			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
-			if (templateItem != null) {
-				if (System.IO.File.Exists(templateItem.FileName)) {
+			if (templateItem != null)
+			{
+				if (System.IO.File.Exists(templateItem.FileName))
+				{
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.Caption + "'?", "Delete Template", true, false);
@@ -466,7 +514,8 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-		private void buttonTemplateHelp_Click(object sender, EventArgs e) {
+		private void buttonTemplateHelp_Click(object sender, EventArgs e)
+		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
 		}
 
@@ -490,8 +539,8 @@ namespace VixenModules.Preview.VixenPreview {
 						//d.Shape._pixels.ForEach(p => {
 
 						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-						((LocationData) prop.ModuleData).X = p.X;
-						((LocationData) prop.ModuleData).Y = p.Y;
+						((LocationData)prop.ModuleData).X = p.X;
+						((LocationData)prop.ModuleData).Y = p.Y;
 
 						//});
 						//});
@@ -507,7 +556,8 @@ namespace VixenModules.Preview.VixenPreview {
 			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
 		}
 
-		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e)
+		{
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", true, false);
@@ -523,21 +573,21 @@ namespace VixenModules.Preview.VixenPreview {
 		private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Data.SaveLocations = saveLocationsToolStripMenuItem.Checked;
-        }
+		}
 
-        private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
-        {
-            double zoomLevel = Convert.ToDouble(Convert.ToDouble(trackerZoom.Value) / 100d);
-            previewForm.Preview.ZoomLevel = zoomLevel;
-        }
+		private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
+		{
+			double zoomLevel = Convert.ToDouble(Convert.ToDouble(trackerZoom.Value) / 100d);
+			previewForm.Preview.ZoomLevel = zoomLevel;
+		}
 
-        private void SetZoomTextAndTracker(double zoomLevel)
-        {
-            int zoomPercent = Convert.ToInt32(zoomLevel * 100);
-            labelZoomLevel.Text = zoomPercent + "%";
-            trackerZoom.Value = Convert.ToInt32(zoomPercent);
-            trackerZoom.Invalidate();
-        }
+		private void SetZoomTextAndTracker(double zoomLevel)
+		{
+			int zoomPercent = Convert.ToInt32(zoomLevel * 100);
+			labelZoomLevel.Text = zoomPercent + "%";
+			trackerZoom.Value = Convert.ToInt32(zoomPercent);
+			trackerZoom.Invalidate();
+		}
 
 		#region Undo/Redo Control
 
@@ -577,7 +627,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void _undoMgr_UndoItemsChanged(object sender, EventArgs e)
 		{
-			
+
 			if (_undoMgr.NumUndoable == 0)
 			{
 				undoButton.Enabled = false;
@@ -594,20 +644,20 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-	    private void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
-	    {
-		    if (_undoMgr.NumRedoable == 0)
-		    {
+		private void _undoMgr_RedoItemsChanged(object sender, EventArgs e)
+		{
+			if (_undoMgr.NumRedoable == 0)
+			{
 				redoButton.Enabled = false;
 				redoToolStripMenuItem.Enabled = false;
-			    return;
-		    }
+				return;
+			}
 
 			redoButton.Enabled = true;
 			redoToolStripMenuItem.Enabled = true;
-		    redoButton.UndoItems.Clear();
-		    foreach (var act in _undoMgr.RedoActions)
-		    {
+			redoButton.UndoItems.Clear();
+			foreach (var act in _undoMgr.RedoActions)
+			{
 				redoButton.UndoItems.Add(act.Description);
 			}
 		}
@@ -627,7 +677,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void buttonShapeSelected(Control selectedButton)
-	    {
+		{
 			foreach (Control c in panel3.Controls)
 			{
 				if (c is Button)
@@ -643,7 +693,7 @@ namespace VixenModules.Preview.VixenPreview {
 				}
 			}
 			selectedButton.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-	    }
+		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -653,8 +703,45 @@ namespace VixenModules.Preview.VixenPreview {
 		private void btnAddCustomObject_Click(object sender, EventArgs e)
 		{
 			CustomProp.CustomPropForm frm = new CustomProp.CustomPropForm();
-			frm.Show();
+			frm.ShowDialog();
+			PopulateTemplateList();
 		}
+
+		private void btnDeleteCustomObject_Click(object sender, EventArgs e)
+		{
+
+			TemplateComboBoxItem templateItem = comboBoxCustomObjects.SelectedItem as TemplateComboBoxItem;
+			if (templateItem != null)
+			{
+				if (System.IO.File.Exists(templateItem.FileName))
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Are you sure you want to delete the Custom Object: '" + templateItem.FileName + "'", "Delete Custom Object", true, false);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
+					{
+						System.IO.File.Delete(templateItem.FileName);
+						PopulateTemplateList();
+					}
+				}
+
+			}
+		}
+
+		private void openToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			TemplateComboBoxItem templateItem = comboBoxCustomObjects.SelectedItem as TemplateComboBoxItem;
+			if (templateItem != null)
+			{
+				CustomProp.CustomPropForm frm = new CustomProp.CustomPropForm(templateItem.FileName);
+				frm.ShowDialog();
+				PopulateTemplateList();
+			}
+		}
+
+
 
 		private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{

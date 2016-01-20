@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
+using VixenModules.Preview.VixenPreview.Shapes;
+using Common.Resources.Properties;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview.CustomProp
 {
@@ -19,10 +22,33 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 		public CustomPropForm()
 		{
 			InitializeComponent();
+			this.textBox1.Enabled = true;
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
+		public CustomPropForm(string fileName)
+		{
+			InitializeComponent();
+
+			if (File.Exists(fileName))
+			{
+				_fileName = fileName;
+				this.textBox1.Enabled = false;
+
+
+			}
+			else this.textBox1.Enabled = true;
+			Icon = Resources.Icon_Vixen3;
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+		}
+		private string _fileName = null;
 		#region Private Variables
 		private Prop _prop;
-		private static readonly string PropDirectory = Path.Combine(new FileInfo(Application.ExecutablePath).DirectoryName, "Props");
+		private static readonly string PropDirectory = PreviewTools.PropsFolder;//Path.Combine(new FileInfo(Application.ExecutablePath).DirectoryName, "Props");
 		private const string PROP_EXTENSION = ".prop";
 		#endregion
 		#region Properties
@@ -62,6 +88,7 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 
 		}
 
+		public bool NameLocked { get { return !this.textBox1.Enabled; } set { this.textBox1.Enabled = !value; } }
 		private string GenerateNewChannelName(string templateName = "Channel_{0}", int index = 1)
 		{
 
@@ -129,12 +156,12 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			using (ColorPicker cp = new ColorPicker())
 			{
 				cp.LockValue_V = true;
-				cp.Color = XYZ.FromRGB(new RGB(item.ItemColor));
+				cp.Color = item.ItemColor;
 				DialogResult result = cp.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					var rgb = cp.Color.ToRGB();
-					item.ItemColor = Color.FromArgb((int)rgb.R, (int)rgb.G, (int)rgb.B);
+				 
+					item.ItemColor = cp.Color;
 
 				}
 			}
@@ -165,8 +192,24 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 
 		private void CustomPropForm_Load(object sender, EventArgs e)
 		{
-			_prop = new Prop(this.panel1, (int)numGridWidth.Value, (int)numGridHeight.Value);
+			if (_fileName == null)
+			{
+				_prop = new Prop(this.panel1, (int)numGridWidth.Value, (int)numGridHeight.Value);
+			}
+			else
+			{
+				var serializer = new SharpSerializer();
+				var prop = serializer.Deserialize(_fileName) as Prop;
 
+				if (prop != null)
+				{
+					_prop = new Prop(panel1, prop);
+					this.textBox1.Text = _prop.Name;
+					listBox1.Items.Clear();
+					listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
+
+				}
+			}
 		}
 
 		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
