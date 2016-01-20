@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VixenModules.Preview.VixenPreview.CustomProp
+namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	public class Prop
 	{

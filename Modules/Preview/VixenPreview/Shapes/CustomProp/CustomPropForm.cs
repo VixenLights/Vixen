@@ -15,7 +15,7 @@ using VixenModules.Preview.VixenPreview.Shapes;
 using Common.Resources.Properties;
 using Common.Controls.Theme;
 
-namespace VixenModules.Preview.VixenPreview.CustomProp
+namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	public partial class CustomPropForm : Form
 	{

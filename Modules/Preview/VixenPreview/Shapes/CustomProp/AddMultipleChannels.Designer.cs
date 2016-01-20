@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Preview.VixenPreview.CustomProp
+﻿namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	partial class AddMultipleChannels
 	{

@@ -193,6 +193,9 @@
     <Compile Include="Shapes\CustomProp\PreviewCustomProp.cs" />
     <Compile Include="Shapes\CustomProp\Prop.cs" />
     <Compile Include="Shapes\CustomProp\PropChannel.cs" />
+    <Compile Include="Shapes\CustomProp\PropDisplayPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Shapes\CustomProp\Square.cs" />
     <Compile Include="Shapes\PreviewCustom.cs" />
     <Compile Include="Shapes\PreviewCustomCreateForm.cs">

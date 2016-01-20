@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VixenModules.Preview.VixenPreview.CustomProp
+namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	public class PropChannel
 	{
@@ -18,29 +18,19 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			Text = m;
 		}
 
-		protected virtual void OnChange(EventArgs e)
-		{
-			if (changed)
-				if (Changed != null)
-				{
-					Changed(this, e);
-					changed = false;
-				}
-		}
 
-		public event EventHandler Changed;
-		bool changed = false;
 		private string _text;
 		private int _id;
 		XYZ _itemColor;
+		
+		
 		public XYZ ItemColor
 		{
 			get { return _itemColor; }
 			set
 			{
-				changed = _itemColor != value;
-				_itemColor;
-				OnChange(new EventArgs());
+				_itemColor = value;
+
 			}
 		}
 
@@ -49,9 +39,7 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			get { return _text; }
 			set
 			{
-				changed = _text != value;
 				_text = value;
-				OnChange(new EventArgs());
 			}
 		}
 
@@ -60,9 +48,7 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			get { return _id; }
 			set
 			{
-				changed = _id != value;
 				_id = value;
-				OnChange(new EventArgs());
 			}
 		}
 

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Common.Controls.Theme;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VixenModules.Preview.VixenPreview.CustomProp
+namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	public class Square
 	{
@@ -24,7 +26,6 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			int w = _prop.Panel.Width / _prop.Width;
 			int h = _prop.Panel.Height / _prop.Height;
 			ChannelID = id;
-			Button.Text = ChannelID > 0 ? ChannelID.ToString() : string.Empty;
 
 
 			_button.Width = w + 1;
@@ -33,7 +34,7 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			_button.Top = h * Y;
 			_button.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
 			_button.MouseDown += new MouseEventHandler(ButtonClick);
-
+			setButtonData();
 			_prop.Panel.Controls.Add(Button);
 		}
 
@@ -42,6 +43,12 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			get { return (this._button); }
 		}
 
+		private void setButtonData()
+		{
+			Button.Text = ChannelID > 0 ? ChannelID.ToString() : string.Empty;
+			Button.ForeColor = ChannelID == 0 ? ThemeColorTable.ButtonTextColor : ThemeColorTable.ButtonBackColor;
+			Button.BackColor = ChannelID == 0 ? ThemeColorTable.ButtonBackColor : Color.White;
+		}
 
 		private void ButtonClick(object sender, MouseEventArgs e)
 		{
@@ -49,12 +56,13 @@ namespace VixenModules.Preview.VixenPreview.CustomProp
 			{
 				case MouseButtons.Left:
 					ChannelID = _prop.SelectedChannelId;
-					Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
-					
+					//Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
+					setButtonData();
 					break;
 				case MouseButtons.Right:
-					Button.Text = string.Empty;
+					//Button.Text = string.Empty;
 					ChannelID = 0;
+					setButtonData();
 					break;
 
 				default:
