@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ namespace Common.Controls.Timeline
 
 		#region Member Controls
 
-		private SplitContainer splitContainer;
+		public SplitContainer splitContainer;
 
 		// Left side (Panel 1)
 		private RowList timelineRowList;
@@ -616,11 +617,15 @@ namespace Common.Controls.Timeline
 		
 		#region Event Handlers
 
+		public int DefaultSplitterDistance;
+
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)
 				timelineRowList.Top = grid.Top;
 			timelineRowList.VerticalOffset = grid.VerticalOffset;
+
+			DefaultSplitterDistance = splitContainer.SplitterDistance;
 
 			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
 			// and it looks shit in general. So, force an immediate graphical refresh

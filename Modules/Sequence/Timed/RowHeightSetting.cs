@@ -8,19 +8,19 @@ using System.Runtime.Serialization;
 namespace VixenModules.Sequence.Timed
 {
 	[DataContract]
-	public class RowSetting
+	public class RowHeightSetting
 	{
-		public RowSetting()
+		public RowHeightSetting()
 		{
 			RowHeight = 32;
-			RowIndex = "0";
+			RowName = "";
 		}
 
 		[DataMember]
 		public int RowHeight { get; set; }
 
 		[DataMember]
-		public string RowIndex { get; set; }
+		public string RowName { get; set; }
 
 	}
 }

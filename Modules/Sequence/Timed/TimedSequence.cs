@@ -13,10 +13,16 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
 		}
 
-		public List<RowSetting> RowSettings
+		public List<RowHeightSetting> RowHeightSettings
 		{
-			get { return ((TimedSequenceData)SequenceData).RowSettings; }
-			set { ((TimedSequenceData)SequenceData).RowSettings = value; }
+			get { return ((TimedSequenceData)SequenceData).RowHeightSettings; }
+			set { ((TimedSequenceData)SequenceData).RowHeightSettings = value; }
+		}
+
+		public List<Guid> RowGuidId
+		{
+			get { return ((TimedSequenceData)SequenceData).RowGuidId; }
+			set { ((TimedSequenceData)SequenceData).RowGuidId = value; }
 		}
 
 		public override string FileExtension
@@ -35,5 +41,12 @@ namespace VixenModules.Sequence.Timed
 			get { return ((TimedSequenceData)SequenceData).DefaultRowHeight; }
 			set { ((TimedSequenceData)SequenceData).DefaultRowHeight = value; }
 		}
+
+		public int DefaultSplitterDistance
+		{
+			get { return ((TimedSequenceData)SequenceData).DefaultSplitterDistance; }
+			set { ((TimedSequenceData)SequenceData).DefaultSplitterDistance = value; }
+		}
+
 	}
 }

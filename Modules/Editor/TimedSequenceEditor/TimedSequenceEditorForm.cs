@@ -58,7 +58,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		// the sequence.
 		private TimedSequence _sequence;
-		public TimedSequence _rowData;
 
 		// the program context we will be playing this sequence in: used to interact with the execution engine.
 		private ISequenceContext _context;
@@ -393,6 +392,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
+			if (_sequence.DefaultSplitterDistance != 0)
+				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
@@ -1011,8 +1012,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_sequence != null)
 			{
-
-				_sequence.RowSettings = new List<RowSetting>();
 				if (filePath == null | forcePrompt)
 				{
 					if (_sequence.FilePath.Trim() == "" || forcePrompt)
@@ -1047,6 +1046,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								name = name + _sequence.FileExtension;
 								Logging.Info("TimedSequenceEditor: <SaveSequence> - Incorrect extension provided for timed sequence, appending one.");
 							}
+							SaveGridRowSettings();
 							_sequence.Save(name);
 							SetTitleBarText();
 						}
@@ -1058,21 +1058,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						_sequence.DefaultRowHeight = TimelineControl.rowHeight;
-						foreach (Row row in TimelineControl.Rows)
-						{
-							if (row.Height != TimelineControl.rowHeight)
-							{
-								RowSetting newCollection = new RowSetting { RowHeight = row.Height, RowIndex = row.Name };
-								_sequence.RowSettings.Add(newCollection);
-							}
-							
-						}
+						SaveGridRowSettings();
 						_sequence.Save();
 					}
 				}
 				else
 				{
+					SaveGridRowSettings();
 					_sequence.Save(filePath);
 					SetTitleBarText();
 				}
@@ -1084,6 +1076,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			
 			SequenceNotModified();
+		}
+
+		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
+		{
+			_sequence.RowHeightSettings = new List<RowHeightSetting>();
+			_sequence.RowGuidId = new List<Guid>();
+			//Add Default Row Height
+			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
+			//Add Splitter Distance, the width of the RowList Column
+			_sequence.DefaultSplitterDistance = TimelineControl.DefaultSplitterDistance;
+			//Adds the Row height settings for only those Rows that are not within the Default range
+			foreach (Row row in TimelineControl.Rows)
+			{
+				if (row.Height > TimelineControl.rowHeight + 7 || row.Height < TimelineControl.rowHeight - 7) //The 7 is the buffer size and will not save the Row Height if within 7 pixels. This is if a user manual adjusts the Row to matach the others (default height) and is a small amout off.
+				{
+					RowHeightSetting newRowHeightCollection = new RowHeightSetting { RowHeight = row.Height, RowName = row.Name };
+					_sequence.RowHeightSettings.Add(newRowHeightCollection);
+				}
+
+			}
+			//Adds the Expanded Groups for the Row List.
+			foreach (Row row in TimelineControl.Rows)
+			{
+				if (row.TreeOpen)
+				{
+					_sequence.RowGuidId.Add(((ElementNode)row.Tag).Id);
+				}
+			}
 		}
 
 		private void SaveColorCollections()
@@ -3336,6 +3356,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
+			if (_sequence.RowGuidId != null && _sequence.RowGuidId.Contains(node.Id))
+				newRow.TreeOpen = true;
+
 			// Tag it with the node it refers to, and take note of which row the given element node will refer to.
 			newRow.Tag = node;
 			if (_elementNodeToRows.ContainsKey(node))
@@ -5069,12 +5092,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LoadSequence(_sequence);
 
 			//Adjusts Row heights based on saved row height settings.
-			if (_sequence.RowSettings != null)
-				foreach (RowSetting rowSettings in _sequence.RowSettings)
+			if (_sequence.RowHeightSettings != null)
+				foreach (RowHeightSetting rowSettings in _sequence.RowHeightSettings)
 				{
 					foreach (Row row in TimelineControl.Rows)
 					{
-						if (row.Name == rowSettings.RowIndex)
+						if (row.Name == rowSettings.RowName)
 						{
 							row.Height = rowSettings.RowHeight;
 						}
@@ -5566,9 +5589,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void zoomUnderMousePositionToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		private void resetRowHeightToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TimelineControl.ZoomToMousePosition = zoomUnderMousePositionToolStripMenuItem.Checked;
+			foreach (Row row in TimelineControl.Rows)
+			{
+				row.Height = 32;
+			}
+			TimelineControl.rowHeight = 32;
+		}
+
+		private void collapeAllElementGroupsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (Row row in TimelineControl.Rows)
+			{
+				if (row.TreeOpen)
+				{
+					row.TreeOpen = false;
+				}
+			}
 		}
 
 	}
