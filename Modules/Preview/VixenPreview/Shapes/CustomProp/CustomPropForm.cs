@@ -51,6 +51,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private Prop _prop;
 		private static readonly string PropDirectory = PreviewTools.PropsFolder;//Path.Combine(new FileInfo(Application.ExecutablePath).DirectoryName, "Props");
 		private const string PROP_EXTENSION = ".prop";
+
+
 		#endregion
 		#region Properties
 		public List<PropChannel> Channels
@@ -151,6 +153,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 		}
+
 		private void changeChannelColorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PropChannel item = listBox1.SelectedItem as PropChannel;
@@ -195,7 +198,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			if (_fileName == null)
 			{
-				_prop = new Prop(this.panel1, (int)numGridWidth.Value, (int)numGridHeight.Value);
+				_prop = new Prop(this.dataGridPropView, (int)numGridWidth.Value, (int)numGridHeight.Value);
 			}
 			else
 			{
@@ -204,13 +207,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 				if (prop != null)
 				{
-					_prop = new Prop(panel1, prop);
+					_prop = new Prop(prop);
+
 					this.textBox1.Text = _prop.Name;
 					listBox1.Items.Clear();
 					listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
 
 				}
 			}
+			dataGridPropView.DataSource = _prop.Data;
+			//	dataGridPropView.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			dataGridPropView.ForeColor = Color.Black;
+
 		}
 
 		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
@@ -237,10 +245,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 					var serializer = new SharpSerializer();
 					var prop = Prop.FromFile(dlg.FileName);
-					
+
 					if (prop != null)
 					{
-						_prop = new Prop(panel1, prop);
+						_prop = new Prop(prop);
+						this.dataGridPropView.DataSource = _prop.Data;
 						this.textBox1.Text = _prop.Name;
 						listBox1.Items.Clear();
 						listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
@@ -262,7 +271,162 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
+		private void dataGridPropView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+			//switch ()
+			//			{
+			//				case MouseButtons.Left:
+			//					ChannelID = _prop.SelectedChannelId;
+			//					//Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
+			//					setButtonData();
+			//					break;
+			//				case MouseButtons.Right:
+			//					//Button.Text = string.Empty;
+			//					ChannelID = 0;
+			//					setButtonData();
+			//					break;
 
+			//				default:
+			//					break;
+			//			}
+		}
+
+		private void dataGridPropView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			var grid = sender as DataGridView;
+			if (grid == null) return;
+			grid.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+			grid.ForeColor = Color.Black;
+			switch (e.Button)
+			{
+				case MouseButtons.Left:
+					//ChannelID = _prop.SelectedChannelId;
+
+					foreach (DataGridViewCell cell in grid.SelectedCells)
+					{
+						cell.Value = _prop.SelectedChannelId;
+					}
+					//Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
+					//setButtonData(); 	
+					break;
+				case MouseButtons.Right:
+					//Button.Text = string.Empty;
+					//ChannelID = 0;
+
+					foreach (DataGridViewCell cell in grid.SelectedCells)
+					{
+						cell.Value = null;
+					}
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		private void contextMenuGrid_Opening(object sender, CancelEventArgs e)
+		{
+			if (dataGridPropView.SelectedCells.Count == 0)
+			{
+				e.Cancel = true;
+				return;
+			}
+			else
+			{
+
+				//	bool hasData = false;
+				//	bool hasBlank = false;
+
+				//	foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
+				//	{
+				//		if (item.Value == null) hasBlank = true;
+				//		if (item.Value != null) hasData = true;
+				//	}
+				//	clearToolStripMenuItem.Visible = hasData;
+				applyToolStripMenuItem.Visible = _prop.SelectedChannelId > 0;
+				//	if (!hasBlank && !hasData) e.Cancel = true; //Something really went wrong here... LOL
+			}
+
+		}
+
+		private void applyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
+			{
+				item.Value = _prop.SelectedChannelId;
+			}
+		}
+
+		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
+			{
+				item.Value = null;
+			}
+		}
+
+		private void dataGridPropView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+		{
+			dataGridPropView.Columns[e.ColumnIndex].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+		}
+
+		private void dataGridPropView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+		{
+			e.Column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+		}
+
+		private void dataGridPropView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+		{
+
+			float fontSize = NewFontSize(e.Graphics, e.CellBounds.Size, e.CellStyle.Font, e.Value as string);
+			if (!float.IsInfinity(fontSize))
+				e.CellStyle.Font = new Font(e.CellStyle.Font.Name, fontSize, e.CellStyle.Font.Style);
+
+			e.PaintBackground(e.ClipBounds, true);
+
+			e.PaintContent(e.ClipBounds);
+			using (Pen p = new Pen(Brushes.Black, 3))
+			{
+				e.Graphics.DrawLine(p, new Point(e.CellBounds.Left, e.CellBounds.Bottom),
+									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
+			}
+			using (Pen p = new Pen(Brushes.Black, 3))
+			{
+				e.Graphics.DrawLine(p, new Point(e.CellBounds.Right, e.CellBounds.Top),
+									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
+			}
+
+
+
+
+			e.Handled = true;
+		}
+
+		public static float NewFontSize(Graphics graphics, Size size, Font font, string str)
+		{
+			SizeF stringSize = graphics.MeasureString(str, font);
+			float wRatio = (size.Width) / stringSize.Width;
+			float hRatio = (size.Height) / stringSize.Height;
+			float ratio = Math.Min(hRatio, wRatio);
+			return font.Size * ratio;
+		}
+
+		private void dataGridPropView_KeyUp(object sender, KeyEventArgs e)
+		{
+			var grid = sender as DataGridView;
+			if (grid == null) return;
+			if (e.KeyCode == Keys.Delete)
+			{
+				if (grid.SelectedCells.Count > 0)
+				{
+					foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
+					{
+						item.Value = null;
+					}
+				}
+			}
+		}
 
 
 	}

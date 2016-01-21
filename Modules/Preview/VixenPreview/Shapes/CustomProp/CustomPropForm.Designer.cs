@@ -50,7 +50,10 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.panel1 = new DoubleBufferedPanel();
+			this.dataGridPropView = new System.Windows.Forms.DataGridView();
+			this.contextMenuGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.applyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();
@@ -62,6 +65,8 @@
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).BeginInit();
+			this.contextMenuGrid.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripMenuItem_Remove
@@ -271,7 +276,7 @@
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.panel1);
+			this.splitContainer1.Panel1.Controls.Add(this.dataGridPropView);
 			// 
 			// splitContainer1.Panel2
 			// 
@@ -280,15 +285,54 @@
 			this.splitContainer1.SplitterDistance = 664;
 			this.splitContainer1.TabIndex = 1;
 			// 
-			// panel1
+			// dataGridPropView
 			// 
-			this.panel1.AutoSize = true;
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(664, 500);
-			this.panel1.TabIndex = 1;
-			this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
+			this.dataGridPropView.AllowDrop = true;
+			this.dataGridPropView.AllowUserToAddRows = false;
+			this.dataGridPropView.AllowUserToDeleteRows = false;
+			this.dataGridPropView.AllowUserToResizeColumns = false;
+			this.dataGridPropView.AllowUserToResizeRows = false;
+			this.dataGridPropView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.dataGridPropView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+			this.dataGridPropView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridPropView.ColumnHeadersVisible = false;
+			this.dataGridPropView.ContextMenuStrip = this.contextMenuGrid;
+			this.dataGridPropView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridPropView.Location = new System.Drawing.Point(0, 0);
+			this.dataGridPropView.Name = "dataGridPropView";
+			this.dataGridPropView.ReadOnly = true;
+			this.dataGridPropView.RowHeadersVisible = false;
+			this.dataGridPropView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+			this.dataGridPropView.ShowEditingIcon = false;
+			this.dataGridPropView.Size = new System.Drawing.Size(664, 500);
+			this.dataGridPropView.TabIndex = 0;
+			this.dataGridPropView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridPropView_CellEndEdit);
+			this.dataGridPropView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridPropView_CellPainting);
+			this.dataGridPropView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridPropView_ColumnAdded);
+			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
+			// 
+			// contextMenuGrid
+			// 
+			this.contextMenuGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem,
+            this.applyToolStripMenuItem});
+			this.contextMenuGrid.Name = "contextMenuGrid";
+			this.contextMenuGrid.Size = new System.Drawing.Size(106, 48);
+			this.contextMenuGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuGrid_Opening);
+			// 
+			// clearToolStripMenuItem
+			// 
+			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.clearToolStripMenuItem.Text = "Clear";
+			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+			// 
+			// applyToolStripMenuItem
+			// 
+			this.applyToolStripMenuItem.Name = "applyToolStripMenuItem";
+			this.applyToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.applyToolStripMenuItem.Text = "Apply";
+			this.applyToolStripMenuItem.Click += new System.EventHandler(this.applyToolStripMenuItem_Click);
 			// 
 			// CustomPropForm
 			// 
@@ -308,10 +352,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel1.PerformLayout();
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).EndInit();
+			this.contextMenuGrid.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -335,11 +380,14 @@
 		private System.Windows.Forms.SplitContainer splitContainer2;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.SplitContainer splitContainer1;
-		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Button btnOpen;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem changeChannelColorToolStripMenuItem;
+		private System.Windows.Forms.DataGridView dataGridPropView;
+		private System.Windows.Forms.ContextMenuStrip contextMenuGrid;
+		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem applyToolStripMenuItem;
 	}
 }
 

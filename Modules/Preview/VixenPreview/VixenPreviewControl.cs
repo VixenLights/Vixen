@@ -1713,25 +1713,25 @@ namespace VixenModules.Preview.VixenPreview
 		}
 		public void AddCustomObjectToPreview(string fileName)
 		{
-			if (System.IO.File.Exists(fileName))
-			{
+			//if (System.IO.File.Exists(fileName))
+			//{
 
-				DisplayItem newDisplayItem =  VixenModules.Preview.VixenPreview.Shapes.CustomProp.Prop.FromFile(fileName).ToDisplayItem() ;
-				if (newDisplayItem != null)
-				{
-					DeSelectSelectedDisplayItem();
+			//	DisplayItem newDisplayItem =  VixenModules.Preview.VixenPreview.Shapes.CustomProp.Prop.FromFile(fileName).ToDisplayItem() ;
+			//	if (newDisplayItem != null)
+			//	{
+			//		DeSelectSelectedDisplayItem();
 
-					AddDisplayItem(newDisplayItem);
-					_selectedDisplayItem = newDisplayItem;
-					OnSelectDisplayItem(this, _selectedDisplayItem);
-					_selectedDisplayItem.Shape.MoveTo(10, 10);
-					_selectedDisplayItem.Shape.Select(true);
-					_selectedDisplayItem.Shape.SetSelectPoint(null);
-					List<DisplayItem> selected = new List<DisplayItem> { _selectedDisplayItem };
+			//		AddDisplayItem(newDisplayItem);
+			//		_selectedDisplayItem = newDisplayItem;
+			//		OnSelectDisplayItem(this, _selectedDisplayItem);
+			//		_selectedDisplayItem.Shape.MoveTo(10, 10);
+			//		_selectedDisplayItem.Shape.Select(true);
+			//		_selectedDisplayItem.Shape.SetSelectPoint(null);
+			//		List<DisplayItem> selected = new List<DisplayItem> { _selectedDisplayItem };
 
-					PreviewItemAddAction(); //starts Undo_Redo Action
-				}
-			}
+			//		PreviewItemAddAction(); //starts Undo_Redo Action
+			//	}
+			//}
 		
 		
 		}

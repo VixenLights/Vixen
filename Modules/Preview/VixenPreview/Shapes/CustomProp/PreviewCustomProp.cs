@@ -23,8 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private PreviewPoint _bottomLeft;
 		[DataMember]
 		private PreviewPoint _bottomRight;
-		[DataMember]
-		private List<Square> _squares;
+		 
 		[DataMember]
 		private Point _gridSize { get; set; }
 
@@ -46,8 +45,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			_prop = prop;
 			if (_bottomRight.X - _bottomLeft.X < _prop.Width) _bottomRight.X = _bottomLeft.X + _prop.Width;
 			if (_topLeft.Y - _bottomLeft.X < _prop.Height) _topLeft.Y = _topRight.Y = _topLeft.Y + _bottomLeft.X + _prop.Height;
-			_squares = _prop.GetSelectedSquares();
-			Layout();
+			 Layout();
 		}
 
 
@@ -246,21 +244,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 						using (FastPixel.FastPixel fp = new FastPixel.FastPixel(b))
 						{
 							fp.Lock();
-							var xSpacing = Math.Round((double)rect.Width / (double)_prop.Squares.GetLength(0), 0);
-							var ySpacing = Math.Round((double)rect.Height / (double)_prop.Squares.GetLength(1), 0);
-							if (xSpacing < 1) xSpacing = 1;
-							if (ySpacing < 1) ySpacing = 1;
+							//var xSpacing = Math.Round((double)rect.Width / (double)_prop.Squares.GetLength(0), 0);
+							//var ySpacing = Math.Round((double)rect.Height / (double)_prop.Squares.GetLength(1), 0);
+							//if (xSpacing < 1) xSpacing = 1;
+							//if (ySpacing < 1) ySpacing = 1;
 
-							_squares.ForEach(sq =>
-							{
-								Color newColor = fp.GetPixel((int)xSpacing * sq.X, (int)ySpacing * sq.Y);
-								if (newColor.A != 0)
-								{
-									PreviewPixel pixel = new PreviewPixel(sq.X, sq.Y , 0, PixelSize);
-									pixel.Node = node;
-									_pixels.Add(pixel);
-								}
-							});
+							//_squares.ForEach(sq =>
+							//{
+							//	Color newColor = fp.GetPixel((int)xSpacing * sq.X, (int)ySpacing * sq.Y);
+							//	if (newColor.A != 0)
+							//	{
+							//		PreviewPixel pixel = new PreviewPixel(sq.X, sq.Y, 0, PixelSize);
+							//		pixel.Node = node;
+							//		_pixels.Add(pixel);
+							//	}
+							//});
 
 							fp.Unlock(false);
 						}
