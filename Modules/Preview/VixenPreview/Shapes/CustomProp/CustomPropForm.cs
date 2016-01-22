@@ -1,4 +1,4 @@
-﻿using Polenter.Serialization;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -85,10 +85,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			if (!Directory.Exists(PropDirectory)) Directory.CreateDirectory(PropDirectory);
 			var fileName = Path.Combine(PropDirectory, Name + PROP_EXTENSION);
-			var serializer = new SharpSerializer();
-
-			serializer.Serialize(_prop, fileName);
-
+			
+			_prop.ToFile(fileName);
 		}
 
 		public bool NameLocked { get { return !this.textBox1.Enabled; } set { this.textBox1.Enabled = !value; } }
@@ -216,6 +214,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				}
 			}
 			dataGridPropView.DataSource = _prop.Data;
+			
 			//	dataGridPropView.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
 			dataGridPropView.ForeColor = Color.Black;
 
@@ -243,7 +242,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				if (results == System.Windows.Forms.DialogResult.OK)
 				{
 
-					var serializer = new SharpSerializer();
+					 
 					var prop = Prop.FromFile(dlg.FileName);
 
 					if (prop != null)

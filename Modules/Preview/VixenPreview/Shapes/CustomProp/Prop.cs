@@ -1,7 +1,8 @@
-﻿using Polenter.Serialization;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,17 +13,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	public class Prop
 	{
-	
+
 		private int _width;
 		private int _height;
-		/// <summary>
-		/// 
-		/// </summary>
-//public Square[,] Squares { get; set; }
 
 		public DataTable Data { get; set; }
 		private DataGridView _dataGrid;
-		public Prop() { }
+		public Prop()
+		{
+			Channels = new List<PropChannel>();
+		}
 
 		public Prop(DataGridView dataGrid, int width, int height)
 		{
@@ -35,12 +35,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public Prop(Prop obj)
 		{
-			 
+
 			this.Name = obj.Name;
 			Channels = obj.Channels;
 			this.Height = obj.Height;
 			this.Width = obj.Width;
-			GenerateGrid( );
+			GenerateGrid();
 
 		}
 
@@ -48,10 +48,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			_width = width;
 			_height = height;
-			GenerateGrid( );
+			GenerateGrid();
 		}
 
-		private void GenerateGrid( )
+		private void GenerateGrid()
 		{
 			if (Data == null) Data = new DataTable();
 			while (Data.Rows.Count < _height)
@@ -60,12 +60,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			while (Data.Rows.Count > _height)
 			{
-				Data.Rows.RemoveAt(Data.Rows.Count -1);
+				Data.Rows.RemoveAt(Data.Rows.Count - 1);
 			}
 			while (Data.Columns.Count < _width)
 			{
 				DataColumn column = new DataColumn();
-		 
+
 				Data.Columns.Add();
 			}
 			while (Data.Columns.Count > _width)
@@ -74,68 +74,114 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 		}
-		
-		//private void GenerateGrid(Square[,] squares = null)
-		//{
-		//	Panel.Enabled = true;
 
-		//	if (Squares != null)
-		//		foreach (Square s in Squares)
-		//		{
-		//			s.RemoveEvents();
-		//		}
 
-		//	Panel.Controls.Clear();
-		//	Panel.SuspendLayout();
-		//	Panel.Parent.SuspendLayout();
-		//	Squares = new Square[Width, Height];
 
-		//	for (int x = 0; x < Width; x++)
-		//	{
-		//		for (int y = 0; y < Height; y++)
-		//		{
-		//			Square s;
-		//			if (squares != null)
-		//			{
-		//				try  //For now brute force..eventually check to ensure the matrix has the requested value...
-		//				{
-		//					s = new Square(this, squares[x, y].X, squares[x, y].Y, squares[x, y].ChannelID);
-		//				}
-		//				catch (Exception)
-		//				{
-		//					s = new Square(this, x, y);
-		//				}
-
-		//			}
-		//			else
-		//				s = new Square(this, x, y);
-
-		//			Squares[x, y] = s;
-		//		}
-		//	}
-
-		//	Panel.ResumeLayout();
-		//	Panel.Parent.ResumeLayout();
-		//}
-		
-		
 		public static Prop FromFile(string fileName)
 		{
-			
-			var serializer = new SharpSerializer();
-			try
+			Prop output = new Prop();
+			using (var fs = new FileStream(fileName, FileMode.Open))
 			{
-				var prop = serializer.Deserialize(fileName) as Prop;
-			
-				return prop;
+				using (var sr = new StreamReader(fs))
+				{
+					while (!sr.EndOfStream)
+					{
+						var line = sr.ReadLine();
+						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+						{
+							var splits = line.Split(',');
+							switch ((FileLineType)Convert.ToInt32(splits[0]))
+							{
+								case FileLineType.DefinitionRow:
+									output.Height = Convert.ToInt32(splits[1]);
+									output.Width = Convert.ToInt32(splits[2]);
+									output.Name = splits[3] as string;
+									output.GenerateGrid();
+									break;
+								case FileLineType.ChannelRow:
+									var propChannel = new PropChannel();
+									propChannel.ID = Convert.ToInt32(splits[1]);
+									propChannel.Text = splits[2] as string;
+									propChannel.ItemColor = new Common.Controls.ColorManagement.ColorModels.XYZ(Convert.ToInt32(splits[3]), Convert.ToInt32(splits[4]), Convert.ToInt32(splits[5]));
+
+									output.Channels.Add(propChannel);
+									break;
+
+								case FileLineType.GridRow:
+									int rowIndex = Convert.ToInt32(splits[1]) - 1;
+									for (int i = 2; i < splits.Length; i++)
+									{
+										if (!string.IsNullOrWhiteSpace(splits[i] as string))
+										{
+											output.Data.Rows[rowIndex][i - 2] = Convert.ToInt32(splits[i]);
+										}
+									}
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
 			}
-			catch
+			return output;
+		}
+
+
+		public void ToFile(string fileName)
+		{
+			using (var fs = new FileStream(fileName, FileMode.Create))
 			{
+				using (var sw = new StreamWriter(fs))
+				{
+					int channelCount = Channels == null ? 0 : Channels.Count();
+					//Write File Definition First
+					sw.WriteLine("#");
+					sw.WriteLine("#File Definition:");
+					sw.WriteLine("#{0},{1},{2},{3},{4}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount");
+					sw.WriteLine("#");
+					sw.WriteLine("{0},{1},{2},{3},{4}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount);
+					//Write the Channel Information
+					sw.WriteLine("#");
+					sw.WriteLine("#Channel Definitions:");
+					sw.WriteLine("#{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, "Channel ID", "Text", "ItemColor.X", "ItemColor.Y", "ItemColor.Z");
+
+					if (Channels != null)
+					{
+						Channels.OrderBy(o => o.ID).ToList()
+							   .ForEach(c =>
+							   {
+								   sw.WriteLine("{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, c.ID, c.Text, c.ItemColor.X, c.ItemColor.Y, c.ItemColor.Z);
+							   });
+					}
+					sw.WriteLine("#");
+					sw.WriteLine("#Column Definitions:");
+					sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.GridRow, "Row Number");
+					sw.WriteLine("#");
+					if (Data != null)
+					{
+
+						foreach (DataRow row in Data.Rows)
+						{
+							sw.Write("{0},{1}", (int)FileLineType.GridRow, Data.Rows.IndexOf(row) + 1);
+							for (int i = 0; i < Data.Columns.Count; i++)
+							{
+								sw.Write(",{0}", row[i]);
+							}
+							sw.WriteLine();
+						}
+					}
+				}
 			}
-			return null;
 
 		}
 
+		public enum FileLineType
+		{
+			DefinitionRow = 0,
+			ChannelRow = 1,
+			GridRow = 2
+		}
 
 		public DisplayItem ToDisplayItem()
 		{
@@ -144,7 +190,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		}
 
 
-	 
+
 		public int Height
 		{
 			set { _height = value; }
@@ -162,11 +208,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public List<PropChannel> Channels { get; set; }
 
-	 
-		[ExcludeFromSerialization]
+
 		public int SelectedChannelId { get; set; }
 
-		[ExcludeFromSerialization]
 		public string SelectedChannelName { get; set; }
 
 
