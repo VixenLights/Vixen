@@ -75,10 +75,12 @@ namespace Common.Controls.Timeline
 				Row.RowToggled += RowToggledHandler;
 				Row.RowHeightChanged += RowHeightChangedHandler;
 				Row.RowHeightResized += RowHeightResizedHandler;
+				Row.RowLabelContextMenuSelect += RowLabelContextMenuHandler;
 			} else {
 				Row.RowToggled -= RowToggledHandler;
 				Row.RowHeightChanged -= RowHeightChangedHandler;
 				Row.RowHeightResized -= RowHeightResizedHandler;
+				Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 			}
 			this.timelineRowList.EnableDisableHandlers(enabled);
 		}
@@ -89,6 +91,7 @@ namespace Common.Controls.Timeline
 			Row.RowToggled -= RowToggledHandler;
 			Row.RowHeightChanged -= RowHeightChangedHandler;
 			Row.RowHeightResized -= RowHeightResizedHandler;
+			Row.RowLabelContextMenuSelect -= RowLabelContextMenuHandler;
 			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(this);
 			Vixen.Utility.cEventHelper.RemoveAllEventHandlers(TimeInfo);
 			TimeInfo = null;
@@ -672,6 +675,62 @@ namespace Common.Controls.Timeline
 				}
 			}
 		}
+
+		#region RowLabel Context Menu Strip
+		private void RowLabelContextMenuHandler(object sender, EventArgs e)
+		{
+			ContextMenuStrip RowListMenu = new ContextMenuStrip();
+			ToolStripMenuItem RowListMenuCollapse = new ToolStripMenuItem("Collapse All Groups");
+			ToolStripMenuItem RowListMenuResetRowHeight = new ToolStripMenuItem("Reset All Rows to Default Height");
+			ToolStripMenuItem RowListMenuResetSelectedRowHeight = new ToolStripMenuItem("Reset Selected and Child rows to Default Height");
+			RowListMenuCollapse.Click += RowListMenuCollapse_Click;
+			RowListMenuResetRowHeight.Click += ResetRowHeight_Click;
+			RowListMenuResetSelectedRowHeight.Click += ResetSelectedRowHeight_Click;
+			RowListMenu.Items.AddRange(new ToolStripItem[] { RowListMenuCollapse, RowListMenuResetRowHeight, RowListMenuResetSelectedRowHeight });
+			RowListMenu.Renderer = new ThemeToolStripRenderer();
+			ContextMenuStrip = RowListMenu;
+		}
+
+		private void RowListMenuCollapse_Click(object sender, EventArgs e)
+		{
+			foreach (Row row in Rows)
+			{
+				if (row.TreeOpen)
+				{
+					row.TreeOpen = false;
+				}
+			}
+		}
+
+		private void ResetRowHeight_Click(object sender, EventArgs e)
+		{
+			foreach (Row row in Rows)
+			{
+				row.Height = 32;
+			}
+			rowHeight = 32;
+		}
+
+		private void ResetSelectedRowHeight_Click(object sender, EventArgs e)
+		{
+			SelectedRow.Height = rowHeight;
+			foreach (Row rH in SelectedRow.ChildRows)
+			{
+				rH.Height = rowHeight;
+				ChangeRowHeight(rH); 
+			}
+		}
+
+		private void ChangeRowHeight(Row childs)
+		{
+			// iterate through all of its children, changing each row height
+			foreach (Row child in childs.ChildRows)
+			{
+				child.Height = rowHeight;
+				ChangeRowHeight(child);
+			}
+		}
+		#endregion
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{

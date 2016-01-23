@@ -100,6 +100,7 @@ namespace Common.Controls.Timeline
 					m_rowLabel.HeightChanged -= HeightChangedHandler;
 					m_rowLabel.LabelClicked -= LabelClickedHandler;
 					m_rowLabel.HeightResized -= HeightResizedHandler;
+					m_rowLabel.RowContextMenuSelect -= RowContextMenuSelectHandler;
 				}
 
 				m_rowLabel = value;
@@ -108,6 +109,7 @@ namespace Common.Controls.Timeline
 				m_rowLabel.HeightChanged += HeightChangedHandler;
 				m_rowLabel.LabelClicked += LabelClickedHandler;
 				m_rowLabel.HeightResized += HeightResizedHandler;
+				m_rowLabel.RowContextMenuSelect += RowContextMenuSelectHandler;
 
 				_RowChanged();
 			}
@@ -223,6 +225,7 @@ namespace Common.Controls.Timeline
 		public static event EventHandler RowChanged;
 		public static event EventHandler RowHeightChanged;
 		public static event EventHandler RowHeightResized;
+		public static event EventHandler RowLabelContextMenuSelect;
 		public static event EventHandler<ModifierKeysEventArgs> RowSelectedChanged;
 
 		private void _ElementAdded(Element te)
@@ -253,6 +256,11 @@ namespace Common.Controls.Timeline
 		private void _RowHeightResized()
 		{
 			if (RowHeightResized != null) RowHeightResized(this, EventArgs.Empty);
+		}
+
+		private void _RowLabelContextMenuSelect()
+		{
+			if (RowLabelContextMenuSelect != null) RowLabelContextMenuSelect(this, EventArgs.Empty);
 		}
 
 		private void _RowSelectedChanged(Keys k)
@@ -299,6 +307,11 @@ namespace Common.Controls.Timeline
 		protected void HeightResizedHandler(object sender, EventArgs e)
 		{
 			_RowHeightResized();
+		}
+
+		protected void RowContextMenuSelectHandler(object sender, EventArgs e)
+		{
+			_RowLabelContextMenuSelect();
 		}
 
 		protected void LabelClickedHandler(object sender, ModifierKeysEventArgs e)
