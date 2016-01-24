@@ -9,6 +9,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
+
 	public class PropChannel
 	{
 		public PropChannel() { }
@@ -61,6 +62,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				return string.Format("{0} -> {1}", ID.ToString().PadRight(3), Text);
 			}
 		}
+		public List<Point> Points = new List<Point>();
 		public ElementNode Node { get; set; }
 	}
 }

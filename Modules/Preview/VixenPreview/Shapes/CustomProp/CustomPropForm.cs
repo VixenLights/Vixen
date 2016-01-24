@@ -44,6 +44,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+
 			ThemeUpdateControls.UpdateControls(this);
 		}
 		private string _fileName = null;
@@ -189,34 +190,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 			Channels.Where(r => r.ID == id + 1).ToList().ForEach(c => c.ID = id);
-			updateDataGrid_RemoveID(id);
-			RemoveChannel(id + 1);
+		 
+	 
 
 		}
-		private void updateDataGrid_RemoveID(int id)
-		{
-
-			foreach (DataGridViewRow row in dataGridPropView.Rows)
-			{
-				foreach (DataGridViewCell cell in row.Cells)
-				{
-					var cellValue = cell.Value as string;
-					if (!string.IsNullOrWhiteSpace(cellValue))
-					{
-						if (cellValue.Equals(id.ToString()))
-						{
-							cellValue = string.Empty;
-						}
-						if (cellValue.Equals((id + 1).ToString()))
-						{
-							cell.Value = id;
-							updateDataGrid_RemoveID(id + 1);
-						}
-					}
-				}
-			}
-
-		}
+	 
 
 		private void changeChannelColorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -283,7 +261,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					this.textBox1.Text = _prop.Name;
 					listBox1.Items.Clear();
 					listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
-
+					this.numGridHeight.Value = _prop.Height;
+					this.numGridWidth.Value = _prop.Width;
 				}
 			}
 			dataGridPropView.DataSource = _prop.Data;
@@ -331,12 +310,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		private void numGridHeight_ValueChanged(object sender, EventArgs e)
-		{
-			_prop.UpdateGrid((int)numGridHeight.Value, (int)numGridWidth.Value);
-
-		}
-
+	 
 		private void panel1_Resize(object sender, EventArgs e)
 		{
 			_prop.UpdateGrid((int)numGridHeight.Value, (int)numGridWidth.Value);

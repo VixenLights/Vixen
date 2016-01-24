@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,13 +12,50 @@ using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
+
 	public class Prop
 	{
 
 		private int _width;
 		private int _height;
+		private DataTable _data;
+		public DataTable Data
+		{
+			get { return _data; }
+			set
+			{
+				_data = value;
+				UpdateChannelPoints();
+			}
+		}
 
-		public DataTable Data { get; set; }
+		private void UpdateChannelPoints()
+		{
+		 
+			object lockObj = new object();
+			if (Channels == null) Channels = new List<PropChannel>();
+			Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
+			Parallel.For(0, _data.Columns.Count, x =>
+			{
+				Parallel.For(0, _data.Rows.Count, y =>
+				{
+					var result = _data.Rows[y][x] as string;
+					if (!string.IsNullOrWhiteSpace(result))
+					{
+						var iResult = Int32.Parse(result);
+						if (iResult > 0)
+						{
+							lock (lockObj)
+							{
+								Channels.Where(w => w.ID == iResult).First().Points.Add(new System.Drawing.Point(x, y));
+							}
+						}
+					}
+				});
+
+			});
+		}
+
 		private DataGridView _dataGrid;
 		public Prop()
 		{

@@ -31,6 +31,8 @@ namespace Common.VixenHelp
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/adding-items-to-the-preview/smart-objects/candy-cane/")]
 			Preview_Cane,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/how-to/resize-the-preview-image/")]
+			Preview_CustomProp,
+			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/how-to/create-custom-prop/")]
 			Preview_ResizeBackground,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/preview/custom-props/")]
 			Preview_CustomShape,

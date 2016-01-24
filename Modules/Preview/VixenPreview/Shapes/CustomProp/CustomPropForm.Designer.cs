@@ -119,7 +119,7 @@
             0,
             0,
             0});
-			this.numGridHeight.ValueChanged += new System.EventHandler(this.numGridHeight_ValueChanged);
+		 
 			// 
 			// label4
 			// 
@@ -212,7 +212,7 @@
             0,
             0,
             0});
-			this.numGridWidth.ValueChanged += new System.EventHandler(this.numGridHeight_ValueChanged);
+		 
 			// 
 			// splitContainer2
 			// 

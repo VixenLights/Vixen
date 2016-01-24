@@ -35,7 +35,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X + prop.Width, _topLeft.Y + prop.Height);
 			_prop = prop;
-
+			 
 			initiallyAssignedNode = selectedNode;
 
 			Layout();
@@ -187,7 +187,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		#endregion
-
+		public override List<PreviewBaseShape> Strings
+		{
+			get
+			{
+				return base.Strings;
+			}
+			set
+			{
+				base.Strings = value;
+			}
+		}
 		public override void Layout()
 		{
 			if (_topLeft != null && _bottomRight != null)

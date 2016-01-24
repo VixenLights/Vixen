@@ -185,8 +185,11 @@
     <Compile Include="Shapes\CustomProp\CustomPropForm.Designer.cs">
       <DependentUpon>CustomPropForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Shapes\CustomProp\DoubleBufferedPanel.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Shapes\PreviewCustomPropControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shapes\PreviewCustomPropControl.Designer.cs">
+      <DependentUpon>PreviewCustomPropControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewCustomProp.cs" />
     <Compile Include="Shapes\CustomProp\Prop.cs" />
@@ -427,6 +430,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\DisplayItemBaseControl.resx">
       <DependentUpon>DisplayItemBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shapes\PreviewCustomPropControl.resx">
+      <DependentUpon>PreviewCustomPropControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewCustomCreateForm.resx">
       <DependentUpon>PreviewCustomCreateForm.cs</DependentUpon>
