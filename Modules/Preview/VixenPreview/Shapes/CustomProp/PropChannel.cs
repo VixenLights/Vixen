@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -22,8 +23,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private string _text;
 		private int _id;
 		XYZ _itemColor;
-		
-		
+
+
 		public XYZ ItemColor
 		{
 			get { return _itemColor; }
@@ -60,5 +61,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				return string.Format("{0} -> {1}", ID.ToString().PadRight(3), Text);
 			}
 		}
+		public ElementNode Node { get; set; }
 	}
 }

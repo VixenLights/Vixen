@@ -85,7 +85,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			if (!Directory.Exists(PropDirectory)) Directory.CreateDirectory(PropDirectory);
 			var fileName = Path.Combine(PropDirectory, Name + PROP_EXTENSION);
-			
+
 			_prop.ToFile(fileName);
 		}
 
@@ -107,6 +107,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 			return channelName;
+		}
+
+		int _currentRowHeight = -1;
+
+		private void ResizeRows()
+		{
+			var rowHeight = (double)dataGridPropView.Parent.Height / (double)dataGridPropView.Rows.Count;
+
+			if (_currentRowHeight != rowHeight)
+			{
+				foreach (DataGridViewRow row in dataGridPropView.Rows)
+				{
+					row.Height = (int)rowHeight;
+				}
+				_currentRowHeight = (int)rowHeight;
+			}
 		}
 
 		#endregion
@@ -144,11 +160,61 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void toolStripMenuItem_Rename_Click(object sender, EventArgs e)
 		{
-
+			var prop = listBox1.SelectedItem as PropChannel;
+			if (prop != null)
+			{
+				ChannelNaming form = new ChannelNaming();
+				form.Value = prop.Text;
+				var result = form.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					prop.Text = form.Value;
+				}
+			}
 		}
 
 		private void toolStripMenuItem_Remove_Click(object sender, EventArgs e)
 		{
+			var prop = listBox1.SelectedItem as PropChannel;
+			if (prop != null)
+				RemoveChannel(prop.ID);
+		}
+
+		private void RemoveChannel(int id, bool renameOnly = false)
+		{
+			var channel = Channels.Where(s => s.ID == id).FirstOrDefault();
+			if (!renameOnly)
+			{
+				Channels.Remove(channel);
+			}
+
+			Channels.Where(r => r.ID == id + 1).ToList().ForEach(c => c.ID = id);
+			updateDataGrid_RemoveID(id);
+			RemoveChannel(id + 1);
+
+		}
+		private void updateDataGrid_RemoveID(int id)
+		{
+
+			foreach (DataGridViewRow row in dataGridPropView.Rows)
+			{
+				foreach (DataGridViewCell cell in row.Cells)
+				{
+					var cellValue = cell.Value as string;
+					if (!string.IsNullOrWhiteSpace(cellValue))
+					{
+						if (cellValue.Equals(id.ToString()))
+						{
+							cellValue = string.Empty;
+						}
+						if (cellValue.Equals((id + 1).ToString()))
+						{
+							cell.Value = id;
+							updateDataGrid_RemoveID(id + 1);
+						}
+					}
+				}
+			}
 
 		}
 
@@ -187,9 +253,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			PropChannel item = listBox1.SelectedItem as PropChannel;
-
-			_prop.SelectedChannelId = item.ID;
-			_prop.SelectedChannelName = item.Text;
+			if (item == null)
+			{
+				_prop.SelectedChannelId = 0;
+				_prop.SelectedChannelName = null;
+			}
+			else
+			{
+				_prop.SelectedChannelId = item.ID;
+				_prop.SelectedChannelName = item.Text;
+			}
 		}
 
 		private void CustomPropForm_Load(object sender, EventArgs e)
@@ -214,10 +287,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				}
 			}
 			dataGridPropView.DataSource = _prop.Data;
-			
+
 			//	dataGridPropView.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
 			dataGridPropView.ForeColor = Color.Black;
-
+			ResizeRows();
 		}
 
 		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
@@ -242,7 +315,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				if (results == System.Windows.Forms.DialogResult.OK)
 				{
 
-					 
+
 					var prop = Prop.FromFile(dlg.FileName);
 
 					if (prop != null)
@@ -270,58 +343,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		private void dataGridPropView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-			//switch ()
-			//			{
-			//				case MouseButtons.Left:
-			//					ChannelID = _prop.SelectedChannelId;
-			//					//Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
-			//					setButtonData();
-			//					break;
-			//				case MouseButtons.Right:
-			//					//Button.Text = string.Empty;
-			//					ChannelID = 0;
-			//					setButtonData();
-			//					break;
-
-			//				default:
-			//					break;
-			//			}
-		}
-
-		private void dataGridPropView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			var grid = sender as DataGridView;
-			if (grid == null) return;
-			grid.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			grid.ForeColor = Color.Black;
-			switch (e.Button)
-			{
-				case MouseButtons.Left:
-					//ChannelID = _prop.SelectedChannelId;
-
-					foreach (DataGridViewCell cell in grid.SelectedCells)
-					{
-						cell.Value = _prop.SelectedChannelId;
-					}
-					//Button.Text = _prop.SelectedChannelId > 0 ? _prop.SelectedChannelId.ToString() : string.Empty;
-					//setButtonData(); 	
-					break;
-				case MouseButtons.Right:
-					//Button.Text = string.Empty;
-					//ChannelID = 0;
-
-					foreach (DataGridViewCell cell in grid.SelectedCells)
-					{
-						cell.Value = null;
-					}
-					break;
-
-				default:
-					break;
-			}
-		}
 
 		private void contextMenuGrid_Opening(object sender, CancelEventArgs e)
 		{
@@ -375,6 +396,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			e.Column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 		}
 
+
 		private void dataGridPropView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
 
@@ -395,8 +417,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				e.Graphics.DrawLine(p, new Point(e.CellBounds.Right, e.CellBounds.Top),
 									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
 			}
-
-
 
 
 			e.Handled = true;
@@ -425,6 +445,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					}
 				}
 			}
+		}
+
+		private void dataGridPropView_Resize(object sender, EventArgs e)
+		{
+			ResizeRows();
 		}
 
 

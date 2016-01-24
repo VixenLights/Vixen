@@ -40,9 +40,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Channels = obj.Channels;
 			this.Height = obj.Height;
 			this.Width = obj.Width;
-			GenerateGrid();
+
+			this.Data = obj.Data;
 
 		}
+
 
 		public void UpdateGrid(int height, int width)
 		{
@@ -54,6 +56,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private void GenerateGrid()
 		{
 			if (Data == null) Data = new DataTable();
+			Data.TableName = "CustomPropGrid";
 			while (Data.Rows.Count < _height)
 			{
 				Data.Rows.Add(Data.NewRow());
@@ -74,8 +77,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 		}
-
-
 
 		public static Prop FromFile(string fileName)
 		{
@@ -183,10 +184,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			GridRow = 2
 		}
 
-		public DisplayItem ToDisplayItem()
+		public DisplayItem ToDisplayItem(int x, int y)
 		{
 			//Theres got to be a better way to do this... LOL
-			return (DisplayItem)PreviewTools.DeSerializeToDisplayItem(PreviewTools.SerializeToString(new PreviewCustomProp(new PreviewPoint(10, 10), null, 1, this)), typeof(DisplayItem));
+
+			var prop = new PreviewCustomProp(new PreviewPoint(x, y), null, 1, this);
+			return new DisplayItem() { Shape = prop, ZoomLevel = 1 };
+
+
 		}
 
 

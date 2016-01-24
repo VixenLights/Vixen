@@ -743,11 +743,11 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void btnAddCustomObjectToPreview_Click(object sender, EventArgs e)
 		{
-			//TemplateComboBoxItem customObject = comboBoxCustomObjects.SelectedItem as TemplateComboBoxItem;
-			//if (customObject != null)
-			//{
-			//	previewForm.Preview.AddCustomObjectToPreview(customObject.FileName);
-			//}
+			TemplateComboBoxItem customObject = comboBoxCustomObjects.SelectedItem as TemplateComboBoxItem;
+			if (customObject != null)
+			{
+				previewForm.Preview.AddCustomObjectToPreview(customObject.FileName);
+			}
 		}
 
 

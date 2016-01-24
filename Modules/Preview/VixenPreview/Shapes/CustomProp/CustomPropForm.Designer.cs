@@ -46,7 +46,6 @@
 			this.btnUpdateChannelCount = new System.Windows.Forms.Button();
 			this.numGridWidth = new System.Windows.Forms.NumericUpDown();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.btnOpen = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -101,9 +100,9 @@
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(159, 87);
+			this.btnSave.Location = new System.Drawing.Point(123, 87);
 			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(75, 76);
+			this.btnSave.Size = new System.Drawing.Size(111, 27);
 			this.btnSave.TabIndex = 9;
 			this.btnSave.Text = "Save";
 			this.btnSave.UseVisualStyleBackColor = true;
@@ -224,7 +223,6 @@
 			// 
 			// splitContainer2.Panel1
 			// 
-			this.splitContainer2.Panel1.Controls.Add(this.btnOpen);
 			this.splitContainer2.Panel1.Controls.Add(this.textBox1);
 			this.splitContainer2.Panel1.Controls.Add(this.label1);
 			this.splitContainer2.Panel1.Controls.Add(this.btnSave);
@@ -241,16 +239,6 @@
 			this.splitContainer2.Size = new System.Drawing.Size(246, 500);
 			this.splitContainer2.SplitterDistance = 203;
 			this.splitContainer2.TabIndex = 0;
-			// 
-			// btnOpen
-			// 
-			this.btnOpen.Location = new System.Drawing.Point(20, 134);
-			this.btnOpen.Name = "btnOpen";
-			this.btnOpen.Size = new System.Drawing.Size(97, 29);
-			this.btnOpen.TabIndex = 12;
-			this.btnOpen.Text = "Open / Import";
-			this.btnOpen.UseVisualStyleBackColor = true;
-			this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
 			// 
 			// textBox1
 			// 
@@ -293,7 +281,6 @@
 			this.dataGridPropView.AllowUserToResizeColumns = false;
 			this.dataGridPropView.AllowUserToResizeRows = false;
 			this.dataGridPropView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.dataGridPropView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
 			this.dataGridPropView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridPropView.ColumnHeadersVisible = false;
 			this.dataGridPropView.ContextMenuStrip = this.contextMenuGrid;
@@ -310,6 +297,7 @@
 			this.dataGridPropView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridPropView_CellPainting);
 			this.dataGridPropView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridPropView_ColumnAdded);
 			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
+			this.dataGridPropView.Resize += new System.EventHandler(this.dataGridPropView_Resize);
 			// 
 			// contextMenuGrid
 			// 
@@ -381,7 +369,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button btnOpen;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem changeChannelColorToolStripMenuItem;
 		private System.Windows.Forms.DataGridView dataGridPropView;
