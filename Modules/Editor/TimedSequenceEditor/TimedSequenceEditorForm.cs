@@ -3347,7 +3347,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AddNodeAsRow(ElementNode node, Row parentRow)
 		{
 			TimelineControl.rowHeight =  _sequence.DefaultRowHeight;
-			if (TimelineControl.rowHeight == 0)
+			if (TimelineControl.rowHeight <= 10)
 				TimelineControl.rowHeight = 32;
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
@@ -5591,22 +5591,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void resetRowHeightToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (Row row in TimelineControl.Rows)
-			{
-				row.Height = 32;
-			}
-			TimelineControl.rowHeight = 32;
+			TimelineControl.ResetRowHeight();
 		}
 
 		private void collapeAllElementGroupsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (Row row in TimelineControl.Rows)
-			{
-				if (row.TreeOpen)
-				{
-					row.TreeOpen = false;
-				}
-			}
+			TimelineControl.RowListMenuCollapse();
 		}
 
 	}

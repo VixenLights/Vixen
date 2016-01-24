@@ -355,16 +355,21 @@ namespace Common.Controls.Timeline
 		{
 			if (scale <= 0.0)
 				return;
-			grid.BeginDraw();
-
+			//The following ensures the screen is not refreshed in any way, saving a lot of redraw time and rows now resize smoothly.
+			grid.AllowGridResize = false;
+			EnableDisableHandlers(false);
+			//sets the new rowheight
 			rowHeight = (int)(rowHeight * scale);
+			//Updastes all rows with new rowheight
 			foreach (Row r in Rows)
 			{
 				if (r.Height * scale > grid.Height) continue; //Don't scale a row beyond the grid height. How big do you need it?
 				r.Height = (int)(r.Height * scale);
 			}
-
-			grid.EndDraw();
+			//Enables handlers and refreshes row and grid heights.
+			EnableDisableHandlers();
+			grid.AllowGridResize = true;
+			LayoutRows();
 		}
 
 		public void ResizeGrid()
@@ -679,6 +684,7 @@ namespace Common.Controls.Timeline
 		#region RowLabel Context Menu Strip
 		private void RowLabelContextMenuHandler(object sender, EventArgs e)
 		{
+			//Conext menu for the RowList when right clicking.
 			ContextMenuStrip RowListMenu = new ContextMenuStrip();
 			ToolStripMenuItem RowListMenuCollapse = new ToolStripMenuItem("Collapse All Groups");
 			ToolStripMenuItem RowListMenuResetRowHeight = new ToolStripMenuItem("Reset All Rows to Default Height");
@@ -691,8 +697,39 @@ namespace Common.Controls.Timeline
 			ContextMenuStrip = RowListMenu;
 		}
 
+		private void ResetRowHeight_Click(object sender, EventArgs e)
+		{
+			ResetRowHeight();
+		}
+		private void ResetSelectedRowHeight_Click(object sender, EventArgs e)
+		{
+			ResetSelectedRowHeight();
+		}
+
 		private void RowListMenuCollapse_Click(object sender, EventArgs e)
 		{
+			RowListMenuCollapse();
+		}
+
+		public void ResetRowHeight()
+		{
+			//Restes all row heights back to default
+			//ensure that rows are completed before refreshing allowing a smooth transistion.
+			EnableDisableHandlers(false);
+			grid.AllowGridResize = false;
+			foreach (Row row in Rows)
+			{
+				if (row.Height != 32)
+					row.Height = 32;
+			}
+			EnableDisableHandlers();
+			grid.AllowGridResize = true;
+			LayoutRows();
+		}
+
+		public void RowListMenuCollapse()
+		{
+			//Collapses ann open groups
 			foreach (Row row in Rows)
 			{
 				if (row.TreeOpen)
@@ -702,17 +739,9 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private void ResetRowHeight_Click(object sender, EventArgs e)
+		public void ResetSelectedRowHeight()
 		{
-			foreach (Row row in Rows)
-			{
-				row.Height = 32;
-			}
-			rowHeight = 32;
-		}
-
-		private void ResetSelectedRowHeight_Click(object sender, EventArgs e)
-		{
+			//Resets the selected row and childs to current default height.
 			SelectedRow.Height = rowHeight;
 			foreach (Row rH in SelectedRow.ChildRows)
 			{
@@ -723,7 +752,7 @@ namespace Common.Controls.Timeline
 
 		private void ChangeRowHeight(Row childs)
 		{
-			// iterate through all of its children, changing each row height
+			// iterate through all of its children, changing each row height to the current default
 			foreach (Row child in childs.ChildRows)
 			{
 				child.Height = rowHeight;

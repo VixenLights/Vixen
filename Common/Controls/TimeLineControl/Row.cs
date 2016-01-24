@@ -253,7 +253,7 @@ namespace Common.Controls.Timeline
 			if (RowHeightChanged != null) RowHeightChanged(this, EventArgs.Empty);
 		}
 
-		private void _RowHeightResized()
+		public void _RowHeightResized()
 		{
 			if (RowHeightResized != null) RowHeightResized(this, EventArgs.Empty);
 		}
