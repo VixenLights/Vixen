@@ -23,7 +23,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		private int _pixelSpacing = 8;
 		[DataMember]
-		private Prop _prop = null;
+		internal Prop _prop = null;
 
 		private ElementNode initiallyAssignedNode = null;
 		private bool lockXY = false;
@@ -35,7 +35,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X + prop.Width, _topLeft.Y + prop.Height);
 			_prop = prop;
-			 
+
 			initiallyAssignedNode = selectedNode;
 
 			Layout();
@@ -104,11 +104,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[Browsable(false)]
 		public override StringTypes StringType
 		{
-			get { return StringTypes.Standard; }
+			get { return StringTypes.Pixel; }
 			set { _stringType = value; }
 		}
 
-		[Browsable(false)]
+		//[Browsable(false)]
 		public int PixelCount
 		{
 			get { return Pixels.Count; }
@@ -191,20 +191,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-				return base.Strings;
+				return _strings;
 			}
 			set
 			{
-				base.Strings = value;
+				_strings = value;
 			}
 		}
+
+
 		public override void Layout()
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
 				ElementNode node = null;
 
-				if (PixelCount > 0)
+				if (PixelCount > 0 && _pixels.Any())
 				{
 					node = _pixels[0].Node;
 					_pixels.Clear();
@@ -237,6 +239,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				Point[] points = { tL, tR, bR, bL };
 
+				Strings = new List<PreviewBaseShape>();
 
 				if (rect.Width > 0 && rect.Height > 0)
 				{
@@ -250,24 +253,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						for (int x = 0; x < _prop.Width; x++)
 						{
+
 							var channel = _prop.Data.Rows[y][x];
 							if (!string.IsNullOrWhiteSpace(channel as string))
 							{
 								int iChannel = Convert.ToInt32(channel);
+								var ch = _prop.Channels.Where(c => c.ID == iChannel).First();
+								var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
+								if (str == null)
+									_strings.Add(new CustomPropBaseShape() { Name = ch.Text });
 
 
-								Color newColor = Color.White;
-								if (newColor.A != 0)
+								PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
+
+								pixel.Node = node;
+
+								var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.X == pixel.X && w.Y == pixel.Y).FirstOrDefault();
+
+								if (stringPixel == null)
 								{
-									PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
-									pixel.Node = node;
-									_pixels.Add(pixel);
+									//_pixels.Add(pixel);
+									_strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Add(pixel);
 								}
 
 							}
-
-
-
 						}
 					}
 					SetPixelZoom();
@@ -309,6 +318,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				bottomLeft.X = _topLeft.X;
 				bottomLeft.Y = _bottomRight.Y;
 			}
+	
+
 			Layout();
 		}
 
@@ -372,8 +383,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			_bottomRight.X += changeX;
 			_bottomRight.Y += changeY;
+			Strings.AsParallel().ForAll(str =>
+			{
+				str.Pixels.AsParallel().ForAll(pix =>
+				{
+					pix.X += changeX;
+					pix.Y += changeY;
+				});
+			});
 
-			Layout();
+			//Layout();
 		}
 
 		public override void Resize(double aspect)
@@ -382,8 +401,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeft.Y = (int)(_topLeft.Y * aspect);
 			_bottomRight.X = (int)(_bottomRight.X * aspect);
 			_bottomRight.Y = (int)(_bottomRight.Y * aspect);
+			Strings.AsParallel().ForAll(str =>
+			{
+				str.Pixels.AsParallel().ForAll(pix =>
+				{
+					pix.X = (int)(pix.X * aspect);
+					pix.Y += (int)(pix.Y * aspect);
+				});
+			});
 
-			Layout();
+			//Layout();
 		}
 
 		public override void ResizeFromOriginal(double aspect)

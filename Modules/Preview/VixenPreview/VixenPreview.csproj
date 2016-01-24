@@ -179,6 +179,7 @@
     <Compile Include="Shapes\CustomProp\ChannelNaming.Designer.cs">
       <DependentUpon>ChannelNaming.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\CustomProp\CustomPropBaseShape.cs" />
     <Compile Include="Shapes\CustomProp\CustomPropForm.cs">
       <SubType>Form</SubType>
     </Compile>

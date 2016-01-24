@@ -28,9 +28,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		
 		private void OnPropertiesChanged(object sender, PreviewBaseShape shape)
 		{
+			var prop = shape as PreviewCustomProp;
 			propertyGrid.Refresh();
 		}
-
+		
 		private void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomProp);
