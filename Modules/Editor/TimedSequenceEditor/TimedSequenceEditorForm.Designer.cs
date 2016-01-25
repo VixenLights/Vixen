@@ -1006,9 +1006,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_zoomTimeIn,
             this.toolStripMenuItem_zoomTimeOut,
+            this.toolStripSeparator14,
             this.toolStripMenuItem_zoomRowsIn,
             this.toolStripMenuItem_zoomRowsOut,
-            this.toolStripSeparator14,
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
             this.toolStripMenuItem1,

@@ -37,6 +37,7 @@ namespace Common.Controls.Timeline
 		private bool _sequenceLoading = false;
 
 		public int rowHeight;
+		private Row selectedRow;
 
 		public bool SequenceLoading
 		{
@@ -333,24 +334,6 @@ namespace Common.Controls.Timeline
 			grid.EndDraw();
 			}
 
-		public void ZoomTime(double scale, Point mousePosition)
-		{
-			if (scale <= 0.0)
-				return;
-			grid.BeginDraw();
-
-			decimal gridPixelWidth = splitContainer.Panel2.Width;
-			TimeSpan originalTimeSpan = VisibleTimeSpan;
-			TimePerPixel = TimePerPixel.Scale(scale);
-			TimeSpan newTimeSpan = VisibleTimeSpan;
-			decimal timeSpanOffset = ((100 / gridPixelWidth) * (mousePosition.X - splitContainer.SplitterDistance) / 100);
-			VisibleTimeStart = scale > 1
-				? VisibleTimeStart - (pixelsToTime((int) (timeToPixels(newTimeSpan - originalTimeSpan)*(float) timeSpanOffset)))
-				: VisibleTimeStart + (pixelsToTime((int) (timeToPixels(originalTimeSpan - newTimeSpan)*(float) timeSpanOffset)));
-
-			grid.EndDraw();
-		}
-
 		public void ZoomRows(double scale)
 		{
 			if (scale <= 0.0)
@@ -370,6 +353,7 @@ namespace Common.Controls.Timeline
 			EnableDisableHandlers();
 			grid.AllowGridResize = true;
 			LayoutRows();
+			Rows.ElementAt(0).Height = Rows.ElementAt(0).Height;
 		}
 
 		public void ResizeGrid()
@@ -722,9 +706,11 @@ namespace Common.Controls.Timeline
 				if (row.Height != 32)
 					row.Height = 32;
 			}
+			rowHeight = 32;
 			EnableDisableHandlers();
 			grid.AllowGridResize = true;
 			LayoutRows();
+			Rows.ElementAt(0).Height = Rows.ElementAt(0).Height;
 		}
 
 		public void RowListMenuCollapse()
@@ -764,19 +750,25 @@ namespace Common.Controls.Timeline
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if (Form.ModifierKeys.HasFlag(Keys.Control)) {
-				if (ZoomToMousePosition)
-				{
-					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
-					ZoomTime(1.0 - ((double) e.Delta/1200.0), e.Location);
-				}
-				else
-				{
-					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-					Zoom(1.0 - ((double) e.Delta/1200.0));
-				}
+			if (ModifierKeys.HasFlag(Keys.Control) & ModifierKeys.HasFlag(Keys.Alt))
+			{
+				//holding the control and alt keys while scrolling adjusts the row height under the cursor.
+				Point gridLocation = e.Location;
+				int delta = e.Delta;
+				zoomRowHeight(gridLocation, delta);
 			}
-			else if (Form.ModifierKeys.HasFlag(Keys.Shift)) {
+			else if (ModifierKeys.HasFlag(Keys.Control) & ModifierKeys.HasFlag(Keys.Shift))
+			{
+				//holding the control and shift while scrolling adjusts all row heights
+				double zoomScale = e.Delta < 0.0 ? 0.8 : 1.25;
+				ZoomRows(zoomScale);
+			}
+			else if (ModifierKeys.HasFlag(Keys.Control))
+			{
+				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
+				Zoom(1.0 - ((double) e.Delta/1200.0));
+			}
+			else if (ModifierKeys.HasFlag(Keys.Shift)) {
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
 				// wheel towards user   --> negative delta --> VisibleTimeStart increases
 				// wheel away from user --> positive delta --> VisibleTimeStart decreases
@@ -789,6 +781,31 @@ namespace Common.Controls.Timeline
 		}
 
 		#endregion
+		private void zoomRowHeight(Point gridLocation, int delta)
+		{
+			//Changes Row height with the control shaift and mouse scroll
+			grid.BeginDraw();
+			double zoomScale = delta < 0.0 ? 0.8 : 1.25;
+			int waveFormHeight = 0;
+			if (waveform.Audio != null)
+				waveFormHeight = waveform.Height;
+			int curheight = ruler.Height + waveFormHeight;
+
+			foreach (Row row in Rows)
+			{
+				if (!row.Visible)
+					continue;
+
+				if (gridLocation.Y < curheight + row.Height)
+				{
+					selectedRow = row;
+					break;
+				}
+				curheight += row.Height;
+			}
+			if (selectedRow != null) selectedRow.Height = (int)(selectedRow.Height * zoomScale);
+			grid.EndDraw();
+		}
 
 		#region Overridden methods (On__)
 
