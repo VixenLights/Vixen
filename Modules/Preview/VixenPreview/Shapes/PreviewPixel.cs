@@ -33,7 +33,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private DiscreteIntentHandler _discreteHandler;
 		private FullColorIntentHandler _fullColorHandler;
 
-		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
+		[XmlIgnore]
+		public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
 
 		public PreviewPixel()
 		{
@@ -92,11 +93,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		[DataMember]
+		internal string InternalId { get; set; }
+
 		public ElementNode Node
 		{
 			get
 			{
-				if (_node == null) {
+				if (_node == null)
+				{
 					_node = VixenSystem.Nodes.GetElementNode(NodeId);
 					_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
 				}
@@ -148,7 +153,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Resize();
 			}
 		}
-		
+
 		public int PixelSize
 		{
 			get { return size; }
@@ -172,11 +177,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Draw(FastPixel.FastPixel fp, bool forceDraw)
 		{
-			if (forceDraw) {
+			if (forceDraw)
+			{
 				Draw(fp, color);
 			}
-			else if (Node != null) {
-				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color)) {
+			else if (Node != null)
+			{
+				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color))
+				{
 					Draw(fp, color);
 				}
 			}
@@ -187,10 +195,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			fp.DrawCircle(drawArea, newColor);
 		}
 
-        public void Draw(FastPixel.FastPixel fp, IIntentStates states)
-        {
-			
-			if(_isDiscreteColored)
+		public void Draw(FastPixel.FastPixel fp, IIntentStates states)
+		{
+
+			if (_isDiscreteColored)
 			{
 				int col = 1;
 				Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
@@ -206,7 +214,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						{
 							drawRect.Y += PixelSize;
 							drawRect.X = drawArea.X;
-						} else
+						}
+						else
 						{
 							drawRect.X = drawArea.X + PixelSize;
 						}
@@ -229,11 +238,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				
 			}
-        }
-        
+		}
+
 		protected virtual void Dispose(bool disposing)
 		{
-			if (disposing) {
+			if (disposing)
+			{
 				if (brush != null)
 					brush.Dispose();
 			}

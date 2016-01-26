@@ -63,6 +63,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 		public List<Point> Points = new List<Point>();
+
 		public ElementNode Node { get; set; }
 	}
 }

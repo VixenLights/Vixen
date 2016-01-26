@@ -18,10 +18,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private PreviewPoint _topLeft;
 		[DataMember]
 		private PreviewPoint _bottomRight;
-		private PreviewPoint topRight, bottomLeft;
 
 		[DataMember]
 		private int _pixelSpacing = 8;
+
 		[DataMember]
 		internal Prop _prop = null;
 
@@ -239,14 +239,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				Point[] points = { tL, tR, bR, bL };
 
-				Strings = new List<PreviewBaseShape>();
+				if (Strings == null)
+					Strings = new List<PreviewBaseShape>();
 
 				if (rect.Width > 0 && rect.Height > 0)
 				{
 					var xRatio = rect.Width / _prop.Width;
 					var yRatio = rect.Height / _prop.Height;
 
-					int xCount = 1;
 					int spacingY = _pixelSpacing;
 
 					for (int y = 0; y < _prop.Height; y++)
@@ -257,6 +257,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							var channel = _prop.Data.Rows[y][x];
 							if (!string.IsNullOrWhiteSpace(channel as string))
 							{
+
 								int iChannel = Convert.ToInt32(channel);
 								var ch = _prop.Channels.Where(c => c.ID == iChannel).First();
 								var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
@@ -265,25 +266,39 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 
 								PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
+								pixel.InternalId = string.Format("{0}.{1}", x, y);
+								//PreviewPixel pixel = AddPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y);
 
-								pixel.Node = node;
 
-								var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.X == pixel.X && w.Y == pixel.Y).FirstOrDefault();
+								var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.InternalId.Equals(pixel.InternalId)).FirstOrDefault();
 
 								if (stringPixel == null)
 								{
 									//_pixels.Add(pixel);
 									_strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Add(pixel);
 								}
+								else
+								{
+									stringPixel.X = pixel.X;
+									stringPixel.Y = pixel.Y;
+								}
 
 							}
+
+
 						}
 					}
+
 					SetPixelZoom();
 				}
 			}
+			CleanUpStrings();
 		}
+		private void CleanUpStrings()
+		{
+			//Remove pixels from strings that are no longer valid....
 
+		}
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
@@ -311,14 +326,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			}
 
-			if (topRight != null)
-			{
-				topRight.X = _bottomRight.X;
-				topRight.Y = _topLeft.Y;
-				bottomLeft.X = _topLeft.X;
-				bottomLeft.Y = _bottomRight.Y;
-			}
-	
 
 			Layout();
 		}
@@ -422,4 +429,5 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Resize(aspect);
 		}
 	}
+
 }
