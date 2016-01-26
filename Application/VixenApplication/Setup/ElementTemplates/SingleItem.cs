@@ -23,7 +23,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			get { return "Single Item"; }
 		}
-
+		public bool TemplateEnabled { get { return true; } }
 		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			using (TextDialog td = new TextDialog("New Element Name?", "Element Name", itemName, true)) {

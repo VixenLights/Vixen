@@ -212,6 +212,12 @@
     <Compile Include="SelectProfile.Designer.cs">
       <DependentUpon>SelectProfile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementTemplates\CustomProp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\CustomProp.Designer.cs">
+      <DependentUpon>CustomProp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup\ElementTemplates\LipSync.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -342,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SelectProfile.resx">
       <DependentUpon>SelectProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\CustomProp.resx">
+      <DependentUpon>CustomProp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\ElementTemplates\LipSync.resx">
       <DependentUpon>LipSync.cs</DependentUpon>

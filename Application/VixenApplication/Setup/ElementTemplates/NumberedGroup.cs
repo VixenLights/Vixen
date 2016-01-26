@@ -41,7 +41,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			get { return "Generic Numbered Group"; }
 		}
-
+		public bool TemplateEnabled { get { return true; } }
 		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
 		{
 			DialogResult result = ShowDialog();

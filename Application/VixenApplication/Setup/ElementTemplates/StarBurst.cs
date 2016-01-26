@@ -43,6 +43,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		{
 			get { return "Starburst"; }
 		}
+		public bool TemplateEnabled { get { return true; } }
 
 		public bool SetupTemplate(IEnumerable<ElementNode> selectedNodes = null)
 		{

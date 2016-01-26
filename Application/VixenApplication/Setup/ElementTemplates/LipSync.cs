@@ -50,6 +50,8 @@ namespace VixenApplication.Setup.ElementTemplates
             return false;
         }
 
+		public bool TemplateEnabled { get { return true; } }
+
         public IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null)
         {
             List<ElementNode> result = new List<ElementNode>();

@@ -37,7 +37,7 @@ namespace VixenApplication
 		private bool _openExecution = true;
 		private bool _disableControllers = false;
 		private bool _devBuild = false;
-		private string _rootDataDirectory;
+		internal static string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
 		private bool _perfCountersAvailable;
 		

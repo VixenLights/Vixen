@@ -168,6 +168,7 @@
     <Compile Include="Data\Value\IntensityValue.cs" />
     <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
+    <Compile Include="Enums\Class1.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
     <Compile Include="Execution\ContextFeatures.cs" />
     <Compile Include="Execution\ContextCaching.cs" />

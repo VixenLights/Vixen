@@ -132,6 +132,7 @@ namespace Vixen.Services
 				.Where(p => (typeof (IElementTemplate)).IsAssignableFrom(p) && !p.IsAbstract)
 				.Select(Activator.CreateInstance)
 				.Cast<IElementTemplate>()
+				.Where(t => t.TemplateEnabled)
 				.ToArray();
 		}
 

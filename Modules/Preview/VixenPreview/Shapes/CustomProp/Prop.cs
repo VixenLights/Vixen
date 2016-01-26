@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vixen;
 using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
@@ -146,7 +147,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 									output.Channels.Add(propChannel);
 									break;
 
-								case FileLineType.GridRow:
+								case FileLineType.DataRow:
 									int rowIndex = Convert.ToInt32(splits[1]) - 1;
 									for (int i = 2; i < splits.Length; i++)
 									{
@@ -195,14 +196,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					}
 					sw.WriteLine("#");
 					sw.WriteLine("#Column Definitions:");
-					sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.GridRow, "Row Number");
+					sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.DataRow, "Row Number");
 					sw.WriteLine("#");
 					if (Data != null)
 					{
 
 						foreach (DataRow row in Data.Rows)
 						{
-							sw.Write("{0},{1}", (int)FileLineType.GridRow, Data.Rows.IndexOf(row) + 1);
+							sw.Write("{0},{1}", (int)FileLineType.DataRow, Data.Rows.IndexOf(row) + 1);
 							for (int i = 0; i < Data.Columns.Count; i++)
 							{
 								sw.Write(",{0}", row[i]);
@@ -215,12 +216,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		public enum FileLineType
-		{
-			DefinitionRow = 0,
-			ChannelRow = 1,
-			GridRow = 2
-		}
+		
 
 		public DisplayItem ToDisplayItem(int x, int y)
 		{

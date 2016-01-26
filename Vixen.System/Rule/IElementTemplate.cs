@@ -27,5 +27,6 @@ namespace Vixen.Rule
 		/// These may be used as the 'parent' for ths generated items, for example.</param>
 		/// <returns>The element nodes that were generated and added to the system elements during the prcess.</returns>
 		IEnumerable<ElementNode> GenerateElements(IEnumerable<ElementNode> selectedNodes = null);
+		bool TemplateEnabled { get; }
 	}
 }
