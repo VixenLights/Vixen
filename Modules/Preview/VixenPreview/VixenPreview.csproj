@@ -186,6 +186,9 @@
     <Compile Include="Shapes\CustomProp\CustomPropForm.Designer.cs">
       <DependentUpon>CustomPropForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\CustomProp\DataGridViewWithBackground.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Shapes\PreviewCustomPropControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

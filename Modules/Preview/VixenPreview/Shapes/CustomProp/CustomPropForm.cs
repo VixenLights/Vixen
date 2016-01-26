@@ -14,6 +14,8 @@ using Common.Controls.ColorManagement.ColorPicker;
 using VixenModules.Preview.VixenPreview.Shapes;
 using Common.Resources.Properties;
 using Common.Controls.Theme;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -190,11 +192,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 
 			Channels.Where(r => r.ID == id + 1).ToList().ForEach(c => c.ID = id);
-		 
-	 
+
+
 
 		}
-	 
+
 
 		private void changeChannelColorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -245,9 +247,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void CustomPropForm_Load(object sender, EventArgs e)
 		{
+			this.trkImageOpacity.Value = 100;
+
 			if (_fileName == null)
 			{
 				_prop = new Prop(this.dataGridPropView, (int)numGridWidth.Value, (int)numGridHeight.Value);
+				this.txtBackgroundImage.Text = null;
+				this.trkImageOpacity.Value = 100;
+				SetGridBackground();
 			}
 			else
 			{
@@ -263,7 +270,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
 					this.numGridHeight.Value = _prop.Height;
 					this.numGridWidth.Value = _prop.Width;
+					this.txtBackgroundImage.Text = _prop.BackgroundImage;
+					this.trkImageOpacity.Value = _prop.BackgroundImageOpacity;
+					SetGridBackground(this._prop.BackgroundImage, _prop.BackgroundImageOpacity);
 				}
+				else
+					SetGridBackground();
 			}
 			dataGridPropView.DataSource = _prop.Data;
 
@@ -310,7 +322,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-	 
+
 		private void panel1_Resize(object sender, EventArgs e)
 		{
 			_prop.UpdateGrid((int)numGridHeight.Value, (int)numGridWidth.Value);
@@ -373,6 +385,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void dataGridPropView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
+			bool hasImage = File.Exists(_prop.BackgroundImage);
+			e.CellStyle.ForeColor = hasImage ? Color.White : Color.Black;
 
 			float fontSize = NewFontSize(e.Graphics, e.CellBounds.Size, e.CellStyle.Font, e.Value as string);
 			if (!float.IsInfinity(fontSize))
@@ -381,12 +395,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			e.PaintBackground(e.ClipBounds, true);
 
 			e.PaintContent(e.ClipBounds);
-			using (Pen p = new Pen(Brushes.Black, 3))
+
+			float lineWidth = 2f;
+			var rowColumnCount = Math.Max(dataGridPropView.Columns.Count, dataGridPropView.Rows.Count);
+			if (rowColumnCount > 16 && rowColumnCount < 40)
+				lineWidth = 1f;
+			else if (rowColumnCount >= 40 && rowColumnCount < 60)
+				lineWidth = .5f;
+			else lineWidth = .25f;
+
+
+			using (Pen p = new Pen(hasImage ? Brushes.White : Brushes.Black, lineWidth))
 			{
 				e.Graphics.DrawLine(p, new Point(e.CellBounds.Left, e.CellBounds.Bottom),
 									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
 			}
-			using (Pen p = new Pen(Brushes.Black, 3))
+			using (Pen p = new Pen(hasImage ? Brushes.White : Brushes.Black, lineWidth))
 			{
 				e.Graphics.DrawLine(p, new Point(e.CellBounds.Right, e.CellBounds.Top),
 									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
@@ -425,6 +449,151 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			ResizeRows();
 		}
+
+		private void btnLoadBackgroundImage_Click(object sender, EventArgs e)
+		{
+			using (var dlg = new OpenFileDialog())
+			{
+				dlg.CheckFileExists = true;
+				dlg.Filter = GetImageFilter();
+				var result = dlg.ShowDialog();
+				if (result == System.Windows.Forms.DialogResult.OK)
+				{
+
+					this._prop.BackgroundImage = this.txtBackgroundImage.Text = dlg.FileName;
+
+					SetGridBackground(this._prop.BackgroundImage, _prop.BackgroundImageOpacity);
+
+				}
+			}
+		}
+
+		private void SetGridBackground(string image = "", int opacity = 100)
+		{
+			splitContainer1.Panel1.BackColor = Color.Black;
+
+			if (!string.IsNullOrWhiteSpace(image) && File.Exists(image))
+			{
+				splitContainer1.Panel1.BackgroundImage = ChangeOpacity(Image.FromFile(image), opacity);
+				splitContainer1.Panel1.BackgroundImageLayout = ImageLayout.Stretch;
+			}
+			else
+			{
+				splitContainer1.Panel1.BackgroundImage = null;
+
+			}
+		}
+		public static Image ChangeOpacity(Image image, float value)
+		{
+			//Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
+			//using (Graphics graphics = Graphics.FromImage(bmp))
+			//{
+			//	ColorMatrix colormatrix = new ColorMatrix { Matrix33 = opacityvalue };
+			//	ImageAttributes imgAttribute = new ImageAttributes();
+			//	imgAttribute.SetColorMatrix(colormatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+			//	graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
+			//}
+
+			Image img = image;
+
+
+			float sb = (float)value / 255F;
+
+			float[][] colorMatrixElements =
+				  {
+                        new float[] {sb,  0,  0,  0, 0},
+                        new float[] {0,  sb,  0,  0, 0},
+                        new float[] {0,  0,  sb,  0, 0},
+                        new float[] {0,  0,  0,  1, 0},
+                        new float[] {0,  0,  0,  0, 1}
+
+                  };
+
+			ColorMatrix cm = new ColorMatrix(colorMatrixElements);
+
+			using (ImageAttributes imgattr = new ImageAttributes())
+			{
+				Rectangle rc = new Rectangle(0, 0, img.Width, img.Height);
+				using (Graphics g = Graphics.FromImage(img))
+				{
+					g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+					imgattr.SetColorMatrix(cm);
+					g.DrawImage(img, rc, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgattr);
+				}
+			}
+
+
+			return img;
+		}
+		public static Color getDominantColor(Bitmap bmp)
+		{
+			//Used for tally
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			int total = 0;
+
+			for (int x = 0; x < bmp.Width; x++)
+			{
+				for (int y = 0; y < bmp.Height; y++)
+				{
+					Color clr = bmp.GetPixel(x, y);
+					r += clr.R;
+					g += clr.G;
+					b += clr.B;
+					total++;
+				}
+			}
+
+			//Calculate average
+			r /= total;
+			g /= total;
+			b /= total;
+
+			return Color.FromArgb(r, g, b);
+		}
+		public string GetImageFilter()
+		{
+			StringBuilder allImageExtensions = new StringBuilder();
+			string separator = "";
+			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+			Dictionary<string, string> images = new Dictionary<string, string>();
+			foreach (ImageCodecInfo codec in codecs)
+			{
+				allImageExtensions.Append(separator);
+				allImageExtensions.Append(codec.FilenameExtension);
+				separator = ";";
+				images.Add(string.Format("{0} Files: ({1})", codec.FormatDescription, codec.FilenameExtension),
+						   codec.FilenameExtension);
+			}
+			StringBuilder sb = new StringBuilder();
+			if (allImageExtensions.Length > 0)
+			{
+				sb.AppendFormat("{0}|{1}", "All Images", allImageExtensions.ToString());
+			}
+			images.Add("All Files", "*.*");
+			foreach (KeyValuePair<string, string> image in images)
+			{
+				sb.AppendFormat("|{0}|{1}", image.Key, image.Value);
+			}
+			return sb.ToString();
+		}
+
+
+
+		private void trkImageOpacity_ValueChanged(object sender, EventArgs e)
+		{
+			_prop.BackgroundImageOpacity = trkImageOpacity.Value;
+			SetGridBackground(_prop.BackgroundImage, _prop.BackgroundImageOpacity);
+		}
+
+		private void trkImageOpacity_Scroll(object sender, EventArgs e)
+		{
+			_prop.BackgroundImageOpacity = trkImageOpacity.Value;
+			SetGridBackground(_prop.BackgroundImage, _prop.BackgroundImageOpacity);
+		}
+
 
 
 	}

@@ -32,7 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void UpdateChannelPoints()
 		{
-		 
+
 			object lockObj = new object();
 			if (Channels == null) Channels = new List<PropChannel>();
 			Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
@@ -63,6 +63,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Channels = new List<PropChannel>();
 		}
 
+		public string BackgroundImage { get; set; }
+		public int BackgroundImageOpacity { get; set; }
+
 		public Prop(DataGridView dataGrid, int width, int height)
 		{
 
@@ -70,6 +73,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			_width = width;
 			_height = height;
 			GenerateGrid();
+			BackgroundImageOpacity = 100;
 		}
 
 		public Prop(Prop obj)
@@ -79,7 +83,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Channels = obj.Channels;
 			this.Height = obj.Height;
 			this.Width = obj.Width;
-
+			this.BackgroundImage = obj.BackgroundImage;
+			this.BackgroundImageOpacity = obj.BackgroundImageOpacity;
 			this.Data = obj.Data;
 
 		}
@@ -136,6 +141,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 									output.Height = Convert.ToInt32(splits[1]);
 									output.Width = Convert.ToInt32(splits[2]);
 									output.Name = splits[3] as string;
+									if (splits.Count() > 4)
+									{
+										output.BackgroundImage = splits[4] as string;
+										
+										//Ensure the image exists
+										if (!File.Exists(output.BackgroundImage)) output.BackgroundImage = null;
+									}
+									if (splits.Count() > 5) output.BackgroundImageOpacity = Convert.ToInt32(splits[5]);
 									output.GenerateGrid();
 									break;
 								case FileLineType.ChannelRow:
@@ -178,9 +191,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					//Write File Definition First
 					sw.WriteLine("#");
 					sw.WriteLine("#File Definition:");
-					sw.WriteLine("#{0},{1},{2},{3},{4}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount");
+					sw.WriteLine("#{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount", "BackgroundImage", "Opacity");
 					sw.WriteLine("#");
-					sw.WriteLine("{0},{1},{2},{3},{4}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount);
+					sw.WriteLine("{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount, BackgroundImage, BackgroundImageOpacity);
 					//Write the Channel Information
 					sw.WriteLine("#");
 					sw.WriteLine("#Channel Definitions:");
@@ -216,7 +229,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		
+
 
 		public DisplayItem ToDisplayItem(int x, int y)
 		{

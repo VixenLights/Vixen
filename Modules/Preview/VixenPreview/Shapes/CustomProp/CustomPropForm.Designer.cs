@@ -46,13 +46,16 @@
 			this.btnUpdateChannelCount = new System.Windows.Forms.Button();
 			this.numGridWidth = new System.Windows.Forms.NumericUpDown();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.trkImageOpacity = new System.Windows.Forms.TrackBar();
+			this.btnLoadBackgroundImage = new System.Windows.Forms.Button();
+			this.txtBackgroundImage = new System.Windows.Forms.TextBox();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.dataGridPropView = new System.Windows.Forms.DataGridView();
 			this.contextMenuGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dataGridPropView = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.DataGridViewWithBackground();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();
@@ -60,12 +63,13 @@
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trkImageOpacity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).BeginInit();
 			this.contextMenuGrid.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// toolStripMenuItem_Remove
@@ -100,7 +104,7 @@
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(123, 87);
+			this.btnSave.Location = new System.Drawing.Point(123, 160);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(111, 27);
 			this.btnSave.TabIndex = 9;
@@ -192,7 +196,7 @@
 			// 
 			// btnUpdateChannelCount
 			// 
-			this.btnUpdateChannelCount.Location = new System.Drawing.Point(20, 87);
+			this.btnUpdateChannelCount.Location = new System.Drawing.Point(20, 160);
 			this.btnUpdateChannelCount.Name = "btnUpdateChannelCount";
 			this.btnUpdateChannelCount.Size = new System.Drawing.Size(97, 27);
 			this.btnUpdateChannelCount.TabIndex = 2;
@@ -221,6 +225,9 @@
 			// 
 			// splitContainer2.Panel1
 			// 
+			this.splitContainer2.Panel1.Controls.Add(this.trkImageOpacity);
+			this.splitContainer2.Panel1.Controls.Add(this.btnLoadBackgroundImage);
+			this.splitContainer2.Panel1.Controls.Add(this.txtBackgroundImage);
 			this.splitContainer2.Panel1.Controls.Add(this.textBox1);
 			this.splitContainer2.Panel1.Controls.Add(this.label1);
 			this.splitContainer2.Panel1.Controls.Add(this.btnSave);
@@ -237,6 +244,37 @@
 			this.splitContainer2.Size = new System.Drawing.Size(246, 500);
 			this.splitContainer2.SplitterDistance = 203;
 			this.splitContainer2.TabIndex = 0;
+			// 
+			// trkImageOpacity
+			// 
+			this.trkImageOpacity.Location = new System.Drawing.Point(20, 109);
+			this.trkImageOpacity.Maximum = 100;
+			this.trkImageOpacity.Name = "trkImageOpacity";
+			this.trkImageOpacity.Size = new System.Drawing.Size(214, 45);
+			this.trkImageOpacity.SmallChange = 5;
+			this.trkImageOpacity.TabIndex = 14;
+			this.trkImageOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
+			this.trkImageOpacity.Value = 100;
+			this.trkImageOpacity.Scroll += new System.EventHandler(this.trkImageOpacity_Scroll);
+			this.trkImageOpacity.ValueChanged += new System.EventHandler(this.trkImageOpacity_ValueChanged);
+			// 
+			// btnLoadBackgroundImage
+			// 
+			this.btnLoadBackgroundImage.Location = new System.Drawing.Point(208, 87);
+			this.btnLoadBackgroundImage.Name = "btnLoadBackgroundImage";
+			this.btnLoadBackgroundImage.Size = new System.Drawing.Size(26, 20);
+			this.btnLoadBackgroundImage.TabIndex = 13;
+			this.btnLoadBackgroundImage.Text = "...";
+			this.btnLoadBackgroundImage.UseVisualStyleBackColor = true;
+			this.btnLoadBackgroundImage.Click += new System.EventHandler(this.btnLoadBackgroundImage_Click);
+			// 
+			// txtBackgroundImage
+			// 
+			this.txtBackgroundImage.Location = new System.Drawing.Point(20, 88);
+			this.txtBackgroundImage.Name = "txtBackgroundImage";
+			this.txtBackgroundImage.ReadOnly = true;
+			this.txtBackgroundImage.Size = new System.Drawing.Size(190, 20);
+			this.txtBackgroundImage.TabIndex = 12;
 			// 
 			// textBox1
 			// 
@@ -271,32 +309,6 @@
 			this.splitContainer1.SplitterDistance = 664;
 			this.splitContainer1.TabIndex = 1;
 			// 
-			// dataGridPropView
-			// 
-			this.dataGridPropView.AllowDrop = true;
-			this.dataGridPropView.AllowUserToAddRows = false;
-			this.dataGridPropView.AllowUserToDeleteRows = false;
-			this.dataGridPropView.AllowUserToResizeColumns = false;
-			this.dataGridPropView.AllowUserToResizeRows = false;
-			this.dataGridPropView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.dataGridPropView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridPropView.ColumnHeadersVisible = false;
-			this.dataGridPropView.ContextMenuStrip = this.contextMenuGrid;
-			this.dataGridPropView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridPropView.Location = new System.Drawing.Point(0, 0);
-			this.dataGridPropView.Name = "dataGridPropView";
-			this.dataGridPropView.ReadOnly = true;
-			this.dataGridPropView.RowHeadersVisible = false;
-			this.dataGridPropView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-			this.dataGridPropView.ShowEditingIcon = false;
-			this.dataGridPropView.Size = new System.Drawing.Size(664, 500);
-			this.dataGridPropView.TabIndex = 0;
-			this.dataGridPropView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridPropView_CellEndEdit);
-			this.dataGridPropView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridPropView_CellPainting);
-			this.dataGridPropView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridPropView_ColumnAdded);
-			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
-			this.dataGridPropView.Resize += new System.EventHandler(this.dataGridPropView_Resize);
-			// 
 			// contextMenuGrid
 			// 
 			this.contextMenuGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -320,6 +332,33 @@
 			this.applyToolStripMenuItem.Text = "Apply";
 			this.applyToolStripMenuItem.Click += new System.EventHandler(this.applyToolStripMenuItem_Click);
 			// 
+			// dataGridPropView
+			// 
+			this.dataGridPropView.AllowDrop = true;
+			this.dataGridPropView.AllowUserToAddRows = false;
+			this.dataGridPropView.AllowUserToDeleteRows = false;
+			this.dataGridPropView.AllowUserToResizeColumns = false;
+			this.dataGridPropView.AllowUserToResizeRows = false;
+			this.dataGridPropView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.dataGridPropView.BackgroundColor = System.Drawing.Color.Black;
+			this.dataGridPropView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridPropView.ColumnHeadersVisible = false;
+			this.dataGridPropView.ContextMenuStrip = this.contextMenuGrid;
+			this.dataGridPropView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridPropView.Location = new System.Drawing.Point(0, 0);
+			this.dataGridPropView.Name = "dataGridPropView";
+			this.dataGridPropView.ReadOnly = true;
+			this.dataGridPropView.RowHeadersVisible = false;
+			this.dataGridPropView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+			this.dataGridPropView.ShowEditingIcon = false;
+			this.dataGridPropView.Size = new System.Drawing.Size(664, 500);
+			this.dataGridPropView.TabIndex = 0;
+			this.dataGridPropView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridPropView_CellEndEdit);
+			this.dataGridPropView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridPropView_CellPainting);
+			this.dataGridPropView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridPropView_ColumnAdded);
+			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
+			this.dataGridPropView.Resize += new System.EventHandler(this.dataGridPropView_Resize);
+			// 
 			// CustomPropForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -337,12 +376,13 @@
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.trkImageOpacity)).EndInit();
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).EndInit();
 			this.contextMenuGrid.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -369,10 +409,13 @@
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem changeChannelColorToolStripMenuItem;
-		private System.Windows.Forms.DataGridView dataGridPropView;
+		private DataGridViewWithBackground dataGridPropView;
 		private System.Windows.Forms.ContextMenuStrip contextMenuGrid;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem applyToolStripMenuItem;
+		private System.Windows.Forms.Button btnLoadBackgroundImage;
+		private System.Windows.Forms.TextBox txtBackgroundImage;
+		private System.Windows.Forms.TrackBar trkImageOpacity;
 	}
 }
 
