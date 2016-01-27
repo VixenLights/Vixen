@@ -259,7 +259,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							{
 
 								int iChannel = Convert.ToInt32(channel);
-								var ch = _prop.Channels.Where(c => c.ID == iChannel).First();
+								var ch = _prop.Channels.Where(c => c.ID == iChannel).FirstOrDefault();
+								if (ch == null) 
+									continue;
+								
 								var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
 								if (str == null)
 									_strings.Add(new CustomPropBaseShape() { Name = ch.Text });

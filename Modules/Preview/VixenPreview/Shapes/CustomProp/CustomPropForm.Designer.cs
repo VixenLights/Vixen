@@ -52,10 +52,10 @@
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.dataGridPropView = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.DataGridViewWithBackground();
 			this.contextMenuGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.dataGridPropView = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.DataGridViewWithBackground();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();
@@ -68,8 +68,8 @@
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			this.contextMenuGrid.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).BeginInit();
+			this.contextMenuGrid.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripMenuItem_Remove
@@ -108,7 +108,7 @@
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(111, 27);
 			this.btnSave.TabIndex = 9;
-			this.btnSave.Text = "Save";
+			this.btnSave.Text = "Save and Exit";
 			this.btnSave.UseVisualStyleBackColor = true;
 			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
@@ -309,29 +309,6 @@
 			this.splitContainer1.SplitterDistance = 664;
 			this.splitContainer1.TabIndex = 1;
 			// 
-			// contextMenuGrid
-			// 
-			this.contextMenuGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem,
-            this.applyToolStripMenuItem});
-			this.contextMenuGrid.Name = "contextMenuGrid";
-			this.contextMenuGrid.Size = new System.Drawing.Size(106, 48);
-			this.contextMenuGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuGrid_Opening);
-			// 
-			// clearToolStripMenuItem
-			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
-			this.clearToolStripMenuItem.Text = "Clear";
-			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
-			// 
-			// applyToolStripMenuItem
-			// 
-			this.applyToolStripMenuItem.Name = "applyToolStripMenuItem";
-			this.applyToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
-			this.applyToolStripMenuItem.Text = "Apply";
-			this.applyToolStripMenuItem.Click += new System.EventHandler(this.applyToolStripMenuItem_Click);
-			// 
 			// dataGridPropView
 			// 
 			this.dataGridPropView.AllowDrop = true;
@@ -359,6 +336,29 @@
 			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
 			this.dataGridPropView.Resize += new System.EventHandler(this.dataGridPropView_Resize);
 			// 
+			// contextMenuGrid
+			// 
+			this.contextMenuGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem,
+            this.applyToolStripMenuItem});
+			this.contextMenuGrid.Name = "contextMenuGrid";
+			this.contextMenuGrid.Size = new System.Drawing.Size(106, 48);
+			this.contextMenuGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuGrid_Opening);
+			// 
+			// clearToolStripMenuItem
+			// 
+			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.clearToolStripMenuItem.Text = "Clear";
+			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+			// 
+			// applyToolStripMenuItem
+			// 
+			this.applyToolStripMenuItem.Name = "applyToolStripMenuItem";
+			this.applyToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.applyToolStripMenuItem.Text = "Apply";
+			this.applyToolStripMenuItem.Click += new System.EventHandler(this.applyToolStripMenuItem_Click);
+			// 
 			// CustomPropForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -381,8 +381,8 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			this.contextMenuGrid.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).EndInit();
+			this.contextMenuGrid.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}

@@ -220,8 +220,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void btnSave_Click(object sender, EventArgs e)
 		{
-			_prop.Name = this.textBox1.Text;
-			SaveProp(_prop.Name);
+			if (!string.IsNullOrWhiteSpace(this.textBox1.Text))
+			{
+				_prop.Name = this.textBox1.Text;
+				SaveProp(_prop.Name);
+				this.Close();
+			}
 		}
 
 		private void btnUpdateChannelCount_Click(object sender, EventArgs e)

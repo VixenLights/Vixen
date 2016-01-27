@@ -20,6 +20,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private int _width;
 		private int _height;
 		private DataTable _data;
+
 		public DataTable Data
 		{
 			get { return _data; }
@@ -36,10 +37,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			object lockObj = new object();
 			if (Channels == null) Channels = new List<PropChannel>();
 			Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
-			Parallel.For(0, _data.Columns.Count, x =>
+
+			for (int x = 0; x < _data.Columns.Count; x++)
 			{
-				Parallel.For(0, _data.Rows.Count, y =>
+				for (int y = 0; y < _data.Rows.Count; y++)
 				{
+
 					var result = _data.Rows[y][x] as string;
 					if (!string.IsNullOrWhiteSpace(result))
 					{
@@ -48,13 +51,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 						{
 							lock (lockObj)
 							{
+								var ch = Channels.Where(w => w.ID == iResult).FirstOrDefault();
+								if (ch == null)
+								{
+									ch = new PropChannel();
+									ch.ID = iResult;
+									ch.Text = string.Format("Channel_{0}", iResult);
+									Channels.Add(ch);
+								}
 								Channels.Where(w => w.ID == iResult).First().Points.Add(new System.Drawing.Point(x, y));
 							}
 						}
 					}
-				});
+				}
 
-			});
+			}
 		}
 
 		private DataGridView _dataGrid;
@@ -144,11 +155,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 									if (splits.Count() > 4)
 									{
 										output.BackgroundImage = splits[4] as string;
-										
+
 										//Ensure the image exists
 										if (!File.Exists(output.BackgroundImage)) output.BackgroundImage = null;
 									}
-									if (splits.Count() > 5) output.BackgroundImageOpacity = Convert.ToInt32(splits[5]);
+									if (splits.Count() > 5)
+										output.BackgroundImageOpacity = Convert.ToInt32(string.IsNullOrWhiteSpace(splits[5]) ? "100" : splits[5]);
 									output.GenerateGrid();
 									break;
 								case FileLineType.ChannelRow:
