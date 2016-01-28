@@ -31,6 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 		}
 		public CustomPropForm(string fileName)
 		{
@@ -59,6 +60,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		#endregion
 		#region Properties
+		public bool BackgroundImageMaintainAspect { get { return this.chkMaintainAspect.Checked; } set { this.chkMaintainAspect.Checked = value; } }
+		public int BackgroundImageOpacity { get { return _prop.BackgroundImageOpacity; } set { _prop.BackgroundImageOpacity = value; } }
+
+		public string BackgroundImageFileName
+		{
+			get
+			{
+				return _prop.BackgroundImage;
+			}
+			set
+			{
+				if (_prop.BackgroundImage != value)
+				{
+					if (System.IO.File.Exists(value))
+						BackgroundImage = Image.FromFile(value);
+				}
+
+				this.txtBackgroundImage.Text = _prop.BackgroundImage = value;
+
+			}
+		}
 		public List<PropChannel> Channels
 		{
 			get
@@ -74,7 +96,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-	 
+
 		#endregion
 
 		#region Private Methods
@@ -165,22 +187,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			//	RemoveChannel(prop.ID);
 		}
 
-		private void changeChannelColorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PropChannel item = null;// listBox1.SelectedItem as PropChannel;
-			using (ColorPicker cp = new ColorPicker())
-			{
-				cp.LockValue_V = true;
-				cp.Color = item.ItemColor;
-				DialogResult result = cp.ShowDialog();
-				if (result == DialogResult.OK)
-				{
 
-					item.ItemColor = cp.Color;
-
-				}
-			}
-		}
 		#endregion
 
 
@@ -195,11 +202,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		private void btnUpdateChannelCount_Click(object sender, EventArgs e)
-		{
-			_prop.UpdateGrid((int)numGridHeight.Value, (int)numGridWidth.Value);
 
-		}
 
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -222,10 +225,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			this.textBox1.Text = "[!Rename Me!]";
 			if (_fileName == null)
 			{
-				_prop = new Prop((int)numGridWidth.Value, (int)numGridHeight.Value);
+				_prop = new Prop(100, 100);
 				this.txtBackgroundImage.Text = null;
 				this.trkImageOpacity.Value = 100;
-				SetGridBackground();
+
 			}
 			else
 			{
@@ -237,17 +240,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					_prop = new Prop(prop);
 
 					this.textBox1.Text = _prop.Name;
- 					 
-					this.numGridHeight.Value = _prop.Height;
-					this.numGridWidth.Value = _prop.Width;
-					this.txtBackgroundImage.Text = _prop.BackgroundImage;
-					this.trkImageOpacity.Value = _prop.BackgroundImageOpacity;
-					SetGridBackground(this._prop.BackgroundImage, _prop.BackgroundImageOpacity);
-				}
-				else
-					SetGridBackground();
-			}
 
+
+					this.BackgroundImageFileName = _prop.BackgroundImage;
+					this.trkImageOpacity.Value = _prop.BackgroundImageOpacity;
+				}
+
+			}
+			SetBackGroundImage();
 
 			PopulateNodeTreeMultiSelect();
 
@@ -265,22 +265,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			treeViewChannels.EndUpdate();
 		}
 
-		private void AddNodeToTree(TreeNodeCollection collection, PropChannel elementNode)
+		private void AddNodeToTree(TreeNodeCollection collection, PropChannel channel)
 		{
-			TreeNode addedNode = new TreeNode()
-			{
-				Name = elementNode.Id.ToString(),
-				Text = elementNode.Name,
-				Tag = elementNode
-			};
+			TreeNode addedNode = SetTreeNodeValues(channel);
 
 			collection.Add(addedNode);
-			if (elementNode.Children != null)
-			foreach (PropChannel childNode in elementNode.Children)
-			{
-				AddNodeToTree(addedNode.Nodes, childNode);
-			}
+			if (channel.Children != null)
+				foreach (PropChannel childNode in channel.Children)
+				{
+					AddNodeToTree(addedNode.Nodes, childNode);
+				}
 		}
+
+		private static TreeNode SetTreeNodeValues(PropChannel channel, TreeNode addedNode = null)
+		{
+			if (addedNode == null)
+				addedNode = new TreeNode();
+
+			addedNode.Name = channel.Id.ToString();
+			addedNode.Text = channel.Name;
+			addedNode.Tag = channel;
+
+			return addedNode;
+		}
+
+
 		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
 		{
 			this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = true;
@@ -320,13 +329,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		}
 
 
-		private void panel1_Resize(object sender, EventArgs e)
-		{
-			_prop.UpdateGrid((int)numGridHeight.Value, (int)numGridWidth.Value);
-
-		}
-
-
 
 		public static float NewFontSize(Graphics graphics, Size size, Font font, string str)
 		{
@@ -349,30 +351,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				var result = dlg.ShowDialog();
 				if (result == System.Windows.Forms.DialogResult.OK)
 				{
-
-					this._prop.BackgroundImage = this.txtBackgroundImage.Text = dlg.FileName;
-
-					SetGridBackground(this._prop.BackgroundImage, _prop.BackgroundImageOpacity);
-
+					this.BackgroundImageFileName = dlg.FileName;
+					SetBackGroundImage();
 				}
 			}
 		}
 
-		private void SetGridBackground(string image = "", int opacity = 100)
-		{
-			splitContainer1.Panel1.BackColor = Color.Black;
 
-			if (!string.IsNullOrWhiteSpace(image) && File.Exists(image))
-			{
-				splitContainer1.Panel1.BackgroundImage = ChangeOpacity(Image.FromFile(image), opacity);
-				splitContainer1.Panel1.BackgroundImageLayout = ImageLayout.Stretch;
-			}
-			else
-			{
-				splitContainer1.Panel1.BackgroundImage = null;
-
-			}
-		}
 		public static Image ChangeOpacity(Image image, float value)
 		{
 			//Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
@@ -474,79 +459,231 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void trkImageOpacity_ValueChanged(object sender, EventArgs e)
 		{
-			_prop.BackgroundImageOpacity = trkImageOpacity.Value;
-			SetGridBackground(_prop.BackgroundImage, _prop.BackgroundImageOpacity);
+
+			BackgroundImageOpacity = trkImageOpacity.Value;
+			SetBackGroundImage();
 		}
 
-		private void trkImageOpacity_Scroll(object sender, EventArgs e)
+
+
+		private void gridPanel_MouseDown(object sender, MouseEventArgs e)
 		{
-			_prop.BackgroundImageOpacity = trkImageOpacity.Value;
-			SetGridBackground(_prop.BackgroundImage, _prop.BackgroundImageOpacity);
+			switch (e.Button)
+			{
+				case MouseButtons.Left:
+					//Draw point
+					if ((Control.ModifierKeys & Keys.Control) != Keys.None)
+					{
+						if (treeViewChannels.SelectedNode != null)
+						{
+							var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+							if (prop == null) return;
+							var pixelSize = prop.PixelSize;
+							if (!prop.Points.Any(a => a.X == e.Location.X && a.Y == e.Location.Y)) //Add logic to ensure we dont overlap any points for this channel
+							{
+								prop.Points.Add(new PreviewPixel(e.Location.X, e.Location.Y, 0, prop.PixelSize));
+							}
+							DrawPoints(prop);
+						}
+					}
+					break;
+				case MouseButtons.Middle:
+					break;
+
+				case MouseButtons.Right:
+					break;
+				default:
+					break;
+			}
 		}
 
-		private void label1_Click(object sender, EventArgs e)
+		void DrawPoints()
 		{
+			foreach (TreeNode item in treeViewChannels.Nodes)
+			{
+				var prop = item.Tag as PropChannel;
+				DrawPoints(prop);
+			}
+		}
+		void DrawPoints(PropChannel channel)
+		{
+			bool isSelected = channel == treeViewChannels.SelectedNode.Tag as PropChannel;
+			foreach (var point in channel.Points)
+			{
+				DrawCircle(this.gridPanel, point, channel.PixelSize, isSelected ? Color.Yellow : Color.White);
+			}
+			foreach (var item in channel.Children)
+			{
+				DrawPoints(item);
+			}
+		}
+
+		private void treeViewChannels_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
+		}
+
+		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
+			var channel = treeViewChannels.SelectedNode.Tag as PropChannel;
+			if (channel != null)
+				treeViewChannels.SelectedNode = SetTreeNodeValues(channel, treeViewChannels.SelectedNode);
+		}
+
+		private static void DrawGrid(Control control, int xSize, int ySize, Color backgroundColor)
+		{
+			if (control == null) return;
+			if (control.BackgroundImage == null)
+				control.BackgroundImage = new Bitmap(control.Width, control.Height);
+
+			using (var g = Graphics.FromImage(control.BackgroundImage))
+			{
+
+				int cellSizeX = control.BackgroundImage.Width / xSize;
+				int cellSizeY = control.BackgroundImage.Height / ySize;
+
+				var r = new Rectangle(new Point(control.Left, control.Top), control.BackgroundImage.Size);
+				System.Windows.Forms.ControlPaint.DrawGrid(g, r, new Size(cellSizeX, cellSizeY), backgroundColor);
+
+			}
 
 		}
 
-		private void numGridHeight_ValueChanged(object sender, EventArgs e)
+		private static void DrawCircle(Control control, PreviewPixel pixel, int size, Color color)
 		{
+			using (var g = Graphics.FromImage(control.BackgroundImage))
+			{
+
+				using (Brush b = new SolidBrush(color))
+				{
+					using (Pen p = new Pen(b))
+					{
+						g.DrawEllipse(p, pixel.X, pixel.Y, size, size);
+						g.FillEllipse(b, new Rectangle(new Point(pixel.X, pixel.Y), new Size(2, 2)));
+					}
+				}
+			}
+		}
+
+		private static Color GetDominantColor(Image image)
+		{
+			if (image == null) return Color.White;
+			//Used for tally
+			int r = 0;
+			int g = 0;
+			int b = 0;
+
+			int total = 0;
+			using (Bitmap bmp = new Bitmap(image))
+			{
+				for (int x = 0; x < bmp.Width; x++)
+				{
+					for (int y = 0; y < bmp.Height; y++)
+					{
+						Color clr = bmp.GetPixel(x, y);
+						r += clr.R;
+						g += clr.G;
+						b += clr.B;
+						total++;
+					}
+				}
+			}
+
+			//Calculate average
+			r /= total;
+			g /= total;
+			b /= total;
+
+			return Color.FromArgb(r, g, b);
+		}
+		private static Image ResizeImage(Image image, int maximumWidth, int maximumHeight, bool enforceRatio, bool addPadding)
+		{
+
+			var imageEncoders = ImageCodecInfo.GetImageEncoders();
+			EncoderParameters encoderParameters = new EncoderParameters(1);
+			encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
+			var canvasWidth = maximumWidth;
+			var canvasHeight = maximumHeight;
+			var newImageWidth = maximumWidth;
+			var newImageHeight = maximumHeight;
+			var xPosition = 0;
+			var yPosition = 0;
+
+
+			if (enforceRatio)
+			{
+				var ratioX = maximumWidth / (double)image.Width;
+				var ratioY = maximumHeight / (double)image.Height;
+				var ratio = ratioX < ratioY ? ratioX : ratioY;
+				newImageHeight = (int)(image.Height * ratio);
+				newImageWidth = (int)(image.Width * ratio);
+
+				if (addPadding)
+				{
+					xPosition = (int)((maximumWidth - (image.Width * ratio)) / 2);
+					yPosition = (int)((maximumHeight - (image.Height * ratio)) / 2);
+				}
+				else
+				{
+					canvasWidth = newImageWidth;
+					canvasHeight = newImageHeight;
+				}
+			}
+
+			var thumbnail = new Bitmap(canvasWidth, canvasHeight);
+
+			using (var graphic = Graphics.FromImage(thumbnail))
+			{
+
+				if (enforceRatio && addPadding)
+				{
+					graphic.Clear(Color.White);
+				}
+
+				graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphic.SmoothingMode = SmoothingMode.HighQuality;
+				graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
+				graphic.CompositingQuality = CompositingQuality.HighQuality;
+				graphic.DrawImage(image, xPosition, yPosition, newImageWidth, newImageHeight);
+			}
+
+			return thumbnail;
+		}
+
+		private static void SetGridBackground(Control control, Control control2, string fileName, int opacity = 100, bool maintainAspectRatio = true)
+		{
+			//control.BackColor = Color.Black;
+
+			if (!string.IsNullOrWhiteSpace(fileName) && File.Exists(fileName))
+			{
+				var image = Image.FromFile(fileName);
+
+				control.BackgroundImage = ChangeOpacity(ResizeImage(image, control.Width, control.Height, maintainAspectRatio, false), opacity);
+
+				control2.BackgroundImageLayout = control.BackgroundImageLayout = maintainAspectRatio ? ImageLayout.Center : ImageLayout.Stretch;
+
+			}
+			else
+			{
+
+				control2.BackgroundImageLayout = ImageLayout.Stretch;
+				control.BackgroundImage = null;
+			}
+			control2.BackColor = Color.Transparent;
+		}
+
+		private void SetBackGroundImage()
+		{
+			SetGridBackground(this.splitContainer1.Panel1, this.gridPanel, this.BackgroundImageFileName, this.BackgroundImageOpacity, BackgroundImageMaintainAspect);
+
+
+			DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
 
 		}
 
-		private void label4_Click(object sender, EventArgs e)
+		private void chkMaintainAspect_CheckedChanged(object sender, EventArgs e)
 		{
-
-		}
-
-		private void label3_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void toolStripSeparator2_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void toolStripSeparator1_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void numGridWidth_ValueChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
-		{
-
-		}
-
-		private void dataGridPropView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-
-		}
-
-		private void txtBackgroundImage_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void textBox1_TextChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void label2_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
-		{
-
+			SetBackGroundImage();
 		}
 
 

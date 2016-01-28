@@ -135,66 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		public static Prop FromFile(string fileName)
-		{
-			Prop output = new Prop();
-			using (var fs = new FileStream(fileName, FileMode.Open))
-			{
-				using (var sr = new StreamReader(fs))
-				{
-					while (!sr.EndOfStream)
-					{
-						var line = sr.ReadLine();
-						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-						{
-							var splits = line.Split(',');
-							switch ((FileLineType)Convert.ToInt32(splits[0]))
-							{
-								case FileLineType.DefinitionRow:
-									output.Height = Convert.ToInt32(splits[1]);
-									output.Width = Convert.ToInt32(splits[2]);
-									output.Name = splits[3] as string;
-									if (splits.Count() > 4)
-									{
-										output.BackgroundImage = splits[4] as string;
-
-										//Ensure the image exists
-										if (!File.Exists(output.BackgroundImage)) output.BackgroundImage = null;
-									}
-									if (splits.Count() > 5)
-										output.BackgroundImageOpacity = Convert.ToInt32(string.IsNullOrWhiteSpace(splits[5]) ? "100" : splits[5]);
-									output.GenerateGrid();
-									break;
-								case FileLineType.ChannelRow:
-									var propChannel = new PropChannel();
-									propChannel.Id = splits[1] as string;
-									propChannel.Name = splits[2] as string;
-									propChannel.ItemColor = new Common.Controls.ColorManagement.ColorModels.XYZ(Convert.ToInt32(splits[3]), Convert.ToInt32(splits[4]), Convert.ToInt32(splits[5]));
-
-									output.Channels.Add(propChannel);
-									break;
-
-								case FileLineType.DataRow:
-									int rowIndex = Convert.ToInt32(splits[1]) - 1;
-									for (int i = 2; i < splits.Length; i++)
-									{
-										if (!string.IsNullOrWhiteSpace(splits[i] as string))
-										{
-											output.Data.Rows[rowIndex][i - 2] = Convert.ToInt32(splits[i]);
-										}
-									}
-									break;
-								default:
-									break;
-							}
-						}
-					}
-				}
-			}
-			return output;
-		}
-
-
+		#region File IO Operations
 		public void ToFile(string fileName)
 		{
 			//using (var fs = new FileStream(fileName, FileMode.Create))
@@ -243,6 +184,66 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
+
+		public static Prop FromFile(string fileName)
+		{
+			Prop output = new Prop();
+			using (var fs = new FileStream(fileName, FileMode.Open))
+			{
+				using (var sr = new StreamReader(fs))
+				{
+					while (!sr.EndOfStream)
+					{
+						var line = sr.ReadLine();
+						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+						{
+							var splits = line.Split(',');
+							switch ((FileLineType)Convert.ToInt32(splits[0]))
+							{
+								case FileLineType.DefinitionRow:
+									output.Height = Convert.ToInt32(splits[1]);
+									output.Width = Convert.ToInt32(splits[2]);
+									output.Name = splits[3] as string;
+									if (splits.Count() > 4)
+									{
+										output.BackgroundImage = splits[4] as string;
+
+										//Ensure the image exists
+										if (!File.Exists(output.BackgroundImage)) output.BackgroundImage = null;
+									}
+									if (splits.Count() > 5)
+										output.BackgroundImageOpacity = Convert.ToInt32(string.IsNullOrWhiteSpace(splits[5]) ? "100" : splits[5]);
+									output.GenerateGrid();
+									break;
+								case FileLineType.ChannelRow:
+									var propChannel = new PropChannel();
+									propChannel.Id = splits[1] as string;
+									propChannel.Name = splits[2] as string;
+
+									output.Channels.Add(propChannel);
+									break;
+
+								case FileLineType.DataRow:
+									int rowIndex = Convert.ToInt32(splits[1]) - 1;
+									for (int i = 2; i < splits.Length; i++)
+									{
+										if (!string.IsNullOrWhiteSpace(splits[i] as string))
+										{
+											output.Data.Rows[rowIndex][i - 2] = Convert.ToInt32(splits[i]);
+										}
+									}
+									break;
+								default:
+									break;
+							}
+						}
+					}
+				}
+			}
+			return output;
+		}
+
+		#endregion
 
 
 		public DisplayItem ToDisplayItem(int x, int y)

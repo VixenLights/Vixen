@@ -1,6 +1,7 @@
 ﻿using Common.Controls.ColorManagement.ColorModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,37 +13,33 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 	public class PropChannel
 	{
+		public enum StringTypes
+		{
+			Standard,
+			Pixel,
+			//            Flood
+		}
+
 		public PropChannel()
 		{
 			Id = Guid.NewGuid().ToString();
 			Children = new List<PropChannel>();
+			PixelSize = 5;
 		}
 
 		public PropChannel(string m)
 			: this()
 		{
-			ItemColor = XYZ.FromRGB(new RGB(Color.Black));
 
 			Name = m;
-	 
+
 		}
 
 
 		private string _text;
 
-		XYZ _itemColor;
 
-
-		public XYZ ItemColor
-		{
-			get { return _itemColor; }
-			set
-			{
-				_itemColor = value;
-
-			}
-		}
-
+		public StringTypes StringType { get; set; }
 		public string Name
 		{
 			get { return _text; }
@@ -52,13 +49,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
+		public int PixelSize { get; set; }
+
+		[Browsable(false)]
 		public string Id
 		{
 			get;
 			set;
 		}
 
-
+		[Browsable(false)]
 		public string ID_Text
 		{
 			get
@@ -66,9 +66,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				return string.Format("{0} -> {1}", Id.ToString().PadRight(3), Name);
 			}
 		}
-		public List<Point> Points = new List<Point>();
+		public List<PreviewPixel> Points = new List<PreviewPixel>();
 
+		[Browsable(false)]
 		public ElementNode Node { get; set; }
+		[Browsable(false)]
 		public List<PropChannel> Children { get; set; }
 	}
 }
