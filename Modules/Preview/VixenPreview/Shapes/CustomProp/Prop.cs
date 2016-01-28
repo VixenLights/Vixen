@@ -35,37 +35,37 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 			object lockObj = new object();
-			if (Channels == null) Channels = new List<PropChannel>();
-			Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
 
-			for (int x = 0; x < _data.Columns.Count; x++)
-			{
-				for (int y = 0; y < _data.Rows.Count; y++)
-				{
+			//Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
 
-					var result = _data.Rows[y][x] as string;
-					if (!string.IsNullOrWhiteSpace(result))
-					{
-						var iResult = Int32.Parse(result);
-						if (iResult > 0)
-						{
-							lock (lockObj)
-							{
-								var ch = Channels.Where(w => w.ID == iResult).FirstOrDefault();
-								if (ch == null)
-								{
-									ch = new PropChannel();
-									ch.ID = iResult;
-									ch.Text = string.Format("Channel_{0}", iResult);
-									Channels.Add(ch);
-								}
-								Channels.Where(w => w.ID == iResult).First().Points.Add(new System.Drawing.Point(x, y));
-							}
-						}
-					}
-				}
+			//for (int x = 0; x < _data.Columns.Count; x++)
+			//{
+			//	for (int y = 0; y < _data.Rows.Count; y++)
+			//	{
 
-			}
+			//		var result = _data.Rows[y][x] as string;
+			//		if (!string.IsNullOrWhiteSpace(result))
+			//		{
+			//			var iResult = Int32.Parse(result);
+			//			if (iResult > 0)
+			//			{
+			//				lock (lockObj)
+			//				{
+			//					var ch = Channels.Where(w => w.ID == iResult).FirstOrDefault();
+			//					if (ch == null)
+			//					{
+			//						ch = new PropChannel();
+			//						ch.ID = iResult;
+			//						ch.Text = string.Format("Channel_{0}", iResult);
+			//						Channels.Add(ch);
+			//					}
+			//					Channels.Where(w => w.ID == iResult).First().Points.Add(new System.Drawing.Point(x, y));
+			//				}
+			//			}
+			//		}
+			//	}
+
+			//}
 		}
 
 		private DataGridView _dataGrid;
@@ -77,14 +77,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public string BackgroundImage { get; set; }
 		public int BackgroundImageOpacity { get; set; }
 
-		public Prop(DataGridView dataGrid, int width, int height)
+		public Prop(int width, int height)
+			: this()
 		{
 
-			_dataGrid = dataGrid;
+
 			_width = width;
 			_height = height;
 			GenerateGrid();
 			BackgroundImageOpacity = 100;
+
 		}
 
 		public Prop(Prop obj)
@@ -165,8 +167,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 									break;
 								case FileLineType.ChannelRow:
 									var propChannel = new PropChannel();
-									propChannel.ID = Convert.ToInt32(splits[1]);
-									propChannel.Text = splits[2] as string;
+									propChannel.Id = splits[1] as string;
+									propChannel.Name = splits[2] as string;
 									propChannel.ItemColor = new Common.Controls.ColorManagement.ColorModels.XYZ(Convert.ToInt32(splits[3]), Convert.ToInt32(splits[4]), Convert.ToInt32(splits[5]));
 
 									output.Channels.Add(propChannel);
@@ -195,49 +197,49 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public void ToFile(string fileName)
 		{
-			using (var fs = new FileStream(fileName, FileMode.Create))
-			{
-				using (var sw = new StreamWriter(fs))
-				{
-					int channelCount = Channels == null ? 0 : Channels.Count();
-					//Write File Definition First
-					sw.WriteLine("#");
-					sw.WriteLine("#File Definition:");
-					sw.WriteLine("#{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount", "BackgroundImage", "Opacity");
-					sw.WriteLine("#");
-					sw.WriteLine("{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount, BackgroundImage, BackgroundImageOpacity);
-					//Write the Channel Information
-					sw.WriteLine("#");
-					sw.WriteLine("#Channel Definitions:");
-					sw.WriteLine("#{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, "Channel ID", "Text", "ItemColor.X", "ItemColor.Y", "ItemColor.Z");
+			//using (var fs = new FileStream(fileName, FileMode.Create))
+			//{
+			//	using (var sw = new StreamWriter(fs))
+			//	{
+			//		int channelCount = Channels == null ? 0 : Channels.Count();
+			//		//Write File Definition First
+			//		sw.WriteLine("#");
+			//		sw.WriteLine("#File Definition:");
+			//		sw.WriteLine("#{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount", "BackgroundImage", "Opacity");
+			//		sw.WriteLine("#");
+			//		sw.WriteLine("{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount, BackgroundImage, BackgroundImageOpacity);
+			//		//Write the Channel Information
+			//		sw.WriteLine("#");
+			//		sw.WriteLine("#Channel Definitions:");
+			//		sw.WriteLine("#{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, "Channel ID", "Text", "ItemColor.X", "ItemColor.Y", "ItemColor.Z");
 
-					if (Channels != null)
-					{
-						Channels.OrderBy(o => o.ID).ToList()
-							   .ForEach(c =>
-							   {
-								   sw.WriteLine("{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, c.ID, c.Text, c.ItemColor.X, c.ItemColor.Y, c.ItemColor.Z);
-							   });
-					}
-					sw.WriteLine("#");
-					sw.WriteLine("#Column Definitions:");
-					sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.DataRow, "Row Number");
-					sw.WriteLine("#");
-					if (Data != null)
-					{
+			//		if (Channels != null)
+			//		{
+			//			Channels.OrderBy(o => o.ID).ToList()
+			//				   .ForEach(c =>
+			//				   {
+			//					   sw.WriteLine("{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, c.ID, c.Text, c.ItemColor.X, c.ItemColor.Y, c.ItemColor.Z);
+			//				   });
+			//		}
+			//		sw.WriteLine("#");
+			//		sw.WriteLine("#Column Definitions:");
+			//		sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.DataRow, "Row Number");
+			//		sw.WriteLine("#");
+			//		if (Data != null)
+			//		{
 
-						foreach (DataRow row in Data.Rows)
-						{
-							sw.Write("{0},{1}", (int)FileLineType.DataRow, Data.Rows.IndexOf(row) + 1);
-							for (int i = 0; i < Data.Columns.Count; i++)
-							{
-								sw.Write(",{0}", row[i]);
-							}
-							sw.WriteLine();
-						}
-					}
-				}
-			}
+			//			foreach (DataRow row in Data.Rows)
+			//			{
+			//				sw.Write("{0},{1}", (int)FileLineType.DataRow, Data.Rows.IndexOf(row) + 1);
+			//				for (int i = 0; i < Data.Columns.Count; i++)
+			//				{
+			//					sw.Write(",{0}", row[i]);
+			//				}
+			//				sw.WriteLine();
+			//			}
+			//		}
+			//	}
+			//}
 
 		}
 
@@ -273,7 +275,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public List<PropChannel> Channels { get; set; }
 
 
-		public int SelectedChannelId { get; set; }
+		public string SelectedChannelId { get; set; }
 
 		public string SelectedChannelName { get; set; }
 

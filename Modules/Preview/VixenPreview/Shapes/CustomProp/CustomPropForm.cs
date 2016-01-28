@@ -16,6 +16,7 @@ using Common.Resources.Properties;
 using Common.Controls.Theme;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -66,24 +67,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				if (_prop.Channels == null) _prop.Channels = new List<PropChannel>();
 				return _prop.Channels;
 			}
-			set { _prop.Channels = value; }
-		}
-		public int MaxChannelID
-		{
-			get
+			set
 			{
-				int maxID = 0;
-				foreach (PropChannel item in listBox1.Items)
-				{
-					if (item.ID > maxID) maxID = item.ID;
-
-				}
-				return maxID;
+				_prop.Channels = value;
+				PopulateNodeTreeMultiSelect();
 			}
 		}
+
+	 
 		#endregion
 
 		#region Private Methods
+
+
 		private void SaveProp(string Name)
 		{
 			if (!Directory.Exists(PropDirectory)) Directory.CreateDirectory(PropDirectory);
@@ -100,33 +96,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			if (i < 1) i = 1;
 			string channelName = string.Format(templateName, i);
 			List<string> names = new List<string>();
-			foreach (PropChannel item in listBox1.Items)
-			{
-				names.Add(item.Text);
-			}
+			//foreach (PropChannel item in listBox1.Items)
+			//{
+			//	names.Add(item.Text);
+			//}
 			while (names.Contains(channelName))
 			{
-				channelName = string.Format("Channel_{0}", i++);
+				channelName = string.Format(templateName, i++);
 			}
 
 			return channelName;
 		}
 
 		int _currentRowHeight = -1;
-
-		private void ResizeRows()
-		{
-			var rowHeight = (double)dataGridPropView.Parent.Height / (double)dataGridPropView.Rows.Count;
-
-			if (_currentRowHeight != rowHeight)
-			{
-				foreach (DataGridViewRow row in dataGridPropView.Rows)
-				{
-					row.Height = (int)rowHeight;
-				}
-				_currentRowHeight = (int)rowHeight;
-			}
-		}
 
 		#endregion
 
@@ -139,9 +121,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			var result = form.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				PropChannel item = new PropChannel(form.Value, MaxChannelID);
-				Channels.Add(item);
-				listBox1.Items.Add(item);
+				PropChannel item = new PropChannel(form.Value);
+				//Channels.Add(item);
+				//listBox1.Items.Add(item);
 			}
 		}
 
@@ -154,53 +136,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				for (int i = 0; i < form.ChannelCount; i++)
 				{
 
-					PropChannel item = new PropChannel(GenerateNewChannelName(form.TemplateName, i), MaxChannelID);
-					Channels.Add(item);
-					listBox1.Items.Add(item);
+					PropChannel item = new PropChannel(GenerateNewChannelName(form.TemplateName, i));
+					//Channels.Add(item);
+					//listBox1.Items.Add(item);
 				}
 			}
 		}
 
 		private void toolStripMenuItem_Rename_Click(object sender, EventArgs e)
 		{
-			var prop = listBox1.SelectedItem as PropChannel;
-			if (prop != null)
-			{
-				ChannelNaming form = new ChannelNaming();
-				form.Value = prop.Text;
-				var result = form.ShowDialog();
-				if (result == DialogResult.OK)
-				{
-					prop.Text = form.Value;
-				}
-			}
+			//var prop = listBox1.SelectedItem as PropChannel;
+			//if (prop != null)
+			//{
+			//	ChannelNaming form = new ChannelNaming();
+			//	form.Value = prop.Text;
+			//	var result = form.ShowDialog();
+			//	if (result == DialogResult.OK)
+			//	{
+			//		prop.Text = form.Value;
+			//	}
+			//}
 		}
 
 		private void toolStripMenuItem_Remove_Click(object sender, EventArgs e)
 		{
-			var prop = listBox1.SelectedItem as PropChannel;
-			if (prop != null)
-				RemoveChannel(prop.ID);
+			//var prop =  listBox1.SelectedItem as PropChannel;
+			//if (prop != null)
+			//	RemoveChannel(prop.ID);
 		}
-
-		private void RemoveChannel(int id, bool renameOnly = false)
-		{
-			var channel = Channels.Where(s => s.ID == id).FirstOrDefault();
-			if (!renameOnly)
-			{
-				Channels.Remove(channel);
-			}
-
-			Channels.Where(r => r.ID == id + 1).ToList().ForEach(c => c.ID = id);
-
-
-
-		}
-
 
 		private void changeChannelColorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PropChannel item = listBox1.SelectedItem as PropChannel;
+			PropChannel item = null;// listBox1.SelectedItem as PropChannel;
 			using (ColorPicker cp = new ColorPicker())
 			{
 				cp.LockValue_V = true;
@@ -236,26 +203,26 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			PropChannel item = listBox1.SelectedItem as PropChannel;
+			PropChannel item = null;// listBox1.SelectedItem as PropChannel;
 			if (item == null)
 			{
-				_prop.SelectedChannelId = 0;
+				_prop.SelectedChannelId = null;
 				_prop.SelectedChannelName = null;
 			}
 			else
 			{
-				_prop.SelectedChannelId = item.ID;
-				_prop.SelectedChannelName = item.Text;
+				_prop.SelectedChannelId = item.Id;
+				_prop.SelectedChannelName = item.Name;
 			}
 		}
 
 		private void CustomPropForm_Load(object sender, EventArgs e)
 		{
 			this.trkImageOpacity.Value = 100;
-
+			this.textBox1.Text = "[!Rename Me!]";
 			if (_fileName == null)
 			{
-				_prop = new Prop(this.dataGridPropView, (int)numGridWidth.Value, (int)numGridHeight.Value);
+				_prop = new Prop((int)numGridWidth.Value, (int)numGridHeight.Value);
 				this.txtBackgroundImage.Text = null;
 				this.trkImageOpacity.Value = 100;
 				SetGridBackground();
@@ -270,8 +237,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					_prop = new Prop(prop);
 
 					this.textBox1.Text = _prop.Name;
-					listBox1.Items.Clear();
-					listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
+ 					 
 					this.numGridHeight.Value = _prop.Height;
 					this.numGridWidth.Value = _prop.Width;
 					this.txtBackgroundImage.Text = _prop.BackgroundImage;
@@ -281,21 +247,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				else
 					SetGridBackground();
 			}
-			dataGridPropView.DataSource = _prop.Data;
 
-			//	dataGridPropView.Font = new System.Drawing.Font("Arial Black", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			dataGridPropView.ForeColor = Color.Black;
-			ResizeRows();
+
+			PopulateNodeTreeMultiSelect();
+
+		}
+		private void PopulateNodeTreeMultiSelect()
+		{
+			treeViewChannels.BeginUpdate();
+			treeViewChannels.Nodes.Clear();
+
+			foreach (var channel in this.Channels)
+			{
+				AddNodeToTree(treeViewChannels.Nodes, channel);
+			}
+
+			treeViewChannels.EndUpdate();
 		}
 
+		private void AddNodeToTree(TreeNodeCollection collection, PropChannel elementNode)
+		{
+			TreeNode addedNode = new TreeNode()
+			{
+				Name = elementNode.Id.ToString(),
+				Text = elementNode.Name,
+				Tag = elementNode
+			};
+
+			collection.Add(addedNode);
+			if (elementNode.Children != null)
+			foreach (PropChannel childNode in elementNode.Children)
+			{
+				AddNodeToTree(addedNode.Nodes, childNode);
+			}
+		}
 		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
 		{
 			this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = true;
 
-			if (this.listBox1.SelectedItems.Count != 1)
-			{
-				this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = false;
-			}
+			//if (this.listBox1.SelectedItems.Count != 1)
+			//{
+			//	this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = false;
+			//}
 		}
 
 
@@ -316,10 +309,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					if (prop != null)
 					{
 						_prop = new Prop(prop);
-						this.dataGridPropView.DataSource = _prop.Data;
+
 						this.textBox1.Text = _prop.Name;
-						listBox1.Items.Clear();
-						listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
+						//listBox1.Items.Clear();
+						//listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
 					}
 
 				}
@@ -334,95 +327,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		}
 
 
-		private void contextMenuGrid_Opening(object sender, CancelEventArgs e)
-		{
-			if (dataGridPropView.SelectedCells.Count == 0)
-			{
-				e.Cancel = true;
-				return;
-			}
-			else
-			{
-
-				//	bool hasData = false;
-				//	bool hasBlank = false;
-
-				//	foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
-				//	{
-				//		if (item.Value == null) hasBlank = true;
-				//		if (item.Value != null) hasData = true;
-				//	}
-				//	clearToolStripMenuItem.Visible = hasData;
-				applyToolStripMenuItem.Visible = _prop.SelectedChannelId > 0;
-				//	if (!hasBlank && !hasData) e.Cancel = true; //Something really went wrong here... LOL
-			}
-
-		}
-
-		private void applyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-			foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
-			{
-				item.Value = _prop.SelectedChannelId;
-			}
-		}
-
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
-			{
-				item.Value = null;
-			}
-		}
-
-		private void dataGridPropView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-		{
-			dataGridPropView.Columns[e.ColumnIndex].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-		}
-
-		private void dataGridPropView_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
-		{
-			e.Column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-		}
-
-
-		private void dataGridPropView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-		{
-			bool hasImage = File.Exists(_prop.BackgroundImage);
-			e.CellStyle.ForeColor = hasImage ? Color.White : Color.Black;
-
-			float fontSize = NewFontSize(e.Graphics, e.CellBounds.Size, e.CellStyle.Font, e.Value as string);
-			if (!float.IsInfinity(fontSize))
-				e.CellStyle.Font = new Font(e.CellStyle.Font.Name, fontSize, e.CellStyle.Font.Style);
-
-			e.PaintBackground(e.ClipBounds, true);
-
-			e.PaintContent(e.ClipBounds);
-
-			float lineWidth = 2f;
-			var rowColumnCount = Math.Max(dataGridPropView.Columns.Count, dataGridPropView.Rows.Count);
-			if (rowColumnCount > 16 && rowColumnCount < 40)
-				lineWidth = 1f;
-			else if (rowColumnCount >= 40 && rowColumnCount < 60)
-				lineWidth = .5f;
-			else lineWidth = .25f;
-
-
-			using (Pen p = new Pen(hasImage ? Brushes.White : Brushes.Black, lineWidth))
-			{
-				e.Graphics.DrawLine(p, new Point(e.CellBounds.Left, e.CellBounds.Bottom),
-									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
-			}
-			using (Pen p = new Pen(hasImage ? Brushes.White : Brushes.Black, lineWidth))
-			{
-				e.Graphics.DrawLine(p, new Point(e.CellBounds.Right, e.CellBounds.Top),
-									   new Point(e.CellBounds.Right, e.CellBounds.Bottom));
-			}
-
-
-			e.Handled = true;
-		}
 
 		public static float NewFontSize(Graphics graphics, Size size, Font font, string str)
 		{
@@ -433,26 +337,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			return font.Size * ratio;
 		}
 
-		private void dataGridPropView_KeyUp(object sender, KeyEventArgs e)
-		{
-			var grid = sender as DataGridView;
-			if (grid == null) return;
-			if (e.KeyCode == Keys.Delete)
-			{
-				if (grid.SelectedCells.Count > 0)
-				{
-					foreach (DataGridViewCell item in dataGridPropView.SelectedCells)
-					{
-						item.Value = null;
-					}
-				}
-			}
-		}
 
-		private void dataGridPropView_Resize(object sender, EventArgs e)
-		{
-			ResizeRows();
-		}
+
 
 		private void btnLoadBackgroundImage_Click(object sender, EventArgs e)
 		{
@@ -596,6 +482,71 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			_prop.BackgroundImageOpacity = trkImageOpacity.Value;
 			SetGridBackground(_prop.BackgroundImage, _prop.BackgroundImageOpacity);
+		}
+
+		private void label1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void numGridHeight_ValueChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label4_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label3_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void toolStripSeparator2_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void toolStripSeparator1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void numGridWidth_ValueChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void splitContainer2_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+
+		}
+
+		private void dataGridPropView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+		{
+
+		}
+
+		private void txtBackgroundImage_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void textBox1_TextChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void label2_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+
 		}
 
 

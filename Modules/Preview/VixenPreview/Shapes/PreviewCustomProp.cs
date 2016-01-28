@@ -259,32 +259,32 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							{
 
 								int iChannel = Convert.ToInt32(channel);
-								var ch = _prop.Channels.Where(c => c.ID == iChannel).FirstOrDefault();
-								if (ch == null) 
+								//var ch = _prop.Channels.Where(c => c.ID == iChannel).FirstOrDefault();
+								//if (ch == null) 
 									continue;
 								
-								var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
-								if (str == null)
-									_strings.Add(new CustomPropBaseShape() { Name = ch.Text });
+								//var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
+								//if (str == null)
+								//	_strings.Add(new CustomPropBaseShape() { Name = ch.Text });
 
 
-								PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
-								pixel.InternalId = string.Format("{0}.{1}", x, y);
-								//PreviewPixel pixel = AddPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y);
+								//PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
+								//pixel.InternalId = string.Format("{0}.{1}", x, y);
+								////PreviewPixel pixel = AddPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y);
 
 
-								var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.InternalId.Equals(pixel.InternalId)).FirstOrDefault();
+								//var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.InternalId.Equals(pixel.InternalId)).FirstOrDefault();
 
-								if (stringPixel == null)
-								{
-									//_pixels.Add(pixel);
-									_strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Add(pixel);
-								}
-								else
-								{
-									stringPixel.X = pixel.X;
-									stringPixel.Y = pixel.Y;
-								}
+								//if (stringPixel == null)
+								//{
+								//	//_pixels.Add(pixel);
+								//	_strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Add(pixel);
+								//}
+								//else
+								//{
+								//	stringPixel.X = pixel.X;
+								//	stringPixel.Y = pixel.Y;
+								//}
 
 							}
 

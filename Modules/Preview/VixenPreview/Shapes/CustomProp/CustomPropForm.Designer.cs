@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomPropForm));
 			this.toolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Rename = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_AddMultiple = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,20 +43,18 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.changeChannelColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.listBox1 = new System.Windows.Forms.ListBox();
 			this.btnUpdateChannelCount = new System.Windows.Forms.Button();
 			this.numGridWidth = new System.Windows.Forms.NumericUpDown();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.trkImageOpacity = new System.Windows.Forms.TrackBar();
+			this.chkMaintainAspect = new System.Windows.Forms.CheckBox();
 			this.btnLoadBackgroundImage = new System.Windows.Forms.Button();
 			this.txtBackgroundImage = new System.Windows.Forms.TextBox();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
+			this.trkImageOpacity = new System.Windows.Forms.TrackBar();
+			this.treeViewChannels = new Common.Controls.MultiSelectTreeview();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.dataGridPropView = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.DataGridViewWithBackground();
-			this.contextMenuGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.applyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gridPanel = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.numGridHeight)).BeginInit();
 			this.contextMenuChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numGridWidth)).BeginInit();
@@ -68,8 +67,6 @@
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).BeginInit();
-			this.contextMenuGrid.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripMenuItem_Remove
@@ -101,6 +98,7 @@
 			this.label1.Size = new System.Drawing.Size(60, 13);
 			this.label1.TabIndex = 10;
 			this.label1.Text = "Prop Name";
+			this.label1.Click += new System.EventHandler(this.label1_Click);
 			// 
 			// btnSave
 			// 
@@ -123,6 +121,7 @@
             0,
             0,
             0});
+			this.numGridHeight.ValueChanged += new System.EventHandler(this.numGridHeight_ValueChanged);
 			// 
 			// label4
 			// 
@@ -133,6 +132,7 @@
 			this.label4.Size = new System.Drawing.Size(51, 13);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "Channels";
+			this.label4.Click += new System.EventHandler(this.label4_Click);
 			// 
 			// label3
 			// 
@@ -142,6 +142,7 @@
 			this.label3.Size = new System.Drawing.Size(60, 13);
 			this.label3.TabIndex = 6;
 			this.label3.Text = "Grid Height";
+			this.label3.Click += new System.EventHandler(this.label3_Click);
 			// 
 			// toolStripMenuItem_Add
 			// 
@@ -168,6 +169,7 @@
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
 			this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
+			this.toolStripSeparator2.Click += new System.EventHandler(this.toolStripSeparator2_Click);
 			// 
 			// changeChannelColorToolStripMenuItem
 			// 
@@ -180,19 +182,7 @@
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
-			// 
-			// listBox1
-			// 
-			this.listBox1.ContextMenuStrip = this.contextMenuChannels;
-			this.listBox1.DisplayMember = "ID_Text";
-			this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.listBox1.FormattingEnabled = true;
-			this.listBox1.Location = new System.Drawing.Point(0, 0);
-			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(246, 293);
-			this.listBox1.TabIndex = 9;
-			this.listBox1.ValueMember = "Text";
-			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+			this.toolStripSeparator1.Click += new System.EventHandler(this.toolStripSeparator1_Click);
 			// 
 			// btnUpdateChannelCount
 			// 
@@ -215,6 +205,7 @@
             0,
             0,
             0});
+			this.numGridWidth.ValueChanged += new System.EventHandler(this.numGridWidth_ValueChanged);
 			// 
 			// splitContainer2
 			// 
@@ -225,7 +216,7 @@
 			// 
 			// splitContainer2.Panel1
 			// 
-			this.splitContainer2.Panel1.Controls.Add(this.trkImageOpacity);
+			this.splitContainer2.Panel1.Controls.Add(this.chkMaintainAspect);
 			this.splitContainer2.Panel1.Controls.Add(this.btnLoadBackgroundImage);
 			this.splitContainer2.Panel1.Controls.Add(this.txtBackgroundImage);
 			this.splitContainer2.Panel1.Controls.Add(this.textBox1);
@@ -237,26 +228,27 @@
 			this.splitContainer2.Panel1.Controls.Add(this.btnUpdateChannelCount);
 			this.splitContainer2.Panel1.Controls.Add(this.numGridWidth);
 			this.splitContainer2.Panel1.Controls.Add(this.label2);
+			this.splitContainer2.Panel1.Controls.Add(this.trkImageOpacity);
 			// 
 			// splitContainer2.Panel2
 			// 
-			this.splitContainer2.Panel2.Controls.Add(this.listBox1);
+			this.splitContainer2.Panel2.Controls.Add(this.treeViewChannels);
 			this.splitContainer2.Size = new System.Drawing.Size(246, 500);
 			this.splitContainer2.SplitterDistance = 203;
 			this.splitContainer2.TabIndex = 0;
+			this.splitContainer2.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer2_SplitterMoved);
 			// 
-			// trkImageOpacity
+			// chkMaintainAspect
 			// 
-			this.trkImageOpacity.Location = new System.Drawing.Point(20, 109);
-			this.trkImageOpacity.Maximum = 100;
-			this.trkImageOpacity.Name = "trkImageOpacity";
-			this.trkImageOpacity.Size = new System.Drawing.Size(214, 45);
-			this.trkImageOpacity.SmallChange = 5;
-			this.trkImageOpacity.TabIndex = 14;
-			this.trkImageOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.trkImageOpacity.Value = 100;
-			this.trkImageOpacity.Scroll += new System.EventHandler(this.trkImageOpacity_Scroll);
-			this.trkImageOpacity.ValueChanged += new System.EventHandler(this.trkImageOpacity_ValueChanged);
+			this.chkMaintainAspect.AutoSize = true;
+			this.chkMaintainAspect.Checked = true;
+			this.chkMaintainAspect.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkMaintainAspect.Location = new System.Drawing.Point(67, 126);
+			this.chkMaintainAspect.Name = "chkMaintainAspect";
+			this.chkMaintainAspect.Size = new System.Drawing.Size(121, 17);
+			this.chkMaintainAspect.TabIndex = 15;
+			this.chkMaintainAspect.Text = "Retain Aspect Ratio";
+			this.chkMaintainAspect.UseVisualStyleBackColor = true;
 			// 
 			// btnLoadBackgroundImage
 			// 
@@ -275,6 +267,7 @@
 			this.txtBackgroundImage.ReadOnly = true;
 			this.txtBackgroundImage.Size = new System.Drawing.Size(190, 20);
 			this.txtBackgroundImage.TabIndex = 12;
+			this.txtBackgroundImage.TextChanged += new System.EventHandler(this.txtBackgroundImage_TextChanged);
 			// 
 			// textBox1
 			// 
@@ -282,6 +275,7 @@
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(151, 20);
 			this.textBox1.TabIndex = 11;
+			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			// 
 			// label2
 			// 
@@ -291,6 +285,37 @@
 			this.label2.Size = new System.Drawing.Size(57, 13);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Grid Width";
+			this.label2.Click += new System.EventHandler(this.label2_Click);
+			// 
+			// trkImageOpacity
+			// 
+			this.trkImageOpacity.Location = new System.Drawing.Point(20, 109);
+			this.trkImageOpacity.Maximum = 100;
+			this.trkImageOpacity.Name = "trkImageOpacity";
+			this.trkImageOpacity.Size = new System.Drawing.Size(214, 45);
+			this.trkImageOpacity.SmallChange = 5;
+			this.trkImageOpacity.TabIndex = 14;
+			this.trkImageOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
+			this.trkImageOpacity.Value = 100;
+			this.trkImageOpacity.Scroll += new System.EventHandler(this.trkImageOpacity_Scroll);
+			this.trkImageOpacity.ValueChanged += new System.EventHandler(this.trkImageOpacity_ValueChanged);
+			// 
+			// treeViewChannels
+			// 
+			this.treeViewChannels.AllowDrop = true;
+			this.treeViewChannels.CustomDragCursor = null;
+			this.treeViewChannels.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeViewChannels.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
+			this.treeViewChannels.DragDestinationNodeBackColor = System.Drawing.SystemColors.Highlight;
+			this.treeViewChannels.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
+			this.treeViewChannels.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
+			this.treeViewChannels.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
+			this.treeViewChannels.Location = new System.Drawing.Point(0, 0);
+			this.treeViewChannels.Name = "treeViewChannels";
+			this.treeViewChannels.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeViewChannels.SelectedNodes")));
+			this.treeViewChannels.Size = new System.Drawing.Size(246, 293);
+			this.treeViewChannels.TabIndex = 0;
+			this.treeViewChannels.UsingCustomDragCursor = false;
 			// 
 			// splitContainer1
 			// 
@@ -300,7 +325,8 @@
 			// 
 			// splitContainer1.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.dataGridPropView);
+			this.splitContainer1.Panel1.BackColor = System.Drawing.Color.Black;
+			this.splitContainer1.Panel1.Controls.Add(this.gridPanel);
 			// 
 			// splitContainer1.Panel2
 			// 
@@ -308,56 +334,17 @@
 			this.splitContainer1.Size = new System.Drawing.Size(914, 500);
 			this.splitContainer1.SplitterDistance = 664;
 			this.splitContainer1.TabIndex = 1;
+			this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
 			// 
-			// dataGridPropView
+			// gridPanel
 			// 
-			this.dataGridPropView.AllowDrop = true;
-			this.dataGridPropView.AllowUserToAddRows = false;
-			this.dataGridPropView.AllowUserToDeleteRows = false;
-			this.dataGridPropView.AllowUserToResizeColumns = false;
-			this.dataGridPropView.AllowUserToResizeRows = false;
-			this.dataGridPropView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.dataGridPropView.BackgroundColor = System.Drawing.Color.Black;
-			this.dataGridPropView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridPropView.ColumnHeadersVisible = false;
-			this.dataGridPropView.ContextMenuStrip = this.contextMenuGrid;
-			this.dataGridPropView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridPropView.Location = new System.Drawing.Point(0, 0);
-			this.dataGridPropView.Name = "dataGridPropView";
-			this.dataGridPropView.ReadOnly = true;
-			this.dataGridPropView.RowHeadersVisible = false;
-			this.dataGridPropView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-			this.dataGridPropView.ShowEditingIcon = false;
-			this.dataGridPropView.Size = new System.Drawing.Size(664, 500);
-			this.dataGridPropView.TabIndex = 0;
-			this.dataGridPropView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridPropView_CellEndEdit);
-			this.dataGridPropView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridPropView_CellPainting);
-			this.dataGridPropView.ColumnAdded += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dataGridPropView_ColumnAdded);
-			this.dataGridPropView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridPropView_KeyUp);
-			this.dataGridPropView.Resize += new System.EventHandler(this.dataGridPropView_Resize);
-			// 
-			// contextMenuGrid
-			// 
-			this.contextMenuGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem,
-            this.applyToolStripMenuItem});
-			this.contextMenuGrid.Name = "contextMenuGrid";
-			this.contextMenuGrid.Size = new System.Drawing.Size(106, 48);
-			this.contextMenuGrid.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuGrid_Opening);
-			// 
-			// clearToolStripMenuItem
-			// 
-			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
-			this.clearToolStripMenuItem.Text = "Clear";
-			this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
-			// 
-			// applyToolStripMenuItem
-			// 
-			this.applyToolStripMenuItem.Name = "applyToolStripMenuItem";
-			this.applyToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
-			this.applyToolStripMenuItem.Text = "Apply";
-			this.applyToolStripMenuItem.Click += new System.EventHandler(this.applyToolStripMenuItem_Click);
+			this.gridPanel.BackColor = System.Drawing.Color.Black;
+			this.gridPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.gridPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gridPanel.Location = new System.Drawing.Point(0, 0);
+			this.gridPanel.Name = "gridPanel";
+			this.gridPanel.Size = new System.Drawing.Size(664, 500);
+			this.gridPanel.TabIndex = 1;
 			// 
 			// CustomPropForm
 			// 
@@ -381,8 +368,6 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridPropView)).EndInit();
-			this.contextMenuGrid.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -400,7 +385,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Add;
 		private System.Windows.Forms.ContextMenuStrip contextMenuChannels;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ListBox listBox1;
 		private System.Windows.Forms.Button btnUpdateChannelCount;
 		private System.Windows.Forms.NumericUpDown numGridWidth;
 		private System.Windows.Forms.SplitContainer splitContainer2;
@@ -409,13 +393,12 @@
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem changeChannelColorToolStripMenuItem;
-		private DataGridViewWithBackground dataGridPropView;
-		private System.Windows.Forms.ContextMenuStrip contextMenuGrid;
-		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem applyToolStripMenuItem;
 		private System.Windows.Forms.Button btnLoadBackgroundImage;
 		private System.Windows.Forms.TextBox txtBackgroundImage;
 		private System.Windows.Forms.TrackBar trkImageOpacity;
+		private System.Windows.Forms.CheckBox chkMaintainAspect;
+		private System.Windows.Forms.Panel gridPanel;
+		private Common.Controls.MultiSelectTreeview treeViewChannels;
 	}
 }
 

@@ -12,17 +12,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 	public class PropChannel
 	{
-		public PropChannel() { }
-		public PropChannel(string m, int maxChannelID)
+		public PropChannel()
+		{
+			Id = Guid.NewGuid().ToString();
+			Children = new List<PropChannel>();
+		}
+
+		public PropChannel(string m)
+			: this()
 		{
 			ItemColor = XYZ.FromRGB(new RGB(Color.Black));
-			ID = maxChannelID + 1;
-			Text = m;
+
+			Name = m;
+	 
 		}
 
 
 		private string _text;
-		private int _id;
+
 		XYZ _itemColor;
 
 
@@ -36,7 +43,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		public string Text
+		public string Name
 		{
 			get { return _text; }
 			set
@@ -45,13 +52,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		public int ID
+		public string Id
 		{
-			get { return _id; }
-			set
-			{
-				_id = value;
-			}
+			get;
+			set;
 		}
 
 
@@ -59,11 +63,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			get
 			{
-				return string.Format("{0} -> {1}", ID.ToString().PadRight(3), Text);
+				return string.Format("{0} -> {1}", Id.ToString().PadRight(3), Name);
 			}
 		}
 		public List<Point> Points = new List<Point>();
 
 		public ElementNode Node { get; set; }
+		public List<PropChannel> Children { get; set; }
 	}
 }
