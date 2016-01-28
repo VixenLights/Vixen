@@ -35,6 +35,8 @@ namespace Common.Controls.Timeline
 
 		private bool _sequenceLoading = false;
 
+		public bool ZoomToMousePosition { get; set; }
+
 		public bool SequenceLoading
 		{
 			get { return _sequenceLoading; }
@@ -326,6 +328,24 @@ namespace Common.Controls.Timeline
 			}
 			grid.EndDraw();
 			}
+
+		public void ZoomTime(double scale, Point mousePosition)
+		{
+			if (scale <= 0.0)
+				return;
+			grid.BeginDraw();
+
+			decimal gridPixelWidth = splitContainer.Panel2.Width;
+			TimeSpan originalTimeSpan = VisibleTimeSpan;
+			TimePerPixel = TimePerPixel.Scale(scale);
+			TimeSpan newTimeSpan = VisibleTimeSpan;
+			decimal timeSpanOffset = ((100 / gridPixelWidth) * (mousePosition.X - splitContainer.SplitterDistance) / 100);
+			VisibleTimeStart = scale > 1
+				? VisibleTimeStart - (pixelsToTime((int) (timeToPixels(newTimeSpan - originalTimeSpan)*(float) timeSpanOffset)))
+				: VisibleTimeStart + (pixelsToTime((int) (timeToPixels(originalTimeSpan - newTimeSpan)*(float) timeSpanOffset)));
+
+			grid.EndDraw();
+		}
 
 		public void ZoomRows(double scale)
 		{
@@ -641,8 +661,16 @@ namespace Common.Controls.Timeline
 		{
 			base.OnMouseWheel(e);
 			if (Form.ModifierKeys.HasFlag(Keys.Control)) {
-				// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
-				Zoom(1.0 - ((double) e.Delta/1200.0));
+				if (ZoomToMousePosition)
+				{
+					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
+					ZoomTime(1.0 - ((double) e.Delta/1200.0), e.Location);
+				}
+				else
+				{
+					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
+					Zoom(1.0 - ((double) e.Delta/1200.0));
+				}
 			}
 			else if (Form.ModifierKeys.HasFlag(Keys.Shift)) {
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
