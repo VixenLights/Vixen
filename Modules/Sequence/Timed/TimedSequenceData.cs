@@ -19,6 +19,9 @@ namespace VixenModules.Sequence.Timed
 		public TimeSpan TimePerPixel { get; set; }
 
 		[DataMember]
+		public TimeSpan VisibleTimeStart { get; set; }
+
+		[DataMember]
 		public int DefaultRowHeight { get; set; }
 
 		[DataMember]
@@ -34,7 +37,8 @@ namespace VixenModules.Sequence.Timed
 			RowHeightSettings = new List<RowHeightSetting>();
 			DefaultRowHeight = 32;
 			RowGuidId = new List<Guid>();
-			DefaultRowHeight = 10;
+			VisibleTimeStart = TimeSpan.MinValue;
+			DefaultSplitterDistance = 200;
 		}
 
 		public override IModuleDataModel Clone()

@@ -364,6 +364,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
 			TimelineControl.TimePerPixelChanged += TimelineControl_TimePerPixelChanged;
+			TimelineControl.VisibleTimeStartChanged += TimelineControl_VisibleTimeStartChanged;
 			TimelineControl.grid.SelectedElementsCloneDelegate = CloneElements;
 			TimelineControl.grid.StartDrawMode += DrawElement;
 			TimelineControl.grid.DragOver += TimelineControlGrid_DragOver;
@@ -480,6 +481,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
+			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -852,6 +854,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.AllowGridResize = false;
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
+			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+			if (TimelineControl.rowHeight == 0)
+				TimelineControl.rowHeight = 32;
+
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
 
@@ -992,6 +998,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;
 				}
 
+				if (_sequence.VisibleTimeStart > TimeSpan.Zero)
+				{
+					TimelineControl.VisibleTimeStart = _sequence.VisibleTimeStart;
+				}
 
 
 				Logging.Debug("Sequence {0} took {1} to load.", sequence.Name, _loadingWatch.Elapsed);
@@ -1801,6 +1811,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
+		private void TimelineControl_VisibleTimeStartChanged(object sender, EventArgs e)
+		{
+			if (_sequence.VisibleTimeStart != TimelineControl.VisibleTimeStart)
+			{
+				_sequence.VisibleTimeStart = TimelineControl.VisibleTimeStart;
+				SequenceModified();
+			}
+
+		}
+
 		private void timelineControl_ContextSelected(object sender, ContextSelectedEventArgs e)
 		{
 
@@ -2078,6 +2098,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddContextCollectionsMenu();
 
 			}
+
+			ToolStripMenuItem contextMenuItemResetTimeLineSettings = new ToolStripMenuItem("Reset Timeline Settings"){ Image = Resources.Reset};
+			contextMenuItemResetTimeLineSettings.ToolTipText = "Resets TimeLine Start to Zero and Timeline Zoom to 14sec";
+			contextMenuItemResetTimeLineSettings.Click += (mySender, myE) => ResetTimeLineSettings();
+			_contextMenuStrip.Items.Add(contextMenuItemResetTimeLineSettings);
 
 			e.AutomaticallyHandleSelection = false;
 
@@ -3346,9 +3371,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="parentRow">The parent node the row should belong to, if any.</param>
 		private void AddNodeAsRow(ElementNode node, Row parentRow)
 		{
-			TimelineControl.rowHeight =  _sequence.DefaultRowHeight;
-			if (TimelineControl.rowHeight <= 10)
-				TimelineControl.rowHeight = 32;
 			// made the new row from the given node and add it to the control.
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
 			
@@ -5525,6 +5547,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//Make sure we have elements in the list to move.
 			if (moveElements.Any()) TimelineControl.grid.MoveResizeElements(moveElements);
+		}
+
+		private void ResetTimeLineSettings()
+		{
+			TimelineControl.VisibleTimeStart = TimeSpan.Zero;
+			TimelineControl.TimePerPixel = TimeSpan.FromTicks(100000);
 		}
 
 		/// <summary>

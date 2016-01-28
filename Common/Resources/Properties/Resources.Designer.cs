@@ -1843,6 +1843,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Reset {
+            get {
+                object obj = ResourceManager.GetObject("Reset", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap sequentialColors {
             get {
                 object obj = ResourceManager.GetObject("sequentialColors", resourceCulture);

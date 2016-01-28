@@ -665,20 +665,26 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+
+		public static readonly ContextMenuStrip RowListMenu = new ContextMenuStrip();
+
 		#region RowLabel Context Menu Strip
+
 		private void RowLabelContextMenuHandler(object sender, EventArgs e)
 		{
-			//Conext menu for the RowList when right clicking.
-			ContextMenuStrip RowListMenu = new ContextMenuStrip();
+			//Conext menu for the RowLabel when right clicking.
+			RowListMenu.Items.Clear();
 			ToolStripMenuItem RowListMenuCollapse = new ToolStripMenuItem("Collapse All Groups");
 			ToolStripMenuItem RowListMenuResetRowHeight = new ToolStripMenuItem("Reset All Rows to Default Height");
-			ToolStripMenuItem RowListMenuResetSelectedRowHeight = new ToolStripMenuItem("Reset Selected and Child rows to Default Height");
+			ToolStripMenuItem RowListMenuResetSelectedRowHeight =
+				new ToolStripMenuItem("Reset Selected and Child rows to Default Height");
 			RowListMenuCollapse.Click += RowListMenuCollapse_Click;
 			RowListMenuResetRowHeight.Click += ResetRowHeight_Click;
 			RowListMenuResetSelectedRowHeight.Click += ResetSelectedRowHeight_Click;
-			RowListMenu.Items.AddRange(new ToolStripItem[] { RowListMenuCollapse, RowListMenuResetRowHeight, RowListMenuResetSelectedRowHeight });
+			RowListMenu.Items.AddRange(new ToolStripItem[]
+			{RowListMenuCollapse, RowListMenuResetRowHeight, RowListMenuResetSelectedRowHeight});
 			RowListMenu.Renderer = new ThemeToolStripRenderer();
-			ContextMenuStrip = RowListMenu;
+			RowListMenu.Show(MousePosition);
 		}
 
 		private void ResetRowHeight_Click(object sender, EventArgs e)
@@ -697,7 +703,7 @@ namespace Common.Controls.Timeline
 
 		public void ResetRowHeight()
 		{
-			//Restes all row heights back to default
+			//Resets all row heights back to default
 			//ensure that rows are completed before refreshing allowing a smooth transistion.
 			EnableDisableHandlers(false);
 			grid.AllowGridResize = false;
@@ -715,7 +721,7 @@ namespace Common.Controls.Timeline
 
 		public void RowListMenuCollapse()
 		{
-			//Collapses ann open groups
+			//Collapses all open groups
 			foreach (Row row in Rows)
 			{
 				if (row.TreeOpen)
@@ -725,7 +731,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		public void ResetSelectedRowHeight()
+		private void ResetSelectedRowHeight()
 		{
 			//Resets the selected row and childs to current default height.
 			SelectedRow.Height = rowHeight;
@@ -736,7 +742,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private void ChangeRowHeight(Row childs)
+		public void ChangeRowHeight(Row childs)
 		{
 			// iterate through all of its children, changing each row height to the current default
 			foreach (Row child in childs.ChildRows)
@@ -783,7 +789,7 @@ namespace Common.Controls.Timeline
 		#endregion
 		private void zoomRowHeight(Point gridLocation, int delta)
 		{
-			//Changes Row height with the control shaift and mouse scroll
+			//Changes Row height with the control shift and mouse scroll
 			grid.BeginDraw();
 			double zoomScale = delta < 0.0 ? 0.8 : 1.25;
 			int waveFormHeight = 0;

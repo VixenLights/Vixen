@@ -36,6 +36,12 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData)SequenceData).TimePerPixel = value; }
 		}
 
+		public TimeSpan VisibleTimeStart
+		{
+			get { return ((TimedSequenceData)SequenceData).VisibleTimeStart; }
+			set { ((TimedSequenceData)SequenceData).VisibleTimeStart = value; }
+		}
+
 		public int DefaultRowHeight
 		{
 			get { return ((TimedSequenceData)SequenceData).DefaultRowHeight; }
