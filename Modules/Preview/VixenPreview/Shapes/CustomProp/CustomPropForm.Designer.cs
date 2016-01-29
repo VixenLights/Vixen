@@ -30,15 +30,9 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomPropForm));
-			this.toolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_Rename = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_AddMultiple = new System.Windows.Forms.ToolStripMenuItem();
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
-			this.toolStripMenuItem_Add = new System.Windows.Forms.ToolStripMenuItem();
-			this.contextMenuChannels = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.chkMaintainAspect = new System.Windows.Forms.CheckBox();
 			this.btnLoadBackgroundImage = new System.Windows.Forms.Button();
@@ -50,7 +44,8 @@
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.gridPanel = new System.Windows.Forms.Panel();
-			this.contextMenuChannels.SuspendLayout();
+			this.contextMenuStripPixels = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.removeSelectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
@@ -64,28 +59,8 @@
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			this.contextMenuStripPixels.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// toolStripMenuItem_Remove
-			// 
-			this.toolStripMenuItem_Remove.Name = "toolStripMenuItem_Remove";
-			this.toolStripMenuItem_Remove.Size = new System.Drawing.Size(195, 22);
-			this.toolStripMenuItem_Remove.Text = "Remove Channel";
-			this.toolStripMenuItem_Remove.Click += new System.EventHandler(this.toolStripMenuItem_Remove_Click);
-			// 
-			// toolStripMenuItem_Rename
-			// 
-			this.toolStripMenuItem_Rename.Name = "toolStripMenuItem_Rename";
-			this.toolStripMenuItem_Rename.Size = new System.Drawing.Size(195, 22);
-			this.toolStripMenuItem_Rename.Text = "Rename Channel";
-			this.toolStripMenuItem_Rename.Click += new System.EventHandler(this.toolStripMenuItem_Rename_Click);
-			// 
-			// toolStripMenuItem_AddMultiple
-			// 
-			this.toolStripMenuItem_AddMultiple.Name = "toolStripMenuItem_AddMultiple";
-			this.toolStripMenuItem_AddMultiple.Size = new System.Drawing.Size(195, 22);
-			this.toolStripMenuItem_AddMultiple.Text = "Add Multiple Channels";
-			this.toolStripMenuItem_AddMultiple.Click += new System.EventHandler(this.toolStripMenuItem_AddMultiple_Click);
 			// 
 			// label1
 			// 
@@ -115,30 +90,6 @@
 			this.label4.Size = new System.Drawing.Size(51, 13);
 			this.label4.TabIndex = 8;
 			this.label4.Text = "Channels";
-			// 
-			// toolStripMenuItem_Add
-			// 
-			this.toolStripMenuItem_Add.Name = "toolStripMenuItem_Add";
-			this.toolStripMenuItem_Add.Size = new System.Drawing.Size(195, 22);
-			this.toolStripMenuItem_Add.Text = "Add Channel";
-			this.toolStripMenuItem_Add.Click += new System.EventHandler(this.toolStripMenuItem_Add_Click);
-			// 
-			// contextMenuChannels
-			// 
-			this.contextMenuChannels.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_Add,
-            this.toolStripMenuItem_AddMultiple,
-            this.toolStripSeparator2,
-            this.toolStripMenuItem_Remove,
-            this.toolStripMenuItem_Rename});
-			this.contextMenuChannels.Name = "contextMenuChannels";
-			this.contextMenuChannels.Size = new System.Drawing.Size(196, 98);
-			this.contextMenuChannels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuChannels_Opening);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
 			// 
 			// splitContainer2
 			// 
@@ -286,12 +237,31 @@
 			// 
 			this.gridPanel.BackColor = System.Drawing.Color.Transparent;
 			this.gridPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.gridPanel.ContextMenuStrip = this.contextMenuStripPixels;
 			this.gridPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.gridPanel.Location = new System.Drawing.Point(0, 0);
 			this.gridPanel.Name = "gridPanel";
 			this.gridPanel.Size = new System.Drawing.Size(664, 500);
 			this.gridPanel.TabIndex = 1;
+			this.gridPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gridPanel_Paint);
 			this.gridPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gridPanel_MouseDown);
+			this.gridPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gridPanel_MouseMove);
+			this.gridPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.gridPanel_MouseUp);
+			// 
+			// contextMenuStripPixels
+			// 
+			this.contextMenuStripPixels.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeSelectedItemsToolStripMenuItem});
+			this.contextMenuStripPixels.Name = "contextMenuStripPixels";
+			this.contextMenuStripPixels.Size = new System.Drawing.Size(197, 26);
+			this.contextMenuStripPixels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripPixels_Opening);
+			// 
+			// removeSelectedItemsToolStripMenuItem
+			// 
+			this.removeSelectedItemsToolStripMenuItem.Name = "removeSelectedItemsToolStripMenuItem";
+			this.removeSelectedItemsToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.removeSelectedItemsToolStripMenuItem.Text = "Remove Selected Items";
+			this.removeSelectedItemsToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedItemsToolStripMenuItem_Click);
 			// 
 			// CustomPropForm
 			// 
@@ -302,7 +272,6 @@
 			this.Name = "CustomPropForm";
 			this.Text = "Custom Prop Editor";
 			this.Load += new System.EventHandler(this.CustomPropForm_Load);
-			this.contextMenuChannels.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
 			this.splitContainer2.Panel1.PerformLayout();
 			this.splitContainer2.Panel2.ResumeLayout(false);
@@ -317,24 +286,19 @@
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			this.contextMenuStripPixels.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Remove;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Rename;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AddMultiple;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnSave;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Add;
-		private System.Windows.Forms.ContextMenuStrip contextMenuChannels;
 		private System.Windows.Forms.SplitContainer splitContainer2;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.Button btnLoadBackgroundImage;
 		private System.Windows.Forms.TextBox txtBackgroundImage;
 		private System.Windows.Forms.TrackBar trkImageOpacity;
@@ -343,6 +307,8 @@
 		private Common.Controls.MultiSelectTreeview treeViewChannels;
 		private System.Windows.Forms.SplitContainer splitContainer3;
 		private System.Windows.Forms.PropertyGrid propertyGrid;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStripPixels;
+		private System.Windows.Forms.ToolStripMenuItem removeSelectedItemsToolStripMenuItem;
 	}
 }
 

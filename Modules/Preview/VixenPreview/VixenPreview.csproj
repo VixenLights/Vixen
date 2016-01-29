@@ -145,6 +145,7 @@
       <DependentUpon>PreviewWPF.xaml</DependentUpon>
     </Compile>
     <Compile Include="DebugTimer.cs" />
+    <Compile Include="Extensions\GraphicsExtensions.cs" />
     <Compile Include="IDisplayForm.cs" />
     <Compile Include="GDIPreview\GDIPreviewForm.cs">
       <SubType>Form</SubType>

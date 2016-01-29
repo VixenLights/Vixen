@@ -109,87 +109,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			_prop.ToFile(fileName);
 		}
-
-		public bool NameLocked { get { return !this.textBox1.Enabled; } set { this.textBox1.Enabled = !value; } }
-		private string GenerateNewChannelName(string templateName = "Channel_{0}", int index = 1)
-		{
-
-			int i = index;
-			if (i < 1) i = 1;
-			string channelName = string.Format(templateName, i);
-			List<string> names = new List<string>();
-			//foreach (PropChannel item in listBox1.Items)
-			//{
-			//	names.Add(item.Text);
-			//}
-			while (names.Contains(channelName))
-			{
-				channelName = string.Format(templateName, i++);
-			}
-
-			return channelName;
-		}
-
-		int _currentRowHeight = -1;
+ 
 
 		#endregion
 
-
-		#region  Context Menu
-		private void toolStripMenuItem_Add_Click(object sender, EventArgs e)
-		{
-			ChannelNaming form = new ChannelNaming();
-			form.Value = GenerateNewChannelName();
-			var result = form.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				PropChannel item = new PropChannel(form.Value);
-				//Channels.Add(item);
-				//listBox1.Items.Add(item);
-			}
-		}
-
-		private void toolStripMenuItem_AddMultiple_Click(object sender, EventArgs e)
-		{
-			AddMultipleChannels form = new AddMultipleChannels();
-			var result = form.ShowDialog();
-			if (result == DialogResult.OK)
-			{
-				for (int i = 0; i < form.ChannelCount; i++)
-				{
-
-					PropChannel item = new PropChannel(GenerateNewChannelName(form.TemplateName, i));
-					//Channels.Add(item);
-					//listBox1.Items.Add(item);
-				}
-			}
-		}
-
-		private void toolStripMenuItem_Rename_Click(object sender, EventArgs e)
-		{
-			//var prop = listBox1.SelectedItem as PropChannel;
-			//if (prop != null)
-			//{
-			//	ChannelNaming form = new ChannelNaming();
-			//	form.Value = prop.Text;
-			//	var result = form.ShowDialog();
-			//	if (result == DialogResult.OK)
-			//	{
-			//		prop.Text = form.Value;
-			//	}
-			//}
-		}
-
-		private void toolStripMenuItem_Remove_Click(object sender, EventArgs e)
-		{
-			//var prop =  listBox1.SelectedItem as PropChannel;
-			//if (prop != null)
-			//	RemoveChannel(prop.ID);
-		}
-
-
-		#endregion
-
+ 
 
 
 		private void btnSave_Click(object sender, EventArgs e)
@@ -247,9 +171,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				}
 
 			}
-			SetBackGroundImage();
+
 
 			PopulateNodeTreeMultiSelect();
+
+			DrawPreview();
+
 
 		}
 		private void PopulateNodeTreeMultiSelect()
@@ -290,15 +217,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		}
 
 
-		private void contextMenuChannels_Opening(object sender, CancelEventArgs e)
-		{
-			this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = true;
-
-			//if (this.listBox1.SelectedItems.Count != 1)
-			//{
-			//	this.toolStripMenuItem_Rename.Visible = this.toolStripMenuItem_Rename.Visible = false;
-			//}
-		}
 
 
 		private void btnOpen_Click(object sender, EventArgs e)
@@ -352,7 +270,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				if (result == System.Windows.Forms.DialogResult.OK)
 				{
 					this.BackgroundImageFileName = dlg.FileName;
-					SetBackGroundImage();
+					DrawPreview();
 				}
 			}
 		}
@@ -461,41 +379,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 			BackgroundImageOpacity = trkImageOpacity.Value;
-			SetBackGroundImage();
+			DrawPreview();
 		}
 
 
-
-		private void gridPanel_MouseDown(object sender, MouseEventArgs e)
-		{
-			switch (e.Button)
-			{
-				case MouseButtons.Left:
-					//Draw point
-					if ((Control.ModifierKeys & Keys.Control) != Keys.None)
-					{
-						if (treeViewChannels.SelectedNode != null)
-						{
-							var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
-							if (prop == null) return;
-							var pixelSize = prop.PixelSize;
-							if (!prop.Points.Any(a => a.X == e.Location.X && a.Y == e.Location.Y)) //Add logic to ensure we dont overlap any points for this channel
-							{
-								prop.Points.Add(new PreviewPixel(e.Location.X, e.Location.Y, 0, prop.PixelSize));
-							}
-							DrawPoints(prop);
-						}
-					}
-					break;
-				case MouseButtons.Middle:
-					break;
-
-				case MouseButtons.Right:
-					break;
-				default:
-					break;
-			}
-		}
 
 		void DrawPoints()
 		{
@@ -504,23 +391,29 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				var prop = item.Tag as PropChannel;
 				DrawPoints(prop);
 			}
+
 		}
 		void DrawPoints(PropChannel channel)
 		{
-			bool isSelected = channel == treeViewChannels.SelectedNode.Tag as PropChannel;
-			foreach (var point in channel.Points)
+
+			bool isSelected = (treeViewChannels.SelectedNode == null) ? false : channel == treeViewChannels.SelectedNode.Tag as PropChannel;
+			foreach (var point in channel.Pixels)
 			{
-				DrawCircle(this.gridPanel, point, channel.PixelSize, isSelected ? Color.Yellow : Color.White);
+				bool pixelSelected = selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
+				DrawCircle(this.gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
 			}
 			foreach (var item in channel.Children)
 			{
 				DrawPoints(item);
 			}
+			gridPanel.Invalidate();
 		}
 
 		private void treeViewChannels_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
+			DrawPreview();
+			selectedPixels.Clear();
 		}
 
 		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -549,8 +442,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		private static void DrawCircle(Control control, PreviewPixel pixel, int size, Color color)
+		private static void DrawCircle(Control control, PreviewPixel pixel, int radius, Color color)
 		{
+			if (control.BackgroundImage == null)
+				control.BackgroundImage = new Bitmap(control.Width, control.Height);
+
 			using (var g = Graphics.FromImage(control.BackgroundImage))
 			{
 
@@ -558,8 +454,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				{
 					using (Pen p = new Pen(b))
 					{
-						g.DrawEllipse(p, pixel.X, pixel.Y, size, size);
-						g.FillEllipse(b, new Rectangle(new Point(pixel.X, pixel.Y), new Size(2, 2)));
+						g.DrawEllipse(p, pixel.X, pixel.Y, radius, radius);
+						g.FillEllipse(b, new Rectangle(new Point(pixel.X, pixel.Y), new Size(radius * 2, radius * 2)));
 					}
 				}
 			}
@@ -672,21 +568,207 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			control2.BackColor = Color.Transparent;
 		}
 
-		private void SetBackGroundImage()
+		private void DrawPreview()
 		{
-			SetGridBackground(this.splitContainer1.Panel1, this.gridPanel, this.BackgroundImageFileName, this.BackgroundImageOpacity, BackgroundImageMaintainAspect);
 
+			if (this.gridPanel.BackgroundImage != null)
+				this.gridPanel.BackgroundImage.Dispose();
+
+			this.gridPanel.BackgroundImage = new Bitmap(gridPanel.Width, gridPanel.Height);
+
+			SetGridBackground(this.splitContainer1.Panel1, this.gridPanel, this.BackgroundImageFileName, this.BackgroundImageOpacity, BackgroundImageMaintainAspect);
 
 			DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
 
+			DrawPoints();
+
+			gridPanel.Invalidate();
 		}
 
 		private void chkMaintainAspect_CheckedChanged(object sender, EventArgs e)
 		{
-			SetBackGroundImage();
+			DrawPreview();
+		}
+
+		private void gridPanel_Paint(object sender, PaintEventArgs e)
+		{
+			if (gridPanel.BackgroundImage == null)
+				gridPanel.BackgroundImage = new Bitmap(gridPanel.Width, gridPanel.Height);
+
+			e.Graphics.DrawImageUnscaled(gridPanel.BackgroundImage, Point.Empty);
+		}
+		private Point start = Point.Empty;
+		private Point end = Point.Empty;
+		bool moving = false;
+		private void gridPanel_MouseDown(object sender, MouseEventArgs e)
+		{
+			switch (e.Button)
+			{
+				case MouseButtons.Left:
+					//Draw point
+					if ((Control.ModifierKeys & Keys.Control) != Keys.None)
+					{
+
+						if (treeViewChannels.SelectedNode != null)
+						{
+
+							var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+							if (prop == null) return;
+
+							var pixelSize = prop.PixelSize;
+
+							PropChannel child = new PropChannel(GenerateNewChannelName(prop.Children, prop.Name + "_P{0}"));
+
+							var p = new PreviewPixel(e.Location.X, e.Location.Y, 0, prop.PixelSize);
+							p.InternalId = Guid.NewGuid().ToString();
+							child.Pixels.Add(p);
+							prop.Children.Add(child);
+							PopulateNodeTreeMultiSelect();
+						}
+					}
+					else
+					{
+						start.X = e.X;
+						start.Y = e.Y;
+
+					}
+					selectedPixels.Clear();
+
+					break;
+				case MouseButtons.Middle:
+					break;
+
+				case MouseButtons.Right:
+					break;
+				default:
+					break;
+			}
+			DrawPreview();
+		}
+		private string GenerateNewChannelName(List<PropChannel> selection, string templateName = "Channel_{0}", int index = 1)
+		{
+
+			int i = index;
+			if (i < 1) i = 1;
+			string channelName = string.Format(templateName, i);
+			List<string> names = new List<string>();
+			selection.ForEach(s => names.Add(s.Name));
+			//foreach (PropChannel item in listBox1.Items)
+			//{
+			//	names.Add(item.Text);
+			//}
+			while (names.Contains(channelName))
+			{
+				channelName = string.Format(templateName, i++);
+			}
+
+			return channelName;
+		}
+
+		int _currentRowHeight = -1;
+		private void gridPanel_MouseMove(object sender, MouseEventArgs e)
+		{
+			Point p1;
+			Point p2;
+			if (((e.Button & MouseButtons.Left) != 0) && (start != Point.Empty))
+			{
+				using (Graphics g = this.CreateGraphics())
+				{
+					p1 = PointToScreen(start);
+					if (end != Point.Empty)
+					{
+						p2 = PointToScreen(end);
+						ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+					}
+					end.X = e.X;
+					end.Y = e.Y;
+					p2 = PointToScreen(end);
+					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+				}
+			}
+		}
+		private Rectangle getRectangleForPoints(Point beginPoint, Point endPoint)
+		{
+			int top = beginPoint.Y < endPoint.Y ? beginPoint.Y : endPoint.Y;
+			int bottom = beginPoint.Y > endPoint.Y ? beginPoint.Y : endPoint.Y;
+			int left = beginPoint.X < endPoint.X ? beginPoint.X : endPoint.X;
+			int right = beginPoint.X > endPoint.X ? beginPoint.X : endPoint.X;
+
+			Rectangle rect = new Rectangle(left, top, (right - left), (bottom - top));
+			return rect;
+		}
+		private void gridPanel_MouseUp(object sender, MouseEventArgs e)
+		{
+			Point p1;
+			Point p2;
+			if ((end != Point.Empty) && (start != Point.Empty))
+			{
+
+				using (Graphics g = this.CreateGraphics())
+				{
+					p1 = PointToScreen(start);
+					p2 = PointToScreen(end);
+
+					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+					if (FindAllPointsInSelection(getRectangleForPoints(start, end)))
+					{
+						DrawPreview();
+					}
+				}
+			}
+			start = Point.Empty;
+			end = Point.Empty;
+
+		}
+
+		List<PreviewPixel> selectedPixels = new List<PreviewPixel>();
+		Rectangle selectPixelRect
+		{
+			get
+			{
+				if (!selectedPixels.Any()) return new Rectangle();
+
+				var minX = selectedPixels.Min(s => s.X);
+				var maxX = selectedPixels.Max(s => s.X);
+				var minY = selectedPixels.Min(s => s.Y);
+				var maxY = selectedPixels.Max(s => s.Y);
+
+				return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+			}
+		}
+
+		private bool FindAllPointsInSelection(Rectangle rect)
+		{
+
+			var points = Channels.SelectMany(s => s.Pixels).ToList();
+			selectedPixels = points.Where(p =>
+					p.X >= Math.Min(rect.Left, rect.Right) &&
+					p.X <= Math.Max(rect.Left, rect.Right) &&
+					p.Y >= Math.Min(rect.Top, rect.Bottom) &&
+					p.Y <= Math.Max(rect.Top, rect.Bottom)).ToList();
+
+			return selectedPixels.Any();
 		}
 
 
+
+
+
+		private void contextMenuStripPixels_Opening(object sender, CancelEventArgs e)
+		{
+			e.Cancel = !selectedPixels.Any();
+		}
+
+		private void removeSelectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			selectedPixels.ForEach(pixel =>
+			{
+				Channels.ForEach(c => c.Pixels.RemoveAll(a => a.InternalId == pixel.InternalId));
+			});
+			selectedPixels.Clear();
+			DrawPreview();
+
+		}
 
 	}
 }

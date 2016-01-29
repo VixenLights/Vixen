@@ -13,13 +13,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 	public class PropChannel
 	{
-		public enum StringTypes
-		{
-			Standard,
-			Pixel,
-			//            Flood
-		}
-
+	
 		public PropChannel()
 		{
 			Id = Guid.NewGuid().ToString();
@@ -27,11 +21,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			PixelSize = 5;
 		}
 
-		public PropChannel(string m)
+		public PropChannel(string name)
 			: this()
 		{
 
-			Name = m;
+			Name = name;
 
 		}
 
@@ -39,7 +33,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private string _text;
 
 
-		public StringTypes StringType { get; set; }
 		public string Name
 		{
 			get { return _text; }
@@ -66,7 +59,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				return string.Format("{0} -> {1}", Id.ToString().PadRight(3), Name);
 			}
 		}
-		public List<PreviewPixel> Points = new List<PreviewPixel>();
+		public List<PreviewPixel> Pixels = new List<PreviewPixel>();
 
 		[Browsable(false)]
 		public ElementNode Node { get; set; }
