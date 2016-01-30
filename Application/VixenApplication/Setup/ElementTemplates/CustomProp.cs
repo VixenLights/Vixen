@@ -61,36 +61,36 @@ namespace VixenApplication.Setup.ElementTemplates
 		private Prop FromFile(string fileName)
 		{
 			Prop output = new Prop();
-			using (var fs = new FileStream(fileName, FileMode.Open))
-			{
-				using (var sr = new StreamReader(fs))
-				{
-					while (!sr.EndOfStream)
-					{
-						var line = sr.ReadLine();
-						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-						{
-							var splits = line.Split(',');
-							switch ((FileLineType)Convert.ToInt32(splits[0]))
-							{
-								case FileLineType.DefinitionRow:
+			//using (var fs = new FileStream(fileName, FileMode.Open))
+			//{
+			//	using (var sr = new StreamReader(fs))
+			//	{
+			//		while (!sr.EndOfStream)
+			//		{
+			//			var line = sr.ReadLine();
+			//			if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+			//			{
+			//				var splits = line.Split(',');
+			//				switch ((FileLineType)Convert.ToInt32(splits[0]))
+			//				{
+			//					case FileLineType.DefinitionRow:
 
-									output.Name = splits[3] as string;
+			//						output.Name = splits[3] as string;
 
-									break;
-								case FileLineType.ChannelRow:
-									var propChannel = new KeyValuePair<int, string>(Convert.ToInt32(splits[1]), splits[2] as string);
+			//						break;
+			//					case FileLineType.ChannelRow:
+			//						var propChannel = new KeyValuePair<int, string>(Convert.ToInt32(splits[1]), splits[2] as string);
 
-									output.Channels.Add(propChannel);
-									break;
+			//						output.Channels.Add(propChannel);
+			//						break;
 
-								default:
-									break;
-							}
-						}
-					}
-				}
-			}
+			//					default:
+			//						break;
+			//				}
+			//			}
+			//		}
+			//	}
+			//}
 			return output;
 		}
 		private List<Prop> Props

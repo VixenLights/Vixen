@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Vixen.Sys
 {
+	[Serializable]
 	public abstract class GroupNode<T> : IEnumerable<T>
 	{
 		private List<GroupNode<T>> _children;

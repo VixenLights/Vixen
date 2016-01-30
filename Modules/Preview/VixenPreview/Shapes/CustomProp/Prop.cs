@@ -1,280 +1,213 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Vixen;
 using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
-
+	[DataContract]
 	public class Prop
 	{
 
-		private int _width;
-		private int _height;
-		private DataTable _data;
-
-		public DataTable Data
-		{
-			get { return _data; }
-			set
-			{
-				_data = value;
-				UpdateChannelPoints();
-			}
-		}
-
-		private void UpdateChannelPoints()
-		{
-
-			object lockObj = new object();
-
-			//Channels.AsParallel().ForAll(a => a.Points = new List<System.Drawing.Point>());
-
-			//for (int x = 0; x < _data.Columns.Count; x++)
-			//{
-			//	for (int y = 0; y < _data.Rows.Count; y++)
-			//	{
-
-			//		var result = _data.Rows[y][x] as string;
-			//		if (!string.IsNullOrWhiteSpace(result))
-			//		{
-			//			var iResult = Int32.Parse(result);
-			//			if (iResult > 0)
-			//			{
-			//				lock (lockObj)
-			//				{
-			//					var ch = Channels.Where(w => w.ID == iResult).FirstOrDefault();
-			//					if (ch == null)
-			//					{
-			//						ch = new PropChannel();
-			//						ch.ID = iResult;
-			//						ch.Text = string.Format("Channel_{0}", iResult);
-			//						Channels.Add(ch);
-			//					}
-			//					Channels.Where(w => w.ID == iResult).First().Points.Add(new System.Drawing.Point(x, y));
-			//				}
-			//			}
-			//		}
-			//	}
-
-			//}
-		}
-
-		private DataGridView _dataGrid;
 		public Prop()
 		{
 			Channels = new List<PropChannel>();
-		}
-
-		public string BackgroundImage { get; set; }
-		public int BackgroundImageOpacity { get; set; }
-
-		public Prop(int width, int height)
-			: this()
-		{
-
-
-			_width = width;
-			_height = height;
-			GenerateGrid();
 			BackgroundImageOpacity = 100;
-
 		}
+
+		[DataMember]
+		public string BackgroundImage { get; set; }
+
+		[DataMember]
+		public int BackgroundImageOpacity { get; set; }
 
 		public Prop(Prop obj)
 		{
 
 			this.Name = obj.Name;
 			Channels = obj.Channels;
-			this.Height = obj.Height;
-			this.Width = obj.Width;
+
 			this.BackgroundImage = obj.BackgroundImage;
 			this.BackgroundImageOpacity = obj.BackgroundImageOpacity;
-			this.Data = obj.Data;
-
 		}
 
 
-		public void UpdateGrid(int height, int width)
-		{
-			_width = width;
-			_height = height;
-			GenerateGrid();
-		}
 
-		private void GenerateGrid()
-		{
-			if (Data == null) Data = new DataTable();
-			Data.TableName = "CustomPropGrid";
-			while (Data.Rows.Count < _height)
-			{
-				Data.Rows.Add(Data.NewRow());
-			}
-			while (Data.Rows.Count > _height)
-			{
-				Data.Rows.RemoveAt(Data.Rows.Count - 1);
-			}
-			while (Data.Columns.Count < _width)
-			{
-				DataColumn column = new DataColumn();
-
-				Data.Columns.Add();
-			}
-			while (Data.Columns.Count > _width)
-			{
-				Data.Columns.RemoveAt(Data.Columns.Count - 1);
-			}
-
-		}
 
 		#region File IO Operations
 		public void ToFile(string fileName)
 		{
-			//using (var fs = new FileStream(fileName, FileMode.Create))
-			//{
-			//	using (var sw = new StreamWriter(fs))
-			//	{
-			//		int channelCount = Channels == null ? 0 : Channels.Count();
-			//		//Write File Definition First
-			//		sw.WriteLine("#");
-			//		sw.WriteLine("#File Definition:");
-			//		sw.WriteLine("#{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, "Height", "Width", "Name", "ChannelCount", "BackgroundImage", "Opacity");
-			//		sw.WriteLine("#");
-			//		sw.WriteLine("{0},{1},{2},{3},{4},{5},{6}", (int)FileLineType.DefinitionRow, Height, Width, Name, channelCount, BackgroundImage, BackgroundImageOpacity);
-			//		//Write the Channel Information
-			//		sw.WriteLine("#");
-			//		sw.WriteLine("#Channel Definitions:");
-			//		sw.WriteLine("#{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, "Channel ID", "Text", "ItemColor.X", "ItemColor.Y", "ItemColor.Z");
-
-			//		if (Channels != null)
-			//		{
-			//			Channels.OrderBy(o => o.ID).ToList()
-			//				   .ForEach(c =>
-			//				   {
-			//					   sw.WriteLine("{0},{1},{2},{3},{4},{5}", (int)FileLineType.ChannelRow, c.ID, c.Text, c.ItemColor.X, c.ItemColor.Y, c.ItemColor.Z);
-			//				   });
-			//		}
-			//		sw.WriteLine("#");
-			//		sw.WriteLine("#Column Definitions:");
-			//		sw.WriteLine("#{0},{1},..... (One Column for each column in the Grid)", (int)FileLineType.DataRow, "Row Number");
-			//		sw.WriteLine("#");
-			//		if (Data != null)
-			//		{
-
-			//			foreach (DataRow row in Data.Rows)
-			//			{
-			//				sw.Write("{0},{1}", (int)FileLineType.DataRow, Data.Rows.IndexOf(row) + 1);
-			//				for (int i = 0; i < Data.Columns.Count; i++)
-			//				{
-			//					sw.Write(",{0}", row[i]);
-			//				}
-			//				sw.WriteLine();
-			//			}
-			//		}
-			//	}
-			//}
+			var xmlsettings = new XmlWriterSettings
+			{
+				Indent = true,
+				IndentChars = "\t",
+			};
+			var serializer = new DataContractSerializer(typeof(Prop));
+			using (var dataWriter = XmlWriter.Create(fileName, xmlsettings))
+			{
+				serializer.WriteObject(dataWriter, this);
+				dataWriter.Close();
+			}
 
 		}
 
 
 		public static Prop FromFile(string fileName)
 		{
-			Prop output = new Prop();
-			using (var fs = new FileStream(fileName, FileMode.Open))
+			if (File.Exists(fileName))
 			{
-				using (var sr = new StreamReader(fs))
+				using (FileStream reader = new FileStream(fileName, FileMode.Open, FileAccess.Read))
 				{
-					while (!sr.EndOfStream)
-					{
-						var line = sr.ReadLine();
-						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-						{
-							var splits = line.Split(',');
-							switch ((FileLineType)Convert.ToInt32(splits[0]))
-							{
-								case FileLineType.DefinitionRow:
-									output.Height = Convert.ToInt32(splits[1]);
-									output.Width = Convert.ToInt32(splits[2]);
-									output.Name = splits[3] as string;
-									if (splits.Count() > 4)
-									{
-										output.BackgroundImage = splits[4] as string;
-
-										//Ensure the image exists
-										if (!File.Exists(output.BackgroundImage)) output.BackgroundImage = null;
-									}
-									if (splits.Count() > 5)
-										output.BackgroundImageOpacity = Convert.ToInt32(string.IsNullOrWhiteSpace(splits[5]) ? "100" : splits[5]);
-									output.GenerateGrid();
-									break;
-								case FileLineType.ChannelRow:
-									var propChannel = new PropChannel();
-									propChannel.Id = splits[1] as string;
-									propChannel.Name = splits[2] as string;
-
-									output.Channels.Add(propChannel);
-									break;
-
-								case FileLineType.DataRow:
-									int rowIndex = Convert.ToInt32(splits[1]) - 1;
-									for (int i = 2; i < splits.Length; i++)
-									{
-										if (!string.IsNullOrWhiteSpace(splits[i] as string))
-										{
-											output.Data.Rows[rowIndex][i - 2] = Convert.ToInt32(splits[i]);
-										}
-									}
-									break;
-								default:
-									break;
-							}
-						}
-					}
+					DataContractSerializer ser = new DataContractSerializer(typeof(Prop));
+					return (Prop)ser.ReadObject(reader);
 				}
 			}
-			return output;
+			return null;
 		}
-
 		#endregion
 
 
 		public DisplayItem ToDisplayItem(int x, int y)
 		{
 			//Theres got to be a better way to do this... LOL
-
 			var prop = new PreviewCustomProp(new PreviewPoint(x, y), null, 1, this);
 			return new DisplayItem() { Shape = prop, ZoomLevel = 1 };
-
-
 		}
 
 
 
 		public int Height
 		{
-			set { _height = value; }
-			get { return (this._height); }
-		}
 
+			get { return GetBounds().Height; }
+		}
 
 		public int Width
 		{
-			set { this._width = value; }
-			get { return (this._width); }
+
+			get { return GetBounds().Width; }
 		}
 
+		[DataMember]
 		public string Name { get; set; }
 
+		[DataMember]
 		public List<PropChannel> Channels { get; set; }
 
+
+
+		public static List<Pixel> GetAllPixels(List<PropChannel> collection)
+		{
+			List<Pixel> result = collection.SelectMany(s => s.Pixels).ToList();
+			collection.ForEach(c => result.AddRange(GetAllPixels(c.Children)));
+			return result;
+		}
+		List<Pixel> _pixels = new List<Pixel>();
+		string _currentHash = null;
+
+		public Rectangle GetBounds()
+		{
+			var hash = ComputeHash(Channels);
+
+			if (hash != _currentHash)
+			{
+				_currentHash = hash;
+				_pixels = GetAllPixels(Channels);
+			}
+
+			var x_query = from Pixel p in _pixels select p.X;
+			int xmin = x_query.Min();
+			int xmax = x_query.Max();
+
+			var y_query = from Pixel p in _pixels select p.Y;
+			int ymin = y_query.Min();
+			int ymax = y_query.Max();
+
+			return new Rectangle(xmin, ymin, xmax - xmin, ymax - ymin);
+		}
+
+		public Point Delta()
+		{
+
+			var bounds = GetBounds();
+
+			int deltaX = bounds.X;
+			int deltaY = bounds.Y;
+			return new Point(deltaX, deltaY);
+
+		}
+		public List<PropChannel> GetRepositionedChannels()
+		{
+			//return Channels;
+			return GetRepositionedChannels(Channels);
+		}
+		public List<PropChannel> GetRepositionedChannels(List<PropChannel> collection)
+		{
+
+			PropChannel[] result = collection.ToArray();
+			var delta = Delta();
+			result.ToList().ForEach(c =>
+			{
+				c.Pixels.ForEach(p =>
+				{
+					p.X -= delta.X;
+					p.Y -= delta.Y;
+				});
+				c.Children = GetRepositionedChannels(c.Children);
+			});
+			return result.ToList();
+		}
+		private static string ComputeHash(Object objectToSerialize)
+		{
+			if (objectToSerialize == null) return null;
+			using (MemoryStream fs = new MemoryStream())
+			{
+				BinaryFormatter formatter = new BinaryFormatter();
+				var serializer = new DataContractSerializer(objectToSerialize.GetType());
+				try
+				{
+
+					using (var dataWriter = XmlWriter.Create(fs))
+					{
+						serializer.WriteObject(dataWriter, objectToSerialize);
+						dataWriter.Close();
+					}
+
+					MD5 md5 = new MD5CryptoServiceProvider();
+
+					byte[] result = md5.ComputeHash(fs.ToArray());
+
+					// Build the final string by converting each byte
+					// into hex and appending it to a StringBuilder
+					StringBuilder sb = new StringBuilder();
+					for (int i = 0; i < result.Length; i++)
+					{
+						sb.Append(result[i].ToString("X2"));
+					}
+
+					// And return it
+					return sb.ToString();
+
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.ToString());
+				}
+
+			}
+			return null;
+		}
 
 		public string SelectedChannelId { get; set; }
 

@@ -41,6 +41,10 @@
 			this.trkImageOpacity = new System.Windows.Forms.TrackBar();
 			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
 			this.treeViewChannels = new Common.Controls.MultiSelectTreeview();
+			this.contextMenuStripChannels = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addMultipleNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.gridPanel = new System.Windows.Forms.Panel();
@@ -55,6 +59,7 @@
 			this.splitContainer3.Panel1.SuspendLayout();
 			this.splitContainer3.Panel2.SuspendLayout();
 			this.splitContainer3.SuspendLayout();
+			this.contextMenuStripChannels.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -190,6 +195,7 @@
 			// treeViewChannels
 			// 
 			this.treeViewChannels.AllowDrop = true;
+			this.treeViewChannels.ContextMenuStrip = this.contextMenuStripChannels;
 			this.treeViewChannels.CustomDragCursor = null;
 			this.treeViewChannels.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeViewChannels.DragDefaultMode = System.Windows.Forms.DragDropEffects.Move;
@@ -204,6 +210,37 @@
 			this.treeViewChannels.TabIndex = 0;
 			this.treeViewChannels.UsingCustomDragCursor = false;
 			this.treeViewChannels.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewChannels_AfterSelect);
+			// 
+			// contextMenuStripChannels
+			// 
+			this.contextMenuStripChannels.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addNodeToolStripMenuItem,
+            this.addMultipleNodesToolStripMenuItem,
+            this.removeNodesToolStripMenuItem});
+			this.contextMenuStripChannels.Name = "contextMenuStripChannels";
+			this.contextMenuStripChannels.Size = new System.Drawing.Size(181, 70);
+			this.contextMenuStripChannels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripChannels_Opening);
+			// 
+			// addNodeToolStripMenuItem
+			// 
+			this.addNodeToolStripMenuItem.Name = "addNodeToolStripMenuItem";
+			this.addNodeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addNodeToolStripMenuItem.Text = "Add Node";
+			this.addNodeToolStripMenuItem.Click += new System.EventHandler(this.addNodeToolStripMenuItem_Click);
+			// 
+			// addMultipleNodesToolStripMenuItem
+			// 
+			this.addMultipleNodesToolStripMenuItem.Name = "addMultipleNodesToolStripMenuItem";
+			this.addMultipleNodesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.addMultipleNodesToolStripMenuItem.Text = "Add Multiple Nodes";
+			this.addMultipleNodesToolStripMenuItem.Click += new System.EventHandler(this.addMultipleNodesToolStripMenuItem_Click);
+			// 
+			// removeNodesToolStripMenuItem
+			// 
+			this.removeNodesToolStripMenuItem.Name = "removeNodesToolStripMenuItem";
+			this.removeNodesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.removeNodesToolStripMenuItem.Text = "Remove Node(s)";
+			this.removeNodesToolStripMenuItem.Click += new System.EventHandler(this.removeNodesToolStripMenuItem_Click);
 			// 
 			// propertyGrid
 			// 
@@ -282,6 +319,7 @@
 			this.splitContainer3.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
 			this.splitContainer3.ResumeLayout(false);
+			this.contextMenuStripChannels.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -309,6 +347,10 @@
 		private System.Windows.Forms.PropertyGrid propertyGrid;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripPixels;
 		private System.Windows.Forms.ToolStripMenuItem removeSelectedItemsToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStripChannels;
+		private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem addMultipleNodesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem removeNodesToolStripMenuItem;
 	}
 }
 

@@ -190,6 +190,7 @@
     <Compile Include="Shapes\CustomProp\DataGridViewWithBackground.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Shapes\CustomProp\Pixel.cs" />
     <Compile Include="Shapes\PreviewCustomPropControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

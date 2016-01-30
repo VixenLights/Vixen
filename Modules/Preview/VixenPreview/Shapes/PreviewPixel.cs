@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-	[DataContract]
+	[DataContract, Serializable]
 	public class PreviewPixel : IDisposable
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
@@ -93,9 +93,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[DataMember]
-		internal string InternalId { get; set; }
-
+		 
 		public ElementNode Node
 		{
 			get

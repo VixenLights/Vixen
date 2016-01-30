@@ -242,66 +242,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				if (Strings == null)
 					Strings = new List<PreviewBaseShape>();
 
-				if (rect.Width > 0 && rect.Height > 0)
+				var channels = _prop.GetRepositionedChannels();
+				channels.ForEach(c =>
 				{
-					var xRatio = rect.Width / _prop.Width;
-					var yRatio = rect.Height / _prop.Height;
+					Strings.Add(new CustomPropBaseShape(_topLeft, c));
+				});
 
-					int spacingY = _pixelSpacing;
+				Strings.ForEach(s => s.Layout());
 
-					for (int y = 0; y < _prop.Height; y++)
-					{
-						for (int x = 0; x < _prop.Width; x++)
-						{
+				SetPixelZoom();
 
-							var channel = _prop.Data.Rows[y][x];
-							if (!string.IsNullOrWhiteSpace(channel as string))
-							{
-
-								int iChannel = Convert.ToInt32(channel);
-								//var ch = _prop.Channels.Where(c => c.ID == iChannel).FirstOrDefault();
-								//if (ch == null) 
-									continue;
-								
-								//var str = _strings.Where(s => s.Name.Equals(ch.Text)).FirstOrDefault();
-								//if (str == null)
-								//	_strings.Add(new CustomPropBaseShape() { Name = ch.Text });
-
-
-								//PreviewPixel pixel = new PreviewPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y, 0, PixelSize);
-								//pixel.InternalId = string.Format("{0}.{1}", x, y);
-								////PreviewPixel pixel = AddPixel((x * xRatio) + boundsTopLeft.X, (y * yRatio) + boundsTopLeft.Y);
-
-
-								//var stringPixel = _strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Where(w => w.InternalId.Equals(pixel.InternalId)).FirstOrDefault();
-
-								//if (stringPixel == null)
-								//{
-								//	//_pixels.Add(pixel);
-								//	_strings.Where(s => s.Name.Equals(ch.Text)).First().Pixels.Add(pixel);
-								//}
-								//else
-								//{
-								//	stringPixel.X = pixel.X;
-								//	stringPixel.Y = pixel.Y;
-								//}
-
-							}
-
-
-						}
-					}
-
-					SetPixelZoom();
-				}
 			}
-			CleanUpStrings();
+		 
 		}
-		private void CleanUpStrings()
-		{
-			//Remove pixels from strings that are no longer valid....
-
-		}
+		 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));

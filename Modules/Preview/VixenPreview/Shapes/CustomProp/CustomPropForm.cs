@@ -17,6 +17,7 @@ using Common.Controls.Theme;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using Vixen.Sys;
+using Common.Controls;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -92,7 +93,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			set
 			{
 				_prop.Channels = value;
-				PopulateNodeTreeMultiSelect();
+
 			}
 		}
 
@@ -109,11 +110,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			_prop.ToFile(fileName);
 		}
- 
+
 
 		#endregion
 
- 
+
 
 
 		private void btnSave_Click(object sender, EventArgs e)
@@ -149,7 +150,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			this.textBox1.Text = "[!Rename Me!]";
 			if (_fileName == null)
 			{
-				_prop = new Prop(100, 100);
+				_prop = new Prop();
 				this.txtBackgroundImage.Text = null;
 				this.trkImageOpacity.Value = 100;
 
@@ -191,6 +192,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			treeViewChannels.EndUpdate();
 		}
+
+		private void PopulateChannelsFromMultiTreeSelect()
+		{
+			if (Channels == null) Channels = new List<PropChannel>();
+			Channels.Clear();
+			var nodes = treeViewChannels.Nodes;
+
+			Channels = PopulateChildrenFromMultiSelectNode(nodes);
+		}
+
+		private List<PropChannel> PopulateChildrenFromMultiSelectNode(TreeNodeCollection nodes)
+		{
+			if (nodes == null) return null;
+			var result = new List<PropChannel>();
+			foreach (TreeNode item in nodes)
+			{
+				var prop = item.Tag as PropChannel;
+				if (prop != null)
+				{
+					prop.Children = PopulateChildrenFromMultiSelectNode(item.Nodes);
+					result.Add(prop);
+				}
+			}
+
+			return result;
+		}
+
+
+
 
 		private void AddNodeToTree(TreeNodeCollection collection, PropChannel channel)
 		{
@@ -384,29 +414,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 
 
-		void DrawPoints()
+
+		void DrawPoints(TreeNodeCollection collection)
 		{
-			foreach (TreeNode item in treeViewChannels.Nodes)
+			foreach (TreeNode item in collection)
 			{
-				var prop = item.Tag as PropChannel;
-				DrawPoints(prop);
+
+				bool isSelected = IsNodeInSelectedTree(item, treeViewChannels.SelectedNode);
+				var channel = item.Tag as PropChannel;
+				if (channel != null)
+				{
+					foreach (var point in channel.Pixels)
+					{
+						bool pixelSelected = selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
+						DrawCircle(this.gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
+					}
+				}
+				DrawPoints(item.Nodes);
 			}
 
 		}
-		void DrawPoints(PropChannel channel)
-		{
 
-			bool isSelected = (treeViewChannels.SelectedNode == null) ? false : channel == treeViewChannels.SelectedNode.Tag as PropChannel;
-			foreach (var point in channel.Pixels)
-			{
-				bool pixelSelected = selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
-				DrawCircle(this.gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
-			}
-			foreach (var item in channel.Children)
-			{
-				DrawPoints(item);
-			}
-			gridPanel.Invalidate();
+		bool IsNodeInSelectedTree(TreeNode node, TreeNode selectedNode)
+		{
+			if (selectedNode == null) return false;
+			bool selected = (node == selectedNode);
+			if (!selected)
+				foreach (TreeNode item in selectedNode.Nodes)
+				{
+					selected = IsNodeInSelectedTree(node, item);
+					if (selected) break;
+				}
+			return selected;
 		}
 
 		private void treeViewChannels_AfterSelect(object sender, TreeViewEventArgs e)
@@ -492,6 +531,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			return Color.FromArgb(r, g, b);
 		}
+
 		private static Image ResizeImage(Image image, int maximumWidth, int maximumHeight, bool enforceRatio, bool addPadding)
 		{
 
@@ -580,7 +620,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
 
-			DrawPoints();
+			DrawPoints(treeViewChannels.Nodes);
 
 			gridPanel.Invalidate();
 		}
@@ -617,20 +657,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 							var pixelSize = prop.PixelSize;
 
-							PropChannel child = new PropChannel(GenerateNewChannelName(prop.Children, prop.Name + "_P{0}"));
-
-							var p = new PreviewPixel(e.Location.X, e.Location.Y, 0, prop.PixelSize);
-							p.InternalId = Guid.NewGuid().ToString();
+							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
+							if (child.Pixels == null) child.Pixels = new List<Pixel>();
+							var p = new Pixel(e.Location.X, e.Location.Y, 0, prop.PixelSize);
+					 
 							child.Pixels.Add(p);
-							prop.Children.Add(child);
-							PopulateNodeTreeMultiSelect();
+
+							treeViewChannels.SelectedNode.Nodes.Add(SetTreeNodeValues(child));
+
+							PopulateChannelsFromMultiTreeSelect();
 						}
 					}
 					else
 					{
+
 						start.X = e.X;
 						start.Y = e.Y;
-
+						moving = treeViewChannels.SelectedNode != null;
 					}
 					selectedPixels.Clear();
 
@@ -645,24 +688,29 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			DrawPreview();
 		}
-		private string GenerateNewChannelName(List<PropChannel> selection, string templateName = "Channel_{0}", int index = 1)
+		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = "Channel_{0}", int index = 1)
 		{
-
 			int i = index;
 			if (i < 1) i = 1;
 			string channelName = string.Format(templateName, i);
 			List<string> names = new List<string>();
-			selection.ForEach(s => names.Add(s.Name));
-			//foreach (PropChannel item in listBox1.Items)
-			//{
-			//	names.Add(item.Text);
-			//}
+			foreach (TreeNode item in selection)
+			{
+				var channel = item.Tag as PropChannel;
+				if (channel != null) names.Add(channel.Name);
+			}
+
 			while (names.Contains(channelName))
 			{
 				channelName = string.Format(templateName, i++);
 			}
 
 			return channelName;
+		}
+		private string GenerateNewChannelName(TreeNode selection, string templateName = "Channel_{0}", int index = 1)
+		{
+
+			return GenerateNewChannelName(selection.Nodes, templateName, index);
 		}
 
 		int _currentRowHeight = -1;
@@ -672,21 +720,56 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Point p2;
 			if (((e.Button & MouseButtons.Left) != 0) && (start != Point.Empty))
 			{
-				using (Graphics g = this.CreateGraphics())
+				if (moving)
 				{
-					p1 = PointToScreen(start);
-					if (end != Point.Empty)
+					 
+					int deltaX = e.Location.X - start.X;
+					int deltaY = e.Location.Y - start.Y;
+					
+					MoveSelected(deltaX, deltaY, treeViewChannels.SelectedNode);
+				}
+				else
+					using (Graphics g = this.CreateGraphics())
 					{
+						p1 = PointToScreen(start);
+						if (end != Point.Empty)
+						{
+							p2 = PointToScreen(end);
+							ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+						}
+						end.X = e.X;
+						end.Y = e.Y;
 						p2 = PointToScreen(end);
 						ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
 					}
-					end.X = e.X;
-					end.Y = e.Y;
-					p2 = PointToScreen(end);
-					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
-				}
 			}
 		}
+		private void MoveSelected(int deltaX, int deltaY, TreeNode selectedNode, bool redraw = true)
+		{
+			var prop = selectedNode.Tag as PropChannel;
+			if (prop != null)
+			{
+				foreach (var item in prop.Pixels)
+				{
+					prop.Pixels.AsParallel().ForAll(p =>
+					{
+						p.X += deltaX;
+						p.Y += deltaY;
+					});
+				}
+				foreach (TreeNode item in selectedNode.Nodes)
+				{
+					MoveSelected(deltaX, deltaY, item, false);
+				}
+
+			}
+			if (redraw)
+			{
+				PopulateChannelsFromMultiTreeSelect();
+				DrawPreview();
+			}
+		}
+
 		private Rectangle getRectangleForPoints(Point beginPoint, Point endPoint)
 		{
 			int top = beginPoint.Y < endPoint.Y ? beginPoint.Y : endPoint.Y;
@@ -721,7 +804,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		List<PreviewPixel> selectedPixels = new List<PreviewPixel>();
+		List<Pixel> selectedPixels = new List<Pixel>();
 		Rectangle selectPixelRect
 		{
 			get
@@ -761,12 +844,115 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void removeSelectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			selectedPixels.ForEach(pixel =>
+			if (treeViewChannels.SelectedNode != null)
 			{
-				Channels.ForEach(c => c.Pixels.RemoveAll(a => a.InternalId == pixel.InternalId));
-			});
-			selectedPixels.Clear();
-			DrawPreview();
+				treeViewChannels.SelectedNode.Remove();
+				PopulateChannelsFromMultiTreeSelect();
+			}
+		}
+
+		private void addNodeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+			using (var frm = new ChannelNaming())
+			{
+				frm.Value = "Channel_{0}";
+				var dlg = frm.ShowDialog();
+
+				if (dlg == System.Windows.Forms.DialogResult.OK)
+				{
+					PropChannel child;
+					if (treeViewChannels.SelectedNode != null)
+					{
+						child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.Value));
+
+						treeViewChannels.SelectedNode.Nodes.Add(SetTreeNodeValues(child));
+					}
+					else
+					{
+						child = new PropChannel(GenerateNewChannelName(treeViewChannels.Nodes, frm.Value));
+
+						treeViewChannels.Nodes.Add(SetTreeNodeValues(child));
+					}
+
+					PopulateChannelsFromMultiTreeSelect();
+				}
+			}
+		}
+
+		private void addMultipleNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var frm = new AddMultipleChannels())
+			{
+
+				var dlg = frm.ShowDialog();
+
+				if (dlg == System.Windows.Forms.DialogResult.OK)
+				{
+					if (treeViewChannels.SelectedNode != null)
+					{
+
+						var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+						for (int i = 0; i < frm.ChannelCount; i++)
+						{
+							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.TemplateName));
+							TreeNode addedNode = SetTreeNodeValues(child);
+							treeViewChannels.SelectedNode.Nodes.Add(addedNode);
+
+						}
+
+					}
+					else
+					{
+
+						for (int i = 0; i < frm.ChannelCount; i++)
+						{
+							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.Nodes, frm.TemplateName));
+							TreeNode addedNode = SetTreeNodeValues(child);
+							treeViewChannels.Nodes.Add(addedNode);
+						}
+					}
+
+					PopulateChannelsFromMultiTreeSelect();
+				}
+			}
+		}
+
+		private void removeNodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (treeViewChannels.SelectedNode != null)
+			{
+				treeViewChannels.SelectedNode.Remove();
+				PopulateChannelsFromMultiTreeSelect();
+				DrawPreview();
+			}
+		}
+
+		bool removePropChannel(PropChannel c, string propToRemove)
+		{
+			bool removed = false;
+			if (c.Children != null && c.Children.Any())
+			{
+
+
+				removed = c.Children.RemoveAll(r => r.Id.Equals(propToRemove)) > 0;
+				if (!removed)
+				{
+					foreach (var child in c.Children)
+					{
+						removed = removePropChannel(c, propToRemove);
+						if (removed) break;
+					}
+				}
+
+
+			}
+			return removed;
+		}
+
+		private void contextMenuStripChannels_Opening(object sender, CancelEventArgs e)
+		{
+			removeNodesToolStripMenuItem.Visible = treeViewChannels.SelectedNode != null;
 
 		}
 

@@ -10,8 +10,21 @@ using System.Threading.Tasks;
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	[DataContract]
-	public class CustomPropBaseShape : PreviewBaseShape
+	public class CustomPropBaseShape : PreviewCustom
 	{
+
+		public CustomPropBaseShape(PreviewPoint point, PropChannel prop)
+			: base(point, null)
+		{			
+			base.Strings = new List<PreviewBaseShape>();
+			prop.Children.ForEach(c =>
+			{
+				Strings.Add(new CustomPropBaseShape(point, c));
+			});
+			Layout();
+		}
+
+
 		[DataMember]
 		public override int Top
 		{
@@ -30,33 +43,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public override int Right
 		{
 			get { return Pixels.Max(m => m.X); }
-	
+
 		}
 
 		public override int Bottom
 		{
 			get { return Pixels.Min(x => x.Y); }
-			
+
 		}
 
 		public override void Match(PreviewBaseShape matchShape)
 		{
-			
+
 		}
 
 		public override void Layout()
 		{
-			 
+			foreach (PreviewBaseShape shape in Strings)
+			{
+				shape.Layout();
+			}
+
+			SetPixelZoom();
 		}
 
 		public override void SelectDragPoints()
 		{
-			 
+
 		}
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			 
+
 		}
 
 		public override bool PointInShape(PreviewPoint point)
@@ -75,27 +93,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public override void SetSelectPoint(PreviewPoint point = null)
 		{
-		 
+
 		}
 
 		public override void SelectDefaultSelectPoint()
 		{
-		 
+
 		}
 
 		public override void MoveTo(int x, int y)
 		{
-		 
+
 		}
 
 		public override void Resize(double aspect)
 		{
-		 
+
 		}
 
 		public override void ResizeFromOriginal(double aspect)
 		{
-		 
+
 		}
 	}
 }
