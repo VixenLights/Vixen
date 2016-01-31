@@ -137,8 +137,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             outputFormatComboBox.Items.AddRange(_exportOps.FormatTypes);
             outputFormatComboBox.Sorted = true;
 
-            outputFormatComboBox.SelectedIndex = 0;
-            resolutionComboBox.SelectedIndex = 1;
+            outputFormatComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), exportTypeDefault);
+            resolutionComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), exportResolutionDefault);
 
             buttonStop.Enabled = false;
 			networkListView.DragDrop += networkListView_DragDrop;
