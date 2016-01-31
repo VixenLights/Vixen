@@ -147,27 +147,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			return new Point(deltaX, deltaY);
 
 		}
-		public List<PropChannel> GetRepositionedChannels()
-		{
-			//return Channels;
-			return GetRepositionedChannels(Channels);
-		}
-		public List<PropChannel> GetRepositionedChannels(List<PropChannel> collection)
-		{
 
-			PropChannel[] result = collection.ToArray();
-			var delta = Delta();
-			result.ToList().ForEach(c =>
-			{
-				c.Pixels.ForEach(p =>
-				{
-					p.X -= delta.X;
-					p.Y -= delta.Y;
-				});
-				c.Children = GetRepositionedChannels(c.Children);
-			});
-			return result.ToList();
-		}
 		private static string ComputeHash(Object objectToSerialize)
 		{
 			if (objectToSerialize == null) return null;

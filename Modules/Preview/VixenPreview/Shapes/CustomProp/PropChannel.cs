@@ -75,14 +75,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				return _pixels;
 			}
 			set
-			{				
+			{
 				_pixels = value;
 			}
 		}
 
+		[DataMember]
+		public bool IsPixel { get; set; } 
+
 		[Browsable(false)]
 		[DataMember]
 		public ElementNode Node { get; set; }
+
 		[Browsable(false)]
 		[DataMember]
 		public List<PropChannel> Children { get; set; }

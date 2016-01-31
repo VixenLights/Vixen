@@ -658,9 +658,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 							var pixelSize = prop.PixelSize;
 
 							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
+							child.IsPixel = true;
 							if (child.Pixels == null) child.Pixels = new List<Pixel>();
 							var p = new Pixel(e.Location.X, e.Location.Y, 0, prop.PixelSize);
-					 
+
 							child.Pixels.Add(p);
 
 							treeViewChannels.SelectedNode.Nodes.Add(SetTreeNodeValues(child));
@@ -722,10 +723,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			{
 				if (moving)
 				{
-					 
+
 					int deltaX = e.Location.X - start.X;
 					int deltaY = e.Location.Y - start.Y;
-					
+
 					MoveSelected(deltaX, deltaY, treeViewChannels.SelectedNode);
 				}
 				else
@@ -952,8 +953,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void contextMenuStripChannels_Opening(object sender, CancelEventArgs e)
 		{
-			removeNodesToolStripMenuItem.Visible = treeViewChannels.SelectedNode != null;
 
+			removeNodesToolStripMenuItem.Visible = treeViewChannels.SelectedNode != null;
+			var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+			if (prop != null)
+			{
+				addNodeToolStripMenuItem.Visible = addMultipleNodesToolStripMenuItem.Visible = removeNodesToolStripMenuItem.Visible = !prop.IsPixel;
+				removePixelToolStripMenuItem.Visible = prop.IsPixel;
+			}
+		}
+
+		private void removePixelToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (treeViewChannels.SelectedNode != null)
+			{
+				treeViewChannels.SelectedNode.Remove();
+				PopulateChannelsFromMultiTreeSelect();
+				DrawPreview();
+			}
 		}
 
 	}

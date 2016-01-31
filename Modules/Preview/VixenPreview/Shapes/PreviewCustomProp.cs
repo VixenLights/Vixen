@@ -35,7 +35,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_topLeft = PointToZoomPoint(point1);
 			_bottomRight = new PreviewPoint(_topLeft.X + prop.Width, _topLeft.Y + prop.Height);
 			_prop = prop;
-
+			base.Name = prop.Name;
 			initiallyAssignedNode = selectedNode;
 
 			Layout();
@@ -229,33 +229,69 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				Rectangle rect = new Rectangle(boundsTopLeft, new Size(bottomRight.X - boundsTopLeft.X, bottomRight.Y - boundsTopLeft.Y));
 
-				var wRatio = rect.Width / _prop.Width;
-				var hRatio = rect.Height / _prop.Height;
+				var wRatio = (float)rect.Width / (float)_prop.Width;
+				var hRatio = (float)rect.Height / (float)_prop.Height;
 
-				Point tL = new Point(boundsTopLeft.X, boundsTopLeft.Y);
-				Point tR = new Point(boundsTopLeft.X, boundsTopLeft.Y);
-				Point bL = new Point(boundsTopLeft.X, boundsTopLeft.Y);
-				Point bR = new Point(boundsTopLeft.X, boundsTopLeft.Y);
+				var w = wRatio;
 
-				Point[] points = { tL, tR, bR, bL };
+				Strings = new List<PreviewBaseShape>();
 
-				if (Strings == null)
-					Strings = new List<PreviewBaseShape>();
-
-				var channels = _prop.GetRepositionedChannels();
+				//var channels = _prop.GetRepositionedChannels();
+				var channels = _prop.Channels;
 				channels.ForEach(c =>
 				{
 					Strings.Add(new CustomPropBaseShape(_topLeft, c));
 				});
 
+				AdjustStringPixelsWithRatio(Strings, wRatio, hRatio);
 				Strings.ForEach(s => s.Layout());
 
 				SetPixelZoom();
 
 			}
-		 
+
 		}
-		 
+
+
+		private void AdjustStringPixelsWithRatio(List<PreviewBaseShape> strings, float wRatio, float hRatio)
+		{
+			if (strings == null) return;
+
+			foreach (CustomPropBaseShape s in strings)
+			{
+				AdjustStringPixelsWithRatio(s.Strings, wRatio, hRatio);
+
+				if (s._pixels != null && s._pixels.Any())
+				{
+					s._pixels.ForEach(p =>
+					{
+						var xF = (float)p.X * wRatio;
+						var yF = (float)p.Y * hRatio;
+						p.X = (int)xF;
+						p.Y = (int)yF;
+					});
+				}
+			}
+		}
+		private void MovePixels(List<PreviewBaseShape> strings, int changeX, int changeY)
+		{
+			if (strings == null) return;
+
+			foreach (CustomPropBaseShape s in strings)
+			{
+				MovePixels(s.Strings, changeX, changeY);
+
+				if (s._pixels != null && s._pixels.Any())
+				{
+					s._pixels.ForEach(p =>
+					{
+						p.X += changeX;
+						p.Y += changeY;
+					});
+				}
+			}
+		}
+
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
 			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
@@ -280,6 +316,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PointToZoomPointRef(_topLeft);
 				PointToZoomPointRef(_bottomRight);
 
+			 
 
 			}
 
@@ -347,14 +384,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			_bottomRight.X += changeX;
 			_bottomRight.Y += changeY;
-			Strings.AsParallel().ForAll(str =>
-			{
-				str.Pixels.AsParallel().ForAll(pix =>
-				{
-					pix.X += changeX;
-					pix.Y += changeY;
-				});
-			});
+			MovePixels(Strings, changeX, changeY);
+
 
 			//Layout();
 		}

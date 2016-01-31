@@ -50,6 +50,7 @@
 			this.gridPanel = new System.Windows.Forms.Panel();
 			this.contextMenuStripPixels = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.removeSelectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removePixelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
@@ -216,9 +217,10 @@
 			this.contextMenuStripChannels.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addNodeToolStripMenuItem,
             this.addMultipleNodesToolStripMenuItem,
-            this.removeNodesToolStripMenuItem});
+            this.removeNodesToolStripMenuItem,
+            this.removePixelToolStripMenuItem});
 			this.contextMenuStripChannels.Name = "contextMenuStripChannels";
-			this.contextMenuStripChannels.Size = new System.Drawing.Size(181, 70);
+			this.contextMenuStripChannels.Size = new System.Drawing.Size(181, 114);
 			this.contextMenuStripChannels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripChannels_Opening);
 			// 
 			// addNodeToolStripMenuItem
@@ -300,6 +302,13 @@
 			this.removeSelectedItemsToolStripMenuItem.Text = "Remove Selected Items";
 			this.removeSelectedItemsToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedItemsToolStripMenuItem_Click);
 			// 
+			// removePixelToolStripMenuItem
+			// 
+			this.removePixelToolStripMenuItem.Name = "removePixelToolStripMenuItem";
+			this.removePixelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.removePixelToolStripMenuItem.Text = "Remove Pixel";
+			this.removePixelToolStripMenuItem.Click += new System.EventHandler(this.removePixelToolStripMenuItem_Click);
+			// 
 			// CustomPropForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -351,6 +360,7 @@
 		private System.Windows.Forms.ToolStripMenuItem addNodeToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem addMultipleNodesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem removeNodesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem removePixelToolStripMenuItem;
 	}
 }
 

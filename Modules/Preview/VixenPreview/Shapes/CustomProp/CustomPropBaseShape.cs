@@ -15,12 +15,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public CustomPropBaseShape(PreviewPoint point, PropChannel prop)
 			: base(point, null)
-		{			
-			base.Strings = new List<PreviewBaseShape>();
-			prop.Children.ForEach(c =>
+		{
+			
+				base.Strings = new List<PreviewBaseShape>();
+			base.Name = prop.Name;
+			if (prop.Children.Any())
 			{
-				Strings.Add(new CustomPropBaseShape(point, c));
-			});
+				prop.Children.ForEach(c =>
+				{
+					Strings.Add(new CustomPropBaseShape(point, c));
+				});
+			}
+			else if (prop.Pixels != null && prop.Pixels.Any())
+			{
+				prop.Pixels.ForEach(p => AddPixel(p.X, p.Y));
+
+			}
 			Layout();
 		}
 
@@ -56,7 +66,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 		}
-
+	 
 		public override void Layout()
 		{
 			foreach (PreviewBaseShape shape in Strings)
