@@ -487,21 +487,30 @@ namespace Common.Controls
 			List<ElementNode> result = new List<ElementNode>();
 
 			// since we're adding multiple nodes, prompt with the name generation form (which also includes a counter on there).
-			using (NameGenerator nameGenerator = new NameGenerator()) {
-				if (nameGenerator.ShowDialog() == DialogResult.OK) {
-					result.AddRange(
-						nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
-							name => AddNewNode(name, false, parent, true)));
-					if (result == null || result.Count() == 0) {
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "", false, false);
-						messageBox.ShowDialog();
-						return result;
+
+			string newMultiName = "NewName";
+			if (treeview.SelectedNode != null)
+				newMultiName = treeview.SelectedNode.Text;
+			
+				using (NameGenerator nameGenerator = new NameGenerator(newMultiName))
+				{
+					if (nameGenerator.ShowDialog() == DialogResult.OK)
+					{
+						result.AddRange(
+							nameGenerator.Names.Where(name => !string.IsNullOrEmpty(name)).Select(
+								name => AddNewNode(name, false, parent, true)));
+						if (result == null || result.Count() == 0)
+						{
+							//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+							MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+							var messageBox = new MessageBoxForm("Could not create elements.  Ensure you use a valid name and try again.", "",
+								false, false);
+							messageBox.ShowDialog();
+							return result;
+						}
+						PopulateNodeTree(result.FirstOrDefault());
 					}
-					PopulateNodeTree(result.FirstOrDefault());
 				}
-			}
 
 			return result;
 		}

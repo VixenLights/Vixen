@@ -17,6 +17,8 @@ namespace Common.Controls
 
 		private int _fixedCount;
 
+		private string SelectedGroupName;
+
 		private int FixedCount
 		{
 			get { return _fixedCount; }
@@ -63,6 +65,7 @@ namespace Common.Controls
 		public NameGenerator(IEnumerable<string> oldNames)
 			: this()
 		{
+			SelectedGroupName = "NewName";
 			OldNames = new List<string>(oldNames);
 			FixedCount = OldNames.Count();
 			listViewNames.Columns.Clear();
@@ -76,6 +79,12 @@ namespace Common.Controls
 			: this()
 		{
 			FixedCount = fixedCount;
+		}
+
+		public NameGenerator(string selectedGroupName)
+			: this()
+		{
+			SelectedGroupName = selectedGroupName;
 		}
 
 		private void BulkRename_Load(object sender, EventArgs e)
@@ -165,7 +174,7 @@ namespace Common.Controls
 
 		private void LoadNamingTemplate(INamingTemplate template)
 		{
-			textBoxNameFormat.Text = template.Format;
+			textBoxNameFormat.Text =  SelectedGroupName + template.Format;
 
 			Generators.Clear();
 			foreach (INamingGenerator generator in template.Generators) {
