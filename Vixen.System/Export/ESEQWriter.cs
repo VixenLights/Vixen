@@ -70,7 +70,7 @@ namespace Vixen.Export
                 _dataOut.Write((Byte)((_startAddress >> 24) & 0xFF));
 
 				// Model Size
-				_modelSize = _seqNumChannels * _seqNumChannels;
+				_modelSize = _seqNumPeriods * _seqNumChannels;
                 
 				_dataOut.Write((Byte)(_modelSize & 0xFF));
                 _dataOut.Write((Byte)((_modelSize >> 8) & 0xFF));
