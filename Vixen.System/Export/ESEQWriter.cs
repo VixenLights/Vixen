@@ -20,10 +20,10 @@ namespace Vixen.Export
         private Int32 _seqNumChannels = 0;
         private Int32 _seqNumPeriods = 0;
         private Int32 _startAddress = 0;
-		private Int32 _numModels = 1;
-		private Int32 _modelSize = 0;
+        private Int32 _numModels = 1;
+        private Int32 _modelSize = 0;
         
-		private FileStream _outfs = null;
+        private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
 
         private Byte[] _padding;
@@ -63,20 +63,20 @@ namespace Vixen.Export
                 _dataOut.Write((Byte)((_seqNumChannels >> 16) & 0xFF));
                 _dataOut.Write((Byte)((_seqNumChannels >> 24) & 0xFF));
 
-				//Model Start address
+                //Model Start address
                 _dataOut.Write((Byte)(_startAddress & 0xFF));
                 _dataOut.Write((Byte)((_startAddress >> 8) & 0xFF));
                 _dataOut.Write((Byte)((_startAddress >> 16) & 0xFF));
                 _dataOut.Write((Byte)((_startAddress >> 24) & 0xFF));
 
-				// Model Size
-				_modelSize = _seqNumPeriods * _seqNumChannels;
+                // Model Size
+                _modelSize = _seqNumPeriods * _seqNumChannels;
                 
-				_dataOut.Write((Byte)(_modelSize & 0xFF));
-                _dataOut.Write((Byte)((_modelSize >> 8) & 0xFF));
-                _dataOut.Write((Byte)((_modelSize >> 16) & 0xFF));
-                _dataOut.Write((Byte)((_modelSize >> 24) & 0xFF));
-				
+                _dataOut.Write((Byte)(_seqNumChannels & 0xFF));
+                _dataOut.Write((Byte)((_seqNumChannels >> 8) & 0xFF));
+                _dataOut.Write((Byte)((_seqNumChannels >> 16) & 0xFF));
+                _dataOut.Write((Byte)((_seqNumChannels >> 24) & 0xFF));
+                
             }
         }
 
