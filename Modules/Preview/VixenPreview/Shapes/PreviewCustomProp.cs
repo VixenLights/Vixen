@@ -19,9 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		private PreviewPoint _bottomRight;
 
-		[DataMember]
-		private int _pixelSpacing = 8;
-
+		 
 		[DataMember]
 		internal Prop _prop = null;
 
@@ -41,18 +39,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-		[OnDeserialized]
-		private new void OnDeserialized(StreamingContext context)
-		{
-			if (_pixelSpacing == 0)
-				_pixelSpacing = 8;
-		}
-
+ 
 		#region "Properties"
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Top Left"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 1.")]
+		 DescriptionAttribute("This is point 1.")]
 		public Point TopLeft
 		{
 			get
@@ -70,7 +62,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		[CategoryAttribute("Position"),
 		 DisplayName("Bottom Right"),
-		 DescriptionAttribute("Nets are defined by 4 points. This is point 3.")]
+	DescriptionAttribute("This is point 2.")]
 		public Point BottomRight
 		{
 			get
@@ -87,24 +79,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
+ 
 
-		[CategoryAttribute("Settings"),
-		 DisplayName("Light Spacing"),
-		 DescriptionAttribute("This is the spacing between each light in the net.")]
-		public int PixelSpacing
-		{
-			get { return _pixelSpacing; }
-			set
-			{
-				_pixelSpacing = value;
-				Layout();
-			}
-		}
-
-		[Browsable(false)]
+		 
 		public override StringTypes StringType
 		{
-			get { return StringTypes.Pixel; }
+			get { return _stringType; }
 			set { _stringType = value; }
 		}
 

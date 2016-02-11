@@ -44,6 +44,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
+		[Browsable(false)]
 		[DataMember]
 		public int PixelSize { get; set; }
 
@@ -79,9 +80,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				_pixels = value;
 			}
 		}
+		public List<Pixel> GetNestedPixels()
+		{
+			List<Pixel> retVal = new List<Pixel>();
+			retVal.AddRange(Pixels);
+			retVal.AddRange(Children.SelectMany(s => s.GetNestedPixels()));
+			return retVal.Distinct().ToList();
+		}
 
+
+		[Browsable(false)]
 		[DataMember]
-		public bool IsPixel { get; set; } 
+		public bool IsPixel { get; set; }
 
 		[Browsable(false)]
 		[DataMember]
@@ -90,5 +100,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		[Browsable(false)]
 		[DataMember]
 		public List<PropChannel> Children { get; set; }
+
+		 
 	}
 }

@@ -45,12 +45,12 @@
 			this.addNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addMultipleNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removePixelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.gridPanel = new System.Windows.Forms.Panel();
 			this.contextMenuStripPixels = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.removeSelectedItemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.removePixelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
@@ -220,7 +220,7 @@
             this.removeNodesToolStripMenuItem,
             this.removePixelToolStripMenuItem});
 			this.contextMenuStripChannels.Name = "contextMenuStripChannels";
-			this.contextMenuStripChannels.Size = new System.Drawing.Size(181, 114);
+			this.contextMenuStripChannels.Size = new System.Drawing.Size(181, 92);
 			this.contextMenuStripChannels.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripChannels_Opening);
 			// 
 			// addNodeToolStripMenuItem
@@ -243,6 +243,13 @@
 			this.removeNodesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.removeNodesToolStripMenuItem.Text = "Remove Node(s)";
 			this.removeNodesToolStripMenuItem.Click += new System.EventHandler(this.removeNodesToolStripMenuItem_Click);
+			// 
+			// removePixelToolStripMenuItem
+			// 
+			this.removePixelToolStripMenuItem.Name = "removePixelToolStripMenuItem";
+			this.removePixelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.removePixelToolStripMenuItem.Text = "Remove Pixel";
+			this.removePixelToolStripMenuItem.Click += new System.EventHandler(this.removePixelToolStripMenuItem_Click);
 			// 
 			// propertyGrid
 			// 
@@ -301,13 +308,6 @@
 			this.removeSelectedItemsToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
 			this.removeSelectedItemsToolStripMenuItem.Text = "Remove Selected Items";
 			this.removeSelectedItemsToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedItemsToolStripMenuItem_Click);
-			// 
-			// removePixelToolStripMenuItem
-			// 
-			this.removePixelToolStripMenuItem.Name = "removePixelToolStripMenuItem";
-			this.removePixelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.removePixelToolStripMenuItem.Text = "Remove Pixel";
-			this.removePixelToolStripMenuItem.Click += new System.EventHandler(this.removePixelToolStripMenuItem_Click);
 			// 
 			// CustomPropForm
 			// 

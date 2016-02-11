@@ -53,6 +53,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			ThemeUpdateControls.UpdateControls(this);
 		}
 		private string _fileName = null;
+		const string CHANNEL_TEMPLATE = "String_{0}";
 		#region Private Variables
 		private Prop _prop;
 		private static readonly string PropDirectory = PreviewTools.PropsFolder;//Path.Combine(new FileInfo(Application.ExecutablePath).DirectoryName, "Props");
@@ -689,7 +690,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			DrawPreview();
 		}
-		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = "Channel_{0}", int index = 1)
+		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = CHANNEL_TEMPLATE, int index = 1)
 		{
 			int i = index;
 			if (i < 1) i = 1;
@@ -708,7 +709,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			return channelName;
 		}
-		private string GenerateNewChannelName(TreeNode selection, string templateName = "Channel_{0}", int index = 1)
+		private string GenerateNewChannelName(TreeNode selection, string templateName = CHANNEL_TEMPLATE, int index = 1)
 		{
 
 			return GenerateNewChannelName(selection.Nodes, templateName, index);
@@ -857,7 +858,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			using (var frm = new ChannelNaming())
 			{
-				frm.Value = "Channel_{0}";
+				frm.Value = CHANNEL_TEMPLATE;
 				var dlg = frm.ShowDialog();
 
 				if (dlg == System.Windows.Forms.DialogResult.OK)
@@ -955,11 +956,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 			removeNodesToolStripMenuItem.Visible = treeViewChannels.SelectedNode != null;
-			var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
-			if (prop != null)
+			if (treeViewChannels.SelectedNode != null)
 			{
-				addNodeToolStripMenuItem.Visible = addMultipleNodesToolStripMenuItem.Visible = removeNodesToolStripMenuItem.Visible = !prop.IsPixel;
-				removePixelToolStripMenuItem.Visible = prop.IsPixel;
+				var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+				if (prop != null)
+				{
+					addNodeToolStripMenuItem.Visible = addMultipleNodesToolStripMenuItem.Visible = removeNodesToolStripMenuItem.Visible = !prop.IsPixel;
+					removePixelToolStripMenuItem.Visible = prop.IsPixel;
+				}
 			}
 		}
 
