@@ -267,8 +267,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						var xF = (float)p.X * wRatio;
 						var yF = (float)p.Y * hRatio;
-						p.X = (int)xF;
-						p.Y = (int)yF;
+						p.X = (int)xF + _topLeft.X;
+						p.Y = (int)yF + _topLeft.Y;
 					});
 				}
 			}
@@ -316,7 +316,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PointToZoomPointRef(_topLeft);
 				PointToZoomPointRef(_bottomRight);
 
-			 
+
 
 			}
 
