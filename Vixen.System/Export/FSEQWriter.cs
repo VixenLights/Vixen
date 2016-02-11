@@ -17,14 +17,15 @@ namespace Vixen.Export
     {
         private const Byte _vMinor = 0;
         private const Byte _vMajor = 1;
-        private const UInt32 _dataOffset = 28;
         private const UInt16 _fixedHeaderLength = 28;
+        private UInt32 _dataOffset = _fixedHeaderLength;
         private Int32 _seqNumChannels = 0;
         private UInt32 _seqNumPeriods = 0;
         private UInt16 _numUniverses = 0;    //Ignored by Pi Player
         private UInt16 _universeSize = 0;    //Ignored by Pi Player
         private Byte _gamma = 1;             //0=encoded, 1=linear, 2=RGB
         private Byte _colorEncoding = 2;
+		private String _audioFileName = "";
 
         private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
@@ -53,12 +54,12 @@ namespace Vixen.Export
                 _dataOut.Write('S');
                 _dataOut.Write('E');
                 _dataOut.Write('Q');
-
-                // Data offset
+				
+                // Data offset  (Initially write to the fixed header length)
                 _dataOut.Write((Byte)(_dataOffset % 256));
                 _dataOut.Write((Byte)(_dataOffset / 256));
 
-                // Data header
+				// Data header
                 _dataOut.Write(_vMinor);
                 _dataOut.Write(_vMajor);
 
@@ -97,6 +98,35 @@ namespace Vixen.Export
                 _dataOut.Write(_colorEncoding);
                 _dataOut.Write((Byte)0);
                 _dataOut.Write((Byte)0);
+
+				//Write the media filename
+				if (_audioFileName.Length > 0)
+				{
+					String fileName = Path.GetFileName(_audioFileName);
+					UInt32 len = (UInt32)fileName.Length + 5;
+					_dataOut.Write((Byte)(len & 0xFF));
+					_dataOut.Write((Byte)((len >> 8) & 0xFF));
+					_dataOut.Write('m');
+					_dataOut.Write('f');
+					_dataOut.Write(fileName);
+
+					_dataOffset += len;
+
+					UInt32 numPads = (4 - (_dataOffset % 4)) % 4;
+					_dataOffset += numPads;
+                   
+ 					if (numPads > 0)
+					{
+						Byte[] padding = Enumerable.Repeat((Byte)0, (Int32)numPads).ToArray();
+						_dataOut.Write(padding);
+					}
+					
+					_dataOut.Seek(4, SeekOrigin.Begin);
+					_dataOut.Write((Byte)(_dataOffset % 256));
+					_dataOut.Write((Byte)(_dataOffset / 256));
+
+					_dataOut.Seek((int)_dataOffset, SeekOrigin.Begin);
+				}
             }
         }
 
@@ -108,7 +138,8 @@ namespace Vixen.Export
         public void OpenSession(SequenceSessionData data)
         {
             this.SeqPeriodTime = data.PeriodMS;
-            OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
+			this._audioFileName = data.AudioFileName;
+			OpenSession(data.OutFileName, data.NumPeriods, data.ChannelNames.Count());
         }
 
         private void OpenSession(string fileName, Int32 numPeriods, Int32 numChannels)
