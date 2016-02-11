@@ -168,7 +168,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				return stringsResult;
 			}
-			set { _strings = value; }
+			set { _strings = value;
+			
+			}
 		}
 
 		[Browsable(false)]

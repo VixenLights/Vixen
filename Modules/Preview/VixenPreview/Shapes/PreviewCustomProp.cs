@@ -19,7 +19,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		private PreviewPoint _bottomRight;
 
-		 
+
 		[DataMember]
 		internal Prop _prop = null;
 
@@ -39,7 +39,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
- 
+
 		#region "Properties"
 
 		[CategoryAttribute("Position"),
@@ -79,13 +79,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 
- 
 
-		 
+
+
 		public override StringTypes StringType
 		{
 			get { return _stringType; }
-			set { _stringType = value; }
+			set
+			{
+				_stringType = value;
+				if (_strings != null)
+					foreach (var item in _strings)
+					{
+						item.StringType = _stringType;
+					}
+			}
 		}
 
 		//[Browsable(false)]
@@ -171,11 +179,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
+				foreach (var item in _strings)
+				{
+					item.StringType = _stringType;
+				}
 				return _strings;
 			}
 			set
 			{
 				_strings = value;
+				if (_strings != null)
+					foreach (var item in _strings)
+					{
+						item.StringType = _stringType;
+					}
 			}
 		}
 
