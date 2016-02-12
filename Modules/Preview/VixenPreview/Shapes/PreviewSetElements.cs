@@ -37,6 +37,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             int i = 1;
             foreach (PreviewBaseShape shape in _shapes)
             {
+				i = GetStringsFromShape(i, shape);
                 if (shape.Pixels.Count == 0)
                     continue;
                 var newString = new PreviewSetElementString();
@@ -67,6 +68,54 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 			}
 		}
+
+		private void GenerateElementsForShapes(string propName)
+		{
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, propName);
+			GenerateElementsForShapes(head, _shapes);
+			treeElements.Nodes.Clear();
+			PreviewTools.PopulateElementTree(treeElements);
+
+			UpdateListLinkedElements();
+		}
+
+		private void GenerateElementsForShapes(ElementNode head, List<PreviewBaseShape> shapes)
+		{
+			foreach (var shape in shapes)
+			{
+				var propShape = shape as VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropBaseShape;
+				if (propShape != null && propShape.IsPixel) continue;
+
+				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, shape.Name);
+
+				var str = _strings.Where(w => w.StringName.Equals(shape.Name)).FirstOrDefault();
+
+				if (shape.Pixels != null && shape.Pixels.Any())
+				{
+
+					int i = 0;
+					for (int pi = 0; pi < shape.Pixels.Count(); pi++)
+					{
+
+						var p = shape.Pixels[i];
+						var sp = str.Pixels[i];
+
+						sp.Node = p.Node = ElementNodeService.Instance.CreateSingle(stringnode, string.Format("{0}_P{1}", shape.Name, i++));
+					}
+
+				}
+
+				if (propShape != null && propShape.Strings != null && propShape.Strings.Any())
+				{
+					if (!propShape.IsPixel)
+					{
+						GenerateElementsForShapes(stringnode, propShape.Strings);
+					}
+				}
+			}
+		}
+
+
 
 		private int GetStringsFromShape(int i, PreviewBaseShape shape)
 		{
@@ -478,6 +527,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
+
+		private void generateElementChannelsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.PropNaming())
+			{
+				var rslt = frm.ShowDialog();
+				if (rslt == System.Windows.Forms.DialogResult.OK)
+				{
+					GenerateElementsForShapes(frm.Value);
+				}
+			}
 		}
 	}
 }
