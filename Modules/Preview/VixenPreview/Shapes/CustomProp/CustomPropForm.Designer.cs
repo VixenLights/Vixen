@@ -316,6 +316,7 @@
 			this.ClientSize = new System.Drawing.Size(914, 500);
 			this.Controls.Add(this.splitContainer1);
 			this.Name = "CustomPropForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Custom Prop Editor";
 			this.Load += new System.EventHandler(this.CustomPropForm_Load);
 			this.splitContainer2.Panel1.ResumeLayout(false);

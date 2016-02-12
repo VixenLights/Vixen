@@ -372,28 +372,51 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				// shapes with count==0 don't show up in combo box so keep separate index
 				var comboidx = -1;
+
 				for (var i = 0; i < _shapes.Count; i++)
 				{
+
 					if (_shapes[i].Pixels.Count == 0)
 						continue;
-					comboidx++;
-					var item = comboStrings.Items[comboidx] as Common.Controls.ComboBoxItem;
-					var lightString = item.Value as PreviewSetElementString;
+
 					var shape = _shapes[i];
+
+					PreviewSetElementString lightString = null;
+
+					foreach (Common.Controls.ComboBoxItem item in comboStrings.Items)
+					{
+						var ls = item.Value as PreviewSetElementString;
+						if (ls.StringName.Equals(shape.Name))
+						{
+							lightString = ls;
+							break;
+						}
+					}
+
+					if (lightString == null) continue;
+
+					var propShape = shape as VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropBaseShape;
+					if (propShape != null && propShape.IsPixel)
+						continue;
+
+
+
+
 
 					if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
 					{
+
 						while (shape.Pixels.Count > lightString.Pixels.Count)
 						{
 							shape.Pixels.RemoveAt(shape.Pixels.Count - 1);
 						}
+
 						while (shape.Pixels.Count < lightString.Pixels.Count)
 						{
 							var pixel = new PreviewPixel();
 							shape.Pixels.Add(pixel);
 						}
 					}
-
 					for (int pixelNum = 0; pixelNum < lightString.Pixels.Count; pixelNum++)
 					{
 						//Console.WriteLine("   pixelNum=" + pixelNum.ToString());
@@ -412,6 +435,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							shape.Pixels[pixelNum] = lightString.Pixels[pixelNum];
 						}
 					}
+
 				}
 			}
 
@@ -533,7 +557,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			using (var frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.PropNaming())
 			{
-				var rslt = frm.ShowDialog();
+				var rslt = frm.ShowDialog(this);
 				if (rslt == System.Windows.Forms.DialogResult.OK)
 				{
 					GenerateElementsForShapes(frm.Value);

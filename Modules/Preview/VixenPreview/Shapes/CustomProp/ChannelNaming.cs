@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Controls.Theme;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public ChannelNaming()
 		{
 			InitializeComponent();
+		//	ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public string Value { get; set; }

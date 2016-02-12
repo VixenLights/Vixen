@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Controls.Theme;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public AddMultipleChannels()
 		{
 			InitializeComponent();
+			//ThemeUpdateControls.UpdateControls(this);
 		}
 		public string TemplateName { get { return this.txtTemplate.Text.Contains("{0}") ? this.txtTemplate.Text : this.txtTemplate.Text + "{0}"; } }
 		public int ChannelCount { get { return (int)this.numChannelsToAdd.Value; } }

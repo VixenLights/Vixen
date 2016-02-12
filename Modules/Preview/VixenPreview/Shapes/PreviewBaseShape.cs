@@ -126,7 +126,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-				if (_strings != null && _strings.Count > 0)
+				if (_strings != null && _strings.Count > 0 )
 				{
 					List<PreviewPixel> outPixels = new List<PreviewPixel>();
 					foreach (PreviewBaseShape line in _strings)
@@ -137,12 +137,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						}
 					}
 					_pixels.Clear();
-					return outPixels.ToList();
+					return outPixels;
 				}
 				
 				return _pixels;
 			}
-			set { _pixels = value; }
+			set
+			{
+				_pixels = value;
+			 
+			}
 		}
 
 		[Browsable(false)]

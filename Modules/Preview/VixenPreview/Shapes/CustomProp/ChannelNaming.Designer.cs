@@ -67,9 +67,9 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(167, 13);
+			this.label1.Size = new System.Drawing.Size(155, 13);
 			this.label1.TabIndex = 4;
-			this.label1.Text = "Please Enter Channel Name here:";
+			this.label1.Text = "Please Enter String Name here:";
 			// 
 			// ChannelNaming
 			// 
@@ -85,7 +85,8 @@
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "ChannelNaming";
-			this.Text = "ChannelNaming";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "String Name";
 			this.Load += new System.EventHandler(this.ChannelNaming_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

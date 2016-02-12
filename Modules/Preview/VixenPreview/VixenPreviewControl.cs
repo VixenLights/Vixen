@@ -2047,55 +2047,50 @@ namespace VixenModules.Preview.VixenPreview
 			AllocateGraphicsBuffer(false);
 			if (Background != null)
 			{
-				FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground));
-				fp.Lock();
-				foreach (DisplayItem displayItem in DisplayItems)
+				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(new Bitmap(_alphaBackground)))
 				{
-					if (_editMode)
+					fp.Lock();
+					foreach (DisplayItem displayItem in DisplayItems)
 					{
 						displayItem.Draw(fp, true, HighlightedElements, displayItem.Shape.Selected || SelectedDisplayItems.Contains(displayItem), false);
 					}
-					else
-					{
-						displayItem.Draw(fp, false, null, false, true);
-					}
-				}
-				fp.Unlock(true);
+					fp.Unlock(true);
 
-				if (ShowInfo && _editMode)
-				{
-					foreach (DisplayItem displayItem in DisplayItems)
+					if (ShowInfo && _editMode)
+					{
+						foreach (DisplayItem displayItem in DisplayItems)
+						{
+							Graphics g = Graphics.FromImage(fp.Bitmap);
+							displayItem.DrawInfo(g);
+						}
+					}
+
+					// Finally, are we drawing a banded rectangle?
+					if (_mouseCaptured && _selectedDisplayItem == null)
 					{
 						Graphics g = Graphics.FromImage(fp.Bitmap);
-						displayItem.DrawInfo(g);
+						g.DrawRectangle(Pens.White, _bandRect);
 					}
-				}
 
-				// Finally, are we drawing a banded rectangle?
-				if (_mouseCaptured && _selectedDisplayItem == null)
-				{
-					Graphics g = Graphics.FromImage(fp.Bitmap);
-					g.DrawRectangle(Pens.White, _bandRect);
-				}
+					bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
-				bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-
-				// Now, draw our "pixel" image using alpha blending
-				if (vScroll.Visible && hScroll.Visible)
-				{
-					int drawWidth = Width - vScroll.Width + hScroll.Value;
-					int drawHeight = Height - hScroll.Height + vScroll.Value;
-					int drawX = -hScroll.Value;
-					int drawY = -vScroll.Value;
-					Rectangle dest = new Rectangle(0, 0, drawWidth, drawHeight);
-					Rectangle src = new Rectangle(hScroll.Value, vScroll.Value, drawWidth, drawHeight);
-					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
-				}
-				else
-				{
-					Rectangle dest = new Rectangle(0, 0, Width, Height);
-					Rectangle src = new Rectangle(0, 0, Width, Height);
-					bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+					// Now, draw our "pixel" image using alpha blending
+					if (vScroll.Visible && hScroll.Visible)
+					{
+						int drawWidth = Width - vScroll.Width + hScroll.Value;
+						int drawHeight = Height - hScroll.Height + vScroll.Value;
+						int drawX = -hScroll.Value;
+						int drawY = -vScroll.Value;
+						Rectangle dest = new Rectangle(0, 0, drawWidth, drawHeight);
+						Rectangle src = new Rectangle(hScroll.Value, vScroll.Value, drawWidth, drawHeight);
+						bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+					}
+					else
+					{
+						Rectangle dest = new Rectangle(0, 0, Width, Height);
+						Rectangle src = new Rectangle(0, 0, Width, Height);
+						bufferedGraphics.Graphics.DrawImage(fp.Bitmap, dest, src, GraphicsUnit.Pixel);
+					}
 				}
 			}
 

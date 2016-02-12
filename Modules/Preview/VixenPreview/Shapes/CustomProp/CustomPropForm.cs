@@ -859,7 +859,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			using (var frm = new ChannelNaming())
 			{
 				frm.Value = CHANNEL_TEMPLATE;
-				var dlg = frm.ShowDialog();
+				var dlg = frm.ShowDialog(this);
 
 				if (dlg == System.Windows.Forms.DialogResult.OK)
 				{
@@ -887,7 +887,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			using (var frm = new AddMultipleChannels())
 			{
 
-				var dlg = frm.ShowDialog();
+				var dlg = frm.ShowDialog(this);
 
 				if (dlg == System.Windows.Forms.DialogResult.OK)
 				{

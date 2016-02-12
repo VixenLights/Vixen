@@ -85,6 +85,7 @@
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "PropNaming";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Prop Naming";
 			this.Load += new System.EventHandler(this.PropNaming_Load);
 			this.ResumeLayout(false);

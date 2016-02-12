@@ -59,9 +59,9 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(12, 10);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(137, 13);
+			this.label1.Size = new System.Drawing.Size(125, 13);
 			this.label1.TabIndex = 9;
-			this.label1.Text = "Number of Channels to Add";
+			this.label1.Text = "Number of Strings to Add";
 			// 
 			// numChannelsToAdd
 			// 
@@ -111,7 +111,8 @@
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.Name = "AddMultipleChannels";
-			this.Text = "Add Multiple Channels";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Add Multiple Strings";
 			((System.ComponentModel.ISupportInitialize)(this.numChannelsToAdd)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

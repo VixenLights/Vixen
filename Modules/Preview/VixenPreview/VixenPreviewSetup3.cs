@@ -703,7 +703,7 @@ namespace VixenModules.Preview.VixenPreview
 		private void btnAddCustomObject_Click(object sender, EventArgs e)
 		{
 			VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm();
-			frm.ShowDialog();
+			frm.ShowDialog(this);
 			PopulateTemplateList();
 		}
 
@@ -736,7 +736,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (templateItem != null)
 			{
 				VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm frm = new VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropForm(templateItem.FileName);
-				frm.ShowDialog();
+				frm.ShowDialog(this);
 				PopulateTemplateList();
 			}
 		}
