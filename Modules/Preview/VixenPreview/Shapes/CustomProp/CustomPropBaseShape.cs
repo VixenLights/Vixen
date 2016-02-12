@@ -13,11 +13,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 	public class CustomPropBaseShape : PreviewCustom
 	{
 
-		public CustomPropBaseShape(PreviewPoint point, PropChannel prop)
+		public CustomPropBaseShape(PreviewPoint point, PropChannel prop )
 			: base(point, null)
 		{
-			
-				base.Strings = new List<PreviewBaseShape>();
+
+			base.Strings = new List<PreviewBaseShape>();
 			base.Name = prop.Name;
 			if (prop.Children.Any())
 			{
@@ -31,6 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				prop.Pixels.ForEach(p => AddPixel(p.X, p.Y));
 
 			}
+			IsPixel = prop.IsPixel;
 			Layout();
 		}
 
@@ -55,7 +56,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			get { return Pixels.Max(m => m.X); }
 
 		}
-
+		public bool IsPixel { get; set; }
 		public override int Bottom
 		{
 			get { return Pixels.Min(x => x.Y); }
@@ -66,7 +67,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 		}
-	 
+
 		public override void Layout()
 		{
 			foreach (PreviewBaseShape shape in Strings)

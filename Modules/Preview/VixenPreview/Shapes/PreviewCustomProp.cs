@@ -182,6 +182,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				foreach (var item in _strings)
 				{
 					item.StringType = _stringType;
+					item.Parent = this;
 				}
 				return _strings;
 			}
@@ -192,11 +193,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					foreach (var item in _strings)
 					{
 						item.StringType = _stringType;
+						item.Parent = this;
 					}
 			}
 		}
-
-
+  
 		public override void Layout()
 		{
 			if (_topLeft != null && _bottomRight != null)
