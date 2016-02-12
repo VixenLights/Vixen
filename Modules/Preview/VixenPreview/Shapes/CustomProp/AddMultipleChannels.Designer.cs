@@ -43,7 +43,7 @@
 			this.txtTemplate.Name = "txtTemplate";
 			this.txtTemplate.Size = new System.Drawing.Size(123, 20);
 			this.txtTemplate.TabIndex = 11;
-			this.txtTemplate.Text = "Channel_";
+			this.txtTemplate.Text = "String_";
 			// 
 			// label2
 			// 
