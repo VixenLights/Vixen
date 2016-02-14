@@ -190,7 +190,7 @@ namespace Common.Controls.Timeline
 			ruler = new Ruler(TimeInfo)
 			        	{
 			        		Dock = DockStyle.Top,
-			        		Height = 40,
+			        		Height = 50,
 			        	};
 			splitContainer.Panel2.Controls.Add(ruler);
 
@@ -450,11 +450,13 @@ namespace Common.Controls.Timeline
 		{
 			grid.AddSnapPoint(time, level, color, lineBold, solidLine);
 			ruler.AddSnapPoint(time, level, color, lineBold, solidLine);
+			waveform.AddSnapPoint(time, level, color);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)
 		{
 			ruler.RemoveSnapPoint(time);
+			waveform.RemoveSnapPoint(time);
 			return grid.RemoveSnapPoint(time);
 		}
 
@@ -462,6 +464,7 @@ namespace Common.Controls.Timeline
 		{
 			grid.ClearSnapPoints();
 			ruler.ClearSnapPoints();
+			waveform.ClearSnapPoints();
 		}
 
 
@@ -681,7 +684,7 @@ namespace Common.Controls.Timeline
 				if (row.Name == selectedRow.Name)
 				{
 					row.Height = selectedRow.Height;
-				}
+		}
 			}
 		}
 
@@ -796,7 +799,7 @@ namespace Common.Controls.Timeline
 				{
 					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
 					ZoomTime(1.0 - ((double)e.Delta / 1200.0), e.Location);
-				}
+			}
 				else
 				{
 					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick

@@ -26,6 +26,9 @@ namespace Common.Controls.Timeline
 		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
 
+
+	//	public Ruler ruler;
+
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
 		/// </summary>
@@ -36,6 +39,22 @@ namespace Common.Controls.Timeline
 			samples = new SampleAggregator();
 			BackColor = Color.Gray;
 			Visible = false;
+			SnapStrength = 2;
+	//		ruler = new Ruler(TimeInfo);
+			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+		}
+
+		public void ClearSnapPoints()
+		{
+			StaticSnapPoints.Clear();
+			if (!SuppressInvalidate) Invalidate();
+		}
+
+		public bool RemoveSnapPoint(TimeSpan snapTime)
+		{
+			bool rv = StaticSnapPoints.Remove(snapTime);
+			if (!SuppressInvalidate) Invalidate();
+			return rv;
 		}
 
 		private void CreateWorker()
@@ -175,8 +194,65 @@ namespace Common.Controls.Timeline
 			//Do nothing
 		}
 
+		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
+
+		public bool SuppressInvalidate { get; set; }
+
+		public int SnapStrength { get; set; }
+
+		public void AddSnapPoint(TimeSpan snapTime, int level, Color color)
+		{
+			if (!StaticSnapPoints.ContainsKey(snapTime))
+				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) });
+			else
+				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
+
+			if (!SuppressInvalidate) Invalidate();
+		}
+
+		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color)
+		{
+			SnapDetails result = new SnapDetails();
+			result.SnapLevel = level;
+			result.SnapTime = snapTime;
+			result.SnapColor = color;
+
+			// the start time and end times for specified points are 2 pixels
+			// per snap level away from the snap time.
+			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
+			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
+			return result;
+		}
+
+		private void _drawMarks(Graphics g)
+		{
+			Pen p;
+
+			// iterate through all snap points, and if it's visible, draw it
+			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints.ToArray())
+			{
+				if (kvp.Key >= VisibleTimeEnd) break;
+
+				if (kvp.Key >= VisibleTimeStart)
+				{
+					SnapDetails details = null;
+					foreach (SnapDetails d in kvp.Value)
+					{
+						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
+							details = d;
+					}
+					p = new Pen(details.SnapColor);
+					Single x = timeToPixels(kvp.Key - VisibleTimeStart);
+					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
+					g.DrawLine(p, x, 0, x, Height);
+					p.Dispose();
+				}
+			}
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			_drawMarks(e.Graphics);
 			if (VisibleTimeStart <= audio.MediaDuration)
 			{
 				if (samples.Count > 0 && !_creatingSamples)

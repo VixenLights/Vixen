@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -66,17 +67,20 @@ namespace Common.Controls.Timeline
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 
-				drawTicks(e.Graphics, MajorTick, 2, 0.5);
-				drawTicks(e.Graphics, MinorTick, 1, 0.25);
+				drawTicks(e.Graphics, MajorTick, 2, 0.4);
+				drawTicks(e.Graphics, MinorTick, 1, 0.20);
 				drawTimes(e.Graphics);
 
-				using (Pen p = new Pen(Color.Black, 2)) {
+				using (Pen p = new Pen(Color.Black, 2))
+				{
 					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
 				}
 
 				drawPlaybackIndicators(e.Graphics);
 
 				_drawMarks(e.Graphics);
+		//		drawMarkTime(e.Graphics);
+				
 			}
 			catch (Exception ex) {
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -104,6 +108,8 @@ namespace Common.Controls.Timeline
 				graphics.DrawLine(p, x, (Single) (Height*(1.0 - height)), x, Height);
 			}
 		}
+
+		private string markTime;
 
 		private void drawTimes(Graphics graphics)
 		{
@@ -135,10 +141,11 @@ namespace Common.Controls.Timeline
 
 				// if drawing the string wouldn't overlap the last, then draw it
 				if (lastPixel + minPxBetweenTimeLabels + posOffset < curPixelCentre) {
-					graphics.DrawString(timeStr, m_font, m_textBrush, curPixelCentre - posOffset, (Height/4) - (stringSize.Height/2));
+					graphics.DrawString(timeStr, m_font, m_textBrush, curPixelCentre - posOffset, ((Height/4) - (stringSize.Height/2)) + 9);
 					lastPixel = (int) (curPixelCentre + posOffset);
 				}
 			}
+			
 		}
 
 		private const int ArrowBase = 16;
@@ -485,6 +492,26 @@ namespace Common.Controls.Timeline
 						PlaybackEndTime = pixelsToTime(end) + VisibleTimeStart;
 						return;
 					case MouseState.DraggingMark:
+
+						if (Convert.ToInt16(m_mark.Minutes) >= 10)
+						{
+							markTime = string.Format("{0:mm\\:ss\\.fff}", m_mark);
+						}
+						else if (Convert.ToInt16(m_mark.Minutes) >= 1)
+						{
+							markTime = string.Format("{0:m\\:ss\\.fff}", m_mark);
+						}
+						else if (Convert.ToInt16(m_mark.Seconds) >= 10)
+						{
+							markTime = string.Format("{0:ss\\.fff}", m_mark);
+						}
+						else if (Convert.ToInt16(m_mark.Seconds) <= 9)
+						{
+							markTime = string.Format("{0:s\\.fff}", m_mark);
+						}
+
+						OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
+						m_mark = pixelsToTime(e.X) + VisibleTimeStart; //VisibleTimeStart + pixelsToTime(e.Location.X);
 						Invalidate();
 						break;
 					default:
@@ -496,6 +523,7 @@ namespace Common.Controls.Timeline
 				// We'll get to this point if there is no mouse button selected
 				if (PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart) != TimeSpan.Zero)
 				{
+					
 					Cursor = Cursors.VSplit;
 				}
 				else
@@ -753,6 +781,9 @@ namespace Common.Controls.Timeline
 					}
 					g.DrawLine(p, x, 0, x, Height);
 					p.Dispose();
+
+				
+
 				}
 			}
 
@@ -763,6 +794,16 @@ namespace Common.Controls.Timeline
 				Single x = timeToPixels(newMarkPosition);
 				g.DrawLine(p, x, 0, x, Height);
 				p.Dispose();
+
+				//Draws the time next to the selected mark that is being moved.
+				Font drawFont = new Font("Arial", 8, FontStyle.Bold);
+				SolidBrush drawBrush = new SolidBrush(Color.White);
+				StringFormat drawFormat = new StringFormat();
+				g.TextRenderingHint = TextRenderingHint.AntiAlias;
+				g.DrawString(markTime, drawFont, drawBrush, x, 0, drawFormat);
+				drawFont.Dispose();
+				drawBrush.Dispose();
+				drawFormat.Dispose();
 			}
 		}
 
