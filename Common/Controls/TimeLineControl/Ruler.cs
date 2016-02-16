@@ -79,7 +79,6 @@ namespace Common.Controls.Timeline
 				drawPlaybackIndicators(e.Graphics);
 
 				_drawMarks(e.Graphics);
-		//		drawMarkTime(e.Graphics);
 				
 			}
 			catch (Exception ex) {
@@ -417,7 +416,8 @@ namespace Common.Controls.Timeline
 			Normal,
 			DragWait,
 			Dragging,
-			DraggingMark
+			DraggingMark,
+			ResizeRuler
 		}
 
 		private MouseState m_mouseState = MouseState.Normal;
@@ -446,6 +446,8 @@ namespace Common.Controls.Timeline
 				}
 				m_mouseState = MouseState.DraggingMark;
 			}
+			else if (Cursor == Cursors.HSplit)
+				m_mouseState = MouseState.ResizeRuler;
 			else
 			{
 				ClearSelectedMarks();
@@ -456,6 +458,7 @@ namespace Common.Controls.Timeline
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+
 			if (m_button == System.Windows.Forms.MouseButtons.Left)
 			{
 				switch (m_mouseState)
@@ -511,8 +514,15 @@ namespace Common.Controls.Timeline
 						}
 
 						OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
-						m_mark = pixelsToTime(e.X) + VisibleTimeStart; //VisibleTimeStart + pixelsToTime(e.Location.X);
-						Invalidate();
+						Refresh();
+						m_mark = pixelsToTime(e.X) + VisibleTimeStart;
+						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, m_mark));
+						
+						break;
+					case MouseState.ResizeRuler:
+						//Adjusts Ruler Height
+						if (e.Location.Y > 40)
+							Height = e.Location.Y + 1;
 						break;
 					default:
 						throw new Exception("Invalid MouseState. WTF?!");
@@ -523,13 +533,29 @@ namespace Common.Controls.Timeline
 				// We'll get to this point if there is no mouse button selected
 				if (PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart) != TimeSpan.Zero)
 				{
-					
 					Cursor = Cursors.VSplit;
+					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart)));
+				}
+				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
+				{
+					Cursor = Cursors.HSplit;
 				}
 				else
 				{
 					Cursor = Cursors.Hand;
+					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 				}
+			}
+		}
+
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			base.OnMouseDoubleClick(e);
+
+			//Resets Ruler Height to default value of 50 when you double click the HSplit
+			if (Cursor == Cursors.HSplit)
+			{
+				Height = 50;
 			}
 		}
 
@@ -576,8 +602,11 @@ namespace Common.Controls.Timeline
 								{
 									ClearSelectedMarks();
 									OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
+									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 								}
 							}
+							break;
+						case MouseState.ResizeRuler:
 							break;
 						default:
 							throw new Exception("Invalid MouseState. WTF?!");
@@ -655,6 +684,7 @@ namespace Common.Controls.Timeline
 		{
 			Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
+			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 		}
 
 		public event EventHandler<MarkMovedEventArgs> MarkMoved;
@@ -662,6 +692,13 @@ namespace Common.Controls.Timeline
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
+		public static event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove;
+
+		public virtual void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
+		{
+			if (SelectedMarkMove != null)
+				SelectedMarkMove(this, e);
+		}
 
 		protected virtual void OnMarkMoved(MarkMovedEventArgs e)
 		{
@@ -840,6 +877,18 @@ namespace Common.Controls.Timeline
 		public bool SuppressInvalidate { get; set; }
 	}
 
+	public class SelectedMarkMoveEventArgs
+	{
+		public SelectedMarkMoveEventArgs(bool waveFormMark, TimeSpan selectedMark)
+		{
+			WaveFormMark = waveFormMark;
+			SelectedMark = selectedMark;
+		}
+
+		public bool WaveFormMark { get; set; }
+
+		public TimeSpan SelectedMark { get; set; }
+	}
 
 	public class TimeRangeDraggedEventArgs : EventArgs
 	{
