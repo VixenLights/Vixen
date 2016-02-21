@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources;
@@ -41,6 +43,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _sequencePlaySelected = false;
 		private List<TimeSpan> _newTappedMarks = new List<TimeSpan>();
 		private Audio _audio = null;
+		private decimal delayStartValue;
+		private int delayCounter;
 
 		public MarkManager(List<MarkCollection> markCollections, IExecutionControl executionControl, ITiming timingSource,
 						   TimedSequenceEditorForm timedSequenceEditorForm)
@@ -57,6 +61,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
 			buttonStop.Text = "";
 			buttonStop.Enabled = false;
+			buttonRestartPlay.Text = "";
+			buttonRestartPlay.Image = Tools.GetIcon(Resources.control_start_blue,24);
 			buttonIncreasePlaybackSpeed.Image = Tools.GetIcon(Resources.add, 24);
 			buttonIncreasePlaybackSpeed.Text = "";
 			buttonDecreasePlaySpeed.Image = Tools.GetIcon(Resources.minus, 24);
@@ -73,6 +79,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_executionControl = executionControl;
 			_timingSource = timingSource;
 			_timedSequenceEditorForm = timedSequenceEditorForm;
+			textBoxPosition.Text = TimeSpan.FromMilliseconds(trackBarPlayBack.Value).ToString(@"m\:ss\.fff");
 		}
 
 		public List<MarkCollection> MarkCollections { get; set; }
@@ -775,6 +782,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			timerPlayback.Stop();
 			_executionControl.Stop();
 			_playbackStarted = false;
+			delayStart.Enabled = true;
 			if (radioButtonTapper.Checked && _newTappedMarks.Count > 0)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -830,6 +838,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			textBoxTime.Enabled = false;
 			buttonPlay.Enabled = false;
 			buttonStop.Enabled = true;
+			buttonRestartPlay.Enabled = false;
 			textBoxCurrentMark.Text = "";
 			panelMarkCollectionsButtons.Enabled = false;
 			try {
@@ -862,12 +871,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			textBoxTime.Enabled = true;
 			buttonPlay.Enabled = true;
 			buttonStop.Enabled = false;
+			buttonRestartPlay.Enabled = true;
 			panelMarkCollectionsButtons.Enabled = true;
 		}
 
-		private void buttonPlay_Click(object sender, EventArgs e)
+		private async void buttonPlay_Click(object sender, EventArgs e)
 		{
 			detectedActions.Clear();
+			delayCounter = Convert.ToInt16(delayStart.Value);
+			delayStartValue = delayStart.Value;
+			delayStart.Enabled = false;
+			timerDelayStart.Start();
+			await Task.Delay(Convert.ToInt16(delayStart.Value) * 1000);
 			sequencePlay(TimeSpan.FromMilliseconds(trackBarPlayBack.Value));
 			_sequencePlaySelected = true;
 			updateControlsforPlaying();
@@ -1538,6 +1553,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			label1.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			label2.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			label3.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+		}
+
+		private void buttonRestartPlay_Click(object sender, EventArgs e)
+		{
+			trackBarPlayBack.Value = 0;
+			textBoxPosition.Text = TimeSpan.FromMilliseconds(trackBarPlayBack.Value).ToString(@"m\:ss\.fff");
+		}
+
+		private void timerDelayStart_Tick(object sender, EventArgs e)
+		{
+			
+			delayCounter--;
+			if (delayCounter < 0)
+			{
+				delayStart.Value = delayStartValue;
+				timerDelayStart.Stop();
+			}
+			else
+			{
+				delayStart.Value--;
+			}
 		}
 
 	}
