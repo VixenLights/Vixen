@@ -16,7 +16,7 @@ namespace Vixen.Rule.Name
 				NumericCounter counter = new NumericCounter();
 				counter.StartNumber = 1;
 				counter.EndNumber = 5;
-				counter.Endless = false;
+				counter.Endless = true;
 				counter.Step = 1;
 				result[0] = counter;
 
@@ -26,7 +26,7 @@ namespace Vixen.Rule.Name
 
 		public string Format
 		{
-			get { return "NewName-<1>"; }
+			get { return "-<1>"; }
 		}
 
 		public string Name

@@ -61,12 +61,27 @@ namespace VixenModules.App.WebServer
 			if (_AppSupportsCommands())
 			{
 				AppCommand toolsMenu = _GetToolsMenu();
-				AppCommand rootCommand = new AppCommand(MENU_ID_ROOT, "Web Server");
+				AppCommand showCommand = new AppCommand(MENU_ID_ROOT, "Web Server");
 
-				rootCommand.Add(_showCommand ?? (_showCommand = _CreateShowCommand()));
+				showCommand.Click += (sender, e) =>
+				{
+					using (Settings cs = new Settings(_data))
+					{
+						cs.SettingsChanged += cs_SettingsChanged;
+						if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+						{
 
-				toolsMenu.Add(rootCommand);
+							_data.HttpPort = cs.Port;
+							_data.IsEnabled = cs.WebServerEnabled;
+
+						}
+						_SetServerEnableState(_data.IsEnabled, _data.HttpPort);
+					}
+				};
+
+				toolsMenu.Add(showCommand);
 			}
+			
 		}
 
 		private void _SetServerEnableState(bool value, int port)
@@ -110,28 +125,6 @@ namespace VixenModules.App.WebServer
 				_server.Dispose();
 				_server = null;
 			}	
-		}
-
-		private AppCommand _CreateShowCommand()
-		{
-			AppCommand showCommand = new AppCommand("WebserverConfigure", "Configure");
-			showCommand.Click += (sender, e) =>
-			{
-				using (Settings cs = new Settings(_data))
-				{
-					cs.SettingsChanged += cs_SettingsChanged;
-					if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-					{
-
-						_data.HttpPort = cs.Port;
-						_data.IsEnabled = cs.WebServerEnabled;
-
-					}
-					_SetServerEnableState(_data.IsEnabled, _data.HttpPort);
-				}
-			};
-
-			return showCommand;
 		}
 
 		private void cs_SettingsChanged(object sender, WebSettingsEventArgs e)

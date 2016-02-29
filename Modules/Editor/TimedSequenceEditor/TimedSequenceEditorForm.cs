@@ -280,6 +280,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
 			cADStyleSelectionBoxToolStripMenuItem.Checked = TimelineControl.grid.aCadStyleSelectionBox = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
 			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
+			zoomUnderMousePositionToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), false);
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -1830,7 +1831,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Disables the Alignment menu if too many effects are selected in a row.
 				if (!contextMenuItemAlignment.Enabled)
 				{
-					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
+					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
 				}
 
 				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)")
@@ -1899,10 +1900,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
 
 				ToolStripMenuItem contextMenuItemAlignStartToMark = new ToolStripMenuItem("Align Start to nearest mark");
-				contextMenuItemAlignStartToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks(true);
+				contextMenuItemAlignStartToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("Start");
 
 				ToolStripMenuItem contextMenuItemAlignEndToMark = new ToolStripMenuItem("Align End to nearest mark");
-				contextMenuItemAlignEndToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks(false);
+				contextMenuItemAlignEndToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("End");
+
+				ToolStripMenuItem contextMenuItemAlignBothToMark = new ToolStripMenuItem("Align Both to nearest mark");
+				contextMenuItemAlignBothToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("Both");
 
 				_contextMenuStrip.Items.Add(contextMenuItemAlignment);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStart);
@@ -1916,6 +1920,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemDistDialog);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStartToMark);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEndToMark);
+				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBothToMark);
 
 				if (tse != null)
 				{
@@ -2001,7 +2006,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					contextMenuItemEditTime.Tag = tse;
 					contextMenuItemEditTime.Enabled = TimelineControl.grid.OkToUseAlignmentHelper(TimelineControl.SelectedElements);
 					if (!contextMenuItemEditTime.Enabled)
-						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 4.";
+						contextMenuItemEditTime.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
 					_contextMenuStrip.Items.Add(contextMenuItemEditTime);
 
 				}
@@ -4846,6 +4851,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), ToolsForm.LinkCurves);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), ToolsForm.LinkGradients);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ToolsForm.Close();
@@ -5414,10 +5420,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Aligns selected elements, or if none, all elements to the closest mark.
-		/// alignStart = true to align the start of the elements, false to align the end of the elements.
+		/// alignMethod = Start to align the start of the elements, End to align the end of the effects and Both to align Start and End of elements.
 		/// </summary>
-		/// <param name="alignStart"></param>
-		private void AlignEffectsToNearestMarks(bool alignStart)
+		/// <param name="alignMethod"></param>
+		private void AlignEffectsToNearestMarks(string alignMethod)
 		{
 			if (!TimelineControl.grid.SelectedElements.Any())
 			{
@@ -5441,10 +5447,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				foreach (Element element in elements)
 				{
-					var nearestMark = FindNearestMark(alignStart ? element.StartTime : element.EndTime);
-					if (nearestMark != TimeSpan.Zero && !moveElements.ContainsKey(element))
+					var nearestStartMark = element.StartTime;
+					var nearestEndMark = element.EndTime;
+
+					switch (alignMethod)
 					{
-						moveElements.Add(element, new Tuple<TimeSpan, TimeSpan>(alignStart ? nearestMark : element.StartTime, alignStart ? element.EndTime : nearestMark));
+						case "Start":
+							nearestStartMark = FindNearestMark(element.StartTime);
+							break;
+						case "End":
+							nearestEndMark = FindNearestMark(element.EndTime);
+							break;
+						case "Both":
+							nearestStartMark = FindNearestMark(element.StartTime);
+							nearestEndMark = FindNearestMark(element.EndTime);
+							break;
+					}
+					if (nearestStartMark != TimeSpan.Zero && !moveElements.ContainsKey(element) && nearestEndMark != TimeSpan.Zero && !moveElements.ContainsKey(element))
+					{
+						moveElements.Add(element, new Tuple<TimeSpan, TimeSpan>(nearestStartMark, nearestEndMark));
 					}
 				}
 			}
@@ -5513,6 +5534,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				}
 			}
+		}
+
+		private void zoomUnderMousePositionToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.ZoomToMousePosition = zoomUnderMousePositionToolStripMenuItem.Checked;
 		}
 
 	}

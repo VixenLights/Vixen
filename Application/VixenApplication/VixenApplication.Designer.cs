@@ -68,20 +68,20 @@ namespace VixenApplication
 			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
 			this.buttonSetupDisplay = new System.Windows.Forms.Button();
 			this.buttonSetupOutputPreviews = new System.Windows.Forms.Button();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.labelDebugVersion = new System.Windows.Forms.Label();
 			this.toolStripStatusLabelExecutionLight = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabelExecutionState = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.groupBoxSystemConfig.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.statusStrip.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// contextMenuStripNewSequence
@@ -387,16 +387,6 @@ namespace VixenApplication
 			this.buttonSetupOutputPreviews.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonSetupOutputPreviews.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(13, 30);
-			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(430, 165);
-			this.pictureBox1.TabIndex = 14;
-			this.pictureBox1.TabStop = false;
-			// 
 			// labelDebugVersion
 			// 
 			this.labelDebugVersion.AutoSize = true;
@@ -461,6 +451,16 @@ namespace VixenApplication
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
 			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(13, 30);
+			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(430, 165);
+			this.pictureBox1.TabIndex = 14;
+			this.pictureBox1.TabStop = false;
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -496,9 +496,9 @@ namespace VixenApplication
 			this.groupBoxSystemConfig.ResumeLayout(false);
 			this.groupBoxSystemConfig.PerformLayout();
 			this.flowLayoutPanel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -526,7 +526,6 @@ namespace VixenApplication
 		private ToolStripMenuItem viewInstalledModulesToolStripMenuItem;
 		private Label labelVersion;
 		private Button buttonSetupOutputPreviews;
-		private PictureBox pictureBox1;
         private ToolStripMenuItem profilesToolStripMenuItem;
 		private Label labelDebugVersion;
 		private Button buttonSetupDisplay;
@@ -540,6 +539,7 @@ namespace VixenApplication
 		private StatusStrip statusStrip;
 		private FlowLayoutPanel flowLayoutPanel1;
 		private FlowLayoutPanel flowLayoutPanel2;
+		private PictureBox pictureBox1;
 	}
 }
 
