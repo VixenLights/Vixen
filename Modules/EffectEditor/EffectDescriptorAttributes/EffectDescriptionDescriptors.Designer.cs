@@ -422,6 +422,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Colors are not used when Rainbow is selected..
+        /// </summary>
+        internal static string Meteor_Type {
+            get {
+                return ResourceManager.GetString("Meteor Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the minimum brightness of a pulse..
         /// </summary>
         internal static string MinBrightness {
