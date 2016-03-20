@@ -5617,6 +5617,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void zoomUnderMousePositionToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.ZoomToMousePosition = zoomUnderMousePositionToolStripMenuItem.Checked;
+		}
+
 		private void resetRowHeightToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TimelineControl.ResetRowHeight();

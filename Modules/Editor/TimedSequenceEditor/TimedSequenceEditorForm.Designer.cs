@@ -125,6 +125,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
+			this.zoomUnderMousePositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomRowsIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomRowsOut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
@@ -1006,7 +1007,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_zoomTimeIn,
             this.toolStripMenuItem_zoomTimeOut,
-            this.toolStripSeparator14,
+			this.zoomUnderMousePositionToolStripMenuItem,
+			this.toolStripSeparator14,
             this.toolStripMenuItem_zoomRowsIn,
             this.toolStripMenuItem_zoomRowsOut,
             this.toolStripMenuItem2,
@@ -1041,6 +1043,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_zoomTimeOut.Size = new System.Drawing.Size(277, 24);
 			this.toolStripMenuItem_zoomTimeOut.Text = "Zoom Time Out";
 			this.toolStripMenuItem_zoomTimeOut.Click += new System.EventHandler(this.toolStripMenuItem_zoomTimeOut_Click);
+			// 
+			// zoomUnderMousePositionToolStripMenuItem
+			// 
+			this.zoomUnderMousePositionToolStripMenuItem.CheckOnClick = true;
+			this.zoomUnderMousePositionToolStripMenuItem.Name = "zoomUnderMousePositionToolStripMenuItem";
+			this.zoomUnderMousePositionToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.zoomUnderMousePositionToolStripMenuItem.Text = "Zoom Under Mouse Position";
+			this.zoomUnderMousePositionToolStripMenuItem.CheckedChanged += new System.EventHandler(this.zoomUnderMousePositionToolStripMenuItem_CheckedChanged);
 			// 
 			// toolStripMenuItem_zoomRowsIn
 			// 
@@ -1694,6 +1704,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		public System.Windows.Forms.ToolStripMenuItem zoomUnderMousePositionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
