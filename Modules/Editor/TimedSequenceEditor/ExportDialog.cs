@@ -28,6 +28,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private ExportNotifyType _currentState;
 	    private bool _cancelled;
 
+        public int exportTypeDefault = 0;
+        public int exportResolutionDefault = 1;
+
+        private XMLProfileSettings _profile;
+
         #region Constructor
         public ExportDialog(ISequence sequence)
         {
@@ -65,6 +70,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+
+            _profile = new XMLProfileSettings();
         }
         #endregion
 
@@ -130,8 +137,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             outputFormatComboBox.Items.AddRange(_exportOps.FormatTypes);
             outputFormatComboBox.Sorted = true;
 
-            outputFormatComboBox.SelectedIndex = 0;
-            resolutionComboBox.SelectedIndex = 1;
+            outputFormatComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), exportTypeDefault);
+            resolutionComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), exportResolutionDefault);
 
             buttonStop.Enabled = false;
 			networkListView.DragDrop += networkListView_DragDrop;
@@ -389,6 +396,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			networkListView.SetLastColumnWidth();
 		}
 
-		
+        private void outputFormatComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), (int)comboBox.SelectedIndex);
+        }
+
+        private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            ComboBox comboBox = (ComboBox)sender;
+            _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), (int)comboBox.SelectedIndex);
+        }
 	}
 }
