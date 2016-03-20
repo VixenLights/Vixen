@@ -17,6 +17,8 @@ namespace VixenModules.Sequence.Timed
 			MarkColor = Color.Black;
 			Level = 1;
 			Enabled = true;
+			Bold = false;
+			SolidLine = false;
 		}
 
 		public MarkCollection(MarkCollection original)
@@ -26,7 +28,9 @@ namespace VixenModules.Sequence.Timed
 			MarkColor = original.MarkColor;
 			Level = original.Level;
 			Enabled = original.Enabled;
+			Bold = original.Bold;
 			Name = original.Name;
+			SolidLine = original.SolidLine;
 		}
 
 		[DataMember]
@@ -34,6 +38,12 @@ namespace VixenModules.Sequence.Timed
 
 		[DataMember]
 		public bool Enabled { get; set; }
+
+		[DataMember]
+		public bool Bold { get; set; }
+
+		[DataMember]
+		public bool SolidLine { get; set; }
 
 		[DataMember]
 		public List<TimeSpan> Marks { get; set; }

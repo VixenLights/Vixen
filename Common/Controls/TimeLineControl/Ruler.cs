@@ -684,12 +684,14 @@ namespace Common.Controls.Timeline
 
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 
-		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color)
+		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
 		{
 			SnapDetails result = new SnapDetails();
 			result.SnapLevel = level;
 			result.SnapTime = snapTime;
 			result.SnapColor = color;
+			result.SnapBold = lineBold;
+			result.SnapSolidLine = solidLine;
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
@@ -698,12 +700,12 @@ namespace Common.Controls.Timeline
 			return result;
 		}
 
-		public void AddSnapPoint(TimeSpan snapTime, int level, Color color)
+		public void AddSnapPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
 		{
 			if (!StaticSnapPoints.ContainsKey(snapTime))
-				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color) });
+				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine) });
 			else
-				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
+				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine));
 
 			if (!SuppressInvalidate) Invalidate();
 		}
@@ -738,9 +740,13 @@ namespace Common.Controls.Timeline
 						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
 							details = d;
 					}
-					p = new Pen(details.SnapColor);
+					int lineBold = 1;
+					if (details.SnapBold)
+						lineBold = 3;
+					p = new Pen(details.SnapColor, lineBold);
 					Single x = timeToPixels(kvp.Key);
-					p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
+					if (!details.SnapSolidLine)
+						p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
 					if (selectedMarks.ContainsKey(kvp.Key))
 					{
 						p.Width = 3;

@@ -189,16 +189,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				textBoxCollectionName.Text = "";
 				numericUpDownWeight.Value = 1;
 				checkBoxEnabled.Checked = false;
+				checkBoxBold.Checked = false;
+				checkBoxSolidLine.Checked = false;
 			}
 			else {
 				textBoxCollectionName.Text = collection.Name;
 				numericUpDownWeight.Value = collection.Level;
 				checkBoxEnabled.Checked = collection.Enabled;
+				checkBoxBold.Checked = collection.Bold;
+				checkBoxSolidLine.Checked = collection.SolidLine;
 			}
 
 			PopulateMarkListFromMarkCollection(collection);
 
 			checkBoxEnabled.AutoCheck = (collection != null);
+			checkBoxBold.AutoCheck = (collection != null);
+			checkBoxSolidLine.AutoCheck = (collection != null);
 			textBoxCollectionName.Enabled = (collection != null);
 			numericUpDownWeight.Enabled = (collection != null);
 			panelColor.Enabled = (collection != null);
@@ -1553,6 +1559,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			label1.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			label2.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			label3.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxBold.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
+			checkBoxSolidLine.ForeColor = groupBoxOperations.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 		}
 
 		private void buttonRestartPlay_Click(object sender, EventArgs e)
@@ -1573,6 +1581,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				delayStart.Value--;
+			}
+		}
+
+		private void checkBoxBold_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_displayedCollection != null && _displayedCollection.Bold != checkBoxBold.Checked)
+			{
+				_displayedCollection.Bold = checkBoxBold.Checked;
+				UpdateMarkCollectionInList(_displayedCollection);
+			}
+		}
+
+		private void checkBoxSolidLine_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_displayedCollection != null && _displayedCollection.SolidLine != checkBoxSolidLine.Checked)
+			{
+				_displayedCollection.SolidLine = checkBoxSolidLine.Checked;
+				UpdateMarkCollectionInList(_displayedCollection);
 			}
 		}
 

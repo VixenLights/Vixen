@@ -1836,18 +1836,20 @@ namespace Common.Controls.Timeline
 			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints) {
 				newPoints[kvp.Key] = new List<SnapDetails>();
 				foreach (SnapDetails details in kvp.Value) {
-					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel, details.SnapColor));
+					newPoints[kvp.Key].Add(CalculateSnapDetailsForPoint(details.SnapTime, details.SnapLevel, details.SnapColor, details.SnapBold, details.SnapSolidLine));
 				}
 			}
 			StaticSnapPoints = newPoints;
 		}
 
-		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color)
+		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
 		{
 			SnapDetails result = new SnapDetails();
 			result.SnapLevel = level;
 			result.SnapTime = snapTime;
 			result.SnapColor = color;
+			result.SnapBold = lineBold;
+			result.SnapSolidLine = solidLine;
 
 			// the start time and end times for specified points are 2 pixels
 			// per snap level away from the snap time.
@@ -1856,12 +1858,12 @@ namespace Common.Controls.Timeline
 			return result;
 		}
 
-		public void AddSnapPoint(TimeSpan snapTime, int level, Color color)
+		public void AddSnapPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
 		{
 			if (!StaticSnapPoints.ContainsKey(snapTime))
-				StaticSnapPoints.Add(snapTime, new List<SnapDetails> {CalculateSnapDetailsForPoint(snapTime, level, color)});
+				StaticSnapPoints.Add(snapTime, new List<SnapDetails> {CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine)});
 			else
-				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color));
+				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine));
 
 			if (!SuppressInvalidate) Invalidate();
 		}
@@ -2060,9 +2062,13 @@ namespace Common.Controls.Timeline
 						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
 							details = d;
 					}
-					p = new Pen(details.SnapColor);
+					int lineBold = 1;
+					if (details.SnapBold)
+						lineBold = 3;
+					p = new Pen(details.SnapColor, lineBold);
 					Single x = timeToPixels(kvp.Key);
-					p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
+					if (!details.SnapSolidLine)
+						p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
 					p.Dispose();
 				}
@@ -2466,6 +2472,8 @@ namespace Common.Controls.Timeline
 		public int SnapLevel; // the "priority" of this snap point; bigger is higher priority
 		public Row SnapRow; // the rows that this point should affect; null if all rows
 		public Color SnapColor; // the color to draw the snap point
+		public bool SnapBold; // snap point is bold
+		public bool SnapSolidLine; // snap point is a solidline or dotted
 	}
 
 
