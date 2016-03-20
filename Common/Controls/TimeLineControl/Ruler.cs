@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
+using Common.Controls.Theme;
 
 namespace Common.Controls.Timeline
 {
@@ -562,8 +563,10 @@ namespace Common.Controls.Timeline
 						// See if we got a right-click on top of a mark.
 						if (e.X == m_mouseDownX)
 						{
-							ContextMenu c = new ContextMenu();
-							c.MenuItems.Add("&Delete Mark", new EventHandler(DeleteMark_Click));
+							ContextMenuStrip c = new ContextMenuStrip();
+							c.Renderer = new ThemeToolStripRenderer();
+							c.Items.Add("&Delete Selected Marks");
+							c.Click += DeleteMark_Click;
 							c.Show(this, new Point(e.X, e.Y));
 						}
 					}
@@ -602,11 +605,7 @@ namespace Common.Controls.Timeline
 
 		void DeleteMark_Click(object sender, EventArgs e)
 		{
-			MenuItem mi = sender as MenuItem;
-			if (mi != null)
-			{
-				DeleteSelectedMarks();
-			}
+			DeleteSelectedMarks();
 		}
 
 		public void DeleteSelectedMarks()
@@ -615,6 +614,7 @@ namespace Common.Controls.Timeline
 			{
 				OnDeleteMark(new DeleteMarkEventArgs(mark));
 			}
+			OnDeleteMark(new DeleteMarkEventArgs(m_mark));
 		}
 
 		protected override void OnMouseEnter(EventArgs e)
