@@ -20,21 +20,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimedSequenceEditorForm));
-			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
-			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin1 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient1 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient2 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient3 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient1 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient4 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient5 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient3 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient6 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient7 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
+			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin2 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient8 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient9 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient5 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient10 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient2 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient11 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient12 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient6 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient13 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
+			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient14 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Play = new System.Windows.Forms.ToolStripButton();
@@ -67,12 +67,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_DragBoxFilter = new System.Windows.Forms.ToolStripButton();
 			this.toolStripDropDownButton_DragBoxFilter = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripDropDownButton_AlignTo = new System.Windows.Forms.ToolStripDropDownButton();
-			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo200 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo400 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo600 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo800 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo1000 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_AlignTo2000 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSplitButton_CloseGaps = new System.Windows.Forms.ToolStripSplitButton();
 			this.toolStripMenuItem_CloseGap100 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_CloseGap200 = new System.Windows.Forms.ToolStripMenuItem();
@@ -519,53 +519,53 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripDropDownButton_AlignTo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripDropDownButton_AlignTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem3,
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5,
-            this.toolStripMenuItem6,
-            this.toolStripMenuItem7,
-            this.toolStripMenuItem8});
+            this.toolStripMenuItem_AlignTo200,
+            this.toolStripMenuItem_AlignTo400,
+            this.toolStripMenuItem_AlignTo600,
+            this.toolStripMenuItem_AlignTo800,
+            this.toolStripMenuItem_AlignTo1000,
+            this.toolStripMenuItem_AlignTo2000});
 			this.toolStripDropDownButton_AlignTo.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton_AlignTo.Image")));
 			this.toolStripDropDownButton_AlignTo.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripDropDownButton_AlignTo.Name = "toolStripDropDownButton_AlignTo";
-			this.toolStripDropDownButton_AlignTo.Size = new System.Drawing.Size(65, 24);
+			this.toolStripDropDownButton_AlignTo.Size = new System.Drawing.Size(79, 29);
 			this.toolStripDropDownButton_AlignTo.Text = "Align To";
 			// 
-			// toolStripMenuItem3
+			// toolStripMenuItem_AlignTo200
 			// 
-			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem3.Text = ".200";
+			this.toolStripMenuItem_AlignTo200.Name = "toolStripMenuItem_AlignTo200";
+			this.toolStripMenuItem_AlignTo200.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo200.Text = ".200";
 			// 
-			// toolStripMenuItem4
+			// toolStripMenuItem_AlignTo400
 			// 
-			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-			this.toolStripMenuItem4.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem4.Text = ".400";
+			this.toolStripMenuItem_AlignTo400.Name = "toolStripMenuItem_AlignTo400";
+			this.toolStripMenuItem_AlignTo400.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo400.Text = ".400";
 			// 
-			// toolStripMenuItem5
+			// toolStripMenuItem_AlignTo600
 			// 
-			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-			this.toolStripMenuItem5.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem5.Text = ".600";
+			this.toolStripMenuItem_AlignTo600.Name = "toolStripMenuItem_AlignTo600";
+			this.toolStripMenuItem_AlignTo600.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo600.Text = ".600";
 			// 
-			// toolStripMenuItem6
+			// toolStripMenuItem_AlignTo800
 			// 
-			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-			this.toolStripMenuItem6.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem6.Text = ".800";
+			this.toolStripMenuItem_AlignTo800.Name = "toolStripMenuItem_AlignTo800";
+			this.toolStripMenuItem_AlignTo800.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo800.Text = ".800";
 			// 
-			// toolStripMenuItem7
+			// toolStripMenuItem_AlignTo1000
 			// 
-			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-			this.toolStripMenuItem7.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem7.Text = "1.000";
+			this.toolStripMenuItem_AlignTo1000.Name = "toolStripMenuItem_AlignTo1000";
+			this.toolStripMenuItem_AlignTo1000.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo1000.Text = "1.000";
 			// 
-			// toolStripMenuItem8
+			// toolStripMenuItem_AlignTo2000
 			// 
-			this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-			this.toolStripMenuItem8.Size = new System.Drawing.Size(101, 22);
-			this.toolStripMenuItem8.Text = "2.000";
+			this.toolStripMenuItem_AlignTo2000.Name = "toolStripMenuItem_AlignTo2000";
+			this.toolStripMenuItem_AlignTo2000.Size = new System.Drawing.Size(175, 24);
+			this.toolStripMenuItem_AlignTo2000.Text = "2.000";
 			// 
 			// toolStripSplitButton_CloseGaps
 			// 
@@ -1067,7 +1067,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_zoomTimeIn,
             this.toolStripMenuItem_zoomTimeOut,
-			this.zoomUnderMousePositionToolStripMenuItem,
+            this.zoomUnderMousePositionToolStripMenuItem,
 			this.toolStripSeparator14,
             this.toolStripMenuItem_zoomRowsIn,
             this.toolStripMenuItem_zoomRowsOut,
@@ -1108,7 +1108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.zoomUnderMousePositionToolStripMenuItem.CheckOnClick = true;
 			this.zoomUnderMousePositionToolStripMenuItem.Name = "zoomUnderMousePositionToolStripMenuItem";
-			this.zoomUnderMousePositionToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.zoomUnderMousePositionToolStripMenuItem.Size = new System.Drawing.Size(277, 24);
 			this.zoomUnderMousePositionToolStripMenuItem.Text = "Zoom Under Mouse Position";
 			this.zoomUnderMousePositionToolStripMenuItem.CheckedChanged += new System.EventHandler(this.zoomUnderMousePositionToolStripMenuItem_CheckedChanged);
 			// 
@@ -1770,11 +1770,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_AlignTo;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo200;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo400;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo600;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo800;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo1000;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo2000;
 	}
 }
