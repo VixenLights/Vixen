@@ -249,6 +249,7 @@
     <Compile Include="Editors\LevelEditor.cs" />
     <Compile Include="Editors\SliderPercentageEditor.cs" />
     <Compile Include="Editors\TypeEditor.cs" />
+    <Compile Include="Editors\VideoPathEditor.cs" />
     <Compile Include="GridEntryCollection.cs" />
     <Compile Include="Input\DragDropManager.cs" />
     <Compile Include="Input\DragDropTargetType.cs" />

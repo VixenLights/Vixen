@@ -16,6 +16,7 @@ namespace ffmpeg
 			_movieFile = movieFile;
 		}
 
+		//Nutcracker Video Effect
 		public void MakeThumbnails(int width, int height, string outputPath, int framesPerSecond = 20)
 		{
 			//make arguements string
@@ -41,6 +42,45 @@ namespace ffmpeg
 			//    Thread.Yield();
 			//}
 			myProcess.WaitForExit();
+		}
+
+		//Native Video Effect
+		public void MakeThumbnails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, string frameRate, string colorType, int rotateVideo)
+		{
+			int maintainAspectValue = maintainAspect ? -1 : height;
+			//make arguements string
+			string args = " -ss " + startPosition + " -i \"" + _movieFile + "\"" + " -t " + duration + colorType + " -vf " + " \"scale=" + width + ":" + maintainAspectValue + ", rotate=" + rotateVideo + "*(PI/180)\" " + frameRate
+				   + " \"" + outputPath + "\\%5d.bmp\"";
+			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
+			ffmpegPath += "Common\\ffmpeg.exe";
+
+			ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
+			psi.UseShellExecute = false;
+			psi.CreateNoWindow = true;
+			Process process = new Process();
+			process.StartInfo = psi;
+			process.Start();
+			process.WaitForExit();
+		}
+
+		//Get Video Info for native Video effect
+		public string MakeThumbnails(string outputPath)
+		{
+			//Gets Video length and will continue if users start position is less then the video length.
+			string args;
+			args = " -i \"" + _movieFile + "\"";
+			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
+			ffmpegPath += "Common\\ffmpeg.exe";
+
+			ProcessStartInfo procStartInfo = new ProcessStartInfo(ffmpegPath, args);
+			procStartInfo.RedirectStandardError = true;
+			procStartInfo.UseShellExecute = false;
+			procStartInfo.CreateNoWindow = true;
+			Process proc = new Process();
+			proc.StartInfo = procStartInfo;
+			proc.Start();
+			string result = proc.StandardError.ReadToEnd();
+			return result;
 		}
 	}
 }
