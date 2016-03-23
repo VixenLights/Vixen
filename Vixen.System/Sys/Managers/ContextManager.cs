@@ -23,7 +23,6 @@ namespace Vixen.Sys.Managers
 		private List<IContext> _contextInstances; 
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private readonly HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
 		
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -101,27 +100,26 @@ namespace Vixen.Sys.Managers
 			_contextInstances = _instances.Values.ToList();
 		}
 
-		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time, IContext context)
+		public bool UpdateCacheCompileContext(TimeSpan time, IContext context)
 		{
-			HashSet<Guid> elementsAffected = null;
+			bool elementsAffected = false;
 			_stopwatch.Restart();
 			try
 			{
-				elementsAffected =context.UpdateElementStates(time);
-			} catch (Exception ee)
+				elementsAffected = context.UpdateElementStates(time);
+			}
+			catch (Exception ee)
 			{
 				Logging.Error(ee.Message, ee);
 			}
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			return elementsAffected;
-
 		}
 
-		public HashSet<Guid> Update()
+		public bool Update()
 		{
 			_stopwatch.Restart();
-			_affectedElements.Clear();
-			
+			bool elementsAffected = false;
 			foreach (var context in _contextInstances)
 			{
 				if (context.IsRunning)
@@ -131,10 +129,9 @@ namespace Vixen.Sys.Managers
 						// Get a snapshot time value for this update.
 						TimeSpan contextTime = context.GetTimeSnapshot();
 						var contextAffectedElements = context.UpdateElementStates(contextTime);
-						if (contextAffectedElements != null)
+						if (contextAffectedElements)
 						{
-							//Aggregate the effected elements so we can do more selective work downstream
-							_affectedElements.AddRange(contextAffectedElements);
+							elementsAffected = true;
 						}
 
 					}
@@ -144,9 +141,9 @@ namespace Vixen.Sys.Managers
 					}
 				}
 			}
-			
+
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
-			return _affectedElements;
+			return elementsAffected;
 		}
 
 		//public IEnumerator<IContext> GetEnumerator()

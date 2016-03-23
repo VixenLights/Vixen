@@ -10,43 +10,43 @@ namespace Vixen.Execution
 	/// Maintains a list of current effects for a context.
 	/// The IDataSource is expected to provide only newly qualified effects, not every qualifying effect.
 	/// </summary>
-	internal class ContextCurrentEffectsIncremental : IContextCurrentEffects
+	internal class ContextCurrentEffectsIncremental : List<IEffectNode>, IContextCurrentEffects
 	{
-		private readonly List<IEffectNode> _currentEffects;
-		private readonly HashSet<Guid> _affectedElements;
+		//private readonly List<IEffectNode> _currentEffects;
+		//private readonly HashSet<Guid> _affectedElements;
 		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
 		private bool _reset = false;
 
 		public ContextCurrentEffectsIncremental()
 		{
-			_affectedElements = new HashSet<Guid>(VixenSystem.Elements.Select(x => x.Id));
-			_affectedElements.Clear();
-			_currentEffects = new List<IEffectNode>();
+			//_affectedElements = new HashSet<Guid>(VixenSystem.Elements.Select(x => x.Id));
+			//_affectedElements.Clear();
+			//_currentEffects = new List<IEffectNode>();
 		}
 
 		/// <summary>
 		/// Updates the collection of current effects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
-		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
+		public bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
 			if (_lastUpdateTime > currentTime)
 			{
 				//Make sure the current effects are cleared if we go back to a earlier time.
-				_currentEffects.Clear();
+				Clear();
 			}
 			_lastUpdateTime = currentTime;
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
-			_currentEffects.AddRange(newQualifiedEffects);
+			AddRange(newQualifiedEffects);
 			// Get the distinct list of all elements affected by all effects in the list.
 			// List has current effects as well as effects that may be expiring.
 			// Current and expired effects affect state.
-			_GetElementsAffected(_currentEffects);
+			//_GetElementsAffected();
 			_RemoveExpiredEffects(currentTime);
 
-			return _affectedElements;
+			return Count>0;
 		}
 
 		public void Reset()
@@ -59,27 +59,26 @@ namespace Vixen.Execution
 			return _reset;
 		}
 
-		private void _GetElementsAffected(IEnumerable<IEffectNode> effects)
-		{
-			_affectedElements.Clear();
-			_affectedElements.UnionWith(effects.SelectMany(x => x.Effect.EffectedElementIds));
-			//return new HashSet<Guid>(effects.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id).Distinct());	
-		}
+		//private void _GetElementsAffected()
+		//{
+		//	_affectedElements.Clear();
+		//	_affectedElements.UnionWith(this.SelectMany(x => x.Effect.EffectedElementIds));
+		//}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
 		{
 			if (_reset)
 			{
-				_currentEffects.Clear();
+				Clear();
 				_reset = false;
 				return;
 			}
 			// Remove expired effects.
-			foreach (var effectNode1 in _currentEffects.ToArray())
+			foreach (var effectNode1 in this.ToArray())
 			{
 				var effectNode = (EffectNode) effectNode1;
 				if (_IsExpired(currentTime, effectNode)) {
-					_currentEffects.Remove(effectNode);
+					Remove(effectNode);
 				}
 			}
 		}
@@ -88,7 +87,7 @@ namespace Vixen.Execution
 		{
 			foreach (var effectNode in nodes)
 			{
-				_currentEffects.Remove(effectNode);
+				Remove(effectNode);
 			}
 		}
 
@@ -97,14 +96,14 @@ namespace Vixen.Execution
 			return currentTime > effectNode.EndTime;
 		}
 
-		public IEnumerator<IEffectNode> GetEnumerator()
-		{
-			return _currentEffects.GetEnumerator();
-		}
+		//public IEnumerator<IEffectNode> GetEnumerator()
+		//{
+		//	return _currentEffects.GetEnumerator();
+		//}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		//System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		//{
+		//	return GetEnumerator();
+		//}
 	}
 }

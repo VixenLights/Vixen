@@ -106,6 +106,21 @@ namespace VixenModules.Effect.Picture
 
 		#endregion
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]

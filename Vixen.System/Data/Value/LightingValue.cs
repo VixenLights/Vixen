@@ -6,6 +6,12 @@ namespace Vixen.Data.Value
 {
 	public struct LightingValue : IIntentDataType
 	{
+		//Using HSV as doubles here makes for a larger size object than say RGB with would be 3 bytes.
+		//Would it be beneficial to store everything as RGB and maybe seperate byte for intensity? 
+		//Changing the doubles to floats introduces math errors in a just a blind conversion
+		//We use a lot of these objects, so it makes sense to try and find an optimization here. 
+		//Some effects use the RGBValue instead of this. Can we change things around a bit and always use it?
+		//That would cause us to think about how we represent color in a more uniform manner. It is all over the board now.
 		private readonly double _hue;
 		private readonly double _saturation;
 		private readonly double _value;

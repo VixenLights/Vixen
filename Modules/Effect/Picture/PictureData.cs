@@ -53,6 +53,9 @@ namespace VixenModules.Effect.Picture
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			PictureData result = new PictureData
@@ -66,7 +69,8 @@ namespace VixenModules.Effect.Picture
 				ScaleToGrid = ScaleToGrid,
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
-				FileName = FileName
+				FileName = FileName,
+				Layer = Layer
 			};
 			return result;
 		}

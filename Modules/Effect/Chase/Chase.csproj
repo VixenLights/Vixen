@@ -79,6 +79,11 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Pulse\Pulse.csproj">
       <Project>{A815A79E-305D-4167-A0BC-FFA590BB4644}</Project>
       <Name>Pulse</Name>

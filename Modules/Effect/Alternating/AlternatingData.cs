@@ -25,6 +25,9 @@ namespace VixenModules.Effect.Alternating {
 		[DataMember]
 		public int IntervalSkipCount { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public AlternatingData()
 		{
 			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100)};
@@ -43,7 +46,8 @@ namespace VixenModules.Effect.Alternating {
 				EnableStatic = EnableStatic,
 				Interval = Interval,
 				GroupLevel = GroupLevel,
-				IntervalSkipCount = IntervalSkipCount
+				IntervalSkipCount = IntervalSkipCount,
+				Layer = Layer
 			};
 			return result;
 		}

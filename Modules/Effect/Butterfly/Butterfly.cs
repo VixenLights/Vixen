@@ -22,6 +22,21 @@ namespace VixenModules.Effect.Butterfly
 			_data = new ButterflyData();
 		}
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Setup
 
 		[Value]

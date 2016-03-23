@@ -173,10 +173,10 @@ namespace Vixen.Sys
 				long lockMs = _stopwatch.ElapsedMilliseconds - nowMs;
 				bool allowUpdate = _UpdateAdjudicator.PetitionForUpdate();
 				if (allowUpdate) {
-					HashSet<Guid> elementsAffected = VixenSystem.Contexts.Update();
-					if (elementsAffected.Count>0)
+					bool elementsAffected = VixenSystem.Contexts.Update();
+					if (elementsAffected)
 					{
-						VixenSystem.Elements.Update(elementsAffected);
+						VixenSystem.Elements.Update();
 						lastUpdateClearedStates = false;
 						if (VixenSystem.OutputControllers.Any(x => x.IsRunning))
 						{

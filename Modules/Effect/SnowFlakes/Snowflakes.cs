@@ -31,6 +31,21 @@ namespace VixenModules.Effect.Snowflakes
 			}
 		}
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Config properties
 
 		[Value]

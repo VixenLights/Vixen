@@ -7,7 +7,7 @@ namespace Vixen.Execution
 {
 	internal interface IContextCurrentEffects : IEnumerable<IEffectNode>
 	{
-		HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime);
+		bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime);
 		void RemoveEffects(IEnumerable<IEffectNode> nodes);
 		void Reset();
 		bool Resetting();

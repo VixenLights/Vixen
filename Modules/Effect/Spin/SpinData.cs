@@ -65,6 +65,9 @@ namespace VixenModules.Effect.Spin
 		[DataMember]
 		public int DepthOfEffect { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public SpinData()
 		{
 			SpeedFormat = SpinSpeedFormat.RevolutionCount;
@@ -100,6 +103,7 @@ namespace VixenModules.Effect.Spin
 			result.PulseCurve = new Curve(PulseCurve);
 			result.ReverseSpin = ReverseSpin;
 			result.DepthOfEffect = DepthOfEffect;
+			result.Layer = Layer;
 			return result;
 		}
 	}

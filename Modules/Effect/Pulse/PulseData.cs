@@ -25,11 +25,15 @@ namespace VixenModules.Effect.Pulse
 			ColorGradient = new ColorGradient(Color.White);
 		}
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			PulseData result = new PulseData();
 			result.LevelCurve = LevelCurve;
 			result.ColorGradient = new ColorGradient(ColorGradient);
+			result.Layer = Layer;
 			return result;
 		}
 	}

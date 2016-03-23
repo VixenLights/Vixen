@@ -9,6 +9,7 @@ namespace Vixen.Sys
 		TimeSpan RelativeTime { get; }
 		IIntentState Clone();
 		object GetValue();
+		byte Layer { get; }
 	}
 
 	public interface IIntentState<out T> : IIntentState

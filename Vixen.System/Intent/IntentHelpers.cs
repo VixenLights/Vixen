@@ -11,6 +11,27 @@ namespace Vixen.Intent
 {
 	public class IntentHelpers
 	{
+		public static Color GetAlphaColorForIntent(IIntentState state)
+		{
+
+			object value = state.GetValue();
+			Color c = Color.Transparent;
+			if (value is LightingValue)
+			{
+				LightingValue lv = (LightingValue)value;
+				if (lv.Intensity > 0)
+				{
+					c = lv.FullColorWithAplha;
+				}
+			}
+			else if (value is RGBValue)
+			{
+				RGBValue rv = (RGBValue)value;
+				c = rv.ColorWithAplha;
+			}
+
+			return c;
+		}
 		/// <summary>
 		/// Given one or more intent states, this will calculate a Color that is the combination of them all, with an
 		/// alpha channel calculated from the 'brightness' of the color. The combination will occur in the RGB space,
@@ -24,8 +45,7 @@ namespace Vixen.Intent
 			// 'highest-wins in each of R/G/B' fashion). Now we need to figure out the appropriate alpha channel
 			// value for the given color. To do that, convert the RGB color to HSV, get the V value to use as
 			// our intensity, and apply that to the alpha channel.
-			HSV hsv = HSV.FromRGB(result);
-			result = Color.FromArgb((byte)(hsv.V * Byte.MaxValue), result.R, result.G, result.B);
+			result = Color.FromArgb((byte)(HSV.VFromRgb(result) * Byte.MaxValue), result.R, result.G, result.B);
 			return result;
 		}
 
@@ -39,23 +59,28 @@ namespace Vixen.Intent
 			byte G = 0;
 			byte B = 0;
 
-			foreach (IIntentState intentState in states) {
+			foreach (IIntentState intentState in states)
+			{
 				object value = intentState.GetValue();
 
-				if (value is LightingValue) {
+				if (value is LightingValue)
+				{
 					LightingValue lv = (LightingValue)value;
-					if (lv.Intensity > 0) {
+					if (lv.Intensity > 0)
+					{
 						Color intentColor = lv.FullColor;
 						R = Math.Max(R, intentColor.R);
 						G = Math.Max(G, intentColor.G);
 						B = Math.Max(B, intentColor.B);
 					}
-				} else if (value is RGBValue) {
+				}
+				else if (value is RGBValue)
+				{
 					RGBValue rv = (RGBValue)value;
 					R = Math.Max(R, rv.R);
 					G = Math.Max(G, rv.G);
 					B = Math.Max(B, rv.B);
-				} 
+				}
 			}
 
 			return Color.FromArgb(R, G, B);
@@ -70,29 +95,42 @@ namespace Vixen.Intent
 
 			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(
 				(x =>
+				{
+					if (x is IntentState<LightingValue>)
 					{
-						if (x is IntentState<LightingValue>) {
-							return (x as IntentState<LightingValue>).GetValue().HueSaturationOnlyColor;
-						}
-						if (x is IntentState<RGBValue>) {
-							return (x as IntentState<RGBValue>).GetValue().Color;
-						}
-						return Color.Empty;
+						return (x as IntentState<LightingValue>).GetValue().HueSaturationOnlyColor;
 					}
+					if (x is IntentState<RGBValue>)
+					{
+						return (x as IntentState<RGBValue>).GetValue().Color;
+					}
+					if (x is IntentState<DiscreteValue>)
+					{
+						return (x as IntentState<DiscreteValue>).GetValue().Color;
+					}
+					return Color.Empty;
+				}
 				));
 
-			foreach (IGrouping<Color, IIntentState> grouping in colorStates) {
+			foreach (IGrouping<Color, IIntentState> grouping in colorStates)
+			{
 
 				double intensity = grouping.Max(x =>
+				{
+					if (x is IntentState<LightingValue>)
 					{
-						if (x is IntentState<LightingValue>) {
-							return (x as IntentState<LightingValue>).GetValue().Intensity;
-						}
-						if (x is IntentState<RGBValue>) {
-							return (x as IntentState<RGBValue>).GetValue().Intensity;
-						}
-						return 0;
-					});
+						return (x as IntentState<LightingValue>).GetValue().Intensity;
+					}
+					if (x is IntentState<RGBValue>)
+					{
+						return (x as IntentState<RGBValue>).GetValue().Intensity;
+					}
+					if (x is IntentState<DiscreteValue>)
+					{
+						return (x as IntentState<DiscreteValue>).GetValue().Intensity;
+					}
+					return 0;
+				});
 
 				Color brightest = Color.FromArgb((byte)(intensity * byte.MaxValue), grouping.Key.R, grouping.Key.G, grouping.Key.B);
 				colors.Add(brightest);

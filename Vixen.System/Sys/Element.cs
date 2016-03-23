@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using Vixen.Data.StateCombinator;
 
 namespace Vixen.Sys
 {
@@ -14,7 +13,8 @@ namespace Vixen.Sys
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
 		private IIntentStates _state;
-		private static readonly IIntentStates EmptyState = new IntentStateList();
+		private static readonly IIntentStates EmptyState = new IntentStateList(1);
+		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
 
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
@@ -91,7 +91,7 @@ namespace Vixen.Sys
 
 			//return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
 
-			IntentStateList ret = new IntentStateList();
+			IntentStateList ret = new IntentStateList(4);
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)
@@ -99,11 +99,20 @@ namespace Vixen.Sys
 					var iss = ctx.GetState(Id);
 					if (iss == null)
 						continue;
-					ret.AddRange(iss.State);
+					var states = GetCombinedState(iss);
+					foreach (var intentState in states)
+					{
+						ret.Add(intentState);
+					}
 				}
 			}
 			return ret;
 
+		}
+
+		private List<IIntentState> GetCombinedState(IIntentStates states)
+		{
+			return _stateCombinator.Combine(states.AsIIntentStateList());
 		}
 	}
 }

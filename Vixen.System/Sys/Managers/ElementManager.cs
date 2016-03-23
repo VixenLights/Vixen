@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Data.Flow;
 using Vixen.Sys.Instrumentation;
 
@@ -113,10 +114,15 @@ namespace Vixen.Sys.Managers
 
 		public void Update()
 		{
+			//Need to profile and see if parallelism here will improve this
+			//At small element counts it is probably unneeded overhead, but at very large counts it may help.
 			_stopwatch.Restart();
 			lock (_instances)
 			{
-				foreach (var x in _instances.Values) x.Update();				
+				Parallel.ForEach(_instances.Values, x =>
+				{
+					x.Update();
+				});
 			}
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
@@ -148,10 +154,15 @@ namespace Vixen.Sys.Managers
 
 		public void ClearStates()
 		{
+			_stopwatch.Restart();
 			lock (_instances)
 			{
-				foreach (var x in _instances.Values) x.ClearStates();	
+				Parallel.ForEach(_instances.Values, x =>
+				{
+					x.ClearStates();
+				});
 			}
+			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
 		private void _AddDataFlowParticipant(Element element)

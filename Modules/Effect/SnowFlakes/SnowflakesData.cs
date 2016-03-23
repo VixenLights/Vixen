@@ -46,6 +46,9 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			SnowflakesData result = new SnowflakesData
@@ -57,7 +60,8 @@ namespace VixenModules.Effect.Snowflakes
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
 				CenterColor = CenterColor,
-				OuterColor = OuterColor
+				OuterColor = OuterColor,
+				Layer = Layer
 				
 			};
 			return result;

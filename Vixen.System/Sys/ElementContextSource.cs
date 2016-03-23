@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Vixen.Sys
 {
-	internal class ElementContextSource : IStateSourceCollectionAdapter<Guid, IEnumerable<IIntentState>>
+	internal class ElementContextSource //: IStateSourceCollectionAdapter<Guid, IEnumerable<IIntentState>>
 	{
 		public ElementContextSource(Guid elementId)
 		{
@@ -14,14 +14,14 @@ namespace Vixen.Sys
 
 		public Guid Key { get; set; }
 
-		public IEnumerator<IStateSource<IEnumerable<IIntentState>>> GetEnumerator()
-		{
-			return VixenSystem.Contexts.Select(x => x.GetState(Key)).Where(x => x != null).GetEnumerator();
-		}
+		//public IEnumerator<IStateSource<IEnumerable<IIntentState>>> GetEnumerator()
+		//{
+		//	return VixenSystem.Contexts.Select(x => x.GetState(Key)).Where(x => x != null).GetEnumerator();
+		//}
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+		//IEnumerator IEnumerable.GetEnumerator()
+		//{
+		//	return GetEnumerator();
+		//}
 	}
 }

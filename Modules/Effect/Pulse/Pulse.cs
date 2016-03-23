@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using ZedGraph;
 
 namespace VixenModules.Effect.Pulse
 {
-	public class Pulse : EffectModuleInstanceBase
+	public class Pulse : BaseEffect
 	{
 		private PulseData _data;
 		private EffectIntents _elementData = null;
@@ -59,6 +57,21 @@ namespace VixenModules.Effect.Pulse
 				IsDirty = true;
 			}
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		[Value]
 		[ProviderCategory(@"Brightness",2)]
@@ -114,13 +127,16 @@ namespace VixenModules.Effect.Pulse
 
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+			if (IsDiscrete())
 			{
-				//Our color is not valid for any elements we have.
-				//Try to set a default color gradient from our available colors
-				_data.ColorGradient = new ColorGradient(validColors.First());
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				{
+					//Our color is not valid for any elements we have.
+					//Try to set a default color gradient from our available colors
+					_data.ColorGradient = new ColorGradient(validColors.First());
+				}
 			}
 		}
 
@@ -161,37 +177,32 @@ namespace VixenModules.Effect.Pulse
 				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
 					double position = allPointsTimeOrdered[i];
+					TimeSpan startTime = lastEnd;
+					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
 
-					LightingValue startValue;
-					LightingValue endValue;
 					if (color == null)
 					{
-						startValue = new LightingValue(ColorGradient.GetColorAt(lastPosition),
-													   LevelCurve.GetValue(lastPosition * 100) / 100);
-						endValue = new LightingValue(ColorGradient.GetColorAt(position), LevelCurve.GetValue(position * 100) / 100);
+						var startIntensity = LevelCurve.GetValue(lastPosition * 100) / 100;
+						var endIntensity = LevelCurve.GetValue(position * 100) / 100;
+
+						if ( ! (startIntensity.Equals(0) && endIntensity.Equals(0)) ) 
+						{
+							IIntent intent = CreateIntent(ColorGradient.GetColorAt(lastPosition), ColorGradient.GetColorAt(position), startIntensity, endIntensity, timeSpan);
+							_elementData.AddIntentForElement(element.Id, intent, startTime);
+						}
 					}
 					else
 					{
-						startValue = new LightingValue((Color)color,
-													   (ColorGradient.GetProportionOfColorAt(lastPosition, (Color)color) *
-														LevelCurve.GetValue(lastPosition * 100) / 100));
-						endValue = new LightingValue((Color)color,
-													 (ColorGradient.GetProportionOfColorAt(position, (Color)color) *
-													  LevelCurve.GetValue(position * 100) / 100));
+						var startIntensity = (ColorGradient.GetProportionOfColorAt(lastPosition, (Color) color)* LevelCurve.GetValue(lastPosition*100)/100);
+						var endIntensity = (ColorGradient.GetProportionOfColorAt(position, (Color) color)* LevelCurve.GetValue(position*100)/100);
+
+						if (! (startIntensity.Equals(0) && endIntensity.Equals(0)) ) 
+						{
+							IIntent intent = CreateDiscreteIntent((Color) color, startIntensity, endIntensity, timeSpan);
+							_elementData.AddIntentForElement(element.Id, intent, startTime);
+						}
+						
 					}
-
-					TimeSpan startTime = lastEnd;
-					TimeSpan timeSpan = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds * (position - lastPosition));
-					if (startValue.Intensity.Equals(0f) && endValue.Intensity.Equals(0f))
-					{
-						lastPosition = position;
-						lastEnd = startTime + timeSpan;
-						continue;
-					}
-
-					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
-
-					_elementData.AddIntentForElement(element.Id, intent, startTime);
 
 					lastPosition = position;
 					lastEnd = startTime + timeSpan;

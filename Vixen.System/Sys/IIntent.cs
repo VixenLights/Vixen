@@ -7,7 +7,7 @@ namespace Vixen.Sys
 	public interface IIntent : IDispatchable
 	{
 		TimeSpan TimeSpan { get; }
-		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer);
 		void FractureAt(TimeSpan intentRelativeTime);
 		void FractureAt(IEnumerable<TimeSpan> intentRelativeTimes);
 		void FractureAt(ITimeNode intentRelativeTime);

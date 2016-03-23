@@ -33,6 +33,9 @@ namespace VixenModules.Effect.Fire
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			FireData result = new FireData
@@ -41,7 +44,8 @@ namespace VixenModules.Effect.Fire
 				Height = Height,
 				HueShift = HueShift,
 				Orientation = Orientation,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				Layer = Layer
 			};
 			return result;
 		}

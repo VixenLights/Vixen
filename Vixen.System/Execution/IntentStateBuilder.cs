@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Vixen.Sys;
 
@@ -10,11 +11,11 @@ namespace Vixen.Execution
 	//Could be multiple intent (T) instances going in and multiple intents (U) coming out
 	internal class IntentStateBuilder : IElementStateBuilder<IIntentState, IIntentStates>
 	{
-		private Dictionary<Guid, IIntentStates> _elementStates;
+		private ConcurrentDictionary<Guid, IIntentStates> _elementStates;
 
 		public IntentStateBuilder()
 		{
-			_elementStates = new Dictionary<Guid, IIntentStates>();
+			_elementStates = new ConcurrentDictionary<Guid, IIntentStates>();
 		}
 
 		public void Clear()
@@ -37,7 +38,7 @@ namespace Vixen.Execution
 		{
 			IIntentStates elementIntentList;
 			if (!_elementStates.TryGetValue(elementId, out elementIntentList)) {
-				elementIntentList = new IntentStateList();
+				elementIntentList = new IntentStateList(4);
 				_elementStates[elementId] = elementIntentList;
 			}
 			return elementIntentList;

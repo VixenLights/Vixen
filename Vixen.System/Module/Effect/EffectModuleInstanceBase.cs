@@ -53,16 +53,12 @@ namespace Vixen.Module.Effect
 				{
 					_targetNodes = value;
 					_EnsureTargetNodeProperties();
-					CalculateAffectedElements();
 					TargetNodesChanged();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
 			}
 		}
-
-		[Browsable(false)]
-		public IEnumerable<Guid> EffectedElementIds { get; set; }
 
 		[Browsable(false)]
 		public TimeSpan TimeSpan
@@ -88,6 +84,8 @@ namespace Vixen.Module.Effect
 				IsDirty = true;
 			}
 		}
+
+		public virtual byte Layer { get; set; }
 
 		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{
@@ -193,35 +191,6 @@ namespace Vixen.Module.Effect
 					//base.GenerateVisualRepresentation(g, clipRectangle);
 				}
 			}
-		}
-
-		public virtual ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
-		{
-			_elementIntents.Clear();
-
-			_AddLocalIntents(effectRelativeTime);
-
-			return _elementIntents;
-		}
-
-		private void _AddLocalIntents(TimeSpan effectRelativeTime)
-		{
-			EffectIntents effectIntents = Render();
-			foreach (Guid elementId in effectIntents.ElementIds)
-			{
-				IIntentNode[] elementIntents = effectIntents.GetElementIntentsAtTime(elementId, effectRelativeTime);
-				_elementIntents.AddIntentNodeToElement(elementId, elementIntents);
-			}
-		}
-
-		private void CalculateAffectedElements()
-		{
-			if (TargetNodes == null || TargetNodes.Length == 0)
-			{
-				EffectedElementIds = Enumerable.Empty<Guid>();
-			}
-			EffectedElementIds =
-				TargetNodes.SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id);
 		}
 
 		private void _EnsureTargetNodeProperties()

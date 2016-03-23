@@ -45,9 +45,9 @@ namespace Vixen.Sys
 			return null;
 		}
 
-		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime)
+		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer)
 		{
-			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime);
+			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime, layer);
 
 			return intentState;
 		}
@@ -74,7 +74,7 @@ namespace Vixen.Sys
 	public interface IIntentNode : IDataNode, IComparable<IIntentNode>
 	{
 		IIntent Intent { get; }
-		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer);
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
 	}

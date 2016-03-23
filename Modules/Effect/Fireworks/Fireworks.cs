@@ -23,6 +23,21 @@ namespace VixenModules.Effect.Fireworks
 		{
 			_data = new FireworksData();
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 		
 		[Value]
 		[ProviderCategory(@"Config", 1)]

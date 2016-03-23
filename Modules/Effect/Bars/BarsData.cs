@@ -48,6 +48,9 @@ namespace VixenModules.Effect.Bars
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			BarsData result = new BarsData
@@ -59,7 +62,8 @@ namespace VixenModules.Effect.Bars
 				Orientation = Orientation,
 				Show3D = Show3D,
 				Highlight = Highlight,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				Layer = Layer
 			};
 			return result;
 		}

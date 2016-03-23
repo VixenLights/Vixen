@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Data.Value;
 using Vixen.Sys;
 
@@ -63,9 +61,9 @@ namespace Vixen.Intent
 			throw new NotImplementedException();
 		}
 
-		public IIntentState CreateIntentState(TimeSpan intentRelativeTime)
+		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer)
 		{
-			return new IntentState<TypeOfValue>(this, intentRelativeTime);
+			return new IntentState<TypeOfValue>(this, intentRelativeTime, layer);
 		}
 
 		private bool _IsValidTime(TimeSpan intentRelativeTime)
@@ -76,8 +74,9 @@ namespace Vixen.Intent
 		#region IDisposable Members
 		protected void Dispose(bool disposing)
 		{
-			if (disposing) {
-				Value= default(TypeOfValue);
+			if (disposing)
+			{
+				Value = default(TypeOfValue);
 			}
 		}
 		public void Dispose()
@@ -85,7 +84,7 @@ namespace Vixen.Intent
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
-		
+
 		#endregion
 	}
 }

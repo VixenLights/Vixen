@@ -76,6 +76,11 @@
       <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Pulse\Pulse.csproj">
       <Project>{a815a79e-305d-4167-a0bc-ffa590bb4644}</Project>
       <Name>Pulse</Name>

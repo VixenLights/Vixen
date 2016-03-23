@@ -7,19 +7,19 @@ using System.Threading;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using ZedGraph;
 
 namespace VixenModules.Effect.Spin
 {
-	public class Spin : EffectModuleInstanceBase
+	public class Spin : BaseEffect
 	{
 		private SpinData _data;
 		private EffectIntents _elementData = null;
@@ -99,6 +99,21 @@ namespace VixenModules.Effect.Spin
 			}
 			protected set { base.IsDirty = value; }
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		[Value]
 		[ProviderCategory(@"Speed",4)]

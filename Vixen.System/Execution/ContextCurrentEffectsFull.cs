@@ -10,7 +10,7 @@ namespace Vixen.Execution
 	/// Maintains a list of current effects for a context.
 	/// The IDataSource is expected to provide every qualifying effect, not just newly qualified effects.
 	/// </summary>
-	internal class ContextCurrentEffectsFull : IContextCurrentEffects
+	internal class ContextCurrentEffectsFull : List<IEffectNode> ,IContextCurrentEffects
 	{
 		private List<IEffectNode> _currentEffects;
 		private HashSet<Guid> _currentAffectedElements;
@@ -25,7 +25,7 @@ namespace Vixen.Execution
 		/// Updates the collection of current affects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
-		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
+		public bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
 			// Get the entirety of the new state.
 			IEffectNode[] newState = dataSource.GetDataAt(currentTime).ToArray();
@@ -35,12 +35,12 @@ namespace Vixen.Execution
 			// the previous state and the current state.
 			//HashSet<Guid> allAffectedElements = new HashSet<Guid>(_currentAffectedElements.Concat(newAffectedElements));
 			_currentAffectedElements.UnionWith(nowAffectedElements);
-			HashSet<Guid> allAffectedElements = _currentAffectedElements;
+			//HashSet<Guid> allAffectedElements = _currentAffectedElements;
 			// Set the new state.
 			_currentEffects = new List<IEffectNode>(newState);
 			_currentAffectedElements = nowAffectedElements;
 
-			return allAffectedElements;
+			return _currentAffectedElements.Count>0;
 		}
 
 		public void RemoveEffects(IEnumerable<IEffectNode> nodes)

@@ -12,13 +12,14 @@ using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
 {
 
-	public class Alternating : EffectModuleInstanceBase
+	public class Alternating : BaseEffect
 	{
 		private AlternatingData _data;
 		private EffectIntents _elementData;
@@ -92,6 +93,21 @@ namespace VixenModules.Effect.Alternating
 				InitAllAttributes();
 			}
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		#region Color
 

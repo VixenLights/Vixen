@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using Common.ValueTypes;
@@ -11,16 +9,15 @@ using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Candle
 {
-	public class CandleModule : EffectModuleInstanceBase
+	public class CandleModule : BaseEffect
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private EffectIntents _effectIntents;
@@ -41,6 +38,21 @@ namespace VixenModules.Effect.Candle
 		{
 			CheckForInvalidColorData();
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -173,6 +185,7 @@ namespace VixenModules.Effect.Candle
 		{
 			HashSet<Color> validColors = new HashSet<Color>();
 			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			IsDiscrete = TargetNodes.Any(x => ColorModule.isElementNodeDiscreteColored(x));
 			if (validColors.Any() && !validColors.Contains(_data.Color))
 			{
 				//Our color is not valid for any elements we have.
@@ -181,6 +194,8 @@ namespace VixenModules.Effect.Candle
 			}
 
 		}
+
+		private bool IsDiscrete { get; set; }
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
@@ -232,11 +247,10 @@ namespace VixenModules.Effect.Candle
 				}
 				else
 				{
+					IIntent intent;
+					intent = IsDiscrete ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) : CreateIntent(Color, Color, currentLevel, nextLevel, length);
+					
 					// Add the intent.
-					LightingValue startValue = new LightingValue(Color, currentLevel);
-					LightingValue endValue = new LightingValue(Color, nextLevel);
-
-					IIntent intent = new LightingIntent(startValue, endValue, length);
 					try
 					{
 						foreach (var element in elements)

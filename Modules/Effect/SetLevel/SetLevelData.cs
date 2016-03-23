@@ -18,6 +18,9 @@ namespace VixenModules.Effect.SetLevel
 		[DataMember]
 		public RGB color { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public SetLevelData()
 		{
 			level = 1;
@@ -29,6 +32,7 @@ namespace VixenModules.Effect.SetLevel
 			SetLevelData result = new SetLevelData();
 			result.level = level;
 			result.color = color;
+			result.Layer = Layer;
 			return result;
 		}
 	}

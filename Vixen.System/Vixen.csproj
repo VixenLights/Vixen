@@ -140,11 +140,14 @@
     <Compile Include="Data\Flow\IntentOutputDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\CommandDataFlowData.cs" />
     <Compile Include="Data\Flow\CommandsDataFlowData.cs" />
+    <Compile Include="Data\StateCombinator\LayeredStateCombinator.cs" />
     <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
     <Compile Include="Data\Flow\IntentsDataFlowData.cs" />
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
+    <Compile Include="Data\StateCombinator\StateCombinator.cs" />
+    <Compile Include="Data\Value\DiscreteValue.cs" />
     <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
@@ -192,6 +195,7 @@
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
     <Compile Include="Instrumentation\MillisecondsValue.cs" />
+    <Compile Include="Intent\DiscreteLightingIntent.cs" />
     <Compile Include="Intent\IntentHelpers.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
@@ -201,6 +205,7 @@
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Intent\StaticArrayIntent.cs" />
+    <Compile Include="Interpolator\DiscreteValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
@@ -310,6 +315,7 @@
     <Compile Include="Services\IFileService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\IStateCombinator.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
     <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
     <Compile Include="Sys\Managers\ExecutionState.cs" />

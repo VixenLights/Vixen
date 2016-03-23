@@ -56,6 +56,9 @@ namespace VixenModules.Effect.Twinkle
 		[DataMember]
 		public int DepthOfEffect { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public TwinkleData()
 		{
 			IndividualChannels = true;
@@ -85,6 +88,7 @@ namespace VixenModules.Effect.Twinkle
 			result.StaticColor = StaticColor;
 			result.ColorGradient = new ColorGradient(ColorGradient);
 			result.DepthOfEffect = DepthOfEffect;
+			result.Layer = Layer;
 			return result;
 		}
 	}

@@ -4,8 +4,9 @@ namespace Vixen.Sys
 {
 	public class IntentStateList : List<IIntentState>, IIntentStates
 	{
-		public IntentStateList()
+		public IntentStateList(int capacity) : base(capacity)
 		{
+
 		}
 
 		public IntentStateList(IEnumerable<IIntentState> states)

@@ -40,6 +40,9 @@ namespace VixenModules.Effect.Fireworks
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
+		[DataMember]
+		public byte Layer { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			FireworksData result = new FireworksData
@@ -49,7 +52,8 @@ namespace VixenModules.Effect.Fireworks
 				ParticleFade = ParticleFade,
 				Explosions = Explosions,
 				Particles = Particles,
-				Colors = Colors.ToList()
+				Colors = Colors.ToList(),
+				Layer = Layer
 			};
 			return result;
 		}

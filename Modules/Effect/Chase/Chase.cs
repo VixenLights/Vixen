@@ -14,13 +14,14 @@ using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using ZedGraph;
 
 namespace VixenModules.Effect.Chase
 {
-	public class Chase : EffectModuleInstanceBase
+	public class Chase : BaseEffect
 	{
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private ChaseData _data;
@@ -91,8 +92,23 @@ namespace VixenModules.Effect.Chase
 			protected set { base.IsDirty = value; }
 		}
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		[Value]
-		[ProviderCategory(@"Color",0)]
+		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
 		[PropertyOrder(1)]

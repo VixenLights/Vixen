@@ -6,19 +6,19 @@ using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Wipe
 {
-	public class WipeModule : EffectModuleInstanceBase
+	public class WipeModule : BaseEffect
 	{
 		public WipeModule()
 		{
@@ -485,6 +485,21 @@ namespace VixenModules.Effect.Wipe
 				_data.ColorGradient = new ColorGradient(validColors.First());
 			}
 		}
+
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		[Value]
 		[ProviderCategory(@"Color",3)]

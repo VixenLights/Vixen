@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -8,15 +7,15 @@ using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.SetLevel
 {
-	public class SetLevel : EffectModuleInstanceBase
+	public class SetLevel : BaseEffect
 	{
 		private SetLevelData _data;
 		private EffectIntents _elementData = null;
@@ -59,6 +58,21 @@ namespace VixenModules.Effect.SetLevel
 			}
 		}
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		[Value]
 		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Brightness")]
@@ -93,29 +107,35 @@ namespace VixenModules.Effect.SetLevel
 				OnPropertyChanged();
 			}
 		}
-
+		
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if(validColors.Any() && !validColors.Contains(_data.color.ToArgb())){
-				//Our color is not valid for any elements we have.
-				//Set a default color 
-				Color = validColors.First();
+			if (IsDiscrete())
+			{
+				HashSet<Color> validColors = new HashSet<Color>();
+				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+				if (validColors.Any() && !validColors.Contains(_data.color.ToArgb()))
+				{
+					//Our color is not valid for any elements we have.
+					//Set a default color 
+					Color = validColors.First();
+				}
 			}
-			
+
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNode(ElementNode node)
 		{
-			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
-				LightingValue lightingValue = new LightingValue(Color, (float) IntensityLevel);
-				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
+			var isDiscrete = IsDiscrete();
+			foreach (ElementNode elementNode in node.GetLeafEnumerator())
+			{
+				var intent = isDiscrete ? CreateDiscreteIntent(Color, IntensityLevel, TimeSpan) : CreateIntent(Color, IntensityLevel, TimeSpan);
 				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 		}
+		
 	}
 }

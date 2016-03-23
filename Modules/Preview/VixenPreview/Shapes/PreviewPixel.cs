@@ -208,11 +208,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else
 			{
-				Color intentColor = IntentHelpers.GetAlphaRGBMaxColorForIntents(states);
-				if (intentColor != Color.Transparent && intentColor.A > 0)
+				var state = states.FirstOrDefault();
+				if (state != null)
 				{
-					fp.DrawCircle(drawArea, intentColor);
+					Color intentColor = IntentHelpers.GetAlphaColorForIntent(state);
+					if (intentColor != Color.Transparent && intentColor.A > 0)
+					{
+						fp.DrawCircle(drawArea, intentColor);
+					}
 				}
+				
 			}
         }
         

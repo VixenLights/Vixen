@@ -19,14 +19,14 @@ namespace Vixen.Module.Effect
 		ElementNode[] TargetNodes { get; set; }
 
 		/// <summary>
-		/// Calculated set of element ids that this effect has an impact on.
-		/// </summary>
-		IEnumerable<Guid> EffectedElementIds { get; set; }
-
-		/// <summary>
 		/// The length of the entire effect.
 		/// </summary>
 		TimeSpan TimeSpan { get; set; }
+
+		/// <summary>
+		/// The layer in which the effect is active.
+		/// </summary>
+		byte Layer { get; set; }
 
 		/// <summary>
 		/// Effect parameter values.
@@ -42,6 +42,5 @@ namespace Vixen.Module.Effect
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
-		ElementIntents GetElementIntents(TimeSpan currentTime);
 	}
 }

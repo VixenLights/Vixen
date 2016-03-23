@@ -23,6 +23,21 @@ namespace VixenModules.Effect.Fire
 			_data = new FireData();
 		}
 
+		#region Layer
+
+		public override byte Layer
+		{
+			get { return _data.Layer; }
+			set
+			{
+				_data.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Setup
 
 		[Value]
