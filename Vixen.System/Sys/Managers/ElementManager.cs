@@ -11,10 +11,10 @@ namespace Vixen.Sys.Managers
 {
 	public class ElementManager : IEnumerable<Element>
 	{
-		private MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
-		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private ElementDataFlowAdapterFactory _dataFlowAdapters;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private readonly MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
+		private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+		private readonly ElementDataFlowAdapterFactory _dataFlowAdapters;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// a mapping of element  GUIDs to element instances. Used for quick reverse mapping at runtime.
 		//This was a ConcurrentDictionary for a while, but grabing an instance enumerator can be costly as it makes a read only copy
@@ -112,6 +112,8 @@ namespace Vixen.Sys.Managers
 			return node;
 		}
 
+		public bool ElementsHaveState { get; set; }
+
 		public void Update()
 		{
 			//Need to profile and see if parallelism here will improve this
@@ -124,6 +126,7 @@ namespace Vixen.Sys.Managers
 					x.Update();
 				});
 			}
+			ElementsHaveState = true;
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
@@ -149,6 +152,7 @@ namespace Vixen.Sys.Managers
 					}
 				}
 			}
+			ElementsHaveState = true;
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
@@ -162,6 +166,7 @@ namespace Vixen.Sys.Managers
 					x.ClearStates();
 				});
 			}
+			ElementsHaveState = false;
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 

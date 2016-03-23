@@ -80,18 +80,7 @@ namespace Vixen.Sys
 
 		private IIntentStates _AggregateStateFromContexts()
 		{
-			//In reality, all this needs to do is call GetElementState on each context
-			//and put them all into a single collection.
-			// NotNull() - filter out any null lists resulting from the context not yet having
-			// a state for the element.  This versus creating a new list in
-			// ElementStateSourceCollection.GetState (or maybe Context.GetState instead, may
-			// make more sense there) on a dictionary miss.
-			//IEnumerable<IIntentState> intentStates = _dataSource.Where(x => x != null).SelectMany(x => x.State);
-			//return new IntentStateList(intentStates);
-
-			//return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
-
-			IntentStateList ret = new IntentStateList(4);
+			IntentStateList ret = new IntentStateList(2);
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)

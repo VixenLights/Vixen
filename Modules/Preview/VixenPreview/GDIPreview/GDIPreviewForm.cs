@@ -54,7 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				if (!VixenSystem.Elements.Any(e => e.State.Count > 0))
+				if (!VixenSystem.Elements.ElementsHaveState)
 				{
 					if (needsUpdate)
 					{

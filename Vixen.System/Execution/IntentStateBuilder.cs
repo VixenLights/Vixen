@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -11,7 +12,7 @@ namespace Vixen.Execution
 	//Could be multiple intent (T) instances going in and multiple intents (U) coming out
 	internal class IntentStateBuilder : IElementStateBuilder<IIntentState, IIntentStates>
 	{
-		private ConcurrentDictionary<Guid, IIntentStates> _elementStates;
+		private readonly ConcurrentDictionary<Guid, IIntentStates> _elementStates;
 
 		public IntentStateBuilder()
 		{
@@ -20,7 +21,10 @@ namespace Vixen.Execution
 
 		public void Clear()
 		{
-			_elementStates.Clear();
+			Parallel.ForEach(_elementStates.Values, x =>
+			{
+				x.Clear();
+			});
 		}
 
 		public void AddElementState(Guid elementId, IIntentState state)
