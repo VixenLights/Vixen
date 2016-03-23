@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Data.Flow;
+using Vixen.Pool;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Managers
@@ -25,7 +27,7 @@ namespace Vixen.Sys.Managers
 		// quickly and easily find the node that a particular element references (eg. if we're previewing the rendered data on a virtual display,
 		// or anything else where we need to actually 'reverse' the rendering process).
 		private readonly ConcurrentDictionary<Element, ElementNode> _elementToElementNode;
-
+		
 		public ElementManager()
 		{
 			_instances = new Dictionary<Guid, Element>();
@@ -33,6 +35,7 @@ namespace Vixen.Sys.Managers
 			_dataFlowAdapters = new ElementDataFlowAdapterFactory();
 
 			VixenSystem.Instrumentation.AddValue(_elementUpdateTimeValue);
+			 
 		}
 
 		public ElementManager(IEnumerable<Element> elements)
@@ -58,7 +61,6 @@ namespace Vixen.Sys.Managers
 				lock (_instances) {
 					_instances[element.Id] = element;
 				}
-
 				_AddDataFlowParticipant(element);
 			}
 		}
@@ -72,16 +74,14 @@ namespace Vixen.Sys.Managers
 
 		public void RemoveElement(Element element)
 		{
-			Element e;
 			ElementNode en;
 			lock (_instances)
 			{
 				_instances.Remove(element.Id);
 			}
-
+			
 			_RemoveDataFlowParticipant(element);
 			_elementToElementNode.TryRemove(element, out en);
-			
 		}
 
 		public Element GetElement(Guid id)
@@ -199,17 +199,68 @@ namespace Vixen.Sys.Managers
 			return name;
 		}
 
-		public IEnumerator<Element> GetEnumerator()
+		IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
 		{
-			lock (_instances) {
+			lock (_instances)
+			{
 				Element[] elements = _instances.Values.ToArray();
 				return ((IEnumerable<Element>)elements).GetEnumerator();
 			}
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		public Enumerator<Element> GetEnumerator()
+		{
+			return new Enumerator<Element>(_instances.Values.ToList());
+		}
+
+		public struct Enumerator<TElement> : IEnumerator<TElement>
+		{
+			int nIndex;
+			readonly List<TElement> _collection;
+			internal Enumerator(List<TElement> coll)
+			{
+				_collection = coll;
+				nIndex = -1;
+			}
+
+			public void Reset()
+			{
+				nIndex = -1;
+			}
+
+			public bool MoveNext()
+			{
+				nIndex++;
+				return (nIndex < _collection.Count);
+			}
+
+			public TElement Current
+			{
+				get
+				{
+					return (_collection[nIndex]);
+				}
+			}
+
+			// The current property on the IEnumerator interface:
+			object IEnumerator.Current
+			{
+				get
+				{
+					return (Current);
+				}
+			}
+
+			public void Dispose()
+			{
+
+			}
+
 		}
 	}
 }

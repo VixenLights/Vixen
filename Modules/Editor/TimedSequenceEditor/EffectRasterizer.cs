@@ -34,11 +34,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				// limit the number of 'rows' rasterized
 				int tmpsiz = (int)(height / 2) + 1;
-				if (elements.Count() > tmpsiz)
+				int count = elements.Count();
+				if (count > tmpsiz)
 				{
 					int skip = elements.Count() / tmpsiz;
 					elements = elements.Where((element, index) => (index + 1) % skip == 0);
-					}
+				}
 
 				double heightPerElement = height / elements.Count();
 

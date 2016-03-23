@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Data.StateCombinator;
+using Vixen.Pool;
 
 namespace Vixen.Sys
 {
@@ -10,11 +11,12 @@ namespace Vixen.Sys
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
 	[Serializable]
-	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
+	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>, IDisposable
 	{
-		private IIntentStates _state;
-		private static readonly IIntentStates EmptyState = new IntentStateList(1);
+		private IntentStateList _state;
 		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
+		private const int ElementStateListRatio = 3;
+		bool _disposed;
 
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
@@ -25,7 +27,8 @@ namespace Vixen.Sys
 		{
 			Id = id;
 			Name = name;
-			_state = EmptyState;
+			IntentStateListPool.GetPool().Allocate(ElementStateListRatio);
+			_state = IntentStateListPool.GetPool().GetObject();
 		}
 
 		public string Name { get; set; }
@@ -36,12 +39,15 @@ namespace Vixen.Sys
 
 		public void Update()
 		{
-			_state = _AggregateStateFromContexts();
+			var state = _AggregateStateFromContexts();
+			IntentStateListPool.GetPool().PutObject(_state);
+			_state = state;
 		}
 
 		public void ClearStates()
 		{
-			_state = EmptyState;
+			IntentStateListPool.GetPool().PutObject(_state);
+			_state = IntentStateListPool.GetPool().GetObject(); 
 		}
 
 		public IIntentStates State
@@ -78,9 +84,9 @@ namespace Vixen.Sys
 			return Id.GetHashCode();
 		}
 
-		private IIntentStates _AggregateStateFromContexts()
+		private IntentStateList _AggregateStateFromContexts()
 		{
-			IntentStateList ret = new IntentStateList(2);
+			IntentStateList ret = IntentStateListPool.GetPool().GetObject();
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)
@@ -102,6 +108,33 @@ namespace Vixen.Sys
 		private List<IIntentState> GetCombinedState(IIntentStates states)
 		{
 			return _stateCombinator.Combine(states.AsIIntentStateList());
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_disposed)
+				return;
+
+			if (disposing)
+			{
+				IntentStateListPool.GetPool().DeAllocate(ElementStateListRatio);
+			}
+
+			// release any unmanaged objects
+			// set the object references to null
+
+			_disposed = true;
+		}
+
+		~Element()
+		{
+			Dispose(false);
 		}
 	}
 }

@@ -302,6 +302,8 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Pool\IntentStateListPool.cs" />
+    <Compile Include="Pool\ObjectPool.cs" />
     <Compile Include="Rule\IElementSetupHelper.cs" />
     <Compile Include="Rule\IElementTemplate.cs" />
     <Compile Include="Rule\INamingTemplate.cs" />
