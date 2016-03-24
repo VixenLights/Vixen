@@ -99,6 +99,7 @@ namespace Vixen.Sys
 					{
 						ret.Add(intentState);
 					}
+					iss.Clear();
 				}
 			}
 			return ret;

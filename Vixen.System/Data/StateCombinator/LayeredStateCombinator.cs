@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -10,7 +11,8 @@ namespace Vixen.Data.StateCombinator
 	{
 		private readonly IIntentStates _combinedStates = new IntentStateList(4);
 		private readonly Dictionary<int, IIntentState<DiscreteValue>> _combinedDiscreteStates = new Dictionary<int, IIntentState<DiscreteValue>>(4);
-		private readonly StaticIntentState<LightingValue> _mixedIntentState = new StaticIntentState<LightingValue>(new LightingValue(Color.Black)); 
+		private readonly StaticIntentState<LightingValue> _mixedIntentState = new StaticIntentState<LightingValue>(new LightingValue(Color.Black));
+		private byte _layer = 0;
 		
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
@@ -21,22 +23,29 @@ namespace Vixen.Data.StateCombinator
 			_combinedDiscreteStates.Clear();
 			
 			//var layer = states.Max(x => x.Layer);
-			byte layer = 0;
+			_layer = 0;
 			foreach (var intentState in states)
 			{
-				if (intentState.Layer > layer)
+				if (intentState.Layer > _layer)
 				{
-					layer = intentState.Layer;
+					_layer = intentState.Layer;
 				}
 			}
-			
-			foreach (var intentState in states)
+			if (states.Count > 1)
 			{
-				if (intentState.Layer == layer)
+				foreach (var intentState in states.OrderByDescending(x => x.Layer))
 				{
 					intentState.Dispatch(this);
 				}
 			}
+			else
+			{
+				foreach (var intentState in states)
+				{
+					intentState.Dispatch(this);
+				}
+			}
+			
 			if (_combinedStates.Count > 0)
 			{
 				var color = IntentHelpers.GetOpaqueRGBMaxColorForIntents(_combinedStates);
@@ -56,7 +65,10 @@ namespace Vixen.Data.StateCombinator
 		{
 			if (obj.GetValue().Intensity > 0)
 			{
-				_combinedStates.AddIntentState(obj);	
+				if (obj.Layer == _layer || _combinedStates.Count == 0)
+				{
+					_combinedStates.AddIntentState(obj);
+				}
 			}
 		}
 
@@ -64,7 +76,10 @@ namespace Vixen.Data.StateCombinator
 		{
 			if (obj.GetValue().Intensity > 0)
 			{
-				_combinedStates.AddIntentState(obj);
+				if (obj.Layer == _layer || _combinedStates.Count == 0)
+				{
+					_combinedStates.AddIntentState(obj);
+				}
 			}
 		}
 
@@ -74,8 +89,9 @@ namespace Vixen.Data.StateCombinator
 			{
 				IIntentState<DiscreteValue> state;
 				_combinedDiscreteStates.TryGetValue(obj.GetValue().Color.ToArgb(), out state);
-				if (state != null)
+				if (state != null && state.Layer == _layer)
 				{
+					
 					if (state.GetValue().Intensity < obj.GetValue().Intensity)
 					{
 						_combinedDiscreteStates[obj.GetValue().Color.ToArgb()] = obj;

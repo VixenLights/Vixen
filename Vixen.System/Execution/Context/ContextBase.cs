@@ -92,8 +92,18 @@ namespace Vixen.Execution.Context
 		public IIntentStates GetState(Guid key)
 		{
 			//Refactored to get state directly from the builder. Avoid copying them into another object with no real value.
-
 			return _elementStateBuilder.GetElementState(key);
+		}
+
+		/// <summary>
+		/// Clears the state after it has been read and prepares it for the next update
+		/// This method is for performance so the states can be reset as they are consumed rather than 
+		/// looping over all of them at one time to try and clear them.
+		/// </summary>
+		/// <param name="states"></param>
+		public static void ClearState(IIntentStates states)
+		{
+			states.Clear();
 		}
 
 		private bool _UpdateCurrentEffectList(TimeSpan currentTime)
@@ -104,7 +114,7 @@ namespace Vixen.Execution.Context
 
 		private void _RepopulateElementBuffer(TimeSpan currentTime)
 		{
-			_InitializeElementStateBuilder();
+			//_InitializeElementStateBuilder();
 			_DiscoverIntentsFromEffects(currentTime, _currentEffects);
 		}
 
@@ -118,13 +128,13 @@ namespace Vixen.Execution.Context
 				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
 			
 				EffectIntents effectIntents = effectNode.Effect.Render();
-				
+				var layer = effectNode.Effect.Layer;
 				// For each element...
-				Parallel.ForEach(effectIntents, (effectIntent) => ProcessIntentNodes(effectIntent, effectRelativeTime, effectNode));
+				Parallel.ForEach(effectIntents, (effectIntent) => ProcessIntentNodes(effectIntent, effectRelativeTime, layer));
 			}
 		}
 
-		private void ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime, IEffectNode effectNode)
+		private void ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime, byte layer)
 		{
 			foreach (IIntentNode intentNode in effectIntent.Value)
 			{
@@ -133,7 +143,7 @@ namespace Vixen.Execution.Context
 					//Get a timing value relative to the intent.
 					TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
 					// Do whatever is going to be done.
-					_AddIntentToElementStateBuilder(effectIntent.Key, intentNode, intentRelativeTime, effectNode.Effect.Layer);
+					_AddIntentToElementStateBuilder(effectIntent.Key, intentNode, intentRelativeTime, layer);
 				}
 			}
 		}
