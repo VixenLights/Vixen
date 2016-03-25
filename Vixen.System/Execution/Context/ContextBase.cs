@@ -81,7 +81,7 @@ namespace Vixen.Execution.Context
 		public bool UpdateElementStates(TimeSpan currentTime)
 		{
 			
-			if (IsRunning && !IsPaused) {
+			if (IsRunning) {
 				_UpdateCurrentEffectList(currentTime);
 				_RepopulateElementBuffer(currentTime);
 			}
