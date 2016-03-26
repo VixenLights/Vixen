@@ -99,7 +99,6 @@ namespace Vixen.Sys
 					{
 						ret.Add(intentState);
 					}
-					iss.Clear();
 				}
 			}
 			return ret;
@@ -108,7 +107,7 @@ namespace Vixen.Sys
 
 		private List<IIntentState> GetCombinedState(IIntentStates states)
 		{
-			return _stateCombinator.Combine(states.AsIIntentStateList());
+			return _stateCombinator.Combine(states.AsList());
 		}
 
 		public void Dispose()

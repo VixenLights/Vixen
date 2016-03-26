@@ -49,11 +49,16 @@ namespace Vixen.Intent
 			return result;
 		}
 
+		public static Color GetOpaqueRGBMaxColorForIntents(IIntentStates states)
+		{
+			return GetOpaqueRGBMaxColorForIntents(states.AsList());
+		}
+
 		/// <summary>
 		/// Given one or more intent states, this will calculate a Color that is the combination of them all, in a 'max
 		/// RGB component' fashion (ie. max of R, max of G, max of B).
 		/// </summary>
-		public static Color GetOpaqueRGBMaxColorForIntents(IIntentStates states)
+		public static Color GetOpaqueRGBMaxColorForIntents(List<IIntentState> states)
 		{
 			byte R = 0;
 			byte G = 0;
@@ -96,18 +101,19 @@ namespace Vixen.Intent
 			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(
 				(x =>
 				{
+					if (x is IntentState<DiscreteValue>)
+					{
+						return ((IntentState<DiscreteValue>) x).GetValue().Color;
+					}
 					if (x is IntentState<LightingValue>)
 					{
-						return (x as IntentState<LightingValue>).GetValue().HueSaturationOnlyColor;
+						return ((IntentState<LightingValue>) x).GetValue().HueSaturationOnlyColor;
 					}
 					if (x is IntentState<RGBValue>)
 					{
-						return (x as IntentState<RGBValue>).GetValue().Color;
+						return ((IntentState<RGBValue>) x).GetValue().Color;
 					}
-					if (x is IntentState<DiscreteValue>)
-					{
-						return (x as IntentState<DiscreteValue>).GetValue().Color;
-					}
+					
 					return Color.Empty;
 				}
 				));
@@ -117,18 +123,19 @@ namespace Vixen.Intent
 
 				double intensity = grouping.Max(x =>
 				{
+					if (x is IntentState<DiscreteValue>)
+					{
+						return ((IntentState<DiscreteValue>) x).GetValue().Intensity;
+					}
 					if (x is IntentState<LightingValue>)
 					{
-						return (x as IntentState<LightingValue>).GetValue().Intensity;
+						return ((IntentState<LightingValue>) x).GetValue().Intensity;
 					}
 					if (x is IntentState<RGBValue>)
 					{
-						return (x as IntentState<RGBValue>).GetValue().Intensity;
+						return ((IntentState<RGBValue>) x).GetValue().Intensity;
 					}
-					if (x is IntentState<DiscreteValue>)
-					{
-						return (x as IntentState<DiscreteValue>).GetValue().Intensity;
-					}
+					
 					return 0;
 				});
 

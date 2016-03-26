@@ -27,6 +27,8 @@ namespace Vixen.Sys.Managers
 		// quickly and easily find the node that a particular element references (eg. if we're previewing the rendered data on a virtual display,
 		// or anything else where we need to actually 'reverse' the rendering process).
 		private readonly ConcurrentDictionary<Element, ElementNode> _elementToElementNode;
+		private Enumerator<Element> _enumerator;
+		private bool _enumeratorInvalid = true;
 		
 		public ElementManager()
 		{
@@ -60,6 +62,7 @@ namespace Vixen.Sys.Managers
 
 				lock (_instances) {
 					_instances[element.Id] = element;
+					_enumeratorInvalid = true;
 				}
 				_AddDataFlowParticipant(element);
 			}
@@ -78,6 +81,7 @@ namespace Vixen.Sys.Managers
 			lock (_instances)
 			{
 				_instances.Remove(element.Id);
+				_enumeratorInvalid = true;
 			}
 			
 			_RemoveDataFlowParticipant(element);
@@ -215,7 +219,11 @@ namespace Vixen.Sys.Managers
 
 		public Enumerator<Element> GetEnumerator()
 		{
-			return new Enumerator<Element>(_instances.Values.ToList());
+			if (_enumeratorInvalid)
+			{
+				_enumerator = new Enumerator<Element>(_instances.Values.ToList());
+			}
+			return _enumerator;
 		}
 
 		public struct Enumerator<TElement> : IEnumerator<TElement>

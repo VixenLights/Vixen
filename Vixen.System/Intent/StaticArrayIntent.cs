@@ -65,9 +65,12 @@ namespace Vixen.Intent
 		{
 			int idx = Math.Min(_vals.Length - 1, (int)(intentRelativeTime.TotalMilliseconds / _frameTime.TotalMilliseconds));
 			if (idx < 0)
+			{
 				idx = 0;
-			else if (idx >= _vals.Length)
-				idx = _vals.Length - 1;
+			}else if (idx >= _vals.Length)
+			{
+				return default(T);
+			}
 			//Console.WriteLine( "gsa: idx: {0}, rel: {1}, ft: {2}", idx, intentRelativeTime.TotalMilliseconds, _frameTime.TotalMilliseconds);
 			return _vals[idx];
 		}

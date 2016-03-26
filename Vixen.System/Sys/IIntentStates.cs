@@ -6,6 +6,6 @@ namespace Vixen.Sys
 	{
 		void AddIntentState(IIntentState intentState);
 		IIntentState this[int index] { get; set; }
-		List<IIntentState> AsIIntentStateList();
+		List<IIntentState> AsList();
 	}
 }

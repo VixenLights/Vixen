@@ -81,9 +81,12 @@ namespace Vixen.Execution.Context
 		public bool UpdateElementStates(TimeSpan currentTime)
 		{
 			
-			if (IsRunning) {
+			if (IsRunning && !IsPaused)
+			{
+				var t = ResetElementStates();
 				_UpdateCurrentEffectList(currentTime);
-				_RepopulateElementBuffer(currentTime);
+				t.Wait();
+				_DiscoverIntentsFromEffects(currentTime);
 			}
 
 			return _currentEffects.Count>0;
@@ -95,15 +98,9 @@ namespace Vixen.Execution.Context
 			return _elementStateBuilder.GetElementState(key);
 		}
 
-		/// <summary>
-		/// Clears the state after it has been read and prepares it for the next update
-		/// This method is for performance so the states can be reset as they are consumed rather than 
-		/// looping over all of them at one time to try and clear them.
-		/// </summary>
-		/// <param name="states"></param>
-		public static void ClearState(IIntentStates states)
+		private async Task ResetElementStates()
 		{
-			states.Clear();
+			await Task.Run(() => _elementStateBuilder.Clear());
 		}
 
 		private bool _UpdateCurrentEffectList(TimeSpan currentTime)
@@ -112,26 +109,21 @@ namespace Vixen.Execution.Context
 			return _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
 		}
 
-		private void _RepopulateElementBuffer(TimeSpan currentTime)
+		private void _DiscoverIntentsFromEffects(TimeSpan currentTime)
 		{
-			//_InitializeElementStateBuilder();
-			_DiscoverIntentsFromEffects(currentTime, _currentEffects);
-		}
-
-		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, List<IEffectNode> effects)
-		{
-
 			// For each effect in the in-effect list for the context...
-			foreach(IEffectNode effectNode in effects)
+			Parallel.ForEach(_currentEffects, effectNode =>
 			{
-				// Get a time value relative to the start of the effect.
-				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
-			
+				TimeSpan effectRelativeTime = currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
 				var layer = effectNode.Effect.Layer;
 				// For each element...
-				Parallel.ForEach(effectIntents, (effectIntent) => ProcessIntentNodes(effectIntent, effectRelativeTime, layer));
-			}
+				//Parallel.ForEach(effectIntents, (effectIntent) => ProcessIntentNodes(effectIntent, effectRelativeTime, layer));
+				foreach (var effectIntent in effectIntents)
+				{
+					ProcessIntentNodes(effectIntent, effectRelativeTime, layer);
+				}
+			});
 		}
 
 		private void ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime, byte layer)
@@ -140,23 +132,10 @@ namespace Vixen.Execution.Context
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					//Get a timing value relative to the intent.
-					TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
-					// Do whatever is going to be done.
-					_AddIntentToElementStateBuilder(effectIntent.Key, intentNode, intentRelativeTime, layer);
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, layer);
+					_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
 				}
 			}
-		}
-
-		private void _InitializeElementStateBuilder()
-		{
-			_elementStateBuilder.Clear();
-		}
-
-		private void _AddIntentToElementStateBuilder(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime, byte layer)
-		{
-			IIntentState intentState = intentNode.CreateIntentState(intentRelativeTime, layer);
-			_elementStateBuilder.AddElementState(elementId, intentState);
 		}
 
 		protected void ClearCurrentEffects()

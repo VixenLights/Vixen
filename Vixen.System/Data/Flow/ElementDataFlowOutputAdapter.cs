@@ -18,7 +18,7 @@ namespace Vixen.Data.Flow
 		{
 			get
 			{
-				_data.Value = _element.State.AsIIntentStateList();
+				_data.Value = _element.State.AsList();
 				return _data;
 			}
 		}

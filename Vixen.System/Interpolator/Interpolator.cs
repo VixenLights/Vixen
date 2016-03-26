@@ -21,7 +21,7 @@ namespace Vixen.Interpolator
 			//Leaving this here as a reminder that it used to be this way, but don't know
 			//if it was for a reason.
 			//if(percentage > 0 && percentage < 1) {
-			if (percentage >= 0 && percentage < 1) {
+			if (percentage >= 0 && percentage <= 1) {
 				value = InterpolateValue(percentage, startValue, endValue);
 				return true;
 			}

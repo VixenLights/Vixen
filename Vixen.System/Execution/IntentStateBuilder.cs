@@ -21,9 +21,9 @@ namespace Vixen.Execution
 
 		public void Clear()
 		{
-			Parallel.ForEach(_elementStates.Values, x =>
+			Parallel.ForEach(_elementStates, x =>
 			{
-				x.Clear();
+				x.Value.Clear();
 			});
 		}
 
