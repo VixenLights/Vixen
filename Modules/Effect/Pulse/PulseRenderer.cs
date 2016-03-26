@@ -59,39 +59,45 @@ namespace VixenModules.Effect.Pulse
 				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
 					double position = allPointsTimeOrdered[i];
+					TimeSpan startTime = lastEnd;
+					TimeSpan timeSpan = TimeSpan.FromMilliseconds(duration.TotalMilliseconds * (position - lastPosition));
 
-					LightingValue startValue;
-					LightingValue endValue;
 					if (color == null)
 					{
+						//var startColor = colorGradient.GetColorAt(lastPosition);
+						//var endColor = colorGradient.GetColorAt(position);
+						//startValue = new LightingValue(startColor, HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100);
+						//endValue = new LightingValue(endColor, HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100);
 						var startColor = colorGradient.GetColorAt(lastPosition);
 						var endColor = colorGradient.GetColorAt(position);
-						startValue = new LightingValue(startColor, HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100);
-						endValue = new LightingValue(endColor, HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100);
+						var startIntensity = HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100;
+						var endIntensity = HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100;
+
+						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
+						{
+							IIntent intent = IntentBuilder.CreateIntent(colorGradient.GetColorAt(lastPosition), colorGradient.GetColorAt(position), startIntensity, endIntensity, timeSpan);
+							elementData.AddIntentForElement(element.Id, intent, startTime);
+						}
 					}
 					else
 					{
-						startValue = new LightingValue((Color)color,
-													   (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * HSV.FromRGB((Color)color).V *
-														levelCurve.GetValue(lastPosition * 100) / 100));
-						endValue = new LightingValue((Color)color,
-													 (colorGradient.GetProportionOfColorAt(position, (Color)color) * HSV.FromRGB((Color)color).V *
-													  levelCurve.GetValue(position * 100) / 100));
+						//startValue = new LightingValue((Color)color,
+						//							   (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * HSV.FromRGB((Color)color).V *
+						//								levelCurve.GetValue(lastPosition * 100) / 100));
+						//endValue = new LightingValue((Color)color,
+						//							 (colorGradient.GetProportionOfColorAt(position, (Color)color) * HSV.FromRGB((Color)color).V *
+						//							  levelCurve.GetValue(position * 100) / 100));
+						var startIntensity = (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * levelCurve.GetValue(lastPosition * 100) / 100);
+						var endIntensity = (colorGradient.GetProportionOfColorAt(position, (Color)color) * levelCurve.GetValue(position * 100) / 100);
+
+						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
+						{
+							IIntent intent = IntentBuilder.CreateDiscreteIntent((Color)color, startIntensity, endIntensity, timeSpan);
+							elementData.AddIntentForElement(element.Id, intent, startTime);
+						}
+
 					}
-
-					TimeSpan startTime = lastEnd;
-					TimeSpan timeSpan = TimeSpan.FromMilliseconds(duration.TotalMilliseconds * (position - lastPosition));
-					if (startValue.Intensity.Equals(0f) && endValue.Intensity.Equals(0f))
-					{
-						lastPosition = position;
-						lastEnd = startTime + timeSpan;
-						continue;
-					}
-
-					IIntent intent = new LightingIntent(startValue, endValue, timeSpan);
-
-					elementData.AddIntentForElement(element.Id, intent, startTime);
-
+					
 					lastPosition = position;
 					lastEnd = startTime + timeSpan;
 				}
