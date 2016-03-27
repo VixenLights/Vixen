@@ -237,7 +237,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			RGBValue value = obj.GetValue();
 			if (_mixColors) {
-				float maxProportion = _getMaxProportion(value.Color);
+				float maxProportion = _getMaxProportion(value.FullColor);
 				Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion),
 												  (int)(_breakdownItem.Color.G * maxProportion),
 												  (int)(_breakdownItem.Color.B * maxProportion));
@@ -245,7 +245,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			} else {
 				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
 				// hue and saturation components; ignore the intensity.
-				HSV inputColor = HSV.FromRGB(value.Color);
+				HSV inputColor = HSV.FromRGB(value.FullColor);
 				if (Math.Abs(inputColor.H - _breakdownColorAsHSV.H) < Tolerance  &&  Math.Abs(inputColor.S - _breakdownColorAsHSV.S) < Tolerance) {
 					_intentValue = new StaticIntentState<RGBValue>(value);
 				} else {
@@ -261,7 +261,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			if (_mixColors) {
 				_intentValue = new StaticIntentState<LightingValue>(new LightingValue(_breakdownItem.Color,
 				                                                                      lightingValue.Intensity*
-				                                                                      _getMaxProportion(lightingValue.HueSaturationOnlyColor)));
+				                                                                      _getMaxProportion(lightingValue.FullColor)));
 			}
 			else {
 				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
@@ -282,7 +282,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 			// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
 			// hue and saturation components; ignore the intensity.
-			if (discreteValue.HueSaturationOnlyColor.ToArgb() == _breakdownItem.Color.ToArgb())
+			if (discreteValue.Color.ToArgb() == _breakdownItem.Color.ToArgb())
 			{
 				_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(_breakdownItem.Color, discreteValue.Intensity));
 			}

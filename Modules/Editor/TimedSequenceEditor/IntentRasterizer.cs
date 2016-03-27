@@ -102,15 +102,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<LightingValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).TrueFullColorWithAlpha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).TrueFullColorWithAlpha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAlpha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAlpha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).TrueFullColorWithAlpha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAlpha;
 				Color endColor =
-					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).TrueFullColorWithAlpha;
+					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAlpha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}
@@ -136,14 +136,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<RGBValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).ColorWithAplha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).ColorWithAplha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAplha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAplha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).ColorWithAplha;
-				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).ColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAplha;
+				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAplha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}

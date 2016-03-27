@@ -12,19 +12,16 @@ namespace Vixen.Data.Value
 
 		public RGBValue(Color color)
 		{
-			if (color.A == 0) {
-				R = G = B = 0;
-			} else {
-				R = color.R;
-				G = color.G;
-				B = color.B;
-			}
+			R = color.R;
+			G = color.G;
+			B = color.B;
 		}
 
 		/// <summary>
-		/// Gets the color as an opaque color: ie. 100% alpha channel.
+		/// The RGB value as a intensity appplied color with a 100% alpha channel. Results in an opaque color ranging from black
+		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color Color
+		public Color FullColor
 		{
 			get { return Color.FromArgb(R, G, B); }
 			set
@@ -36,9 +33,10 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
-		/// Gets the color value with the alpha channel interpreted as the 'brightness' of the color.
+		/// Gets the RGB value as a intensity appplied color with the intensity value applied to the alpha channel. 
+		/// Results in an non opaque color ranging from transparent (0,0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color ColorWithAplha
+		public Color FullColorWithAplha
 		{
 			get
 			{
@@ -47,13 +45,13 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
-		/// the intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
+		/// The Intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
 		public double Intensity
 		{
 			get
 			{
-				return HSV.FromRGB(Color).V;
+				return HSV.VFromRgb(FullColor);
 			}
 		}
 

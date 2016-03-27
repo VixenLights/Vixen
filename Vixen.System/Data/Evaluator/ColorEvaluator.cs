@@ -9,7 +9,7 @@ namespace Vixen.Data.Evaluator
 	{
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
-			EvaluatorValue = new ColorCommand(obj.GetValue().Color);
+			EvaluatorValue = new ColorCommand(obj.GetValue().FullColor);
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)

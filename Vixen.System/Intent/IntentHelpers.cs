@@ -21,13 +21,13 @@ namespace Vixen.Intent
 				LightingValue lv = (LightingValue)value;
 				if (lv.Intensity > 0)
 				{
-					c = lv.FullColorWithAplha;
+					c = lv.FullColorWithAlpha;
 				}
 			}
 			else if (value is RGBValue)
 			{
 				RGBValue rv = (RGBValue)value;
-				c = rv.ColorWithAplha;
+				c = rv.FullColorWithAplha;
 			}
 
 			return c;
@@ -98,15 +98,15 @@ namespace Vixen.Intent
 				{
 					if (x is IntentState<DiscreteValue>)
 					{
-						return ((IntentState<DiscreteValue>) x).GetValue().FullColor;
+						return ((IntentState<DiscreteValue>) x).GetValue().Color;
 					}
 					if (x is IntentState<LightingValue>)
 					{
-						return ((IntentState<LightingValue>) x).GetValue().HueSaturationOnlyColor;
+						return ((IntentState<LightingValue>) x).GetValue().FullColor;
 					}
 					if (x is IntentState<RGBValue>)
 					{
-						return ((IntentState<RGBValue>) x).GetValue().Color;
+						return ((IntentState<RGBValue>) x).GetValue().FullColor;
 					}
 					
 					return Color.Empty;

@@ -171,25 +171,23 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			LightingValue lightingValue = obj.GetValue();
 			double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<LightingValue>(new LightingValue(lightingValue.Hue, lightingValue.Saturation, newIntensity));
+			_intentValue = new StaticIntentState<LightingValue>(new LightingValue(lightingValue, newIntensity));
 		}
 
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue rgbValue = obj.GetValue();
-			HSV hsv = HSV.FromRGB(rgbValue.Color);
+			HSV hsv = HSV.FromRGB(rgbValue.FullColor);
 			double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
 			hsv.V = newIntensity;
-			_intentValue = new StaticIntentState<RGBValue>(new RGBValue(hsv.ToRGB().ToArgb()));
+			_intentValue = new StaticIntentState<RGBValue>(new RGBValue(hsv.ToRGB()));
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
 		{
 			DiscreteValue discreteValue = obj.GetValue();
-
 			double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.FullColor, newIntensity));
-
+			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
 		}
 	}
 

@@ -24,7 +24,7 @@ namespace Vixen.Interpolator
 
 			return new LightingValue(Linear(startValue.Hue, endValue.Hue, percent) , 
 				Linear(startValue.Saturation, endValue.Saturation, percent), 
-				Linear(startValue.Intensity, endValue.Intensity, percent));
+				Linear(startValue.Intensity*startValue.Value, endValue.Intensity*endValue.Value, percent));
 		}
 
 		private double Linear(double a, double b, double t)

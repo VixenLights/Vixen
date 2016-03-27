@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
 
@@ -64,25 +63,36 @@ namespace Vixen.Intent
 
 			foreach (var effectIntent in intents)
 			{
-				DiscreteValue[] values = new DiscreteValue[intervals + 1];
+				Dictionary<Color, DiscreteValue[]> colorValues = new Dictionary<Color, DiscreteValue[]>();
+				
 				for (int i = 0; i < intervals + 1; i++)
 				{
 					var currentTime = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * i);
-					var color = ProcessDiscreteIntentNodes(effectIntent, currentTime);
-					if (color.Count() > 0)
+					var colors = ProcessDiscreteIntentNodes(effectIntent, currentTime);
+					DiscreteValue[] values;
+					foreach (KeyValuePair<Color, DiscreteValue> color in colors)
 					{
-						values[i] = new DiscreteValue(color.First());
+						colorValues.TryGetValue(color.Key, out values);
+						if (values == null)
+						{
+							values = new DiscreteValue[intervals + 1];
+							colorValues[color.Key] = values;
+						}
+						values[i] = color.Value;
 					}
-					
 				}
 
-				effectIntents.AddIntentForElement(effectIntent.Key, new StaticArrayIntent<DiscreteValue>(interval, values, duration), TimeSpan.Zero);
+				foreach (var discreteValues in colorValues)
+				{
+					effectIntents.AddIntentForElement(effectIntent.Key, new StaticArrayIntent<DiscreteValue>(interval, discreteValues.Value, duration), TimeSpan.Zero);
+				}
+				
 			}
 
 			return effectIntents;
 		}
 
-		private static IEnumerable<Color> ProcessDiscreteIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)
+		private static Dictionary<Color, DiscreteValue> ProcessDiscreteIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)
 		{
 			IntentStateList states = new IntentStateList();
 			foreach (IIntentNode intentNode in effectIntent.Value)
@@ -94,7 +104,7 @@ namespace Vixen.Intent
 				}
 			}
 
-			return IntentHelpers.GetAlphaAffectedDiscreteColorsForIntents(states);
+			return GetAlphaDiscreteColorsForIntents(states);
 		}
 
 		private static Color ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)
@@ -141,6 +151,44 @@ namespace Vixen.Intent
 			var endValue = new DiscreteValue(color, endIntensity);
 			IIntent intent = new DiscreteLightingIntent(startingValue, endValue, duration);
 			return intent;
+		}
+
+		public static Dictionary<Color, DiscreteValue> GetAlphaDiscreteColorsForIntents(IIntentStates states)
+		{
+			Dictionary<Color, DiscreteValue> colors = new Dictionary<Color, DiscreteValue>();
+
+			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(
+				(x =>
+				{
+					var state = x as IntentState<DiscreteValue>;
+					if (state != null)
+					{
+						return state.GetValue().Color;
+					}
+					
+					return Color.Empty;
+				}
+				));
+
+			foreach (IGrouping<Color, IIntentState> grouping in colorStates)
+			{
+
+				double intensity = grouping.Max(x =>
+				{
+					var state = x as IntentState<DiscreteValue>;
+					if (state != null)
+					{
+						return state.GetValue().Intensity;
+					}
+					
+					return 0;
+				});
+
+				Color brightest = Color.FromArgb(grouping.Key.R, grouping.Key.G, grouping.Key.B);
+				colors.Add(brightest, new DiscreteValue(brightest, intensity));
+			}
+
+			return colors;
 		}
 	}
 }

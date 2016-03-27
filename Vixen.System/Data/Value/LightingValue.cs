@@ -15,27 +15,59 @@ namespace Vixen.Data.Value
 		private readonly double _hue;
 		private readonly double _saturation;
 		private readonly double _value;
-
-		public LightingValue(Color color)
+		private readonly double _intensity;
+		
+		/// <summary>
+		/// Create a lighting value of the specified color with intensity of 1
+		/// </summary>
+		/// <param name="color"></param>
+		public LightingValue(Color color):this(color, 1)
 		{
-			HSV.FromRGB(color, out _hue, out _saturation, out _value);
-		}
-
-		public LightingValue(Color color, double intensity)
-			: this(color)
-		{
-			_value = intensity;
-		}
-
-		public LightingValue(double h, double s, double i)
-		{
-			_hue = XYZ.ClipValue(h, 0.0, 1.0);
-			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
-			_value = XYZ.ClipValue(i, 0.0, 1.0);
 		}
 
 		/// <summary>
-		/// Percentage value between 0 and 1.
+		/// Create a lighting value with the specified color and intensity
+		/// </summary>
+		/// <param name="color"></param>
+		/// <param name="intensity">Percentage value in the range 0.0 -> 1.0 (from 0% to 100%).</param>
+		public LightingValue(Color color, double intensity)
+		{
+			HSV.FromRGB(color, out _hue, out _saturation, out _value);
+			_intensity = XYZ.ClipValue(intensity, 0.0, 1.0);
+		}
+
+		/// <summary>
+		/// Create a lighting value of the specified color with intensity of 100%
+		/// </summary>
+		/// <param name="h"></param>
+		/// <param name="s"></param>
+		/// <param name="i"></param>
+		public LightingValue(double h, double s, double v)
+		{
+			_hue = XYZ.ClipValue(h, 0.0, 1.0);
+			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
+			_value = XYZ.ClipValue(v, 0.0, 1.0);
+			_intensity = 1;
+		}
+
+		public LightingValue(double h, double s, double v, double i)
+		{
+			_hue = XYZ.ClipValue(h, 0.0, 1.0);
+			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
+			_value = XYZ.ClipValue(v, 0.0, 1.0);
+			_intensity = XYZ.ClipValue(i, 0.0, 1.0); ;
+		}
+
+		public LightingValue(LightingValue lv, double i)
+		{
+			_hue = lv._hue;
+			_saturation = lv._saturation;
+			_value = lv._value;
+			_intensity = XYZ.ClipValue(i, 0.0, 1.0); ;
+		}
+
+		/// <summary>
+		/// Percentage value in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
 		public double Hue
 		{
@@ -43,66 +75,55 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
-		/// Percentage value between 0 and 1.
+		/// Percentage value in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
 		public double Saturation
 		{
 			get { return _saturation; }
 		}
 
-		/// <summary>
-		/// Percentage value between 0 and 1.
-		/// </summary>
-		public double Intensity
+		public double Value
 		{
 			get { return _value; }
 		}
 
 		/// <summary>
-		/// The lighting value as a color with the intensity value applied. Results in an opaque color ranging from black
+		/// The Intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
+		/// </summary>
+		public double Intensity
+		{
+			get { return _intensity; }
+		}
+
+		public Color Color
+		{
+			get
+			{
+				return HSV.ToRGB(_hue, _saturation, _value);
+			}
+		}
+
+		/// <summary>
+		/// The lighting value as a intensity appplied color with a 100% alpha channel. Results in an opaque color ranging from black
 		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
 		public Color FullColor
 		{
-			get { return HSV.ToRGB(_hue, _saturation, _value).ToArgb(); }
+			get { return HSV.ToRGB(_hue, _saturation, _value*Intensity); }
 		}
 
 		/// <summary>
-		/// Gets the lighting value as a color with the intensity value applied to the alpha channel.
-		/// Results in a color of variable transparancy.
+		/// Gets the lighting value as a intensity appplied color with the intensity value applied to the alpha channel. 
+		/// Results in an non opaque color ranging from transparent (0,0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color FullColorWithAplha
+		public Color FullColorWithAlpha
 		{
 			get
 			{
 				Color c = FullColor;
-				return Color.FromArgb((int)(Intensity * byte.MaxValue), c.R, c.G, c.B);
+				return Color.FromArgb((int)(Intensity * byte.MaxValue), c);
 			}
 		}
 
-		/// <summary>
-		/// This is the full color portion of the lighting value with the Inesity applied only to the Alpha portion of 
-		/// the color. See VIX-430
-		/// </summary>
-		public Color TrueFullColorWithAlpha
-		{
-			get
-			{
-				return Color.FromArgb((int)(Intensity * byte.MaxValue), HueSaturationOnlyColor);
-			}
-		}
-
-		/// <summary>
-		/// The 'color' portion of the lighting value; ie. only the Hue and Saturation.
-		/// This is equivalent to the full color that would have an intensity of 1 (or 100%).
-		/// </summary>
-		public Color HueSaturationOnlyColor
-		{
-			get
-			{
-				Color rv = HSV.ToRGB(_hue, _saturation, 1).ToArgb();
-				return rv;
-			}
-		}
 	}
 }
