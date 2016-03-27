@@ -49,16 +49,11 @@ namespace Vixen.Intent
 			return result;
 		}
 
-		public static Color GetOpaqueRGBMaxColorForIntents(IIntentStates states)
-		{
-			return GetOpaqueRGBMaxColorForIntents(states.AsList());
-		}
-
 		/// <summary>
 		/// Given one or more intent states, this will calculate a Color that is the combination of them all, in a 'max
 		/// RGB component' fashion (ie. max of R, max of G, max of B).
 		/// </summary>
-		public static Color GetOpaqueRGBMaxColorForIntents(List<IIntentState> states)
+		public static Color GetOpaqueRGBMaxColorForIntents(IIntentStates states)
 		{
 			byte R = 0;
 			byte G = 0;
@@ -103,7 +98,7 @@ namespace Vixen.Intent
 				{
 					if (x is IntentState<DiscreteValue>)
 					{
-						return ((IntentState<DiscreteValue>) x).GetValue().Color;
+						return ((IntentState<DiscreteValue>) x).GetValue().FullColor;
 					}
 					if (x is IntentState<LightingValue>)
 					{

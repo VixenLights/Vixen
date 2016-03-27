@@ -188,7 +188,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			DiscreteValue discreteValue = obj.GetValue();
 
 			double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
+			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.FullColor, newIntensity));
 
 		}
 	}

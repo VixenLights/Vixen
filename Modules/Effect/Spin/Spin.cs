@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using NLog;
 using Vixen.Attributes;
+using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -13,6 +14,7 @@ using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using ZedGraph;
@@ -49,6 +51,8 @@ namespace VixenModules.Effect.Spin
 			_elementData = new EffectIntents();
 
 			DoRendering(tokenSource);
+
+			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.

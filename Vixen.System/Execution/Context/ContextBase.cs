@@ -116,26 +116,15 @@ namespace Vixen.Execution.Context
 			{
 				TimeSpan effectRelativeTime = currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
-				var layer = effectNode.Effect.Layer;
-				// For each element...
-				//Parallel.ForEach(effectIntents, (effectIntent) => ProcessIntentNodes(effectIntent, effectRelativeTime, layer));
 				foreach (var effectIntent in effectIntents)
 				{
-					ProcessIntentNodes(effectIntent, effectRelativeTime, layer);
+					foreach (IIntentNode intentNode in effectIntent.Value)
+					{
+						IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, effectNode.Effect.Layer);
+						_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
+					}
 				}
 			});
-		}
-
-		private void ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime, byte layer)
-		{
-			foreach (IIntentNode intentNode in effectIntent.Value)
-			{
-				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
-				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, layer);
-					_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
-				}
-			}
 		}
 
 		protected void ClearCurrentEffects()

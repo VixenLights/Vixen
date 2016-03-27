@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Attributes;
+using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Sys;
@@ -13,6 +14,7 @@ using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
@@ -48,7 +50,7 @@ namespace VixenModules.Effect.Alternating
 					data.Add(RenderNode(node));
 			}
 
-			_elementData = data;
+			_elementData = IntentBuilder.ConvertToStaticArrayIntents(data, TimeSpan, IsDiscrete());
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.

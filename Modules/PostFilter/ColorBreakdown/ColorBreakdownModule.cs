@@ -282,7 +282,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 			// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
 			// hue and saturation components; ignore the intensity.
-			if (discreteValue.Color.ToArgb() == _breakdownItem.Color.ToArgb())
+			if (discreteValue.HueSaturationOnlyColor.ToArgb() == _breakdownItem.Color.ToArgb())
 			{
 				_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(_breakdownItem.Color, discreteValue.Intensity));
 			}

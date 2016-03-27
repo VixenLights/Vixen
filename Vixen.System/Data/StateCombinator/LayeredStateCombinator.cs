@@ -88,18 +88,18 @@ namespace Vixen.Data.StateCombinator
 			if (obj.GetValue().Intensity > 0)
 			{
 				IIntentState<DiscreteValue> state;
-				_combinedDiscreteStates.TryGetValue(obj.GetValue().Color.ToArgb(), out state);
+				_combinedDiscreteStates.TryGetValue(obj.GetValue().FullColor.ToArgb(), out state);
 				if (state != null && state.Layer == _layer)
 				{
 					
 					if (state.GetValue().Intensity < obj.GetValue().Intensity)
 					{
-						_combinedDiscreteStates[obj.GetValue().Color.ToArgb()] = obj;
+						_combinedDiscreteStates[obj.GetValue().FullColor.ToArgb()] = obj;
 					}
 				}
 				else
 				{
-					_combinedDiscreteStates.Add(obj.GetValue().Color.ToArgb(), obj);
+					_combinedDiscreteStates.Add(obj.GetValue().FullColor.ToArgb(), obj);
 				}
 
 			}

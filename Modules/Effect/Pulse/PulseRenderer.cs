@@ -64,29 +64,19 @@ namespace VixenModules.Effect.Pulse
 
 					if (color == null)
 					{
-						//var startColor = colorGradient.GetColorAt(lastPosition);
-						//var endColor = colorGradient.GetColorAt(position);
-						//startValue = new LightingValue(startColor, HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100);
-						//endValue = new LightingValue(endColor, HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100);
 						var startColor = colorGradient.GetColorAt(lastPosition);
 						var endColor = colorGradient.GetColorAt(position);
-						var startIntensity = HSV.FromRGB(startColor).V * levelCurve.GetValue(lastPosition * 100) / 100;
-						var endIntensity = HSV.FromRGB(endColor).V * levelCurve.GetValue(position * 100) / 100;
+						var startIntensity = levelCurve.GetValue(lastPosition * 100) / 100;
+						var endIntensity = levelCurve.GetValue(position * 100) / 100;
 
 						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
 						{
-							IIntent intent = IntentBuilder.CreateIntent(colorGradient.GetColorAt(lastPosition), colorGradient.GetColorAt(position), startIntensity, endIntensity, timeSpan);
+							IIntent intent = IntentBuilder.CreateIntent(startColor, endColor, startIntensity, endIntensity, timeSpan);
 							elementData.AddIntentForElement(element.Id, intent, startTime);
 						}
 					}
 					else
 					{
-						//startValue = new LightingValue((Color)color,
-						//							   (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * HSV.FromRGB((Color)color).V *
-						//								levelCurve.GetValue(lastPosition * 100) / 100));
-						//endValue = new LightingValue((Color)color,
-						//							 (colorGradient.GetProportionOfColorAt(position, (Color)color) * HSV.FromRGB((Color)color).V *
-						//							  levelCurve.GetValue(position * 100) / 100));
 						var startIntensity = (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * levelCurve.GetValue(lastPosition * 100) / 100);
 						var endIntensity = (colorGradient.GetProportionOfColorAt(position, (Color)color) * levelCurve.GetValue(position * 100) / 100);
 

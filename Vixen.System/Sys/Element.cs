@@ -11,11 +11,13 @@ namespace Vixen.Sys
 	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
 	/// </summary>
 	[Serializable]
-	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>, IDisposable
+	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
-		private IntentStateList _state;
-		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
 		private const int ElementStateListRatio = 3;
+		private ushort _stateIndex;
+		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
+		private readonly IntentStateList[] _stateLists = new IntentStateList[ElementStateListRatio];
+		
 		bool _disposed;
 
 		internal Element(string name)
@@ -27,8 +29,10 @@ namespace Vixen.Sys
 		{
 			Id = id;
 			Name = name;
-			IntentStateListPool.GetPool().Allocate(ElementStateListRatio);
-			_state = IntentStateListPool.GetPool().GetObject();
+			for (int i = 0; i < ElementStateListRatio; i++)
+			{
+				_stateLists[i] = new IntentStateList(4);
+			}
 		}
 
 		public string Name { get; set; }
@@ -39,20 +43,17 @@ namespace Vixen.Sys
 
 		public void Update()
 		{
-			var state = _AggregateStateFromContexts();
-			IntentStateListPool.GetPool().PutObject(_state);
-			_state = state;
+			_AggregateStateFromContexts();
 		}
 
 		public void ClearStates()
 		{
-			IntentStateListPool.GetPool().PutObject(_state);
-			_state = IntentStateListPool.GetPool().GetObject(); 
+			ResetState();
 		}
 
 		public IIntentStates State
 		{
-			get { return _state; }
+			get { return _stateLists[_stateIndex]; }
 		}
 
 		public override string ToString()
@@ -84,9 +85,23 @@ namespace Vixen.Sys
 			return Id.GetHashCode();
 		}
 
-		private IntentStateList _AggregateStateFromContexts()
+		private void ResetState()
 		{
-			IntentStateList ret = IntentStateListPool.GetPool().GetObject();
+			if (_stateIndex < ElementStateListRatio - 1)
+			{
+				_stateLists[_stateIndex + 1].Clear();
+				_stateIndex++;
+			}
+			else
+			{
+				_stateLists[0].Clear();
+				_stateIndex = 0;
+			}
+		}
+
+		private void _AggregateStateFromContexts()
+		{
+			ResetState();
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)
@@ -97,12 +112,10 @@ namespace Vixen.Sys
 					var states = GetCombinedState(iss);
 					foreach (var intentState in states)
 					{
-						ret.Add(intentState);
+						_stateLists[_stateIndex].Add(intentState);
 					}
 				}
 			}
-			return ret;
-
 		}
 
 		private List<IIntentState> GetCombinedState(IIntentStates states)
@@ -110,31 +123,5 @@ namespace Vixen.Sys
 			return _stateCombinator.Combine(states.AsList());
 		}
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (_disposed)
-				return;
-
-			if (disposing)
-			{
-				IntentStateListPool.GetPool().DeAllocate(ElementStateListRatio);
-			}
-
-			// release any unmanaged objects
-			// set the object references to null
-
-			_disposed = true;
-		}
-
-		~Element()
-		{
-			Dispose(false);
-		}
 	}
 }

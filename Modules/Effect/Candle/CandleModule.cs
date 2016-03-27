@@ -6,7 +6,6 @@ using System.Threading;
 using Common.ValueTypes;
 using NLog;
 using Vixen.Attributes;
-using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Sys;
@@ -185,7 +184,6 @@ namespace VixenModules.Effect.Candle
 		{
 			HashSet<Color> validColors = new HashSet<Color>();
 			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			IsDiscrete = TargetNodes.Any(x => ColorModule.isElementNodeDiscreteColored(x));
 			if (validColors.Any() && !validColors.Contains(_data.Color))
 			{
 				//Our color is not valid for any elements we have.
@@ -194,8 +192,6 @@ namespace VixenModules.Effect.Candle
 			}
 
 		}
-
-		private bool IsDiscrete { get; set; }
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
@@ -209,9 +205,10 @@ namespace VixenModules.Effect.Candle
 
 			foreach (IGrouping<int, ElementNode> block in elementGroup)
 			{
-				
 				_RenderCandleOnElements(block.GetElements().ToList());
 			}
+
+			_effectIntents = IntentBuilder.ConvertToStaticArrayIntents(_effectIntents, TimeSpan, IsDiscrete());
 
 		}
 
@@ -247,9 +244,9 @@ namespace VixenModules.Effect.Candle
 				}
 				else
 				{
-					IIntent intent;
-					intent = IsDiscrete ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) : CreateIntent(Color, Color, currentLevel, nextLevel, length);
-					
+					var intent = IsDiscrete() ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) 
+												: CreateIntent(Color, Color, currentLevel, nextLevel, length);
+
 					// Add the intent.
 					try
 					{
@@ -267,7 +264,7 @@ namespace VixenModules.Effect.Candle
 						throw;
 					}
 				}
-				
+
 				startTime += length;	
 				currentLevel = nextLevel;
 			}

@@ -77,7 +77,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// The question is how many... each takes precious UI time to render.
 			// For now try almost easiest, fixed num per sec
 			// TODO: can we figure out what dimensions we're rendering for, and then rasterize based on that?  That's the ideal solution: one chunk per 2 pixels or so.
-			int nChunks = 1 + (int)(timespan - _startOffset).TotalMilliseconds / 100;
+			int nChunks = 1 + (int)(timespan - _startOffset).TotalMilliseconds / 50;
 			TimeSpan tsStart = _startOffset; //TimeSpan.Zero;
 			RectangleF drawRectangle = new RectangleF(rectangle.Location, rectangle.Size);
 			float rectWidth = rectangle.Width / nChunks;
@@ -119,15 +119,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<DiscreteValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).ColorWithAplha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).ColorWithAplha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAplha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAplha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).ColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAplha;
 				Color endColor =
-					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).ColorWithAplha;
+					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAplha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}

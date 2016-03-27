@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Reflection;
 using System.Resources;
 using Vixen.Attributes;
-using Vixen.Commands;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Module.Effect;
@@ -20,7 +14,6 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.LipSyncApp;
-using VixenModules.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.LipSync

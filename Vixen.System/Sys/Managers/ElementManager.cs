@@ -134,32 +134,6 @@ namespace Vixen.Sys.Managers
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
-		/// <summary>
-		/// This performs updates on the predicted elements and arbitrarily clears the rest.
-		/// Saves the labor of doing Dictionary lookups in every context when we know it was not affected.
-		/// </summary>
-		/// <param name="elements"></param>
-		public void Update(HashSet<Guid> elements)
-		{
-			_stopwatch.Restart();
-			lock (_instances)
-			{
-				foreach (var x in _instances.Values)
-				{
-					if (elements.Contains(x.Id))
-					{
-						x.Update();
-					} else
-					{
-						//No sense in checking each context as we know our element is not affected on this update.
-						x.ClearStates();
-					}
-				}
-			}
-			ElementsHaveState = true;
-			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
-		}
-
 		public void ClearStates()
 		{
 			_stopwatch.Restart();
@@ -205,11 +179,7 @@ namespace Vixen.Sys.Managers
 
 		IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
 		{
-			lock (_instances)
-			{
-				Element[] elements = _instances.Values.ToArray();
-				return ((IEnumerable<Element>)elements).GetEnumerator();
-			}
+			return GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -222,36 +192,37 @@ namespace Vixen.Sys.Managers
 			if (_enumeratorInvalid)
 			{
 				_enumerator = new Enumerator<Element>(_instances.Values.ToList());
+				_enumeratorInvalid = false;
 			}
 			return _enumerator;
 		}
 
 		public struct Enumerator<TElement> : IEnumerator<TElement>
 		{
-			int nIndex;
+			int _nIndex;
 			readonly List<TElement> _collection;
 			internal Enumerator(List<TElement> coll)
 			{
 				_collection = coll;
-				nIndex = -1;
+				_nIndex = -1;
 			}
 
 			public void Reset()
 			{
-				nIndex = -1;
+				_nIndex = -1;
 			}
 
 			public bool MoveNext()
 			{
-				nIndex++;
-				return (nIndex < _collection.Count);
+				_nIndex++;
+				return (_nIndex < _collection.Count);
 			}
 
 			public TElement Current
 			{
 				get
 				{
-					return (_collection[nIndex]);
+					return (_collection[_nIndex]);
 				}
 			}
 

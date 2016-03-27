@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Sys;
 
@@ -27,8 +28,13 @@ namespace Vixen.Intent
 			return new StaticArrayIntent<RGBValue>(interval, values, duration);
 		}
 
-		public static EffectIntents ConvertToStaticArrayIntents(EffectIntents intents, TimeSpan duration)
+		public static EffectIntents ConvertToStaticArrayIntents(EffectIntents intents, TimeSpan duration, bool discrete = false)
 		{
+			if (discrete)
+			{
+				return ConvertToDiscreteStaticArrayIntents(intents, duration);
+			}
+
 			var interval = VixenSystem.DefaultUpdateTimeSpan;
 			var intervals = (int)(duration.TotalMilliseconds / interval.TotalMilliseconds);
 			EffectIntents effectIntents = new EffectIntents();
@@ -42,6 +48,7 @@ namespace Vixen.Intent
 					var color = ProcessIntentNodes(effectIntent, currentTime);
 					values[i] = new RGBValue(color);
 				}
+
 				effectIntents.AddIntentForElement(effectIntent.Key, new StaticArrayIntent<RGBValue>(interval, values, duration), TimeSpan.Zero);
 			}
 
@@ -49,9 +56,50 @@ namespace Vixen.Intent
 
 		}
 
+		private static EffectIntents ConvertToDiscreteStaticArrayIntents(EffectIntents intents, TimeSpan duration)
+		{
+			var interval = VixenSystem.DefaultUpdateTimeSpan;
+			var intervals = (int)(duration.TotalMilliseconds / interval.TotalMilliseconds);
+			EffectIntents effectIntents = new EffectIntents();
+
+			foreach (var effectIntent in intents)
+			{
+				DiscreteValue[] values = new DiscreteValue[intervals + 1];
+				for (int i = 0; i < intervals + 1; i++)
+				{
+					var currentTime = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * i);
+					var color = ProcessDiscreteIntentNodes(effectIntent, currentTime);
+					if (color.Count() > 0)
+					{
+						values[i] = new DiscreteValue(color.First());
+					}
+					
+				}
+
+				effectIntents.AddIntentForElement(effectIntent.Key, new StaticArrayIntent<DiscreteValue>(interval, values, duration), TimeSpan.Zero);
+			}
+
+			return effectIntents;
+		}
+
+		private static IEnumerable<Color> ProcessDiscreteIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)
+		{
+			IntentStateList states = new IntentStateList();
+			foreach (IIntentNode intentNode in effectIntent.Value)
+			{
+				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
+				{
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, 0);
+					states.Add(intentState);
+				}
+			}
+
+			return IntentHelpers.GetAlphaAffectedDiscreteColorsForIntents(states);
+		}
+
 		private static Color ProcessIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)
 		{
-			List<IIntentState> states = new List<IIntentState>();
+			IntentStateList states = new IntentStateList();
 			foreach (IIntentNode intentNode in effectIntent.Value)
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))

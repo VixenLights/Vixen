@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
+using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -12,6 +13,7 @@ using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Location;
@@ -77,6 +79,7 @@ namespace VixenModules.Effect.Wipe
 														return 1;
 												})
 												.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Down:
 
@@ -112,6 +115,7 @@ namespace VixenModules.Effect.Wipe
 														return 1;
 												})
 												.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Right:
 
@@ -147,6 +151,7 @@ namespace VixenModules.Effect.Wipe
 														return 1;
 												})
 												.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Left:
 
@@ -180,19 +185,16 @@ namespace VixenModules.Effect.Wipe
 												})
 
 												.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Out:
 				case WipeDirection.In:
 					RenderBurst(tokenSource, _data.Direction);
-
-					return;
-
-					break;
-				default:
 					break;
 			}
 
-			RenderNonBurst(tokenSource, renderNodes);
+			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+
 		}
 
 		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
