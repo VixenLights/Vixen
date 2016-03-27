@@ -28,6 +28,12 @@ namespace VixenModules.Sequence.Timed
 		public int DefaultSplitterDistance { get; set; }
 
 		[DataMember]
+		public TimeSpan? DefaultPlaybackStartTime { get; set; }
+
+		[DataMember]
+		public TimeSpan? DefaultPlaybackEndTime { get; set; }
+
+		[DataMember]
 		public List<Guid> RowGuidId { get; set; }
 
 		public TimedSequenceData()
@@ -39,6 +45,8 @@ namespace VixenModules.Sequence.Timed
 			RowGuidId = new List<Guid>();
 			VisibleTimeStart = TimeSpan.MinValue;
 			DefaultSplitterDistance = 200;
+			DefaultPlaybackStartTime = TimeSpan.Zero;
+			DefaultPlaybackEndTime = TimeSpan.Zero;
 		}
 
 		public override IModuleDataModel Clone()
