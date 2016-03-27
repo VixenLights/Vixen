@@ -118,6 +118,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//Used for setting a mouse location to do repeat actions on.
 		private Point _mouseOriginalPoint = new Point(0,0);
 
+		//Used for the Align Effects to the nearest Mark.
+		private string AlignTo_Threshold;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -181,6 +184,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripSplitButton_CloseGaps.Image = Tools.GetIcon(Resources.fill_gaps, 24);
 			toolStripSplitButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripDropDownButton_AlignTo.Image = Tools.GetIcon(Resources.alignment, 24);
+			toolStripDropDownButton_AlignTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -197,6 +202,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (toolStripMenuItem != null)
 				{
 					toolStripMenuItem.Click += toolStripButtonCloseGapStrength_MenuItem_Click;
+				}
+			}
+
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_AlignTo.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					toolStripMenuItem.Click += toolStripDropDownButtonAlignToStrength_MenuItem_Click;
 				}
 			}
 
@@ -273,6 +287,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapToSelected", Name), true);
 			PopulateSnapStrength(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), 2));
 			TimelineControl.grid.CloseGap_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), ".100");
+			AlignTo_Threshold = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlignToThreshold", Name), ".800");
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), false);
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
@@ -301,6 +316,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (toolStripMenuItem != null)
 				{
 					if (TimelineControl.grid.CloseGap_Threshold.Equals(toolStripMenuItem.Tag))
+					{
+						toolStripMenuItem.PerformClick();
+						break;
+					}
+				}
+			}
+
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_AlignTo.DropDownItems)
+			{
+				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
+				if (toolStripMenuItem != null)
+				{
+					if (AlignTo_Threshold.Equals(toolStripMenuItem.ToString()))
 					{
 						toolStripMenuItem.PerformClick();
 						break;
@@ -4717,6 +4745,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void toolStripDropDownButtonAlignToStrength_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
+			if (item != null && !item.Checked)
+			{
+				foreach (ToolStripMenuItem subItem in item.Owner.Items)
+				{
+					if (!item.Equals(subItem) && subItem != null)
+					{
+						subItem.Checked = false;
+					}
+				}
+				item.Checked = true;
+				AlignTo_Threshold = item.ToString();
+			}
+		}
+
 		#endregion
 
 		#region Undo
@@ -4908,6 +4953,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SnapStrength", Name), TimelineControl.grid.SnapStrength);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CloseGapThreshold", Name), TimelineControl.grid.CloseGap_Threshold);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlignToThreshold", Name), AlignTo_Threshold);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), TimelineControl.grid.ResizeIndicator_Enabled);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), cADStyleSelectionBoxToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
@@ -5557,14 +5603,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		/// <summary>
 		/// Returns the TimeSpan location of the nearest mark to the given TimeSpan
-		/// Located within the threshhold: TimelineControl.grid.CloseGap_Threshold
+		/// Located within the threshhold: AlignTo_Threshold
 		/// </summary>
 		/// <param name="referenceTimeSpan"></param>
 		/// <returns></returns>
 		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
 		{
 			List<TimeSpan> marksInRange = new List<TimeSpan>();
-			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(TimelineControl.grid.CloseGap_Threshold));
+			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(AlignTo_Threshold));
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
@@ -5583,13 +5629,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (TimeSpan markTime in marksInRange)
 			{
-				if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult || result == TimeSpan.Zero)
+				if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
 				{
 					compareResult = markTime - referenceTimeSpan;
 					result = markTime;
 				}
 
-				if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult || result == TimeSpan.Zero)
+				if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult.Duration() || result == TimeSpan.Zero)
 				{
 					compareResult = referenceTimeSpan - markTime;
 					result = markTime;
