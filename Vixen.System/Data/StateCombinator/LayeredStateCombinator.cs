@@ -9,20 +9,19 @@ namespace Vixen.Data.StateCombinator
 {
 	public class LayeredStateCombinator:StateCombinator<LayeredStateCombinator>
 	{
-		private readonly IIntentStates _combinedStates = new IntentStateList(4);
+		private readonly IIntentStates _combinedMixingColorStates = new IntentStateList(4);
 		private readonly Dictionary<int, IIntentState<DiscreteValue>> _combinedDiscreteStates = new Dictionary<int, IIntentState<DiscreteValue>>(4);
-		private readonly StaticIntentState<LightingValue> _mixedIntentState = new StaticIntentState<LightingValue>(new LightingValue(Color.Black));
-		private byte _layer = 0;
+		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
+		private byte _layer;
 		
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
 			StateCombinatorValue.Clear();
 			if (states == null || states.Count <= 0) return StateCombinatorValue;
 			
-			_combinedStates.Clear();
+			_combinedMixingColorStates.Clear();
 			_combinedDiscreteStates.Clear();
 			
-			//var layer = states.Max(x => x.Layer);
 			_layer = 0;
 			foreach (var intentState in states)
 			{
@@ -46,10 +45,10 @@ namespace Vixen.Data.StateCombinator
 				}
 			}
 			
-			if (_combinedStates.Count > 0)
+			if (_combinedMixingColorStates.Count > 0)
 			{
-				var color = IntentHelpers.GetOpaqueRGBMaxColorForIntents(_combinedStates);
-				_mixedIntentState.SetValue(new LightingValue(color));
+				var color = IntentHelpers.GetOpaqueRGBMaxColorForIntents(_combinedMixingColorStates);
+				_mixedIntentState.SetValue(new RGBValue(color));
 				StateCombinatorValue.Add(_mixedIntentState);
 			}
 
@@ -65,9 +64,9 @@ namespace Vixen.Data.StateCombinator
 		{
 			if (obj.GetValue().Intensity > 0)
 			{
-				if (obj.Layer == _layer || _combinedStates.Count == 0)
+				if (obj.Layer == _layer || _combinedMixingColorStates.Count == 0)
 				{
-					_combinedStates.AddIntentState(obj);
+					_combinedMixingColorStates.AddIntentState(obj);
 				}
 			}
 		}
@@ -76,9 +75,9 @@ namespace Vixen.Data.StateCombinator
 		{
 			if (obj.GetValue().Intensity > 0)
 			{
-				if (obj.Layer == _layer || _combinedStates.Count == 0)
+				if (obj.Layer == _layer || _combinedMixingColorStates.Count == 0)
 				{
-					_combinedStates.AddIntentState(obj);
+					_combinedMixingColorStates.AddIntentState(obj);
 				}
 			}
 		}
@@ -103,6 +102,18 @@ namespace Vixen.Data.StateCombinator
 				}
 
 			}
+		}
+
+		public override void Handle(IIntentState<CommandValue> obj)
+		{
+			//You may pass untouched for now
+			StateCombinatorValue.Add(obj);
+		}
+
+		public override void Handle(IIntentState<PositionValue> obj)
+		{
+			//You may pass untouched for now
+			StateCombinatorValue.Add(obj);
 		}
 
 		//TODO deal with the other intent types!!!!!
