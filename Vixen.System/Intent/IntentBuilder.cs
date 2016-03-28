@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using Vixen.Data.Value;
 using Vixen.Sys;
@@ -9,6 +10,7 @@ namespace Vixen.Intent
 {
 	public class IntentBuilder
 	{
+		private static int EmptyColor = Color.FromArgb(0, 0, 0).ToArgb();
 		public static StaticArrayIntent<RGBValue> CreateStaticArrayIntent(LightingValue startValue, LightingValue endValue, TimeSpan duration)
 		{
 			var interval = VixenSystem.DefaultUpdateTimeSpan;
@@ -72,6 +74,7 @@ namespace Vixen.Intent
 					DiscreteValue[] values;
 					foreach (KeyValuePair<Color, DiscreteValue> color in colors)
 					{
+						if(color.Key.ToArgb() == EmptyColor) { continue;}
 						colorValues.TryGetValue(color.Key, out values);
 						if (values == null)
 						{
