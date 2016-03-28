@@ -19,7 +19,7 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData)SequenceData).RowHeightSettings = value; }
 		}
 
-		public List<Guid> RowGuidId
+		public Dictionary<Guid, bool> RowGuidId
 		{
 			get { return ((TimedSequenceData)SequenceData).RowGuidId; }
 			set { ((TimedSequenceData)SequenceData).RowGuidId = value; }
