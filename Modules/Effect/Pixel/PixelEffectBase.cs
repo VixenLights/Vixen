@@ -42,7 +42,6 @@ namespace VixenModules.Effect.Pixel
 			}
 			_elementData = data;
 			CleanUpRender();
-			_elementIntents.Clear();
 		}
 
 		[ProviderCategory(@"Layer", 0)]

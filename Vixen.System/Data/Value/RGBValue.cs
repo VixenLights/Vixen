@@ -12,9 +12,16 @@ namespace Vixen.Data.Value
 
 		public RGBValue(Color color)
 		{
-			R = color.R;
-			G = color.G;
-			B = color.B;
+			if (color.A != 0)
+			{
+				R = color.R;
+				G = color.G;
+				B = color.B;
+			}
+			else
+			{
+				R = G = B = 0;
+			}
 		}
 
 		/// <summary>

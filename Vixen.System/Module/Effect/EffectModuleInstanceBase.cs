@@ -24,7 +24,6 @@ namespace Vixen.Module.Effect
 		private ElementNode[] _targetNodes;
 		private TimeSpan _timeSpan;
 		private DefaultValueArrayMember _parameterValues;
-		protected ElementIntents _elementIntents;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
 
@@ -35,7 +34,6 @@ namespace Vixen.Module.Effect
 			TimeSpan = TimeSpan.Zero;
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
-			_elementIntents = new ElementIntents();
 		}
 
 		[Browsable(false)]

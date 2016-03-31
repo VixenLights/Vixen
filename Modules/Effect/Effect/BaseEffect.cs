@@ -41,7 +41,7 @@ namespace VixenModules.Effect.Effect
 
 		protected bool IsDiscrete()
 		{
-			return TargetNodes.Any(x => ColorModule.isElementNodeDiscreteColored(x));
+			return TargetNodes.Any(x => ColorModule.isElementNodeTreeDiscreteColored(x));
 		}
 		
 	}

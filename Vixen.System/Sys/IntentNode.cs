@@ -23,6 +23,12 @@ namespace Vixen.Sys
 
 		public TimeSpan EndTime { get; private set; }
 
+		public void OffSetTime(TimeSpan offset)
+		{
+			StartTime = StartTime+offset;
+			EndTime = StartTime + TimeSpan;
+		}
+
 		//contextAbsoluteEffectStartTime = effectNode.StartTime
 		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime)
 		{
@@ -77,5 +83,6 @@ namespace Vixen.Sys
 		IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer);
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
+		void OffSetTime(TimeSpan offset);
 	}
 }

@@ -60,7 +60,6 @@ namespace VixenModules.Effect.Nutcracker
 					RenderNode(node);
 			}
 
-			_elementIntents.Clear();
 		}
 
 		protected override EffectIntents _Render()
