@@ -6,13 +6,13 @@ using Vixen.Sys;
 
 namespace Vixen.Intent
 {
-	public class LinearIntent<TypeOfValue> : Dispatchable<LinearIntent<TypeOfValue>>, IIntent<TypeOfValue>
+	public class SegmentedLinearIntent<TypeOfValue> : Dispatchable<SegmentedLinearIntent<TypeOfValue>>, IIntent<TypeOfValue>
 		where TypeOfValue : IIntentDataType
 	{
 		private LinearInterpolatedIntentSegmentCollection<TypeOfValue> _segments;
 		private readonly IntentState<TypeOfValue> _intentState;
 
-		public LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
+		public SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
 							Interpolator<TypeOfValue> interpolator = null)
 			: this(startValue, endValue, timeSpan)
 		{
@@ -20,7 +20,7 @@ namespace Vixen.Intent
 			_segments = new LinearInterpolatedIntentSegmentCollection<TypeOfValue>(startValue, endValue, timeSpan, interpolator);
 		}
 
-		private LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan)
+		private SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan)
 		{
 			StartValue = startValue;
 			EndValue = endValue;
@@ -28,7 +28,7 @@ namespace Vixen.Intent
 			_intentState = new IntentState<TypeOfValue>(this, TimeSpan.Zero);
 		}
 
-		private LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
+		private SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
 							 LinearInterpolatedIntentSegmentCollection<TypeOfValue> segments)
 			: this(startValue, endValue, timeSpan)
 		{
@@ -90,9 +90,9 @@ namespace Vixen.Intent
 			TypeOfValue dividePointValue = GetStateAt(intentRelativeTime);
 
 			// Create the new intents.
-			LinearIntent<TypeOfValue> leftIntent = new LinearIntent<TypeOfValue>(StartValue, dividePointValue, intentRelativeTime,
+			SegmentedLinearIntent<TypeOfValue> leftIntent = new SegmentedLinearIntent<TypeOfValue>(StartValue, dividePointValue, intentRelativeTime,
 																				 leftSegments);
-			LinearIntent<TypeOfValue> rightIntent = new LinearIntent<TypeOfValue>(dividePointValue, EndValue,
+			SegmentedLinearIntent<TypeOfValue> rightIntent = new SegmentedLinearIntent<TypeOfValue>(dividePointValue, EndValue,
 																				  TimeSpan - intentRelativeTime, rightSegments);
 
 			return new[] { leftIntent, rightIntent };

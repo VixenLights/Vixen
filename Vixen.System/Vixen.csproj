@@ -198,6 +198,7 @@
     <Compile Include="Intent\DiscreteLightingIntent.cs" />
     <Compile Include="Intent\IntentBuilder.cs" />
     <Compile Include="Intent\IntentHelpers.cs" />
+    <Compile Include="Intent\NonSegmentedLinearIntent.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
@@ -494,7 +495,7 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
-    <Compile Include="Intent\LinearIntent.cs" />
+    <Compile Include="Intent\SegmentedLinearIntent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>

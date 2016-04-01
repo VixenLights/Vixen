@@ -3,7 +3,7 @@ using Vixen.Data.Value;
 
 namespace Vixen.Intent
 {
-	public class LightingIntent : LinearIntent<LightingValue>
+	public class LightingIntent : NonSegmentedLinearIntent<LightingValue>
 	{
 		public LightingIntent(LightingValue startValue, LightingValue endValue, TimeSpan timeSpan)
 			: base(startValue, endValue, timeSpan)
