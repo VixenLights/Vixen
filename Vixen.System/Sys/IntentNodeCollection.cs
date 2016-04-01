@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Vixen.Sys.Range;
+﻿using System.Collections.Generic;
 
 namespace Vixen.Sys
 {
