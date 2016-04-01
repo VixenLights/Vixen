@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Sys;
 
@@ -16,7 +17,7 @@ namespace Vixen.Execution
 
 		public IntentStateBuilder()
 		{
-			_elementStates = new ConcurrentDictionary<Guid, IIntentStates>();
+			_elementStates = new ConcurrentDictionary<Guid, IIntentStates>(4 * Environment.ProcessorCount, VixenSystem.Elements.Count());
 		}
 
 		public void Clear()
