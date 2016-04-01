@@ -42,15 +42,15 @@ namespace VixenModules.Effect.Alternating
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			EffectIntents data = new EffectIntents();
+			_elementData = new EffectIntents();
 
 			foreach (ElementNode node in TargetNodes)
 			{
 				if (node != null)
-					data.Add(RenderNode(node));
+					_elementData.Add(RenderNode(node));
 			}
 
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(data, TimeSpan, IsDiscrete());
+			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.

@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Chase
 
 			DoRendering(tokenSource);
 
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 		}
 
 		protected override EffectIntents _Render()

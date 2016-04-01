@@ -193,7 +193,7 @@ namespace VixenModules.Effect.Wipe
 					break;
 			}
 
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 
 		}
 

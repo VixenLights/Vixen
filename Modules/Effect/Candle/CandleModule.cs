@@ -208,7 +208,7 @@ namespace VixenModules.Effect.Candle
 				_RenderCandleOnElements(block.GetElements().ToList());
 			}
 
-			_effectIntents = IntentBuilder.ConvertToStaticArrayIntents(_effectIntents, TimeSpan, IsDiscrete());
+			//_effectIntents = IntentBuilder.ConvertToStaticArrayIntents(_effectIntents, TimeSpan, IsDiscrete());
 
 		}
 
