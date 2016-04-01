@@ -10,7 +10,7 @@ namespace Vixen.Execution.Context
 	public abstract class ContextBase : IContext
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		internal ContextCurrentEffectsIncremental _currentEffects; //TODO fix this to have a abstract class that is a List
+		internal ContextCurrentEffectsFull _currentEffects; 
 		private readonly IntentStateBuilder _elementStateBuilder;
 		private bool _disposed;
 
@@ -21,7 +21,7 @@ namespace Vixen.Execution.Context
 		{
 			Id = Guid.NewGuid();
 
-			_currentEffects = new ContextCurrentEffectsIncremental();
+			_currentEffects = new ContextCurrentEffectsFull();
 			_elementStateBuilder = new IntentStateBuilder();
 		}
 
@@ -116,14 +116,19 @@ namespace Vixen.Execution.Context
 			{
 				TimeSpan effectRelativeTime = currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
-				foreach (var effectIntent in effectIntents)
+				Parallel.ForEach(effectIntents, effectIntent =>
 				{
 					foreach (IIntentNode intentNode in effectIntent.Value)
 					{
-						IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, effectNode.Effect.Layer);
-						_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
+						if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
+						{
+							IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime,
+								effectNode.Effect.Layer);
+							_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
+						}
 					}
-				}
+				});
+
 			});
 		}
 
