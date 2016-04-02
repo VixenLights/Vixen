@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 
 namespace Vixen.Data.Value
@@ -33,7 +32,7 @@ namespace Vixen.Data.Value
 		public LightingValue(Color color, double intensity)
 		{
 			HSV.FromRGB(color, out _hue, out _saturation, out _value);
-			_intensity = XYZ.ClipValue(intensity, 0.0, 1.0);
+			_intensity = intensity;
 		}
 
 		/// <summary>
@@ -41,21 +40,21 @@ namespace Vixen.Data.Value
 		/// </summary>
 		/// <param name="h"></param>
 		/// <param name="s"></param>
-		/// <param name="i"></param>
+		/// <param name="v"></param>
 		public LightingValue(double h, double s, double v)
 		{
-			_hue = XYZ.ClipValue(h, 0.0, 1.0);
-			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
-			_value = XYZ.ClipValue(v, 0.0, 1.0);
+			_hue = h;
+			_saturation = s;
+			_value = v;
 			_intensity = 1;
 		}
 
 		public LightingValue(double h, double s, double v, double i)
 		{
-			_hue = XYZ.ClipValue(h, 0.0, 1.0);
-			_saturation = XYZ.ClipValue(s, 0.0, 1.0);
-			_value = XYZ.ClipValue(v, 0.0, 1.0);
-			_intensity = XYZ.ClipValue(i, 0.0, 1.0); ;
+			_hue = h;
+			_saturation = s;
+			_value = v;
+			_intensity = i;
 		}
 
 		public LightingValue(LightingValue lv, double i)
@@ -63,7 +62,7 @@ namespace Vixen.Data.Value
 			_hue = lv._hue;
 			_saturation = lv._saturation;
 			_value = lv._value;
-			_intensity = XYZ.ClipValue(i, 0.0, 1.0); ;
+			_intensity = i;
 		}
 
 		/// <summary>

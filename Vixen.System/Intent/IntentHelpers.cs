@@ -59,7 +59,7 @@ namespace Vixen.Intent
 			byte G = 0;
 			byte B = 0;
 
-			foreach (IIntentState intentState in states)
+			foreach (IIntentState intentState in states.AsList())
 			{
 				object value = intentState.GetValue();
 
