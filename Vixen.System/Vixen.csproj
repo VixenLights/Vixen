@@ -187,6 +187,7 @@
     <Compile Include="Export\Vir2Writer.cs" />
     <Compile Include="Export\HelixWriter.cs" />
     <Compile Include="Export\Vix2Writer.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />

@@ -96,17 +96,17 @@ namespace Vixen.Intent
 			IEnumerable<IGrouping<Color, IIntentState>> colorStates = states.GroupBy(
 				(x =>
 				{
-					if (x is IntentState<DiscreteValue>)
+					if (x is IIntentState<DiscreteValue>)
 					{
-						return ((IntentState<DiscreteValue>) x).GetValue().Color;
+						return ((IIntentState<DiscreteValue>) x).GetValue().Color;
 					}
-					if (x is IntentState<LightingValue>)
+					if (x is IIntentState<LightingValue>)
 					{
-						return ((IntentState<LightingValue>) x).GetValue().FullColor;
+						return ((IIntentState<LightingValue>) x).GetValue().FullColor;
 					}
-					if (x is IntentState<RGBValue>)
+					if (x is IIntentState<RGBValue>)
 					{
-						return ((IntentState<RGBValue>) x).GetValue().FullColor;
+						return ((IIntentState<RGBValue>) x).GetValue().FullColor;
 					}
 					
 					return Color.Empty;
@@ -118,17 +118,17 @@ namespace Vixen.Intent
 
 				double intensity = grouping.Max(x =>
 				{
-					if (x is IntentState<DiscreteValue>)
+					if (x is IIntentState<DiscreteValue>)
 					{
-						return ((IntentState<DiscreteValue>) x).GetValue().Intensity;
+						return ((IIntentState<DiscreteValue>) x).GetValue().Intensity;
 					}
-					if (x is IntentState<LightingValue>)
+					if (x is IIntentState<LightingValue>)
 					{
-						return ((IntentState<LightingValue>) x).GetValue().Intensity;
+						return ((IIntentState<LightingValue>) x).GetValue().Intensity;
 					}
-					if (x is IntentState<RGBValue>)
+					if (x is IIntentState<RGBValue>)
 					{
-						return ((IntentState<RGBValue>) x).GetValue().Intensity;
+						return ((IIntentState<RGBValue>) x).GetValue().Intensity;
 					}
 					
 					return 0;

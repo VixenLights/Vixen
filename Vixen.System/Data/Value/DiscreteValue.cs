@@ -7,7 +7,7 @@ namespace Vixen.Data.Value
 	public struct DiscreteValue : IIntentDataType
 	{
 		private readonly Color _color;
-		private readonly double _intensity;
+		private double _intensity;
 
 		public DiscreteValue(Color color) : this(color, 1)
 		{
@@ -58,6 +58,7 @@ namespace Vixen.Data.Value
 		public double Intensity
 		{
 			get { return _intensity; }
+			set { _intensity = value; }
 		}
 	}
 }
