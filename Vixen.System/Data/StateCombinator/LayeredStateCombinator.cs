@@ -83,7 +83,7 @@ namespace Vixen.Data.StateCombinator
 		public override void Handle(IIntentState<DiscreteValue> obj)
 		{
 			var discreteValue = obj.GetValue();
-			var argbColor = discreteValue.FullColor.ToArgb();
+			var argbColor = discreteValue.Color.ToArgb();
 			DiscreteValue value;
 
 			if (_tempDiscreteColors.TryGetValue(argbColor, out value))

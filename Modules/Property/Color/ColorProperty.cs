@@ -157,7 +157,7 @@ namespace VixenModules.Property.Color
 
 			if (element.Children.Any())
 			{
-				return element.Children.Any(x => isElementNodeDiscreteColored(x));
+				return element.Children.Any(x => isElementNodeTreeDiscreteColored(x));
 			}
 			return false;
 		}
