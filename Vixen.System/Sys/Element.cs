@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Data.StateCombinator;
-using Vixen.Pool;
 
 namespace Vixen.Sys
 {
-	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
-	// the default Object Equals() and GetHashCode().
 	/// <summary>
-	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
+	/// A logical representation of an element within a prop.
 	/// </summary>
 	[Serializable]
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
-		private const int ElementStateListRatio = 3;
-		private ushort _stateIndex;
+		private const ushort ElementStateListRatio = 3;
+		private int _stateIndex;
 		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
 		private readonly IntentStateList[] _stateLists = new IntentStateList[ElementStateListRatio];
 		
-		bool _disposed;
-
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
 		{
@@ -48,7 +43,9 @@ namespace Vixen.Sys
 
 		public void ClearStates()
 		{
-			ResetState();
+			var nextIndex = GetNextStateIndex();
+			_stateLists[nextIndex].Clear();
+			_stateIndex = nextIndex;
 		}
 
 		public IIntentStates State
@@ -85,23 +82,23 @@ namespace Vixen.Sys
 			return Id.GetHashCode();
 		}
 
-		private void ResetState()
+		
+		private int GetNextStateIndex()
 		{
 			if (_stateIndex < ElementStateListRatio - 1)
 			{
-				_stateLists[_stateIndex + 1].Clear();
-				_stateIndex++;
+				return _stateIndex + 1;
 			}
 			else
 			{
-				_stateLists[0].Clear();
-				_stateIndex = 0;
+				return 0;
 			}
 		}
 
 		private void _AggregateStateFromContexts()
 		{
-			ResetState();
+			var nextIndex = GetNextStateIndex();
+			_stateLists[nextIndex].Clear();
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)
@@ -112,10 +109,11 @@ namespace Vixen.Sys
 					var states = GetCombinedState(iss);
 					foreach (var intentState in states)
 					{
-						_stateLists[_stateIndex].Add(intentState);
+						_stateLists[nextIndex].Add(intentState);
 					}
 				}
 			}
+			_stateIndex = nextIndex;
 		}
 
 		private List<IIntentState> GetCombinedState(IIntentStates states)
