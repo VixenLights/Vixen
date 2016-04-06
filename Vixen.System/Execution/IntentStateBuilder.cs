@@ -31,7 +31,10 @@ namespace Vixen.Execution
 		public void AddElementState(Guid elementId, IIntentState state)
 		{
 			IIntentStates elementIntentList = _GetElementIntentList(elementId);
-			elementIntentList.AddIntentState(state);
+			lock (elementIntentList)
+			{
+				elementIntentList.AddIntentState(state);
+			}
 		}
 
 		public IIntentStates GetElementState(Guid elementId)
