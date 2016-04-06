@@ -129,6 +129,7 @@ namespace Vixen.Data.StateCombinator
 				{
 					double intensity = color.Value.Intensity*(1 - highDiscreteValue.Intensity);
 					highDiscreteValue.Intensity = Math.Max(intensity, highDiscreteValue.Intensity);
+					highLayer[color.Key] = highDiscreteValue; //this is a struct, so put our modified copy back in the collection.
 				}
 				else
 				{
