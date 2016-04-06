@@ -68,26 +68,33 @@ namespace VixenModules.Effect.Twinkle
 					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
 			}
 
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete);
 		}
+
+		public bool IsDiscrete { get; private set; }
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			var validColors = GetValidColors();
 
-			if (validColors.Any() &&
-				(!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))) //Discrete colors specified
+			if (validColors.Any())
 			{
-				_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
+				IsDiscrete = true;
+				if (!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors)) //Discrete colors specified
+				{
+					_data.ColorGradient = new ColorGradient(validColors.DefaultIfEmpty(Color.White).First());
 
-				//Set a default color 
-				_data.StaticColor = validColors.First();
+					//Set a default color 
+					_data.StaticColor = validColors.First();
+				}
 			}
-
+			else
+			{
+				IsDiscrete = false;
+			}
 		}
-
+		
 		protected override EffectIntents _Render()
 		{
 			return _elementData;
@@ -382,14 +389,14 @@ namespace VixenModules.Effect.Twinkle
 								//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new [] {value, value}));
 								//pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
 								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan);
+								pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, IsDiscrete);
 								result.Add(pulseData);
 							}
 						} else {
 							//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
 							//pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(0));
 							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue })), new ColorGradient(ColorGradient.GetColorAt(0)), TimeSpan);
+							pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue })), new ColorGradient(ColorGradient.GetColorAt(0)), TimeSpan, IsDiscrete);
 							result.Add(pulseData);
 						}
 						break;
@@ -398,7 +405,7 @@ namespace VixenModules.Effect.Twinkle
 						//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
 						//pulse.ColorGradient = ColorGradient;
 						//pulseData = pulse.Render();
-						pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new [] { minPulseValue, minPulseValue })), ColorGradient, TimeSpan);
+						pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new [] { minPulseValue, minPulseValue })), ColorGradient, TimeSpan, IsDiscrete);
 						result.Add(pulseData);
 						break;
 
@@ -406,7 +413,7 @@ namespace VixenModules.Effect.Twinkle
 						//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
 						//pulse.ColorGradient = StaticColorGradient;
 						//pulseData = pulse.Render();
-						pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new [] { minPulseValue, minPulseValue })), StaticColorGradient, TimeSpan);
+						pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new [] { minPulseValue, minPulseValue })), StaticColorGradient, TimeSpan, IsDiscrete);
 						result.Add(pulseData);
 						break;
 
@@ -418,14 +425,14 @@ namespace VixenModules.Effect.Twinkle
 								//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {value, value}));
 								//pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
 								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan);
+								pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, IsDiscrete);
 								result.Add(pulseData);
 							}
 						} else {
 							//pulse.LevelCurve = new Curve(new PointPairList(new double[] {0, 100}, new double[] {minPulseValue, minPulseValue}));
 							//pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan);
+							pulseData = PulseRenderer.RenderNode(node, new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { minPulseValue, minPulseValue })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, IsDiscrete);
 							result.Add(pulseData);
 						}
 						break;
@@ -446,7 +453,7 @@ namespace VixenModules.Effect.Twinkle
 						case TwinkleColorHandling.GradientForEachPulse:
 							//pulse.ColorGradient = ColorGradient;
 							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient, twinkle.Duration);
+							pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient, twinkle.Duration, IsDiscrete);
 							pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 							result.Add(pulseData);
 							break;
@@ -474,7 +481,7 @@ namespace VixenModules.Effect.Twinkle
 									//pulse.LevelCurve = newCurve;
 									//pulse.ColorGradient = new ColorGradient(color);
 									//pulseData = pulse.Render();
-									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(color), twinkle.Duration);
+									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(color), twinkle.Duration, IsDiscrete);
 									pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 									result.Add(pulseData);
 									
@@ -483,7 +490,7 @@ namespace VixenModules.Effect.Twinkle
 							} else {
 								//pulse.ColorGradient = ColorGradient.GetSubGradient(startPos, endPos);
 								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient.GetSubGradient(startPos, endPos), twinkle.Duration);
+								pulseData = PulseRenderer.RenderNode(node, curve, ColorGradient.GetSubGradient(startPos, endPos), twinkle.Duration, IsDiscrete);
 								pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 								result.Add(pulseData);
 							}
@@ -492,7 +499,7 @@ namespace VixenModules.Effect.Twinkle
 						case TwinkleColorHandling.StaticColor:
 							//pulse.ColorGradient = StaticColorGradient;
 							//pulseData = pulse.Render();
-							pulseData = PulseRenderer.RenderNode(node, curve, StaticColorGradient, twinkle.Duration);
+							pulseData = PulseRenderer.RenderNode(node, curve, StaticColorGradient, twinkle.Duration, IsDiscrete);
 							pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 							result.Add(pulseData);
 							break;
@@ -510,14 +517,14 @@ namespace VixenModules.Effect.Twinkle
 									//pulse.LevelCurve = newCurve;
 									//pulse.ColorGradient = new ColorGradient(colorProportion.Item1);
 									//pulseData = pulse.Render();
-									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(colorProportion.Item1), twinkle.Duration);
+									pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(colorProportion.Item1), twinkle.Duration, IsDiscrete);
 									pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 									result.Add(pulseData);
 								}
 							} else {
 								//pulse.ColorGradient = new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup));
 								//pulseData = pulse.Render();
-								pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), twinkle.Duration);
+								pulseData = PulseRenderer.RenderNode(node, curve, new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), twinkle.Duration, IsDiscrete);
 								pulseData.OffsetAllCommandsByTime(twinkle.StartTime);
 								result.Add(pulseData);
 							}

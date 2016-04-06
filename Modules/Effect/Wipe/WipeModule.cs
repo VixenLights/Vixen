@@ -230,7 +230,7 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -270,7 +270,7 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -402,7 +402,7 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -443,7 +443,7 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
 									_elementData.Add(result);
 								}
@@ -477,17 +477,24 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
-
+		public bool IsDiscrete { get; private set; }
 
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+			var validColors = GetValidColors();
+			if (validColors.Any())
 			{
-				//Our color is not valid for any elements we have.
-				//Try to set a default color gradient from our available colors
-				_data.ColorGradient = new ColorGradient(validColors.First());
+				IsDiscrete = true;
+				if (!_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				{
+					//Our color is not valid for any elements we have.
+					//Try to set a default color gradient from our available colors
+					_data.ColorGradient = new ColorGradient(validColors.First());
+				}
+			}
+			else
+			{
+				IsDiscrete = false;
 			}
 		}
 

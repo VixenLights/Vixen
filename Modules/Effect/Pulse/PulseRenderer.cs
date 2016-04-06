@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Pulse
 	{
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration)
+		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete)
 		{
 			//Collect all the points first.
 			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient).ToArray();
@@ -30,9 +30,9 @@ namespace VixenModules.Effect.Pulse
 				if (elementNode == null || elementNode.Element == null)
 					continue;
 
-				ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
+				//ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
 
-				if (colorType == ElementColorType.FullColor)
+				if (!isDiscrete)
 				{
 					AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData);
 				}

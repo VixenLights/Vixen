@@ -151,15 +151,7 @@ namespace VixenModules.Property.Color
 
 		public static bool isElementNodeTreeDiscreteColored(ElementNode element)
 		{
-			ElementColorType type = getColorTypeForElementNode(element);
-			if (type == ElementColorType.MultipleDiscreteColors || type == ElementColorType.SingleColor)
-				return true;
-
-			if (element.Children.Any())
-			{
-				return element.Children.Any(x => isElementNodeTreeDiscreteColored(x));
-			}
-			return false;
+			return element.GetLeafEnumerator().Any(x => isElementNodeDiscreteColored(x));
 		}
 
 		// gets a enumerable of valid colors for the given element node. If the element is full color, an empty enumeration

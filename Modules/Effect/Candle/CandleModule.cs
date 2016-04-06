@@ -177,18 +177,24 @@ namespace VixenModules.Effect.Candle
 				OnPropertyChanged();
 			}
 		}
-
+		public bool IsDiscrete { get; private set; }
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if (validColors.Any() && !validColors.Contains(_data.Color))
+			var validColors = GetValidColors();
+			if (validColors.Any())
+			{ 
+				if (!validColors.Contains(_data.Color))
+				{
+					//Our color is not valid for any elements we have.
+					//Set a default color 
+					Color = validColors.First();
+				}
+			}
+			else
 			{
-				//Our color is not valid for any elements we have.
-				//Set a default color 
-				Color = validColors.First();
+				IsDiscrete = false;
 			}
 
 		}
@@ -244,7 +250,7 @@ namespace VixenModules.Effect.Candle
 				}
 				else
 				{
-					var intent = IsDiscrete() ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) 
+					var intent = IsDiscrete ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) 
 												: CreateIntent(Color, Color, currentLevel, nextLevel, length);
 
 					// Add the intent.

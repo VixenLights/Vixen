@@ -38,9 +38,13 @@ namespace VixenModules.Effect.SetLevel
 			foreach (ElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
-				
+
 				if (node != null)
-					RenderNode(node);
+				{
+					_elementData = RenderNode(node);
+					//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+					
+				}
 			}
 		}
 
@@ -108,34 +112,41 @@ namespace VixenModules.Effect.SetLevel
 				OnPropertyChanged();
 			}
 		}
+
+		public bool IsDiscrete { get; private set; }
 		
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			if (IsDiscrete())
+			var validColors = GetValidColors();
+			if (validColors.Any())
 			{
-				HashSet<Color> validColors = new HashSet<Color>();
-				validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-				if (validColors.Any() && !validColors.Contains(_data.color.ToArgb()))
+				IsDiscrete = true;
+				if (!validColors.Contains(_data.color.ToArgb()))
 				{
 					//Our color is not valid for any elements we have.
 					//Set a default color 
 					Color = validColors.First();
 				}
 			}
-
+			else
+			{
+				IsDiscrete = false;
+			}
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private EffectIntents RenderNode(ElementNode node)
 		{
-			var isDiscrete = IsDiscrete();
+			EffectIntents effectIntents = new EffectIntents();
 			foreach (ElementNode elementNode in node.GetLeafEnumerator())
 			{
-				var intent = isDiscrete ? CreateDiscreteIntent(Color, IntensityLevel, TimeSpan) : CreateIntent(Color, IntensityLevel, TimeSpan);
-				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
+				var intent = IsDiscrete ? CreateDiscreteIntent(Color, (float) HSV.FromRGB(Color).V * IntensityLevel, TimeSpan) : CreateIntent(Color, (float) HSV.FromRGB(Color).V *IntensityLevel, TimeSpan);
+				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
+
+			return effectIntents;
 		}
 		
 	}

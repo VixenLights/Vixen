@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Vixen.Attributes;
@@ -18,6 +19,13 @@ namespace VixenModules.Effect.Effect
 		[ProviderDescription(@"Layer")]
 		[PropertyOrder(3)]
 		public override byte Layer { get; set; }
+
+		protected HashSet<Color> GetValidColors()
+		{
+			HashSet<Color> validColors = new HashSet<Color>();
+			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
+			return validColors;
+		}
 
 		protected static IIntent CreateIntent(Color color, double intensity, TimeSpan duration)
 		{
@@ -39,10 +47,5 @@ namespace VixenModules.Effect.Effect
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
 
-		protected bool IsDiscrete()
-		{
-			return TargetNodes.Any(x => ColorModule.isElementNodeTreeDiscreteColored(x));
-		}
-		
 	}
 }
