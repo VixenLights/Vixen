@@ -53,10 +53,21 @@ namespace Vixen.Data.Policy
 				_commandResult = CombineCommands(intentStates);
 			}
 		}
+		public override void Handle(IntentDataFlowData obj)
+		{
+			if (obj != null)
+			{
+				//We only have one intent, so no need to combine, just evaluate and move on
+				_commandResult = EvaluateIntentState(obj.Value);
+			}
+			else
+			{
+				_commandResult = null;
+			}
+		}
 
 		protected internal virtual List<ICommand> EvaluateIntentStates(List<IIntentState> intentStates)
 		{
-			//return intentStates.Select(_GetEvaluator().Evaluate);
 			_commands.Clear();
 			foreach (var intentState in intentStates)
 			{
@@ -64,6 +75,11 @@ namespace Vixen.Data.Policy
 			}
 
 			return _commands;
+		}
+
+		protected internal virtual ICommand EvaluateIntentState(IIntentState intentState)
+		{
+			return _GetEvaluator().Evaluate(intentState);
 		}
 
 		protected internal virtual ICommand CombineCommands(List<ICommand> commands)

@@ -137,6 +137,7 @@
     <Compile Include="Data\Flow\IDataFlowComponentReference.cs" />
     <Compile Include="Data\Flow\IDataFlowOutput.cs" />
     <Compile Include="Data\Flow\CommandOutputDataFlowAdapter.cs" />
+    <Compile Include="Data\Flow\IntentDataFlowData.cs" />
     <Compile Include="Data\Flow\IntentOutputDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\CommandDataFlowData.cs" />
     <Compile Include="Data\Flow\CommandsDataFlowData.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
     <Compile Include="Data\StateCombinator\StateCombinator.cs" />
     <Compile Include="Data\Value\DiscreteValue.cs" />
+    <Compile Include="Data\Value\IntensityValue.cs" />
     <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />

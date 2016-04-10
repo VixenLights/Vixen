@@ -22,5 +22,8 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IIntent<DiscreteValue> obj)
 		{
 		}
+		public virtual void Handle(IIntent<IntensityValue> obj)
+		{
+		}
 	}
 }

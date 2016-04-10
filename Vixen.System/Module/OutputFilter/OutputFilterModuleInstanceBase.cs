@@ -75,6 +75,10 @@ namespace Vixen.Module.OutputFilter
 		{
 		}
 
+		public virtual void Handle(IntentDataFlowData obj)
+		{
+		}
+
 		#endregion
 
 		#region IDataFlowComponent

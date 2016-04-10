@@ -28,5 +28,10 @@ namespace Vixen.Data.Evaluator
 			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
 		}
 
+		public override void Handle(IIntentState<IntensityValue> obj)
+		{
+			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
+		}
+
 	}
 }

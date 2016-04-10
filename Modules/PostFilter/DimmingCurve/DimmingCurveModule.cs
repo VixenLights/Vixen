@@ -189,6 +189,13 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
 			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
 		}
+
+		public override void Handle(IIntentState<IntensityValue> obj)
+		{
+			IntensityValue intensityValue = obj.GetValue();
+			double newIntensity = _curve.GetValue(intensityValue.Intensity * 100.0) / 100.0;
+			_intentValue = new StaticIntentState<IntensityValue>(new IntensityValue(newIntensity));
+		}
 	}
 
 
@@ -226,8 +233,16 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			}
 		}
 
+		public void ProcessInputData(IntentDataFlowData data)
+		{
+			var states = new List<IIntentState>(1);
+			states.Add(_filter.Filter(data.Value));
+			Data.Value = states;
+		}
+
 		public IntentsDataFlowData Data { get; private set; }
 
+	
 		IDataFlowData IDataFlowOutput.Data
 		{
 			get { return Data; }
@@ -237,5 +252,6 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			get { return "Dimming Curve Output"; }
 		}
+
 	}
 }

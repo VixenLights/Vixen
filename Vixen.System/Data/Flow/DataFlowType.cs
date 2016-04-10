@@ -5,6 +5,7 @@
 		None,
 		SingleCommand,
 		MultipleCommands,
-		MultipleIntents
+		MultipleIntents,
+		SingleIntent
 	}
 }

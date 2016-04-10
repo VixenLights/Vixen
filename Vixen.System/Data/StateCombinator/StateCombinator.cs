@@ -49,6 +49,9 @@ namespace Vixen.Data.StateCombinator
 		public virtual void Handle(IIntentState<DiscreteValue> obj)
 		{
 		}
+		public virtual void Handle(IIntentState<IntensityValue> obj)
+		{
+		}
 
 		protected List<IIntentState> StateCombinatorValue { get; set; }
 	}

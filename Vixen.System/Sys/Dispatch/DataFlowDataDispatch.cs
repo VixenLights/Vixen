@@ -15,5 +15,9 @@ namespace Vixen.Sys.Dispatch
 		public virtual void Handle(IntentsDataFlowData obj)
 		{
 		}
+
+		public virtual void Handle(IntentDataFlowData obj)
+		{
+		}
 	}
 }

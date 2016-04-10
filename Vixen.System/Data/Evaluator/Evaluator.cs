@@ -37,6 +37,10 @@ namespace Vixen.Data.Evaluator
 		{
 		}
 
+		public virtual void Handle(IIntentState<IntensityValue> obj)
+		{
+		}
+
 		protected ICommand EvaluatorValue { get; set; }
 
 	}
