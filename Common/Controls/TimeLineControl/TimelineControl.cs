@@ -30,7 +30,7 @@ namespace Common.Controls.Timeline
 		// Right side (Panel 2)
 		public Ruler ruler;
 		public Grid grid;
-		private Waveform waveform;
+		public Waveform waveform;
 
 		#endregion
 
@@ -190,7 +190,7 @@ namespace Common.Controls.Timeline
 			ruler = new Ruler(TimeInfo)
 			        	{
 			        		Dock = DockStyle.Top,
-			        		Height = 40,
+			        		Height = 50,
 			        	};
 			splitContainer.Panel2.Controls.Add(ruler);
 
@@ -625,6 +625,12 @@ namespace Common.Controls.Timeline
 			remove { ruler.TimeRangeDragged -= value; }
 		}
 
+		public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove
+		{
+			add { Ruler.SelectedMarkMove += value; }
+			remove { Ruler.SelectedMarkMove -= value; }
+		}
+
 		#endregion
 		
 		#region Event Handlers
@@ -681,7 +687,7 @@ namespace Common.Controls.Timeline
 				if (row.Name == selectedRow.Name)
 				{
 					row.Height = selectedRow.Height;
-				}
+		}
 			}
 		}
 
@@ -796,7 +802,8 @@ namespace Common.Controls.Timeline
 				{
 					// holding the control key zooms the horizontal axis under the cursor, by 10% per mouse wheel tick
 					ZoomTime(1.0 - ((double)e.Delta / 1200.0), e.Location);
-				}
+	//			waveform.Invalidate();
+			}
 				else
 				{
 					// holding the control key zooms the horizontal axis, by 10% per mouse wheel tick
@@ -807,7 +814,8 @@ namespace Common.Controls.Timeline
 				// holding the skift key moves the horizontal axis, by 10% of the visible time span per mouse wheel tick
 				// wheel towards user   --> negative delta --> VisibleTimeStart increases
 				// wheel away from user --> positive delta --> VisibleTimeStart decreases
-				VisibleTimeStart += VisibleTimeSpan.Scale(-((double) e.Delta/1200.0));
+				VisibleTimeStart += VisibleTimeSpan.Scale(-((double)e.Delta / 1200.0));
+	//			waveform.Invalidate();
 			}
 			else {
 				// moving the mouse wheel with no modifiers moves the display vertically, 40 pixels per mouse wheel tick

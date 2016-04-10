@@ -25,6 +25,8 @@ namespace Common.Controls.Timeline
 		private Audio audio;
 		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
+		private bool waveFormMark;
+		private TimeSpan selectedTime;
 
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
@@ -36,6 +38,40 @@ namespace Common.Controls.Timeline
 			samples = new SampleAggregator();
 			BackColor = Color.Gray;
 			Visible = false;
+			Ruler.SelectedMarkMove += waveForm_SelectedMarkMove;
+		}
+
+		private void waveForm_SelectedMarkMove(object sender, SelectedMarkMoveEventArgs e)
+		{
+			waveFormMark = e.WaveFormMark;
+			selectedTime = e.SelectedMark;
+			Refresh();
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			//Adjusts WaveForm Height with a minimum of 40 pixels
+			if (e.Button == MouseButtons.Left & Cursor == Cursors.HSplit & e.Location.Y > 40)
+			{
+				Height = e.Location.Y + 1;
+			}
+			else
+			{
+				Cursor = e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6 ? Cursors.HSplit : Cursors.Hand;
+			}
+		}
+
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			base.OnMouseDoubleClick(e);
+
+			//Resets WaveForm Height to default value of 50 when you double click the HSplit
+			if (Cursor == Cursors.HSplit)
+			{
+				Height = 50;
+			}
 		}
 
 		private void CreateWorker()
@@ -181,6 +217,17 @@ namespace Common.Controls.Timeline
 			{
 				if (samples.Count > 0 && !_creatingSamples)
 				{
+					//Draws the Mark throught the waveform if Mark is being moved.
+					if (waveFormMark)
+					{
+						Pen p;
+						p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
+						Single x1 = timeToPixels(selectedTime - VisibleTimeStart);
+						e.Graphics.DrawLine(p, x1, 0, x1, Height);
+						p.Dispose();
+					}
+
+					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
 					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
@@ -197,15 +244,16 @@ namespace Common.Controls.Timeline
 						float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
 						e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
 					}
+					
 				}
 				else
 				{
 					using (Font f = new Font(Font.FontFamily, 10f, FontStyle.Regular))
 					{
 						e.Graphics.DrawString("Building waveform.....", f, Brushes.Black,
-							new Point((int) timeToPixels(VisibleTimeStart) + 15,
-								(int) (Height - f.GetHeight(e.Graphics))/2),
-							new StringFormat {Alignment = StringAlignment.Near});
+							new Point((int)timeToPixels(VisibleTimeStart) + 15,
+								(int)(Height - f.GetHeight(e.Graphics)) / 2),
+							new StringFormat { Alignment = StringAlignment.Near });
 					}
 				}
 			}
@@ -318,5 +366,6 @@ namespace Common.Controls.Timeline
 			}
 			base.Dispose(disposing);
 		}
+
 	}
 }
