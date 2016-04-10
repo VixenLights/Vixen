@@ -54,5 +54,17 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData)SequenceData).DefaultSplitterDistance = value; }
 		}
 
+		public TimeSpan? DefaultPlaybackStartTime
+		{
+			get { return ((TimedSequenceData)SequenceData).DefaultPlaybackStartTime; }
+			set { ((TimedSequenceData)SequenceData).DefaultPlaybackStartTime = value; }
+		}
+
+		public TimeSpan? DefaultPlaybackEndTime
+		{
+			get { return ((TimedSequenceData)SequenceData).DefaultPlaybackEndTime; }
+			set { ((TimedSequenceData)SequenceData).DefaultPlaybackEndTime = value; }
+		}
+
 	}
 }

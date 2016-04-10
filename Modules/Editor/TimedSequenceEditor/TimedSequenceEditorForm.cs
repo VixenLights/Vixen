@@ -426,6 +426,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.DefaultSplitterDistance != 0)
 				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
 
+			_mPrevPlaybackStart = TimelineControl.PlaybackStartTime = _sequence.DefaultPlaybackStartTime;
+			_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime =_sequence.DefaultPlaybackEndTime;
+
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
 			b.Click += b_Click;
@@ -1126,6 +1129,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
 			//Add Splitter Distance, the width of the RowList Column
 			_sequence.DefaultSplitterDistance = TimelineControl.DefaultSplitterDistance;
+			//Add Playback start and end time
+			_sequence.DefaultPlaybackStartTime = TimelineControl.PlaybackStartTime;
+			_sequence.DefaultPlaybackEndTime = TimelineControl.PlaybackEndTime;
 			//Adds the Row height settings for only those Rows that are not within the Default range
 			foreach (Row row in TimelineControl.Rows)
 			{
@@ -2634,7 +2640,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// Set the timeline control
 				TimelineControl.PlaybackStartTime = e.Time;
 				TimelineControl.PlaybackEndTime = null;
-
+				SequenceModified();
 				if (autoPlay)
 				{
 					_PlaySequence(e.Time, TimeSpan.MaxValue);
