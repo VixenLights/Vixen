@@ -899,6 +899,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				AddNodeAsRow(node, null);
 			}
+
+			//Expand groups based on save settings
+			foreach (Row row in TimelineControl.Rows)
+			{
+				if (_sequence.RowGuidId == null) continue;
+				foreach (var rowGuidId in _sequence.RowGuidId)
+				{
+					if (rowGuidId.Key != ((ElementNode) row.Tag).Id) continue;
+					row.TreeOpen = true;
+					if (row.ParentRow != null)
+					{
+						row.TreeOpen = true;
+						row.Visible = rowGuidId.Value;
+					}
+				}
+			}
 			TimelineControl.EnableDisableHandlers();
 
 			TimelineControl.LayoutRows();
@@ -1124,7 +1140,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
 		{
 			_sequence.RowHeightSettings = new List<RowHeightSetting>();
-			_sequence.RowGuidId = new List<Guid>();
+			_sequence.RowGuidId = new Dictionary<Guid, bool>();
 			//Add Default Row Height
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
 			//Add Splitter Distance, the width of the RowList Column
@@ -1140,14 +1156,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					RowHeightSetting newRowHeightCollection = new RowHeightSetting { RowHeight = row.Height, RowName = row.Name };
 					_sequence.RowHeightSettings.Add(newRowHeightCollection);
 				}
-
 			}
 			//Adds the Expanded Groups for the Row List.
 			foreach (Row row in TimelineControl.Rows)
 			{
 				if (row.TreeOpen)
 				{
-					_sequence.RowGuidId.Add(((ElementNode)row.Tag).Id);
+					if (!_sequence.RowGuidId.Keys.Contains(((ElementNode)row.Tag).Id))
+						_sequence.RowGuidId.Add(((ElementNode)row.Tag).Id, row.Visible);
 				}
 			}
 		}
@@ -3414,9 +3430,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			newRow.ElementRemoved += ElementRemovedFromRowHandler;
 			newRow.ElementAdded += ElementAddedToRowHandler;
 
-			if (_sequence.RowGuidId != null && _sequence.RowGuidId.Contains(node.Id))
-				newRow.TreeOpen = true;
-
 			// Tag it with the node it refers to, and take note of which row the given element node will refer to.
 			newRow.Tag = node;
 			if (_elementNodeToRows.ContainsKey(node))
@@ -3435,6 +3448,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (ElementNode child in node.Children)
 			{
 				AddNodeAsRow(child, newRow);
+				
 			}
 		}
 

@@ -28,13 +28,14 @@ namespace VixenModules.Sequence.Timed
 		public int DefaultSplitterDistance { get; set; }
 
 		[DataMember]
-		public TimeSpan? DefaultPlaybackStartTime { get; set; }
+		public Dictionary<Guid, bool> RowGuidId { get; set; }
+		
 
 		[DataMember]
 		public TimeSpan? DefaultPlaybackEndTime { get; set; }
 
 		[DataMember]
-		public List<Guid> RowGuidId { get; set; }
+		public TimeSpan? DefaultPlaybackStartTime { get; set; }
 
 		public TimedSequenceData()
 		{
@@ -42,7 +43,7 @@ namespace VixenModules.Sequence.Timed
 			TimePerPixel = TimeSpan.MinValue;
 			RowHeightSettings = new List<RowHeightSetting>();
 			DefaultRowHeight = 32;
-			RowGuidId = new List<Guid>();
+			RowGuidId = new Dictionary<Guid, bool>();
 			VisibleTimeStart = TimeSpan.MinValue;
 			DefaultSplitterDistance = 200;
 			DefaultPlaybackStartTime = TimeSpan.Zero;
