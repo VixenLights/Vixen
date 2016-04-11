@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Extensions;
@@ -17,6 +16,7 @@ namespace Vixen.Data.StateCombinator
 		private Dictionary<int, DiscreteValue> _combinedDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly Dictionary<int, DiscreteValue> _tempDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
+		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
 		
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
@@ -36,41 +36,34 @@ namespace Vixen.Data.StateCombinator
 			_combinedDiscreteColors.Clear();
 			_tempDiscreteColors.Clear();
 
-			//Order all states in decending order by layer and then make groups by layer
-			var orderedStates = states.OrderByDescending(x => x.Layer).GroupBy(x => x.Layer);
+			//Order all states in decending order by layer
+			//We are goign to do this without Linq because it is way more memory efficient
+			states.Sort(LayerComparer);
+
+			//Establish the top level layer
+			byte currentLayer = states[0].Layer;
 			
 			//Walk through the groups of layers and process them
-			foreach (var intentStateGroups in orderedStates)
+			foreach (var state in states)
 			{
 				//Iterate the states in the layer
-				foreach (IIntentState intentState in intentStateGroups)
+				if (state.Layer == currentLayer)
 				{
 					//Dispatch each state to the Handle method for its type to combine down to one state
 					//per layer in a mixing fashion
-					intentState.Dispatch(this);
+					state.Dispatch(this);
+					continue;
 				}
-
-				//Check to see if the layer had any mixing type colors that were combined down to one to process
-				if (_tempMixingColor != Color.Empty)
-				{
-					//If there are them mix that with the previous layer with the layer mixing logic
-					//If we have not seen a previous layer, just assign this color as our color
-					//Otherwise pass this color and the previous layer color into the mixing logic
-					_combinedMixingColor = _combinedMixingColor == Color.Empty ? _tempMixingColor : MixLayerColors(_combinedMixingColor, _tempMixingColor);
-				}
-				//Check to see if there were any discrete types. These are combined down to one per color
-				if (_tempDiscreteColors.Count > 0)
-				{
-					//If there are then mix that with the previous layer with the layer mixing logic
-					//Discrete are special, so we have to handle them a litle different. We need to maintain each indivdual color and manipulate the intensity
-					MixDiscreteLayerColors(ref _combinedDiscreteColors, _tempDiscreteColors);
-				}
-
-				//reset our temp variables and go back for more layers
-				_tempMixingColor = Color.Empty;
-				_tempDiscreteColors.Clear();
+				
+				//We have a new layer so we need to wrap up the previous one
+				MixLayers();
+				state.Dispatch(this);
+				
 			}
-			
+
+			//Mix the final layer
+			MixLayers();
+
 			//Now we should be down to one mixing type and we can put that in our return obejct as a RGBValue.
 			//This will convert all mxing types to the simpler more efficient RGBValue 
 			if (_combinedMixingColor != Color.Empty)
@@ -90,6 +83,31 @@ namespace Vixen.Data.StateCombinator
 			}
 
 			return StateCombinatorValue;
+		}
+
+		private void MixLayers()
+		{
+			//Check to see if the layer had any mixing type colors that were combined down to one to process
+			if (_tempMixingColor != Color.Empty)
+			{
+				//If there are them mix that with the previous layer with the layer mixing logic
+				//If we have not seen a previous layer, just assign this color as our color
+				//Otherwise pass this color and the previous layer color into the mixing logic
+				_combinedMixingColor = _combinedMixingColor == Color.Empty
+					? _tempMixingColor
+					: MixLayerColors(_combinedMixingColor, _tempMixingColor);
+			}
+			//Check to see if there were any discrete types. These are combined down to one per color
+			if (_tempDiscreteColors.Count > 0)
+			{
+				//If there are then mix that with the previous layer with the layer mixing logic
+				//Discrete are special, so we have to handle them a litle different. We need to maintain each indivdual color and manipulate the intensity
+				MixDiscreteLayerColors(ref _combinedDiscreteColors, _tempDiscreteColors);
+			}
+
+			//reset our temp variables and go back for more layers
+			_tempMixingColor = Color.Empty;
+			_tempDiscreteColors.Clear();
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
@@ -160,5 +178,16 @@ namespace Vixen.Data.StateCombinator
 			}
 		}
 		
+	}
+
+	/// <summary>
+	/// Class to order states in decending order by layer
+	/// </summary>
+	internal class IntentStateLayerComparer : IComparer<IIntentState>
+	{
+		public int Compare(IIntentState x, IIntentState y)
+		{
+			return -1 * x.Layer.CompareTo(y.Layer);
+		}
 	}
 }
