@@ -426,8 +426,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.DefaultSplitterDistance != 0)
 				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
 
-			_mPrevPlaybackStart = TimelineControl.PlaybackStartTime = _sequence.DefaultPlaybackStartTime;
-			_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime =_sequence.DefaultPlaybackEndTime;
+			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)
+			{
+				_mPrevPlaybackStart = TimelineControl.PlaybackStartTime = _sequence.DefaultPlaybackStartTime;
+				_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime = _sequence.DefaultPlaybackEndTime;
+			}
 
 #if DEBUG
 			ToolStripButton b = new ToolStripButton("[Debug Break]");
