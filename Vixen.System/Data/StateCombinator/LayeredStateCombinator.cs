@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
-using Vixen.Extensions;
 using Vixen.Intent;
 using Vixen.Sys;
 
@@ -114,14 +113,14 @@ namespace Vixen.Data.StateCombinator
 		{
 			//Handles mixing the LightingValue type intents within the same layer all togther in a simple mixing form of 
 			//highest value R, G, B
-			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Mix(obj.GetValue().FullColor);
+			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Combine(obj.GetValue().FullColor);
 		}
 
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			//Handles mixing the RGBValue type intents within the same layer all togther in a simple mixing form of 
 			//highest value R, G, B
-			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Mix(obj.GetValue().FullColor);
+			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Combine(obj.GetValue().FullColor);
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
@@ -154,7 +153,7 @@ namespace Vixen.Data.StateCombinator
 			//Mixing logic for mixing colors between layers
 			var hsv = HSV.FromRGB(lowLayer);
 			hsv.V = hsv.V*(1 - HSV.VFromRgb(highLayer));
-			return highLayer.Mix(hsv.ToRGB());
+			return highLayer.Combine(hsv.ToRGB());
 		}
 
 		private static void MixDiscreteLayerColors(ref Dictionary<int, DiscreteValue> highLayer, Dictionary<int, DiscreteValue> lowLayer)
