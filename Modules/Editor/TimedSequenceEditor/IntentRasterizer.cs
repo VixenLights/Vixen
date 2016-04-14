@@ -21,6 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimeSpan _startOffset;
 		private TimeSpan _endTime;
 		private readonly TimeSpan _oneTick = TimeSpan.FromTicks(1);
+		private readonly SolidBrush _brush = new SolidBrush(Color.Transparent);
 
 		public void Rasterize(IIntent intent, RectangleF rect, Graphics g, TimeSpan startOffset, TimeSpan endTime)
 		{
@@ -52,10 +53,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (startColor == endColor)
 			{
-				using (SolidBrush brush = new SolidBrush(startColor))
-				{
-					_graphics.FillRectangle(brush, rectangle);
-				}
+				_brush.Color = startColor;
+				_graphics.FillRectangle(_brush, rectangle);
+				
 			}
 			else
 			{
@@ -136,14 +136,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<RGBValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAplha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAplha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAlpha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAlpha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAplha;
-				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAlpha;
+				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAlpha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}

@@ -43,7 +43,7 @@ namespace Vixen.Data.Value
 		/// Gets the RGB value as a intensity appplied color with the intensity value applied to the alpha channel. 
 		/// Results in an non opaque color ranging from transparent (0,0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color FullColorWithAplha
+		public Color FullColorWithAlpha
 		{
 			get
 			{
