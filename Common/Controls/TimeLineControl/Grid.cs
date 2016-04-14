@@ -2116,7 +2116,7 @@ namespace Common.Controls.Timeline
             CancellationTokenSource cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.CancellationToken = cts.Token;
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            //po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
 			long processed = 0;
 			try

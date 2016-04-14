@@ -22,10 +22,15 @@ namespace Vixen.Execution
 
 		public void Clear()
 		{
-			Parallel.ForEach(_elementStates, x =>
+			foreach (var elementState in _elementStates)
 			{
-				x.Value.Clear();
-			});
+				elementState.Value.Clear();
+			}
+
+			//Parallel.ForEach(_elementStates, x =>
+			//{
+			//	x.Value.Clear();
+			//});
 		}
 
 		public void AddElementState(Guid elementId, IIntentState state)

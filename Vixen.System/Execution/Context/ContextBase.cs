@@ -116,7 +116,7 @@ namespace Vixen.Execution.Context
 			{
 				TimeSpan effectRelativeTime = currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
-				Parallel.ForEach(effectIntents, effectIntent =>
+				foreach (var effectIntent in effectIntents)
 				{
 					foreach (IIntentNode intentNode in effectIntent.Value)
 					{
@@ -127,7 +127,7 @@ namespace Vixen.Execution.Context
 							_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
 						}
 					}
-				});
+				}
 
 			});
 		}
