@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -26,11 +24,6 @@ namespace Vixen.Execution
 			{
 				elementState.Value.Clear();
 			}
-
-			//Parallel.ForEach(_elementStates, x =>
-			//{
-			//	x.Value.Clear();
-			//});
 		}
 
 		public void AddElementState(Guid elementId, IIntentState state)

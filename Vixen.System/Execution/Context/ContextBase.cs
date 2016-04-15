@@ -83,9 +83,8 @@ namespace Vixen.Execution.Context
 			
 			if (IsRunning && !IsPaused)
 			{
-				var t = ResetElementStates();
+				ResetElementStates();
 				_UpdateCurrentEffectList(currentTime);
-				t.Wait();
 				_DiscoverIntentsFromEffects(currentTime);
 			}
 
@@ -98,9 +97,9 @@ namespace Vixen.Execution.Context
 			return _elementStateBuilder.GetElementState(key);
 		}
 
-		private async Task ResetElementStates()
+		private void ResetElementStates()
 		{
-			await Task.Run(() => _elementStateBuilder.Clear());
+			_elementStateBuilder.Clear();
 		}
 
 		private bool _UpdateCurrentEffectList(TimeSpan currentTime)
