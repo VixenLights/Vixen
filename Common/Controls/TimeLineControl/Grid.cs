@@ -53,6 +53,9 @@ namespace Common.Controls.Timeline
 		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 		public bool aCadStyleSelectionBox { get; set; }
 
+		private List<Row> _visibleRows = new List<Row>();
+		private bool _visibleRowsDirty = false;
+
 		#region Initialization
 
 		public Grid(TimeInfo timeinfo)
@@ -254,9 +257,17 @@ namespace Common.Controls.Timeline
 			get { return Rows.FirstOrDefault(x => x.Active); }
 		}
 
-		public IEnumerable<Row> VisibleRows
+		public List<Row> VisibleRows
 		{
-			get { return Rows.Where(x => x.Visible); }
+			get
+			{
+				if (_visibleRowsDirty)
+				{
+					_visibleRows = Rows.Where(x => x.Visible).ToList();
+					_visibleRowsDirty = false;
+				}
+				return _visibleRows;
+			}
 		}
 
 		public Row TopVisibleRow
@@ -427,6 +438,8 @@ namespace Common.Controls.Timeline
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
 			if (m_dragState != DragState.Moving && !SequenceLoading)
 				if (!SuppressInvalidate) Invalidate();
+
+			_visibleRowsDirty = true;
 		}
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
@@ -2003,10 +2016,7 @@ namespace Common.Controls.Timeline
 			// Draw row separators
 			using (Pen p = new Pen(RowSeparatorColor))
 			using (SolidBrush b = new SolidBrush(SelectionColor)) {
-				foreach (Row row in Rows) {
-					if (!row.Visible)
-						continue;
-
+				foreach (Row row in VisibleRows) {
 					Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
 					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
