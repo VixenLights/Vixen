@@ -477,7 +477,7 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
-		public bool IsDiscrete { get; private set; }
+		private bool IsDiscrete { get; set; }
 
 		private void CheckForInvalidColorData()
 		{

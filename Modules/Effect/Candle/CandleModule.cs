@@ -177,7 +177,7 @@ namespace VixenModules.Effect.Candle
 				OnPropertyChanged();
 			}
 		}
-		public bool IsDiscrete { get; private set; }
+		private bool IsDiscrete { get; set; }
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()

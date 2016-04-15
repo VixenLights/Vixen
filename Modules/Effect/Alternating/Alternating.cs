@@ -53,7 +53,7 @@ namespace VixenModules.Effect.Alternating
 			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
 		}
 
-		public bool IsDiscrete { get; private set; }
+		private bool IsDiscrete { get; set; }
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		//we only need to check against 1 color variable,
