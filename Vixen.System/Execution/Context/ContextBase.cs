@@ -12,6 +12,7 @@ namespace Vixen.Execution.Context
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		internal ContextCurrentEffectsFull _currentEffects; 
 		private readonly IntentStateBuilder _elementStateBuilder;
+		private TimeSpan _currentTime = TimeSpan.Zero;
 		private bool _disposed;
 
 		public event EventHandler ContextStarted;
@@ -83,9 +84,10 @@ namespace Vixen.Execution.Context
 			
 			if (IsRunning && !IsPaused)
 			{
+				_currentTime = currentTime;
 				ResetElementStates();
-				_UpdateCurrentEffectList(currentTime);
-				_DiscoverIntentsFromEffects(currentTime);
+				_UpdateCurrentEffectList();
+				_DiscoverIntentsFromEffects();
 			}
 
 			return _currentEffects.Count>0;
@@ -102,18 +104,19 @@ namespace Vixen.Execution.Context
 			_elementStateBuilder.Clear();
 		}
 
-		private bool _UpdateCurrentEffectList(TimeSpan currentTime)
+		private bool _UpdateCurrentEffectList()
 		{
 			// We have an object that does this for us.
-			return _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
+			return _currentEffects.UpdateCurrentEffects(_DataSource, _currentTime);
 		}
 
-		private void _DiscoverIntentsFromEffects(TimeSpan currentTime)
+		private void _DiscoverIntentsFromEffects()
 		{
 			// For each effect in the in-effect list for the context...
-			Parallel.ForEach(_currentEffects, effectNode =>
+			//Parallel.ForEach(_currentEffects, effectNode =>
+			foreach (var effectNode in _currentEffects)
 			{
-				TimeSpan effectRelativeTime = currentTime - effectNode.StartTime;
+				TimeSpan effectRelativeTime = _currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
 				foreach (var effectIntent in effectIntents)
 				{
@@ -128,7 +131,7 @@ namespace Vixen.Execution.Context
 					}
 				}
 
-			});
+			}
 		}
 
 		protected void ClearCurrentEffects()

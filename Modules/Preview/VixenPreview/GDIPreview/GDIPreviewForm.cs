@@ -75,24 +75,21 @@ namespace VixenModules.Preview.VixenPreview
 					gdiControl.BeginUpdate();
 
 					_sw.Restart();
-					Parallel.ForEach(VixenSystem.Elements, element =>
+					foreach (var element in VixenSystem.Elements)
 					{
 						if (element.State.Count > 0)
 						{
-							ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-							if (node != null)
+							List<PreviewPixel> pixels;
+							if (NodeToPixel.TryGetValue(element.Id, out pixels))
 							{
-								List<PreviewPixel> pixels;
-								if (NodeToPixel.TryGetValue(node, out pixels))
+								foreach (PreviewPixel pixel in pixels)
 								{
-									foreach (PreviewPixel pixel in pixels)
-									{
-										pixel.Draw(gdiControl.FastPixel, element.State);
-									}
+									pixel.Draw(gdiControl.FastPixel, element.State);
 								}
 							}
 						}
-					});
+					}
+
 					_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
 				}
 				catch (Exception e)
@@ -107,7 +104,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+		public ConcurrentDictionary<Guid, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<Guid, List<PreviewPixel>>();
 		public List<DisplayItem> DisplayItems
 		{
 			get
@@ -146,9 +143,10 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (pixel.Node != null)
 						{
+							
 							pixelCount++;
 							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+							if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
 							{
 								if (!pixels.Contains(pixel))
 								{
@@ -159,7 +157,7 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								pixels = new List<PreviewPixel>();
 								pixels.Add(pixel);
-								NodeToPixel.TryAdd(pixel.Node, pixels);
+								NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
 							}
 						}
 					}

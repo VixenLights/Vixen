@@ -19,24 +19,22 @@ namespace Vixen.Data.StateCombinator
 		
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
-			//Reset our return type and check to see if we really have anythign to combine. 
-			//If we have one or none we can skip all the complex stuff
-			StateCombinatorValue.Clear();
-			if (states == null || states.Count <= 0) return StateCombinatorValue;
-			if (states.Count == 1)
+			//Reset our return type and check to see if we really have anything to combine. 
+			//If we have one or none we can skip all the complex stuff			
+			if (states.Count <= 1)
 			{
-				StateCombinatorValue.Add(states[0]);
-				return StateCombinatorValue;
+				return states;
 			}
 
 			//Reset all our temp variables
+			StateCombinatorValue.Clear();
 			_tempMixingColor = Color.Empty;
 			_combinedMixingColor = Color.Empty;
 			_combinedDiscreteColors.Clear();
 			_tempDiscreteColors.Clear();
 
 			//Order all states in decending order by layer
-			//We are goign to do this without Linq because it is way more memory efficient
+			//We are going to do this without Linq because it is way more memory efficient
 			states.Sort(LayerComparer);
 
 			//Establish the top level layer

@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace Vixen.Sys
 {
-	public class EffectIntents : ConcurrentDictionary<Guid, IntentNodeCollection>
+	public class EffectIntents : Dictionary<Guid, IntentNodeCollection>
 	{
 		public EffectIntents()
 		{
