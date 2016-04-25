@@ -5,14 +5,12 @@ namespace Vixen.Sys.Output
 {
 	internal class IntervalUpdateSignaler : IOutputDeviceUpdateSignaler
 	{
-		private Stopwatch _stopwatch;
-		private long _lastUpdateTime;
+		private readonly Stopwatch _stopwatch;
 		private long _nextUpdateTime;
 
 		public IntervalUpdateSignaler()
 		{
 			_stopwatch = Stopwatch.StartNew();
-			_lastUpdateTime = 0;
 			_nextUpdateTime = 0;
 		}
 
@@ -24,16 +22,9 @@ namespace Vixen.Sys.Output
 		{
 			if (_nextUpdateTime == 0)
 				_nextUpdateTime = _stopwatch.ElapsedMilliseconds + OutputDevice.UpdateInterval;
-			while (_stopwatch.ElapsedMilliseconds < _nextUpdateTime)
-			{
-				Thread.Sleep(1);
-			}
-			_nextUpdateTime += OutputDevice.UpdateInterval;
 
-//			long timeLeft = OutputDevice.UpdateInterval - (_stopwatch.ElapsedMilliseconds - _lastUpdateTime);
-//			_Sleep(timeLeft);
-//			_lastUpdateTime = _stopwatch.ElapsedMilliseconds;
-//			UpdateSignal.Set();
+			_Sleep(_nextUpdateTime - _stopwatch.ElapsedMilliseconds);
+			_nextUpdateTime += OutputDevice.UpdateInterval;
 		}
 
 		private void _Sleep(long timeInMs)
