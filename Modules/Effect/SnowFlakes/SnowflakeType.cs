@@ -15,6 +15,8 @@ namespace VixenModules.Effect.Snowflakes
 		[Description("9 Point")]
 		Nine,
 		[Description("13 Point")]
-		Thirteen
+		Thirteen,
+		[Description("45 Point")]
+		FortyFive
 	}
 }

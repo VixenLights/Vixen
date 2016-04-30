@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
@@ -72,7 +73,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
+		[NumberRange(1, 40, 1)]
 		[PropertyOrder(2)]
 		public int FlakeCount
 		{
@@ -89,11 +90,11 @@ namespace VixenModules.Effect.Snowflakes
 
 		#region Color properties
 
-
 		[Value]
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
+		[Browsable(false)]
 		[PropertyOrder(1)]
 		public Color CenterColor
 		{
@@ -108,15 +109,48 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"OuterColor")]
+		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
+		public List<Color> InnerColor
+		{
+			get { return _data.InnerColor; }
+			set
+			{
+				_data.InnerColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"OuterColor")]
+		[ProviderDescription(@"Color")]
+		[Browsable(false)]
+		[PropertyOrder(3)]
 		public Color OuterColor
 		{
 			get { return _data.OuterColor; }
 			set
 			{
 				_data.OuterColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"OuterColor")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(4)]
+		public List<Color> OutSideColor
+		{
+			get { return _data.OutSideColor; }
+			set
+			{
+				_data.OutSideColor = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -160,6 +194,14 @@ namespace VixenModules.Effect.Snowflakes
 
 		protected override void SetupRender()
 		{
+			if (CenterColor != Color.Empty)
+			{
+				//Converts the Old Effect Color already on the timeline to the new List Colors.
+				InnerColor = new List<Color> { CenterColor };
+				OutSideColor = new List<Color> { OuterColor };
+				CenterColor = Color.Empty;
+				OuterColor = Color.Empty;
+			}
 			if (BufferHt <= 1) return; //Invalid configuration
 			int x = 0;
 			int y = 0;
@@ -181,6 +223,8 @@ namespace VixenModules.Effect.Snowflakes
 					y = y0 + (Rand() % deltaY);
 					if (tempBuffer.GetColorAt(x, y) == Color.Black) break;
 				}
+				Color outerColor = OutSideColor[_Random.Next(0, OutSideColor.Count)];
+				Color innerColor = InnerColor[_Random.Next(0, InnerColor.Count)];
 
 				SnowflakeType type = SnowflakeType == SnowflakeType.Random ? RandomFlakeType<SnowflakeType>() : SnowflakeType;
 				// draw flake
@@ -188,7 +232,7 @@ namespace VixenModules.Effect.Snowflakes
 				{
 					case SnowflakeType.Single:
 						// single node
-						tempBuffer.SetPixel(x, y, CenterColor);
+						tempBuffer.SetPixel(x, y, innerColor);
 						break;
 					case SnowflakeType.Five:
 						// 5 nodes
@@ -196,11 +240,11 @@ namespace VixenModules.Effect.Snowflakes
 						if (y < 1) y += 1;
 						if (x > BufferWi - 2) x -= 1;
 						if (y > BufferHt - 2) y -= 1;
-						tempBuffer.SetPixel(x, y, CenterColor);
-						tempBuffer.SetPixel(x - 1, y, OuterColor);
-						tempBuffer.SetPixel(x + 1, y, OuterColor);
-						tempBuffer.SetPixel(x, y - 1, OuterColor);
-						tempBuffer.SetPixel(x, y + 1, OuterColor);
+						tempBuffer.SetPixel(x, y, innerColor);
+						tempBuffer.SetPixel(x - 1, y, outerColor);
+						tempBuffer.SetPixel(x + 1, y, outerColor);
+						tempBuffer.SetPixel(x, y - 1, outerColor);
+						tempBuffer.SetPixel(x, y + 1, outerColor);
 						break;
 					case SnowflakeType.Three:
 						// 3 nodes
@@ -208,32 +252,32 @@ namespace VixenModules.Effect.Snowflakes
 						if (y < 1) y += 1;
 						if (x > BufferWi - 2) x -= 1;
 						if (y > BufferHt - 2) y -= 1;
-						tempBuffer.SetPixel(x, y, CenterColor);
+						tempBuffer.SetPixel(x, y, innerColor);
 						if (Rand() % 100 > 50) // % 2 was not so Random
 						{
-							tempBuffer.SetPixel(x - 1, y, OuterColor);
-							tempBuffer.SetPixel(x + 1, y, OuterColor);
+							tempBuffer.SetPixel(x - 1, y, outerColor);
+							tempBuffer.SetPixel(x + 1, y, outerColor);
 						}
 						else
 						{
-							tempBuffer.SetPixel(x, y - 1, OuterColor);
-							tempBuffer.SetPixel(x, y + 1, OuterColor);
+							tempBuffer.SetPixel(x, y - 1, outerColor);
+							tempBuffer.SetPixel(x, y + 1, outerColor);
 						}
 						break;
 					case SnowflakeType.Nine:
 						// 9 nodes
-						if (x < 2) x += 2;
+						if (x < 2) x +=2;
 						if (y < 2) y += 2;
 						if (x > BufferWi - 3) x -= 2;
 						if (y > BufferHt - 3) y -= 2;
-						tempBuffer.SetPixel(x, y, CenterColor);
+						tempBuffer.SetPixel(x, y, innerColor);
 						int i;
 						for (i = 1; i <= 2; i++)
 						{
-							tempBuffer.SetPixel(x - i, y, OuterColor);
-							tempBuffer.SetPixel(x + i, y, OuterColor);
-							tempBuffer.SetPixel(x, y - i, OuterColor);
-							tempBuffer.SetPixel(x, y + i, OuterColor);
+							tempBuffer.SetPixel(x - i, y, outerColor);
+							tempBuffer.SetPixel(x + i, y, outerColor);
+							tempBuffer.SetPixel(x, y - i, outerColor);
+							tempBuffer.SetPixel(x, y + i, outerColor);
 						}
 						break;
 					case SnowflakeType.Thirteen:
@@ -242,23 +286,56 @@ namespace VixenModules.Effect.Snowflakes
 						if (y < 2) y += 2;
 						if (x > BufferWi - 3) x -= 2;
 						if (y > BufferHt - 3) y -= 2;
-						tempBuffer.SetPixel(x, y, CenterColor);
-						tempBuffer.SetPixel(x - 1, y, OuterColor);
-						tempBuffer.SetPixel(x + 1, y, OuterColor);
-						tempBuffer.SetPixel(x, y - 1, OuterColor);
-						tempBuffer.SetPixel(x, y + 1, OuterColor);
+						tempBuffer.SetPixel(x, y, innerColor);
+						tempBuffer.SetPixel(x - 1, y, outerColor);
+						tempBuffer.SetPixel(x + 1, y, outerColor);
+						tempBuffer.SetPixel(x, y - 1, outerColor);
+						tempBuffer.SetPixel(x, y + 1, outerColor);
 
-						tempBuffer.SetPixel(x - 1, y + 2, OuterColor);
-						tempBuffer.SetPixel(x + 1, y + 2, OuterColor);
-						tempBuffer.SetPixel(x - 1, y - 2, OuterColor);
-						tempBuffer.SetPixel(x + 1, y - 2, OuterColor);
-						tempBuffer.SetPixel(x + 2, y - 1, OuterColor);
-						tempBuffer.SetPixel(x + 2, y + 1, OuterColor);
-						tempBuffer.SetPixel(x - 2, y - 1, OuterColor);
-						tempBuffer.SetPixel(x - 2, y + 1, OuterColor);
+						tempBuffer.SetPixel(x - 1, y + 2, outerColor);
+						tempBuffer.SetPixel(x + 1, y + 2, outerColor);
+						tempBuffer.SetPixel(x - 1, y - 2, outerColor);
+						tempBuffer.SetPixel(x + 1, y - 2, outerColor);
+						tempBuffer.SetPixel(x + 2, y - 1, outerColor);
+						tempBuffer.SetPixel(x + 2, y + 1, outerColor);
+						tempBuffer.SetPixel(x - 2, y - 1, outerColor);
+						tempBuffer.SetPixel(x - 2, y + 1, outerColor);
+						break;
+					case SnowflakeType.FortyFive:
+						// 45 nodes
+						if (x < 4) x += 4;
+						if (y < 4) y += 4;
+						if (x > BufferWi - 5) x -= 4;
+						if (y > BufferHt - 5) y -= 4;
+
+						int ii = 4;
+						for (int j = -4; j < 5; j++)
+						{
+							tempBuffer.SetPixel(x + j, y + ii, outerColor);
+							ii --;
+						}
+						for (int j = -4; j < 5; j++)
+						{
+							tempBuffer.SetPixel(x + j, y + j, outerColor);
+						}
+						tempBuffer.SetPixel(x - 2, y + 3, outerColor);
+						tempBuffer.SetPixel(x - 3, y + 2, outerColor);
+						tempBuffer.SetPixel(x - 3, y - 2, outerColor);
+						tempBuffer.SetPixel(x - 2, y - 3, outerColor);
+						tempBuffer.SetPixel(x + 2, y + 3, outerColor);
+						tempBuffer.SetPixel(x + 2, y - 3, outerColor);
+						tempBuffer.SetPixel(x + 3, y + 2, outerColor);
+						tempBuffer.SetPixel(x + 3, y - 2, outerColor);
+						for (int j = -5; j < 6; j++)
+						{
+							tempBuffer.SetPixel(x, y + j, outerColor);
+						}for (int j = -5; j < 6; j++)
+						{
+							tempBuffer.SetPixel(x + j, y, outerColor);
+						}
+						tempBuffer.SetPixel(x, y, innerColor);
 						break;
 				}
-
 			}
 		}
 
@@ -284,7 +361,7 @@ namespace VixenModules.Effect.Snowflakes
 					var newY = (y + stateInt / 10) % BufferHt;
 					var newY2 = (newY + BufferHt / 2) % BufferHt;
 					var color1 = tempBuffer.GetColorAt(newX, newY);
-					if (color1 == Color.Black)
+					if (color1 == Color.Empty)
 					{
 						color1 = tempBuffer.GetColorAt(newX2, newY2);
 					}
