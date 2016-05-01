@@ -411,6 +411,11 @@ namespace Common.Controls.ColorManagement.ColorModels
 			return max;
 		}
 
+		public static double VFromRgb(Color col)
+		{
+			return Math.Max(Math.Max(col.R, col.G), col.B)/255d;
+		}
+
 		public static HSV FromRGB(RGB col)
 		{
 			double
