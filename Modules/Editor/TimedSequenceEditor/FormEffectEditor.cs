@@ -127,7 +127,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (var element in _elements)
 			{
 				element.UpdateNotifyContentChanged();
-				elementValues.Add(element, new Tuple<object, PropertyDescriptor>(e.OldValue[i], e.Property.UnderLyingPropertyDescriptor(i)));
+				if (e.OldValue != null)
+					elementValues.Add(element, new Tuple<object, PropertyDescriptor>(e.OldValue[i], e.Property.UnderLyingPropertyDescriptor(i)));
 				i++;
 			}
 

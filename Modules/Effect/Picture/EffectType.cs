@@ -4,6 +4,10 @@ namespace VixenModules.Effect.Picture
 {
 	public enum EffectType
 	{
+		[Description("None")]
+		RenderPictureNone,
+		[Description("Tiles")]
+		RenderPictureTiles,
 		[Description("Left")]
 		RenderPictureLeft,
 		[Description("Right")]
@@ -12,8 +16,6 @@ namespace VixenModules.Effect.Picture
 		RenderPictureUp,
 		[Description("Down")]
 		RenderPictureDown,
-		[Description("None")]
-		RenderPictureNone,
 		[Description("Up & Left")]
 		RenderPictureUpleft,
 		[Description("Down & Left")]

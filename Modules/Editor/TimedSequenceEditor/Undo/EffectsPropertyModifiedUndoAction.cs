@@ -13,7 +13,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		{
 			if (effectPropertyValues == null) throw new ArgumentNullException("effectPropertyValues");
 			ElementValues = effectPropertyValues;
-			DisplayName = effectPropertyValues.First().Value.Item2.DisplayName;
+			if (effectPropertyValues.Count > 0)
+				DisplayName = effectPropertyValues.First().Value.Item2.DisplayName;
 		}
 
 		public Dictionary<Element, Tuple<Object, PropertyDescriptor>> ElementValues { get; private set; }
