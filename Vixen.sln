@@ -354,6 +354,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntensityOverlay", "Modules
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaskFill", "Modules\LayerCombiningFilter\MaskFill\MaskFill.csproj", "{63B2964A-6190-4746-B12D-7D79DFCA7BB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Life", "Modules\Effect\Life\Life.csproj", "{6AF57086-0809-408B-B6DF-6411F2F5BDE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1041,6 +1043,20 @@ Global
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x64.Build.0 = Release|x64
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x86.ActiveCfg = Release|x86
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x86.Build.0 = Release|x86
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|x64.ActiveCfg = Release|x64
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|x64.Build.0 = Release|x64
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|x86.ActiveCfg = Release|x86
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1152,6 +1168,7 @@ Global
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4} = {25A1ED22-180F-4B61-84FC-55790AA11254}
 		{5A80172D-2C62-463A-8271-4F4FEE9214E8} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
+		{6AF57086-0809-408B-B6DF-6411F2F5BDE0} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
