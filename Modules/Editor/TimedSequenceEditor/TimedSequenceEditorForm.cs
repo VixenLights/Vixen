@@ -949,6 +949,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (IEffectModuleDescriptor effectDesriptor in
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
+				if (effectDesriptor.EffectName == "Nutcracker") continue; //Remove this when the Nutcracker module is removed
 				//Populate Drag Box Filter drop down with effect types
 				ToolStripMenuItem dbfMenuItem = new ToolStripMenuItem(effectDesriptor.EffectName,
 					effectDesriptor.GetRepresentativeImage(36, 36));
@@ -971,6 +972,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (IEffectModuleDescriptor effectDesriptor in
 				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
+				if (effectDesriptor.EffectName == "Nutcracker") continue; //Remove this when the Nutcracker module is removed
 				// Add an entry to the menu
 				ToolStripMenuItem menuItem = new ToolStripMenuItem(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
 				menuItem.Click += (sender, e) =>
@@ -2059,6 +2061,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectGroups group = effectDesriptors.First().EffectGroup;
 			foreach (IEffectModuleDescriptor effectDesriptor in effectDesriptors)
 			{
+				if (effectDesriptor.EffectName == "Nutcracker") continue;  //Remove this when the Nutcracker module is removed
 				if (effectDesriptor.EffectGroup != group)
 				{
 					ToolStripSeparator seperator = new ToolStripSeparator();

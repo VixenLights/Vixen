@@ -96,7 +96,7 @@ namespace VixenModules.Effect.Nutcracker
 		[DisplayName(" ")]
 		public string Warning
 		{
-			get { return "Not supported in this editor."; }
+			get { return "To edit this existing effect, double\r\nclick on the effect in the timeline\r\nand use the legacy effect editor.\r\n\n                    WARNING\r\nThis effect will soon be deprecated.\r\n\nYou should replace this effect with\r\nthe newer native effect of the same\r\ntype."; }
 		}
 
 		[Value]
