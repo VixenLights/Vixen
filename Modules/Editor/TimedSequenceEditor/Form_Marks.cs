@@ -8,7 +8,6 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
 using Vixen.Services;
-using VixenApplication;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 

@@ -24,7 +24,6 @@ using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
 using Vixen.Module.App;
-using VixenApplication;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Media.Audio;

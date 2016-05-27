@@ -76,6 +76,7 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>

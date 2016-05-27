@@ -68,6 +68,7 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
