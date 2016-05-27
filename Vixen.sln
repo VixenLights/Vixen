@@ -296,7 +296,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NutcrackerEffectEditor", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effect", "Modules\Effect\Effect\Effect.csproj", "{AF76C902-A776-49C3-9019-D7CB0A53FB2F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayerCombiningFilter", "LayerCombiningFilter", "{1F565F1F-0815-4819-B72C-FE4CAE9DECD9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayerMixingFilter", "LayerMixingFilter", "{1F565F1F-0815-4819-B72C-FE4CAE9DECD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InverseProportion", "Modules\LayerCombiningFilter\InverseProportion\InverseProportion.csproj", "{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}"
 EndProject

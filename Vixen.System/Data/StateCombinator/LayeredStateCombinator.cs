@@ -4,7 +4,7 @@ using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Module.CombiningFilter;
+using Vixen.Module.MixingFilter;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -20,15 +20,15 @@ namespace Vixen.Data.StateCombinator
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
 	    
 		//Temp for testing
-		private Dictionary<byte, ILayerCombiningFilter> filterMap = new Dictionary<byte, ILayerCombiningFilter>();
+		private Dictionary<byte, ILayerMixingFilter> filterMap = new Dictionary<byte, ILayerMixingFilter>();
 
 		public LayeredStateCombinator()
 		{
-			var filters = ApplicationServices.GetAvailableModules<ILayerCombiningFilterInstance>();
+			var filters = ApplicationServices.GetAvailableModules<ILayerMixingFilterInstance>();
 			byte i = 1;
 			foreach (var filter in filters)
 			{
-				filterMap.Add(i, ApplicationServices.Get<ILayerCombiningFilterInstance>(filter.Key));
+				filterMap.Add(i, ApplicationServices.Get<ILayerMixingFilterInstance>(filter.Key));
 				i++;
 			}
 		}
@@ -55,7 +55,7 @@ namespace Vixen.Data.StateCombinator
 
 			//Establish the top level layer
 			byte currentLayer = states[0].Layer;
-			ILayerCombiningFilter filter= null;
+			ILayerMixingFilter filter= null;
 			bool first = true;
 			//Walk through the groups of layers and process them
 			foreach (var state in states)
@@ -101,7 +101,7 @@ namespace Vixen.Data.StateCombinator
 			return StateCombinatorValue;
 		}
 
-		private void MixLayers(ILayerCombiningFilter filter)
+		private void MixLayers(ILayerMixingFilter filter)
 		{
 			//Check to see if the layer had any mixing type colors that were combined down to one to process
 			if (_tempMixingColor != Color.Empty)
@@ -176,7 +176,7 @@ namespace Vixen.Data.StateCombinator
 		//so we don't need handle methods for those
 		
 
-		private static Color MixLayerColors(Color highLayer, Color lowLayer, ILayerCombiningFilter filter)
+		private static Color MixLayerColors(Color highLayer, Color lowLayer, ILayerMixingFilter filter)
 		{
 			//Mixing logic for mixing colors between layers
 			return filter.CombineFullColor(highLayer, lowLayer);
@@ -186,7 +186,7 @@ namespace Vixen.Data.StateCombinator
 			//return highLayer.Combine(hsv.ToRGB());
 		}
 
-		private static void MixDiscreteLayerColors(ref Dictionary<int, DiscreteValue> highLayer, Dictionary<int, DiscreteValue> lowLayer, ILayerCombiningFilter filter)
+		private static void MixDiscreteLayerColors(ref Dictionary<int, DiscreteValue> highLayer, Dictionary<int, DiscreteValue> lowLayer, ILayerMixingFilter filter)
 		{
 			//Mixing logic for Discrete colors between layers
 			//We are going to look at the lower layer and modify any values in the higher layer if the proportioned value is 
