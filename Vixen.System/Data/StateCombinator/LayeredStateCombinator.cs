@@ -4,6 +4,8 @@ using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Intent;
+using Vixen.Module.CombiningFilter;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Data.StateCombinator
@@ -16,7 +18,21 @@ namespace Vixen.Data.StateCombinator
 		private readonly Dictionary<int, DiscreteValue> _tempDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
-		
+	    
+		//Temp for testing
+		private Dictionary<byte, ILayerCombiningFilter> filterMap = new Dictionary<byte, ILayerCombiningFilter>();
+
+		public LayeredStateCombinator()
+		{
+			var filters = ApplicationServices.GetAvailableModules<ILayerCombiningFilterInstance>();
+			byte i = 1;
+			foreach (var filter in filters)
+			{
+				filterMap.Add(i, ApplicationServices.Get<ILayerCombiningFilterInstance>(filter.Key));
+				i++;
+			}
+		}
+
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
 			//Reset our return type and check to see if we really have anything to combine. 
@@ -39,7 +55,8 @@ namespace Vixen.Data.StateCombinator
 
 			//Establish the top level layer
 			byte currentLayer = states[0].Layer;
-			
+			ILayerCombiningFilter filter= null;
+			bool first = true;
 			//Walk through the groups of layers and process them
 			foreach (var state in states)
 			{
@@ -51,15 +68,17 @@ namespace Vixen.Data.StateCombinator
 					state.Dispatch(this);
 					continue;
 				}
-				
+
 				//We have a new layer so we need to wrap up the previous one
-				MixLayers();
+				MixLayers(filter);
+				filterMap.TryGetValue(currentLayer, out filter);
 				state.Dispatch(this);
-				
+				currentLayer = state.Layer;
 			}
 
 			//Mix the final layer
-			MixLayers();
+			
+			MixLayers(filter);
 
 			//Now we should be down to one mixing type and we can put that in our return obejct as a RGBValue.
 			//This will convert all mxing types to the simpler more efficient RGBValue 
@@ -82,24 +101,35 @@ namespace Vixen.Data.StateCombinator
 			return StateCombinatorValue;
 		}
 
-		private void MixLayers()
+		private void MixLayers(ILayerCombiningFilter filter)
 		{
 			//Check to see if the layer had any mixing type colors that were combined down to one to process
 			if (_tempMixingColor != Color.Empty)
 			{
-				//If there are them mix that with the previous layer with the layer mixing logic
+				//If there are then mix that with the previous layer with the layer mixing logic
 				//If we have not seen a previous layer, just assign this color as our color
 				//Otherwise pass this color and the previous layer color into the mixing logic
 				_combinedMixingColor = _combinedMixingColor == Color.Empty
 					? _tempMixingColor
-					: MixLayerColors(_combinedMixingColor, _tempMixingColor);
+					: MixLayerColors(_combinedMixingColor, _tempMixingColor, filter);
 			}
 			//Check to see if there were any discrete types. These are combined down to one per color
 			if (_tempDiscreteColors.Count > 0)
 			{
-				//If there are then mix that with the previous layer with the layer mixing logic
-				//Discrete are special, so we have to handle them a litle different. We need to maintain each indivdual color and manipulate the intensity
-				MixDiscreteLayerColors(ref _combinedDiscreteColors, _tempDiscreteColors);
+				if (_combinedDiscreteColors.Count == 0)
+				{
+					foreach (var tempDiscreteColor in _tempDiscreteColors)
+					{
+						_combinedDiscreteColors[tempDiscreteColor.Key] = tempDiscreteColor.Value;
+					}
+				}
+				else
+				{
+					//If there are then mix that with the previous layer with the layer mixing logic
+					//Discrete are special, so we have to handle them a litle different. We need to maintain each indivdual color and manipulate the intensity
+					MixDiscreteLayerColors(ref _combinedDiscreteColors, _tempDiscreteColors, filter);
+				}
+				
 			}
 
 			//reset our temp variables and go back for more layers
@@ -146,15 +176,17 @@ namespace Vixen.Data.StateCombinator
 		//so we don't need handle methods for those
 		
 
-		private static Color MixLayerColors(Color highLayer, Color lowLayer)
+		private static Color MixLayerColors(Color highLayer, Color lowLayer, ILayerCombiningFilter filter)
 		{
 			//Mixing logic for mixing colors between layers
-			var hsv = HSV.FromRGB(lowLayer);
-			hsv.V = hsv.V*(1 - HSV.VFromRgb(highLayer));
-			return highLayer.Combine(hsv.ToRGB());
+			return filter.CombineFullColor(highLayer, lowLayer);
+			
+			//var hsv = HSV.FromRGB(lowLayer);
+			//hsv.V = hsv.V*(1 - HSV.VFromRgb(highLayer));
+			//return highLayer.Combine(hsv.ToRGB());
 		}
 
-		private static void MixDiscreteLayerColors(ref Dictionary<int, DiscreteValue> highLayer, Dictionary<int, DiscreteValue> lowLayer)
+		private static void MixDiscreteLayerColors(ref Dictionary<int, DiscreteValue> highLayer, Dictionary<int, DiscreteValue> lowLayer, ILayerCombiningFilter filter)
 		{
 			//Mixing logic for Discrete colors between layers
 			//We are going to look at the lower layer and modify any values in the higher layer if the proportioned value is 
@@ -164,9 +196,18 @@ namespace Vixen.Data.StateCombinator
 				DiscreteValue highDiscreteValue;
 				if (highLayer.TryGetValue(color.Key, out highDiscreteValue))
 				{
-					double intensity = color.Value.Intensity*(1 - highDiscreteValue.Intensity);
-					highDiscreteValue.Intensity = Math.Max(intensity, highDiscreteValue.Intensity);
-					highLayer[color.Key] = highDiscreteValue; //this is a struct, so put our modified copy back in the collection.
+					var value = filter.CombineDiscreteIntensity(highDiscreteValue, color.Value);
+					if (value.Intensity > 0)
+					{
+						highLayer[color.Key] = value;
+					}
+					else
+					{
+						highLayer.Remove(color.Key);
+					}
+					//double intensity = color.Value.Intensity*(1 - highDiscreteValue.Intensity);
+					//highDiscreteValue.Intensity = Math.Max(intensity, highDiscreteValue.Intensity);
+					//highLayer[color.Key] = highDiscreteValue; //this is a struct, so put our modified copy back in the collection.
 				}
 				else
 				{

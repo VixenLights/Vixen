@@ -2134,8 +2134,8 @@ namespace Common.Controls.Timeline
 		        if (_blockingElementQueue != null)
 		        {
                     //Use or fancy multi cpu boxes more effectively.
-		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
-		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
+		            foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) 
+		            //Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
 		            {
 			            Interlocked.Increment(ref processed);
 		                // This will likely never be hit: the blocking element queue above will always block waiting for more
@@ -2176,7 +2176,7 @@ namespace Common.Controls.Timeline
 		                {
 		                    Logging.Error("Error in rendering.", ex);
 		                }
-		            });
+		            }//);
 		        }
 		    }
 		    catch (OperationCanceledException ce)

@@ -6,7 +6,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Snowflakes
@@ -30,21 +30,6 @@ namespace VixenModules.Effect.Snowflakes
 			{
 			}
 		}
-
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
 
 		#region Config properties
 
@@ -166,6 +151,11 @@ namespace VixenModules.Effect.Snowflakes
 				_data = value as SnowflakesData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()

@@ -9,7 +9,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Picture
@@ -106,22 +106,7 @@ namespace VixenModules.Effect.Picture
 
 		#endregion
 
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
-
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Orientation")]
@@ -261,6 +246,11 @@ namespace VixenModules.Effect.Picture
 				UpdateAttributes();
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		private string ConvertPath(string path)

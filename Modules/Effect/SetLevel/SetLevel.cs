@@ -63,20 +63,10 @@ namespace VixenModules.Effect.SetLevel
 			}
 		}
 
-		#region Layer
-
-		public override byte Layer
+		protected override EffectTypeModuleData EffectModuleData
 		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
+			get { return _data; }
 		}
-
-		#endregion
 
 		[Value]
 		[ProviderCategory(@"Brightness",2)]

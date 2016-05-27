@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -9,7 +8,7 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Bars
@@ -17,7 +16,7 @@ namespace VixenModules.Effect.Bars
 	public class Bars:PixelEffectBase
 	{
 		private BarsData _data;
-		
+
 		public Bars()
 		{
 			_data = new BarsData();
@@ -36,21 +35,6 @@ namespace VixenModules.Effect.Bars
 			}
 			protected set { base.IsDirty = value; }
 		}
-
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
 
 		#region Setup
 
@@ -204,6 +188,11 @@ namespace VixenModules.Effect.Bars
 				_data = value as BarsData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()

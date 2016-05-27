@@ -111,6 +111,11 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
 		public override bool IsDirty
 		{
 			get
@@ -122,21 +127,6 @@ namespace VixenModules.Effect.Twinkle
 			}
 			protected set { base.IsDirty = value; }
 		}
-
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
 
 		[Value]
 		[ProviderCategory(@"Depth", 10)]

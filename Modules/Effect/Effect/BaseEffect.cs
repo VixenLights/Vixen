@@ -13,13 +13,24 @@ namespace VixenModules.Effect.Effect
 {
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
-
+		
 		[ProviderCategory(@"Layer", 0)]
 		[ProviderDisplayName(@"Layer")]
 		[ProviderDescription(@"Layer")]
 		[PropertyOrder(3)]
-		public override byte Layer { get; set; }
+		public override byte Layer
+		{
+			get { return EffectModuleData.Layer; }
+			set
+			{
+				EffectModuleData.Layer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
+		protected abstract EffectTypeModuleData EffectModuleData { get; }
+		
 		protected HashSet<Color> GetValidColors()
 		{
 			HashSet<Color> validColors = new HashSet<Color>();

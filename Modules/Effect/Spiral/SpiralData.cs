@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Spiral
 {
 	[DataContract]
-	public class SpiralData: ModuleDataModelBase
+	public class SpiralData: EffectTypeModuleData
 	{
 		public SpiralData()
 		{

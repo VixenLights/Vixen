@@ -14,6 +14,7 @@ namespace Vixen.Sys
 		private int _stateIndex;
 		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
 		private readonly IntentStateList[] _stateLists = new IntentStateList[ElementStateListRatio];
+		private readonly IntentStateList _contextStates = new IntentStateList();
 		
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
@@ -99,6 +100,7 @@ namespace Vixen.Sys
 		{
 			var nextIndex = GetNextStateIndex();
 			_stateLists[nextIndex].Clear();
+			_contextStates.Clear();
 			foreach (var ctx in VixenSystem.Contexts)
 			{
 				if (ctx.IsRunning)
@@ -106,12 +108,13 @@ namespace Vixen.Sys
 					var iss = ctx.GetState(Id);
 					if (iss == null)
 						continue;
-					var states = GetCombinedState(iss);
-					foreach (var intentState in states)
-					{
-						_stateLists[nextIndex].Add(intentState);
-					}
+					_contextStates.AddRangeIntentState(iss);
 				}
+			}
+			var states = GetCombinedState(_contextStates);
+			foreach (var intentState in states)
+			{
+				_stateLists[nextIndex].Add(intentState);
 			}
 			_stateIndex = nextIndex;
 		}

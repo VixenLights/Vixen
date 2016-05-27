@@ -3,14 +3,14 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Fireworks
 {
 	[DataContract]
-	public class FireworksData: ModuleDataModelBase
+	public class FireworksData: EffectTypeModuleData
 	{
 		public FireworksData()
 		{

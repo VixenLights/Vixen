@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Drawing;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Twinkle
 {
 	[DataContract]
-	public class TwinkleData : ModuleDataModelBase
+	public class TwinkleData : EffectTypeModuleData
 	{
 		[DataMember]
 		public bool IndividualChannels { get; set; }

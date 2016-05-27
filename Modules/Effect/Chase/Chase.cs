@@ -70,6 +70,11 @@ namespace VixenModules.Effect.Chase
 			}
 		}
 
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
 		public override bool IsDirty
 		{
 			get

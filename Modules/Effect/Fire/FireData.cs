@@ -1,13 +1,13 @@
 ﻿using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Fire
 {
 	[DataContract]
-	public class FireData: ModuleDataModelBase
+	public class FireData: EffectTypeModuleData
 	{
 		public FireData()
 		{

@@ -479,6 +479,11 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
 		private bool IsDiscrete { get; set; }
 
 		private void CheckForInvalidColorData()
@@ -499,21 +504,6 @@ namespace VixenModules.Effect.Wipe
 				IsDiscrete = false;
 			}
 		}
-
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
 
 		[Value]
 		[ProviderCategory(@"Color",3)]

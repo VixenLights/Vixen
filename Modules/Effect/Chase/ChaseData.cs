@@ -1,14 +1,14 @@
 ﻿using System.Runtime.Serialization;
-using System.ComponentModel;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Chase
 {
 	[DataContract]
-	public class ChaseData : ModuleDataModelBase
+	public class ChaseData : EffectTypeModuleData
 	{
 		[DataMember]
 		public ChaseColorHandling ColorHandling { get; set; }

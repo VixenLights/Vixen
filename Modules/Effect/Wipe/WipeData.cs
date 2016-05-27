@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using Common.Controls.ColorManagement.ColorModels;
 using System.Drawing;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Wipe {
 	[DataContract]
-	public class WipeData : ModuleDataModelBase {
+	public class WipeData : EffectTypeModuleData {
 
 		public WipeData() {
 			Curve = new Curve();

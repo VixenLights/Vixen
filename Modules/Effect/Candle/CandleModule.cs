@@ -33,25 +33,15 @@ namespace VixenModules.Effect.Candle
 			}
 		}
 
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
 		}
-
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]

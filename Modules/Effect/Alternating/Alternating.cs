@@ -4,11 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Vixen.Attributes;
-using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
@@ -20,11 +17,10 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Alternating
 {
-
 	public class Alternating : BaseEffect
 	{
-		private AlternatingData _data;
 		private EffectIntents _elementData;
+		private AlternatingData _data;
 
 		public Alternating()
 		{
@@ -103,20 +99,10 @@ namespace VixenModules.Effect.Alternating
 			}
 		}
 
-		#region Layer
-
-		public override byte Layer
+		protected override EffectTypeModuleData EffectModuleData
 		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
+			get { return _data; }
 		}
-
-		#endregion
 
 		#region Color
 

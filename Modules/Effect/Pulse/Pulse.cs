@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
-using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Module;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -13,8 +7,6 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.Property.Color;
-using ZedGraph;
 
 namespace VixenModules.Effect.Pulse
 {
@@ -64,21 +56,11 @@ namespace VixenModules.Effect.Pulse
 			}
 		}
 
-		#region Layer
-
-		public override byte Layer
+		protected override EffectTypeModuleData EffectModuleData
 		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
+			get { return _data; }
 		}
-
-		#endregion
-
+		
 		[Value]
 		[ProviderCategory(@"Brightness",2)]
 		[ProviderDisplayName(@"Brightness")]

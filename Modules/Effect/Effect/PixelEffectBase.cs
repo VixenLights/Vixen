@@ -7,14 +7,13 @@ using System.Threading;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
-namespace VixenModules.Effect.Pixel
+namespace VixenModules.Effect.Effect
 {
-	public abstract class PixelEffectBase : EffectModuleInstanceBase
+	public abstract class PixelEffectBase : BaseEffect
 	{
 
 		protected const short FrameTime = 50;
@@ -43,12 +42,6 @@ namespace VixenModules.Effect.Pixel
 			_elementData = data;
 			CleanUpRender();
 		}
-
-		[ProviderCategory(@"Layer", 0)]
-		[ProviderDisplayName(@"Layer")]
-		[ProviderDescription(@"Layer")]
-		[PropertyOrder(3)]
-		public override byte Layer { get; set; }
 
 		[ReadOnly(true)]
 		[ProviderCategory(@"Setup", 0)]

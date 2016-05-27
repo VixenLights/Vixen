@@ -6,13 +6,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Text
 {
 	[DataContract]
 	[KnownType(typeof (SerializableFont))]
-	public class TextData: ModuleDataModelBase
+	public class TextData: EffectTypeModuleData
 	{
 		public TextData()
 		{

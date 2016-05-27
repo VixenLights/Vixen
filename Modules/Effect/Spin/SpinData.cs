@@ -5,11 +5,12 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.ComponentModel;
 using Vixen.TypeConverters;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Spin
 {
 	[DataContract]
-	public class SpinData : ModuleDataModelBase
+	public class SpinData : EffectTypeModuleData
 	{
 		[DataMember]
 		public SpinSpeedFormat SpeedFormat { get; set; }

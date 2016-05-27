@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -76,9 +76,9 @@
       <Name>EffectDescriptorAttributes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Pixel\Pixel.csproj">
-      <Project>{4ED66B3A-E4C0-40C5-B19F-67B8486121CA}</Project>
-      <Name>Pixel</Name>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
