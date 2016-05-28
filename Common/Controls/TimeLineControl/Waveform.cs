@@ -240,9 +240,12 @@ namespace Common.Controls.Timeline
 					
 					for (int x = start; x < end; x += 1)
 					{
-						float lowPercent = (((samples[x].Low*factor) - minValue)/maxValue);
-						float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
-						e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
+						if (samples.Count <= x) break;
+						{
+							float lowPercent = (((samples[x].Low*factor) - minValue)/maxValue);
+							float highPercent = (((samples[x].High*factor) - minValue)/maxValue);
+							e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
+						}
 					}
 					
 				}
