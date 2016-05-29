@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MeteorsType.cs" />
+    <Compile Include="MeteorsColorType.cs" />
     <Compile Include="MeteorsDescriptor.cs" />
     <Compile Include="MeteorsData.cs" />
     <Compile Include="Meteors.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -20,7 +21,8 @@ namespace VixenModules.Effect.Meteors
 			Speed = 7;
 			PixelCount = 15;
 			Direction = 180;
-			MeteorType = MeteorsType.Palette;
+			Type = MeteorsType.Standard;
+			ColorType = MeteorsColorType.Palette;
 			Length = 5;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
@@ -30,7 +32,7 @@ namespace VixenModules.Effect.Meteors
 		public List<ColorGradient> Colors { get; set; }
 
 		[DataMember]
-		public MeteorsType MeteorType { get; set; }
+		public MeteorsColorType ColorType { get; set; }
 
 		[DataMember]
 		public int Speed { get; set; }
@@ -48,6 +50,9 @@ namespace VixenModules.Effect.Meteors
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
+		public MeteorsType Type { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
 		public override IModuleDataModel Clone()
@@ -56,8 +61,9 @@ namespace VixenModules.Effect.Meteors
 			{
 				Colors = Colors.ToList(),
 				Speed = Speed,
-				MeteorType = MeteorType,
+				ColorType = ColorType,
 				Length = Length,
+				Type = Type,
 				PixelCount = PixelCount,
 				Orientation = Orientation,
 				Direction = Direction,

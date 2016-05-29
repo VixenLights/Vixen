@@ -4,13 +4,11 @@ namespace VixenModules.Effect.Meteors
 {
 	public enum MeteorsType
 	{
-		[Description("RainBow")]
-		RainBow,
-		[Description("Range")]
-		Range,
-		[Description("Palette")]
-		Palette,
-		[Description("Gradient")]
-		Gradient
+		[Description("Standard")]
+		Standard,
+		[Description("Random")]
+		RandomDirection,
+		[Description("Explode")]
+		Explode
 	}
 }
