@@ -63,15 +63,15 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Meteor Type")]
-		[ProviderDescription(@"Meteor Type")]
+		[ProviderDisplayName(@"Meteor Effects")]
+		[ProviderDescription(@"Meteor Effects")]
 		[PropertyOrder(1)]
-		public MeteorsType Type
+		public MeteorsEffect MeteorEffect
 		{
-			get { return _data.Type; }
+			get { return _data.MeteorEffect; }
 			set
 			{
-				_data.Type = value;
+				_data.MeteorEffect = value;
 				IsDirty = true;
 				UpdateDirectionAttribute();
 				OnPropertyChanged();
@@ -214,7 +214,7 @@ namespace VixenModules.Effect.Meteors
 
 		private void UpdateDirectionAttribute(bool refresh = true)
 		{
-			bool RandomDirection = _data.Type != MeteorsType.Standard;
+			bool RandomDirection = MeteorEffect != MeteorsEffect.None;
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
 			propertyStates.Add("Direction", !RandomDirection);
 			SetBrowsable(propertyStates);
@@ -261,88 +261,85 @@ namespace VixenModules.Effect.Meteors
 			HSV hsv = new HSV();
 			for (int i = 0; i < PixelCount; i++)
 			{
-				if (_meteors.Count < PixelCount)
+				if (_meteors.Count >= PixelCount) continue;
+				MeteorClass m = new MeteorClass();
+				int direction;
+				direction = MeteorEffect == MeteorsEffect.None ? Direction : _random.Next(0, 360);
+
+				//Moving left and right
+				if (direction > 0 && direction <= 90)
 				{
-
-					MeteorClass m = new MeteorClass();
-					int direction;
-					direction = Type == MeteorsType.Standard ? Direction : _random.Next(0, 360);
-
-					//Moving left and right
-					if (direction > 0 && direction <= 90)
-					{
-						m.tailX = ((double)direction / 90);
-						m.deltaX = m.tailX * _position;
-					}
-					else if (direction > 90 && direction <= 180)
-					{
-						m.tailX = ((double)Math.Abs(direction - 180) / 90);
-						m.deltaX = m.tailX * _position;
-					}
-					else if (direction > 180 && direction <= 270)
-					{
-						m.tailX = -1 * ((double)Math.Abs(direction - 180) / 90);
-						m.deltaX = m.tailX * _position;
-					}
-					else if (direction > 270 && direction <= 360)
-					{
-						m.tailX = -1 * ((double)Math.Abs(direction - 360) / 90);
-						m.deltaX = m.tailX * _position;
-					}
-
-					//Moving up and down
-					if (direction >= 0 && direction <= 90)
-					{
-						m.tailY = ((double)Math.Abs(direction - 90) / 90);
-						m.deltaY = m.tailY * _position;
-					}
-					else if (direction > 90 && direction <= 180)
-					{
-						m.tailY = -1 * ((double)Math.Abs(direction - 90) / 90);
-						m.deltaY = m.tailY * _position;
-					}
-					else if (direction > 180 && direction <= 270)
-					{
-						m.tailY = -1 * ((double)Math.Abs(direction - 270) / 90);
-						m.deltaY = m.tailY * _position;
-					}
-					else if (direction > 270 && direction <= 360)
-					{
-						m.tailY = ((double)Math.Abs(270 - direction) / 90);
-						m.deltaY = m.tailY * _position;
-					}
-
-					if (Type == MeteorsType.Explode)
-					{
-						m.x = BufferWi/2;
-						m.y = BufferHt/2;
-					}
-					else
-					{
-						m.x = rand()%BufferWi;
-						m.y = (BufferHt - 1 - (rand()%tailStart));
-					}
-					m.deltaXOrig = m.deltaX;
-					m.deltaYOrig = m.deltaY;
-
-					switch (ColorType)
-					{
-						case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
-							m.hsv =
-								SetRangeColor(HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)),
-									HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)));
-							break;
-						case MeteorsColorType.Palette: //All colors are used
-							m.hsv = HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
-							break;
-						case MeteorsColorType.Gradient:
-							m.color = rand() % colorcnt;
-							_gradientPosition = 100 / (double)tailLength / 100;
-							m.hsv = HSV.FromRGB(Colors[m.color].GetColorAt(0));
-							break;
-					}
-					_meteors.Add(m);
+					m.tailX = ((double)direction / 90);
+					m.deltaX = m.tailX * _position;
 				}
+				else if (direction > 90 && direction <= 180)
+				{
+					m.tailX = ((double)Math.Abs(direction - 180) / 90);
+					m.deltaX = m.tailX * _position;
+				}
+				else if (direction > 180 && direction <= 270)
+				{
+					m.tailX = -1 * ((double)Math.Abs(direction - 180) / 90);
+					m.deltaX = m.tailX * _position;
+				}
+				else if (direction > 270 && direction <= 360)
+				{
+					m.tailX = -1 * ((double)Math.Abs(direction - 360) / 90);
+					m.deltaX = m.tailX * _position;
+				}
+
+				//Moving up and down
+				if (direction >= 0 && direction <= 90)
+				{
+					m.tailY = ((double)Math.Abs(direction - 90) / 90);
+					m.deltaY = m.tailY * _position;
+				}
+				else if (direction > 90 && direction <= 180)
+				{
+					m.tailY = -1 * ((double)Math.Abs(direction - 90) / 90);
+					m.deltaY = m.tailY * _position;
+				}
+				else if (direction > 180 && direction <= 270)
+				{
+					m.tailY = -1 * ((double)Math.Abs(direction - 270) / 90);
+					m.deltaY = m.tailY * _position;
+				}
+				else if (direction > 270 && direction <= 360)
+				{
+					m.tailY = ((double)Math.Abs(270 - direction) / 90);
+					m.deltaY = m.tailY * _position;
+				}
+
+				if (MeteorEffect == MeteorsEffect.Explode)
+				{
+					m.x = BufferWi/2;
+					m.y = BufferHt/2;
+				}
+				else
+				{
+					m.x = rand()%BufferWi;
+					m.y = (BufferHt - 1 - (rand()%tailStart));
+				}
+				m.deltaXOrig = m.deltaX;
+				m.deltaYOrig = m.deltaY;
+
+				switch (ColorType)
+				{
+					case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
+						m.hsv =
+							SetRangeColor(HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)),
+								HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)));
+						break;
+					case MeteorsColorType.Palette: //All colors are used
+						m.hsv = HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
+						break;
+					case MeteorsColorType.Gradient:
+						m.color = rand() % colorcnt;
+						_gradientPosition = 100 / (double)tailLength / 100;
+						m.hsv = HSV.FromRGB(Colors[m.color].GetColorAt(0));
+						break;
+				}
+				_meteors.Add(m);
 			}
 
 			// render meteors

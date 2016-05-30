@@ -2,10 +2,10 @@
 
 namespace VixenModules.Effect.Meteors
 {
-	public enum MeteorsType
+	public enum MeteorsEffect
 	{
-		[Description("Standard")]
-		Standard,
+		[Description("None")]
+		None,
 		[Description("Random")]
 		RandomDirection,
 		[Description("Explode")]

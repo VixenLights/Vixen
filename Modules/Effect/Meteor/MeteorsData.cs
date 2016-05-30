@@ -21,7 +21,7 @@ namespace VixenModules.Effect.Meteors
 			Speed = 7;
 			PixelCount = 15;
 			Direction = 180;
-			Type = MeteorsType.Standard;
+			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			Length = 5;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
@@ -50,7 +50,7 @@ namespace VixenModules.Effect.Meteors
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public MeteorsType Type { get; set; }
+		public MeteorsEffect MeteorEffect { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
@@ -63,7 +63,7 @@ namespace VixenModules.Effect.Meteors
 				Speed = Speed,
 				ColorType = ColorType,
 				Length = Length,
-				Type = Type,
+				MeteorEffect = MeteorEffect,
 				PixelCount = PixelCount,
 				Orientation = Orientation,
 				Direction = Direction,
