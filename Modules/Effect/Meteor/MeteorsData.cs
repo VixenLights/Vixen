@@ -18,9 +18,15 @@ namespace VixenModules.Effect.Meteors
 		public MeteorsData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			Speed = 7;
-			PixelCount = 15;
+			Speed = 30;
+			PixelCount = 20;
 			Direction = 180;
+			MaxSpeed = 40;
+			MinSpeed = 15;
+			MinDirection = 0;
+			MaxDirection = 360;
+			RandomBrightness = false;
+			RandomSpeed = true;
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			Length = 5;
@@ -44,6 +50,18 @@ namespace VixenModules.Effect.Meteors
 		public int PixelCount { get; set; }
 
 		[DataMember]
+		public int MaxSpeed { get; set; }
+
+		[DataMember]
+		public int MinSpeed { get; set; }
+
+		[DataMember]
+		public int MaxDirection { get; set; }
+
+		[DataMember]
+		public int MinDirection { get; set; }
+
+		[DataMember]
 		public int Length { get; set; }
 
 		[DataMember]
@@ -51,6 +69,12 @@ namespace VixenModules.Effect.Meteors
 
 		[DataMember]
 		public MeteorsEffect MeteorEffect { get; set; }
+
+		[DataMember]
+		public bool RandomSpeed { get; set; }
+
+		[DataMember]
+		public bool RandomBrightness { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
@@ -63,8 +87,14 @@ namespace VixenModules.Effect.Meteors
 				Speed = Speed,
 				ColorType = ColorType,
 				Length = Length,
+				MaxSpeed = MaxSpeed,
+				MinSpeed = MinSpeed,
+				RandomBrightness = RandomBrightness,
+				MinDirection = MinDirection,
+				MaxDirection = MaxDirection,
 				MeteorEffect = MeteorEffect,
 				PixelCount = PixelCount,
+				RandomSpeed = RandomSpeed,
 				Orientation = Orientation,
 				Direction = Direction,
 				LevelCurve = new Curve(LevelCurve)

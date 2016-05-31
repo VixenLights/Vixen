@@ -6,7 +6,7 @@ namespace VixenModules.Effect.Meteors
 	{
 		[Description("None")]
 		None,
-		[Description("Random")]
+		[Description("Random Direction")]
 		RandomDirection,
 		[Description("Explode")]
 		Explode
