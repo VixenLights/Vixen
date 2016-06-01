@@ -16,14 +16,24 @@ namespace VixenModules.Effect.Snowflakes
 
 		public SnowflakesData()
 		{
-			InnerColor = new List<Color> { Color.Blue };
-			OutSideColor = new List<Color> { Color.White };
+			InnerColor = new List<ColorGradient> { new ColorGradient(Color.Blue) };
+			OutSideColor = new List<ColorGradient> { new ColorGradient(Color.White) };
 			CenterColor = Color.Blue;
 			OuterColor = Color.White;
 			SnowflakeType = SnowflakeType.Random;
 			Speed = 5;
 			FlakeCount = 10;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			PixelCount = 15;
+			MaxSpeed = 10;
+			MinSpeed = 5;
+			MinDirection = 145;
+			MaxDirection = 215;
+			RandomSpeed = true;
+			RandomBrightness = false;
+			PointFlake45 = true;
+			SnowflakeEffect = SnowflakeEffect.None;
+			ColorType = SnowflakeColorType.Palette;
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -34,10 +44,10 @@ namespace VixenModules.Effect.Snowflakes
 		public Color OuterColor { get; set; }
 
 		[DataMember]
-		public List<Color> InnerColor { get; set; }
+		public List<ColorGradient> InnerColor { get; set; }
 
 		[DataMember]
-		public List<Color> OutSideColor { get; set; }
+		public List<ColorGradient> OutSideColor { get; set; }
 
 		[DataMember]
 		public SnowflakeType SnowflakeType { get; set; }
@@ -52,23 +62,61 @@ namespace VixenModules.Effect.Snowflakes
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
+		public SnowflakeColorType ColorType { get; set; }
+
+		[DataMember]
+		public int PixelCount { get; set; }
+
+		[DataMember]
+		public int MaxSpeed { get; set; }
+
+		[DataMember]
+		public int MinSpeed { get; set; }
+
+		[DataMember]
+		public int MaxDirection { get; set; }
+
+		[DataMember]
+		public int MinDirection { get; set; }
+
+		[DataMember]
+		public SnowflakeEffect SnowflakeEffect { get; set; }
+
+		[DataMember]
+		public bool RandomSpeed { get; set; }
+
+		[DataMember]
+		public bool RandomBrightness { get; set; }
+
+		[DataMember]
+		public bool PointFlake45 { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
 		public override IModuleDataModel Clone()
 		{
 			SnowflakesData result = new SnowflakesData
 			{
-				
 				SnowflakeType = SnowflakeType,
 				Speed = Speed,
 				FlakeCount = FlakeCount,
 				Orientation = Orientation,
+				PointFlake45 = PointFlake45,
 				LevelCurve = new Curve(LevelCurve),
 				CenterColor = CenterColor,
 				OuterColor = OuterColor,
-				InnerColor = new List<Color>(InnerColor),
-				OutSideColor = new List<Color>(OutSideColor)
-				
+				InnerColor = InnerColor.ToList(),
+				OutSideColor = OutSideColor.ToList(),
+				ColorType = ColorType,
+				MaxSpeed = MaxSpeed,
+				MinSpeed = MinSpeed,
+				RandomBrightness = RandomBrightness,
+				MinDirection = MinDirection,
+				MaxDirection = MaxDirection,
+				SnowflakeEffect = SnowflakeEffect,
+				PixelCount = PixelCount,
+				RandomSpeed = RandomSpeed
 			};
 			return result;
 		}

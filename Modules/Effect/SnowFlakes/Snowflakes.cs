@@ -6,6 +6,7 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
+using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -15,8 +16,9 @@ namespace VixenModules.Effect.Snowflakes
 	public class Snowflakes:PixelEffectBase
 	{
 		private SnowflakesData _data;
-		private PixelFrameBuffer tempBuffer;
-		private readonly Random _Random = new Random();
+
+		private readonly List<SnowFlakeClass> _snowFlakes = new List<SnowFlakeClass>();
+		private static Random _random = new Random();
 		
 		public Snowflakes()
 		{
@@ -36,8 +38,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SnowflakeType")]
-		[ProviderDescription(@"SnowflakeType")]
+		[ProviderDisplayName(@"SnowFlake Type")]
+		[ProviderDescription(@"SnowFlake Type")]
 		[PropertyOrder(0)]
 		public SnowflakeType SnowflakeType
 		{
@@ -46,6 +48,111 @@ namespace VixenModules.Effect.Snowflakes
 			{
 				_data.SnowflakeType = value;
 				IsDirty = true;
+				UpdateFlakeAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		//This is done so the user can exclude 45 Point Flakes from the Random selection as they would be too big on a small Matrix.
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Include 45Pt Flakes")]
+		[ProviderDescription(@"Include 45 Point Flakes")]
+		[PropertyOrder(1)]
+		public bool PointFlake45
+		{
+			get { return _data.PointFlake45; }
+			set
+			{
+				_data.PointFlake45 = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Color Type")]
+		[ProviderDescription(@"Color Type")]
+		[PropertyOrder(2)]
+		public SnowflakeColorType ColorType
+		{
+			get { return _data.ColorType; }
+			set
+			{
+				_data.ColorType = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SnowFlake Effects")]
+		[ProviderDescription(@"SnowFlake Effects")]
+		[PropertyOrder(3)]
+		public SnowflakeEffect SnowflakeEffect
+		{
+			get { return _data.SnowflakeEffect; }
+			set
+			{
+				_data.SnowflakeEffect = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Min Direction")]
+		[ProviderDescription(@"Min Direction in Degrees")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 359, 1)]
+		[PropertyOrder(4)]
+		public int MinDirection
+		{
+			get { return _data.MinDirection; }
+			set
+			{
+				_data.MinDirection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Max Direction")]
+		[ProviderDescription(@"Max Direction in Degrees")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 360, 1)]
+		[PropertyOrder(5)]
+		public int MaxDirection
+		{
+			get { return _data.MaxDirection; }
+			set
+			{
+				_data.MaxDirection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Random Speed")]
+		[ProviderDescription(@"Random Speed")]
+		[PropertyOrder(6)]
+		public bool RandomSpeed
+		{
+			get { return _data.RandomSpeed; }
+			set
+			{
+				_data.RandomSpeed = value;
+				IsDirty = true;
+				UpdateRandomSpeedAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -55,8 +162,8 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
-		[PropertyOrder(1)]
+		[NumberRange(1, 30, 1)]
+		[PropertyOrder(7)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -70,11 +177,51 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Min Speed")]
+		[ProviderDescription(@"Min Speed")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 30, 1)]
+		[PropertyOrder(8)]
+		public int MinSpeed
+		{
+			get { return _data.MinSpeed; }
+			set
+			{
+				if (MaxSpeed <= value)
+					value = MaxSpeed - 1; //Ensures MinSpeed is below MaxSpeed
+				_data.MinSpeed = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Max Speed")]
+		[ProviderDescription(@"Max Speed")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(2, 30, 1)]
+		[PropertyOrder(9)]
+		public int MaxSpeed
+		{
+			get { return _data.MaxSpeed; }
+			set
+			{
+				if (MinSpeed > value)
+					value = MinSpeed + 1;  //Ensures MaxSpeed is above MinSpeed
+				_data.MaxSpeed = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 40, 1)]
-		[PropertyOrder(2)]
+		[NumberRange(1, 100, 1)]
+		[PropertyOrder(10)]
 		public int FlakeCount
 		{
 			get { return _data.FlakeCount; }
@@ -112,7 +259,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
-		public List<Color> InnerColor
+		public List<ColorGradient> InnerColor
 		{
 			get { return _data.InnerColor; }
 			set
@@ -145,7 +292,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"OuterColor")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(4)]
-		public List<Color> OutSideColor
+		public List<ColorGradient> OutSideColor
 		{
 			get { return _data.OutSideColor; }
 			set
@@ -162,8 +309,25 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"Random Intensity")]
+		[ProviderDescription(@"Chnages the Intensity for each SnowFlake")]
+		[PropertyOrder(0)]
+		public bool RandomBrightness
+		{
+			get { return _data.RandomBrightness; }
+			set
+			{
+				_data.RandomBrightness = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(1)]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
@@ -177,12 +341,88 @@ namespace VixenModules.Effect.Snowflakes
 
 		#endregion
 
+		#region Update Attributes
+		private void UpdateAttributes()
+		{
+			UpdateColorAttribute(false);
+			UpdateDirectionAttribute(false);
+			UpdateRandomSpeedAttribute(false);
+			UpdateFlakeAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
+		private void UpdateColorAttribute(bool refresh = true)
+		{
+			bool snowFlakeType = ColorType != SnowflakeColorType.RainBow;
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add("InnerColor", snowFlakeType);
+			propertyStates.Add("OutSideColor", snowFlakeType);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateRandomSpeedAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
+			propertyStates.Add("Speed", !RandomSpeed);
+			propertyStates.Add("MaxSpeed", RandomSpeed);
+			propertyStates.Add("MinSpeed", RandomSpeed);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateDirectionAttribute(bool refresh = true)
+		{
+			bool direction = false;
+			bool variableDirection = false;
+			if (SnowflakeEffect == SnowflakeEffect.Explode)
+			{
+				direction = true;
+			}
+			if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
+			{
+				direction = true;
+				variableDirection = true;
+			}
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
+			propertyStates.Add("Direction", !direction);
+			propertyStates.Add("MinDirection", variableDirection);
+			propertyStates.Add("MaxDirection", variableDirection);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateFlakeAttribute(bool refresh = true)
+		{
+			bool snowFlakeType = SnowflakeType == SnowflakeType.Random;
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("PointFlake45", snowFlakeType);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
 			set
 			{
 				_data = value as SnowflakesData;
+				UpdateAttributes();
 				IsDirty = true;
 			}
 		}
@@ -196,197 +436,343 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			if (CenterColor != Color.Empty)
 			{
-				//Converts the Old Effect Color already on the timeline to the new List Colors.
-				InnerColor = new List<Color> { CenterColor };
-				OutSideColor = new List<Color> { OuterColor };
+				//Converts any Old Effect Colors to the new Colors List.
+				InnerColor = new List<ColorGradient> { new ColorGradient(CenterColor) };
+				OutSideColor = new List<ColorGradient> { new ColorGradient(OuterColor) };
 				CenterColor = Color.Empty;
 				OuterColor = Color.Empty;
-			}
-			if (BufferHt <= 1) return; //Invalid configuration
-			int x = 0;
-			int y = 0;
-
-			// initialize
-			tempBuffer = new PixelFrameBuffer(BufferWi, BufferHt);
-
-			// place Count snowflakes
-			for (int n = 0; n < FlakeCount; n++)
-			{
-				var deltaY = BufferHt / 4;
-				var y0 = (n % 4) * deltaY;
-				if (y0 + deltaY > BufferHt) deltaY = BufferHt - y0;
-				// find unused space
-				int check;
-				for (check = 0; check < 20; check++)
-				{
-					x = Rand() % BufferWi;
-					y = y0 + (Rand() % deltaY);
-					if (tempBuffer.GetColorAt(x, y) == Color.Black) break;
-				}
-				Color outerColor = OutSideColor[_Random.Next(0, OutSideColor.Count)];
-				Color innerColor = InnerColor[_Random.Next(0, InnerColor.Count)];
-
-				SnowflakeType type = SnowflakeType == SnowflakeType.Random ? RandomFlakeType<SnowflakeType>() : SnowflakeType;
-				// draw flake
-				switch (type)
-				{
-					case SnowflakeType.Single:
-						// single node
-						tempBuffer.SetPixel(x, y, innerColor);
-						break;
-					case SnowflakeType.Five:
-						// 5 nodes
-						if (x < 1) x += 1;
-						if (y < 1) y += 1;
-						if (x > BufferWi - 2) x -= 1;
-						if (y > BufferHt - 2) y -= 1;
-						tempBuffer.SetPixel(x, y, innerColor);
-						tempBuffer.SetPixel(x - 1, y, outerColor);
-						tempBuffer.SetPixel(x + 1, y, outerColor);
-						tempBuffer.SetPixel(x, y - 1, outerColor);
-						tempBuffer.SetPixel(x, y + 1, outerColor);
-						break;
-					case SnowflakeType.Three:
-						// 3 nodes
-						if (x < 1) x += 1;
-						if (y < 1) y += 1;
-						if (x > BufferWi - 2) x -= 1;
-						if (y > BufferHt - 2) y -= 1;
-						tempBuffer.SetPixel(x, y, innerColor);
-						if (Rand() % 100 > 50) // % 2 was not so Random
-						{
-							tempBuffer.SetPixel(x - 1, y, outerColor);
-							tempBuffer.SetPixel(x + 1, y, outerColor);
-						}
-						else
-						{
-							tempBuffer.SetPixel(x, y - 1, outerColor);
-							tempBuffer.SetPixel(x, y + 1, outerColor);
-						}
-						break;
-					case SnowflakeType.Nine:
-						// 9 nodes
-						if (x < 2) x +=2;
-						if (y < 2) y += 2;
-						if (x > BufferWi - 3) x -= 2;
-						if (y > BufferHt - 3) y -= 2;
-						tempBuffer.SetPixel(x, y, innerColor);
-						int i;
-						for (i = 1; i <= 2; i++)
-						{
-							tempBuffer.SetPixel(x - i, y, outerColor);
-							tempBuffer.SetPixel(x + i, y, outerColor);
-							tempBuffer.SetPixel(x, y - i, outerColor);
-							tempBuffer.SetPixel(x, y + i, outerColor);
-						}
-						break;
-					case SnowflakeType.Thirteen:
-						// 13 nodes
-						if (x < 2) x += 2;
-						if (y < 2) y += 2;
-						if (x > BufferWi - 3) x -= 2;
-						if (y > BufferHt - 3) y -= 2;
-						tempBuffer.SetPixel(x, y, innerColor);
-						tempBuffer.SetPixel(x - 1, y, outerColor);
-						tempBuffer.SetPixel(x + 1, y, outerColor);
-						tempBuffer.SetPixel(x, y - 1, outerColor);
-						tempBuffer.SetPixel(x, y + 1, outerColor);
-
-						tempBuffer.SetPixel(x - 1, y + 2, outerColor);
-						tempBuffer.SetPixel(x + 1, y + 2, outerColor);
-						tempBuffer.SetPixel(x - 1, y - 2, outerColor);
-						tempBuffer.SetPixel(x + 1, y - 2, outerColor);
-						tempBuffer.SetPixel(x + 2, y - 1, outerColor);
-						tempBuffer.SetPixel(x + 2, y + 1, outerColor);
-						tempBuffer.SetPixel(x - 2, y - 1, outerColor);
-						tempBuffer.SetPixel(x - 2, y + 1, outerColor);
-						break;
-					case SnowflakeType.FortyFive:
-						// 45 nodes
-						if (x < 4) x += 4;
-						if (y < 4) y += 4;
-						if (x > BufferWi - 5) x -= 4;
-						if (y > BufferHt - 5) y -= 4;
-
-						int ii = 4;
-						for (int j = -4; j < 5; j++)
-						{
-							tempBuffer.SetPixel(x + j, y + ii, outerColor);
-							ii --;
-						}
-						for (int j = -4; j < 5; j++)
-						{
-							tempBuffer.SetPixel(x + j, y + j, outerColor);
-						}
-						tempBuffer.SetPixel(x - 2, y + 3, outerColor);
-						tempBuffer.SetPixel(x - 3, y + 2, outerColor);
-						tempBuffer.SetPixel(x - 3, y - 2, outerColor);
-						tempBuffer.SetPixel(x - 2, y - 3, outerColor);
-						tempBuffer.SetPixel(x + 2, y + 3, outerColor);
-						tempBuffer.SetPixel(x + 2, y - 3, outerColor);
-						tempBuffer.SetPixel(x + 3, y + 2, outerColor);
-						tempBuffer.SetPixel(x + 3, y - 2, outerColor);
-						for (int j = -5; j < 6; j++)
-						{
-							tempBuffer.SetPixel(x, y + j, outerColor);
-						}for (int j = -5; j < 6; j++)
-						{
-							tempBuffer.SetPixel(x + j, y, outerColor);
-						}
-						tempBuffer.SetPixel(x, y, innerColor);
-						break;
-				}
 			}
 		}
 
 		protected override void CleanUpRender()
 		{
-			tempBuffer = null;
+			_snowFlakes.Clear();
 		}
 
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
-			if (BufferHt <= 1) return; //Invalid configuration
-			int stateInt = Speed*frame;
-			double position = GetEffectTimeIntervalPosition(frame);
-			double level = LevelCurve.GetValue(position * 100) / 100;
-			// move snowflakes
-			for (int x = 0; x < BufferWi; x++)
+			int colorcntOutSide = OutSideColor.Count;
+			int colorcntInside = InnerColor.Count;
+			int minDirection = 1;
+			int maxDirection = 360;
+
+			double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed) / 5 : (double)Speed / 5;
+
+			// create new SnowFlakes and maintain maximum number as per users selection.
+
+			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < FlakeCount ? 1 : FlakeCount;
+			for (int i = 0; i < flakeCount; i++)
 			{
-				var newX = (x + stateInt / 20) % BufferWi;
-				var newX2 = (x - stateInt / 20) % BufferWi;
-				if (newX2 < 0) newX2 += BufferWi;
-				for (int y = 0; y < BufferHt; y++)
+				if (_snowFlakes.Count >= FlakeCount) continue;
+				SnowFlakeClass m = new SnowFlakeClass();
+				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
-					var newY = (y + stateInt / 10) % BufferHt;
-					var newY2 = (newY + BufferHt / 2) % BufferHt;
-					var color1 = tempBuffer.GetColorAt(newX, newY);
-					if (color1 == Color.Empty)
+					minDirection = MinDirection;
+					maxDirection = MaxDirection;
+				}
+
+				int direction;
+				if (SnowflakeEffect == SnowflakeEffect.None)
+					direction = _random.Next(145, 215); //Set Range for standard Snowflakes as we don't want to just have them going straight down or two dirctions like the original Snowflake effect.
+				else
+				{
+					//This is to generate random directions between the Min and Max values
+					//However if Someone makes the MaxDirection lower then the Min Direction then
+					//the new direction will be the inverserve of the Min and Max effectively changing
+					//the range from a downward motion to an upward motion, increasing the feature capability.
+					direction = maxDirection <= minDirection
+						? (_random.Next(1, 3) == 1 ? _random.Next(1, maxDirection) : _random.Next(minDirection, 360))
+						: _random.Next(minDirection, maxDirection);
+				}
+
+				//Moving (direction)
+				if (direction > 0 && direction <= 90)
+				{
+					m.DeltaX = ((double)direction / 90) * position;
+					m.DeltaY = ((double)Math.Abs(direction - 90) / 90) * position;
+				}
+				else if (direction > 90 && direction <= 180)
+				{
+					m.DeltaX = ((double)Math.Abs(direction - 180) / 90) * position;
+					m.DeltaY = (-1 * ((double)Math.Abs(direction - 90) / 90)) * position;
+				}
+				else if (direction > 180 && direction <= 270)
+				{
+					m.DeltaX = (-1 * ((double)Math.Abs(direction - 180) / 90)) * position;
+					m.DeltaY = (-1 * ((double)Math.Abs(direction - 270) / 90)) * position;
+				}
+				else if (direction > 270 && direction <= 360)
+				{
+					m.DeltaX = (-1 * ((double)Math.Abs(direction - 360) / 90)) * position;
+					m.DeltaY = ((double)Math.Abs(270 - direction) / 90) * position;
+				}
+
+				//Start position for Snowflake
+				if (SnowflakeEffect == SnowflakeEffect.Explode) //Will start in the centre of the grid
+				{
+					m.X = BufferWi / 2;
+					m.Y = BufferHt / 2;
+				}
+				else
+				{
+					m.X = _random.Next() % BufferWi;
+					if (frame == 0)
+						m.Y = _random.Next() % BufferHt; //This is used so for the first lot of Snowflakes they will start in a random position and then fall from the edge.
+					else
 					{
-						color1 = tempBuffer.GetColorAt(newX2, newY2);
+						m.Y = BufferHt;
 					}
-					var hsv = HSV.FromRGB(color1);
-					hsv.V = hsv.V * level;
-					frameBuffer.SetPixel(x, y, hsv);
+				}
+				m.DeltaXOrig = m.DeltaX;
+				m.DeltaYOrig = m.DeltaY;
+
+				m.Type = SnowflakeType == SnowflakeType.Random ? RandomFlakeType<SnowflakeType>() : SnowflakeType;
+
+				//Set the SnowFlake colors during the creation of the snowflake.
+				switch (ColorType)
+				{
+					case SnowflakeColorType.Range: //Random two colors are selected from the list for each SnowFlake and then the color range between them are used.
+						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)),
+								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)));
+						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)),
+								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)));
+						break;
+					case SnowflakeColorType.Palette: //All user colors are used
+						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						break;
+					default:
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+					break;
+				}
+				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1; //Adds a random brightness to each Snowflake making it look more realistic
+				_snowFlakes.Add(m);
+			}
+
+			// render all SnowFlakes
+			foreach (SnowFlakeClass snowFlakes in _snowFlakes)
+			{
+				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
+				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
+				for (int c = 0; c < 1; c++)
+				{
+					//Sets the new position the SnowFlake is moving to
+					int colorX = (snowFlakes.X + Convert.ToInt32(snowFlakes.DeltaX) - (BufferWi / 100));
+					int colorY = (snowFlakes.Y + Convert.ToInt32(snowFlakes.DeltaY) + (BufferHt / 100));
+
+					if (SnowflakeEffect != SnowflakeEffect.Explode)//Modifies the colorX and colorY when the Explode effect is not used.
+					{
+						colorX = colorX%BufferWi;
+						colorY = colorY%BufferHt;
+					}
+
+					if (ColorType == SnowflakeColorType.RainBow) //No user colors are used for Rainbow effect. Color selection for user will be hidden.
+					{
+						snowFlakes.OuterHsv.H = (float) (rand()%1000)/1000.0f;
+						snowFlakes.OuterHsv.S = 1.0f;
+						snowFlakes.OuterHsv.V = 1.0f;
+					}
+					//Added the color and then adjusts brightness based on effect time position, randon Brightness and over all brightness level.
+					HSV hsvInner = snowFlakes.OuterHsv;
+					HSV hsvOuter = snowFlakes.InnerHsv;
+					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+					if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
+					{
+						snowFlakes.Expired = true; //flags SnowFlakes that have reached the end of the grid as expiried. Allows new Snowflakes to be created.
+						break;
+					}
+
+					//Render SnowFlakes
+					switch (snowFlakes.Type)
+					{
+						case SnowflakeType.Single:
+							// single node
+							frameBuffer.SetPixel(colorX, colorY, hsvInner);
+							break;
+						case SnowflakeType.Five:
+							// 5 nodes
+							frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+							frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
+							frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
+							frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
+							frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+							break;
+						case SnowflakeType.Three:
+							// 3 nodes
+							frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+							if (rand()%100 > 50)
+							{
+								frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
+								frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
+							}
+							else
+							{
+								frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
+								frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+							}
+							break;
+						case SnowflakeType.Nine:
+							// 9 nodes
+							frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+							int i;
+							for (i = 1; i <= 2; i++)
+							{
+								frameBuffer.SetPixel(colorX - i, colorY, hsvInner);
+								frameBuffer.SetPixel(colorX + i, colorY, hsvInner);
+								frameBuffer.SetPixel(colorX, colorY - i, hsvInner);
+								frameBuffer.SetPixel(colorX, colorY + i, hsvInner);
+							}
+							break;
+						case SnowflakeType.Thirteen:
+							// 13 nodes
+							frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+							frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
+							frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
+							frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
+							frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+
+							frameBuffer.SetPixel(colorX - 1, colorY + 2, hsvInner);
+							frameBuffer.SetPixel(colorX + 1, colorY + 2, hsvInner);
+							frameBuffer.SetPixel(colorX - 1, colorY - 2, hsvInner);
+							frameBuffer.SetPixel(colorX + 1, colorY - 2, hsvInner);
+							frameBuffer.SetPixel(colorX + 2, colorY - 1, hsvInner);
+							frameBuffer.SetPixel(colorX + 2, colorY + 1, hsvInner);
+							frameBuffer.SetPixel(colorX - 2, colorY - 1, hsvInner);
+							frameBuffer.SetPixel(colorX - 2, colorY + 1, hsvInner);
+							break;
+						case SnowflakeType.FortyFive:
+							// 45 nodes
+							int ii = 4;
+							for (int j = -4; j < 5; j++)
+							{
+								if (colorX <= BufferWi && colorY <= BufferHt)
+									frameBuffer.SetPixel(colorX + j, colorY + ii, hsvInner);
+								ii--;
+							}
+							for (int j = -4; j < 5; j++)
+							{
+								if (colorX <= BufferWi && colorY <= BufferHt)
+									frameBuffer.SetPixel(colorX + j, colorY + j, hsvInner);
+							}
+							if (colorX <= BufferWi && colorY <= BufferHt)
+							{
+								frameBuffer.SetPixel(colorX - 2, colorY + 3, hsvInner);
+								frameBuffer.SetPixel(colorX - 3, colorY + 2, hsvInner);
+								frameBuffer.SetPixel(colorX - 3, colorY - 2, hsvInner);
+								frameBuffer.SetPixel(colorX - 2, colorY - 3, hsvInner);
+								frameBuffer.SetPixel(colorX + 2, colorY + 3, hsvInner);
+								frameBuffer.SetPixel(colorX + 2, colorY - 3, hsvInner);
+								frameBuffer.SetPixel(colorX + 3, colorY + 2, hsvInner);
+								frameBuffer.SetPixel(colorX + 3, colorY - 2, hsvInner);
+							}
+							for (int j = -5; j < 6; j++)
+							{
+								if (colorX <= BufferWi && colorY <= BufferHt)
+									frameBuffer.SetPixel(colorX, colorY + j, hsvInner);
+							}
+							for (int j = -5; j < 6; j++)
+							{
+								if (colorX <= BufferWi && colorY <= BufferHt)
+									frameBuffer.SetPixel(colorX + j, colorY, hsvInner);
+							}
+							if (colorX <= BufferWi && colorY <= BufferHt)
+								frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+							break;
+					}
+				}
+			}
+
+			// deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
+			int snowFlakeNum = 0;
+			while (snowFlakeNum < _snowFlakes.Count)
+			{
+				if (_snowFlakes[snowFlakeNum].Expired)
+				{
+					_snowFlakes.RemoveAt(snowFlakeNum);
+				}
+				else
+				{
+					snowFlakeNum++;
 				}
 			}
 		}
 
-		private int Rand()
+		// SnowFlakes
+		public class SnowFlakeClass
 		{
-			return _Random.Next();
+			public int X;
+			public int Y;
+			public double DeltaX;
+			public double DeltaY;
+			public double DeltaXOrig;
+			public double DeltaYOrig;
+			public HSV OuterHsv = new HSV();
+			public HSV InnerHsv = new HSV();
+			public bool Expired = false;
+			public SnowflakeType Type;
+			public double HsvBrightness;
 		}
 
-		private int Rand(int seed)
+		// generates a random number between Color num1 and and Color num2.
+		private static float RandomRange(float num1, float num2)
 		{
-			return _Random.Next(seed);
+			double hi, lo;
+			InitRandom();
+
+			if (num1 < num2)
+			{
+				lo = num1;
+				hi = num2;
+			}
+			else
+			{
+				lo = num2;
+				hi = num1;
+			}
+			return (float)(_random.NextDouble() * (hi - lo) + lo);
+		}
+
+		private int rand()
+		{
+			return _random.Next();
+		}
+
+		private static void InitRandom()
+		{
+			if (_random == null)
+				_random = new Random();
+		}
+
+		//Use for Range type
+		public static HSV SetRangeColor(HSV hsv1, HSV hsv2)
+		{
+			HSV newHsv = new HSV(RandomRange((float)hsv1.H, (float)hsv2.H),
+								 RandomRange((float)hsv1.S, (float)hsv2.S),
+								 1.0f);
+			return newHsv;
 		}
 
 		private T RandomFlakeType<T>()
 		{
-			Array values = Enum.GetValues(typeof(T));
-			T randomEnum = (T)values.GetValue(Rand(values.Length));
+			T randomEnum;
+			bool exclude45PtFlakes; //This is done so the user can exclude 45 Point Flakes from the Random selection as they would be too big on a small Matrix.
+			do
+			{
+				exclude45PtFlakes = false;
+				Array values = Enum.GetValues(typeof(T));
+				randomEnum = (T)values.GetValue(rand(values.Length));
+				if (!PointFlake45 && randomEnum.ToString() == "FortyFive")
+					exclude45PtFlakes = true;
+			} while (exclude45PtFlakes);
+			
 			return randomEnum;
+		}
+
+		private int rand(int seed)
+		{
+			return _random.Next(seed);
 		}
 	}
 }
