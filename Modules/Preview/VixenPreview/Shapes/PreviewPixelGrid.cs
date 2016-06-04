@@ -81,7 +81,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (selectedNode != null && selectedNode.Children != null) {
 				int parentStringCount = selectedNode.Children.ToList().Count;
 				// Selected node has to be a group!
-				if (!selectedNode.IsLeaf && parentStringCount >= 4) {
+				if (!selectedNode.IsLeaf && parentStringCount >= 2) {
 					// Iterate through the strings in the grid
 					parentStringCount = selectedNode.Children.ToList().Count;
 					foreach (ElementNode parent in selectedNode.Children) {
@@ -104,7 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 				}
 
-				if (lastChildLightCount > 4 && parentStringCount >= 4) {
+				if (lastChildLightCount >= 2 && parentStringCount >= 2) {
 					childLightCount = lastChildLightCount;
 					return true;
 				}
