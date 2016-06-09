@@ -27,6 +27,7 @@ namespace VixenModules.Effect.Meteors
 			MaxDirection = 360;
 			RandomBrightness = false;
 			RandomSpeed = true;
+			RandomMeteorPosition = false;
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			Length = 5;
@@ -74,6 +75,9 @@ namespace VixenModules.Effect.Meteors
 		public bool RandomSpeed { get; set; }
 
 		[DataMember]
+		public bool RandomMeteorPosition { get; set; }
+
+		[DataMember]
 		public bool RandomBrightness { get; set; }
 
 		[DataMember]
@@ -94,6 +98,7 @@ namespace VixenModules.Effect.Meteors
 				MaxDirection = MaxDirection,
 				MeteorEffect = MeteorEffect,
 				PixelCount = PixelCount,
+				RandomMeteorPosition = RandomMeteorPosition,
 				RandomSpeed = RandomSpeed,
 				Orientation = Orientation,
 				Direction = Direction,
