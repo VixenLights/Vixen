@@ -305,6 +305,7 @@
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
     <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
+    <Compile Include="Module\SequenceType\Surrogate\LayerMixingFilterSurrogate.cs" />
     <Compile Include="Module\Service\IService.cs" />
     <Compile Include="Module\Service\IServiceModuleDescriptor.cs" />
     <Compile Include="Module\Service\IServiceModuleInstance.cs" />
@@ -326,9 +327,15 @@
     <Compile Include="Rule\Name\WordIterator.cs" />
     <Compile Include="Rule\Patch\ElementsToSingleController.cs" />
     <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\LayerMixingFilterService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
     <Compile Include="Sys\IStateCombinator.cs" />
+    <Compile Include="Sys\LayerMixing\BaseLayerMixingDefinition.cs" />
+    <Compile Include="Sys\LayerMixing\DefaultLayerMixingDefinition.cs" />
+    <Compile Include="Sys\LayerMixing\ILayerMixingDefinition.cs" />
+    <Compile Include="Sys\LayerMixing\LayerMixingDefinition.cs" />
+    <Compile Include="Sys\LayerMixing\LayerMixingFilterCollection.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
     <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
     <Compile Include="Sys\Managers\ExecutionState.cs" />
@@ -853,6 +860,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\MixingFilterTypeConverter.cs" />
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />

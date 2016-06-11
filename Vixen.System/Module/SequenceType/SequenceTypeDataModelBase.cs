@@ -6,6 +6,7 @@ using Vixen.Execution;
 using Vixen.Module.Media;
 using Vixen.Module.SequenceType.Surrogate;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.SequenceType
 {
@@ -16,6 +17,7 @@ namespace Vixen.Module.SequenceType
 		{
 			Media = new MediaCollection();
 			LocalDataSet = new ModuleLocalDataSet();
+			LayerMixingFilterCollection = new LayerMixingFilterCollection();
 			_InitDataStreams();
 		}
 
@@ -41,6 +43,9 @@ namespace Vixen.Module.SequenceType
 		public DataStream SequenceFilterData { get; set; }
 
 		public DataStreams DataStreams { get; private set; }
+
+		[DataMember]
+		public LayerMixingFilterCollection LayerMixingFilterCollection { get; set; }
 
 		public override IModuleDataModel Clone()
 		{
@@ -111,6 +116,10 @@ namespace Vixen.Module.SequenceType
 			_InitDataStreams();
 			EffectData.AddData(effectNodes);
 			SequenceFilterData.AddData(sequenceFilterNodes);
+			if (LayerMixingFilterCollection == null)
+			{
+				LayerMixingFilterCollection = new LayerMixingFilterCollection();
+			}
 		}
 	}
 }

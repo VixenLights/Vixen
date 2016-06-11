@@ -231,7 +231,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return ToolsForm;
 			if (persistString == typeof(FormEffectEditor).ToString())
 				return EffectEditorForm;
-			
+			if (persistString == typeof(MixingFilterEditor).ToString())
+				return MixingFilterEditor;
+
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
 		}
@@ -445,10 +447,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarksForm.Show(dockPanel, DockState.DockLeft);
 			EffectsForm.Show(dockPanel, DockState.DockLeft);
 			EffectEditorForm.Show(dockPanel, DockState.DockRight);
+			MixingFilterEditor.Show(dockPanel, DockState.DockLeft);
 		}
 
 
-#if DEBUGDataDropped
+#if DEBUG
 		private void b_Click(object sender, EventArgs e)
 		{
 			//Debugger.Break();
@@ -719,6 +722,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private MixingFilterEditor _mixingFilterEditor;
+
+		private MixingFilterEditor MixingFilterEditor
+		{
+			get
+			{
+				if (_mixingFilterEditor != null && !_mixingFilterEditor.IsDisposed)
+				{
+					return _mixingFilterEditor;
+				}
+
+				_mixingFilterEditor = new MixingFilterEditor(_sequence.LayerMixingFilterCollection, this);
+				_mixingFilterEditor.MixingLayerFiltersChanged += _mixingFilterEditor_MixingLayerFiltersChanged;
+				//_mixingFilterEditor.PopulateMarkCollectionsList(null);
+				//_mixingFilterEditor.MarkCollectionChecked += MarkCollection_Checked;
+				//_mixingFilterEditor.EditMarkCollection += MarkCollection_Edit;
+				//_mixingFilterEditor.ChangedMarkCollection += MarkCollection_Changed;
+				_mixingFilterEditor.Closing +=MixingFilterEditorOnClosing;
+
+				return _mixingFilterEditor;
+			}
+		}
+
 		private Form_ToolPalette _toolPaletteForm;
 
 		private Form_ToolPalette ToolsForm
@@ -765,6 +791,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectsForm.Closing -= _effectsForm_Closing;
 		}
 
+		private void MixingFilterEditorOnClosing(object sender, CancelEventArgs cancelEventArgs)
+		{
+			MixingFilterEditor.Closing -= MixingFilterEditorOnClosing;
+		}
+
+		private void _mixingFilterEditor_MixingLayerFiltersChanged(object sender, LayerMixingFilterEditorEventArgs e)
+		{
+			if (e.LayerDefinitionRemoved)
+			{
+				//TODO update all the effects if one is removed	
+			}
+
+			SequenceModified();
+		}
 
 
 		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
@@ -4056,6 +4096,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Overridden form functions (On___)
 
+		public bool IgnoreKeyDownEvents { get; set; }
+
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			switch (keyData)
@@ -4083,6 +4125,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			if (IgnoreKeyDownEvents) return;
+
 			Element element;
 			// do anything special we want to here: keyboard shortcuts that are in
 			// the menu will be handled by them instead.
@@ -4604,73 +4648,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
-			if (GridForm.IsHidden || GridForm.DockState == DockState.Unknown)
-			{
-				GridForm.DockState = DockState.Document;
-				GridForm.Show(dockPanel, DockState.Document);
-			}
-			
+			HandleDockContentToolStripMenuClick(GridForm, DockState.Document);
 		}
 
 		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (EffectEditorForm.DockState == DockState.Unknown)
-			{
-				EffectEditorForm.Show(dockPanel, DockState.DockRight);
-			}
-			else
-			{
-				EffectEditorForm.Close();
-			}
-
+			HandleDockContentToolStripMenuClick(EffectEditorForm, DockState.DockRight);
 		}
-
 
 		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (EffectsForm.DockState == DockState.Unknown)
-			{
-				DockState dockState = EffectsForm.DockState;
-				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
-				EffectsForm.Show(dockPanel, dockState);
-			}
-			else
-			{
-				EffectsForm.Close();
-			}
+			HandleDockContentToolStripMenuClick(EffectsForm, DockState.DockLeft);
 		}
 
 		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (MarksForm.DockState == DockState.Unknown)
-			{
-				DockState dockState = MarksForm.DockState;
-				dockState = DockState.DockLeft;
-				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
-				MarksForm.Show(dockPanel, dockState);
-			}
-			else
-			{
-				MarksForm.Close();
-			}
+			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockLeft);
 		}
 
 		private void toolWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (ToolsForm.DockState == DockState.Unknown)
+			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockLeft);
+		}
+
+		private void mixingFilterEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			HandleDockContentToolStripMenuClick(MixingFilterEditor, DockState.DockLeft);
+		}
+
+		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)
+		{
+			if (dockWindow.IsHidden || dockWindow.DockState == DockState.Unknown)
 			{
-				DockState dockState = ToolsForm.DockState;
-				dockState = DockState.DockLeft;
-				if (dockState == DockState.Unknown) dockState = DockState.DockLeft;
-				ToolsForm.Show(dockPanel, dockState);
+				dockWindow.Show(dockPanel, state);
 			}
 			else
 			{
-				ToolsForm.Close();
+				dockWindow.Close();
 			}
 		}
-
 
 		#endregion
 
@@ -4962,6 +4978,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.SaveAsXml(_settingsPath);
 			MarksForm.Close();
 			EffectsForm.Close();
+			MixingFilterEditor.Close();
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);

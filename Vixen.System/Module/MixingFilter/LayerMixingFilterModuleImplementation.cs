@@ -2,7 +2,7 @@
 
 namespace Vixen.Module.MixingFilter
 {
-	[TypeOfModule("LayerCombiningFilter")]
+	[TypeOfModule("LayerMixingFilter")]
 	internal class LayerMixingFilterModuleImplementation: ModuleImplementation<ILayerMixingFilterInstance>
 	{
 		public LayerMixingFilterModuleImplementation() 

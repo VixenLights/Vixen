@@ -35,9 +35,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>$(SolutionDir)\Debug\Modules\Editor\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -179,6 +189,12 @@
     <Compile Include="InvalidAudioPathDialog.Designer.cs">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="MixingFilterEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MixingFilterEditor.Designer.cs">
+      <DependentUpon>MixingFilterEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
@@ -298,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MarkTapper.resx">
       <DependentUpon>MarkTapper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MixingFilterEditor.resx">
+      <DependentUpon>MixingFilterEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>

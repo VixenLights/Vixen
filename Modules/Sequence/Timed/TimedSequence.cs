@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Sys.LayerMixing;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -64,6 +65,12 @@ namespace VixenModules.Sequence.Timed
 		{
 			get { return ((TimedSequenceData)SequenceData).DefaultPlaybackEndTime; }
 			set { ((TimedSequenceData)SequenceData).DefaultPlaybackEndTime = value; }
+		}
+
+		public LayerMixingFilterCollection LayerMixingFilterCollection
+		{
+			get { return ((TimedSequenceData)SequenceData).LayerMixingFilterCollection; }
+			set { ((TimedSequenceData)SequenceData).LayerMixingFilterCollection = value; }
 		}
 
 	}
