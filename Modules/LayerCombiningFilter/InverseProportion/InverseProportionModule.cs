@@ -5,7 +5,7 @@ using Vixen.Data.Value;
 using Vixen.Module.MixingFilter;
 using Vixen.Sys;
 
-namespace VixenModules.LayerCombiningFilter.InverseProportion
+namespace VixenModules.LayerMixingFilter.InverseProportion
 {
 	public class InverseProportionModule : LayerMixingFilterModuleInstanceBase
 	{

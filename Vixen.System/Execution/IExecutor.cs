@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution
 {
@@ -16,5 +17,6 @@ namespace Vixen.Execution
 		string Name { get; }
 		ITiming TimingSource { get; }
 		IEnumerable<ISequenceFilterNode> SequenceFilters { get; }
+		SequenceLayers SequenceLayers { get; }
 	}
 }

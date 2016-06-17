@@ -10,6 +10,7 @@ using NLog;
 using Vixen.Attributes;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.Effect
 {
@@ -83,7 +84,7 @@ namespace Vixen.Module.Effect
 			}
 		}
 
-		public virtual byte Layer { get; set; }
+		//public virtual LayerMixingDefinition LayerMixingDefinition { get; set; }
 
 		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{

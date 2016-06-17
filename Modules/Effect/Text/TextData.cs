@@ -80,9 +80,6 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{
@@ -98,7 +95,7 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			TextData result = new TextData
 			{
@@ -117,8 +114,7 @@ namespace VixenModules.Effect.Text
 				BaseColor = BaseColor,
 				Font = new SerializableFont(Font.FontValue),
 				LevelCurve = LevelCurve,
-				BaseLevelCurve = BaseLevelCurve,
-				Layer = Layer
+				BaseLevelCurve = BaseLevelCurve
 			};
 			return result;
 		}

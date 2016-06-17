@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Vixen.Sys;
 using Vixen.Data.Value;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
@@ -24,7 +25,7 @@ namespace Vixen.Intent
 
 		public TimeSpan TimeSpan { get { return _timespan; } }
 
-		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer)
+		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
 			//return new IntentState<T>(this, intentRelativeTime, layer);
 			_intentState.Layer = layer;

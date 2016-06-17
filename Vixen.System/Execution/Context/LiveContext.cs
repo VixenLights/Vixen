@@ -4,13 +4,15 @@ using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
 	public class LiveContext : ContextBase
 	{
-		private string _name;
-		private LiveDataSource _dataSource;
+		private readonly string _name;
+		private readonly LiveDataSource _dataSource;
+		private readonly Layer _layer = new DefaultLayer();
 
 		//public LiveContext(string name)
 		//    : base(name) {
@@ -24,8 +26,8 @@ namespace Vixen.Execution.Context
 
 		public void TerminateNode(Guid targetNode)
 		{
-			IEnumerable<IEffectNode> nodes = _currentEffects.Where(x => x.Effect.TargetNodes.Any(t => t.Id.Equals(targetNode))).ToList();
-			_currentEffects.RemoveEffects(nodes);
+			IEnumerable<IEffectNode> nodes = CurrentEffects.Where(x => x.Effect.TargetNodes.Any(t => t.Id.Equals(targetNode))).ToList();
+			CurrentEffects.RemoveEffects(nodes);
 		}
 
 		public override string Name
@@ -51,14 +53,19 @@ namespace Vixen.Execution.Context
 		public void Clear(bool waitForReset = true)
 		{	
 			_dataSource.ClearData();
-			_currentEffects.Reset();
+			CurrentEffects.Reset();
 			if (waitForReset)
 			{
-				while (_currentEffects.Resetting())
+				while (CurrentEffects.Resetting())
 				{
 					//wait for reset to occur.
 				}
 			}
+		}
+
+		protected override ILayer GetLayerForNode(IEffectNode node)
+		{
+			return _layer;
 		}
 
 		protected override IDataSource _DataSource

@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
 	public abstract class ContextBase : IContext
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		internal ContextCurrentEffectsFull _currentEffects; 
+		internal ContextCurrentEffectsFull CurrentEffects; 
 		private readonly IntentStateBuilder _elementStateBuilder;
 		private TimeSpan _currentTime = TimeSpan.Zero;
 		private bool _disposed;
@@ -22,7 +21,7 @@ namespace Vixen.Execution.Context
 		{
 			Id = Guid.NewGuid();
 
-			_currentEffects = new ContextCurrentEffectsFull();
+			CurrentEffects = new ContextCurrentEffectsFull();
 			_elementStateBuilder = new IntentStateBuilder();
 		}
 
@@ -90,7 +89,7 @@ namespace Vixen.Execution.Context
 				_DiscoverIntentsFromEffects();
 			}
 
-			return _currentEffects.Count>0;
+			return CurrentEffects.Count>0;
 		}
 
 		public IIntentStates GetState(Guid key)
@@ -107,15 +106,19 @@ namespace Vixen.Execution.Context
 		private bool _UpdateCurrentEffectList()
 		{
 			// We have an object that does this for us.
-			return _currentEffects.UpdateCurrentEffects(_DataSource, _currentTime);
+			return CurrentEffects.UpdateCurrentEffects(_DataSource, _currentTime);
 		}
+
+		//Let each context decide how to apply the layers. 
+		protected abstract ILayer GetLayerForNode(IEffectNode node);
 
 		private void _DiscoverIntentsFromEffects()
 		{
 			// For each effect in the in-effect list for the context...
 			//Parallel.ForEach(_currentEffects, effectNode =>
-			foreach (var effectNode in _currentEffects)
+			foreach (var effectNode in CurrentEffects)
 			{
+				var layer = GetLayerForNode(effectNode);
 				TimeSpan effectRelativeTime = _currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
 				foreach (var effectIntent in effectIntents)
@@ -125,7 +128,7 @@ namespace Vixen.Execution.Context
 						if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 						{
 							IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime,
-								effectNode.Effect.Layer);
+								layer);
 							_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
 						}
 					}
@@ -136,7 +139,7 @@ namespace Vixen.Execution.Context
 
 		protected void ClearCurrentEffects()
 		{
-			_currentEffects.Reset();
+			CurrentEffects.Reset();
 		}
 
 		protected abstract IDataSource _DataSource { get; }

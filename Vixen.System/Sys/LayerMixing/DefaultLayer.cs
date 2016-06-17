@@ -3,11 +3,11 @@
 namespace Vixen.Sys.LayerMixing
 {
 	[DataContract]
-	public class DefaultLayerMixingDefinition:BaseLayerMixingDefinition
+	public class DefaultLayer:Layer
 	{
-		public DefaultLayerMixingDefinition()
+		public DefaultLayer()
 		{
-			Type = LayerMixingDefinitionType.Default;
+			Type = LayerType.Default;
 			LayerName = "Default";
 			LayerLevel = 0;
 		}

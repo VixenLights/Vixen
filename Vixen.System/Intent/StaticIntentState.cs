@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Data.Value;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
@@ -9,11 +10,11 @@ namespace Vixen.Intent
 	{
 		private ResultType _value;
 
-		public StaticIntentState(ResultType value) : this(value, 0)
+		public StaticIntentState(ResultType value) : this(value, new DefaultLayer())
 		{
 		}
 
-		public StaticIntentState(ResultType value, byte layer)
+		public StaticIntentState(ResultType value, Layer layer)
 		{
 			_value = value;
 			Layer = layer;
@@ -43,7 +44,7 @@ namespace Vixen.Intent
 			return _value;
 		}
 
-		public byte Layer { get; private set; }
+		public ILayer Layer { get; private set; }
 
 		object IIntentState.GetValue()
 		{

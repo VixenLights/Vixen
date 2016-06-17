@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.ControlsEx.ValueControls;
@@ -34,6 +35,7 @@ using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 using Vixen.Sys.State;
 using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
@@ -733,12 +735,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _mixingFilterEditor;
 				}
 
-				_mixingFilterEditor = new MixingFilterEditor(_sequence.LayerMixingFilterCollection, this);
+				_mixingFilterEditor = new MixingFilterEditor(_sequence.SequenceLayers, this);
 				_mixingFilterEditor.MixingLayerFiltersChanged += _mixingFilterEditor_MixingLayerFiltersChanged;
-				//_mixingFilterEditor.PopulateMarkCollectionsList(null);
-				//_mixingFilterEditor.MarkCollectionChecked += MarkCollection_Checked;
-				//_mixingFilterEditor.EditMarkCollection += MarkCollection_Edit;
-				//_mixingFilterEditor.ChangedMarkCollection += MarkCollection_Changed;
 				_mixingFilterEditor.Closing +=MixingFilterEditorOnClosing;
 
 				return _mixingFilterEditor;
@@ -798,11 +796,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _mixingFilterEditor_MixingLayerFiltersChanged(object sender, LayerMixingFilterEditorEventArgs e)
 		{
-			if (e.LayerDefinitionRemoved)
-			{
-				//TODO update all the effects if one is removed	
-			}
-
 			SequenceModified();
 		}
 
@@ -1094,6 +1087,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					TimelineControl.VisibleTimeStart = _sequence.VisibleTimeStart;
 				}
 
+				TimelineControl.grid.SequenceLayers = Sequence.GetSequenceLayerManager();
 
 				Logging.Debug("Sequence {0} took {1} to load.", sequence.Name, _loadingWatch.Elapsed);
 			}
@@ -1960,7 +1954,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_contextMenuStrip.Items.Add(contextMenuItemAddEffect);
 
-
+			ConfigureLayerMenu(e);
 
 			if (e.ElementsUnderCursor != null && e.ElementsUnderCursor.Count() == 1)
 			{
@@ -2201,6 +2195,49 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			e.AutomaticallyHandleSelection = false;
 
 			_contextMenuStrip.Show(MousePosition);
+		}
+
+		private void ConfigureLayerMenu(ContextSelectedEventArgs e)
+		{
+			if ((e.ElementsUnderCursor != null && e.ElementsUnderCursor.Any()) || TimelineControl.SelectedElements.Any())
+			{
+				var layers = Sequence.GetAllLayers();
+				if (layers.Count() > 1)
+				{
+					ToolStripMenuItem contextMenuToLayer = new ToolStripMenuItem("To Layer")
+					{
+						Enabled = true,
+						Image = Resources.alignment,
+						ToolTipText = @"Assign effects to a layer"
+					};
+
+					foreach (var layer in layers.Reverse())
+					{
+						var item = new ToolStripMenuItem(layer.LayerName);
+						item.Tag = layer;
+						item.ToolTipText = layer.FilterName;
+						contextMenuToLayer.DropDownItems.Add(item);
+						item.Click += (sender, args) =>
+						{
+							var sequenceLayers = Sequence.GetSequenceLayerManager();
+							var el = e.ElementsUnderCursor;
+							if (e.ElementsUnderCursor != null && el.Any())
+							{
+								foreach (var element in el)
+								{
+									sequenceLayers.AssignEffectNodeToLayer(element.EffectNode, (ILayer)item.Tag);
+								}
+								
+							}
+							foreach (var selectedElement in TimelineControl.SelectedElements)
+							{
+								sequenceLayers.AssignEffectNodeToLayer(selectedElement.EffectNode, (ILayer) item.Tag);
+							}
+						};
+					}
+					_contextMenuStrip.Items.Add(contextMenuToLayer);
+				}
+			}
 		}
 
 		private void AddContextCollectionsMenu()

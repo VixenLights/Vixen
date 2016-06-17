@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Common.Controls.Timeline
 {
@@ -414,7 +415,7 @@ namespace Common.Controls.Timeline
 			return result;
 		}
 
-		public void DrawInfo(Graphics g, Rectangle rect) 
+		public void DrawInfo(Graphics g, Rectangle rect, ILayer layer) 
 		{
 			const int margin = 2;
 			if (MouseCaptured)
@@ -424,11 +425,14 @@ namespace Common.Controls.Timeline
 				{
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
-					string s = string.Format("{0} \r\n Start: {1} \r\n End: {2} \r\n Length: {3}", 
+					string s = string.Format("{0} \r\n Layer: {4} \r\n Start: {1} \r\n End: {2} \r\n Length: {3}",
 						EffectNode.Effect.EffectName,
 						StartTime.ToString(@"m\:ss\.fff"),
 						EndTime.ToString(@"m\:ss\.fff"),
-						Duration.ToString(@"m\:ss\.fff"));
+						Duration.ToString(@"m\:ss\.fff"),
+						layer.LayerName);
+						
+						
 
 					SizeF textSize = g.MeasureString(s, TextFont);
 					Rectangle destRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
@@ -453,8 +457,8 @@ namespace Common.Controls.Timeline
 						destRect.X = (int)g.VisibleClipBounds.X + 5;
 					}
 
-					g.FillRectangle(InfoBrush, new Rectangle(destRect.Left, destRect.Top, (int)Math.Min(textSize.Width + margin, destRect.Width), (int)Math.Min(textSize.Height + margin, destRect.Height)));
-					g.DrawString(s, TextFont, b, new Rectangle(destRect.Left + margin/2, destRect.Top + margin/2, destRect.Width - margin, destRect.Height - margin));
+					g.FillRectangle(InfoBrush, new Rectangle(destRect.Left + margin / 2, destRect.Top + margin / 2, destRect.Width + margin / 2, destRect.Height + margin / 2));
+					g.DrawString(s, TextFont, b, new Rectangle(destRect.Left , destRect.Top , destRect.Width, destRect.Height));
 				}
 			}
 		}

@@ -62,10 +62,7 @@ namespace VixenModules.Effect.Spiral
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SpiralData result = new SpiralData
 			{
@@ -80,8 +77,7 @@ namespace VixenModules.Effect.Spiral
 				Blend = Blend,
 				LevelCurve = new Curve(LevelCurve),
 				Grow = Grow,
-				Shrink = Shrink,
-				Layer = Layer
+				Shrink = Shrink
 			};
 			return result;
 		}

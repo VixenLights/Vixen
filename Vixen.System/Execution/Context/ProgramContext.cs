@@ -2,6 +2,7 @@
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
@@ -25,6 +26,11 @@ namespace Vixen.Execution.Context
 				_program = value;
 				_AssignProgramToExecutor();
 			}
+		}
+
+		protected override ILayer GetLayerForNode(IEffectNode node)
+		{
+			return _programExecutor.SequenceLayers.GetLayer(node);
 		}
 
 		public override IExecutor Executor

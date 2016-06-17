@@ -1,17 +1,27 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Vixen.Module.MixingFilter;
 using Vixen.Module.SequenceType.Surrogate;
 
 namespace Vixen.Sys.LayerMixing
 {
 	[DataContract]
-	public abstract class BaseLayerMixingDefinition : ILayerMixingDefinition
+	public abstract class Layer : ILayer, IEquatable<Layer>, IEqualityComparer<Layer>
 	{
-		[DataMember]
-		public LayerMixingDefinitionType Type { get; protected set; }
+		protected Layer()
+		{
+			Id = Guid.NewGuid();
+		}
 
 		[DataMember]
-		public int LayerLevel { get; internal set; }
+		public Guid Id { get; set; }
+
+		[DataMember]
+		public LayerType Type { get; protected set; }
+
+		[DataMember]
+		public int LayerLevel { get; set; }
 
 		[DataMember]
 		public string LayerName { get; set; }
@@ -26,7 +36,7 @@ namespace Vixen.Sys.LayerMixing
 
 
 		public ILayerMixingFilterInstance LayerMixingFilter { get; set; }
-
+		
 		[OnSerializing]
 		private void SurrogateWrite(StreamingContext context)
 		{
@@ -43,6 +53,21 @@ namespace Vixen.Sys.LayerMixing
 			{
 				LayerMixingFilter = _layerMixingFilterSurrogate.CreateLayerMixingFilter();
 			}
+		}
+
+		public bool Equals(Layer other)
+		{
+			return Id == other.Id;
+		}
+
+		public bool Equals(Layer x, Layer y)
+		{
+			return x.Id == y.Id;
+		}
+
+		public int GetHashCode(Layer obj)
+		{
+			return obj.Id.GetHashCode();
 		}
 	}
 }

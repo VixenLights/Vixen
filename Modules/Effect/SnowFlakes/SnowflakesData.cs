@@ -43,14 +43,10 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SnowflakesData result = new SnowflakesData
 			{
-				
 				SnowflakeType = SnowflakeType,
 				Speed = Speed,
 				FlakeCount = FlakeCount,
@@ -58,8 +54,6 @@ namespace VixenModules.Effect.Snowflakes
 				LevelCurve = new Curve(LevelCurve),
 				CenterColor = CenterColor,
 				OuterColor = OuterColor,
-				Layer = Layer
-				
 			};
 			return result;
 		}

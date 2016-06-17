@@ -13,6 +13,10 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Effect
 {
+	/// <summary>
+	/// This class provides some additional utility functions for all the grid style efects
+	/// commonly thought of as pixel effects.  
+	/// </summary>
 	public abstract class PixelEffectBase : BaseEffect
 	{
 

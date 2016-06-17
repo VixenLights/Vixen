@@ -171,7 +171,7 @@ namespace Vixen.Sys.Managers
 				int counter = 2;
 				do {
 					name = string.Format("{0}-{1}", originalName, counter++);
-					unique = !_instances.Values.Any(x => x.Name == name);
+					unique = _instances.Values.All(x => x.Name != name);
 				} while (!unique);
 			}
 			return name;

@@ -45,9 +45,6 @@ namespace VixenModules.Effect.Candle
 		[DataMember]
 		public float ChangePercentageDeviationCap { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{
@@ -62,7 +59,7 @@ namespace VixenModules.Effect.Candle
 			}
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			return (CandleData) MemberwiseClone();
 		}

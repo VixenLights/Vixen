@@ -53,10 +53,7 @@ namespace VixenModules.Effect.Picture
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			PictureData result = new PictureData
 			{
@@ -70,7 +67,6 @@ namespace VixenModules.Effect.Picture
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
 				FileName = FileName,
-				Layer = Layer
 			};
 			return result;
 		}

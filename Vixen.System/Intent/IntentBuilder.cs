@@ -5,6 +5,7 @@ using System.Drawing.Text;
 using System.Linq;
 using Vixen.Data.Value;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
@@ -102,7 +103,7 @@ namespace Vixen.Intent
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, 0);
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, new DefaultLayer());
 					states.Add(intentState);
 				}
 			}
@@ -117,7 +118,7 @@ namespace Vixen.Intent
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, 0);
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, new DefaultLayer());
 					states.Add(intentState);
 				}
 			}

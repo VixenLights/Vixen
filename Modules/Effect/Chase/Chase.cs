@@ -99,21 +99,6 @@ namespace VixenModules.Effect.Chase
 			protected set { base.IsDirty = value; }
 		}
 
-		#region Layer
-
-		public override byte Layer
-		{
-			get { return _data.Layer; }
-			set
-			{
-				_data.Layer = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		#endregion
-
 		[Value]
 		[ProviderCategory(@"Color",1)]
 		[ProviderDisplayName(@"ColorHandling")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
+using VixenModules.LayerMixingFilter.Mask;
 
 namespace VixenModules.LayerCombiningFilter.Mask
 {

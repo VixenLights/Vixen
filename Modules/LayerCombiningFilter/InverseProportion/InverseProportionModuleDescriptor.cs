@@ -1,6 +1,6 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
-using VixenModules.LayerCombiningFilter.InverseProportion;
+using VixenModules.LayerMixingFilter.InverseProportion;
 
 namespace VixenModules.OutputFilter.DimmingCurve
 {

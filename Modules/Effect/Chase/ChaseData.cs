@@ -51,10 +51,7 @@ namespace VixenModules.Effect.Chase
 
 		[DataMember]
 		public bool ExtendPulseToEnd { get; set; }
-
-		[DataMember]
-		public byte Layer { get; set; }
-
+		
 		public ChaseData()
 		{
 			ColorHandling = ChaseColorHandling.StaticColor;
@@ -69,7 +66,7 @@ namespace VixenModules.Effect.Chase
 			ExtendPulseToEnd = false;
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ChaseData result = new ChaseData();
 			result.ColorHandling = ColorHandling;
@@ -82,7 +79,6 @@ namespace VixenModules.Effect.Chase
 			result.DepthOfEffect = DepthOfEffect;
 			result.ExtendPulseToStart = ExtendPulseToStart;
 			result.ExtendPulseToEnd = ExtendPulseToEnd;
-			result.Layer = Layer;
 			return result;
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using Vixen.Data.Value;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys
 {
@@ -9,7 +10,7 @@ namespace Vixen.Sys
 		TimeSpan RelativeTime { get; }
 		IIntentState Clone();
 		object GetValue();
-		byte Layer { get; }
+		ILayer Layer { get; }
 	}
 
 	public interface IIntentState<out T> : IIntentState

@@ -1,5 +1,6 @@
 ﻿using System;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
@@ -52,6 +53,11 @@ namespace Vixen.Execution.Context
 		public override bool IsPaused
 		{
 			get { return _IsSequenceExecutorPaused(); }
+		}
+
+		protected override ILayer GetLayerForNode(IEffectNode node)
+		{
+			return _sequenceExecutor.SequenceLayers.GetLayer(node);
 		}
 
 		public override IExecutor Executor

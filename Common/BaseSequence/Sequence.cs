@@ -7,6 +7,7 @@ using Vixen.Module.Timing;
 using Vixen.Execution;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace BaseSequence
 {
@@ -142,6 +143,20 @@ namespace BaseSequence
 
 		#endregion
 
+		#region IHasLayerMixingFilters
+
+		public IEnumerable<ILayer> GetAllLayers()
+		{
+			return SequenceData.SequenceLayers.GetLayers();
+		}
+
+		public SequenceLayers GetSequenceLayerManager()
+		{
+			return SequenceData.SequenceLayers;
+		}
+
+		#endregion
+
 		public SelectedTimingProvider SelectedTimingProvider
 		{
 			get { return SequenceData.SelectedTimingProvider; }
@@ -176,6 +191,8 @@ namespace BaseSequence
 		~Sequence() {
 			Dispose(false);
 		}
+
+		
 		protected void Dispose(bool disposing) {
 			if (disposing)
 			{

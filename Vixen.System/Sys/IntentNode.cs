@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys
 {
@@ -51,7 +52,7 @@ namespace Vixen.Sys
 			return null;
 		}
 
-		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer)
+		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
 			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime, layer);
 
@@ -80,7 +81,7 @@ namespace Vixen.Sys
 	public interface IIntentNode : IDataNode, IComparable<IIntentNode>
 	{
 		IIntent Intent { get; }
-		IIntentState CreateIntentState(TimeSpan intentRelativeTime, byte layer);
+		IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer);
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
 		void OffSetTime(TimeSpan offset);

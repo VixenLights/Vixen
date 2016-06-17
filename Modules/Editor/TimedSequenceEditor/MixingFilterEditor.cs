@@ -15,13 +15,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class MixingFilterEditor : DockContent
 	{
-		private readonly LayerMixingFilterCollection _layers;
+		private readonly SequenceLayers _layers;
 		private ListViewItem.ListViewSubItem _lvEditedItem;
-		private ILayerMixingDefinition _lvEditedDefinition;
+		private ILayer _lvEditedDefinition;
 		private readonly TimedSequenceEditorForm _parent;
 		private ILayerMixingFilterInstance _defaultFilter;
 		
-		public MixingFilterEditor(LayerMixingFilterCollection layers, TimedSequenceEditorForm parent)
+		public MixingFilterEditor(SequenceLayers layers, TimedSequenceEditorForm parent)
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
@@ -70,7 +70,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var count = lvMixingFilters.Items.Count;
 			for (int i = 0; i < count; i++)
 			{
-				_layers.ReplaceAt(i, (BaseLayerMixingDefinition)lvMixingFilters.Items[count-i-1].Tag);
+				_layers.ReplaceLayerAt(i, (Layer)lvMixingFilters.Items[count-i-1].Tag);
 			}
 
 			OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(false));
@@ -78,9 +78,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonAddLayer_Click(object sender, EventArgs e)
 		{
-			var layer = new LayerMixingDefinition(EnsureUniqueName("Default"));
+			var layer = new StandardLayer(EnsureUniqueName("Default"));
 			layer.LayerMixingFilter = _defaultFilter;
-			_layers.Add(layer);
+			_layers.AddLayer(layer);
 			AddLayerItem(layer, 0);
 			OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(false));
 		}
@@ -96,7 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var count = lvMixingFilters.SelectedIndices.Count;
 					for (int i = 0; i < count; i++)
 					{
-						_layers.RemoveAt(_layers.Count - lvMixingFilters.SelectedIndices[i] - 1);
+						_layers.RemoveLayerAt(_layers.Count - lvMixingFilters.SelectedIndices[i] - 1);
 						lvMixingFilters.Items.RemoveAt(lvMixingFilters.SelectedIndices[i]);
 					}
 					toolStripButtonRemoveLayer.Enabled = false;
@@ -118,10 +118,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			lvMixingFilters.View = View.Details;
 			lvMixingFilters.FullRowSelect = true;
 
-			foreach (var baseMixingLayerDefinition in _layers.GetLayerDefinitions())
+			foreach (var baseMixingLayerDefinition in _layers.GetLayers())
 			{
 				var item = AddLayerItem(baseMixingLayerDefinition, 0);
-				if (baseMixingLayerDefinition.Type == LayerMixingDefinitionType.Default)
+				if (baseMixingLayerDefinition.Type == LayerType.Default)
 				{
 					lvMixingFilters.ReorderExcludeItem(item);
 				}
@@ -131,13 +131,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			lvMixingFilters.SetLastColumnWidth();
 		}
 
-		private ListViewItem AddLayerItem(ILayerMixingDefinition definition, int index)
+		private ListViewItem AddLayerItem(ILayer layer, int index)
 		{
-			var listViewItem = new ListViewItem(definition.LayerName);
+			var listViewItem = new ListViewItem(layer.LayerName);
 			listViewItem.Name = @"Name";
 			ListViewItem.ListViewSubItem item = new ListViewItem.ListViewSubItem();
-			item.Text = definition.FilterName;
-			listViewItem.Tag = definition;
+			item.Text = layer.FilterName;
+			listViewItem.Tag = layer;
 			item.Name = @"Type";
 			listViewItem.SubItems.Add(item);
 			lvMixingFilters.Items.Insert(index, listViewItem);
@@ -262,7 +262,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 			}
 
-			_lvEditedDefinition = (ILayerMixingDefinition) item.Tag;
+			_lvEditedDefinition = (ILayer) item.Tag;
 			_lvEditedItem = item.GetSubItemAt(e.X, e.Y);
 			
 			// Make sure that an item is clicked.

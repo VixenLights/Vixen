@@ -19,20 +19,6 @@ namespace Vixen.Data.StateCombinator
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
 	    
-		//Temp for testing
-		private Dictionary<byte, ILayerMixingFilter> filterMap = new Dictionary<byte, ILayerMixingFilter>();
-
-		public LayeredStateCombinator()
-		{
-			var filters = ApplicationServices.GetAvailableModules<ILayerMixingFilterInstance>();
-			byte i = 1;
-			foreach (var filter in filters)
-			{
-				filterMap.Add(i, ApplicationServices.Get<ILayerMixingFilterInstance>(filter.Key));
-				i++;
-			}
-		}
-
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
 			//Reset our return type and check to see if we really have anything to combine. 
@@ -54,14 +40,14 @@ namespace Vixen.Data.StateCombinator
 			states.Sort(LayerComparer);
 
 			//Establish the top level layer
-			byte currentLayer = states[0].Layer;
+			var currentLayer = states[0].Layer;
 			ILayerMixingFilter filter= null;
-			bool first = true;
+			
 			//Walk through the groups of layers and process them
 			foreach (var state in states)
 			{
 				//Iterate the states in the layer
-				if (state.Layer == currentLayer)
+				if (state.Layer.LayerLevel == currentLayer.LayerLevel)
 				{
 					//Dispatch each state to the Handle method for its type to combine down to one state
 					//per layer in a mixing fashion
@@ -71,7 +57,7 @@ namespace Vixen.Data.StateCombinator
 
 				//We have a new layer so we need to wrap up the previous one
 				MixLayers(filter);
-				filterMap.TryGetValue(currentLayer, out filter);
+				filter = currentLayer.LayerMixingFilter;
 				state.Dispatch(this);
 				currentLayer = state.Layer;
 			}
@@ -225,7 +211,7 @@ namespace Vixen.Data.StateCombinator
 	{
 		public int Compare(IIntentState x, IIntentState y)
 		{
-			return -1 * x.Layer.CompareTo(y.Layer);
+			return -1 * x.Layer.LayerLevel.CompareTo(y.Layer.LayerLevel);
 		}
 	}
 }

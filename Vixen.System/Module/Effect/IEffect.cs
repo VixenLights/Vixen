@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.Effect
 {
@@ -26,7 +27,7 @@ namespace Vixen.Module.Effect
 		/// <summary>
 		/// The layer in which the effect is active.
 		/// </summary>
-		byte Layer { get; set; }
+		//LayerMixingDefinition LayerMixingDefinition { get; set; }
 
 		/// <summary>
 		/// Effect parameter values.

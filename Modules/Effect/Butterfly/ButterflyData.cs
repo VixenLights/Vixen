@@ -59,7 +59,7 @@ namespace VixenModules.Effect.Butterfly
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ButterflyData result = new ButterflyData
 			{
@@ -73,8 +73,7 @@ namespace VixenModules.Effect.Butterfly
 				Direction = Direction,
 				BackgroundChunks = BackgroundChunks,
 				ColorScheme = ColorScheme,
-				Iterations = Iterations,
-				Layer = Layer
+				Iterations = Iterations
 			};
 			return result;
 		}

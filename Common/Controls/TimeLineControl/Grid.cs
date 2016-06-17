@@ -13,6 +13,7 @@ using Common.Controls.Theme;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
+using Vixen.Sys.LayerMixing;
 
 namespace Common.Controls.Timeline
 {
@@ -333,6 +334,8 @@ namespace Common.Controls.Timeline
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		private List<Element> tempSelectedElements = new List<Element>();
+
+		public SequenceLayers SequenceLayers { get; set; }
 
 		#endregion
 
@@ -2326,7 +2329,8 @@ namespace Common.Controls.Timeline
 				Row row = rowAt(m_lastGridLocation);
 				if (row != null) //null check to prevent mouse off screen locations trying to find a row.
 				{
-					element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height));
+					var layerInfo = SequenceLayers.GetLayer(element.EffectNode);
+					element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height), layerInfo);
 				}
 			}
 		}

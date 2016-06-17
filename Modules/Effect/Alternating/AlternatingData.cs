@@ -36,7 +36,8 @@ namespace VixenModules.Effect.Alternating {
 			IntervalSkipCount = 1;
 		}
 
-		public override IModuleDataModel Clone() {
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
 			var gradientLevelList = Colors.Select(glp => new GradientLevelPair(new ColorGradient(glp.ColorGradient), new Curve(glp.Curve))).ToList();
 			var result = new AlternatingData
 			{
@@ -44,8 +45,7 @@ namespace VixenModules.Effect.Alternating {
 				EnableStatic = EnableStatic,
 				Interval = Interval,
 				GroupLevel = GroupLevel,
-				IntervalSkipCount = IntervalSkipCount,
-				Layer = Layer
+				IntervalSkipCount = IntervalSkipCount
 			};
 			return result;
 		}

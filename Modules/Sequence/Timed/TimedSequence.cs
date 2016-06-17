@@ -67,10 +67,10 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData)SequenceData).DefaultPlaybackEndTime = value; }
 		}
 
-		public LayerMixingFilterCollection LayerMixingFilterCollection
+		public SequenceLayers SequenceLayers
 		{
-			get { return ((TimedSequenceData)SequenceData).LayerMixingFilterCollection; }
-			set { ((TimedSequenceData)SequenceData).LayerMixingFilterCollection = value; }
+			get { return ((TimedSequenceData)SequenceData).SequenceLayers; }
+			set { ((TimedSequenceData)SequenceData).SequenceLayers = value; }
 		}
 
 	}

@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Module;
 using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.SetLevel
@@ -15,21 +14,17 @@ namespace VixenModules.Effect.SetLevel
 		[DataMember]
 		public RGB color { get; set; }
 
-		[DataMember]
-		public byte Layer { get; set; }
-
 		public SetLevelData()
 		{
 			level = 1;
 			color = Color.White;
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SetLevelData result = new SetLevelData();
 			result.level = level;
 			result.color = color;
-			result.Layer = Layer;
 			return result;
 		}
 	}

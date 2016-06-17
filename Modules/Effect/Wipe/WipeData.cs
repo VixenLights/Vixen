@@ -44,11 +44,9 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public double PulsePercent { get; set; }
-
-		[DataMember]
-		public byte Layer { get; set; }
- 
-		public override IModuleDataModel Clone() {
+		
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
 			return (WipeData)MemberwiseClone();
 		}
 	}

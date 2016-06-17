@@ -1,25 +1,26 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Vixen.Module.MixingFilter;
 
 namespace Vixen.Sys.LayerMixing
 {
-	public interface ILayerMixingDefinition
+	public interface ILayer
 	{
-
-		LayerMixingDefinitionType Type { get; }
-
-		int LayerLevel { get; }
+		Guid Id { get; set; }
+		LayerType Type { get; }
 
 		string LayerName { get; set; }
+
+		int LayerLevel { get; set; }
 
 		string FilterName { get; }
 
 		ILayerMixingFilterInstance LayerMixingFilter { get; set; }
-
 	}
 
 	[DataContract]
-	public enum LayerMixingDefinitionType
+	public enum LayerType
 	{
 		[EnumMember]
 		Default,

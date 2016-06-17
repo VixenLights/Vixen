@@ -1,18 +1,19 @@
 ﻿using System;
 using Vixen.Data.Value;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
 	internal class IntentState<ResultType> : Dispatchable<IntentState<ResultType>>, IIntentState<ResultType>
 		where ResultType : IIntentDataType
 	{
-		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime) : this(intent, intentRelativeTime, 0)
+		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime) : this(intent, intentRelativeTime, new DefaultLayer())
 		{
 
 		}
 
-		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime, byte layer)
+		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime, ILayer layer)
 		{
 			if (intent == null) throw new ArgumentNullException("intent");
 
@@ -35,7 +36,7 @@ namespace Vixen.Intent
 			return Intent.GetStateAt(RelativeTime);
 		}
 
-		public byte Layer { get; set; }
+		public ILayer Layer { get; set; }
 
 		object IIntentState.GetValue()
 		{
