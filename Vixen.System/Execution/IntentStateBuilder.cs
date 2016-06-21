@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Vixen.Sys;
 
@@ -21,19 +22,22 @@ namespace Vixen.Execution
 
 		public void Clear()
 		{
-			foreach (var elementState in _elementStates)
+			lock (_elementStates)
 			{
-				elementState.Value.Clear();
-			}
+				foreach (var value in _elementStates.Values)
+				{
+					value.Clear();
+				}
+			}	
 		}
 
 		public void AddElementState(Guid elementId, IIntentState state)
 		{
 			IIntentStates elementIntentList = _GetElementIntentList(elementId);
-			//lock (elementIntentList)
-			//{
+			lock (elementIntentList)
+			{
 				elementIntentList.AddIntentState(state);
-			//}
+			}
 		}
 
 		public IIntentStates GetElementState(Guid elementId)
@@ -44,10 +48,15 @@ namespace Vixen.Execution
 		private IIntentStates _GetElementIntentList(Guid elementId)
 		{
 			IIntentStates elementIntentList;
-			if (!_elementStates.TryGetValue(elementId, out elementIntentList)) {
-				elementIntentList = new IntentStateList(4);
-				_elementStates[elementId] = elementIntentList;
+			lock (_elementStates)
+			{
+				if (!_elementStates.TryGetValue(elementId, out elementIntentList))
+				{
+					elementIntentList = new IntentStateList(4);
+					_elementStates[elementId] = elementIntentList;
+				}
 			}
+			
 			return elementIntentList;
 		}
 	}
