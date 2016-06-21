@@ -13,7 +13,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-	public partial class MixingFilterEditor : DockContent
+	public partial class LayerEditor : DockContent
 	{
 		private readonly SequenceLayers _layers;
 		private ListViewItem.ListViewSubItem _lvEditedItem;
@@ -21,7 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly TimedSequenceEditorForm _parent;
 		private ILayerMixingFilterInstance _defaultFilter;
 		
-		public MixingFilterEditor(SequenceLayers layers, TimedSequenceEditorForm parent)
+		public LayerEditor(SequenceLayers layers, TimedSequenceEditorForm parent)
 		{
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
@@ -41,8 +41,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		
-		public event EventHandler<LayerMixingFilterEditorEventArgs> MixingLayerFiltersChanged;
-		protected virtual void OnMixingLayerFilterCollectionChanged(LayerMixingFilterEditorEventArgs e)
+		public event EventHandler<LayerEditorEventArgs> MixingLayerFiltersChanged;
+		protected virtual void OnMixingLayerFilterCollectionChanged(LayerEditorEventArgs e)
 		{
 			if (MixingLayerFiltersChanged != null)
 				MixingLayerFiltersChanged(this, e);
@@ -73,7 +73,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_layers.ReplaceLayerAt(i, (Layer)lvMixingFilters.Items[count-i-1].Tag);
 			}
 
-			OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(false));
+			OnMixingLayerFilterCollectionChanged(new LayerEditorEventArgs(false));
 		}
 
 		private void toolStripButtonAddLayer_Click(object sender, EventArgs e)
@@ -82,7 +82,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			layer.LayerMixingFilter = _defaultFilter;
 			_layers.AddLayer(layer);
 			AddLayerItem(layer, 0);
-			OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(false));
+			OnMixingLayerFilterCollectionChanged(new LayerEditorEventArgs(false));
 		}
 
 		private void toolStripButtonRemoveLayer_Click(object sender, EventArgs e)
@@ -100,7 +100,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						lvMixingFilters.Items.RemoveAt(lvMixingFilters.SelectedIndices[i]);
 					}
 					toolStripButtonRemoveLayer.Enabled = false;
-					OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(true));
+					OnMixingLayerFilterCollectionChanged(new LayerEditorEventArgs(true));
 				}
 			}
 
@@ -198,7 +198,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					cboListViewCombo.Visible = false;
 				}
 				
-				OnMixingLayerFilterCollectionChanged(new LayerMixingFilterEditorEventArgs(false));
+				OnMixingLayerFilterCollectionChanged(new LayerEditorEventArgs(false));
 			}
 			
 		}
@@ -346,9 +346,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		
 	}
 
-	public class LayerMixingFilterEditorEventArgs : EventArgs
+	public class LayerEditorEventArgs : EventArgs
 	{
-		public LayerMixingFilterEditorEventArgs(bool layerDefinitionRemoved)
+		public LayerEditorEventArgs(bool layerDefinitionRemoved)
 		{
 			LayerDefinitionRemoved = layerDefinitionRemoved;
 		}

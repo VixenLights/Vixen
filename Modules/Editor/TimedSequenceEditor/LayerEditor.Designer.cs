@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.Editor.TimedSequenceEditor
 {
-	partial class MixingFilterEditor
+	partial class LayerEditor
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MixingFilterEditor));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayerEditor));
 			this.cboListViewCombo = new System.Windows.Forms.ComboBox();
 			this.txtListViewEdit = new System.Windows.Forms.TextBox();
 			this.lvMixingFilters = new Common.Controls.ListViewEx();
@@ -122,7 +122,7 @@
 			this.toolStripButtonRemoveLayer.Text = "Remove Layer";
 			this.toolStripButtonRemoveLayer.Click += new System.EventHandler(this.toolStripButtonRemoveLayer_Click);
 			// 
-			// MixingFilterEditor
+			// LayerEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -132,8 +132,8 @@
 			this.Controls.Add(this.lvMixingFilters);
 			this.Controls.Add(this.toolStripEx1);
 			this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.Name = "MixingFilterEditor";
-			this.Text = "Mixing Filter Editor";
+			this.Name = "LayerEditor";
+			this.Text = "Layers";
 			this.Load += new System.EventHandler(this.MixingFilterEditor_Load);
 			this.toolStripEx1.ResumeLayout(false);
 			this.toolStripEx1.PerformLayout();

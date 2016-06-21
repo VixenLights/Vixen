@@ -233,8 +233,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return ToolsForm;
 			if (persistString == typeof(FormEffectEditor).ToString())
 				return EffectEditorForm;
-			if (persistString == typeof(MixingFilterEditor).ToString())
-				return MixingFilterEditor;
+			if (persistString == typeof(LayerEditor).ToString())
+				return LayerEditor;
 
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
@@ -277,7 +277,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				EffectEditorForm.Show(dockPanel, DockState.DockRight);
 			}
-				
+
+			if (LayerEditor.DockState == DockState.Unknown)
+			{
+				LayerEditor.Show(dockPanel, DockState.DockRight);
+			}
+
 			XMLProfileSettings xml = new XMLProfileSettings();
 
 			//Get preferences
@@ -445,11 +450,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void SetDockDefaults()
 		{
 			GridForm.Show(dockPanel, DockState.Document);
-			ToolsForm.Show(dockPanel, DockState.DockLeft);
-			MarksForm.Show(dockPanel, DockState.DockLeft);
+			ToolsForm.Show(dockPanel, DockState.DockRight);
+			MarksForm.Show(dockPanel, DockState.DockRight);
+			LayerEditor.Show(dockPanel, DockState.DockRight);
 			EffectsForm.Show(dockPanel, DockState.DockLeft);
-			EffectEditorForm.Show(dockPanel, DockState.DockRight);
-			MixingFilterEditor.Show(dockPanel, DockState.DockLeft);
+			EffectEditorForm.Show(ToolsForm.Pane, DockAlignment.Top, .6);
 		}
 
 
@@ -724,22 +729,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private MixingFilterEditor _mixingFilterEditor;
+		private LayerEditor _layerEditor;
 
-		private MixingFilterEditor MixingFilterEditor
+		private LayerEditor LayerEditor
 		{
 			get
 			{
-				if (_mixingFilterEditor != null && !_mixingFilterEditor.IsDisposed)
+				if (_layerEditor != null && !_layerEditor.IsDisposed)
 				{
-					return _mixingFilterEditor;
+					return _layerEditor;
 				}
 
-				_mixingFilterEditor = new MixingFilterEditor(_sequence.SequenceLayers, this);
-				_mixingFilterEditor.MixingLayerFiltersChanged += _mixingFilterEditor_MixingLayerFiltersChanged;
-				_mixingFilterEditor.Closing +=MixingFilterEditorOnClosing;
+				_layerEditor = new LayerEditor(_sequence.SequenceLayers, this);
+				_layerEditor.MixingLayerFiltersChanged += LayerEditorMixingLayerFiltersChanged;
+				_layerEditor.Closing +=LayerEditorOnClosing;
 
-				return _mixingFilterEditor;
+				return _layerEditor;
 			}
 		}
 
@@ -789,12 +794,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			EffectsForm.Closing -= _effectsForm_Closing;
 		}
 
-		private void MixingFilterEditorOnClosing(object sender, CancelEventArgs cancelEventArgs)
+		private void LayerEditorOnClosing(object sender, CancelEventArgs cancelEventArgs)
 		{
-			MixingFilterEditor.Closing -= MixingFilterEditorOnClosing;
+			LayerEditor.Closing -= LayerEditorOnClosing;
 		}
 
-		private void _mixingFilterEditor_MixingLayerFiltersChanged(object sender, LayerMixingFilterEditorEventArgs e)
+		private void LayerEditorMixingLayerFiltersChanged(object sender, LayerEditorEventArgs e)
 		{
 			SequenceModified();
 		}
@@ -2204,7 +2209,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var layers = Sequence.GetAllLayers();
 				if (layers.Count() > 1)
 				{
-					ToolStripMenuItem contextMenuToLayer = new ToolStripMenuItem("To Layer")
+					ToolStripMenuItem contextMenuToLayer = new ToolStripMenuItem("Layer")
 					{
 						Enabled = true,
 						Image = Resources.alignment,
@@ -4700,17 +4705,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockLeft);
+			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockRight);
 		}
 
 		private void toolWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockLeft);
+			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockRight);
 		}
 
 		private void mixingFilterEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			HandleDockContentToolStripMenuClick(MixingFilterEditor, DockState.DockLeft);
+			HandleDockContentToolStripMenuClick(LayerEditor, DockState.DockLeft);
 		}
 
 		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)
@@ -5015,7 +5020,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.SaveAsXml(_settingsPath);
 			MarksForm.Close();
 			EffectsForm.Close();
-			MixingFilterEditor.Close();
+			LayerEditor.Close();
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
@@ -5269,6 +5274,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//to create the form if the user does not activate it. 
 			effectWindowToolStripMenuItem.Checked = !(_effectsForm == null || _effectsForm.DockState == DockState.Unknown);
 			markWindowToolStripMenuItem.Checked = !(_marksForm == null || _marksForm.DockState == DockState.Unknown);
+			mixingFilterEditorWindowToolStripMenuItem.Checked = !(_layerEditor == null || _layerEditor.DockState == DockState.Unknown);
 			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm==null || _toolPaletteForm.DockState == DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 			effectEditorWindowToolStripMenuItem.Checked = !(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);

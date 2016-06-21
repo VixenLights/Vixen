@@ -189,11 +189,11 @@
     <Compile Include="InvalidAudioPathDialog.Designer.cs">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="MixingFilterEditor.cs">
+    <Compile Include="LayerEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MixingFilterEditor.Designer.cs">
-      <DependentUpon>MixingFilterEditor.cs</DependentUpon>
+    <Compile Include="LayerEditor.Designer.cs">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
@@ -315,8 +315,8 @@
     <EmbeddedResource Include="MarkTapper.resx">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MixingFilterEditor.resx">
-      <DependentUpon>MixingFilterEditor.cs</DependentUpon>
+    <EmbeddedResource Include="LayerEditor.resx">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
