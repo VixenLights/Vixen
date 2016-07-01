@@ -69,9 +69,19 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
       <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
       <Name>EffectEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\LayerEditor\LayerEditor.csproj">
+      <Project>{3233add6-fb95-4c57-af81-34c6c19717db}</Project>
+      <Name>LayerEditor</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -189,12 +199,6 @@
     <Compile Include="InvalidAudioPathDialog.Designer.cs">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="LayerEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LayerEditor.Designer.cs">
-      <DependentUpon>LayerEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="PapagayoDoc.cs" />
     <Compile Include="MarkManager.cs">
       <SubType>Form</SubType>
@@ -261,6 +265,12 @@
     <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
     <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
     <Compile Include="Undo\EffectsCutUndoAction.cs" />
+    <Compile Include="LayerEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayerEditor.Designer.cs">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -315,9 +325,6 @@
     <EmbeddedResource Include="MarkTapper.resx">
       <DependentUpon>MarkTapper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LayerEditor.resx">
-      <DependentUpon>LayerEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ParameterEditor.resx">
       <DependentUpon>ParameterEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -336,6 +343,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_ToolPalette.resx">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerEditor.resx">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -2,16 +2,18 @@
 using System.Runtime.Serialization;
 using Vixen.Module.MixingFilter;
 using Vixen.Services;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.SequenceType.Surrogate
 {
 	[DataContract(Namespace = "")]
 	public class LayerMixingFilterSurrogate
 	{
-		public LayerMixingFilterSurrogate(ILayerMixingFilterInstance mediaModuleInstance)
+		public LayerMixingFilterSurrogate(ILayer layer)
 		{
-			TypeId = mediaModuleInstance.Descriptor.TypeId;
-			InstanceId = mediaModuleInstance.InstanceId;
+			TypeId = layer.LayerMixingFilter.Descriptor.TypeId;
+			InstanceId = layer.LayerMixingFilter.InstanceId;
+			LayerReferenceId = layer.Id;
 		}
 
 		[DataMember]
@@ -19,6 +21,9 @@ namespace Vixen.Module.SequenceType.Surrogate
 
 		[DataMember]
 		public Guid InstanceId { get; private set; }
+
+		[DataMember]
+		public Guid LayerReferenceId { get; private set; }
 
 		public ILayerMixingFilterInstance CreateLayerMixingFilter()
 		{

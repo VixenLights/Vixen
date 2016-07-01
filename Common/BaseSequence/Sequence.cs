@@ -5,6 +5,7 @@ using System.IO;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.Execution;
+using Vixen.Module.MixingFilter;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
@@ -147,7 +148,7 @@ namespace BaseSequence
 
 		public IEnumerable<ILayer> GetAllLayers()
 		{
-			return SequenceData.SequenceLayers.GetLayers();
+			return SequenceData.SequenceLayers.Layers;
 		}
 
 		public SequenceLayers GetSequenceLayerManager()

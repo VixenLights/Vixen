@@ -23,6 +23,11 @@ namespace VixenModules.LayerCombiningFilter.Mask
 			get { return typeof (MaskModule); }
 		}
 
+		public override Type ModuleDataClass
+		{
+			get { return typeof (MaskFilterModuleData); }
+		}
+
 		public override string Author
 		{
 			get { return "Jeff Uchitjil"; }

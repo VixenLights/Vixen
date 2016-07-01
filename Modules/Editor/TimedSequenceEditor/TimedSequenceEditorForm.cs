@@ -740,8 +740,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _layerEditor;
 				}
 
-				_layerEditor = new LayerEditor(_sequence.SequenceLayers, this);
-				_layerEditor.MixingLayerFiltersChanged += LayerEditorMixingLayerFiltersChanged;
+				_layerEditor = new LayerEditor(_sequence.SequenceLayers);
+				_layerEditor.LayersChanged += LayerEditorLayersChanged;
 				_layerEditor.Closing +=LayerEditorOnClosing;
 
 				return _layerEditor;
@@ -799,7 +799,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LayerEditor.Closing -= LayerEditorOnClosing;
 		}
 
-		private void LayerEditorMixingLayerFiltersChanged(object sender, LayerEditorEventArgs e)
+		private void LayerEditorLayersChanged(object sender, EventArgs e)
 		{
 			SequenceModified();
 		}

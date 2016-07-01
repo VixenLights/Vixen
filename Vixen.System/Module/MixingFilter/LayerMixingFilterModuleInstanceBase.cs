@@ -12,7 +12,17 @@ namespace Vixen.Module.MixingFilter
 														   IEqualityComparer<LayerMixingFilterModuleInstanceBase>,
 														   IEquatable<LayerMixingFilterModuleInstanceBase>
 	{
-		
+
+		public virtual bool HasSetup
+		{
+			get { return false; }
+		}
+
+		public virtual bool Setup()
+		{
+			return false;
+		}
+
 		public virtual Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
 			//A default implementation of highest layer wins.
@@ -29,17 +39,17 @@ namespace Vixen.Module.MixingFilter
 
 		public bool Equals(ILayerMixingFilterInstance x, ILayerMixingFilterInstance y)
 		{
-			return base.Equals(x, y);
+			return x.InstanceId == y.InstanceId;
 		}
 
 		public int GetHashCode(ILayerMixingFilterInstance obj)
 		{
-			return base.GetHashCode(obj);
+			return obj.InstanceId.GetHashCode();
 		}
 
 		public bool Equals(ILayerMixingFilterInstance other)
 		{
-			return base.Equals(other);
+			return Equals(this, other);
 		}
 
 		public bool Equals(LayerMixingFilterModuleInstanceBase x, LayerMixingFilterModuleInstanceBase y)

@@ -1,41 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Module.MixingFilter;
+using Vixen.Services;
 
 namespace Vixen.Sys.LayerMixing
 {
 	[DataContract]
 	[KnownType(typeof(DefaultLayer))]
 	[KnownType(typeof(StandardLayer))]
-	public class SequenceLayers
+	public class SequenceLayers 
 	{
+		/// <summary>
+		/// Effects reside in a layer. This is the mapping of the effect id to the layer id.
+		/// </summary>
 		[DataMember]
 		private readonly Dictionary<Guid, Guid> _effectLayerMap;
 
-		[DataMember]
-		private readonly List<ILayer> _layers = new List<ILayer>();
-		private Dictionary<Guid, ILayer> _layerMap; 
+		/// <summary>
+		/// This is a mapping of the layer id to the layer object for fast lookups.
+		/// </summary>
+		private Dictionary<Guid, ILayer> _layerMap;
+
+		private ISequence _sequence;
+
 		public SequenceLayers()
 		{
-			Id = Guid.NewGuid();
+			Layers = new ObservableCollection<ILayer>();
 			_effectLayerMap = new Dictionary<Guid, Guid>();
 			_layerMap = new Dictionary<Guid, ILayer>();
 			//Add the default layer
 			AddLayer(new DefaultLayer());
-		}
-		
-		[DataMember]
-		public Guid Id { get; set; }
-
-		public void UpdateLayers(List<ILayer> layers)
-		{
-			_layers.Clear();
-			for (int i = 0; i < layers.Count; i++)
-			{
-				_layers[i] = layers[i];
-			}
-			UpdateLevels();
 		}
 
 		public void ReplaceLayerAt(int index, ILayer layer)
@@ -44,23 +41,27 @@ namespace Vixen.Sys.LayerMixing
 			{
 				throw new ArgumentOutOfRangeException("index");
 			}
-			_layers[index] = layer;
+
+			Layers[index] = layer;
 			UpdateLevels();
 		}
 
-		public List<ILayer> GetLayers()
-		{
-			return _layers.ToList();
-		}
+		[DataMember]
+		public ObservableCollection<ILayer> Layers { get; private set; }
 
 		public ILayer GetDefaultLayer()
 		{
-			return _layers[0];
-		} 
+			return Layers[0];
+		}
+
+		public bool IsDefaultLayer(ILayer layer)
+		{
+			return layer.Type == LayerType.Default;
+		}
 
 		public void AddLayer(ILayer layer)
 		{
-			_layers.Insert(Count, layer);
+			Layers.Insert(0, layer);
 			if (!_layerMap.ContainsKey(layer.Id))
 			{
 				_layerMap.Add(layer.Id, layer);
@@ -68,30 +69,33 @@ namespace Vixen.Sys.LayerMixing
 			UpdateLevels();
 		}
 
+		public void AddLayer()
+		{
+			var layer = new StandardLayer(EnsureUniqueName("Default")) {LayerMixingFilter = GetDefaultLayer().LayerMixingFilter};
+			AddLayer(layer);
+		}
+
 		public int Count
 		{
-			get { return _layers.Count; } 
+			get { return Layers.Count; } 
 		}
 
 		public void MoveLayer(int indexFrom, int indexTo)
 		{
-			if (indexFrom == 0 || indexTo == 0) throw new ArgumentOutOfRangeException();
-			var itemToMove = _layers[indexFrom];
-			_layers.RemoveAt(indexFrom);
-			if (indexTo > indexFrom) indexTo--;
-			_layers.Insert(indexTo, itemToMove);
+			if (indexFrom == Layers.Count - 1 || indexTo == Layers.Count-1) throw new ArgumentOutOfRangeException();
+			Layers.Move(indexFrom, indexTo);
 			UpdateLevels();
 		}
 
 		public int IndexOfLayer(ILayer item)
 		{
-			return _layers.IndexOf(item);
+			return Layers.IndexOf(item);
 		}
 
 		public void InsertLayer(int index, ILayer layer)
 		{
-			if (index == 0) throw new ArgumentOutOfRangeException();
-			_layers.Insert(index, layer);
+			if (index == Layers.Count - 1) throw new ArgumentOutOfRangeException();
+			Layers.Insert(index, layer);
 			if (!_layerMap.ContainsKey(layer.Id))
 			{
 				_layerMap.Add(layer.Id, layer);
@@ -99,17 +103,27 @@ namespace Vixen.Sys.LayerMixing
 			UpdateLevels();
 		}
 
+		public void Remove(ILayer layer)
+		{
+			RemoveLayerAt(IndexOfLayer(layer));
+		}
+
 		public void RemoveLayerAt(int index)
 		{
-			if (index == 0) throw new ArgumentOutOfRangeException();
-			if (index >= _layers.Count) throw new ArgumentOutOfRangeException();
+			
+			if (index >= Layers.Count-1) throw new ArgumentOutOfRangeException();
 
 			//when we remove, we move all effects from the old layer into the default layer
-			var layer = _layers[index];
-			var defaultLayer = GetDefaultLayer();
-			_effectLayerMap.Where(x => x.Value.Equals(layer.Id)).Select(x => x.Value == defaultLayer.Id);
-			_layers.RemoveAt(index);
-			_layerMap.Remove(layer.Id);
+			//as default is the default we can just remove all the references to keep things neat.
+			var id = Layers[index].Id;
+			
+			foreach (var item in _effectLayerMap.Where(kvp => kvp.Value == id).ToList())
+			{
+				_effectLayerMap.Remove(item.Key);
+			}
+
+			Layers.RemoveAt(index);
+			_layerMap.Remove(id);
 			UpdateLevels();
 		}
 
@@ -125,8 +139,24 @@ namespace Vixen.Sys.LayerMixing
 				}
 				
 			}
-			return _layers[0];
+			return Layers[Layers.Count-1];
 
+		}
+
+		private string EnsureUniqueName(string name)
+		{
+			if (Layers.Any(x => x.LayerName == name))
+			{
+				string originalName = name;
+				bool unique;
+				int counter = 2;
+				do
+				{
+					name = string.Format("{0} - {1}", originalName, counter++);
+					unique = Layers.All(x => x.LayerName != name);
+				} while (!unique);
+			}
+			return name;
 		}
 
 		public void AssignEffectNodeToLayer(IEffectNode node, ILayer layer)
@@ -136,14 +166,16 @@ namespace Vixen.Sys.LayerMixing
 
 		public void AssignEffectNodeToDefaultLayer(IEffectNode node)
 		{
-			_effectLayerMap[node.Effect.InstanceId] = _layers[0].Id;
+			_effectLayerMap[node.Effect.InstanceId] = Layers[0].Id;
 		}
 		
 		private void UpdateLevels()
 		{
-			for (int i = 0; i < _layers.Count; i++)
+			var count = Layers.Count;
+
+			for (int i = 0; i < count; i++)
 			{
-				_layers[i].LayerLevel = i;
+				Layers[i].LayerLevel = count-i-1;
 			}
 		}
 
@@ -151,13 +183,14 @@ namespace Vixen.Sys.LayerMixing
 		private void PopulateMap(StreamingContext ctx)
 		{
 			_layerMap = new Dictionary<Guid, ILayer>();
-			if (_layers != null)
+			if (Layers != null)
 			{
-				foreach (var layer in _layers)
+				foreach (var layer in Layers)
 				{
 					_layerMap.Add(layer.Id, layer);
 				}
 			}
 		}
+
 	}
 }

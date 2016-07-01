@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Vixen.Module.MixingFilter;
 using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys

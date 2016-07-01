@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Vixen.Module.MixingFilter;
 
@@ -15,6 +14,8 @@ namespace Vixen.Sys.LayerMixing
 		int LayerLevel { get; set; }
 
 		string FilterName { get; }
+
+		Guid FilterTypeId { get; set; }
 
 		ILayerMixingFilterInstance LayerMixingFilter { get; set; }
 	}

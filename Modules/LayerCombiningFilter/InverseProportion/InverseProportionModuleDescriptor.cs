@@ -1,8 +1,7 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
-using VixenModules.LayerMixingFilter.InverseProportion;
 
-namespace VixenModules.OutputFilter.DimmingCurve
+namespace VixenModules.LayerMixingFilter.InverseProportion
 {
 	public class InverseProportionModuleDescriptor: LayerMixingFilterModuleDescriptorBase
 	{

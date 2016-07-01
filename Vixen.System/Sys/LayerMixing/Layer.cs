@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Vixen.Annotations;
 using Vixen.Module.MixingFilter;
-using Vixen.Module.SequenceType.Surrogate;
+using Vixen.Services;
 
 namespace Vixen.Sys.LayerMixing
 {
 	[DataContract]
-	public abstract class Layer : ILayer, IEquatable<Layer>, IEqualityComparer<Layer>
+	public abstract class Layer : ILayer, IEquatable<Layer>, IEqualityComparer<Layer>, INotifyPropertyChanged
 	{
+		private ILayerMixingFilterInstance _layerMixingFilter;
+		private string _layerName;
+		private LayerType _type;
+		private int _layerLevel;
+
 		protected Layer()
 		{
 			Id = Guid.NewGuid();
@@ -18,40 +26,65 @@ namespace Vixen.Sys.LayerMixing
 		public Guid Id { get; set; }
 
 		[DataMember]
-		public LayerType Type { get; protected set; }
+		public LayerType Type
+		{
+			get { return _type; }
+			protected set
+			{
+				if (value == _type) return;
+				_type = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[DataMember]
-		public int LayerLevel { get; set; }
+		public int LayerLevel
+		{
+			get { return _layerLevel; }
+			set
+			{
+				if (value == _layerLevel) return;
+				_layerLevel = value;
+				OnPropertyChanged();
+			}
+		}
 
 		[DataMember]
-		public string LayerName { get; set; }
+		public string LayerName
+		{
+			get { return _layerName; }
+			set
+			{
+				if (value == _layerName) return;
+				_layerName = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public string FilterName
 		{
 			get { return LayerMixingFilter != null ? LayerMixingFilter.Descriptor.TypeName : "None"; }
 		}
 
-		[DataMember]
-		private LayerMixingFilterSurrogate _layerMixingFilterSurrogate;
-
-
-		public ILayerMixingFilterInstance LayerMixingFilter { get; set; }
-		
-		[OnSerializing]
-		private void SurrogateWrite(StreamingContext context)
+		public Guid FilterTypeId
 		{
-			if (LayerMixingFilter != null)
+			get { return LayerMixingFilter != null ? LayerMixingFilter.Descriptor.TypeId : Guid.Empty; }
+			set
 			{
-				_layerMixingFilterSurrogate = new LayerMixingFilterSurrogate(LayerMixingFilter);
+				LayerMixingFilter = LayerMixingFilterService.Instance.GetInstance(value);
 			}
 		}
 
-		[OnDeserialized]
-		private void SurrogateRead(StreamingContext context)
+		public ILayerMixingFilterInstance LayerMixingFilter
 		{
-			if (_layerMixingFilterSurrogate != null)
+			get { return _layerMixingFilter; }
+			set
 			{
-				LayerMixingFilter = _layerMixingFilterSurrogate.CreateLayerMixingFilter();
+				if (Equals(value, _layerMixingFilter)) return;
+				_layerMixingFilter = value;
+				OnPropertyChanged();
+				OnPropertyChanged("FilterName");
+				OnPropertyChanged("FilterTypeId");
 			}
 		}
 
@@ -68,6 +101,15 @@ namespace Vixen.Sys.LayerMixing
 		public int GetHashCode(Layer obj)
 		{
 			return obj.Id.GetHashCode();
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
