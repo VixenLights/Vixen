@@ -3269,6 +3269,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				_effectNodeToElement.Remove(node); // Remove the effect node from the map
 				_sequence.RemoveData(node); // Remove the effect node from sequence
+				Sequence.GetSequenceLayerManager().RemoveEffectNodeFromLayers(node);
 			}
 			else
 			{

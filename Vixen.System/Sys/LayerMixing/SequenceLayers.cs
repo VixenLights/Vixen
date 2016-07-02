@@ -159,6 +159,11 @@ namespace Vixen.Sys.LayerMixing
 			return name;
 		}
 
+		public void RemoveEffectNodeFromLayers(IEffectNode node)
+		{
+			_effectLayerMap.Remove(node.Effect.InstanceId);
+		}
+
 		public void AssignEffectNodeToLayer(IEffectNode node, ILayer layer)
 		{
 			_effectLayerMap[node.Effect.InstanceId] = layer.Id;
@@ -166,7 +171,8 @@ namespace Vixen.Sys.LayerMixing
 
 		public void AssignEffectNodeToDefaultLayer(IEffectNode node)
 		{
-			_effectLayerMap[node.Effect.InstanceId] = Layers[0].Id;
+			//We jsut remove it because if it is not found it will be in the default.
+			_effectLayerMap.Remove(node.Effect.InstanceId);
 		}
 		
 		private void UpdateLevels()
