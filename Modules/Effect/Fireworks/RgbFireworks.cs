@@ -16,9 +16,10 @@ namespace VixenModules.Effect.Fireworks
 		public bool Active { get; set; }
 		public int Cycles { get; internal set; }
 		public HSV HSV { get; private set; }
+		public int StartPeriod { get; set; }
 		private static readonly Random Random = new Random();
 
-		public void Reset(int x, int y, bool active, float velocity, HSV hsv)
+		public void Reset(int x, int y, bool active, float velocity, HSV hsv, int start)
 		{
 			X = x;
 			Y = y;
@@ -29,6 +30,7 @@ namespace VixenModules.Effect.Fireworks
 			Active = active;
 			Cycles = 0;
 			HSV = hsv;
+			StartPeriod = start;
 		}
 	}
 }

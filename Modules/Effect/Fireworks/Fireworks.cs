@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Fireworks
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
 		private readonly Random _random = new Random();
-		private const int MaxFlakes = 1000;
+		private const int MaxFlakes = 10000;
 		
 		public Fireworks()
 		{
@@ -181,6 +181,36 @@ namespace VixenModules.Effect.Fireworks
 		protected override void SetupRender()
 		{
 			InitFireworksBuffer();
+			ResetBurstBuffer();
+
+			var x25 = (int)(BufferWi * 0.25);
+			var x75 = (int)(BufferWi * 0.75);
+			var y25 = (int)(BufferHt * 0.25);
+			var y75 = (int)(BufferHt * 0.75);
+
+			ResetBurstBuffer();
+
+			// Create new bursts
+			for (int x = 0; x < Explosions; x++)
+			{
+				int start =  (int)(Rand01() * GetNumberFrames());
+
+				var startX = x25 + (Rand() % (x75 - x25));
+				var startY = y25 + (Rand() % (y75 - y25));
+				if ((x75 - x25) > 0) startX = x25 + Rand() % (x75 - x25); else startX = 0;
+				if ((y75 - y25) > 0) startY = y25 + Rand() % (y75 - y25); else startY = 0;
+
+				HSV hsv = Colors.Count > 0 ? HSV.FromRGB(Colors[Rand() % Colors.Count]) : HSV.FromRGB(Color.White);
+
+				for (int i = 0; i < Particles; i++)
+				{
+					_fireworkBursts[x * Particles + i].Reset(startX, startY, false, Velocity, hsv, start);
+				}
+			}
+		}
+
+		private void ResetBurstBuffer()
+		{
 			for (int i = 0; i < MaxFlakes; i++)
 			{
 				_fireworkBursts[i].Active = false;
@@ -195,72 +225,37 @@ namespace VixenModules.Effect.Fireworks
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
 			if (StringCount == 1) return;
-			
-			var mod100 = (Speed*frame % (101 - Explosions) * 20);
 
-			HSV hsv;
-			if (mod100 == 0)
+			for (int i = 0; i < Particles*Explosions; i++)
 			{
-				var x25 = (int)(BufferWi * 0.25);
-				var x75 = (int)(BufferWi * 0.75);
-				var y25 = (int)(BufferHt * 0.25);
-				var y75 = (int)(BufferHt * 0.75);
-				var startX = x25 + (Rand() % (x75 - x25));
-				var startY = y25 + (Rand() % (y75 - y25)); 
-
-				// Create new bursts
-				hsv = Colors.Count > 0 ? HSV.FromRGB(Colors[Rand() % Colors.Count]) : HSV.FromRGB(Color.White);
-				int idxFlakes = 0;
-				for (int i = 0; i < Particles; i++)
+				if (_fireworkBursts[i].StartPeriod == frame)
 				{
-					do
-					{
-						idxFlakes = (idxFlakes + 1) % MaxFlakes;
-					} while (_fireworkBursts[idxFlakes].Active);
-					_fireworkBursts[idxFlakes].Reset(startX, startY, true, Velocity, hsv);
+					_fireworkBursts[i].Active = true;
 				}
-			}
-			else
-			{
-				for (int i = 0; i < MaxFlakes; i++)
+
+				// ... active flakes:
+				if (_fireworkBursts[i].Active)
 				{
-					// ... active flakes:
-					if (_fireworkBursts[i].Active)
+					// Update position
+					_fireworkBursts[i].X += _fireworkBursts[i].Dx;
+					_fireworkBursts[i].Y +=
+						(float) (-_fireworkBursts[i].Dy - _fireworkBursts[i].Cycles*_fireworkBursts[i].Cycles/10000000.0);
+					// If this flake run for more than maxCycle, time to switch it off
+					_fireworkBursts[i].Cycles += 20;
+					if (_fireworkBursts[i].Cycles >= 10000) // if (10000 == _fireworkBursts[i]._cycles)
 					{
-						// Update position
-						_fireworkBursts[i].X += _fireworkBursts[i].Dx;
-						_fireworkBursts[i].Y +=
-							(float)(-_fireworkBursts[i].Dy - _fireworkBursts[i].Cycles * _fireworkBursts[i].Cycles / 10000000.0);
-						// If this flake run for more than maxCycle, time to switch it off
-						_fireworkBursts[i].Cycles += 20;
-						if (10000 == _fireworkBursts[i].Cycles) // if (10000 == _fireworkBursts[i]._cycles)
-						{
-							_fireworkBursts[i].Active = false;
-							continue;
-						}
-						// If this flake hit the earth, time to switch it off
-						if (_fireworkBursts[i].Y >= BufferHt)
-						{
-							_fireworkBursts[i].Active = false;
-							continue;
-						}
-						// Draw the flake, if its X-pos is within frame
-						if (_fireworkBursts[i].X >= 0.0 && _fireworkBursts[i].X < BufferWi)
-						{
-							// But only if it is "under" the roof!
-							if (_fireworkBursts[i].Y >= 0.0)
-							{
-								// sean we need to set color here
-							}
-						}
-						else
-						{
-							// otherwise it just got outside the valid X-pos, so switch it off
-							_fireworkBursts[i].Active = false;
-						}
+						_fireworkBursts[i].Active = false;
+						continue;
+					}
+					// If this flake hit the earth or is out of bounds, time to switch it off
+					if (_fireworkBursts[i].Y >= BufferHt || _fireworkBursts[i].Y < 0 || _fireworkBursts[i].X < 0 || _fireworkBursts[i].X >= BufferWi)
+					{
+						_fireworkBursts[i].Active = false;
 					}
 				}
 			}
+			
+
 			double position = GetEffectTimeIntervalPosition(frame);
 			double level = LevelCurve.GetValue(position * 100) / 100;
 			for (int i = 0; i < 1000; i++)
@@ -269,7 +264,7 @@ namespace VixenModules.Effect.Fireworks
 				{
 					var v = (float)(((ParticalFade * 10.0) - _fireworkBursts[i].Cycles) / (ParticalFade * 10.0));
 					if (v < 0) v = 0.0f;
-					hsv = _fireworkBursts[i].HSV;
+					HSV hsv = _fireworkBursts[i].HSV;
 					hsv.V = v*level;
 					frameBuffer.SetPixel((int)_fireworkBursts[i].X, (int)_fireworkBursts[i].Y, hsv);
 				}
@@ -282,8 +277,8 @@ namespace VixenModules.Effect.Fireworks
 		{
 			if (_fireworkBursts == null)
 			{
-				_fireworkBursts = new List<RgbFireworks>(20000);
-				for (int burstNum = 0; burstNum < 20000; burstNum++)
+				_fireworkBursts = new List<RgbFireworks>(MaxFlakes);
+				for (int burstNum = 0; burstNum < MaxFlakes; burstNum++)
 				{
 					RgbFireworks firework = new RgbFireworks();
 					_fireworkBursts.Add(firework);
@@ -296,6 +291,9 @@ namespace VixenModules.Effect.Fireworks
 			return _random.Next();
 		}
 
-		
+		private double Rand01()
+		{
+			return _random.NextDouble();
+		}
 	}
 }

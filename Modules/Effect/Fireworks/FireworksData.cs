@@ -16,7 +16,7 @@ namespace VixenModules.Effect.Fireworks
 		{
 			Colors = new List<Color> { Color.Red, Color.Lime, Color.Blue };
 			Particles = 50;
-			Explosions = 50;
+			Explosions = 10;
 			Velocity = 5;
 			ParticleFade = 50;
 			Speed = 5;

@@ -188,7 +188,7 @@ namespace VixenModules.Effect.Pixel
 		protected EffectIntents RenderNode(ElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
-			int nFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime);
+			int nFrames = GetNumberFrames();
 			if (nFrames <= 0) return effectIntents;
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 
@@ -223,6 +223,7 @@ namespace VixenModules.Effect.Pixel
 					{
 						for (int x = 0; x < StringPixelCounts[y]; x++)
 						{
+							if (i >= pixels.Length) break;
 							pixels[i][frameNum] = new RGBValue(buffer.GetColorAt(x,y));
 							i++;
 						}
@@ -235,6 +236,7 @@ namespace VixenModules.Effect.Pixel
 					{
 						for (int y = 0; y < StringPixelCounts[x]; y++)
 						{
+							if (i >= pixels.Length) break;
 							pixels[i][frameNum] = new RGBValue(buffer.GetColorAt(x, y));
 							i++;
 						}
@@ -267,6 +269,15 @@ namespace VixenModules.Effect.Pixel
 				position = (frame * FrameTime) / TimeSpan.TotalMilliseconds;
 			}
 			return position;
+		}
+
+		protected int GetNumberFrames()
+		{
+			if (TimeSpan == TimeSpan.Zero)
+			{
+				return 0;
+			}
+			return (int)(TimeSpan.TotalMilliseconds / FrameTime);
 		}
 	}
 }
