@@ -306,6 +306,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LayerEditor", "Modules\Edit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFCommon", "Common\WPFCommon\WPFCommon.csproj", "{44C23ECF-EA1C-4806-956A-07EC1203F8B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntensityOverlay", "Modules\LayerCombiningFilter\IntensityOverlay\IntensityOverlay.csproj", "{5A80172D-2C62-463A-8271-4F4FEE9214E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -977,6 +979,14 @@ Global
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4}.Release|x64.Build.0 = Release|x64
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4}.Release|x86.ActiveCfg = Release|x86
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4}.Release|x86.Build.0 = Release|x86
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Debug|x64.ActiveCfg = Release|x64
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Debug|x64.Build.0 = Release|x64
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Debug|x86.ActiveCfg = Release|x86
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Debug|x86.Build.0 = Release|x86
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Release|x64.ActiveCfg = Release|x64
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Release|x64.Build.0 = Release|x64
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Release|x86.ActiveCfg = Release|x86
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1086,6 +1096,7 @@ Global
 		{FF20D252-96DB-4B7F-B073-108EE95BF177} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 		{3233ADD6-FB95-4C57-AF81-34C6C19717DB} = {E28B32DB-012C-4B34-A515-0D4D4E8FD7F9}
 		{44C23ECF-EA1C-4806-956A-07EC1203F8B4} = {25A1ED22-180F-4B61-84FC-55790AA11254}
+		{5A80172D-2C62-463A-8271-4F4FEE9214E8} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
