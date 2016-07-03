@@ -2226,17 +2226,41 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							var sequenceLayers = Sequence.GetSequenceLayerManager();
 							var el = e.ElementsUnderCursor;
-							if (e.ElementsUnderCursor != null && el.Any())
+							Dictionary<IEffectNode, ILayer> modifiedNodes = new Dictionary<IEffectNode, ILayer>();
+							var newLayer = (ILayer) item.Tag;
+							//First try to apply to selected elements
+							if (TimelineControl.SelectedElements.Any())
 							{
-								foreach (var element in el)
+								foreach (var selectedElement in TimelineControl.SelectedElements)
 								{
-									sequenceLayers.AssignEffectNodeToLayer(element.EffectNode, (ILayer)item.Tag);
+									var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+									if (newLayer != curentLayer)
+									{
+										modifiedNodes.Add(selectedElement.EffectNode, curentLayer);
+										sequenceLayers.AssignEffectNodeToLayer(selectedElement.EffectNode, newLayer);
+									}
 								}
-								
 							}
-							foreach (var selectedElement in TimelineControl.SelectedElements)
+							else if (el != null && el.Any()) 
 							{
-								sequenceLayers.AssignEffectNodeToLayer(selectedElement.EffectNode, (ILayer) item.Tag);
+								//if there are no selected elements, the ntry to apply to the element under the cursor
+								foreach (var selectedElement in el)
+								{
+									var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+									if (newLayer != curentLayer)
+									{
+										modifiedNodes.Add(selectedElement.EffectNode, curentLayer);
+										sequenceLayers.AssignEffectNodeToLayer(selectedElement.EffectNode, newLayer);
+									}
+								}
+							}
+							
+
+							if (modifiedNodes.Any())
+							{
+								var undo = new EffectsLayerChangedUndoAction(this, modifiedNodes);
+								_undoMgr.AddUndoAction(undo);
+								SequenceModified();
 							}
 						};
 					}
@@ -3212,6 +3236,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(act);
 
 			return newElements;
+		}
+
+		/// <summary>
+		/// Adds an EffectNode to the sequence and the TimelineControl and puts it in the given layer.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns>The TimedSequenceElement created and added to the TimelineControl.</returns>
+		public TimedSequenceElement AddEffectNode(EffectNode node, ILayer layer)
+		{
+			//Debug.WriteLine("{0}   AddEffectNode({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, node.Effect.InstanceId);
+			_sequence.InsertData(node);
+			//return addElementForEffectNode(node);
+			var element =  AddElementForEffectNodeTpl(node);
+			Sequence.GetSequenceLayerManager().AssignEffectNodeToLayer(node, layer);
+			return element;
 		}
 
 		/// <summary>
@@ -4319,6 +4358,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			int rownum = 0;
 			var affectedElements = new List<Element>();
+			var layerManager = LayerManager;
 			foreach (Row row in TimelineControl.VisibleRows)
 			{
 				// Since removals may happen during enumeration, make a copy with ToArray().
@@ -4335,7 +4375,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						new EffectModelCandidate(elem.EffectNode.Effect)
 							{
 								Duration = elem.Duration,
-								StartTime = elem.StartTime
+								StartTime = elem.StartTime,
+								LayerId = layerManager.GetLayer(elem.EffectNode).Id
 							};
 					result.EffectModelCandidates.Add(modelCandidate, relativeVisibleRow);
 
@@ -4421,8 +4462,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				//Make a new effect and populate it with the detail data from the clipboard
 				var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
-				
-				nodesToAdd.Add(CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration));
+				var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
+				LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
+				nodesToAdd.Add(node);
+
 				result++;
 			}
 
@@ -4934,6 +4977,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.SwapElementPlacement(changedElements);
 		}
 
+		public void SwapLayers(Dictionary<IEffectNode, ILayer> effectNodes)
+		{
+			foreach (var node in effectNodes.Keys.ToList())
+			{
+				var tmpLayer = LayerManager.GetLayer(node);
+				LayerManager.AssignEffectNodeToLayer(node, effectNodes[node]);
+				effectNodes[node] = tmpLayer;
+			}
+
+			SequenceModified();
+		}
 		//private void SwapEffectData(Dictionary<Element, EffectModelCandidate> changedElements)
 		//{
 		//	List<Element> keys = new List<Element>(changedElements.Keys);
@@ -4984,6 +5038,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public ISelection Selection
 		{
 			get { throw new NotImplementedException(); }
+		}
+
+		public SequenceLayers LayerManager
+		{
+			get
+			{
+				return Sequence.GetSequenceLayerManager();
+				
+			}
 		}
 
 		public ISequence Sequence
@@ -5420,8 +5483,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
                               new EffectModelCandidate(effect)
                               {
                                   Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
-                                  StartTime = startTime,
-                              };
+                                  StartTime = startTime
+							  };
 
                         result.EffectModelCandidates.Add(modelCandidate, rownum);
                         if (startTime < result.EarliestStartTime)
