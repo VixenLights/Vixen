@@ -109,8 +109,10 @@ namespace Vixen.Module.Effect
 					//Trap any errors to prevent the effect from staying in a state of rendering.
 					Logging.Error(String.Format("Error rendering {0}", EffectName), e);
 				}
-
-				IsRendering = false;
+				finally
+				{
+					IsRendering = false;
+				}
 			}
 			else
 			{
