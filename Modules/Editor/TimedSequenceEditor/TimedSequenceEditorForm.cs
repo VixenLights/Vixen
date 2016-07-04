@@ -2212,7 +2212,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ToolStripMenuItem contextMenuToLayer = new ToolStripMenuItem("Layer")
 					{
 						Enabled = true,
-						Image = Resources.alignment,
+						Image = Resources.layers,
 						ToolTipText = @"Assign effects to a layer"
 					};
 
