@@ -9,6 +9,7 @@ namespace VixenModules.Editor.LayerEditor.Input
 
 		private static readonly RoutedUICommand _AddLayerCommand = new RoutedUICommand("Add Layer", "AddLayer", ThisType);
 		private static readonly RoutedUICommand _RemoveLayerCommand = new RoutedUICommand("Remove Layer", "RemoveLayer", ThisType);
+		private static readonly RoutedUICommand _ConfigureLayerCommand = new RoutedUICommand("Configure Layer", "ConfigureLayer", ThisType);
 
 
 		/// <summary>
@@ -25,6 +26,14 @@ namespace VixenModules.Editor.LayerEditor.Input
 		public static RoutedUICommand RemoveLayer
 		{
 			get { return _RemoveLayerCommand; }
+		}
+
+		/// <summary>
+		/// Represents a command for the control to remove a layer.
+		/// </summary>
+		public static RoutedUICommand ConfigureLayer
+		{
+			get { return _ConfigureLayerCommand; }
 		}
 	}
 }

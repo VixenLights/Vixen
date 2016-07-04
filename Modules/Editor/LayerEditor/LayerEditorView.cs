@@ -29,6 +29,7 @@ namespace VixenModules.Editor.LayerEditor
 		{
 			CommandBindings.Add(new CommandBinding(LayerEditorCommands.AddLayer, OnAddLayer, CanExecuteAddLayer));
 			CommandBindings.Add(new CommandBinding(LayerEditorCommands.RemoveLayer, OnRemoveLayer, CanExecuteRemoveLayer));
+			CommandBindings.Add(new CommandBinding(LayerEditorCommands.ConfigureLayer, ConfigureLayer, CanExecuteConfigureLayer));
 			_layers = layers;
 			InitializeLayers();
 			DataContext = this;
@@ -80,6 +81,17 @@ namespace VixenModules.Editor.LayerEditor
 			canExecuteRoutedEventArgs.CanExecute = layer!=null && !_layers.IsDefaultLayer(layer);
 		}
 
+		private void CanExecuteConfigureLayer(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
+		{
+			ILayer layer = canExecuteRoutedEventArgs.Parameter as ILayer;
+			canExecuteRoutedEventArgs.CanExecute = layer != null && layer.LayerMixingFilter!= null && layer.LayerMixingFilter.HasSetup;
+		}
+
+		private void ConfigureLayer(object sender, ExecutedRoutedEventArgs executedRoutedEventArgs)
+		{
+			ILayer layer = executedRoutedEventArgs.Parameter as ILayer;
+			var success = layer.LayerMixingFilter.Setup();
+		}
 		#endregion
 
 		public Object SelectedItem { get; set; }
