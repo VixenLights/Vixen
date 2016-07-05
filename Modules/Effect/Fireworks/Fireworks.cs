@@ -48,7 +48,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public int Velocity
 		{
 			get { return _data.Velocity; }
@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public int Particles
 		{
 			get { return _data.Particles; }
@@ -84,31 +84,13 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"ParticleFade")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public int ParticalFade
 		{
 			get { return _data.ParticleFade; }
 			set
 			{
 				_data.ParticleFade = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
-		[PropertyOrder(1)]
-		public int Speed
-		{
-			get { return _data.Speed; }
-			set
-			{
-				_data.Speed = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -165,8 +147,6 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		#endregion
-
-		
 
 		public override IModuleDataModel ModuleData
 		{
@@ -242,7 +222,7 @@ namespace VixenModules.Effect.Fireworks
 						(float) (-_fireworkBursts[i].Dy - _fireworkBursts[i].Cycles*_fireworkBursts[i].Cycles/10000000.0);
 					// If this flake run for more than maxCycle, time to switch it off
 					_fireworkBursts[i].Cycles += 20;
-					if (_fireworkBursts[i].Cycles >= 10000) // if (10000 == _fireworkBursts[i]._cycles)
+					if (_fireworkBursts[i].Cycles >= MaxFlakes) // if (10000 == _fireworkBursts[i]._cycles)
 					{
 						_fireworkBursts[i].Active = false;
 						continue;
@@ -254,11 +234,10 @@ namespace VixenModules.Effect.Fireworks
 					}
 				}
 			}
-			
 
 			double position = GetEffectTimeIntervalPosition(frame);
 			double level = LevelCurve.GetValue(position * 100) / 100;
-			for (int i = 0; i < 1000; i++)
+			for (int i = 0; i < MaxFlakes; i++)
 			{
 				if (_fireworkBursts[i].Active)
 				{
@@ -269,8 +248,6 @@ namespace VixenModules.Effect.Fireworks
 					frameBuffer.SetPixel((int)_fireworkBursts[i].X, (int)_fireworkBursts[i].Y, hsv);
 				}
 			}
-			
-				
 		}
 
 		private void InitFireworksBuffer()
