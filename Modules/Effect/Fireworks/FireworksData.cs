@@ -19,7 +19,6 @@ namespace VixenModules.Effect.Fireworks
 			Explosions = 10;
 			Velocity = 5;
 			ParticleFade = 50;
-			Speed = 5;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 		}
 
@@ -39,9 +38,6 @@ namespace VixenModules.Effect.Fireworks
 		public int Particles { get; set; }
 
 		[DataMember]
-		public int Speed { get; set; }
-
-		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		public override IModuleDataModel Clone()
@@ -53,7 +49,6 @@ namespace VixenModules.Effect.Fireworks
 				ParticleFade = ParticleFade,
 				Explosions = Explosions,
 				Particles = Particles,
-				Speed = Speed,
 				Colors = Colors.ToList()
 			};
 			return result;
