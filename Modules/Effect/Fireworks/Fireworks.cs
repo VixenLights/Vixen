@@ -242,7 +242,7 @@ namespace VixenModules.Effect.Fireworks
 						(float) (-_fireworkBursts[i].Dy - _fireworkBursts[i].Cycles*_fireworkBursts[i].Cycles/10000000.0);
 					// If this flake run for more than maxCycle, time to switch it off
 					_fireworkBursts[i].Cycles += 20;
-					if (_fireworkBursts[i].Cycles >= 10000) // if (10000 == _fireworkBursts[i]._cycles)
+					if (_fireworkBursts[i].Cycles >= MaxFlakes) // if (10000 == _fireworkBursts[i]._cycles)
 					{
 						_fireworkBursts[i].Active = false;
 						continue;
@@ -258,7 +258,7 @@ namespace VixenModules.Effect.Fireworks
 
 			double position = GetEffectTimeIntervalPosition(frame);
 			double level = LevelCurve.GetValue(position * 100) / 100;
-			for (int i = 0; i < 1000; i++)
+			for (int i = 0; i < MaxFlakes; i++)
 			{
 				if (_fireworkBursts[i].Active)
 				{
