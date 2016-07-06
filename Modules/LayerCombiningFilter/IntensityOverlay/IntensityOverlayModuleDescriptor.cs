@@ -1,8 +1,7 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
-using VixenModules.LayerMixingFilter.IntensityOverlay;
 
-namespace VixenModules.LayerCombiningFilter.Mask
+namespace VixenModules.LayerMixingFilter.IntensityOverlay
 {
 	public class IntensityOverlayModuleDescriptor: LayerMixingFilterModuleDescriptorBase
 	{

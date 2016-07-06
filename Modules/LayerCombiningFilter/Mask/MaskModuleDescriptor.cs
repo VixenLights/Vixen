@@ -1,8 +1,7 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
-using VixenModules.LayerMixingFilter.Mask;
 
-namespace VixenModules.LayerCombiningFilter.Mask
+namespace VixenModules.LayerMixingFilter.Mask
 {
 	public class MaskModuleDescriptor: LayerMixingFilterModuleDescriptorBase
 	{
@@ -21,11 +20,6 @@ namespace VixenModules.LayerCombiningFilter.Mask
 		public override Type ModuleClass
 		{
 			get { return typeof (MaskModule); }
-		}
-
-		public override Type ModuleDataClass
-		{
-			get { return typeof (MaskFilterModuleData); }
 		}
 
 		public override string Author

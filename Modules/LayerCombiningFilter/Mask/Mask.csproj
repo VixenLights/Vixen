@@ -48,7 +48,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MaskFilterModuleData.cs" />
     <Compile Include="MaskModuleDescriptor.cs" />
     <Compile Include="MaskModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
