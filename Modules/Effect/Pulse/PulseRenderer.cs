@@ -32,11 +32,7 @@ namespace VixenModules.Effect.Pulse
 
 				//ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
 
-				if (!isDiscrete)
-				{
-					AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData);
-				}
-				else
+				if (isDiscrete && IsElementDiscrete(node))
 				{
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
 						 .Intersect(colorGradient.GetColorsInGradient());
@@ -44,6 +40,10 @@ namespace VixenModules.Effect.Pulse
 					{
 						AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData, color);
 					}
+				}
+				else
+				{
+					AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData);
 				}
 			}
 
@@ -141,6 +141,11 @@ namespace VixenModules.Effect.Pulse
 			points.Add(1.0);
 
 			return points.OrderBy(x => x);
+		}
+
+		private static bool IsElementDiscrete(ElementNode elementNode)
+		{
+			return ColorModule.isElementNodeDiscreteColored(elementNode);
 		}
 	}
 }

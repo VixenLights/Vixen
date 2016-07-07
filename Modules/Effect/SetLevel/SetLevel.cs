@@ -103,8 +103,6 @@ namespace VixenModules.Effect.SetLevel
 			}
 		}
 
-		private bool IsDiscrete { get; set; }
-
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
@@ -132,7 +130,7 @@ namespace VixenModules.Effect.SetLevel
 			EffectIntents effectIntents = new EffectIntents();
 			foreach (ElementNode elementNode in node.GetLeafEnumerator())
 			{
-				var intent = IsDiscrete ? CreateDiscreteIntent(Color, (float) HSV.FromRGB(Color).V * IntensityLevel, TimeSpan) : CreateIntent(Color, (float) HSV.FromRGB(Color).V *IntensityLevel, TimeSpan);
+				var intent = CreateIntent(elementNode, Color, (float) HSV.FromRGB(Color).V * IntensityLevel, TimeSpan);
 				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 

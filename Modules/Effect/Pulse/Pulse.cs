@@ -113,8 +113,6 @@ namespace VixenModules.Effect.Pulse
 			protected set { base.IsDirty = value; }
 		}
 
-		private bool IsDiscrete { get; set; }
-
 		private void CheckForInvalidColorData()
 		{
 			

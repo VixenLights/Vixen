@@ -167,8 +167,7 @@ namespace VixenModules.Effect.Candle
 				OnPropertyChanged();
 			}
 		}
-		private bool IsDiscrete { get; set; }
-
+		
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
@@ -201,7 +200,7 @@ namespace VixenModules.Effect.Candle
 
 			foreach (IGrouping<int, ElementNode> block in elementGroup)
 			{
-				_RenderCandleOnElements(block.GetElements().ToList());
+				_RenderCandleOnElements(block.ToList());
 			}
 
 			//_effectIntents = IntentBuilder.ConvertToStaticArrayIntents(_effectIntents, TimeSpan, IsDiscrete());
@@ -213,7 +212,7 @@ namespace VixenModules.Effect.Candle
 			return _effectIntents;
 		}
 
-		private void _RenderCandleOnElements(List<Element> elements)
+		private void _RenderCandleOnElements(List<ElementNode> elements)
 		{
 			TimeSpan startTime = TimeSpan.Zero;
 			double currentLevel = _GenerateStartingLevel();
@@ -240,8 +239,8 @@ namespace VixenModules.Effect.Candle
 				}
 				else
 				{
-					var intent = IsDiscrete ? CreateDiscreteIntent(Color, currentLevel, nextLevel, length) 
-												: CreateIntent(Color, Color, currentLevel, nextLevel, length);
+					IIntent discreteIntent = null;
+					var fullColorintent = CreateIntent(Color, Color, currentLevel, nextLevel, length);
 
 					// Add the intent.
 					try
@@ -250,7 +249,18 @@ namespace VixenModules.Effect.Candle
 						{
 							if (element != null)
 							{
-								_effectIntents.AddIntentForElement(element.Id, intent, startTime);
+								if (IsDiscrete && IsElementDiscrete(element))
+								{
+									if (discreteIntent == null)
+									{
+										discreteIntent = CreateDiscreteIntent(Color, currentLevel, nextLevel, length);
+									}
+									_effectIntents.AddIntentForElement(element.Id, discreteIntent, startTime);
+								}
+								else
+								{
+									_effectIntents.AddIntentForElement(element.Id, fullColorintent, startTime);
+								}
 							}
 						}
 					}
