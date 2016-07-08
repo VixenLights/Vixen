@@ -229,9 +229,9 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
 									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
@@ -270,9 +270,9 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
 									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
@@ -403,9 +403,9 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
 									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
@@ -445,9 +445,9 @@ namespace VixenModules.Effect.Wipe
 									//pulse.LevelCurve = _data.Curve;
 									//pulse.TargetNodes = new ElementNode[] { element };
 									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
 									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
@@ -490,17 +490,12 @@ namespace VixenModules.Effect.Wipe
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				if (!_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 				{
 					//Our color is not valid for any elements we have.
 					//Try to set a default color gradient from our available colors
 					_data.ColorGradient = new ColorGradient(validColors.First());
 				}
-			}
-			else
-			{
-				IsDiscrete = false;
 			}
 		}
 

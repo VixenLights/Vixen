@@ -174,7 +174,6 @@ namespace VixenModules.Effect.Candle
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				if (!validColors.Contains(_data.Color))
 				{
 					//Our color is not valid for any elements we have.
@@ -182,11 +181,6 @@ namespace VixenModules.Effect.Candle
 					Color = validColors.First();
 				}
 			}
-			else
-			{
-				IsDiscrete = false;
-			}
-
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
@@ -250,7 +244,7 @@ namespace VixenModules.Effect.Candle
 						{
 							if (element != null)
 							{
-								if (IsDiscrete && IsElementDiscrete(element))
+								if (HasDiscreteColors && IsElementDiscrete(element))
 								{
 									if (discreteIntent == null)
 									{

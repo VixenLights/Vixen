@@ -62,7 +62,6 @@ namespace VixenModules.Effect.Spin
 
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				if (!validColors.Contains(_data.StaticColor) || !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 					//Discrete colors specified
 				{
@@ -71,10 +70,6 @@ namespace VixenModules.Effect.Spin
 					//Set a default color 
 					_data.StaticColor = validColors.First();
 				}
-			}
-			else
-			{
-				IsDiscrete = false;
 			}
 
 		}
@@ -450,19 +445,19 @@ namespace VixenModules.Effect.Spin
 						switch (ColorHandling) {
 							case SpinColorHandling.GradientForEachPulse:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new [] {level, level})), StaticColorGradient, TimeSpan, IsDiscrete);
+									new Curve(new PointPairList(new double[] {0, 100}, new [] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.GradientThroughWholeEffect:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), ColorGradient, TimeSpan, IsDiscrete);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.StaticColor:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level})), StaticColorGradient, TimeSpan, IsDiscrete);
+									new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors);
 								_elementData.Add(pulseData);
 								break;
 
@@ -474,13 +469,13 @@ namespace VixenModules.Effect.Spin
 									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
 										double value = level*colorProportion.Item2;
 										pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, IsDiscrete);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors);
 										_elementData.Add(pulseData);
 									}
 								}
 								else {
 									pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, IsDiscrete);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors);
 									_elementData.Add(pulseData);
 								}
 								break;
@@ -566,7 +561,7 @@ namespace VixenModules.Effect.Spin
 				// figure out what color gradient to use for the pulse
 				switch (ColorHandling) {
 					case SpinColorHandling.GradientForEachPulse:
-						pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient, pulseTimeSpan, IsDiscrete);
+						pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient, pulseTimeSpan, HasDiscreteColors);
 						pulseData.OffsetAllCommandsByTime(current);
 						_elementData.Add(pulseData);
 						break;
@@ -596,19 +591,19 @@ namespace VixenModules.Effect.Spin
 									double proportion = ColorGradient.GetProportionOfColorAt(effectRelativePosition, color);
 									point.Y *= proportion;
 								}
-								pulseData = PulseRenderer.RenderNode(currentNode, newCurve, new ColorGradient(color), pulseTimeSpan, IsDiscrete);
+								pulseData = PulseRenderer.RenderNode(currentNode, newCurve, new ColorGradient(color), pulseTimeSpan, HasDiscreteColors);
 								pulseData.OffsetAllCommandsByTime(current);
 								_elementData.Add(pulseData);
 							}
 						} else {
-							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient.GetSubGradient(startPos, endPos), pulseTimeSpan, IsDiscrete);
+							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), ColorGradient.GetSubGradient(startPos, endPos), pulseTimeSpan, HasDiscreteColors);
 							pulseData.OffsetAllCommandsByTime(current);
 							_elementData.Add(pulseData);
 						}
 						break;
 
 					case SpinColorHandling.StaticColor:
-						pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), StaticColorGradient, pulseTimeSpan, IsDiscrete);
+						pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), StaticColorGradient, pulseTimeSpan, HasDiscreteColors);
 						pulseData.OffsetAllCommandsByTime(current);
 						_elementData.Add(pulseData);
 						break;
@@ -628,12 +623,12 @@ namespace VixenModules.Effect.Spin
 								{
 									pointPair.Y *= proportion;
 								}
-								pulseData = PulseRenderer.RenderNode(currentNode, newCurve, new ColorGradient(colorProportion.Item1), pulseTimeSpan, IsDiscrete);
+								pulseData = PulseRenderer.RenderNode(currentNode, newCurve, new ColorGradient(colorProportion.Item1), pulseTimeSpan, HasDiscreteColors);
 								pulseData.OffsetAllCommandsByTime(current);
 								_elementData.Add(pulseData);
 							}
 						} else {
-							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), new ColorGradient(ColorGradient.GetColorAt(targetElementPosition / 100.0)), pulseTimeSpan, IsDiscrete);
+							pulseData = PulseRenderer.RenderNode(currentNode, new Curve(PulseCurve), new ColorGradient(ColorGradient.GetColorAt(targetElementPosition / 100.0)), pulseTimeSpan, HasDiscreteColors);
 							pulseData.OffsetAllCommandsByTime(current);
 							_elementData.Add(pulseData);
 						}

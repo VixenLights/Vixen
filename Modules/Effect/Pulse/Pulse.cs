@@ -119,7 +119,6 @@ namespace VixenModules.Effect.Pulse
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				if (!_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 				{
 					//Our color is not valid for any elements we have.
@@ -127,17 +126,13 @@ namespace VixenModules.Effect.Pulse
 					_data.ColorGradient = new ColorGradient(validColors.First());
 				}
 			}
-			else
-			{
-				IsDiscrete = false;
-			}
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		private EffectIntents RenderNode(ElementNode node)
 		{
-			return PulseRenderer.RenderNode(node, LevelCurve, ColorGradient, TimeSpan, IsDiscrete);
+			return PulseRenderer.RenderNode(node, LevelCurve, ColorGradient, TimeSpan, HasDiscreteColors);
 		}
 	}
 }

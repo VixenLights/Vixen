@@ -109,17 +109,12 @@ namespace VixenModules.Effect.SetLevel
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				if (!validColors.Contains(_data.color.ToArgb()))
 				{
 					//Our color is not valid for any elements we have.
 					//Set a default color 
 					Color = validColors.First();
 				}
-			}
-			else
-			{
-				IsDiscrete = false;
 			}
 		}
 

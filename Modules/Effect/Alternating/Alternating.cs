@@ -60,7 +60,6 @@ namespace VixenModules.Effect.Alternating
 
 			if (validColors.Any())
 			{
-				IsDiscrete = true;
 				bool changed = false;
 				foreach (GradientLevelPair t in Colors)
 				{
@@ -74,10 +73,6 @@ namespace VixenModules.Effect.Alternating
 				{
 					OnPropertyChanged("Colors");
 				}
-			}
-			else
-			{
-				IsDiscrete = false;
 			}
 
 		}
@@ -312,7 +307,7 @@ namespace VixenModules.Effect.Alternating
 		private void RenderElement(GradientLevelPair gradientLevelPair, TimeSpan startTime, TimeSpan interval,
 			ElementNode element, EffectIntents effectIntents)
 		{
-			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, IsDiscrete);
+			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, HasDiscreteColors);
 			result.OffsetAllCommandsByTime(startTime);
 			effectIntents.Add(result);
 		}
