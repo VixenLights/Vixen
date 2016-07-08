@@ -170,7 +170,7 @@ namespace VixenModules.Effect.Effect
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
-			if (nFrames <= 0) return effectIntents;
+			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return effectIntents;
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 
 			int bufferSize = StringPixelCounts.Sum();
