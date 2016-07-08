@@ -20,6 +20,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public Form_Effects(TimelineControl timelineControl)
 		{
+			Font = SystemFonts.MessageBoxFont;
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			ForeColor = ThemeColorTable.ForeColor;
@@ -83,7 +84,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					treeEffects.Nodes[1].Expand();
 				}
 				treeEffects.Nodes[0].EnsureVisible();
-			
 			}
 		}
 

@@ -854,7 +854,7 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLoad(EventArgs e)
 		{
-			splitContainer.SplitterDistance = InitialSplitterDistance;
+			splitContainer.SplitterDistance = InitialSplitterDistance * 2;
 			base.OnLoad(e);
 		}
 

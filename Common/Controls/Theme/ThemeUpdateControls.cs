@@ -26,7 +26,8 @@ namespace Common.Controls.Theme
 			
 			foreach (Control c in control.Controls)
 			{
-				if(excludes != null && excludes.Contains(c)) continue;
+				c.Font = SystemFonts.MessageBoxFont;
+				if (excludes != null && excludes.Contains(c)) continue;
 
 				if (c is GroupBox | c is Panel | c is Label | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
 				{

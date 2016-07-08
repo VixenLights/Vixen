@@ -122,6 +122,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//Used for the Align Effects to the nearest Mark.
 		private string AlignTo_Threshold;
 
+		private double _scaleFactor = 1;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -129,6 +131,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
+
+			var g = CreateGraphics();
+			if (g.DpiY > 96)
+			{
+				_scaleFactor = g.DpiY / 96d;
+			}
 
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
@@ -140,52 +148,53 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			cboAudioDevices.BackColor = ThemeColorTable.BackgroundColor;
 			cboAudioDevices.ForeColor = ThemeColorTable.ForeColor;
 			Icon = Resources.Icon_Vixen3;
-			toolStripButton_Start.Image = Tools.GetIcon(Resources.control_start_blue,24);
+			int iconSize = (int) (24*_scaleFactor);
+			toolStripButton_Start.Image = Tools.GetIcon(Resources.control_start_blue, iconSize);
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+			toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			toolStripButton_Play.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Stop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
+			toolStripButton_Stop.Image = Tools.GetIcon(Resources.control_stop_blue, iconSize);
 			toolStripButton_Stop.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Pause.Image = Tools.GetIcon(Resources.control_pause_blue, 24);
+			toolStripButton_Pause.Image = Tools.GetIcon(Resources.control_pause_blue, iconSize);
 			toolStripButton_Pause.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_End.Image = Tools.GetIcon(Resources.control_end_blue, 24);
+			toolStripButton_End.Image = Tools.GetIcon(Resources.control_end_blue, iconSize);
 			toolStripButton_End.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Loop.Image = Tools.GetIcon(Resources.arrow_repeat, 24);
+			toolStripButton_Loop.Image = Tools.GetIcon(Resources.arrow_repeat, iconSize);
 			toolStripButton_Loop.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			undoButton.Image =  Tools.GetIcon(Resources.arrow_undo, 24);
+			undoButton.Image =  Tools.GetIcon(Resources.arrow_undo, iconSize);
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			redoButton.Image =  Tools.GetIcon(Resources.arrow_redo, 24);
+			redoButton.Image =  Tools.GetIcon(Resources.arrow_redo, iconSize);
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.ButtonType =  UndoButtonType.RedoButton;
-			toolStripButton_Cut.Image = Tools.GetIcon(Resources.cut, 24);
+			toolStripButton_Cut.Image = Tools.GetIcon(Resources.cut, iconSize);
 			toolStripButton_Cut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Copy.Image = Tools.GetIcon(Resources.page_white_copy, 24);
+			toolStripButton_Copy.Image = Tools.GetIcon(Resources.page_white_copy, iconSize);
 			toolStripButton_Copy.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_Paste.Image = Tools.GetIcon(Resources.page_white_paste, 24);
+			toolStripButton_Paste.Image = Tools.GetIcon(Resources.page_white_paste, iconSize);
 			toolStripButton_Paste.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_AssociateAudio.Image = Tools.GetIcon(Resources.music, 24);
+			toolStripButton_AssociateAudio.Image = Tools.GetIcon(Resources.music, iconSize);
 			toolStripButton_AssociateAudio.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_MarkManager.Image = Tools.GetIcon(Resources.timeline_marker, 24);
+			toolStripButton_MarkManager.Image = Tools.GetIcon(Resources.timeline_marker, iconSize);
 			toolStripButton_MarkManager.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_ZoomTimeIn.Image = Tools.GetIcon(Resources.zoom_in, 24);
+			toolStripButton_ZoomTimeIn.Image = Tools.GetIcon(Resources.zoom_in, iconSize);
 			toolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_ZoomTimeOut.Image = Tools.GetIcon(Resources.zoom_out, 24);
+			toolStripButton_ZoomTimeOut.Image = Tools.GetIcon(Resources.zoom_out, iconSize);
 			toolStripButton_ZoomTimeOut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_SnapTo.Image = Tools.GetIcon(Resources.magnet, 24);
+			toolStripButton_SnapTo.Image = Tools.GetIcon(Resources.magnet, iconSize);
 			toolStripButton_SnapTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_DrawMode.Image = Tools.GetIcon(Resources.pencil, 24);
+			toolStripButton_DrawMode.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			toolStripButton_DrawMode.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_SelectionMode.Image = Tools.GetIcon(Resources.cursor_arrow, 24);
+			toolStripButton_SelectionMode.Image = Tools.GetIcon(Resources.cursor_arrow, iconSize);
 			toolStripButton_SelectionMode.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_DragBoxFilter.Image = Tools.GetIcon(Resources.table_select_big, 24);
+			toolStripButton_DragBoxFilter.Image = Tools.GetIcon(Resources.table_select_big, iconSize);
 			toolStripButton_DragBoxFilter.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_IncreaseTimingSpeed.Image = Tools.GetIcon(Resources.plus, 24);
+			toolStripButton_IncreaseTimingSpeed.Image = Tools.GetIcon(Resources.plus, iconSize);
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_DecreaseTimingSpeed.Image = Tools.GetIcon(Resources.minus, 24);
+			toolStripButton_DecreaseTimingSpeed.Image = Tools.GetIcon(Resources.minus, iconSize);
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripSplitButton_CloseGaps.Image = Tools.GetIcon(Resources.fill_gaps, 24);
+			toolStripSplitButton_CloseGaps.Image = Tools.GetIcon(Resources.fill_gaps, iconSize);
 			toolStripSplitButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripDropDownButton_AlignTo.Image = Tools.GetIcon(Resources.alignment, 24);
+			toolStripDropDownButton_AlignTo.Image = Tools.GetIcon(Resources.alignment, iconSize);
 			toolStripDropDownButton_AlignTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
@@ -432,7 +441,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
 			if (_sequence.DefaultSplitterDistance != 0)
-				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
+			{
+				TimelineControl.splitContainer.SplitterDistance = (int)(_sequence.DefaultSplitterDistance * _scaleFactor);
+			}
 
 			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)
 			{
@@ -926,11 +937,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimelineControl.AllowGridResize = false;
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
-
-			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+			
+			
+			//Scale our default pixel height for the rows
+			TimelineControl.rowHeight = (int)(_sequence.DefaultRowHeight * _scaleFactor);
 			if (TimelineControl.rowHeight == 0)
-				TimelineControl.rowHeight = 32;
-
+				TimelineControl.rowHeight = (int)(32 * _scaleFactor);
+			
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
 

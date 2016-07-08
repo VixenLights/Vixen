@@ -15,6 +15,8 @@ namespace VixenModules.App.InstrumentationPanel
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+			textBox1.ForeColor = ThemeColorTable.ForeColor;
+			textBox1.BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 		}
