@@ -65,10 +65,12 @@ namespace VixenModules.Effect.Twinkle
 					return;
 
 				if (node != null)
-					_elementData.Add(RenderElement(node, i++/(double) totalNodes, twinkles));
+				{
+					bool discreteColors = IsDiscrete && ColorModule.isElementNodeDiscreteColored(node);
+					var intents = RenderElement(node, i++/totalNodes, discreteColors, twinkles);
+					_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(intents, TimeSpan, discreteColors));
+				}
 			}
-
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete);
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -348,15 +350,13 @@ namespace VixenModules.Effect.Twinkle
 			}
 		}
 
-		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup,
+		private EffectIntents RenderElement(ElementNode node, double positionWithinGroup, bool discreteColors,
 		                                    List<IndividualTwinkleDetails> twinkles = null)
 		{
 			if (twinkles == null)
 				twinkles = GenerateTwinkleData();
 
 			EffectIntents result = new EffectIntents();
-
-			bool discreteColors = ColorModule.isElementNodeDiscreteColored(node);
 
 			// render the flat 'minimum value' across the entire effect
 			//Pulse.Pulse pulse = new Pulse.Pulse();

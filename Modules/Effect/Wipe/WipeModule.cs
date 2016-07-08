@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
@@ -41,8 +40,6 @@ namespace VixenModules.Effect.Wipe
 			_elementData = new EffectIntents();
 
 			RenderNodes(tokenSource);
-
-			_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete);
 		}
 
 		private void RenderNodes(CancellationTokenSource tokenSource)
@@ -234,7 +231,8 @@ namespace VixenModules.Effect.Wipe
 									//result = pulse.Render();
 									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -274,7 +272,8 @@ namespace VixenModules.Effect.Wipe
 									//result = pulse.Render();
 									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -406,7 +405,8 @@ namespace VixenModules.Effect.Wipe
 									//result = pulse.Render();
 									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -447,7 +447,8 @@ namespace VixenModules.Effect.Wipe
 									//result = pulse.Render();
 									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, IsDiscrete);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = IsDiscrete && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
