@@ -173,7 +173,8 @@ namespace VixenModules.Effect.Candle
 		{
 			var validColors = GetValidColors();
 			if (validColors.Any())
-			{ 
+			{
+				IsDiscrete = true;
 				if (!validColors.Contains(_data.Color))
 				{
 					//Our color is not valid for any elements we have.
@@ -240,7 +241,7 @@ namespace VixenModules.Effect.Candle
 				else
 				{
 					IIntent discreteIntent = null;
-					var fullColorintent = CreateIntent(Color, Color, currentLevel, nextLevel, length);
+					IIntent fullColorintent = null;
 
 					// Add the intent.
 					try
@@ -255,11 +256,15 @@ namespace VixenModules.Effect.Candle
 									{
 										discreteIntent = CreateDiscreteIntent(Color, currentLevel, nextLevel, length);
 									}
-									_effectIntents.AddIntentForElement(element.Id, discreteIntent, startTime);
+									_effectIntents.AddIntentForElement(element.Element.Id, discreteIntent, startTime);
 								}
 								else
 								{
-									_effectIntents.AddIntentForElement(element.Id, fullColorintent, startTime);
+									if (fullColorintent == null)
+									{
+										fullColorintent = CreateIntent(Color, Color, currentLevel, nextLevel, length);
+									}
+									_effectIntents.AddIntentForElement(element.Element.Id, fullColorintent, startTime);
 								}
 							}
 						}
