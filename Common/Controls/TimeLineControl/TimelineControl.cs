@@ -12,6 +12,7 @@ using System.Diagnostics;
 using Common.Controls.Theme;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
+using Common.Controls.Scaling;
 
 namespace Common.Controls.Timeline
 {
@@ -207,6 +208,8 @@ namespace Common.Controls.Timeline
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
+
+			splitContainer.PerformAutoScale();
 		}
 
 		#endregion
@@ -854,14 +857,17 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLoad(EventArgs e)
 		{
-			splitContainer.SplitterDistance = InitialSplitterDistance * 2;
+			splitContainer.SplitterDistance = (int)(InitialSplitterDistance*ScalingTools.GetScaleFactor());
 			base.OnLoad(e);
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
 			//Console.WriteLine("Layout");
-			timelineRowList.Top = grid.Top;
+			if (grid != null)
+			{
+				timelineRowList.Top = grid.Top;
+			}
 			base.OnLayout(e);
 		}
 

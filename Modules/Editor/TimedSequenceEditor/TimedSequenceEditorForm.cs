@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.ControlsEx.ValueControls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources;
@@ -122,7 +123,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//Used for the Align Effects to the nearest Mark.
 		private string AlignTo_Threshold;
 
-		private double _scaleFactor = 1;
+		private readonly double _scaleFactor = 1;
 
 		#endregion
 
@@ -131,13 +132,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimedSequenceEditorForm()
 		{
 			InitializeComponent();
-
-			var g = CreateGraphics();
-			if (g.DpiY > 96)
-			{
-				_scaleFactor = g.DpiY / 96d;
-			}
-
+			_scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
@@ -224,6 +219,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
+			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
@@ -940,9 +936,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			
 			//Scale our default pixel height for the rows
-			TimelineControl.rowHeight = (int)(_sequence.DefaultRowHeight * _scaleFactor);
+			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
 			if (TimelineControl.rowHeight == 0)
-				TimelineControl.rowHeight = (int)(32 * _scaleFactor);
+				TimelineControl.rowHeight = 32;
 			
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
