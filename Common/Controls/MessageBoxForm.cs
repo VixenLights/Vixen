@@ -71,7 +71,7 @@ namespace Common.Controls
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
-			txtMessage.AutoSize = true;
+			//txtMessage.AutoSize = true;
 			txtMessage.BackColor = ThemeColorTable.BackgroundColor; //override theme as we are using this as a label.
 			txtMessage.ForeColor = ThemeColorTable.ForeColor;
 			txtMessage.Text = messageBoxData;

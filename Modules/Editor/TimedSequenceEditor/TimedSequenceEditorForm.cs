@@ -438,7 +438,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Cursor.Current = Cursors.Default;
 			if (_sequence.DefaultSplitterDistance != 0)
 			{
-				TimelineControl.splitContainer.SplitterDistance = (int)(_sequence.DefaultSplitterDistance * _scaleFactor);
+				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
+				TimelineControl.splitContainer.PerformAutoScale();
 			}
 
 			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)

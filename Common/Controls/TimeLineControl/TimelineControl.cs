@@ -208,7 +208,7 @@ namespace Common.Controls.Timeline
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
-
+			splitContainer.SplitterDistance = InitialSplitterDistance;
 			splitContainer.PerformAutoScale();
 		}
 
@@ -857,7 +857,6 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLoad(EventArgs e)
 		{
-			splitContainer.SplitterDistance = (int)(InitialSplitterDistance*ScalingTools.GetScaleFactor());
 			base.OnLoad(e);
 		}
 

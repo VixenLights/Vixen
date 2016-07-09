@@ -241,7 +241,7 @@ namespace VixenModules.Output.E131
 			this.lblDestination.AutoSize = true;
 			this.lblDestination.Location = new System.Drawing.Point(15, 339);
 			this.lblDestination.Name = "lblDestination";
-			this.lblDestination.Size = new System.Drawing.Size(102, 24);
+			this.lblDestination.Size = new System.Drawing.Size(67, 15);
 			this.lblDestination.TabIndex = 3;
 			this.lblDestination.Text = "Destination";
 			// 
@@ -345,6 +345,8 @@ namespace VixenModules.Output.E131
 			// univDGVN
 			// 
 			this.univDGVN.AllowUserToAddRows = false;
+			this.univDGVN.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+			this.univDGVN.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
 			this.univDGVN.BackgroundColor = this.BackColor;
 			this.univDGVN.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.startColumn,
@@ -380,7 +382,7 @@ namespace VixenModules.Output.E131
 			this.startColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			this.startColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.startColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-			this.startColumn.Width = 60;
+			this.startColumn.Width = 37;
 			// 
 			// activeColumn
 			// 
@@ -388,7 +390,7 @@ namespace VixenModules.Output.E131
 			this.activeColumn.HeaderText = "On";
 			this.activeColumn.Name = "activeColumn";
 			this.activeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-			this.activeColumn.Width = 25;
+			this.activeColumn.Width = 29;
 			// 
 			// universeColumn
 			// 
@@ -401,7 +403,7 @@ namespace VixenModules.Output.E131
 			this.universeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			this.universeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.universeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-			this.universeColumn.Width = 60;
+			this.universeColumn.Width = 58;
 			// 
 			// sizeColumn
 			// 
@@ -414,11 +416,14 @@ namespace VixenModules.Output.E131
 			this.sizeColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			this.sizeColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.sizeColumn.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-			this.sizeColumn.Width = 60;
+			this.sizeColumn.Width = 33;
 			// 
 			// SetupForm
 			// 
 			this.AcceptButton = this.okButton;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(382, 485);
 			this.Controls.Add(this.tabControlEX1);

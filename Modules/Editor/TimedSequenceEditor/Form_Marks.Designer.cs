@@ -63,7 +63,7 @@
             this.toolStripButtonDeleteMarkCollection});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(256, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(192, 27);
 			this.toolStrip1.TabIndex = 4;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -101,28 +101,32 @@
 			// 
 			// numericUpDownStandardNudge
 			// 
-			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(7, 20);
+			this.numericUpDownStandardNudge.AutoSize = true;
+			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(5, 15);
+			this.numericUpDownStandardNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
 			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
-			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(48, 23);
+			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(41, 20);
 			this.numericUpDownStandardNudge.TabIndex = 1;
 			this.toolTip1.SetToolTip(this.numericUpDownStandardNudge, "Standard Nudge in Miniseconds");
 			this.numericUpDownStandardNudge.ValueChanged += new System.EventHandler(this.numericUpDownStandardNudge_ValueChanged);
 			// 
 			// numericUpDownSuperNudge
 			// 
-			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(72, 20);
+			this.numericUpDownSuperNudge.AutoSize = true;
+			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(54, 15);
+			this.numericUpDownSuperNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
 			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
-			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(48, 23);
+			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(41, 20);
 			this.numericUpDownSuperNudge.TabIndex = 3;
 			this.toolTip1.SetToolTip(this.numericUpDownSuperNudge, "Super Nudge in Miliseconds");
 			this.numericUpDownSuperNudge.ValueChanged += new System.EventHandler(this.numericUpDownSuperNudge_ValueChanged);
@@ -134,20 +138,23 @@
 			this.panel1.Controls.Add(this.label2);
 			this.panel1.Controls.Add(this.numericUpDownStandardNudge);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(0, 356);
+			this.panel1.Location = new System.Drawing.Point(0, 272);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(256, 46);
+			this.panel1.Size = new System.Drawing.Size(192, 35);
 			this.panel1.TabIndex = 6;
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.label3.AutoSize = true;
 			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label3.Location = new System.Drawing.Point(3, 3);
+			this.label3.Location = new System.Drawing.Point(2, 2);
+			this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(253, 14);
+			this.label3.Size = new System.Drawing.Size(39, 13);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Nudge";
 			// 
@@ -155,9 +162,10 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(56, 23);
+			this.label2.Location = new System.Drawing.Point(42, 18);
+			this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(12, 17);
+			this.label2.Size = new System.Drawing.Size(12, 13);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "/";
 			// 
@@ -175,8 +183,9 @@
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
 			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 27);
+			this.listViewMarkCollections.Margin = new System.Windows.Forms.Padding(2);
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Size = new System.Drawing.Size(256, 329);
+			this.listViewMarkCollections.Size = new System.Drawing.Size(192, 245);
 			this.listViewMarkCollections.TabIndex = 8;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
@@ -198,13 +207,13 @@
             this.changeColorToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.ShowImageMargin = false;
-			this.contextMenuStrip1.Size = new System.Drawing.Size(172, 104);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(144, 70);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// boldToolStripMenuItem
 			// 
 			this.boldToolStripMenuItem.Name = "boldToolStripMenuItem";
-			this.boldToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.boldToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.boldToolStripMenuItem.Text = "Normal/Bold Line";
 			this.boldToolStripMenuItem.ToolTipText = "Toggles the Selected Mark Collection";
 			this.boldToolStripMenuItem.Click += new System.EventHandler(this.boldToolStripMenuItem_Click);
@@ -212,7 +221,7 @@
 			// dottedSolidToolStripMenuItem
 			// 
 			this.dottedSolidToolStripMenuItem.Name = "dottedSolidToolStripMenuItem";
-			this.dottedSolidToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.dottedSolidToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.dottedSolidToolStripMenuItem.Text = "Dotted/Solid Line";
 			this.dottedSolidToolStripMenuItem.ToolTipText = "Toggles the Selected Mark Collection";
 			this.dottedSolidToolStripMenuItem.Click += new System.EventHandler(this.dottedSolidToolStripMenuItem_Click);
@@ -220,24 +229,26 @@
 			// changeColorToolStripMenuItem
 			// 
 			this.changeColorToolStripMenuItem.Name = "changeColorToolStripMenuItem";
-			this.changeColorToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
+			this.changeColorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.changeColorToolStripMenuItem.Text = "Change Color";
 			this.changeColorToolStripMenuItem.ToolTipText = "Change Mark Collection color";
 			this.changeColorToolStripMenuItem.Click += new System.EventHandler(this.changeColorToolStripMenuItem_Click);
 			// 
 			// Form_Marks
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(256, 402);
+			this.ClientSize = new System.Drawing.Size(192, 307);
 			this.ControlBox = false;
 			this.Controls.Add(this.listViewMarkCollections);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.toolStrip1);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "Form_Marks";
 			this.Text = "Marks";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Marks_Closing);

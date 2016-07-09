@@ -4,8 +4,11 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
+using Common.Resources;
+using Common.Resources.Properties;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using WeifenLuo.WinFormsUI.Docking;
@@ -18,6 +21,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_Marks(TimelineControl timelineControl)
 		{
 			InitializeComponent();
+			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
+			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.add, iconSize);
+			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonEditMarkCollection.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			TimelineControl = timelineControl;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

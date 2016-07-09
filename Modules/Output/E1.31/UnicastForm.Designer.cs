@@ -36,7 +36,7 @@ namespace VixenModules.Controller.E131
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.okButton.Location = new System.Drawing.Point(28, 80);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(75, 25);
 			this.okButton.TabIndex = 101;
 			this.okButton.Text = "&OK";
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
@@ -49,7 +49,7 @@ namespace VixenModules.Controller.E131
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancelButton.Location = new System.Drawing.Point(117, 80);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(75, 25);
 			this.cancelButton.TabIndex = 102;
 			this.cancelButton.Text = "&Cancel";
 			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -62,7 +62,7 @@ namespace VixenModules.Controller.E131
 			this.ipRadio.Checked = true;
 			this.ipRadio.Location = new System.Drawing.Point(26, 49);
 			this.ipRadio.Name = "ipRadio";
-			this.ipRadio.Size = new System.Drawing.Size(76, 17);
+			this.ipRadio.Size = new System.Drawing.Size(80, 19);
 			this.ipRadio.TabIndex = 104;
 			this.ipRadio.TabStop = true;
 			this.ipRadio.Text = "IP Address";
@@ -74,7 +74,7 @@ namespace VixenModules.Controller.E131
 			this.networkNameRadio.AutoSize = true;
 			this.networkNameRadio.Location = new System.Drawing.Point(103, 49);
 			this.networkNameRadio.Name = "networkNameRadio";
-			this.networkNameRadio.Size = new System.Drawing.Size(96, 17);
+			this.networkNameRadio.Size = new System.Drawing.Size(105, 19);
 			this.networkNameRadio.TabIndex = 105;
 			this.networkNameRadio.Text = "Network Name";
 			this.networkNameRadio.UseVisualStyleBackColor = true;
@@ -86,12 +86,13 @@ namespace VixenModules.Controller.E131
 			this.networkNameTextBox.Enabled = false;
 			this.networkNameTextBox.Location = new System.Drawing.Point(45, 18);
 			this.networkNameTextBox.Name = "networkNameTextBox";
-			this.networkNameTextBox.Size = new System.Drawing.Size(139, 20);
+			this.networkNameTextBox.Size = new System.Drawing.Size(139, 23);
 			this.networkNameTextBox.TabIndex = 106;
 			this.networkNameTextBox.Text = "myComputer";
 			// 
 			// ipTextBox
 			// 
+			this.ipTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ipTextBox.Location = new System.Drawing.Point(45, 18);
 			this.ipTextBox.Name = "ipTextBox";
 			this.ipTextBox.Size = new System.Drawing.Size(139, 20);
@@ -102,6 +103,9 @@ namespace VixenModules.Controller.E131
 			// UnicastForm
 			// 
 			this.AcceptButton = this.okButton;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(227, 110);
 			this.ControlBox = false;

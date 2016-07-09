@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 namespace Common.Controls.Timeline
@@ -18,15 +19,21 @@ namespace Common.Controls.Timeline
 	{
 		private const int minPxBetweenTimeLabels = 10;
 		private const int maxDxForClick = 2;
+		private readonly int _arrowBase;
+		private readonly int _arrowLength;
 
 
 		public Ruler(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
+			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
 			recalculate();
 			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapStrength = 2;
+			double factor = ScalingTools.GetScaleFactor();
+			_arrowBase = (int) (16 * factor);
+			_arrowLength = (int)(10 * factor);
 			//SnapPriorityForElements = 5;
 		}
 
@@ -147,26 +154,23 @@ namespace Common.Controls.Timeline
 			
 		}
 
-		private const int ArrowBase = 16;
-		private const int ArrowLength = 10;
-
 		private void drawPlaybackIndicators(Graphics g)
 		{
 			// Playback start/end arrows
 			if (PlaybackStartTime.HasValue || PlaybackEndTime.HasValue) {
 				GraphicsState gstate = g.Save();
-				g.TranslateTransform(0, -ArrowBase/2);
+				g.TranslateTransform(0, -_arrowBase/2);
 
 				if (PlaybackStartTime.HasValue) {
 					// start arrow (faces left)  |<|
 					int x = (int) timeToPixels(PlaybackStartTime.Value);
 					g.FillPolygon(Brushes.DarkGray, new Point[]
 					                                	{
-					                                		new Point(x, Height - ArrowBase/2), // left mid point
-					                                		new Point(x + ArrowLength, Height - ArrowBase), // right top point
-					                                		new Point(x + ArrowLength, Height) // right bottom point
+					                                		new Point(x, Height - _arrowBase/2), // left mid point
+					                                		new Point(x + _arrowLength, Height - _arrowBase), // right top point
+					                                		new Point(x + _arrowLength, Height) // right bottom point
 					                                	});
-					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
+					g.DrawLine(Pens.DarkGray, x, Height - _arrowBase, x, Height);
 				}
 
 				if (PlaybackEndTime.HasValue) {
@@ -174,20 +178,20 @@ namespace Common.Controls.Timeline
 					int x = (int) timeToPixels(PlaybackEndTime.Value);
 					g.FillPolygon(Brushes.DarkGray, new Point[]
 					                                	{
-					                                		new Point(x, Height - ArrowBase/2), // right mid point
-					                                		new Point(x - ArrowLength, Height - ArrowBase), // left top point
-					                                		new Point(x - ArrowLength, Height) // left bottom point
+					                                		new Point(x, Height - _arrowBase/2), // right mid point
+					                                		new Point(x - _arrowLength, Height - _arrowBase), // left top point
+					                                		new Point(x - _arrowLength, Height) // left bottom point
 					                                	});
-					g.DrawLine(Pens.DarkGray, x, Height - ArrowBase, x, Height);
+					g.DrawLine(Pens.DarkGray, x, Height - _arrowBase, x, Height);
 				}
 
 				if (PlaybackStartTime.HasValue && PlaybackEndTime.HasValue) {
 					// line between the two
 					using (Pen p = new Pen(Color.DarkGray)) {
 						p.Width = 4;
-						int x1 = (int) timeToPixels(PlaybackStartTime.Value) + ArrowLength;
-						int x2 = (int) timeToPixels(PlaybackEndTime.Value) - ArrowLength;
-						int y = Height - ArrowBase/2;
+						int x1 = (int) timeToPixels(PlaybackStartTime.Value) + _arrowLength;
+						int x2 = (int) timeToPixels(PlaybackEndTime.Value) - _arrowLength;
+						int y = Height - _arrowBase/2;
 						g.DrawLine(p, x1, y, x2, y);
 					}
 				}
@@ -200,9 +204,9 @@ namespace Common.Controls.Timeline
 				int x = (int) timeToPixels(PlaybackCurrentTime.Value);
 				g.FillPolygon(Brushes.Green, new Point[]
 				                             	{
-				                             		new Point(x, ArrowLength), // bottom mid point
-				                             		new Point(x - ArrowBase/2, 0), // top left point
-				                             		new Point(x + ArrowBase/2, 0), // top right point
+				                             		new Point(x, _arrowLength), // bottom mid point
+				                             		new Point(x - _arrowBase/2, 0), // top left point
+				                             		new Point(x + _arrowBase/2, 0), // top right point
 				                             	});
 			}
 		}
