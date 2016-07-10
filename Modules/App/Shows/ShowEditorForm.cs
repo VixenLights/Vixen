@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -23,12 +24,12 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			
-			buttonAddItem.Image = Tools.GetIcon(Resources.add, 24);
+			int iconSize = (int) (24*ScalingTools.GetScaleFactor());
+			buttonAddItem.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddItem.Text = "";
-			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonDeleteItem.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteItem.Text = "";
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 
 			ThemeUpdateControls.UpdateControls(this);
 

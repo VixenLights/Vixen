@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -27,10 +28,10 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			
-			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, 16);
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
+			buttonSelectProgram.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
 			buttonSelectProgram.Text = "";
-			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
+			buttonTest.Image = Tools.GetIcon(Resources.cog_go, iconSize);
 			buttonTest.Text = "";
 			ContolLabel1 = label1;
 			ContolLabel2 = label2;

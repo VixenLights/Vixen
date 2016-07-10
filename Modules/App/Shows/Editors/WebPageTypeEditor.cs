@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -26,8 +27,9 @@ namespace VixenModules.App.Shows
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			ThemeUpdateControls.UpdateControls(this);
-			buttonTest.Image = Tools.GetIcon(Resources.cog_go, 16);
+			buttonTest.Image = Tools.GetIcon(Resources.cog_go, iconSize);
 			buttonTest.Text = "";
 
 			_showItem = showItem;
