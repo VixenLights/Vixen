@@ -439,7 +439,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.DefaultSplitterDistance != 0)
 			{
 				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
-				TimelineControl.splitContainer.PerformAutoScale();
+			}
+			else
+			{
+				TimelineControl.splitContainer.SplitterDistance = (int) (TimelineControl.DefaultSplitterDistance*_scaleFactor);
 			}
 
 			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)
@@ -934,13 +937,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimelineControl.AllowGridResize = false;
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
-			
-			
+
+
 			//Scale our default pixel height for the rows
-			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+			TimelineControl.rowHeight = (int)(_sequence.DefaultRowHeight * _scaleFactor);
 			if (TimelineControl.rowHeight == 0)
-				TimelineControl.rowHeight = 32;
-			
+				TimelineControl.rowHeight = (int)(32 * _scaleFactor);
+
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
 
@@ -1195,7 +1198,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Add Default Row Height
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
 			//Add Splitter Distance, the width of the RowList Column
-			_sequence.DefaultSplitterDistance = TimelineControl.DefaultSplitterDistance;
+			if (TimelineControl.splitContainer.SplitterDistance != TimelineControl.DefaultSplitterDistance)
+			{
+				_sequence.DefaultSplitterDistance = TimelineControl.splitContainer.SplitterDistance;
+			}
 			//Add Playback start and end time
 			_sequence.DefaultPlaybackStartTime = TimelineControl.PlaybackStartTime;
 			_sequence.DefaultPlaybackEndTime = TimelineControl.PlaybackEndTime;

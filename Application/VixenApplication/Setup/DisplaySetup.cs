@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Rule;
@@ -35,12 +36,12 @@ namespace VixenApplication
 		public DisplaySetup()
 		{
 			InitializeComponent();
-
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
+			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, iconSize);
 			elementLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 			patchingHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 			controllersHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);

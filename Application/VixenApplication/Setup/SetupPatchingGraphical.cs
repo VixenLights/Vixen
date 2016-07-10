@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -74,16 +75,16 @@ namespace VixenApplication.Setup
 		public SetupPatchingGraphical()
 		{
 			InitializeComponent();
-
-			buttonAddFilter.Image = Tools.GetIcon(Resources.add, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonAddFilter.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddFilter.Text = "";
-			buttonDeleteFilter.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonDeleteFilter.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteFilter.Text = "";
-			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, 24);
+			buttonZoomIn.Image = Tools.GetIcon(Resources.zoom_in, iconSize);
 			buttonZoomIn.Text = "";
-			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, 24);
+			buttonZoomOut.Image = Tools.GetIcon(Resources.zoom_out, iconSize);
 			buttonZoomOut.Text = "";
-			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, 24);
+			buttonZoomFit.Image = Tools.GetIcon(Resources.zoom_fit, iconSize);
 			buttonZoomFit.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

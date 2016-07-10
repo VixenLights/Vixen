@@ -25,6 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.add, iconSize);
 			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete, iconSize);
 			toolStripButtonEditMarkCollection.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStrip1.ImageScalingSize = new Size(iconSize, iconSize);
 			TimelineControl = timelineControl;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

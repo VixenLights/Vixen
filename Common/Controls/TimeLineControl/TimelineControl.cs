@@ -19,8 +19,7 @@ namespace Common.Controls.Timeline
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class TimelineControl : TimelineControlBase, IEnumerable<Row>
 	{
-		private const int InitialSplitterDistance = 200;
-
+		
 		#region Member Controls
 
 		public SplitContainer splitContainer;
@@ -56,6 +55,7 @@ namespace Common.Controls.Timeline
 		public TimelineControl()
 			: base(new TimeInfo()) // This is THE TimeInfo object for the whole control (and all sub-controls).
 		{
+			DefaultSplitterDistance = 200;
 			TimeInfo.TimePerPixel = TimeSpan.FromTicks(100000);
 			TimeInfo.VisibleTimeStart = TimeSpan.Zero;
 
@@ -145,10 +145,11 @@ namespace Common.Controls.Timeline
 
 			InitializePanel1();
 			InitializePanel2();
-
+			
 			splitContainer.ResumeLayout(false);
 			splitContainer.EndInit();
-
+		
+			splitContainer.PerformAutoScale();
 			this.ResumeLayout(false);
 		}
 
@@ -208,8 +209,6 @@ namespace Common.Controls.Timeline
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
-			splitContainer.SplitterDistance = InitialSplitterDistance;
-			splitContainer.PerformAutoScale();
 		}
 
 		#endregion
@@ -645,8 +644,6 @@ namespace Common.Controls.Timeline
 			if (timelineRowList != null)
 				timelineRowList.Top = grid.Top;
 			timelineRowList.VerticalOffset = grid.VerticalOffset;
-
-			DefaultSplitterDistance = splitContainer.SplitterDistance;
 
 			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
 			// and it looks shit in general. So, force an immediate graphical refresh

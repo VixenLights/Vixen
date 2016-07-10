@@ -57,6 +57,7 @@
 			// 
 			this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.toolStrip1.AutoSize = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditMarkCollection,
             this.toolStripButtonAddMarkCollection,

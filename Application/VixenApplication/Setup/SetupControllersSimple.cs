@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Common.Resources;
@@ -27,22 +28,22 @@ namespace VixenApplication.Setup
 		public SetupControllersSimple()
 		{
 			InitializeComponent();
-
-			buttonAddController.Image = Tools.GetIcon(Resources.add, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonAddController.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddController.Text = "";
-			buttonConfigureController.Image = Tools.GetIcon(Resources.cog, 24);
+			buttonConfigureController.Image = Tools.GetIcon(Resources.cog, iconSize);
 			buttonConfigureController.Text = "";
-			buttonNumberChannelsController.Image = Tools.GetIcon(Resources.attributes_display, 24);
+			buttonNumberChannelsController.Image = Tools.GetIcon(Resources.attributes_display, iconSize);
 			buttonNumberChannelsController.Text = "";
-			buttonRenameController.Image = Tools.GetIcon(Resources.pencil, 24);
+			buttonRenameController.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			buttonRenameController.Text = "";
-			buttonDeleteController.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonDeleteController.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteController.Text = "";
-			buttonSelectSourceElements.Image = Tools.GetIcon(Resources.table_select_row, 24);
+			buttonSelectSourceElements.Image = Tools.GetIcon(Resources.table_select_row, iconSize);
 			buttonSelectSourceElements.Text = "";
-			buttonStopController.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
+			buttonStopController.Image = Tools.GetIcon(Resources.control_stop_blue, iconSize);
 			buttonStopController.Text = "";
-			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+			buttonStartController.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			buttonStartController.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
