@@ -124,6 +124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private string AlignTo_Threshold;
 
 		private readonly double _scaleFactor = 1;
+		private bool _suppressModifiedEvents;
 
 		#endregion
 
@@ -413,6 +414,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragOver += TimelineControlGrid_DragOver;
 			TimelineControl.grid.DragEnter += TimelineControlGrid_DragEnter;
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
+			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
@@ -538,6 +540,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
+			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -938,12 +941,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.AllowGridResize = false;
 			_elementNodeToRows = new Dictionary<ElementNode, List<Row>>();
 
-
+			_suppressModifiedEvents = true;
 			//Scale our default pixel height for the rows
-			TimelineControl.rowHeight = (int)(_sequence.DefaultRowHeight * _scaleFactor);
-			if (TimelineControl.rowHeight == 0)
-				TimelineControl.rowHeight = (int)(32 * _scaleFactor);
-
+			if (_sequence.DefaultRowHeight != 0)
+			{
+				TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+			}
+			else
+			{
+				TimelineControl.rowHeight = (int)(TimelineControl.DefaultRowHeight * _scaleFactor);
+			}
+			
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
 
@@ -968,6 +976,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 			}
+			_suppressModifiedEvents = false;
 			TimelineControl.EnableDisableHandlers();
 
 			TimelineControl.LayoutRows();
@@ -1907,6 +1916,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					SequenceModified();
 				}
+			}
+		}
+
+		private void TimeLineControl_Row_RowHeightChanged(object sender, EventArgs e)
+		{
+			if (!_suppressModifiedEvents)
+			{
+				SequenceModified();
 			}
 		}
 
@@ -5326,6 +5343,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//Adjusts Row heights based on saved row height settings.
 			if (_sequence.RowHeightSettings != null)
+				_suppressModifiedEvents = true;
 				foreach (RowHeightSetting rowSettings in _sequence.RowHeightSettings)
 				{
 					foreach (Row row in TimelineControl.Rows)
@@ -5333,9 +5351,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						if (row.Name == rowSettings.RowName)
 						{
 							row.Height = rowSettings.RowHeight;
-		}
+						}
 					}
 				}
+			_suppressModifiedEvents = false;
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)

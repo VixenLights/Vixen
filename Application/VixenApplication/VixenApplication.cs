@@ -721,6 +721,20 @@ namespace VixenApplication
 			}
 
 			listViewRecentSequences.EndUpdate();
+			ColumnAutoSize();
+		}
+
+		public void ColumnAutoSize()
+		{
+			listViewRecentSequences.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			ListView.ColumnHeaderCollection cc = listViewRecentSequences.Columns;
+			for (int i = 0; i < cc.Count; i++)
+			{
+				if (cc[i].Width > listViewRecentSequences.Width)
+				{
+					cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width *.06d);
+				}
+			}
 		}
 
 		#endregion
