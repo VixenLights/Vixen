@@ -260,8 +260,21 @@ namespace VixenApplication.Setup
 				listViewProperties.SelectedItems.Clear();
 			}
 			listViewProperties.EndUpdate();
-
+			ColumnAutoSize();
 			UpdateButtons();
+		}
+
+		public void ColumnAutoSize()
+		{
+			listViewProperties.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			ListView.ColumnHeaderCollection cc = listViewProperties.Columns;
+			for (int i = 0; i < cc.Count; i++)
+			{
+				if (cc[i].Width > listViewProperties.Width)
+				{
+					cc[i].Width = listViewProperties.Width - (int)(listViewProperties.Width * .06d);
+				}
+			}
 		}
 
 		private void UpdateButtons()
