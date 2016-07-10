@@ -8,6 +8,7 @@ using Common.Resources;
 using Vixen.Rule;
 using Vixen.Rule.Name;
 using System.Drawing;
+using Common.Controls.Scaling;
 
 namespace Common.Controls
 {
@@ -42,13 +43,14 @@ namespace Common.Controls
 		{
 			InitializeComponent();
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
-			buttonMoveRuleUp.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_up, 16);
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
+			buttonMoveRuleUp.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_up, iconSize);
 			buttonMoveRuleUp.Text = "";
-			buttonMoveRuleDown.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_down, 16);
+			buttonMoveRuleDown.Image = Tools.GetIcon(Resources.Properties.Resources.arrow_down, iconSize);
 			buttonMoveRuleDown.Text = "";
-			buttonAddNewRule.Image = Tools.GetIcon(Resources.Properties.Resources.add, 16);
+			buttonAddNewRule.Image = Tools.GetIcon(Resources.Properties.Resources.add, iconSize);
 			buttonAddNewRule.Text = "";
-			buttonDeleteRule.Image = Tools.GetIcon(Resources.Properties.Resources.delete, 16);
+			buttonDeleteRule.Image = Tools.GetIcon(Resources.Properties.Resources.delete, iconSize);
 			buttonDeleteRule.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -21,16 +22,16 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			
-			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonAddSchedule.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddSchedule.Text = "";
-			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonDeleteSchedule.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteSchedule.Text = "";
-			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, 24);
+			buttonEditSchedule.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			buttonEditSchedule.Text = "";
-			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, 24);
+			buttonEditShow.Image = Tools.GetIcon(Resources.table_edit, iconSize);
 			buttonEditShow.Text = "";
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 
 			ThemeUpdateControls.UpdateControls(this);
 			

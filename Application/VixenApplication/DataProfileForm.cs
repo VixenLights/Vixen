@@ -8,6 +8,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Scaling;
 
 namespace VixenApplication
 {
@@ -22,11 +23,12 @@ namespace VixenApplication
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
-			buttonAddProfile.Image = Tools.GetIcon(Resources.add, 16);
+			int iconSize = (int)(16*ScalingTools.GetScaleFactor());
+			buttonAddProfile.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddProfile.Text = "";
-			buttonDeleteProfile.Image = Tools.GetIcon(Resources.delete, 16);
+			buttonDeleteProfile.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteProfile.Text = "";
-			buttonSetDataFolder.Image = Tools.GetIcon(Resources.folder, 16);
+			buttonSetDataFolder.Image = Tools.GetIcon(Resources.folder, iconSize);
 			buttonSetDataFolder.Text = "";
 			ThemeUpdateControls.UpdateControls(this);
 		}

@@ -2997,13 +2997,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void PlaySequence()
 		{
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			//MessageBox.Show("Call to play sequence");
 			if (delayOffToolStripMenuItem.Checked == false && timerPostponePlay.Enabled == false && toolStripButton_Stop.Enabled == false)
 			{
 				//MessageBox.Show("Starting delay");
 				_delayCountDown = (timerPostponePlay.Interval / 1000);
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = true;
-				toolStripButton_Play.Image = Tools.GetIcon(Resources.hourglass, 24);
+				toolStripButton_Play.Image = Tools.GetIcon(Resources.hourglass, iconSize);
 				//The Looping stuff kinda broke this, but we need to do this for consistency
 				toolStripButton_Play.Enabled = true;
 				playToolStripMenuItem.Enabled = false;
@@ -3017,7 +3018,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			//Make sure the blue play icon is used & dissappear the delay countdown
-			toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+			toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = false;
 
 			if (_context == null)
@@ -3090,6 +3091,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void StopSequence()
 		{
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			if (delayOffToolStripMenuItem.Checked != true)
 			{
 				toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
@@ -3099,7 +3101,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (timerPostponePlay.Enabled)
 			{
 				timerPostponePlay.Enabled = timerDelayCountdown.Enabled = false;
-				toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+				toolStripButton_Play.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 				toolStripButton_Play.Enabled = playToolStripMenuItem.Enabled = true;
 				toolStripButton_Stop.Enabled = stopToolStripMenuItem.Enabled = false;
 				//We are stopping the delay, there is no context, so get out of here to avoid false entry into error log
