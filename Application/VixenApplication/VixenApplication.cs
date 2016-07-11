@@ -730,10 +730,7 @@ namespace VixenApplication
 			ListView.ColumnHeaderCollection cc = listViewRecentSequences.Columns;
 			for (int i = 0; i < cc.Count; i++)
 			{
-				if (cc[i].Width > listViewRecentSequences.Width)
-				{
-					cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width *.06d);
-				}
+				cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width *.18d);
 			}
 		}
 
