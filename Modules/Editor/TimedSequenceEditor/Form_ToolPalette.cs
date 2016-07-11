@@ -91,7 +91,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this);
 			var t = (int)(48*ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t,t);
-			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Tools.GetIcon(Resources.pencil, iconSize);
 
@@ -149,6 +149,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.SelectedTab = tabPageEX1;
+			tabControlEX1.SizeMode = TabSizeMode.Fixed;
+			SizeF size = ScalingTools.MeasureString(Font, "Gradientsss");
+			tabControlEX1.ItemSize = size.ToSize();
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
