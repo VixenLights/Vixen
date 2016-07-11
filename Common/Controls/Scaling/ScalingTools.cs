@@ -20,5 +20,21 @@ namespace Common.Controls.Scaling
 
 			return _factor;
 		}
+
+		public static SizeF MeasureString(Font f, string s)
+		{
+			SizeF size = new SizeF(0,0);
+			using (Graphics g = Graphics.FromHwnd(IntPtr.Zero))
+			{
+				size = g.MeasureString(s, f);
+			}
+
+			return size;
+		}
+
+		public static double MeasureHeight(Font f, string s)
+		{
+			return MeasureString(f, s).Height;
+		}
 	}
 }

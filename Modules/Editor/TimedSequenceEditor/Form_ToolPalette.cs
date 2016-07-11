@@ -17,7 +17,9 @@ using Vixen.Services;
 using Vixen.Module.App;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Runtime.InteropServices;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Resources;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -71,6 +73,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private CurveLibrary _curveLibrary;
 		private ColorGradientLibrary _colorGradientLibrary;
 		private string _lastFolder;
+		private readonly Size _imageSize;
 		private bool ShiftPressed
 		{
 			get { return ModifierKeys.HasFlag(Keys.Shift); }
@@ -85,42 +88,51 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
+			ThemeUpdateControls.UpdateControls(this);
+			var t = (int)(48*ScalingTools.GetScaleFactor());
+			_imageSize = new Size(t,t);
+			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditColor.Image = Resources.pencil;
+			toolStripButtonEditColor.Image = Tools.GetIcon(Resources.pencil, iconSize);
+
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewColor.Image = Resources.add;
+			toolStripButtonNewColor.Image = Tools.GetIcon(Resources.add, iconSize);
 			toolStripButtonDeleteColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteColor.Image = Resources.delete;
+			toolStripButtonDeleteColor.Image = Tools.GetIcon(Resources.delete, iconSize);
 			toolStripButtonExportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportColors.Image = Resources.disk;
+			toolStripButtonExportColors.Image = Tools.GetIcon(Resources.disk, iconSize);
 			toolStripButtonImportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonImportColors.Image = Resources.folder_open;
+			toolStripButtonImportColors.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			toolStripButtonEditCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditCurve.Image = Resources.pencil;
+			toolStripButtonEditCurve.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			toolStripButtonNewCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewCurve.Image = Resources.add;
+			toolStripButtonNewCurve.Image = Tools.GetIcon(Resources.add, iconSize);
 			toolStripButtonDeleteCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteCurve.Image = Resources.delete;
+			toolStripButtonDeleteCurve.Image = Tools.GetIcon(Resources.delete, iconSize);
 			toolStripButtonExportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportCurves.Image = Resources.disk;
+			toolStripButtonExportCurves.Image = Tools.GetIcon(Resources.disk, iconSize);
 			toolStripButtonImportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonImportCurves.Image = Resources.folder_open;
+			toolStripButtonImportCurves.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			toolStripButtonEditGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditGradient.Image = Resources.pencil;
+			toolStripButtonEditGradient.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			toolStripButtonNewGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewGradient.Image = Resources.add;
+			toolStripButtonNewGradient.Image = Tools.GetIcon(Resources.add, iconSize);
 			toolStripButtonDeleteGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteGradient.Image = Resources.delete;
+			toolStripButtonDeleteGradient.Image = Tools.GetIcon(Resources.delete, iconSize);
 			toolStripButtonExportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportGradients.Image = Resources.disk;
+			toolStripButtonExportGradients.Image = Tools.GetIcon(Resources.disk, iconSize);
 			toolStripButtonImportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonImportGradients.Image = Resources.folder_open;
+			toolStripButtonImportGradients.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
-			ListViewItem_SetSpacing(listViewColors, 48 + 5, 48 + 5);
-			ListViewItem_SetSpacing(listViewCurves, 48 + 5, 48 + 30);
-			ListViewItem_SetSpacing(listViewGradients, 48 + 5, 48 + 30);
+			short sideGap = (short)(_imageSize.Width + (5*ScalingTools.GetScaleFactor()));
+			
+			short topGap = (short)(_imageSize.Width + ScalingTools.MeasureHeight(Font, "Test")* 2);
+
+			ListViewItem_SetSpacing(listViewColors, sideGap, sideGap);
+			ListViewItem_SetSpacing(listViewCurves, sideGap, topGap);
+			ListViewItem_SetSpacing(listViewGradients, sideGap, topGap);
 
 			listViewColors.AllowDrop = true;
 			listViewCurves.AllowDrop = true;
@@ -206,7 +218,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewColors.BeginUpdate();
 			listViewColors.Items.Clear();
 
-			listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
+			listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 
 			foreach (Color colorItem in _colors)
 			{
@@ -226,8 +238,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
-					gfx.FillRectangle(brush, 0, 0, 48, 48);
-					gfx.DrawRectangle(p, 0, 0, 48, 48);
+					gfx.FillRectangle(brush, 0, 0, _imageSize.Width, _imageSize.Height);
+					gfx.DrawRectangle(p, 0, 0, _imageSize.Width, _imageSize.Height);
 				}
 			}
 			gfx.Dispose();
@@ -262,7 +274,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewCurves.BeginUpdate();
 			listViewCurves.Items.Clear();
 
-			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
+			listViewCurves.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
@@ -270,9 +282,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					Curve c = kvp.Value;
 					string name = kvp.Key;
 
-					var image = c.GenerateGenericCurveImage(new Size(48, 48));
+					var image = c.GenerateGenericCurveImage(_imageSize);
 					Graphics gfx = Graphics.FromImage(image);
-					gfx.DrawRectangle(p, 0, 0, 48, 48);
+					gfx.DrawRectangle(p, 0, 0, _imageSize.Width, _imageSize.Height);
 					gfx.Dispose();
 					listViewCurves.LargeImageList.Images.Add(name, image);
 
@@ -302,7 +314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewGradients.BeginUpdate();
 			listViewGradients.Items.Clear();
 
-			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(48, 48) };
+			listViewGradients.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
 			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 			{
 				foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
@@ -310,9 +322,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ColorGradient gradient = kvp.Value;
 					string name = kvp.Key;
 
-					var result = new Bitmap(gradient.GenerateColorGradientImage(new Size(48, 48), false), 48, 48);
+					var result = new Bitmap(gradient.GenerateColorGradientImage(_imageSize, false), _imageSize.Width, _imageSize.Height);
 					Graphics gfx = Graphics.FromImage(result);
-					gfx.DrawRectangle(p, 0, 0, 48, 48);
+					gfx.DrawRectangle(p, 0, 0, _imageSize.Width, _imageSize.Height);
 					gfx.Dispose();
 					listViewGradients.LargeImageList.Images.Add(name, result);
 					
