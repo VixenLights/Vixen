@@ -23,8 +23,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
 			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.add, iconSize);
+			toolStripButtonAddMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonDeleteMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditMarkCollection.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStripButtonEditMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStrip1.ImageScalingSize = new Size(iconSize, iconSize);
 			TimelineControl = timelineControl;
 			ForeColor = ThemeColorTable.ForeColor;

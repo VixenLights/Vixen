@@ -39,7 +39,6 @@
 			this.numericUpDownSuperNudge = new System.Windows.Forms.NumericUpDown();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.listViewMarkCollections = new System.Windows.Forms.ListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -57,53 +56,51 @@
 			// 
 			this.toolStrip1.BackColor = System.Drawing.Color.Transparent;
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.toolStrip1.AutoSize = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonEditMarkCollection,
             this.toolStripButtonAddMarkCollection,
             this.toolStripButtonDeleteMarkCollection});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(192, 27);
+			this.toolStrip1.Size = new System.Drawing.Size(192, 25);
 			this.toolStrip1.TabIndex = 4;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// toolStripButtonEditMarkCollection
 			// 
-			this.toolStripButtonEditMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonEditMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonEditMarkCollection.Image")));
+			this.toolStripButtonEditMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonEditMarkCollection.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.toolStripButtonEditMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonEditMarkCollection.Name = "toolStripButtonEditMarkCollection";
-			this.toolStripButtonEditMarkCollection.Size = new System.Drawing.Size(24, 24);
-			this.toolStripButtonEditMarkCollection.Text = "toolStripButtonEditMarkCollections";
-			this.toolStripButtonEditMarkCollection.ToolTipText = "Edit Mark Collections";
+			this.toolStripButtonEditMarkCollection.Size = new System.Drawing.Size(31, 22);
+			this.toolStripButtonEditMarkCollection.Text = "Edit";
+			this.toolStripButtonEditMarkCollection.ToolTipText = "Edit";
 			this.toolStripButtonEditMarkCollection.Click += new System.EventHandler(this.toolStripButtonEditMarkCollection_Click);
 			// 
 			// toolStripButtonAddMarkCollection
 			// 
-			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonAddMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddMarkCollection.Image")));
+			this.toolStripButtonAddMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonAddMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonAddMarkCollection.Name = "toolStripButtonAddMarkCollection";
-			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(24, 24);
-			this.toolStripButtonAddMarkCollection.ToolTipText = "New Mark Collection";
+			this.toolStripButtonAddMarkCollection.Size = new System.Drawing.Size(35, 22);
+			this.toolStripButtonAddMarkCollection.Text = "New";
+			this.toolStripButtonAddMarkCollection.ToolTipText = "New";
 			this.toolStripButtonAddMarkCollection.Click += new System.EventHandler(this.toolStripButtonAddMarkCollection_Click);
 			// 
 			// toolStripButtonDeleteMarkCollection
 			// 
-			this.toolStripButtonDeleteMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonDeleteMarkCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDeleteMarkCollection.Image")));
+			this.toolStripButtonDeleteMarkCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonDeleteMarkCollection.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonDeleteMarkCollection.Name = "toolStripButtonDeleteMarkCollection";
-			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(24, 24);
-			this.toolStripButtonDeleteMarkCollection.Text = "toolStripButtonDeleteMarkCollection";
-			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete Mark Collection";
+			this.toolStripButtonDeleteMarkCollection.Size = new System.Drawing.Size(44, 22);
+			this.toolStripButtonDeleteMarkCollection.Text = "Delete";
+			this.toolStripButtonDeleteMarkCollection.ToolTipText = "Delete";
 			this.toolStripButtonDeleteMarkCollection.Click += new System.EventHandler(this.toolStripButtonDeleteMarkCollection_Click);
 			// 
 			// numericUpDownStandardNudge
 			// 
 			this.numericUpDownStandardNudge.AutoSize = true;
-			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(5, 15);
+			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(45, 15);
 			this.numericUpDownStandardNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
             1000,
@@ -119,7 +116,7 @@
 			// numericUpDownSuperNudge
 			// 
 			this.numericUpDownSuperNudge.AutoSize = true;
-			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(54, 15);
+			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(99, 15);
 			this.numericUpDownSuperNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
             1000,
@@ -136,13 +133,12 @@
 			// 
 			this.panel1.Controls.Add(this.label3);
 			this.panel1.Controls.Add(this.numericUpDownSuperNudge);
-			this.panel1.Controls.Add(this.label2);
 			this.panel1.Controls.Add(this.numericUpDownStandardNudge);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(0, 272);
+			this.panel1.Location = new System.Drawing.Point(0, 263);
 			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(192, 35);
+			this.panel1.Size = new System.Drawing.Size(192, 44);
 			this.panel1.TabIndex = 6;
 			// 
 			// label3
@@ -152,23 +148,12 @@
 			this.label3.AutoSize = true;
 			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label3.Location = new System.Drawing.Point(2, 2);
+			this.label3.Location = new System.Drawing.Point(2, 17);
 			this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(39, 13);
 			this.label3.TabIndex = 4;
 			this.label3.Text = "Nudge";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(42, 18);
-			this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(12, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "/";
 			// 
 			// listViewMarkCollections
 			// 
@@ -183,10 +168,10 @@
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarkCollections.HideSelection = false;
 			this.listViewMarkCollections.LabelEdit = true;
-			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 27);
+			this.listViewMarkCollections.Location = new System.Drawing.Point(0, 25);
 			this.listViewMarkCollections.Margin = new System.Windows.Forms.Padding(2);
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Size = new System.Drawing.Size(192, 245);
+			this.listViewMarkCollections.Size = new System.Drawing.Size(192, 238);
 			this.listViewMarkCollections.TabIndex = 8;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
@@ -275,7 +260,6 @@
 		private System.Windows.Forms.ToolStripButton toolStripButtonDeleteMarkCollection;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.NumericUpDown numericUpDownSuperNudge;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.NumericUpDown numericUpDownStandardNudge;
 		private System.Windows.Forms.ListView listViewMarkCollections;
 		private System.Windows.Forms.ColumnHeader columnHeader1;

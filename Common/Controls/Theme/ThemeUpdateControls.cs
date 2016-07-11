@@ -23,7 +23,7 @@ namespace Common.Controls.Theme
 		//will move through each control and sub controls and adjust each control properties as required.
 		public static void UpdateControls(Control control, List<Control> excludes = null)
 		{
-			
+			control.Font = SystemFonts.MessageBoxFont;
 			foreach (Control c in control.Controls)
 			{
 				c.Font = SystemFonts.MessageBoxFont;
