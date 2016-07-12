@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
@@ -40,6 +41,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadAvailableEffects()
 		{
+			int imageSize = (int)(16 * ScalingTools.GetScaleFactor());
+			effectTreeImages.ImageSize = new Size(imageSize, imageSize);
+			treeEffects.ItemHeight = (int)ScalingTools.MeasureHeight(treeEffects.Font, "My Text");
+
 			foreach (
 				IEffectModuleDescriptor effectDesriptor in
 					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
@@ -62,6 +67,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
+				
 				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
@@ -85,6 +91,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				treeEffects.Nodes[0].EnsureVisible();
 			}
+			
+			
 		}
 
 		#endregion Effect Loading
@@ -211,6 +219,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			node.ImageKey = image;
 			node.SelectedImageKey = node.ImageKey;
+			
 		}
 		
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
