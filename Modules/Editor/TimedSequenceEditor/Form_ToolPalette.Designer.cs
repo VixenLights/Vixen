@@ -217,12 +217,12 @@
 			// 
 			// checkBoxLinkCurves
 			// 
-			this.checkBoxLinkCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkCurves.AutoSize = true;
-			this.checkBoxLinkCurves.Location = new System.Drawing.Point(6, 365);
+			this.checkBoxLinkCurves.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.checkBoxLinkCurves.Location = new System.Drawing.Point(0, 376);
 			this.checkBoxLinkCurves.Margin = new System.Windows.Forms.Padding(6);
 			this.checkBoxLinkCurves.Name = "checkBoxLinkCurves";
-			this.checkBoxLinkCurves.Size = new System.Drawing.Size(123, 17);
+			this.checkBoxLinkCurves.Size = new System.Drawing.Size(594, 17);
 			this.checkBoxLinkCurves.TabIndex = 4;
 			this.checkBoxLinkCurves.Text = "Maintain Library Link";
 			this.checkBoxLinkCurves.UseVisualStyleBackColor = true;
@@ -230,14 +230,12 @@
 			// listViewCurves
 			// 
 			this.listViewCurves.AllowDrop = true;
-			this.listViewCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.listViewCurves.Location = new System.Drawing.Point(6, 31);
+			this.listViewCurves.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listViewCurves.Location = new System.Drawing.Point(0, 25);
 			this.listViewCurves.Margin = new System.Windows.Forms.Padding(6);
 			this.listViewCurves.Name = "listViewCurves";
-			this.listViewCurves.Size = new System.Drawing.Size(582, 322);
+			this.listViewCurves.Size = new System.Drawing.Size(594, 351);
 			this.listViewCurves.TabIndex = 0;
 			this.listViewCurves.UseCompatibleStateImageBehavior = false;
 			this.listViewCurves.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewCurves_ItemDrag);
@@ -314,13 +312,13 @@
 			// 
 			// checkBoxLinkGradients
 			// 
-			this.checkBoxLinkGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxLinkGradients.AutoSize = true;
+			this.checkBoxLinkGradients.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.checkBoxLinkGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxLinkGradients.Location = new System.Drawing.Point(6, 365);
+			this.checkBoxLinkGradients.Location = new System.Drawing.Point(0, 376);
 			this.checkBoxLinkGradients.Margin = new System.Windows.Forms.Padding(6);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
-			this.checkBoxLinkGradients.Size = new System.Drawing.Size(123, 17);
+			this.checkBoxLinkGradients.Size = new System.Drawing.Size(594, 17);
 			this.checkBoxLinkGradients.TabIndex = 9;
 			this.checkBoxLinkGradients.Text = "Maintain Library Link";
 			this.checkBoxLinkGradients.UseVisualStyleBackColor = true;
@@ -328,14 +326,12 @@
 			// listViewGradients
 			// 
 			this.listViewGradients.AllowDrop = true;
-			this.listViewGradients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.listViewGradients.Location = new System.Drawing.Point(6, 31);
+			this.listViewGradients.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.listViewGradients.Location = new System.Drawing.Point(0, 25);
 			this.listViewGradients.Margin = new System.Windows.Forms.Padding(6);
 			this.listViewGradients.Name = "listViewGradients";
-			this.listViewGradients.Size = new System.Drawing.Size(582, 322);
+			this.listViewGradients.Size = new System.Drawing.Size(594, 351);
 			this.listViewGradients.TabIndex = 0;
 			this.listViewGradients.UseCompatibleStateImageBehavior = false;
 			this.listViewGradients.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewGradient_ItemDrag);
@@ -354,7 +350,7 @@
 			this.tabControlEX1.Location = new System.Drawing.Point(0, 0);
 			this.tabControlEX1.Margin = new System.Windows.Forms.Padding(6);
 			this.tabControlEX1.Name = "tabControlEX1";
-			this.tabControlEX1.SelectedIndex = 2;
+			this.tabControlEX1.SelectedIndex = 1;
 			this.tabControlEX1.Size = new System.Drawing.Size(602, 419);
 			this.tabControlEX1.TabIndex = 7;
 			this.tabControlEX1.UseVisualStyles = false;
@@ -373,8 +369,8 @@
 			// 
 			// tabPageEX2
 			// 
-			this.tabPageEX2.Controls.Add(this.toolStripCurves);
 			this.tabPageEX2.Controls.Add(this.listViewCurves);
+			this.tabPageEX2.Controls.Add(this.toolStripCurves);
 			this.tabPageEX2.Controls.Add(this.checkBoxLinkCurves);
 			this.tabPageEX2.Location = new System.Drawing.Point(4, 22);
 			this.tabPageEX2.Margin = new System.Windows.Forms.Padding(6);
@@ -386,8 +382,8 @@
 			// 
 			// tabPageEX3
 			// 
-			this.tabPageEX3.Controls.Add(this.toolStripGradients);
 			this.tabPageEX3.Controls.Add(this.listViewGradients);
+			this.tabPageEX3.Controls.Add(this.toolStripGradients);
 			this.tabPageEX3.Controls.Add(this.checkBoxLinkGradients);
 			this.tabPageEX3.Location = new System.Drawing.Point(4, 22);
 			this.tabPageEX3.Margin = new System.Windows.Forms.Padding(6);

@@ -92,6 +92,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var t = (int)(48*ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t,t);
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
+			toolStripCurves.ImageScalingSize = new Size(iconSize, iconSize);
+			toolStripGradients.ImageScalingSize = new Size(iconSize, iconSize);
+			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonEditColor.Image = Tools.GetIcon(Resources.pencil, iconSize);
 
