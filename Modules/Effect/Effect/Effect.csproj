@@ -53,6 +53,7 @@
     <Compile Include="PixelFrameBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringOrientation.cs" />
+    <Compile Include="TargetPositioningType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
@@ -78,6 +79,11 @@
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Location\Location.csproj">
+      <Project>{7D5D4BE4-576A-4092-A3E2-1A6F27CDC213}</Project>
+      <Name>Location</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -20,6 +21,8 @@ namespace VixenModules.Effect.Bars
 		public Bars()
 		{
 			_data = new BarsData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		public override bool IsDirty
@@ -186,8 +189,14 @@ namespace VixenModules.Effect.Bars
 			set
 			{
 				_data = value as BarsData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData

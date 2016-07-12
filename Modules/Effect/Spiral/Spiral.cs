@@ -19,6 +19,8 @@ namespace VixenModules.Effect.Spiral
 		public Spiral()
 		{
 			_data = new SpiralData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		public override bool IsDirty
@@ -254,9 +256,16 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data = value as SpiralData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
 		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+		}
+
 
 		protected override EffectTypeModuleData EffectModuleData
 		{

@@ -19,6 +19,8 @@ namespace VixenModules.Effect.Butterfly
 		public Butterfly()
 		{
 			_data = new ButterflyData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		#region Setup
@@ -206,8 +208,14 @@ namespace VixenModules.Effect.Butterfly
 			set
 			{
 				_data = value as ButterflyData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
@@ -248,18 +256,19 @@ namespace VixenModules.Effect.Butterfly
     
     
 			if(Direction==Direction.Forward) offset = -offset;
+			double n;
+			double x1;
+			double y1;
+			double f;
+			int d;
+			int x0;
+			int y0;
 			for (int x=0; x<BufferWi; x++)
 			{
 				int y;
 				for (y=0; y<BufferHt; y++)
 				{
-					double n;
-					double x1;
-					double y1;
-					double f;
-					int d;
-					int x0;
-					int y0;
+					
 					switch (ButterflyType)
 					{
 					case ButterflyType.Type1:

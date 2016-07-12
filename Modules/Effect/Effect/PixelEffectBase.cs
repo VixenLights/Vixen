@@ -8,8 +8,10 @@ using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
+using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Effect
 {
@@ -23,6 +25,7 @@ namespace VixenModules.Effect.Effect
 		protected const short FrameTime = 50;
 
 		protected readonly List<int> StringPixelCounts = new List<int>();
+		protected Dictionary<ElementNode, Point> ElementLocations; 
 
 		private EffectIntents _elementData;
 		private int _stringCount;
@@ -36,6 +39,15 @@ namespace VixenModules.Effect.Effect
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				ConfigureStringBuffer();
+			}
+			else
+			{
+				ConfigureVirtualBuffer();
+			}
+			
 			SetupRender();
 			EffectIntents data = new EffectIntents();
 			foreach (ElementNode node in TargetNodes)
@@ -86,6 +98,28 @@ namespace VixenModules.Effect.Effect
 		[PropertyOrder(2)]
 		public abstract StringOrientation StringOrientation { get; set; }
 
+		[Value]
+		[Browsable(false)]
+		[ProviderCategory(@"Setup", 0)]
+		[ProviderDisplayName(@"TargetPositioning")]
+		[ProviderDescription(@"TargetPositioning")]
+		[PropertyOrder(3)]
+		public TargetPositioningType TargetPositioning
+		{
+			get { return EffectModuleData.TargetPositioning; }
+			set
+			{
+				EffectModuleData.TargetPositioning = value;
+				if (TargetPositioning == TargetPositioningType.Locations)
+				{
+					StringOrientation = StringOrientation.Vertical;
+				}
+				UpdateStringOrientationAttributes(true);
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Browsable(false)]
 		public virtual Color BaseColor { 
 			get { return Color.Transparent; }
@@ -100,6 +134,32 @@ namespace VixenModules.Effect.Effect
 
 		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }
+
+		protected void UpdateStringOrientationAttributes(bool refresh = false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"StringOrientation", TargetPositioning.Equals(TargetPositioningType.Strings)}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		protected void EnableTargetPositioning(bool enable, bool refresh = false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"TargetPositioning", enable}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
 		private void CalculatePixelsPerString()
 		{
@@ -140,33 +200,147 @@ namespace VixenModules.Effect.Effect
 
 		protected override void TargetNodesChanged()
 		{
+			CalculateStringCounts();
+		}
+
+		private void ConfigureStringBuffer()
+		{
+			_bufferHt = StringCount;
+			_bufferWi = MaxPixelsPerString;
+			_xOffset = 0;
+			_yOffset = 0;
+		}
+
+		private void CalculateStringCounts()
+		{
 			CalculatePixelsPerString();
-			MaxPixelsPerString = StringPixelCounts.Concat(new[] { 0 }).Max();
+			MaxPixelsPerString = StringPixelCounts.Concat(new[] {0}).Max();
 			StringCount = CalculateMaxStringCount();
 		}
+
+		private void ConfigureVirtualBuffer()
+		{
+			ElementLocations = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToDictionary(e => e, LocationModule.GetPositionForElement);
+			var xMax = ElementLocations.Values.Max(p => p.X);
+			var xMin = ElementLocations.Values.Min(p => p.X);
+			var yMax = ElementLocations.Values.Max(p => p.Y);
+			var yMin = ElementLocations.Values.Min(p => p.Y);
+
+			_bufferWi = (yMax - yMin) + 1;
+			_yOffset = yMin;
+			_bufferHt = (xMax - xMin) + 1;
+			_xOffset = xMin;
+
+		}
+
+		private int _xOffset;
+		private int _yOffset;
+		protected int BufferHtOffset
+		{
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _yOffset : _xOffset;
+			}
+		}
+
+		protected int BufferWiOffset
+		{
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _xOffset : _yOffset;
+			}
+		}
+
+		protected int StringCountOffset { get; set; }
+		protected int MaxPixelsPerStringOffset { get; set; }
 
 		protected abstract void SetupRender();
 		protected abstract void RenderEffect(int frameNum, ref PixelFrameBuffer frameBuffer);
 		protected abstract void CleanUpRender();
 
+		private int _bufferHt = 0;
 		protected int BufferHt
 		{
 			get
 			{
-				return StringOrientation == StringOrientation.Horizontal ? StringCount : MaxPixelsPerString;
+				return StringOrientation == StringOrientation.Horizontal ? _bufferHt : _bufferWi;
 			}
 
 		}
 
+		private int _bufferWi = 0;
 		protected int BufferWi
 		{
 			get
 			{
-				return StringOrientation == StringOrientation.Horizontal ? MaxPixelsPerString : StringCount;
+				return StringOrientation == StringOrientation.Horizontal ? _bufferWi : _bufferHt;
 			}
 		}
 
 		protected EffectIntents RenderNode(ElementNode node)
+		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				return RenderNodeByStrings(node);
+			}
+			return RenderNodeByLocation(node);
+		}
+
+		protected EffectIntents RenderNodeByLocation(ElementNode node)
+		{
+			EffectIntents effectIntents = new EffectIntents();
+			int nFrames = GetNumberFrames();
+			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
+			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor ? BaseColor : Color.Transparent);
+
+			int bufferSize = StringPixelCounts.Sum();
+
+			TimeSpan startTime = TimeSpan.Zero;
+
+			// set up arrays to hold the generated colors
+			var pixels = new RGBValue[bufferSize][];
+			for (int eidx = 0; eidx < bufferSize; eidx++)
+				pixels[eidx] = new RGBValue[nFrames];
+
+			// generate all the pixels
+			for (int frameNum = 0; frameNum < nFrames; frameNum++)
+			{
+				if (UseBaseColor)
+				{
+					var level = BaseLevelCurve.GetValue(GetEffectTimeIntervalPosition(frameNum) * 100) / 100;
+					buffer.ClearBuffer(level);
+				}
+				else
+				{
+					buffer.ClearBuffer();
+				}
+
+				RenderEffect(frameNum, ref buffer);
+				// peel off this frames pixels...
+				
+					int i = 0;
+					foreach (var elementLocation in ElementLocations)
+					{
+						var p = elementLocation.Value;
+						pixels[i][frameNum] = new RGBValue(buffer.GetColorAt(p.X - _xOffset, -(p.Y - _yOffset)+BufferHt-1));
+						i++;
+					}
+			}
+
+			// create the intents
+			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
+			int numElements = ElementLocations.Count;
+			List<ElementNode> elements = ElementLocations.Keys.ToList();
+			for (int eidx = 0; eidx < numElements; eidx++)
+			{
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
+				effectIntents.AddIntentForElement(elements[eidx].Element.Id, intent, startTime);
+			}
+
+			return effectIntents;
+		}
+
+		protected EffectIntents RenderNodeByStrings(ElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
