@@ -5345,6 +5345,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//Adjusts Row heights based on saved row height settings.
 			if (_sequence.RowHeightSettings != null)
+			{
 				_suppressModifiedEvents = true;
 				foreach (RowHeightSetting rowSettings in _sequence.RowHeightSettings)
 				{
@@ -5356,7 +5357,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
-			_suppressModifiedEvents = false;
+
+				_suppressModifiedEvents = false;
+			}
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)
