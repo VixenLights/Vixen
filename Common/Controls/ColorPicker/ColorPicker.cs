@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
@@ -62,7 +63,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			ThemeUpdateControls.UpdateButton(btnCancel);
+			ThemeUpdateControls.UpdateButton(btnOK);
 			whiteButton.BackColor = System.Drawing.Color.White;
 			whiteButton.BackgroundImage = null;
 			redButton.BackColor = System.Drawing.Color.Red;

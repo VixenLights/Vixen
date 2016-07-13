@@ -26,9 +26,8 @@ namespace Common.Controls.Theme
 			control.Font = SystemFonts.MessageBoxFont;
 			foreach (Control c in control.Controls)
 			{
-				c.Font = SystemFonts.MessageBoxFont;
 				if (excludes != null && excludes.Contains(c)) continue;
-
+				c.Font = SystemFonts.MessageBoxFont;
 				if (c is GroupBox | c is Panel | c is Label | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
 				{
 					c.ForeColor = ThemeColorTable.ForeColor;
@@ -89,6 +88,20 @@ namespace Common.Controls.Theme
 					UpdateControls(c, excludes);
 				}
 			}
+		}
+
+		public static void UpdateButton(Button btn)
+		{
+			btn.FlatStyle = FlatStyle.Flat;
+			btn.FlatAppearance.BorderSize = 0;
+			if (btn.BackgroundImage == null && btn.Image == null)
+			{
+				btn.BackgroundImageLayout = ImageLayout.Stretch;
+				btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
+				btn.BackColor = Color.Transparent;
+				btn.ForeColor = ThemeColorTable.ForeColor;
+			}
+			
 		}
 	}
 }
