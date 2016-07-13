@@ -30,27 +30,40 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GradientEditPanel));
 			this.grpStops = new System.Windows.Forms.GroupBox();
+			this.lblColorSelect = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.vColorLoc = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
 			this.btnDeleteColor = new System.Windows.Forms.Button();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.lblColorSelect = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.vColorLoc = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.edit = new VixenModules.App.ColorGradients.GradientEdit();
 			this.grpStops.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// grpStops
 			// 
+			this.grpStops.Controls.Add(this.flowLayoutPanel1);
 			resources.ApplyResources(this.grpStops, "grpStops");
-			this.grpStops.Controls.Add(this.lblColorSelect);
-			this.grpStops.Controls.Add(this.vColorLoc);
-			this.grpStops.Controls.Add(this.btnDeleteColor);
-			this.grpStops.Controls.Add(this.label5);
-			this.grpStops.Controls.Add(this.label4);
 			this.grpStops.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpStops.Name = "grpStops";
 			this.grpStops.TabStop = false;
 			this.grpStops.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
+			// 
+			// lblColorSelect
+			// 
+			resources.ApplyResources(this.lblColorSelect, "lblColorSelect");
+			this.lblColorSelect.Name = "lblColorSelect";
+			this.lblColorSelect.ColorChanged += new System.EventHandler(this.lblColorSelect_ColorChanged);
+			this.lblColorSelect.Click += new System.EventHandler(this.lblColorSelect_Click);
+			// 
+			// vColorLoc
+			// 
+			resources.ApplyResources(this.vColorLoc, "vColorLoc");
+			this.vColorLoc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
+			this.vColorLoc.Name = "vColorLoc";
+			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
+			this.vColorLoc.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
 			// 
 			// btnDeleteColor
 			// 
@@ -78,25 +91,20 @@
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label4.Name = "label4";
 			// 
-			// lblColorSelect
+			// flowLayoutPanel1
 			// 
-			resources.ApplyResources(this.lblColorSelect, "lblColorSelect");
-			this.lblColorSelect.Name = "lblColorSelect";
-			this.lblColorSelect.ColorChanged += new System.EventHandler(this.lblColorSelect_ColorChanged);
-			this.lblColorSelect.Click += new System.EventHandler(this.lblColorSelect_Click);
-			// 
-			// vColorLoc
-			// 
-			resources.ApplyResources(this.vColorLoc, "vColorLoc");
-			this.vColorLoc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
-			this.vColorLoc.Name = "vColorLoc";
-			this.vColorLoc.TrackerOrientation = System.Windows.Forms.Orientation.Vertical;
-			this.vColorLoc.ValueChanged += new Common.Controls.ControlsEx.ValueControls.ValueChangedEH(this.vColorLoc_ValueChanged);
+			this.flowLayoutPanel1.Controls.Add(this.label4);
+			this.flowLayoutPanel1.Controls.Add(this.lblColorSelect);
+			this.flowLayoutPanel1.Controls.Add(this.label5);
+			this.flowLayoutPanel1.Controls.Add(this.vColorLoc);
+			this.flowLayoutPanel1.Controls.Add(this.btnDeleteColor);
+			resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
 			// 
 			// edit
 			// 
-			resources.ApplyResources(this.edit, "edit");
 			this.edit.DiscreteColors = false;
+			resources.ApplyResources(this.edit, "edit");
 			this.edit.Name = "edit";
 			this.edit.ReadOnly = false;
 			this.edit.ValidDiscreteColors = null;
@@ -109,10 +117,12 @@
 			resources.ApplyResources(this, "$this");
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.Controls.Add(this.grpStops);
 			this.Controls.Add(this.edit);
+			this.Controls.Add(this.grpStops);
 			this.Name = "GradientEditPanel";
 			this.grpStops.ResumeLayout(false);
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -126,6 +136,6 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label4;
 		private GradientEdit edit;
-
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 	}
 }
