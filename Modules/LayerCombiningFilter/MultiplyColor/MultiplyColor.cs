@@ -16,20 +16,15 @@ namespace VixenModules.LayerMixingFilter.MultiplyColor
 
         public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
         {
-            int newR , newG, newB;
-            if(highLayerColor.R >0)
-                newR = (highLayerColor.R * lowLayerColor.R)/256;
-            else
-                newR=lowLayerColor.R;
-            if(highLayerColor.G >0)
-                newG = (highLayerColor.G * lowLayerColor.G)/256;
-            else
-                newG=lowLayerColor.G;
-            if(highLayerColor.B>0)
-                newB = (highLayerColor.B * lowLayerColor.B)/256;
-            else
-                newB=lowLayerColor.B;
-            return Color.FromArgb(newR, newG, newB);
+            int newR = Convert(highLayerColor.R, lowLayerColor.R);
+            int newG = Convert(highLayerColor.G, lowLayerColor.G);
+            int newB = Convert(highLayerColor.B, lowLayerColor.B);
+            return Color.FromArgb((int)newR, newG, newB);
+        }
+        private int Convert(int highValue, int lowValue)
+        {
+            double newVal = highValue > 0 ? (lowValue * (1d - (highValue / 255d))) : lowValue;
+            return (int)newVal;
         }
 	}
 
