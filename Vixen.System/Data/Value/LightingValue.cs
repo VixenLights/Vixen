@@ -119,7 +119,7 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				Color c = FullColor;
+				Color c = Color;
 				return Color.FromArgb((int)(Intensity * byte.MaxValue), c);
 			}
 		}

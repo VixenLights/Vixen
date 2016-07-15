@@ -47,7 +47,7 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				Color c = FullColor;
+				Color c = Color;
 				return Color.FromArgb((byte)(Intensity * Byte.MaxValue), c.R, c.G, c.B);
 			}
 		}
