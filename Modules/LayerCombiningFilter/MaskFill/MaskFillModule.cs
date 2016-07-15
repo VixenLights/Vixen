@@ -3,16 +3,15 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Module.MixingFilter;
 
-namespace VixenModules.LayerMixingFilter.Mask
+namespace VixenModules.LayerMixingFilter.MaskFill
 {
-	public class MaskModule : LayerMixingFilterModuleInstanceBase
+	public class MaskFillModule : LayerMixingFilterModuleInstanceBase
 	{
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
 			if (highLayerValue.Intensity > 0)
 			{
-				lowLayerValue.Intensity = 0;
-				return lowLayerValue;
+				return highLayerValue;
 			}
 			return lowLayerValue;
 		}
@@ -21,7 +20,7 @@ namespace VixenModules.LayerMixingFilter.Mask
 		{
 			if(HSV.VFromRgb(highLayerColor) > 0)
 			{
-				return Color.Empty;
+				return highLayerColor;
 			}
 			
 			return lowLayerColor;
