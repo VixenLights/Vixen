@@ -471,24 +471,56 @@ namespace VixenModules.Effect.Chase
 		{
 			if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
 			var lightingIntent = intentNode.Intent as LightingIntent;
-			if(lightingIntent != null && lightingIntent.EndValue.Intensity > 0){
+			if (lightingIntent != null && lightingIntent.EndValue.Intensity > 0)
+			{
 				var newCurve = new Curve(lightingIntent.EndValue.Intensity*100);
-				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor), TimeSpan - intentNode.EndTime, HasDiscreteColors);
-				result.OffsetAllCommandsByTime(intentNode.EndTime);
-				_elementData.Add(result);
+				GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
+					TimeSpan - intentNode.EndTime, intentNode.EndTime);
 			}
+			else
+			{
+				var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
+				if (discreteIntent != null && discreteIntent.EndValue.Intensity > 0)
+				{
+					var newCurve = new Curve(discreteIntent.EndValue.Intensity*100);
+					GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.EndValue.FullColor),
+						TimeSpan - intentNode.EndTime, intentNode.EndTime);
+				}
+			}
+		}
+
+		private void GenerateExtendedStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan duration, TimeSpan offset)
+		{
+			var result = PulseRenderer.RenderNode(target, newCurve, gradient, duration, HasDiscreteColors);
+			result.OffsetAllCommandsByTime(offset);
+			_elementData.Add(result);
 		}
 
 		private void GenerateStartingStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
 		{
 			if (intentNode == null || intentNode.StartTime <= TimeSpan.Zero) return;
 			var lightingIntent = intentNode.Intent as LightingIntent;
-			if (lightingIntent!= null && lightingIntent.StartValue.Intensity > 0)
+			if (lightingIntent != null && lightingIntent.StartValue.Intensity > 0)
 			{
 				var newCurve = new Curve(lightingIntent.StartValue.Intensity*100);
-				var result = PulseRenderer.RenderNode(target, newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime, HasDiscreteColors);
-				_elementData.Add(result);
+				GenerateStartingStaticPulse(target,newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime);
 			}
+			else
+			{
+				var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
+				if (discreteIntent != null && discreteIntent.StartValue.Intensity > 0)
+				{
+					var newCurve = new Curve(discreteIntent.StartValue.Intensity*100);
+					GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.StartValue.FullColor),
+						intentNode.StartTime);
+				}
+			}
+		}
+
+		private void GenerateStartingStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan time)
+		{
+			var result = PulseRenderer.RenderNode(target, newCurve, gradient, time, HasDiscreteColors);
+			_elementData.Add(result);
 		}
 
 		private void GeneratePulse(ElementNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
