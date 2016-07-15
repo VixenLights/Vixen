@@ -1,15 +1,15 @@
 ﻿using System;
 using Vixen.Module.MixingFilter;
 
-namespace VixenModules.LayerMixingFilter.InverseProportion
+namespace VixenModules.LayerMixingFilter.ProportionalMix
 {
-	public class InverseProportionModuleDescriptor: LayerMixingFilterModuleDescriptorBase
+	public class ProportionalMixModuleDescriptor: LayerMixingFilterModuleDescriptorBase
 	{
 		private static readonly Guid _typeId = new Guid("{1F16D67A-1FFF-485C-8E76-27FF7E7D072B}");
 
 		public override string TypeName
 		{
-			get { return "Inverse Proportion"; }
+			get { return "Proportional Mix"; }
 		}
 
 		public override Guid TypeId
@@ -19,7 +19,7 @@ namespace VixenModules.LayerMixingFilter.InverseProportion
 
 		public override Type ModuleClass
 		{
-			get { return typeof (InverseProportionModule); }
+			get { return typeof (ProportionalMixModule); }
 		}
 
 		public override string Author

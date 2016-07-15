@@ -8,8 +8,8 @@
     <ProjectGuid>{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.LayerMixingFilter.InverseProportion</RootNamespace>
-    <AssemblyName>InverseProportion</AssemblyName>
+    <RootNamespace>VixenModules.LayerMixingFilter.ProportionalMix</RootNamespace>
+    <AssemblyName>ProportionalMix</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -51,8 +51,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InverseProportionModuleDescriptor.cs" />
-    <Compile Include="InverseProportionModule.cs" />
+    <Compile Include="ProportionalMixModuleDescriptor.cs" />
+    <Compile Include="ProportionalMixModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

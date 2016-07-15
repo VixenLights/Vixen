@@ -5,9 +5,9 @@ using Vixen.Data.Value;
 using Vixen.Module.MixingFilter;
 using Vixen.Sys;
 
-namespace VixenModules.LayerMixingFilter.InverseProportion
+namespace VixenModules.LayerMixingFilter.ProportionalMix
 {
-	public class InverseProportionModule : LayerMixingFilterModuleInstanceBase
+	public class ProportionalMixModule : LayerMixingFilterModuleInstanceBase
 	{
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{

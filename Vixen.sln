@@ -339,7 +339,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Effect", "Modules\Effect\Ef
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayerMixingFilter", "LayerMixingFilter", "{1F565F1F-0815-4819-B72C-FE4CAE9DECD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InverseProportion", "Modules\LayerCombiningFilter\InverseProportion\InverseProportion.csproj", "{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProportionalMix", "Modules\LayerCombiningFilter\InverseProportion\ProportionalMix.csproj", "{C6B46FE9-16AE-4BCD-82D7-AAB944F88854}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mask", "Modules\LayerCombiningFilter\Mask\Mask.csproj", "{FF20D252-96DB-4B7F-B073-108EE95BF177}"
 EndProject
