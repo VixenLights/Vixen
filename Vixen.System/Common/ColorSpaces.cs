@@ -418,9 +418,14 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public static HSV FromRGB(RGB col)
 		{
+			return FromRGB(col.R, col.G, col.B);	
+		}
+
+		public static HSV FromRGB(double r, double g, double b)
+		{
 			double
-				min = Math.Min(Math.Min(col.R, col.G), col.B),
-				max = Math.Max(Math.Max(col.R, col.G), col.B),
+				min = Math.Min(Math.Min(r, g), b),
+				max = Math.Max(Math.Max(r, g), b),
 				delta_max = max - min;
 
 			HSV ret = new HSV(0, 0, 0);
@@ -431,23 +436,23 @@ namespace Common.Controls.ColorManagement.ColorModels
 				ret._h = 0.0;
 				ret._s = 0.0;
 			}
-			else {
+			else
+			{
 				ret._s = delta_max / max;
 
-				double del_R = (((max - col.R) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_G = (((max - col.G) / 6.0) + (delta_max / 2.0)) / delta_max;
-				double del_B = (((max - col.B) / 6.0) + (delta_max / 2.0)) / delta_max;
+				double del_R = (((max - r) / 6.0) + (delta_max / 2.0)) / delta_max;
+				double del_G = (((max - g) / 6.0) + (delta_max / 2.0)) / delta_max;
+				double del_B = (((max - b) / 6.0) + (delta_max / 2.0)) / delta_max;
 
-				if (col.R == max) ret._h = del_B - del_G;
-				else if (col.G == max) ret._h = (1.0 / 3.0) + del_R - del_B;
-				else if (col.B == max) ret._h = (2.0 / 3.0) + del_G - del_R;
+				if (r == max) ret._h = del_B - del_G;
+				else if (g == max) ret._h = (1.0 / 3.0) + del_R - del_B;
+				else if (b == max) ret._h = (2.0 / 3.0) + del_G - del_R;
 
 				if (ret._h < 0.0) ret._h += 1.0;
 				if (ret._h > 1.0) ret._h -= 1.0;
 			}
 			return ret;
 		}
-
 		public static void FromRGB(RGB col, out double hue, out double saturation, out double value)
 		{
 			double
