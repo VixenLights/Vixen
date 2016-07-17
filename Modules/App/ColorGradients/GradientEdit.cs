@@ -81,17 +81,17 @@ namespace VixenModules.App.ColorGradients
 			if (flip)
 				return new Point[]
 				       	{
-				       		new Point(fader.X + 1, fader.Y), new Point(fader.Right - 1, fader.Y),
-				       		new Point(fader.Right, fader.Y + 1), new Point(fader.Right, fader.Y + 16),
-				       		new Point(fader.X + fader.Width/2, fader.Y + 20),
-				       		new Point(fader.X, fader.Y + 16), new Point(fader.X, fader.Y + 1)
+				       		new Point(fader.X + ScaleValue(1), fader.Y), new Point(fader.Right - ScaleValue(1), fader.Y),
+				       		new Point(fader.Right, fader.Y + ScaleValue(1)), new Point(fader.Right, fader.Y + ScaleValue(16)),
+				       		new Point(fader.X + fader.Width/2, fader.Y + ScaleValue(20)),
+				       		new Point(fader.X, fader.Y + ScaleValue(16)), new Point(fader.X, fader.Y + ScaleValue(1))
 				       	};
 			return new Point[]
 			       	{
 			       		new Point(fader.X + 1, fader.Bottom), new Point(fader.Right - 1, fader.Bottom),
-			       		new Point(fader.Right, fader.Bottom - 1), new Point(fader.Right, fader.Bottom - 16),
-			       		new Point(fader.X + fader.Width/2, fader.Bottom - 20),
-			       		new Point(fader.X, fader.Bottom - 16), new Point(fader.X, fader.Bottom - 1)
+			       		new Point(fader.Right, fader.Bottom - ScaleValue(1)), new Point(fader.Right, fader.Bottom - ScaleValue(16)),
+			       		new Point(fader.X + fader.Width/2, fader.Bottom - ScaleValue(20)),
+			       		new Point(fader.X, fader.Bottom - ScaleValue(16)), new Point(fader.X, fader.Bottom - ScaleValue(1))
 			       	};
 		}
 
@@ -102,13 +102,13 @@ namespace VixenModules.App.ColorGradients
 			if (flip)
 				return new Point[]
 				       	{
-				       		new Point(m - 5, fader.Y + 8), new Point(m, fader.Y + 3), new Point(m + 5, fader.Y + 8),
-				       		new Point(m, fader.Y + 13)
+				       		new Point(m - ScaleValue(5), fader.Y + ScaleValue(8)), new Point(m, fader.Y + ScaleValue(3)), new Point(m + ScaleValue(5), fader.Y + ScaleValue(8)),
+				       		new Point(m, fader.Y + ScaleValue(13))
 				       	};
 			return new Point[]
 			       	{
-			       		new Point(m - 5, fader.Bottom - 8), new Point(m, fader.Bottom - 3), new Point(m + 5, fader.Bottom - 8),
-			       		new Point(m, fader.Bottom - 13)
+			       		new Point(m - ScaleValue(5), fader.Bottom - ScaleValue(8)), new Point(m, fader.Bottom - ScaleValue(3)), new Point(m + ScaleValue(5), fader.Bottom - ScaleValue(8)),
+			       		new Point(m, fader.Bottom - ScaleValue(13))
 			       	};
 		}
 
@@ -118,8 +118,18 @@ namespace VixenModules.App.ColorGradients
 		private RectangleF GetFaderArea(Rectangle fader, bool flip)
 		{
 			if (flip)
-				return new RectangleF(fader.X + 1f, fader.Y + 1.5f, fader.Width - 2, 14);
-			return new RectangleF(fader.X + 1f, fader.Bottom - 14.5f, fader.Width - 2, 14);
+				return new RectangleF(fader.X + ScaleValue(1f), fader.Y + ScaleValue(1.5f), fader.Width - ScaleValue(2), ScaleValue(14));
+			return new RectangleF(fader.X + ScaleValue(1f), fader.Bottom - ScaleValue(14.5f), fader.Width - ScaleValue(2), ScaleValue(14));
+		}
+
+		private int ScaleValue(int value)
+		{
+			return (int) (value*ScalingTools.GetScaleFactor());
+		}
+
+		private float ScaleValue(float value)
+		{
+			return (float) (value*ScalingTools.GetScaleFactor());
 		}
 
 		/// <summary>
