@@ -168,6 +168,7 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(574, 397);
 			this.Name = "ColorGradientLibrarySelector";

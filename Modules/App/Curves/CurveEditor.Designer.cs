@@ -391,6 +391,7 @@ namespace VixenModules.App.Curves
 			this.Controls.Add(this.zedGraphControl);
 			this.DoubleBuffered = true;
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MinimumSize = new System.Drawing.Size(591, 788);
 			this.Name = "CurveEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

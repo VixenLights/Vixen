@@ -71,9 +71,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewCurves.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.listViewCurves.Location = new System.Drawing.Point(-1, -1);
+			this.listViewCurves.Location = new System.Drawing.Point(12, 12);
 			this.listViewCurves.Name = "listViewCurves";
-			this.listViewCurves.Size = new System.Drawing.Size(558, 377);
+			this.listViewCurves.Size = new System.Drawing.Size(532, 364);
 			this.listViewCurves.TabIndex = 6;
 			this.listViewCurves.UseCompatibleStateImageBehavior = false;
 			this.listViewCurves.SelectedIndexChanged += new System.EventHandler(this.listViewCurves_SelectedIndexChanged);
@@ -157,6 +157,7 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(572, 472);
 			this.Name = "CurveLibrarySelector";
