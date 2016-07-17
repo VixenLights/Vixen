@@ -50,7 +50,7 @@ namespace Common.Controls
 			this.buttonOk.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.buttonOk.Location = new System.Drawing.Point(3, 3);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(48, 27);
+			this.buttonOk.Size = new System.Drawing.Size(87, 27);
 			this.buttonOk.TabIndex = 2;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = false;
@@ -65,9 +65,9 @@ namespace Common.Controls
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonCancel.Location = new System.Drawing.Point(111, 3);
+			this.buttonCancel.Location = new System.Drawing.Point(189, 3);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(64, 27);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "CANCEL";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -82,9 +82,9 @@ namespace Common.Controls
 			this.buttonNo.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNo.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonNo.Location = new System.Drawing.Point(57, 3);
+			this.buttonNo.Location = new System.Drawing.Point(96, 3);
 			this.buttonNo.Name = "buttonNo";
-			this.buttonNo.Size = new System.Drawing.Size(48, 27);
+			this.buttonNo.Size = new System.Drawing.Size(87, 27);
 			this.buttonNo.TabIndex = 4;
 			this.buttonNo.Text = "NO";
 			this.buttonNo.UseVisualStyleBackColor = true;
@@ -114,9 +114,9 @@ namespace Common.Controls
 			this.flowLayoutPanel1.Controls.Add(this.buttonNo);
 			this.flowLayoutPanel1.Controls.Add(this.buttonOk);
 			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			this.flowLayoutPanel1.Location = new System.Drawing.Point(215, 101);
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(114, 101);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(178, 33);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(279, 33);
 			this.flowLayoutPanel1.TabIndex = 7;
 			// 
 			// tableLayoutPanel1
