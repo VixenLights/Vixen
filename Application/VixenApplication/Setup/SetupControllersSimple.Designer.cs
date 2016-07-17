@@ -45,18 +45,23 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonSelectSourceElements = new System.Windows.Forms.Button();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.controllerTree = new Common.Controls.ControllerTree();
 			this.groupBoxSelectedController.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
+			this.flowLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBoxSelectedController
 			// 
-			this.groupBoxSelectedController.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSelectedController.AutoSize = true;
 			this.groupBoxSelectedController.Controls.Add(this.panel1);
-			this.groupBoxSelectedController.Location = new System.Drawing.Point(3, 410);
+			this.groupBoxSelectedController.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBoxSelectedController.Location = new System.Drawing.Point(3, 486);
 			this.groupBoxSelectedController.Name = "groupBoxSelectedController";
 			this.groupBoxSelectedController.Size = new System.Drawing.Size(249, 112);
 			this.groupBoxSelectedController.TabIndex = 32;
@@ -221,7 +226,8 @@
 			this.buttonAddController.Enabled = false;
 			this.buttonAddController.FlatAppearance.BorderSize = 0;
 			this.buttonAddController.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddController.Location = new System.Drawing.Point(219, 10);
+			this.buttonAddController.Location = new System.Drawing.Point(201, 6);
+			this.buttonAddController.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.buttonAddController.Name = "buttonAddController";
 			this.buttonAddController.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddController.TabIndex = 35;
@@ -238,7 +244,8 @@
 			this.comboBoxNewControllerType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxNewControllerType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxNewControllerType.FormattingEnabled = true;
-			this.comboBoxNewControllerType.Location = new System.Drawing.Point(47, 12);
+			this.comboBoxNewControllerType.Location = new System.Drawing.Point(38, 8);
+			this.comboBoxNewControllerType.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
 			this.comboBoxNewControllerType.Name = "comboBoxNewControllerType";
 			this.comboBoxNewControllerType.Size = new System.Drawing.Size(157, 21);
 			this.comboBoxNewControllerType.TabIndex = 34;
@@ -247,7 +254,8 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 15);
+			this.label5.Location = new System.Drawing.Point(3, 12);
+			this.label5.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(29, 13);
 			this.label5.TabIndex = 33;
@@ -267,7 +275,7 @@
 			this.buttonSelectSourceElements.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.buttonSelectSourceElements.FlatAppearance.BorderSize = 0;
 			this.buttonSelectSourceElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonSelectSourceElements.Location = new System.Drawing.Point(11, 380);
+			this.buttonSelectSourceElements.Location = new System.Drawing.Point(3, 3);
 			this.buttonSelectSourceElements.Name = "buttonSelectSourceElements";
 			this.buttonSelectSourceElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonSelectSourceElements.TabIndex = 40;
@@ -276,15 +284,55 @@
 			this.buttonSelectSourceElements.UseVisualStyleBackColor = false;
 			this.buttonSelectSourceElements.Click += new System.EventHandler(this.buttonSelectSourceElements_Click);
 			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.Controls.Add(this.buttonSelectSourceElements);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 449);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(249, 31);
+			this.flowLayoutPanel1.TabIndex = 41;
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.Controls.Add(this.label5);
+			this.flowLayoutPanel2.Controls.Add(this.comboBoxNewControllerType);
+			this.flowLayoutPanel2.Controls.Add(this.buttonAddController);
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 3);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(244, 34);
+			this.flowLayoutPanel2.TabIndex = 42;
+			this.flowLayoutPanel2.WrapContents = false;
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.AutoSize = true;
+			this.tableLayoutPanel1.ColumnCount = 1;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.groupBoxSelectedController, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.controllerTree, 0, 1);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 4;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(255, 601);
+			this.tableLayoutPanel1.TabIndex = 43;
+			// 
 			// controllerTree
 			// 
-			this.controllerTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.controllerTree.AutoScroll = true;
 			this.controllerTree.AutoSize = true;
-			this.controllerTree.Location = new System.Drawing.Point(3, 45);
+			this.controllerTree.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.controllerTree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.controllerTree.Location = new System.Drawing.Point(3, 43);
 			this.controllerTree.Name = "controllerTree";
-			this.controllerTree.Size = new System.Drawing.Size(249, 329);
+			this.controllerTree.Size = new System.Drawing.Size(249, 400);
 			this.controllerTree.TabIndex = 36;
 			// 
 			// SetupControllersSimple
@@ -292,19 +340,18 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.Controls.Add(this.buttonSelectSourceElements);
-			this.Controls.Add(this.controllerTree);
-			this.Controls.Add(this.buttonAddController);
-			this.Controls.Add(this.comboBoxNewControllerType);
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.groupBoxSelectedController);
+			this.Controls.Add(this.tableLayoutPanel1);
 			this.DoubleBuffered = true;
 			this.Name = "SetupControllersSimple";
-			this.Size = new System.Drawing.Size(255, 525);
+			this.Size = new System.Drawing.Size(255, 601);
 			this.groupBoxSelectedController.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel2.ResumeLayout(false);
+			this.flowLayoutPanel2.PerformLayout();
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -330,5 +377,8 @@
 		private System.Windows.Forms.Button buttonStopController;
 		private System.Windows.Forms.Button buttonStartController;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 	}
 }

@@ -269,6 +269,7 @@ namespace Common.Controls
 			//base.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			AllowDrop = true;
 			AutoSize = true;
+			Dock = DockStyle.Fill;
 		}
 
 		#region Overridden Events
