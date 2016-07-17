@@ -210,8 +210,7 @@
 			this.Controls.Add(this.txtEndTime);
 			this.Controls.Add(this.txtStartTime);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.MaximumSize = new System.Drawing.Size(323, 293);
-			this.MinimumSize = new System.Drawing.Size(323, 293);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "BulkEffectMoveForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Bulk Effect Move";
