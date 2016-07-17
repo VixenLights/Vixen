@@ -587,6 +587,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				_module.XYZ = InternalColor;
 				_module.ColorSelectionFader = colorSelectionFader1;
 				_module.ColorSelectionPlane = colorSelectionPlane1;
+				
 			}
 		}
 

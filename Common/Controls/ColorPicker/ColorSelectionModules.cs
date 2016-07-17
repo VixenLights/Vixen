@@ -53,10 +53,17 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				_fader = value;
 				if (_fader != null) {
 					_fader.Scroll += new EventHandler(Fader_Scroll);
+					_fader.ImageSizeChanged += _fader_SizeChanged;
 				}
 				UpdateFaderImage();
 				UpdateFaderPosition();
 			}
+		}
+
+		private void _fader_SizeChanged(object sender, EventArgs e)
+		{
+			UpdateFaderImage();
+			UpdateFaderPosition();
 		}
 
 		#endregion
@@ -107,10 +114,17 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				_plane = value;
 				if (_plane != null) {
 					_plane.Scroll += new EventHandler(Plane_Scroll);
+					_plane.ImageSizeChanged+=ImageSizeChanged;
 				}
 				UpdatePlaneImage();
 				UpdatePlanePosition();
 			}
+		}
+
+		private void ImageSizeChanged(object sender, EventArgs eventArgs)
+		{
+			UpdatePlaneImage();
+			UpdatePlanePosition();
 		}
 
 		#endregion
