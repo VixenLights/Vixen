@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("DimmingCurve")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mask")]
+[assembly: AssemblyDescription("Masking filter")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DimmingCurve")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCompany("Vixen")]
+[assembly: AssemblyProduct("Mask")]
+[assembly: AssemblyCopyright("Copyright 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("373d0aeb-92cf-4a00-aaec-d573e330362b")]
+[assembly: Guid("7F2F4D01-A994-42B7-8656-7BF2F302B839")]
 
 // Version information for an assembly consists of the following four values:
 //
