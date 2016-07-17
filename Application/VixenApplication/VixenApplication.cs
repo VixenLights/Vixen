@@ -17,6 +17,7 @@ using Vixen.Sys;
 using NLog;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 namespace VixenApplication
@@ -861,8 +862,10 @@ namespace VixenApplication
 			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
 			if (ActiveForm != null)
 			{
-				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
-				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + 40), Width, Height - (statusStrip.Height + 40));
+				int extraSpace1 = (int) (30*ScalingTools.GetScaleFactor());
+				int extraSpace2 = (int) (40 * ScalingTools.GetScaleFactor());
+				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + extraSpace1, ActiveForm.Width, pictureBox1.Size.Height + extraSpace1);
+				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + extraSpace2), Width, Height - (statusStrip.Height + extraSpace2));
 			}
 		}
 
