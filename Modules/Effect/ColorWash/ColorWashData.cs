@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.ColorWash
 {
 	[DataContract]
-	public class ColorWashData : ModuleDataModelBase
+	public class ColorWashData : EffectTypeModuleData
 	{
 
 		public ColorWashData()
@@ -46,7 +46,7 @@ namespace VixenModules.Effect.ColorWash
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ColorWashData result = new ColorWashData
 			{
