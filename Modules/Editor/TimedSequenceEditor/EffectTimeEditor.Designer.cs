@@ -36,9 +36,9 @@
 			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnOk.Location = new System.Drawing.Point(32, 102);
+			this.btnOk.Location = new System.Drawing.Point(37, 118);
 			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(75, 23);
+			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 1;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = false;
@@ -48,18 +48,18 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(35, 39);
+			this.label1.Location = new System.Drawing.Point(41, 45);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(29, 13);
+			this.label1.Size = new System.Drawing.Size(31, 15);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Start";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(17, 68);
+			this.label2.Location = new System.Drawing.Point(20, 78);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(47, 13);
+			this.label2.Size = new System.Drawing.Size(53, 15);
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Duration";
 			// 
@@ -72,9 +72,9 @@
 			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnCancel.Location = new System.Drawing.Point(113, 102);
+			this.btnCancel.Location = new System.Drawing.Point(132, 118);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = false;
@@ -86,9 +86,9 @@
 			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtStartTime.Location = new System.Drawing.Point(70, 36);
+			this.txtStartTime.Location = new System.Drawing.Point(82, 42);
 			this.txtStartTime.Name = "txtStartTime";
-			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
+			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
 			this.txtStartTime.TabIndex = 6;
 			this.txtStartTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtStartTime_MaskInputRejected);
 			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
@@ -99,9 +99,9 @@
 			this.txtDuration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.txtDuration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtDuration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtDuration.Location = new System.Drawing.Point(70, 65);
+			this.txtDuration.Location = new System.Drawing.Point(82, 75);
 			this.txtDuration.Name = "txtDuration";
-			this.txtDuration.Size = new System.Drawing.Size(100, 20);
+			this.txtDuration.Size = new System.Drawing.Size(116, 23);
 			this.txtDuration.TabIndex = 7;
 			this.txtDuration.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtDuration_MaskInputRejected);
 			this.txtDuration.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDuration_KeyDown);
@@ -116,11 +116,12 @@
 			// EffectTimeEditor
 			// 
 			this.AcceptButton = this.btnOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(212, 167);
+			this.ClientSize = new System.Drawing.Size(247, 194);
 			this.Controls.Add(this.txtDuration);
 			this.Controls.Add(this.txtStartTime);
 			this.Controls.Add(this.btnCancel);
@@ -129,9 +130,9 @@
 			this.Controls.Add(this.btnOk);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(228, 206);
+			this.MaximumSize = new System.Drawing.Size(263, 232);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(228, 206);
+			this.MinimumSize = new System.Drawing.Size(263, 232);
 			this.Name = "EffectTimeEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "EffectTimeEditor";

@@ -12,6 +12,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Vixen.Data.Flow;
 using Vixen.Module.Property;
 using Vixen.Rule;
@@ -26,22 +27,22 @@ namespace VixenApplication.Setup
 		public SetupElementsTree(IEnumerable<IElementTemplate> elementTemplates, IEnumerable<IElementSetupHelper> elementSetupHelpers)
 		{
 			InitializeComponent();
-
-			buttonAddTemplate.Image = Tools.GetIcon(Resources.add, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonAddTemplate.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddTemplate.Text = "";
-			buttonRunHelperSetup.Image = Tools.GetIcon(Resources.cog_go, 24);
+			buttonRunHelperSetup.Image = Tools.GetIcon(Resources.cog_go, iconSize);
 			buttonRunHelperSetup.Text = "";
-			buttonAddProperty.Image = Tools.GetIcon(Resources.add, 24);
+			buttonAddProperty.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonAddProperty.Text = "";
-			buttonRemoveProperty.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonRemoveProperty.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonRemoveProperty.Text = "";
-			buttonConfigureProperty.Image = Tools.GetIcon(Resources.cog, 24);
+			buttonConfigureProperty.Image = Tools.GetIcon(Resources.cog, iconSize);
 			buttonConfigureProperty.Text = "";
-			buttonDeleteElements.Image = Tools.GetIcon(Resources.delete, 24);
+			buttonDeleteElements.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonDeleteElements.Text = "";
-			buttonRenameElements.Image = Tools.GetIcon(Resources.pencil, 24);
+			buttonRenameElements.Image = Tools.GetIcon(Resources.pencil, iconSize);
 			buttonRenameElements.Text = "";
-			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, 24);
+			buttonSelectDestinationOutputs.Image = Tools.GetIcon(Resources.table_select_row, iconSize);
 			buttonSelectDestinationOutputs.Text = "";
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -259,8 +260,21 @@ namespace VixenApplication.Setup
 				listViewProperties.SelectedItems.Clear();
 			}
 			listViewProperties.EndUpdate();
-
+			ColumnAutoSize();
 			UpdateButtons();
+		}
+
+		public void ColumnAutoSize()
+		{
+			listViewProperties.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			ListView.ColumnHeaderCollection cc = listViewProperties.Columns;
+			for (int i = 0; i < cc.Count; i++)
+			{
+				if (cc[i].Width > listViewProperties.Width)
+				{
+					cc[i].Width = listViewProperties.Width - (int)(listViewProperties.Width * .06d);
+				}
+			}
 		}
 
 		private void UpdateButtons()

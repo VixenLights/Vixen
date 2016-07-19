@@ -17,7 +17,7 @@ namespace Common.Controls.Timeline
 	{
 		protected TimelineControlBase(TimeInfo timeinfo)
 		{
-
+			AutoScaleMode = AutoScaleMode.Font;
 			if (timeinfo== null)
 				timeinfo= new Timeline.TimeInfo();
 

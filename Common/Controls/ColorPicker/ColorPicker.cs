@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
@@ -62,7 +63,8 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			ThemeUpdateControls.UpdateButton(btnCancel);
+			ThemeUpdateControls.UpdateButton(btnOK);
 			whiteButton.BackColor = System.Drawing.Color.White;
 			whiteButton.BackgroundImage = null;
 			redButton.BackColor = System.Drawing.Color.Red;
@@ -133,14 +135,14 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.lblSecond_2 = new System.Windows.Forms.Label();
 			this.lblSecond_3 = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
-			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
-			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox = new System.Windows.Forms.GroupBox();
 			this.whiteButton = new System.Windows.Forms.Button();
 			this.blueButton = new System.Windows.Forms.Button();
 			this.greenButton = new System.Windows.Forms.Button();
 			this.redButton = new System.Windows.Forms.Button();
+			this.lblColorOut = new Common.Controls.ColorManagement.ColorPicker.ColorLabel();
+			this.colorSelectionFader1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader();
+			this.colorSelectionPlane1 = new Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane();
 			this.quickPickBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -326,20 +328,20 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			// 
 			// lblHSV_H
 			// 
-			this.lblHSV_H.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_H, "lblHSV_H");
+			this.lblHSV_H.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.lblHSV_H.Name = "lblHSV_H";
 			// 
 			// lblHSV_S
 			// 
-			this.lblHSV_S.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_S, "lblHSV_S");
+			this.lblHSV_S.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.lblHSV_S.Name = "lblHSV_S";
 			// 
 			// lblHSV_V
 			// 
-			this.lblHSV_V.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			resources.ApplyResources(this.lblHSV_V, "lblHSV_V");
+			this.lblHSV_V.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.lblHSV_V.Name = "lblHSV_V";
 			// 
 			// lblSecond_1
@@ -366,32 +368,6 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.toolTip.AutoPopDelay = 5000;
 			this.toolTip.InitialDelay = 1000;
 			this.toolTip.ReshowDelay = 200;
-			// 
-			// lblColorOut
-			// 
-			resources.ApplyResources(this.lblColorOut, "lblColorOut");
-			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.lblColorOut.ContextMenu = this.contextMenu;
-			this.lblColorOut.ForeColor = System.Drawing.Color.Black;
-			this.lblColorOut.Name = "lblColorOut";
-			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
-			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
-			// 
-			// colorSelectionFader1
-			// 
-			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
-			this.colorSelectionFader1.Name = "colorSelectionFader1";
-			this.colorSelectionFader1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
-			// 
-			// colorSelectionPlane1
-			// 
-			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
-			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
-			this.colorSelectionPlane1.TabStop = false;
-			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
 			// 
 			// quickPickBox
 			// 
@@ -444,6 +420,32 @@ namespace Common.Controls.ColorManagement.ColorPicker
 			this.redButton.Name = "redButton";
 			this.redButton.UseVisualStyleBackColor = false;
 			this.redButton.Click += new System.EventHandler(this.redButton_Click);
+			// 
+			// lblColorOut
+			// 
+			resources.ApplyResources(this.lblColorOut, "lblColorOut");
+			this.lblColorOut.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.lblColorOut.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.lblColorOut.ContextMenu = this.contextMenu;
+			this.lblColorOut.ForeColor = System.Drawing.Color.Black;
+			this.lblColorOut.Name = "lblColorOut";
+			this.lblColorOut.OldColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+			this.toolTip.SetToolTip(this.lblColorOut, resources.GetString("lblColorOut.ToolTip"));
+			this.lblColorOut.ColorChanged += new System.EventHandler(this.lblColorOut_ColorChanged);
+			// 
+			// colorSelectionFader1
+			// 
+			resources.ApplyResources(this.colorSelectionFader1, "colorSelectionFader1");
+			this.colorSelectionFader1.Name = "colorSelectionFader1";
+			this.colorSelectionFader1.TabStop = false;
+			this.toolTip.SetToolTip(this.colorSelectionFader1, resources.GetString("colorSelectionFader1.ToolTip"));
+			// 
+			// colorSelectionPlane1
+			// 
+			resources.ApplyResources(this.colorSelectionPlane1, "colorSelectionPlane1");
+			this.colorSelectionPlane1.Name = "colorSelectionPlane1";
+			this.colorSelectionPlane1.TabStop = false;
+			this.toolTip.SetToolTip(this.colorSelectionPlane1, resources.GetString("colorSelectionPlane1.ToolTip"));
 			// 
 			// ColorPicker
 			// 
@@ -585,6 +587,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				_module.XYZ = InternalColor;
 				_module.ColorSelectionFader = colorSelectionFader1;
 				_module.ColorSelectionPlane = colorSelectionPlane1;
+				
 			}
 		}
 

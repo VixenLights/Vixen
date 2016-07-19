@@ -50,9 +50,9 @@
 			this.txtStartTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtStartTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtStartTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtStartTime.Location = new System.Drawing.Point(104, 12);
+			this.txtStartTime.Location = new System.Drawing.Point(121, 14);
 			this.txtStartTime.Name = "txtStartTime";
-			this.txtStartTime.Size = new System.Drawing.Size(100, 20);
+			this.txtStartTime.Size = new System.Drawing.Size(116, 23);
 			this.txtStartTime.TabIndex = 0;
 			this.txtStartTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtStartTime_MaskInputRejected);
 			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
@@ -63,9 +63,9 @@
 			this.txtEndTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtEndTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtEndTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtEndTime.Location = new System.Drawing.Point(104, 38);
+			this.txtEndTime.Location = new System.Drawing.Point(121, 44);
 			this.txtEndTime.Name = "txtEndTime";
-			this.txtEndTime.Size = new System.Drawing.Size(100, 20);
+			this.txtEndTime.Size = new System.Drawing.Size(116, 23);
 			this.txtEndTime.TabIndex = 1;
 			this.txtEndTime.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtEndTime_MaskInputRejected);
 			this.txtEndTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyDown);
@@ -76,9 +76,9 @@
 			this.txtOffset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtOffset.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtOffset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtOffset.Location = new System.Drawing.Point(104, 64);
+			this.txtOffset.Location = new System.Drawing.Point(121, 74);
 			this.txtOffset.Name = "txtOffset";
-			this.txtOffset.Size = new System.Drawing.Size(100, 20);
+			this.txtOffset.Size = new System.Drawing.Size(116, 23);
 			this.txtOffset.TabIndex = 2;
 			this.txtOffset.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.txtOffset_MaskInputRejected);
 			this.txtOffset.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOffset_KeyDown);
@@ -87,35 +87,35 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(43, 12);
+			this.label1.Location = new System.Drawing.Point(50, 14);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(55, 13);
+			this.label1.Size = new System.Drawing.Size(61, 15);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Start Time";
 			// 
 			// linkLabel1
 			// 
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(66, 23);
+			this.linkLabel1.Location = new System.Drawing.Point(77, 27);
 			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(0, 13);
+			this.linkLabel1.Size = new System.Drawing.Size(0, 15);
 			this.linkLabel1.TabIndex = 4;
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(46, 38);
+			this.label2.Location = new System.Drawing.Point(54, 44);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(52, 13);
+			this.label2.Size = new System.Drawing.Size(57, 15);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "End Time";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(60, 64);
+			this.label3.Location = new System.Drawing.Point(70, 74);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 13);
+			this.label3.Size = new System.Drawing.Size(39, 15);
 			this.label3.TabIndex = 6;
 			this.label3.Text = "Offset";
 			// 
@@ -128,9 +128,9 @@
 			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnOk.Location = new System.Drawing.Point(95, 185);
+			this.btnOk.Location = new System.Drawing.Point(111, 213);
 			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(75, 23);
+			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 7;
 			this.btnOk.Text = "Ok";
 			this.btnOk.UseVisualStyleBackColor = true;
@@ -146,9 +146,9 @@
 			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnCancel.Location = new System.Drawing.Point(176, 185);
+			this.btnCancel.Location = new System.Drawing.Point(205, 213);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 8;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
@@ -160,9 +160,9 @@
 			this.groupBox1.Controls.Add(this.radioButtonBackward);
 			this.groupBox1.Controls.Add(this.radioButtonForward);
 			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox1.Location = new System.Drawing.Point(46, 101);
+			this.groupBox1.Location = new System.Drawing.Point(54, 117);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(158, 73);
+			this.groupBox1.Size = new System.Drawing.Size(184, 84);
 			this.groupBox1.TabIndex = 9;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Direction";
@@ -171,9 +171,9 @@
 			// radioButtonBackward
 			// 
 			this.radioButtonBackward.AutoSize = true;
-			this.radioButtonBackward.Location = new System.Drawing.Point(8, 44);
+			this.radioButtonBackward.Location = new System.Drawing.Point(9, 51);
 			this.radioButtonBackward.Name = "radioButtonBackward";
-			this.radioButtonBackward.Size = new System.Drawing.Size(73, 17);
+			this.radioButtonBackward.Size = new System.Drawing.Size(76, 19);
 			this.radioButtonBackward.TabIndex = 1;
 			this.radioButtonBackward.Text = "Backward";
 			this.radioButtonBackward.UseVisualStyleBackColor = true;
@@ -182,9 +182,9 @@
 			// 
 			this.radioButtonForward.AutoSize = true;
 			this.radioButtonForward.Checked = true;
-			this.radioButtonForward.Location = new System.Drawing.Point(8, 21);
+			this.radioButtonForward.Location = new System.Drawing.Point(9, 24);
 			this.radioButtonForward.Name = "radioButtonForward";
-			this.radioButtonForward.Size = new System.Drawing.Size(63, 17);
+			this.radioButtonForward.Size = new System.Drawing.Size(68, 19);
 			this.radioButtonForward.TabIndex = 0;
 			this.radioButtonForward.TabStop = true;
 			this.radioButtonForward.Text = "Forward";
@@ -193,11 +193,12 @@
 			// BulkEffectMoveForm
 			// 
 			this.AcceptButton = this.btnOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(263, 220);
+			this.ClientSize = new System.Drawing.Size(307, 255);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -209,8 +210,7 @@
 			this.Controls.Add(this.txtEndTime);
 			this.Controls.Add(this.txtStartTime);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.MaximumSize = new System.Drawing.Size(279, 259);
-			this.MinimumSize = new System.Drawing.Size(279, 259);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "BulkEffectMoveForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Bulk Effect Move";

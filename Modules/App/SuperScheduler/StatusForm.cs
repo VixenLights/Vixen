@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -24,22 +25,22 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			
-			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonPauseShow.Image = Tools.GetIcon(Resources.control_pause, iconSize);
 			buttonPauseShow.Text = "";
-			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, 24);
+			buttonNextSong.Image = Tools.GetIcon(Resources.control_end, iconSize);
 			buttonNextSong.Text = "";
-			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+			buttonStartScheduler.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			buttonStartScheduler.Text = "";
-			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
+			buttonStopNow.Image = Tools.GetIcon(Resources.control_stop_blue, iconSize);
 			buttonStopNow.Text = "";
-			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, 24);
+			buttonStopGracefully.Image = Tools.GetIcon(Resources.clock_stop, iconSize);
 			buttonStopGracefully.Text = "";
-			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, 24);
+			buttonViewLog.Image = Tools.GetIcon(Resources.document_notes, iconSize);
 			buttonViewLog.Text = "";
-			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, 24);
+			buttonPlayShowNow.Image = Tools.GetIcon(Resources.control_play, iconSize);
 			buttonPlayShowNow.Text = "";
-			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, 24);
+			buttonPlayShowGracefully.Image = Tools.GetIcon(Resources.clock_play, iconSize);
 			buttonPlayShowGracefully.Text = "";
 
 			ThemeUpdateControls.UpdateControls(this);

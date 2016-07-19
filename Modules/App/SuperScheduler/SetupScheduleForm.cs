@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -23,8 +24,8 @@ namespace VixenModules.App.SuperScheduler
 
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			
-			buttonHelp.Image = Tools.GetIcon(Resources.help, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 
 			ThemeUpdateControls.UpdateControls(this);
 

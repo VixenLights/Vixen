@@ -17,6 +17,7 @@ using Vixen.Sys;
 using NLog;
 using Common.Resources.Properties;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 namespace VixenApplication
@@ -40,7 +41,6 @@ namespace VixenApplication
 		{
 			InitializeComponent();
 			labelVersion.Font = new Font("Segoe UI", 14);
-			labelDebugVersion.Font = new Font("Segoe UI", 9);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,
@@ -722,6 +722,17 @@ namespace VixenApplication
 			}
 
 			listViewRecentSequences.EndUpdate();
+			ColumnAutoSize();
+		}
+
+		public void ColumnAutoSize()
+		{
+			listViewRecentSequences.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+			ListView.ColumnHeaderCollection cc = listViewRecentSequences.Columns;
+			for (int i = 0; i < cc.Count; i++)
+			{
+				cc[i].Width = listViewRecentSequences.Width - (int)(listViewRecentSequences.Width *.18d);
+			}
 		}
 
 		#endregion
@@ -851,8 +862,10 @@ namespace VixenApplication
 			Pen borderColor = new Pen(ThemeColorTable.GroupBoxBorderColor, 1);
 			if (ActiveForm != null)
 			{
-				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + 30, ActiveForm.Width, pictureBox1.Size.Height + 30);
-				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + 40), Width, Height - (statusStrip.Height + 40));
+				int extraSpace1 = (int) (30*ScalingTools.GetScaleFactor());
+				int extraSpace2 = (int) (40 * ScalingTools.GetScaleFactor());
+				e.Graphics.DrawLine(borderColor, 0, pictureBox1.Size.Height + extraSpace1, ActiveForm.Width, pictureBox1.Size.Height + extraSpace1);
+				e.Graphics.DrawLine(borderColor, 0, Height - (statusStrip.Height + extraSpace2), Width, Height - (statusStrip.Height + extraSpace2));
 			}
 		}
 

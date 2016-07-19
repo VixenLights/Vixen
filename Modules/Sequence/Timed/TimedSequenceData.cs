@@ -43,10 +43,10 @@ namespace VixenModules.Sequence.Timed
 			MarkCollections = new List<MarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
 			RowHeightSettings = new List<RowHeightSetting>();
-			DefaultRowHeight = 32;
+			DefaultRowHeight = 0;
 			RowGuidId = new Dictionary<Guid, bool>();
 			VisibleTimeStart = TimeSpan.MinValue;
-			DefaultSplitterDistance = 200;
+			DefaultSplitterDistance = 0;
 			DefaultPlaybackStartTime = TimeSpan.Zero;
 			DefaultPlaybackEndTime = TimeSpan.Zero;
 		}

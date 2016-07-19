@@ -59,6 +59,7 @@ namespace Common.Controls.ColorManagement.ColorPicker
 				_bmp.Dispose();
 			_bmp = new Bitmap(Math.Max(1, this.Width - 2), Math.Max(1, this.Height - 2),
 			                  System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			OnImageChanged();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -170,6 +171,15 @@ namespace Common.Controls.ColorManagement.ColorPicker
 
 		#region events
 
+		public EventHandler ImageSizeChanged;
+
+		private void OnImageChanged()
+		{
+			if (ImageSizeChanged != null)
+			{
+				ImageSizeChanged(this, EventArgs.Empty);
+			}
+		}
 		private void RaiseScroll()
 		{
 			if (Scroll != null)

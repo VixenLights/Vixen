@@ -406,7 +406,7 @@ namespace VixenModules.App.LipSyncApp
 
                 dgvRow.HeaderCell.Value = rowIndexVal.ToString();
             }
-            doDataGridResize();
+			doDataGridResize();
         }
 
         private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -531,6 +531,7 @@ namespace VixenModules.App.LipSyncApp
             dataGridView1.ClientSize = new Size(width + 2, height + 2);
 
             dataGridView1.Location = new Point(25, 150);
+			dataGridView1.Invalidate();
 			Refresh();
         }
 

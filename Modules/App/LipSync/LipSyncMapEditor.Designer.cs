@@ -51,7 +51,7 @@
 			this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOK.Location = new System.Drawing.Point(58, 22);
+			this.buttonOK.Location = new System.Drawing.Point(16, 10);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(93, 25);
 			this.buttonOK.TabIndex = 16;
@@ -70,7 +70,7 @@
 			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.Location = new System.Drawing.Point(168, 22);
+			this.buttonCancel.Location = new System.Drawing.Point(126, 10);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(93, 25);
 			this.buttonCancel.TabIndex = 15;
@@ -86,7 +86,7 @@
 			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(973, 329);
+			this.dataGridView1.Size = new System.Drawing.Size(973, 341);
 			this.dataGridView1.TabIndex = 18;
 			this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
 			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
@@ -142,15 +142,19 @@
 			// panel1
 			// 
 			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.panel1.AutoSize = true;
 			this.panel1.Controls.Add(this.buttonOK);
 			this.panel1.Controls.Add(this.buttonCancel);
-			this.panel1.Location = new System.Drawing.Point(686, 338);
+			this.panel1.Location = new System.Drawing.Point(728, 350);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(290, 54);
+			this.panel1.Size = new System.Drawing.Size(248, 42);
 			this.panel1.TabIndex = 26;
 			// 
 			// tableLayoutPanel1
 			// 
+			this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 0);
@@ -158,8 +162,8 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(17, 76);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 85F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(979, 395);
 			this.tableLayoutPanel1.TabIndex = 27;
 			// 
@@ -168,7 +172,7 @@
 			this.AcceptButton = this.buttonOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSize = true;
+			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(1008, 480);
@@ -190,6 +194,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -7,6 +7,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
+using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
@@ -64,9 +65,10 @@ namespace VixenModules.Preview.VixenPreview {
 			label13.ForeColor = Color.Yellow;
 
 			this.ShowInTaskbar = false;
-		    undoButton.Image = Tools.GetIcon(Resources.arrow_undo, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
 		    undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-		    redoButton.Image = Tools.GetIcon(Resources.arrow_redo, 24);
+		    redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
 		    redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 		    redoButton.ButtonType = UndoButtonType.RedoButton;
 

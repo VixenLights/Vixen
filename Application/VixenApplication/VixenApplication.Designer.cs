@@ -105,7 +105,7 @@ namespace VixenApplication
 			this.menuStripMain.Name = "menuStripMain";
 			this.menuStripMain.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
 			this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-			this.menuStripMain.Size = new System.Drawing.Size(456, 25);
+			this.menuStripMain.Size = new System.Drawing.Size(459, 25);
 			this.menuStripMain.TabIndex = 2;
 			this.menuStripMain.Text = "menuStrip1";
 			// 
@@ -224,6 +224,7 @@ namespace VixenApplication
 			// 
 			// buttonOpenSequence
 			// 
+			this.buttonOpenSequence.AutoSize = true;
 			this.buttonOpenSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonOpenSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOpenSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -241,6 +242,7 @@ namespace VixenApplication
 			// 
 			// buttonNewSequence
 			// 
+			this.buttonNewSequence.AutoSize = true;
 			this.buttonNewSequence.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonNewSequence.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonNewSequence.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -355,6 +357,7 @@ namespace VixenApplication
 			// 
 			// buttonSetupDisplay
 			// 
+			this.buttonSetupDisplay.AutoSize = true;
 			this.buttonSetupDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSetupDisplay.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupDisplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -372,6 +375,7 @@ namespace VixenApplication
 			// 
 			// buttonSetupOutputPreviews
 			// 
+			this.buttonSetupOutputPreviews.AutoSize = true;
 			this.buttonSetupOutputPreviews.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.buttonSetupOutputPreviews.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSetupOutputPreviews.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -428,7 +432,7 @@ namespace VixenApplication
 			this.toolStripStatusLabel_memory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel_memory.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel_memory.Name = "toolStripStatusLabel_memory";
-			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(279, 22);
+			this.toolStripStatusLabel_memory.Size = new System.Drawing.Size(282, 22);
 			this.toolStripStatusLabel_memory.Spring = true;
 			this.toolStripStatusLabel_memory.Text = "Resource Usage";
 			this.toolStripStatusLabel_memory.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -443,10 +447,10 @@ namespace VixenApplication
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelExecutionState,
             this.toolStripStatusLabel_memory});
-			this.statusStrip.Location = new System.Drawing.Point(0, 496);
+			this.statusStrip.Location = new System.Drawing.Point(0, 500);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-			this.statusStrip.Size = new System.Drawing.Size(456, 24);
+			this.statusStrip.Size = new System.Drawing.Size(459, 24);
 			this.statusStrip.SizingGrip = false;
 			this.statusStrip.TabIndex = 13;
 			this.statusStrip.Text = "statusStrip";
@@ -457,17 +461,18 @@ namespace VixenApplication
 			this.pictureBox1.Location = new System.Drawing.Point(13, 30);
 			this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(430, 165);
+			this.pictureBox1.Size = new System.Drawing.Size(427, 165);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
 			// VixenApplication
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(456, 520);
+			this.ClientSize = new System.Drawing.Size(459, 524);
 			this.Controls.Add(this.groupBoxSequences);
 			this.Controls.Add(this.labelDebugVersion);
 			this.Controls.Add(this.statusStrip);
@@ -496,6 +501,7 @@ namespace VixenApplication
 			this.groupBoxSystemConfig.ResumeLayout(false);
 			this.groupBoxSystemConfig.PerformLayout();
 			this.flowLayoutPanel2.ResumeLayout(false);
+			this.flowLayoutPanel2.PerformLayout();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

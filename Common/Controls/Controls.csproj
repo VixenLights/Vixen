@@ -99,6 +99,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scaling\ScalingTools.cs" />
     <Compile Include="Theme\ThemePropertyGridRenderer.cs" />
     <Compile Include="Theme\ThemeComboBoxRenderer.cs" />
     <Compile Include="Theme\ThemeUpdateControls.cs" />
@@ -368,6 +369,9 @@
     <Compile Include="XMLProfileSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BaseForm.resx">
+      <DependentUpon>BaseForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ColorPicker\ColorLabel.resx">
       <DependentUpon>ColorLabel.cs</DependentUpon>
     </EmbeddedResource>

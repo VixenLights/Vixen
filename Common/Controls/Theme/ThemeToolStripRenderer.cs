@@ -2,6 +2,7 @@
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Common.Controls.Scaling;
 using Common.Resources;
 using Common.Resources.Properties;
 
@@ -145,12 +146,8 @@ namespace Common.Controls.Theme
 
 		protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
 		{
-			//base.OnRenderItemCheck(e);
-			Rectangle bounds = new Rectangle(e.ImageRectangle.Left - 2, 1, e.ImageRectangle.Width + 4, e.Item.Height - 2);
-			Graphics g = e.Graphics;
-
-
-			Image image = Tools.GetIcon(Resources.Properties.Resources.check_mark, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			Image image = Tools.GetIcon(Resources.Properties.Resources.check_mark, iconSize);
 			Rectangle imageRect = e.ImageRectangle;
 
 

@@ -7,6 +7,7 @@ using System.Drawing.Drawing2D;
 using Common.Controls.ColorManagement.ColorModels;
 using System.ComponentModel;
 using System.Linq;
+using Common.Controls.Scaling;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -19,7 +20,7 @@ namespace VixenModules.App.ColorGradients
 	{
 		#region variables
 
-		private const int BORDER = 10;
+		private readonly int _border;
 		private ColorGradient _blend;
 		private Orientation _orientation = Orientation.Horizontal;
 		//selection
@@ -36,6 +37,7 @@ namespace VixenModules.App.ColorGradients
 			SetStyle(ControlStyles.AllPaintingInWmPaint |
 			         ControlStyles.OptimizedDoubleBuffer |
 			         ControlStyles.UserPaint, true);
+			_border = (int) (10*ScalingTools.GetScaleFactor());
 		}
 
 		#region helper
@@ -47,12 +49,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return Math.Max(0.0, Math.Min(1.0,
-				                              (double) (pt.X - BORDER)/
-				                              (double) Math.Max(1.0, this.Width - BORDER*2 - 1)));
+				                              (double) (pt.X - _border)/
+				                              (double) Math.Max(1.0, this.Width - _border*2 - 1)));
 			//vertical
 			return Math.Max(0.0, Math.Min(1.0,
-			                              (double) (pt.Y - BORDER)/
-			                              (double) Math.Max(1.0, this.Height - BORDER*2 - 1)));
+			                              (double) (pt.Y - _border)/
+			                              (double) Math.Max(1.0, this.Height - _border*2 - 1)));
 		}
 
 		/// <summary>
@@ -62,12 +64,12 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (_orientation == Orientation.Horizontal)
 				return new Rectangle(
-					(int) (pos*(double) (this.Width - BORDER*2 - 1)), 0,
-					BORDER*2, this.Height - 1);
+					(int) (pos*(double) (this.Width - _border*2 - 1)), 0,
+					_border*2, this.Height - 1);
 			//vertical
 			return new Rectangle(
-				0, (int) (pos*(double) (this.Height - BORDER*2 - 1)),
-				this.Width - 1, BORDER*2);
+				0, (int) (pos*(double) (this.Height - _border*2 - 1)),
+				this.Width - 1, _border*2);
 		}
 
 		/// <summary>
@@ -79,17 +81,17 @@ namespace VixenModules.App.ColorGradients
 			if (flip)
 				return new Point[]
 				       	{
-				       		new Point(fader.X + 1, fader.Y), new Point(fader.Right - 1, fader.Y),
-				       		new Point(fader.Right, fader.Y + 1), new Point(fader.Right, fader.Y + 16),
-				       		new Point(fader.X + fader.Width/2, fader.Y + 20),
-				       		new Point(fader.X, fader.Y + 16), new Point(fader.X, fader.Y + 1)
+				       		new Point(fader.X + ScaleValue(1), fader.Y), new Point(fader.Right - ScaleValue(1), fader.Y),
+				       		new Point(fader.Right, fader.Y + ScaleValue(1)), new Point(fader.Right, fader.Y + ScaleValue(16)),
+				       		new Point(fader.X + fader.Width/2, fader.Y + ScaleValue(20)),
+				       		new Point(fader.X, fader.Y + ScaleValue(16)), new Point(fader.X, fader.Y + ScaleValue(1))
 				       	};
 			return new Point[]
 			       	{
 			       		new Point(fader.X + 1, fader.Bottom), new Point(fader.Right - 1, fader.Bottom),
-			       		new Point(fader.Right, fader.Bottom - 1), new Point(fader.Right, fader.Bottom - 16),
-			       		new Point(fader.X + fader.Width/2, fader.Bottom - 20),
-			       		new Point(fader.X, fader.Bottom - 16), new Point(fader.X, fader.Bottom - 1)
+			       		new Point(fader.Right, fader.Bottom - ScaleValue(1)), new Point(fader.Right, fader.Bottom - ScaleValue(16)),
+			       		new Point(fader.X + fader.Width/2, fader.Bottom - ScaleValue(20)),
+			       		new Point(fader.X, fader.Bottom - ScaleValue(16)), new Point(fader.X, fader.Bottom - ScaleValue(1))
 			       	};
 		}
 
@@ -100,13 +102,13 @@ namespace VixenModules.App.ColorGradients
 			if (flip)
 				return new Point[]
 				       	{
-				       		new Point(m - 5, fader.Y + 8), new Point(m, fader.Y + 3), new Point(m + 5, fader.Y + 8),
-				       		new Point(m, fader.Y + 13)
+				       		new Point(m - ScaleValue(5), fader.Y + ScaleValue(8)), new Point(m, fader.Y + ScaleValue(3)), new Point(m + ScaleValue(5), fader.Y + ScaleValue(8)),
+				       		new Point(m, fader.Y + ScaleValue(13))
 				       	};
 			return new Point[]
 			       	{
-			       		new Point(m - 5, fader.Bottom - 8), new Point(m, fader.Bottom - 3), new Point(m + 5, fader.Bottom - 8),
-			       		new Point(m, fader.Bottom - 13)
+			       		new Point(m - ScaleValue(5), fader.Bottom - ScaleValue(8)), new Point(m, fader.Bottom - ScaleValue(3)), new Point(m + ScaleValue(5), fader.Bottom - ScaleValue(8)),
+			       		new Point(m, fader.Bottom - ScaleValue(13))
 			       	};
 		}
 
@@ -116,8 +118,18 @@ namespace VixenModules.App.ColorGradients
 		private RectangleF GetFaderArea(Rectangle fader, bool flip)
 		{
 			if (flip)
-				return new RectangleF(fader.X + 1f, fader.Y + 1.5f, fader.Width - 2, 14);
-			return new RectangleF(fader.X + 1f, fader.Bottom - 14.5f, fader.Width - 2, 14);
+				return new RectangleF(fader.X + ScaleValue(1f), fader.Y + ScaleValue(1.5f), fader.Width - ScaleValue(2), ScaleValue(14));
+			return new RectangleF(fader.X + ScaleValue(1f), fader.Bottom - ScaleValue(14.5f), fader.Width - ScaleValue(2), ScaleValue(14));
+		}
+
+		private int ScaleValue(int value)
+		{
+			return (int) (value*ScalingTools.GetScaleFactor());
+		}
+
+		private float ScaleValue(float value)
+		{
+			return (float) (value*ScalingTools.GetScaleFactor());
 		}
 
 		/// <summary>
@@ -286,13 +298,13 @@ namespace VixenModules.App.ColorGradients
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if (this.Width < BORDER*2 || this.Height < BORDER*2)
+			if (this.Width < _border*2 || this.Height < _border*2)
 				return;
 			e.Graphics.SmoothingMode =
 				System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			//draw gradient
-			Rectangle area = new Rectangle(BORDER, BORDER,
-			                               this.Width - BORDER*2 - 1, this.Height - BORDER*2 - 1);
+			Rectangle area = new Rectangle(_border, _border,
+			                               this.Width - _border*2 - 1, this.Height - _border*3 - 1);
 			if (_blend != null) {
 				using (HatchBrush brs = new HatchBrush(HatchStyle.LargeCheckerBoard,
 													   Color.Silver, Color.White)) {
@@ -350,7 +362,7 @@ namespace VixenModules.App.ColorGradients
 				FocusSelection = foc;
 				if (_selection == null || _selection.Count == 0) {
 					//create new color or alpha point
-					Rectangle area = Rectangle.Inflate(this.ClientRectangle, -BORDER, -BORDER);
+					Rectangle area = Rectangle.Inflate(this.ClientRectangle, -_border, -_border);
 					double pos = PointToPos(e.Location);
 					_offset = Point.Empty;
 					//
@@ -422,7 +434,7 @@ namespace VixenModules.App.ColorGradients
 				//set cursor
 				Point pt = Point.Empty;
 				Rectangle area = Rectangle.Inflate(
-					this.ClientRectangle, -BORDER, -BORDER);
+					this.ClientRectangle, -_border, -_border);
 				bool foc;
 				List<ColorGradient.Point> underMouse = GetFadersUnderMouse(e.Location, ref pt, out foc);
 				if (underMouse != null && underMouse.Count > 0)

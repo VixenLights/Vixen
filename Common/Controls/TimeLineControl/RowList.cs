@@ -24,6 +24,7 @@ namespace Common.Controls.Timeline
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
 			EnableDisableHandlers(true);
+			Font = SystemFonts.MessageBoxFont;
 		}
 
 		#region Properties

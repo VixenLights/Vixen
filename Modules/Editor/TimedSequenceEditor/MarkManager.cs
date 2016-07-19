@@ -21,6 +21,7 @@ using Common.Resources.Properties;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 
@@ -55,20 +56,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor;
 			listViewMarks.BackColor = ThemeColorTable.BackgroundColor;
-			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, 24);
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			buttonPlay.Image = Tools.GetIcon(Resources.control_play_blue, iconSize);
 			buttonPlay.Text = "";
-			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, 24);
+			buttonStop.Image = Tools.GetIcon(Resources.control_stop_blue, iconSize);
 			buttonStop.Text = "";
 			buttonStop.Enabled = false;
 			buttonRestartPlay.Text = "";
-			buttonRestartPlay.Image = Tools.GetIcon(Resources.control_start_blue,24);
-			buttonIncreasePlaybackSpeed.Image = Tools.GetIcon(Resources.add, 24);
+			buttonRestartPlay.Image = Tools.GetIcon(Resources.control_start_blue,iconSize);
+			buttonIncreasePlaybackSpeed.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonIncreasePlaybackSpeed.Text = "";
-			buttonDecreasePlaySpeed.Image = Tools.GetIcon(Resources.minus, 24);
+			buttonDecreasePlaySpeed.Image = Tools.GetIcon(Resources.minus, iconSize);
 			buttonDecreasePlaySpeed.Text = "";
-			buttonIncreaseSelectedMarks.Image = Tools.GetIcon(Resources.add, 24);
+			buttonIncreaseSelectedMarks.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonIncreaseSelectedMarks.Text = "";
-			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, 24);
+			buttonDecreaseSelectedMarks.Image = Tools.GetIcon(Resources.minus, iconSize);
 			buttonDecreaseSelectedMarks.Text = "";
 			buttonRemoveCollection.ForeColor = buttonRemoveCollection.Enabled ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
 			ThemeUpdateControls.UpdateControls(this);

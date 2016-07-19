@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -57,13 +57,14 @@
 			// 
 			this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStart.AutoSize = true;
 			this.buttonStart.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonStart.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
 			this.buttonStart.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStart.Location = new System.Drawing.Point(16, 429);
+			this.buttonStart.Location = new System.Drawing.Point(17, 453);
 			this.buttonStart.Name = "buttonStart";
 			this.buttonStart.Size = new System.Drawing.Size(104, 27);
 			this.buttonStart.TabIndex = 8;
@@ -133,9 +134,9 @@
 			this.groupBox1.Controls.Add(this.outputFormatComboBox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox1.Location = new System.Drawing.Point(9, 59);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(471, 70);
+			this.groupBox1.Size = new System.Drawing.Size(488, 70);
 			this.groupBox1.TabIndex = 13;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Settings";
@@ -149,10 +150,11 @@
             this.progressLabel,
             this.exportProgressBar,
             this.currentTimeLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 503);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 498);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
 			this.statusStrip1.Size = new System.Drawing.Size(516, 24);
+			this.statusStrip1.SizingGrip = false;
 			this.statusStrip1.TabIndex = 14;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -179,6 +181,7 @@
 			// 
 			this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonStop.AutoSize = true;
 			this.buttonStop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.buttonStop.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.buttonStop.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
@@ -186,7 +189,7 @@
 			this.buttonStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonStop.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonStop.Location = new System.Drawing.Point(126, 429);
+			this.buttonStop.Location = new System.Drawing.Point(127, 453);
 			this.buttonStop.Name = "buttonStop";
 			this.buttonStop.Size = new System.Drawing.Size(104, 27);
 			this.buttonStop.TabIndex = 15;
@@ -205,9 +208,9 @@
 			this.groupBox2.AutoSize = true;
 			this.groupBox2.Controls.Add(this.networkListView);
 			this.groupBox2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox2.Location = new System.Drawing.Point(9, 149);
+			this.groupBox2.Location = new System.Drawing.Point(12, 88);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(488, 264);
+			this.groupBox2.Size = new System.Drawing.Size(488, 259);
 			this.groupBox2.TabIndex = 16;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Network";
@@ -229,12 +232,12 @@
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem4});
 			this.networkListView.Location = new System.Drawing.Point(7, 22);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;
-			this.networkListView.Size = new System.Drawing.Size(473, 233);
+			this.networkListView.Size = new System.Drawing.Size(473, 228);
 			this.networkListView.TabIndex = 1;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -265,10 +268,10 @@
 			this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.textBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBox1.Location = new System.Drawing.Point(16, 15);
+			this.textBox1.Location = new System.Drawing.Point(12, 358);
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(464, 43);
+			this.textBox1.Size = new System.Drawing.Size(488, 36);
 			this.textBox1.TabIndex = 17;
 			this.textBox1.Text = "You must have all of your required display elements to controller outputs fully p" +
     "atched in the Display Setup for the export to produce correct results..";
@@ -277,6 +280,7 @@
 			// 
 			this.btnUserCancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnUserCancel.AutoSize = true;
 			this.btnUserCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.btnUserCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnUserCancel.FlatAppearance.BorderColor = System.Drawing.Color.Black;
@@ -284,7 +288,7 @@
 			this.btnUserCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnUserCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnUserCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnUserCancel.Location = new System.Drawing.Point(372, 429);
+			this.btnUserCancel.Location = new System.Drawing.Point(373, 453);
 			this.btnUserCancel.Name = "btnUserCancel";
 			this.btnUserCancel.Size = new System.Drawing.Size(104, 27);
 			this.btnUserCancel.TabIndex = 18;
@@ -299,7 +303,7 @@
 			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnUserCancel;
-			this.ClientSize = new System.Drawing.Size(516, 527);
+			this.ClientSize = new System.Drawing.Size(516, 522);
 			this.Controls.Add(this.btnUserCancel);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
@@ -307,9 +311,9 @@
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonStart);
-			this.MaximumSize = new System.Drawing.Size(532, 856);
-			this.MinimumSize = new System.Drawing.Size(532, 536);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "ExportDialog";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Export Sequence";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportDialog_FormClosed);
 			this.Load += new System.EventHandler(this.ExportForm_Load);

@@ -50,15 +50,22 @@
 			this.buttonSelectDestinationOutputs = new System.Windows.Forms.Button();
 			this.buttonDeleteElements = new System.Windows.Forms.Button();
 			this.buttonRenameElements = new System.Windows.Forms.Button();
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.elementTree = new Common.Controls.ElementTree();
 			this.groupBoxSelectedItems.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.flowLayoutPanel1.SuspendLayout();
+			this.flowLayoutPanel2.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 15);
+			this.label1.Location = new System.Drawing.Point(3, 12);
+			this.label1.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(29, 13);
 			this.label1.TabIndex = 29;
@@ -72,7 +79,8 @@
 			this.comboBoxNewItemType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxNewItemType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxNewItemType.FormattingEnabled = true;
-			this.comboBoxNewItemType.Location = new System.Drawing.Point(47, 12);
+			this.comboBoxNewItemType.Location = new System.Drawing.Point(38, 8);
+			this.comboBoxNewItemType.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
 			this.comboBoxNewItemType.Name = "comboBoxNewItemType";
 			this.comboBoxNewItemType.Size = new System.Drawing.Size(146, 21);
 			this.comboBoxNewItemType.TabIndex = 30;
@@ -86,7 +94,8 @@
 			this.buttonAddTemplate.Enabled = false;
 			this.buttonAddTemplate.FlatAppearance.BorderSize = 0;
 			this.buttonAddTemplate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddTemplate.Location = new System.Drawing.Point(209, 10);
+			this.buttonAddTemplate.Location = new System.Drawing.Point(190, 6);
+			this.buttonAddTemplate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.buttonAddTemplate.Name = "buttonAddTemplate";
 			this.buttonAddTemplate.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddTemplate.TabIndex = 31;
@@ -97,12 +106,11 @@
 			// 
 			// groupBoxSelectedItems
 			// 
-			this.groupBoxSelectedItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBoxSelectedItems.Controls.Add(this.panel1);
-			this.groupBoxSelectedItems.Location = new System.Drawing.Point(3, 387);
+			this.groupBoxSelectedItems.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBoxSelectedItems.Location = new System.Drawing.Point(3, 484);
 			this.groupBoxSelectedItems.Name = "groupBoxSelectedItems";
-			this.groupBoxSelectedItems.Size = new System.Drawing.Size(244, 159);
+			this.groupBoxSelectedItems.Size = new System.Drawing.Size(249, 159);
 			this.groupBoxSelectedItems.TabIndex = 33;
 			this.groupBoxSelectedItems.TabStop = false;
 			this.groupBoxSelectedItems.Text = "Selected Item(s):";
@@ -118,9 +126,10 @@
 			this.panel1.Controls.Add(this.buttonRunHelperSetup);
 			this.panel1.Controls.Add(this.comboBoxSetupHelperType);
 			this.panel1.Controls.Add(this.label2);
-			this.panel1.Location = new System.Drawing.Point(7, 16);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel1.Location = new System.Drawing.Point(3, 16);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(232, 137);
+			this.panel1.Size = new System.Drawing.Size(243, 140);
 			this.panel1.TabIndex = 42;
 			// 
 			// buttonConfigureProperty
@@ -130,7 +139,7 @@
 			this.buttonConfigureProperty.Enabled = false;
 			this.buttonConfigureProperty.FlatAppearance.BorderSize = 0;
 			this.buttonConfigureProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonConfigureProperty.Location = new System.Drawing.Point(123, 109);
+			this.buttonConfigureProperty.Location = new System.Drawing.Point(134, 109);
 			this.buttonConfigureProperty.Name = "buttonConfigureProperty";
 			this.buttonConfigureProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonConfigureProperty.TabIndex = 41;
@@ -146,7 +155,7 @@
 			this.buttonRemoveProperty.Enabled = false;
 			this.buttonRemoveProperty.FlatAppearance.BorderSize = 0;
 			this.buttonRemoveProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonRemoveProperty.Location = new System.Drawing.Point(93, 109);
+			this.buttonRemoveProperty.Location = new System.Drawing.Point(104, 109);
 			this.buttonRemoveProperty.Name = "buttonRemoveProperty";
 			this.buttonRemoveProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonRemoveProperty.TabIndex = 40;
@@ -162,7 +171,7 @@
 			this.buttonAddProperty.Enabled = false;
 			this.buttonAddProperty.FlatAppearance.BorderSize = 0;
 			this.buttonAddProperty.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddProperty.Location = new System.Drawing.Point(63, 109);
+			this.buttonAddProperty.Location = new System.Drawing.Point(74, 109);
 			this.buttonAddProperty.Name = "buttonAddProperty";
 			this.buttonAddProperty.Size = new System.Drawing.Size(24, 24);
 			this.buttonAddProperty.TabIndex = 39;
@@ -195,7 +204,7 @@
             listViewItem8});
 			this.listViewProperties.Location = new System.Drawing.Point(63, 45);
 			this.listViewProperties.Name = "listViewProperties";
-			this.listViewProperties.Size = new System.Drawing.Size(160, 58);
+			this.listViewProperties.Size = new System.Drawing.Size(171, 58);
 			this.listViewProperties.TabIndex = 37;
 			this.listViewProperties.UseCompatibleStateImageBehavior = false;
 			this.listViewProperties.View = System.Windows.Forms.View.Details;
@@ -213,7 +222,7 @@
 			this.buttonRunHelperSetup.Enabled = false;
 			this.buttonRunHelperSetup.FlatAppearance.BorderSize = 0;
 			this.buttonRunHelperSetup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonRunHelperSetup.Location = new System.Drawing.Point(199, 8);
+			this.buttonRunHelperSetup.Location = new System.Drawing.Point(210, 8);
 			this.buttonRunHelperSetup.Name = "buttonRunHelperSetup";
 			this.buttonRunHelperSetup.Size = new System.Drawing.Size(24, 24);
 			this.buttonRunHelperSetup.TabIndex = 36;
@@ -231,7 +240,7 @@
 			this.comboBoxSetupHelperType.FormattingEnabled = true;
 			this.comboBoxSetupHelperType.Location = new System.Drawing.Point(63, 10);
 			this.comboBoxSetupHelperType.Name = "comboBoxSetupHelperType";
-			this.comboBoxSetupHelperType.Size = new System.Drawing.Size(120, 21);
+			this.comboBoxSetupHelperType.Size = new System.Drawing.Size(131, 21);
 			this.comboBoxSetupHelperType.TabIndex = 35;
 			this.comboBoxSetupHelperType.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxSetupHelperType.SelectedIndexChanged += new System.EventHandler(this.comboBoxSetupHelperType_SelectedIndexChanged);
@@ -258,7 +267,7 @@
 			this.buttonSelectDestinationOutputs.BackColor = System.Drawing.Color.Transparent;
 			this.buttonSelectDestinationOutputs.FlatAppearance.BorderSize = 0;
 			this.buttonSelectDestinationOutputs.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonSelectDestinationOutputs.Location = new System.Drawing.Point(70, 355);
+			this.buttonSelectDestinationOutputs.Location = new System.Drawing.Point(64, 3);
 			this.buttonSelectDestinationOutputs.Name = "buttonSelectDestinationOutputs";
 			this.buttonSelectDestinationOutputs.Size = new System.Drawing.Size(24, 24);
 			this.buttonSelectDestinationOutputs.TabIndex = 41;
@@ -273,7 +282,7 @@
 			this.buttonDeleteElements.BackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteElements.FlatAppearance.BorderSize = 0;
 			this.buttonDeleteElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDeleteElements.Location = new System.Drawing.Point(10, 355);
+			this.buttonDeleteElements.Location = new System.Drawing.Point(3, 3);
 			this.buttonDeleteElements.Name = "buttonDeleteElements";
 			this.buttonDeleteElements.Size = new System.Drawing.Size(24, 24);
 			this.buttonDeleteElements.TabIndex = 42;
@@ -288,7 +297,7 @@
 			this.buttonRenameElements.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRenameElements.FlatAppearance.BorderSize = 0;
 			this.buttonRenameElements.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonRenameElements.Location = new System.Drawing.Point(40, 355);
+			this.buttonRenameElements.Location = new System.Drawing.Point(33, 3);
 			this.buttonRenameElements.Name = "buttonRenameElements";
 			this.buttonRenameElements.Size = new System.Drawing.Size(25, 24);
 			this.buttonRenameElements.TabIndex = 43;
@@ -297,16 +306,62 @@
 			this.buttonRenameElements.UseVisualStyleBackColor = false;
 			this.buttonRenameElements.Click += new System.EventHandler(this.buttonRenameElements_Click);
 			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanel1.Controls.Add(this.label1);
+			this.flowLayoutPanel1.Controls.Add(this.comboBoxNewItemType);
+			this.flowLayoutPanel1.Controls.Add(this.buttonAddTemplate);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(249, 37);
+			this.flowLayoutPanel1.TabIndex = 44;
+			this.flowLayoutPanel1.WrapContents = false;
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.flowLayoutPanel2.Controls.Add(this.buttonDeleteElements);
+			this.flowLayoutPanel2.Controls.Add(this.buttonRenameElements);
+			this.flowLayoutPanel2.Controls.Add(this.buttonSelectDestinationOutputs);
+			this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 452);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(249, 26);
+			this.flowLayoutPanel2.TabIndex = 45;
+			this.flowLayoutPanel2.WrapContents = false;
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.AutoSize = true;
+			this.tableLayoutPanel1.ColumnCount = 1;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.groupBoxSelectedItems, 0, 3);
+			this.tableLayoutPanel1.Controls.Add(this.elementTree, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel2, 0, 2);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 4;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(255, 646);
+			this.tableLayoutPanel1.TabIndex = 46;
+			// 
 			// elementTree
 			// 
 			this.elementTree.AllowDragging = true;
-			this.elementTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.elementTree.AutoScroll = true;
 			this.elementTree.AutoSize = true;
+			this.elementTree.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.elementTree.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.elementTree.Location = new System.Drawing.Point(3, 46);
 			this.elementTree.Name = "elementTree";
-			this.elementTree.Size = new System.Drawing.Size(244, 303);
+			this.elementTree.Size = new System.Drawing.Size(249, 400);
 			this.elementTree.TabIndex = 28;
 			this.elementTree.treeviewDeselected += new System.EventHandler(this.elementTree_treeviewDeselected);
 			this.elementTree.treeviewAfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.elementTree_treeviewAfterSelect);
@@ -317,21 +372,18 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.Controls.Add(this.buttonRenameElements);
-			this.Controls.Add(this.buttonDeleteElements);
-			this.Controls.Add(this.buttonSelectDestinationOutputs);
-			this.Controls.Add(this.groupBoxSelectedItems);
-			this.Controls.Add(this.buttonAddTemplate);
-			this.Controls.Add(this.comboBoxNewItemType);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.elementTree);
+			this.Controls.Add(this.tableLayoutPanel1);
 			this.DoubleBuffered = true;
 			this.Name = "SetupElementsTree";
-			this.Size = new System.Drawing.Size(250, 550);
+			this.Size = new System.Drawing.Size(255, 646);
 			this.groupBoxSelectedItems.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.flowLayoutPanel1.PerformLayout();
+			this.flowLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -358,5 +410,8 @@
 		private System.Windows.Forms.Button buttonDeleteElements;
 		private System.Windows.Forms.Button buttonRenameElements;
 		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 	}
 }

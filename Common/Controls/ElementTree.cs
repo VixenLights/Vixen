@@ -27,7 +27,8 @@ namespace Common.Controls
 		public ElementTree()
 		{
 			InitializeComponent();
-
+			AutoSize = true;
+			treeview.Dock = DockStyle.Fill;
 			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
 			treeview.DragFinishing += treeviewDragFinishingHandler;
 			treeview.DragOverVerify += treeviewDragVerifyHandler;

@@ -36,7 +36,6 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
-			this.lblDisclaimer = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.label4 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -142,14 +141,6 @@
 			this.label3.TabIndex = 10;
 			this.label3.Text = "Point your browser here:";
 			// 
-			// lblDisclaimer
-			// 
-			this.lblDisclaimer.AutoSize = true;
-			this.lblDisclaimer.Location = new System.Drawing.Point(14, 208);
-			this.lblDisclaimer.Name = "lblDisclaimer";
-			this.lblDisclaimer.Size = new System.Drawing.Size(0, 15);
-			this.lblDisclaimer.TabIndex = 11;
-			// 
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
@@ -163,9 +154,12 @@
 			// 
 			// label4
 			// 
+			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(14, 280);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(338, 40);
+			this.label4.Size = new System.Drawing.Size(336, 15);
 			this.label4.TabIndex = 16;
 			this.label4.Text = "Turn off the web server when not in use to conserve resources.";
 			// 
@@ -173,9 +167,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(366, 365);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(366, 366);
 			this.Controls.Add(this.label4);
-			this.Controls.Add(this.lblDisclaimer);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.btnCancel);
@@ -185,8 +179,6 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDown1);
 			this.Controls.Add(this.pictureBox1);
-			this.MaximumSize = new System.Drawing.Size(382, 404);
-			this.MinimumSize = new System.Drawing.Size(382, 404);
 			this.Name = "Settings";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Configuration";
@@ -207,7 +199,6 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label lblDisclaimer;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label4;
 	}

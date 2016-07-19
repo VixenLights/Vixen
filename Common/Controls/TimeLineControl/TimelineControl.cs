@@ -12,13 +12,16 @@ using System.Diagnostics;
 using Common.Controls.Theme;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
+using Common.Controls.Scaling;
 
 namespace Common.Controls.Timeline
 {
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public class TimelineControl : TimelineControlBase, IEnumerable<Row>
 	{
-		private const int InitialSplitterDistance = 200;
+		//These are the 96 DPI based defaults. They should be scaled if used.
+		public const int DefaultSplitterDistance = 200;
+		public const int DefaultRowHeight = 32;
 
 		#region Member Controls
 
@@ -55,6 +58,7 @@ namespace Common.Controls.Timeline
 		public TimelineControl()
 			: base(new TimeInfo()) // This is THE TimeInfo object for the whole control (and all sub-controls).
 		{
+			rowHeight = (int)(DefaultRowHeight*ScalingTools.GetScaleFactor());
 			TimeInfo.TimePerPixel = TimeSpan.FromTicks(100000);
 			TimeInfo.VisibleTimeStart = TimeSpan.Zero;
 
@@ -144,10 +148,11 @@ namespace Common.Controls.Timeline
 
 			InitializePanel1();
 			InitializePanel2();
-
+			
 			splitContainer.ResumeLayout(false);
 			splitContainer.EndInit();
-
+		
+			splitContainer.PerformAutoScale();
 			this.ResumeLayout(false);
 		}
 
@@ -635,15 +640,11 @@ namespace Common.Controls.Timeline
 		
 		#region Event Handlers
 
-		public int DefaultSplitterDistance;
-
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)
 				timelineRowList.Top = grid.Top;
 			timelineRowList.VerticalOffset = grid.VerticalOffset;
-
-			DefaultSplitterDistance = splitContainer.SplitterDistance;
 
 			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
 			// and it looks shit in general. So, force an immediate graphical refresh
@@ -733,12 +734,13 @@ namespace Common.Controls.Timeline
 			//ensure that rows are completed before refreshing allowing a smooth transistion.
 			EnableDisableHandlers(false);
 			grid.AllowGridResize = false;
+			rowHeight = (int)(DefaultRowHeight*ScalingTools.GetScaleFactor());
 			foreach (Row row in Rows)
 			{
-				if (row.Height != 32)
-					row.Height = 32;
+				if (row.Height != rowHeight )
+					row.Height = rowHeight;
 			}
-			rowHeight = 32;
+			
 			EnableDisableHandlers();
 			grid.AllowGridResize = true;
 			LayoutRows();
@@ -854,14 +856,16 @@ namespace Common.Controls.Timeline
 
 		protected override void OnLoad(EventArgs e)
 		{
-			splitContainer.SplitterDistance = InitialSplitterDistance;
 			base.OnLoad(e);
 		}
 
 		protected override void OnLayout(LayoutEventArgs e)
 		{
 			//Console.WriteLine("Layout");
-			timelineRowList.Top = grid.Top;
+			if (grid != null)
+			{
+				timelineRowList.Top = grid.Top;
+			}
 			base.OnLayout(e);
 		}
 

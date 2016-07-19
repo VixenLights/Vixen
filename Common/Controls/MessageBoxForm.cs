@@ -68,14 +68,17 @@ namespace Common.Controls
 
 		private void InitMessageBox(string messageBoxData, string messageBoxTitle)
 		{
+			Height = 0;
+			txtMessage.AutoSize = true;
+			messageIcon.AutoSize = true;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{txtMessage}));
-			txtMessage.AutoSize = true;
 			txtMessage.BackColor = ThemeColorTable.BackgroundColor; //override theme as we are using this as a label.
 			txtMessage.ForeColor = ThemeColorTable.ForeColor;
 			txtMessage.Text = messageBoxData;
 			Text = messageBoxTitle;
+			AdjustHeight();
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
@@ -107,7 +110,7 @@ namespace Common.Controls
 			Close();
 		}
 
-		private void txtMessage_TextChanged(object sender, EventArgs e)
+		private void AdjustHeight()
 		{
 			// amount of padding to add
 			const int padding = 3;

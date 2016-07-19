@@ -46,9 +46,9 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(386, 273);
+			this.buttonCancel.Location = new System.Drawing.Point(450, 315);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(80, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(93, 29);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
@@ -66,9 +66,9 @@
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(300, 273);
+			this.buttonOK.Location = new System.Drawing.Point(350, 315);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(80, 25);
+			this.buttonOK.Size = new System.Drawing.Size(93, 29);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
@@ -82,9 +82,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.listViewColorGradients.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.listViewColorGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.listViewColorGradients.Location = new System.Drawing.Point(12, 12);
+			this.listViewColorGradients.Location = new System.Drawing.Point(14, 14);
 			this.listViewColorGradients.Name = "listViewColorGradients";
-			this.listViewColorGradients.Size = new System.Drawing.Size(454, 249);
+			this.listViewColorGradients.Size = new System.Drawing.Size(529, 287);
 			this.listViewColorGradients.TabIndex = 6;
 			this.listViewColorGradients.UseCompatibleStateImageBehavior = false;
 			this.listViewColorGradients.SelectedIndexChanged += new System.EventHandler(this.listViewColorGradients_SelectedIndexChanged);
@@ -101,9 +101,9 @@
 			this.buttonEditColorGradient.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonEditColorGradient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEditColorGradient.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonEditColorGradient.Location = new System.Drawing.Point(108, 273);
+			this.buttonEditColorGradient.Location = new System.Drawing.Point(126, 315);
 			this.buttonEditColorGradient.Name = "buttonEditColorGradient";
-			this.buttonEditColorGradient.Size = new System.Drawing.Size(90, 25);
+			this.buttonEditColorGradient.Size = new System.Drawing.Size(105, 29);
 			this.buttonEditColorGradient.TabIndex = 7;
 			this.buttonEditColorGradient.Text = "Edit Gradient";
 			this.buttonEditColorGradient.UseVisualStyleBackColor = false;
@@ -122,9 +122,9 @@
 			this.buttonDeleteColorGradient.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonDeleteColorGradient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonDeleteColorGradient.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonDeleteColorGradient.Location = new System.Drawing.Point(204, 273);
+			this.buttonDeleteColorGradient.Location = new System.Drawing.Point(238, 315);
 			this.buttonDeleteColorGradient.Name = "buttonDeleteColorGradient";
-			this.buttonDeleteColorGradient.Size = new System.Drawing.Size(90, 25);
+			this.buttonDeleteColorGradient.Size = new System.Drawing.Size(105, 29);
 			this.buttonDeleteColorGradient.TabIndex = 8;
 			this.buttonDeleteColorGradient.Text = "Delete Gradient";
 			this.buttonDeleteColorGradient.UseVisualStyleBackColor = false;
@@ -142,9 +142,9 @@
 			this.buttonNewColorGradient.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonNewColorGradient.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonNewColorGradient.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonNewColorGradient.Location = new System.Drawing.Point(12, 273);
+			this.buttonNewColorGradient.Location = new System.Drawing.Point(14, 315);
 			this.buttonNewColorGradient.Name = "buttonNewColorGradient";
-			this.buttonNewColorGradient.Size = new System.Drawing.Size(90, 25);
+			this.buttonNewColorGradient.Size = new System.Drawing.Size(105, 29);
 			this.buttonNewColorGradient.TabIndex = 9;
 			this.buttonNewColorGradient.Text = "New Gradient";
 			this.buttonNewColorGradient.UseVisualStyleBackColor = false;
@@ -155,11 +155,12 @@
 			// ColorGradientLibrarySelector
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(478, 310);
+			this.ClientSize = new System.Drawing.Size(558, 359);
 			this.Controls.Add(this.buttonNewColorGradient);
 			this.Controls.Add(this.buttonDeleteColorGradient);
 			this.Controls.Add(this.buttonEditColorGradient);
@@ -167,8 +168,9 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(494, 349);
+			this.MinimumSize = new System.Drawing.Size(574, 397);
 			this.Name = "ColorGradientLibrarySelector";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Color Gradient Library";

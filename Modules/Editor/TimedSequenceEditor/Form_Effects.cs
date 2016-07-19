@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Vixen.Module.Effect;
@@ -20,6 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public Form_Effects(TimelineControl timelineControl)
 		{
+			Font = SystemFonts.MessageBoxFont;
 			InitializeComponent();
 			TimelineControl = timelineControl;
 			ForeColor = ThemeColorTable.ForeColor;
@@ -39,6 +41,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LoadAvailableEffects()
 		{
+			int imageSize = (int)(18 * ScalingTools.GetScaleFactor());
+			effectTreeImages.ImageSize = new Size(imageSize, imageSize);
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
+			effectTreeImages.ImageStream = ((ImageListStreamer)(resources.GetObject("effectTreeImages.ImageStream")));
+			effectTreeImages.TransparentColor = treeEffects.BackColor;
+			effectTreeImages.Images.SetKeyName(0, "rightarrow.png");
+			effectTreeImages.Images.SetKeyName(1, "downarrow.png");
+			treeEffects.ItemHeight = (int)ScalingTools.MeasureHeight(treeEffects.Font, "My Text");
+
 			foreach (
 				IEffectModuleDescriptor effectDesriptor in
 					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
@@ -61,6 +72,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						break;
 				}
 				TreeNode node = new TreeNode(effectDesriptor.EffectName) {Tag = effectDesriptor.TypeId};
+				
 				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
@@ -83,8 +95,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					treeEffects.Nodes[1].Expand();
 				}
 				treeEffects.Nodes[0].EnsureVisible();
-			
 			}
+			
+			
 		}
 
 		#endregion Effect Loading
@@ -211,6 +224,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			node.ImageKey = image;
 			node.SelectedImageKey = node.ImageKey;
+			
 		}
 		
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

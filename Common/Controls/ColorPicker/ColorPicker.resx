@@ -126,7 +126,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 211</value>
+    <value>8, 228</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>296, 1</value>
@@ -157,10 +157,10 @@
     <value>NoControl</value>
   </data>
   <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>216, 219</value>
+    <value>216, 235</value>
   </data>
   <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 24</value>
+    <value>80, 25</value>
   </data>
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -190,10 +190,10 @@
     <value>NoControl</value>
   </data>
   <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>128, 219</value>
+    <value>128, 235</value>
   </data>
   <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>80, 24</value>
+    <value>80, 25</value>
   </data>
   <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -555,6 +555,9 @@
   <data name="&gt;&gt;tbSecond_3.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="lblHSV_H.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="lblHSV_H.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -562,7 +565,7 @@
     <value>280, 8</value>
   </data>
   <data name="lblHSV_H.Size" type="System.Drawing.Size, System.Drawing">
-    <value>16, 20</value>
+    <value>11, 13</value>
   </data>
   <data name="lblHSV_H.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -585,6 +588,9 @@
   <data name="&gt;&gt;lblHSV_H.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="lblHSV_S.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="lblHSV_S.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -592,7 +598,7 @@
     <value>280, 32</value>
   </data>
   <data name="lblHSV_S.Size" type="System.Drawing.Size, System.Drawing">
-    <value>16, 20</value>
+    <value>15, 13</value>
   </data>
   <data name="lblHSV_S.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -615,6 +621,9 @@
   <data name="&gt;&gt;lblHSV_S.ZOrder" xml:space="preserve">
     <value>20</value>
   </data>
+  <data name="lblHSV_V.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="lblHSV_V.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -622,7 +631,7 @@
     <value>280, 56</value>
   </data>
   <data name="lblHSV_V.Size" type="System.Drawing.Size, System.Drawing">
-    <value>16, 20</value>
+    <value>15, 13</value>
   </data>
   <data name="lblHSV_V.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -729,85 +738,6 @@
   <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
   </metadata>
-  <data name="lblColorOut.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
-  <data name="lblColorOut.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 6.75pt</value>
-  </data>
-  <data name="lblColorOut.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 219</value>
-  </data>
-  <data name="lblColorOut.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 24</value>
-  </data>
-  <data name="lblColorOut.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="lblColorOut.ToolTip" xml:space="preserve">
-    <value>Right Click here for more options.
-Left Click and drag outside to pick a color from screen.</value>
-  </data>
-  <data name="&gt;&gt;lblColorOut.Name" xml:space="preserve">
-    <value>lblColorOut</value>
-  </data>
-  <data name="&gt;&gt;lblColorOut.Type" xml:space="preserve">
-    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;lblColorOut.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;lblColorOut.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="colorSelectionFader1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>160, 3</value>
-  </data>
-  <data name="colorSelectionFader1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 158</value>
-  </data>
-  <data name="colorSelectionFader1.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="colorSelectionFader1.ToolTip" xml:space="preserve">
-    <value>Hold down Shift for snap at 10% steps</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionFader1.Name" xml:space="preserve">
-    <value>colorSelectionFader1</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionFader1.Type" xml:space="preserve">
-    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionFader1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionFader1.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
-  <data name="colorSelectionPlane1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 8</value>
-  </data>
-  <data name="colorSelectionPlane1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>148, 148</value>
-  </data>
-  <data name="colorSelectionPlane1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="colorSelectionPlane1.ToolTip" xml:space="preserve">
-    <value>Hold Down Shift for snap to grid</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionPlane1.Name" xml:space="preserve">
-    <value>colorSelectionPlane1</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionPlane1.Type" xml:space="preserve">
-    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionPlane1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;colorSelectionPlane1.ZOrder" xml:space="preserve">
-    <value>13</value>
-  </data>
   <data name="whiteButton.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Popup</value>
   </data>
@@ -920,7 +850,7 @@ Left Click and drag outside to pick a color from screen.</value>
     <value>8, 163</value>
   </data>
   <data name="quickPickBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>272, 42</value>
+    <value>272, 49</value>
   </data>
   <data name="quickPickBox.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -940,14 +870,99 @@ Left Click and drag outside to pick a color from screen.</value>
   <data name="&gt;&gt;quickPickBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="lblColorOut.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="lblColorOut.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 6.75pt</value>
+  </data>
+  <data name="lblColorOut.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 236</value>
+  </data>
+  <data name="lblColorOut.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 24</value>
+  </data>
+  <data name="lblColorOut.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="lblColorOut.ToolTip" xml:space="preserve">
+    <value>Right Click here for more options.
+Left Click and drag outside to pick a color from screen.</value>
+  </data>
+  <data name="&gt;&gt;lblColorOut.Name" xml:space="preserve">
+    <value>lblColorOut</value>
+  </data>
+  <data name="&gt;&gt;lblColorOut.Type" xml:space="preserve">
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorLabel, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lblColorOut.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;lblColorOut.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="colorSelectionFader1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>160, 3</value>
+  </data>
+  <data name="colorSelectionFader1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 158</value>
+  </data>
+  <data name="colorSelectionFader1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="colorSelectionFader1.ToolTip" xml:space="preserve">
+    <value>Hold down Shift for snap at 10% steps</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionFader1.Name" xml:space="preserve">
+    <value>colorSelectionFader1</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionFader1.Type" xml:space="preserve">
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionFader, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionFader1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionFader1.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="colorSelectionPlane1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 8</value>
+  </data>
+  <data name="colorSelectionPlane1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>148, 148</value>
+  </data>
+  <data name="colorSelectionPlane1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="colorSelectionPlane1.ToolTip" xml:space="preserve">
+    <value>Hold Down Shift for snap to grid</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionPlane1.Name" xml:space="preserve">
+    <value>colorSelectionPlane1</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionPlane1.Type" xml:space="preserve">
+    <value>Common.Controls.ColorManagement.ColorPicker.ColorSelectionPlane, Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionPlane1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;colorSelectionPlane1.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleBaseSize" type="System.Drawing.Size, System.Drawing">
     <value>5, 13</value>
   </data>
+  <data name="$this.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>306, 251</value>
+    <value>306, 268</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>

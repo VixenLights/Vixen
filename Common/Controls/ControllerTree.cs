@@ -31,6 +31,8 @@ namespace Common.Controls
 		public ControllerTree()
 		{
 			InitializeComponent();
+			AutoSize = true;
+			treeview.Dock = DockStyle.Fill;
 			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
 		}
 

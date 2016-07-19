@@ -41,7 +41,8 @@ using Common.Controls.Theme;
     using VixenModules.Controller.E131.J1Sys;
     using System.Drawing;
     using System.Linq;
-    using Vixen.Sys;
+using Common.Controls.Scaling;
+using Vixen.Sys;
 
 namespace VixenModules.Output.E131
 {
@@ -100,16 +101,17 @@ namespace VixenModules.Output.E131
 
             // finally initialize the form
             InitializeComponent();
+	        int iconSize = (int)(16*ScalingTools.GetScaleFactor());
 			lblDestination.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 14.25F);
             btnAddUniverse.Text = "";
-            btnAddUniverse.Image = Tools.GetIcon(Resources.add, 16);
+            btnAddUniverse.Image = Tools.GetIcon(Resources.add, iconSize);
             btnDeleteUniverse.Text = "";
-            btnDeleteUniverse.Image = Tools.GetIcon(Resources.delete, 16);
+            btnDeleteUniverse.Image = Tools.GetIcon(Resources.delete, iconSize);
 
             btnAddUnicast.Text = "";
-            btnAddUnicast.Image = Tools.GetIcon(Resources.add, 16);
+            btnAddUnicast.Image = Tools.GetIcon(Resources.add, iconSize);
             btnDeleteUnicast.Text = "";
-            btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, 16);
+            btnDeleteUnicast.Image = Tools.GetIcon(Resources.delete, iconSize);
 			SetDestinations();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -991,14 +993,14 @@ namespace VixenModules.Output.E131
             {
 	            var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
 				style.BackColor = ThemeColorTable.ListBoxHighLightColor;
-				style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Italic);
+				style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.MessageBoxFont, FontStyle.Italic);
 	            univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }
             else
             {
 				var style = univDGVN.Columns[START_COLUMN].DefaultCellStyle;
 				style.BackColor = ThemeColorTable.BackgroundColor;
-                style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.DefaultFont, FontStyle.Regular);
+                style.Font = new Font(univDGVN.Columns[START_COLUMN].DefaultCellStyle.Font ?? SystemFonts.MessageBoxFont, FontStyle.Regular);
 				univDGVN.Columns[START_COLUMN].DefaultCellStyle = style;
             }
 

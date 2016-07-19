@@ -38,9 +38,9 @@
 			// 
 			this.radioAudacityFormat.AutoSize = true;
 			this.radioAudacityFormat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.radioAudacityFormat.Location = new System.Drawing.Point(38, 49);
+			this.radioAudacityFormat.Location = new System.Drawing.Point(44, 57);
 			this.radioAudacityFormat.Name = "radioAudacityFormat";
-			this.radioAudacityFormat.Size = new System.Drawing.Size(98, 17);
+			this.radioAudacityFormat.Size = new System.Drawing.Size(111, 19);
 			this.radioAudacityFormat.TabIndex = 1;
 			this.radioAudacityFormat.TabStop = true;
 			this.radioAudacityFormat.Text = "Audacity format";
@@ -50,9 +50,9 @@
 			// 
 			this.radioVixen3Format.AutoSize = true;
 			this.radioVixen3Format.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.radioVixen3Format.Location = new System.Drawing.Point(38, 27);
+			this.radioVixen3Format.Location = new System.Drawing.Point(44, 31);
 			this.radioVixen3Format.Name = "radioVixen3Format";
-			this.radioVixen3Format.Size = new System.Drawing.Size(92, 17);
+			this.radioVixen3Format.Size = new System.Drawing.Size(101, 19);
 			this.radioVixen3Format.TabIndex = 0;
 			this.radioVixen3Format.TabStop = true;
 			this.radioVixen3Format.Text = "Vixen 3 format";
@@ -65,9 +65,9 @@
 			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(13, 90);
+			this.buttonOK.Location = new System.Drawing.Point(15, 104);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
@@ -81,9 +81,9 @@
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(94, 90);
+			this.buttonCancel.Location = new System.Drawing.Point(110, 104);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
@@ -93,11 +93,12 @@
 			// BeatMarkExportDialog
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(189, 137);
+			this.ClientSize = new System.Drawing.Size(220, 159);
 			this.ControlBox = false;
 			this.Controls.Add(this.radioAudacityFormat);
 			this.Controls.Add(this.buttonCancel);
@@ -105,9 +106,9 @@
 			this.Controls.Add(this.buttonOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(205, 176);
+			this.MaximumSize = new System.Drawing.Size(236, 197);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(205, 176);
+			this.MinimumSize = new System.Drawing.Size(236, 197);
 			this.Name = "BeatMarkExportDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Export Beat Marks";

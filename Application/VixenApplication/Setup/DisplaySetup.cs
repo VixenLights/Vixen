@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Rule;
@@ -35,12 +36,12 @@ namespace VixenApplication
 		public DisplaySetup()
 		{
 			InitializeComponent();
-
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, 16);
+			buttonHelp.Image = Common.Resources.Tools.GetIcon(Resources.help, iconSize);
 			elementLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 			patchingHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
 			controllersHeaderLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 12F);
@@ -52,7 +53,7 @@ namespace VixenApplication
 		private void DisplaySetup_Load(object sender, EventArgs e)
 		{
 			_setupElementsTree = new SetupElementsTree(_elementTemplates, _elementSetupHelpers);
-			//_setupElementsTree.Dock = DockStyle.Fill;
+			_setupElementsTree.Dock = DockStyle.Fill;
 			_setupElementsTree.MasterForm = this;
 
 			_setupPatchingSimple = new SetupPatchingSimple();
@@ -70,7 +71,7 @@ namespace VixenApplication
 			activateElementControl(_setupElementsTree);
 			
 			radioButtonPatchingSimple.Checked = true;
-			splitContainer1.SplitterDistance = elementPanelFlowLayoutPanel.Width + 10;
+			splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 10;
 			splitContainer2.SplitterDistance = patchingPaneFlowLayoutPanel.Width + 6;
 		}
 
@@ -87,8 +88,9 @@ namespace VixenApplication
 			control.ElementSelectionChanged +=  control_ElementSelectionChanged;
 			control.ElementsChanged += control_ElementsChanged;
 
-			tableLayoutPanelElementSetup.Controls.Clear();
-			tableLayoutPanelElementSetup.Controls.Add(control.SetupElementsControl);
+			//tableLayoutPanelElementSetup.Controls.Clear();
+			tableLayoutPanelElementSetup.Controls.Add(control.SetupElementsControl,0,2);
+			
 
 			control.UpdatePatching();
 		}
@@ -171,8 +173,8 @@ namespace VixenApplication
 			control.ControllerSelectionChanged += control_ControllerSelectionChanged;
 			control.ControllersChanged += control_ControllersChanged;
 
-			tableLayoutPanelControllerSetup.Controls.Clear();
-			tableLayoutPanelControllerSetup.Controls.Add(control.SetupControllersControl);
+			//tableLayoutPanelControllerSetup.Controls.Clear();
+			tableLayoutPanelControllerSetup.Controls.Add(control.SetupControllersControl,0,2);
 
 			control.UpdatePatching();
 		}

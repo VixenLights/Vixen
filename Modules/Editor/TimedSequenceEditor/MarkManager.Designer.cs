@@ -159,11 +159,11 @@
 			this.groupBoxMarkCollections.Controls.Add(this.label10);
 			this.groupBoxMarkCollections.Controls.Add(this.listViewMarkCollections);
 			this.groupBoxMarkCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxMarkCollections.Location = new System.Drawing.Point(16, 11);
-			this.groupBoxMarkCollections.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxMarkCollections.Location = new System.Drawing.Point(14, 8);
+			this.groupBoxMarkCollections.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxMarkCollections.Name = "groupBoxMarkCollections";
-			this.groupBoxMarkCollections.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxMarkCollections.Size = new System.Drawing.Size(306, 505);
+			this.groupBoxMarkCollections.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxMarkCollections.Size = new System.Drawing.Size(268, 379);
 			this.groupBoxMarkCollections.TabIndex = 0;
 			this.groupBoxMarkCollections.TabStop = false;
 			this.groupBoxMarkCollections.Text = "Mark Collections";
@@ -175,10 +175,10 @@
 			this.panelMarkCollectionsButtons.Controls.Add(this.buttonRemoveCollection);
 			this.panelMarkCollectionsButtons.Controls.Add(this.buttonImportAudacity);
 			this.panelMarkCollectionsButtons.Controls.Add(this.buttonAddCollection);
-			this.panelMarkCollectionsButtons.Location = new System.Drawing.Point(6, 355);
-			this.panelMarkCollectionsButtons.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panelMarkCollectionsButtons.Location = new System.Drawing.Point(5, 266);
+			this.panelMarkCollectionsButtons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.panelMarkCollectionsButtons.Name = "panelMarkCollectionsButtons";
-			this.panelMarkCollectionsButtons.Size = new System.Drawing.Size(294, 141);
+			this.panelMarkCollectionsButtons.Size = new System.Drawing.Size(257, 106);
 			this.panelMarkCollectionsButtons.TabIndex = 3;
 			this.panelMarkCollectionsButtons.EnabledChanged += new System.EventHandler(this.panelMarkCollectionsButtons_EnabledChanged);
 			// 
@@ -188,10 +188,10 @@
 			this.buttonExportBeatMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonExportBeatMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonExportBeatMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonExportBeatMarks.Location = new System.Drawing.Point(8, 97);
-			this.buttonExportBeatMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonExportBeatMarks.Location = new System.Drawing.Point(7, 73);
+			this.buttonExportBeatMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonExportBeatMarks.Name = "buttonExportBeatMarks";
-			this.buttonExportBeatMarks.Size = new System.Drawing.Size(286, 35);
+			this.buttonExportBeatMarks.Size = new System.Drawing.Size(250, 26);
 			this.buttonExportBeatMarks.TabIndex = 4;
 			this.buttonExportBeatMarks.Text = "Export Beat Marks";
 			this.buttonExportBeatMarks.UseVisualStyleBackColor = false;
@@ -206,10 +206,10 @@
 			this.buttonRemoveCollection.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonRemoveCollection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRemoveCollection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonRemoveCollection.Location = new System.Drawing.Point(152, 5);
-			this.buttonRemoveCollection.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonRemoveCollection.Location = new System.Drawing.Point(133, 4);
+			this.buttonRemoveCollection.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonRemoveCollection.Name = "buttonRemoveCollection";
-			this.buttonRemoveCollection.Size = new System.Drawing.Size(138, 37);
+			this.buttonRemoveCollection.Size = new System.Drawing.Size(121, 28);
 			this.buttonRemoveCollection.TabIndex = 2;
 			this.buttonRemoveCollection.Text = "Remove Collection";
 			this.buttonRemoveCollection.UseVisualStyleBackColor = false;
@@ -223,10 +223,10 @@
 			this.buttonImportAudacity.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonImportAudacity.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonImportAudacity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonImportAudacity.Location = new System.Drawing.Point(8, 52);
-			this.buttonImportAudacity.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonImportAudacity.Location = new System.Drawing.Point(7, 39);
+			this.buttonImportAudacity.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonImportAudacity.Name = "buttonImportAudacity";
-			this.buttonImportAudacity.Size = new System.Drawing.Size(282, 35);
+			this.buttonImportAudacity.Size = new System.Drawing.Size(247, 26);
 			this.buttonImportAudacity.TabIndex = 3;
 			this.buttonImportAudacity.Text = "Import Beat Marks";
 			this.buttonImportAudacity.UseVisualStyleBackColor = false;
@@ -240,10 +240,10 @@
 			this.buttonAddCollection.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonAddCollection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddCollection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonAddCollection.Location = new System.Drawing.Point(8, 5);
-			this.buttonAddCollection.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonAddCollection.Location = new System.Drawing.Point(7, 4);
+			this.buttonAddCollection.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonAddCollection.Name = "buttonAddCollection";
-			this.buttonAddCollection.Size = new System.Drawing.Size(138, 37);
+			this.buttonAddCollection.Size = new System.Drawing.Size(121, 28);
 			this.buttonAddCollection.TabIndex = 1;
 			this.buttonAddCollection.Text = "Add Collection";
 			this.buttonAddCollection.UseVisualStyleBackColor = false;
@@ -254,30 +254,30 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(238, 28);
+			this.label12.Location = new System.Drawing.Point(208, 21);
 			this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(48, 20);
+			this.label12.Size = new System.Drawing.Size(39, 15);
 			this.label12.TabIndex = 7;
 			this.label12.Text = "Marks";
 			// 
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(155, 28);
+			this.label11.Location = new System.Drawing.Point(136, 21);
 			this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(57, 20);
+			this.label11.Size = new System.Drawing.Size(45, 15);
 			this.label11.TabIndex = 6;
 			this.label11.Text = "Weight";
 			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(8, 28);
+			this.label10.Location = new System.Drawing.Point(7, 21);
 			this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(49, 20);
+			this.label10.Size = new System.Drawing.Size(39, 15);
 			this.label10.TabIndex = 5;
 			this.label10.Text = "Name";
 			// 
@@ -292,10 +292,10 @@
 			this.listViewMarkCollections.FullRowSelect = true;
 			this.listViewMarkCollections.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarkCollections.HideSelection = false;
-			this.listViewMarkCollections.Location = new System.Drawing.Point(8, 52);
-			this.listViewMarkCollections.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.listViewMarkCollections.Location = new System.Drawing.Point(7, 39);
+			this.listViewMarkCollections.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.listViewMarkCollections.Name = "listViewMarkCollections";
-			this.listViewMarkCollections.Size = new System.Drawing.Size(294, 297);
+			this.listViewMarkCollections.Size = new System.Drawing.Size(257, 223);
 			this.listViewMarkCollections.TabIndex = 0;
 			this.listViewMarkCollections.UseCompatibleStateImageBehavior = false;
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
@@ -320,15 +320,16 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonOK.AutoSize = true;
 			this.buttonOK.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(749, 885);
-			this.buttonOK.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonOK.Location = new System.Drawing.Point(655, 664);
+			this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(106, 37);
+			this.buttonOK.Size = new System.Drawing.Size(93, 28);
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = false;
@@ -343,11 +344,11 @@
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxOperations);
 			this.groupBoxSelectedMarkCollection.Controls.Add(this.groupBoxMarks);
 			this.groupBoxSelectedMarkCollection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(330, 11);
-			this.groupBoxSelectedMarkCollection.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxSelectedMarkCollection.Location = new System.Drawing.Point(289, 8);
+			this.groupBoxSelectedMarkCollection.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxSelectedMarkCollection.Name = "groupBoxSelectedMarkCollection";
-			this.groupBoxSelectedMarkCollection.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(642, 507);
+			this.groupBoxSelectedMarkCollection.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxSelectedMarkCollection.Size = new System.Drawing.Size(562, 380);
 			this.groupBoxSelectedMarkCollection.TabIndex = 1;
 			this.groupBoxSelectedMarkCollection.TabStop = false;
 			this.groupBoxSelectedMarkCollection.Text = "Selected Collection";
@@ -359,11 +360,11 @@
 			this.groupBoxSelectedMarks.Controls.Add(this.label7);
 			this.groupBoxSelectedMarks.Controls.Add(this.textBoxTimeIncrement);
 			this.groupBoxSelectedMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(410, 403);
-			this.groupBoxSelectedMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxSelectedMarks.Location = new System.Drawing.Point(359, 302);
+			this.groupBoxSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxSelectedMarks.Name = "groupBoxSelectedMarks";
-			this.groupBoxSelectedMarks.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(218, 83);
+			this.groupBoxSelectedMarks.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxSelectedMarks.Size = new System.Drawing.Size(191, 62);
 			this.groupBoxSelectedMarks.TabIndex = 7;
 			this.groupBoxSelectedMarks.TabStop = false;
 			this.groupBoxSelectedMarks.Text = "SelectedMarks";
@@ -373,10 +374,10 @@
 			// 
 			this.panel3.Controls.Add(this.buttonIncreaseSelectedMarks);
 			this.panel3.Controls.Add(this.buttonDecreaseSelectedMarks);
-			this.panel3.Location = new System.Drawing.Point(101, 25);
-			this.panel3.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panel3.Location = new System.Drawing.Point(88, 19);
+			this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(98, 52);
+			this.panel3.Size = new System.Drawing.Size(86, 39);
 			this.panel3.TabIndex = 14;
 			// 
 			// buttonIncreaseSelectedMarks
@@ -386,10 +387,10 @@
 			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonIncreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonIncreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(8, 5);
-			this.buttonIncreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonIncreaseSelectedMarks.Location = new System.Drawing.Point(7, 4);
+			this.buttonIncreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonIncreaseSelectedMarks.Name = "buttonIncreaseSelectedMarks";
-			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(34, 40);
+			this.buttonIncreaseSelectedMarks.Size = new System.Drawing.Size(30, 30);
 			this.buttonIncreaseSelectedMarks.TabIndex = 1;
 			this.buttonIncreaseSelectedMarks.Text = "+";
 			this.buttonIncreaseSelectedMarks.UseVisualStyleBackColor = true;
@@ -402,10 +403,10 @@
 			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonDecreaseSelectedMarks.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonDecreaseSelectedMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(54, 5);
-			this.buttonDecreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonDecreaseSelectedMarks.Location = new System.Drawing.Point(47, 4);
+			this.buttonDecreaseSelectedMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonDecreaseSelectedMarks.Name = "buttonDecreaseSelectedMarks";
-			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(34, 40);
+			this.buttonDecreaseSelectedMarks.Size = new System.Drawing.Size(30, 30);
 			this.buttonDecreaseSelectedMarks.TabIndex = 2;
 			this.buttonDecreaseSelectedMarks.Text = "-";
 			this.buttonDecreaseSelectedMarks.UseVisualStyleBackColor = true;
@@ -414,10 +415,10 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(72, 51);
-			this.label7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label7.Location = new System.Drawing.Point(63, 38);
+			this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(28, 20);
+			this.label7.Size = new System.Drawing.Size(23, 15);
 			this.label7.TabIndex = 13;
 			this.label7.Text = "ms";
 			// 
@@ -426,10 +427,10 @@
 			this.textBoxTimeIncrement.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.textBoxTimeIncrement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxTimeIncrement.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxTimeIncrement.Location = new System.Drawing.Point(18, 37);
-			this.textBoxTimeIncrement.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxTimeIncrement.Location = new System.Drawing.Point(16, 28);
+			this.textBoxTimeIncrement.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxTimeIncrement.Name = "textBoxTimeIncrement";
-			this.textBoxTimeIncrement.Size = new System.Drawing.Size(50, 27);
+			this.textBoxTimeIncrement.Size = new System.Drawing.Size(44, 23);
 			this.textBoxTimeIncrement.TabIndex = 0;
 			this.textBoxTimeIncrement.Text = "10";
 			// 
@@ -445,11 +446,11 @@
 			this.groupBoxDetails.Controls.Add(this.textBoxCollectionName);
 			this.groupBoxDetails.Controls.Add(this.label1);
 			this.groupBoxDetails.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxDetails.Location = new System.Drawing.Point(8, 29);
-			this.groupBoxDetails.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxDetails.Location = new System.Drawing.Point(7, 22);
+			this.groupBoxDetails.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxDetails.Name = "groupBoxDetails";
-			this.groupBoxDetails.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxDetails.Size = new System.Drawing.Size(206, 455);
+			this.groupBoxDetails.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxDetails.Size = new System.Drawing.Size(180, 341);
 			this.groupBoxDetails.TabIndex = 0;
 			this.groupBoxDetails.TabStop = false;
 			this.groupBoxDetails.Text = "Details";
@@ -460,10 +461,9 @@
 			this.checkBoxSolidLine.AutoSize = true;
 			this.checkBoxSolidLine.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.checkBoxSolidLine.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxSolidLine.Location = new System.Drawing.Point(1, 225);
-			this.checkBoxSolidLine.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.checkBoxSolidLine.Location = new System.Drawing.Point(1, 169);
 			this.checkBoxSolidLine.Name = "checkBoxSolidLine";
-			this.checkBoxSolidLine.Size = new System.Drawing.Size(99, 24);
+			this.checkBoxSolidLine.Size = new System.Drawing.Size(80, 19);
 			this.checkBoxSolidLine.TabIndex = 16;
 			this.checkBoxSolidLine.Text = "Solid Line:";
 			this.checkBoxSolidLine.UseVisualStyleBackColor = true;
@@ -474,10 +474,9 @@
 			this.checkBoxBold.AutoSize = true;
 			this.checkBoxBold.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.checkBoxBold.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxBold.Location = new System.Drawing.Point(32, 269);
-			this.checkBoxBold.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.checkBoxBold.Location = new System.Drawing.Point(28, 202);
 			this.checkBoxBold.Name = "checkBoxBold";
-			this.checkBoxBold.Size = new System.Drawing.Size(65, 24);
+			this.checkBoxBold.Size = new System.Drawing.Size(53, 19);
 			this.checkBoxBold.TabIndex = 15;
 			this.checkBoxBold.Text = "Bold:";
 			this.checkBoxBold.UseVisualStyleBackColor = true;
@@ -487,10 +486,10 @@
 			// 
 			this.checkBoxEnabled.AutoSize = true;
 			this.checkBoxEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxEnabled.Location = new System.Drawing.Point(22, 43);
-			this.checkBoxEnabled.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.checkBoxEnabled.Location = new System.Drawing.Point(19, 32);
+			this.checkBoxEnabled.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.checkBoxEnabled.Name = "checkBoxEnabled";
-			this.checkBoxEnabled.Size = new System.Drawing.Size(85, 24);
+			this.checkBoxEnabled.Size = new System.Drawing.Size(68, 19);
 			this.checkBoxEnabled.TabIndex = 0;
 			this.checkBoxEnabled.Text = "Enabled";
 			this.checkBoxEnabled.UseVisualStyleBackColor = true;
@@ -500,20 +499,20 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label3.Location = new System.Drawing.Point(24, 175);
-			this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label3.Location = new System.Drawing.Point(21, 131);
+			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(48, 20);
+			this.label3.Size = new System.Drawing.Size(39, 15);
 			this.label3.TabIndex = 13;
 			this.label3.Text = "Color:";
 			// 
 			// panelColor
 			// 
 			this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panelColor.Location = new System.Drawing.Point(78, 168);
-			this.panelColor.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.panelColor.Location = new System.Drawing.Point(68, 126);
+			this.panelColor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.panelColor.Name = "panelColor";
-			this.panelColor.Size = new System.Drawing.Size(80, 37);
+			this.panelColor.Size = new System.Drawing.Size(70, 28);
 			this.panelColor.TabIndex = 3;
 			this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
 			// 
@@ -521,10 +520,10 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label2.Location = new System.Drawing.Point(10, 131);
-			this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label2.Location = new System.Drawing.Point(9, 98);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(60, 20);
+			this.label2.Size = new System.Drawing.Size(48, 15);
 			this.label2.TabIndex = 11;
 			this.label2.Text = "Weight:";
 			// 
@@ -533,8 +532,8 @@
 			this.numericUpDownWeight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.numericUpDownWeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numericUpDownWeight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.numericUpDownWeight.Location = new System.Drawing.Point(78, 128);
-			this.numericUpDownWeight.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.numericUpDownWeight.Location = new System.Drawing.Point(68, 96);
+			this.numericUpDownWeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.numericUpDownWeight.Maximum = new decimal(new int[] {
             20,
             0,
@@ -546,7 +545,7 @@
             0,
             0});
 			this.numericUpDownWeight.Name = "numericUpDownWeight";
-			this.numericUpDownWeight.Size = new System.Drawing.Size(62, 27);
+			this.numericUpDownWeight.Size = new System.Drawing.Size(54, 23);
 			this.numericUpDownWeight.TabIndex = 2;
 			this.numericUpDownWeight.Value = new decimal(new int[] {
             1,
@@ -560,10 +559,10 @@
 			this.textBoxCollectionName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.textBoxCollectionName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxCollectionName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxCollectionName.Location = new System.Drawing.Point(78, 88);
-			this.textBoxCollectionName.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxCollectionName.Location = new System.Drawing.Point(68, 66);
+			this.textBoxCollectionName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxCollectionName.Name = "textBoxCollectionName";
-			this.textBoxCollectionName.Size = new System.Drawing.Size(114, 27);
+			this.textBoxCollectionName.Size = new System.Drawing.Size(100, 23);
 			this.textBoxCollectionName.TabIndex = 1;
 			this.textBoxCollectionName.TextChanged += new System.EventHandler(this.textBoxCollectionName_TextChanged);
 			// 
@@ -571,10 +570,10 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label1.Location = new System.Drawing.Point(18, 92);
-			this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label1.Location = new System.Drawing.Point(16, 69);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(52, 20);
+			this.label1.Size = new System.Drawing.Size(42, 15);
 			this.label1.TabIndex = 8;
 			this.label1.Text = "Name:";
 			// 
@@ -588,11 +587,11 @@
 			this.groupBoxOperations.Controls.Add(this.buttonGenerateSubmarks);
 			this.groupBoxOperations.Controls.Add(this.buttonEvenlySpaceMarks);
 			this.groupBoxOperations.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxOperations.Location = new System.Drawing.Point(410, 29);
-			this.groupBoxOperations.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxOperations.Location = new System.Drawing.Point(359, 22);
+			this.groupBoxOperations.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxOperations.Name = "groupBoxOperations";
-			this.groupBoxOperations.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxOperations.Size = new System.Drawing.Size(218, 371);
+			this.groupBoxOperations.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxOperations.Size = new System.Drawing.Size(191, 278);
 			this.groupBoxOperations.TabIndex = 2;
 			this.groupBoxOperations.TabStop = false;
 			this.groupBoxOperations.Text = "Operations";
@@ -601,14 +600,15 @@
 			// 
 			// buttonGenerateGrid
 			// 
+			this.buttonGenerateGrid.AutoSize = true;
 			this.buttonGenerateGrid.BackColor = System.Drawing.Color.Transparent;
 			this.buttonGenerateGrid.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonGenerateGrid.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonGenerateGrid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonGenerateGrid.Location = new System.Drawing.Point(10, 312);
-			this.buttonGenerateGrid.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonGenerateGrid.Location = new System.Drawing.Point(9, 234);
+			this.buttonGenerateGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonGenerateGrid.Name = "buttonGenerateGrid";
-			this.buttonGenerateGrid.Size = new System.Drawing.Size(202, 37);
+			this.buttonGenerateGrid.Size = new System.Drawing.Size(177, 28);
 			this.buttonGenerateGrid.TabIndex = 6;
 			this.buttonGenerateGrid.Text = "Generate Grid";
 			this.toolTip1.SetToolTip(this.buttonGenerateGrid, "Generate a \'grid\' of equally space marks across the sequence.");
@@ -619,14 +619,15 @@
 			// 
 			// buttonGenerateBeatMarks
 			// 
+			this.buttonGenerateBeatMarks.AutoSize = true;
 			this.buttonGenerateBeatMarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonGenerateBeatMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonGenerateBeatMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonGenerateBeatMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(10, 265);
-			this.buttonGenerateBeatMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonGenerateBeatMarks.Location = new System.Drawing.Point(9, 199);
+			this.buttonGenerateBeatMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonGenerateBeatMarks.Name = "buttonGenerateBeatMarks";
-			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonGenerateBeatMarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonGenerateBeatMarks.TabIndex = 5;
 			this.buttonGenerateBeatMarks.Text = "Generate beat marks";
 			this.toolTip1.SetToolTip(this.buttonGenerateBeatMarks, "Generate more marks based on the frequency of the selected marks.");
@@ -637,14 +638,15 @@
 			// 
 			// buttonCopyAndOffsetMarks
 			// 
+			this.buttonCopyAndOffsetMarks.AutoSize = true;
 			this.buttonCopyAndOffsetMarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCopyAndOffsetMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCopyAndOffsetMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCopyAndOffsetMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(10, 217);
-			this.buttonCopyAndOffsetMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonCopyAndOffsetMarks.Location = new System.Drawing.Point(9, 163);
+			this.buttonCopyAndOffsetMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonCopyAndOffsetMarks.Name = "buttonCopyAndOffsetMarks";
-			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonCopyAndOffsetMarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonCopyAndOffsetMarks.TabIndex = 4;
 			this.buttonCopyAndOffsetMarks.Text = "Copy && offset marks";
 			this.toolTip1.SetToolTip(this.buttonCopyAndOffsetMarks, "Duplicate the selected marks, offsetting the new ones by a fixed amount of time.");
@@ -655,14 +657,15 @@
 			// 
 			// buttonPasteEffectsToMarks
 			// 
+			this.buttonPasteEffectsToMarks.AutoSize = true;
 			this.buttonPasteEffectsToMarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonPasteEffectsToMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonPasteEffectsToMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonPasteEffectsToMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(10, 172);
-			this.buttonPasteEffectsToMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonPasteEffectsToMarks.Location = new System.Drawing.Point(9, 129);
+			this.buttonPasteEffectsToMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonPasteEffectsToMarks.Name = "buttonPasteEffectsToMarks";
-			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonPasteEffectsToMarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonPasteEffectsToMarks.TabIndex = 3;
 			this.buttonPasteEffectsToMarks.Text = "Paste effect to marks";
 			this.toolTip1.SetToolTip(this.buttonPasteEffectsToMarks, "Place a copy of the effect currently in the paste buffer to begin at each selecte" +
@@ -674,14 +677,15 @@
 			// 
 			// buttonOffsetMarks
 			// 
+			this.buttonOffsetMarks.AutoSize = true;
 			this.buttonOffsetMarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonOffsetMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonOffsetMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOffsetMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOffsetMarks.Location = new System.Drawing.Point(10, 29);
-			this.buttonOffsetMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonOffsetMarks.Location = new System.Drawing.Point(9, 22);
+			this.buttonOffsetMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonOffsetMarks.Name = "buttonOffsetMarks";
-			this.buttonOffsetMarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonOffsetMarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonOffsetMarks.TabIndex = 0;
 			this.buttonOffsetMarks.Text = "Offset marks";
 			this.toolTip1.SetToolTip(this.buttonOffsetMarks, "Adjust selected marks left or right a fixed amount of time.");
@@ -692,14 +696,15 @@
 			// 
 			// buttonGenerateSubmarks
 			// 
+			this.buttonGenerateSubmarks.AutoSize = true;
 			this.buttonGenerateSubmarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonGenerateSubmarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonGenerateSubmarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonGenerateSubmarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonGenerateSubmarks.Location = new System.Drawing.Point(10, 125);
-			this.buttonGenerateSubmarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonGenerateSubmarks.Location = new System.Drawing.Point(9, 94);
+			this.buttonGenerateSubmarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonGenerateSubmarks.Name = "buttonGenerateSubmarks";
-			this.buttonGenerateSubmarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonGenerateSubmarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonGenerateSubmarks.TabIndex = 2;
 			this.buttonGenerateSubmarks.Text = "Generate submarks";
 			this.toolTip1.SetToolTip(this.buttonGenerateSubmarks, "Create new marks by subdividing regions of other marks (select at least 2).");
@@ -710,14 +715,15 @@
 			// 
 			// buttonEvenlySpaceMarks
 			// 
+			this.buttonEvenlySpaceMarks.AutoSize = true;
 			this.buttonEvenlySpaceMarks.BackColor = System.Drawing.Color.Transparent;
 			this.buttonEvenlySpaceMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonEvenlySpaceMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonEvenlySpaceMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonEvenlySpaceMarks.Location = new System.Drawing.Point(10, 77);
-			this.buttonEvenlySpaceMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonEvenlySpaceMarks.Location = new System.Drawing.Point(9, 58);
+			this.buttonEvenlySpaceMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonEvenlySpaceMarks.Name = "buttonEvenlySpaceMarks";
-			this.buttonEvenlySpaceMarks.Size = new System.Drawing.Size(202, 37);
+			this.buttonEvenlySpaceMarks.Size = new System.Drawing.Size(177, 28);
 			this.buttonEvenlySpaceMarks.TabIndex = 1;
 			this.buttonEvenlySpaceMarks.Text = "Evenly space marks";
 			this.toolTip1.SetToolTip(this.buttonEvenlySpaceMarks, "Evenly space out the selected marks (choose at least 3 marks).");
@@ -733,11 +739,11 @@
 			this.groupBoxMarks.Controls.Add(this.textBoxTime);
 			this.groupBoxMarks.Controls.Add(this.buttonSelectAllMarks);
 			this.groupBoxMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBoxMarks.Location = new System.Drawing.Point(222, 29);
-			this.groupBoxMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxMarks.Location = new System.Drawing.Point(194, 22);
+			this.groupBoxMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxMarks.Name = "groupBoxMarks";
-			this.groupBoxMarks.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxMarks.Size = new System.Drawing.Size(182, 455);
+			this.groupBoxMarks.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxMarks.Size = new System.Drawing.Size(159, 341);
 			this.groupBoxMarks.TabIndex = 1;
 			this.groupBoxMarks.TabStop = false;
 			this.groupBoxMarks.Text = "Marks";
@@ -752,10 +758,10 @@
 			this.listViewMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewMarks.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listViewMarks.HideSelection = false;
-			this.listViewMarks.Location = new System.Drawing.Point(8, 29);
-			this.listViewMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.listViewMarks.Location = new System.Drawing.Point(7, 22);
+			this.listViewMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.listViewMarks.Name = "listViewMarks";
-			this.listViewMarks.Size = new System.Drawing.Size(168, 312);
+			this.listViewMarks.Size = new System.Drawing.Size(147, 234);
 			this.listViewMarks.TabIndex = 0;
 			this.listViewMarks.UseCompatibleStateImageBehavior = false;
 			this.listViewMarks.View = System.Windows.Forms.View.Details;
@@ -772,10 +778,10 @@
 			this.buttonAddOrUpdateMark.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonAddOrUpdateMark.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonAddOrUpdateMark.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(96, 349);
-			this.buttonAddOrUpdateMark.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonAddOrUpdateMark.Location = new System.Drawing.Point(84, 262);
+			this.buttonAddOrUpdateMark.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonAddOrUpdateMark.Name = "buttonAddOrUpdateMark";
-			this.buttonAddOrUpdateMark.Size = new System.Drawing.Size(78, 37);
+			this.buttonAddOrUpdateMark.Size = new System.Drawing.Size(68, 28);
 			this.buttonAddOrUpdateMark.TabIndex = 2;
 			this.buttonAddOrUpdateMark.Text = "Add";
 			this.buttonAddOrUpdateMark.UseVisualStyleBackColor = false;
@@ -788,10 +794,10 @@
 			this.textBoxTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.textBoxTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxTime.Location = new System.Drawing.Point(8, 355);
-			this.textBoxTime.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxTime.Location = new System.Drawing.Point(7, 266);
+			this.textBoxTime.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxTime.Name = "textBoxTime";
-			this.textBoxTime.Size = new System.Drawing.Size(77, 27);
+			this.textBoxTime.Size = new System.Drawing.Size(68, 23);
 			this.textBoxTime.TabIndex = 1;
 			// 
 			// buttonSelectAllMarks
@@ -800,10 +806,10 @@
 			this.buttonSelectAllMarks.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonSelectAllMarks.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonSelectAllMarks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonSelectAllMarks.Location = new System.Drawing.Point(8, 397);
-			this.buttonSelectAllMarks.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonSelectAllMarks.Location = new System.Drawing.Point(7, 298);
+			this.buttonSelectAllMarks.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonSelectAllMarks.Name = "buttonSelectAllMarks";
-			this.buttonSelectAllMarks.Size = new System.Drawing.Size(166, 37);
+			this.buttonSelectAllMarks.Size = new System.Drawing.Size(145, 28);
 			this.buttonSelectAllMarks.TabIndex = 3;
 			this.buttonSelectAllMarks.Text = "Select All";
 			this.buttonSelectAllMarks.UseVisualStyleBackColor = false;
@@ -814,15 +820,16 @@
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonCancel.AutoSize = true;
 			this.buttonCancel.BackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.buttonCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(863, 885);
-			this.buttonCancel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonCancel.Location = new System.Drawing.Point(755, 664);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(106, 37);
+			this.buttonCancel.Size = new System.Drawing.Size(93, 28);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = false;
@@ -837,9 +844,10 @@
 			this.buttonRestartPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonRestartPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonRestartPlay.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.buttonRestartPlay.Location = new System.Drawing.Point(8, 19);
+			this.buttonRestartPlay.Location = new System.Drawing.Point(7, 14);
+			this.buttonRestartPlay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.buttonRestartPlay.Name = "buttonRestartPlay";
-			this.buttonRestartPlay.Size = new System.Drawing.Size(34, 40);
+			this.buttonRestartPlay.Size = new System.Drawing.Size(30, 30);
 			this.buttonRestartPlay.TabIndex = 2;
 			this.buttonRestartPlay.Text = "Jump to Start";
 			this.toolTip1.SetToolTip(this.buttonRestartPlay, "Jump to Start");
@@ -866,11 +874,11 @@
 			this.groupBoxPlayback.Controls.Add(this.textBoxCurrentMark);
 			this.groupBoxPlayback.Controls.Add(this.groupBoxMode);
 			this.groupBoxPlayback.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.groupBoxPlayback.Location = new System.Drawing.Point(16, 523);
-			this.groupBoxPlayback.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxPlayback.Location = new System.Drawing.Point(14, 392);
+			this.groupBoxPlayback.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxPlayback.Name = "groupBoxPlayback";
-			this.groupBoxPlayback.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxPlayback.Size = new System.Drawing.Size(955, 352);
+			this.groupBoxPlayback.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxPlayback.Size = new System.Drawing.Size(836, 264);
 			this.groupBoxPlayback.TabIndex = 2;
 			this.groupBoxPlayback.TabStop = false;
 			this.groupBoxPlayback.Text = "Playback";
@@ -881,45 +889,45 @@
 			this.delayStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.delayStart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.delayStart.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.delayStart.Location = new System.Drawing.Point(251, 43);
-			this.delayStart.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.delayStart.Location = new System.Drawing.Point(220, 32);
+			this.delayStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.delayStart.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
 			this.delayStart.Name = "delayStart";
-			this.delayStart.Size = new System.Drawing.Size(43, 27);
+			this.delayStart.Size = new System.Drawing.Size(38, 23);
 			this.delayStart.TabIndex = 3;
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.label4.Location = new System.Drawing.Point(167, 47);
-			this.label4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label4.Location = new System.Drawing.Point(146, 35);
+			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(85, 20);
+			this.label4.Size = new System.Drawing.Size(66, 15);
 			this.label4.TabIndex = 19;
 			this.label4.Text = "Start Delay:";
 			// 
 			// panel4
 			// 
 			this.panel4.Controls.Add(this.labelTapperInstructions);
-			this.panel4.Location = new System.Drawing.Point(22, 305);
-			this.panel4.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panel4.Location = new System.Drawing.Point(19, 229);
+			this.panel4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(360, 29);
+			this.panel4.Size = new System.Drawing.Size(315, 22);
 			this.panel4.TabIndex = 17;
 			// 
 			// labelTapperInstructions
 			// 
 			this.labelTapperInstructions.AutoSize = true;
 			this.labelTapperInstructions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelTapperInstructions.Location = new System.Drawing.Point(5, 5);
-			this.labelTapperInstructions.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.labelTapperInstructions.Location = new System.Drawing.Point(4, 4);
+			this.labelTapperInstructions.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelTapperInstructions.Name = "labelTapperInstructions";
-			this.labelTapperInstructions.Size = new System.Drawing.Size(342, 20);
+			this.labelTapperInstructions.Size = new System.Drawing.Size(271, 15);
 			this.labelTapperInstructions.TabIndex = 14;
 			this.labelTapperInstructions.Text = "Click the box or use the spacebar to create a mark.";
 			// 
@@ -927,10 +935,10 @@
 			// 
 			this.panel2.Controls.Add(this.buttonIncreasePlaybackSpeed);
 			this.panel2.Controls.Add(this.buttonDecreasePlaySpeed);
-			this.panel2.Location = new System.Drawing.Point(543, 28);
-			this.panel2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panel2.Location = new System.Drawing.Point(475, 21);
+			this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(98, 59);
+			this.panel2.Size = new System.Drawing.Size(86, 44);
 			this.panel2.TabIndex = 16;
 			// 
 			// buttonIncreasePlaybackSpeed
@@ -941,10 +949,10 @@
 			this.buttonIncreasePlaybackSpeed.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonIncreasePlaybackSpeed.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonIncreasePlaybackSpeed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(6, 8);
-			this.buttonIncreasePlaybackSpeed.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonIncreasePlaybackSpeed.Location = new System.Drawing.Point(5, 6);
+			this.buttonIncreasePlaybackSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonIncreasePlaybackSpeed.Name = "buttonIncreasePlaybackSpeed";
-			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(34, 40);
+			this.buttonIncreasePlaybackSpeed.Size = new System.Drawing.Size(30, 30);
 			this.buttonIncreasePlaybackSpeed.TabIndex = 5;
 			this.buttonIncreasePlaybackSpeed.Text = "+";
 			this.buttonIncreasePlaybackSpeed.UseVisualStyleBackColor = false;
@@ -958,10 +966,10 @@
 			this.buttonDecreasePlaySpeed.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonDecreasePlaySpeed.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonDecreasePlaySpeed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(53, 8);
-			this.buttonDecreasePlaySpeed.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonDecreasePlaySpeed.Location = new System.Drawing.Point(46, 6);
+			this.buttonDecreasePlaySpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonDecreasePlaySpeed.Name = "buttonDecreasePlaySpeed";
-			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(34, 40);
+			this.buttonDecreasePlaySpeed.Size = new System.Drawing.Size(30, 30);
 			this.buttonDecreasePlaySpeed.TabIndex = 6;
 			this.buttonDecreasePlaySpeed.Text = "-";
 			this.buttonDecreasePlaySpeed.UseVisualStyleBackColor = false;
@@ -972,10 +980,10 @@
 			this.panel1.Controls.Add(this.buttonPlay);
 			this.panel1.Controls.Add(this.buttonRestartPlay);
 			this.panel1.Controls.Add(this.buttonStop);
-			this.panel1.Location = new System.Drawing.Point(14, 21);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panel1.Location = new System.Drawing.Point(12, 16);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(153, 65);
+			this.panel1.Size = new System.Drawing.Size(134, 49);
 			this.panel1.TabIndex = 15;
 			// 
 			// buttonPlay
@@ -985,10 +993,10 @@
 			this.buttonPlay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonPlay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonPlay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonPlay.Location = new System.Drawing.Point(57, 19);
-			this.buttonPlay.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonPlay.Location = new System.Drawing.Point(50, 14);
+			this.buttonPlay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonPlay.Name = "buttonPlay";
-			this.buttonPlay.Size = new System.Drawing.Size(34, 40);
+			this.buttonPlay.Size = new System.Drawing.Size(30, 30);
 			this.buttonPlay.TabIndex = 0;
 			this.buttonPlay.Text = "Play";
 			this.buttonPlay.UseVisualStyleBackColor = false;
@@ -1002,10 +1010,10 @@
 			this.buttonStop.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonStop.Location = new System.Drawing.Point(110, 19);
-			this.buttonStop.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.buttonStop.Location = new System.Drawing.Point(96, 14);
+			this.buttonStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.buttonStop.Name = "buttonStop";
-			this.buttonStop.Size = new System.Drawing.Size(34, 40);
+			this.buttonStop.Size = new System.Drawing.Size(30, 30);
 			this.buttonStop.TabIndex = 1;
 			this.buttonStop.Text = "Stop";
 			this.buttonStop.UseVisualStyleBackColor = false;
@@ -1021,11 +1029,11 @@
 			this.groupBoxFreqDetection.Controls.Add(this.btnAutoDetectionSettings);
 			this.groupBoxFreqDetection.Controls.Add(this.ChkAutoTapper);
 			this.groupBoxFreqDetection.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.groupBoxFreqDetection.Location = new System.Drawing.Point(389, 155);
-			this.groupBoxFreqDetection.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxFreqDetection.Location = new System.Drawing.Point(340, 116);
+			this.groupBoxFreqDetection.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxFreqDetection.Name = "groupBoxFreqDetection";
-			this.groupBoxFreqDetection.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxFreqDetection.Size = new System.Drawing.Size(235, 181);
+			this.groupBoxFreqDetection.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxFreqDetection.Size = new System.Drawing.Size(206, 136);
 			this.groupBoxFreqDetection.TabIndex = 8;
 			this.groupBoxFreqDetection.TabStop = false;
 			this.groupBoxFreqDetection.Text = "Automatic Frequency Detection";
@@ -1037,10 +1045,10 @@
 			this.btnCreateCollections.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.btnCreateCollections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCreateCollections.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnCreateCollections.Location = new System.Drawing.Point(120, 137);
-			this.btnCreateCollections.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.btnCreateCollections.Location = new System.Drawing.Point(105, 103);
+			this.btnCreateCollections.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.btnCreateCollections.Name = "btnCreateCollections";
-			this.btnCreateCollections.Size = new System.Drawing.Size(101, 35);
+			this.btnCreateCollections.Size = new System.Drawing.Size(88, 26);
 			this.btnCreateCollections.TabIndex = 4;
 			this.btnCreateCollections.Text = "Create";
 			this.btnCreateCollections.UseVisualStyleBackColor = false;
@@ -1052,30 +1060,30 @@
 			// 
 			this.label9.AutoSize = true;
 			this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label9.Location = new System.Drawing.Point(10, 80);
-			this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label9.Location = new System.Drawing.Point(9, 60);
+			this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(167, 20);
+			this.label9.Size = new System.Drawing.Size(134, 15);
 			this.label9.TabIndex = 22;
 			this.label9.Text = "Create Collection(s) For:";
 			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(11, 60);
-			this.label8.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label8.Location = new System.Drawing.Point(10, 45);
+			this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(9, 20);
+			this.label8.Size = new System.Drawing.Size(7, 15);
 			this.label8.TabIndex = 18;
 			this.label8.Text = "\t";
 			// 
 			// radioSelected
 			// 
 			this.radioSelected.AutoSize = true;
-			this.radioSelected.Location = new System.Drawing.Point(70, 109);
-			this.radioSelected.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.radioSelected.Location = new System.Drawing.Point(61, 82);
+			this.radioSelected.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.radioSelected.Name = "radioSelected";
-			this.radioSelected.Size = new System.Drawing.Size(87, 24);
+			this.radioSelected.Size = new System.Drawing.Size(69, 19);
 			this.radioSelected.TabIndex = 3;
 			this.radioSelected.Text = "Selected";
 			this.radioSelected.UseVisualStyleBackColor = true;
@@ -1084,10 +1092,10 @@
 			// 
 			this.radioAll.AutoSize = true;
 			this.radioAll.Checked = true;
-			this.radioAll.Location = new System.Drawing.Point(14, 109);
-			this.radioAll.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.radioAll.Location = new System.Drawing.Point(12, 82);
+			this.radioAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.radioAll.Name = "radioAll";
-			this.radioAll.Size = new System.Drawing.Size(48, 24);
+			this.radioAll.Size = new System.Drawing.Size(39, 19);
 			this.radioAll.TabIndex = 2;
 			this.radioAll.TabStop = true;
 			this.radioAll.Text = "All";
@@ -1099,10 +1107,10 @@
 			this.btnAutoDetectionSettings.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.btnAutoDetectionSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnAutoDetectionSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(120, 29);
-			this.btnAutoDetectionSettings.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.btnAutoDetectionSettings.Location = new System.Drawing.Point(105, 22);
+			this.btnAutoDetectionSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.btnAutoDetectionSettings.Name = "btnAutoDetectionSettings";
-			this.btnAutoDetectionSettings.Size = new System.Drawing.Size(101, 35);
+			this.btnAutoDetectionSettings.Size = new System.Drawing.Size(88, 26);
 			this.btnAutoDetectionSettings.TabIndex = 1;
 			this.btnAutoDetectionSettings.Text = "Settings";
 			this.btnAutoDetectionSettings.UseVisualStyleBackColor = false;
@@ -1114,10 +1122,10 @@
 			// 
 			this.ChkAutoTapper.AutoSize = true;
 			this.ChkAutoTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.ChkAutoTapper.Location = new System.Drawing.Point(14, 40);
-			this.ChkAutoTapper.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.ChkAutoTapper.Location = new System.Drawing.Point(12, 30);
+			this.ChkAutoTapper.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.ChkAutoTapper.Name = "ChkAutoTapper";
-			this.ChkAutoTapper.Size = new System.Drawing.Size(85, 24);
+			this.ChkAutoTapper.Size = new System.Drawing.Size(68, 19);
 			this.ChkAutoTapper.TabIndex = 0;
 			this.ChkAutoTapper.Text = "Enabled";
 			this.ChkAutoTapper.UseVisualStyleBackColor = true;
@@ -1130,11 +1138,11 @@
 			this.groupBoxAudioFilter.Controls.Add(this.chkHighPass);
 			this.groupBoxAudioFilter.Controls.Add(this.chkLowPass);
 			this.groupBoxAudioFilter.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.groupBoxAudioFilter.Location = new System.Drawing.Point(634, 155);
-			this.groupBoxAudioFilter.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxAudioFilter.Location = new System.Drawing.Point(555, 116);
+			this.groupBoxAudioFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxAudioFilter.Name = "groupBoxAudioFilter";
-			this.groupBoxAudioFilter.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxAudioFilter.Size = new System.Drawing.Size(306, 115);
+			this.groupBoxAudioFilter.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxAudioFilter.Size = new System.Drawing.Size(268, 86);
 			this.groupBoxAudioFilter.TabIndex = 9;
 			this.groupBoxAudioFilter.TabStop = false;
 			this.groupBoxAudioFilter.Text = "Audio Filter";
@@ -1145,8 +1153,8 @@
 			this.numHighPass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.numHighPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numHighPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.numHighPass.Location = new System.Drawing.Point(126, 69);
-			this.numHighPass.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.numHighPass.Location = new System.Drawing.Point(110, 52);
+			this.numHighPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.numHighPass.Maximum = new decimal(new int[] {
             22000,
             0,
@@ -1158,7 +1166,7 @@
             0,
             0});
 			this.numHighPass.Name = "numHighPass";
-			this.numHighPass.Size = new System.Drawing.Size(160, 27);
+			this.numHighPass.Size = new System.Drawing.Size(140, 23);
 			this.numHighPass.TabIndex = 3;
 			this.numHighPass.Value = new decimal(new int[] {
             5000,
@@ -1172,15 +1180,15 @@
 			this.numLowPass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.numLowPass.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.numLowPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.numLowPass.Location = new System.Drawing.Point(126, 29);
-			this.numLowPass.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.numLowPass.Location = new System.Drawing.Point(110, 22);
+			this.numLowPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.numLowPass.Maximum = new decimal(new int[] {
             22000,
             0,
             0,
             0});
 			this.numLowPass.Name = "numLowPass";
-			this.numLowPass.Size = new System.Drawing.Size(160, 27);
+			this.numLowPass.Size = new System.Drawing.Size(140, 23);
 			this.numLowPass.TabIndex = 1;
 			this.numLowPass.Value = new decimal(new int[] {
             5000,
@@ -1193,10 +1201,10 @@
 			// 
 			this.chkHighPass.AutoSize = true;
 			this.chkHighPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.chkHighPass.Location = new System.Drawing.Point(21, 69);
-			this.chkHighPass.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.chkHighPass.Location = new System.Drawing.Point(18, 52);
+			this.chkHighPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.chkHighPass.Name = "chkHighPass";
-			this.chkHighPass.Size = new System.Drawing.Size(95, 24);
+			this.chkHighPass.Size = new System.Drawing.Size(78, 19);
 			this.chkHighPass.TabIndex = 2;
 			this.chkHighPass.Text = "High Pass";
 			this.chkHighPass.UseVisualStyleBackColor = true;
@@ -1206,10 +1214,10 @@
 			// 
 			this.chkLowPass.AutoSize = true;
 			this.chkLowPass.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.chkLowPass.Location = new System.Drawing.Point(21, 29);
-			this.chkLowPass.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.chkLowPass.Location = new System.Drawing.Point(18, 22);
+			this.chkLowPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.chkLowPass.Name = "chkLowPass";
-			this.chkLowPass.Size = new System.Drawing.Size(90, 24);
+			this.chkLowPass.Size = new System.Drawing.Size(74, 19);
 			this.chkLowPass.TabIndex = 0;
 			this.chkLowPass.Text = "Low Pass";
 			this.chkLowPass.UseVisualStyleBackColor = true;
@@ -1219,19 +1227,19 @@
 			// 
 			this.label6.AutoSize = true;
 			this.label6.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.label6.Location = new System.Drawing.Point(352, 45);
-			this.label6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label6.Location = new System.Drawing.Point(308, 34);
+			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(104, 20);
+			this.label6.Size = new System.Drawing.Size(83, 15);
 			this.label6.TabIndex = 12;
 			this.label6.Text = "Timing Speed:";
 			// 
 			// trackBarPlayBack
 			// 
-			this.trackBarPlayBack.Location = new System.Drawing.Point(8, 100);
-			this.trackBarPlayBack.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.trackBarPlayBack.Location = new System.Drawing.Point(7, 75);
+			this.trackBarPlayBack.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.trackBarPlayBack.Name = "trackBarPlayBack";
-			this.trackBarPlayBack.Size = new System.Drawing.Size(938, 56);
+			this.trackBarPlayBack.Size = new System.Drawing.Size(821, 45);
 			this.trackBarPlayBack.TabIndex = 8;
 			this.trackBarPlayBack.Scroll += new System.EventHandler(this.trackBarPlayBack_Scroll);
 			this.trackBarPlayBack.MouseUp += new System.Windows.Forms.MouseEventHandler(this.trackBarPlayBack_MouseUp);
@@ -1241,10 +1249,10 @@
 			this.textBoxTimingSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.textBoxTimingSpeed.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxTimingSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxTimingSpeed.Location = new System.Drawing.Point(456, 43);
-			this.textBoxTimingSpeed.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxTimingSpeed.Location = new System.Drawing.Point(399, 32);
+			this.textBoxTimingSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxTimingSpeed.Name = "textBoxTimingSpeed";
-			this.textBoxTimingSpeed.Size = new System.Drawing.Size(76, 27);
+			this.textBoxTimingSpeed.Size = new System.Drawing.Size(67, 23);
 			this.textBoxTimingSpeed.TabIndex = 4;
 			// 
 			// textBoxPosition
@@ -1252,21 +1260,21 @@
 			this.textBoxPosition.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.textBoxPosition.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxPosition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxPosition.Location = new System.Drawing.Point(797, 43);
-			this.textBoxPosition.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxPosition.Location = new System.Drawing.Point(697, 32);
+			this.textBoxPosition.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxPosition.Name = "textBoxPosition";
 			this.textBoxPosition.ReadOnly = true;
-			this.textBoxPosition.Size = new System.Drawing.Size(119, 27);
+			this.textBoxPosition.Size = new System.Drawing.Size(104, 23);
 			this.textBoxPosition.TabIndex = 7;
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
 			this.label5.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.label5.Location = new System.Drawing.Point(677, 48);
-			this.label5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.label5.Location = new System.Drawing.Point(592, 36);
+			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(117, 20);
+			this.label5.Size = new System.Drawing.Size(96, 15);
 			this.label5.TabIndex = 7;
 			this.label5.Text = "Current Position:";
 			// 
@@ -1274,10 +1282,10 @@
 			// 
 			this.panelMarkView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelMarkView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.panelMarkView.Location = new System.Drawing.Point(146, 179);
-			this.panelMarkView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.panelMarkView.Location = new System.Drawing.Point(128, 134);
+			this.panelMarkView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.panelMarkView.Name = "panelMarkView";
-			this.panelMarkView.Size = new System.Drawing.Size(196, 111);
+			this.panelMarkView.Size = new System.Drawing.Size(172, 84);
 			this.panelMarkView.TabIndex = 8;
 			this.panelMarkView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelMarkView_MouseDown);
 			// 
@@ -1285,10 +1293,10 @@
 			// 
 			this.lblLastMarkHit.AutoSize = true;
 			this.lblLastMarkHit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.lblLastMarkHit.Location = new System.Drawing.Point(677, 309);
-			this.lblLastMarkHit.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+			this.lblLastMarkHit.Location = new System.Drawing.Point(592, 232);
+			this.lblLastMarkHit.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblLastMarkHit.Name = "lblLastMarkHit";
-			this.lblLastMarkHit.Size = new System.Drawing.Size(99, 20);
+			this.lblLastMarkHit.Size = new System.Drawing.Size(80, 15);
 			this.lblLastMarkHit.TabIndex = 4;
 			this.lblLastMarkHit.Text = "Last Mark Hit:";
 			// 
@@ -1297,11 +1305,11 @@
 			this.textBoxCurrentMark.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.textBoxCurrentMark.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxCurrentMark.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.textBoxCurrentMark.Location = new System.Drawing.Point(782, 305);
-			this.textBoxCurrentMark.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.textBoxCurrentMark.Location = new System.Drawing.Point(684, 229);
+			this.textBoxCurrentMark.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.textBoxCurrentMark.Name = "textBoxCurrentMark";
 			this.textBoxCurrentMark.ReadOnly = true;
-			this.textBoxCurrentMark.Size = new System.Drawing.Size(119, 27);
+			this.textBoxCurrentMark.Size = new System.Drawing.Size(104, 23);
 			this.textBoxCurrentMark.TabIndex = 10;
 			// 
 			// groupBoxMode
@@ -1309,11 +1317,11 @@
 			this.groupBoxMode.Controls.Add(this.radioButtonPlayback);
 			this.groupBoxMode.Controls.Add(this.radioButtonTapper);
 			this.groupBoxMode.ForeColor = System.Drawing.Color.WhiteSmoke;
-			this.groupBoxMode.Location = new System.Drawing.Point(22, 171);
-			this.groupBoxMode.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.groupBoxMode.Location = new System.Drawing.Point(19, 128);
+			this.groupBoxMode.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.groupBoxMode.Name = "groupBoxMode";
-			this.groupBoxMode.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
-			this.groupBoxMode.Size = new System.Drawing.Size(118, 120);
+			this.groupBoxMode.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.groupBoxMode.Size = new System.Drawing.Size(103, 90);
 			this.groupBoxMode.TabIndex = 7;
 			this.groupBoxMode.TabStop = false;
 			this.groupBoxMode.Text = "Mode";
@@ -1325,10 +1333,10 @@
 			this.radioButtonPlayback.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.radioButtonPlayback.Checked = true;
 			this.radioButtonPlayback.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.radioButtonPlayback.Location = new System.Drawing.Point(11, 37);
-			this.radioButtonPlayback.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.radioButtonPlayback.Location = new System.Drawing.Point(10, 28);
+			this.radioButtonPlayback.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.radioButtonPlayback.Name = "radioButtonPlayback";
-			this.radioButtonPlayback.Size = new System.Drawing.Size(88, 24);
+			this.radioButtonPlayback.Size = new System.Drawing.Size(72, 19);
 			this.radioButtonPlayback.TabIndex = 1;
 			this.radioButtonPlayback.TabStop = true;
 			this.radioButtonPlayback.Text = "Playback";
@@ -1339,10 +1347,10 @@
 			this.radioButtonTapper.AutoSize = true;
 			this.radioButtonTapper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.radioButtonTapper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.radioButtonTapper.Location = new System.Drawing.Point(11, 72);
-			this.radioButtonTapper.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.radioButtonTapper.Location = new System.Drawing.Point(10, 54);
+			this.radioButtonTapper.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.radioButtonTapper.Name = "radioButtonTapper";
-			this.radioButtonTapper.Size = new System.Drawing.Size(77, 24);
+			this.radioButtonTapper.Size = new System.Drawing.Size(62, 19);
 			this.radioButtonTapper.TabIndex = 0;
 			this.radioButtonTapper.Text = "Tapper";
 			this.radioButtonTapper.UseVisualStyleBackColor = false;
@@ -1370,11 +1378,12 @@
 			// MarkManager
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(979, 917);
+			this.ClientSize = new System.Drawing.Size(858, 694);
 			this.Controls.Add(this.groupBoxPlayback);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.groupBoxSelectedMarkCollection);
@@ -1384,11 +1393,10 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
-			this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(997, 964);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(997, 964);
+			this.MinimumSize = new System.Drawing.Size(874, 732);
 			this.Name = "MarkManager";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -1408,6 +1416,7 @@
 			this.groupBoxDetails.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWeight)).EndInit();
 			this.groupBoxOperations.ResumeLayout(false);
+			this.groupBoxOperations.PerformLayout();
 			this.groupBoxMarks.ResumeLayout(false);
 			this.groupBoxMarks.PerformLayout();
 			this.groupBoxPlayback.ResumeLayout(false);
@@ -1427,6 +1436,7 @@
 			this.groupBoxMode.ResumeLayout(false);
 			this.groupBoxMode.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
