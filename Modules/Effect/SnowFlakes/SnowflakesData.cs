@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Snowflakes
 {
 	[DataContract]
-	public class SnowflakesData: ModuleDataModelBase
+	public class SnowflakesData : EffectTypeModuleData
 	{
 
 		public SnowflakesData()
@@ -94,7 +94,7 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SnowflakesData result = new SnowflakesData
 			{
