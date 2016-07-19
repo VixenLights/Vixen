@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Tree
 {
 	[DataContract]
-	public class TreeData: ModuleDataModelBase
+	public class TreeData : EffectTypeModuleData
 	{
 
 		public TreeData()
@@ -62,7 +62,7 @@ namespace VixenModules.Effect.Tree
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			TreeData result = new TreeData
 			{

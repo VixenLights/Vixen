@@ -106,9 +106,9 @@
       <Name>EffectDescriptorAttributes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Pixel\Pixel.csproj">
-      <Project>{4ed66b3a-e4c0-40c5-b19f-67b8486121ca}</Project>
-      <Name>Pixel</Name>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{AF76C902-A776-49C3-9019-D7CB0A53FB2F}</Project>
+      <Name>Effect</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
