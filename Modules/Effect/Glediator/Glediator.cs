@@ -10,7 +10,7 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using Vixen.Sys.State.Execution;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Glediator
@@ -155,6 +155,14 @@ namespace VixenModules.Effect.Glediator
 			}
 		}
 
+		[Value]
+		[ProviderCategory("Information", 4)]
+		[ProviderDisplayName(" ")]
+		public string Information
+		{
+			get { return "Download Glediator from\r\nwww.solderlab.de/index\r\n.php/software/glediator\r\n\r\nCreate Glediator with the\r\nsame Matrix size."; }
+		}
+
 		#endregion
 
 		private void UpdateAttributes()
@@ -185,6 +193,11 @@ namespace VixenModules.Effect.Glediator
 				UpdateAttributes();
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		private string ConvertPath(string path)

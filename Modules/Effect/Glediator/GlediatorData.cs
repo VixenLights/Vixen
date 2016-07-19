@@ -3,13 +3,13 @@ using System.CodeDom;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Glediator
 {
 	[DataContract]
-	public class GlediatorData: ModuleDataModelBase
+	public class GlediatorData : EffectTypeModuleData
 	{
 		public GlediatorData()
 		{
@@ -39,7 +39,7 @@ namespace VixenModules.Effect.Glediator
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			GlediatorData result = new GlediatorData
 			{
