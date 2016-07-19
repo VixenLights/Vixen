@@ -6,13 +6,13 @@ using System.Security.Cryptography;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Spirograph
 {
 	[DataContract]
-	public class SpirographData : ModuleDataModelBase
+	public class SpirographData : EffectTypeModuleData
 	{
 
 		public SpirographData()
@@ -67,7 +67,7 @@ namespace VixenModules.Effect.Spirograph
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SpirographData result = new SpirographData
 			{

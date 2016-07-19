@@ -10,7 +10,7 @@ using Vixen.Sys.Attribute;
 using Vixen.Sys.State.Execution;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Spirograph
@@ -252,6 +252,11 @@ namespace VixenModules.Effect.Spirograph
 				UpdateAttributes();
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		private void UpdateAttributes()
