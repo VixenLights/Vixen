@@ -6,7 +6,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Snowflakes
@@ -151,6 +151,11 @@ namespace VixenModules.Effect.Snowflakes
 				_data = value as SnowflakesData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()

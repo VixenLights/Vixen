@@ -3,31 +3,34 @@ using System.Collections.Generic;
 using Vixen.Data.Value;
 using Vixen.Interpolator;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
-	public class LinearIntent<TypeOfValue> : Dispatchable<LinearIntent<TypeOfValue>>, IIntent<TypeOfValue>
+	public class SegmentedLinearIntent<TypeOfValue> : Dispatchable<SegmentedLinearIntent<TypeOfValue>>, IIntent<TypeOfValue>
 		where TypeOfValue : IIntentDataType
 	{
 		private LinearInterpolatedIntentSegmentCollection<TypeOfValue> _segments;
+		private readonly IntentState<TypeOfValue> _intentState;
 
-		public LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
-		                    Interpolator<TypeOfValue> interpolator = null)
+		public SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
+							Interpolator<TypeOfValue> interpolator = null)
 			: this(startValue, endValue, timeSpan)
 		{
 			interpolator = interpolator ?? Interpolator.Interpolator.Create<TypeOfValue>();
 			_segments = new LinearInterpolatedIntentSegmentCollection<TypeOfValue>(startValue, endValue, timeSpan, interpolator);
 		}
 
-		private LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan)
+		private SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan)
 		{
 			StartValue = startValue;
 			EndValue = endValue;
 			TimeSpan = timeSpan;
+			_intentState = new IntentState<TypeOfValue>(this, TimeSpan.Zero);
 		}
 
-		private LinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
-		                     LinearInterpolatedIntentSegmentCollection<TypeOfValue> segments)
+		private SegmentedLinearIntent(TypeOfValue startValue, TypeOfValue endValue, TimeSpan timeSpan,
+							 LinearInterpolatedIntentSegmentCollection<TypeOfValue> segments)
 			: this(startValue, endValue, timeSpan)
 		{
 			_segments = segments;
@@ -51,21 +54,23 @@ namespace Vixen.Intent
 
 		public void FractureAt(TimeSpan intentRelativeTime)
 		{
-			if (_IsValidTime(intentRelativeTime)) {
+			if (_IsValidTime(intentRelativeTime))
+			{
 				_segments.FractureAt(intentRelativeTime);
 			}
 		}
 
 		public void FractureAt(IEnumerable<TimeSpan> intentRelativeTimes)
 		{
-			foreach (TimeSpan intentRelativeTime in intentRelativeTimes) {
+			foreach (TimeSpan intentRelativeTime in intentRelativeTimes)
+			{
 				FractureAt(intentRelativeTime);
 			}
 		}
 
 		public void FractureAt(params TimeSpan[] intentRelativeTimes)
 		{
-			FractureAt((IEnumerable<TimeSpan>) intentRelativeTimes);
+			FractureAt((IEnumerable<TimeSpan>)intentRelativeTimes);
 		}
 
 		public void FractureAt(ITimeNode intentRelativeTime)
@@ -86,12 +91,12 @@ namespace Vixen.Intent
 			TypeOfValue dividePointValue = GetStateAt(intentRelativeTime);
 
 			// Create the new intents.
-			LinearIntent<TypeOfValue> leftIntent = new LinearIntent<TypeOfValue>(StartValue, dividePointValue, intentRelativeTime,
-			                                                                     leftSegments);
-			LinearIntent<TypeOfValue> rightIntent = new LinearIntent<TypeOfValue>(dividePointValue, EndValue,
-			                                                                      TimeSpan - intentRelativeTime, rightSegments);
+			SegmentedLinearIntent<TypeOfValue> leftIntent = new SegmentedLinearIntent<TypeOfValue>(StartValue, dividePointValue, intentRelativeTime,
+																				 leftSegments);
+			SegmentedLinearIntent<TypeOfValue> rightIntent = new SegmentedLinearIntent<TypeOfValue>(dividePointValue, EndValue,
+																				  TimeSpan - intentRelativeTime, rightSegments);
 
-			return new[] {leftIntent, rightIntent};
+			return new[] { leftIntent, rightIntent };
 		}
 
 		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteIntentStartTime)
@@ -99,9 +104,12 @@ namespace Vixen.Intent
 			_segments.ApplyFilter(sequenceFilterNode, contextAbsoluteIntentStartTime);
 		}
 
-		public IIntentState CreateIntentState(TimeSpan intentRelativeTime)
+		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
-			return new IntentState<TypeOfValue>(this, intentRelativeTime);
+			//return new IntentState<TypeOfValue>(this, intentRelativeTime, layer);
+			_intentState.Layer = layer;
+			_intentState.RelativeTime = intentRelativeTime;
+			return _intentState;
 		}
 
 		private bool _IsValidTime(TimeSpan intentRelativeTime)

@@ -5,10 +5,11 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Alternating {
 	[DataContract]
-	public class AlternatingData : ModuleDataModelBase {
+	public class AlternatingData : EffectTypeModuleData {
 
 		[DataMember]
 		public List<GradientLevelPair> Colors { get; set; }
@@ -35,7 +36,8 @@ namespace VixenModules.Effect.Alternating {
 			IntervalSkipCount = 1;
 		}
 
-		public override IModuleDataModel Clone() {
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
 			var gradientLevelList = Colors.Select(glp => new GradientLevelPair(new ColorGradient(glp.ColorGradient), new Curve(glp.Curve))).ToList();
 			var result = new AlternatingData
 			{

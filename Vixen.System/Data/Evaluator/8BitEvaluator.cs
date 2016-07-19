@@ -1,7 +1,6 @@
 ﻿using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Sys;
-using Vixen.Sys.Dispatch;
 
 namespace Vixen.Data.Evaluator
 {
@@ -23,6 +22,16 @@ namespace Vixen.Data.Evaluator
 		{
 			EvaluatorValue = new _8BitCommand((byte) (byte.MaxValue*obj.GetValue().Position));
 		}
-        
+
+		public override void Handle(IIntentState<DiscreteValue> obj)
+		{
+			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
+		}
+
+		public override void Handle(IIntentState<IntensityValue> obj)
+		{
+			EvaluatorValue = new _8BitCommand((byte)(byte.MaxValue * obj.GetValue().Intensity));
+		}
+
 	}
 }

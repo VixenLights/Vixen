@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using Common.Controls.ColorManagement.ColorModels;
 
 namespace Vixen.Data.Value
@@ -15,19 +12,23 @@ namespace Vixen.Data.Value
 
 		public RGBValue(Color color)
 		{
-			if (color.A == 0) {
-				R = G = B = 0;
-			} else {
+			if (color.A != 0)
+			{
 				R = color.R;
 				G = color.G;
 				B = color.B;
 			}
+			else
+			{
+				R = G = B = 0;
+			}
 		}
 
 		/// <summary>
-		/// Gets the color as an opaque color: ie. 100% alpha channel.
+		/// The RGB value as a intensity appplied color with a 100% alpha channel. Results in an opaque color ranging from black
+		/// (0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color Color
+		public Color FullColor
 		{
 			get { return Color.FromArgb(R, G, B); }
 			set
@@ -39,24 +40,32 @@ namespace Vixen.Data.Value
 		}
 
 		/// <summary>
-		/// Gets the color value with the alpha channel interpreted as the 'brightness' of the color.
+		/// Gets the RGB value as a full brightness color with the intensity value applied to the alpha channel. 
+		/// Results in an non opaque color ranging from transparent (0,0,0,0) when the intensity is 0 and the solid color when the intensity is 1 (ie. 100%).
 		/// </summary>
-		public Color ColorWithAplha
+		public Color FullColorWithAlpha
 		{
 			get
 			{
-				return Color.FromArgb((byte) (Intensity * Byte.MaxValue), R, G, B);
+				//return Color.FromArgb((byte) (Intensity * Byte.MaxValue), R, G, B);
+				//This is already a brightness compensated color so applying the intensity to the alpha will dim it further.
+				//Need to convert it to it's full brightness color and then apply the alpha.
+				var hsv = HSV.FromRGB(R / 255d, G / 255d, B / 255d);
+				var v = hsv.V;
+				hsv.V = 1;
+				var c = hsv.ToRGB().ToArgb();
+				return Color.FromArgb((int)(255d * v), c.R, c.G, c.B);
 			}
 		}
 
 		/// <summary>
-		/// the intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
+		/// The Intensity or brightness of this color in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
 		public double Intensity
 		{
 			get
 			{
-				return HSV.FromRGB(Color).V;
+				return HSV.VFromRgb(FullColor);
 			}
 		}
 

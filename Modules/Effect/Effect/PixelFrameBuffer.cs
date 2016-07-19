@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 
-namespace VixenModules.Effect.Pixel
+namespace VixenModules.Effect.Effect
 {
 	public class PixelFrameBuffer
 	{

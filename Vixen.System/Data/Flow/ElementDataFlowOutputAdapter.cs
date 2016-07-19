@@ -7,7 +7,7 @@ namespace Vixen.Data.Flow
 	internal class ElementDataFlowOutputAdapter : IDataFlowOutput<IntentsDataFlowData>
 	{
 		private readonly Element _element;
-		private readonly IntentsDataFlowData _data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
+		private readonly IntentsDataFlowData _data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
 
 		public ElementDataFlowOutputAdapter(Element element)
 		{
@@ -18,7 +18,7 @@ namespace Vixen.Data.Flow
 		{
 			get
 			{
-				_data.Value = _element.State;
+				_data.Value = _element.State.AsList();
 				return _data;
 			}
 		}

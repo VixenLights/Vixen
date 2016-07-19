@@ -50,7 +50,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 						new EffectModelCandidate(element.EffectNode.Effect)
 						{
 							Duration = element.Duration,
-							StartTime = element.StartTime
+							StartTime = element.StartTime,
+							LayerId = _changedElements[element].LayerId
 						};
 				IModuleDataModel model = _changedElements[element].GetEffectData();
 				element.EffectNode.Effect.ModuleData = model;

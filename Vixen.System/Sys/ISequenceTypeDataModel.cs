@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Vixen.Execution;
 using Vixen.Module;
 using Vixen.Module.Media;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys
 {
@@ -16,5 +17,7 @@ namespace Vixen.Sys
 		DataStream EffectData { get; set; }
 		DataStream SequenceFilterData { get; set; }
 		DataStreams DataStreams { get; }
+		SequenceLayers SequenceLayers { get; set; }
+
 	}
 }

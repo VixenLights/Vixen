@@ -264,6 +264,8 @@
     <None Include="Resources\ButtonBackgroundImage.jpg" />
     <None Include="Resources\check_box.bmp" />
     <None Include="Resources\Reset.png" />
+    <Content Include="layers.png" />
+    <None Include="Resources\layers.bmp" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />

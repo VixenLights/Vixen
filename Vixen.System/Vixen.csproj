@@ -137,14 +137,19 @@
     <Compile Include="Data\Flow\IDataFlowComponentReference.cs" />
     <Compile Include="Data\Flow\IDataFlowOutput.cs" />
     <Compile Include="Data\Flow\CommandOutputDataFlowAdapter.cs" />
+    <Compile Include="Data\Flow\IntentDataFlowData.cs" />
     <Compile Include="Data\Flow\IntentOutputDataFlowAdapter.cs" />
     <Compile Include="Data\Flow\CommandDataFlowData.cs" />
     <Compile Include="Data\Flow\CommandsDataFlowData.cs" />
+    <Compile Include="Data\StateCombinator\LayeredStateCombinator.cs" />
     <Compile Include="Data\Policy\ControllerDataPolicy.cs" />
     <Compile Include="Data\Flow\IntentsDataFlowData.cs" />
     <Compile Include="Data\Flow\IDataFlowData.cs" />
     <Compile Include="Data\Policy\DataFlowDataDispatchingDataPolicy.cs" />
     <Compile Include="Data\Policy\SmartControllerDataPolicy.cs" />
+    <Compile Include="Data\StateCombinator\StateCombinator.cs" />
+    <Compile Include="Data\Value\DiscreteValue.cs" />
+    <Compile Include="Data\Value\IntensityValue.cs" />
     <Compile Include="Data\Value\RGBValue.cs" />
     <Compile Include="Delegates\Delegates.cs" />
     <Compile Include="Execution\ContextCurrentEffectsFull.cs" />
@@ -184,7 +189,6 @@
     <Compile Include="Export\Vir2Writer.cs" />
     <Compile Include="Export\HelixWriter.cs" />
     <Compile Include="Export\Vix2Writer.cs" />
-    <Compile Include="Extensions\IntentNodeCollection.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
     <Compile Include="Factory\IntentOutputFactory.cs" />
@@ -192,7 +196,10 @@
     <Compile Include="Factory\PreviewFactory.cs" />
     <Compile Include="Factory\SmartControllerFactory.cs" />
     <Compile Include="Instrumentation\MillisecondsValue.cs" />
+    <Compile Include="Intent\DiscreteLightingIntent.cs" />
+    <Compile Include="Intent\IntentBuilder.cs" />
     <Compile Include="Intent\IntentHelpers.cs" />
+    <Compile Include="Intent\NonSegmentedLinearIntent.cs" />
     <Compile Include="Intent\RGBIntent.cs" />
     <Compile Include="Intent\CommandIntent.cs" />
     <Compile Include="Intent\IntentState.cs" />
@@ -201,6 +208,7 @@
     <Compile Include="Intent\StaticIntent.cs" />
     <Compile Include="Intent\StaticIntentState.cs" />
     <Compile Include="Intent\StaticArrayIntent.cs" />
+    <Compile Include="Interpolator\DiscreteValueInterpolator.cs" />
     <Compile Include="Interpolator\LightingValueInterpolator.cs" />
     <Compile Include="Interpolator\PositionValueInterpolator.cs" />
     <Compile Include="Interpolator\StaticValueInterpolator.cs" />
@@ -283,12 +291,21 @@
     <Compile Include="Module\Analysis\IAnalysis.cs" />
     <Compile Include="Module\Analysis\IAnalysisModuleDescriptor.cs" />
     <Compile Include="Module\Analysis\IAnalysisModuleInstance.cs" />
+    <Compile Include="Module\MixingFilter\ILayerMixingFilterInstance.cs" />
+    <Compile Include="Module\MixingFilter\LayerMixingFilterModuleDescriptorBase.cs" />
+    <Compile Include="Module\MixingFilter\ILayerMixingFilter.cs" />
+    <Compile Include="Module\MixingFilter\ILayerMixingFilterModuleDescriptor.cs" />
+    <Compile Include="Module\MixingFilter\LayerMixingFilterModuleImplementation.cs" />
+    <Compile Include="Module\MixingFilter\LayerMixingFilterModuleInstanceBase.cs" />
+    <Compile Include="Module\MixingFilter\LayerMixingFilterModuleManagement.cs" />
+    <Compile Include="Module\MixingFilter\LayerMixingFilterModuleRepository.cs" />
     <Compile Include="Module\IModuleConsumer.cs" />
     <Compile Include="Module\IModuleDataRetriever.cs" />
     <Compile Include="Module\ModuleInstanceDataRetriever.cs" />
     <Compile Include="Module\ModuleConsumer.cs" />
     <Compile Include="Module\ModuleTypeDataRetriever.cs" />
     <Compile Include="Module\Preview\PreviewElementIntentStates.cs" />
+    <Compile Include="Module\SequenceType\Surrogate\LayerMixingFilterSurrogate.cs" />
     <Compile Include="Module\Service\IService.cs" />
     <Compile Include="Module\Service\IServiceModuleDescriptor.cs" />
     <Compile Include="Module\Service\IServiceModuleInstance.cs" />
@@ -297,6 +314,9 @@
     <Compile Include="Module\Service\ServiceModuleInstanceBase.cs" />
     <Compile Include="Module\Service\ServiceModuleManagement.cs" />
     <Compile Include="Module\Service\ServiceModuleRepository.cs" />
+    <Compile Include="Pool\IntentStateListPool.cs" />
+    <Compile Include="Pool\ObjectPool.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Rule\IElementSetupHelper.cs" />
     <Compile Include="Rule\IElementTemplate.cs" />
     <Compile Include="Rule\INamingTemplate.cs" />
@@ -308,8 +328,16 @@
     <Compile Include="Rule\Name\WordIterator.cs" />
     <Compile Include="Rule\Patch\ElementsToSingleController.cs" />
     <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\LayerMixingFilterService.cs" />
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
+    <Compile Include="Sys\IHasLayers.cs" />
+    <Compile Include="Sys\IStateCombinator.cs" />
+    <Compile Include="Sys\LayerMixing\Layer.cs" />
+    <Compile Include="Sys\LayerMixing\DefaultLayer.cs" />
+    <Compile Include="Sys\LayerMixing\ILayer.cs" />
+    <Compile Include="Sys\LayerMixing\StandardLayer.cs" />
+    <Compile Include="Sys\LayerMixing\SequenceLayers.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
     <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
     <Compile Include="Sys\Managers\ExecutionState.cs" />
@@ -485,7 +513,7 @@
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeActualValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceSleepTimeRequestedValue.cs" />
     <Compile Include="Sys\Instrumentation\OutputDeviceUpdateTimeValue.cs" />
-    <Compile Include="Intent\LinearIntent.cs" />
+    <Compile Include="Intent\SegmentedLinearIntent.cs" />
     <Compile Include="Sys\IntentNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -881,7 +909,9 @@
   <ItemGroup>
     <Compile Include="Commands\StringCommand.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"</PostBuildEvent>

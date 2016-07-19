@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
+using Vixen.Sys.LayerMixing;
 
 namespace VixenModules.Sequence.Timed
 {

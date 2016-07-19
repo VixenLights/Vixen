@@ -1,32 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
-	public abstract class ContextBase : IContext, IStateSourceCollection<Guid, IIntentStates>
+	public abstract class ContextBase : IContext
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private ElementStateSourceCollection _elementStates;
-		internal IContextCurrentEffects _currentEffects;
-		private HashSet<Guid> _affectedElements;
-		private IntentStateBuilder _elementStateBuilder;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		internal ContextCurrentEffectsFull CurrentEffects; 
+		private readonly IntentStateBuilder _elementStateBuilder;
+		private TimeSpan _currentTime = TimeSpan.Zero;
 		private bool _disposed;
 
 		public event EventHandler ContextStarted;
 		public event EventHandler ContextEnded;
 
-		private delegate void IntentDiscoveryAction(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime);
-
 		protected ContextBase()
 		{
 			Id = Guid.NewGuid();
 
-			_elementStates = new ElementStateSourceCollection();
-			_currentEffects = new ContextCurrentEffectsIncremental();
+			CurrentEffects = new ContextCurrentEffectsFull();
 			_elementStateBuilder = new IntentStateBuilder();
 		}
 
@@ -83,92 +78,68 @@ namespace Vixen.Execution.Context
 			return (_SequenceTiming != null) ? _SequenceTiming.Position : TimeSpan.Zero;
 		}
 
-		public HashSet<Guid> UpdateElementStates(TimeSpan currentTime)
+		public bool UpdateElementStates(TimeSpan currentTime)
 		{
-			if (IsRunning && !IsPaused) {
-				_affectedElements = _UpdateCurrentEffectList(currentTime);
-				_RepopulateElementBuffer(currentTime, _affectedElements);
+			
+			if (IsRunning && !IsPaused)
+			{
+				_currentTime = currentTime;
+				ResetElementStates();
+				_UpdateCurrentEffectList();
+				_DiscoverIntentsFromEffects();
 			}
 
-			return _affectedElements;
+			return CurrentEffects.Count>0;
 		}
 
-		public IStateSource<IIntentStates> GetState(Guid key)
+		public IIntentStates GetState(Guid key)
 		{
-			return _elementStates.GetState(key);
+			//Refactored to get state directly from the builder. Avoid copying them into another object with no real value.
+			return _elementStateBuilder.GetElementState(key);
 		}
 
-		private HashSet<Guid> _UpdateCurrentEffectList(TimeSpan currentTime)
-		{
-			// We have an object that does this for us.
-			return _currentEffects.UpdateCurrentEffects(_DataSource, currentTime);
-		}
-
-		private void _RepopulateElementBuffer(TimeSpan currentTime, IEnumerable<Guid> affectedElementIds)
-		{
-			_InitializeElementStateBuilder();
-			_DiscoverIntentsFromCurrentEffects(currentTime, _AddIntentToElementStateBuilder);
-			_LatchElementStatesFromBuilder(affectedElementIds);
-		}
-
-		private void _DiscoverIntentsFromCurrentEffects(TimeSpan currentTime, IntentDiscoveryAction intentDiscoveryAction)
-		{
-			_DiscoverIntentsFromEffects(currentTime, _currentEffects, intentDiscoveryAction);
-		}
-
-		private void _DiscoverIntentsFromEffects(TimeSpan currentTime, IEnumerable<IEffectNode> effects,
-		                                         IntentDiscoveryAction intentDiscoveryAction)
-		{
-			// For each effect in the in-effect list for the context...
-			foreach (IEffectNode effectNode in effects) {
-				// Get a time value relative to the start of the effect.
-				TimeSpan effectRelativeTime = Helper.GetEffectRelativeTime(currentTime, effectNode);
-				// Get the elements the effect affects at this time and the ways it will do so.
-				ElementIntents elementIntents = effectNode.Effect.GetElementIntents(effectRelativeTime);
-				// For each element...
-				foreach (Guid elementId in elementIntents.ElementIds) {
-					// Get the intent nodes.
-					IIntentNode[] intentNodes = elementIntents[elementId];
-					// For each intent node.
-					foreach (IIntentNode intentNode in intentNodes) {
-						// Get a timing value relative to the intent.
-						TimeSpan intentRelativeTime = Helper.GetIntentRelativeTime(effectRelativeTime, intentNode);
-						// Do whatever is going to be done.
-						intentDiscoveryAction(elementId, intentNode, intentRelativeTime);
-					}
-				}
-			}
-		}
-
-		private void _InitializeElementStateBuilder()
+		private void ResetElementStates()
 		{
 			_elementStateBuilder.Clear();
 		}
 
-		private void _AddIntentToElementStateBuilder(Guid elementId, IIntentNode intentNode, TimeSpan intentRelativeTime)
+		private bool _UpdateCurrentEffectList()
 		{
-			IIntentState intentState = intentNode.CreateIntentState(intentRelativeTime);
-			_elementStateBuilder.AddElementState(elementId, intentState);
+			// We have an object that does this for us.
+			return CurrentEffects.UpdateCurrentEffects(_DataSource, _currentTime);
 		}
 
-		private void _LatchElementStatesFromBuilder(IEnumerable<Guid> affectedElementIds)
+		//Let each context decide how to apply the layers. 
+		protected abstract ILayer GetLayerForNode(IEffectNode node);
+
+		private void _DiscoverIntentsFromEffects()
 		{
-			foreach (Guid elementId in affectedElementIds) {
-				_elementStates.SetValue(elementId, _elementStateBuilder.GetElementState(elementId));
+			// For each effect in the in-effect list for the context...
+			//Parallel.ForEach(_currentEffects, effectNode =>
+			foreach (var effectNode in CurrentEffects)
+			{
+				var layer = GetLayerForNode(effectNode);
+				TimeSpan effectRelativeTime = _currentTime - effectNode.StartTime;
+				EffectIntents effectIntents = effectNode.Effect.Render();
+				foreach (var effectIntent in effectIntents)
+				{
+					foreach (IIntentNode intentNode in effectIntent.Value)
+					{
+						if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
+						{
+							IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime,
+								layer);
+							_elementStateBuilder.AddElementState(effectIntent.Key, intentState);
+						}
+					}
+				}
+
 			}
 		}
 
 		protected void ClearCurrentEffects()
 		{
-			_currentEffects.Reset();
-		}
-
-		private void _ResetElementStates()
-		{
-			_currentEffects.Reset();
-			_InitializeElementStateBuilder();
-			_LatchElementStatesFromBuilder(_elementStates.ElementsInCollection);
-			
+			CurrentEffects.Reset();
 		}
 
 		protected abstract IDataSource _DataSource { get; }

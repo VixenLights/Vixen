@@ -54,6 +54,11 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SetLevel.cs" />

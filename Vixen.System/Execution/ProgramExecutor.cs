@@ -4,6 +4,7 @@ using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution
 {
@@ -119,6 +120,11 @@ namespace Vixen.Execution
 				}
 				return Enumerable.Empty<ISequenceFilterNode>();
 			}
+		}
+
+		public SequenceLayers SequenceLayers
+		{
+			get { return _sequenceExecutor.Sequence.GetSequenceLayerManager(); }
 		}
 
 		/// <summary>

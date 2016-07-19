@@ -155,11 +155,11 @@ namespace Vixen.Cache.Sequence
 			var outputCommands = new List<CommandOutput>(_outputCount);
 
 			//Advance our context to specified time and do all the normal update stuff
-			HashSet<Guid> elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time, _context);
+			bool elementsAffected = VixenSystem.Contexts.UpdateCacheCompileContext(time, _context);
 			//Check to see if any elements are affected
-			if (elementsAffected != null && elementsAffected.Any())
+			if (elementsAffected)
 			{
-				VixenSystem.Elements.Update(elementsAffected);
+				VixenSystem.Elements.Update();
 				_statesClear = false;
 				VixenSystem.Filters.Update();
 			}

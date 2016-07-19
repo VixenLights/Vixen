@@ -83,7 +83,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 		public override DataFlowType OutputDataType
 		{
-			get { return DataFlowType.MultipleIntents; }
+			get { return DataFlowType.SingleIntent; }
 		}
 
 		public override IDataFlowOutput[] Outputs
@@ -192,15 +192,17 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 
 
-
+	/// <summary>
+	/// This filter gets the intensity percent for a given state
+	/// </summary>
 	internal class ColorBreakdownFilter : IntentStateDispatch
 	{
-		private IIntentState _intentValue;
+		private double _intensityValue;
 		private readonly ColorBreakdownItem _breakdownItem;
 		private readonly HSV _breakdownColorAsHSV;
 		private readonly bool _mixColors;
 		private const double Tolerance = .0001; //For how close the Hue and Saturation should match for Discrete.
-
+		
 		public ColorBreakdownFilter(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
 			_breakdownItem = breakdownItem;
@@ -211,10 +213,15 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			_breakdownColorAsHSV.V = 1;
 		}
 
-		public IIntentState Filter(IIntentState intentValue)
+		/// <summary>
+		/// Process the intent and return a value that represents the percent of intensity for the state
+		/// </summary>
+		/// <param name="intentValue"></param>
+		/// <returns></returns>
+		public double GetIntensityForState(IIntentState intentValue)
 		{
 			intentValue.Dispatch(this);
-			return _intentValue;
+			return _intensityValue;
 		}
 
 		private float _getMaxProportion(Color inputColor)
@@ -237,20 +244,29 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			RGBValue value = obj.GetValue();
 			if (_mixColors) {
-				float maxProportion = _getMaxProportion(value.Color);
-				Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion),
+				float maxProportion = _getMaxProportion(value.FullColor);
+				if (maxProportion > 0)
+				{
+					Color finalColor = Color.FromArgb((int)(_breakdownItem.Color.R * maxProportion),
 												  (int)(_breakdownItem.Color.G * maxProportion),
 												  (int)(_breakdownItem.Color.B * maxProportion));
-				_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(finalColor));
+					_intensityValue = HSV.VFromRgb(finalColor);
+				}
+				else
+				{
+					_intensityValue = 0;
+				}
+				
 			} else {
 				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
 				// hue and saturation components; ignore the intensity.
-				HSV inputColor = HSV.FromRGB(value.Color);
+				HSV inputColor = HSV.FromRGB(value.FullColor);
 				if (Math.Abs(inputColor.H - _breakdownColorAsHSV.H) < Tolerance  &&  Math.Abs(inputColor.S - _breakdownColorAsHSV.S) < Tolerance) {
-					_intentValue = new StaticIntentState<RGBValue>(obj, value);
+					var i = HSV.VFromRgb(value.FullColor);
+					//the value types are structs, so modify our copy and then set it back
+					_intensityValue = i;
 				} else {
-					// TODO: return 'null', or some sort of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
-					_intentValue = new StaticIntentState<RGBValue>(obj, new RGBValue(Color.Black));
+					_intensityValue = 0;
 				}
 			}
 		}
@@ -259,21 +275,33 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			LightingValue lightingValue = obj.GetValue();
 			if (_mixColors) {
-				_intentValue = new StaticIntentState<LightingValue>(obj,
-				                                                    new LightingValue(_breakdownItem.Color,
-				                                                                      lightingValue.Intensity*
-				                                                                      _getMaxProportion(lightingValue.HueSaturationOnlyColor)));
+				_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.FullColor);
 			}
 			else {
 				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
 				// hue and saturation components; ignore the intensity.
 				if (Math.Abs(lightingValue.Hue - _breakdownColorAsHSV.H) < Tolerance  &&  Math.Abs(lightingValue.Saturation - _breakdownColorAsHSV.S) < Tolerance) {
-					_intentValue = new StaticIntentState<LightingValue>(obj, lightingValue);
+					_intensityValue = lightingValue.Intensity;
 				}
 				else {
-					// TODO: return 'null', or some sort of empty intent state here instead. (null isn't handled well, and we don't have an 'empty' state class.)
-					_intentValue = new StaticIntentState<LightingValue>(obj, new LightingValue(_breakdownItem.Color, 0));
+					_intensityValue = 0;
 				}
+			}
+		}
+
+		public override void Handle(IIntentState<DiscreteValue> obj)
+		{
+			DiscreteValue discreteValue = obj.GetValue();
+
+			// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
+			// hue and saturation components; ignore the intensity.
+			if (discreteValue.Color.ToArgb() == _breakdownItem.Color.ToArgb())
+			{
+				_intensityValue = discreteValue.Intensity;
+			}
+			else
+			{
+				_intensityValue = 0;
 			}
 		}
 	}
@@ -281,24 +309,55 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 
 
-	internal class ColorBreakdownOutput : IDataFlowOutput<IntentsDataFlowData>
+	internal class ColorBreakdownOutput : IDataFlowOutput<IntentDataFlowData>
 	{
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
-
+		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
+		private readonly IntentDataFlowData _intentData;
+		
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>());
+			_intentData = new IntentDataFlowData(_state);
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
 		}
 
 		public void ProcessInputData(IntentsDataFlowData data)
 		{
-			Data.Value = data.Value.Any() ? data.Value.Select(_filter.Filter).ToArray() : Enumerable.Empty<IIntentState>();
+			//Because we are combining at the layer above us, we should really only have one
+			//intent that matches this outputs color setting. 
+			//Everything else will have a zero intensity and should be thrown away when it does not match our outputs color.
+			double intensity = 0;
+			if (data.Value.Count > 0)
+			{
+				foreach (var intentState in data.Value)
+				{
+					var i = _filter.GetIntensityForState(intentState);
+					if (i > 0)
+					{
+						intensity = i;
+					}
+				}
+			}
+
+			if (intensity > 0)
+			{
+				//Get a copy of the state value which is a struct and update it with the new intensity and then set it back
+				var intensityValue = _state.GetValue();
+				intensityValue.Intensity = intensity;
+				_state.SetValue(intensityValue);
+				Data = _intentData;
+			}
+			else
+			{
+				Data = null;
+			}
+			
+			
 		}
 
-		public IntentsDataFlowData Data { get; private set; }
+		public IntentDataFlowData Data { get; private set; }
 
 		IDataFlowData IDataFlowOutput.Data
 		{

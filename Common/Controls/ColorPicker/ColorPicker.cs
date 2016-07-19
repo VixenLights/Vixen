@@ -1,13 +1,8 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
-using Common.Resources.Properties;
-using Microsoft.WindowsAPICodePack.DirectX.Direct3D10;
 using Message = System.Windows.Forms.Message;
 
 namespace Common.Controls.ColorManagement.ColorPicker

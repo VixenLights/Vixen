@@ -6,6 +6,12 @@ namespace Vixen.Sys
 	{
 		public IntentStateList()
 		{
+			
+		}
+
+		public IntentStateList(int capacity) : base(capacity)
+		{
+
 		}
 
 		public IntentStateList(IEnumerable<IIntentState> states)
@@ -25,5 +31,10 @@ namespace Vixen.Sys
 		{
 			AddRange(intentStates);
 		}
+
+		public virtual List<IIntentState> AsList()
+		{
+			return this;
+		} 
 	}
 }

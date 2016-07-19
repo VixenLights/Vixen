@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources;
-using VixenApplication;
 using VixenModules.Sequence.Timed;
 using Vixen.Execution;
 using Vixen.Module.Timing;

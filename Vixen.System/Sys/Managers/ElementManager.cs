@@ -1,19 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Data.Flow;
+using Vixen.Pool;
 using Vixen.Sys.Instrumentation;
 
 namespace Vixen.Sys.Managers
 {
 	public class ElementManager : IEnumerable<Element>
 	{
-		private MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
-		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private ElementDataFlowAdapterFactory _dataFlowAdapters;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private readonly MillisecondsValue _elementUpdateTimeValue = new MillisecondsValue("   Elements update");
+		private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+		private readonly ElementDataFlowAdapterFactory _dataFlowAdapters;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		// a mapping of element  GUIDs to element instances. Used for quick reverse mapping at runtime.
 		//This was a ConcurrentDictionary for a while, but grabing an instance enumerator can be costly as it makes a read only copy
@@ -24,7 +27,9 @@ namespace Vixen.Sys.Managers
 		// quickly and easily find the node that a particular element references (eg. if we're previewing the rendered data on a virtual display,
 		// or anything else where we need to actually 'reverse' the rendering process).
 		private readonly ConcurrentDictionary<Element, ElementNode> _elementToElementNode;
-
+		private Enumerator<Element> _enumerator;
+		private bool _enumeratorInvalid = true;
+		
 		public ElementManager()
 		{
 			_instances = new Dictionary<Guid, Element>();
@@ -32,6 +37,7 @@ namespace Vixen.Sys.Managers
 			_dataFlowAdapters = new ElementDataFlowAdapterFactory();
 
 			VixenSystem.Instrumentation.AddValue(_elementUpdateTimeValue);
+			 
 		}
 
 		public ElementManager(IEnumerable<Element> elements)
@@ -56,8 +62,8 @@ namespace Vixen.Sys.Managers
 
 				lock (_instances) {
 					_instances[element.Id] = element;
+					_enumeratorInvalid = true;
 				}
-
 				_AddDataFlowParticipant(element);
 			}
 		}
@@ -71,16 +77,15 @@ namespace Vixen.Sys.Managers
 
 		public void RemoveElement(Element element)
 		{
-			Element e;
 			ElementNode en;
 			lock (_instances)
 			{
 				_instances.Remove(element.Id);
+				_enumeratorInvalid = true;
 			}
-
+			
 			_RemoveDataFlowParticipant(element);
 			_elementToElementNode.TryRemove(element, out en);
-			
 		}
 
 		public Element GetElement(Guid id)
@@ -111,47 +116,36 @@ namespace Vixen.Sys.Managers
 			return node;
 		}
 
+		public bool ElementsHaveState { get; set; }
+
 		public void Update()
 		{
+			//Need to profile and see if parallelism here will improve this
+			//At small element counts it is probably unneeded overhead, but at very large counts it may help.
 			_stopwatch.Restart();
 			lock (_instances)
 			{
-				foreach (var x in _instances.Values) x.Update();				
-			}
-			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
-		}
-
-		/// <summary>
-		/// This performs updates on the predicted elements and arbitrarily clears the rest.
-		/// Saves the labor of doing Dictionary lookups in every context when we know it was not affected.
-		/// </summary>
-		/// <param name="elements"></param>
-		public void Update(HashSet<Guid> elements)
-		{
-			_stopwatch.Restart();
-			lock (_instances)
-			{
-				foreach (var x in _instances.Values)
+				Parallel.ForEach(_instances.Values, x =>
 				{
-					if (elements.Contains(x.Id))
-					{
-						x.Update();
-					} else
-					{
-						//No sense in checking each context as we know our element is not affected on this update.
-						x.ClearStates();
-					}
-				}
+					x.Update();
+				});
 			}
+			ElementsHaveState = true;
 			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
 		public void ClearStates()
 		{
+			_stopwatch.Restart();
 			lock (_instances)
 			{
-				foreach (var x in _instances.Values) x.ClearStates();	
+				Parallel.ForEach(_instances.Values, x =>
+				{
+					x.ClearStates();
+				});
 			}
+			ElementsHaveState = false;
+			_elementUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}
 
 		private void _AddDataFlowParticipant(Element element)
@@ -177,23 +171,75 @@ namespace Vixen.Sys.Managers
 				int counter = 2;
 				do {
 					name = string.Format("{0}-{1}", originalName, counter++);
-					unique = !_instances.Values.Any(x => x.Name == name);
+					unique = _instances.Values.All(x => x.Name != name);
 				} while (!unique);
 			}
 			return name;
 		}
 
-		public IEnumerator<Element> GetEnumerator()
-		{
-			lock (_instances) {
-				Element[] elements = _instances.Values.ToArray();
-				return ((IEnumerable<Element>)elements).GetEnumerator();
-			}
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator<Element> IEnumerable<Element>.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public Enumerator<Element> GetEnumerator()
+		{
+			if (_enumeratorInvalid)
+			{
+				_enumerator = new Enumerator<Element>(_instances.Values.ToList());
+				_enumeratorInvalid = false;
+			}
+			return _enumerator;
+		}
+
+		public struct Enumerator<TElement> : IEnumerator<TElement>
+		{
+			int _nIndex;
+			readonly List<TElement> _collection;
+			internal Enumerator(List<TElement> coll)
+			{
+				_collection = coll;
+				_nIndex = -1;
+			}
+
+			public void Reset()
+			{
+				_nIndex = -1;
+			}
+
+			public bool MoveNext()
+			{
+				_nIndex++;
+				return (_nIndex < _collection.Count);
+			}
+
+			public TElement Current
+			{
+				get
+				{
+					return (_collection[_nIndex]);
+				}
+			}
+
+			// The current property on the IEnumerator interface:
+			object IEnumerator.Current
+			{
+				get
+				{
+					return (Current);
+				}
+			}
+
+			public void Dispose()
+			{
+
+			}
+
 		}
 	}
 }

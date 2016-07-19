@@ -18,15 +18,14 @@ namespace Vixen.Interpolator
 
 		public bool Interpolate(double percentage, T startValue, T endValue, out T value)
 		{
-			value = default(T);
-
 			//Leaving this here as a reminder that it used to be this way, but don't know
 			//if it was for a reason.
 			//if(percentage > 0 && percentage < 1) {
-			if (percentage >= 0 && percentage < 1) {
+			if (percentage >= 0 && percentage <= 1) {
 				value = InterpolateValue(percentage, startValue, endValue);
 				return true;
 			}
+			value = default(T);
 
 			return false;
 		}

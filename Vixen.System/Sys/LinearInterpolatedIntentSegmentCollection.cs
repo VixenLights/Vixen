@@ -14,7 +14,7 @@ namespace Vixen.Sys
 
 		private LinearInterpolatedIntentSegmentCollection()
 		{
-			_segmentTimeIndex = new SortedList<TimeSpan, IntentSegmentNode<TypeOfValue>>();
+			_segmentTimeIndex = new SortedList<TimeSpan, IntentSegmentNode<TypeOfValue>>(1);
 		}
 
 		private LinearInterpolatedIntentSegmentCollection(ISegmentCreator<TypeOfValue> segmentCreator)

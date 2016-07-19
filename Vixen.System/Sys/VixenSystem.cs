@@ -63,6 +63,8 @@ namespace Vixen.Sys
 
 					LoadSystemConfig();
 
+					DefaultUpdateTimeSpan = TimeSpan.FromMilliseconds(SystemConfig.DefaultUpdateInterval);
+
 					// Add modules to repositories.
 					Modules.PopulateRepositories();
 
@@ -244,8 +246,14 @@ namespace Vixen.Sys
 					? SystemConfig.DEFAULT_UPDATE_INTERVAL
 					: SystemConfig.DefaultUpdateInterval; 
 			}
-			set { SystemConfig.DefaultUpdateInterval = value; }
+			set
+			{
+				SystemConfig.DefaultUpdateInterval = value;
+				DefaultUpdateTimeSpan = TimeSpan.FromMilliseconds(value);
+			}
 		}
+
+		public static TimeSpan DefaultUpdateTimeSpan { get; private set; }
 
 		public static ElementManager Elements { get; private set; }
 		public static NodeManager Nodes { get; private set; }

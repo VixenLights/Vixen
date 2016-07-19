@@ -6,6 +6,7 @@ using Vixen.Cache.Sequence;
 using Vixen.Execution.DataSource;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Execution.Context
 {
@@ -32,6 +33,11 @@ namespace Vixen.Execution.Context
 				_sequence = value;
 				_dataSource = new SequenceDataPump {Sequence = _sequence};
 			}
+		}
+
+		protected override ILayer GetLayerForNode(IEffectNode node)
+		{
+			return Sequence.SequenceData.SequenceLayers.GetLayer(node);
 		}
 
 		protected override void _OnStart()

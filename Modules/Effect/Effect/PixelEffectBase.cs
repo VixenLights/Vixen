@@ -4,18 +4,20 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.App.Curves;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
-namespace VixenModules.Effect.Pixel
+namespace VixenModules.Effect.Effect
 {
-	public abstract class PixelEffectBase : EffectModuleInstanceBase
+	/// <summary>
+	/// This class provides some additional utility functions for all the grid style efects
+	/// commonly thought of as pixel effects.  
+	/// </summary>
+	public abstract class PixelEffectBase : BaseEffect
 	{
 
 		protected const short FrameTime = 50;
@@ -43,7 +45,6 @@ namespace VixenModules.Effect.Pixel
 			}
 			_elementData = data;
 			CleanUpRender();
-			_elementIntents.Clear();
 		}
 
 		[ReadOnly(true)]
@@ -165,31 +166,11 @@ namespace VixenModules.Effect.Pixel
 			}
 		}
 
-		//Pixel base effects are special right now as we only ever generate one intent per element, we can skip a lot of logic
-		//in the base class as if we are active, our intents are always in the relative time.
-		public override ElementIntents GetElementIntents(TimeSpan effectRelativeTime)
-		{
-			if (!_elementIntents.Any())
-			{
-				_AddLocalIntents();
-			}
-			return _elementIntents;
-		}
-
-		private void _AddLocalIntents()
-		{
-			EffectIntents effectIntents = Render();
-			foreach (KeyValuePair<Guid, IntentNodeCollection> keyValuePair in effectIntents)
-			{
-				_elementIntents.AddIntentNodeToElement(keyValuePair.Key, keyValuePair.Value.ToArray());
-			}
-		}
-
 		protected EffectIntents RenderNode(ElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
-			if (nFrames <= 0) return effectIntents;
+			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return effectIntents;
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 
 			int bufferSize = StringPixelCounts.Sum();

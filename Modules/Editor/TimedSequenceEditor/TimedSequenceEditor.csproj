@@ -35,9 +35,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\Modules\Editor\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>$(SolutionDir)\Debug\Modules\Editor\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -59,30 +69,32 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Application\VixenApplication\VixenApplication.csproj">
-      <Project>{2572F3DF-7CF2-4B6C-9FC2-8E11D0BC08D6}</Project>
-      <Name>VixenApplication</Name>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\EffectEditor\EffectEditor.csproj">
       <Project>{5a48b67f-1e7e-4ed6-a201-f6cc8e7e6788}</Project>
       <Name>EffectEditor</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\LayerEditor\LayerEditor.csproj">
+      <Project>{3233add6-fb95-4c57-af81-34c6c19717db}</Project>
+      <Name>LayerEditor</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -247,12 +259,19 @@
     </Compile>
     <Compile Include="Undo\EffectsAddedRemovedUndoAction.cs" />
     <Compile Include="Undo\EffectsAddedUndoAction.cs" />
+    <Compile Include="Undo\EffectsLayerChangedUndoAction.cs" />
     <Compile Include="Undo\EffectsModifiedUndoAction.cs" />
     <Compile Include="Undo\EffectsPastedUndoAction.cs" />
     <Compile Include="Undo\EffectsPropertyModifiedUndoAction.cs" />
     <Compile Include="Undo\EffectsRemovedUndoAction.cs" />
     <Compile Include="Undo\ElementsTimeChangedUndoAction.cs" />
     <Compile Include="Undo\EffectsCutUndoAction.cs" />
+    <Compile Include="LayerEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayerEditor.Designer.cs">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -325,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_ToolPalette.resx">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerEditor.resx">
+      <DependentUpon>LayerEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -2,10 +2,10 @@
 
 namespace Vixen.Sys
 {
-	public interface IIntentStates : IEnumerable<IIntentState>
+	public interface IIntentStates : IList<IIntentState>
 	{
 		void AddIntentState(IIntentState intentState);
 		IIntentState this[int index] { get; set; }
-		int Count { get; }
+		List<IIntentState> AsList();
 	}
 }

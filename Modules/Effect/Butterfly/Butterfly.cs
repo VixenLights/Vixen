@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -7,7 +6,7 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Butterfly
@@ -209,6 +208,11 @@ namespace VixenModules.Effect.Butterfly
 				_data = value as ButterflyData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()

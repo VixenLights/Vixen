@@ -66,7 +66,6 @@ namespace Vixen.Sys.Output
 			try {
 				Outputs.AsParallel().ForAll(x =>
 				                            	{
-				                            		x.Update();
 				                            		x.IntentChangeCollection = _GenerateChangeCollection(x);
 				                            	});
 				_UpdateModuleState(_ExtractIntentChangesFromOutputs().ToArray());

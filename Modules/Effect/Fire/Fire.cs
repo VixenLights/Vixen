@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -7,7 +6,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Fire
@@ -127,6 +126,12 @@ namespace VixenModules.Effect.Fire
 				IsDirty = true;
 			}
 		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
 		// 0 <= x < BufferWi
 		// 0 <= y < BufferHt
 		private void SetFireBuffer(int x, int y, int paletteIdx, int maxWi, int maxHt)

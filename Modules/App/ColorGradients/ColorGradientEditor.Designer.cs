@@ -182,7 +182,7 @@
 			this.gradientEditPanel.DiscreteColors = false;
 			this.gradientEditPanel.ForeColor = System.Drawing.Color.Black;
 			this.gradientEditPanel.Location = new System.Drawing.Point(12, 12);
-			this.gradientEditPanel.LockColorEditorHSV_Value = true;
+			this.gradientEditPanel.LockColorEditorHSV_Value = false;
 			this.gradientEditPanel.MinimumSize = new System.Drawing.Size(357, 120);
 			this.gradientEditPanel.Name = "gradientEditPanel";
 			this.gradientEditPanel.ReadOnly = false;

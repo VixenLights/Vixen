@@ -3,13 +3,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Butterfly
 {
 	[DataContract]
-	public class ButterflyData: ModuleDataModelBase
+	public class ButterflyData: EffectTypeModuleData
 	{
 
 		public ButterflyData()
@@ -59,7 +59,7 @@ namespace VixenModules.Effect.Butterfly
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ButterflyData result = new ButterflyData
 			{

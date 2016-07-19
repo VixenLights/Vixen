@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,10 +20,9 @@ namespace Vixen.Sys.Managers
 		//General locking on a Dictionary is sufficient here and more performant for iterating
 		private readonly Dictionary<Guid, IContext> _instances;
 		//Used to help reduce the amount of object allocations. So the enumerator does not have to constantly make a copy.
-		private ReadOnlyCollection<IContext> _contextInstances; 
+		private List<IContext> _contextInstances; 
 		private MillisecondsValue _contextUpdateTimeValue = new MillisecondsValue("   Contexts update");
 		private Stopwatch _stopwatch = Stopwatch.StartNew();
-		private readonly HashSet<Guid> _affectedElements = new HashSet<Guid>(); 
 		
 		public event EventHandler<ContextEventArgs> ContextCreated;
 		public event EventHandler<ContextEventArgs> ContextReleased;
@@ -30,7 +30,7 @@ namespace Vixen.Sys.Managers
 		public ContextManager()
 		{
 			_instances = new Dictionary<Guid, IContext>();
-			_contextInstances = _instances.Values.ToList().AsReadOnly();
+			_contextInstances = _instances.Values.ToList();
 			VixenSystem.Instrumentation.AddValue(_contextUpdateTimeValue);
 		}
 
@@ -97,63 +97,79 @@ namespace Vixen.Sys.Managers
 			lock (_instances) {
 				_instances.Clear();
 			}
-			_contextInstances = _instances.Values.ToList().AsReadOnly();
+			_contextInstances = _instances.Values.ToList();
 		}
 
-		public HashSet<Guid> UpdateCacheCompileContext(TimeSpan time, IContext context)
+		public bool UpdateCacheCompileContext(TimeSpan time, IContext context)
 		{
-			HashSet<Guid> elementsAffected = null;
+			bool elementsAffected = false;
 			_stopwatch.Restart();
 			try
 			{
-				elementsAffected =context.UpdateElementStates(time);
-			} catch (Exception ee)
+				elementsAffected = context.UpdateElementStates(time);
+			}
+			catch (Exception ee)
 			{
 				Logging.Error(ee.Message, ee);
 			}
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 			return elementsAffected;
-
 		}
 
-		public HashSet<Guid> Update()
+		public bool Update()
 		{
 			_stopwatch.Restart();
-			_affectedElements.Clear();
-			
-			foreach (var context in _contextInstances.Where(x => x.IsRunning))
+			bool elementsAffected = false;
+			foreach (var context in _contextInstances)
 			{
-				try
+				if (context.IsRunning)
 				{
-					// Get a snapshot time value for this update.
-					TimeSpan contextTime = context.GetTimeSnapshot();
-					var contextAffectedElements = context.UpdateElementStates(contextTime);
-					if (contextAffectedElements != null)
+					try
 					{
-						//Aggregate the effected elements so we can do more selective work downstream
-						_affectedElements.AddRange(contextAffectedElements);
-					}
+						// Get a snapshot time value for this update.
+						TimeSpan contextTime = context.GetTimeSnapshot();
+						var contextAffectedElements = context.UpdateElementStates(contextTime);
+						if (contextAffectedElements)
+						{
+							elementsAffected = true;
+						}
 
-				}
-				catch (Exception ee)
-				{
-					Logging.Error(ee.Message, ee);
+					}
+					catch (Exception ee)
+					{
+						Logging.Error(ee.Message, ee);
+					}
 				}
 			}
-			
+
 			_contextUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
-			return _affectedElements;
+			return elementsAffected;
 		}
 
-		public IEnumerator<IContext> GetEnumerator()
+		//public IEnumerator<IContext> GetEnumerator()
+		//{
+		//	return _contextInstances.GetEnumerator();
+		//}
+
+		IEnumerator<IContext> IEnumerable<IContext>.GetEnumerator()
 		{
-			return _contextInstances.GetEnumerator();
+			return new Enumerator(_contextInstances);
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return GetEnumerator();
+			return new Enumerator(_contextInstances);
 		}
+
+		public Enumerator GetEnumerator()
+		{
+			return new Enumerator(_contextInstances);
+		}
+
+		//System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		//{
+		//	return GetEnumerator();
+		//}
 
 		private IContext _CreateContext(ContextTargetType contextTargetType, ContextFeatures contextFeatures)
 		{
@@ -181,7 +197,7 @@ namespace Vixen.Sys.Managers
 			lock (_instances) {
 				_instances[context.Id] = context;
 			}
-			_contextInstances = _instances.Values.ToList().AsReadOnly();
+			_contextInstances = _instances.Values.ToList();
 			OnContextCreated(new ContextEventArgs(context));
 		}
 
@@ -192,7 +208,7 @@ namespace Vixen.Sys.Managers
 			{
 				_instances.Remove(context.Id);	
 			}
-			_contextInstances = _instances.Values.ToList().AsReadOnly();
+			_contextInstances = _instances.Values.ToList();
 			context.Dispose();
 			OnContextReleased(new ContextEventArgs(context));
 		}
@@ -210,5 +226,51 @@ namespace Vixen.Sys.Managers
 				ContextReleased(this, e);
 			}
 		}
+
+		public struct Enumerator : IEnumerator<IContext>
+	{
+		int nIndex;
+		readonly List<IContext> _collection;
+		public Enumerator(List<IContext> coll)
+		{
+			_collection = coll;
+			nIndex = -1;
+		}
+
+		public void Reset()
+		{
+			nIndex = -1;
+		}
+
+		public bool MoveNext()
+		{
+			nIndex++;
+			return (nIndex < _collection.Count);
+		}
+
+		public IContext Current
+		{
+			get
+			{
+				return (_collection[nIndex]);
+			}
+		}
+
+		// The current property on the IEnumerator interface:
+		object IEnumerator.Current
+		{
+			get
+			{
+				return (Current);
+			}
+		}
+
+		public void Dispose()
+		{
+			
+		}
 	}
+	}
+
+	
 }

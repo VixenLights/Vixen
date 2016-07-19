@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms.VisualStyles;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
@@ -22,6 +21,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimeSpan _startOffset;
 		private TimeSpan _endTime;
 		private readonly TimeSpan _oneTick = TimeSpan.FromTicks(1);
+		private readonly SolidBrush _brush = new SolidBrush(Color.Transparent);
 
 		public void Rasterize(IIntent intent, RectangleF rect, Graphics g, TimeSpan startOffset, TimeSpan endTime)
 		{
@@ -43,20 +43,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// a simple pulse down (or up). The ends/starts of the effect flip to the color of the other end briefly,
 			// for a single pixel width. I'm guessing it's an issue in the gradient rendering for large shapes where
 			// the gradient rectangle is within the same integer range as the rendering rectangle.
-			float offset = rectangle.X*0.004F;
+			float offset = rectangle.X * 0.004F;
 			RectangleF gradientRectangle = new RectangleF(
 				(rectangle.X) - offset,
 				rectangle.Y,
-				(rectangle.Width) + (2*offset),
+				(rectangle.Width) + (2 * offset),
 				rectangle.Height
 				);
 
 			if (startColor == endColor)
 			{
-				using (SolidBrush brush = new SolidBrush(startColor))
-				{
-					_graphics.FillRectangle(brush, rectangle);
-				}
+				_brush.Color = startColor;
+				_graphics.FillRectangle(_brush, rectangle);
+				
 			}
 			else
 			{
@@ -78,18 +77,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// The question is how many... each takes precious UI time to render.
 			// For now try almost easiest, fixed num per sec
 			// TODO: can we figure out what dimensions we're rendering for, and then rasterize based on that?  That's the ideal solution: one chunk per 2 pixels or so.
-			int nChunks = 1 + (int) (timespan - _startOffset).TotalMilliseconds/100;
+			int nChunks = 1 + (int)(timespan - _startOffset).TotalMilliseconds / 50;
 			TimeSpan tsStart = _startOffset; //TimeSpan.Zero;
 			RectangleF drawRectangle = new RectangleF(rectangle.Location, rectangle.Size);
-			float rectWidth = rectangle.Width/nChunks;
+			float rectWidth = rectangle.Width / nChunks;
 			for (int i = 1; i <= nChunks; i++)
 			{
-				var tsEnd = TimeSpan.FromMilliseconds((timespan - _startOffset).TotalMilliseconds/nChunks*i) + _startOffset;
+				var tsEnd = TimeSpan.FromMilliseconds((timespan - _startOffset).TotalMilliseconds / nChunks * i) + _startOffset;
 
 				Color startColor = startColorGetter(tsStart);
 				Color endColor = startColorGetter(tsEnd);
 
-				float rectX = rectangle.X + (i - 1)*rectWidth;
+				float rectX = rectangle.X + (i - 1) * rectWidth;
 				drawRectangle.X = rectX;
 				drawRectangle.Width = rectWidth;
 
@@ -103,15 +102,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<LightingValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).TrueFullColorWithAlpha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).TrueFullColorWithAlpha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAlpha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAlpha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).TrueFullColorWithAlpha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAlpha;
 				Color endColor =
-					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).TrueFullColorWithAlpha;
+					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAlpha;
+				DrawGradient(startColor, endColor, _rect);
+			}
+		}
+
+		public override void Handle(IIntent<DiscreteValue> obj)
+		{
+			if (obj is StaticArrayIntent<DiscreteValue>)
+			{
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAplha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAplha;
+				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
+			}
+			else
+			{
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAplha;
+				Color endColor =
+					obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAplha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}
@@ -120,14 +136,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (obj is StaticArrayIntent<RGBValue>)
 			{
-				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).ColorWithAplha;
-				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).ColorWithAplha;
+				Func<TimeSpan, Color> scg = x => obj.GetStateAt(x).FullColorWithAlpha;
+				Func<TimeSpan, Color> ecg = x => obj.GetStateAt(x - _oneTick).FullColorWithAlpha;
 				DrawStaticArrayIntent(_endTime, _rect, scg, ecg);
 			}
 			else
 			{
-				Color startColor = obj.GetStateAt(_startOffset).ColorWithAplha;
-				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).ColorWithAplha;
+				Color startColor = obj.GetStateAt(_startOffset).FullColorWithAlpha;
+				Color endColor = obj.GetStateAt(_endTime - (_endTime < obj.TimeSpan ? TimeSpan.Zero : _oneTick)).FullColorWithAlpha;
 				DrawGradient(startColor, endColor, _rect);
 			}
 		}

@@ -13,6 +13,7 @@ using Common.Controls.Theme;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
+using Vixen.Sys.LayerMixing;
 
 namespace Common.Controls.Timeline
 {
@@ -52,6 +53,9 @@ namespace Common.Controls.Timeline
 		private MouseButtons MouseButtonDown;
 		public string alignmentHelperWarning = @"Too many effects selected on the same row for this action.\nMax selected effects per row for this action is 4";
 		public bool aCadStyleSelectionBox { get; set; }
+
+		private List<Row> _visibleRows = new List<Row>();
+		private bool _visibleRowsDirty = false;
 
 		#region Initialization
 
@@ -254,9 +258,17 @@ namespace Common.Controls.Timeline
 			get { return Rows.FirstOrDefault(x => x.Active); }
 		}
 
-		public IEnumerable<Row> VisibleRows
+		public List<Row> VisibleRows
 		{
-			get { return Rows.Where(x => x.Visible); }
+			get
+			{
+				if (_visibleRowsDirty)
+				{
+					_visibleRows = Rows.Where(x => x.Visible).ToList();
+					_visibleRowsDirty = false;
+				}
+				return _visibleRows;
+			}
 		}
 
 		public Row TopVisibleRow
@@ -322,6 +334,8 @@ namespace Common.Controls.Timeline
 		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
 		private SortedDictionary<TimeSpan, List<SnapDetails>> CurrentDragSnapPoints { get; set; }
 		private List<Element> tempSelectedElements = new List<Element>();
+
+		public SequenceLayers SequenceLayers { get; set; }
 
 		#endregion
 
@@ -427,6 +441,8 @@ namespace Common.Controls.Timeline
 			// when dragging, the control will invalidate after it's done, in case multiple elements are changing.
 			if (m_dragState != DragState.Moving && !SequenceLoading)
 				if (!SuppressInvalidate) Invalidate();
+
+			_visibleRowsDirty = true;
 		}
 
 		protected void RowSelectedChangedHandler(object sender, ModifierKeysEventArgs e)
@@ -2003,10 +2019,7 @@ namespace Common.Controls.Timeline
 			// Draw row separators
 			using (Pen p = new Pen(RowSeparatorColor))
 			using (SolidBrush b = new SolidBrush(SelectionColor)) {
-				foreach (Row row in Rows) {
-					if (!row.Visible)
-						continue;
-
+				foreach (Row row in VisibleRows) {
 					Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
 					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
@@ -2116,7 +2129,7 @@ namespace Common.Controls.Timeline
             CancellationTokenSource cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.CancellationToken = cts.Token;
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            //po.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
 			long processed = 0;
 			try
@@ -2124,8 +2137,8 @@ namespace Common.Controls.Timeline
 		        if (_blockingElementQueue != null)
 		        {
                     //Use or fancy multi cpu boxes more effectively.
-		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) {
-		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
+		            foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) 
+		            //Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
 		            {
 			            Interlocked.Increment(ref processed);
 		                // This will likely never be hit: the blocking element queue above will always block waiting for more
@@ -2166,7 +2179,7 @@ namespace Common.Controls.Timeline
 		                {
 		                    Logging.Error("Error in rendering.", ex);
 		                }
-		            });
+		            }//);
 		        }
 		    }
 		    catch (OperationCanceledException ce)
@@ -2316,7 +2329,8 @@ namespace Common.Controls.Timeline
 				Row row = rowAt(m_lastGridLocation);
 				if (row != null) //null check to prevent mouse off screen locations trying to find a row.
 				{
-					element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height));
+					var layerInfo = SequenceLayers.GetLayer(element.EffectNode);
+					element.DrawInfo(g, new Rectangle(element.DisplayRect.X, row.DisplayTop, element.DisplayRect.Width, row.Height), layerInfo);
 				}
 			}
 		}

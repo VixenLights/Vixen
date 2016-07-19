@@ -5,11 +5,12 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.ComponentModel;
 using Vixen.TypeConverters;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Spin
 {
 	[DataContract]
-	public class SpinData : ModuleDataModelBase
+	public class SpinData : EffectTypeModuleData
 	{
 		[DataMember]
 		public SpinSpeedFormat SpeedFormat { get; set; }
@@ -64,7 +65,7 @@ namespace VixenModules.Effect.Spin
 
 		[DataMember]
 		public int DepthOfEffect { get; set; }
-
+		
 		public SpinData()
 		{
 			SpeedFormat = SpinSpeedFormat.RevolutionCount;
@@ -83,7 +84,7 @@ namespace VixenModules.Effect.Spin
 			DepthOfEffect = 0;
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SpinData result = new SpinData();
 			result.SpeedFormat = SpeedFormat;

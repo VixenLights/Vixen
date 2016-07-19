@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Module;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.SetLevel
 {
 	[DataContract]
-	internal class SetLevelData : ModuleDataModelBase
+	internal class SetLevelData : EffectTypeModuleData
 	{
 		[DataMember]
 		public double level { get; set; }
@@ -24,7 +20,7 @@ namespace VixenModules.Effect.SetLevel
 			color = Color.White;
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			SetLevelData result = new SetLevelData();
 			result.level = level;

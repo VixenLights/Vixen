@@ -19,15 +19,11 @@ namespace Vixen.Sys.Output
 
 		public int Index { get; private set; }
 
-		public void Update()
-		{
-			if (Source != null) {
-				State = Source.GetOutputState();
-			}
-		}
-
 		public IDataFlowComponentReference Source { get; set; }
 
-		public IDataFlowData State { get; private set; }
+		public IDataFlowData State
+		{
+			get { return Source != null ? Source.GetOutputState() : null; }
+		}
 	}
 }

@@ -149,6 +149,11 @@ namespace VixenModules.Property.Color
 			return false;
 		}
 
+		public static bool isElementNodeTreeDiscreteColored(ElementNode element)
+		{
+			return element.GetLeafEnumerator().Any(x => isElementNodeDiscreteColored(x));
+		}
+
 		// gets a enumerable of valid colors for the given element node. If the element is full color, an empty enumeration
 		// will be returned; otherwise one of more colors will be returned (for single or multiple discrete colors).
 		// wIt will recurse the children to collect from all parts of the element

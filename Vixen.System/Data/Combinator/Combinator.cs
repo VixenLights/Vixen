@@ -8,7 +8,7 @@ namespace Vixen.Data.Combinator
 	public abstract class Combinator<T> : Dispatchable<T>, ICombinator, IAnyCommandHandler
 		where T : Combinator<T>
 	{
-		public ICommand Combine(IEnumerable<ICommand> commands)
+		public ICommand Combine(List<ICommand> commands)
 		{
 			CombinatorValue = null;
 
@@ -19,7 +19,7 @@ namespace Vixen.Data.Combinator
 			return CombinatorValue;
 		}
 
-		ICommand ICombinator.Combine(IEnumerable<ICommand> commands)
+		ICommand ICombinator.Combine(List<ICommand> commands)
 		{
 			return Combine(commands);
 		}

@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace Vixen.Sys
 {
-	public class EffectIntents : ConcurrentDictionary<Guid, IntentNodeCollection>
+	public class EffectIntents : Dictionary<Guid, IntentNodeCollection>
 	{
 		public EffectIntents()
 		{
@@ -46,19 +46,17 @@ namespace Vixen.Sys
 		{
 		   _AddIntentsForElement(elementId, new IIntentNode[] { intentNode });
 		}
-		ConcurrentDictionary<Guid, object> ArrayLocks = new ConcurrentDictionary<Guid, object>();
+		
 		private void _AddIntentsForElement(Guid elementId, IEnumerable<IIntentNode> intentNodes) {
 
-			ArrayLocks.TryAdd(elementId, new object());
-			lock (ArrayLocks[elementId]) {
-				if (ContainsKey(elementId)) {
-					this[elementId].AddRange(intentNodes);
-					//this[elementId].AddRangeCombiner(intentNodes);
-				}
-				else {
-					this[elementId] = new IntentNodeCollection(intentNodes);
-				}
+			IntentNodeCollection nodes;
+			if (TryGetValue(elementId, out nodes)) {
+				nodes.AddRange(intentNodes);
 			}
+			else {
+				this[elementId] = new IntentNodeCollection(intentNodes);
+			}
+			
 		}
 
 		public void Add(EffectIntents other)
@@ -71,17 +69,11 @@ namespace Vixen.Sys
 		public void OffsetAllCommandsByTime(TimeSpan offset)
 		{
 			foreach (IntentNodeCollection intentNodes in Values) {
-				IntentNode[] newIntentNodes = intentNodes.Select(x => new IntentNode(x.Intent, x.StartTime + offset)).ToArray();
-				intentNodes.Clear();
-				intentNodes.AddRange(newIntentNodes);
-				//intentNodes.AddRangeCombiner(newIntentNodes);
+				foreach (var intentNode in intentNodes)
+				{
+					intentNode.OffSetTime(offset);
+				}
 			}
-			//foreach(KeyValuePair<Guid, CommandNode[]> kvp in this.ToArray()) {
-			//    List<CommandNode> newCommands = new List<CommandNode>();
-			//    foreach(CommandNode cn in kvp.Value)
-			//        newCommands.Add(new CommandNode(cn.Command, cn.StartTime + offset, cn.TimeSpan));
-			//    this[kvp.Key] = newCommands.ToArray();
-			//}
 		}
 
 		public static EffectIntents Restrict(EffectIntents effectIntents, TimeSpan startTime, TimeSpan endTime)

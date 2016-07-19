@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.SetLevel
 {
-	public class SetLevel : EffectModuleInstanceBase
+	public class SetLevel : BaseEffect
 	{
 		private SetLevelData _data;
 		private EffectIntents _elementData = null;
@@ -38,9 +38,13 @@ namespace VixenModules.Effect.SetLevel
 			foreach (ElementNode node in TargetNodes) {
 				if (tokenSource != null && tokenSource.IsCancellationRequested)
 					return;
-				
+
 				if (node != null)
-					RenderNode(node);
+				{
+					_elementData = RenderNode(node);
+					//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+					
+				}
 			}
 		}
 
@@ -57,6 +61,11 @@ namespace VixenModules.Effect.SetLevel
 				_data = value as SetLevelData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		[Value]
@@ -97,25 +106,31 @@ namespace VixenModules.Effect.SetLevel
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if(validColors.Any() && !validColors.Contains(_data.color.ToArgb())){
-				//Our color is not valid for any elements we have.
-				//Set a default color 
-				Color = validColors.First();
+			var validColors = GetValidColors();
+			if (validColors.Any())
+			{
+				if (!validColors.Contains(_data.color.ToArgb()))
+				{
+					//Our color is not valid for any elements we have.
+					//Set a default color 
+					Color = validColors.First();
+				}
 			}
-			
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private EffectIntents RenderNode(ElementNode node)
 		{
-			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
-				LightingValue lightingValue = new LightingValue(Color, (float) IntensityLevel);
-				IIntent intent = new LightingIntent(lightingValue, lightingValue, TimeSpan);
-				_elementData.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
+			EffectIntents effectIntents = new EffectIntents();
+			foreach (ElementNode elementNode in node.GetLeafEnumerator())
+			{
+				var intent = CreateIntent(elementNode, Color, (float) HSV.FromRGB(Color).V * IntensityLevel, TimeSpan);
+				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
+
+			return effectIntents;
 		}
+		
 	}
 }

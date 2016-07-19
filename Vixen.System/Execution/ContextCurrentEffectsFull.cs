@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Sys;
 
@@ -10,70 +9,77 @@ namespace Vixen.Execution
 	/// Maintains a list of current effects for a context.
 	/// The IDataSource is expected to provide every qualifying effect, not just newly qualified effects.
 	/// </summary>
-	internal class ContextCurrentEffectsFull : IContextCurrentEffects
+	internal class ContextCurrentEffectsFull : List<IEffectNode> ,IContextCurrentEffects
 	{
-		private List<IEffectNode> _currentEffects;
-		private HashSet<Guid> _currentAffectedElements;
-
-		public ContextCurrentEffectsFull()
-		{
-			_currentEffects = new List<IEffectNode>();
-			_currentAffectedElements = new HashSet<Guid>();
-		}
+		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
+		private bool _reset = false;
 
 		/// <summary>
-		/// Updates the collection of current affects, returning the ids of the affected elements.
+		/// Updates the collection of current effects, returning the ids of the affected elements.
 		/// </summary>
 		/// <returns>Ids of the affected elements.</returns>
-		public HashSet<Guid> UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
+		public bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
-			// Get the entirety of the new state.
-			IEffectNode[] newState = dataSource.GetDataAt(currentTime).ToArray();
-			// Get the elements affected by this new state.
-			HashSet<Guid> nowAffectedElements = _GetAffectedElements(newState);
-			// New and expiring effects affect the state, so get the union of
-			// the previous state and the current state.
-			//HashSet<Guid> allAffectedElements = new HashSet<Guid>(_currentAffectedElements.Concat(newAffectedElements));
-			_currentAffectedElements.UnionWith(nowAffectedElements);
-			HashSet<Guid> allAffectedElements = _currentAffectedElements;
-			// Set the new state.
-			_currentEffects = new List<IEffectNode>(newState);
-			_currentAffectedElements = nowAffectedElements;
+			if (_lastUpdateTime > currentTime)
+			{
+				//Make sure the current effects are cleared if we go back to a earlier time.
+				Clear();
+			}
+			_lastUpdateTime = currentTime;
+			// Get the effects that are newly qualified.
+			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
+			// Add them to the current effect list.
+			AddRange(newQualifiedEffects);
+			// Get the distinct list of all elements affected by all effects in the list.
+			// List has current effects as well as effects that may be expiring.
+			// Current and expired effects affect state.
+			//_GetElementsAffected();
+			_RemoveExpiredEffects(currentTime);
 
-			return allAffectedElements;
+			return Count > 0;
+		}
+
+		public void Reset()
+		{
+			_reset = true;
+		}
+
+		public bool Resetting()
+		{
+			return _reset;
+		}
+
+		private void _RemoveExpiredEffects(TimeSpan currentTime)
+		{
+			if (_reset)
+			{
+				Clear();
+				_reset = false;
+				return;
+			}
+			// Remove expired effects.
+			foreach (var effectNode1 in this.ToArray())
+			{
+				var effectNode = (EffectNode)effectNode1;
+				if (_IsExpired(currentTime, effectNode))
+				{
+					Remove(effectNode);
+				}
+			}
 		}
 
 		public void RemoveEffects(IEnumerable<IEffectNode> nodes)
 		{
 			foreach (var effectNode in nodes)
 			{
-				_currentEffects.Remove(effectNode);
+				Remove(effectNode);
 			}
 		}
 
-		public void Reset()
+		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode)
 		{
-			_currentEffects.Clear();
+			return currentTime > effectNode.EndTime;
 		}
 
-		public bool Resetting()
-		{
-			return false;
-		}
-
-		private HashSet<Guid> _GetAffectedElements(IEnumerable<IEffectNode> effectNodes)
-		{
-			return new HashSet<Guid>(effectNodes.SelectMany(x => x.Effect.TargetNodes).SelectMany(y => y.GetElementEnumerator()).Select(z => z.Id));
-		}
-
-		public IEnumerator<IEffectNode> GetEnumerator()
-		{
-			return _currentEffects.GetEnumerator();
-		}
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
 	}
 }

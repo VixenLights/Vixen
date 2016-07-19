@@ -7,7 +7,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Fireworks
@@ -23,7 +23,8 @@ namespace VixenModules.Effect.Fireworks
 		{
 			_data = new FireworksData();
 		}
-		
+
+	
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Explosions")]
@@ -156,6 +157,11 @@ namespace VixenModules.Effect.Fireworks
 				_data = value as FireworksData;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()

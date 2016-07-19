@@ -123,7 +123,7 @@ namespace Vixen.Sys.Managers
 			_stopwatch.Restart();
 			lock (_updateLock)
 			{
-				Parallel.ForEach(_rootFilters, _po, _UpdateFilterBranch);	
+				Parallel.ForEach(_rootFilters, _UpdateFilterBranch);	
 			}
 			_filterUpdateTimeValue.Set(_stopwatch.ElapsedMilliseconds);
 		}

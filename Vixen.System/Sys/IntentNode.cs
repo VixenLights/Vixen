@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys
 {
@@ -23,6 +24,12 @@ namespace Vixen.Sys
 
 		public TimeSpan EndTime { get; private set; }
 
+		public void OffSetTime(TimeSpan offset)
+		{
+			StartTime = StartTime+offset;
+			EndTime = StartTime + TimeSpan;
+		}
+
 		//contextAbsoluteEffectStartTime = effectNode.StartTime
 		public void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime)
 		{
@@ -45,9 +52,9 @@ namespace Vixen.Sys
 			return null;
 		}
 
-		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime)
+		public virtual IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
-			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime);
+			IIntentState intentState = Intent.CreateIntentState(intentRelativeTime, layer);
 
 			return intentState;
 		}
@@ -74,8 +81,9 @@ namespace Vixen.Sys
 	public interface IIntentNode : IDataNode, IComparable<IIntentNode>
 	{
 		IIntent Intent { get; }
-		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer);
 		void ApplyFilter(ISequenceFilterNode sequenceFilterNode, TimeSpan contextAbsoluteEffectStartTime);
 		IIntentNode[] DivideAt(TimeSpan effectRelativeTime);
+		void OffSetTime(TimeSpan offset);
 	}
 }

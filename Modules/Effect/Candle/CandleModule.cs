@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Linq;
 using System.Threading;
 using Common.ValueTypes;
 using NLog;
 using Vixen.Attributes;
-using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Candle
 {
-	public class CandleModule : EffectModuleInstanceBase
+	public class CandleModule : BaseEffect
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private EffectIntents _effectIntents;
@@ -35,6 +31,11 @@ namespace VixenModules.Effect.Candle
 				_data = (CandleData) value;
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void TargetNodesChanged()
@@ -166,20 +167,20 @@ namespace VixenModules.Effect.Candle
 				OnPropertyChanged();
 			}
 		}
-
-
+		
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if (validColors.Any() && !validColors.Contains(_data.Color))
+			var validColors = GetValidColors();
+			if (validColors.Any())
 			{
-				//Our color is not valid for any elements we have.
-				//Set a default color 
-				Color = validColors.First();
+				if (!validColors.Contains(_data.Color))
+				{
+					//Our color is not valid for any elements we have.
+					//Set a default color 
+					Color = validColors.First();
+				}
 			}
-
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
@@ -194,9 +195,10 @@ namespace VixenModules.Effect.Candle
 
 			foreach (IGrouping<int, ElementNode> block in elementGroup)
 			{
-				
-				_RenderCandleOnElements(block.GetElements().ToList());
+				_RenderCandleOnElements(block.ToList());
 			}
+
+			//_effectIntents = IntentBuilder.ConvertToStaticArrayIntents(_effectIntents, TimeSpan, IsDiscrete());
 
 		}
 
@@ -205,7 +207,7 @@ namespace VixenModules.Effect.Candle
 			return _effectIntents;
 		}
 
-		private void _RenderCandleOnElements(List<Element> elements)
+		private void _RenderCandleOnElements(List<ElementNode> elements)
 		{
 			TimeSpan startTime = TimeSpan.Zero;
 			double currentLevel = _GenerateStartingLevel();
@@ -232,18 +234,32 @@ namespace VixenModules.Effect.Candle
 				}
 				else
 				{
-					// Add the intent.
-					LightingValue startValue = new LightingValue(Color, currentLevel);
-					LightingValue endValue = new LightingValue(Color, nextLevel);
+					IIntent discreteIntent = null;
+					IIntent fullColorintent = null;
 
-					IIntent intent = new LightingIntent(startValue, endValue, length);
+					// Add the intent.
 					try
 					{
 						foreach (var element in elements)
 						{
 							if (element != null)
 							{
-								_effectIntents.AddIntentForElement(element.Id, intent, startTime);
+								if (HasDiscreteColors && IsElementDiscrete(element))
+								{
+									if (discreteIntent == null)
+									{
+										discreteIntent = CreateDiscreteIntent(Color, currentLevel, nextLevel, length);
+									}
+									_effectIntents.AddIntentForElement(element.Element.Id, discreteIntent, startTime);
+								}
+								else
+								{
+									if (fullColorintent == null)
+									{
+										fullColorintent = CreateIntent(Color, Color, currentLevel, nextLevel, length);
+									}
+									_effectIntents.AddIntentForElement(element.Element.Id, fullColorintent, startTime);
+								}
 							}
 						}
 					}
@@ -253,7 +269,7 @@ namespace VixenModules.Effect.Candle
 						throw;
 					}
 				}
-				
+
 				startTime += length;	
 				currentLevel = nextLevel;
 			}

@@ -1,14 +1,14 @@
 ﻿using System.Runtime.Serialization;
-using System.ComponentModel;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Chase
 {
 	[DataContract]
-	public class ChaseData : ModuleDataModelBase
+	public class ChaseData : EffectTypeModuleData
 	{
 		[DataMember]
 		public ChaseColorHandling ColorHandling { get; set; }
@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Chase
 
 		[DataMember]
 		public bool ExtendPulseToEnd { get; set; }
-
+		
 		public ChaseData()
 		{
 			ColorHandling = ChaseColorHandling.StaticColor;
@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Chase
 			ExtendPulseToEnd = false;
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ChaseData result = new ChaseData();
 			result.ColorHandling = ColorHandling;

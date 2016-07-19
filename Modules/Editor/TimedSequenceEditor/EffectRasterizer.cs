@@ -30,28 +30,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon)
 					return;
 
-				IEnumerable<Element> elements = effect.TargetNodes.GetElements();
+				Element[] elements = effect.TargetNodes.GetElements();
 
 				// limit the number of 'rows' rasterized
 				int tmpsiz = (int)(height / 2) + 1;
-				if (elements.Count() > tmpsiz)
-				{
-					int skip = elements.Count() / tmpsiz;
-					elements = elements.Where((element, index) => (index + 1) % skip == 0);
-					}
 
-				double heightPerElement = height / elements.Count();
+				int count = elements.Length;
 
-				//long tOh = sw.ElapsedMilliseconds;
+				int skipCount = count>tmpsiz ? count / tmpsiz: 1;
+
+				double heightPerElement = height/ ( count / skipCount);
+
 				EffectIntents effectIntents = effect.Render();
 
-				//long tRend = sw.ElapsedMilliseconds - tOh;
-
-				
-
 				double y = 0;
+				int ctr = 0;
 				foreach (Element element in elements)
 				{
+					if(ctr++ % skipCount != 0) continue;
+				
 					//Getting exception on null elements here... A simple check to look for these null values and ignore them
 					if (element != null) {
 						IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);

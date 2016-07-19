@@ -1,24 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using Common.Controls;
-using Vixen.Data.Value;
-using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Collections.Concurrent;
-using Common.Controls;
-using VixenModules.Property.Location;
+using System.Diagnostics;
 using Common.Resources.Properties;
+using Vixen.Sys.Instrumentation;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -27,12 +20,16 @@ namespace VixenModules.Preview.VixenPreview
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private bool needsUpdate = true;
 		private bool formLoading = true;
+		private static MillisecondsValue _previewSetPixelsTime;
+		private Stopwatch _sw = Stopwatch.StartNew();
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
 			Icon = Resources.Icon_Vixen3;
 			InitializeComponent();
 			Data = data;
+			_previewSetPixelsTime = new MillisecondsValue("Preview pixel set time");
+			VixenSystem.Instrumentation.AddValue(_previewSetPixelsTime);
 		}
 
 		private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -57,10 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (!gdiControl.IsUpdating)
 			{
-				
-				IEnumerable<Element> elementArray = VixenSystem.Elements.Where(e => e.State.Any());
-
-				if (!elementArray.Any())
+				if (!VixenSystem.Elements.ElementsHaveState)
 				{
 					if (needsUpdate)
 					{
@@ -70,28 +64,23 @@ namespace VixenModules.Preview.VixenPreview
 						gdiControl.Invalidate();
 					}
 
-					toolStripStatusFPS.Text =  "0 fps";
+					toolStripStatusFPS.Text = "0 fps";
 					return;
 				}
 
 				needsUpdate = true;
 
-				gdiControl.BeginUpdate();
-
 				try
 				{
-					var po = new ParallelOptions
-					{
-						MaxDegreeOfParallelism = Environment.ProcessorCount
-					};
+					gdiControl.BeginUpdate();
 
-					Parallel.ForEach(elementArray, po, element => 
+					_sw.Restart();
+					foreach (var element in VixenSystem.Elements)
 					{
-						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-						if (node != null)
+						if (element.State.Count > 0)
 						{
 							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(node, out pixels))
+							if (NodeToPixel.TryGetValue(element.Id, out pixels))
 							{
 								foreach (PreviewPixel pixel in pixels)
 								{
@@ -99,20 +88,23 @@ namespace VixenModules.Preview.VixenPreview
 								}
 							}
 						}
-					});
-				} catch (Exception e)
+					}
+
+					_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
+				}
+				catch (Exception e)
 				{
 					Logging.Error(e.Message, e);
 				}
-				
+
 				gdiControl.EndUpdate();
 				gdiControl.Invalidate();
 
-				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate);
+				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate.ToString());
 			}
 		}
 
-		public ConcurrentDictionary<ElementNode, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<ElementNode, List<PreviewPixel>>();
+		public ConcurrentDictionary<Guid, List<PreviewPixel>> NodeToPixel = new ConcurrentDictionary<Guid, List<PreviewPixel>>();
 		public List<DisplayItem> DisplayItems
 		{
 			get
@@ -151,9 +143,10 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (pixel.Node != null)
 						{
+							
 							pixelCount++;
 							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(pixel.Node, out pixels))
+							if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
 							{
 								if (!pixels.Contains(pixel))
 								{
@@ -164,7 +157,7 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								pixels = new List<PreviewPixel>();
 								pixels.Add(pixel);
-								NodeToPixel.TryAdd(pixel.Node, pixels);
+								NodeToPixel.TryAdd(pixel.Node.Element.Id, pixels);
 							}
 						}
 					}

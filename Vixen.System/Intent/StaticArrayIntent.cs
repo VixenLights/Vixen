@@ -1,8 +1,8 @@
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 using Vixen.Sys;
 using Vixen.Data.Value;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Intent
 {
@@ -13,19 +13,24 @@ namespace Vixen.Intent
 		readonly TimeSpan _timespan;
 		readonly T[] _vals;
 		TimeSpan _frameTime;
+		private readonly IntentState<T> _intentState;
 
 		public StaticArrayIntent(TimeSpan frameTime, T[] vals, TimeSpan timeSpan)
 		{
 			_timespan = timeSpan;
 			_vals = vals;
 			_frameTime = frameTime;
+			_intentState = new IntentState<T>(this, TimeSpan.Zero);
 		}
 
 		public TimeSpan TimeSpan { get { return _timespan; } }
 
-		public IIntentState CreateIntentState(TimeSpan intentRelativeTime)
+		public IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer)
 		{
-			return new IntentState<T>(this, intentRelativeTime);
+			//return new IntentState<T>(this, intentRelativeTime, layer);
+			_intentState.Layer = layer;
+			_intentState.RelativeTime = intentRelativeTime;
+			return _intentState;
 		}
 
 		public void FractureAt(TimeSpan intentRelativeTime)
@@ -59,11 +64,11 @@ namespace Vixen.Intent
 
 		public T GetStateAt(TimeSpan intentRelativeTime)
 		{
-			int idx = Math.Min(_vals.Length - 1, (int) (intentRelativeTime.TotalMilliseconds / _frameTime.TotalMilliseconds) );
-			if( idx < 0)
+			int idx = Math.Min(_vals.Length - 1, (int)(intentRelativeTime.TotalMilliseconds / _frameTime.TotalMilliseconds));
+			if (idx < 0)
 				idx = 0;
-			else if( idx >= _vals.Length)
-				idx = _vals.Length-1;
+			else if (idx >= _vals.Length)
+				idx = _vals.Length - 1;
 			//Console.WriteLine( "gsa: idx: {0}, rel: {1}, ft: {2}", idx, intentRelativeTime.TotalMilliseconds, _frameTime.TotalMilliseconds);
 			return _vals[idx];
 		}

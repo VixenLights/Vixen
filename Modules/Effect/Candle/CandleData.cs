@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Runtime.Serialization;
-using System.Text;
-using Vixen.Data.Value;
 using Vixen.Module;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Candle
 {
 	[DataContract]
-	public class CandleData : ModuleDataModelBase
+	public class CandleData : EffectTypeModuleData
 	{
 		public CandleData()
 		{
@@ -63,7 +59,7 @@ namespace VixenModules.Effect.Candle
 			}
 		}
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			return (CandleData) MemberwiseClone();
 		}

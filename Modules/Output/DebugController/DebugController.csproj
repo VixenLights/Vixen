@@ -63,6 +63,7 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>

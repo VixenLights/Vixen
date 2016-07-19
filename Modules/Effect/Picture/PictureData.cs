@@ -2,13 +2,13 @@
 using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Picture
 {
 	[DataContract]
-	public class PictureData: ModuleDataModelBase
+	public class PictureData: EffectTypeModuleData
 	{
 		public PictureData()
 		{
@@ -53,7 +53,7 @@ namespace VixenModules.Effect.Picture
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			PictureData result = new PictureData
 			{
@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Picture
 				ScaleToGrid = ScaleToGrid,
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
-				FileName = FileName
+				FileName = FileName,
 			};
 			return result;
 		}

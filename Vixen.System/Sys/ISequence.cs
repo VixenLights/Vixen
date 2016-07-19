@@ -6,7 +6,7 @@ using Vixen.Module;
 
 namespace Vixen.Sys
 {
-	public interface ISequence : IHasMedia, IHasSequenceFilterNodes
+	public interface ISequence : IHasMedia, IHasSequenceFilterNodes, IHasLayers
 	{
 		string Name { get; }
 		void Save();

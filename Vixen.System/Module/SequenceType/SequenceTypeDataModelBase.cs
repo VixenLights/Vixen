@@ -6,6 +6,7 @@ using Vixen.Execution;
 using Vixen.Module.Media;
 using Vixen.Module.SequenceType.Surrogate;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.SequenceType
 {
@@ -16,6 +17,7 @@ namespace Vixen.Module.SequenceType
 		{
 			Media = new MediaCollection();
 			LocalDataSet = new ModuleLocalDataSet();
+			SequenceLayers = new SequenceLayers();
 			_InitDataStreams();
 		}
 
@@ -27,6 +29,9 @@ namespace Vixen.Module.SequenceType
 
 		[DataMember] private SelectedTimingProviderSurrogate _selectedTimingProviderSurrogate;
 		public SelectedTimingProvider SelectedTimingProvider { get; set; }
+
+		[DataMember]
+		private IModuleDataModel[] _layerMixingFilterDataModels;
 
 		[DataMember] private IModuleDataModel[] _dataModels;
 		public ModuleLocalDataSet LocalDataSet { get; set; }
@@ -41,6 +46,12 @@ namespace Vixen.Module.SequenceType
 		public DataStream SequenceFilterData { get; set; }
 
 		public DataStreams DataStreams { get; private set; }
+
+		[DataMember]
+		public SequenceLayers SequenceLayers { get; set; }
+
+		[DataMember]
+		private LayerMixingFilterSurrogate[] _layerMixingFilterSurrogates;
 
 		public override IModuleDataModel Clone()
 		{
@@ -72,12 +83,31 @@ namespace Vixen.Module.SequenceType
 					activeInstances.Add(((IEffectNode) dataNode).Effect.InstanceId);
 				}
 			}
-			if (LocalDataSet != null) {
+
+			if (SequenceLayers != null)
+			{
+				_layerMixingFilterSurrogates = SequenceLayers.Layers.Where(x => x.LayerMixingFilter != null).Select(x => new LayerMixingFilterSurrogate(x)).ToArray();
+				ModuleLocalDataSet data = new ModuleLocalDataSet();
+				foreach (var layer in SequenceLayers.Layers)
+				{
+					if (layer != null)
+					{
+						data.AssignModuleInstanceData(layer.LayerMixingFilter);
+					}
+				}
+				_layerMixingFilterDataModels = data.DataModels.ToArray();
+			}
+
+			if (LocalDataSet != null)
+			{
 				_dataModels = LocalDataSet.DataModels.Where(x => activeInstances.Contains(x.ModuleInstanceId)).ToArray();
 			}
+
 			if (SequenceFilterData != null) {
 				_filterNodeSurrogates = SequenceFilterData.Select(x => new FilterNodeSurrogate((ISequenceFilterNode) x)).ToArray();
 			}
+
+			
 		}
 
 		[OnDeserialized]
@@ -107,10 +137,32 @@ namespace Vixen.Module.SequenceType
 				LocalDataSet.AssignModuleInstanceData(sequenceFilterNode.Filter);
 			}
 
+			if (SequenceLayers != null)
+			{
+				var layerMixingFilterModels = new ModuleLocalDataSet { DataModels = _dataModels };
+				//Bring in the layers
+				foreach (var layer in SequenceLayers.Layers)
+				{
+					var surrogate = _layerMixingFilterSurrogates.FirstOrDefault(x => x.LayerReferenceId == layer.Id);
+					if (surrogate != null)
+					{
+						layer.LayerMixingFilter = surrogate.CreateLayerMixingFilter();
+						layerMixingFilterModels.AssignModuleInstanceData(layer.LayerMixingFilter);
+					}
+					
+				}
+				
+			}
+			else
+			{
+				SequenceLayers = new SequenceLayers();
+			}
+			
 			// Get the modules back into their collections.
 			_InitDataStreams();
 			EffectData.AddData(effectNodes);
 			SequenceFilterData.AddData(sequenceFilterNodes);
+			
 		}
 	}
 }

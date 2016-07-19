@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
-using System.Text;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -13,7 +12,7 @@ using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Text
@@ -333,6 +332,11 @@ namespace VixenModules.Effect.Text
 				UpdateAllAttributes();
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		private void UpdateAllAttributes()

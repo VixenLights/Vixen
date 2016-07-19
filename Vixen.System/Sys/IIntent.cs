@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Vixen.Data.Value;
+using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Sys
 {
 	public interface IIntent : IDispatchable
 	{
 		TimeSpan TimeSpan { get; }
-		IIntentState CreateIntentState(TimeSpan intentRelativeTime);
+		IIntentState CreateIntentState(TimeSpan intentRelativeTime, ILayer layer);
 		void FractureAt(TimeSpan intentRelativeTime);
 		void FractureAt(IEnumerable<TimeSpan> intentRelativeTimes);
 		void FractureAt(ITimeNode intentRelativeTime);

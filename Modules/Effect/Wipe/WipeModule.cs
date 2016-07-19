@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Vixen.Attributes;
+using Vixen.Intent;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
+using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Wipe
 {
-	public class WipeModule : EffectModuleInstanceBase
+	public class WipeModule : BaseEffect
 	{
 		public WipeModule()
 		{
@@ -36,168 +37,168 @@ namespace VixenModules.Effect.Wipe
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
-
 			_elementData = new EffectIntents();
 
+			RenderNodes(tokenSource);
+		}
+
+		private void RenderNodes(CancellationTokenSource tokenSource)
+		{
 			IEnumerable<IGrouping<int, ElementNode>> renderNodes = null;
-			
+
 			switch (_data.Direction)
 			{
 				case WipeDirection.Up:
 					renderNodes = TargetNodes
-												.SelectMany(x => x.GetLeafEnumerator())
-												.OrderByDescending(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+						.SelectMany(x => x.GetLeafEnumerator())
+						.OrderByDescending(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							else
+								return 1;
+						})
+						.ThenBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							else
+								return 1;
+						})
+						.GroupBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							else
+								return 1;
+						})
+						.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Down:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+						.OrderBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							else
+								return 1;
+						})
+						.ThenBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							else
+								return 1;
+						})
+						.GroupBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							else
+								return 1;
+						})
+						.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Right:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.ThenBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													else
-														return 1;
-												})
-												.GroupBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													else
-														return 1;
-												})
-												.Distinct();
+						.OrderBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							else
+								return 1;
+						})
+						.ThenBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							else
+								return 1;
+						})
+						.GroupBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							else
+								return 1;
+						})
+						.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Left:
 
 					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-												.OrderByDescending(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													return 1;
-												})
-												.ThenBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).Y;
-													}
-													return 1;
-												})
-												.GroupBy(x =>
-												{
-													var prop = x.Properties.Get(LocationDescriptor._typeId);
-													if (prop != null)
-													{
-														return ((LocationData)prop.ModuleData).X;
-													}
-													return 1;
-												})
-
-												.Distinct();
+						.OrderByDescending(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							return 1;
+						})
+						.ThenBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y;
+							}
+							return 1;
+						})
+						.GroupBy(x =>
+						{
+							var prop = x.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X;
+							}
+							return 1;
+						})
+						.Distinct();
+					RenderNonBurst(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Out:
 				case WipeDirection.In:
 					RenderBurst(tokenSource, _data.Direction);
-
-					return;
-
-					break;
-				default:
 					break;
 			}
-
-			RenderNonBurst(tokenSource, renderNodes);
 		}
 
 		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
 		{
-			var pulse = new Pulse.Pulse();
+			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
@@ -222,13 +223,16 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
+
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -261,14 +265,15 @@ namespace VixenModules.Effect.Wipe
 
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
-
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -368,7 +373,7 @@ namespace VixenModules.Effect.Wipe
 					break;
 			}
 
-			var pulse = new Pulse.Pulse();
+			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
@@ -393,13 +398,15 @@ namespace VixenModules.Effect.Wipe
 									return;
 								if (element != null)
 								{
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -433,14 +440,15 @@ namespace VixenModules.Effect.Wipe
 									if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
 									
-									pulse.TimeSpan = segmentPulse;
-									pulse.ColorGradient = _data.ColorGradient;
-									pulse.LevelCurve = _data.Curve;
-									pulse.TargetNodes = new ElementNode[] { element };
-									result = pulse.Render();
-
+									//pulse.TimeSpan = segmentPulse;
+									//pulse.ColorGradient = _data.ColorGradient;
+									//pulse.LevelCurve = _data.Curve;
+									//pulse.TargetNodes = new ElementNode[] { element };
+									//result = pulse.Render();
+									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									_elementData.Add(result);
+									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
 								}
 							}
 							effectTime += intervalTime;
@@ -472,17 +480,22 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
-
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
 
 		private void CheckForInvalidColorData()
 		{
-			HashSet<Color> validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-			if (validColors.Any() && !_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+			var validColors = GetValidColors();
+			if (validColors.Any())
 			{
-				//Our color is not valid for any elements we have.
-				//Try to set a default color gradient from our available colors
-				_data.ColorGradient = new ColorGradient(validColors.First());
+				if (!_data.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				{
+					//Our color is not valid for any elements we have.
+					//Try to set a default color gradient from our available colors
+					_data.ColorGradient = new ColorGradient(validColors.First());
+				}
 			}
 		}
 

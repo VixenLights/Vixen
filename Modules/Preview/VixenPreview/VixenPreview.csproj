@@ -138,6 +138,8 @@
     <Compile Include="ResizePreviewForm.Designer.cs">
       <DependentUpon>ResizePreviewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\DiscreteIntentHandler.cs" />
+    <Compile Include="Shapes\FullColorIntentHandler.cs" />
     <Compile Include="Shapes\PreviewCustom.cs" />
     <Compile Include="Shapes\PreviewCustomCreateForm.cs">
       <SubType>Form</SubType>

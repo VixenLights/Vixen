@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using Vixen.Data.StateCombinator;
 
 namespace Vixen.Sys
 {
-	// Need to implement IEquatable<T> so that IEnumerable<T>.Except() will not use
-	// the default Object Equals() and GetHashCode().
 	/// <summary>
-	/// A logical channel of low-level CommandData that is intended to be executed by a controller.
+	/// A logical representation of an element within a prop.
 	/// </summary>
 	[Serializable]
 	public class Element : IOutputStateSource, IEqualityComparer<Element>, IEquatable<Element>
 	{
-		private IIntentStates _state;
-		private static readonly IIntentStates EmptyState = new IntentStateList();
-
+		private const ushort ElementStateListRatio = 3;
+		private int _stateIndex;
+		private readonly IStateCombinator _stateCombinator = new LayeredStateCombinator();
+		private readonly IntentStateList[] _stateLists = new IntentStateList[ElementStateListRatio];
+		private readonly IntentStateList _contextStates = new IntentStateList();
+		
 		internal Element(string name)
 			: this(Guid.NewGuid(), name)
 		{
@@ -25,7 +25,10 @@ namespace Vixen.Sys
 		{
 			Id = id;
 			Name = name;
-			_state = EmptyState;
+			for (int i = 0; i < ElementStateListRatio; i++)
+			{
+				_stateLists[i] = new IntentStateList(4);
+			}
 		}
 
 		public string Name { get; set; }
@@ -36,17 +39,19 @@ namespace Vixen.Sys
 
 		public void Update()
 		{
-			_state = _AggregateStateFromContexts();
+			_AggregateStateFromContexts();
 		}
 
 		public void ClearStates()
 		{
-			_state = EmptyState;
+			var nextIndex = GetNextStateIndex();
+			_stateLists[nextIndex].Clear();
+			_stateIndex = nextIndex;
 		}
 
 		public IIntentStates State
 		{
-			get { return _state; }
+			get { return _stateLists[_stateIndex]; }
 		}
 
 		public override string ToString()
@@ -78,29 +83,46 @@ namespace Vixen.Sys
 			return Id.GetHashCode();
 		}
 
-		private IIntentStates _AggregateStateFromContexts()
+		
+		private int GetNextStateIndex()
 		{
-			//In reality, all this needs to do is call GetElementState on each context
-			//and put them all into a single collection.
-			// NotNull() - filter out any null lists resulting from the context not yet having
-			// a state for the element.  This versus creating a new list in
-			// ElementStateSourceCollection.GetState (or maybe Context.GetState instead, may
-			// make more sense there) on a dictionary miss.
-			//IEnumerable<IIntentState> intentStates = _dataSource.Where(x => x != null).SelectMany(x => x.State);
-			//return new IntentStateList(intentStates);
-
-			//return new IntentStateList(_dataSource.Where(x => x != null).SelectMany(x => x.State));
-
-			IntentStateList ret = new IntentStateList();
-			foreach (var ctx in VixenSystem.Contexts.Where(x => x.IsRunning))
+			if (_stateIndex < ElementStateListRatio - 1)
 			{
-				var iss = ctx.GetState(Id);
-				if (iss == null)
-					continue;
-				ret.AddRange(iss.State);
+				return _stateIndex + 1;
 			}
-			return ret;
-
+			else
+			{
+				return 0;
+			}
 		}
+
+		private void _AggregateStateFromContexts()
+		{
+			var nextIndex = GetNextStateIndex();
+			_stateLists[nextIndex].Clear();
+			_contextStates.Clear();
+			foreach (var ctx in VixenSystem.Contexts)
+			{
+				if (ctx.IsRunning)
+				{
+					var iss = ctx.GetState(Id);
+					if (iss == null)
+						continue;
+					_contextStates.AddRangeIntentState(iss);
+				}
+			}
+			var states = GetCombinedState(_contextStates);
+			foreach (var intentState in states)
+			{
+				_stateLists[nextIndex].Add(intentState);
+			}
+			_stateIndex = nextIndex;
+		}
+
+		private List<IIntentState> GetCombinedState(IIntentStates states)
+		{
+			return _stateCombinator.Combine(states.AsList());
+		}
+
 	}
 }

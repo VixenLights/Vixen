@@ -65,10 +65,12 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
