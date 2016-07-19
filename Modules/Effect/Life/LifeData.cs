@@ -6,13 +6,13 @@ using Vixen.Instrumentation;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Life
 {
 	[DataContract]
-	public class LifeData: ModuleDataModelBase
+	public class LifeData : EffectTypeModuleData
 	{
 
 		public LifeData()
@@ -47,7 +47,7 @@ namespace VixenModules.Effect.Life
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LifeData result = new LifeData
 			{
