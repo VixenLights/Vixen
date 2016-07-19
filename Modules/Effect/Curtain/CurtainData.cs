@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Curtain
 {
 	[DataContract]
-	public class CurtainData: ModuleDataModelBase
+	public class CurtainData : EffectTypeModuleData
 	{
 
 		public CurtainData()
@@ -46,7 +46,7 @@ namespace VixenModules.Effect.Curtain
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			CurtainData result = new CurtainData
 			{
