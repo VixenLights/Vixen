@@ -214,7 +214,7 @@ namespace VixenModules.Effect.Bars
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			int x, y, n, colorIdx;
 			int colorcnt = Colors.Count();

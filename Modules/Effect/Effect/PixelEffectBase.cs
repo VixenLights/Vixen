@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -10,6 +11,7 @@ using Vixen.Intent;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Location;
 
@@ -25,7 +27,7 @@ namespace VixenModules.Effect.Effect
 		protected const short FrameTime = 50;
 
 		protected readonly List<int> StringPixelCounts = new List<int>();
-		protected Dictionary<ElementNode, Point> ElementLocations; 
+		protected List<ElementLocation> ElementLocations; 
 
 		private EffectIntents _elementData;
 		private int _stringCount;
@@ -220,11 +222,11 @@ namespace VixenModules.Effect.Effect
 
 		private void ConfigureVirtualBuffer()
 		{
-			ElementLocations = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToDictionary(e => e, LocationModule.GetPositionForElement);
-			var xMax = ElementLocations.Values.Max(p => p.X);
-			var xMin = ElementLocations.Values.Min(p => p.X);
-			var yMax = ElementLocations.Values.Max(p => p.Y);
-			var yMin = ElementLocations.Values.Min(p => p.Y);
+			ElementLocations = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Select(x => new ElementLocation(x)).ToList();
+			var xMax = ElementLocations.Max(p => p.X);
+			var xMin = ElementLocations.Min(p => p.X);
+			var yMax = ElementLocations.Max(p => p.Y);
+			var yMin = ElementLocations.Min(p => p.Y);
 
 			_bufferWi = (yMax - yMin) + 1;
 			_yOffset = yMin;
@@ -255,7 +257,7 @@ namespace VixenModules.Effect.Effect
 		protected int MaxPixelsPerStringOffset { get; set; }
 
 		protected abstract void SetupRender();
-		protected abstract void RenderEffect(int frameNum, ref PixelFrameBuffer frameBuffer);
+		protected abstract void RenderEffect(int frameNum, IPixelFrameBuffer frameBuffer);
 		protected abstract void CleanUpRender();
 
 		private int _bufferHt = 0;
@@ -288,54 +290,49 @@ namespace VixenModules.Effect.Effect
 
 		protected EffectIntents RenderNodeByLocation(ElementNode node)
 		{
+			Console.Out.WriteLine("Render by location");
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
-			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor ? BaseColor : Color.Transparent);
-
-			int bufferSize = StringPixelCounts.Sum();
-
+			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames, _xOffset, _yOffset, BufferHt);
+			
 			TimeSpan startTime = TimeSpan.Zero;
-
-			// set up arrays to hold the generated colors
-			var pixels = new RGBValue[bufferSize][];
-			for (int eidx = 0; eidx < bufferSize; eidx++)
-				pixels[eidx] = new RGBValue[nFrames];
 
 			// generate all the pixels
 			for (int frameNum = 0; frameNum < nFrames; frameNum++)
 			{
-				if (UseBaseColor)
-				{
-					var level = BaseLevelCurve.GetValue(GetEffectTimeIntervalPosition(frameNum) * 100) / 100;
-					buffer.ClearBuffer(level);
-				}
-				else
-				{
-					buffer.ClearBuffer();
-				}
+				//if (UseBaseColor)
+				//{
+				//	var level = BaseLevelCurve.GetValue(GetEffectTimeIntervalPosition(frameNum) * 100) / 100;
+				//	buffer.ClearBuffer(level);
+				//}
+				//else
+				//{
+				//	buffer.ClearBuffer();
+				//}
 
-				RenderEffect(frameNum, ref buffer);
-				// peel off this frames pixels...
-				
-					int i = 0;
-					foreach (var elementLocation in ElementLocations)
-					{
-						var p = elementLocation.Value;
-						pixels[i][frameNum] = new RGBValue(buffer.GetColorAt(p.X - _xOffset, -(p.Y - _yOffset)+BufferHt-1));
-						i++;
-					}
+				RenderEffect(frameNum, buffer);
 			}
 
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
-			int numElements = ElementLocations.Count;
-			List<ElementNode> elements = ElementLocations.Keys.ToList();
-			for (int eidx = 0; eidx < numElements; eidx++)
+
+			foreach (var tuple in buffer.GetElementData())
 			{
-				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
-				effectIntents.AddIntentForElement(elements[eidx].Element.Id, intent, startTime);
+				if (tuple.Item2.Count == 0)
+				{
+					Debugger.Break();
+				}
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, tuple.Item2.ToArray(), TimeSpan);
+				effectIntents.AddIntentForElement(tuple.Item1.ElementNode.Element.Id, intent, startTime);
 			}
+			//int numElements = ElementLocations.Count;
+			//List<ElementNode> elements = ElementLocations.Keys.ToList();
+			//for (int eidx = 0; eidx < numElements; eidx++)
+			//{
+			//	IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
+			//	effectIntents.AddIntentForElement(elements[eidx].Element.Id, intent, startTime);
+			//}
 
 			return effectIntents;
 		}
@@ -369,7 +366,7 @@ namespace VixenModules.Effect.Effect
 					buffer.ClearBuffer();
 				}
 				
-				RenderEffect(frameNum, ref buffer);
+				RenderEffect(frameNum, buffer);
 				// peel off this frames pixels...
 				if (StringOrientation == StringOrientation.Horizontal)
 				{

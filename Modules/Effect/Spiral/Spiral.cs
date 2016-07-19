@@ -282,7 +282,7 @@ namespace VixenModules.Effect.Spiral
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;

@@ -17,6 +17,10 @@ namespace Vixen.Intent
 
 		public StaticArrayIntent(TimeSpan frameTime, T[] vals, TimeSpan timeSpan)
 		{
+			if (vals.Length == 0)
+			{
+				throw new ArgumentOutOfRangeException("vals");
+			}
 			_timespan = timeSpan;
 			_vals = vals;
 			_frameTime = frameTime;

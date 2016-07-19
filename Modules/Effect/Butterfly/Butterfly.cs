@@ -233,7 +233,7 @@ namespace VixenModules.Effect.Butterfly
 			//Not required
 		}
 
-		protected override void RenderEffect(int effectFrame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
 			int repeat = Repeat;
 			switch (ButterflyType)
@@ -265,6 +265,7 @@ namespace VixenModules.Effect.Butterfly
 			int y0;
 			for (int x=0; x<BufferWi; x++)
 			{
+				if(!frameBuffer.ContainsRow(x)) continue;
 				int y;
 				for (y=0; y<BufferHt; y++)
 				{

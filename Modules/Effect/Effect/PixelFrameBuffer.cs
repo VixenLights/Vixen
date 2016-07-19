@@ -3,7 +3,7 @@ using Common.Controls.ColorManagement.ColorModels;
 
 namespace VixenModules.Effect.Effect
 {
-	public class PixelFrameBuffer
+	public class PixelFrameBuffer:IPixelFrameBuffer
 	{
 		private Color[][] _pixels;
 		private readonly int _bufferWi;
@@ -70,6 +70,12 @@ namespace VixenModules.Effect.Effect
 		{
 			Color color = hsv.ToRGB().ToArgb();
 			SetPixel(x, y, color);
+		}
+
+		public bool ContainsRow(int x)
+		{
+			//TODO implement this!!
+			return true;
 		}
 
 		public Color GetColorAt(int x, int y)

@@ -404,7 +404,7 @@ namespace VixenModules.Effect.Fireworks
 			_fireworkBursts = null;
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (StringCount == 1) return;
 

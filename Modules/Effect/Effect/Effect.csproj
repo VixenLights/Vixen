@@ -49,6 +49,11 @@
   <ItemGroup>
     <Compile Include="BaseEffect.cs" />
     <Compile Include="EffectTypeModuleData.cs" />
+    <Compile Include="IPixelFrameBuffer.cs" />
+    <Compile Include="Location\ElementLocation.cs" />
+    <Compile Include="Location\PixelLocationFrameBuffer.cs" />
+    <Compile Include="Location\LocationComparer.cs" />
+    <Compile Include="Location\SparseMatrix.cs" />
     <Compile Include="PixelEffectBase.cs" />
     <Compile Include="PixelFrameBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
