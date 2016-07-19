@@ -6,13 +6,13 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Meteors
 {
 	[DataContract]
-	public class MeteorsData: ModuleDataModelBase
+	public class MeteorsData : EffectTypeModuleData
 	{
 
 		public MeteorsData()
@@ -83,7 +83,7 @@ namespace VixenModules.Effect.Meteors
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			MeteorsData result = new MeteorsData
 			{

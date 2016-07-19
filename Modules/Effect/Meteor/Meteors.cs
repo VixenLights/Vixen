@@ -11,7 +11,7 @@ using Vixen.Sys.Attribute;
 using Vixen.Sys.State.Execution;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Meteors
@@ -389,6 +389,11 @@ namespace VixenModules.Effect.Meteors
 				UpdateAttributes();
 				IsDirty = true;
 			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
 		}
 
 		protected override void SetupRender()
