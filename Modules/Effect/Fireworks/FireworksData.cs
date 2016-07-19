@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
+using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using ZedGraph;
