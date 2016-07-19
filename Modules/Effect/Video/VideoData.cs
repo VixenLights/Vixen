@@ -3,13 +3,13 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Vixen.Module;
 using VixenModules.App.Curves;
-using VixenModules.Effect.Pixel;
+using VixenModules.Effect.Effect;
 using ZedGraph;
 
 namespace VixenModules.Effect.Video
 {
 	[DataContract]
-	public class VideoData : ModuleDataModelBase
+	public class VideoData : EffectTypeModuleData
 	{
 
 		public VideoData()
@@ -98,7 +98,7 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public string Video_DataPath { get; set; }
 
-		public override IModuleDataModel Clone()
+		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			VideoData result = new VideoData
 			{
