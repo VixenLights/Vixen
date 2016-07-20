@@ -157,6 +157,7 @@
     <Compile Include="Execution\ContextCaching.cs" />
     <Compile Include="Execution\ContextTargetType.cs" />
     <Compile Include="Execution\Context\PreCachingSequenceContext.cs" />
+    <Compile Include="Execution\Context\PreviewContext.cs" />
     <Compile Include="Execution\DataSource\EffectNodeDataPump.cs" />
     <Compile Include="Execution\DataSource\IMutableDataSource.cs" />
     <Compile Include="Execution\DataSource\SequenceDataPump.cs" />

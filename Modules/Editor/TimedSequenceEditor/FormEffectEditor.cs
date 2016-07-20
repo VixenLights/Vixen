@@ -23,7 +23,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		private readonly List<Element> _elements = new List<Element>();
 		private readonly TimedSequenceEditorForm _sequenceEditorForm;
-		private LiveContext _previewContext;
+		private PreviewContext _previewContext;
 		private readonly Timer _previewLoopTimer = new Timer();
 		private readonly EffectPropertyEditorGrid _effectPropertyEditorGridEffectEffectPropertiesEditor;
 		private bool _previewState;
@@ -150,7 +150,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_previewContext == null)
 			{
-				_previewContext = VixenSystem.Contexts.CreateLiveContext("Effect Preview");
+				_previewContext = VixenSystem.Contexts.CreatePreviewContext("Effect Preview");
+				_previewContext.Sequence = _sequenceEditorForm.Sequence;
 				_previewContext.Start();
 
 			}
