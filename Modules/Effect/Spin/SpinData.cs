@@ -65,7 +65,17 @@ namespace VixenModules.Effect.Spin
 
 		[DataMember]
 		public int DepthOfEffect { get; set; }
-		
+
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			//Ensure defaults for new fields that might not be in older effects.
+			if (StaticColor.IsEmpty)
+			{
+				StaticColor = Color.White;
+			}
+		}
+
 		public SpinData()
 		{
 			SpeedFormat = SpinSpeedFormat.RevolutionCount;
