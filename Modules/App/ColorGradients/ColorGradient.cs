@@ -883,16 +883,36 @@ namespace VixenModules.App.ColorGradients
 
 			result.Colors.Add(new ColorPoint(GetColorAt(start), 0));
 
-			//Sample the colors out for more accuracy
-			for (double d = start; d < end; d += .2d)
+			ColorPoint previous = null;
+			foreach (ColorPoint cp in Colors)
 			{
-				var c = GetColorAt(d);
-				double scaledPos = (d - start) / range;
-				if (scaledPos > 1.0 || scaledPos < 0.0)
+				if (cp.Position > start && cp.Position < end)
 				{
-					throw new Exception("Error  calculating position: " + scaledPos + " out of range");
+					double scaledPos = (cp.Position - start) / range;
+					if (scaledPos > 1.0 || scaledPos < 0.0)
+					{
+						throw new Exception("Error  calculating position: " + scaledPos + " out of range");
+					}
+
+					
+					result.Colors.Add(new ColorPoint(cp.Color.ToRGB(), scaledPos));
 				}
-				result.Colors.Add(new ColorPoint(c, scaledPos));
+			}
+
+			//Sample a few more colors out for more accuracy
+			for (double d = start+.2d; d < end; d += .2d)
+			{
+				if (d < end)
+				{
+					var c = GetColorAt(d);
+					double scaledPos = (d - start) / range;
+					if (scaledPos > 1.0 || scaledPos < 0.0)
+					{
+						throw new Exception("Error  calculating position: " + scaledPos + " out of range");
+					}
+					result.Colors.Add(new ColorPoint(c, scaledPos));
+				}
+				
 			}
 
 			result.Colors.Add(new ColorPoint(GetColorAt(end), 1));
