@@ -166,6 +166,7 @@
 			this.listViewMarkCollections.View = System.Windows.Forms.View.Details;
 			this.listViewMarkCollections.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.listViewMarkCollections_AfterLabelEdit);
 			this.listViewMarkCollections.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listViewMarkCollections_ItemCheck);
+			this.listViewMarkCollections.SelectedIndexChanged += new System.EventHandler(this.listViewMarkCollections_SelectedIndexChanged);
 			this.listViewMarkCollections.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.listViewMarkCollections_PreviewKeyDown);
 			// 
 			// columnHeader1
