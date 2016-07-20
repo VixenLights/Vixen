@@ -44,6 +44,7 @@
 			this.boldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dottedSolidToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteSelectedMarksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownStandardNudge)).BeginInit();
@@ -178,10 +179,12 @@
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.boldToolStripMenuItem,
             this.dottedSolidToolStripMenuItem,
-            this.changeColorToolStripMenuItem});
+            this.changeColorToolStripMenuItem,
+            this.deleteSelectedMarksToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.ShowImageMargin = false;
 			this.contextMenuStrip1.Size = new System.Drawing.Size(144, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(202, 136);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// boldToolStripMenuItem
@@ -207,6 +210,13 @@
 			this.changeColorToolStripMenuItem.Text = "Change Color";
 			this.changeColorToolStripMenuItem.ToolTipText = "Change Mark Collection color";
 			this.changeColorToolStripMenuItem.Click += new System.EventHandler(this.changeColorToolStripMenuItem_Click);
+			// 
+			// deleteSelectedMarksToolStripMenuItem
+			// 
+			this.deleteSelectedMarksToolStripMenuItem.Name = "deleteSelectedMarksToolStripMenuItem";
+			this.deleteSelectedMarksToolStripMenuItem.Size = new System.Drawing.Size(201, 26);
+			this.deleteSelectedMarksToolStripMenuItem.Text = "Delete Selected Marks";
+			this.deleteSelectedMarksToolStripMenuItem.Click += new System.EventHandler(this.deleteMarksToolStripMenuItem_Click);
 			// 
 			// flowLayoutPanel1
 			// 
@@ -267,5 +277,6 @@
 		private System.Windows.Forms.ToolStripMenuItem dottedSolidToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem changeColorToolStripMenuItem;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+		private System.Windows.Forms.ToolStripMenuItem deleteSelectedMarksToolStripMenuItem;
 	}
 }

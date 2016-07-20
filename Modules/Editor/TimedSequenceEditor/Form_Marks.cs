@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -142,6 +143,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
 			mc.Name = e.Label ?? mc.Name;
 			OnChangedMarkCollection(new MarkCollectionArgs(mc));
+			PopulateMarkCollectionsList(mc);
 		}
 
 		private void toolStripButtonAddMarkCollection_Click(object sender, EventArgs e)
@@ -237,30 +239,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			changeMarkCollection(menuAction);
 		}
 
+		private void deleteMarksToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var menuAction = sender;
+			changeMarkCollection(menuAction);
+		}
+
 		private void changeMarkCollection(object menuAction)
 		{
-			ListViewItem item = listViewMarkCollections.SelectedItems[0];
-			MarkCollection mc = item.Tag as MarkCollection;
+			DialogResult result = DialogResult.Cancel;
+			Common.Controls.ColorManagement.ColorPicker.ColorPicker picker = null;
 			switch (menuAction.ToString())
 			{
-				case "Normal/Bold Line":
-					mc.Bold = !mc.Bold;
-					break;
-				case "Dotted/Solid Line":
-					mc.SolidLine = !mc.SolidLine;
-					break;
 				case "Change Color":
-					Common.Controls.ColorManagement.ColorPicker.ColorPicker picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
-
-					DialogResult result = picker.ShowDialog();
-					if (result == DialogResult.OK)
-					{
-						mc.MarkColor = picker.Color.ToRGB().ToArgb();
-						item.ForeColor = picker.Color.ToRGB().ToArgb();
-					}
+					picker = new Common.Controls.ColorManagement.ColorPicker.ColorPicker();
+					result = picker.ShowDialog();
 					break;
 			}
-			OnMarkCollectionChecked(new MarkCollectionArgs(mc));
+			foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
+			{
+				MarkCollection mc = item.Tag as MarkCollection;
+				switch (menuAction.ToString())
+				{
+					case "Normal/Bold Line":
+						mc.Bold = !mc.Bold;
+						break;
+					case "Dotted/Solid Line":
+						mc.SolidLine = !mc.SolidLine;
+						break;
+					case "Change Color":
+						if (result == DialogResult.OK)
+						{
+							mc.MarkColor = picker.Color.ToRGB().ToArgb();
+							item.ForeColor = picker.Color.ToRGB().ToArgb();
+						}
+						break;
+					case "Delete Selected Marks":
+						DeleteSelectedMarkCollections();
+						return;
+				}
+				OnMarkCollectionChecked(new MarkCollectionArgs(mc));
+			}
 		}
 
 	}
