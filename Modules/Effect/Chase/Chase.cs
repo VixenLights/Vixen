@@ -536,19 +536,14 @@ namespace VixenModules.Effect.Chase
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
-						foreach (var iintentNode in result.FirstOrDefault().Value)
-						{
-							GenerateStartingStaticPulse(target, iintentNode);
-						}
-					}
+						var iintentNode = result.FirstOrDefault().Value.FirstOrDefault();
+						GenerateStartingStaticPulse(target, iintentNode);
+					}	
 					_elementData.Add(result);
 					if (ExtendPulseToEnd && result.Count > 0)
 					{
-						foreach (var iintentNode in result.FirstOrDefault().Value)
-						{
-							GenerateExtendedStaticPulse(target, iintentNode);	
-						}
-						
+						var iintentNode = result.FirstOrDefault().Value.LastOrDefault();
+						GenerateExtendedStaticPulse(target, iintentNode);	
 					}
 					break;
 
