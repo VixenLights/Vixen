@@ -383,7 +383,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					{
 						pixelColor = PreviewTools.SelectedItemColor;
 					}
-					else if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
+					else if (highlightedElements != null && highlightedElements.Contains(pixel.NodeId))
 					{
 						pixelColor = Color.HotPink;
 					}

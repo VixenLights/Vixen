@@ -32,39 +32,41 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			contextMenuLinkedElements.Renderer = new ThemeToolStripRenderer();
-            _shapes = shapes;
-            connectStandardStrings = shapes[0].connectStandardStrings;
-            int i = 1;
-            foreach (PreviewBaseShape shape in _shapes)
-            {
-				i = GetStringsFromShape(i, shape);
-                if (shape.Pixels.Count == 0)
-                    continue;
-                var newString = new PreviewSetElementString();
-                // If this is a Standard string, only set the first pixel of the string
-                if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
-                {
-                    //Console.WriteLine("Standard String");
-                    PreviewPixel pixel = shape.Pixels[0];
-                    //Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
-                    newString.Pixels.Add(pixel.Clone());
-                }
-                // If this is a pixel string, let them set every pixel
-                else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
-                {
-                    foreach (PreviewPixel pixel in shape.Pixels)
-                    {
-                        newString.Pixels.Add(pixel.Clone());
-                    }
-                }
-
-			if (_shapes[0].Parent != null)
+			_shapes = shapes;
+			connectStandardStrings = shapes[0].connectStandardStrings;
+			int i = 1;
+			foreach (PreviewBaseShape shape in _shapes)
 			{
-				string shapeType = "";
-				shapeType = _shapes[0].Parent.GetType().ToString();
-				if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString"))
+				i = GetStringsFromShape(i, shape);
+				if (shape.Pixels.Count == 0)
+					continue;
+				var newString = new PreviewSetElementString();
+				// If this is a Standard string, only set the first pixel of the string
+				if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
 				{
-					panelSetLightCount.Visible = true;
+					//Console.WriteLine("Standard String");
+					PreviewPixel pixel = shape.Pixels[0];
+					//Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
+					newString.Pixels.Add(pixel.Clone());
+				}
+				// If this is a pixel string, let them set every pixel
+				else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
+				{
+					foreach (PreviewPixel pixel in shape.Pixels)
+					{
+						newString.Pixels.Add(pixel.Clone());
+					}
+				}
+
+				if (_shapes[0].Parent != null)
+				{
+					string shapeType = "";
+					shapeType = _shapes[0].Parent.GetType().ToString();
+					if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) ||
+					    shapeType.Contains("MultiString"))
+					{
+						panelSetLightCount.Visible = true;
+					}
 				}
 			}
 		}
