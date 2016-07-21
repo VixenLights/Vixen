@@ -11,7 +11,5 @@ namespace VixenModules.Effect.Effect
 
 		void SetPixel(int x, int y, HSV hsv);
 
-		bool ContainsRow(int x);
-		
 	}
 }

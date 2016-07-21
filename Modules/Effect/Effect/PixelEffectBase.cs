@@ -209,8 +209,6 @@ namespace VixenModules.Effect.Effect
 		{
 			_bufferHt = StringCount;
 			_bufferWi = MaxPixelsPerString;
-			_xOffset = 0;
-			_yOffset = 0;
 		}
 
 		private void CalculateStringCounts()
@@ -229,28 +227,7 @@ namespace VixenModules.Effect.Effect
 			var yMin = ElementLocations.Min(p => p.Y);
 
 			_bufferWi = (yMax - yMin) + 1;
-			_yOffset = yMin;
 			_bufferHt = (xMax - xMin) + 1;
-			_xOffset = xMin;
-
-		}
-
-		private int _xOffset;
-		private int _yOffset;
-		protected int BufferHtOffset
-		{
-			get
-			{
-				return StringOrientation == StringOrientation.Horizontal ? _yOffset : _xOffset;
-			}
-		}
-
-		protected int BufferWiOffset
-		{
-			get
-			{
-				return StringOrientation == StringOrientation.Horizontal ? _xOffset : _yOffset;
-			}
 		}
 
 		protected int StringCountOffset { get; set; }
@@ -261,11 +238,11 @@ namespace VixenModules.Effect.Effect
 
 		protected virtual void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			
+			throw new NotImplementedException();
 		}
 		protected abstract void CleanUpRender();
 
-		private int _bufferHt = 0;
+		private int _bufferHt;
 		protected int BufferHt
 		{
 			get
@@ -275,7 +252,7 @@ namespace VixenModules.Effect.Effect
 
 		}
 
-		private int _bufferWi = 0;
+		private int _bufferWi;
 		protected int BufferWi
 		{
 			get
@@ -295,11 +272,10 @@ namespace VixenModules.Effect.Effect
 
 		protected EffectIntents RenderNodeByLocation(ElementNode node)
 		{
-			Console.Out.WriteLine("Render by location");
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
-			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames, _xOffset, _yOffset, BufferHt);
+			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames);
 			
 			TimeSpan startTime = TimeSpan.Zero;
 
@@ -318,14 +294,7 @@ namespace VixenModules.Effect.Effect
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, tuple.Item2.ToArray(), TimeSpan);
 				effectIntents.AddIntentForElement(tuple.Item1.ElementNode.Element.Id, intent, startTime);
 			}
-			//int numElements = ElementLocations.Count;
-			//List<ElementNode> elements = ElementLocations.Keys.ToList();
-			//for (int eidx = 0; eidx < numElements; eidx++)
-			//{
-			//	IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);
-			//	effectIntents.AddIntentForElement(elements[eidx].Element.Id, intent, startTime);
-			//}
-
+			
 			return effectIntents;
 		}
 
