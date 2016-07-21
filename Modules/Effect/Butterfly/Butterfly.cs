@@ -253,9 +253,10 @@ namespace VixenModules.Effect.Butterfly
 			int curState = (int)(TimeSpan.TotalMilliseconds*position*repeat);
 			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 			double offset=curState/TimeSpan.TotalMilliseconds;
-    
-    
-			if(Direction==Direction.Forward) offset = -offset;
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
+
+
+			if (Direction==Direction.Forward) offset = -offset;
 			double n;
 			double x1;
 			double y1;
@@ -263,18 +264,27 @@ namespace VixenModules.Effect.Butterfly
 			int d;
 			int x0;
 			int y0;
+
+			int bufferDim = 0;
+			if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
+			{
+				bufferDim = BufferHt + BufferWi;
+			}
+			else if(ButterflyType == ButterflyType.Type5)
+			{
+				bufferDim = BufferHt*BufferWi;
+			}
 			for (int x=0; x<BufferWi; x++)
 			{
 				if(!frameBuffer.ContainsRow(x)) continue;
-				int y;
-				for (y=0; y<BufferHt; y++)
+				for (int y=0; y<BufferHt; y++)
 				{
 					
 					switch (ButterflyType)
 					{
 					case ButterflyType.Type1:
 						//  http://mathworld.wolfram.com/ButterflyFunction.html
-						n = Math.Abs((x*x - y*y) * Math.Sin(offset + ((x+y)*pi2 / (BufferHt+BufferWi))));
+						n = Math.Abs((x*x - y*y) * Math.Sin(offset + ((x+y)*pi2 / (bufferDim))));
 						d = x*x + y*y;
 
 						//  This section is to fix the colors on pixels at {0,1} and {1,0}
@@ -282,12 +292,12 @@ namespace VixenModules.Effect.Butterfly
 						y0=y+1;
 						if((x==0 && y==1))
 						{
-							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt+BufferWi))));
+							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (bufferDim))));
 							d = x*x + y0*y0;
 						}
 						if((x==1 && y==0))
 						{
-							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt+BufferWi))));
+							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (bufferDim))));
 							d = x0*x0 + y*y;
 						}
 						// end of fix
@@ -312,7 +322,7 @@ namespace VixenModules.Effect.Butterfly
 
 					case ButterflyType.Type4:
 						//  http://mathworld.wolfram.com/ButterflyFunction.html
-						n = ((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (BufferHt+BufferWi))));
+						n = ((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (bufferDim))));
 						d = x*x + y*y;
 
 						//  This section is to fix the colors on pixels at {0,1} and {1,0}
@@ -320,12 +330,12 @@ namespace VixenModules.Effect.Butterfly
 						y0=y+1;
 						if((x==0 && y==1))
 						{
-							n = ((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt+BufferWi))));
+							n = ((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (bufferDim))));
 							d = x*x + y0*y0;
 						}
 						if((x==1 && y==0))
 						{
-							n = ((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt+BufferWi))));
+							n = ((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (bufferDim))));
 							d = x0*x0 + y*y;
 						}
 						// end of fix
@@ -339,7 +349,7 @@ namespace VixenModules.Effect.Butterfly
 
 					case ButterflyType.Type5:
 						//  http://mathworld.wolfram.com/ButterflyFunction.html
-							n = Math.Abs((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (BufferHt*BufferWi))));
+							n = Math.Abs((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (bufferDim))));
 						d = x*x + y*y;
 
 						//  This section is to fix the colors on pixels at {0,1} and {1,0}
@@ -347,12 +357,12 @@ namespace VixenModules.Effect.Butterfly
 						y0=y+1;
 						if((x==0 && y==1))
 						{
-							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt*BufferWi))));
+							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (bufferDim))));
 							d = x*x + y0*y0;
 						}
 						if((x==1 && y==0))
 						{
-							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt*BufferWi))));
+							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (bufferDim))));
 							d = x0*x0 + y*y;
 						}
 						// end of fix
@@ -362,7 +372,7 @@ namespace VixenModules.Effect.Butterfly
 
 					}
 					HSV hsv = new HSV(h, 1.0, 1.0);
-					double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
+					
 					if (BackgroundChunks <= 1 || (int)(h*BackgroundChunks) % BackgroundSkips != 0)
 					{
 						if (ColorScheme == ColorScheme.Gradient)

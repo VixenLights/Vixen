@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 
 namespace VixenModules.Effect.Effect
@@ -77,6 +78,9 @@ namespace VixenModules.Effect.Effect
 			//TODO implement this!!
 			return true;
 		}
+
+		public List<int> XIndexes { get; private set; }
+		public List<int> YIndexes { get; private set; }
 
 		public Color GetColorAt(int x, int y)
 		{

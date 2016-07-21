@@ -258,6 +258,11 @@ namespace VixenModules.Effect.Effect
 
 		protected abstract void SetupRender();
 		protected abstract void RenderEffect(int frameNum, IPixelFrameBuffer frameBuffer);
+
+		protected virtual void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			
+		}
 		protected abstract void CleanUpRender();
 
 		private int _bufferHt = 0;
@@ -299,20 +304,7 @@ namespace VixenModules.Effect.Effect
 			TimeSpan startTime = TimeSpan.Zero;
 
 			// generate all the pixels
-			for (int frameNum = 0; frameNum < nFrames; frameNum++)
-			{
-				//if (UseBaseColor)
-				//{
-				//	var level = BaseLevelCurve.GetValue(GetEffectTimeIntervalPosition(frameNum) * 100) / 100;
-				//	buffer.ClearBuffer(level);
-				//}
-				//else
-				//{
-				//	buffer.ClearBuffer();
-				//}
-
-				RenderEffect(frameNum, buffer);
-			}
+			RenderEffectByLocation(nFrames, buffer);
 
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
