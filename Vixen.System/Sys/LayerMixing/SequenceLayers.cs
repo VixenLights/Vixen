@@ -69,9 +69,9 @@ namespace Vixen.Sys.LayerMixing
 			UpdateLevels();
 		}
 
-		public void AddLayer()
+		public void AddLayer(ILayerMixingFilterInstance mixer)
 		{
-			var layer = new StandardLayer(EnsureUniqueName("Default")) {LayerMixingFilter = GetDefaultLayer().LayerMixingFilter};
+			var layer = new StandardLayer(EnsureUniqueName("Default")) {LayerMixingFilter = mixer};
 			AddLayer(layer);
 		}
 

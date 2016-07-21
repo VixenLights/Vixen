@@ -61,7 +61,7 @@ namespace VixenModules.Editor.LayerEditor
 
 		private void OnAddLayer(object sender, ExecutedRoutedEventArgs executedRoutedEventArgs)
 		{
-			_layers.AddLayer();
+			_layers.AddLayer(_standardFilters.FirstOrDefault());
 		}
 
 		private void CanExecuteAddLayer(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
