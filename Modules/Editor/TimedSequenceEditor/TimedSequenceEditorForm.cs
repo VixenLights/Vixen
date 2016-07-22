@@ -268,8 +268,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				catch (Exception ex)
 				{
-					Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
-					SetDockDefaults();
+					DestroyAndRecreateDockPanel(ex);
 				}
 			}
 			else
@@ -365,23 +364,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					new Size(
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+
+			var windowState =
+					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal");
+
 			if (IsVisibleOnAnyScreen(desktopBounds))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;
-
-				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal").Equals("Maximized"))
+				
+				if (windowState.Equals("Maximized"))
 				{
 					WindowState = FormWindowState.Maximized;
 				}
+				
 			}
 			else
 			{
 				// this resets the upper left corner of the window to windows standards
 				StartPosition = FormStartPosition.WindowsDefaultLocation;
 
-				// we can still apply the saved size
-				Size = new Size(desktopBounds.Width, desktopBounds.Height);
+				if (windowState.Equals("Minimized"))
+				{
+					//Somehow we were closed in a minimized state. All bets are off, so put use back in some sensible default.
+					WindowState = FormWindowState.Normal;
+					// this resets the upper left corner of the window to windows standards
+					StartPosition = FormStartPosition.WindowsDefaultLocation;
+					Size = new Size(800, 600);
+				}
+				else
+				{
+					// we can still apply the saved size
+					Size = new Size(desktopBounds.Width, desktopBounds.Height);
+				}
 			}
 
 			_effectNodeToElement = new Dictionary<EffectNode, Element>();
@@ -461,6 +476,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			b.Click += b_Click;
 			toolStripOperations.Items.Add(b);
 #endif
+		}
+
+		private void DestroyAndRecreateDockPanel(Exception ex)
+		{
+			toolStripContainer.ContentPanel.Controls.Remove(dockPanel);
+			dockPanel = new DockPanel();
+			dockPanel.BackColor = ThemeColorTable.BackgroundColor;
+			dockPanel.Dock = DockStyle.Fill;
+			dockPanel.DockBackColor = ThemeColorTable.BackgroundColor;
+			dockPanel.DockLeftPortion = 200D;
+			dockPanel.DocumentStyle = DocumentStyle.DockingWindow;
+			dockPanel.Location = new Point(0, 0);
+			dockPanel.Margin = new Padding(4);
+			dockPanel.Name = "dockPanel";
+			dockPanel.Size = new Size(1579, 630);
+			toolStripContainer.ContentPanel.Controls.Add(dockPanel);
+			Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
+			if (_gridForm != null)
+			{
+				_gridForm.Dispose();
+				_gridForm = null;
+			}
+			if (_toolPaletteForm != null)
+			{
+				_toolPaletteForm.Dispose();
+				_toolPaletteForm = null;
+			}
+			if (_marksForm != null)
+			{
+				_marksForm.Dispose();
+				_marksForm = null;
+			}
+			if (_layerEditor != null)
+			{
+				_layerEditor.Dispose();
+				_layerEditor = null;
+			}
+			if (_effectEditorForm != null)
+			{
+				_effectEditorForm.Dispose();
+				_effectEditorForm = null;
+			}
+			if (_effectsForm != null)
+			{
+				_effectsForm.Dispose();
+				_effectsForm = null;
+			}
+			SetDockDefaults();
 		}
 
 		private void SetDockDefaults()
@@ -5118,7 +5181,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void IEditorUserInterface.EditorClosing()
 		{
-			
+			if (WindowState == FormWindowState.Minimized)
+			{
+				//Don't close with a minimized window.
+				WindowState = FormWindowState.Normal;
+			}
+
 			dockPanel.SaveAsXml(_settingsPath);
 			MarksForm.Close();
 			EffectsForm.Close();
