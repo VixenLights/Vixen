@@ -145,7 +145,7 @@ namespace VixenModules.Effect.Pulse
 
 		private static bool IsElementDiscrete(ElementNode elementNode)
 		{
-			return ColorModule.isElementNodeDiscreteColored(elementNode);
+			return ColorModule.isElementNodeTreeDiscreteColored(elementNode);
 		}
 	}
 }
