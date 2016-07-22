@@ -42,6 +42,14 @@ namespace Vixen.Sys.Managers
 			return context;
 		}
 
+		public PreviewContext CreatePreviewContext(string name)
+		{
+			if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+			var context = new PreviewContext(name);
+			_AddContext(context);
+			return context;
+		}
+
 		public PreCachingSequenceContext GetCacheCompileContext()
 		{
 			var	preCachingSequenceContext = new PreCachingSequenceContext("Compiler");
