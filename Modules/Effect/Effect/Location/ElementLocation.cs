@@ -1,10 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using Vixen.Sys;
 using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Effect.Location
 {
-	public class ElementLocation
+	public class ElementLocation:IEquatable<ElementLocation>, IEqualityComparer<ElementLocation>
 	{
 		public ElementLocation(ElementNode node)
 		{
@@ -27,6 +29,36 @@ namespace VixenModules.Effect.Effect.Location
 		private static Point GetLocation(ElementNode node)
 		{
 			return LocationModule.GetPositionForElement(node);
+		}
+
+		public override bool Equals(object obj)
+		{
+			var el = obj as ElementLocation;
+			if (el != null)
+			{
+				return Equals(el);
+			}
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return ElementNode.GetHashCode();
+		}
+
+		public bool Equals(ElementLocation other)
+		{
+			return other.ElementNode.Equals(ElementNode);
+		}
+
+		public bool Equals(ElementLocation x, ElementLocation y)
+		{
+			return x.Equals(y);
+		}
+
+		public int GetHashCode(ElementLocation obj)
+		{
+			return ElementNode.GetHashCode();
 		}
 	}
 }

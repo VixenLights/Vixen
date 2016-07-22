@@ -19,7 +19,6 @@ namespace VixenModules.Effect.Spiral
 		public Spiral()
 		{
 			_data = new SpiralData();
-			EnableTargetPositioning(true, true);
 			InitAllAttributes();
 		}
 

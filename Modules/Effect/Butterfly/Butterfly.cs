@@ -307,7 +307,7 @@ namespace VixenModules.Effect.Butterfly
 		}
 
 
-		private void CalculatePixel(int x, int y, int bufferDim, double offset, int frame, int maxframe, 
+		private void CalculatePixel(int x, int y, float bufferDim, double offset, int frame, int maxframe, 
 			double level, IPixelFrameBuffer frameBuffer)
 		{
 			double n;
@@ -318,6 +318,15 @@ namespace VixenModules.Effect.Butterfly
 			int x0;
 			int y0;
 			double h = 0.0;
+			int yCoord = y;
+			int xCoord = x;
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Flip me over so and offset my coordinates I can act like the string version
+				y = Math.Abs((BufferHtOffset-y) + (BufferHt-1+BufferHtOffset));
+				y = y - BufferHtOffset;
+				x = x - BufferWiOffset;
+			}
 			switch (ButterflyType)
 			{
 				case ButterflyType.Type1:
@@ -326,15 +335,15 @@ namespace VixenModules.Effect.Butterfly
 					d = x * x + y * y;
 
 					//  This section is to fix the colors on pixels at {0,1} and {1,0}
-					x0 = x + 1;
-					y0 = y + 1;
 					if ((x == 0 && y == 1))
 					{
+						y0 = y + 1;
 						n = Math.Abs((x * x - y0 * y0) * Math.Sin(offset + ((x + y0) * pi2 / (bufferDim))));
 						d = x * x + y0 * y0;
 					}
 					if ((x == 1 && y == 0))
 					{
+						x0 = x + 1;
 						n = Math.Abs((x0 * x0 - y * y) * Math.Sin(offset + ((x0 + y) * pi2 / (bufferDim))));
 						d = x0 * x0 + y * y;
 					}
@@ -419,7 +428,7 @@ namespace VixenModules.Effect.Butterfly
 					hsv = HSV.FromRGB(color);
 				}
 				hsv.V = hsv.V * level;
-				frameBuffer.SetPixel(x, y, hsv);
+				frameBuffer.SetPixel(xCoord, yCoord, hsv);
 			}
 		}
 

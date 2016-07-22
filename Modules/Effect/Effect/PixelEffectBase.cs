@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using NLog;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -25,7 +26,7 @@ namespace VixenModules.Effect.Effect
 	{
 
 		protected const short FrameTime = 50;
-
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		protected readonly List<int> StringPixelCounts = new List<int>();
 		protected List<ElementLocation> ElementLocations; 
 
@@ -59,6 +60,7 @@ namespace VixenModules.Effect.Effect
 			}
 			_elementData = data;
 			CleanUpRender();
+			ElementLocations = null;
 		}
 
 		[ReadOnly(true)]
@@ -209,6 +211,8 @@ namespace VixenModules.Effect.Effect
 		{
 			_bufferHt = StringCount;
 			_bufferWi = MaxPixelsPerString;
+			_bufferHtOffset = 0;
+			_bufferWiOffset = 0;
 		}
 
 		private void CalculateStringCounts()
@@ -228,6 +232,8 @@ namespace VixenModules.Effect.Effect
 
 			_bufferWi = (yMax - yMin) + 1;
 			_bufferHt = (xMax - xMin) + 1;
+			_bufferWiOffset = yMin;
+			_bufferHtOffset = xMin;
 		}
 
 		protected int StringCountOffset { get; set; }
@@ -261,6 +267,25 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
+		private int _bufferHtOffset;
+
+		public int BufferHtOffset
+		{
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _bufferHtOffset : _bufferWiOffset;
+			}
+		}
+
+		private int _bufferWiOffset;
+		public int BufferWiOffset {
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _bufferWiOffset : _bufferHtOffset;
+			}
+		}
+
+
 		protected EffectIntents RenderNode(ElementNode node)
 		{
 			if (TargetPositioning == TargetPositioningType.Strings)
@@ -275,7 +300,7 @@ namespace VixenModules.Effect.Effect
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
-			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames);
+			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations.Distinct().ToList(), nFrames);
 			
 			TimeSpan startTime = TimeSpan.Zero;
 
@@ -287,9 +312,9 @@ namespace VixenModules.Effect.Effect
 
 			foreach (var tuple in buffer.GetElementData())
 			{
-				if (tuple.Item2.Count == 0)
+				if (tuple.Item2.Count != nFrames)
 				{
-					Debugger.Break();
+					Logging.Error("{0} count has {1} instead of {2}", tuple.Item1.ElementNode.Name, tuple.Item2.Count, nFrames );
 				}
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, tuple.Item2.ToArray(), TimeSpan);
 				effectIntents.AddIntentForElement(tuple.Item1.ElementNode.Element.Id, intent, startTime);
@@ -355,7 +380,7 @@ namespace VixenModules.Effect.Effect
 						}
 					}
 				}
-			};
+			}
 
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);

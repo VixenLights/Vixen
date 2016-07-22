@@ -378,4 +378,7 @@
   <data name="BaseBrightness" xml:space="preserve">
     <value>Base Color Intensity</value>
   </data>
+  <data name="TargetPositioning" xml:space="preserve">
+    <value>Positioning</value>
+  </data>
 </root>

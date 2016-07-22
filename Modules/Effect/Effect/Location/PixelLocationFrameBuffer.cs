@@ -41,7 +41,6 @@ namespace VixenModules.Effect.Effect.Location
 
 		private void AddData(List<ElementLocation> nodes, int numFrames)
 		{
-			nodes.Sort(new LocationComparer(true));
 			foreach (var elementLocation in nodes)
 			{
 				_data.SetAt(elementLocation.X, elementLocation.Y, new Tuple<ElementLocation, List<RGBValue>>(elementLocation, new List<RGBValue>(numFrames)));
