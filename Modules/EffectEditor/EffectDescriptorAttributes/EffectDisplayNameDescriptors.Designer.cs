@@ -512,6 +512,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meteor Type.
+        /// </summary>
+        internal static string MeteorType {
+            get {
+                return ResourceManager.GetString("MeteorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Min.
         /// </summary>
         internal static string MinBrightness {

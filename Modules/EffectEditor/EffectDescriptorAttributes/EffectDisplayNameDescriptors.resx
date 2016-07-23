@@ -354,6 +354,9 @@
   <data name="IntervalSkip" xml:space="preserve">
     <value>Color Offset</value>
   </data>
+  <data name="MeteorType" xml:space="preserve">
+    <value>Meteor Type</value>
+  </data>
   <data name="GradientLevelPair" xml:space="preserve">
     <value>Color &amp; Brightness</value>
   </data>

@@ -366,4 +366,7 @@
   <data name="YOffset" xml:space="preserve">
     <value>Can help to adjust the position of the image. May not work in all cases.</value>
   </data>
+  <data name="Meteor Type" xml:space="preserve">
+    <value>Colors are not used when Rainbow is selected.</value>
+  </data>
 </root>
