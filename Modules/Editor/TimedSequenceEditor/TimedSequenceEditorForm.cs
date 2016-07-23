@@ -589,14 +589,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				EffectsForm.Dispose();
 			}
 
-			EffectEditorForm.Dispose();
+			if (_effectEditorForm != null && !_effectEditorForm.IsDisposed)
+			{
+				EffectEditorForm.Dispose();
+			}
 
 			if (_marksForm != null && !_marksForm.IsDisposed)
 			{
 				_marksForm.Dispose();	
 			}
-			
-			ToolsForm.Dispose();
+
+			if (_toolPaletteForm != null && !_toolPaletteForm.IsDisposed)
+			{
+				ToolsForm.Dispose();
+			}
+
+			if (_layerEditor != null && !_layerEditor.IsDisposed)
+			{
+				_layerEditor.Dispose();
+			}
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
