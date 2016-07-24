@@ -17,7 +17,7 @@ namespace VixenModules.Effect.ColorWash
 		public ColorWashData()
 		{
 			Colors = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue) };
-			Type = ColorWashType.Centre;
+			Type = ColorWashType.Center;
 			Iterations = 1;
 			VerticalFade = true;
 			HorizontalFade = true;

@@ -4,8 +4,8 @@ namespace VixenModules.Effect.ColorWash
 {
 	public enum ColorWashType
 	{
-		[Description("Centre")]
-		Centre,
+		[Description("Center")]
+		Center,
 		[Description("Outer")]
 		Outer,
 		[Description("Invert")]

@@ -216,7 +216,7 @@ namespace VixenModules.Effect.ColorWash
 					hsv2 = hsv;
 					switch (Type)
 					{
-							case ColorWashType.Centre:
+							case ColorWashType.Center:
 								if (HorizontalFade && halfWi > 0) hsv2.V *= (float)(1.0 - Math.Abs(halfWi - x) / halfWi);
 								if (VerticalFade && halfHt > 0) hsv2.V *= (float)(1.0 - Math.Abs(halfHt - y) / halfHt);
 							break;
