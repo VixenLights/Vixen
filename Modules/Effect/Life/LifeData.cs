@@ -22,7 +22,7 @@ namespace VixenModules.Effect.Life
 			CellsToStart = 50;
 			Type = 1;
 			Repeat = 1;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 		}
 
