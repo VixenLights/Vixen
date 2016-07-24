@@ -375,6 +375,7 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+			SaveLocationDataForElements();
 			Close();
 		}
 
