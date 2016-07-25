@@ -33,7 +33,12 @@ namespace VixenModules.Effect.Effect.Location
 			var color = hsv.ToRGB();
 			SetPixel(x, y, color);
 		}
-		
+
+		public Color GetColorAt(int x, int y)
+		{
+			throw new NotImplementedException();
+		}
+
 		public List<Tuple<ElementLocation, List<RGBValue>>> GetElementData()
 		{
 			return _data.GetData();

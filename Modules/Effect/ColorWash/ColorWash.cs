@@ -189,7 +189,7 @@ namespace VixenModules.Effect.ColorWash
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (Shimmer && frame%2 != 0)
 			{
