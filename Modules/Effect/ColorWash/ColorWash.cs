@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.Sys.State.Execution;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -19,26 +13,14 @@ namespace VixenModules.Effect.ColorWash
 	public class ColorWash : PixelEffectBase
 	{
 		private ColorWashData _data;
-		
+		private double _halfHt;
+		private double _halfWi;
+
 		public ColorWash()
 		{
 			_data = new ColorWashData();
 		}
-
-		//public override bool IsDirty
-		//{
-		//	get
-		//	{
-		//		if (Color.CheckLibraryReference())
-		//		{
-		//			base.IsDirty = true;
-		//		}
-
-		//		return base.IsDirty;
-		//	}
-		//	protected set { base.IsDirty = value; }
-		//}
-
+		
 		#region Setup
 
 		[Value]
@@ -198,7 +180,8 @@ namespace VixenModules.Effect.ColorWash
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
+			_halfHt = (BufferHt - 1) / 2.0;
+			_halfWi = (BufferWi - 1) / 2.0;
 		}
 
 		protected override void CleanUpRender()
@@ -217,8 +200,6 @@ namespace VixenModules.Effect.ColorWash
 			var iterationFrame = frame*Iterations%(totalFrames);
 			double position = GetEffectTimeIntervalPosition(iterationFrame);
 			HSV hsv = HSV.FromRGB(Color.GetColorAt(position));
-			double halfHt = (BufferHt - 1) / 2.0;
-			double halfWi = (BufferWi - 1) / 2.0;
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
@@ -227,33 +208,33 @@ namespace VixenModules.Effect.ColorWash
 					switch (Type)
 					{
 							case ColorWashType.Center:
-								if (HorizontalFade && halfWi > 0)
+								if (HorizontalFade && _halfWi > 0)
 								{
-									v *= (float)(1.0 - Math.Abs(halfWi - x) / halfWi);
+									v *= (float)(1.0 - Math.Abs(_halfWi - x) / _halfWi);
 								}
-								if (VerticalFade && halfHt > 0)
+								if (VerticalFade && _halfHt > 0)
 								{
-									v *= (float)(1.0 - Math.Abs(halfHt - y) / halfHt);
+									v *= (float)(1.0 - Math.Abs(_halfHt - y) / _halfHt);
 								}
 								break;
 							case ColorWashType.Outer:
-								if (HorizontalFade && halfWi > 0)
+								if (HorizontalFade && _halfWi > 0)
 								{
-									v *= (float)(Math.Abs(halfWi - x) / halfWi);
+									v *= (float)(Math.Abs(_halfWi - x) / _halfWi);
 								}
-								if (VerticalFade && halfHt > 0)
+								if (VerticalFade && _halfHt > 0)
 								{
-									v *= (float)(Math.Abs(halfHt - y) / halfHt);
+									v *= (float)(Math.Abs(_halfHt - y) / _halfHt);
 								}
 								break;
 							case ColorWashType.Invert:
-								if (HorizontalFade && halfWi > 0)
+								if (HorizontalFade && _halfWi > 0)
 								{
-									v /= (float)(1 - Math.Abs(halfWi - x) / halfWi);
+									v /= (float)(1 - Math.Abs(_halfWi - x) / _halfWi);
 								}
-								if (VerticalFade && halfHt > 0)
+								if (VerticalFade && _halfHt > 0)
 								{
-									v /= (float)(1 - Math.Abs(halfHt - y) / halfHt);
+									v /= (float)(1 - Math.Abs(_halfHt - y) / _halfHt);
 								}
 								break;
 					}
@@ -264,32 +245,5 @@ namespace VixenModules.Effect.ColorWash
 				}
 			}
 		}
-
-		//private int ChannelBlend(int c1, int c2, double ratio)
-		//{
-		//	return c1 + (int) Math.Floor(ratio* (c2 - c1) + 0.5);
-		//}
-
-		//public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
-		//{
-		//	Color c1, c2;
-		//	c1 = Colors[coloridx1].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100);
-		//	c2 = Colors[coloridx2].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-
-		//	return Color.FromArgb(ChannelBlend(c1.R, c2.R, ratio), ChannelBlend(c1.G, c2.G, ratio),
-		//						  ChannelBlend(c1.B, c2.B, ratio));
-		//}
-
-		//public Color GetMultiColorBlend(double n, int frame)
-		//{
-		//	int colorcnt = Colors.Count();
-		//	if (n >= 1.0) n = 0.99999;
-		//	if (n < 0.0) n = 0.0;
-		//	double realidx = n * colorcnt;
-		//	int coloridx1 = (int)Math.Floor(realidx);
-		//	int coloridx2 = (coloridx1 + 1) % colorcnt;
-		//	double ratio = realidx - coloridx1;
-		//	return Get2ColorBlend(coloridx1, coloridx2, ratio, frame);
-		//}
 	}
 }
