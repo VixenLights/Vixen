@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
-using Vixen.Sys.State.Execution;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -19,27 +13,14 @@ namespace VixenModules.Effect.ColorWash
 	public class ColorWash : PixelEffectBase
 	{
 		private ColorWashData _data;
-		public List<ColorGradient> WorkingColors;
+		private double _halfHt;
+		private double _halfWi;
 
 		public ColorWash()
 		{
 			_data = new ColorWashData();
 		}
-
-		public override bool IsDirty
-		{
-			get
-			{
-				if (Colors.Any(x => !x.CheckLibraryReference()))
-				{
-					base.IsDirty = true;
-				}
-
-				return base.IsDirty;
-			}
-			protected set { base.IsDirty = value; }
-		}
-
+		
 		#region Setup
 
 		[Value]
@@ -124,6 +105,22 @@ namespace VixenModules.Effect.ColorWash
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Shimmer")]
+		[ProviderDescription(@"Shimmer")]
+		[PropertyOrder(5)]
+		public bool Shimmer
+		{
+			get { return _data.Shimmer; }
+			set
+			{
+				_data.Shimmer = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Color properties
@@ -131,15 +128,15 @@ namespace VixenModules.Effect.ColorWash
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"ColorGradients")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(1)]
-		public List<ColorGradient> Colors
+		[PropertyOrder(2)]
+		public ColorGradient Color
 		{
-			get { return _data.Colors; }
+			get { return _data.Gradient; }
 			set
 			{
-				_data.Colors = value;
+				_data.Gradient = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -183,7 +180,8 @@ namespace VixenModules.Effect.ColorWash
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
+			_halfHt = (BufferHt - 1) / 2.0;
+			_halfWi = (BufferWi - 1) / 2.0;
 		}
 
 		protected override void CleanUpRender()
@@ -193,73 +191,59 @@ namespace VixenModules.Effect.ColorWash
 
 		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
 		{
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-
-			int x, y;
-			WorkingColors = new List<ColorGradient>{new ColorGradient(Color.Black)};
-			foreach (var colorGradient in Colors)
+			if (Shimmer && frame%2 != 0)
 			{
-				WorkingColors.Add(colorGradient);
+				return;
 			}
-
-			HSV hsv2 = new HSV();
-			var totalFrames = (TimeSpan.TotalMilliseconds / FrameTime);
-			int cycleLen = ((((int)totalFrames - 1) / Iterations));
-			Color color = GetMultiColorBlend((double)(frame % cycleLen) / cycleLen, frame);
-			HSV hsv = HSV.FromRGB(color);
-			double halfHt = (BufferHt - 1) / 2.0;
-			double halfWi = (BufferWi - 1) / 2.0;
-			for (x = 0; x < BufferWi; x++)
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			int totalFrames = GetNumberFrames();
+			var iterationFrame = frame*Iterations%(totalFrames);
+			double position = GetEffectTimeIntervalPosition(iterationFrame);
+			HSV hsv = HSV.FromRGB(Color.GetColorAt(position));
+			for (int x = 0; x < BufferWi; x++)
 			{
-				for (y = 0; y < BufferHt; y++)
+				for (int y = 0; y < BufferHt; y++)
 				{
-					hsv2 = hsv;
+					var v = hsv.V;
 					switch (Type)
 					{
 							case ColorWashType.Center:
-								if (HorizontalFade && halfWi > 0) hsv2.V *= (float)(1.0 - Math.Abs(halfWi - x) / halfWi);
-								if (VerticalFade && halfHt > 0) hsv2.V *= (float)(1.0 - Math.Abs(halfHt - y) / halfHt);
-							break;
+								if (HorizontalFade && _halfWi > 0)
+								{
+									v *= (float)(1.0 - Math.Abs(_halfWi - x) / _halfWi);
+								}
+								if (VerticalFade && _halfHt > 0)
+								{
+									v *= (float)(1.0 - Math.Abs(_halfHt - y) / _halfHt);
+								}
+								break;
 							case ColorWashType.Outer:
-								if (HorizontalFade && halfWi > 0) hsv2.V *= (float)(Math.Abs(halfWi - x) / halfWi);
-								if (VerticalFade && halfHt > 0) hsv2.V *= (float)(Math.Abs(halfHt - y) / halfHt);
-							break;
+								if (HorizontalFade && _halfWi > 0)
+								{
+									v *= (float)(Math.Abs(_halfWi - x) / _halfWi);
+								}
+								if (VerticalFade && _halfHt > 0)
+								{
+									v *= (float)(Math.Abs(_halfHt - y) / _halfHt);
+								}
+								break;
 							case ColorWashType.Invert:
-								if (HorizontalFade && halfWi > 0) hsv2.V /= (float)(1 - Math.Abs(halfWi - x) / halfWi);
-								if (VerticalFade && halfHt > 0) hsv2.V /= (float)(1 - Math.Abs(halfHt - y) / halfHt);
-							break;
+								if (HorizontalFade && _halfWi > 0)
+								{
+									v /= (float)(1 - Math.Abs(_halfWi - x) / _halfWi);
+								}
+								if (VerticalFade && _halfHt > 0)
+								{
+									v /= (float)(1 - Math.Abs(_halfHt - y) / _halfHt);
+								}
+								break;
 					}
-					hsv2.V *= level;
+					v *= level;
+					HSV hsv2 = hsv;
+					hsv2.V = v; 
 					frameBuffer.SetPixel(x, y, hsv2);
 				}
 			}
-		}
-
-		private int ChannelBlend(int c1, int c2, double ratio)
-		{
-			return c1 + (int) Math.Floor(ratio* (c2 - c1) + 0.5);
-		}
-
-		public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
-		{
-			Color c1, c2;
-			c1 = WorkingColors[coloridx1].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100);
-			c2 = WorkingColors[coloridx2].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-
-			return Color.FromArgb(ChannelBlend(c1.R, c2.R, ratio), ChannelBlend(c1.G, c2.G, ratio),
-								  ChannelBlend(c1.B, c2.B, ratio));
-		}
-
-		public Color GetMultiColorBlend(double n, int frame)
-		{
-			int colorcnt = WorkingColors.Count();
-			if (n >= 1.0) n = 0.99999;
-			if (n < 0.0) n = 0.0;
-			double realidx = n * colorcnt;
-			int coloridx1 = (int)Math.Floor(realidx);
-			int coloridx2 = (coloridx1 + 1) % colorcnt;
-			double ratio = realidx - coloridx1;
-			return Get2ColorBlend(coloridx1, coloridx2, ratio, frame);
 		}
 	}
 }

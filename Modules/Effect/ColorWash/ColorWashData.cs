@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -16,7 +13,11 @@ namespace VixenModules.Effect.ColorWash
 
 		public ColorWashData()
 		{
-			Colors = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue) };
+			Gradient = new ColorGradient();
+			Gradient.Colors.Clear();
+			Gradient.Colors.Add(new ColorPoint(Color.Red, 0.0));
+			Gradient.Colors.Add(new ColorPoint(Color.Lime, .5));
+			Gradient.Colors.Add(new ColorPoint(Color.Blue, 1.0));
 			Type = ColorWashType.Center;
 			Iterations = 1;
 			VerticalFade = true;
@@ -26,7 +27,7 @@ namespace VixenModules.Effect.ColorWash
 		}
 
 		[DataMember]
-		public List<ColorGradient> Colors { get; set; }
+		public ColorGradient Gradient { get; set; }
 
 		[DataMember]
 		public ColorWashType Type { get; set; }
@@ -44,13 +45,16 @@ namespace VixenModules.Effect.ColorWash
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
+		public bool Shimmer { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			ColorWashData result = new ColorWashData
 			{
-				Colors = Colors.ToList(),
+				Gradient = Gradient,
 				Type = Type,
 				Iterations = Iterations,
 				Orientation = Orientation,
