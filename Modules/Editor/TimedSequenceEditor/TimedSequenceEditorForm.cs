@@ -2326,15 +2326,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						ToolTipText = @"Assign effects to a layer"
 					};
 
+					int layersSelected = 0;
 					foreach (var layer in layers.Reverse())
 					{
 						var item = new ToolStripMenuItem(layer.LayerName);
 						item.Tag = layer;
 						item.ToolTipText = layer.FilterName;
+						var sequenceLayers = Sequence.GetSequenceLayerManager();
+						var elc = e.ElementsUnderCursor;
+						// Look for layers used in selected elements
+						if (TimelineControl.SelectedElements.Any())
+						{
+							foreach (var selectedElement in TimelineControl.SelectedElements)
+							{
+								var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+								if (layer.LayerName == curentLayer.LayerName)
+								{
+									item.Image = Resources.check_markMedium;
+									layersSelected++;
+									break;
+								}
+							}
+						}
+						else if (elc != null && elc.Any()) 
+						{
+							// Look for layers used in elements under cursor
+							foreach (var selectedElement in elc)
+							{
+								var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+								if (layer.LayerName == curentLayer.LayerName)
+								{
+									item.Image = Resources.check_markMedium;
+									layersSelected++;
+									break;
+								}
+							}
+						}
 						contextMenuToLayer.DropDownItems.Add(item);
 						item.Click += (sender, args) =>
 						{
-							var sequenceLayers = Sequence.GetSequenceLayerManager();
 							var el = e.ElementsUnderCursor;
 							Dictionary<IEffectNode, ILayer> modifiedNodes = new Dictionary<IEffectNode, ILayer>();
 							var newLayer = (ILayer) item.Tag;
@@ -2353,7 +2383,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 							else if (el != null && el.Any()) 
 							{
-								//if there are no selected elements, the ntry to apply to the element under the cursor
+								//if there are no selected elements, then try to apply to the element under the cursor
 								foreach (var selectedElement in el)
 								{
 									var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
@@ -2373,6 +2403,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								SequenceModified();
 							}
 						};
+					}
+					//By default the image used is the darker shade indicating mutiple layers selected, this code changes the image to the normal shade since only one layer is selected.
+					if (layersSelected == 1)
+					{
+						foreach (ToolStripItem menuItem in contextMenuToLayer.DropDownItems)
+						{
+							if (menuItem.Image != null)
+							{
+								menuItem.Image = Resources.check_mark;
+								break;
+							}
+						}
 					}
 					_contextMenuStrip.Items.Add(contextMenuToLayer);
 				}
