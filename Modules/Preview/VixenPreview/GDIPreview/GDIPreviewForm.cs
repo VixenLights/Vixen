@@ -75,21 +75,8 @@ namespace VixenModules.Preview.VixenPreview
 					gdiControl.BeginUpdate();
 
 					_sw.Restart();
-					foreach (var element in VixenSystem.Elements)
-					{
-						if (element.State.Count > 0)
-						{
-							List<PreviewPixel> pixels;
-							if (NodeToPixel.TryGetValue(element.Id, out pixels))
-							{
-								foreach (PreviewPixel pixel in pixels)
-								{
-									pixel.Draw(gdiControl.FastPixel, element.State);
-								}
-							}
-						}
-					}
-
+					Parallel.ForEach(VixenSystem.Elements, UpdateElementPixels);
+					
 					_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
 				}
 				catch (Exception e)
@@ -101,6 +88,21 @@ namespace VixenModules.Preview.VixenPreview
 				gdiControl.Invalidate();
 
 				toolStripStatusFPS.Text = string.Format("{0} fps", gdiControl.FrameRate.ToString());
+			}
+		}
+
+		private void UpdateElementPixels(Element element)
+		{
+			if (element.State.Count > 0)
+			{
+				List<PreviewPixel> pixels;
+				if (NodeToPixel.TryGetValue(element.Id, out pixels))
+				{
+					foreach (PreviewPixel pixel in pixels)
+					{
+						pixel.Draw(gdiControl.FastPixel, element.State);
+					}
+				}
 			}
 		}
 

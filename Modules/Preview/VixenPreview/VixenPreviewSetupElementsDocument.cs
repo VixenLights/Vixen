@@ -100,7 +100,8 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 			// Finally, highlight the node passed to us
-			_preview.HighlightedElements.Add(node.Tag as ElementNode);
+			var elementNode = node.Tag as ElementNode;
+			_preview.HighlightedElements.Add(elementNode.Id);
 			_preview.DeSelectSelectedDisplayItemNoNotify();
 		}
 
