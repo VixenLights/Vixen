@@ -242,10 +242,25 @@ namespace VixenModules.Effect.Effect
 		protected abstract void SetupRender();
 		protected abstract void RenderEffect(int frameNum, IPixelFrameBuffer frameBuffer);
 
+		/// <summary>
+		/// Called by for effects that support location based rendering when it is enabled
+		/// The normal array based logic inverts the effect data. This si the formula to convert the x, y coordinates 
+		/// in order to do similar math
+		/// This inverts the coordinate
+		/// y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+		/// 
+		/// This offsets it to be zero based like the others
+		///	y = y - BufferHtOffset;
+		///	x = x - BufferWiOffset;
+		/// See full example in Butteryfly or partial in Colorwash. 
+		/// </summary>
+		/// <param name="numFrames"></param>
+		/// <param name="frameBuffer"></param>
 		protected virtual void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
 			throw new NotImplementedException();
 		}
+
 		protected abstract void CleanUpRender();
 
 		private int _bufferHt;
