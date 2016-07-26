@@ -96,6 +96,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private TimeSpan? _mPrevPlaybackEnd;
 
 		private bool _mModified;
+		private bool _mModifiedNoMsgBox;
 
 		private float _timingSpeed = 1;
 
@@ -2020,7 +2021,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (!_suppressModifiedEvents)
 			{
-				SequenceModified();
+				_mModifiedNoMsgBox = true;
 			}
 		}
 
@@ -2029,7 +2030,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.TimePerPixel != TimelineControl.TimePerPixel)
 			{
 				_sequence.TimePerPixel = TimelineControl.TimePerPixel;
-				SequenceModified();
+				_mModifiedNoMsgBox = true;
 			}
 
 		}
@@ -2039,7 +2040,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_sequence.VisibleTimeStart != TimelineControl.VisibleTimeStart)
 			{
 				_sequence.VisibleTimeStart = TimelineControl.VisibleTimeStart;
-				SequenceModified();
+				_mModifiedNoMsgBox = true;
 			}
 
 		}
@@ -5218,6 +5219,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public bool IsModified
 		{
 			get { return _mModified; }
+		}
+
+		public bool IsModifiedNoMsgBox
+		{
+			get { return _mModifiedNoMsgBox; }
+			set { _mModifiedNoMsgBox = value; }
 		}
 
 		public void RefreshSequence()
