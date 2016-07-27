@@ -52,7 +52,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _shape = value; }
 		}
 
-		public void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected, bool forceDraw)
+		public void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected, bool forceDraw)
 		{
 			_shape.Draw(fp, editMode, highlightedElements, selected, forceDraw);
 		}

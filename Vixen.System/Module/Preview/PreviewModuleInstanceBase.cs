@@ -34,7 +34,10 @@ namespace Vixen.Module.Preview
 		{
 			// Get the data referenced locally so we can get off this thread if need be.
 			//ElementStates = elementIntentStates;
-			ThreadBehavior.BeginInvoke(Update);
+			if(IsRunning)
+			{
+				ThreadBehavior.BeginInvoke(Update);
+			}
 		}
 
 		protected abstract void Update();

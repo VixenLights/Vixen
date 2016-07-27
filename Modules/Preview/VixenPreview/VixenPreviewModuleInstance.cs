@@ -9,7 +9,7 @@ using VixenModules.Preview.VixenPreview.Direct2D;
 
 namespace VixenModules.Preview.VixenPreview
 {
-	public partial class VixenPreviewModuleInstance : FormPreviewModuleInstanceBase
+	public partial class VixenPreviewModuleInstance
 	{
 		private VixenPreviewSetup3 setupForm;
 		private IDisplayForm displayForm;
@@ -19,35 +19,6 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewModuleInstance()
 		{
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
-		}
-
-		private void VixenPreviewModuleInstance_Load(object sender, EventArgs e)
-		{
-		}
-
-		public override void Stop()
-		{
-			base.Stop();
-		}
-
-		public override void Resume()
-		{
-			base.Resume();
-		}
-
-		public override void Pause()
-		{
-			base.Pause();
-		}
-
-		public override bool IsRunning
-		{
-			get { return base.IsRunning; }
-		}
-
-		public override bool HasSetup
-		{
-			get { return base.HasSetup; }
 		}
 
 		public override Vixen.Module.IModuleDataModel ModuleData
@@ -111,12 +82,6 @@ namespace VixenModules.Preview.VixenPreview
 		private VixenPreviewData GetDataModel()
 		{
 			return ModuleData as VixenPreviewData;
-		}
-
-		public override void Start()
-		{
-			//System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
-			base.Start();
 		}
 
 		public override bool Setup()

@@ -327,12 +327,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public virtual void Draw(Bitmap b, bool editMode, List<ElementNode> highlightedElements)
+		public virtual void Draw(Bitmap b, bool editMode, HashSet<Guid> highlightedElements)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements,
+		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
             if (forceDraw)
@@ -356,7 +356,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     {
                         pixelColor = PreviewTools.SelectedItemColor;
                     }
-                    else if (highlightedElements != null && highlightedElements.Contains(pixel.Node))
+                    else if (highlightedElements != null && highlightedElements.Contains(pixel.Node.Id))
                     {
                         pixelColor = Color.HotPink;
                     }
@@ -376,7 +376,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 		}
 
-		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
 		                         bool forceDraw)
 		{
 			foreach (PreviewPixel pixel in Pixels) {

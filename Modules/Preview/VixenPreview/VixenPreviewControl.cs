@@ -94,7 +94,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private VixenPreviewData _data;
 
-		private List<ElementNode> _highlightedElements = new List<ElementNode>();
+		private HashSet<Guid> _highlightedElements = new HashSet<Guid>();
 		public List<DisplayItem> _selectedDisplayItems;
 
 		private Rectangle _bandRect = new Rectangle();
@@ -204,7 +204,7 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public List<ElementNode> HighlightedElements
+		public HashSet<Guid> HighlightedElements
 		{
 			get { return _highlightedElements; }
 		}

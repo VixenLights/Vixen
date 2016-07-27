@@ -151,13 +151,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			SetPixelZoom();
 		}
 
-		public override void Draw(Bitmap b, bool editMode, List<ElementNode> highlightedElements)
+		public override void Draw(Bitmap b, bool editMode, HashSet<Guid> highlightedElements)
 		{
 			Graphics g = Graphics.FromImage(b);
 			g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
 			SolidBrush brush;
-			if (highlightedElements != null && highlightedElements.Contains(_pixels[0].Node)) {
+			if (highlightedElements != null && highlightedElements.Contains(_pixels[0].Node.Id)) {
 				brush = new SolidBrush(Color.HotPink);
 			}
 			else {
@@ -176,7 +176,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
 		                          bool forceDraw)
 		{
 			foreach (PreviewPixel pixel in Pixels) {

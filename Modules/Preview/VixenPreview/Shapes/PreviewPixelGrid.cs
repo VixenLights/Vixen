@@ -452,7 +452,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_selectedPoint = _bottomRight;
 		}
 
-		public override void Draw(FastPixel.FastPixel fp, bool editMode, List<ElementNode> highlightedElements, bool selected,
+		public override void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
 		                          bool forceDraw)
 		{
 			if (_strings != null) {

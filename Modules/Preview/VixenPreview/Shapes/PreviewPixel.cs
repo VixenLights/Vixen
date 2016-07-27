@@ -37,7 +37,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public PreviewPixel()
 		{
-
+			_fullColorHandler = new FullColorIntentHandler();
+			_discreteHandler = new DiscreteIntentHandler();
 		}
 
 		public PreviewPixel(int xPosition, int yPositoin, int zPosition, int pixelSize):this()
@@ -53,7 +54,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
-			//editColor = Color.White;
+			_discreteHandler = new DiscreteIntentHandler();
+			_fullColorHandler = new FullColorIntentHandler();
 		}
 
 		public PreviewPixel Clone()
@@ -82,7 +84,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public Guid NodeId
 		{
 			get { return _nodeId; }
-			set { _nodeId = value; }
+			set
+			{
+				_nodeId = value;
+				_node = VixenSystem.Nodes.GetElementNode(NodeId);
+				_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
+			}
 		}
 
 		public ElementNode Node
@@ -91,7 +98,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_node == null) {
 					_node = VixenSystem.Nodes.GetElementNode(NodeId);
-					_isDiscreteColored = _node != null ? VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node) : false;
+					_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
 				}
 				return _node;
 			}
@@ -102,7 +109,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				else
 					NodeId = value.Id;
 				_node = value;
-				_isDiscreteColored = _node!=null?VixenModules.Property.Color.ColorModule.isElementNodeDiscreteColored(_node):false;
+				_isDiscreteColored = _node!=null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
 			}
 
 		}
@@ -189,7 +196,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				int col = 1;
 				Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
 				// Get states for each color
-				if(_discreteHandler == null) _discreteHandler = new DiscreteIntentHandler();
 				List<Color> colors = _discreteHandler.GetAlphaAffectedColor(states);
 				foreach (Color c in colors)
 				{
@@ -215,12 +221,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				var state = states.FirstOrDefault();
 				if (state != null)
 				{
-					if(_fullColorHandler == null) _fullColorHandler = new FullColorIntentHandler();
 					Color intentColor = _fullColorHandler.GetFullColor(state);
-					if (intentColor != Color.Transparent && intentColor.A > 0)
+					if (intentColor.A > 0)
 					{
 						fp.DrawCircle(drawArea, intentColor);
 					}
+			
 				}
 				
 			}

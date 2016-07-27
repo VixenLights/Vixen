@@ -197,8 +197,16 @@ namespace VixenApplication
 
 		private void ConfigureSelectedController()
 		{
-			if (listViewControllers.SelectedItems.Count == 1) {
-				(listViewControllers.SelectedItems[0].Tag as OutputPreview).Setup();
+			if (listViewControllers.SelectedItems.Count == 1)
+			{
+				var preview = listViewControllers.SelectedItems[0].Tag as OutputPreview;
+				if (preview != null)
+				{
+					preview.Stop();
+					preview.Setup();
+					preview.Start();
+				}
+				
 			}
 		}
 
