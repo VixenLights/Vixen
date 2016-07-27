@@ -25,20 +25,6 @@ namespace VixenModules.Effect.Curtain
 			_data = new CurtainData();
 		}
 
-		public override bool IsDirty
-		{
-			get
-			{
-				if (Colors.Any(x => !x.CheckLibraryReference()))
-				{
-					base.IsDirty = true;
-				}
-
-				return base.IsDirty;
-			}
-			protected set { base.IsDirty = value; }
-		}
-
 		#region Setup
 
 		[Value]
@@ -131,15 +117,15 @@ namespace VixenModules.Effect.Curtain
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"ColorGradients")]
+		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(1)]
-		public List<ColorGradient> Colors
+		[PropertyOrder(2)]
+		public ColorGradient Color
 		{
-			get { return _data.Colors; }
+			get { return _data.Gradient; }
 			set
 			{
-				_data.Colors = value;
+				_data.Gradient = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -204,6 +190,7 @@ namespace VixenModules.Effect.Curtain
 			int curtainDir, xlimit, middle, ylimit;
 			int swaglen = BufferHt > 1 ? Swag*BufferWi/40 : 0;
 			double position = (GetEffectTimeIntervalPosition(frame)*Speed)%1;
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 
 			if (swaglen > 0)
 			{
@@ -246,48 +233,46 @@ namespace VixenModules.Effect.Curtain
 			{
 				case CurtainEdge.Left:
 					// left
-					DrawCurtain(true, xlimit, swagArray, frameBuffer, frame);
+					DrawCurtain(true, xlimit, swagArray, frameBuffer, level, (BufferWi- 1));
 					break;
 				case CurtainEdge.Center:
 					// center
 					middle = (xlimit + 1)/2;
-					DrawCurtain(true, middle, swagArray, frameBuffer, frame);
-					DrawCurtain(false, middle, swagArray, frameBuffer, frame);
+					DrawCurtain(true, middle, swagArray, frameBuffer, level, (BufferWi / 2 - 1));
+					DrawCurtain(false, middle, swagArray, frameBuffer, level, (BufferWi / 2 - 1));
 					break;
 				case CurtainEdge.Right:
 					// right
-					DrawCurtain(false, xlimit, swagArray, frameBuffer, frame);
+					DrawCurtain(false, xlimit, swagArray, frameBuffer, level, (BufferWi - 1));
 					break;
 				case CurtainEdge.Bottom:
 
 					// bottom
-					DrawCurtainVertical(true, ylimit, swagArray, frameBuffer, frame);
+					DrawCurtainVertical(true, ylimit, swagArray, frameBuffer, level, (BufferHt - 1));
 					break;
 				case CurtainEdge.Middle:
 					// middle
 					middle = (ylimit + 1)/2;
-					DrawCurtainVertical(true, middle, swagArray, frameBuffer, frame);
-					DrawCurtainVertical(false, middle, swagArray, frameBuffer, frame);
+					DrawCurtainVertical(true, middle, swagArray, frameBuffer, level, (BufferHt / 2 - 1));
+					DrawCurtainVertical(false, middle, swagArray, frameBuffer, level, (BufferHt / 2 - 1));
 					break;
 				case CurtainEdge.Top:
 					// top
-					DrawCurtainVertical(false, ylimit, swagArray, frameBuffer, frame);
+					DrawCurtainVertical(false, ylimit, swagArray, frameBuffer, level, (BufferHt - 1));
 					break;
 			}
 		}
 
-		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, PixelFrameBuffer frameBuffer, int frame)
+		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, PixelFrameBuffer frameBuffer, double level, int width)
 		{
 			int i, x, y;
-			Color color;
 			for (i = 0; i < xlimit; i++)
 			{
-				color = GetMultiColorBlend((double)i / BufferWi, frame);
+				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)i / width));
 				x = leftEdge ? BufferWi - i - 1 : i;
 				for (y = BufferHt - 1; y >= 0; y--)
 				{
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);
 				}
 			}
@@ -296,30 +281,26 @@ namespace VixenModules.Effect.Curtain
 			for (i = 0; i < swagArray.Count; i++)
 			{
 				x = xlimit + i;
-				color = GetMultiColorBlend((double)x / BufferWi, frame);
+				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)x / width));
 				if (leftEdge) x = BufferWi - x - 1;
 				for (y = BufferHt - 1; y > swagArray[i]; y--)
 				{
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);
 				}
 			}
 		}
 
-		private void DrawCurtainVertical(bool topEdge, int ylimit, List<int> swagArray, PixelFrameBuffer frameBuffer,
-			int frame)
+		private void DrawCurtainVertical(bool topEdge, int ylimit, List<int> swagArray, PixelFrameBuffer frameBuffer, double level, int width)
 		{
 			int i, x, y;
-			Color color;
 			for (i = 0; i < ylimit; i++)
 			{
-				color = GetMultiColorBlend(((double)i / BufferHt), frame);
+				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)i / width));
 				y = topEdge ? BufferHt - i - 1 : i;
 				for (x = BufferWi - 1; x >= 0; x--)
 				{
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);
 				}
 			}
@@ -328,44 +309,16 @@ namespace VixenModules.Effect.Curtain
 			for (i = 0; i < swagArray.Count(); i++)
 			{
 				y = ylimit + i;
-				color = GetMultiColorBlend(((double)y / BufferHt), frame);
+				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)y / width));
 				if (topEdge) y = BufferHt - y - 1;
 				for (x = BufferWi - 1; x > swagArray[i]; x--)
 				{
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);
 				}
 			}
 		}
 
-		public Color GetMultiColorBlend(double n, int frame)
-		{
-			int colorcnt = Colors.Count();
-			if (colorcnt <= 1)
-			{
-				return Colors[0].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-			}
-			if (n >= 1.0) n = 0.99999;
-			if (n < 0.0) n = 0.0;
-			int coloridx1 = (int) Math.Floor(n*colorcnt);
-			int coloridx2 = (coloridx1 + 1)%colorcnt;
-			double ratio = n * colorcnt - coloridx1;
-			return Get2ColorBlend(coloridx1, coloridx2, ratio, frame);
-		}
-
-		public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
-		{
-			Color c1, c2;
-			c1 = Colors[coloridx1].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-			c2 = Colors[coloridx2].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-
-			return Color.FromArgb(ChannelBlend(c1.R, c2.R, ratio), ChannelBlend(c1.G, c2.G, ratio), ChannelBlend(c1.B, c2.B, ratio));
-		}
-
-		private int ChannelBlend(int c1, int c2, double ratio)
-		{
-			return c1 + (int) Math.Floor(ratio*(double) (c2 - c1) + 0.5);
-		}
+		
 	}
 }
