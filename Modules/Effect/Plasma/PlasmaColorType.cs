@@ -6,13 +6,13 @@ namespace VixenModules.Effect.Plasma
 	{
 		[Description("Normal")]
 		Normal,
-		[Description("Preset1")]
+		[Description("Preset 1")]
 		Preset1,
-		[Description("Preset2")]
+		[Description("Preset 2")]
 		Preset2,
-		[Description("Preset3")]
+		[Description("Preset 3")]
 		Preset3,
-		[Description("Preset4")]
+		[Description("Preset 4")]
 		Preset4
 	}
 }

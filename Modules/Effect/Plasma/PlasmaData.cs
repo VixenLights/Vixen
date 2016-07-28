@@ -2,11 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
-using ZedGraph;
 
 namespace VixenModules.Effect.Plasma
 {
@@ -20,8 +18,8 @@ namespace VixenModules.Effect.Plasma
 			Speed = 10;
 			PlasmaStyle = 1;
 			LineDensity = 1;
-			ColorType = PlasmaColorType.Preset1;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			ColorType = PlasmaColorType.Normal;
+			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 		}
 
