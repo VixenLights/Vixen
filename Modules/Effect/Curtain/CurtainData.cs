@@ -16,17 +16,20 @@ namespace VixenModules.Effect.Curtain
 
 		public CurtainData()
 		{
-			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime)};
+			Gradient = new ColorGradient();
+			Gradient.Colors.Clear();
+			Gradient.Colors.Add(new ColorPoint(Color.Red, 0.0));
+			Gradient.Colors.Add(new ColorPoint(Color.Lime, 1.0));
 			Direction = CurtainDirection.CurtainOpen;
 			Speed = 1;
 			Edge = CurtainEdge.Center;
 			Swag = 1;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 		}
 
 		[DataMember]
-		public List<ColorGradient> Colors { get; set; }
+		public ColorGradient Gradient { get; set; }
 
 		[DataMember]
 		public CurtainDirection Direction { get; set; }
@@ -50,7 +53,7 @@ namespace VixenModules.Effect.Curtain
 		{
 			CurtainData result = new CurtainData
 			{
-				Colors = Colors.ToList(),
+				Gradient = new ColorGradient(Gradient),
 				Direction = Direction,
 				Speed = Speed,
 				Edge = Edge,
