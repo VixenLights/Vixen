@@ -110,20 +110,20 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void PixelGrid_Load(object sender, EventArgs e)
 		{
 			textBoxName.Text = gridname;
-			numericUpDownRows.Value = rows;
-			numericUpDownColumns.Value = columns;
+			numericUpDownHeight.Value = rows;
+			numericUpDownWidth.Value = columns;
 			if (rowsfirst)
-				radioButtonRowsFirst.Checked = true;
+				radioButtonHorizontalFirst.Checked = true;
 			else
-				radioButtonColumnsFirst.Checked = true;
+				radioButtonVerticalFirst.Checked = true;
 		}
 
 		private void PixelGrid_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			gridname = textBoxName.Text;
-			rows = Decimal.ToInt32(numericUpDownRows.Value);
-			columns = Decimal.ToInt32(numericUpDownColumns.Value);
-			rowsfirst = radioButtonRowsFirst.Checked;
+			rows = Decimal.ToInt32(numericUpDownHeight.Value);
+			columns = Decimal.ToInt32(numericUpDownWidth.Value);
+			rowsfirst = radioButtonHorizontalFirst.Checked;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
