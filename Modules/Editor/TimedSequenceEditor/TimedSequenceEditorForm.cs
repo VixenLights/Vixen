@@ -2325,43 +2325,61 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Image = Resources.layers,
 						ToolTipText = @"Assign effects to a layer"
 					};
+					
+					HashSet<Guid> layersUsed = new HashSet<Guid>();
+					var sequenceLayers = Sequence.GetSequenceLayerManager();
+					if (TimelineControl.SelectedElements.Any())
+					{
+						foreach (var selectedElement in TimelineControl.SelectedElements)
+						{
+							var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+							if (layersUsed.Contains(curentLayer.Id) == false)
+							{
+								layersUsed.Add(curentLayer.Id);
+								if (layersUsed.Count == sequenceLayers.Count)
+								{
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						foreach (var elementUnderCursor in e.ElementsUnderCursor)
+						{
+							var curentLayer = sequenceLayers.GetLayer(elementUnderCursor.EffectNode);
+							if (layersUsed.Contains(curentLayer.Id) == false)
+							{
+								layersUsed.Add(curentLayer.Id);
+								if (layersUsed.Count == sequenceLayers.Count)
+								{
+									break;
+								}
+							}
+						}
+					}
+					Bitmap checkMarkColor;
+					if (layersUsed.Count == 1)
+					{
+						checkMarkColor = Resources.check_mark;
+					}
+					else
+					{
+						checkMarkColor = Resources.check_markMedium;
+					}
 
-					int layersSelected = 0;
+					
 					foreach (var layer in layers.Reverse())
 					{
 						var item = new ToolStripMenuItem(layer.LayerName);
 						item.Tag = layer;
 						item.ToolTipText = layer.FilterName;
-						var sequenceLayers = Sequence.GetSequenceLayerManager();
-						var elc = e.ElementsUnderCursor;
-						// Look for layers used in selected elements
-						if (TimelineControl.SelectedElements.Any())
+
+						if (layersUsed.Contains(layer.Id))
 						{
-							foreach (var selectedElement in TimelineControl.SelectedElements)
-							{
-								var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
-								if (layer.LayerName == curentLayer.LayerName)
-								{
-									item.Image = Resources.check_markMedium;
-									layersSelected++;
-									break;
-								}
-							}
+							item.Image = checkMarkColor;
 						}
-						else if (elc != null && elc.Any()) 
-						{
-							// Look for layers used in elements under cursor
-							foreach (var selectedElement in elc)
-							{
-								var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
-								if (layer.LayerName == curentLayer.LayerName)
-								{
-									item.Image = Resources.check_markMedium;
-									layersSelected++;
-									break;
-								}
-							}
-						}
+						
 						contextMenuToLayer.DropDownItems.Add(item);
 						item.Click += (sender, args) =>
 						{
@@ -2403,18 +2421,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								SequenceModified();
 							}
 						};
-					}
-					//By default the image used is the darker shade indicating mutiple layers selected, this code changes the image to the normal shade since only one layer is selected.
-					if (layersSelected == 1)
-					{
-						foreach (ToolStripItem menuItem in contextMenuToLayer.DropDownItems)
-						{
-							if (menuItem.Image != null)
-							{
-								menuItem.Image = Resources.check_mark;
-								break;
-							}
-						}
 					}
 					_contextMenuStrip.Items.Add(contextMenuToLayer);
 				}
@@ -5992,6 +5998,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RowListMenuCollapse();
 		}
 
+
+		public Bitmap checkMark { get; set; }
 	}
 
 	[Serializable]
