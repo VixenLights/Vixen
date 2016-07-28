@@ -2031,7 +2031,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					if (_editMode)
 					{
-						displayItem.Draw(fp, true, HighlightedElements, SelectedDisplayItems.Contains(displayItem), false);
+						displayItem.Draw(fp, true, HighlightedElements, displayItem.Shape.Selected || SelectedDisplayItems.Contains(displayItem), false);
 					}
 					else
 					{
@@ -2181,7 +2181,14 @@ namespace VixenModules.Preview.VixenPreview
 
 				foreach (var previewItem in modifyingElements)
 				{
-					OriginalPreviewItem.Add(previewItem, new PreviewItemPositionInfo(previewItem));
+					if (OriginalPreviewItem.ContainsKey(previewItem))
+					{
+						OriginalPreviewItem[previewItem] = new PreviewItemPositionInfo(previewItem);
+					}
+					else
+					{
+						OriginalPreviewItem.Add(previewItem, new PreviewItemPositionInfo(previewItem));
+					}
 				}
 			}
 
