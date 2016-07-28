@@ -209,6 +209,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(304, 241);
 			this.Controls.Add(this.groupBoxDimensions);
 			this.Controls.Add(this.groupBoxStringOrientation);
@@ -218,7 +219,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(361, 279);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(320, 279);
 			this.Name = "PixelGrid";
