@@ -352,25 +352,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 else
                 {
-                    if (selected)
-                    {
-                        pixelColor = PreviewTools.SelectedItemColor;
-                    }
-                    else if (highlightedElements != null && highlightedElements.Contains(pixel.Node.Id))
-                    {
-                        pixelColor = Color.HotPink;
-                    }
-                    else
-                    {
-                        if (pixel.Node != null)
-                        {
-                            pixelColor = Color.Turquoise;
-                        }
-                        else
-                        {
-                            pixelColor = Color.White;
-                        }
-                    }
+	                if (selected)
+	                {
+		                pixelColor = PreviewTools.SelectedItemColor;
+	                }
+	                else
+	                {
+		                if (pixel.NodeId != Guid.Empty)
+		                {
+			                if (highlightedElements.Contains(pixel.NodeId))
+			                {
+				                pixelColor = Color.HotPink;
+			                }
+			                else
+			                {
+								pixelColor = Color.Turquoise;
+							}
+						}
+	                } 
                 }
                 pixel.Draw(fp, pixelColor);
             }

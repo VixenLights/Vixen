@@ -156,11 +156,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Graphics g = Graphics.FromImage(b);
 			g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
 
-			SolidBrush brush;
-			if (highlightedElements != null && highlightedElements.Contains(_pixels[0].Node.Id)) {
-				brush = new SolidBrush(Color.HotPink);
-			}
-			else {
+			if (!highlightedElements.Contains(_pixels[0].NodeId)) 
+			{
+				SolidBrush brush;
 				if (editMode) {
 					//Image img = Properties.Resources.FloodLight;
 					//Rectangle dstRect = new Rectangle(_pixels[0].X - (PixelSize / 2), _pixels[0].Y - (PixelSize / 2), PixelSize, PixelSize);
