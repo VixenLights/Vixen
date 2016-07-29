@@ -2325,16 +2325,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						Image = Resources.layers,
 						ToolTipText = @"Assign effects to a layer"
 					};
+					
+					HashSet<Guid> layersUsed = new HashSet<Guid>();
+					var sequenceLayers = Sequence.GetSequenceLayerManager();
+					if (TimelineControl.SelectedElements.Any())
+					{
+						foreach (var selectedElement in TimelineControl.SelectedElements)
+						{
+							var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
+							if (layersUsed.Contains(curentLayer.Id) == false)
+							{
+								layersUsed.Add(curentLayer.Id);
+								if (layersUsed.Count == sequenceLayers.Count)
+								{
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						foreach (var elementUnderCursor in e.ElementsUnderCursor)
+						{
+							var curentLayer = sequenceLayers.GetLayer(elementUnderCursor.EffectNode);
+							if (layersUsed.Contains(curentLayer.Id) == false)
+							{
+								layersUsed.Add(curentLayer.Id);
+								if (layersUsed.Count == sequenceLayers.Count)
+								{
+									break;
+								}
+							}
+						}
+					}
+					Bitmap checkMarkColor;
+					if (layersUsed.Count == 1)
+					{
+						checkMarkColor = Resources.check_mark;
+					}
+					else
+					{
+						checkMarkColor = Resources.check_markMedium;
+					}
 
+					
 					foreach (var layer in layers.Reverse())
 					{
 						var item = new ToolStripMenuItem(layer.LayerName);
 						item.Tag = layer;
 						item.ToolTipText = layer.FilterName;
+
+						if (layersUsed.Contains(layer.Id))
+						{
+							item.Image = checkMarkColor;
+						}
+						
 						contextMenuToLayer.DropDownItems.Add(item);
 						item.Click += (sender, args) =>
 						{
-							var sequenceLayers = Sequence.GetSequenceLayerManager();
 							var el = e.ElementsUnderCursor;
 							Dictionary<IEffectNode, ILayer> modifiedNodes = new Dictionary<IEffectNode, ILayer>();
 							var newLayer = (ILayer) item.Tag;
@@ -2353,7 +2401,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							}
 							else if (el != null && el.Any()) 
 							{
-								//if there are no selected elements, the ntry to apply to the element under the cursor
+								//if there are no selected elements, then try to apply to the element under the cursor
 								foreach (var selectedElement in el)
 								{
 									var curentLayer = sequenceLayers.GetLayer(selectedElement.EffectNode);
@@ -5950,6 +5998,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RowListMenuCollapse();
 		}
 
+
+		public Bitmap checkMark { get; set; }
 	}
 
 	[Serializable]
