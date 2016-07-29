@@ -50,6 +50,7 @@
     <Compile Include="Fireworks.cs" />
     <Compile Include="FireworksData.cs" />
     <Compile Include="FireworksDescriptor.cs" />
+    <Compile Include="FireworksColorType.cs" />
     <Compile Include="RgbFireworks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
