@@ -43,6 +43,8 @@
 			this.buttonCancel.TabIndex = 0;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonOK_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonOK_MouseHover);
 			// 
 			// buttonOK
 			// 
@@ -54,6 +56,8 @@
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonOK_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonOK_MouseHover);
 			// 
 			// label1
 			// 
