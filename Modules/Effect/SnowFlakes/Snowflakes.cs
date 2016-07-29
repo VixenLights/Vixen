@@ -25,12 +25,15 @@ namespace VixenModules.Effect.Snowflakes
 			_data = new SnowflakesData();
 		}
 
-		[Browsable(false)]
+		[Value]
 		public override StringOrientation StringOrientation
 		{
-			get { return StringOrientation.Vertical; }
+			get { return _data.Orientation; }
 			set
 			{
+				_data.Orientation = value;
+				IsDirty = true;
+				OnPropertyChanged();
 			}
 		}
 

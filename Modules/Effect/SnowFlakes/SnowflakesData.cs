@@ -23,7 +23,7 @@ namespace VixenModules.Effect.Snowflakes
 			SnowflakeType = SnowflakeType.Random;
 			Speed = 5;
 			FlakeCount = 10;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 			PixelCount = 15;
 			MaxSpeed = 10;
 			MinSpeed = 5;
@@ -31,7 +31,7 @@ namespace VixenModules.Effect.Snowflakes
 			MaxDirection = 215;
 			RandomSpeed = true;
 			RandomBrightness = false;
-			PointFlake45 = true;
+			PointFlake45 = false;
 			SnowflakeEffect = SnowflakeEffect.None;
 			ColorType = SnowflakeColorType.Palette;
 			Orientation=StringOrientation.Vertical;
