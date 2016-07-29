@@ -18,6 +18,7 @@ using Vixen.Services;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Alternating;
+using VixenModules.Effect.Snowflakes;
 using ZedGraph;
 
 namespace VixenModules.Sequence.Timed
@@ -34,8 +35,9 @@ namespace VixenModules.Sequence.Timed
 			ValidMigrations = new[]
 				{
 									new MigrationSegment<XElement>(0, 1, _Version_0_to_1),
-									new MigrationSegment<XElement>(1, 2, _Version_1_to_2)
-									
+									new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
+									new MigrationSegment<XElement>(2, 3, _Version_2_to_3)
+
 				};
 		}
 
@@ -48,6 +50,7 @@ namespace VixenModules.Sequence.Timed
 				toVersion);
 			}
 			content = migrationSegment.Execute(content);
+			ShowCompleteMessage(fromVersion, toVersion);
 			return content;
 		}
 
@@ -64,13 +67,19 @@ namespace VixenModules.Sequence.Timed
 		{
 			get { return ValidMigrations; }
 		}
+		private static void ShowCompleteMessage(int fromVersion, int toVersion)
+		{
+			var messageBox = new MessageBoxForm(
+				string.Format("Migration from version {0} to {1} is complete. You will need to save the sequence in the editor for the migration to persist or use it in a Vixen scheduled show.", fromVersion, toVersion),
+				"Sequence upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+		}
+
 
 		private XElement _Version_0_to_1(XElement content)
 		{
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm(string.Format("Migrating sequence from version 0 to version 1. Changes include moving Nutcracker and Audio files to the common media folder.{0}{0}" +
-				"These changes are not backward compatible", Environment.NewLine), "Sequence Upgrade", false, false);
+				"These changes are not backward compatible", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialog();
 			//  3/14/2015
 			//Migrate full path name of the background image to just the filename. Code will now look 
@@ -173,25 +182,17 @@ namespace VixenModules.Sequence.Timed
 
 		private XElement _Version_1_to_2(XElement content)
 		{
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 			var messageBox = new MessageBoxForm(string.Format(
 					"Migrating sequence from version 1 to version 2. Changes include upgrades to the Alternating effect to allow more than 2 colors.{0}{0}" +
-					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", false, false);
+					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialog();
 			//This migration deals with changing the Alternating effect to a Multi Alternating
 			//Style that allows N number of colors. 
-			var namespaces = new XmlNamespaceManager(new NameTable());
-			XNamespace ns = "http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed";
-			namespaces.AddNamespace("", ns.NamespaceName);
+			var namespaces = GetStandardNamespaces();
+			//Add in our specific ones
 			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Alternating";
 			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
-			XNamespace d1p1 = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
-			namespaces.AddNamespace("d1p1", d1p1.NamespaceName);
-			XNamespace i = "http://www.w3.org/2001/XMLSchema-instance";
-			namespaces.AddNamespace("i", i.NamespaceName);
-			XNamespace a = "http://www.w3.org/2001/XMLSchema";
-			namespaces.AddNamespace("a", a.NamespaceName);
+			
 			
 			//Find the Alternating effects.
 			IEnumerable<XElement> alternatingElements =
@@ -278,13 +279,103 @@ namespace VixenModules.Sequence.Timed
 				DataContainer dc = new DataContainer {_dataModels = dm};
 
 				//Serialize the object into a xelement
-				XElement glp = Serializer(dc);
+				XElement glp = Serializer(dc, new[] { typeof(AlternatingData), typeof(IModuleDataModel[]), typeof(DataContainer) });
 
 				//Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
 			}
-		
+
 			return content;
+		}
+
+		private XElement _Version_2_to_3(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+					"Migrating sequence from version 2 to version 3. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}Snowflakes and Fireworks now allow more color options as well as enhanced features.{0}" + 
+					"Snowflakes had a bug where the flakes only went one direction. This has been corrected, so you may see some different behavior than before. "+
+					"You may need to set the string orientation to get them going the right direction. Please review them.{0}{0}" +
+					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+
+			MigrateSnowflakesFrom2To3(content);
+
+			return content;
+		}
+
+		private static void MigrateSnowflakesFrom2To3(XElement content)
+		{
+			//This migration deals with changing the Snowflake effect to accomodate multiple gradients instead of single colors for inner and outer
+			//Getthe standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Snowflakes";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Snowflakes effects.
+			IEnumerable<XElement> snowFlakeElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:SnowflakesData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var snowflakeElement in snowFlakeElements.ToList())
+			{
+				//Find all the data points we need to keep.
+				XElement outerColor = snowflakeElement.XPathSelectElement("d2p1:OuterColor", namespaces);
+				XElement centerColor = snowflakeElement.XPathSelectElement("d2p1:CenterColor", namespaces);
+				XElement flakeCount = snowflakeElement.XPathSelectElement("d2p1:FlakeCount", namespaces);
+				XElement level = snowflakeElement.XPathSelectElement("d2p1:LevelCurve", namespaces);
+				XElement speed = snowflakeElement.XPathSelectElement("d2p1:Speed", namespaces);
+				XElement snowFlakeType = snowflakeElement.XPathSelectElement("d2p1:SnowflakeType", namespaces);
+
+				XElement moduleInstanceId = snowflakeElement.XPathSelectElement("ModuleInstanceId", namespaces);
+				XElement moduleTypeId = snowflakeElement.XPathSelectElement("ModuleTypeId", namespaces);
+
+				//Build up our new replacement model
+				SnowflakesData snowflakesData = new SnowflakesData()
+				{
+					ModuleInstanceId = DeSerializer<Guid>(moduleInstanceId),
+					ModuleTypeId = DeSerializer<Guid>(moduleTypeId),
+					OutSideColor = new List<ColorGradient>(new[] {new ColorGradient(DeSerializer<Color>(outerColor))}),
+					InnerColor = new List<ColorGradient>(new[] {new ColorGradient(DeSerializer<Color>(centerColor))}),
+					FlakeCount = DeSerializer<int>(flakeCount),
+					LevelCurve = DeSerializer<Curve>(level),
+					Speed = DeSerializer<int>(speed),
+					SnowflakeType = DeSerializer<SnowflakeType>(snowFlakeType),
+					RandomSpeed = false,
+					RandomBrightness = false,
+					PointFlake45 = false
+				};
+
+				//Remove the old version
+				snowflakeElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = {snowflakesData};
+				DataContainer dc = new DataContainer {_dataModels = dm};
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(SnowflakesData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private static XmlNamespaceManager GetStandardNamespaces()
+		{
+			var namespaces = new XmlNamespaceManager(new NameTable());
+			XNamespace ns = "http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed";
+			namespaces.AddNamespace("", ns.NamespaceName);
+			XNamespace d1p1 = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+			namespaces.AddNamespace("d1p1", d1p1.NamespaceName);
+			XNamespace i = "http://www.w3.org/2001/XMLSchema-instance";
+			namespaces.AddNamespace("i", i.NamespaceName);
+			XNamespace a = "http://www.w3.org/2001/XMLSchema";
+			namespaces.AddNamespace("a", a.NamespaceName);
+			return namespaces;
 		}
 
 		static T DeSerializer<T>(XElement element)
@@ -293,7 +384,7 @@ namespace VixenModules.Sequence.Timed
 			return (T)serializer.ReadObject(element.CreateReader());
 		}
 
-		static XElement Serializer(DataContainer data)
+		static XElement Serializer(DataContainer data, Type[] knownTypes)
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
@@ -305,7 +396,7 @@ namespace VixenModules.Sequence.Timed
 				};
 				using (XmlWriter xmlWriter = XmlWriter.Create(stream, settings))
 				{
-					_WriteSequenceDataToXmlWriter(data, xmlWriter);
+					_WriteSequenceDataToXmlWriter(data, xmlWriter, knownTypes);
 					xmlWriter.Flush();
 				}
 
@@ -321,9 +412,9 @@ namespace VixenModules.Sequence.Timed
 			}
 		}
 
-		private static void _WriteSequenceDataToXmlWriter(DataContainer data, XmlWriter xmlWriter)
+		private static void _WriteSequenceDataToXmlWriter(DataContainer data, XmlWriter xmlWriter, Type[] knownTypes)
 		{
-			DataContractSerializer serializer = new DataContractSerializer(typeof(DataContainer), new[] { typeof(AlternatingData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+			DataContractSerializer serializer = new DataContractSerializer(typeof(DataContainer), knownTypes);
 			serializer.WriteStartObject(xmlWriter, data);
 			xmlWriter.WriteAttributeString("xmlns", "a", null, "http://www.w3.org/2001/XMLSchema");
 			serializer.WriteObjectContent(xmlWriter, data);

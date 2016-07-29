@@ -244,23 +244,6 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
-		[Browsable(false)]
-		[PropertyOrder(1)]
-		public Color CenterColor
-		{
-			get { return _data.CenterColor; }
-			set
-			{
-				_data.CenterColor = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"CenterColor")]
-		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
 		public List<ColorGradient> InnerColor
 		{
@@ -268,23 +251,6 @@ namespace VixenModules.Effect.Snowflakes
 			set
 			{
 				_data.InnerColor = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"OuterColor")]
-		[ProviderDescription(@"Color")]
-		[Browsable(false)]
-		[PropertyOrder(3)]
-		public Color OuterColor
-		{
-			get { return _data.OuterColor; }
-			set
-			{
-				_data.OuterColor = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -437,14 +403,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		protected override void SetupRender()
 		{
-			if (CenterColor != Color.Empty)
-			{
-				//Converts any Old Effect Colors to the new Colors List.
-				InnerColor = new List<ColorGradient> { new ColorGradient(CenterColor) };
-				OutSideColor = new List<ColorGradient> { new ColorGradient(OuterColor) };
-				CenterColor = Color.Empty;
-				OuterColor = Color.Empty;
-			}
+			//Not needed
 		}
 
 		protected override void CleanUpRender()

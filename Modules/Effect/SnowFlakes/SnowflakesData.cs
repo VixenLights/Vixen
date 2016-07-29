@@ -18,8 +18,6 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			InnerColor = new List<ColorGradient> { new ColorGradient(Color.Blue) };
 			OutSideColor = new List<ColorGradient> { new ColorGradient(Color.White) };
-			CenterColor = Color.Blue;
-			OuterColor = Color.White;
 			SnowflakeType = SnowflakeType.Random;
 			Speed = 5;
 			FlakeCount = 10;
@@ -36,12 +34,6 @@ namespace VixenModules.Effect.Snowflakes
 			ColorType = SnowflakeColorType.Palette;
 			Orientation=StringOrientation.Vertical;
 		}
-
-		[DataMember]
-		public Color CenterColor { get; set; }
-
-		[DataMember]
-		public Color OuterColor { get; set; }
 
 		[DataMember]
 		public List<ColorGradient> InnerColor { get; set; }
@@ -104,8 +96,6 @@ namespace VixenModules.Effect.Snowflakes
 				Orientation = Orientation,
 				PointFlake45 = PointFlake45,
 				LevelCurve = new Curve(LevelCurve),
-				CenterColor = CenterColor,
-				OuterColor = OuterColor,
 				InnerColor = InnerColor.ToList(),
 				OutSideColor = OutSideColor.ToList(),
 				ColorType = ColorType,
