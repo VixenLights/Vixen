@@ -1,4 +1,5 @@
-﻿namespace Common.Controls
+﻿using System.Windows.Forms;
+namespace Common.Controls
 {
 	partial class ElementTree
 	{
@@ -91,6 +92,7 @@
 			this.cutNodesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
 			this.cutNodesToolStripMenuItem.Text = "Cut";
 			this.cutNodesToolStripMenuItem.Click += new System.EventHandler(this.cutNodesToolStripMenuItem_Click);
+			this.cutNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
 			// 
 			// copyNodesToolStripMenuItem
 			// 
@@ -98,6 +100,7 @@
 			this.copyNodesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
 			this.copyNodesToolStripMenuItem.Text = "Copy";
 			this.copyNodesToolStripMenuItem.Click += new System.EventHandler(this.copyNodesToolStripMenuItem_Click);
+			this.copyNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
 			// 
 			// pasteNodesToolStripMenuItem
 			// 
@@ -105,6 +108,7 @@
 			this.pasteNodesToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
 			this.pasteNodesToolStripMenuItem.Text = "Paste";
 			this.pasteNodesToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesToolStripMenuItem_Click);
+			this.pasteNodesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
 			// 
 			// pasteAsNewToolStripMenuItem
 			// 
@@ -113,6 +117,7 @@
 			this.pasteAsNewToolStripMenuItem.Size = new System.Drawing.Size(206, 30);
 			this.pasteAsNewToolStripMenuItem.Text = "Paste as New";
 			this.pasteAsNewToolStripMenuItem.Click += new System.EventHandler(this.pasteNodesAsNewToolStripMenuItem_Click);
+			this.pasteAsNewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.V;
 			// 
 			// toolStripSeparator1
 			// 
