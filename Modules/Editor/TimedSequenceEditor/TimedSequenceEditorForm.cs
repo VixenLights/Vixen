@@ -2359,13 +2359,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 					Bitmap checkMarkColor;
+					int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 					if (layersUsed.Count == 1)
 					{
-						checkMarkColor = Resources.check_mark;
+						checkMarkColor = Tools.GetIcon(Resources.check_mark, iconSize);
 					}
 					else
 					{
-						checkMarkColor = Resources.check_markMedium;
+						checkMarkColor = Tools.GetIcon(Resources.check_markMedium, iconSize);
 					}
 
 					
