@@ -24,7 +24,9 @@ namespace VixenModules.Effect.Fireworks
 		{
 			_data = new FireworksData();
 		}
-		
+
+		#region Config
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Explosions")]
@@ -224,6 +226,8 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
+		#endregion
+
 		#region Color
 
 		[Value]
@@ -254,23 +258,6 @@ namespace VixenModules.Effect.Fireworks
 			set
 			{
 				_data.ColorGradients = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Colors")]
-		[ProviderDescription(@"Color")]
-		[Browsable(false)]
-		[PropertyOrder(1)]
-		public List<Color> Colors
-		{
-			get { return _data.Colors; }
-			set
-			{
-				_data.Colors = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -365,17 +352,6 @@ namespace VixenModules.Effect.Fireworks
 
 		protected override void SetupRender()
 		{
-			if (Colors.Count != 0)
-			{
-				//Converts any Old Effect Colors to the new Colors List.
-				ColorGradients = new List<ColorGradient>{};
-				foreach (var color in Colors)
-				{
-				    ColorGradients.Add(new ColorGradient(color));
-				}
-				Colors.Clear();
-			}
-
 			InitFireworksBuffer();
 			ResetBurstBuffer();
 

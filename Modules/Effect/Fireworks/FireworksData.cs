@@ -2,11 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
-using ZedGraph;
 
 namespace VixenModules.Effect.Fireworks
 {
@@ -15,7 +13,6 @@ namespace VixenModules.Effect.Fireworks
 	{
 		public FireworksData()
 		{
-			Colors = new List<Color> { Color.Red, Color.Lime, Color.Blue };
 			ColorGradients = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue) };
 			Explosions = 10;
 			RandomVelocity = false;
@@ -28,11 +25,8 @@ namespace VixenModules.Effect.Fireworks
 			MaxParticles = 90;
 			ColorType = FireworksColorType.Standard;
 			ParticleFade = 50;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 		}
-
-		[DataMember]
-		public List<Color> Colors { get; set; }
 
 		[DataMember]
 		public List<ColorGradient> ColorGradients { get; set; }

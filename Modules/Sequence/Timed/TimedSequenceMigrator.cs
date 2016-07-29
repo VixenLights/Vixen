@@ -18,6 +18,7 @@ using Vixen.Services;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Alternating;
+using VixenModules.Effect.Fireworks;
 using VixenModules.Effect.Snowflakes;
 using ZedGraph;
 
@@ -299,6 +300,8 @@ namespace VixenModules.Sequence.Timed
 
 			MigrateSnowflakesFrom2To3(content);
 
+			MigrateFireworksFrom2To3(content);
+
 			return content;
 		}
 
@@ -358,6 +361,70 @@ namespace VixenModules.Sequence.Timed
 
 				//Serialize the object into a xelement
 				XElement glp = Serializer(dc, new[] { typeof(SnowflakesData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private static void MigrateFireworksFrom2To3(XElement content)
+		{
+			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
+			//Get the standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Fireworks";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Snowflakes effects.
+			IEnumerable<XElement> fireworksElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:FireworksData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var fireworkElement in fireworksElements.ToList())
+			{
+				//Find all the data points we need to keep.
+				XElement colors = fireworkElement.XPathSelectElement("d2p1:Colors", namespaces);
+				XElement explosions = fireworkElement.XPathSelectElement("d2p1:Explosions", namespaces);
+				XElement particleFade = fireworkElement.XPathSelectElement("d2p1:ParticleFade", namespaces);
+				XElement level = fireworkElement.XPathSelectElement("d2p1:LevelCurve", namespaces);
+				XElement particles = fireworkElement.XPathSelectElement("d2p1:Particles", namespaces);
+				XElement velocity = fireworkElement.XPathSelectElement("d2p1:Velocity", namespaces);
+
+				XElement moduleInstanceId = fireworkElement.XPathSelectElement("ModuleInstanceId", namespaces);
+				XElement moduleTypeId = fireworkElement.XPathSelectElement("ModuleTypeId", namespaces);
+
+				var colorList = DeSerializer<List<Color>>(colors);
+				List<ColorGradient> colorGradients = colorList.Select(color => new ColorGradient(color)).ToList();
+
+				//Build up our new replacement model
+				FireworksData data = new FireworksData()
+				{
+					ModuleInstanceId = DeSerializer<Guid>(moduleInstanceId),
+					ModuleTypeId = DeSerializer<Guid>(moduleTypeId),
+					Velocity = DeSerializer<int>(velocity),
+					Explosions = DeSerializer<int>(explosions),
+					ParticleFade = DeSerializer<int>(particleFade),
+					Particles = DeSerializer<int>(particles),
+					LevelCurve = DeSerializer<Curve>(level),
+					ColorGradients = colorGradients,
+					RandomParticles = false,
+					RandomVelocity = false
+				};
+
+				//Remove the old version
+				fireworkElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { data };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(FireworksData), typeof(IModuleDataModel[]), typeof(DataContainer) });
 
 				//Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
