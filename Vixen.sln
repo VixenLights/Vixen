@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -1569,15 +1569,18 @@ Global
 		{B8772D9D-49D5-4DD2-A27B-F5A3C67C9925}.Release|x64.Build.0 = Release|x64
 		{B8772D9D-49D5-4DD2-A27B-F5A3C67C9925}.Release|x86.ActiveCfg = Release|x86
 		{B8772D9D-49D5-4DD2-A27B-F5A3C67C9925}.Release|x86.Build.0 = Release|x86
+		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|Any CPU.ActiveCfg = Release|x86
+		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|Mixed Platforms.ActiveCfg = Release|x86
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|x64.ActiveCfg = Release|x64
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|x64.Build.0 = Release|x64
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|x86.ActiveCfg = Release|x86
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Debug|x86.Build.0 = Release|x86
+		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|Any CPU.ActiveCfg = Release|x86
+		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x64.ActiveCfg = Release|x64
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x64.Build.0 = Release|x64
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x86.ActiveCfg = Release|x86
 		{63B2964A-6190-4746-B12D-7D79DFCA7BB7}.Release|x86.Build.0 = Release|x86
-		
 		{9E984FC3-44EC-405F-90F7-94B2D99027F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9E984FC3-44EC-405F-90F7-94B2D99027F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E984FC3-44EC-405F-90F7-94B2D99027F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

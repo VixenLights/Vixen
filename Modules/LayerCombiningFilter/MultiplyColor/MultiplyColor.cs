@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Module.MixingFilter;
 
