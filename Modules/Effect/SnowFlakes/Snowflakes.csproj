@@ -50,6 +50,8 @@
     <Compile Include="Snowflakes.cs" />
     <Compile Include="SnowflakesData.cs" />
     <Compile Include="SnowflakesDescriptor.cs" />
+    <Compile Include="SnowflakeEffect.cs" />
+    <Compile Include="SnowflakeColorType.cs" />
     <Compile Include="SnowflakeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

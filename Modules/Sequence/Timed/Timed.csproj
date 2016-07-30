@@ -82,6 +82,16 @@
       <Name>Effect</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Fireworks\Fireworks.csproj">
+      <Project>{bdf7f625-5041-428d-9c68-cb5462671c6b}</Project>
+      <Name>Fireworks</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\SnowFlakes\Snowflakes.csproj">
+      <Project>{5437f188-1867-4bf5-890e-431721f1b57d}</Project>
+      <Name>Snowflakes</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
