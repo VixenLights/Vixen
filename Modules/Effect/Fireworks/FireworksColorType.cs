@@ -5,15 +5,15 @@ namespace VixenModules.Effect.Fireworks
 {
 	public enum FireworksColorType
 	{
-		[Description("Standard")]
+		[Description("Standard Bursts")]
 		Standard,
-		[Description("RainBow")]
+		[Description("RainBow Particles")]
 		RainBow,
-		[Description("Range")]
+		[Description("Range Particles")]
 		Range,
-		[Description("Palette")]
+		[Description("Palette Particles")]
 		Palette,
-		[Description("Random")]
+		[Description("Random Bursts")]
 		Random
 	}
 }
