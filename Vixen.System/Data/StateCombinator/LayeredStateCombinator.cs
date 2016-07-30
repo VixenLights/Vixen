@@ -165,7 +165,7 @@ namespace Vixen.Data.StateCombinator
 		private static Color MixLayerColors(Color highLayer, Color lowLayer, ILayerMixingFilter filter)
 		{
 			//Mixing logic for mixing colors between layers
-			return filter.CombineFullColor(highLayer, lowLayer);
+			 return filter.CombineFullColor(highLayer, lowLayer);
 			
 			//var hsv = HSV.FromRGB(lowLayer);
 			//hsv.V = hsv.V*(1 - HSV.VFromRgb(highLayer));
