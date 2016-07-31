@@ -1,36 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.ComponentModel;
-using Vixen.Data.Value;
-using Vixen.Intent;
 using Vixen.Sys;
 using Vixen.Module;
-using Vixen.Module.Effect;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using VixenModules.Property.Color;
-using System.Windows.Forms;
-using Vixen.Module.Media;
-using Vixen.Services;
-using VixenModules.Media.Audio;
 using Vixen.Execution;
 using Vixen.Execution.Context;
-using VixenModules.Effect.AudioHelp;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using Vixen.Attributes;
+using Vixen.TypeConverters;
+using VixenModules.Effect.Effect;
 
 
 namespace VixenModules.Effect.AudioHelp
 {
     public enum MeterColorTypes { Linear, Discrete, Custom };
 
-    public abstract class AudioPluginBase : EffectModuleInstanceBase
+    public abstract class AudioPluginBase : BaseEffect
     {
 
         protected IAudioPluginData _data;
@@ -39,7 +31,7 @@ namespace VixenModules.Effect.AudioHelp
         protected Color[] _colors;
         protected TimeSpan _lastRenderedStartTime;
 
-        [Browsable(false)]
+	    [Browsable(false)]
         public AudioHelper AudioHelper { get { return _audioHelper; } }
 
         private ColorGradient _workingGradient;
@@ -58,7 +50,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.LowPass = value;
                 _audioHelper.LowPass = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -66,14 +59,15 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDisplayName(@"Low Pass Frequency")]
         [ProviderDescription(@"Ignore frequencies below this value")]
         [PropertyOrder(2)]
-        public int lowPassFreq
+        public int LowPassFreq
         {
             get { return _data.LowPassFreq; }
             set {
                 _data.LowPassFreq = value;
                 _audioHelper.LowPassFreq = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -81,7 +75,7 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDisplayName(@"High Pass Filter")]
         [ProviderDescription(@"Ignores frequencies above a given frequency")]
         [PropertyOrder(3)]
-        public bool highPass
+        public bool HighPass
         {
             get { return _data.HighPass; }
             set
@@ -89,7 +83,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.HighPass = value;
                 _audioHelper.HighPass = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -97,7 +92,7 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDisplayName(@"High Pass Frequency")]
         [ProviderDescription(@"Ignore frequencies above this value")]
         [PropertyOrder(4)]
-        public int highPassFreq
+        public int HighPassFreq
         {
             get { return _data.HighPassFreq; }
             set
@@ -105,7 +100,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.HighPassFreq = value;
                 _audioHelper.HighPassFreq = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -123,7 +119,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.Gain = value/10;
                 _audioHelper.Gain = value/10;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -140,7 +137,8 @@ namespace VixenModules.Effect.AudioHelp
             {
                 _data.Range = 20 - value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -155,7 +153,8 @@ namespace VixenModules.Effect.AudioHelp
                 _audioHelper.Normalize = value;
                 _data.Normalize = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -173,7 +172,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.DecayTime = value;
                 _audioHelper.DecayTime = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -191,7 +191,8 @@ namespace VixenModules.Effect.AudioHelp
                 _data.AttackTime = value;
                 _audioHelper.AttackTime = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -205,9 +206,11 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 _data.MeterColorStyle = value;
-                updateColorGradient();
+				UpdateColorTypesAttributes(true);
+                UpdateColorGradient();
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
@@ -223,13 +226,14 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 _data.GreenColorPosition = value;
-                updateColorGradient();
+                UpdateColorGradient();
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color",0)]
         [PropertyOrder(3)]
         [ProviderDisplayName(@"Red Gradient Position")]
         [ProviderDescription(@"Red Gradient Position")]
@@ -241,13 +245,14 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 _data.RedColorPosition = value;
-                updateColorGradient();
+                UpdateColorGradient();
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color",0)]
         [PropertyOrder(4)]
         [ProviderDisplayName(@"Custom Gradient")]
         [ProviderDescription(@"Custom Gradient")]
@@ -257,13 +262,14 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 _data.MeterColorGradient = value;
-                updateColorGradient();
+                UpdateColorGradient();
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
 
         [Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Brightness",1)]
         [PropertyOrder(5)]
         [ProviderDisplayName(@"Intensity Curve")]
         public Curve MeterIntensityCurve
@@ -273,21 +279,109 @@ namespace VixenModules.Effect.AudioHelp
             {
                 _data.IntensityCurve = value;
                 IsDirty = true;
-            }
+				OnPropertyChanged();
+			}
         }
+		[Value]
+		[ProviderCategory(@"Depth", 4)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[MergableProperty(false)]
+		public virtual int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
-        #endregion
+		#endregion
 
-        public AudioPluginBase()
-        {        }
+		protected override void TargetNodesChanged()
+		{
+			CheckForInvalidColorData();
+			if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+			{
+				DepthOfEffect = 0;
+			}
+		}
 
-        public Color GetColorAt(double pos)
+		//Validate that the we are using valid colors and set appropriate defaults if not.
+		private void CheckForInvalidColorData()
+		{
+			var validColors = GetValidColors();
+			if (validColors.Any())
+			{
+				if (!_data.MeterColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				{
+					//Our color is not valid for any elements we have.
+					//Try to set a default color gradient from our available colors
+					MeterColorGradient = new ColorGradient(validColors.First());
+				}
+
+				//ensure we are using Custom and we can't change it. We are limited in discrete color mode
+				MeterColorStyle = MeterColorTypes.Custom;
+				EnableColorTypesSelection(false);
+			}
+			else
+			{
+				EnableColorTypesSelection(true);
+			}
+
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateColorTypesAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+	    protected void EnableColorTypesSelection(bool enable)
+	    {
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"MeterColorStyle", enable}
+			};
+			SetBrowsable(propertyStates);
+			TypeDescriptor.Refresh(this);
+		}
+
+		protected void UpdateColorTypesAttributes(bool refresh=false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"MeterColorGradient", MeterColorStyle == MeterColorTypes.Custom},
+				{"RedColorPosition", MeterColorStyle != MeterColorTypes.Custom},
+				{"GreenColorPosition", MeterColorStyle != MeterColorTypes.Custom}
+
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		protected Color GetColorAt(double pos)
         {
             if (_workingGradient == null) return Color.Black;
             return _workingGradient.GetColorAt(pos);
         }
 
-        protected void updateColorGradient(){
+	    protected ColorGradient WorkingGradient
+	    {
+		    get
+		    {
+			    return _workingGradient;
+		    }
+	    }
+
+        protected void UpdateColorGradient(){
             if (_data == null)
                 return;
 
@@ -297,7 +391,7 @@ namespace VixenModules.Effect.AudioHelp
                     Color[] discreteColors = { Color.Lime, Color.Lime, Color.Yellow, Color.Yellow, Color.Red, Color.Red };
                     float greenPos = (float)_data.GreenColorPosition / 100;
                     float yellowPos = (float)_data.RedColorPosition / 100;
-                    float[] DiscretePositions = { .000001F, greenPos, greenPos + .000001F, yellowPos, yellowPos + .000001F, 1 };
+                    float[] DiscretePositions = { 0, greenPos, greenPos, yellowPos, yellowPos, 1 };
                     ColorBlend discreteBlend = new ColorBlend();
                     discreteBlend.Colors = discreteColors;
                     discreteBlend.Positions = DiscretePositions;
@@ -306,7 +400,7 @@ namespace VixenModules.Effect.AudioHelp
                     break;
                 case MeterColorTypes.Linear:
                     Color[] linearColors = { Color.Lime, Color.Yellow, Color.Red };
-                    float[] myPositions = { (float)0.00000000000001, (float)_data.GreenColorPosition / 100, (float)_data.RedColorPosition / 100 };
+                    float[] myPositions = { 0, (float)_data.GreenColorPosition / 100, (float)_data.RedColorPosition / 100 };
                     ColorBlend linearBlend = new ColorBlend();
                     linearBlend.Colors = linearColors;
                     linearBlend.Positions = myPositions;
@@ -318,37 +412,15 @@ namespace VixenModules.Effect.AudioHelp
             }
         }
 
-        private EffectNode _thisEffectNode;
-        private TimeSpan _getEffectStartTime()
-        {
-            if (_thisEffectNode == null)
-            {
-                foreach (IContext context in VixenSystem.Contexts)
-                {
-                    if (context is ISequenceContext)
-                    {
-                        foreach (IDataNode dataNode in ((ISequenceContext)context).Sequence.SequenceData.EffectData)
-                            if (dataNode is EffectNode)
-                                if (((EffectNode)dataNode).Effect.InstanceId == InstanceId)
-                                    _thisEffectNode = (EffectNode)dataNode;
-                    }
-                }
-                if (_thisEffectNode == null)
-                    return new TimeSpan(0);
-            }
-
-            return _thisEffectNode.StartTime;
-        }
-
         protected override void _PreRender(CancellationTokenSource tokenSource = null)
         {
             _elementData = new EffectIntents();
 
-            _lastRenderedStartTime = _getEffectStartTime();
-
             _audioHelper.ReloadAudio();
 
-            foreach (ElementNode node in TargetNodes)
+	        var nodes = GetNodesToRenderOn();
+
+            foreach (ElementNode node in nodes)
             {
                 if (tokenSource != null && tokenSource.IsCancellationRequested)
                     return;
@@ -358,18 +430,32 @@ namespace VixenModules.Effect.AudioHelp
             }
         }
 
-        private bool hasMoved()
-        {
-            TimeSpan currentStartTime = _getEffectStartTime();
-            if (_lastRenderedStartTime == null || _lastRenderedStartTime != currentStartTime)
-            {
-                return true;
-            }
-            return false;
-        }
+		private List<ElementNode> GetNodesToRenderOn()
+		{
+			IEnumerable<ElementNode> renderNodes = null;
 
+			if (DepthOfEffect == 0)
+			{
+				renderNodes = TargetNodes;
+			}
+			else
+			{
+				renderNodes = TargetNodes;
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
+			}
 
-        protected override EffectIntents _Render()
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			return renderNodes.ToList();
+		}
+
+		protected override EffectIntents _Render()
 		{
 			return _elementData;
 		}
@@ -379,12 +465,12 @@ namespace VixenModules.Effect.AudioHelp
             get { return _data; }
 			set {
                 _data = value as IAudioPluginData;
-                updateColorGradient();
+                UpdateColorGradient();
+				InitAllAttributes();
                 _audioHelper.DecayTime = _data.DecayTime;
                 _audioHelper.AttackTime = _data.AttackTime;
                 _audioHelper.Gain = _data.Gain;
                 _audioHelper.Normalize = _data.Normalize;
-                _audioHelper.ReloadAudio();
                 _audioHelper.LowPass = _data.LowPass;
                 _audioHelper.LowPassFreq = _data.LowPassFreq;
                 _audioHelper.HighPass = _data.HighPass;
@@ -392,17 +478,58 @@ namespace VixenModules.Effect.AudioHelp
             }
 		}
 
-        public override bool IsDirty
+       protected abstract void RenderNode(ElementNode node);
+
+		protected override EffectTypeModuleData EffectModuleData
 		{
-			get
-			{
-                if (_audioHelper.checkForNewAudio())
-                    PreRender();
-                return base.IsDirty || hasMoved();
-			}
-			protected set { base.IsDirty = value; }
+			get { return (EffectTypeModuleData)_data; }
 		}
 
-        protected abstract void RenderNode(ElementNode node);
-    }
+		/// <summary>
+		/// Convienience method to generate intents that knows how to deal with discrete colors.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="gradient"></param>
+		/// <param name="level"></param>
+		/// <param name="startPos"></param>
+		/// <param name="endPos"></param>
+		/// <param name="duration"></param>
+		/// <param name="startTime"></param>
+		/// <param name="isDiscrete"></param>
+		/// <returns></returns>
+		protected EffectIntents GenerateEffectIntents(ElementNode node, ColorGradient gradient, Curve level, double startPos, double endPos,
+			TimeSpan duration, TimeSpan startTime, bool isDiscrete)
+		{
+			EffectIntents result = new EffectIntents();
+			if (isDiscrete)
+			{
+				foreach (Color color in gradient.GetColorsInGradient())
+				{
+					double proportion = gradient.GetProportionOfColorAt(startPos, color);
+					var startIntensity = (level.GetValue(startPos * 100) / 100) * proportion;
+					proportion = gradient.GetProportionOfColorAt(endPos, color);
+					var endIntensity = (level.GetValue(endPos * 100) / 100) * proportion;
+					if (startIntensity > 0 && endIntensity > 0)
+					{
+						var intent = CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
+						result.AddIntentForElement(node.Element.Id, intent, startTime);
+					}
+				}
+			}
+			else
+			{
+				var startIntensity = level.GetValue(startPos * 100) / 100;
+				var endIntensity = level.GetValue(endPos * 100) / 100;
+				if (startIntensity > 0 && endIntensity > 0)
+				{
+					var intent = CreateIntent(gradient.GetColorAt(startPos), gradient.GetColorAt(endPos), startIntensity, endIntensity, duration);
+					result.AddIntentForElement(node.Element.Id, intent, startTime);
+				}
+			}
+
+			return result;
+		}
+
+
+	}
 }

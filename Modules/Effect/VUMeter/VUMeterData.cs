@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using Vixen.Module.Effect;
 using VixenModules.Effect.AudioHelp;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.VUMeter
 {
 	[DataContract]
-	public class VUMeterData : ModuleDataModelBase, IAudioPluginData
+	public class VUMeterData : EffectTypeModuleData, IAudioPluginData
 	{
         [DataMember]
         public int DecayTime { get; set; }
@@ -58,7 +52,10 @@ namespace VixenModules.Effect.VUMeter
         [DataMember]
         public int HighPassFreq { get; set; }
 
-        public VUMeterData()
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
+		public VUMeterData()
         {
             DecayTime = 1500;
             AttackTime = 50;
@@ -74,41 +71,30 @@ namespace VixenModules.Effect.VUMeter
             HighPass = false;
             HighPassFreq = 500;
 
-            /*
-            Color[] myColors = { Color.Lime, Color.Yellow, Color.Red };
-            float[] myPositions = { (float)0.00000000000001, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
-            ColorBlend linearBlend = new ColorBlend();
-            linearBlend.Colors = myColors;
-            linearBlend.Positions = myPositions;*/
-
-            Color[] myColors = { Color.White, Color.White };
-            float[] myPositions = { (float)0.00000000000001, (float)98 / 100 };
-            ColorBlend linearBlend = new ColorBlend();
-            linearBlend.Colors = myColors;
-            linearBlend.Positions = myPositions;
-
-            IntensityCurve = new Curve();
+			IntensityCurve = new Curve();
             IntensityCurve.Points.Clear();
             IntensityCurve.Points.Add(new ZedGraph.PointPair(0, 0));
             IntensityCurve.Points.Add(new ZedGraph.PointPair(100, 100));
 
-            ColorGradient linearGradient = new ColorGradient(linearBlend);
+            ColorGradient linearGradient = new ColorGradient(Color.White);
             MeterColorGradient = linearGradient;
-        }
 
-        public override IModuleDataModel Clone()
-        {
-            VUMeterData result = new VUMeterData();
-            result.DecayTime = DecayTime;
-            result.AttackTime = AttackTime;
-            result.Normalize = Normalize;
-            result.Gain = Gain;
-            result.Range = Range;
-            result.GreenColorPosition = GreenColorPosition;
-            result.RedColorPosition = RedColorPosition;
-            result.MeterColorGradient = MeterColorGradient;
+			DepthOfEffect = 0;
+		}
 
-            return result;
-        }
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
+			VUMeterData result = new VUMeterData();
+			result.DecayTime = DecayTime;
+			result.AttackTime = AttackTime;
+			result.Normalize = Normalize;
+			result.Gain = Gain;
+			result.Range = Range;
+			result.GreenColorPosition = GreenColorPosition;
+			result.RedColorPosition = RedColorPosition;
+			result.MeterColorGradient = MeterColorGradient;
+
+			return result;
+		}
 	}
 }

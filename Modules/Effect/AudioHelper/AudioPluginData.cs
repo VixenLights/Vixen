@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
-using Vixen.Module;
+﻿using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using Vixen.Module.Effect;
-using VixenModules.Effect.AudioHelp;
 
 namespace VixenModules.Effect.AudioHelp
 {
@@ -27,6 +18,7 @@ namespace VixenModules.Effect.AudioHelp
         bool HighPass { get; set; }
         int HighPassFreq { get; set; }
         Curve IntensityCurve { get; set; }
+		int DepthOfEffect { get; set; }
         ColorGradient MeterColorGradient { get; set; }
         MeterColorTypes MeterColorStyle { get; set; }
     }

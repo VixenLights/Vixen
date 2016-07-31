@@ -1,19 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Vixen.Sys;
 using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 using VixenModules.Effect.AudioHelp;
 
 namespace VixenModules.Effect.VerticalMeter
 {
     public class VerticalMeterDescriptor : EffectModuleDescriptorBase
 	{
-		private static Guid _typeId = new Guid("{af92929a-f35e-4762-ba86-a901a1f4eb53}");
-        private static Guid _ColorGradientId = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
+		private static readonly Guid _typeId = new Guid("{af92929a-f35e-4762-ba86-a901a1f4eb53}");
+        private static readonly Guid _ColorGradientId = new Guid("{64f4ab26-3ed4-49a3-a004-23656ed0424a}");
+
+		public override bool SupportsMedia
+		{
+			get { return true; }
+		}
 
 		public override string EffectName
 		{
@@ -22,7 +23,7 @@ namespace VixenModules.Effect.VerticalMeter
 
 		public override EffectGroups EffectGroup
 		{
-			get { return EffectGroups.Basic; }
+			get { return EffectGroups.Pixel; }
 		}
 
 		public override Guid TypeId

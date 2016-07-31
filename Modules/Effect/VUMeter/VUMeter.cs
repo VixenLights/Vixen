@@ -1,53 +1,39 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
-using Vixen.Data.Value;
-using Vixen.Intent;
+using System.ComponentModel;
 using Vixen.Sys;
-using Vixen.Module;
-using Vixen.Module.Effect;
-using Vixen.Sys.Attribute;
-using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
-using VixenModules.Property.Color;
-using ZedGraph;
-using System.Windows.Forms;
-using Vixen.Module.Media;
-using Vixen.Services;
-using VixenModules.Media.Audio;
-using Vixen.Execution;
-using Vixen.Execution.Context;
 using VixenModules.Effect.AudioHelp;
+using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.VUMeter
 {
     public class VUMeter : AudioPluginBase
 	{
+		private const int Spacing = 30;
 
-        protected override void TargetNodesChanged()
-        {
-
-        }
-
-        public VUMeter()
+		public VUMeter()
         {
             _audioHelper = new AudioHelper(this);
         }
+
+		[Browsable(false)]
+		public override int DepthOfEffect
+		{
+			//epth makes no difference here so we turn it off
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
 		{
-            _elementData.Clear();
-
             if (!_audioHelper.AudioLoaded)
                 return;
-            
-            int spacing = 30; //smoothness. Intent length in ms
-            LightingValue color1, color2;
 
 			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
 				// this is probably always going to be a single element for the given node, as
@@ -55,44 +41,31 @@ namespace VixenModules.Effect.VUMeter
 				// it this way, though, in case something changes in future.
 				if (elementNode == null || elementNode.Element == null)
 					continue;
+				bool discreteColors = ColorModule.isElementNodeDiscreteColored(elementNode);
+				
+                for(int i = 0;i<(int)((TimeSpan.TotalMilliseconds/Spacing)-1);i++)
+                {
 
-			    if (elementNode.Element != null)
-			    {
-                    for(int i = 1;i<(int)((TimeSpan.TotalMilliseconds/spacing)-1);i++)
-                    {
+                    double gradientPosition1 = (_audioHelper.VolumeAtTime(i * Spacing) + _data.Range)/_data.Range ;
+                    double gradientPosition2 = (_audioHelper.VolumeAtTime((i+1) * Spacing) + _data.Range)/_data.Range;
+					if (gradientPosition1 <= 0)
+						gradientPosition1 = 0;
+					if (gradientPosition1 >= 1)
+						gradientPosition1 = 1;
 
-                        double GradientPosition1 = (_audioHelper.VolumeAtTime(i * spacing) + _data.Range)/_data.Range ;
-                        double GradientPosition2 = (_audioHelper.VolumeAtTime((i+1) * spacing) + _data.Range)/_data.Range;
-
-                        //Some odd corner cases
-                        if (GradientPosition1 <= 0)
-                            GradientPosition1 = .001;
-                        if (GradientPosition1 >= 1)
-                            GradientPosition1 = .999;
-
-                        //Some odd corner cases
-                        if (GradientPosition2 <= 0)
-                            GradientPosition2 = .001;
-                        if (GradientPosition2 >= 1)
-                            GradientPosition2 = .999;
-
-                        color1 = new LightingValue(GetColorAt(GradientPosition1), MeterIntensityCurve.GetValue(GradientPosition1 * 100) / 100);
-                        color2 = new LightingValue(GetColorAt(GradientPosition2), MeterIntensityCurve.GetValue(GradientPosition2 * 100) / 100);
-
-                        TimeSpan startTime = TimeSpan.FromMilliseconds(i * spacing);
-                        TimeSpan endTime = TimeSpan.FromMilliseconds((i + 1) * spacing);
-
-                        int startAudioTime = i * spacing + 1;
-
-                        IIntent intent = new LightingIntent(color1, color2, TimeSpan.FromMilliseconds(spacing));
-
-                        _elementData.AddIntentForElement(elementNode.Element.Id, intent, startTime);
-                    }
+					//Some odd corner cases
+					if (gradientPosition2 <= 0)
+						gradientPosition2 = 0;
+					if (gradientPosition2 >= 1)
+						gradientPosition2 = 1;
+					TimeSpan startTime = TimeSpan.FromMilliseconds(i * Spacing);
+					_elementData.Add(GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition1, gradientPosition2, TimeSpan.FromMilliseconds(Spacing), startTime, discreteColors));
+					
                 }
+                
 		    }
 
 		}
-
 
 	}
 }

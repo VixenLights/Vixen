@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using Vixen.Module.Effect;
 using VixenModules.Effect.AudioHelp;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.VerticalMeter
 {
 	[DataContract]
-	public class VerticalMeterData : ModuleDataModelBase, IAudioPluginData
+	public class VerticalMeterData : EffectTypeModuleData, IAudioPluginData
 	{
         [DataMember]
         public bool Inverted { get; set; }
@@ -40,7 +35,10 @@ namespace VixenModules.Effect.VerticalMeter
         [DataMember]
         public int RedColorPosition { get; set; }
 
-        [DataMember]
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
+		[DataMember]
         public ColorGradient MeterColorGradient { get; set; }
 
         [DataMember]
@@ -79,7 +77,7 @@ namespace VixenModules.Effect.VerticalMeter
             HighPassFreq = 500;
 
             Color[] myColors = { Color.Lime, Color.Yellow, Color.Red };
-            float[] myPositions = { (float)0.00000000000001, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
+            float[] myPositions = { 0, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
             ColorBlend linearBlend = new ColorBlend();
             linearBlend.Colors = myColors;
             linearBlend.Positions = myPositions;
@@ -92,22 +90,24 @@ namespace VixenModules.Effect.VerticalMeter
             IntensityCurve.Points.Add(new ZedGraph.PointPair(100, 100));
 
             MeterColorGradient = linearGradient;
-        }
 
-        public override IModuleDataModel Clone()
-        {
-            VerticalMeterData result = new VerticalMeterData();
-            result.Inverted = Inverted;
-            result.DecayTime = DecayTime;
-            result.AttackTime = AttackTime;
-            result.Normalize = Normalize;
-            result.Gain = Gain;
-            result.Range = Range;
-            result.GreenColorPosition = GreenColorPosition;
-            result.RedColorPosition = RedColorPosition;
-            result.MeterColorGradient = MeterColorGradient;
+			DepthOfEffect = 0;
+		}
 
-            return result;
-        }
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
+			VerticalMeterData result = new VerticalMeterData();
+			result.Inverted = Inverted;
+			result.DecayTime = DecayTime;
+			result.AttackTime = AttackTime;
+			result.Normalize = Normalize;
+			result.Gain = Gain;
+			result.Range = Range;
+			result.GreenColorPosition = GreenColorPosition;
+			result.RedColorPosition = RedColorPosition;
+			result.MeterColorGradient = MeterColorGradient;
+
+			return result;
+		}
 	}
 }

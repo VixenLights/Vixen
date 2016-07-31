@@ -56,6 +56,7 @@ namespace Vixen.Module.Input
 			EffectParameterValues[InputValueParameterIndex] = input.Value;
 			effect.ParameterValues = EffectParameterValues;
 			effect.TimeSpan = effectTimeSpan;
+			effect.StartTime = TimeSpan.Zero;
 			effect.TargetNodes = Nodes.Select(x => VixenSystem.Nodes.FirstOrDefault(y => y.Id == x)).ToArray();
 			EffectNode effectNode = new EffectNode(effect, TimeSpan.Zero);
 

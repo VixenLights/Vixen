@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using Vixen.Module.Effect;
 using VixenModules.Effect.AudioHelp;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Waveform
 {
 	[DataContract]
-	public class WaveformData : ModuleDataModelBase, IAudioPluginData
+	public class WaveformData : EffectTypeModuleData, IAudioPluginData
 	{
         [DataMember]
         public bool Inverted { get; set; }
@@ -64,7 +59,10 @@ namespace VixenModules.Effect.Waveform
         [DataMember]
         public int HighPassFreq { get; set; }
 
-        public WaveformData()
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
+		public WaveformData()
         {
             Inverted = false;
             ScrollSpeed = 10;
@@ -83,7 +81,7 @@ namespace VixenModules.Effect.Waveform
             HighPassFreq = 500;
 
             Color[] myColors = { Color.Lime, Color.Yellow, Color.Red };
-            float[] myPositions = { (float)0.00000000000001, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
+            float[] myPositions = { 0, (float)GreenColorPosition / 100, (float)RedColorPosition / 100 };
             ColorBlend linearBlend = new ColorBlend();
             linearBlend.Colors = myColors;
             linearBlend.Positions = myPositions;
@@ -95,23 +93,25 @@ namespace VixenModules.Effect.Waveform
 
             ColorGradient linearGradient = new ColorGradient(linearBlend);
             MeterColorGradient = linearGradient;
+
+			DepthOfEffect = 0;
         }
 
-        public override IModuleDataModel Clone()
-        {
-            WaveformData result = new WaveformData();
-            result.Inverted = Inverted;
-            result.ScrollSpeed = ScrollSpeed;
-            result.DecayTime = DecayTime;
-            result.AttackTime = AttackTime;
-            result.Normalize = Normalize;
-            result.Gain = Gain;
-            result.Range = Range;
-            result.GreenColorPosition = GreenColorPosition;
-            result.RedColorPosition = RedColorPosition;
-            result.MeterColorGradient = MeterColorGradient;
+		protected override EffectTypeModuleData CreateInstanceForClone()
+		{
+			WaveformData result = new WaveformData();
+			result.Inverted = Inverted;
+			result.ScrollSpeed = ScrollSpeed;
+			result.DecayTime = DecayTime;
+			result.AttackTime = AttackTime;
+			result.Normalize = Normalize;
+			result.Gain = Gain;
+			result.Range = Range;
+			result.GreenColorPosition = GreenColorPosition;
+			result.RedColorPosition = RedColorPosition;
+			result.MeterColorGradient = MeterColorGradient;
 
-            return result;
-        }
+			return result;
+		}
 	}
 }

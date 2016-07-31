@@ -3364,23 +3364,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// get the target element
 					if (element.Row != null)
 					{
-						var targetNode = (ElementNode) element.Row.Tag;
-
-						// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-						newEffect.TargetNodes = new[] {targetNode};
+						var effectNode = CreateEffectNode(newEffect, element.Row, element.StartTime, element.Duration);
+						// put it in the sequence and in the timeline display
+						newElements.Add(AddEffectNode(effectNode));
 					}
 					else
 					{
 						Logging.Error("TimedSequenceEditor: <CloneElements> - Skipping element; element.Row is null!");
-						continue;
+						
 					}
-
-					newEffect.TimeSpan = element.Duration;
-					var effectNode = new EffectNode(newEffect, element.StartTime);
-
-					// put it in the sequence and in the timeline display
-					newElements.Add(AddEffectNode(effectNode));
-					
 
 				} catch (Exception ex)
 				{
@@ -3540,7 +3532,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private static EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
+		private EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
@@ -3549,7 +3541,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
 			effectInstance.TimeSpan = timeSpan;
+			effectInstance.StartTime = startTime;
 			if (parameterValues != null) effectInstance.ParameterValues = parameterValues;
+			if (effectInstance.SupportsMedia)
+			{
+				effectInstance.Media = Sequence.SequenceData.Media;
+			}
 			return new EffectNode(effectInstance, startTime);
 	
 		}
@@ -3569,6 +3566,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (EffectNode node in nodes)
 			{
+				if (node.Effect.SupportsMedia)
+				{
+					node.Effect.Media = Sequence.SequenceData.Media;
+				}
 				TimedSequenceElement element = SetupNewElementFromNode(node);
 				foreach (ElementNode target in node.Effect.TargetNodes)
 				{

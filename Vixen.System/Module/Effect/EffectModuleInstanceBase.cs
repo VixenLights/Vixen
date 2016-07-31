@@ -7,10 +7,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using NLog;
-using Vixen.Attributes;
+using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
-using Vixen.Sys.LayerMixing;
 
 namespace Vixen.Module.Effect
 {
@@ -23,7 +22,9 @@ namespace Vixen.Module.Effect
 		ICustomTypeDescriptor
 	{
 		private ElementNode[] _targetNodes;
+		private List<IMediaModuleInstance> _media;
 		private TimeSpan _timeSpan;
+		private TimeSpan _startTime;
 		private DefaultValueArrayMember _parameterValues;
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly Dictionary<string, bool> _browsableState = new Dictionary<string, bool>();
@@ -33,6 +34,7 @@ namespace Vixen.Module.Effect
 			_targetNodes = new ElementNode[0];
 				//set member directly on creation to prevent target node changed events from occuring.
 			TimeSpan = TimeSpan.Zero;
+			StartTime = TimeSpan.Zero;
 			IsDirty = true;
 			_parameterValues = new DefaultValueArrayMember(this);
 		}
@@ -74,6 +76,20 @@ namespace Vixen.Module.Effect
 		}
 
 		[Browsable(false)]
+		public TimeSpan StartTime
+		{
+			get { return _startTime; }
+			set
+			{
+				if (value != _startTime)
+				{
+					_startTime = value;
+					IsDirty = true;
+				}
+			}
+		}
+
+		[Browsable(false)]
 		public object[] ParameterValues
 		{
 			get { return _parameterValues.Values; }
@@ -83,8 +99,6 @@ namespace Vixen.Module.Effect
 				IsDirty = true;
 			}
 		}
-
-		//public virtual LayerMixingDefinition LayerMixingDefinition { get; set; }
 
 		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{
@@ -200,6 +214,26 @@ namespace Vixen.Module.Effect
 
 					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
 					//base.GenerateVisualRepresentation(g, clipRectangle);
+				}
+			}
+		}
+
+		[Browsable(false)]
+		public bool SupportsMedia
+		{
+			get { return ((IEffectModuleDescriptor) Descriptor).SupportsMedia; }
+		}
+
+		[Browsable(false)]
+		public List<IMediaModuleInstance> Media
+		{
+			get { return _media; }
+			set
+			{
+				if (value != _media)
+				{
+					_media = value;
+					IsDirty = true;
 				}
 			}
 		}
