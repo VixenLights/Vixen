@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -1625,6 +1626,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
+
+				UpdateMediaOnSupportedEffects();
 
 				toolStripMenuItem_removeAudio.Enabled = true;
 				beatBarDetectionToolStripMenuItem.Enabled = true;
@@ -3664,14 +3667,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void CheckAndRenderDirtyElements()
 		{
-			TimelineControl.Rows.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(target =>
+			var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+			elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
 			{
-				foreach (Element elem in target)
+				if (element.EffectNode.Effect.IsDirty)
 				{
-					if (elem.EffectNode.Effect.IsDirty)
-					{
-						TimelineControl.grid.RenderElement(elem);
-					}
+					TimelineControl.grid.RenderElement(element);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Checks all elements and if they support audio is updates the media property and puts them in the render queue
+		/// </summary>
+		private void UpdateMediaOnSupportedEffects()
+		{
+			var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+			elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
+			{
+				if (element.EffectNode.Effect.SupportsMedia)
+				{
+				element.EffectNode.Effect.Media = Sequence.SequenceData.Media;
+					TimelineControl.grid.RenderElement(element);
 				}
 			});
 		}

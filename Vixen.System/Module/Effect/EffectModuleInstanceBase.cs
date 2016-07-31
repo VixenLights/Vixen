@@ -230,11 +230,8 @@ namespace Vixen.Module.Effect
 			get { return _media; }
 			set
 			{
-				if (value != _media)
-				{
-					_media = value;
-					IsDirty = true;
-				}
+				_media = value;
+				IsDirty = true;
 			}
 		}
 
