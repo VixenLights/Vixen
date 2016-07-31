@@ -332,6 +332,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the stop point for the color in the gradient..
+        /// </summary>
+        internal static string GradientPosition {
+            get {
+                return ResourceManager.GetString("GradientPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the grouping together of elements that will be in the same state..
         /// </summary>
         internal static string GroupLevel {
@@ -424,9 +433,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Colors are not used when Rainbow is selected..
         /// </summary>
-        internal static string Meteor_Type {
+        internal static string MeteorType {
             get {
-                return ResourceManager.GetString("Meteor Type", resourceCulture);
+                return ResourceManager.GetString("MeteorType", resourceCulture);
             }
         }
         

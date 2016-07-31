@@ -381,4 +381,28 @@
   <data name="TargetPositioning" xml:space="preserve">
     <value>Positioning</value>
   </data>
+  <data name="AttackTime" xml:space="preserve">
+    <value>Attack Time</value>
+  </data>
+  <data name="DecayTime" xml:space="preserve">
+    <value>Decay Time</value>
+  </data>
+  <data name="Gain" xml:space="preserve">
+    <value>Gain</value>
+  </data>
+  <data name="HighPassFilter" xml:space="preserve">
+    <value>High Pass Filter</value>
+  </data>
+  <data name="HighPassFrequency" xml:space="preserve">
+    <value>High Pass Frequency</value>
+  </data>
+  <data name="LowPassFilter" xml:space="preserve">
+    <value>Low Pass Filter</value>
+  </data>
+  <data name="LowPassFrequency" xml:space="preserve">
+    <value>Low Pass Frequency</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
 </root>

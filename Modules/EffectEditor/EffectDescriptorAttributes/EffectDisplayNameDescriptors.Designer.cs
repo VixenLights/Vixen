@@ -62,6 +62,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attack Time.
+        /// </summary>
+        internal static string AttackTime {
+            get {
+                return ResourceManager.GetString("AttackTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Avg Pulse Time.
         /// </summary>
         internal static string AveragePulseTime {
@@ -260,6 +269,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Decay Time.
+        /// </summary>
+        internal static string DecayTime {
+            get {
+                return ResourceManager.GetString("DecayTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Brightness.
         /// </summary>
         internal static string DefaultBrightness {
@@ -377,6 +395,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gain.
+        /// </summary>
+        internal static string Gain {
+            get {
+                return ResourceManager.GetString("Gain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Animation Speed.
         /// </summary>
         internal static string GifSpeed {
@@ -449,6 +476,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High Pass Filter.
+        /// </summary>
+        internal static string HighPassFilter {
+            get {
+                return ResourceManager.GetString("HighPassFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High Pass Frequency.
+        /// </summary>
+        internal static string HighPassFrequency {
+            get {
+                return ResourceManager.GetString("HighPassFrequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hue Shift.
         /// </summary>
         internal static string HueShift {
@@ -499,6 +544,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Location {
             get {
                 return ResourceManager.GetString("Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low Pass Filter.
+        /// </summary>
+        internal static string LowPassFilter {
+            get {
+                return ResourceManager.GetString("LowPassFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low Pass Frequency.
+        /// </summary>
+        internal static string LowPassFrequency {
+            get {
+                return ResourceManager.GetString("LowPassFrequency", resourceCulture);
             }
         }
         
@@ -850,6 +913,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string YOffset {
             get {
                 return ResourceManager.GetString("YOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        internal static string Zoom {
+            get {
+                return ResourceManager.GetString("Zoom", resourceCulture);
             }
         }
     }

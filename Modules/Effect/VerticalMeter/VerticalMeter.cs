@@ -20,7 +20,7 @@ namespace VixenModules.Effect.VerticalMeter
 		}
 
 		[Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color",3)]
         [PropertyOrder(6)]
         [ProviderDisplayName(@"Flip")]
         public bool Inverted

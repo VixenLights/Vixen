@@ -39,10 +39,10 @@ namespace VixenModules.Effect.AudioHelp
         #region Attribute Accessors
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [ProviderDisplayName(@"Low Pass Filter")]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [ProviderDisplayName(@"LowPassFilter")]
         [ProviderDescription(@"Ignores frequencies below a given frequency")]
-        [PropertyOrder(1)]
+        [PropertyOrder(3)]
         public bool LowPass
         {
             get { return _data.LowPass; }
@@ -50,15 +50,16 @@ namespace VixenModules.Effect.AudioHelp
                 _data.LowPass = value;
                 _audioHelper.LowPass = value;
                 IsDirty = true;
+	            UpdateLowHighPassAttributes(true);
 				OnPropertyChanged();
 			}
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [ProviderDisplayName(@"Low Pass Frequency")]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [ProviderDisplayName(@"LowPassFrequency")]
         [ProviderDescription(@"Ignore frequencies below this value")]
-        [PropertyOrder(2)]
+        [PropertyOrder(4)]
         public int LowPassFreq
         {
             get { return _data.LowPassFreq; }
@@ -71,10 +72,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [ProviderDisplayName(@"High Pass Filter")]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [ProviderDisplayName(@"HighPassFilter")]
         [ProviderDescription(@"Ignores frequencies above a given frequency")]
-        [PropertyOrder(3)]
+        [PropertyOrder(5)]
         public bool HighPass
         {
             get { return _data.HighPass; }
@@ -83,15 +84,16 @@ namespace VixenModules.Effect.AudioHelp
                 _data.HighPass = value;
                 _audioHelper.HighPass = value;
                 IsDirty = true;
+				UpdateLowHighPassAttributes(true);
 				OnPropertyChanged();
 			}
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [ProviderDisplayName(@"High Pass Frequency")]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [ProviderDisplayName(@"HighPassFrequency")]
         [ProviderDescription(@"Ignore frequencies above this value")]
-        [PropertyOrder(4)]
+        [PropertyOrder(6)]
         public int HighPassFreq
         {
             get { return _data.HighPassFreq; }
@@ -105,8 +107,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [PropertyOrder(5)]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [PropertyOrder(0)]
         [ProviderDisplayName(@"Gain")]
         [ProviderDescription(@"Boosts the volume")]
         [PropertyEditor("SliderEditor")]
@@ -124,8 +126,8 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
-        [PropertyOrder(6)]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
+        [PropertyOrder(1)]
         [ProviderDisplayName(@"Zoom")]
         [ProviderDescription(@"The range of the volume levels displayed by the meter")]
         [PropertyEditor("SliderEditor")]
@@ -142,9 +144,9 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Audio Sensitivity Range")]
+        [ProviderCategory(@"AudioSensitivityRange", 1)]
         [ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the meter")]
-        [PropertyOrder(7)]
+        [PropertyOrder(2)]
         public bool Normalize
         {
             get { return _data.Normalize; }
@@ -158,9 +160,9 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Response Speed")]
+        [ProviderCategory(@"ResponseSpeed", 2)]
         [PropertyOrder(1)]
-        [ProviderDisplayName(@"Decay Time")]
+        [ProviderDisplayName(@"DecayTime")]
         [ProviderDescription(@"How quickly the meter falls from a volume peak")]
         [PropertyEditor("SliderEditor")]
         [NumberRange(0, 5000, 300)]
@@ -177,9 +179,9 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Response Speed")]
+        [ProviderCategory(@"ResponseSpeed", 2)]
         [PropertyOrder(2)]
-        [ProviderDisplayName(@"Attack Time")]
+        [ProviderDisplayName(@"AttackTime")]
         [ProviderDescription(@"How quickly the meter initially reacts to a volume peak")]
         [PropertyEditor("SliderEditor")]
         [NumberRange(0, 300, 10)]
@@ -196,10 +198,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color", 3)]
         [PropertyOrder(1)]
-        [ProviderDisplayName(@"Coloring Mode")]
-        [ProviderDescription(@"Coloring Mode")]
+        [ProviderDisplayName(@"ColorHandling")]
+        [ProviderDescription(@"ColorHandling")]
         public MeterColorTypes MeterColorStyle
         {
             get { return _data.MeterColorStyle; }
@@ -214,10 +216,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color", 3)]
         [PropertyOrder(2)]
         [ProviderDisplayName(@"Green Gradient Position")]
-        [ProviderDescription(@"Green Gradient Position")]
+        [ProviderDescription(@"GradientPosition")]
         [PropertyEditor("SliderEditor")]
         [NumberRange(1, 99, 1)]
         public int GreenColorPosition
@@ -233,10 +235,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color",0)]
+        [ProviderCategory(@"Color",3)]
         [PropertyOrder(3)]
         [ProviderDisplayName(@"Red Gradient Position")]
-        [ProviderDescription(@"Red Gradient Position")]
+        [ProviderDescription(@"GradientPosition")]
         [PropertyEditor("SliderEditor")]
         [NumberRange(1, 99, 1)]
         public int RedColorPosition
@@ -252,10 +254,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Color",0)]
+        [ProviderCategory(@"Color",3)]
         [PropertyOrder(4)]
         [ProviderDisplayName(@"Custom Gradient")]
-        [ProviderDescription(@"Custom Gradient")]
+        [ProviderDescription(@"Color")]
         public ColorGradient MeterColorGradient
         {
             get { return _data.MeterColorGradient; }
@@ -269,9 +271,10 @@ namespace VixenModules.Effect.AudioHelp
         }
 
         [Value]
-        [ProviderCategory(@"Brightness",1)]
+        [ProviderCategory(@"Brightness",4)]
         [PropertyOrder(5)]
-        [ProviderDisplayName(@"Intensity Curve")]
+        [ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
         public Curve MeterIntensityCurve
         {
             get { return _data.IntensityCurve; }
@@ -283,7 +286,7 @@ namespace VixenModules.Effect.AudioHelp
 			}
         }
 		[Value]
-		[ProviderCategory(@"Depth", 4)]
+		[ProviderCategory(@"Depth", 5)]
 		[ProviderDisplayName(@"Depth")]
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
@@ -338,6 +341,7 @@ namespace VixenModules.Effect.AudioHelp
 		private void InitAllAttributes()
 		{
 			UpdateColorTypesAttributes();
+			UpdateLowHighPassAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -359,6 +363,20 @@ namespace VixenModules.Effect.AudioHelp
 				{"RedColorPosition", MeterColorStyle != MeterColorTypes.Custom},
 				{"GreenColorPosition", MeterColorStyle != MeterColorTypes.Custom}
 
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		protected void UpdateLowHighPassAttributes(bool refresh = false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"LowPassFreq", LowPass},
+				{"HighPassFreq", HighPass}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)

@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Waveform
 		private const int Spacing = 30;
 
 		[Value]
-        [ProviderCategory(@"Color")]
+        [ProviderCategory(@"Color",3)]
         [PropertyOrder(6)]
         [ProviderDisplayName(@"Reverse")]
         public bool Inverted
@@ -34,11 +34,11 @@ namespace VixenModules.Effect.Waveform
         }
 
         [Value]
-        [ProviderCategory(@"Response Speed")]
+        [ProviderCategory(@"Response Speed",2)]
         [ProviderDisplayName(@"Scroll Speed")]
         [ProviderDescription(@"How fast the effect goes. Lower is faster")]
         [PropertyEditor("SliderEditor")]
-        [NumberRange(0, 50, .5)]
+        [NumberRange(0, 50, 1)]
         [PropertyOrder(0)]
         public int ScrollSpeed
         {
