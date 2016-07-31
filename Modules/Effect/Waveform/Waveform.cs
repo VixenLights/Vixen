@@ -114,22 +114,29 @@ namespace VixenModules.Effect.Waveform
 
             int currentElement = 0;
 
+			var nodeCount = 0;
+			if (Inverted)
+			{
+				nodeCount = node.GetLeafEnumerator().Count();
+			}
+
 			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
 				// it this way, though, in case something changes in future.
 				if (elementNode == null || elementNode.Element == null)
 					continue;
+
 				bool discreteColors = ColorModule.isElementNodeDiscreteColored(elementNode);
 
 				for (int i = 1;i<(int)(TimeSpan.TotalMilliseconds/Spacing);i++)
                 {
                     int startAudioTime;
                     int endAudioTime;
-                    if (((WaveformData)_data).Inverted)
+                    if (Inverted)
                     {
-                        startAudioTime = i * Spacing - (node.GetLeafEnumerator().Count()-currentElement) * ((WaveformData)_data).ScrollSpeed + 1;
-                        endAudioTime = (i + 1) * Spacing - (node.GetLeafEnumerator().Count()-currentElement) * ((WaveformData)_data).ScrollSpeed;
+                        startAudioTime = i * Spacing - (nodeCount-currentElement) * ((WaveformData)_data).ScrollSpeed + 1;
+                        endAudioTime = (i + 1) * Spacing - (nodeCount-currentElement) * ((WaveformData)_data).ScrollSpeed;
                     }
                     else
                     {
