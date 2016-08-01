@@ -151,6 +151,18 @@ namespace Vixen.Module.Effect
 		}
 
 		[Browsable(false)]
+		public virtual string Information
+		{
+			get { return ""; }
+		}
+
+		[Browsable(false)]
+		public virtual string InformationLink
+		{
+			get { return "http://vixenlights.com"; }
+		}
+
+		[Browsable(false)]
 		public EffectGroups EffectGroup
 		{
 			get { return ((IEffectModuleDescriptor) Descriptor).EffectGroup; }
