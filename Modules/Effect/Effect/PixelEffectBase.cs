@@ -284,7 +284,7 @@ namespace VixenModules.Effect.Effect
 
 		private int _bufferHtOffset;
 
-		public int BufferHtOffset
+		protected int BufferHtOffset
 		{
 			get
 			{
@@ -293,7 +293,7 @@ namespace VixenModules.Effect.Effect
 		}
 
 		private int _bufferWiOffset;
-		public int BufferWiOffset {
+		protected int BufferWiOffset {
 			get
 			{
 				return StringOrientation == StringOrientation.Horizontal ? _bufferWiOffset : _bufferHtOffset;

@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
-using Vixen.Sys.State.Execution;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -17,10 +15,13 @@ namespace VixenModules.Effect.Glediator
 {
 	public class Glediator : PixelEffectBase
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private GlediatorData _data;
 		private double _speed = 1;
 		private FileStream _f;
 		private double _position;
+		private int _seqNumChannels;
+		private byte[] _glediatorFrameBuffer;
 
 		public Glediator()
 		{
@@ -107,7 +108,7 @@ namespace VixenModules.Effect.Glediator
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Filename")]
-		[ProviderDescription(@"Create Glediator with the same Matrix size.")]
+		[ProviderDescription(@"Recorder file from Glediator")]
 		[PropertyEditor("GledPathEditor")]
 		[PropertyOrder(1)]
 		public String FileName
@@ -155,15 +156,17 @@ namespace VixenModules.Effect.Glediator
 			}
 		}
 
-		[Value]
-		[ProviderCategory("Information", 4)]
-		[ProviderDisplayName(" ")]
-		public string Information
+		#endregion
+
+		public override string Information
 		{
-			get { return "Download Glediator from\r\nwww.solderlab.de/index\r\n.php/software/glediator\r\n\r\nCreate Glediator with the\r\nsame Matrix size."; }
+			get { return "Download Glediator using the More Info link. Configure Glediator with the same Matrix size."; }
 		}
 
-		#endregion
+		public override string InformationLink
+		{
+			get { return "http://www.solderlab.de/index.php/software/glediator"; }
+		}
 
 		private void UpdateAttributes()
 		{
@@ -204,6 +207,7 @@ namespace VixenModules.Effect.Glediator
 		{
 			if (string.IsNullOrEmpty(path))
 			{
+				Logging.Warn("Path is empty!.");
 				return path;
 			}
 			if (Path.IsPathRooted(path))
@@ -228,23 +232,43 @@ namespace VixenModules.Effect.Glediator
 		{
 			if (string.IsNullOrEmpty(FileName)) return;
 			var filePath = Path.Combine(GlediatorDescriptor.ModulePath, FileName);
+			CleanupStream(); //enusre that we don't leave a stream laying around if for some reason it exists.
 			if (File.Exists(filePath))
 			{
 				_f = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 			}
+			_seqNumChannels = (BufferWi * 3 * BufferHt);
+			_glediatorFrameBuffer = new byte[_seqNumChannels];
 		}
 
 		protected override void CleanUpRender()
 		{
-			_f.Close();
+			_glediatorFrameBuffer = null;
+			CleanupStream();
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		private void CleanupStream()
 		{
+			if (_f != null)
+			{
+				try
+				{
+					_f.Dispose();
+					_f = null;
+				}
+				catch (Exception e)
+				{
+					Logging.Error("Failed to dispose of the filestream properly.", e);
+				}
+			}
+		}
+
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
+		{
+			if (_f == null) return;
 			long fileLength = _f.Length;
-			int seqNumChannels = (BufferWi*3*BufferHt);
-			byte[] glediatorFrameBuffer = new byte[seqNumChannels];
-			int seqNumPeriods = (int) (fileLength/seqNumChannels);
+			
+			int seqNumPeriods = (int) (fileLength/ _seqNumChannels);
 
 			if (frame == 0)
 			{
@@ -255,15 +279,15 @@ namespace VixenModules.Effect.Glediator
 			}
 
 			_speed += _position;
-			int period = ((int)_speed) % seqNumPeriods;
-			int offset = (int)(seqNumChannels * period);
+			int period = (int)_speed % seqNumPeriods;
+			int offset = _seqNumChannels * period;
 			_f.Seek(offset, SeekOrigin.Begin);
-			long readcnt = _f.Read(glediatorFrameBuffer, 0, seqNumChannels);
+			long readcnt = _f.Read(_glediatorFrameBuffer, 0, _seqNumChannels);
 
 			for (int j = 0; j < readcnt; j += 3)
 			{
 				// Loop thru all channels
-				Color color = Color.FromArgb(255, glediatorFrameBuffer[j], glediatorFrameBuffer[j + 1], glediatorFrameBuffer[j + 2]);
+				Color color = Color.FromArgb(255, _glediatorFrameBuffer[j], _glediatorFrameBuffer[j + 1], _glediatorFrameBuffer[j + 2]);
 				int x = (j%(BufferWi*3))/3;
 				int y = (BufferHt - 1) - (j/(BufferWi*3));
 				var hsv = HSV.FromRGB(color);
