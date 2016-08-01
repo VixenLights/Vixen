@@ -10,6 +10,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Plasma
@@ -22,6 +23,7 @@ namespace VixenModules.Effect.Plasma
 		public Plasma()
 		{
 			_data = new PlasmaData();
+			EnableTargetPositioning(true, true);
 		}
 
 		public override bool IsDirty
@@ -225,58 +227,93 @@ namespace VixenModules.Effect.Plasma
 			{
 				for (int y = 0; y < BufferHt; y++)
 				{
-					double rx = ((float) x/(BufferWi - 1));
-					double ry = ((float) y/(BufferHt - 1));
-
-					// 1st equation
-					var v = Math.Sin(rx*10 + time);
-
-					//  second equation
-					v += Math.Sin(10*(rx*Math.Sin(time/2) + ry*Math.Cos(time/3)) + time);
-
-					//  third equation
-					var cx = rx + .5*Math.Sin(time/5);
-					var cy = ry + .5*Math.Cos(time/3);
-					v += Math.Sin(Math.Sqrt((PlasmaStyle*50)*((cx*cx) + (cy*cy)) + time));
-
-					v += Math.Sin(rx + time);
-					v += Math.Sin((ry + time)/2.0);
-					v += Math.Sin((rx + ry + time)/2.0);
-					
-					v += Math.Sin(Math.Sqrt(rx*rx + ry*ry) + time);
-					v = v/2.0;
-
-					Color color = Color.Transparent;
-					switch (ColorType)
-					{
-						case PlasmaColorType.Normal:
-
-							var h = Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1*0.5;
-							color = GetMultiColorBlend(h/2, frame);
-							break;
-						case PlasmaColorType.Preset1:
-							color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
-								0);
-							break;
-						case PlasmaColorType.Preset2:
-							color = Color.FromArgb(1, (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
-								(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
-							break;
-
-						case PlasmaColorType.Preset3:
-							color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
-								(int) ((Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi + 4*Pi/3) + 1)*128));
-							break;
-						case PlasmaColorType.Preset4:
-							color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
-								(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
-							break;
-					}
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V*level;
-					frameBuffer.SetPixel(x, y, hsv);
+					CalculatePixel(x, y, time, frame, level, frameBuffer);
 				}
 			}
+		}
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				double position = GetEffectTimeIntervalPosition(frame) * Speed * 100;
+				double plasmaSpeed = (101 - Speed) * 3;
+				var time = (position + 1.0) / plasmaSpeed;
+				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+				{
+					foreach (var elementLocation in elementLocations)
+					{
+						CalculatePixel(elementLocation.X, elementLocation.Y, time, frame, level, frameBuffer);
+					}
+				}
+			}
+		}
+
+		private void CalculatePixel(int x, int y, double time, int frame, double level, IPixelFrameBuffer frameBuffer)
+		{
+			int yCoord = y;
+			int xCoord = x;
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Flip me over so and offset my coordinates I can act like the string version
+				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = y - BufferHtOffset;
+				x = x - BufferWiOffset;
+			}
+			double rx = ((float) x/(BufferWi - 1));
+			double ry = ((float) y/(BufferHt - 1));
+			
+			// 1st equation
+			var v = Math.Sin(rx*10 + time);
+
+			//  second equation
+			v += Math.Sin(10*(rx*Math.Sin(time/2) + ry*Math.Cos(time/3)) + time);
+
+			//  third equation
+			var cx = rx + .5*Math.Sin(time/5);
+			var cy = ry + .5*Math.Cos(time/3);
+			v += Math.Sin(Math.Sqrt((PlasmaStyle*50)*((cx*cx) + (cy*cy)) + time));
+
+			v += Math.Sin(rx + time);
+			v += Math.Sin((ry + time)/2.0);
+			v += Math.Sin((rx + ry + time)/2.0);
+
+			v += Math.Sin(Math.Sqrt(rx*rx + ry*ry) + time);
+			v = v/2.0;
+
+			Color color = Color.Transparent;
+			switch (ColorType)
+			{
+				case PlasmaColorType.Normal:
+
+					var h = Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1*0.5;
+					color = GetMultiColorBlend(h/2, frame);
+					break;
+				case PlasmaColorType.Preset1:
+					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
+						0);
+					break;
+				case PlasmaColorType.Preset2:
+					color = Color.FromArgb(1, (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
+						(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
+					break;
+
+				case PlasmaColorType.Preset3:
+					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
+						(int) ((Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi + 4*Pi/3) + 1)*128));
+					break;
+				case PlasmaColorType.Preset4:
+					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
+						(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
+					break;
+			}
+			HSV hsv = HSV.FromRGB(color);
+			hsv.V = hsv.V*level;
+			frameBuffer.SetPixel(xCoord, yCoord, hsv);
+
 		}
 
 		public Color GetMultiColorBlend(double n, int frame)
