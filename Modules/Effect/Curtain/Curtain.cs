@@ -263,7 +263,7 @@ namespace VixenModules.Effect.Curtain
 			}
 		}
 
-		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, IPixelFrameBuffer frameBuffer, int frame)
+		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, IPixelFrameBuffer frameBuffer, double level, int width)
 		{
 			int i, x, y;
 			for (i = 0; i < xlimit; i++)
@@ -292,7 +292,7 @@ namespace VixenModules.Effect.Curtain
 		}
 
 		private void DrawCurtainVertical(bool topEdge, int ylimit, List<int> swagArray, IPixelFrameBuffer frameBuffer,
-			int frame)
+			double level, int width)
 		{
 			int i, x, y;
 			for (i = 0; i < ylimit; i++)

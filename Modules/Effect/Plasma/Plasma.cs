@@ -214,7 +214,7 @@ namespace VixenModules.Effect.Plasma
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double position = GetEffectTimeIntervalPosition(frame)*Speed*100;
 			double plasmaSpeed = (101 - Speed)*3;
