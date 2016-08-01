@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Vixen.Module.Property;
+using Vixen.Sys;
 
 namespace VixenModules.Property.Location {
 	public class LocationModule : PropertyModuleInstanceBase {
@@ -19,6 +21,11 @@ namespace VixenModules.Property.Location {
 			_data.X = _data.Y = _data.Z = 1;
 		}
 
+		public Point Position()
+		{
+			return new Point(_data.X, _data.Y);
+		}
+
 		public override Vixen.Module.IModuleDataModel ModuleData {
 			get {
 				return _data;
@@ -26,6 +33,22 @@ namespace VixenModules.Property.Location {
 			set {
 				_data = (LocationData)value;
 			}
+		}
+
+		public static Point GetPositionForElement(ElementNode element)
+		{
+			Point p;
+			LocationModule module = element.Properties.Get(LocationDescriptor.ModuleId) as LocationModule;
+			if (module != null)
+			{
+				p = module.Position();
+			}
+			else
+			{
+				p = new Point();
+			}
+			
+			return p;
 		}
 
 		public override bool Setup() {

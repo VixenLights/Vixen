@@ -168,7 +168,7 @@ namespace VixenModules.Effect.Fire
 			_fireBuffer = null;
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double position = GetEffectTimeIntervalPosition(frame);
 			int x, y;

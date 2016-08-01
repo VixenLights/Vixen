@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -7,6 +8,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Butterfly
@@ -19,6 +21,8 @@ namespace VixenModules.Effect.Butterfly
 		public Butterfly()
 		{
 			_data = new ButterflyData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		#region Setup
@@ -206,8 +210,14 @@ namespace VixenModules.Effect.Butterfly
 			set
 			{
 				_data = value as ButterflyData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
@@ -225,12 +235,209 @@ namespace VixenModules.Effect.Butterfly
 			//Not required
 		}
 
-		protected override void RenderEffect(int effectFrame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int effectFrame, IPixelFrameBuffer frameBuffer)
+		{
+			
+			int repeat = ConfigureRepeat();
+			int maxframe=BufferHt;
+			double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+			int curState = (int)(TimeSpan.TotalMilliseconds*position*repeat);
+			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
+			double offset=curState/TimeSpan.TotalMilliseconds;
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
+
+
+			if (Direction==Direction.Forward) offset = -offset;
+
+			int bufferDim = 0;
+			if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
+			{
+				bufferDim = BufferHt + BufferWi;
+			}
+			else if(ButterflyType == ButterflyType.Type5)
+			{
+				bufferDim = BufferHt*BufferWi;
+			}
+			for (int x=0; x<BufferWi; x++)
+			{
+				for (int y=0; y<BufferHt; y++)
+				{
+					CalculatePixel(x, y, bufferDim, offset, frame, maxframe, level, frameBuffer);
+				}
+			}
+		}
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			int repeat = ConfigureRepeat();
+			int maxframe = BufferHt;
+
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+
+			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
+			{
+				double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+				int curState = (int)(TimeSpan.TotalMilliseconds * position * repeat);
+				int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
+				double offset = curState / TimeSpan.TotalMilliseconds;
+				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
+
+
+				if (Direction == Direction.Forward) offset = -offset;
+
+				int bufferDim = 0;
+				if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
+				{
+					bufferDim = BufferHt + BufferWi;
+				}
+				else if (ButterflyType == ButterflyType.Type5)
+				{
+					bufferDim = BufferHt * BufferWi;
+				}
+
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+				{
+					foreach (var elementLocation in elementLocations)
+					{
+						CalculatePixel(elementLocation.X, elementLocation.Y, bufferDim, offset, frame, maxframe, level, frameBuffer);
+					}
+				}
+			}
+			
+		}
+
+
+		private void CalculatePixel(int x, int y, float bufferDim, double offset, int frame, int maxframe, 
+			double level, IPixelFrameBuffer frameBuffer)
+		{
+			double n;
+			double x1;
+			double y1;
+			double f;
+			int d;
+			int x0;
+			int y0;
+			double h = 0.0;
+			int yCoord = y;
+			int xCoord = x;
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Flip me over so and offset my coordinates I can act like the string version
+				y = Math.Abs((BufferHtOffset-y) + (BufferHt-1+BufferHtOffset));
+				y = y - BufferHtOffset;
+				x = x - BufferWiOffset;
+			}
+			switch (ButterflyType)
+			{
+				case ButterflyType.Type1:
+					//  http://mathworld.wolfram.com/ButterflyFunction.html
+					n = Math.Abs((x * x - y * y) * Math.Sin(offset + ((x + y) * pi2 / (bufferDim))));
+					d = x * x + y * y;
+
+					//  This section is to fix the colors on pixels at {0,1} and {1,0}
+					if ((x == 0 && y == 1))
+					{
+						y0 = y + 1;
+						n = Math.Abs((x * x - y0 * y0) * Math.Sin(offset + ((x + y0) * pi2 / (bufferDim))));
+						d = x * x + y0 * y0;
+					}
+					if ((x == 1 && y == 0))
+					{
+						x0 = x + 1;
+						n = Math.Abs((x0 * x0 - y * y) * Math.Sin(offset + ((x0 + y) * pi2 / (bufferDim))));
+						d = x0 * x0 + y * y;
+					}
+					// end of fix
+
+					h = d > 0.001 ? n / d : 0.0;
+					break;
+
+				case ButterflyType.Type2:
+					f = (frame < maxframe / 2) ? frame + 1 : maxframe - frame;
+					x1 = (x - BufferWi / 2.0) / f;
+					y1 = (y - BufferHt / 2.0) / f;
+					h = Math.Sqrt(x1 * x1 + y1 * y1);
+					break;
+
+				case ButterflyType.Type3:
+					f = (frame < maxframe / 2) ? frame + 1 : maxframe - frame;
+					f = f * 0.1 + BufferHt / 60.0;
+					x1 = (x - BufferWi / 2.0) / f;
+					y1 = (y - BufferHt / 2.0) / f;
+					h = Math.Sin(x1) * Math.Cos(y1);
+					break;
+
+				case ButterflyType.Type4:
+					//  http://mathworld.wolfram.com/ButterflyFunction.html
+					n = ((x * x - y * y) * Math.Sin(offset + ((x + y) * pi2 / (bufferDim))));
+					d = x * x + y * y;
+
+					//  This section is to fix the colors on pixels at {0,1} and {1,0}
+					x0 = x + 1;
+					y0 = y + 1;
+					if ((x == 0 && y == 1))
+					{
+						n = ((x * x - y0 * y0) * Math.Sin(offset + ((x + y0) * pi2 / (bufferDim))));
+						d = x * x + y0 * y0;
+					}
+					if ((x == 1 && y == 0))
+					{
+						n = ((x0 * x0 - y * y) * Math.Sin(offset + ((x0 + y) * pi2 / (bufferDim))));
+						d = x0 * x0 + y * y;
+					}
+					// end of fix
+
+					h = d > 0.001 ? n / d : 0.0;
+
+					var fractpart = h - (Math.Floor(h));
+					h = fractpart;
+					if (h < 0) h = 1.0 + h;
+					break;
+
+				case ButterflyType.Type5:
+					//  http://mathworld.wolfram.com/ButterflyFunction.html
+					n = Math.Abs((x * x - y * y) * Math.Sin(offset + ((x + y) * pi2 / (bufferDim))));
+					d = x * x + y * y;
+
+					//  This section is to fix the colors on pixels at {0,1} and {1,0}
+					x0 = x + 1;
+					y0 = y + 1;
+					if ((x == 0 && y == 1))
+					{
+						n = Math.Abs((x * x - y0 * y0) * Math.Sin(offset + ((x + y0) * pi2 / (bufferDim))));
+						d = x * x + y0 * y0;
+					}
+					if ((x == 1 && y == 0))
+					{
+						n = Math.Abs((x0 * x0 - y * y) * Math.Sin(offset + ((x0 + y) * pi2 / (bufferDim))));
+						d = x0 * x0 + y * y;
+					}
+					// end of fix
+
+					h = d > 0.001 ? n / d : 0.0;
+					break;
+
+			}
+			HSV hsv = new HSV(h, 1.0, 1.0);
+
+			if (BackgroundChunks <= 1 || (int)(h * BackgroundChunks) % BackgroundSkips != 0)
+			{
+				if (ColorScheme == ColorScheme.Gradient)
+				{
+					Color color = Color.GetColorAt(h);
+					hsv = HSV.FromRGB(color);
+				}
+				hsv.V = hsv.V * level;
+				frameBuffer.SetPixel(xCoord, yCoord, hsv);
+			}
+		}
+
+		private int ConfigureRepeat()
 		{
 			int repeat = Repeat;
 			switch (ButterflyType)
 			{
-				case ButterflyType.Type1 :
+				case ButterflyType.Type1:
 				case ButterflyType.Type5:
 					repeat = Repeat*3;
 					break;
@@ -238,135 +445,7 @@ namespace VixenModules.Effect.Butterfly
 					repeat = Repeat*6;
 					break;
 			}
-
-			double h=0.0;
-			int maxframe=BufferHt;
-			double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
-			int curState = (int)(TimeSpan.TotalMilliseconds*position*repeat);
-			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
-			double offset=curState/TimeSpan.TotalMilliseconds;
-    
-    
-			if(Direction==Direction.Forward) offset = -offset;
-			for (int x=0; x<BufferWi; x++)
-			{
-				int y;
-				for (y=0; y<BufferHt; y++)
-				{
-					double n;
-					double x1;
-					double y1;
-					double f;
-					int d;
-					int x0;
-					int y0;
-					switch (ButterflyType)
-					{
-					case ButterflyType.Type1:
-						//  http://mathworld.wolfram.com/ButterflyFunction.html
-						n = Math.Abs((x*x - y*y) * Math.Sin(offset + ((x+y)*pi2 / (BufferHt+BufferWi))));
-						d = x*x + y*y;
-
-						//  This section is to fix the colors on pixels at {0,1} and {1,0}
-						x0=x+1;
-						y0=y+1;
-						if((x==0 && y==1))
-						{
-							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt+BufferWi))));
-							d = x*x + y0*y0;
-						}
-						if((x==1 && y==0))
-						{
-							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt+BufferWi))));
-							d = x0*x0 + y*y;
-						}
-						// end of fix
-
-						h=d>0.001 ? n/d : 0.0;
-						break;
-
-					case ButterflyType.Type2:
-						f=(frame < maxframe/2) ? frame+1 : maxframe - frame;
-						x1=(x -BufferWi/2.0)/f;
-						y1=(y-BufferHt/2.0)/f;
-						h=Math.Sqrt(x1*x1+y1*y1);
-						break;
-
-					case ButterflyType.Type3:
-						f=(frame < maxframe/2) ? frame+1 : maxframe - frame;
-						f=f*0.1+BufferHt/60.0;
-						x1 = (x-BufferWi/2.0)/f;
-						y1 = (y-BufferHt/2.0)/f;
-						h=Math.Sin(x1) * Math.Cos(y1);
-						break;
-
-					case ButterflyType.Type4:
-						//  http://mathworld.wolfram.com/ButterflyFunction.html
-						n = ((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (BufferHt+BufferWi))));
-						d = x*x + y*y;
-
-						//  This section is to fix the colors on pixels at {0,1} and {1,0}
-						x0=x+1;
-						y0=y+1;
-						if((x==0 && y==1))
-						{
-							n = ((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt+BufferWi))));
-							d = x*x + y0*y0;
-						}
-						if((x==1 && y==0))
-						{
-							n = ((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt+BufferWi))));
-							d = x0*x0 + y*y;
-						}
-						// end of fix
-
-						h=d>0.001 ? n/d : 0.0;
-						
-						var  fractpart = h - (Math.Floor(h));
-						h=fractpart;
-						if(h<0) h=1.0+h;
-						break;
-
-					case ButterflyType.Type5:
-						//  http://mathworld.wolfram.com/ButterflyFunction.html
-							n = Math.Abs((x*x - y*y) * Math.Sin (offset + ((x+y)*pi2 / (BufferHt*BufferWi))));
-						d = x*x + y*y;
-
-						//  This section is to fix the colors on pixels at {0,1} and {1,0}
-						x0=x+1;
-						y0=y+1;
-						if((x==0 && y==1))
-						{
-							n = Math.Abs((x*x - y0*y0) * Math.Sin (offset + ((x+y0)*pi2 / (BufferHt*BufferWi))));
-							d = x*x + y0*y0;
-						}
-						if((x==1 && y==0))
-						{
-							n = Math.Abs((x0*x0 - y*y) * Math.Sin (offset + ((x0+y)*pi2 / (BufferHt*BufferWi))));
-							d = x0*x0 + y*y;
-						}
-						// end of fix
-
-						h=d>0.001 ? n/d : 0.0;
-						break;
-
-					}
-					HSV hsv = new HSV(h, 1.0, 1.0);
-					double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
-					if (BackgroundChunks <= 1 || (int)(h*BackgroundChunks) % BackgroundSkips != 0)
-					{
-						if (ColorScheme == ColorScheme.Gradient)
-						{
-							Color color = Color.GetColorAt(h);
-							hsv = HSV.FromRGB(color);
-						}
-						hsv.V = hsv.V * level;
-						frameBuffer.SetPixel(x, y, hsv);
-					}
-				}
-			}
+			return repeat;
 		}
-
-		
 	}
 }

@@ -321,7 +321,7 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (_image == null) return;
 			const int speedfactor = 4;

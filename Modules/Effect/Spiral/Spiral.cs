@@ -19,6 +19,7 @@ namespace VixenModules.Effect.Spiral
 		public Spiral()
 		{
 			_data = new SpiralData();
+			InitAllAttributes();
 		}
 
 		public override bool IsDirty
@@ -254,9 +255,16 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data = value as SpiralData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
 		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+		}
+
 
 		protected override EffectTypeModuleData EffectModuleData
 		{
@@ -273,7 +281,7 @@ namespace VixenModules.Effect.Spiral
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;

@@ -20,8 +20,8 @@ namespace VixenModules.Effect.ColorWash
 			Gradient.Colors.Add(new ColorPoint(Color.Blue, 1.0));
 			Type = ColorWashType.Center;
 			Iterations = 1;
-			VerticalFade = true;
-			HorizontalFade = true;
+			VerticalFade = false;
+			HorizontalFade = false;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
 		}

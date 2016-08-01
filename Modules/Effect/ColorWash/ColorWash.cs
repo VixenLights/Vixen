@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -6,6 +7,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.ColorWash
@@ -19,6 +21,7 @@ namespace VixenModules.Effect.ColorWash
 		public ColorWash()
 		{
 			_data = new ColorWashData();
+			EnableTargetPositioning(true, true);
 		}
 		
 		#region Setup
@@ -189,7 +192,7 @@ namespace VixenModules.Effect.ColorWash
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (Shimmer && frame%2 != 0)
 			{
@@ -205,39 +208,7 @@ namespace VixenModules.Effect.ColorWash
 				for (int y = 0; y < BufferHt; y++)
 				{
 					var v = hsv.V;
-					switch (Type)
-					{
-							case ColorWashType.Center:
-								if (HorizontalFade && _halfWi > 0)
-								{
-									v *= (float)(1.0 - Math.Abs(_halfWi - x) / _halfWi);
-								}
-								if (VerticalFade && _halfHt > 0)
-								{
-									v *= (float)(1.0 - Math.Abs(_halfHt - y) / _halfHt);
-								}
-								break;
-							case ColorWashType.Outer:
-								if (HorizontalFade && _halfWi > 0)
-								{
-									v *= (float)(Math.Abs(_halfWi - x) / _halfWi);
-								}
-								if (VerticalFade && _halfHt > 0)
-								{
-									v *= (float)(Math.Abs(_halfHt - y) / _halfHt);
-								}
-								break;
-							case ColorWashType.Invert:
-								if (HorizontalFade && _halfWi > 0)
-								{
-									v /= (float)(1 - Math.Abs(_halfWi - x) / _halfWi);
-								}
-								if (VerticalFade && _halfHt > 0)
-								{
-									v /= (float)(1 - Math.Abs(_halfHt - y) / _halfHt);
-								}
-								break;
-					}
+					v = CalculateAdjustedV(v, x, y);
 					v *= level;
 					HSV hsv2 = hsv;
 					hsv2.V = v; 
@@ -245,5 +216,77 @@ namespace VixenModules.Effect.ColorWash
 				}
 			}
 		}
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				var iterationFrame = frame * Iterations % (numFrames);
+				double position = GetEffectTimeIntervalPosition(iterationFrame);
+
+				HSV hsv = HSV.FromRGB(Color.GetColorAt(position));
+				if (Shimmer && frame % 2 != 0)
+				{
+					hsv.V = 0;
+				}
+				
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+				{
+					foreach (var elementLocation in elementLocations)
+					{
+						var v = hsv.V;
+						//Here we offset our x, y values to get us to zero based coordinates for our math to work out
+						//Our effect is symetrical so we don't need to waste time flipping the coordinates around
+						v = CalculateAdjustedV(v, elementLocation.X-BufferWiOffset, elementLocation.Y-BufferHtOffset);
+						v *= level;
+						HSV hsv2 = hsv;
+						hsv2.V = v;
+						frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv2);
+					}
+				}
+			}
+		}
+
+		private double CalculateAdjustedV(double v, int x, int y)
+		{
+			switch (Type)
+			{
+				case ColorWashType.Center:
+					if (HorizontalFade && _halfWi > 0)
+					{
+						v *= (float) (1.0 - Math.Abs(_halfWi - x)/_halfWi);
+					}
+					if (VerticalFade && _halfHt > 0)
+					{
+						v *= (float) (1.0 - Math.Abs(_halfHt - y)/_halfHt);
+					}
+					break;
+				case ColorWashType.Outer:
+					if (HorizontalFade && _halfWi > 0)
+					{
+						v *= (float) (Math.Abs(_halfWi - x)/_halfWi);
+					}
+					if (VerticalFade && _halfHt > 0)
+					{
+						v *= (float) (Math.Abs(_halfHt - y)/_halfHt);
+					}
+					break;
+				case ColorWashType.Invert:
+					if (HorizontalFade && _halfWi > 0)
+					{
+						v /= (float) (1 - Math.Abs(_halfWi - x)/_halfWi);
+					}
+					if (VerticalFade && _halfHt > 0)
+					{
+						v /= (float) (1 - Math.Abs(_halfHt - y)/_halfHt);
+					}
+					break;
+			}
+			return v;
+		}
+
+		
 	}
 }

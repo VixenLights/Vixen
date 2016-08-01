@@ -19,6 +19,11 @@ namespace VixenModules.Property.Location {
 			get { return _typeId; }
 		}
 
+		public static Guid ModuleId
+		{
+			get { return _typeId; }
+		}
+
 		public override Type ModuleClass
 		{
 			get { return typeof (LocationModule); }

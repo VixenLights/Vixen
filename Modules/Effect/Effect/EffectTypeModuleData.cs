@@ -11,9 +11,18 @@ namespace VixenModules.Effect.Effect
 	[DataContract]
 	public abstract class EffectTypeModuleData: ModuleDataModelBase
 	{
+		protected EffectTypeModuleData()
+		{
+			TargetPositioning = TargetPositioningType.Strings;
+		}
+
+		[DataMember]
+		public TargetPositioningType TargetPositioning { get; set; }
+
 		public override IModuleDataModel Clone()
 		{
 			var instance = CreateInstanceForClone();
+			instance.TargetPositioning = TargetPositioning;
 			return instance;
 		}
 

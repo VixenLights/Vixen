@@ -184,7 +184,7 @@ namespace VixenModules.Effect.Curtain
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			var swagArray = new List<int>();
 			int curtainDir, xlimit, middle, ylimit;
@@ -263,7 +263,7 @@ namespace VixenModules.Effect.Curtain
 			}
 		}
 
-		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, PixelFrameBuffer frameBuffer, double level, int width)
+		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, IPixelFrameBuffer frameBuffer, double level, int width)
 		{
 			int i, x, y;
 			for (i = 0; i < xlimit; i++)
@@ -291,7 +291,8 @@ namespace VixenModules.Effect.Curtain
 			}
 		}
 
-		private void DrawCurtainVertical(bool topEdge, int ylimit, List<int> swagArray, PixelFrameBuffer frameBuffer, double level, int width)
+		private void DrawCurtainVertical(bool topEdge, int ylimit, List<int> swagArray, IPixelFrameBuffer frameBuffer,
+			double level, int width)
 		{
 			int i, x, y;
 			for (i = 0; i < ylimit; i++)

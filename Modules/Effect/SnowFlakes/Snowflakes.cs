@@ -411,7 +411,7 @@ namespace VixenModules.Effect.Snowflakes
 			_snowFlakes.Clear();
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			int colorcntOutSide = OutSideColor.Count;
 			int colorcntInside = InnerColor.Count;

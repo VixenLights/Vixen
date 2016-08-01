@@ -406,7 +406,7 @@ namespace VixenModules.Effect.Meteors
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (frame == 0)
 				_meteors.Clear();

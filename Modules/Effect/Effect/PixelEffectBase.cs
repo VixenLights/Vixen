@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using NLog;
 using Vixen.Attributes;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Sys;
+using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Property.Location;
 
 namespace VixenModules.Effect.Effect
 {
@@ -21,8 +26,9 @@ namespace VixenModules.Effect.Effect
 	{
 
 		protected const short FrameTime = 50;
-
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		protected readonly List<int> StringPixelCounts = new List<int>();
+		protected List<ElementLocation> ElementLocations; 
 
 		private EffectIntents _elementData;
 		private int _stringCount;
@@ -36,6 +42,15 @@ namespace VixenModules.Effect.Effect
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
 		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				ConfigureStringBuffer();
+			}
+			else
+			{
+				ConfigureVirtualBuffer();
+			}
+			
 			SetupRender();
 			EffectIntents data = new EffectIntents();
 			foreach (ElementNode node in TargetNodes)
@@ -45,6 +60,7 @@ namespace VixenModules.Effect.Effect
 			}
 			_elementData = data;
 			CleanUpRender();
+			ElementLocations = null;
 		}
 
 		[ReadOnly(true)]
@@ -86,6 +102,28 @@ namespace VixenModules.Effect.Effect
 		[PropertyOrder(2)]
 		public abstract StringOrientation StringOrientation { get; set; }
 
+		[Value]
+		[Browsable(false)]
+		[ProviderCategory(@"Setup", 0)]
+		[ProviderDisplayName(@"TargetPositioning")]
+		[ProviderDescription(@"TargetPositioning")]
+		[PropertyOrder(3)]
+		public TargetPositioningType TargetPositioning
+		{
+			get { return EffectModuleData.TargetPositioning; }
+			set
+			{
+				EffectModuleData.TargetPositioning = value;
+				if (TargetPositioning == TargetPositioningType.Locations)
+				{
+					StringOrientation = StringOrientation.Vertical;
+				}
+				UpdateStringOrientationAttributes(true);
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Browsable(false)]
 		public virtual Color BaseColor { 
 			get { return Color.Transparent; }
@@ -100,6 +138,32 @@ namespace VixenModules.Effect.Effect
 
 		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }
+
+		protected void UpdateStringOrientationAttributes(bool refresh = false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"StringOrientation", TargetPositioning.Equals(TargetPositioningType.Strings)}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		protected void EnableTargetPositioning(bool enable, bool refresh = false)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"TargetPositioning", enable}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
 		private void CalculatePixelsPerString()
 		{
@@ -140,33 +204,141 @@ namespace VixenModules.Effect.Effect
 
 		protected override void TargetNodesChanged()
 		{
+			CalculateStringCounts();
+		}
+
+		private void ConfigureStringBuffer()
+		{
+			_bufferHt = StringCount;
+			_bufferWi = MaxPixelsPerString;
+			_bufferHtOffset = 0;
+			_bufferWiOffset = 0;
+		}
+
+		private void CalculateStringCounts()
+		{
 			CalculatePixelsPerString();
-			MaxPixelsPerString = StringPixelCounts.Concat(new[] { 0 }).Max();
+			MaxPixelsPerString = StringPixelCounts.Concat(new[] {0}).Max();
 			StringCount = CalculateMaxStringCount();
 		}
 
+		private void ConfigureVirtualBuffer()
+		{
+			ElementLocations = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).Select(x => new ElementLocation(x)).ToList();
+			var xMax = ElementLocations.Max(p => p.X);
+			var xMin = ElementLocations.Min(p => p.X);
+			var yMax = ElementLocations.Max(p => p.Y);
+			var yMin = ElementLocations.Min(p => p.Y);
+
+			_bufferWi = (yMax - yMin) + 1;
+			_bufferHt = (xMax - xMin) + 1;
+			_bufferWiOffset = yMin;
+			_bufferHtOffset = xMin;
+		}
+
+		protected int StringCountOffset { get; set; }
+		protected int MaxPixelsPerStringOffset { get; set; }
+
 		protected abstract void SetupRender();
-		protected abstract void RenderEffect(int frameNum, ref PixelFrameBuffer frameBuffer);
+		protected abstract void RenderEffect(int frameNum, IPixelFrameBuffer frameBuffer);
+
+		/// <summary>
+		/// Called by for effects that support location based rendering when it is enabled
+		/// The normal array based logic inverts the effect data. This si the formula to convert the x, y coordinates 
+		/// in order to do similar math
+		/// This inverts the coordinate
+		/// y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+		/// 
+		/// This offsets it to be zero based like the others
+		///	y = y - BufferHtOffset;
+		///	x = x - BufferWiOffset;
+		/// See full example in Butteryfly or partial in Colorwash. 
+		/// </summary>
+		/// <param name="numFrames"></param>
+		/// <param name="frameBuffer"></param>
+		protected virtual void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			throw new NotImplementedException();
+		}
+
 		protected abstract void CleanUpRender();
 
+		private int _bufferHt;
 		protected int BufferHt
 		{
 			get
 			{
-				return StringOrientation == StringOrientation.Horizontal ? StringCount : MaxPixelsPerString;
+				return StringOrientation == StringOrientation.Horizontal ? _bufferHt : _bufferWi;
 			}
 
 		}
 
+		private int _bufferWi;
 		protected int BufferWi
 		{
 			get
 			{
-				return StringOrientation == StringOrientation.Horizontal ? MaxPixelsPerString : StringCount;
+				return StringOrientation == StringOrientation.Horizontal ? _bufferWi : _bufferHt;
 			}
 		}
 
+		private int _bufferHtOffset;
+
+		public int BufferHtOffset
+		{
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _bufferHtOffset : _bufferWiOffset;
+			}
+		}
+
+		private int _bufferWiOffset;
+		public int BufferWiOffset {
+			get
+			{
+				return StringOrientation == StringOrientation.Horizontal ? _bufferWiOffset : _bufferHtOffset;
+			}
+		}
+
+
 		protected EffectIntents RenderNode(ElementNode node)
+		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				return RenderNodeByStrings(node);
+			}
+			return RenderNodeByLocation(node);
+		}
+
+		protected EffectIntents RenderNodeByLocation(ElementNode node)
+		{
+			EffectIntents effectIntents = new EffectIntents();
+			int nFrames = GetNumberFrames();
+			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
+			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations.Distinct().ToList(), nFrames);
+			
+			TimeSpan startTime = TimeSpan.Zero;
+
+			// generate all the pixels
+			RenderEffectByLocation(nFrames, buffer);
+
+			// create the intents
+			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
+
+			foreach (var tuple in buffer.GetElementData())
+			{
+				if (tuple.Item2.Count != nFrames)
+				{
+					Logging.Error("{0} count has {1} instead of {2}", tuple.Item1.ElementNode.Name, tuple.Item2.Count, nFrames );
+				}
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, tuple.Item2.ToArray(), TimeSpan);
+				effectIntents.AddIntentForElement(tuple.Item1.ElementNode.Element.Id, intent, startTime);
+			}
+			
+			return effectIntents;
+		}
+
+		protected EffectIntents RenderNodeByStrings(ElementNode node)
 		{
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
@@ -195,7 +367,7 @@ namespace VixenModules.Effect.Effect
 					buffer.ClearBuffer();
 				}
 				
-				RenderEffect(frameNum, ref buffer);
+				RenderEffect(frameNum, buffer);
 				// peel off this frames pixels...
 				if (StringOrientation == StringOrientation.Horizontal)
 				{
@@ -223,7 +395,7 @@ namespace VixenModules.Effect.Effect
 						}
 					}
 				}
-			};
+			}
 
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);

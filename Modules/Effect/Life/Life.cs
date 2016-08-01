@@ -217,7 +217,7 @@ namespace VixenModules.Effect.Life
 		}
 
 		// use tempbuf for calculations
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer) 
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer) 
 		{
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			int i, x, y;
@@ -380,7 +380,7 @@ namespace VixenModules.Effect.Life
 			return c1 + (int)Math.Floor(ratio * (double)(c2 - c1) + 0.5);
 		}
 
-		private void CopyPixelsToTempBuf(PixelFrameBuffer frameBuffer)
+		private void CopyPixelsToTempBuf(IPixelFrameBuffer frameBuffer)
 		{
 			for (int x = 0; x < BufferWi; x++)
 			{
@@ -410,7 +410,7 @@ namespace VixenModules.Effect.Life
 			}
 		}
 
-		private void CopyTempBufToPixels(PixelFrameBuffer frameBuffer)
+		private void CopyTempBufToPixels(IPixelFrameBuffer frameBuffer)
 		{
 			for (int x = 0; x < BufferWi; x++) {
 				for (int y = 0; y < BufferHt; y++) {
