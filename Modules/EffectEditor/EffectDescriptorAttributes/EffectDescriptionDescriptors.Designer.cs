@@ -818,7 +818,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can help to adjust the position of the image. May not work in all cases..
+        ///   Looks up a localized string similar to Can help to adjust the position of the effect. May not work in all cases..
         /// </summary>
         internal static string XOffset {
             get {
@@ -827,7 +827,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can help to adjust the position of the image. May not work in all cases..
+        ///   Looks up a localized string similar to Can help to adjust the position of the effect. May not work in all cases..
         /// </summary>
         internal static string YOffset {
             get {
