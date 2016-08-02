@@ -48,6 +48,7 @@
     <Compile Include="PinWheelData.cs" />
     <Compile Include="PinWheel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RotationType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">

@@ -364,10 +364,10 @@
     <value>Controls how the wipe behaves. Either by a count of passes, or by time related to pulse length.</value>
   </data>
   <data name="XOffset" xml:space="preserve">
-    <value>Can help to adjust the position of the image. May not work in all cases.</value>
+    <value>Can help to adjust the position of the effect. May not work in all cases.</value>
   </data>
   <data name="YOffset" xml:space="preserve">
-    <value>Can help to adjust the position of the image. May not work in all cases.</value>
+    <value>Can help to adjust the position of the effect. May not work in all cases.</value>
   </data>
   <data name="MeteorType" xml:space="preserve">
     <value>Colors are not used when Rainbow is selected.</value>

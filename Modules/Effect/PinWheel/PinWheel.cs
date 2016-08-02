@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -17,8 +16,9 @@ namespace VixenModules.Effect.PinWheel
 	public class PinWheel : PixelEffectBase
 	{
 		private PinWheelData _data;
-		private static Random _random = new Random();
+		private static readonly Random Random = new Random();
 		private List<ColorGradient> _newColors = new List<ColorGradient>();
+		private const double Pi180 = (Math.PI / 180);
 
 		public PinWheel()
 		{
@@ -204,9 +204,9 @@ namespace VixenModules.Effect.PinWheel
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
-		[ProviderDescription(@"Rotation")]
+		[ProviderDescription(@"Direction")]
 		[PropertyOrder(8)]
-		public bool Rotation
+		public RotationType Rotation
 		{
 			get { return _data.Rotation; }
 			set
@@ -330,101 +330,97 @@ namespace VixenModules.Effect.PinWheel
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
-		}
-
-		protected override void CleanUpRender()
-		{
-			//Nothing to clean up
-		}
-
-		private HSV hsv;
-		private int xc_adj, yc_adj;
-
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
-		{
-			if (frame == 0)
+			if (ColorType == PinWheelColorType.Random)
 			{
 				HSV temphsv = new HSV();
 				_newColors = new List<ColorGradient>();
 				for (int newColr = 0; newColr < Arms; newColr++)
 				{
-					temphsv.H = (float)(rand() % 1000) / 1000.0f;
+					temphsv.H = Rand();
 					temphsv.S = 1.0f;
 					temphsv.V = 1.0f;
 					_newColors.Add(new ColorGradient(temphsv.ToRGB()));
 				}
 			}
-			int a, xc, ColorIdx, base_degrees;
-			float t, tmax;
+		}
+
+		protected override void CleanUpRender()
+		{
+			_newColors = null;
+		}
+
+		private HSV _hsv;
+		
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
+		{
+			var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			int colorcnt = Colors.Count;
 
-			xc = (int) (Math.Max(BufferWi, BufferHt)/2);
+			var xc = Math.Max(BufferWi, BufferHt)/2;
 
 			double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
 
-			int degrees_per_arm = 1;
-			if (Arms > 0) degrees_per_arm = 360/Arms;
+			int degreesPerArm = 1;
+			if (Arms > 0) degreesPerArm = 360/Arms;
 			float armsize = (float) (Size/100.0);
-			for (a = 1; a <= Arms; a++)
+			for (int a = 1; a <= Arms; a++)
 			{
-				ColorIdx = a%colorcnt;
+				var colorIdx = a%colorcnt;
 				switch (ColorType)
 				{
 					case PinWheelColorType.Rainbow: //No user colors are used for Rainbow effect.
-						hsv.H = (float)(rand() % 1000) / 1000.0f;
-						hsv.S = 1.0f;
-						hsv.V = 1.0f;
+						_hsv.H = Rand();
+						_hsv.S = 1.0f;
+						_hsv.V = 1.0f;
 						break;
 					case PinWheelColorType.Random:
-						hsv = HSV.FromRGB(_newColors[ColorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						_hsv = HSV.FromRGB(_newColors[colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
 						break;
 					case PinWheelColorType.Standard:
-						hsv = HSV.FromRGB(Colors[ColorIdx].ColorGradient.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						_hsv = HSV.FromRGB(Colors[colorIdx].ColorGradient.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
 						break;
 				}
 
-				base_degrees = Rotation ? (int) ((a + 1)*degrees_per_arm + pos) : (int) ((a + 1)*degrees_per_arm - pos);
-				hsv.V = hsv.V * Colors[ColorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				Draw_arm(frameBuffer, base_degrees, xc * armsize, Twist, hsv, XOffset, YOffset, frame, ColorIdx);
+				var baseDegrees = Rotation==RotationType.Backward ? (int) ((a + 1)*degreesPerArm + pos) : (int) ((a + 1)*degreesPerArm - pos);
+				_hsv.V = _hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				_hsv.V = _hsv.V * overallLevel;
+				Draw_arm(frameBuffer, baseDegrees, xc * armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
 				
-				//Adjusts arm thinkness
-				tmax = (float)((Thickness / 100.0) * degrees_per_arm / 2.0);
+				//Adjusts arm thickness
+				var tmax = (float)((Thickness / 100.0) * degreesPerArm / 2.0);
+				float t;
 				for (t = 1; t <= tmax; t++)
 				{
 					if (PinWheel3D)
 					{
-						hsv.V = hsv.V*((tmax - t)/tmax);
+						_hsv.V = _hsv.V*((tmax - t)/tmax);
 					}
-					Draw_arm(frameBuffer, base_degrees - t, xc*armsize, Twist, hsv, XOffset, YOffset, frame, ColorIdx);
-					Draw_arm(frameBuffer, base_degrees + t, xc*armsize, Twist, hsv, XOffset, YOffset, frame, ColorIdx);
+					Draw_arm(frameBuffer, baseDegrees - t, xc*armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
+					Draw_arm(frameBuffer, baseDegrees + t, xc*armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
 				}
 			}
 		}
 
-		private void Draw_arm(PixelFrameBuffer frameBuffer, float base_degrees, float max_radius, int twist, HSV hsv, int XOffset, int YOffset, int frame, int ColorIdx)
+		private void Draw_arm(IPixelFrameBuffer frameBuffer, float baseDegrees, float maxRadius, int twist, HSV hsv, int xOffset, int yOffset, int frame, int colorIdx, double overallLevel)
 		{
-			double r;
-			double pi180 = (Math.PI/180);
 			int xc = BufferWi/2;
 			int yc = BufferHt/2;
-			xc = (int)(xc + (XOffset / 100.0) * xc); // XOffset is from -100 to 100
-			yc = (int)(yc + (YOffset / 100.0) * yc);
+			xc = (int)(xc + (xOffset / 100.0) * xc); // XOffset is from -100 to 100
+			yc = (int)(yc + (yOffset / 100.0) * yc);
 
-			for (r = 0.0; r <= max_radius; r += 0.5)
+			for (double r = 0.0; r <= maxRadius; r += 0.5)
 			{
-				int degrees_twist = (int) ((r/max_radius)*twist);
-				int degrees = (int)(base_degrees + degrees_twist);
-				double phi = degrees*pi180;
+				int degreesTwist = (int) ((r/maxRadius)*twist);
+				int degrees = (int)(baseDegrees + degreesTwist);
+				double phi = degrees*Pi180;
 				int x = (int) (r*Math.Cos(phi) + xc);
 				int y = (int) (r*Math.Sin(phi) + yc);
 				switch (ColorType)
 				{
 					case PinWheelColorType.Gradient: //Applies gradient over each arm
-						hsv = HSV.FromRGB(max_radius > (double)(Math.Max(BufferHt, BufferWi)) / 2 ? Colors[ColorIdx].ColorGradient.GetColorAt((100 / ((double)(Math.Max(BufferHt, BufferWi)) / 2) * r) / 100) : Colors[ColorIdx].ColorGradient.GetColorAt((100 / max_radius * r) / 100));
-						hsv.V = hsv.V * Colors[ColorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-						hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+						hsv = HSV.FromRGB(maxRadius > (double)(Math.Max(BufferHt, BufferWi)) / 2 ? Colors[colorIdx].ColorGradient.GetColorAt((100 / ((double)(Math.Max(BufferHt, BufferWi)) / 2) * r) / 100) : Colors[colorIdx].ColorGradient.GetColorAt((100 / maxRadius * r) / 100));
+						hsv.V = hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+						hsv.V = hsv.V * overallLevel;
 						break;
 				}
 				if (r > CenterStart)
@@ -432,9 +428,9 @@ namespace VixenModules.Effect.PinWheel
 			}
 		}
 
-		private int rand()
+		private static double Rand()
 		{
-			return _random.Next();
+			return Random.NextDouble();
 		}
 	}
 }

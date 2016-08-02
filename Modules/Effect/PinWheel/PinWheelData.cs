@@ -2,11 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
-using ZedGraph;
 
 namespace VixenModules.Effect.PinWheel
 {
@@ -21,14 +19,14 @@ namespace VixenModules.Effect.PinWheel
 			Speed = 1;
 			Arms = 8;
 			Twist = 60;
-			Rotation = false;
+			Rotation = RotationType.Forward;
 			Size = 90;
 			Thickness = 15;
 			XOffset = 0;
 			YOffset = 0;
 			CenterStart = 0;
 			PinWheel3D = false;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -63,7 +61,7 @@ namespace VixenModules.Effect.PinWheel
 		public int Size { get; set; }
 
 		[DataMember]
-		public bool Rotation { get; set; }
+		public RotationType Rotation { get; set; }
 
 		[DataMember]
 		public bool PinWheel3D { get; set; }
