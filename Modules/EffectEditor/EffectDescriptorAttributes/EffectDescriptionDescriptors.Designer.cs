@@ -305,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the frames per second rate..
+        /// </summary>
+        internal static string FramesPerSecond {
+            get {
+                return ResourceManager.GetString("FramesPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the speed at which a gif animates if the image is a animated gif..
         /// </summary>
         internal static string GifSpeed {

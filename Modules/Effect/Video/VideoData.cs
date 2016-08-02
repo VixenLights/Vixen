@@ -25,7 +25,7 @@ namespace VixenModules.Effect.Video
 			PlayBackSpeed = 0;
 			StartTime = 0;
 			RotateVideo = 0;
-			CustomFrameRate = true;
+			CustomFrameRate = false;
 			Video_DataPath = string.Empty;
 			FileName = String.Empty;
 			Orientation = StringOrientation.Vertical;

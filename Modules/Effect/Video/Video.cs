@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.IO;
@@ -16,6 +15,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Video
 {
+	[BrowsableCategory(@"Advanced Settings", true, false)]
 	public class Video : PixelEffectBase
 	{
 		private VideoData _data;
@@ -238,40 +238,39 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Video Configuration", 2)]
-		[ProviderDisplayName(@"Advanced Settings")]
-		[ProviderDescription(@"Advanced Settings")]
-		[PropertyOrder(5)]
-		public bool AdvancedSettings
-		{
-			get { return _data.AdvancedSettings; }
-			set
-			{
-				_data.AdvancedSettings = value;
-				IsDirty = true;
-				_processVideo = false;
-				if (!AdvancedSettings)
-				{
-					StartTime = 0;
-					RotateVideo = 0;
-					CustomFrameRate = true;
-					FramesPerSecond = 25;
-					MaintainAspect = false;
-					IncreaseBrightness = 10;
-					_processVideo = true;
-				}
-				UpdateAdvancedSettingsAttribute();
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Advance Settings
 
+		//[Value]
+		//[ProviderCategory(@"Advanced Settings", 3)]
+		//[ProviderDisplayName(@"Use Advanced Settings")]
+		//[ProviderDescription(@"Check to enable the settings in this section instead of the defaults.")]
+		//[PropertyOrder(0)]
+		//public bool AdvancedSettings
+		//{
+		//	get { return _data.AdvancedSettings; }
+		//	set
+		//	{
+		//		_data.AdvancedSettings = value;
+		//		IsDirty = true;
+		//		_processVideo = false;
+		//		if (!AdvancedSettings)
+		//		{
+		//			StartTimeSeconds = 0;
+		//			RotateVideo = 0;
+		//			CustomFrameRate = true;
+		//			FramesPerSecond = 25;
+		//			MaintainAspect = false;
+		//			IncreaseBrightness = 10;
+		//			_processVideo = true;
+		//		}
+		//		OnPropertyChanged();
+		//	}
+		//}
+
 		[ReadOnly(true)]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Video Length (sec)")]
 		[ProviderDescription(@"Video Length")]
 		[PropertyEditor("Label")]
@@ -289,13 +288,13 @@ namespace VixenModules.Effect.Video
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Start Time (sec)")]
 		[ProviderDescription(@"Start position of Video File")]
 		[PropertyEditor("DoubleSliderEditor")]
 		[NumberRange(0, 500, 1)]
 		[PropertyOrder(2)]
-		public double StartTime
+		public double StartTimeSeconds
 		{
 			get { return _data.StartTime; }
 			set
@@ -308,7 +307,7 @@ namespace VixenModules.Effect.Video
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Custom Frame Rate")]
 		[ProviderDescription(@"CustomFrameRate")]
 		[PropertyOrder(3)]
@@ -321,13 +320,12 @@ namespace VixenModules.Effect.Video
 				IsDirty = true;
 				_processVideo = true;
 				UpdateFrameRateAttribute();
-				UpdateFrameRateAttribute();
 				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Frames/sec")]
 		[ProviderDescription(@"FramesPerSecond")]
 		[PropertyEditor("SliderEditor")]
@@ -346,7 +344,7 @@ namespace VixenModules.Effect.Video
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Maintain Aspect")]
 		[ProviderDescription(@"Maintain Grid Aspect")]
 		[PropertyOrder(5)]
@@ -363,7 +361,7 @@ namespace VixenModules.Effect.Video
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Rotate Video")]
 		[ProviderDescription(@"Rotate Video")]
 		[PropertyEditor("SliderEditor")]
@@ -382,7 +380,7 @@ namespace VixenModules.Effect.Video
 		}
 
 		[Value]
-		[ProviderCategory(@"Advanced Setting", 3)]
+		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Increase Brightness")]
 		[ProviderDescription(@"Increase Brightness")]
 		[PropertyEditor("SliderEditor")]
@@ -423,7 +421,7 @@ namespace VixenModules.Effect.Video
 			UpdateScaleAttribute(false);
 			UpdateIterationsAttribute(false);
 			UpdateFrameRateAttribute(false);
-			UpdateAdvancedSettingsAttribute();
+			//UpdateAdvancedSettingsAttribute();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -467,25 +465,25 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
-		private void UpdateAdvancedSettingsAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(7)
-			{
-				{"VideoLength", AdvancedSettings},
-				{"StartTime", AdvancedSettings},
-				{"CustomFrameRate", AdvancedSettings},
-				{"FramesPerSecond", AdvancedSettings},
-				{"MaintainAspect", AdvancedSettings},
-				{"RotateVideo", AdvancedSettings},
-				{"IncreaseBrightness", AdvancedSettings}
-				
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
+		//private void UpdateAdvancedSettingsAttribute(bool refresh = true)
+		//{
+		//	Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(7)
+		//	{
+		//		{"VideoLength", AdvancedSettings},
+		//		{"StartTime", AdvancedSettings},
+		//		{"CustomFrameRate", AdvancedSettings},
+		//		{"FramesPerSecond", AdvancedSettings},
+		//		{"MaintainAspect", AdvancedSettings},
+		//		{"RotateVideo", AdvancedSettings},
+		//		{"IncreaseBrightness", AdvancedSettings}
+
+		//	};
+		//	SetBrowsable(propertyStates);
+		//	if (refresh)
+		//	{
+		//		TypeDescriptor.Refresh(this);
+		//	}
+		//}
 
 		public override IModuleDataModel ModuleData
 		{
@@ -566,10 +564,10 @@ namespace VixenModules.Effect.Video
 				VideoLength = (int)videoTimeSpan.TotalSeconds;
 
 				//Gets selected video if Video length is longer then the entered start time.
-				if (VideoLength > StartTime + (TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1)))
+				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1)))
 				{
 					ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(videoFilename);
-					converter.MakeThumbnails(_data.Video_DataPath, StartTime, ((TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1))),
+					converter.MakeThumbnails(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1))),
 						renderWidth, renderHeight, MaintainAspect, frameRate, colorType, RotateVideo);
 					_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
 					_currentMovieImageNum = 0;
@@ -594,7 +592,7 @@ namespace VixenModules.Effect.Video
 		}
 
 		#region Render Video Effect
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;

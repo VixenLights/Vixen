@@ -375,4 +375,7 @@
   <data name="GradientPosition" xml:space="preserve">
     <value>Controls the stop point for the color in the gradient.</value>
   </data>
+  <data name="FramesPerSecond" xml:space="preserve">
+    <value>Controls the frames per second rate.</value>
+  </data>
 </root>

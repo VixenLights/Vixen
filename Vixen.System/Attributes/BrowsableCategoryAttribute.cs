@@ -35,10 +35,24 @@ namespace Vixen.Attributes
 		/// </summary>
 		/// <param name="categoryName">Name of the category.</param>
 		/// <param name="browsable">if set to <c>true</c> the category is browsable.</param>
+		/// <param name="expanded">if set to <c>true</c> the category is collapsed.</param>
+		public BrowsableCategoryAttribute(string categoryName, bool browsable, bool expanded)
+		{
+			CategoryName = string.IsNullOrEmpty(categoryName) ? All : categoryName;
+			Browsable = browsable;
+			Expanded = expanded;
+		}
+
+		/// <summary>
+		///     Initializes a new instance of the <see cref="BrowsableCategoryAttribute" /> class.
+		/// </summary>
+		/// <param name="categoryName">Name of the category.</param>
+		/// <param name="browsable">if set to <c>true</c> the category is browsable.</param>
 		public BrowsableCategoryAttribute(string categoryName, bool browsable)
 		{
 			CategoryName = string.IsNullOrEmpty(categoryName) ? All : categoryName;
 			Browsable = browsable;
+			Expanded = true;
 		}
 
 		/// <summary>
@@ -68,5 +82,11 @@ namespace Vixen.Attributes
 		/// </summary>
 		/// <value><c>true</c> if category should be displayed at run time; otherwise, <c>false</c>.</value>
 		public bool Browsable { get; private set; }
+
+		/// <summary>
+		///     Gets or sets a value indicating whether category is Collapsed.
+		/// </summary>
+		/// <value><c>true</c> if category should be displayed at run time; otherwise, <c>false</c>.</value>
+		public bool Expanded { get; private set; }
 	}
 }

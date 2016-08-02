@@ -1164,6 +1164,7 @@ namespace VixenModules.Editor.EffectEditor
 			// Create a new CategoryItem
 			var categoryItem = new CategoryItem(this, attribute);
 			categoryItem.IsBrowsable = ShouldDisplayCategory(categoryItem.Name);
+			categoryItem.IsExpanded = IsCategoryExpanded(categoryItem.Name);
 			if (attribute is IOrderableAttribute)
 			{
 				var attr = (IOrderableAttribute) attribute;
@@ -1240,6 +1241,22 @@ namespace VixenModules.Editor.EffectEditor
 			if (wildcard != null) return wildcard.Browsable;
 
 			// Allow by default if no restrictions were applied
+			return true;
+		}
+
+		private bool IsCategoryExpanded(string categoryName)
+		{
+			if (string.IsNullOrEmpty(categoryName)) return false;
+
+			// Check the explicit declaration
+			var attribute = browsableCategories.FirstOrDefault(item => item.CategoryName == categoryName);
+			if (attribute != null) return attribute.Expanded;
+
+			// Check the wildcard
+			var wildcard = browsableCategories.FirstOrDefault(item => item.CategoryName == BrowsableCategoryAttribute.All);
+			if (wildcard != null) return wildcard.Expanded;
+
+			// Expanded by default if no restrictions were applied
 			return true;
 		}
 
