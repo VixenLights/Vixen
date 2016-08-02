@@ -2293,7 +2293,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Enabled = ClipboardHasData()
 			};
 
-			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCopy, contextMenuItemCut, contextMenuItemPaste});
+			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCut, contextMenuItemCopy,  contextMenuItemPaste});
 
 			if (TimelineControl.SelectedElements.Any())
 			{
