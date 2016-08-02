@@ -30,6 +30,7 @@ namespace Vixen.Module.SequenceType.Surrogate
 			IEffectModuleInstance effect = Modules.ModuleManagement.GetEffect(TypeId);
 			effect.InstanceId = InstanceId;
 			effect.TimeSpan = TimeSpan;
+			effect.StartTime = StartTime;
 			effect.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
 
 			return new EffectNode(effect, StartTime);

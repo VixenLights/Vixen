@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FDB91428-9BD4-47DD-9A7D-D33FF955985B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.Effect.Waveform</RootNamespace>
+    <AssemblyName>Waveform</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\Release\Modules\Effect\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\Effect\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
+      <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>
+      <Name>EffectDescriptorAttributes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
+      <Project>{4243ba4c-6371-4dd1-8a1d-675bed5322af}</Project>
+      <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Color\Color.csproj">
+      <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
+      <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AudioHelper\AudioHelper.csproj">
+      <Project>{c5c25088-6305-4d15-8469-52995e03c611}</Project>
+      <Name>AudioHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Waveform.cs" />
+    <Compile Include="WaveformData.cs" />
+    <Compile Include="WaveformDescriptor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
+      <Name>ColorGradients</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Curves\Curves.csproj">
+      <Project>{F0BA7127-61B4-453A-802B-ABCB5A0D3D54}</Project>
+      <Name>Curves</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Effect48.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

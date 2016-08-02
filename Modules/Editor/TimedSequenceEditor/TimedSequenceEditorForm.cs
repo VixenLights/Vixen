@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -1625,6 +1626,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 				}
+
+				UpdateMediaOnSupportedEffects();
 
 				toolStripMenuItem_removeAudio.Enabled = true;
 				beatBarDetectionToolStripMenuItem.Enabled = true;
@@ -3364,23 +3367,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					// get the target element
 					if (element.Row != null)
 					{
-						var targetNode = (ElementNode) element.Row.Tag;
-
-						// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
-						newEffect.TargetNodes = new[] {targetNode};
+						var effectNode = CreateEffectNode(newEffect, element.Row, element.StartTime, element.Duration);
+						// put it in the sequence and in the timeline display
+						newElements.Add(AddEffectNode(effectNode));
 					}
 					else
 					{
 						Logging.Error("TimedSequenceEditor: <CloneElements> - Skipping element; element.Row is null!");
-						continue;
+						
 					}
-
-					newEffect.TimeSpan = element.Duration;
-					var effectNode = new EffectNode(newEffect, element.StartTime);
-
-					// put it in the sequence and in the timeline display
-					newElements.Add(AddEffectNode(effectNode));
-					
 
 				} catch (Exception ex)
 				{
@@ -3540,7 +3535,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private static EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
+		private EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
 			TimeSpan timeSpan, object[] parameterValues = null)
 		{
 			// get the target element
@@ -3549,7 +3544,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] {targetNode};
 			effectInstance.TimeSpan = timeSpan;
+			effectInstance.StartTime = startTime;
 			if (parameterValues != null) effectInstance.ParameterValues = parameterValues;
+			if (effectInstance.SupportsMedia)
+			{
+				effectInstance.Media = Sequence.SequenceData.Media;
+			}
 			return new EffectNode(effectInstance, startTime);
 	
 		}
@@ -3569,6 +3569,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (EffectNode node in nodes)
 			{
+				if (node.Effect.SupportsMedia)
+				{
+					node.Effect.Media = Sequence.SequenceData.Media;
+				}
 				TimedSequenceElement element = SetupNewElementFromNode(node);
 				foreach (ElementNode target in node.Effect.TargetNodes)
 				{
@@ -3663,14 +3667,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void CheckAndRenderDirtyElements()
 		{
-			TimelineControl.Rows.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(target =>
+			var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+			elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
 			{
-				foreach (Element elem in target)
+				if (element.EffectNode.Effect.IsDirty)
 				{
-					if (elem.EffectNode.Effect.IsDirty)
-					{
-						TimelineControl.grid.RenderElement(elem);
-					}
+					TimelineControl.grid.RenderElement(element);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Checks all elements and if they support audio is updates the media property and puts them in the render queue
+		/// </summary>
+		private void UpdateMediaOnSupportedEffects()
+		{
+			var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+			elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
+			{
+				if (element.EffectNode.Effect.SupportsMedia)
+				{
+				element.EffectNode.Effect.Media = Sequence.SequenceData.Media;
+					TimelineControl.grid.RenderElement(element);
 				}
 			});
 		}

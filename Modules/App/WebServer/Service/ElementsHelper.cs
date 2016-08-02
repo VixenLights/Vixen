@@ -336,6 +336,7 @@ namespace VixenModules.App.WebServer.Service
 			// populate the given effect instance with the appropriate target node and times, and wrap it in an effectNode
 			effectInstance.TargetNodes = new[] { targetNode };
 			effectInstance.TimeSpan = timeSpan;
+			effectInstance.StartTime = TimeSpan.Zero;
 			return new EffectNode(effectInstance, TimeSpan.Zero);
 
 		}

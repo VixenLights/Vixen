@@ -25,6 +25,14 @@ namespace Vixen.Module.Effect {
 
 		public abstract EffectGroups EffectGroup { get; }
 
+		public virtual bool SupportsMedia
+		{
+			get
+			{
+				return false;
+			}
+		}
+
 		public abstract override string TypeName { get; }
 
 		public abstract override Guid TypeId { get; }

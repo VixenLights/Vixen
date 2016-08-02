@@ -633,6 +633,7 @@ namespace VixenModules.App.ColorGradients
 		public static implicit operator ColorGradient(ColorBlend blend)
 		{
 			ColorGradient ret = new ColorGradient();
+			ret.Colors.Clear();
 			ret.AddColors(blend);
 			return ret;
 		}

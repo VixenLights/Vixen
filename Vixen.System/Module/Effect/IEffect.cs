@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
+using Vixen.Module.Media;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 
@@ -27,7 +28,7 @@ namespace Vixen.Module.Effect
 		/// <summary>
 		/// The layer in which the effect is active.
 		/// </summary>
-		//LayerMixingDefinition LayerMixingDefinition { get; set; }
+		TimeSpan StartTime { get; set; }
 
 		/// <summary>
 		/// Effect parameter values.
@@ -43,5 +44,8 @@ namespace Vixen.Module.Effect
 		string EffectName { get; }
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
+		bool SupportsMedia { get; }
+		List<IMediaModuleInstance> Media { get; set; }
+
 	}
 }
