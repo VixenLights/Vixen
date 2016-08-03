@@ -161,6 +161,10 @@ namespace VixenModules.Editor.LayerEditor
 		public void OnDropCompleted(IDataObject obj, Point dropPoint)
 		{
 			ListBox lb = TargetUI as ListBox;
+			if (lb == null)
+			{
+				return;
+			}
 			HitTestResult result = VisualTreeHelper.HitTest(lb, dropPoint);
 
 			ListBoxItem lbi = FindAncestor<ListBoxItem>(result.VisualHit);
