@@ -145,7 +145,11 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						if (pixel.Node != null)
 						{
-							
+							if (pixel.Node.Element == null)
+							{
+								Logging.Warn("Null element for Node {0}", pixel.Node.Name);
+								continue;
+							}
 							pixelCount++;
 							List<PreviewPixel> pixels;
 							if (NodeToPixel.TryGetValue(pixel.Node.Element.Id, out pixels))
