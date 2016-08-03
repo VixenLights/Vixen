@@ -29,6 +29,7 @@ using Vixen.Execution.Context;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
+using VixenModules.Effect.Video;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
 using Vixen.Module.Editor;
@@ -135,6 +136,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			_scaleFactor = ScalingTools.GetScaleFactor();
+			deleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
@@ -245,7 +247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return EffectEditorForm;
 			if (persistString == typeof(LayerEditor).ToString())
 				return LayerEditor;
-
+			
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
 		}
@@ -286,7 +288,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				EffectEditorForm.Show(dockPanel, DockState.DockRight);
 			}
-
+				
 			if (LayerEditor.DockState == DockState.Unknown)
 			{
 				LayerEditor.Show(dockPanel, DockState.DockRight);
@@ -1023,13 +1025,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Scale our default pixel height for the rows
 			if (_sequence.DefaultRowHeight != 0)
 			{
-				TimelineControl.rowHeight = _sequence.DefaultRowHeight;
+			TimelineControl.rowHeight = _sequence.DefaultRowHeight;
 			}
 			else
 			{
 				TimelineControl.rowHeight = (int)(TimelineControl.DefaultRowHeight * _scaleFactor);
 			}
-			
+
 			if (clearCurrentRows)
 				TimelineControl.ClearAllRows();
 
@@ -1276,6 +1278,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			
 			SequenceNotModified();
+		}
+
+		private void deleteVideoTempFolder()
+		{
+			try
+			{
+			string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
+				if (Directory.Exists(_tempPath))
+				{
+					Directory.Delete(_tempPath, true);
+				}
+			}
+			catch
+			{
+			}
 		}
 
 		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
@@ -4519,6 +4536,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
+			deleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 
@@ -4646,7 +4664,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
 				LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
 				nodesToAdd.Add(node);
-
+				
 				result++;
 			}
 
@@ -4916,32 +4934,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(GridForm, DockState.Document);
-		}
-
+			}
+			
 		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(EffectEditorForm, DockState.DockRight);
-		}
+			}
 
 		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(EffectsForm, DockState.DockLeft);
-		}
+			}
 
 		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+			{
 			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockRight);
-		}
+			}
 
 		private void toolWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockRight);
-		}
+			}
 
 		private void mixingFilterEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
+			{
 			HandleDockContentToolStripMenuClick(LayerEditor, DockState.DockLeft);
-		}
+			}
 
 		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)
 		{
@@ -5510,7 +5528,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				_suppressModifiedEvents = false;
-			}
+		}
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)
@@ -5675,7 +5693,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                               {
                                   Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
                                   StartTime = startTime
-							  };
+                              };
 
                         result.EffectModelCandidates.Add(modelCandidate, rownum);
                         if (startTime < result.EarliestStartTime)
@@ -6007,7 +6025,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void zoomUnderMousePositionToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			TimelineControl.ZoomToMousePosition = zoomUnderMousePositionToolStripMenuItem.Checked;
-	}
+		}
 
 		private void resetRowHeightToolStripMenuItem_Click(object sender, EventArgs e)
 		{
