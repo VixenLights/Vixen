@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.IO;
+using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -574,19 +575,16 @@ namespace VixenModules.Effect.Video
 				}
 				else
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Entered Start Time plus Effect length is greater than the Video Length of " + _data.FileName,
-						"Invalid Start Time. Decrease the Start Time", false, false);
+						"Invalid Start Time. Decrease the Start Time", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
 				}
 			}
 			catch (Exception ex)
 			{
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
-					"Error Converting Video", false, false);
+					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 			}
 		}
