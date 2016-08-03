@@ -51,6 +51,16 @@ namespace VixenModules.Effect.Twinkle
 		[DataMember]
 		public ColorGradient ColorGradient { get; set; }
 
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			//Ensure defaults for new fields that might not be in older effects.
+			if (StaticColor.IsEmpty)
+			{
+				StaticColor = Color.White;
+			}
+		}
+
 		[DataMember]
 		public int DepthOfEffect { get; set; }
 
@@ -64,7 +74,7 @@ namespace VixenModules.Effect.Twinkle
 			PulseTimeVariation = 30;
 			AverageCoverage = 50;
 			ColorHandling = TwinkleColorHandling.GradientForEachPulse;
-			StaticColor = Color.Empty;
+			StaticColor = Color.White;
 			ColorGradient = new ColorGradient(Color.White);
 			DepthOfEffect = 0;
 		}
