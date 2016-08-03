@@ -188,7 +188,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Center Start")]
 		[ProviderDescription(@"Center Start")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		[NumberRange(0, 100, 1)]
 		[PropertyOrder(7)]
 		public int CenterStart
 		{
