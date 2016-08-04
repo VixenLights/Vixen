@@ -418,14 +418,15 @@ namespace VixenModules.Effect.Meteors
 			int tailStart = BufferHt;
 			if (tailStart < 1) tailStart = 1;
 
-			double _position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed) / 20 : (double)Speed / 20;
-
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv = new HSV();
-			int pixelCount = !RandomMeteorPosition && frame > PixelCount ? 1 : (PixelCount < 10 ? PixelCount : PixelCount/10);
+			int pixelCount = frame < PixelCount
+				? (!RandomMeteorPosition && frame > PixelCount ? 1 : (PixelCount < 10 ? PixelCount : PixelCount / 10))
+				: PixelCount;
 
 			for (int i = 0; i < pixelCount; i++)
 			{
+				double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed + 1) / 20 : (double)Speed / 20;
 				if (_meteors.Count >= PixelCount) continue;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
@@ -472,9 +473,9 @@ namespace VixenModules.Effect.Meteors
 					}
 
 					m.TailX = ((double)direction / 90);
-					m.DeltaX = m.TailX * _position;
+					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(direction - 90) / 90);
-					m.DeltaY = m.TailY * _position;
+					m.DeltaY = m.TailY * position;
 				}
 				else if (direction > 90 && direction <= 180)
 				{
@@ -492,9 +493,9 @@ namespace VixenModules.Effect.Meteors
 					}
 
 					m.TailX = ((double)Math.Abs(direction - 180) / 90);
-					m.DeltaX = m.TailX * _position;
+					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 90) / 90);
-					m.DeltaY = m.TailY * _position;
+					m.DeltaY = m.TailY * position;
 				}
 				else if (direction > 180 && direction <= 270)
 				{
@@ -511,9 +512,9 @@ namespace VixenModules.Effect.Meteors
 					}
 
 					m.TailX = -1 * ((double)Math.Abs(direction - 180) / 90);
-					m.DeltaX = m.TailX * _position;
+					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 270) / 90);
-					m.DeltaY = m.TailY * _position;
+					m.DeltaY = m.TailY * position;
 				}
 				else if (direction > 270 && direction <= 360)
 				{
@@ -530,9 +531,9 @@ namespace VixenModules.Effect.Meteors
 					}
 
 					m.TailX = -1 * ((double)Math.Abs(direction - 360) / 90);
-					m.DeltaX = m.TailX * _position;
+					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(270 - direction) / 90);
-					m.DeltaY = m.TailY * _position;
+					m.DeltaY = m.TailY * position;
 				}
 
 				if (MeteorEffect == MeteorsEffect.Explode)
