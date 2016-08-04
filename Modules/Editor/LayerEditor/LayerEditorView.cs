@@ -166,6 +166,10 @@ namespace VixenModules.Editor.LayerEditor
 				return;
 			}
 			HitTestResult result = VisualTreeHelper.HitTest(lb, dropPoint);
+			if (result == null)
+			{
+				return;
+			}
 
 			ListBoxItem lbi = FindAncestor<ListBoxItem>(result.VisualHit);
 			if (lbi == null)
