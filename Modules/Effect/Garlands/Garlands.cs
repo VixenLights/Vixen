@@ -60,7 +60,7 @@ namespace VixenModules.Effect.Garlands
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Movement Type")]
-		[ProviderDescription(@"Movement Type")]
+		[ProviderDescription(@"Switches between speed or iterations")]
 		[PropertyOrder(0)]
 		public MovementType MovementType
 		{
@@ -77,7 +77,7 @@ namespace VixenModules.Effect.Garlands
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
-		[ProviderDescription(@"Direction")]
+		[ProviderDescription(@"Changes the direction that the garlands stack.")]
 		[PropertyOrder(1)]
 		public GarlandsDirection Direction
 		{
@@ -128,8 +128,8 @@ namespace VixenModules.Effect.Garlands
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Display Type")]
-		[ProviderDescription(@"Display Type")]
+		[ProviderDisplayName(@"Garland Type")]
+		[ProviderDescription(@"Changes the garland type")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 4, 1)]
 		[PropertyOrder(4)]
@@ -147,7 +147,7 @@ namespace VixenModules.Effect.Garlands
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Spacing")]
-		[ProviderDescription(@"Spacing")]
+		[ProviderDescription(@"Adjusts the space between garlands.")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
 		[PropertyOrder(5)]
@@ -249,12 +249,10 @@ namespace VixenModules.Effect.Garlands
 			//Nothing to clean up
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-			int x, y, yadj, ylimit, ring, width, height;
-			double ratio;
-			Color color;
+			int width, height;
 			double totalFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime) -1;
 			
 			int pixelSpacing = Spacing * BufferHt / 100 + 3;
@@ -283,19 +281,18 @@ namespace VixenModules.Effect.Garlands
 			}
 			_frames++;
 
-			for (ring = 0; ring < height; ring++)
+			for (int ring = 0; ring < height; ring++)
 			{
-				ratio = (double)ring / (double)height;
-				color = GetMultiColorBlend(ratio, false, frame);
-				HSV hsv = new HSV();
-				hsv = HSV.FromRGB(color);
+				var ratio = ring / (double)height;
+				var color = GetMultiColorBlend(ratio, false, frame);
+				var hsv = HSV.FromRGB(color);
 				hsv.V = hsv.V*level;
 				
-				y = garlandsState - ring * pixelSpacing;
-				ylimit = height - ring - 1;
-				for (x = 0; x < width; x++)
+				var y = garlandsState - ring * pixelSpacing;
+				var ylimit = height - ring - 1;
+				for (int x = 0; x < width; x++)
 				{
-					yadj = y;
+					var yadj = y;
 					switch (Type)
 					{
 						case 1:
