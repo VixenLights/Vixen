@@ -418,13 +418,12 @@ namespace VixenModules.Effect.Snowflakes
 			int minDirection = 1;
 			int maxDirection = 360;
 
-			double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed) / 5 : (double)Speed / 5;
-
 			// create new SnowFlakes and maintain maximum number as per users selection.
 
 			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < FlakeCount ? 1 : FlakeCount;
 			for (int i = 0; i < flakeCount; i++)
 			{
+				double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed) / 5 : (double)Speed / 5;
 				if (_snowFlakes.Count >= FlakeCount) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
