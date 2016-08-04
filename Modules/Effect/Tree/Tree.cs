@@ -293,7 +293,7 @@ namespace VixenModules.Effect.Tree
 			}
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			double blendLevel = BlendCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
