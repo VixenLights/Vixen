@@ -447,6 +447,10 @@ namespace VixenApplication
 				if (messageBox.DialogResult == DialogResult.OK)
 					editor.Save();
 			}
+			else if (editor.IsEditorStateModified)
+			{
+				editor.Save();
+			}
 
 			if (_openEditors.Contains(editor)) {
 				_openEditors.Remove(editor);

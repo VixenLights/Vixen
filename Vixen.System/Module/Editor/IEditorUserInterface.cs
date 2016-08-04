@@ -32,6 +32,7 @@ namespace Vixen.Module.Editor
 		void Refresh();
 		//EditorValues EditorValues { get; }
 		bool IsModified { get; }
+		bool IsEditorStateModified { get; set; }
 		bool IsDisposed { get; }
 	}
 }
