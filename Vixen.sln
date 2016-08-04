@@ -365,6 +365,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaskFill", "Modules\LayerCombiningFilter\MaskFill\MaskFill.csproj", "{63B2964A-6190-4746-B12D-7D79DFCA7BB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glediator", "Modules\Effect\Glediator\Glediator.csproj", "{3B88D0A6-CD89-4E14-996A-3EB6B27F4DA7}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Garlands", "Modules\Effect\Garlands\Garlands.csproj", "{A23EA1BF-1AEF-499A-BAA8-4E58EC9A1A46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinWheel", "Modules\Effect\PinWheel\PinWheel.csproj", "{6F110A5E-C126-44B9-9F60-E24AB9332949}"
