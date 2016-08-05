@@ -182,23 +182,23 @@ namespace VixenModules.Property.Color
 						case ElementColorType.FullColor:
 							mixColors = true;
 
-							for (int i = 0; i <= 2; i++)
+							foreach (var color in comboBoxColorOrder.SelectedItem.ToString().ToCharArray())
 							{
-								switch (comboBoxColorOrder.SelectedItem.ToString().Substring(i,1))
+								switch (color)
 								{
-									case "R":
+									case 'R':
 										cbi = new ColorBreakdownItem();
 										cbi.Color = System.Drawing.Color.Red;
 										cbi.Name = Red;
 										newBreakdownItems.Add(cbi);
 										break;
-									case "G":
+									case 'G':
 										cbi = new ColorBreakdownItem();
 										cbi.Color = System.Drawing.Color.Lime;
 										cbi.Name = Green;
 										newBreakdownItems.Add(cbi);
 										break;
-									case "B":
+									case 'B':
 										cbi = new ColorBreakdownItem();
 										cbi.Color = System.Drawing.Color.Blue;
 										cbi.Name = Blue;
