@@ -56,9 +56,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				// Add the effects to the tree
 				// Set default to basic to get rid of annoying possible null reference warning.
-
+				if (effectDesriptor.EffectName == "Nutcracker") continue;
 				TreeNode parentNode = treeEffects.Nodes["treeBasic"];
-				
+
 				switch (effectDesriptor.EffectGroup)
 				{
 					case EffectGroups.Basic:

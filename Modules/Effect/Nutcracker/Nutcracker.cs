@@ -81,22 +81,14 @@ namespace VixenModules.Effect.Nutcracker
 			}
 		}
 
-		//public double IntensityLevel
-		//{
-		//	get { return 100; }
-		//	set { IsDirty = true; }
-		//}
-
-		//public Color Color
-		//{
-		//	get { return SystemColors.ActiveBorder; }
-		//	set { IsDirty = true; }
-		//}
-		[Category("Warning")]
-		[DisplayName(" ")]
-		public string Warning
+		public override string Information
 		{
-			get { return "Not supported in this editor."; }
+			get { return "To edit this existing effect, double click on the effect in the timeline and use the legacy effect editor.\r\n\nWARNING: This effect will soon be deprecated. You should replace this effect with the newer native effect of the same type."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/"; }
 		}
 
 		[Value]
