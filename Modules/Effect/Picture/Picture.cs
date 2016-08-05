@@ -26,7 +26,6 @@ namespace VixenModules.Effect.Picture
 		private int _frameCount;
 		private FrameDimension _dimension;
 		private FastPixel.FastPixel _fp;
-		private static Random _random = new Random();
 		private bool _enableColorEffect;
 		private double _movementX = 0.0;
 		private double _movementY = 0.0;
@@ -272,23 +271,6 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Enable Background Color")]
-		[ProviderDescription(@"Replaces black color based on the sensitivity")]
-		[PropertyOrder(5)]
-		public bool EnableBackgroundColor
-		{
-			get { return _data.EnableBackgroundColor; }
-			set
-			{
-				_data.EnableBackgroundColor = value;
-				IsDirty = true;
-				UpdateBackgroundColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Movement Rate")]
 		[ProviderDescription(@"MovementRate")]
 		[PropertyEditor("SliderEditor")]
@@ -340,56 +322,6 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Background", 4)]
-		[ProviderDisplayName(@"Sensitivity")]
-		[ProviderDescription(@"Adjusts the background color sensitivity")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
-		[PropertyOrder(1)]
-		public int Sensitivity
-		{
-			get { return _data.Sensitivity; }
-			set
-			{
-				_data.Sensitivity = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Background", 4)]
-		[ProviderDisplayName(@"Gradient")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(2)]
-		public ColorGradient BackgroundColor
-		{
-			get { return _data.BackgroundColor; }
-			set
-			{
-				_data.BackgroundColor = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Background", 4)]
-		[ProviderDisplayName(@"Brightness")]
-		[ProviderDescription(@"Brightness of the Background color")]
-		[PropertyOrder(3)]
-		public Curve BackgroundBrightness
-		{
-			get { return _data.BackgroundBrightness; }
-			set
-			{
-				_data.BackgroundBrightness = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Level properties
@@ -433,7 +365,6 @@ namespace VixenModules.Effect.Picture
 		{
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
-			UpdateBackgroundColorAttribute(false);
 			UpdateGifSpeedAttribute(false);
 			UpdateScaleAttribute(false);
 			UpdateMovementRateAttribute(false);
@@ -499,21 +430,6 @@ namespace VixenModules.Effect.Picture
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"GifSpeed", !_gifSpeed}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateBackgroundColorAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
-			{
-				{"BackgroundBrightness", EnableBackgroundColor},
-				{"BackgroundColor", EnableBackgroundColor},
-				{"Sensitivity", EnableBackgroundColor}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -603,16 +519,12 @@ namespace VixenModules.Effect.Picture
 					_gifSpeed = false;
 				}
 				UpdateGifSpeedAttribute();
-				if (BackgroundBrightness == null) //This will only be null for Picture effects that are already on the time line. This is due to the upgrade for the effect.
+				if (Colors == null) //This will only be null for Picture effects that are already on the time line. This is due to the upgrade for the effect.
 				{
-					BackgroundBrightness = new Curve(new PointPairList(new[] {0.0, 100}, new[] {50.0, 50.0}));
 					Colors = new ColorGradient(Color.DodgerBlue);
-					BackgroundColor = new ColorGradient(Color.Red);
-					Sensitivity = 15;
 					Direction = 0;
 					IncreaseBrightness = 10;
 					GifSpeed = 1;
-					EnableBackgroundColor = false;
 					ColorEffect = ColorEffect.None;
 					MovementRate = 4;
 				}
@@ -937,35 +849,20 @@ namespace VixenModules.Effect.Picture
 
 		private HSV CustomColor(HSV hsv, int frame, double level, Color fpColor)
 		{
-			double backgroundLevel = BackgroundBrightness.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-			double backgroundSensitivity = Sensitivity;
-			if (hsv.V >= backgroundSensitivity / 100)
+			if (ColorEffect == ColorEffect.CustomColor)
 			{
-				if (ColorEffect == ColorEffect.CustomColor)
-				{
-					Color newColor = new Color();
-					newColor = _data.Colors.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-					double hsvLevel = Convert.ToInt32(fpColor.GetBrightness() * 255);
-					hsv = HSV.FromRGB(newColor);
-					hsv.V = hsvLevel / 100;
-				}
+				Color newColor = new Color();
+				newColor = _data.Colors.GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100);
+				double hsvLevel = Convert.ToInt32(fpColor.GetBrightness()*255);
+				hsv = HSV.FromRGB(newColor);
+				hsv.V = hsvLevel/100;
+			}
 
-				double tempV = hsv.V * level * ((double)(IncreaseBrightness) / 10);
-				if (tempV > 1)
-					tempV = 1;
-				hsv.V = tempV;
-			}
-			else
-			{
-				//Background color
-				if (EnableBackgroundColor)
-				{
-					fpColor = BackgroundColor.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-					hsv = HSV.FromRGB(fpColor);
-					hsv.V = hsv.V * backgroundLevel * level;
-				}
-			}
-			
+			double tempV = hsv.V*level*((double) (IncreaseBrightness)/10);
+			if (tempV > 1)
+				tempV = 1;
+			hsv.V = tempV;
+
 			return hsv;
 		}
 

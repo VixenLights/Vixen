@@ -22,15 +22,11 @@ namespace VixenModules.Effect.Picture
 			YOffset = 0;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Colors = new ColorGradient(Color.DodgerBlue);
-			BackgroundColor = new ColorGradient(Color.Red);
-			BackgroundBrightness = new Curve(new PointPairList(new[] { 0.0, 100 }, new[] { 50.0, 50.0 }));
 			ColorEffect = ColorEffect.None;
 			ScalePercent = 50;
 			MovementRate = 4;
-			Sensitivity = 15;
 			Direction = 0;
 			IncreaseBrightness = 10;
-			EnableBackgroundColor = false;
 			ScaleToGrid = true;
 			TilePictures = TilePictures.BlueGlowDots;
 			GifSpeed = 1;
@@ -61,13 +57,7 @@ namespace VixenModules.Effect.Picture
 		public bool ScaleToGrid { get; set; }
 
 		[DataMember]
-		public bool EnableBackgroundColor { get; set; }
-
-		[DataMember]
 		public int ScalePercent { get; set; }
-
-		[DataMember]
-		public int Sensitivity { get; set; }
 
 		[DataMember]
 		public int XOffset { get; set; }
@@ -83,12 +73,6 @@ namespace VixenModules.Effect.Picture
 
 		[DataMember]
 		public ColorGradient Colors { get; set; }
-
-		[DataMember]
-		public ColorGradient BackgroundColor { get; set; }
-
-		[DataMember]
-		public Curve BackgroundBrightness { get; set; }
 
 		[DataMember]
 		public int Direction { get; set; }
@@ -119,11 +103,7 @@ namespace VixenModules.Effect.Picture
 				Direction = Direction,
 				GifSpeed = GifSpeed,
 				IncreaseBrightness = IncreaseBrightness,
-				Sensitivity = Sensitivity,
-				Colors = Colors,
-				BackgroundColor = BackgroundColor,
-				EnableBackgroundColor = EnableBackgroundColor,
-				BackgroundBrightness = new Curve(BackgroundBrightness)
+				Colors = Colors
 			};
 			return result;
 		}
