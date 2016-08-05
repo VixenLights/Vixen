@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TilePictures.cs" />
+    <Compile Include="ColorType.cs" />
     <Compile Include="Picture.cs" />
     <Compile Include="PictureData.cs" />
     <Compile Include="PictureDescriptor.cs" />
@@ -62,6 +64,11 @@
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
+      <Name>ColorGradients</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
@@ -85,6 +92,42 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Effect48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\BlueGlowDots.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Bubbles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Checkers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Damask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Diamonds.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Rain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Snowflakes1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Snowflakes2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Stripes1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\Stripes2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\TuttiFruitti.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PictureTiles\VintageDamask.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
