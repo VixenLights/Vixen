@@ -32,6 +32,7 @@ namespace VixenModules.Property.Color
 			ThemeUpdateControls.UpdateControls(this);
 			colorPanelSingleColor.BackColor = System.Drawing.Color.RoyalBlue;
 			colorPanelSingleColor.Color = System.Drawing.Color.RoyalBlue;
+			comboBoxColorOrder.SelectedIndex = 0;
 		}
 
 		public string HelperName
@@ -181,22 +182,30 @@ namespace VixenModules.Property.Color
 						case ElementColorType.FullColor:
 							mixColors = true;
 
-							// TODO: really, RGB isn't the only option for 'full color': some people use white as well.  We should allow for that.
-							cbi = new ColorBreakdownItem();
-							cbi.Color = System.Drawing.Color.Red;
-							cbi.Name = Red;
-							newBreakdownItems.Add(cbi);
-
-							cbi = new ColorBreakdownItem();
-							cbi.Color = System.Drawing.Color.Lime;
-							cbi.Name = Green;
-							newBreakdownItems.Add(cbi);
-
-							cbi = new ColorBreakdownItem();
-							cbi.Color = System.Drawing.Color.Blue;
-							cbi.Name = Blue;
-							newBreakdownItems.Add(cbi);
-
+							foreach (var color in comboBoxColorOrder.SelectedItem.ToString().ToCharArray())
+							{
+								switch (color)
+								{
+									case 'R':
+										cbi = new ColorBreakdownItem();
+										cbi.Color = System.Drawing.Color.Red;
+										cbi.Name = Red;
+										newBreakdownItems.Add(cbi);
+										break;
+									case 'G':
+										cbi = new ColorBreakdownItem();
+										cbi.Color = System.Drawing.Color.Lime;
+										cbi.Name = Green;
+										newBreakdownItems.Add(cbi);
+										break;
+									case 'B':
+										cbi = new ColorBreakdownItem();
+										cbi.Color = System.Drawing.Color.Blue;
+										cbi.Name = Blue;
+										newBreakdownItems.Add(cbi);
+										break;
+								}
+							}
 							break;
 
 						case ElementColorType.MultipleDiscreteColors:
@@ -311,6 +320,7 @@ namespace VixenModules.Property.Color
 			colorPanelSingleColor.Enabled = radioButtonOptionSingle.Checked;
 			comboBoxColorSet.Enabled = radioButtonOptionMultiple.Checked;
 			buttonColorSetsSetup.Enabled = radioButtonOptionMultiple.Checked;
+			comboBoxColorOrder.Enabled = radioButtonOptionFullColor.Checked;
 
 			buttonOk.Enabled = radioButtonOptionSingle.Checked || radioButtonOptionMultiple.Checked || radioButtonOptionFullColor.Checked;
 		}
