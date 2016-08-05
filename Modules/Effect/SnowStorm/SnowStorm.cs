@@ -19,7 +19,7 @@ namespace VixenModules.Effect.SnowStorm
 		private SnowStormData _data;
 		private static Random _random = new Random();
 		private double _gradientPosition = 0;
-		private List<SnowstormClass> SnowstormItems = new List<SnowstormClass>();
+		private readonly List<SnowstormClass> _snowstormItems = new List<SnowstormClass>();
 		private int _lastSnowstormCount = 0;
 
 		public SnowStorm()
@@ -233,7 +233,7 @@ namespace VixenModules.Effect.SnowStorm
 
 		private class SnowstormClass
 		{
-			public List<Point> points = new List<Point>();
+			public readonly List<Point> Points = new List<Point>();
 			public HSV Hsv;
 			public int Idx, SsDecay;
 			public int Color;
@@ -241,7 +241,7 @@ namespace VixenModules.Effect.SnowStorm
 
 			public SnowstormClass()
 			{
-				points.Clear();
+				Points.Clear();
 			}
 		};
 
@@ -308,7 +308,7 @@ namespace VixenModules.Effect.SnowStorm
 				adv.X *= 2;
 				adv.Y *= 2;
 			}
-			Point xy = ssItem.points[ssItem.points.Count - 1];
+			Point xy = ssItem.Points[ssItem.Points.Count - 1];
 			xy.X += adv.X;
 			xy.Y += adv.Y;
 
@@ -316,32 +316,30 @@ namespace VixenModules.Effect.SnowStorm
 			xy.Y %= BufferHt;
 			if (xy.X < 0) xy.X += BufferWi;
 			if (xy.Y < 0) xy.Y += BufferHt;
-			ssItem.points.Add(xy);
+			ssItem.Points.Add(xy);
 		}
 
-		protected override void RenderEffect(int frame, ref PixelFrameBuffer frameBuffer)
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			HSV hsv;
 			int colorcnt = Colors.Count;
 			int count = Convert.ToInt32(BufferWi * BufferHt * Count / 2000) + 1;
-			int TailLength = BufferWi * BufferHt * Length / 2000 + 2;
-			SnowstormClass ssItem;
+			int tailLength = BufferWi * BufferHt * Length / 2000 + 2;
 			Point xy = new Point();
 			int r;
 			if (frame == 0 || count != _lastSnowstormCount)
 			{
 				_lastSnowstormCount = count;
-				SnowstormItems.Clear();
+				_snowstormItems.Clear();
 			}
 			// create snowstorm elements
 			for (int i = 0; i < count; i++)
 			{
-				if (SnowstormItems.Count < count)
+				if (_snowstormItems.Count < count)
 				{
-					ssItem = new SnowstormClass();
+					var ssItem = new SnowstormClass();
 					ssItem.Idx = i;
 					ssItem.SsDecay = 0;
-					ssItem.points.Clear();
+					ssItem.Points.Clear();
 					switch (ColorType)
 					{
 						case SnowStormColorType.Range: //Random two colors are selected from the list for each Snowstorms.
@@ -354,47 +352,46 @@ namespace VixenModules.Effect.SnowStorm
 							break;
 						case SnowStormColorType.Gradient:
 							ssItem.Color = rand()%colorcnt;
-							_gradientPosition = 100/(double) TailLength/100;
+							_gradientPosition = 100/(double) tailLength/100;
 							ssItem.Hsv = HSV.FromRGB(Colors[ssItem.Color].GetColorAt(0));
 							break;
 					}
 					// start in a random state
-					r = rand()%(2*TailLength);
+					r = rand()%(2*tailLength);
 					if (r > 0)
 					{
 						xy.X = rand()%BufferWi;
 						xy.Y = rand()%BufferHt;
 						//ssItem.points.push_back(xy);
-						ssItem.points.Add(xy);
+						ssItem.Points.Add(xy);
 					}
-					if (r >= TailLength)
+					if (r >= tailLength)
 					{
-						ssItem.SsDecay = r - TailLength;
-						r = TailLength;
+						ssItem.SsDecay = r - tailLength;
+						r = tailLength;
 					}
 					for (int j = 1; j < r; j++)
 					{
 						SnowstormAdvance(ssItem);
 					}
-					SnowstormItems.Add(ssItem);
+					_snowstormItems.Add(ssItem);
 				}
 			}
 
 			// render Snowstorm Items
-			int sz;
-			foreach (SnowstormClass it in SnowstormItems)
+			foreach (SnowstormClass it in _snowstormItems)
 			{
-				if (it.points.Count == 0)
+				if (it.Points.Count == 0)
 				{
 					xy.X = rand() % BufferWi;
 					xy.Y = rand() % BufferHt;
-					it.points.Add(xy);
+					it.Points.Add(xy);
 				}
 				else if (rand() % 20 < Speed)
 				{
 					SnowstormAdvance(it);
 				}
-				sz = it.points.Count();
+				var sz = it.Points.Count();
 				for (int pt = 0; pt < sz; pt++)
 				{
 					switch (ColorType)
@@ -408,10 +405,10 @@ namespace VixenModules.Effect.SnowStorm
 							it.Hsv = HSV.FromRGB(Colors[it.Color].GetColorAt(_gradientPosition * pt));
 							break;
 					}
-					hsv = it.Hsv;
-					hsv.V = (float)(1.0 - (double)(sz - pt + it.SsDecay) / TailLength);
+					var hsv = it.Hsv;
+					hsv.V = (float)(1.0 - (double)(sz - pt + it.SsDecay) / tailLength);
 					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-					if (it.points[pt].X >= BufferWi - 1 || it.points[pt].Y >= BufferHt - 1 || it.points[pt].X <= 1 || it.points[pt].Y <= 1)
+					if (it.Points[pt].X >= BufferWi - 1 || it.Points[pt].Y >= BufferHt - 1 || it.Points[pt].X <= 1 || it.Points[pt].Y <= 1)
 					{
 						it.Expired = true; //flags Snowstorms that have reached the end of the grid as expiried.
 						break;
@@ -419,25 +416,25 @@ namespace VixenModules.Effect.SnowStorm
 					if (hsv.V < 0.0) hsv.V = 0.0f;
 					if (!ReverseDirection)
 					{
-						frameBuffer.SetPixel(it.points[pt].X, it.points[pt].Y, hsv);
+						frameBuffer.SetPixel(it.Points[pt].X, it.Points[pt].Y, hsv);
 					}
 					else
 					{
-						frameBuffer.SetPixel(BufferWi - it.points[pt].X, it.points[pt].Y, hsv);
+						frameBuffer.SetPixel(BufferWi - it.Points[pt].X, it.Points[pt].Y, hsv);
 					}
 				}
 			}
 			// delete old Snowstorms
-			int SnowStorms = 0;
-			while (SnowStorms < SnowstormItems.Count)
+			int snowStorms = 0;
+			while (snowStorms < _snowstormItems.Count)
 			{
-				if (SnowstormItems[SnowStorms].Expired)
+				if (_snowstormItems[snowStorms].Expired)
 				{
-					SnowstormItems.RemoveAt(SnowStorms);
+					_snowstormItems.RemoveAt(snowStorms);
 				}
 				else
 				{
-					SnowStorms++;
+					snowStorms++;
 				}
 			}
 		}
