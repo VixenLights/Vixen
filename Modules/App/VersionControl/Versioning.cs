@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 using GitSharp;
 
 namespace VersionControl
@@ -33,6 +35,10 @@ namespace VersionControl
         {
             GitDetails = null;
             InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
             VersionControlData = data;
             _repo = repo;
 
@@ -262,6 +268,10 @@ namespace VersionControl
 
         }
 
+		private void groupBoxes_Paint(object sender, PaintEventArgs e)
+		{
+			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
 
     }
 }
