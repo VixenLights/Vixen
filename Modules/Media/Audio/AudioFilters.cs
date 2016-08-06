@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 //Based off the algorithms and pseudo-code in dspguide.com Chapter 20.
 
-namespace VixenModules.Effect.AudioHelp
+namespace VixenModules.Media.Audio
 {
-    public class filterCoefs
+    public struct FilterCoefs
     {
-        public double[] a;
-        public double[] b;
+        public double[] A;
+        public double[] B;
     }
 
-    class audioFilters
+    public class AudioFilters
     {
-        public static double[] highPass(double freq, int sampleRate, double[] data)
+        public static double[] HighPass(double freq, int sampleRate, double[] data)
         {
             double fc = (double)freq / sampleRate;
             int numOfPoles = 0;
@@ -28,7 +24,7 @@ namespace VixenModules.Effect.AudioHelp
             else if (fc <= .45) numOfPoles = 6;
             else numOfPoles = 4;
 
-            filterCoefs coefs = generateCoefficients(fc, true, 2, numOfPoles);
+            FilterCoefs coefs = generateCoefficients(fc, true, 2, numOfPoles);
 
             double[] paddedData = new double[data.Length + 100];
             double[] newData = new double[data.Length + 100];
@@ -42,19 +38,15 @@ namespace VixenModules.Effect.AudioHelp
                 paddedData[i + 50] = data[i];
             }
 
-            double current;
-            double future;
-            double past;
-
-            for (int i = 20; i < (paddedData.Length - numOfPoles); i++)
+	        for (int i = 20; i < (paddedData.Length - numOfPoles); i++)
             {
-                current = paddedData[i] * coefs.a[0];
-                future = 0;
-                past = 0;
-                for (int x = 1; x < coefs.a.Length; x++)
+                var current = paddedData[i] * coefs.A[0];
+                double future = 0;
+                double past = 0;
+                for (int x = 1; x < coefs.A.Length; x++)
                 {
-                    future += paddedData[i + x] * coefs.a[x];
-                    past += newData[i - x] * coefs.b[x - 1];
+                    future += paddedData[i + x] * coefs.A[x];
+                    past += newData[i - x] * coefs.B[x - 1];
                 }
                 newData[i] = current + future + past;
             }
@@ -72,7 +64,7 @@ namespace VixenModules.Effect.AudioHelp
             return ret;
         }
 
-        public static double[] lowPass(double freq, int sampleRate, double[] data)
+        public static double[] LowPass(double freq, int sampleRate, double[] data)
         {
             double fc = (double)freq / sampleRate;
             int numOfPoles = 0;
@@ -84,7 +76,7 @@ namespace VixenModules.Effect.AudioHelp
             else if (fc <= .45) numOfPoles = 6;
             else numOfPoles = 4;
 
-            filterCoefs coefs = generateCoefficients(fc, false, 2, numOfPoles);
+            FilterCoefs coefs = generateCoefficients(fc, false, 2, numOfPoles);
 
             double[] paddedData = new double[data.Length + 100];
             double[] newData = new double[data.Length + 100];
@@ -98,19 +90,15 @@ namespace VixenModules.Effect.AudioHelp
                 paddedData[i + 50] = data[i];
             }
 
-            double current;
-            double future;
-            double past;
-
-            for (int i = 20; i < (paddedData.Length - numOfPoles); i++)
+	        for (int i = 20; i < (paddedData.Length - numOfPoles); i++)
             {
-                current = paddedData[i] * coefs.a[0];
-                future = 0;
-                past = 0;
-                for (int x = 1; x < coefs.a.Length; x++)
+                var current = paddedData[i] * coefs.A[0];
+                double future = 0;
+                double past = 0;
+                for (int x = 1; x < coefs.A.Length; x++)
                 {
-                    future += paddedData[i + x] * coefs.a[x];
-                    past += newData[i - x] * coefs.b[x - 1];
+                    future += paddedData[i + x] * coefs.A[x];
+                    past += newData[i - x] * coefs.B[x - 1];
                 }
                 newData[i] = current + future + past;
             }
@@ -128,15 +116,15 @@ namespace VixenModules.Effect.AudioHelp
             return ret;
         }
 
-        /// <summary>
-        /// dspguide.com Chapter 20
-        /// </summary>
-        /// <param name="frequencyCutoff">0 to .5 relative to sampling frequency</param>
-        /// <param name="lowPass">false for lowpass, true for highpass</param>
-        /// <param name="percentRipple">0 to 29 percent ripple, .5 recommended</param>
-        /// <param name="numPoles">Number of poles, must be even</param>
-        ///         
-        public static filterCoefs generateCoefficients(double frequencyCutoff, bool highPass, double percentRipple, int numPoles)
+		/// <summary>
+		/// dspguide.com Chapter 20
+		/// </summary>
+		/// <param name="frequencyCutoff">0 to .5 relative to sampling frequency</param>
+		/// <param name="highPass">false for lowpass, true for highpass</param>
+		/// <param name="percentRipple">0 to 29 percent ripple, .5 recommended</param>
+		/// <param name="numPoles">Number of poles, must be even</param>
+		///         
+		public static FilterCoefs generateCoefficients(double frequencyCutoff, bool highPass, double percentRipple, int numPoles)
         {
             double[] a = new double[22];
             double[] b = new double[22];
@@ -149,33 +137,33 @@ namespace VixenModules.Effect.AudioHelp
             a[2] = 1;
             b[2] = 1;
 
-            double rp, ip, es, vx, kx, t, w, m, d, k = 0, x0, x1, x2, y1, y2;
+            double k = 0;
 
             for (int p = 1; p <= (numPoles / 2); p++)
             {
-                rp = -Math.Cos(Math.PI / (numPoles * 2) + (p - 1) * Math.PI / numPoles);
-                ip = Math.Sin(Math.PI / (numPoles * 2) + (p - 1) * Math.PI / numPoles);
+                var rp = -Math.Cos(Math.PI / (numPoles * 2) + (p - 1) * Math.PI / numPoles);
+                var ip = Math.Sin(Math.PI / (numPoles * 2) + (p - 1) * Math.PI / numPoles);
 
                 if (percentRipple != 0)
                 { //Warp from a circle to an ellipse
-                    es = Math.Sqrt(Math.Pow(100 / (100 - percentRipple), 2) - 1);
-                    vx = (1.0 / numPoles) * Math.Log((1.0 / es) + Math.Sqrt((1.0 / Math.Pow(es, 2)) + 1));
-                    kx = (1.0 / numPoles) * Math.Log((1.0 / es) + Math.Sqrt((1.0 / Math.Pow(es, 2)) - 1));
+                    var es = Math.Sqrt(Math.Pow(100 / (100 - percentRipple), 2) - 1);
+                    var vx = (1.0 / numPoles) * Math.Log((1.0 / es) + Math.Sqrt((1.0 / Math.Pow(es, 2)) + 1));
+                    var kx = (1.0 / numPoles) * Math.Log((1.0 / es) + Math.Sqrt((1.0 / Math.Pow(es, 2)) - 1));
                     kx = (Math.Exp(kx) + Math.Exp(-kx)) / 2;
                     rp = rp * ((Math.Exp(vx) - Math.Exp(-vx)) / 2) / kx;
                     ip = ip * ((Math.Exp(vx) + Math.Exp(-vx)) / 2) / kx;
                 }
 
                 //s-domain to z-domain conversion
-                t = 2 * Math.Tan(.5);
-                w = 2 * Math.PI * frequencyCutoff;
-                m = Math.Pow(rp, 2) + Math.Pow(ip, 2);
-                d = 4 - 4 * rp * t + m * Math.Pow(t, 2);
-                x0 = Math.Pow(t, 2) / d;
-                x1 = 2 * Math.Pow(t, 2) / d;
-                x2 = Math.Pow(t, 2) / d;
-                y1 = (8 - 2 * m * Math.Pow(t, 2)) / d;
-                y2 = (-4 - 4 * rp * t - m * Math.Pow(t, 2)) / d;
+                var t = 2 * Math.Tan(.5);
+                var w = 2 * Math.PI * frequencyCutoff;
+                var m = Math.Pow(rp, 2) + Math.Pow(ip, 2);
+                var d = 4 - 4 * rp * t + m * Math.Pow(t, 2);
+                var x0 = Math.Pow(t, 2) / d;
+                var x1 = 2 * Math.Pow(t, 2) / d;
+                var x2 = Math.Pow(t, 2) / d;
+                var y1 = (8 - 2 * m * Math.Pow(t, 2)) / d;
+                var y2 = (-4 - 4 * rp * t - m * Math.Pow(t, 2)) / d;
 
                 //lp to lp or lp to hp transform
                 if (highPass) k = -Math.Cos(w / 2 + .5) / Math.Cos(w / 2 - .5);
@@ -223,14 +211,14 @@ namespace VixenModules.Effect.AudioHelp
             for (int i = 0; i < 20; i++)
                 a[i] = a[i] / gain;
 
-            filterCoefs ret = new filterCoefs();
-            ret.a = new double[numPoles + 1];
-            ret.b = new double[numPoles];
+            FilterCoefs ret = new FilterCoefs();
+            ret.A = new double[numPoles + 1];
+            ret.B = new double[numPoles];
             for (int i = 0; i <= numPoles; i++)
-                ret.a[i] = a[i];
+                ret.A[i] = a[i];
 
             for (int i = 1; i <= numPoles; i++)
-                ret.b[i - 1] = b[i];
+                ret.B[i - 1] = b[i];
 
             return ret;
         }

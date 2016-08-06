@@ -240,9 +240,9 @@ namespace VixenModules.Effect.AudioHelp
                 });
 
             if (LowPass)
-                _audioChannel = audioFilters.lowPass(LowPassFreq, (int) _audioModule.Frequency, _audioChannel);
+                _audioChannel = AudioFilters.LowPass(LowPassFreq, (int) _audioModule.Frequency, _audioChannel);
             if (HighPass)
-                _audioChannel = audioFilters.highPass(HighPassFreq, (int)_audioModule.Frequency, _audioChannel);
+                _audioChannel = AudioFilters.HighPass(HighPassFreq, (int)_audioModule.Frequency, _audioChannel);
 
             RecalculateVolume();
             _audioLoaded = true;
