@@ -18,7 +18,7 @@ namespace VixenModules.Effect.Garlands
 		public GarlandsData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			Direction = GarlandsDirection.Down;
+			Direction = GarlandsDirection.Up;
 			Iterations = 1;
 			Speed = 30;
 			MovementType = MovementType.Iterations;
