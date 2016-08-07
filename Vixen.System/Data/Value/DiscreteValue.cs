@@ -17,7 +17,7 @@ namespace Vixen.Data.Value
 		public DiscreteValue(Color color, double intensity)
 		{
 			_color = color;
-			_intensity = intensity;
+			_intensity = XYZ.ClipValue(intensity, 0, 1);
 		}
 
 		public Color Color

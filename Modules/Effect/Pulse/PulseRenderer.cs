@@ -68,6 +68,7 @@ namespace VixenModules.Effect.Pulse
 						var endColor = colorGradient.GetColorAt(position);
 						var startIntensity = levelCurve.GetValue(lastPosition * 100) / 100;
 						var endIntensity = levelCurve.GetValue(position * 100) / 100;
+						
 
 						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
 						{
