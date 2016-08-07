@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -180,6 +181,10 @@ namespace VixenModules.App.Curves
 
 			if (returnValue > 100.0) returnValue = 100.0;
 			if (returnValue < 0.0) returnValue = 0.0;
+			if (double.IsNaN(returnValue))
+			{
+				returnValue = 100;
+			}
 
 			return returnValue;
 		}

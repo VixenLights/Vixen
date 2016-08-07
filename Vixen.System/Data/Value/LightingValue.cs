@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 
 namespace Vixen.Data.Value
@@ -32,7 +33,7 @@ namespace Vixen.Data.Value
 		public LightingValue(Color color, double intensity)
 		{
 			HSV.FromRGB(color, out _hue, out _saturation, out _value);
-			_intensity = intensity;
+			_intensity = XYZ.ClipValue(intensity,0,1);
 		}
 
 		/// <summary>
