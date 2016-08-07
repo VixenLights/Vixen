@@ -165,7 +165,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 30, 1)]
+		[NumberRange(1, 60, 1)]
 		[PropertyOrder(7)]
 		public int Speed
 		{
@@ -183,7 +183,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Min Speed")]
 		[ProviderDescription(@"Min Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 30, 1)]
+		[NumberRange(1, 60, 1)]
 		[PropertyOrder(8)]
 		public int MinSpeed
 		{
@@ -203,7 +203,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Max Speed")]
 		[ProviderDescription(@"Max Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(2, 30, 1)]
+		[NumberRange(2, 60, 1)]
 		[PropertyOrder(9)]
 		public int MaxSpeed
 		{
