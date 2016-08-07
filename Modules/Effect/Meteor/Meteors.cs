@@ -155,7 +155,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		[NumberRange(1, 200, 1)]
 		[PropertyOrder(6)]
 		public int Speed
 		{
@@ -173,7 +173,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Min Speed")]
 		[ProviderDescription(@"Min Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		[NumberRange(1, 200, 1)]
 		[PropertyOrder(7)]
 		public int MinSpeed
 		{
@@ -193,7 +193,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Max Speed")]
 		[ProviderDescription(@"Max Speed")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		[NumberRange(1, 200, 1)]
 		[PropertyOrder(8)]
 		public int MaxSpeed
 		{
