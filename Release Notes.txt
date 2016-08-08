@@ -1,3 +1,114 @@
+Vixen Release Notes - 3.3
+
+Features
+
+* Significant performance improvements throughout the application. 
+* Layering support has been added to define how effects mix in a sequence.
+* Many more Nutcracker effects have been ported to more full featured Vixen type effects. See tickets below for details. 
+* Several more effects have gained Location support.
+
+General
+
+* Improvements to handle high DPI displays better. 
+* Many usability enhancements and general UI polish.
+
+Installer
+* Changes to handle installs on Win 10 and not try to install .NET 4.5.2 as Win 10 comes with 4.6.
+
+Deprecation notice
+
+* The consolidated Nutcracker effect has been deprecated and will no longer be supported. Existing effects will continue to work, but efforts should be 
+made to migrate to the newer standalone versions of the individual effects.
+
+
+Bug Fixes / Features by ticket
+
+VIX-1083 Speed of the Snowflake and Meteor effects is not fast enough for large matrix
+VIX-1082 An unexpected error occured while drawing the grid
+VIX-1080 Effect: Garland - up/down is reversed
+VIX-1078 Twinkle effect static color has transparent color as the old default was empty
+VIX-1077 new meteor effect - meteors not evenly distributed
+VIX-1076 Vixen 3 Crashed when clicking in the Layers window
+VIX-1075 Pinwheel Center Start
+VIX-1074 Dev 209 Random Crashes
+VIX-1073 V3 Dev build not starting when loading data from released version
+VIX-1071 Add Location Positioning option to the new Plasma effect
+VIX-1069 Exception in TimelineGrid.OnPaint() System.ArgumentException: Value of '-2147483648' is not valid for 'alpha'.
+VIX-1067 Add Location support to Butterfly effect
+VIX-1066 Add Location support to Bars effect
+VIX-1065 Add Location support to Colorwash effect
+VIX-1063 Add a Description field to the effect editor for effects that may need it.
+VIX-1061 Cut Copy Paste order on Editor shortcut menu
+VIX-1060 Existing Previews no longer open and Vixen crashes
+VIX-1059 Show current layer in layer selection menu
+VIX-1058 Create new Plasma effect
+VIX-1057 Auto-save after scrolling
+VIX-1055 Editor Minimized Crash
+VIX-1052 Create new Pinwheel effect
+VIX-1048 Effect Preview not following Layer settings
+VIX-1047 Default Layer Type
+VIX-1046 Make some minor improvements to the Mark Collections Docker
+VIX-1045 A few issues I have found with the newest dev release
+VIX-1042 Investigate preview drawing to check if it's double dimming.
+VIX-1039 New Multiply Color Mixing Filter
+VIX-1035 Make Improvements to the Firework effect.
+VIX-1033 New Firework effect doesn't seem to honor explosion count
+VIX-1030 The Discrete Color Picker still has the old theme
+VIX-1029 Firework effect does not work after changing the number of Explosions to 100
+VIX-1024 Random crash when zooming in and out quickly.
+VIX-1023 Preview Pixel Grid Smart Object Size
+VIX-1017 Create Native Spirograph Effect based off the Nutcracker one in Vixen
+VIX-1016 Create Native Life Effect based off the Nutcracker one in Vixen
+VIX-1013 SnowFlake Effect doesn't perform the same as the Nutcracker SnowFlack effect does.
+VIX-1004 Create Native Color Wash Effect based off the Nutcracker one in Vixen.
+VIX-1003 When creating a new sequence the start and end time on the time line is set to 00:00:00
+VIX-992 Create Native Glediator Effect based off the Nutcracker one in Vixen
+VIX-987 Create Native Curtain Effect based off the Nutcracker one in Vixen
+VIX-986 The new feature to save row expansion has random bug in saving.
+VIX-985 Save the play from location in the ruler.
+VIX-983 Terminology consistency for grid/matrix related items
+VIX-982 Save dialog doesn't appear if only the Row height was changed and user exits the sequencer.
+VIX-981 Display Setup Additonal Buttons
+VIX-979	3.2u2 crashes when choosing font for Text effect
+VIX-978 Vixen 3.2u2 Crashes/freezes with firework effect
+VIX-977 Update the Picture Effect to include the Nutcracker Picture Tiles.
+VIX-976 Create Native Video Effect based off the Nutcracker one in Vixen.
+VIX-975 Create Native Meteor Effect based off the Nutcracker one in Vixen.
+VIX-974 Deleting and Adding Timeline Marks
+VIX-973 Minor Improvements to Sequence editor Timeline Panel
+VIX-972 Align Effects to Marks
+VIX-966 Remove the "Configure" sub menu under "Web Server" menu in the Vixen Main App Form
+VIX-954 unable to open new or saved sequence
+VIX-947 Add alignment tool for both start and end to marks
+VIX-946 Increase limit on align to marks tool
+VIX-944 Add additional header info to FPP exported files
+VIX-933 Add ability to adjust individual mark weight.
+VIX-920 Installed modules screen columns don't line up with headers.
+VIX-914 When zooming in\out using CTRL-Scroll, keep mouse timeline position
+VIX-913 Set row sizes
+VIX-906 Vixen crash after deleting an empty collection in Mark manager
+VIX-904 Vixen name on main admin window is Black
+VIX-894 Enhancement request to twinkle effect
+VIX-892 Change RGB Pixel order
+VIX-890 Stop trying to install .Net 4.5.2 on Windows 10
+VIX-887 High-DPI Scaling issue with Vixen
+VIX-875 Generic Numbered Group wizard naming improvement
+VIX-874 Add Multiple Screen should have "endless" checked by default
+VIX-872 Vixen crashes with attempted zoom in
+VIX-871 Add date stamp to show scheduler log.
+VIX-867 feature request for meteor effect
+VIX-850 Beat Mark Manager: Playback delay & Jump to start of track
+VIX-843 Export Default
+VIX-742 Add fit to time on effects
+VIX-649 Friday is part of weekend and weekday
+VIX-641 Mouse scroll wheel zoom rows
+VIX-622 Preview exit methods behave differently
+VIX-540 Shortcuts in Display do not work - Cntrl C, V, X do not work in the main Display module
+VIX-528 Restructuring of Nutcracker effects
+VIX-483 Request for 2 Vixen 2 Effects - Waveform and Frequency Spectrum
+
+
+
 Vixen Release Notes - 3.2u2
 
 Features / Fixes
