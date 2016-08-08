@@ -13,6 +13,7 @@ using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Text
@@ -21,10 +22,12 @@ namespace VixenModules.Effect.Text
 	{
 		private TextData _data;
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
+		private Font _font;
 
 		public Text()
 		{
 			_data = new TextData();
+			EnableTargetPositioning(true, true);
 			UpdateAllAttributes();
 		}
 
@@ -185,9 +188,27 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Text", 2)]
+		[ProviderDisplayName(@"Scale Text")]
+		[ProviderDescription(@"Scale Text")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 100, 1)]
+		[PropertyOrder(3)]
+		public int ScaleText
+		{
+			get { return _data.ScaleText; }
+			set
+			{
+				_data.ScaleText = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Text", 2)]
 		[ProviderDisplayName(@"CenterText")]
 		[ProviderDescription(@"CenterText")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public bool CenterText
 		{
 			get { return _data.CenterText; }
@@ -203,7 +224,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Text", 2)]
 		[ProviderDisplayName(@"TextMode")]
 		[ProviderDescription(@"TextMode")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public TextMode TextMode
 		{
 			get { return _data.TextMode; }
@@ -341,6 +362,7 @@ namespace VixenModules.Effect.Text
 
 		private void UpdateAllAttributes()
 		{
+			UpdateScaleTextAttribute(false);
 			UpdateBaseColorAttribute(false);
 			UpdatePositionXAttribute(false);
 			TypeDescriptor.Refresh(this);
@@ -352,6 +374,19 @@ namespace VixenModules.Effect.Text
 			{
 				{"BaseColor", UseBaseColor},
 				{"BaseLevelCurve", UseBaseColor}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateScaleTextAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"ScaleText", TargetPositioning == TargetPositioningType.Locations}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -378,7 +413,16 @@ namespace VixenModules.Effect.Text
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
+			UpdateScaleTextAttribute();
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
+				// Font is further adjusted using the scale text slider.
+				double newFontSize = ((StringCount - ((StringCount - Font.Size) / 100) * (100 - ScaleText))) * ((double)BufferHt / StringCount);
+				_font = new Font(Font.FontFamily.Name,  (int)newFontSize, Font.Style);
+				return;
+			}
+			_font = Font;
 		}
 
 		protected override void CleanUpRender()
@@ -390,96 +434,141 @@ namespace VixenModules.Effect.Text
 		{
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
-				using (Graphics graphics = Graphics.FromImage(bitmap))
+				InitialRender(frame, bitmap);
+
+				// copy to frameBuffer
+				for (int x = 0; x < BufferWi; x++)
 				{
-					var text = TextMode == TextMode.Normal ? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList() : SplitTextIntoCharacters(TextLines);
-					int numberLines=text.Count();
-					
-					SizeF textsize = new SizeF(0,0);
-					
-					foreach (string t in text)
+					for (int y = 0; y < BufferHt; y++)
 					{
-						if(!String.IsNullOrEmpty(t))
-						{
-							var size = graphics.MeasureString(t, Font);
-							if (size.Width > textsize.Width)
-							{
-								textsize = size;
-							}	
-						}
+						CalculatePixel(x, y, bitmap, frame, frameBuffer);
 					}
-					_maxTextSize = Convert.ToInt32(textsize.Width*.95);
-					int maxht = Convert.ToInt32(textsize.Height * numberLines);
-					int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + Position) / 2;
-					int offsetTop = (((BufferHt - maxht)/2)*2 + Position) / 2;
-					double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-					Point point;
-					
-					switch (Direction)
-					{
-						case TextDirection.Left:
-							// left
-							int leftX = BufferWi - (int)(intervalPosition * (textsize.Width + BufferWi));
-							
-							point =
-								new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2) : leftX), offsetTop);
-
-							DrawText(text, graphics, point);
-							
-							break;
-						case TextDirection.Right:
-							// right
-							int	rightX = -_maxTextSize + (int)(intervalPosition * (_maxTextSize + BufferWi));
-							
-							point =
-								new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2) : rightX), offsetTop);
-							DrawText(text, graphics, point);
-							break;
-						case TextDirection.Up:
-							// up
-							int	upY = BufferHt - (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
-							
-							point = new Point(offsetLeft,
-								Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int)(textsize.Height * numberLines)) / 2): upY));
-							DrawText(text, graphics, point);
-							break;
-						case TextDirection.Down:
-							// down
-							int	downY = -(int)(textsize.Height * numberLines) + (int)(((textsize.Height * numberLines) + BufferHt) * intervalPosition);
-			
-							point = new Point(offsetLeft,
-								Convert.ToInt32(CenterStop
-									? Math.Min(downY, (BufferHt - (int)(textsize.Height * numberLines)) / 2)
-									: downY));
-							DrawText(text, graphics, point);
-							break;
-						default:
-							// no movement - centered
-							point = new Point(((BufferWi-_maxTextSize)/2)+PositionX, offsetTop);
-							DrawText(text, graphics, point);
-							break;
-					}
-					
-					// copy to frameBuffer
-					for (int x = 0; x < BufferWi; x++)
-					{
-						for (int y = 0; y < BufferHt; y++)
-						{
-							Color color = bitmap.GetPixel(x, BufferHt - y - 1);
-							
-							if (!EmptyColor.Equals(color))
-							{
-								var hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-								frameBuffer.SetPixel(x, y, hsv);	
-							}
-							
-						}
-					}
-						
-						
 				}
+			}
+		}
 
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+				using (var bitmap = new Bitmap(BufferWi, BufferHt))
+				{
+					InitialRender(frame, bitmap);
+					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					{
+						foreach (var elementLocation in elementLocations)
+						{
+							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+						}
+					}
+				}
+			}
+		}
+
+		private void InitialRender(int frame, Bitmap bitmap)
+		{
+			using (Graphics graphics = Graphics.FromImage(bitmap))
+			{
+				var text = TextMode == TextMode.Normal
+					? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
+					: SplitTextIntoCharacters(TextLines);
+				int numberLines = text.Count();
+
+				SizeF textsize = new SizeF(0, 0);
+
+				foreach (string t in text)
+				{
+					if (!String.IsNullOrEmpty(t))
+					{
+						var size = graphics.MeasureString(t, _font);
+						if (size.Width > textsize.Width)
+						{
+							textsize = size;
+						}
+					}
+				}
+				_maxTextSize = Convert.ToInt32(textsize.Width*.95);
+				int maxht = Convert.ToInt32(textsize.Height*numberLines);
+				int offsetLeft = (((BufferWi - _maxTextSize)/2)*2 + Position)/2;
+				int offsetTop = (((BufferHt - maxht)/2)*2 + Position)/2;
+				double intervalPosition = (GetEffectTimeIntervalPosition(frame)*Speed)%1;
+				Point point;
+
+				switch (Direction)
+				{
+					case TextDirection.Left:
+						// left
+						int leftX = BufferWi - (int) (intervalPosition*(textsize.Width + BufferWi));
+
+						point =
+							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int) textsize.Width)/2) : leftX), offsetTop);
+
+						DrawText(text, graphics, point);
+
+						break;
+					case TextDirection.Right:
+						// right
+						int rightX = -_maxTextSize + (int) (intervalPosition*(_maxTextSize + BufferWi));
+
+						point =
+							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int) textsize.Width)/2) : rightX),
+								offsetTop);
+						DrawText(text, graphics, point);
+						break;
+					case TextDirection.Up:
+						// up
+						int upY = BufferHt - (int) (((textsize.Height*numberLines) + BufferHt)*intervalPosition);
+
+						point = new Point(offsetLeft,
+							Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int) (textsize.Height*numberLines))/2) : upY));
+						DrawText(text, graphics, point);
+						break;
+					case TextDirection.Down:
+						// down
+						int downY = -(int) (textsize.Height*numberLines) +
+						            (int) (((textsize.Height*numberLines) + BufferHt)*intervalPosition);
+
+						point = new Point(offsetLeft,
+							Convert.ToInt32(CenterStop
+								? Math.Min(downY, (BufferHt - (int) (textsize.Height*numberLines))/2)
+								: downY));
+						DrawText(text, graphics, point);
+						break;
+					default:
+						// no movement - centered
+						point = new Point(((BufferWi - _maxTextSize)/2) + PositionX, offsetTop);
+						DrawText(text, graphics, point);
+						break;
+				}
+			}
+		}
+
+		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
+		{
+			int yCoord = y;
+			int xCoord = x;
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Flip me over so and offset my coordinates I can act like the string version
+				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = y - BufferHtOffset;
+				x = x - BufferWiOffset;
+			}
+			Color color = bitmap.GetPixel(x, BufferHt - y - 1);
+
+			if (!EmptyColor.Equals(color))
+			{
+				var hsv = HSV.FromRGB(color);
+				hsv.V = hsv.V*level;
+
+				frameBuffer.SetPixel(xCoord, yCoord, hsv);
+			}
+			else if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Set me to my base color or transparent
+				frameBuffer.SetPixel(xCoord, yCoord, UseBaseColor ? BaseColor : Color.Transparent);
 			}
 		}
 
@@ -532,8 +621,8 @@ namespace VixenModules.Effect.Text
 			int i = 0;
 			foreach (var text in textLines)
 			{
-				
-				var size = g.MeasureString(text, Font);
+
+				var size = g.MeasureString(text, _font);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 				var brushPointX = p.X;
@@ -573,7 +662,7 @@ namespace VixenModules.Effect.Text
 			int i = 0;
 			foreach (var text in textLines)
 			{
-				var size = g.MeasureString(text, Font);
+				var size = g.MeasureString(text, _font);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 
@@ -602,7 +691,7 @@ namespace VixenModules.Effect.Text
 		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-			g.DrawString(text, Font, brush, p);
+			g.DrawString(text, _font, brush, p);
 		}
 	}
 }
