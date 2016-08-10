@@ -16,6 +16,7 @@ using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using Vixen.Attributes;
 using Vixen.TypeConverters;
 using VixenModules.Effect.Effect;
+using VixenModules.Property.Color;
 
 
 namespace VixenModules.Effect.AudioHelp
@@ -521,7 +522,9 @@ namespace VixenModules.Effect.AudioHelp
 			EffectIntents result = new EffectIntents();
 			if (isDiscrete)
 			{
-				foreach (Color color in gradient.GetColorsInGradient())
+				IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(node, false)
+						 .Intersect(gradient.GetColorsInGradient());
+				foreach (Color color in colors)
 				{
 					double proportion = gradient.GetProportionOfColorAt(startPos, color);
 					var startIntensity = (level.GetValue(startPos * 100) / 100) * proportion;
