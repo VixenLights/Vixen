@@ -396,6 +396,7 @@ namespace VixenModules.Effect.Fireworks
 			for (int i = 0; i < MaxFlakes; i++)
 			{
 				_fireworkBursts[i].Active = false;
+				_fireworkBursts[i].StartPeriod = -1; //Ensures there is no false firework at pixel 0,0 on Frame 0
 			}
 		}
 
