@@ -23,6 +23,9 @@ made to migrate to the newer standalone versions of the individual effects.
 
 Bug Fixes / Features by ticket
 
+VIX-1093 Alternating effect issue with discrete colors
+VIX-1090 FireWorks effect always shows a pixel ON at 0,0 coordinates at frame 0.
+VIX-1087 Audio effect issue with discrete colors
 VIX-1083 Speed of the Snowflake and Meteor effects is not fast enough for large matrix
 VIX-1082 An unexpected error occured while drawing the grid
 VIX-1080 Effect: Garland - up/down is reversed
