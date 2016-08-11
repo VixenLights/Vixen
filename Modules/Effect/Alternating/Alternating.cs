@@ -55,9 +55,7 @@ namespace VixenModules.Effect.Alternating
 		private void CheckForInvalidColorData()
 		{
 			// check for sane default colors when first rendering it
-			var validColors = new HashSet<Color>();
-			validColors.AddRange(TargetNodes.SelectMany(x => ColorModule.getValidColorsForElementNode(x, true)));
-
+			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
 				bool changed = false;
