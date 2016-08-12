@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using Vixen.Sys;
@@ -24,10 +23,10 @@ namespace VixenModules.Effect.Waveform
         [ProviderDisplayName(@"Reverse")]
         public bool Inverted
         {
-            get { return ((WaveformData)_data).Inverted; }
+            get { return ((WaveformData)Data).Inverted; }
             set
             {
-                ((WaveformData)_data).Inverted = value;
+                ((WaveformData)Data).Inverted = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -42,18 +41,13 @@ namespace VixenModules.Effect.Waveform
         [PropertyOrder(0)]
         public int ScrollSpeed
         {
-            get { return 50 - ((WaveformData)_data).ScrollSpeed; }
+            get { return 50 - ((WaveformData)Data).ScrollSpeed; }
             set
             {
-                ((WaveformData)_data).ScrollSpeed = 50 - value;
+                ((WaveformData)Data).ScrollSpeed = 50 - value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
-        }
-
-		public Waveform()
-        {
-            _audioHelper = new AudioHelper(this);
         }
 
 		protected override void TargetNodesChanged()
@@ -71,7 +65,7 @@ namespace VixenModules.Effect.Waveform
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				if (!_data.MeterColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				if (!Data.MeterColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 				{
 					//Our color is not valid for any elements we have.
 					//Try to set a default color gradient from our available colors
@@ -109,7 +103,7 @@ namespace VixenModules.Effect.Waveform
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
 		{
-            if (!_audioHelper.AudioLoaded)
+            if (!AudioHelper.AudioLoaded)
                 return;
 
             int currentElement = 0;
@@ -135,21 +129,21 @@ namespace VixenModules.Effect.Waveform
                     int endAudioTime;
                     if (Inverted)
                     {
-                        startAudioTime = i * Spacing - (nodeCount-currentElement) * ((WaveformData)_data).ScrollSpeed + 1;
-                        endAudioTime = (i + 1) * Spacing - (nodeCount-currentElement) * ((WaveformData)_data).ScrollSpeed;
+                        startAudioTime = i * Spacing - (nodeCount-currentElement) * ((WaveformData)Data).ScrollSpeed + 1;
+                        endAudioTime = (i + 1) * Spacing - (nodeCount-currentElement) * ((WaveformData)Data).ScrollSpeed;
                     }
                     else
                     {
-                        startAudioTime = i * Spacing - currentElement * ((WaveformData)_data).ScrollSpeed + 1;
-                        endAudioTime = (i + 1) * Spacing - currentElement * ((WaveformData)_data).ScrollSpeed;
+                        startAudioTime = i * Spacing - currentElement * ((WaveformData)Data).ScrollSpeed + 1;
+                        endAudioTime = (i + 1) * Spacing - currentElement * ((WaveformData)Data).ScrollSpeed;
                     }
                     TimeSpan startTime = TimeSpan.FromMilliseconds(i * Spacing);
 
                     if (startAudioTime > 0 && startAudioTime < TimeSpan.TotalMilliseconds && endAudioTime > 0 && endAudioTime < TimeSpan.TotalMilliseconds)
                     {
 
-                        double gradientPosition1 = (_audioHelper.VolumeAtTime(startAudioTime) + _data.Range) / _data.Range;
-                        double gradientPosition2 = (_audioHelper.VolumeAtTime(endAudioTime) + _data.Range) / _data.Range;
+                        double gradientPosition1 = (AudioHelper.VolumeAtTime(startAudioTime) + Data.Range) / Data.Range;
+                        double gradientPosition2 = (AudioHelper.VolumeAtTime(endAudioTime) + Data.Range) / Data.Range;
 						
 						//Some odd corner cases
 						if (gradientPosition1 <= 0)
@@ -163,7 +157,7 @@ namespace VixenModules.Effect.Waveform
 						if (gradientPosition2 >= 1)
 							gradientPosition2 = 1;
 
-						_elementData.Add(GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition1, gradientPosition2, TimeSpan.FromMilliseconds(Spacing), startTime, discreteColors));
+						ElementData.Add(GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition1, gradientPosition2, TimeSpan.FromMilliseconds(Spacing), startTime, discreteColors));
 
 					}
                 }

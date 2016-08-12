@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using NLog;
 using VixenModules.Media.Audio;
-using Vixen.Module.Effect;
 using Vixen.Module.Media;
 
 namespace VixenModules.Effect.AudioHelp
@@ -12,10 +13,8 @@ namespace VixenModules.Effect.AudioHelp
 
     public class AudioHelper
     {
-
-        private EffectModuleInstanceBase _effect;
-        //private EffectNode _effectNode;
-        private Audio _audioModule;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		private Audio _audioModule;
         private TimeSpan _mediaStartTime;
         private float _audioSampleRate;
 
@@ -91,6 +90,8 @@ namespace VixenModules.Effect.AudioHelp
         /// </summary>
         public double HighPassFreq { get; set; }
 
+		public TimeSpan TimeSpan { get; set; }
+
         private bool _audioLoaded;
 
         /// <summary>
@@ -98,10 +99,9 @@ namespace VixenModules.Effect.AudioHelp
         /// </summary>
         public bool AudioLoaded { get { return _audioLoaded; } }
 
-        public AudioHelper(EffectModuleInstanceBase myEffect)
+        public AudioHelper()
         {
             _audioLoaded = false;
-            _effect = myEffect;
             Gain = 1;
             AttackTime = 300;
             DecayTime = 1000;
@@ -116,39 +116,24 @@ namespace VixenModules.Effect.AudioHelp
         public float AudioSampleRate { get { return _audioSampleRate; } }
 
         /// <summary>
-        /// The time in the audio file that lines up with the start of the effect
-        /// </summary>
-        public TimeSpan MediaStartTime
-        {
-            get { return _mediaStartTime; }
-        }
-
-        /// <summary>
-        /// Duration of the effect in ms.
-        /// </summary>
-        public int EffectDuration { get { return (int)_effect.TimeSpan.TotalMilliseconds; } }
-
-        //private ISequenceContext _effectSequence;
-
-        /// <summary>
         /// Find the associated sequence and audio module and load the audio as a mono channel into memory
         /// </summary>
-        public bool ReloadAudio()
+        public bool ReloadAudio(List<IMediaModuleInstance> media, TimeSpan startTime)
         {
-	        if (_effect.Media == null || _effect.Media.Count == 0)
+	        if (media == null || media.Count == 0)
 	        {
-				Console.Out.WriteLine("No Media!");
+				Logging.Warn("No Media available in the AudioHelper!");
 		        return false;
 	        }
             
-            foreach (IMediaModuleInstance module in _effect.Media)
+            foreach (IMediaModuleInstance module in media)
             {
                 if (module is Audio)
                 {
                     if ((module as Audio).Channels == 0)
                         return false;
                     _audioModule = module as Audio;
-                    _mediaStartTime = _effect.StartTime;
+                    _mediaStartTime = startTime;
                     _audioSampleRate = _audioModule.Frequency;
                     LoadAudioIntoMemory();
                     return true;
@@ -157,32 +142,6 @@ namespace VixenModules.Effect.AudioHelp
 
             return false;
 
-        }
-
-        public bool CheckForNewAudio()
-        {
-			if (_effect.Media == null || _effect.Media.Count == 0)
-			{
-				return false;
-			}
-
-			foreach (IMediaModuleInstance module in _effect.Media)
-            {
-                if (module is Audio)
-                {
-	                if (_audioModule != module)
-	                {
-		                return true;
-	                }
-	                return false;
-                }
-            }
-
-	        if (_audioModule == null)
-	        {
-		        return false;
-	        }
-	        return true;
         }
 
         private static int Bytes2Int(byte b1, byte b2, byte b3)
@@ -204,7 +163,7 @@ namespace VixenModules.Effect.AudioHelp
         private void LoadAudioIntoMemory()
         {
             int startSample = (int)(_audioSampleRate * _mediaStartTime.TotalSeconds);
-            int totalSamples = (int)(_audioSampleRate * _effect.TimeSpan.TotalSeconds);
+            int totalSamples = (int)(_audioSampleRate * TimeSpan.TotalSeconds);
 
             byte[] _audioRawData = _audioModule.GetSamples(startSample, totalSamples);
             _audioChannel = new double[_audioRawData.Length / _audioModule.BytesPerSample];
@@ -262,12 +221,10 @@ namespace VixenModules.Effect.AudioHelp
             int maxVolumeIndex = 0;
             int minVolumeIndex = 0;
 
-            double newSample;
-
-            for (int i = 1; i < _volume.Length; i++)
+	        for (int i = 1; i < _volume.Length; i++)
             {
                 //Rectify the signal and convert to db
-                newSample = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[i]));
+                var newSample = 20.0 * (double)Math.Log10((double)Math.Abs(_audioChannel[i]));
 
                 //fastDecay converts the AC signal into a DC representation of the volume
                 if (_volume[i - 1] > newSample)
@@ -319,7 +276,7 @@ namespace VixenModules.Effect.AudioHelp
                 throw new AudioNotLoadedException();
             if (time < 0)
                 return 0;
-            if (time > _effect.TimeSpan.TotalMilliseconds)
+            if (time > TimeSpan.TotalMilliseconds)
                 return _volume.Length-1;
             else
                 return (int)(time * _audioSampleRate / 1000.0);

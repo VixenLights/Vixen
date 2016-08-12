@@ -14,21 +14,16 @@ namespace VixenModules.Effect.VerticalMeter
     {
 		private const int Spacing = 30;
 
-		public VerticalMeter()
-		{
-			_audioHelper = new AudioHelper(this);
-		}
-
 		[Value]
         [ProviderCategory(@"Color",3)]
         [PropertyOrder(6)]
         [ProviderDisplayName(@"Flip")]
         public bool Inverted
         {
-            get { return ((VerticalMeterData)_data).Inverted; }
+            get { return ((VerticalMeterData)Data).Inverted; }
             set
             {
-                ((VerticalMeterData)_data).Inverted = value;
+                ((VerticalMeterData)Data).Inverted = value;
                 IsDirty = true;
 				OnPropertyChanged();
             }
@@ -49,7 +44,7 @@ namespace VixenModules.Effect.VerticalMeter
 				if (elementNode == null || elementNode.Element == null)
 					continue;
 
-                if (!_audioHelper.AudioLoaded)
+                if (!AudioHelper.AudioLoaded)
                     return;
 				bool discreteColors = ColorModule.isElementNodeDiscreteColored(elementNode);
 				var lastTime = TimeSpan.FromMilliseconds(0);
@@ -58,24 +53,24 @@ namespace VixenModules.Effect.VerticalMeter
 
                 //Audio max is at 0db. The threshold gets shifted from 0 to 1 to -1 to 0 and then scaled.
 				double threshold;
-				if (!((VerticalMeterData)_data).Inverted)
+				if (!((VerticalMeterData)Data).Inverted)
                 {
-                    threshold = (((double)(elementCount - currentElement)) / elementCount - 1) * _data.Range;
+                    threshold = (((double)(elementCount - currentElement)) / elementCount - 1) * Data.Range;
                     gradientPosition = 1 - gradientPosition;
                 }
                 else
                 {
-                    threshold = (((double)currentElement) / elementCount - 1) * _data.Range;
+                    threshold = (((double)currentElement) / elementCount - 1) * Data.Range;
                         
                 }
                
-	           var lastValue = _audioHelper.VolumeAtTime(0) >= threshold;
+	           var lastValue = AudioHelper.VolumeAtTime(0) >= threshold;
 
 				TimeSpan start;
 				for(int i = 1;i<(int)(TimeSpan.TotalMilliseconds/Spacing);i++)
                 {
 	                //Current time in ms = i*spacing
-	                var currentValue = _audioHelper.VolumeAtTime(i * Spacing) >= threshold;
+	                var currentValue = AudioHelper.VolumeAtTime(i * Spacing) >= threshold;
 
 	                if( currentValue != lastValue) {
                         start = lastTime;
@@ -84,7 +79,7 @@ namespace VixenModules.Effect.VerticalMeter
                         {
 	                        var effectIntents = GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition,
 		                        gradientPosition, TimeSpan.FromMilliseconds(i*Spacing) - lastTime, start, discreteColors);
-							_elementData.Add(effectIntents);
+							ElementData.Add(effectIntents);
                         }
 
                         lastTime = TimeSpan.FromMilliseconds(i * Spacing);
@@ -97,7 +92,7 @@ namespace VixenModules.Effect.VerticalMeter
                     start = lastTime;
 					var effectIntents = GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition,
 								gradientPosition, TimeSpan - lastTime, start, discreteColors);
-					_elementData.Add(effectIntents);
+					ElementData.Add(effectIntents);
 				}
 
                 currentElement++;

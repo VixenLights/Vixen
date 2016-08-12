@@ -10,19 +10,14 @@ namespace VixenModules.Effect.VUMeter
 	{
 		private const int Spacing = 30;
 
-		public VUMeter()
-        {
-            _audioHelper = new AudioHelper(this);
-        }
-
 		[Browsable(false)]
 		public override int DepthOfEffect
 		{
 			//epth makes no difference here so we turn it off
-			get { return _data.DepthOfEffect; }
+			get { return Data.DepthOfEffect; }
 			set
 			{
-				_data.DepthOfEffect = value;
+				Data.DepthOfEffect = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -32,7 +27,7 @@ namespace VixenModules.Effect.VUMeter
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
 		{
-            if (!_audioHelper.AudioLoaded)
+            if (!AudioHelper.AudioLoaded)
                 return;
 
 			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
@@ -46,8 +41,8 @@ namespace VixenModules.Effect.VUMeter
                 for(int i = 0;i<(int)((TimeSpan.TotalMilliseconds/Spacing)-1);i++)
                 {
 
-                    double gradientPosition1 = (_audioHelper.VolumeAtTime(i * Spacing) + _data.Range)/_data.Range ;
-                    double gradientPosition2 = (_audioHelper.VolumeAtTime((i+1) * Spacing) + _data.Range)/_data.Range;
+                    double gradientPosition1 = (AudioHelper.VolumeAtTime(i * Spacing) + Data.Range)/Data.Range ;
+                    double gradientPosition2 = (AudioHelper.VolumeAtTime((i+1) * Spacing) + Data.Range)/Data.Range;
 					if (gradientPosition1 <= 0)
 						gradientPosition1 = 0;
 					if (gradientPosition1 >= 1)
@@ -59,7 +54,7 @@ namespace VixenModules.Effect.VUMeter
 					if (gradientPosition2 >= 1)
 						gradientPosition2 = 1;
 					TimeSpan startTime = TimeSpan.FromMilliseconds(i * Spacing);
-					_elementData.Add(GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition1, gradientPosition2, TimeSpan.FromMilliseconds(Spacing), startTime, discreteColors));
+					ElementData.Add(GenerateEffectIntents(elementNode, WorkingGradient, MeterIntensityCurve, gradientPosition1, gradientPosition2, TimeSpan.FromMilliseconds(Spacing), startTime, discreteColors));
 					
                 }
                 

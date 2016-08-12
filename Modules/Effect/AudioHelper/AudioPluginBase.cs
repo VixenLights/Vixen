@@ -8,8 +8,6 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
-using Vixen.Execution;
-using Vixen.Execution.Context;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -26,11 +24,16 @@ namespace VixenModules.Effect.AudioHelp
     public abstract class AudioPluginBase : BaseEffect
     {
 
-        protected IAudioPluginData _data;
-        protected EffectIntents _elementData = null;
-        protected AudioHelper _audioHelper;
-        protected Color[] _colors;
-        protected TimeSpan _lastRenderedStartTime;
+        protected IAudioPluginData Data;
+        protected EffectIntents ElementData = null;
+        private AudioHelper _audioHelper;
+        protected Color[] Colors;
+        protected TimeSpan LastRenderedStartTime;
+
+	    protected AudioPluginBase()
+	    {
+		    _audioHelper = new AudioHelper();
+	    }
 
 	    [Browsable(false)]
         public AudioHelper AudioHelper { get { return _audioHelper; } }
@@ -46,9 +49,9 @@ namespace VixenModules.Effect.AudioHelp
         [PropertyOrder(3)]
         public bool LowPass
         {
-            get { return _data.LowPass; }
+            get { return Data.LowPass; }
             set {
-                _data.LowPass = value;
+                Data.LowPass = value;
                 _audioHelper.LowPass = value;
                 IsDirty = true;
 	            UpdateLowHighPassAttributes(true);
@@ -63,9 +66,9 @@ namespace VixenModules.Effect.AudioHelp
         [PropertyOrder(4)]
         public int LowPassFreq
         {
-            get { return _data.LowPassFreq; }
+            get { return Data.LowPassFreq; }
             set {
-                _data.LowPassFreq = value;
+                Data.LowPassFreq = value;
                 _audioHelper.LowPassFreq = value;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -79,10 +82,10 @@ namespace VixenModules.Effect.AudioHelp
         [PropertyOrder(5)]
         public bool HighPass
         {
-            get { return _data.HighPass; }
+            get { return Data.HighPass; }
             set
             {
-                _data.HighPass = value;
+                Data.HighPass = value;
                 _audioHelper.HighPass = value;
                 IsDirty = true;
 				UpdateLowHighPassAttributes(true);
@@ -97,10 +100,10 @@ namespace VixenModules.Effect.AudioHelp
         [PropertyOrder(6)]
         public int HighPassFreq
         {
-            get { return _data.HighPassFreq; }
+            get { return Data.HighPassFreq; }
             set
             {
-                _data.HighPassFreq = value;
+                Data.HighPassFreq = value;
                 _audioHelper.HighPassFreq = value;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -116,10 +119,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(0, 200, .5)]
         public int Gain
         {
-            get { return _data.Gain*10; }
+            get { return Data.Gain*10; }
             set
             {
-                _data.Gain = value/10;
+                Data.Gain = value/10;
                 _audioHelper.Gain = value/10;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -135,10 +138,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(0, 20, 1)]
         public int Range
         {
-            get { return 20 - _data.Range; }
+            get { return 20 - Data.Range; }
             set
             {
-                _data.Range = 20 - value;
+                Data.Range = 20 - value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -150,11 +153,11 @@ namespace VixenModules.Effect.AudioHelp
         [PropertyOrder(2)]
         public bool Normalize
         {
-            get { return _data.Normalize; }
+            get { return Data.Normalize; }
             set
             {
                 _audioHelper.Normalize = value;
-                _data.Normalize = value;
+                Data.Normalize = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -169,10 +172,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(0, 5000, 300)]
         public int DecayTime
         {
-            get { return _data.DecayTime; }
+            get { return Data.DecayTime; }
             set
             {
-                _data.DecayTime = value;
+                Data.DecayTime = value;
                 _audioHelper.DecayTime = value;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -188,10 +191,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(0, 300, 10)]
         public int AttackTime
         {
-            get { return _data.AttackTime; }
+            get { return Data.AttackTime; }
             set
             {
-                _data.AttackTime = value;
+                Data.AttackTime = value;
                 _audioHelper.AttackTime = value;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -205,10 +208,10 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDescription(@"ColorHandling")]
         public MeterColorTypes MeterColorStyle
         {
-            get { return _data.MeterColorStyle; }
+            get { return Data.MeterColorStyle; }
             set
             {
-                _data.MeterColorStyle = value;
+                Data.MeterColorStyle = value;
 				UpdateColorTypesAttributes(true);
                 UpdateColorGradient();
                 IsDirty = true;
@@ -225,10 +228,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(1, 99, 1)]
         public int GreenColorPosition
         {
-            get { return _data.GreenColorPosition; }
+            get { return Data.GreenColorPosition; }
             set
             {
-                _data.GreenColorPosition = value;
+                Data.GreenColorPosition = value;
                 UpdateColorGradient();
                 IsDirty = true;
 				OnPropertyChanged();
@@ -244,10 +247,10 @@ namespace VixenModules.Effect.AudioHelp
         [NumberRange(1, 99, 1)]
         public int RedColorPosition
         {
-            get { return _data.RedColorPosition; }
+            get { return Data.RedColorPosition; }
             set
             {
-                _data.RedColorPosition = value;
+                Data.RedColorPosition = value;
                 UpdateColorGradient();
                 IsDirty = true;
 				OnPropertyChanged();
@@ -261,10 +264,10 @@ namespace VixenModules.Effect.AudioHelp
         [ProviderDescription(@"Color")]
         public ColorGradient MeterColorGradient
         {
-            get { return _data.MeterColorGradient; }
+            get { return Data.MeterColorGradient; }
             set
             {
-                _data.MeterColorGradient = value;
+                Data.MeterColorGradient = value;
                 UpdateColorGradient();
                 IsDirty = true;
 				OnPropertyChanged();
@@ -278,10 +281,10 @@ namespace VixenModules.Effect.AudioHelp
 		[ProviderDescription(@"Brightness")]
         public Curve MeterIntensityCurve
         {
-            get { return _data.IntensityCurve; }
+            get { return Data.IntensityCurve; }
             set
             {
-                _data.IntensityCurve = value;
+                Data.IntensityCurve = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -295,10 +298,10 @@ namespace VixenModules.Effect.AudioHelp
 		[MergableProperty(false)]
 		public virtual int DepthOfEffect
 		{
-			get { return _data.DepthOfEffect; }
+			get { return Data.DepthOfEffect; }
 			set
 			{
-				_data.DepthOfEffect = value;
+				Data.DepthOfEffect = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -321,7 +324,7 @@ namespace VixenModules.Effect.AudioHelp
 			var validColors = GetValidColors();
 			if (validColors.Any())
 			{
-				if (!_data.MeterColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
+				if (!Data.MeterColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 				{
 					//Our color is not valid for any elements we have.
 					//Try to set a default color gradient from our available colors
@@ -401,15 +404,15 @@ namespace VixenModules.Effect.AudioHelp
 	    }
 
         protected void UpdateColorGradient(){
-            if (_data == null)
+            if (Data == null)
                 return;
 
-            switch (_data.MeterColorStyle)
+            switch (Data.MeterColorStyle)
             {
                 case MeterColorTypes.Discrete:
                     Color[] discreteColors = { Color.Lime, Color.Lime, Color.Yellow, Color.Yellow, Color.Red, Color.Red };
-                    float greenPos = (float)_data.GreenColorPosition / 100;
-                    float yellowPos = (float)_data.RedColorPosition / 100;
+                    float greenPos = (float)Data.GreenColorPosition / 100;
+                    float yellowPos = (float)Data.RedColorPosition / 100;
                     float[] DiscretePositions = { 0, greenPos, greenPos, yellowPos, yellowPos, 1 };
                     ColorBlend discreteBlend = new ColorBlend();
                     discreteBlend.Colors = discreteColors;
@@ -419,7 +422,7 @@ namespace VixenModules.Effect.AudioHelp
                     break;
                 case MeterColorTypes.Linear:
                     Color[] linearColors = { Color.Lime, Color.Yellow, Color.Red };
-                    float[] myPositions = { 0, (float)_data.GreenColorPosition / 100, (float)_data.RedColorPosition / 100 };
+                    float[] myPositions = { 0, (float)Data.GreenColorPosition / 100, (float)Data.RedColorPosition / 100 };
                     ColorBlend linearBlend = new ColorBlend();
                     linearBlend.Colors = linearColors;
                     linearBlend.Positions = myPositions;
@@ -427,15 +430,16 @@ namespace VixenModules.Effect.AudioHelp
                     ColorGradient linearGradient = new ColorGradient(linearBlend);
                     _workingGradient = linearGradient;
                     break;
-                case MeterColorTypes.Custom: _workingGradient = _data.MeterColorGradient; break;
+                case MeterColorTypes.Custom: _workingGradient = Data.MeterColorGradient; break;
             }
         }
 
         protected override void _PreRender(CancellationTokenSource tokenSource = null)
         {
-            _elementData = new EffectIntents();
+            ElementData = new EffectIntents();
 
-            _audioHelper.ReloadAudio();
+	        _audioHelper.TimeSpan = TimeSpan;
+            _audioHelper.ReloadAudio(Media, StartTime);
 
 	        var nodes = GetNodesToRenderOn();
 
@@ -447,6 +451,8 @@ namespace VixenModules.Effect.AudioHelp
                 if (node != null)
                     RenderNode(node);
             }
+
+			_audioHelper.FreeMem();
         }
 
 		private List<ElementNode> GetNodesToRenderOn()
@@ -476,24 +482,24 @@ namespace VixenModules.Effect.AudioHelp
 
 		protected override EffectIntents _Render()
 		{
-			return _elementData;
+			return ElementData;
 		}
 
         public override IModuleDataModel ModuleData
 		{
-            get { return _data; }
+            get { return Data; }
 			set {
-                _data = value as IAudioPluginData;
+                Data = value as IAudioPluginData;
                 UpdateColorGradient();
 				InitAllAttributes();
-                _audioHelper.DecayTime = _data.DecayTime;
-                _audioHelper.AttackTime = _data.AttackTime;
-                _audioHelper.Gain = _data.Gain;
-                _audioHelper.Normalize = _data.Normalize;
-                _audioHelper.LowPass = _data.LowPass;
-                _audioHelper.LowPassFreq = _data.LowPassFreq;
-                _audioHelper.HighPass = _data.HighPass;
-                _audioHelper.HighPassFreq = _data.HighPassFreq;
+                _audioHelper.DecayTime = Data.DecayTime;
+                _audioHelper.AttackTime = Data.AttackTime;
+                _audioHelper.Gain = Data.Gain;
+                _audioHelper.Normalize = Data.Normalize;
+                _audioHelper.LowPass = Data.LowPass;
+                _audioHelper.LowPassFreq = Data.LowPassFreq;
+                _audioHelper.HighPass = Data.HighPass;
+                _audioHelper.HighPassFreq = Data.HighPassFreq;
             }
 		}
 
@@ -501,7 +507,7 @@ namespace VixenModules.Effect.AudioHelp
 
 		protected override EffectTypeModuleData EffectModuleData
 		{
-			get { return (EffectTypeModuleData)_data; }
+			get { return (EffectTypeModuleData)Data; }
 		}
 
 		/// <summary>
