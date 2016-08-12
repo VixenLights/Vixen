@@ -55,7 +55,7 @@ namespace VixenModules.Effect.SnowStorm
 
 		public override string EffectName
 		{
-			get { return "SnowStorm"; }
+			get { return "Snowstorm"; }
 		}
 	}
 }
