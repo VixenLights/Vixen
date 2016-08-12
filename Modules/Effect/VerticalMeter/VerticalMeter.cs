@@ -44,7 +44,7 @@ namespace VixenModules.Effect.VerticalMeter
 				if (elementNode == null || elementNode.Element == null)
 					continue;
 
-                if (!AudioHelper.AudioLoaded)
+                if (!AudioUtilities.AudioLoaded)
                     return;
 				bool discreteColors = ColorModule.isElementNodeDiscreteColored(elementNode);
 				var lastTime = TimeSpan.FromMilliseconds(0);
@@ -64,13 +64,13 @@ namespace VixenModules.Effect.VerticalMeter
                         
                 }
                
-	           var lastValue = AudioHelper.VolumeAtTime(0) >= threshold;
+	           var lastValue = AudioUtilities.VolumeAtTime(0) >= threshold;
 
 				TimeSpan start;
 				for(int i = 1;i<(int)(TimeSpan.TotalMilliseconds/Spacing);i++)
                 {
 	                //Current time in ms = i*spacing
-	                var currentValue = AudioHelper.VolumeAtTime(i * Spacing) >= threshold;
+	                var currentValue = AudioUtilities.VolumeAtTime(i * Spacing) >= threshold;
 
 	                if( currentValue != lastValue) {
                         start = lastTime;

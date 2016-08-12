@@ -27,7 +27,7 @@ namespace VixenModules.Effect.VUMeter
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
 		{
-            if (!AudioHelper.AudioLoaded)
+            if (!AudioUtilities.AudioLoaded)
                 return;
 
 			foreach (ElementNode elementNode in node.GetLeafEnumerator()) {
@@ -41,8 +41,8 @@ namespace VixenModules.Effect.VUMeter
                 for(int i = 0;i<(int)((TimeSpan.TotalMilliseconds/Spacing)-1);i++)
                 {
 
-                    double gradientPosition1 = (AudioHelper.VolumeAtTime(i * Spacing) + Data.Range)/Data.Range ;
-                    double gradientPosition2 = (AudioHelper.VolumeAtTime((i+1) * Spacing) + Data.Range)/Data.Range;
+                    double gradientPosition1 = (AudioUtilities.VolumeAtTime(i * Spacing) + Data.Range)/Data.Range ;
+                    double gradientPosition2 = (AudioUtilities.VolumeAtTime((i+1) * Spacing) + Data.Range)/Data.Range;
 					if (gradientPosition1 <= 0)
 						gradientPosition1 = 0;
 					if (gradientPosition1 >= 1)

@@ -10,10 +10,13 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using NLog;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using Vixen.Attributes;
+using Vixen.Module.Media;
 using Vixen.TypeConverters;
 using VixenModules.Effect.Effect;
+using VixenModules.Media.Audio;
 using VixenModules.Property.Color;
 
 
@@ -23,20 +26,20 @@ namespace VixenModules.Effect.AudioHelp
 
     public abstract class AudioPluginBase : BaseEffect
     {
-
-        protected IAudioPluginData Data;
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+		protected IAudioPluginData Data;
         protected EffectIntents ElementData = null;
-        private AudioHelper _audioHelper;
+        private readonly AudioUtilities _audioUtilities;
         protected Color[] Colors;
         protected TimeSpan LastRenderedStartTime;
 
 	    protected AudioPluginBase()
 	    {
-		    _audioHelper = new AudioHelper();
+		    _audioUtilities = new AudioUtilities();
 	    }
 
 	    [Browsable(false)]
-        public AudioHelper AudioHelper { get { return _audioHelper; } }
+        public AudioUtilities AudioUtilities { get { return _audioUtilities; } }
 
         private ColorGradient _workingGradient;
 
@@ -52,7 +55,7 @@ namespace VixenModules.Effect.AudioHelp
             get { return Data.LowPass; }
             set {
                 Data.LowPass = value;
-                _audioHelper.LowPass = value;
+                _audioUtilities.LowPass = value;
                 IsDirty = true;
 	            UpdateLowHighPassAttributes(true);
 				OnPropertyChanged();
@@ -69,7 +72,7 @@ namespace VixenModules.Effect.AudioHelp
             get { return Data.LowPassFreq; }
             set {
                 Data.LowPassFreq = value;
-                _audioHelper.LowPassFreq = value;
+                _audioUtilities.LowPassFreq = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -86,7 +89,7 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 Data.HighPass = value;
-                _audioHelper.HighPass = value;
+                _audioUtilities.HighPass = value;
                 IsDirty = true;
 				UpdateLowHighPassAttributes(true);
 				OnPropertyChanged();
@@ -104,7 +107,7 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 Data.HighPassFreq = value;
-                _audioHelper.HighPassFreq = value;
+                _audioUtilities.HighPassFreq = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -123,7 +126,7 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 Data.Gain = value/10;
-                _audioHelper.Gain = value/10;
+                _audioUtilities.Gain = value/10;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -156,7 +159,7 @@ namespace VixenModules.Effect.AudioHelp
             get { return Data.Normalize; }
             set
             {
-                _audioHelper.Normalize = value;
+                _audioUtilities.Normalize = value;
                 Data.Normalize = value;
                 IsDirty = true;
 				OnPropertyChanged();
@@ -176,7 +179,7 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 Data.DecayTime = value;
-                _audioHelper.DecayTime = value;
+                _audioUtilities.DecayTime = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -195,7 +198,7 @@ namespace VixenModules.Effect.AudioHelp
             set
             {
                 Data.AttackTime = value;
-                _audioHelper.AttackTime = value;
+                _audioUtilities.AttackTime = value;
                 IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -438,10 +441,35 @@ namespace VixenModules.Effect.AudioHelp
         {
             ElementData = new EffectIntents();
 
-	        _audioHelper.TimeSpan = TimeSpan;
-            _audioHelper.ReloadAudio(Media, StartTime);
+			if (Media == null || Media.Count == 0)
+			{
+				Logging.Warn("No audio available to render effect!");
+				return;
+			}
 
-	        var nodes = GetNodesToRenderOn();
+			foreach (IMediaModuleInstance module in Media)
+			{
+				var audio = module as Audio;
+				if (audio != null)
+				{
+					if (audio.Channels == 0)
+					{
+						continue;
+					}
+						
+					_audioUtilities.TimeSpan = TimeSpan;
+					_audioUtilities.StartTime = StartTime;
+					_audioUtilities.ReloadAudio(audio);
+				}
+			}
+
+			if (!_audioUtilities.AudioLoaded)
+			{
+				Logging.Warn("Unable to load audio to render audio effect!");
+				return;
+			}
+
+			var nodes = GetNodesToRenderOn();
 
             foreach (ElementNode node in nodes)
             {
@@ -452,7 +480,7 @@ namespace VixenModules.Effect.AudioHelp
                     RenderNode(node);
             }
 
-			_audioHelper.FreeMem();
+			_audioUtilities.FreeMem();
         }
 
 		private List<ElementNode> GetNodesToRenderOn()
@@ -492,14 +520,14 @@ namespace VixenModules.Effect.AudioHelp
                 Data = value as IAudioPluginData;
                 UpdateColorGradient();
 				InitAllAttributes();
-                _audioHelper.DecayTime = Data.DecayTime;
-                _audioHelper.AttackTime = Data.AttackTime;
-                _audioHelper.Gain = Data.Gain;
-                _audioHelper.Normalize = Data.Normalize;
-                _audioHelper.LowPass = Data.LowPass;
-                _audioHelper.LowPassFreq = Data.LowPassFreq;
-                _audioHelper.HighPass = Data.HighPass;
-                _audioHelper.HighPassFreq = Data.HighPassFreq;
+                _audioUtilities.DecayTime = Data.DecayTime;
+                _audioUtilities.AttackTime = Data.AttackTime;
+                _audioUtilities.Gain = Data.Gain;
+                _audioUtilities.Normalize = Data.Normalize;
+                _audioUtilities.LowPass = Data.LowPass;
+                _audioUtilities.LowPassFreq = Data.LowPassFreq;
+                _audioUtilities.HighPass = Data.HighPass;
+                _audioUtilities.HighPassFreq = Data.HighPassFreq;
             }
 		}
 

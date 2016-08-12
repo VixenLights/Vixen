@@ -103,7 +103,7 @@ namespace VixenModules.Effect.Waveform
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
 		{
-            if (!AudioHelper.AudioLoaded)
+            if (!AudioUtilities.AudioLoaded)
                 return;
 
             int currentElement = 0;
@@ -142,8 +142,8 @@ namespace VixenModules.Effect.Waveform
                     if (startAudioTime > 0 && startAudioTime < TimeSpan.TotalMilliseconds && endAudioTime > 0 && endAudioTime < TimeSpan.TotalMilliseconds)
                     {
 
-                        double gradientPosition1 = (AudioHelper.VolumeAtTime(startAudioTime) + Data.Range) / Data.Range;
-                        double gradientPosition2 = (AudioHelper.VolumeAtTime(endAudioTime) + Data.Range) / Data.Range;
+                        double gradientPosition1 = (AudioUtilities.VolumeAtTime(startAudioTime) + Data.Range) / Data.Range;
+                        double gradientPosition2 = (AudioUtilities.VolumeAtTime(endAudioTime) + Data.Range) / Data.Range;
 						
 						//Some odd corner cases
 						if (gradientPosition1 <= 0)
