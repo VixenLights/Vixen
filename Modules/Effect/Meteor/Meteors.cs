@@ -102,7 +102,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Min Direction")]
 		[ProviderDescription(@"Min Direction in Degrees")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 359, 1)]
+		[NumberRange(1, 360, 1)]
 		[PropertyOrder(3)]
 		public int MinDirection
 		{
@@ -455,23 +455,11 @@ namespace VixenModules.Effect.Meteors
 						direction = _random.Next(minDirection, maxDirection);
 					}
 				}
-				double num = _random.NextDouble();
-				double angle = 0;
 				//Moving
+				m.X = rand() % BufferWi;
+				m.Y = rand() % BufferHt;
 				if (direction >= 0 && direction <= 90)
 				{
-					angle = (double)(90 - Direction)/90;
-					if (angle < num)
-					{
-						m.X = 0;
-						m.Y = rand() % BufferHt;
-					}
-					else
-					{
-						m.X = rand() % BufferWi;
-						m.Y = 0;
-					}
-
 					m.TailX = ((double)direction / 90);
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(direction - 90) / 90);
@@ -479,19 +467,6 @@ namespace VixenModules.Effect.Meteors
 				}
 				else if (direction > 90 && direction <= 180)
 				{
-					angle = (double)(180 - Direction) / 90;
-					if (angle < num)
-					{
-						m.X = rand() % BufferWi;
-						m.Y = BufferHt - 1;
-					}
-					else
-					{
-
-						m.X = 0;
-						m.Y = rand() % BufferHt;
-					}
-
 					m.TailX = ((double)Math.Abs(direction - 180) / 90);
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 90) / 90);
@@ -499,18 +474,6 @@ namespace VixenModules.Effect.Meteors
 				}
 				else if (direction > 180 && direction <= 270)
 				{
-					angle = (double)(270 - Direction) / 90;
-					if (angle < num)
-					{
-						m.X = BufferWi - 1;
-						m.Y = rand() % BufferHt;
-					}
-					else
-					{
-						m.X = rand() % BufferWi;
-						m.Y = BufferHt - 1;
-					}
-
 					m.TailX = -1 * ((double)Math.Abs(direction - 180) / 90);
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 270) / 90);
@@ -518,18 +481,6 @@ namespace VixenModules.Effect.Meteors
 				}
 				else if (direction > 270 && direction <= 360)
 				{
-					angle = (double)(360 - Direction) / 90;
-					if (angle < num)
-					{
-						m.X = rand() % BufferWi;
-						m.Y = 0;
-					}
-					else
-					{
-						m.X = BufferWi - 1;
-						m.Y = rand() % BufferHt;
-					}
-
 					m.TailX = -1 * ((double)Math.Abs(direction - 360) / 90);
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(270 - direction) / 90);
