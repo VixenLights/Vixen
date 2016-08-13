@@ -236,7 +236,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripOperations.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripOperations.Location = new System.Drawing.Point(3, 0);
 			this.toolStripOperations.Name = "toolStripOperations";
-			this.toolStripOperations.Size = new System.Drawing.Size(1576, 27);
+			this.toolStripOperations.Size = new System.Drawing.Size(1433, 27);
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
 			// 
@@ -606,14 +606,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripLabel_TimingSpeed
 			// 
 			this.toolStripLabel_TimingSpeed.Name = "toolStripLabel_TimingSpeed";
-			this.toolStripLabel_TimingSpeed.Size = new System.Drawing.Size(35, 24);
+			this.toolStripLabel_TimingSpeed.Size = new System.Drawing.Size(35, 15);
 			this.toolStripLabel_TimingSpeed.Text = "100%";
 			// 
 			// toolStripButton_IncreaseTimingSpeed
 			// 
 			this.toolStripButton_IncreaseTimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButton_IncreaseTimingSpeed.Name = "toolStripButton_IncreaseTimingSpeed";
-			this.toolStripButton_IncreaseTimingSpeed.Size = new System.Drawing.Size(88, 24);
+			this.toolStripButton_IncreaseTimingSpeed.Size = new System.Drawing.Size(88, 19);
 			this.toolStripButton_IncreaseTimingSpeed.Text = "Increase speed";
 			this.toolStripButton_IncreaseTimingSpeed.Click += new System.EventHandler(this.toolStripButton_IncreaseTimingSpeed_Click);
 			// 
@@ -662,7 +662,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-			this.menuStrip.Size = new System.Drawing.Size(1579, 24);
+			this.menuStrip.Size = new System.Drawing.Size(1436, 24);
 			this.menuStrip.TabIndex = 2;
 			this.menuStrip.Text = "Menu";
 			this.menuStrip.MenuActivate += new System.EventHandler(this.menuStrip_MenuActivate);
@@ -1182,7 +1182,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.mixingFilterEditorWindowToolStripMenuItem.Name = "mixingFilterEditorWindowToolStripMenuItem";
 			this.mixingFilterEditorWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-			this.mixingFilterEditorWindowToolStripMenuItem.Text = "Mixing Filter Editor Window";
+			this.mixingFilterEditorWindowToolStripMenuItem.Text = "Layer Editor Window";
 			this.mixingFilterEditorWindowToolStripMenuItem.Click += new System.EventHandler(this.mixingFilterEditorWindowToolStripMenuItem_Click);
 			// 
 			// toolsToolStripMenuItem
@@ -1375,7 +1375,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.statusStrip.Location = new System.Drawing.Point(0, 681);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 17, 0);
-			this.statusStrip.Size = new System.Drawing.Size(1579, 22);
+			this.statusStrip.Size = new System.Drawing.Size(1436, 22);
 			this.statusStrip.TabIndex = 4;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -1446,7 +1446,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripStatusLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripStatusLabel4.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
 			this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-			this.toolStripStatusLabel4.Size = new System.Drawing.Size(1258, 20);
+			this.toolStripStatusLabel4.Size = new System.Drawing.Size(1115, 20);
 			this.toolStripStatusLabel4.Spring = true;
 			// 
 			// toolStripStatusLabel_RenderingElements
@@ -1477,14 +1477,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1579, 630);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1436, 630);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
 			this.toolStripContainer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
 			this.toolStripContainer.Name = "toolStripContainer";
 			this.toolStripContainer.RightToolStripPanelVisible = false;
-			this.toolStripContainer.Size = new System.Drawing.Size(1579, 657);
+			this.toolStripContainer.Size = new System.Drawing.Size(1436, 657);
 			this.toolStripContainer.TabIndex = 5;
 			this.toolStripContainer.Text = "toolStripContainer1";
 			// 
@@ -1504,7 +1504,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(1579, 630);
+			this.dockPanel.Size = new System.Drawing.Size(1436, 630);
 			dockPanelGradient1.EndColor = System.Drawing.SystemColors.ControlLight;
 			dockPanelGradient1.StartColor = System.Drawing.SystemColors.ControlLight;
 			autoHideStripSkin1.DockStripGradient = dockPanelGradient1;
@@ -1578,7 +1578,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.ClientSize = new System.Drawing.Size(1579, 703);
+			this.ClientSize = new System.Drawing.Size(1436, 703);
 			this.Controls.Add(this.toolStripContainer);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.menuStrip);
