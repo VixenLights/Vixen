@@ -256,6 +256,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PointToZoomPointRef(_bottomRight);
 			}
 
+			if (_selectedPoint == _bottomRight &&
+					System.Windows.Forms.Control.ModifierKeys == System.Windows.Forms.Keys.Control)
+			{
+				_bottomRight.Y = _topLeft.Y + (_bottomRight.X - _topLeft.X);
+			}
+			
 			if (topRight != null) {
 				topRight.X = _bottomRight.X;
 				topRight.Y = _topLeft.Y;
