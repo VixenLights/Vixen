@@ -112,7 +112,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Min Direction")]
 		[ProviderDescription(@"Min Direction in Degrees")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 359, 1)]
+		[NumberRange(1, 360, 1)]
 		[PropertyOrder(4)]
 		public int MinDirection
 		{
