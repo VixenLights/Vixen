@@ -121,6 +121,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		[DataMember]
+		int _XYRotation = 0;
+		[CategoryAttribute("Settings"),
+		DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
+		DisplayName("XY Rotation")]
+		public int XYRotation
+		{
+			get
+			{
+				return _XYRotation;
+			}
+			set
+			{
+				_XYRotation = value;
+				Layout();
+			}
+		}
 		public override int Top
 		{
             get
@@ -201,7 +218,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				int width = _bottomRight.X - _topLeft.X;
 				int height = _bottomRight.Y - _topLeft.Y;
 				List<Point> points;
-				points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, 0);
+				points = PreviewTools.GetEllipsePoints(0, 0, width, height, PixelCount, 360, XYRotation);
 				int pointNum = 0;
 				foreach (PreviewPixel pixel in _pixels) {
 					pixel.X = points[pointNum].X + _topLeft.X;
