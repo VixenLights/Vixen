@@ -416,7 +416,9 @@ namespace VixenModules.Effect.Bars
 					break;
 
 			}
-
+			var nodeCount = nodes.Count();
+			var halfNodeCount = (nodeCount - 1) / 2;
+			var evenHalfCount = nodeCount%2!=0;
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
@@ -462,11 +464,16 @@ namespace VixenModules.Effect.Bars
 							case BarDirection.Expand:
 							case BarDirection.Compress:
 								// expand / compress
-								if (i <= (nodes.Count() - 1)/2)
+								if (i <= halfNodeCount)
 								{
 									foreach (var elementLocation in elementLocations)
 									{
 										frameBuffer.SetPixel(elementLocation.X, y, hsv);
+									}
+									if (i == halfNodeCount & evenHalfCount)
+									{
+										i++;
+										continue;
 									}
 									foreach (var elementLocation in reversedNodes[i])
 									{
@@ -504,7 +511,7 @@ namespace VixenModules.Effect.Bars
 					}
 
 					int i = 0;
-
+					
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
 						int x = elementLocations.Key;
@@ -521,11 +528,16 @@ namespace VixenModules.Effect.Bars
 						{
 							case BarDirection.HExpand:
 							case BarDirection.HCompress:
-								if (i <= (nodes.Count() - 1) / 2)
+								if (i <= halfNodeCount)
 								{
 									foreach (var elementLocation in elementLocations)
 									{
 										frameBuffer.SetPixel(x, elementLocation.Y, hsv);
+									}
+									if (i == halfNodeCount & evenHalfCount)
+									{
+										i++;
+										continue;
 									}
 									foreach (var elementLocation in reversedNodes[i])
 									{
