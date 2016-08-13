@@ -55,7 +55,7 @@ namespace VixenModules.Effect.PinWheel
 
 		public override string EffectName
 		{
-			get { return "PinWheel"; }
+			get { return "Pinwheel"; }
 		}
 	}
 }

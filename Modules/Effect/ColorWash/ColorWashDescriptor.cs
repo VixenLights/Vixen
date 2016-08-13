@@ -55,7 +55,7 @@ namespace VixenModules.Effect.ColorWash
 
 		public override string EffectName
 		{
-			get { return "ColorWash"; }
+			get { return "Colorwash"; }
 		}
 	}
 }
