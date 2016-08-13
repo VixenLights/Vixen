@@ -4,7 +4,7 @@ namespace VixenModules.Effect.Meteors
 {
 	public enum MeteorsColorType
 	{
-		[Description("RainBow")]
+		[Description("Rainbow")]
 		RainBow,
 		[Description("Range")]
 		Range,
