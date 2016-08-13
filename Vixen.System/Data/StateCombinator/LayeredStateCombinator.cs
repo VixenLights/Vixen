@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module.MixingFilter;
-using Vixen.Services;
 using Vixen.Sys;
 
 namespace Vixen.Data.StateCombinator
 {
 	public class LayeredStateCombinator:StateCombinator<LayeredStateCombinator>
 	{
-		private Color _combinedMixingColor = Color.Empty;
-		private Color _tempMixingColor = Color.Empty;
+		private Color? _combinedMixingColor;
+		private Color? _tempMixingColor;
 		private Dictionary<int, DiscreteValue> _combinedDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly Dictionary<int, DiscreteValue> _tempDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
@@ -30,8 +27,8 @@ namespace Vixen.Data.StateCombinator
 
 			//Reset all our temp variables
 			StateCombinatorValue.Clear();
-			_tempMixingColor = Color.Empty;
-			_combinedMixingColor = Color.Empty;
+			_tempMixingColor = null;
+			_combinedMixingColor = null;
 			_combinedDiscreteColors.Clear();
 			_tempDiscreteColors.Clear();
 
@@ -68,9 +65,9 @@ namespace Vixen.Data.StateCombinator
 
 			//Now we should be down to one mixing type and we can put that in our return obejct as a RGBValue.
 			//This will convert all mxing types to the simpler more efficient RGBValue 
-			if (_combinedMixingColor != Color.Empty)
+			if (_combinedMixingColor != null)
 			{
-				_mixedIntentState.SetValue(new RGBValue(_combinedMixingColor));
+				_mixedIntentState.SetValue(new RGBValue(_combinedMixingColor.Value));
 				StateCombinatorValue.Add(_mixedIntentState);
 			}
 
@@ -90,14 +87,14 @@ namespace Vixen.Data.StateCombinator
 		private void MixLayers(ILayerMixingFilter filter)
 		{
 			//Check to see if the layer had any mixing type colors that were combined down to one to process
-			if (_tempMixingColor != Color.Empty)
+			if (_tempMixingColor != null)
 			{
 				//If there are then mix that with the previous layer with the layer mixing logic
 				//If we have not seen a previous layer, just assign this color as our color
 				//Otherwise pass this color and the previous layer color into the mixing logic
-				_combinedMixingColor = _combinedMixingColor == Color.Empty
+				_combinedMixingColor = _combinedMixingColor == null
 					? _tempMixingColor
-					: MixLayerColors(_combinedMixingColor, _tempMixingColor, filter);
+					: MixLayerColors(_combinedMixingColor.Value, _tempMixingColor.Value, filter);
 			}
 			//Check to see if there were any discrete types. These are combined down to one per color
 			if (_tempDiscreteColors.Count > 0)
@@ -127,14 +124,14 @@ namespace Vixen.Data.StateCombinator
 		{
 			//Handles mixing the LightingValue type intents within the same layer all togther in a simple mixing form of 
 			//highest value R, G, B
-			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Combine(obj.GetValue().FullColor);
+			_tempMixingColor = _tempMixingColor == null ? obj.GetValue().FullColor : _tempMixingColor.Value.Combine(obj.GetValue().FullColor);
 		}
 
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			//Handles mixing the RGBValue type intents within the same layer all togther in a simple mixing form of 
 			//highest value R, G, B
-			_tempMixingColor = _tempMixingColor == Color.Empty ? obj.GetValue().FullColor : _tempMixingColor.Combine(obj.GetValue().FullColor);
+			_tempMixingColor = _tempMixingColor == null ? obj.GetValue().FullColor : _tempMixingColor.Value.Combine(obj.GetValue().FullColor);
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
