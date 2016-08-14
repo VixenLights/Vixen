@@ -207,6 +207,7 @@ namespace Common.WPFCommon.Input
 
 		private static void DragSource_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			if (e.ClickCount > 1) return;
 			// Make this the new drag source
 			CurrentDragSourceAdvisor = GetDragSourceAdvisor(sender as DependencyObject);
 			CurrentDragSourceAdvisor.SourceUI = sender as UIElement;
@@ -239,6 +240,12 @@ namespace Common.WPFCommon.Input
 		private static void DragSource_PreviewMouseUp(object sender, MouseButtonEventArgs e)
 		{
 			_isMouseDown = false;
+			_draggedElt = null;
+			if (CurrentDragSourceAdvisor != null)
+			{
+				CurrentDragSourceAdvisor.SourceUI = null;
+				CurrentDragSourceAdvisor = null;
+			}
 			//Mouse.Capture(null);
 			e.Handled = false;
 		}

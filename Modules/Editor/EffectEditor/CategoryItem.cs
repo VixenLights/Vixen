@@ -253,6 +253,34 @@ namespace VixenModules.Editor.EffectEditor
 
 		#endregion
 
+		/// <summary>
+		///     Releases unmanaged and - optionally - managed resources
+		/// </summary>
+		/// <param name="disposing">
+		///     <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only
+		///     unmanaged resources.
+		/// </param>
+		protected override void Dispose(bool disposing)
+		{
+			if (!Disposed)
+			{
+				if (disposing)
+				{
+					if (_properties != null)
+					{
+						foreach (var propertyItem in _properties)
+						{
+							if (propertyItem != null)
+							{
+								propertyItem.BrowsableChanged -= PropertyBrowsableChanged;
+							}
+						}
+					}
+				}
+				base.Dispose(disposing);
+			}
+		}
+
 		#region ITypeDescriptorContext
 
 		public override object GetService(Type serviceType)

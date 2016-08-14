@@ -12,6 +12,7 @@ namespace Vixen.Intent
 	public class IntentBuilder
 	{
 		private static int EmptyColor = Color.FromArgb(0, 0, 0).ToArgb();
+		
 		public static StaticArrayIntent<RGBValue> CreateStaticArrayIntent(LightingValue startValue, LightingValue endValue, TimeSpan duration)
 		{
 			var interval = VixenSystem.DefaultUpdateTimeSpan;
@@ -103,7 +104,7 @@ namespace Vixen.Intent
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, new DefaultLayer());
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, SequenceLayers.GetDefaultLayer());
 					states.Add(intentState);
 				}
 			}
@@ -118,7 +119,7 @@ namespace Vixen.Intent
 			{
 				if (TimeNode.IntersectsInclusively(intentNode, effectRelativeTime))
 				{
-					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, new DefaultLayer());
+					IIntentState intentState = intentNode.CreateIntentState(effectRelativeTime - intentNode.StartTime, SequenceLayers.GetDefaultLayer());
 					states.Add(intentState);
 				}
 			}

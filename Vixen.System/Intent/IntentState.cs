@@ -8,7 +8,7 @@ namespace Vixen.Intent
 	internal class IntentState<ResultType> : Dispatchable<IntentState<ResultType>>, IIntentState<ResultType>
 		where ResultType : IIntentDataType
 	{
-		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime) : this(intent, intentRelativeTime, new DefaultLayer())
+		public IntentState(IIntent<ResultType> intent, TimeSpan intentRelativeTime) : this(intent, intentRelativeTime, SequenceLayers.GetDefaultLayer())
 		{
 
 		}

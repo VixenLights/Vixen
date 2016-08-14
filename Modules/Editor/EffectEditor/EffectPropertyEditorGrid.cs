@@ -393,6 +393,13 @@ namespace VixenModules.Editor.EffectEditor
 			private set
 			{
 				if (_categories == value) return;
+				if (_categories != null)
+				{
+					foreach (var item in _categories)
+					{
+						item.Dispose();
+					}
+				}
 				_categories = value;
 
 				if (CategoryComparer != null)

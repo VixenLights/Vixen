@@ -9,12 +9,12 @@ namespace Vixen.Intent
 		where ResultType : IIntentDataType
 	{
 		private ResultType _value;
-
-		public StaticIntentState(ResultType value) : this(value, new DefaultLayer())
+		
+		public StaticIntentState(ResultType value) : this(value, SequenceLayers.GetDefaultLayer())
 		{
 		}
 
-		public StaticIntentState(ResultType value, Layer layer)
+		public StaticIntentState(ResultType value, ILayer layer)
 		{
 			_value = value;
 			Layer = layer;
