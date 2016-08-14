@@ -4,7 +4,7 @@ namespace VixenModules.Effect.SnowStorm
 {
 	public enum SnowStormColorType
 	{
-		[Description("RainBow")]
+		[Description("Rainbow")]
 		RainBow,
 		[Description("Range")]
 		Range,

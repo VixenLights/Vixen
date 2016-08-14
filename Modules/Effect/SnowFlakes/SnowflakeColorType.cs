@@ -8,7 +8,7 @@ namespace VixenModules.Effect.Snowflakes
 		Range,
 		[Description("Palette")]
 		Palette,
-		[Description("RainBow")]
+		[Description("Rainbow")]
 		RainBow
 	}
 }
