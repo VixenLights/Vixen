@@ -427,7 +427,7 @@ namespace VixenModules.Effect.Text
 
 		protected override void CleanUpRender()
 		{
-			//Nothing to clean up
+			_font = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
