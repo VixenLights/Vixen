@@ -19,6 +19,8 @@ namespace Vixen.Sys.LayerMixing
 		[DataMember]
 		private readonly Dictionary<Guid, Guid> _effectLayerMap;
 
+		private static readonly ILayer DefaultLayer = new DefaultLayer();
+
 		/// <summary>
 		/// This is a mapping of the layer id to the layer object for fast lookups.
 		/// </summary>
@@ -32,7 +34,7 @@ namespace Vixen.Sys.LayerMixing
 			_effectLayerMap = new Dictionary<Guid, Guid>();
 			_layerMap = new Dictionary<Guid, ILayer>();
 			//Add the default layer
-			AddLayer(new DefaultLayer());
+			AddLayer(DefaultLayer);
 		}
 
 		public void ReplaceLayerAt(int index, ILayer layer)
@@ -49,9 +51,9 @@ namespace Vixen.Sys.LayerMixing
 		[DataMember]
 		public ObservableCollection<ILayer> Layers { get; private set; }
 
-		public ILayer GetDefaultLayer()
+		public static ILayer GetDefaultLayer()
 		{
-			return Layers[0];
+			return DefaultLayer;
 		}
 
 		public bool IsDefaultLayer(ILayer layer)

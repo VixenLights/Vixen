@@ -14,8 +14,7 @@ namespace Vixen.Execution.Context
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private readonly string _name;
 		private readonly LiveDataSource _dataSource;
-		private readonly Layer _layer = new DefaultLayer();
-
+		
 		//public LiveContext(string name)
 		//    : base(name) {
 		//    _dataSource = new LiveDataSource();
@@ -79,7 +78,7 @@ namespace Vixen.Execution.Context
 
 		protected override ILayer GetLayerForNode(IEffectNode node)
 		{
-			return _layer;
+			return SequenceLayers.GetDefaultLayer();
 		}
 
 		protected override IDataSource _DataSource
