@@ -4,22 +4,22 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
-using NLog.Targets;
 using Vixen.IO;
 using Vixen.Module;
 using Vixen.Services;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Alternating;
+using VixenModules.Effect.Chase;
 using VixenModules.Effect.Fireworks;
 using VixenModules.Effect.Snowflakes;
+using VixenModules.Effect.Spin;
 using ZedGraph;
 
 namespace VixenModules.Sequence.Timed
@@ -37,7 +37,8 @@ namespace VixenModules.Sequence.Timed
 				{
 									new MigrationSegment<XElement>(0, 1, _Version_0_to_1),
 									new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
-									new MigrationSegment<XElement>(2, 3, _Version_2_to_3)
+									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
+									new MigrationSegment<XElement>(3, 4, _Version_3_to_4)
 
 				};
 		}
@@ -431,6 +432,104 @@ namespace VixenModules.Sequence.Timed
 			}
 		}
 
+		private XElement _Version_3_to_4(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+					"Migrating sequence from version 3 to version 4. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+					"Minor changes to how the default brightness is handled in the Chase and Spin effect to make it easier to use in layer mixing.{0}" +
+					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+
+			MigrateChaseFrom3To4(content);
+			MigrateSpinFrom3To4(content);
+
+			return content;
+		}
+
+		private void MigrateChaseFrom3To4(XElement content)
+		{
+			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
+			//Get the standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Chase";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Chase effects.
+			IEnumerable<XElement> chaseElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:ChaseData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var chaseElement in chaseElements.ToList())
+			{
+				var chasedata = DeSerializer<ChaseData>(chaseElement);
+
+				if (chasedata.DefaultLevel > 0)
+				{
+					chasedata.EnableDefaultLevel = true;
+				}
+
+				//Remove the old version
+				chaseElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { chasedata };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(ChaseData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private void MigrateSpinFrom3To4(XElement content)
+		{
+			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
+			//Get the standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.Spin";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Spin effects.
+			IEnumerable<XElement> xElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:SpinData']",
+					namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			foreach (var xElement in xElements.ToList())
+			{
+				var spindata = DeSerializer<SpinData>(xElement);
+
+				if (spindata.DefaultLevel > 0)
+				{
+					spindata.EnableDefaultLevel = true;
+				}
+
+				//Remove the old version
+				xElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { spindata };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(SpinData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
 		private static XmlNamespaceManager GetStandardNamespaces()
 		{
 			var namespaces = new XmlNamespaceManager(new NameTable());
@@ -445,9 +544,17 @@ namespace VixenModules.Sequence.Timed
 			return namespaces;
 		}
 
-		static T DeSerializer<T>(XElement element)
+		static T DeSerializer<T>(XElement element, Type[] knownTypes = null)
 		{
-			var serializer = new DataContractSerializer(typeof(T), element.Name.LocalName, element.Name.NamespaceName);
+			DataContractSerializer serializer;
+			if (knownTypes == null)
+			{
+				serializer = new DataContractSerializer(typeof (T), element.Name.LocalName, element.Name.NamespaceName);
+			}
+			else
+			{
+				serializer = new DataContractSerializer(typeof(T), element.Name.LocalName, element.Name.NamespaceName, knownTypes);
+			}
 			return (T)serializer.ReadObject(element.CreateReader());
 		}
 

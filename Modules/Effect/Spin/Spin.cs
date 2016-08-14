@@ -250,11 +250,29 @@ namespace VixenModules.Effect.Spin
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness",2)]
-		[ProviderDisplayName(@"DefaultBrightness")]
-		[ProviderDescription(@"DefaultBrightness")]
-		[PropertyEditor("LevelEditor")]
+		[ProviderCategory(@"Brightness", 2)]
+		[ProviderDisplayName(@"EnableMinimumBrightness")]
+		[ProviderDescription(@"EnableMinimumBrightness")]
 		[PropertyOrder(2)]
+		public bool EnableDefaultLevel
+		{
+			get { return _data.EnableDefaultLevel; }
+			set
+			{
+				_data.EnableDefaultLevel = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateDefaultLevelAttributes();
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness",2)]
+		[ProviderDisplayName(@"MinimumBrightness")]
+		[ProviderDescription(@"MinimumBrightness")]
+		[PropertyEditor("LevelEditor")]
+		[PropertyOrder(3)]
 		public double DefaultLevel
 		{
 			get { return _data.DefaultLevel; }
@@ -316,7 +334,7 @@ namespace VixenModules.Effect.Spin
 
 		[Value]
 		[ProviderCategory(@"Brightness",2)]
-		[ProviderDisplayName(@"Brightness")]
+		[ProviderDisplayName(@"PulseShape")]
 		[ProviderDescription(@"PulseShape")]
 		[PropertyOrder(1)]
 		public Curve PulseCurve
@@ -366,6 +384,16 @@ namespace VixenModules.Effect.Spin
 			}
 		}
 
+		public override string Information
+		{
+			get { return "See the Vixen Lights website for more information on layering with this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/spin/"; }
+		}
+
 		#region Attributes
 
 		private void InitAllAttributes()
@@ -373,7 +401,15 @@ namespace VixenModules.Effect.Spin
 			UpdateColorHandlingAttributes();
 			UpdateSpeedFormatAttributes();
 			UpdatePulseLengthFormatAttributes();
+			UpdateDefaultLevelAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateDefaultLevelAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add("DefaultLevel", EnableDefaultLevel);
+			SetBrowsable(propertyStates);
 		}
 
 
@@ -427,7 +463,7 @@ namespace VixenModules.Effect.Spin
 			EffectIntents pulseData;
 
 			// apply the 'background' values to all targets if nonzero
-			if (DefaultLevel > 0) {
+			if (EnableDefaultLevel) {
 				int i = 0;
 				foreach (ElementNode target in renderNodes)
 				{
@@ -445,19 +481,19 @@ namespace VixenModules.Effect.Spin
 						switch (ColorHandling) {
 							case SpinColorHandling.GradientForEachPulse:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new [] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] {0, 100}, new [] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.GradientThroughWholeEffect:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case SpinColorHandling.StaticColor:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] {0, 100}, new[] {level, level})), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
@@ -469,13 +505,13 @@ namespace VixenModules.Effect.Spin
 									foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
 										double value = level*colorProportion.Item2;
 										pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors, true);
 										_elementData.Add(pulseData);
 									}
 								}
 								else {
 									pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new double[] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors, true);
 									_elementData.Add(pulseData);
 								}
 								break;

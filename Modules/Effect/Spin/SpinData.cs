@@ -39,6 +39,9 @@ namespace VixenModules.Effect.Spin
 		[DataMember]
 		public double DefaultLevel { get; set; }
 
+		[DataMember]
+		public bool EnableDefaultLevel { get; set; }
+
 		private Color _staticColor;
 
 		[DataMember]

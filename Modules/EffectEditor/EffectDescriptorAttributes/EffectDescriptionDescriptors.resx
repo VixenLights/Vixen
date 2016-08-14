@@ -156,8 +156,8 @@
   <data name="ColorScheme" xml:space="preserve">
     <value>Controls the color scheme.</value>
   </data>
-  <data name="DefaultBrightness" xml:space="preserve">
-    <value>Controls the default brightness of the inactive elements in the effect.</value>
+  <data name="MinimumBrightness" xml:space="preserve">
+    <value>Controls the default brightness of the background in the effect. Sometimes a zero value may be necesary to get certain behaviors in layer mixing.</value>
   </data>
   <data name="Depth" xml:space="preserve">
     <value>Indicates how many levels deep the effect should be grouped.</value>
@@ -377,5 +377,8 @@
   </data>
   <data name="FramesPerSecond" xml:space="preserve">
     <value>Controls the frames per second rate.</value>
+  </data>
+  <data name="EnableMinimumBrightness" xml:space="preserve">
+    <value>Enables a default brightness for the background in the effect. The background will be based on the foreground color selections.</value>
   </data>
 </root>
