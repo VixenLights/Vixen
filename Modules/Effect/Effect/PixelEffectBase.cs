@@ -119,6 +119,7 @@ namespace VixenModules.Effect.Effect
 					StringOrientation = StringOrientation.Vertical;
 				}
 				UpdateStringOrientationAttributes(true);
+				TargetPositioningChanged();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -138,6 +139,14 @@ namespace VixenModules.Effect.Effect
 
 		[Browsable(false)]
 		public virtual bool UseBaseColor { get; set; }
+
+		/// <summary>
+		/// Override to do things when the target locations changes 
+		/// </summary>
+		protected virtual void TargetPositioningChanged()
+		{
+			
+		}
 
 		protected void UpdateStringOrientationAttributes(bool refresh = false)
 		{

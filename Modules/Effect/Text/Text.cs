@@ -360,6 +360,11 @@ namespace VixenModules.Effect.Text
 			get { return _data; }
 		}
 
+		protected override void TargetPositioningChanged()
+		{
+			UpdateScaleTextAttribute();
+		}
+
 		private void UpdateAllAttributes()
 		{
 			UpdateScaleTextAttribute(false);
@@ -413,7 +418,6 @@ namespace VixenModules.Effect.Text
 
 		protected override void SetupRender()
 		{
-			UpdateScaleTextAttribute();
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
