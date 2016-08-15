@@ -80,7 +80,7 @@ namespace Vixen.Intent
 						colorValues.TryGetValue(color.Key, out values);
 						if (values == null)
 						{
-							values = new DiscreteValue[intervals + 1];
+							values = InitializeDiscreteValues(color.Key, intervals + 1);
 							colorValues[color.Key] = values;
 						}
 						values[i] = color.Value;
@@ -95,6 +95,17 @@ namespace Vixen.Intent
 			}
 
 			return effectIntents;
+		}
+
+		private static DiscreteValue[] InitializeDiscreteValues(Color c, int number)
+		{
+			var discreteValues = new DiscreteValue[number];
+			for (int i = 0; i < discreteValues.Length; i++)
+			{
+				discreteValues[i] = new DiscreteValue(c, 0);
+			}
+
+			return discreteValues;
 		}
 
 		private static Dictionary<Color, DiscreteValue> ProcessDiscreteIntentNodes(KeyValuePair<Guid, IntentNodeCollection> effectIntent, TimeSpan effectRelativeTime)

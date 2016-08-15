@@ -19,6 +19,9 @@ namespace VixenModules.Effect.Chase
 		[DataMember]
 		public double DefaultLevel { get; set; }
 
+		[DataMember]
+		public bool EnableDefaultLevel { get; set; }
+
 		private Color _staticColor;
 
 		[DataMember]
@@ -51,7 +54,7 @@ namespace VixenModules.Effect.Chase
 
 		[DataMember]
 		public bool ExtendPulseToEnd { get; set; }
-		
+
 		public ChaseData()
 		{
 			ColorHandling = ChaseColorHandling.StaticColor;
@@ -64,6 +67,7 @@ namespace VixenModules.Effect.Chase
 			DepthOfEffect = 0;
 			ExtendPulseToStart = false;
 			ExtendPulseToEnd = false;
+			EnableDefaultLevel = false;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -72,6 +76,7 @@ namespace VixenModules.Effect.Chase
 			result.ColorHandling = ColorHandling;
 			result.PulseOverlap = PulseOverlap;
 			result.DefaultLevel = DefaultLevel;
+			result.EnableDefaultLevel = EnableDefaultLevel;
 			result.StaticColor = StaticColor;
 			result.ColorGradient = new ColorGradient(ColorGradient);
 			result.PulseCurve = new Curve(PulseCurve);

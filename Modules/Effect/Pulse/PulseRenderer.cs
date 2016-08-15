@@ -17,7 +17,7 @@ namespace VixenModules.Effect.Pulse
 	{
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete)
+		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete, bool allowZeroIntensity = false)
 		{
 			//Collect all the points first.
 			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient).ToArray();
@@ -38,19 +38,19 @@ namespace VixenModules.Effect.Pulse
 						 .Intersect(colorGradient.GetColorsInGradient());
 					foreach (Color color in colors)
 					{
-						AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData, color);
+						AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData, allowZeroIntensity, color);
 					}
 				}
 				else
 				{
-					AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData);
+					AddIntentsToElement(elementNode.Element, allPointsTimeOrdered, levelCurve, colorGradient, duration, elementData, allowZeroIntensity);
 				}
 			}
 
 			return elementData;
 		}
 
-		private static void AddIntentsToElement(Element element, double[] allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, Color? color = null)
+		private static void AddIntentsToElement(Element element, double[] allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, bool allowZeroIntensity, Color? color = null)
 		{
 			if (element != null)
 			{
@@ -70,7 +70,7 @@ namespace VixenModules.Effect.Pulse
 						var endIntensity = levelCurve.GetValue(position * 100) / 100;
 						
 
-						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
+						if (allowZeroIntensity || !(startIntensity.Equals(0) && endIntensity.Equals(0)))
 						{
 							IIntent intent = IntentBuilder.CreateIntent(startColor, endColor, startIntensity, endIntensity, timeSpan);
 							elementData.AddIntentForElement(element.Id, intent, startTime);
@@ -81,7 +81,7 @@ namespace VixenModules.Effect.Pulse
 						var startIntensity = (colorGradient.GetProportionOfColorAt(lastPosition, (Color)color) * levelCurve.GetValue(lastPosition * 100) / 100);
 						var endIntensity = (colorGradient.GetProportionOfColorAt(position, (Color)color) * levelCurve.GetValue(position * 100) / 100);
 
-						if (!(startIntensity.Equals(0) && endIntensity.Equals(0)))
+						if (allowZeroIntensity || !(startIntensity.Equals(0) && endIntensity.Equals(0)))
 						{
 							IIntent intent = IntentBuilder.CreateDiscreteIntent((Color)color, startIntensity, endIntensity, timeSpan);
 							elementData.AddIntentForElement(element.Id, intent, startTime);

@@ -180,8 +180,8 @@
   <data name="DataType" xml:space="preserve">
     <value>Data Type</value>
   </data>
-  <data name="DefaultBrightness" xml:space="preserve">
-    <value>Default Brightness</value>
+  <data name="MinimumBrightness" xml:space="preserve">
+    <value>Minimum Level</value>
   </data>
   <data name="Depth" xml:space="preserve">
     <value>Levels Deep</value>
@@ -404,5 +404,14 @@
   </data>
   <data name="Zoom" xml:space="preserve">
     <value>Zoom</value>
+  </data>
+  <data name="MinimumLevel" xml:space="preserve">
+    <value>Minimum Level</value>
+  </data>
+  <data name="EnableMinimumBrightness" xml:space="preserve">
+    <value>Minimum Brightness</value>
+  </data>
+  <data name="PulseShape" xml:space="preserve">
+    <value>Pulse Intensity</value>
   </data>
 </root>

@@ -100,7 +100,7 @@ namespace VixenModules.Effect.Chase
 		}
 
 		[Value]
-		[ProviderCategory(@"Color",1)]
+		[ProviderCategory(@"Color",0)]
 		[ProviderDisplayName(@"ColorHandling")]
 		[ProviderDescription(@"ColorHandling")]
 		[PropertyOrder(1)]
@@ -117,41 +117,8 @@ namespace VixenModules.Effect.Chase
 			}
 		}
 
-
 		[Value]
-		[ProviderCategory(@"Pulse",3)]
-		[ProviderDisplayName(@"PulseOverlap")]
-		[ProviderDescription(@"PulseOverlap")]
-		public int PulseOverlap
-		{
-			get { return _data.PulseOverlap; }
-			set
-			{
-				_data.PulseOverlap = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Brightness",1)]
-		[ProviderDisplayName(@"DefaultBrightness")]
-		[ProviderDescription(@"DefaultBrightness")]
-		[PropertyOrder(2)]
-		[PropertyEditor("LevelEditor")]
-		public double DefaultLevel
-		{
-			get { return _data.DefaultLevel; }
-			set
-			{
-				_data.DefaultLevel = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color",0)]
+		[ProviderCategory(@"Color", 0)]
 		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
@@ -169,6 +136,57 @@ namespace VixenModules.Effect.Chase
 				OnPropertyChanged();
 			}
 		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 1)]
+		[ProviderDisplayName(@"EnableMinimumBrightness")]
+		[ProviderDescription(@"EnableMinimumBrightness")]
+		[PropertyOrder(2)]
+		public bool EnableDefaultLevel
+		{
+			get { return _data.EnableDefaultLevel; }
+			set
+			{
+				_data.EnableDefaultLevel = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateDefaultLevelAttributes();
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness",1)]
+		[ProviderDisplayName(@"MinimumBrightness")]
+		[ProviderDescription(@"MinimumBrightness")]
+		[PropertyOrder(3)]
+		[PropertyEditor("LevelEditor")]
+		public double DefaultLevel
+		{
+			get { return _data.DefaultLevel; }
+			set
+			{
+				_data.DefaultLevel = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Pulse", 3)]
+		[ProviderDisplayName(@"PulseOverlap")]
+		[ProviderDescription(@"PulseOverlap")]
+		public int PulseOverlap
+		{
+			get { return _data.PulseOverlap; }
+			set
+			{
+				_data.PulseOverlap = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 
 		//Created to hold a ColorGradient version of color rather than continually creating them from Color for static colors.
 		protected ColorGradient StaticColorGradient
@@ -198,7 +216,7 @@ namespace VixenModules.Effect.Chase
 
 		[Value]
 		[ProviderCategory(@"Brightness",1)]
-		[ProviderDisplayName(@"Brightness")]
+		[ProviderDisplayName(@"PulseShape")]
 		[ProviderDescription(@"PulseShape")]
 		[PropertyOrder(1)]
 		public Curve PulseCurve
@@ -275,11 +293,22 @@ namespace VixenModules.Effect.Chase
 			}
 		}
 
+		public override string Information
+		{
+			get { return "See the Vixen Lights website for more information on layering with this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/chase/"; }
+		}
+
 		#region Attributes
 
 		private void InitAllAttributes()
 		{
 			UpdateColorHandlingAttributes();
+			UpdateDefaultLevelAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -289,6 +318,13 @@ namespace VixenModules.Effect.Chase
 			Dictionary<string,bool> propertyStates = new Dictionary<string, bool>(2); 
 			propertyStates.Add("StaticColor", ColorHandling.Equals(ChaseColorHandling.StaticColor));
 			propertyStates.Add("ColorGradient", !ColorHandling.Equals(ChaseColorHandling.StaticColor));
+			SetBrowsable(propertyStates);
+		}
+
+		private void UpdateDefaultLevelAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			propertyStates.Add("DefaultLevel", EnableDefaultLevel);
 			SetBrowsable(propertyStates);
 		}
 
@@ -322,38 +358,36 @@ namespace VixenModules.Effect.Chase
 
 			int targetNodeCount = renderNodes.Count;
 
-			//Pulse.Pulse pulse;
-			EffectIntents pulseData;
-
-			// apply the 'background' values to all targets if the level is supposed to be nonzero
-			if (DefaultLevel > 0) {
+			// apply the 'background' values to all targets if the level is supposed to be enabled
+			if (EnableDefaultLevel) {
 				int i = 0;
 				foreach (ElementNode target in renderNodes) {
 					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 					
-					if (target != null && target.Element != null)
+					if (target != null)
 					{
 						bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 
 						double level = DefaultLevel*100.0;
 
 						// figure out what color gradient to use for the pulse
+						EffectIntents pulseData;
 						switch (ColorHandling) {
 							case ChaseColorHandling.GradientForEachPulse:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case ChaseColorHandling.GradientThroughWholeEffect:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), ColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
 							case ChaseColorHandling.StaticColor:
 								pulseData = PulseRenderer.RenderNode(target,
-									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors);
+									new Curve(new PointPairList(new double[] { 0, 100 }, new[] { level, level })), StaticColorGradient, TimeSpan, HasDiscreteColors, true);
 								_elementData.Add(pulseData);
 								break;
 
@@ -367,13 +401,13 @@ namespace VixenModules.Effect.Chase
 											return;
 										double value = level*colorProportion.Item2;
 										pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new[] { value, value })), new ColorGradient(colorProportion.Item1), TimeSpan, HasDiscreteColors, true);
 										_elementData.Add(pulseData);
 									}
 								}
 								else {
 									pulseData = PulseRenderer.RenderNode(target,
-											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors);
+											new Curve(new PointPairList(new double[] { 0, 100 }, new [] { level, level })), new ColorGradient(ColorGradient.GetColorAt(positionWithinGroup)), TimeSpan, HasDiscreteColors, true);
 									_elementData.Add(pulseData);
 								}
 								break;

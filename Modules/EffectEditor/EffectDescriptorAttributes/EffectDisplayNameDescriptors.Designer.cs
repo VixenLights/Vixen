@@ -278,15 +278,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default Brightness.
-        /// </summary>
-        internal static string DefaultBrightness {
-            get {
-                return ResourceManager.GetString("DefaultBrightness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Levels Deep.
         /// </summary>
         internal static string Depth {
@@ -310,6 +301,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum Brightness.
+        /// </summary>
+        internal static string EnableMinimumBrightness {
+            get {
+                return ResourceManager.GetString("EnableMinimumBrightness", resourceCulture);
             }
         }
         
@@ -593,6 +593,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minimum Level.
+        /// </summary>
+        internal static string MinimumBrightness {
+            get {
+                return ResourceManager.GetString("MinimumBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum Level.
+        /// </summary>
+        internal static string MinimumLevel {
+            get {
+                return ResourceManager.GetString("MinimumLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to String Orientation.
         /// </summary>
         internal static string Orientation {
@@ -670,6 +688,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string PulsePercent {
             get {
                 return ResourceManager.GetString("PulsePercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pulse Intensity.
+        /// </summary>
+        internal static string PulseShape {
+            get {
+                return ResourceManager.GetString("PulseShape", resourceCulture);
             }
         }
         

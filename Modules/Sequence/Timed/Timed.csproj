@@ -77,6 +77,11 @@
       <Name>Alternating</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Chase\Chase.csproj">
+      <Project>{27ec771c-d03c-4c94-915b-e18e33cb6c43}</Project>
+      <Name>Chase</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
       <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
       <Name>Effect</Name>
@@ -90,6 +95,11 @@
     <ProjectReference Include="..\..\Effect\SnowFlakes\Snowflakes.csproj">
       <Project>{5437f188-1867-4bf5-890e-431721f1b57d}</Project>
       <Name>Snowflakes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Spin\Spin.csproj">
+      <Project>{56296134-41f2-4b20-95fc-6eb3049cffeb}</Project>
+      <Name>Spin</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

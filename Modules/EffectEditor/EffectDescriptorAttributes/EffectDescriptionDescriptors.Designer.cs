@@ -179,15 +179,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the default brightness of the inactive elements in the effect..
-        /// </summary>
-        internal static string DefaultBrightness {
-            get {
-                return ResourceManager.GetString("DefaultBrightness", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
@@ -220,6 +211,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string EffectType {
             get {
                 return ResourceManager.GetString("EffectType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enables a default brightness for the background in the effect. The background will be based on the foreground color selections..
+        /// </summary>
+        internal static string EnableMinimumBrightness {
+            get {
+                return ResourceManager.GetString("EnableMinimumBrightness", resourceCulture);
             }
         }
         
@@ -454,6 +454,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinBrightness {
             get {
                 return ResourceManager.GetString("MinBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the default brightness of the background in the effect. Sometimes a zero value may be necesary to get certain behaviors in layer mixing..
+        /// </summary>
+        internal static string MinimumBrightness {
+            get {
+                return ResourceManager.GetString("MinimumBrightness", resourceCulture);
             }
         }
         
