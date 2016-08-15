@@ -67,7 +67,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					_strings.Add(line);
 				}
 			}
-
+			if (childLightCount == -1)
+			{
+				LightsPerString = defaultLightsPerString;
+			}
 			StringCount = _strings.Count();
 
 			// Lay out the pixels
