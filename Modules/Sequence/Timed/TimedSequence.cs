@@ -14,16 +14,10 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
 		}
 
-		public List<RowHeightSetting> RowHeightSettings
+		public RowSettings RowSettings
 		{
-			get { return ((TimedSequenceData)SequenceData).RowHeightSettings; }
-			set { ((TimedSequenceData)SequenceData).RowHeightSettings = value; }
-		}
-
-		public Dictionary<Guid, bool> RowGuidId
-		{
-			get { return ((TimedSequenceData)SequenceData).RowGuidId; }
-			set { ((TimedSequenceData)SequenceData).RowGuidId = value; }
+			get { return ((TimedSequenceData)SequenceData).RowSettings; }
+			set { ((TimedSequenceData)SequenceData).RowSettings = value; }
 		}
 
 		public override string FileExtension

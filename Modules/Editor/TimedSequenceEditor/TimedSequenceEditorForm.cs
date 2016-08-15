@@ -1044,19 +1044,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddNodeAsRow(node, null);
 			}
 
+			var rowSettings = _sequence.RowSettings;
+
+			//Adjusts Row heights based on saved row height settings.
+			//if (_sequence.RowHeightSettings != null)
+			//{
+			//	_suppressModifiedEvents = true;
+			//	foreach (RowHeightSetting rowSettings in _sequence.RowHeightSettings)
+			//	{
+			//		foreach (Row row in TimelineControl.Rows)
+			//		{
+			//			if (row.Name == rowSettings.RowName)
+			//			{
+			//				row.Height = rowSettings.RowHeight;
+			//			}
+			//		}
+			//	}
+
+			//	_suppressModifiedEvents = false;
+			//}
+
 			//Expand groups based on save settings
 			foreach (Row row in TimelineControl.Rows)
 			{
-				if (_sequence.RowGuidId == null) continue;
-				foreach (var rowGuidId in _sequence.RowGuidId)
+				RowSetting rowSetting;
+				if(rowSettings.TryGetValue(row.TreeId(), out rowSetting))
 				{
-					if (rowGuidId.Key != ((ElementNode) row.Tag).Id) continue;
-					row.TreeOpen = true;
-					if (row.ParentRow != null)
-					{
-						row.TreeOpen = true;
-						row.Visible = rowGuidId.Value;
-					}
+					row.TreeOpen = rowSetting.Expanded;
+					row.Height = rowSetting.RowHeight;
+					row.Visible = rowSetting.Visible;
+					//if (row.ParentRow != null)
+					//{
+					//	row.TreeOpen = true;
+					//	row.Visible = true;
+					//}
 				}
 			}
 			_suppressModifiedEvents = false;
@@ -1300,8 +1321,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
 		{
-			_sequence.RowHeightSettings = new List<RowHeightSetting>();
-			_sequence.RowGuidId = new Dictionary<Guid, bool>();
+			
 			//Add Default Row Height
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
 			//Add Splitter Distance, the width of the RowList Column
@@ -1312,22 +1332,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Add Playback start and end time
 			_sequence.DefaultPlaybackStartTime = TimelineControl.PlaybackStartTime;
 			_sequence.DefaultPlaybackEndTime = TimelineControl.PlaybackEndTime;
-			//Adds the Row height settings for only those Rows that are not within the Default range
-			foreach (Row row in TimelineControl.Rows)
+
+			var rowSettings = _sequence.RowSettings;
+			rowSettings.Clear();
+			//Stores the settigns for rows that have been altered
+			foreach (var row in TimelineControl.Rows)
 			{
 				if (row.Height > TimelineControl.rowHeight + 7 || row.Height < TimelineControl.rowHeight - 7) //The 7 is the buffer size and will not save the Row Height if within 7 pixels. This is if a user manual adjusts the Row to matach the others (default height) and is a small amout off.
 				{
-					RowHeightSetting newRowHeightCollection = new RowHeightSetting { RowHeight = row.Height, RowName = row.Name };
-					_sequence.RowHeightSettings.Add(newRowHeightCollection);
+					rowSettings.Add(row.TreeId(), new RowSetting(row.Height, row.TreeOpen, row.Visible));
 				}
-			}
-			//Adds the Expanded Groups for the Row List.
-			foreach (Row row in TimelineControl.Rows)
-			{
-				if (row.TreeOpen)
+				else if (row.TreeOpen)
 				{
-					if (!_sequence.RowGuidId.Keys.Contains(((ElementNode)row.Tag).Id))
-						_sequence.RowGuidId.Add(((ElementNode)row.Tag).Id, row.Visible);
+					rowSettings.Add(row.TreeId(), new RowSetting(true, row.Visible));
 				}
 			}
 		}
@@ -5521,24 +5538,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			FormBorderStyle = FormBorderStyle.FixedSingle;
 			//loadingTask = Task.Factory.StartNew(() => loadSequence(_sequence), token);
 			LoadSequence(_sequence);
-
-			//Adjusts Row heights based on saved row height settings.
-			if (_sequence.RowHeightSettings != null)
-			{
-				_suppressModifiedEvents = true;
-				foreach (RowHeightSetting rowSettings in _sequence.RowHeightSettings)
-				{
-					foreach (Row row in TimelineControl.Rows)
-					{
-						if (row.Name == rowSettings.RowName)
-						{
-							row.Height = rowSettings.RowHeight;
-						}
-					}
-				}
-
-				_suppressModifiedEvents = false;
-		}
 		}
 
 		private void cboAudioDevices_TextChanged(object sender, EventArgs e)

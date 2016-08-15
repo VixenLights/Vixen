@@ -117,6 +117,22 @@ namespace Common.Controls.Timeline
 
 		private Row m_parentRow;
 
+		/// <summary>
+		/// This is a hash id based on its position in the tree. It is based on the hash of it's name and all it's parents. 
+		/// This should provide a pretty unique that is fairly static for restoring row settings. This can change if the user 
+		/// restructures the group, but then the settings are probably not valid anyway.
+		/// </summary>
+		/// <returns></returns>
+		public double TreeId()
+		{
+			if (ParentRow == null)
+			{
+				return Name.GetHashCode();
+			}
+
+			return Name.GetHashCode() + ParentRow.TreeId();
+		}
+
 		public Row ParentRow
 		{
 			get { return m_parentRow; }
