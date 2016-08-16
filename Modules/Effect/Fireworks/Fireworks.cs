@@ -374,8 +374,8 @@ namespace VixenModules.Effect.Fireworks
 				}
 				int start =  (int)(Rand01() * GetNumberFrames());
 
-				var startX = x25 + (Rand() % (x75 - x25));
-				var startY = y25 + (Rand() % (y75 - y25));
+				int startX;
+				int startY;
 				if ((x75 - x25) > 0) startX = x25 + Rand() % (x75 - x25); else startX = 0;
 				if ((y75 - y25) > 0) startY = y25 + Rand() % (y75 - y25); else startY = 0;
 

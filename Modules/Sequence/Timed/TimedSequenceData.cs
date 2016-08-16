@@ -14,9 +14,6 @@ namespace VixenModules.Sequence.Timed
 		public List<MarkCollection> MarkCollections { get; set; }
 
 		[DataMember]
-		public List<RowHeightSetting> RowHeightSettings { get; set; }
-
-		[DataMember]
 		public TimeSpan TimePerPixel { get; set; }
 
 		[DataMember]
@@ -29,7 +26,7 @@ namespace VixenModules.Sequence.Timed
 		public int DefaultSplitterDistance { get; set; }
 
 		[DataMember]
-		public Dictionary<Guid, bool> RowGuidId { get; set; }
+		public RowSettings RowSettings { get; set; }
 		
 
 		[DataMember]
@@ -42,13 +39,21 @@ namespace VixenModules.Sequence.Timed
 		{
 			MarkCollections = new List<MarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
-			RowHeightSettings = new List<RowHeightSetting>();
 			DefaultRowHeight = 0;
-			RowGuidId = new Dictionary<Guid, bool>();
+			RowSettings = new RowSettings();
 			VisibleTimeStart = TimeSpan.MinValue;
 			DefaultSplitterDistance = 0;
 			DefaultPlaybackStartTime = TimeSpan.Zero;
 			DefaultPlaybackEndTime = TimeSpan.Zero;
+		}
+
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			if (RowSettings == null)
+			{
+				RowSettings = new RowSettings();
+			}
 		}
 
 		public override IModuleDataModel Clone()
