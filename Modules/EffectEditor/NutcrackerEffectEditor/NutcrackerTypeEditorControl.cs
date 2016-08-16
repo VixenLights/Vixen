@@ -343,8 +343,7 @@ namespace VixenModules.EffectEditor.NutcrackerEffectEditor
 			tree.PixelColor = Color.White;
 			tree.Top = 10;
 			tree.Left = 10;
-			tree.BottomRight.X = preview.Width - 10;
-			tree.BottomRight.Y = preview.Height - 10;
+			tree.BottomRight = new Point(preview.Width - 10, preview.Height - 10);
 			tree.Layout();
 			displayItem.Shape = tree;
 
