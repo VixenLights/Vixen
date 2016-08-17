@@ -370,6 +370,7 @@ namespace VixenModules.Effect.Text
 			UpdateScaleTextAttribute(false);
 			UpdateBaseColorAttribute(false);
 			UpdatePositionXAttribute(false);
+			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 

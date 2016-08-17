@@ -22,6 +22,7 @@ namespace VixenModules.Effect.ColorWash
 		{
 			_data = new ColorWashData();
 			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 		
 		#region Setup
@@ -172,8 +173,14 @@ namespace VixenModules.Effect.ColorWash
 			set
 			{
 				_data = value as ColorWashData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
