@@ -71,6 +71,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
+		[Browsable(false)]
 		public PreviewPoint TopRight
 		{
 			get
@@ -90,6 +91,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             //}
 		}
 
+		[Browsable(false)]
         public PreviewPoint BottomLeft
         {
             get

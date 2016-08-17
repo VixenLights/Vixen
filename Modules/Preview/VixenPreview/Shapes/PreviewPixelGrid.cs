@@ -157,6 +157,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("Lights Per String"),
+		 DescriptionAttribute("The number of lights on each string of the Pixel Grid")]
 		public int LightsPerString
 		{
 			set
@@ -169,6 +172,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("String Count"),
+		 DescriptionAttribute("Number of strings on Pixel Grid")]
 		public int StringCount
 		{
 			set
@@ -238,13 +244,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
         }
 
-		public PreviewPoint BottomRight
+		[CategoryAttribute("Position"),
+		 DisplayName("Bottom Right"),
+		 DescriptionAttribute("Lower right point of Pixel Grid.")]
+		public Point BottomRight
 		{
-			get { return _bottomRight; }
-			set 
-            { _bottomRight = value; }
+			get
+			{
+				Point p = new Point(_bottomRight.X, _bottomRight.Y);
+				return p;
+			}
+			set
+			{
+				_bottomRight.X = value.X;
+				_bottomRight.Y = value.Y;
+				Layout();
+			}
 		}
 
+		[Browsable(false)]
 		public PreviewPoint BottomLeft
 		{
 			get { return _bottomLeft; }
@@ -268,6 +286,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
         }
 
+		[CategoryAttribute("Position"),
+		 DisplayName("Top Left"),
+		 DescriptionAttribute("Upper left point of Pixel Grid.")]
+		public Point TopLeft
+		{
+			get
+			{
+				Point p = new Point(_topLeft.X, _topLeft.Y);
+				return p;
+			}
+			set
+			{
+				_topLeft.X = value.X;
+				_topLeft.Y = value.Y;
+				Layout();
+			}
+		}
+
+		[CategoryAttribute("Settings"),
+		 DisplayName("String Orientation"),
+		 DescriptionAttribute("Orientation of strings in pixel grid. Vertical is Up/Down, Horizontal is Left/Right")]
 		public StringOrientations StringOrientation 
 		{ 
 			get 
