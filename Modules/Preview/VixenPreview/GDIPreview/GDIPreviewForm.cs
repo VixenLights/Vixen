@@ -237,7 +237,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (e.CloseReason == CloseReason.UserClosing)
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				var messageBox = new MessageBoxForm("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OKCancel, SystemIcons.Information);
+				var messageBox = new MessageBoxForm("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OK, SystemIcons.Information);
 				messageBox.ShowDialog();
 				e.Cancel = true;
 			}

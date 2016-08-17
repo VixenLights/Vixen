@@ -118,7 +118,7 @@ namespace VixenModules.Preview.VixenPreview {
 		private void VixenPreviewDisplay_FormClosing(object sender, FormClosingEventArgs e) {
 			if (e.CloseReason == CloseReason.UserClosing) {
 				MessageBox.Show("The preview can only be closed from the Preview Configuration dialog.", "Close",
-								MessageBoxButtons.OKCancel);
+								MessageBoxButtons.OK);
 				e.Cancel = true;
 			}
 		}
