@@ -173,6 +173,7 @@ namespace VixenModules.Effect.Plasma
 		private void UpdateAttributes()
 		{
 			UpdateColorAttribute(false);
+			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
