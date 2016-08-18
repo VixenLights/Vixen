@@ -5,11 +5,13 @@ using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
+using Vixen.Module.Media;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using VixenModules.Media.Audio;
 
 namespace VixenModules.Effect.Fireworks
 {
@@ -18,12 +20,19 @@ namespace VixenModules.Effect.Fireworks
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
 		private static Random _random = new Random();
-		private const int MaxFlakes = 10000;
+		private const int MaxFlakes = 100000;
+		private readonly AudioUtilities _audioUtilities;
+		private const int Spacing = 50;
+		private int _explosion;
 		
 		public Fireworks()
 		{
 			_data = new FireworksData();
+			_audioUtilities = new AudioUtilities();
 		}
+
+		[Browsable(false)]
+		public AudioUtilities AudioUtilities { get { return _audioUtilities; } }
 
 		#region Config
 
@@ -47,9 +56,27 @@ namespace VixenModules.Effect.Fireworks
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Explosion Sensitivity")]
+		[ProviderDescription(@"Varies the Explosion sensitivity")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 10, 1)]
+		[PropertyOrder(1)]
+		public int ExplosionSensitivity
+		{
+			get { return _data.ExplosionSensitivity; }
+			set
+			{
+				_data.ExplosionSensitivity = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Random Velocity")]
 		[ProviderDescription(@"Random Velocity")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public bool RandomVelocity
 		{
 			get { return _data.RandomVelocity; }
@@ -68,7 +95,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public int Velocity
 		{
 			get { return _data.Velocity; }
@@ -86,7 +113,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Min Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public int MinVelocity
 		{
 			get { return _data.MinVelocity; }
@@ -106,7 +133,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Max Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public int MaxVelocity
 		{
 			get { return _data.MaxVelocity; }
@@ -124,7 +151,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Random Particles")]
 		[ProviderDescription(@"Random Particles")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public bool RandomParticles
 		{
 			get { return _data.RandomParticles; }
@@ -143,7 +170,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public int Particles
 		{
 			get { return _data.Particles; }
@@ -161,7 +188,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Min Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public int MinParticles
 		{
 			get { return _data.MinParticles; }
@@ -181,7 +208,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Max Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public int MaxParticles
 		{
 			get { return _data.MaxParticles; }
@@ -201,7 +228,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"ParticleFade")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public int ParticalFade
 		{
 			get { return _data.ParticleFade; }
@@ -209,6 +236,23 @@ namespace VixenModules.Effect.Fireworks
 			{
 				_data.ParticleFade = value;
 				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Enable Audio")]
+		[ProviderDescription(@"Synchronise Fireworks to the music")]
+		[PropertyOrder(11)]
+		public bool EnableAudio
+		{
+			get { return _data.EnableAudio; }
+			set
+			{
+				_data.EnableAudio = value;
+				IsDirty = true;
+				UpdateAudioAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -228,10 +272,176 @@ namespace VixenModules.Effect.Fireworks
 
 		#endregion
 
+		#region Audio
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"Volume Sensitivity")]
+		[ProviderDescription(@"The range of the volume levels displayed by the effect")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(-200, 0, 1)]
+		[PropertyOrder(0)]
+		public int Sensitivity
+		{
+			get { return _data.Sensitivity; }
+			set
+			{
+				_data.Sensitivity = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"Gain")]
+		[ProviderDescription(@"Boosts the volume")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 200, .5)]
+		[PropertyOrder(1)]
+		public int Gain
+		{
+			get { return _data.Gain * 10; }
+			set
+			{
+				_data.Gain = value / 10;
+				_audioUtilities.Gain = value / 10;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the effect")]
+		[PropertyOrder(3)]
+		public bool Normalize
+		{
+			get { return _data.Normalize; }
+			set
+			{
+				_audioUtilities.Normalize = value;
+				_data.Normalize = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"LowPassFilter")]
+		[ProviderDescription(@"Ignores frequencies above a given frequency")]
+		[PropertyOrder(4)]
+		public bool LowPass
+		{
+			get { return _data.LowPass; }
+			set
+			{
+				_data.LowPass = value;
+				_audioUtilities.LowPass = value;
+				IsDirty = true;
+				UpdateLowHighPassAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"LowPassFrequency")]
+		[ProviderDescription(@"Ignore frequencies above this value")]
+		[PropertyOrder(5)]
+		public int LowPassFreq
+		{
+			get { return _data.LowPassFreq; }
+			set
+			{
+				_data.LowPassFreq = value;
+				_audioUtilities.LowPassFreq = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"HighPassFilter")]
+		[ProviderDescription(@"Ignores frequencies below a given frequency")]
+		[PropertyOrder(6)]
+		public bool HighPass
+		{
+			get { return _data.HighPass; }
+			set
+			{
+				_data.HighPass = value;
+				_audioUtilities.HighPass = value;
+				IsDirty = true;
+				UpdateLowHighPassAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"HighPassFrequency")]
+		[ProviderDescription(@"Ignore frequencies below this value")]
+		[PropertyOrder(7)]
+		public int HighPassFreq
+		{
+			get { return _data.HighPassFreq; }
+			set
+			{
+				_data.HighPassFreq = value;
+				_audioUtilities.HighPassFreq = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"DecayTime")]
+		[ProviderDescription(@"How quickly the effect falls from a volume peak")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 5000, 300)]
+		[PropertyOrder(8)]
+		public int DecayTime
+		{
+			get { return _data.DecayTime; }
+			set
+			{
+				_data.DecayTime = value;
+				_audioUtilities.DecayTime = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"AttackTime")]
+		[ProviderDescription(@"How quickly the effect initially reacts to a volume peak")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 300, 10)]
+		[PropertyOrder(9)]
+		public int AttackTime
+		{
+			get { return _data.AttackTime; }
+			set
+			{
+				_data.AttackTime = value;
+				_audioUtilities.AttackTime = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+
+		#endregion
+
 		#region Color
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"Color Type")]
 		[ProviderDescription(@"Color Type")]
 		[PropertyOrder(0)]
@@ -248,7 +458,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"Colors")]
 		[ProviderDescription(@"Colors")]
 		[PropertyOrder(2)]
@@ -268,7 +478,7 @@ namespace VixenModules.Effect.Fireworks
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		public Curve LevelCurve
@@ -303,9 +513,11 @@ namespace VixenModules.Effect.Fireworks
 		#region Update Attributes
 		private void UpdateAttributes()
 		{
+			UpdateAudioAttributes(false);
 			UpdateRandomVelocityAttribute(false);
 			UpdateColorAttribute(false);
 			UpdateRandomParticlesAttribute(false);
+			UpdateLowHighPassAttributes(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -335,6 +547,41 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
+		private void UpdateEnableAudioAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
+			propertyStates.Add("EnableAudio", _audioUtilities.AudioLoaded);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateAudioAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10);
+			propertyStates.Add("Sensitivity", EnableAudio);
+			propertyStates.Add("LowPass", EnableAudio);
+			propertyStates.Add("LowPassFreq", EnableAudio);
+			propertyStates.Add("HighPass", EnableAudio);
+			propertyStates.Add("HighPassFreq", EnableAudio);
+			propertyStates.Add("Range", EnableAudio);
+			propertyStates.Add("Normalize", EnableAudio);
+			propertyStates.Add("DecayTime", EnableAudio);
+			propertyStates.Add("AttackTime", EnableAudio);
+			propertyStates.Add("Gain", EnableAudio);
+			propertyStates.Add("Explosions", !EnableAudio);
+			propertyStates.Add("ExplosionSensitivity", EnableAudio);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+
+			UpdateLowHighPassAttributes();
+		}
+
 		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
 		private void UpdateColorAttribute(bool refresh = true)
 		{
@@ -348,10 +595,40 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
+		protected void UpdateLowHighPassAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{"LowPassFreq", LowPass},
+				{"HighPassFreq", HighPass}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
 		#endregion
 
 		protected override void SetupRender()
 		{
+			foreach (IMediaModuleInstance module in Media)
+			{
+				var audio = module as Audio;
+				if (audio != null)
+				{
+					if (audio.Channels == 0)
+					{
+						continue;
+					}
+
+					_audioUtilities.TimeSpan = TimeSpan;
+					_audioUtilities.StartTime = StartTime;
+					_audioUtilities.ReloadAudio(audio);
+				}
+			}
+			UpdateEnableAudioAttribute();
 			InitFireworksBuffer();
 			ResetBurstBuffer();
 
@@ -362,32 +639,58 @@ namespace VixenModules.Effect.Fireworks
 
 			ResetBurstBuffer();
 
-			// Create new bursts
-			for (int x = 0; x < Explosions; x++)
+			_explosion = 0;
+			if (EnableAudio)
 			{
-				HSV hsv = new HSV();
-				if (ColorType == FireworksColorType.Random)
+				for (int ii = 0; ii < (int)(TimeSpan.TotalMilliseconds / Spacing); ii++)
 				{
-					hsv.H = (float)(Rand() % 1000) / 1000.0f;
-					hsv.S = 1.0f;
-					hsv.V = 1.0f;
+					var currentValue = _audioUtilities.VolumeAtTime(ii * Spacing);
+
+					if (currentValue > ((double)Sensitivity / 10))
+					{
+						CreateExplosions(ii, x75, x25, y75, y25);
+						_explosion++;
+						ii += ExplosionSensitivity;
+					}
 				}
-				int start =  (int)(Rand01() * GetNumberFrames());
-
-				int startX;
-				int startY;
-				if ((x75 - x25) > 0) startX = x25 + Rand() % (x75 - x25); else startX = 0;
-				if ((y75 - y25) > 0) startY = y25 + Rand() % (y75 - y25); else startY = 0;
-
-				int colorLocation = Rand() % ColorGradients.Count;
-
-				int randomParticles = RandomParticles ? _random.Next(MinParticles, MaxParticles) : Particles;
-
-				for (int i = 0; i < randomParticles; i++)
+			}
+			else
+			{
+				for (int x = 0; x < Explosions; x++)
 				{
-					int velocity = RandomVelocity ? _random.Next(MinVelocity, MaxVelocity) : Velocity;
-					_fireworkBursts[x * Particles + i].Reset(startX, startY, false, velocity, hsv, start, colorLocation);
+					_explosion = x;
+					CreateExplosions(0, x75, x25, y75, y25);
 				}
+				_explosion = Explosions;
+			}
+		}
+
+		private void CreateExplosions(int ii, int x75, int x25, int y75, int y25)
+		{
+			HSV hsv = new HSV();
+			if (ColorType == FireworksColorType.Random)
+			{
+				hsv.H = (float)(Rand() % 1000) / 1000.0f;
+				hsv.S = 1.0f;
+				hsv.V = 1.0f;
+			}
+			int start = EnableAudio ? ii : (int) (Rand01()*GetNumberFrames());
+
+			int startX;
+			int startY;
+			if ((x75 - x25) > 0) startX = x25 + Rand() % (x75 - x25);
+			else startX = 0;
+			if ((y75 - y25) > 0) startY = y25 + Rand() % (y75 - y25);
+			else startY = 0;
+
+			int colorLocation = Rand() % ColorGradients.Count;
+
+			int randomParticles = RandomParticles ? _random.Next(MinParticles, MaxParticles) : Particles;
+
+			for (int i = 0; i < randomParticles; i++)
+			{
+				int velocity = RandomVelocity ? _random.Next(MinVelocity, MaxVelocity) : Velocity;
+				_fireworkBursts[_explosion * Particles + i].Reset(startX, startY, false, velocity, hsv, start, colorLocation);
 			}
 		}
 
@@ -403,6 +706,7 @@ namespace VixenModules.Effect.Fireworks
 		protected override void CleanUpRender()
 		{
 			_fireworkBursts = null;
+			_audioUtilities.FreeMem();
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -411,7 +715,7 @@ namespace VixenModules.Effect.Fireworks
 
 			int colorcnt = ColorGradients.Count;
 
-			for (int i = 0; i < Particles*Explosions; i++)
+			for (int i = 0; i < Particles * _explosion; i++)
 			{
 				if (_fireworkBursts[i].StartPeriod == frame)
 				{

@@ -75,6 +75,11 @@
       <Name>EffectDescriptorAttributes</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
+      <Project>{4243BA4C-6371-4DD1-8A1D-675BED5322AF}</Project>
+      <Name>Audio</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Effect\Effect.csproj">
       <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
       <Name>Effect</Name>
