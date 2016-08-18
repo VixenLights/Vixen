@@ -43,6 +43,10 @@ namespace Common.Controls
 				control.SelectedChanged += control_SelectedChanged;
 				tableLayoutPanelColors.Controls.Add(control);
 			}
+			if (SingleColorOnly) {
+				labelSelectPrompt.Text = "Select a discrete color.";
+				this.Text = "Select Color";
+			}
 		}
 
 		private void control_SelectedChanged(object sender, EventArgs e)

@@ -29,7 +29,7 @@
 		{
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.labelSelectPrompt = new System.Windows.Forms.Label();
 			this.tableLayoutPanelColors = new System.Windows.Forms.TableLayoutPanel();
 			this.SuspendLayout();
 			// 
@@ -37,9 +37,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(217, 247);
+			this.buttonCancel.Location = new System.Drawing.Point(253, 285);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 0;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -50,23 +50,23 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(136, 247);
+			this.buttonOK.Location = new System.Drawing.Point(159, 285);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonOK_MouseLeave);
 			this.buttonOK.MouseHover += new System.EventHandler(this.buttonOK_MouseHover);
 			// 
-			// label1
+			// labelSelectPrompt
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(27, 23);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(170, 13);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "Select one or more discrete colors:";
+			this.labelSelectPrompt.AutoSize = true;
+			this.labelSelectPrompt.Location = new System.Drawing.Point(31, 27);
+			this.labelSelectPrompt.Name = "labelSelectPrompt";
+			this.labelSelectPrompt.Size = new System.Drawing.Size(188, 15);
+			this.labelSelectPrompt.TabIndex = 2;
+			this.labelSelectPrompt.Text = "Select one or more discrete colors:";
 			// 
 			// tableLayoutPanelColors
 			// 
@@ -75,22 +75,22 @@
 			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanelColors.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize;
-			this.tableLayoutPanelColors.Location = new System.Drawing.Point(28, 52);
+			this.tableLayoutPanelColors.Location = new System.Drawing.Point(33, 60);
 			this.tableLayoutPanelColors.Name = "tableLayoutPanelColors";
 			this.tableLayoutPanelColors.RowCount = 3;
 			this.tableLayoutPanelColors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33233F));
 			this.tableLayoutPanelColors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33533F));
 			this.tableLayoutPanelColors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33233F));
-			this.tableLayoutPanelColors.Size = new System.Drawing.Size(252, 162);
+			this.tableLayoutPanelColors.Size = new System.Drawing.Size(294, 187);
 			this.tableLayoutPanelColors.TabIndex = 3;
 			// 
 			// DiscreteColorPicker
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(304, 282);
+			this.ClientSize = new System.Drawing.Size(355, 325);
 			this.Controls.Add(this.tableLayoutPanelColors);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.labelSelectPrompt);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.buttonCancel);
 			this.DoubleBuffered = true;
@@ -109,7 +109,7 @@
 
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOK;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label labelSelectPrompt;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelColors;
 	}
 }
