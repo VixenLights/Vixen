@@ -7,6 +7,8 @@ using System.Reflection;
 using Vixen.Sys;
 using System.ComponentModel;
 using Common.Controls;
+using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -41,6 +43,11 @@ namespace VixenModules.SequenceType.Vixen2x
 		public Vixen2xSequenceImporterChannelMapper(List<ChannelMapping> mappings, bool mapExists, string mappingName)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			Icon = Resources.Icon_Vixen3;
+			listViewMapping.ForeColor = SystemColors.WindowText;
 
 			Mappings = mappings;
 			MapExists = mapExists;
@@ -426,6 +433,18 @@ namespace VixenModules.SequenceType.Vixen2x
 					itemrow.SubItems[(int)mapperColumnId.importColor].BackColor = colorDlg.Color;
 				}
 			}
+		}
+
+		private void buttonBackground_MouseHover(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
+		}
+
+		private void buttonBackground_MouseLeave(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
 		#endregion

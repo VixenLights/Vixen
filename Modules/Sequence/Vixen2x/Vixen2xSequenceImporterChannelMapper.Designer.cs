@@ -99,10 +99,10 @@
             listViewItem2,
             listViewItem3,
             listViewItem4});
-			this.listViewMapping.Location = new System.Drawing.Point(12, 12);
+			this.listViewMapping.Location = new System.Drawing.Point(14, 14);
 			this.listViewMapping.Name = "listViewMapping";
 			this.listViewMapping.ShowGroups = false;
-			this.listViewMapping.Size = new System.Drawing.Size(628, 488);
+			this.listViewMapping.Size = new System.Drawing.Size(732, 562);
 			this.listViewMapping.TabIndex = 0;
 			this.listViewMapping.UseCompatibleStateImageBehavior = false;
 			this.listViewMapping.View = System.Windows.Forms.View.Details;
@@ -147,25 +147,29 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(759, 515);
+			this.buttonCancel.Location = new System.Drawing.Point(885, 594);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(855, 515);
+			this.buttonOK.Location = new System.Drawing.Point(997, 594);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(90, 25);
+			this.buttonOK.Size = new System.Drawing.Size(105, 29);
 			this.buttonOK.TabIndex = 4;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.buttonOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// multiSelectTreeview1
 			// 
@@ -179,10 +183,10 @@
 			this.multiSelectTreeview1.DragDestinationNodeForeColor = System.Drawing.SystemColors.HighlightText;
 			this.multiSelectTreeview1.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
 			this.multiSelectTreeview1.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
-			this.multiSelectTreeview1.Location = new System.Drawing.Point(646, 12);
+			this.multiSelectTreeview1.Location = new System.Drawing.Point(754, 14);
 			this.multiSelectTreeview1.Name = "multiSelectTreeview1";
 			this.multiSelectTreeview1.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("multiSelectTreeview1.SelectedNodes")));
-			this.multiSelectTreeview1.Size = new System.Drawing.Size(299, 488);
+			this.multiSelectTreeview1.Size = new System.Drawing.Size(348, 562);
 			this.multiSelectTreeview1.TabIndex = 5;
 			this.multiSelectTreeview1.UsingCustomDragCursor = false;
 			this.multiSelectTreeview1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.multiSelectTreeview1_ItemDrag);
@@ -191,36 +195,38 @@
 			// destinationColorButton
 			// 
 			this.destinationColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.destinationColorButton.Location = new System.Drawing.Point(294, 515);
+			this.destinationColorButton.Location = new System.Drawing.Point(343, 594);
 			this.destinationColorButton.Name = "destinationColorButton";
-			this.destinationColorButton.Size = new System.Drawing.Size(90, 25);
+			this.destinationColorButton.Size = new System.Drawing.Size(105, 29);
 			this.destinationColorButton.TabIndex = 6;
 			this.destinationColorButton.Text = "Set Import Color";
 			this.destinationColorButton.UseVisualStyleBackColor = true;
 			this.destinationColorButton.Click += new System.EventHandler(this.destinationColorButton_Click);
+			this.destinationColorButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.destinationColorButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// mappingNameLabel
 			// 
 			this.mappingNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mappingNameLabel.AutoSize = true;
-			this.mappingNameLabel.Location = new System.Drawing.Point(12, 521);
+			this.mappingNameLabel.Location = new System.Drawing.Point(14, 601);
 			this.mappingNameLabel.Name = "mappingNameLabel";
-			this.mappingNameLabel.Size = new System.Drawing.Size(82, 13);
+			this.mappingNameLabel.Size = new System.Drawing.Size(93, 15);
 			this.mappingNameLabel.TabIndex = 7;
 			this.mappingNameLabel.Text = "Mapping Name:";
 			// 
 			// mappingNameTextBox
 			// 
 			this.mappingNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.mappingNameTextBox.Location = new System.Drawing.Point(100, 518);
+			this.mappingNameTextBox.Location = new System.Drawing.Point(117, 598);
 			this.mappingNameTextBox.Name = "mappingNameTextBox";
-			this.mappingNameTextBox.Size = new System.Drawing.Size(168, 20);
+			this.mappingNameTextBox.Size = new System.Drawing.Size(195, 23);
 			this.mappingNameTextBox.TabIndex = 8;
 			// 
 			// numericUpDownRepeatElements
 			// 
 			this.numericUpDownRepeatElements.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.numericUpDownRepeatElements.Location = new System.Drawing.Point(516, 518);
+			this.numericUpDownRepeatElements.Location = new System.Drawing.Point(602, 598);
 			this.numericUpDownRepeatElements.Maximum = new decimal(new int[] {
             20,
             0,
@@ -232,7 +238,7 @@
             0,
             0});
 			this.numericUpDownRepeatElements.Name = "numericUpDownRepeatElements";
-			this.numericUpDownRepeatElements.Size = new System.Drawing.Size(40, 20);
+			this.numericUpDownRepeatElements.Size = new System.Drawing.Size(47, 23);
 			this.numericUpDownRepeatElements.TabIndex = 9;
 			this.numericUpDownRepeatElements.Value = new decimal(new int[] {
             1,
@@ -244,9 +250,9 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(410, 521);
+			this.label1.Location = new System.Drawing.Point(478, 601);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(105, 13);
+			this.label1.Size = new System.Drawing.Size(111, 15);
 			this.label1.TabIndex = 10;
 			this.label1.Text = "Repeat Elements:   x";
 			// 
@@ -254,9 +260,9 @@
 			// 
 			this.checkBoxRGB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxRGB.AutoSize = true;
-			this.checkBoxRGB.Location = new System.Drawing.Point(567, 516);
+			this.checkBoxRGB.Location = new System.Drawing.Point(661, 600);
 			this.checkBoxRGB.Name = "checkBoxRGB";
-			this.checkBoxRGB.Size = new System.Drawing.Size(105, 21);
+			this.checkBoxRGB.Size = new System.Drawing.Size(94, 19);
 			this.checkBoxRGB.TabIndex = 11;
 			this.checkBoxRGB.Text = "Color Mixing";
 			this.checkBoxRGB.CheckedChanged += new System.EventHandler(this.checkBoxRGB_CheckedChanged);
@@ -273,18 +279,18 @@
             "BGR",
             "GRB",
             "GBR"});
-			this.comboBoxColorOrder.Location = new System.Drawing.Point(650, 516);
+			this.comboBoxColorOrder.Location = new System.Drawing.Point(758, 595);
 			this.comboBoxColorOrder.Name = "comboBoxColorOrder";
-			this.comboBoxColorOrder.Size = new System.Drawing.Size(75, 24);
+			this.comboBoxColorOrder.Size = new System.Drawing.Size(87, 23);
 			this.comboBoxColorOrder.TabIndex = 12;
 			// 
 			// Vixen2xSequenceImporterChannelMapper
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(951, 552);
+			this.ClientSize = new System.Drawing.Size(1109, 637);
 			this.Controls.Add(this.checkBoxRGB);
 			this.Controls.Add(this.comboBoxColorOrder);
 			this.Controls.Add(this.label1);
@@ -298,7 +304,6 @@
 			this.Controls.Add(this.listViewMapping);
 			this.DoubleBuffered = true;
 			this.Name = "Vixen2xSequenceImporterChannelMapper";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Vixen 2.x Channel Mapping";
 			this.Load += new System.EventHandler(this.Vixen2xSequenceImporterChannelMapper_Load);
