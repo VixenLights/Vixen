@@ -895,6 +895,10 @@ namespace Common.Controls
 			}
 		}
 
+		private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			treeview.CollapseAll();
+		}
 		#endregion
 
 
@@ -946,5 +950,7 @@ namespace Common.Controls
 			//	e.SuppressKeyPress = true;
 			//}
 		}
+
+		
 	}
 }
