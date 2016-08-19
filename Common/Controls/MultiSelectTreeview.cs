@@ -243,6 +243,39 @@ namespace Common.Controls
 
 		#endregion
 
+		public bool CanReverseElements()
+		{
+			//CanReverseElements is true if two requirements are met, selected nodes must all have the same parent and must be a contiguous selection.
+			TreeNode firstParent = null;
+			int lastNodesIndex = -1;
+			foreach (TreeNode node in m_SelectedNodes)
+			{
+				if (lastNodesIndex == -1)
+				{
+					firstParent = node.Parent;
+					lastNodesIndex = node.Index;
+				}
+				else
+				{
+					if (node.Parent == firstParent)
+					{
+						if (lastNodesIndex != node.Index -1) 
+						{
+							return false;
+						}
+						else
+						{
+							lastNodesIndex = node.Index;							
+						}
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 		public new void BeginUpdate()
 		{
 			base.BeginUpdate();

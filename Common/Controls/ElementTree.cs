@@ -652,6 +652,7 @@ namespace Common.Controls
 			createGroupWithNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			deleteNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			renameNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
+			reverseElementsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 1) && (treeview.CanReverseElements());
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
@@ -898,6 +899,19 @@ namespace Common.Controls
 		private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			treeview.CollapseAll();
+		}
+
+		private void reverseElementsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			
+			for (int i = 1; i < SelectedTreeNodes.Count; i++)
+			{
+				ElementNode sourceNode = SelectedTreeNodes[i].Tag as ElementNode;
+				ElementNode parentNode = (SelectedTreeNodes[i].Parent != null) ? SelectedTreeNodes[i].Parent.Tag as ElementNode : null;
+				VixenSystem.Nodes.MoveNode(sourceNode, parentNode, parentNode, SelectedTreeNodes[0].Index);
+			}
+						
+			PopulateNodeTree();
 		}
 		#endregion
 
