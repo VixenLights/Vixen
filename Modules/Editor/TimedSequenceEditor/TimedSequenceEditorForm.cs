@@ -2327,7 +2327,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
 			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click)
 			{
-				ShortcutKeyDisplayString = @"Ctrl+V", Image = Resources.page_copy,
+				ShortcutKeyDisplayString = @"Ctrl+V", Image = Resources.page_white_paste,
 				Enabled = ClipboardHasData()
 			};
 
@@ -6048,7 +6048,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 
 		public Bitmap checkMark { get; set; }
-	}
+		}
 
 	[Serializable]
 	internal class TimelineElementsClipboardData
