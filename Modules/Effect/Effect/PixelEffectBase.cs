@@ -441,5 +441,47 @@ namespace VixenModules.Effect.Effect
 			}
 			return (int)(TimeSpan.TotalMilliseconds / FrameTime);
 		}
+
+		protected double CalculateAcceleration(double ratio, double accel)
+		{
+			if (accel == 0) return ratio;
+
+			double pctAccel = (Math.Abs(accel) - 1.0) / 9.0;
+			double newAccel1 = pctAccel * 5 + (1.0 - pctAccel) * 1.5;
+			double newAccel2 = 1.5 + (ratio * newAccel1);
+			double finalAccel = pctAccel * newAccel2 + (1.0 - pctAccel) * newAccel1;
+
+			if (accel > 0)
+			{
+				return Math.Pow(ratio, finalAccel);
+			}
+			else
+			{
+				return (1.0 - Math.Pow(1.0 - ratio, newAccel1));
+			}
+		}
+
+		protected double GetStepAngle(int width, int height)
+		{
+			double step = 0.5;
+			int biggest = Math.Max(width, height);
+			if (biggest > 50)
+			{
+				step = 0.4;
+			}
+			if (biggest > 150)
+			{
+				step = 0.3;
+			}
+			if (biggest > 250)
+			{
+				step = 0.2;
+			}
+			if (biggest > 350)
+			{
+				step = 0.1;
+			}
+			return step;
+		}
 	}
 }
