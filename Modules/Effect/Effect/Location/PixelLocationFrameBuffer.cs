@@ -19,6 +19,13 @@ namespace VixenModules.Effect.Effect.Location
 		
 		public List<ElementLocation> ElementLocations { get; private set; }
 
+		/// <summary>
+		/// Add a frame and set the pixel to the given color. This cannot be used to update a pixel that 
+		/// has already been set. See update functions.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="c"></param>
 		public void SetPixel(int x, int y, Color c)
 		{
 			Tuple<ElementLocation, List<RGBValue>> elementData;
@@ -28,6 +35,13 @@ namespace VixenModules.Effect.Effect.Location
 			}
 		}
 
+		/// <summary>
+		/// Add a frame and set the pixel to the given color. This cannot be used to update a pixel that 
+		/// has already been set. See update functions.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="hsv"></param>
 		public void SetPixel(int x, int y, HSV hsv)
 		{
 			var color = hsv.ToRGB();
@@ -38,6 +52,49 @@ namespace VixenModules.Effect.Effect.Location
 		{
 			throw new NotImplementedException();
 		}
+
+		/// <summary>
+		/// This adds a frame worth of data to the buffer in a transparent color.
+		/// </summary>
+		public void InitializeNextFrame()
+		{
+			foreach (var tuple in _data.GetData())
+			{
+				tuple.Item2.Add(new RGBValue(Color.Transparent));
+			}
+		}
+
+		/// <summary>
+		/// Update a existing pixel in the specified frame. The pixel must exist from either the InitializeNextFrame
+		/// or the SetPixel methods or an exception will occur.
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="c"></param>
+		public void UpdatePixel(int frame, int x, int y, Color c)
+		{
+			Tuple<ElementLocation, List<RGBValue>> elementData;
+			if (_data.TryGetAt(x, y, out elementData))
+			{
+				elementData.Item2[frame]= new RGBValue(c);
+			}
+		}
+
+		/// <summary>
+		/// Update a existing pixel in the specified frame. The pixel must exist from either the InitializeNextFrame
+		/// or the SetPixel methods or an exception will occur.
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="hsv"></param>
+		public void UpdatePixel(int frame, int x, int y, HSV hsv)
+		{
+			var color = hsv.ToRGB();
+			UpdatePixel(frame, x, y, color);
+		}
+
 
 		public List<Tuple<ElementLocation, List<RGBValue>>> GetElementData()
 		{
