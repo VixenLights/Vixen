@@ -141,7 +141,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (e.Key == Key.Space)
 			{
-				_sequenceEditorForm.HandleSpacebarAction();
+				_sequenceEditorForm.HandleSpacebarAction(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl));
 			}
 		}
 

@@ -4465,7 +4465,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 
 				case Keys.Space:
-					HandleSpacebarAction();
+					HandleSpacebarAction(e.Control);
 					break;
 
 				case Keys.Left:
@@ -4542,7 +4542,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			base.OnKeyDown(e);
 		}
 
-		internal void HandleSpacebarAction()
+		internal void HandleSpacebarAction(bool pause)
 		{
 			if (!_context.IsRunning)
 				PlaySequence();
@@ -4551,7 +4551,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (_context.IsPaused)
 					PlaySequence();
 				else
-					StopSequence();
+					if (pause)
+					{
+						PauseSequence();
+					}
+					else
+					{
+						StopSequence();
+					}
 			}
 		}
 
