@@ -31,6 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+			contextMenuLinkedElements.Renderer = new ThemeToolStripRenderer();
             _shapes = shapes;
             connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
