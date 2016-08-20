@@ -12,7 +12,7 @@ namespace Vixen.IO.Loader
 		public ISequence LoadFromFile(string filePath)
 		{
 			if (filePath == null) throw new InvalidOperationException("Cannot load from a null file path.");
-			if (!File.Exists(filePath)) throw new InvalidOperationException("File does not exist.");
+			if (!File.Exists(filePath)) throw new InvalidOperationException(string.Format("File does not exist at path {0}.", filePath));
 
 			IFileReader fileReader = FileReaderFactory.Instance.CreateFileReader();
 			if (fileReader == null) return null;

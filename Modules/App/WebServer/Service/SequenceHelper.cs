@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Vixen.Execution;
@@ -63,31 +61,38 @@ namespace VixenModules.App.WebServer.Service
 			{
 				string fileName = HttpUtility.UrlDecode(sequence.FileName);
 
-				ISequence seq = SequenceService.Instance.Load(fileName);
-				if (seq != null)
+				try
 				{
-					Logging.Info(string.Format("Web - Prerendering effects for sequence: {0}", sequence.Name));
-					Parallel.ForEach(seq.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => effectNode.Effect.PreRender());
-
-					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(
-						new ContextFeatures(ContextCaching.NoCaching), seq);
-					context.ContextEnded += context_ContextEnded;
-					context.Play(TimeSpan.Zero, seq.Length);
-					status.State = ContextStatus.States.Playing;
-					status.Sequence = new Sequence()
+					Logging.Info("Web - Loading sequence {0} from filename {1}", sequence.Name, fileName);
+					var seq = SequenceService.Instance.Load(fileName);
+					if (seq != null)
 					{
-						Name = context.Sequence.Name,
-						FileName = fileName
-					};
-					
-					status.Message = string.Format("Playing sequence {0} of length {1}", sequence.Name, seq.Length);
+						Logging.Info(string.Format("Web - Prerendering effects for sequence: {0}", sequence.Name));
+						Parallel.ForEach(seq.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => effectNode.Effect.PreRender());
+
+						ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(
+							new ContextFeatures(ContextCaching.NoCaching), seq);
+						context.ContextEnded += context_ContextEnded;
+						context.Play(TimeSpan.Zero, seq.Length);
+						status.State = ContextStatus.States.Playing;
+						status.Sequence = new Sequence()
+						{
+							Name = context.Sequence.Name,
+							FileName = fileName
+						};
+
+						status.Message = string.Format("Playing sequence {0} of length {1}", sequence.Name, seq.Length);
+					}
+					else
+					{
+						status.Message = string.Format("Sequence {0} not found.", fileName);
+					}
 				}
-				else
+				catch (Exception e)
 				{
-					status.Message = string.Format("Sequence {0} not found.", fileName);
-				}
-				
-				
+					Logging.Error("Error loading the sequence.", e);
+					status.Message = string.Format("An error occured loading sequence {0}.", fileName);
+				}	
 			}
 			
 
