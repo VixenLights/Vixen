@@ -243,33 +243,6 @@ namespace VixenModules.Effect.Video
 
 		#region Advance Settings
 
-		//[Value]
-		//[ProviderCategory(@"Advanced Settings", 3)]
-		//[ProviderDisplayName(@"Use Advanced Settings")]
-		//[ProviderDescription(@"Check to enable the settings in this section instead of the defaults.")]
-		//[PropertyOrder(0)]
-		//public bool AdvancedSettings
-		//{
-		//	get { return _data.AdvancedSettings; }
-		//	set
-		//	{
-		//		_data.AdvancedSettings = value;
-		//		IsDirty = true;
-		//		_processVideo = false;
-		//		if (!AdvancedSettings)
-		//		{
-		//			StartTimeSeconds = 0;
-		//			RotateVideo = 0;
-		//			CustomFrameRate = true;
-		//			FramesPerSecond = 25;
-		//			MaintainAspect = false;
-		//			IncreaseBrightness = 10;
-		//			_processVideo = true;
-		//		}
-		//		OnPropertyChanged();
-		//	}
-		//}
-
 		[ReadOnly(true)]
 		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Video Length (sec)")]
@@ -301,43 +274,6 @@ namespace VixenModules.Effect.Video
 			set
 			{
 				_data.StartTime = value;
-				IsDirty = true;
-				_processVideo = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Advanced Settings", 3)]
-		[ProviderDisplayName(@"Custom Frame Rate")]
-		[ProviderDescription(@"CustomFrameRate")]
-		[PropertyOrder(3)]
-		public bool CustomFrameRate
-		{
-			get { return _data.CustomFrameRate; }
-			set
-			{
-				_data.CustomFrameRate = value;
-				IsDirty = true;
-				_processVideo = true;
-				UpdateFrameRateAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Advanced Settings", 3)]
-		[ProviderDisplayName(@"Frames/sec")]
-		[ProviderDescription(@"FramesPerSecond")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(5, 50, 1)]
-		[PropertyOrder(4)]
-		public int FramesPerSecond
-		{
-			get { return _data.FramesPerSecond; }
-			set
-			{
-				_data.FramesPerSecond = value;
 				IsDirty = true;
 				_processVideo = true;
 				OnPropertyChanged();
@@ -421,8 +357,6 @@ namespace VixenModules.Effect.Video
 		{
 			UpdateScaleAttribute(false);
 			UpdateIterationsAttribute(false);
-			UpdateFrameRateAttribute(false);
-			//UpdateAdvancedSettingsAttribute();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -431,19 +365,6 @@ namespace VixenModules.Effect.Video
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"ScalePercent", !ScaleToGrid}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateFrameRateAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{"FramesPerSecond", CustomFrameRate}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -465,26 +386,6 @@ namespace VixenModules.Effect.Video
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
-		//private void UpdateAdvancedSettingsAttribute(bool refresh = true)
-		//{
-		//	Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(7)
-		//	{
-		//		{"VideoLength", AdvancedSettings},
-		//		{"StartTime", AdvancedSettings},
-		//		{"CustomFrameRate", AdvancedSettings},
-		//		{"FramesPerSecond", AdvancedSettings},
-		//		{"MaintainAspect", AdvancedSettings},
-		//		{"RotateVideo", AdvancedSettings},
-		//		{"IncreaseBrightness", AdvancedSettings}
-
-		//	};
-		//	SetBrowsable(propertyStates);
-		//	if (refresh)
-		//	{
-		//		TypeDescriptor.Refresh(this);
-		//	}
-		//}
 
 		public override IModuleDataModel ModuleData
 		{
@@ -550,7 +451,7 @@ namespace VixenModules.Effect.Video
 			}
 
 			string colorType = EffectColorType == EffectColorType.RenderGreyScale ? " -pix_fmt gray" : ""; //Effcet type will be Color or Gray scale
-			string frameRate = CustomFrameRate ? " -r " + FramesPerSecond : ""; //Video Frame rate or Custom frame rate
+			string frameRate = " -r " + 20; //Video Frame rate is set to 20 to matach Vixen
 
 			string videoFilename = Path.Combine(_videoPath, _data.FileName);
 			try
@@ -600,7 +501,7 @@ namespace VixenModules.Effect.Video
 				return;
 
 			int pictureCount = _moviePicturesFileList.Count;
-
+			
 			if (PlayBackSpeed > 0)
 			{
 				_currentMovieImageNum += ((PlayBackSpeed * .01) + 1);
@@ -611,7 +512,7 @@ namespace VixenModules.Effect.Video
 			}
 			else
 			{
-				_currentMovieImageNum++;
+				_currentMovieImageNum ++;
 			}
 
 			int currentImage = Convert.ToInt32(_currentMovieImageNum);
