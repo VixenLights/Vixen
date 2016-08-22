@@ -612,8 +612,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				count += totalPasted;
 			}
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-			var messageBox2 = new MessageBoxForm(string.Format("{0} effects pasted.", count), "Need an effect", false, false);
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox2 = new MessageBoxForm(string.Format("{0} effects pasted.", count), "Effects Pasted", false, false);
 			messageBox2.ShowDialog();
 		}
 
