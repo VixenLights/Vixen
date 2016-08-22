@@ -1561,7 +1561,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.contextMenuStripElementSelection.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.contextMenuStripElementSelection.Name = "contextMenuStripElementSelection";
-			this.contextMenuStripElementSelection.Size = new System.Drawing.Size(61, 4);
+			this.contextMenuStripElementSelection.Size = new System.Drawing.Size(153, 26);
 			// 
 			// timerPostponePlay
 			// 
