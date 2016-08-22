@@ -25,13 +25,11 @@ namespace VixenModules.Effect.Video
 			PlayBackSpeed = 0;
 			StartTime = 0;
 			RotateVideo = 0;
-			CustomFrameRate = false;
 			Video_DataPath = string.Empty;
 			FileName = String.Empty;
 			Orientation = StringOrientation.Vertical;
 			XOffset = 0;
 			YOffset = 0;
-			FramesPerSecond = 25;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 		}
 
@@ -78,13 +76,7 @@ namespace VixenModules.Effect.Video
 		public int YOffset { get; set; }
 
 		[DataMember]
-		public bool CustomFrameRate { get; set; }
-
-		[DataMember]
 		public bool AdvancedSettings { get; set; }
-
-		[DataMember]
-		public int FramesPerSecond { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
@@ -112,7 +104,6 @@ namespace VixenModules.Effect.Video
 				VideoLength = VideoLength,
 				RotateVideo =RotateVideo,
 				AdvancedSettings = AdvancedSettings,
-				CustomFrameRate = CustomFrameRate,
 				PlayBackSpeed = PlayBackSpeed,
 				StartTime = StartTime,
 				ScalePercent = ScalePercent,
@@ -121,8 +112,7 @@ namespace VixenModules.Effect.Video
 				LevelCurve = new Curve(LevelCurve),
 				FileName = FileName,
 				EffectColorType = EffectColorType,
-				MaintainAspect = MaintainAspect,
-				FramesPerSecond = FramesPerSecond
+				MaintainAspect = MaintainAspect
 			};
 			return result;
 		}
