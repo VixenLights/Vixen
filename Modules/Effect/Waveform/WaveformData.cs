@@ -100,6 +100,10 @@ namespace VixenModules.Effect.Waveform
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			WaveformData result = new WaveformData();
+			result.HighPass = HighPass;
+			result.LowPass = LowPass;
+			result.HighPassFreq = HighPassFreq;
+			result.LowPassFreq = LowPassFreq;
 			result.Inverted = Inverted;
 			result.ScrollSpeed = ScrollSpeed;
 			result.DecayTime = DecayTime;
@@ -109,7 +113,9 @@ namespace VixenModules.Effect.Waveform
 			result.Range = Range;
 			result.GreenColorPosition = GreenColorPosition;
 			result.RedColorPosition = RedColorPosition;
-			result.MeterColorGradient = MeterColorGradient;
+			result.MeterColorGradient = new ColorGradient(MeterColorGradient);
+			result.IntensityCurve = new Curve(IntensityCurve);
+			result.DepthOfEffect = DepthOfEffect;
 
 			return result;
 		}
