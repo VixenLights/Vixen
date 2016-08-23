@@ -3406,6 +3406,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (element.Row != null)
 					{
 						var effectNode = CreateEffectNode(newEffect, element.Row, element.StartTime, element.Duration);
+						LayerManager.AssignEffectNodeToLayer(effectNode, LayerManager.GetLayer(element.EffectNode));
 						// put it in the sequence and in the timeline display
 						newElements.Add(AddEffectNode(effectNode));
 					}
