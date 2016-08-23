@@ -85,6 +85,10 @@ namespace VixenModules.Effect.VUMeter
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			VUMeterData result = new VUMeterData();
+			result.HighPass = HighPass;
+			result.LowPass = LowPass;
+			result.HighPassFreq = HighPassFreq;
+			result.LowPassFreq = LowPassFreq;
 			result.DecayTime = DecayTime;
 			result.AttackTime = AttackTime;
 			result.Normalize = Normalize;
@@ -92,7 +96,9 @@ namespace VixenModules.Effect.VUMeter
 			result.Range = Range;
 			result.GreenColorPosition = GreenColorPosition;
 			result.RedColorPosition = RedColorPosition;
-			result.MeterColorGradient = MeterColorGradient;
+			result.MeterColorGradient = new ColorGradient(MeterColorGradient);
+			result.IntensityCurve = new Curve(IntensityCurve);
+			result.DepthOfEffect = DepthOfEffect;
 
 			return result;
 		}

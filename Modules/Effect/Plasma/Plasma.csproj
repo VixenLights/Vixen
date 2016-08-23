@@ -80,7 +80,6 @@
   <ItemGroup>
     <Compile Include="PlasmaColorType.cs" />
     <Compile Include="PlasmaDescriptor.cs" />
-    <Compile Include="PlasmaDirection.cs" />
     <Compile Include="PlasmaData.cs" />
     <Compile Include="Plasma.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

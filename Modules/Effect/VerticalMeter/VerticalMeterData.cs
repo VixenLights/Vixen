@@ -97,6 +97,10 @@ namespace VixenModules.Effect.VerticalMeter
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			VerticalMeterData result = new VerticalMeterData();
+			result.HighPass = HighPass;
+			result.LowPass = LowPass;
+			result.HighPassFreq = HighPassFreq;
+			result.LowPassFreq = LowPassFreq;
 			result.Inverted = Inverted;
 			result.DecayTime = DecayTime;
 			result.AttackTime = AttackTime;
@@ -105,7 +109,10 @@ namespace VixenModules.Effect.VerticalMeter
 			result.Range = Range;
 			result.GreenColorPosition = GreenColorPosition;
 			result.RedColorPosition = RedColorPosition;
-			result.MeterColorGradient = MeterColorGradient;
+			result.IntensityCurve = new Curve(IntensityCurve);
+			result.MeterColorGradient = new ColorGradient(MeterColorGradient);
+			result.MeterColorStyle = MeterColorStyle;
+			result.DepthOfEffect = DepthOfEffect;
 
 			return result;
 		}
