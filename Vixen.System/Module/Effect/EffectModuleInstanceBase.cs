@@ -52,7 +52,7 @@ namespace Vixen.Module.Effect
 			{
 				if (value != _targetNodes)
 				{
-					_targetNodes = value;
+					_targetNodes = TargetNodes == null ? new ElementNode[0] : value;
 					_EnsureTargetNodeProperties();
 					TargetNodesChanged();
 					IsDirty = true;
