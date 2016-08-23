@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -247,39 +248,34 @@ namespace VixenModules.Effect.Shockwave
 
 			double posX = BufferWi * CenterX / 100.0;
 			double posY = BufferHt * CenterY / 100.0;
-
+			Point centerPoint = new Point((int)posX, (int)posY);
 			double centerRadius = StartRadius + (EndRadius - StartRadius) * effectPositionAdjust;
 			double halfWidth = (StartWidth + (EndWidth - StartWidth) * effectPositionAdjust) / 2.0;
-			var radius1 = centerRadius - halfWidth;
+			var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 			var radius2 = centerRadius + halfWidth;
 			
-			double step = GetStepAngle(StartRadius, EndRadius);
-			
-			for (double currentAngle = 0.0; currentAngle <= 360.0; currentAngle += step)
-			{
-				for (double r = Math.Max(0.0, radius1); r <= radius2; r += 0.5)
-				{
-					double x1 = Math.Sin(ToRadians(currentAngle)) * r + posX;
-					double y1 = Math.Cos(ToRadians(currentAngle)) * r + posY;
+			Point currentPoint = Point.Empty;
 
-					if (BlendEdges)
+			for (currentPoint.X = 0; currentPoint.X < BufferWi; currentPoint.X++)
+			{
+				for (currentPoint.Y = 0; currentPoint.Y < BufferHt; currentPoint.Y++)
+				{
+					var distance = DistanceFromCenter(centerPoint, currentPoint);
+					if (ContainsPoint(distance, radius1, radius2))
 					{
-						if (x1 >= 0 && x1 < BufferWi && y1 >= 0 && y1 < BufferHt)
+						if (BlendEdges)
 						{
-							double colorPct = 1.0 - Math.Abs(r - centerRadius)/halfWidth;
+							double colorPct = 1.0 - Math.Abs(distance - centerRadius) / halfWidth;
 							if (colorPct > 0.0)
 							{
 								HSV hsv = HSV.FromRGB(c);
-								hsv.V = hsv.V*colorPct;
-								frameBuffer.SetPixel((int) x1, (int) y1, hsv);
+								hsv.V = hsv.V * colorPct;
+								frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, hsv);
 							}
 						}
-					}
-					else
-					{
-						if (x1 >= 0 && x1 < BufferWi && y1 >= 0 && y1 < BufferHt)
+						else
 						{
-							frameBuffer.SetPixel((int)x1, (int)y1, c);
+							frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, c);
 						}
 					}
 				}
@@ -293,59 +289,70 @@ namespace VixenModules.Effect.Shockwave
 			//small parts of it out into reusable chunks is probably not fruitful at this time.
 			double posX = (BufferWi * CenterX / 100.0) + BufferWiOffset;
 			double posY = (BufferHt * CenterY / 100.0) + BufferHtOffset;
-			
-			double step = GetStepAngle(StartRadius, EndRadius);
+			Point centerPoint = new Point((int)posX, (int)posY);
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			Point currentPoint = Point.Empty;
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
 			{
-				frameBuffer.InitializeNextFrame();
 				double position = GetEffectTimeIntervalPosition(effectFrame);
 				double effectPositionAdjust = CalculateAcceleration(position, Acceleration);
 				Color c = Color.GetColorAt(position);
 				double centerRadius = StartRadius + (EndRadius - StartRadius) * effectPositionAdjust;
 				double halfWidth = (StartWidth + (EndWidth - StartWidth) * effectPositionAdjust) / 2.0;
-				var radius1 = centerRadius - halfWidth;
+				var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 				var radius2 = centerRadius + halfWidth;
-				
-				for (double currentAngle = 0.0; currentAngle <= 360.0; currentAngle += step)
-				{
-					for (double r = Math.Max(0.0, radius1); r <= radius2; r += 0.5)
-					{
-						double x1 = (Math.Sin(ToRadians(currentAngle)) * r + posX);
-						double y1 = (Math.Cos(ToRadians(currentAngle)) * r + posY);
 
-						if (BlendEdges)
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+				{
+					foreach (var elementLocation in elementLocations)
+					{
+						currentPoint.X = elementLocation.X;
+						currentPoint.Y = elementLocation.Y;
+						var distance = DistanceFromCenter(centerPoint, currentPoint);
+						if (ContainsPoint(distance, radius1, radius2))
 						{
-							if (x1 >= 0 && x1 < BufferWi + BufferWiOffset && y1 >= 0 && y1 < BufferHt + BufferHtOffset)
+							if (BlendEdges)
 							{
-								double colorPct = 1.0 - Math.Abs(r - centerRadius)/halfWidth;
+								double colorPct = 1.0 - Math.Abs(distance - centerRadius)/halfWidth;
 								if (colorPct > 0.0)
 								{
 									HSV hsv = HSV.FromRGB(c);
 									hsv.V = hsv.V*colorPct;
-									frameBuffer.UpdatePixel(effectFrame, (int) x1, (int) y1, hsv);
+									frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, hsv);
 								}
+								else
+								{
+									frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, System.Drawing.Color.Transparent);
+								}
+							}
+							else
+							{
+
+								frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, c);
+
 							}
 						}
 						else
 						{
-							if (x1 >= 0 && x1 < BufferWi + BufferWiOffset && y1 >= 0 && y1 < BufferHt + BufferHtOffset)
-							{
-								frameBuffer.SetPixel((int)x1, (int)y1, c);
-							}
+							frameBuffer.SetPixel(currentPoint.X, currentPoint.Y, System.Drawing.Color.Transparent);
 						}
 					}
 				}
+
 			}
 
 		}
 
-
-		private double ToRadians(double angle)
+		private double DistanceFromCenter(Point center, Point point)
 		{
-			return (Math.PI / 180) * angle;
+			return Math.Sqrt(Math.Pow((point.X - center.X), 2) + Math.Pow((point.Y - center.Y),2));
 		}
 
+		private bool ContainsPoint(double distance, double innerRadius, double outerRadius)
+		{
+			return distance <= outerRadius && distance >= innerRadius;
+		}
 
 	}
 }
