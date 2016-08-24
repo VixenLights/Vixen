@@ -44,7 +44,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-       <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,6 +59,8 @@
     <Compile Include="AudioData.cs" />
     <Compile Include="AudioDescriptor.cs" />
     <Compile Include="Audio.cs" />
+    <Compile Include="AudioFilters.cs" />
+    <Compile Include="AudioUtilities.cs" />
     <Compile Include="FmodInstance.cs" />
     <Compile Include="FmodInstance_AudioDetection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
