@@ -129,19 +129,25 @@ namespace VixenApplication
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0)
 			{
-				MessageBox.Show(@"Unable to locate any profiles.");
-				return;
-			}
-
-			for (int i = 0; i < profileCount; i++)
-			{
 				var item = new ProfileItem
 				{
-					Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", ""),
-					DataFolder =
-						profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", "")
+					Name = "Default",
+					DataFolder = DataProfileForm.DefaultFolder
 				};
 				comboBoxProfiles.Items.Add(item);
+			}
+			else
+			{
+				for (int i = 0; i < profileCount; i++)
+				{
+					var item = new ProfileItem
+					{
+						Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", ""),
+						DataFolder =
+							profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", "")
+					};
+					comboBoxProfiles.Items.Add(item);
+				}
 			}
 			comboBoxProfiles.SelectedIndex = 0;
 			textBoxFileName.Text=@"VixenProfile";
