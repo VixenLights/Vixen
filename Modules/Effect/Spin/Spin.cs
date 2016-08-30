@@ -38,7 +38,8 @@ namespace VixenModules.Effect.Spin
 			if (TargetNodes.Any())
 			{
 				CheckForInvalidColorData();
-				if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+				var firstNode = TargetNodes.FirstOrDefault();
+				if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
 				{
 					DepthOfEffect = 0;
 				}
