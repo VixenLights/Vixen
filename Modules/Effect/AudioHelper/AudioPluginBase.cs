@@ -315,7 +315,8 @@ namespace VixenModules.Effect.AudioHelp
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
-			if (DepthOfEffect > TargetNodes.FirstOrDefault().GetMaxChildDepth() - 1)
+			var firstNode = TargetNodes.FirstOrDefault();
+			if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
 			{
 				DepthOfEffect = 0;
 			}
