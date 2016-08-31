@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Theme;
+
 
 namespace VixenModules.SequenceType.Vixen2x
 {
@@ -21,6 +23,9 @@ namespace VixenModules.SequenceType.Vixen2x
 		public CoversionProgressForm()
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public void UpdateProgressBar(int value)
