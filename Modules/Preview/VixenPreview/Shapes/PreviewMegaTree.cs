@@ -156,6 +156,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		#region "Properties'
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("Top Height"),
+		 DescriptionAttribute("Height of Mega Tree top.")]
 		public int TopHeight
 		{
 			set
@@ -166,6 +169,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topHeight; }
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("Top Width"),
+		 DescriptionAttribute("Width of Mega Tree top.")]
 		public int TopWidth
 		{
 			set
@@ -176,6 +182,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _topWidth; }
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("Base Height"),
+		 DescriptionAttribute("Height of Mega Tree base.")]
 		public int BaseHeight
 		{
 			set
@@ -186,6 +195,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _baseHeight; }
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("String Coverage Degrees"),
+		 DescriptionAttribute("Coverage in degrees that strings go around Mega Tree.")]
 		public int Degrees
 		{
 			set
@@ -195,7 +207,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			get { return _degrees; }
 		}
-
+		[CategoryAttribute("Settings"),
+		 DisplayName("Lights Per String"),
+		 DescriptionAttribute("The number of lights on each string of the Mega Tree")]
 		public int LightsPerString
 		{
 			set
@@ -208,6 +222,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _lightsPerString; }
 		}
 
+		[CategoryAttribute("Settings"),
+		 DisplayName("String Count"),
+		 DescriptionAttribute("Number of strings on Mega Tree")]
 		public int StringCount
 		{
 			set
@@ -269,12 +286,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 		}
 
-		public PreviewPoint BottomRight
+
+		[CategoryAttribute("Position"),
+		 DisplayName("Top Left"),
+		 DescriptionAttribute("Upper left point of Mega Tree.")]
+		public Point TopLeft
 		{
-			get { return _bottomRight; }
-			set { _bottomRight = value; }
+			get
+			{
+				Point p = new Point(_topLeft.X, _topLeft.Y);
+				return p;
+			}
+			set
+			{
+				_topLeft.X = value.X;
+				_topLeft.Y = value.Y;
+				Layout();
+			}
 		}
 
+		[CategoryAttribute("Position"),
+		 DisplayName("Bottom Right"),
+		 DescriptionAttribute("Lower right point of Mega Tree.")]
+		public Point BottomRight
+		{
+			get
+			{
+				Point p = new Point(_bottomRight.X, _bottomRight.Y);
+				return p;
+			}
+			set
+			{
+				_bottomRight.X = value.X;
+				_bottomRight.Y = value.Y;
+				Layout();
+			}
+		}
         public override void Match(PreviewBaseShape matchShape)
         {
             PreviewMegaTree shape = (matchShape as PreviewMegaTree);
@@ -285,8 +332,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             TopWidth = shape.TopWidth;
             BaseHeight = shape.BaseHeight;
             Degrees = shape.Degrees;
-            BottomRight.X = _topLeft.X + (shape.BottomRight.X - shape._topLeft.X);
-            BottomRight.Y = _topLeft.Y + (shape.BottomRight.Y - shape._topLeft.Y);
+            _bottomRight.X = _topLeft.X + (shape._bottomRight.X - shape._topLeft.X);
+            _bottomRight.Y = _topLeft.Y + (shape._bottomRight.Y - shape._topLeft.Y);
             Layout();
         }
 
@@ -302,7 +349,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			_stringCount = _strings.Count();
 		}
 
-
+		[Browsable(false)]
 		public int PixelCount
 		{
 			set
