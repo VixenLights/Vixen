@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Fireworks
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
 		private static Random _random = new Random();
-		private const int MaxFlakes = 100000;
+		private int _maxFlakes;
 		private readonly AudioUtilities _audioUtilities;
 		private const int Spacing = 50;
 		private int _explosion;
@@ -32,7 +32,7 @@ namespace VixenModules.Effect.Fireworks
 		}
 
 		[Browsable(false)]
-		public AudioUtilities AudioUtilities { get { return _audioUtilities; } }
+		private AudioUtilities AudioUtilities { get { return _audioUtilities; } }
 
 		#region Config
 
@@ -629,30 +629,40 @@ namespace VixenModules.Effect.Fireworks
 				}
 			}
 			UpdateEnableAudioAttribute();
-			InitFireworksBuffer();
-			ResetBurstBuffer();
-
 			var x25 = (int)(BufferWi * 0.25);
 			var x75 = (int)(BufferWi * 0.75);
 			var y25 = (int)(BufferHt * 0.25);
 			var y75 = (int)(BufferHt * 0.75);
 
-			ResetBurstBuffer();
-
-			_explosion = 0;
+			_maxFlakes = RandomParticles ? Explosions * MaxParticles : Explosions * Particles;
+			List<int> audioExplosions = new List<int>();
 			if (EnableAudio)
 			{
-				for (int ii = 0; ii < (int)(TimeSpan.TotalMilliseconds / Spacing); ii++)
+				//Determines frame number for each explosion to start based off the audio
+				for (int i = 0; i < (int)(TimeSpan.TotalMilliseconds / Spacing); i++)
 				{
-					var currentValue = _audioUtilities.VolumeAtTime(ii * Spacing);
+					var currentValue = _audioUtilities.VolumeAtTime(i * Spacing);
 
 					if (currentValue > ((double)Sensitivity / 10))
 					{
-						CreateExplosions(ii, x75, x25, y75, y25);
-						_explosion++;
-						ii += ExplosionSensitivity;
+						audioExplosions.Add(i);
+						i += ExplosionSensitivity;
 					}
 				}
+				_maxFlakes = RandomParticles ? audioExplosions.Count * MaxParticles : audioExplosions.Count * Particles;
+			}
+			
+			InitFireworksBuffer();
+
+			//Creates the explosions
+			if (EnableAudio)
+			{
+				for (int x = 0; x < audioExplosions.Count; x++)
+				{
+					_explosion = x;
+					CreateExplosions(audioExplosions[x], x75, x25, y75, y25);
+				}
+				_explosion = audioExplosions.Count;
 			}
 			else
 			{
@@ -690,16 +700,7 @@ namespace VixenModules.Effect.Fireworks
 			for (int i = 0; i < randomParticles; i++)
 			{
 				int velocity = RandomVelocity ? _random.Next(MinVelocity, MaxVelocity) : Velocity;
-				_fireworkBursts[_explosion * Particles + i].Reset(startX, startY, false, velocity, hsv, start, colorLocation);
-			}
-		}
-
-		private void ResetBurstBuffer()
-		{
-			for (int i = 0; i < MaxFlakes; i++)
-			{
-				_fireworkBursts[i].Active = false;
-				_fireworkBursts[i].StartPeriod = -1; //Ensures there is no false firework at pixel 0,0 on Frame 0
+				_fireworkBursts[_explosion * randomParticles + i].Reset(startX, startY, false, velocity, hsv, start, colorLocation);
 			}
 		}
 
@@ -715,7 +716,7 @@ namespace VixenModules.Effect.Fireworks
 
 			int colorcnt = ColorGradients.Count;
 
-			for (int i = 0; i < Particles * _explosion; i++)
+			for (int i = 0; i < _maxFlakes; i++)
 			{
 				if (_fireworkBursts[i].StartPeriod == frame)
 				{
@@ -731,7 +732,7 @@ namespace VixenModules.Effect.Fireworks
 						(float) (-_fireworkBursts[i].Dy - _fireworkBursts[i].Cycles*_fireworkBursts[i].Cycles/10000000.0);
 					// If this flake run for more than maxCycle, time to switch it off
 					_fireworkBursts[i].Cycles += 20;
-					if (_fireworkBursts[i].Cycles >= MaxFlakes)
+					if (_fireworkBursts[i].Cycles >= _maxFlakes)
 					{
 						_fireworkBursts[i].Active = false;
 						continue;
@@ -746,7 +747,7 @@ namespace VixenModules.Effect.Fireworks
 
 			double position = GetEffectTimeIntervalPosition(frame);
 			double level = LevelCurve.GetValue(position * 100) / 100;
-			for (int i = 0; i < MaxFlakes; i++)
+			for (int i = 0; i < _maxFlakes; i++)
 			{
 				if (_fireworkBursts[i].Active)
 				{
@@ -780,14 +781,14 @@ namespace VixenModules.Effect.Fireworks
 
 		private void InitFireworksBuffer()
 		{
-			if (_fireworkBursts == null)
+			_fireworkBursts = null;
+			_fireworkBursts = new List<RgbFireworks>(_maxFlakes);
+			for (int burstNum = 0; burstNum < _maxFlakes; burstNum++)
 			{
-				_fireworkBursts = new List<RgbFireworks>(MaxFlakes);
-				for (int burstNum = 0; burstNum < MaxFlakes; burstNum++)
-				{
-					RgbFireworks firework = new RgbFireworks();
-					_fireworkBursts.Add(firework);
-				}
+				RgbFireworks firework = new RgbFireworks();
+				firework.Active = false;
+				firework.StartPeriod = -1; //Ensures there is no false firework at pixel 0,0 on Frame 0
+				_fireworkBursts.Add(firework);
 			}
 		}
 
