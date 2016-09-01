@@ -14,7 +14,7 @@ namespace VixenApplication
 {
 	public partial class DataProfileForm : BaseForm
 	{
-		private readonly string _defaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
+		public static readonly string DefaultFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Vixen 3";
 		private ProfileItem _currentItem;
 		
 		public DataProfileForm()
@@ -214,7 +214,7 @@ namespace VixenApplication
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
 			if (profileCount == 0)
 			{
-				ProfileItem item = new ProfileItem {Name = "Default", DataFolder = _defaultFolder};
+				ProfileItem item = new ProfileItem {Name = "Default", DataFolder = DefaultFolder};
 				comboBoxProfiles.Items.Add(item);
 			}
 			else
@@ -224,7 +224,7 @@ namespace VixenApplication
 					ProfileItem item = new ProfileItem
 					{
 						Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/Name", "New Profile"),
-						DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", _defaultFolder)
+						DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i + "/DataFolder", DefaultFolder)
 					};
 					comboBoxProfiles.Items.Add(item);
 				}
@@ -297,7 +297,7 @@ namespace VixenApplication
 			if (dialog.DialogResult == DialogResult.Cancel)
 				return;
 
-			ProfileItem item = new ProfileItem { Name = dialog.Response, DataFolder = _defaultFolder + " " + dialog.Response };
+			ProfileItem item = new ProfileItem { Name = dialog.Response, DataFolder = DefaultFolder + " " + dialog.Response };
 			comboBoxProfiles.Items.Add(item);
 			comboBoxProfiles.SelectedIndex = comboBoxProfiles.Items.Count - 1;
 			PopulateLoadProfileSection(false);
