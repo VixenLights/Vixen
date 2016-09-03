@@ -111,7 +111,7 @@
 			this.numericUpDownStandardNudge.Name = "numericUpDownStandardNudge";
 			this.numericUpDownStandardNudge.Size = new System.Drawing.Size(41, 20);
 			this.numericUpDownStandardNudge.TabIndex = 1;
-			this.toolTip1.SetToolTip(this.numericUpDownStandardNudge, "Standard Nudge in Miniseconds");
+			this.toolTip1.SetToolTip(this.numericUpDownStandardNudge, "Standard Nudge in Milliseconds");
 			this.numericUpDownStandardNudge.ValueChanged += new System.EventHandler(this.numericUpDownStandardNudge_ValueChanged);
 			// 
 			// numericUpDownSuperNudge
@@ -127,7 +127,7 @@
 			this.numericUpDownSuperNudge.Name = "numericUpDownSuperNudge";
 			this.numericUpDownSuperNudge.Size = new System.Drawing.Size(41, 20);
 			this.numericUpDownSuperNudge.TabIndex = 3;
-			this.toolTip1.SetToolTip(this.numericUpDownSuperNudge, "Super Nudge in Miliseconds");
+			this.toolTip1.SetToolTip(this.numericUpDownSuperNudge, "Super Nudge in Milliseconds");
 			this.numericUpDownSuperNudge.ValueChanged += new System.EventHandler(this.numericUpDownSuperNudge_ValueChanged);
 			// 
 			// label3
