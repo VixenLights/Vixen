@@ -13,6 +13,11 @@ namespace VixenModules.Effect.Fireworks
 			get { return new ParameterSignature(); }
 		}
 
+		public override bool SupportsMedia
+		{
+			get { return true; }
+		}
+
 		public override EffectGroups EffectGroup
 		{
 			get { return EffectGroups.Pixel; }
