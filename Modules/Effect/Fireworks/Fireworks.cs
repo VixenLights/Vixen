@@ -633,11 +633,10 @@ namespace VixenModules.Effect.Fireworks
 			var x75 = (int)(BufferWi * 0.75);
 			var y25 = (int)(BufferHt * 0.25);
 			var y75 = (int)(BufferHt * 0.75);
-
-			_maxFlakes = RandomParticles ? Explosions * MaxParticles : Explosions * Particles;
-			List<int> audioExplosions = new List<int>();
+			
 			if (EnableAudio)
 			{
+				List<int> audioExplosions = new List<int>();
 				//Determines frame number for each explosion to start based off the audio
 				for (int i = 0; i < (int)(TimeSpan.TotalMilliseconds / Spacing); i++)
 				{
@@ -650,13 +649,9 @@ namespace VixenModules.Effect.Fireworks
 					}
 				}
 				_maxFlakes = RandomParticles ? audioExplosions.Count * MaxParticles : audioExplosions.Count * Particles;
-			}
-			
-			InitFireworksBuffer();
 
-			//Creates the explosions
-			if (EnableAudio)
-			{
+				InitFireworksBuffer();
+
 				for (int x = 0; x < audioExplosions.Count; x++)
 				{
 					_explosion = x;
@@ -666,6 +661,8 @@ namespace VixenModules.Effect.Fireworks
 			}
 			else
 			{
+				_maxFlakes = RandomParticles ? Explosions * MaxParticles : Explosions * Particles;
+				InitFireworksBuffer();
 				for (int x = 0; x < Explosions; x++)
 				{
 					_explosion = x;
