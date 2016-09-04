@@ -185,16 +185,25 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			double C_x = Width/2;
 			double C_y = Height/2;
 			double radianIncrement;
-			double radianOffset = (degreeOffset*Math.PI)/180;
+			double radianOffset = (degreeOffset * Math.PI) / 180;
 			double startRadian = radianOffset;
 			double endRadian = totalRadians + radianOffset;
-			radianIncrement = (Math.PI*2)/totalPoints;
+
+			if (degrees <= 180)
+			{
+				radianIncrement = Math.PI / (numPoints - 1);
+			}
+			else
+			{
+				radianIncrement = (Math.PI * 2) / totalPoints;
+			}
+
 			// watch out for rounding on the fp adds
 			for (double t = startRadian; t < endRadian + radianIncrement / 10; t += radianIncrement)
 			{
-				double X = (C_x + (Width/2)*Math.Cos(t)) + leftOffset;
-				double Y = (C_y + (Height/2)*Math.Sin(t)) + topOffset;
-				points.Add(new Point((int) X, (int) Y));
+				double X = (C_x + (Width / 2) * Math.Cos(t)) + leftOffset;
+				double Y = (C_y + (Height / 2) * Math.Sin(t)) + topOffset;
+				points.Add(new Point((int)X, (int)Y));
 			}
 			return points;
 		}
