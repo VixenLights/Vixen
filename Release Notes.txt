@@ -1,6 +1,44 @@
 Vixen Release Notes - 3.3u1
 
-Under development. Search for verision DevBuild on bugs.vixenlights.com for details.
+General
+
+* Maintenance release for Vixen 3.3
+
+Bug Fixes / Features by ticket
+
+VIX-1140 Tooltip for the Nudge has Milliseconds spelt as Miniseconds
+VIX-1138 Unable to ZIP up the Default profile when no other profiles have been created.
+VIX-1133 error when opening a sequence
+VIX-1130 Paste Effect To Marks
+VIX-1129 Create a Shockwave type effect
+VIX-1128 Context Menu in the Link Elements Form is not the Dark Theme
+VIX-1125 Control+Click Cloning doesn't copy layer
+VIX-1124 Sequence Editor Context Menu Paste Icon
+VIX-1121 Some of the effects that support Location does not retain the hidden String Orientation when loading sequence
+VIX-1117 Mega Tree Setup Control form redesign
+VIX-1116 Add degree offset to preview Megatree
+VIX-1114 Add audio support to Firework effect
+VIX-1112 Pixel Grid intial lights per string incorrectly displayed
+VIX-1111 Preview Points not displaying correctly (Arch, Pixel Grid)
+VIX-1109 Clean up a few left over memory issues.
+VIX-1107 Issue with Meteor effect when Meteor direction is set to Random Direction
+VIX-1106 Typo RainBow vs Rainbow
+VIX-1105 Intensity overlay on Twinkle effect not working as expected
+VIX-1102 Video doesn't play at proper speed
+VIX-1101 Window name not intuative
+VIX-1099 Snowflake Effect gets stuck
+VIX-1097 Butterfly and Bars effect both have location based rendering issues.
+VIX-1096 Maintain Circle while drawing ellipse in preview
+VIX-1095 Effect Names
+VIX-1092 Add Location support to the Text Effect
+VIX-1070 Row expansion settings not restoring properly
+VIX-1049 Close Preview MessageBox Buttons
+VIX-1031 Vixen2 Import Forms Theme
+VIX-869 Reversing elements in Setup
+VIX-672 need ability to change start point for pixel ellipse
+VIX-670 Expand / Collapse / All
+VIX-646 sequence editor transport controls
+VIX-615 set level: multiple discrete colors.
 
 Vixen Release Notes - 3.3
 
