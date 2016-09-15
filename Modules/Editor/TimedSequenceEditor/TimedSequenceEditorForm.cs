@@ -360,14 +360,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			WindowState = FormWindowState.Normal;
 
+			var width = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name),
+				Size.Width);
+			var height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name),
+				Size.Height);
+
+			//ensure our sizes are at least a minimum 640x480
+			if (width < 640)
+			{
+				width = 640;
+			}
+			if (height < 480)
+			{
+				height = 480;
+			}
+
 			var desktopBounds =
 				new Rectangle(
 					new Point(
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
 						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
 					new Size(
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+						width,
+						height));
 
 			var windowState =
 					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal");
