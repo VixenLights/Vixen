@@ -1123,6 +1123,7 @@ namespace Common.Controls.Timeline
 				elem.BeginUpdate();
 				elem.StartTime += offset;
 				elem.EndUpdate();
+				RenderElement(elem);
 			}
 
 			MultiElementEventArgs evargs = new MultiElementEventArgs {Elements = elements};
