@@ -440,13 +440,13 @@ namespace VixenModules.Effect.Text
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
-
+				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				// copy to frameBuffer
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < BufferHt; y++)
 					{
-						CalculatePixel(x, y, bitmap, frame, frameBuffer);
+						CalculatePixel(x, y, bitmap, level, frameBuffer);
 					}
 				}
 			}
