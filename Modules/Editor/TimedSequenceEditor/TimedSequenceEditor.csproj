@@ -277,6 +277,8 @@
     <Compile Include="LayerEditor.Designer.cs">
       <DependentUpon>LayerEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="User32.cs" />
+    <Compile Include="Shell32.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -129,6 +129,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly double _scaleFactor = 1;
 		private bool _suppressModifiedEvents;
 
+		//for external clipboard events.
+		IntPtr _clipboardViewerNext;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -255,6 +258,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimedSequenceEditorForm_Load(object sender, EventArgs e)
 		{
+			RegisterClipboardViewer();
 			_settingsPath =
 				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen",
 					"TimedSequenceEditorForm.xml");
@@ -383,6 +387,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					new Size(
 						width,
 						height));
+
 
 			var windowState =
 					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal");
@@ -1880,6 +1885,97 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Logging.Error("TimedSequenceEditor: <OnRenderProgressChanged> - Error updating rendering progress indicator.", ex);
 			}
 		}
+
+		/// <summary>
+		/// Register this form as a Clipboard Viewer application
+		/// </summary>
+		private void RegisterClipboardViewer()
+		{
+			_clipboardViewerNext = User32.SetClipboardViewer(this.Handle);
+		}
+
+		/// <summary>
+		/// Remove this form from the Clipboard Viewer list
+		/// </summary>
+		private void UnregisterClipboardViewer()
+		{
+			User32.ChangeClipboardChain(this.Handle, _clipboardViewerNext);
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			switch ((Msgs)m.Msg)
+			{
+				//
+				// The WM_DRAWCLIPBOARD message is sent to the first window 
+				// in the clipboard viewer chain when the content of the 
+				// clipboard changes. This enables a clipboard viewer 
+				// window to display the new content of the clipboard. 
+				//
+				case Msgs.WM_DRAWCLIPBOARD:
+
+					Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + m.Msg, "WndProc");
+
+					if (ClipboardHasData())
+					{
+						_TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
+					}
+
+					//
+					// Each window that receives the WM_DRAWCLIPBOARD message 
+					// must call the SendMessage function to pass the message 
+					// on to the next window in the clipboard viewer chain.
+					//
+					User32.SendMessage(_clipboardViewerNext, m.Msg, m.WParam, m.LParam);
+					break;
+
+
+				//
+				// The WM_CHANGECBCHAIN message is sent to the first window 
+				// in the clipboard viewer chain when a window is being 
+				// removed from the chain. 
+				//
+				case Msgs.WM_CHANGECBCHAIN:
+					Debug.WriteLine("WM_CHANGECBCHAIN: lParam: " + m.LParam, "WndProc");
+
+					// When a clipboard viewer window receives the WM_CHANGECBCHAIN message, 
+					// it should call the SendMessage function to pass the message to the 
+					// next window in the chain, unless the next window is the window 
+					// being removed. In this case, the clipboard viewer should save 
+					// the handle specified by the lParam parameter as the next window in the chain. 
+
+					//
+					// wParam is the Handle to the window being removed from 
+					// the clipboard viewer chain 
+					// lParam is the Handle to the next window in the chain 
+					// following the window being removed. 
+					if (m.WParam == _clipboardViewerNext)
+					{
+						//
+						// If wParam is the next clipboard viewer then it
+						// is being removed so update pointer to the next
+						// window in the clipboard chain
+						//
+						_clipboardViewerNext = m.LParam;
+					}
+					else
+					{
+						User32.SendMessage(_clipboardViewerNext, m.Msg, m.WParam, m.LParam);
+					}
+					break;
+
+				default:
+					//
+					// Let the form process the messages that we are
+					// not interested in
+					//
+					base.WndProc(ref m);
+					break;
+
+			}
+
+		}
+
 
 		private void TimelineSequenceTimeLineSequenceClipboardContentsChanged(object sender, EventArgs eventArgs)
 		{
@@ -5329,6 +5425,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		void IEditorUserInterface.EditorClosing()
 		{
+			UnregisterClipboardViewer();
 			if (WindowState == FormWindowState.Minimized)
 			{
 				//Don't close with a minimized window.
