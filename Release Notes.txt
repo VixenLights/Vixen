@@ -1,3 +1,7 @@
+Vixen Release Notes - 3.3u2
+
+  See the bug tracker for bugs in Dev build fix version.
+
 Vixen Release Notes - 3.3u1
 
 General
