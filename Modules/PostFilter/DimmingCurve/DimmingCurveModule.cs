@@ -77,6 +77,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			_output.ProcessInputData(obj);
 		}
 
+		public override void Handle(IntentDataFlowData obj)
+		{
+			_output.ProcessInputData(obj);
+		}
+
 		public override DataFlowType InputDataType
 		{
 			get { return DataFlowType.MultipleIntents; }
