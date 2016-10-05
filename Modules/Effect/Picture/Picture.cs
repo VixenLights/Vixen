@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Common.Controls.ColorManagement.ColorModels;
+using NLog;
 using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
@@ -16,8 +17,10 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Picture
 {
+	
 	public class Picture:PixelEffectBase
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private PictureData _data;
 
 		private double _currentGifImageNum;
@@ -500,6 +503,10 @@ namespace VixenModules.Effect.Picture
 					}
 
 				}
+				else
+				{
+					Logging.Error("File is missing or invalid path. {0}",filePath);
+				}
 			}
 			else
 			{
@@ -508,6 +515,7 @@ namespace VixenModules.Effect.Picture
 																			   TilePictures + ".png");
 				_image = Image.FromStream(fs);
 			}
+
 			if (_image != null)
 			{
 				_dimension = new FrameDimension(_image.FrameDimensionsList[0]);
@@ -548,6 +556,11 @@ namespace VixenModules.Effect.Picture
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
+			if (_image == null)
+			{
+				Logging.Error("Image object is null");
+				return;
+			}
 			var dir = 360 - Direction;
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			int speedFactor = 4;
