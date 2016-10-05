@@ -275,7 +275,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		{
 			LightingValue lightingValue = obj.GetValue();
 			if (_mixColors) {
-				_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.FullColor);
+				_intensityValue = lightingValue.Intensity * _getMaxProportion(lightingValue.Color);
 			}
 			else {
 				// if we're not mixing colors, we need to compare the input color against the filter color -- but only the
