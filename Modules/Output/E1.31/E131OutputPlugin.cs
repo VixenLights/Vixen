@@ -248,6 +248,8 @@ namespace VixenModules.Controller.E131
                 {
                     _data.Universes[0].Socket.Shutdown(SocketShutdown.Both);
                     _data.Universes[0].Socket.Close();
+	                _data.Universes[0].Socket = null;
+
                 }
             }
             else if (_data.Multicast != null)
@@ -274,6 +276,7 @@ namespace VixenModules.Controller.E131
                                 idList.Add(id, 1);
                                 uE.Socket.Shutdown(SocketShutdown.Both);
                                 uE.Socket.Close();
+	                            uE.Socket = null;
                             }
                         }
                     }
