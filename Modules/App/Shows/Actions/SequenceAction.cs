@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Module.Media;
 using Vixen.Sys;
-using Vixen.Module;
-using Vixen.Module.App;
 using Vixen.Services;
 using VixenModules.Sequence.Timed;
 
@@ -19,7 +15,7 @@ namespace VixenModules.App.Shows
 	{
 		private ISequenceContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		ISequence sequence = null;
+		private ISequence _sequence = null;
 
 		public SequenceAction(ShowItem showItem)
 			: base(showItem)
@@ -87,14 +83,17 @@ namespace VixenModules.App.Shows
 						DisposeCurrentContext();
 					}
 
-					sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
+					_sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
+
+					//Initialize the media if we have it so any audio effects can be rendered 
+					LoadMedia();
 					// Why doesn't this work?
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
-					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), sequence);
+					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), _sequence);
 
 					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
 					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
-					Parallel.ForEach(sequence.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => effectNode.Effect.PreRender());
+					Parallel.ForEach(_sequence.SequenceData.EffectData.Cast<IEffectNode>(), RenderEffect);
 
 					context.SequenceEnded += sequence_Ended;
 
@@ -106,6 +105,26 @@ namespace VixenModules.App.Shows
 			{
 				Logging.ErrorException("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
 			}
+		}
+
+		private void LoadMedia()
+		{
+			var sequenceMedia = _sequence.GetAllMedia();
+			if (sequenceMedia != null && sequenceMedia.Any())
+				foreach (IMediaModuleInstance media in sequenceMedia)
+				{
+					media.LoadMedia(TimeSpan.Zero);
+				}
+		}
+
+		private void RenderEffect(IEffectNode node)
+		{
+			if (node.Effect.SupportsMedia)
+			{
+				node.Effect.Media = _sequence.SequenceData.Media;
+			}
+
+			node.Effect.PreRender();
 		}
 
 		DateTime _lastSequenceDateTime = DateTime.Now;
@@ -133,7 +152,7 @@ namespace VixenModules.App.Shows
 			{
 				_sequenceContext.SequenceEnded -= sequence_Ended;
 				VixenSystem.Contexts.ReleaseContext(_sequenceContext);
-				var tSequence = (sequence as TimedSequence);
+				var tSequence = (_sequence as TimedSequence);
 				if (tSequence != null)
 				{
 					tSequence.Dispose();
@@ -149,7 +168,7 @@ namespace VixenModules.App.Shows
 				DisposeCurrentContext();
 				
 			}
-			sequence = null;
+			_sequence = null;
 			_sequenceContext = null;
 			base.Dispose(disposing);
 		}
