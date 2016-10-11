@@ -9,38 +9,37 @@ namespace VixenModules.App.Shows
 {
 	public class PauseAction: Action
 	{
-		private Process process = null;
-		private Timer timer;
+		private readonly Timer _timer;
 
 		public PauseAction(ShowItem showItem)
 			: base(showItem)
 		{
-			timer = new Timer(showItem.Pause_Seconds);
+			_timer = new Timer(showItem.Pause_Seconds*1000);
 		}
 
 		public override void Execute()
 		{
 			base.Execute();
 
-			timer.Elapsed += Timer_Tick;
-			timer.Start();
+			_timer.Elapsed += Timer_Tick;
+			_timer.Start();
 		}
 
 		public override void Stop()
 		{
-			if (timer.Enabled)
+			if (_timer.Enabled)
 			{
-				timer.Stop();
-				timer.Elapsed -= Timer_Tick;
+				_timer.Stop();
+				_timer.Elapsed -= Timer_Tick;
 				base.Complete();
 			}
 		}
 
 		public void Timer_Tick(object sender, EventArgs e) 
 		{
-			Timer timer = (sender as Timer);
-			timer.Stop(); 
-			timer.Elapsed -= Timer_Tick;
+			//Timer timer = (sender as Timer);
+			_timer.Stop(); 
+			_timer.Elapsed -= Timer_Tick;
 			base.Complete();
 		}
 	}
