@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.Drawing;
+using System.Globalization;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -67,6 +68,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public Point ToPoint()
 		{
 			return new Point(_x, _y);
+		}
+
+		public override string ToString()
+		{
+			return "{X=" + this._x.ToString((IFormatProvider)CultureInfo.CurrentCulture) + ",Y=" + this._y.ToString((IFormatProvider)CultureInfo.CurrentCulture) + "}";
 		}
 	}
 }

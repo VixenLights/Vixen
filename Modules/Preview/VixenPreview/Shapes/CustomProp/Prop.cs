@@ -81,7 +81,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public DisplayItem ToDisplayItem(int x, int y)
 		{
 			//Theres got to be a better way to do this... LOL
-			var prop = new PreviewCustomProp(new PreviewPoint(x, y), null, 1, this);
+			var prop = new PreviewCustomProp(new PreviewPoint(x, y), null, 1);
+			prop.LoadProp(this);
 			return new DisplayItem() { Shape = prop, ZoomLevel = 1 };
 		}
 

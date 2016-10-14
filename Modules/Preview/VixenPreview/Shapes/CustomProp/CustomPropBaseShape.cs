@@ -17,22 +17,40 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			: base(point, null)
 		{
 
-			base.Strings = new List<PreviewBaseShape>();
-			base.Name = prop.Name;
+			Name = prop.Name;
+			
 			if (prop.Children.Any())
 			{
 				prop.Children.ForEach(c =>
 				{
-					Strings.Add(new CustomPropBaseShape(point, c));
+					if (!c.IsPixel)
+					{
+						if (Strings == null)
+						{
+							Strings = new List<PreviewBaseShape>();
+						}
+						Strings.Add(new CustomPropBaseShape(point, c));
+					}
+					else
+					{
+						c.Pixels.ForEach(p => AddCustomPixel(p));
+					}
 				});
 			}
 			else if (prop.Pixels != null && prop.Pixels.Any())
 			{
-				prop.Pixels.ForEach(p => AddPixel(p.X, p.Y));
+				prop.Pixels.ForEach(p => AddCustomPixel(p));
 
 			}
 			IsPixel = prop.IsPixel;
 			Layout();
+		}
+
+		public void AddCustomPixel(Pixel p)
+		{
+			var pixel = new CustomPreviewPixel(p.X, p.Y, 0, PixelSize);
+			pixel.PixelColor = PixelColor;
+			Pixels.Add(pixel);
 		}
 
 

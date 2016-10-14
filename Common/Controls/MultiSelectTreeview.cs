@@ -408,7 +408,10 @@ namespace Common.Controls
 		{
 			// Never allow base.SelectedNode to be set!
 			try {
-				base.SelectedNode = null;
+				if (base.SelectedNode != null)
+				{
+					base.SelectedNode = null;
+				}
 				e.Cancel = true;
 
 				base.OnBeforeSelect(e);
@@ -422,7 +425,10 @@ namespace Common.Controls
 			// Never allow base.SelectedNode to be set!
 			try {
 				base.OnAfterSelect(e);
-				base.SelectedNode = null;
+				if (base.SelectedNode != null)
+				{
+					base.SelectedNode = null;
+				}
 			} catch (Exception ex) {
 				HandleException(ex);
 			}

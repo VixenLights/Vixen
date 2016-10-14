@@ -1715,7 +1715,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (System.IO.File.Exists(fileName))
 			{
 
-				DisplayItem newDisplayItem = VixenModules.Preview.VixenPreview.Shapes.CustomProp.Prop.FromFile(fileName).ToDisplayItem(10,10);
+				DisplayItem newDisplayItem = Shapes.CustomProp.Prop.FromFile(fileName).ToDisplayItem(10,10);
 				if (newDisplayItem != null)
 				{
 					DeSelectSelectedDisplayItem();
@@ -1726,8 +1726,6 @@ namespace VixenModules.Preview.VixenPreview
 					_selectedDisplayItem.Shape.MoveTo(10, 10);
 					_selectedDisplayItem.Shape.Select(true);
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
-					List<DisplayItem> selected = new List<DisplayItem> { _selectedDisplayItem };
-
 					PreviewItemAddAction(); //starts Undo_Redo Action
 				}
 			}

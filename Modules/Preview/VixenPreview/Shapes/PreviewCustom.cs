@@ -17,7 +17,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewCustom : PreviewBaseShape
 	{
-		[DataMember] private PreviewPoint _topLeft;
+		[DataMember]
+		public PreviewPoint _topLeft;
 		private PreviewPoint topLeftStart;
 		private int startWidth, startHeight;
 

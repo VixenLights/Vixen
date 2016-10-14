@@ -451,9 +451,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void treeViewChannels_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
-			DrawPreview();
-			selectedPixels.Clear();
+			var selectedObject = e.Node.Tag as PropChannel;
+			if (propertyGrid.SelectedObject != selectedObject)
+			{
+				propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
+				DrawPreview();
+				selectedPixels.Clear();
+			}
+			
 		}
 
 		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -476,7 +481,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				int cellSizeY = control.BackgroundImage.Height / ySize;
 
 				var r = new Rectangle(new Point(control.Left, control.Top), control.BackgroundImage.Size);
-				System.Windows.Forms.ControlPaint.DrawGrid(g, r, new Size(cellSizeX, cellSizeY), backgroundColor);
+				ControlPaint.DrawGrid(g, r, new Size(cellSizeX, cellSizeY), backgroundColor);
 
 			}
 
@@ -619,7 +624,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			SetGridBackground(this.splitContainer1.Panel1, this.gridPanel, this.BackgroundImageFileName, this.BackgroundImageOpacity, BackgroundImageMaintainAspect);
 
-			DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
+			//DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
 
 			DrawPoints(treeViewChannels.Nodes);
 
@@ -922,9 +927,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void removeNodesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (treeViewChannels.SelectedNode != null)
+			if (treeViewChannels.SelectedNodes != null)
 			{
-				treeViewChannels.SelectedNode.Remove();
+				treeViewChannels.BeginUpdate();
+				foreach (var selectedNode in treeViewChannels.SelectedNodes)
+				{
+					selectedNode.Remove();
+				}
+				treeViewChannels.EndUpdate();
+				
 				PopulateChannelsFromMultiTreeSelect();
 				DrawPreview();
 			}

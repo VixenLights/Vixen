@@ -19,23 +19,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		private PreviewPoint _bottomRight;
 
+		[DataMember]
+		private int _originHeight;
 
 		[DataMember]
-		internal Prop _prop = null;
+		private int _originWidth;
 
 		private ElementNode initiallyAssignedNode = null;
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, bottomRightStart;
 
-		public PreviewCustomProp(PreviewPoint point1, ElementNode selectedNode, double zoomLevel, Prop prop)
+		public PreviewCustomProp(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
+			Strings = new List<PreviewBaseShape>();
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
-			_bottomRight = new PreviewPoint(_topLeft.X + prop.Width, _topLeft.Y + prop.Height);
-			_prop = prop;
-			base.Name = prop.Name;
 			initiallyAssignedNode = selectedNode;
-
 			Layout();
 		}
 
@@ -78,9 +77,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		[Browsable(false)]
+		public override List<PreviewPixel> Pixels
+		{
+			get
+			{
+				if (_strings != null && _strings.Count > 0)
+				{
+					List<PreviewPixel> outPixels = new List<PreviewPixel>();
+					foreach (PreviewBaseShape line in _strings)
+					{
+						foreach (PreviewPixel pixel in line.Pixels)
+						{
+							outPixels.Add(pixel);
+						}
+					}
 
+					return outPixels;
+				}
+				else
+				{
 
+					return _pixels;
+				}
+			}
+			set
+			{
+				_pixels = value;
 
+			}
+		}
 
 		public override StringTypes StringType
 		{
@@ -202,21 +228,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
-				ElementNode node = null;
-
-				if (PixelCount > 0 && _pixels.Any())
-				{
-					node = _pixels[0].Node;
-					_pixels.Clear();
-				}
-				else if (initiallyAssignedNode != null)
-				{
-					if (initiallyAssignedNode.IsLeaf)
-					{
-						node = initiallyAssignedNode;
-					}
-				}
-
 				Point boundsTopLeft = new Point();
 				boundsTopLeft.X = Math.Min(_topLeft.X, _bottomRight.X);
 				boundsTopLeft.Y = Math.Min(_topLeft.Y, _bottomRight.Y);
@@ -227,20 +238,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				Rectangle rect = new Rectangle(boundsTopLeft, new Size(bottomRight.X - boundsTopLeft.X, bottomRight.Y - boundsTopLeft.Y));
 
-				var wRatio = (float)rect.Width / (float)_prop.Width;
-				var hRatio = (float)rect.Height / (float)_prop.Height;
+				var wRatio = (float)rect.Width / (float)_originWidth;
+				var hRatio = (float) rect.Height/(float) _originHeight;
 
-				var w = wRatio;
-
-				Strings = new List<PreviewBaseShape>();
-
-				//var channels = _prop.GetRepositionedChannels();
-				var channels = _prop.Channels;
-				channels.ForEach(c =>
+				foreach (var previewBaseShape in Strings)
 				{
-					Strings.Add(new CustomPropBaseShape(_topLeft, c));
-				});
-
+					var s = previewBaseShape as CustomPropBaseShape;
+					if (s == null) continue;
+					s._topLeft = _topLeft;
+					s.Layout();
+				}
 				AdjustStringPixelsWithRatio(Strings, wRatio, hRatio);
 				Strings.ForEach(s => s.Layout());
 
@@ -248,6 +255,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			}
 
+		}
+
+		public void LoadProp(Prop prop)
+		{
+			_bottomRight = new PreviewPoint(_topLeft.X + prop.Width, _topLeft.Y + prop.Height);
+			_originHeight = prop.Height;
+			_originWidth = prop.Width;
+			Name = prop.Name;
+			Strings = new List<PreviewBaseShape>();
+
+			var channels = prop.Channels;
+			channels.ForEach(c => { Strings.Add(new CustomPropBaseShape(_topLeft, c)); });
+			Layout();
 		}
 
 
@@ -263,10 +283,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				{
 					s._pixels.ForEach(p =>
 					{
-						var xF = (float)p.X * wRatio;
-						var yF = (float)p.Y * hRatio;
-						p.X = (int)xF + _topLeft.X;
-						p.Y = (int)yF + _topLeft.Y;
+						var cp = p as CustomPreviewPixel;
+						if (cp != null)
+						{
+							var xF = (float) cp.OriginX*wRatio;
+							var yF = (float) cp.OriginY*hRatio;
+							cp.X = (int) xF + _topLeft.X;
+							cp.Y = (int) yF + _topLeft.Y;
+						}
 					});
 				}
 			}

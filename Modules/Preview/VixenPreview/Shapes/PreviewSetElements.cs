@@ -37,36 +37,42 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			int i = 1;
 			foreach (PreviewBaseShape shape in _shapes)
 			{
+				
 				i = GetStringsFromShape(i, shape);
-				if (shape.Pixels.Count == 0)
-					continue;
-				var newString = new PreviewSetElementString();
-				// If this is a Standard string, only set the first pixel of the string
-				if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
-				{
-					//Console.WriteLine("Standard String");
-					PreviewPixel pixel = shape.Pixels[0];
-					//Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
-					newString.Pixels.Add(pixel.Clone());
-				}
-				// If this is a pixel string, let them set every pixel
-				else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
-				{
-					foreach (PreviewPixel pixel in shape.Pixels)
-					{
-						newString.Pixels.Add(pixel.Clone());
-					}
-				}
+				//if (shape.Pixels.Count == 0)
+				//	continue;
+				//var newString = new PreviewSetElementString();
+				//// If this is a Standard string, only set the first pixel of the string
+				//if (shape.StringType == PreviewBaseShape.StringTypes.Standard)
+				//{
+				//	//Console.WriteLine("Standard String");
+				//	PreviewPixel pixel = shape.Pixels[0];
+				//	//Console.WriteLine(shape.Pixels[0].Node.Name.ToString());
+				//	newString.Pixels.Add(pixel.Clone());
+				//}
+				//// If this is a pixel string, let them set every pixel
+				//else if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
+				//{
+				//	foreach (PreviewPixel pixel in shape.Pixels)
+				//	{
+				//		newString.Pixels.Add(pixel.Clone());
+				//	}
+				//}
 
-				if (_shapes[0].Parent != null)
+				//newString.StringName = "String " + i.ToString();
+				//_strings.Add(newString);
+				//i++;
+
+			}
+
+			if (_shapes[0].Parent != null)
+			{
+				string shapeType = "";
+				shapeType = _shapes[0].Parent.GetType().ToString();
+				if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) ||
+					shapeType.Contains("MultiString"))
 				{
-					string shapeType = "";
-					shapeType = _shapes[0].Parent.GetType().ToString();
-					if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) ||
-					    shapeType.Contains("MultiString"))
-					{
-						panelSetLightCount.Visible = true;
-					}
+					panelSetLightCount.Visible = true;
 				}
 			}
 		}
@@ -121,7 +127,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private int GetStringsFromShape(int i, PreviewBaseShape shape)
 		{
-			var propShape = shape as VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropBaseShape;
+			var propShape = shape as CustomProp.CustomPropBaseShape;
 			if (propShape != null)
 			{
 
@@ -132,7 +138,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			}
 
-			if (shape.Pixels.Count > 0 && (propShape != null && !propShape.IsPixel))
+			if (shape != null && shape.Pixels.Count > 0)
 			{
 				var newString = new PreviewSetElementString();
 				// If this is a Standard string, only set the first pixel of the string
@@ -154,7 +160,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 
 				//The shapes/strings have names... might as well use it... 
-				newString.StringName = shape.Name;
+				if (!string.IsNullOrEmpty(shape.Name))
+				{
+					newString.StringName = shape.Name;
+				}
+				else
+				{
+					newString.StringName = "String " + i.ToString();
+				}
 
 				_strings.Add(newString);
 				i++;
@@ -380,31 +393,30 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 					if (_shapes[i].Pixels.Count == 0)
 						continue;
+					comboidx++;
 
+					var item = comboStrings.Items[comboidx] as ComboBoxItem;
+					var lightString = item.Value as PreviewSetElementString;
 					var shape = _shapes[i];
 
-					PreviewSetElementString lightString = null;
+					//PreviewSetElementString lightString = null;
 
-					foreach (Common.Controls.ComboBoxItem item in comboStrings.Items)
-					{
-						var ls = item.Value as PreviewSetElementString;
-						if (ls.StringName.Equals(shape.Name))
-						{
-							lightString = ls;
-							break;
-						}
-					}
+					//foreach (ComboBoxItem item in comboStrings.Items)
+					//{
+					//	var ls = item.Value as PreviewSetElementString;
+					//	if (ls.StringName.Equals(shape.Name))
+					//	{
+					//		lightString = ls;
+					//		break;
+					//	}
+					//}
 
-					if (lightString == null) continue;
+					//if (lightString == null) continue;
 
-					var propShape = shape as VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropBaseShape;
-					if (propShape != null && propShape.IsPixel)
-						continue;
-
-
-
-
-
+					//var propShape = shape as VixenModules.Preview.VixenPreview.Shapes.CustomProp.CustomPropBaseShape;
+					//if (propShape != null && propShape.IsPixel)
+					//	continue;
+					
 					if (shape.StringType == PreviewBaseShape.StringTypes.Pixel)
 					{
 
@@ -434,7 +446,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						}
 						else
 						{
-							shape.Pixels[pixelNum] = lightString.Pixels[pixelNum];
+							shape.Pixels[pixelNum].Node = lightString.Pixels[pixelNum].Node;
+							shape.Pixels[pixelNum].NodeId = lightString.Pixels[pixelNum].NodeId;
 						}
 					}
 

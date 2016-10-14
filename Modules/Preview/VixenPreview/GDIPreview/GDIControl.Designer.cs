@@ -15,10 +15,26 @@
 		{
 			if (disposing)
 			{
-				if (components != null) components.Dispose();
-				if (_fastPixel != null) _fastPixel.Dispose();
-				if (_backgroundAlphaImage != null) _backgroundAlphaImage.Dispose();
-				if (_background != null) _background.Dispose();
+				if (components != null)
+				{
+					components.Dispose();
+					components = null;
+				}
+				if (_fastPixel != null)
+				{
+					_fastPixel.Dispose();
+					_fastPixel = null;
+				}
+				if (_backgroundAlphaImage != null)
+				{
+					_backgroundAlphaImage.Dispose();
+					_backgroundAlphaImage = null;
+				}
+				if (_background != null)
+				{
+					_background.Dispose();
+					_background = null;
+				}
 			}
 
 			base.Dispose(disposing);

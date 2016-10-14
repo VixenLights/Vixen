@@ -40,6 +40,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[KnownType(typeof(PreviewCustomProp))]
 	[KnownType(typeof(CustomPropBaseShape))]
 	[KnownType(typeof(Pixel))]
+	[KnownType(typeof(CustomPreviewPixel))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>
 	{
 		private PreviewBaseShape _shape;
