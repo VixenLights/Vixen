@@ -649,6 +649,11 @@ namespace VixenModules.Editor.EffectEditor
 			if (collectionValue != null)
 			{
 				var oldValue = CreateList(PropertyType, collectionValue);
+				if (oldValue != null && oldValue.Count-1 >= index && oldValue[index].Equals(value))
+				{
+					//old and new values are the same
+					return;
+				}
 				collectionValue[index] = value;
 				SetValueCore(collectionValue);
 				OnValueChanged(new object[] { oldValue }, GetValue());

@@ -46,7 +46,10 @@ namespace VixenModules.Editor.EffectEditor.Utils
 				textbox.LostFocus -= TextBoxFocusLostCommitValue;
 
 			if (needToBind)
+			{
+				textbox.LostFocus -= TextBoxFocusLostCommitValue;
 				textbox.LostFocus += TextBoxFocusLostCommitValue;
+			}
 		}
 
 		private static void TextBoxFocusLostCommitValue(object sender, RoutedEventArgs e)
@@ -89,10 +92,13 @@ namespace VixenModules.Editor.EffectEditor.Utils
 			var needToBind = (bool) (e.NewValue);
 
 			if (wasBound)
-				textbox.KeyUp -= TextBoxCommitValue;
+				textbox.KeyDown -= TextBoxCommitValue;
 
 			if (needToBind)
-				textbox.KeyUp += TextBoxCommitValue;
+			{
+				textbox.KeyDown -= TextBoxCommitValue;
+				textbox.KeyDown += TextBoxCommitValue;
+			}
 		}
 
 		private static void TextBoxCommitValue(object sender, KeyEventArgs e)
@@ -102,9 +108,9 @@ namespace VixenModules.Editor.EffectEditor.Utils
 
 			if ((e.Key == Key.Enter))
 			{
+				e.Handled = true;
 				var expression = textbox.GetBindingExpression(TextBox.TextProperty);
 				if (expression != null) expression.UpdateSource();
-				e.Handled = true;
 			}
 		}
 
