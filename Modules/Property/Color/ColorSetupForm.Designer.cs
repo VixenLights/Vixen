@@ -87,7 +87,7 @@
 			this.colorPanelSingleColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.colorPanelSingleColor.Color = System.Drawing.Color.Maroon;
 			this.colorPanelSingleColor.Location = new System.Drawing.Point(208, 9);
-			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+			this.colorPanelSingleColor.Margin = new System.Windows.Forms.Padding(5);
 			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
 			this.colorPanelSingleColor.Size = new System.Drawing.Size(70, 34);
 			this.colorPanelSingleColor.TabIndex = 6;
@@ -159,9 +159,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(475, 231);
+			this.ClientSize = new System.Drawing.Size(475, 232);
 			this.Controls.Add(this.groupBoxOptions);
 			this.Controls.Add(this.buttonOk);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(491, 270);

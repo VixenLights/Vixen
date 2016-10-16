@@ -181,11 +181,12 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			// groupBoxStringOrientation
 			// 
+			this.groupBoxStringOrientation.AutoSize = true;
 			this.groupBoxStringOrientation.Controls.Add(this.radioButtonHorizontalFirst);
 			this.groupBoxStringOrientation.Controls.Add(this.radioButtonVerticalFirst);
 			this.groupBoxStringOrientation.Location = new System.Drawing.Point(17, 51);
 			this.groupBoxStringOrientation.Name = "groupBoxStringOrientation";
-			this.groupBoxStringOrientation.Size = new System.Drawing.Size(270, 57);
+			this.groupBoxStringOrientation.Size = new System.Drawing.Size(270, 63);
 			this.groupBoxStringOrientation.TabIndex = 28;
 			this.groupBoxStringOrientation.TabStop = false;
 			this.groupBoxStringOrientation.Text = "String Orientation";
@@ -193,13 +194,14 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			// groupBoxDimensions
 			// 
+			this.groupBoxDimensions.AutoSize = true;
 			this.groupBoxDimensions.Controls.Add(this.numericUpDownHeight);
 			this.groupBoxDimensions.Controls.Add(this.label5);
 			this.groupBoxDimensions.Controls.Add(this.numericUpDownWidth);
 			this.groupBoxDimensions.Controls.Add(this.label4);
 			this.groupBoxDimensions.Location = new System.Drawing.Point(17, 114);
 			this.groupBoxDimensions.Name = "groupBoxDimensions";
-			this.groupBoxDimensions.Size = new System.Drawing.Size(270, 65);
+			this.groupBoxDimensions.Size = new System.Drawing.Size(270, 67);
 			this.groupBoxDimensions.TabIndex = 29;
 			this.groupBoxDimensions.TabStop = false;
 			this.groupBoxDimensions.Text = "Dimensions";
@@ -220,7 +222,6 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.DoubleBuffered = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(320, 279);
 			this.Name = "PixelGrid";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

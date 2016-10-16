@@ -200,6 +200,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(541, 372);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.comboBoxColorOrder);
@@ -214,8 +215,8 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(557, 410);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(557, 410);
 			this.Name = "ColorSetupHelper";

@@ -71,8 +71,9 @@ namespace VixenApplication
 			activateElementControl(_setupElementsTree);
 			
 			radioButtonPatchingSimple.Checked = true;
-			splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 10;
-			splitContainer2.SplitterDistance = patchingPaneFlowLayoutPanel.Width + 6;
+			splitContainer1.SplitterDistance = tableLayoutPanelElementSetup.Width + 6;
+			splitContainer2.SplitterDistance = (int)(tableLayoutPanelPatchingSetup.Width + (10 * ScalingTools.GetScaleFactor()));
+
 		}
 
 
