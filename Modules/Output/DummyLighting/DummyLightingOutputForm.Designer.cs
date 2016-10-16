@@ -36,9 +36,10 @@
 			// 
 			// DummyLightingOutputForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(331, 302);
 			this.Name = "DummyLightingOutputForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Dummy Lighting Output";

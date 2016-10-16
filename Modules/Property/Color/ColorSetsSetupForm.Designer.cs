@@ -60,10 +60,10 @@
             listViewItem1,
             listViewItem2,
             listViewItem3});
-			this.listViewColorSets.Location = new System.Drawing.Point(14, 30);
+			this.listViewColorSets.Location = new System.Drawing.Point(16, 35);
 			this.listViewColorSets.MultiSelect = false;
 			this.listViewColorSets.Name = "listViewColorSets";
-			this.listViewColorSets.Size = new System.Drawing.Size(98, 95);
+			this.listViewColorSets.Size = new System.Drawing.Size(114, 109);
 			this.listViewColorSets.TabIndex = 0;
 			this.listViewColorSets.UseCompatibleStateImageBehavior = false;
 			this.listViewColorSets.View = System.Windows.Forms.View.List;
@@ -72,9 +72,9 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 14);
+			this.label1.Location = new System.Drawing.Point(14, 16);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(98, 13);
+			this.label1.Size = new System.Drawing.Size(107, 15);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Defined Color Sets:";
 			// 
@@ -86,9 +86,9 @@
 			this.groupBoxColorSet.Controls.Add(this.panelColorSet);
 			this.groupBoxColorSet.Controls.Add(this.label3);
 			this.groupBoxColorSet.Controls.Add(this.label2);
-			this.groupBoxColorSet.Location = new System.Drawing.Point(129, 12);
+			this.groupBoxColorSet.Location = new System.Drawing.Point(150, 14);
 			this.groupBoxColorSet.Name = "groupBoxColorSet";
-			this.groupBoxColorSet.Size = new System.Drawing.Size(302, 199);
+			this.groupBoxColorSet.Size = new System.Drawing.Size(352, 230);
 			this.groupBoxColorSet.TabIndex = 4;
 			this.groupBoxColorSet.TabStop = false;
 			this.groupBoxColorSet.Text = "Selected Color Set";
@@ -100,9 +100,9 @@
 			this.panelColorSet.Controls.Add(this.buttonUpdate);
 			this.panelColorSet.Controls.Add(this.tableLayoutPanelColors);
 			this.panelColorSet.Controls.Add(this.textBoxName);
-			this.panelColorSet.Location = new System.Drawing.Point(57, 18);
+			this.panelColorSet.Location = new System.Drawing.Point(66, 21);
 			this.panelColorSet.Name = "panelColorSet";
-			this.panelColorSet.Size = new System.Drawing.Size(238, 172);
+			this.panelColorSet.Size = new System.Drawing.Size(278, 198);
 			this.panelColorSet.TabIndex = 13;
 			// 
 			// buttonAddColor
@@ -110,9 +110,9 @@
 			this.buttonAddColor.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddColor.FlatAppearance.BorderSize = 0;
 			this.buttonAddColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddColor.Location = new System.Drawing.Point(193, 47);
+			this.buttonAddColor.Location = new System.Drawing.Point(225, 54);
 			this.buttonAddColor.Name = "buttonAddColor";
-			this.buttonAddColor.Size = new System.Drawing.Size(28, 28);
+			this.buttonAddColor.Size = new System.Drawing.Size(33, 32);
 			this.buttonAddColor.TabIndex = 12;
 			this.buttonAddColor.Text = "+";
 			this.buttonAddColor.UseVisualStyleBackColor = false;
@@ -120,9 +120,9 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(16, 137);
+			this.buttonUpdate.Location = new System.Drawing.Point(19, 158);
 			this.buttonUpdate.Name = "buttonUpdate";
-			this.buttonUpdate.Size = new System.Drawing.Size(120, 25);
+			this.buttonUpdate.Size = new System.Drawing.Size(140, 29);
 			this.buttonUpdate.TabIndex = 11;
 			this.buttonUpdate.Text = "Make New Color Set";
 			this.buttonUpdate.UseVisualStyleBackColor = true;
@@ -133,43 +133,43 @@
 			// tableLayoutPanelColors
 			// 
 			this.tableLayoutPanelColors.ColumnCount = 4;
-			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-			this.tableLayoutPanelColors.Location = new System.Drawing.Point(16, 43);
+			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanelColors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanelColors.Location = new System.Drawing.Point(19, 50);
 			this.tableLayoutPanelColors.Name = "tableLayoutPanelColors";
 			this.tableLayoutPanelColors.RowCount = 2;
 			this.tableLayoutPanelColors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.tableLayoutPanelColors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanelColors.Size = new System.Drawing.Size(160, 80);
+			this.tableLayoutPanelColors.Size = new System.Drawing.Size(187, 92);
 			this.tableLayoutPanelColors.TabIndex = 4;
 			// 
 			// textBoxName
 			// 
 			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxName.Location = new System.Drawing.Point(16, 8);
+			this.textBoxName.Location = new System.Drawing.Point(19, 9);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(130, 20);
+			this.textBoxName.Size = new System.Drawing.Size(151, 23);
 			this.textBoxName.TabIndex = 0;
 			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(19, 73);
+			this.label3.Location = new System.Drawing.Point(22, 84);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(39, 13);
+			this.label3.Size = new System.Drawing.Size(44, 15);
 			this.label3.TabIndex = 3;
 			this.label3.Text = "Colors:";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(19, 29);
+			this.label2.Location = new System.Drawing.Point(22, 33);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(38, 13);
+			this.label2.Size = new System.Drawing.Size(42, 15);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "Name:";
 			// 
@@ -177,9 +177,9 @@
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(341, 223);
+			this.button1.Location = new System.Drawing.Point(398, 257);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(90, 25);
+			this.button1.Size = new System.Drawing.Size(105, 29);
 			this.button1.TabIndex = 10;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
@@ -191,9 +191,9 @@
 			this.buttonRemoveColorSet.BackColor = System.Drawing.Color.Transparent;
 			this.buttonRemoveColorSet.FlatAppearance.BorderSize = 0;
 			this.buttonRemoveColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonRemoveColorSet.Location = new System.Drawing.Point(70, 134);
+			this.buttonRemoveColorSet.Location = new System.Drawing.Point(82, 155);
 			this.buttonRemoveColorSet.Name = "buttonRemoveColorSet";
-			this.buttonRemoveColorSet.Size = new System.Drawing.Size(28, 28);
+			this.buttonRemoveColorSet.Size = new System.Drawing.Size(33, 32);
 			this.buttonRemoveColorSet.TabIndex = 3;
 			this.buttonRemoveColorSet.Text = "-";
 			this.buttonRemoveColorSet.UseVisualStyleBackColor = false;
@@ -204,9 +204,9 @@
 			this.buttonAddColorSet.BackColor = System.Drawing.Color.Transparent;
 			this.buttonAddColorSet.FlatAppearance.BorderSize = 0;
 			this.buttonAddColorSet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonAddColorSet.Location = new System.Drawing.Point(24, 134);
+			this.buttonAddColorSet.Location = new System.Drawing.Point(28, 155);
 			this.buttonAddColorSet.Name = "buttonAddColorSet";
-			this.buttonAddColorSet.Size = new System.Drawing.Size(28, 28);
+			this.buttonAddColorSet.Size = new System.Drawing.Size(33, 32);
 			this.buttonAddColorSet.TabIndex = 2;
 			this.buttonAddColorSet.Text = "+";
 			this.buttonAddColorSet.UseVisualStyleBackColor = false;
@@ -214,9 +214,10 @@
 			// 
 			// ColorSetsSetupForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(443, 260);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(517, 301);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.groupBoxColorSet);
 			this.Controls.Add(this.buttonRemoveColorSet);
@@ -224,8 +225,8 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.listViewColorSets);
 			this.DoubleBuffered = true;
-			this.MaximumSize = new System.Drawing.Size(459, 299);
-			this.MinimumSize = new System.Drawing.Size(459, 299);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MinimumSize = new System.Drawing.Size(533, 339);
 			this.Name = "ColorSetsSetupForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

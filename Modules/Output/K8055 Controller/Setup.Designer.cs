@@ -68,9 +68,9 @@
 			this.groupBox1.Controls.Add(this.numericUpDownDev2);
 			this.groupBox1.Controls.Add(this.numericUpDownDev1);
 			this.groupBox1.Controls.Add(this.numericUpDownDev0);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(14, 14);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(336, 172);
+			this.groupBox1.Size = new System.Drawing.Size(392, 198);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Velleman K8805";
@@ -78,9 +78,9 @@
 			// 
 			// driverVersionButton
 			// 
-			this.driverVersionButton.Location = new System.Drawing.Point(199, 136);
+			this.driverVersionButton.Location = new System.Drawing.Point(232, 157);
 			this.driverVersionButton.Name = "driverVersionButton";
-			this.driverVersionButton.Size = new System.Drawing.Size(116, 23);
+			this.driverVersionButton.Size = new System.Drawing.Size(135, 27);
 			this.driverVersionButton.TabIndex = 9;
 			this.driverVersionButton.Text = "K8055 driver version";
 			this.driverVersionButton.UseVisualStyleBackColor = true;
@@ -90,9 +90,9 @@
 			// 
 			// searchDevicesButton
 			// 
-			this.searchDevicesButton.Location = new System.Drawing.Point(62, 136);
+			this.searchDevicesButton.Location = new System.Drawing.Point(72, 157);
 			this.searchDevicesButton.Name = "searchDevicesButton";
-			this.searchDevicesButton.Size = new System.Drawing.Size(116, 23);
+			this.searchDevicesButton.Size = new System.Drawing.Size(135, 27);
 			this.searchDevicesButton.TabIndex = 8;
 			this.searchDevicesButton.Text = "Search Devices";
 			this.searchDevicesButton.UseVisualStyleBackColor = true;
@@ -103,9 +103,9 @@
 			// checkBoxDev3
 			// 
 			this.checkBoxDev3.AutoSize = true;
-			this.checkBoxDev3.Location = new System.Drawing.Point(17, 97);
+			this.checkBoxDev3.Location = new System.Drawing.Point(20, 112);
 			this.checkBoxDev3.Name = "checkBoxDev3";
-			this.checkBoxDev3.Size = new System.Drawing.Size(208, 17);
+			this.checkBoxDev3.Size = new System.Drawing.Size(225, 19);
 			this.checkBoxDev3.TabIndex = 6;
 			this.checkBoxDev3.Text = "Device Address 3 will handle channels";
 			this.checkBoxDev3.UseVisualStyleBackColor = true;
@@ -113,9 +113,9 @@
 			// checkBoxDev2
 			// 
 			this.checkBoxDev2.AutoSize = true;
-			this.checkBoxDev2.Location = new System.Drawing.Point(17, 73);
+			this.checkBoxDev2.Location = new System.Drawing.Point(20, 84);
 			this.checkBoxDev2.Name = "checkBoxDev2";
-			this.checkBoxDev2.Size = new System.Drawing.Size(208, 17);
+			this.checkBoxDev2.Size = new System.Drawing.Size(225, 19);
 			this.checkBoxDev2.TabIndex = 4;
 			this.checkBoxDev2.Text = "Device Address 2 will handle channels";
 			this.checkBoxDev2.UseVisualStyleBackColor = true;
@@ -123,9 +123,9 @@
 			// checkBoxDev1
 			// 
 			this.checkBoxDev1.AutoSize = true;
-			this.checkBoxDev1.Location = new System.Drawing.Point(17, 46);
+			this.checkBoxDev1.Location = new System.Drawing.Point(20, 53);
 			this.checkBoxDev1.Name = "checkBoxDev1";
-			this.checkBoxDev1.Size = new System.Drawing.Size(208, 17);
+			this.checkBoxDev1.Size = new System.Drawing.Size(225, 19);
 			this.checkBoxDev1.TabIndex = 2;
 			this.checkBoxDev1.Text = "Device Address 1 will handle channels";
 			this.checkBoxDev1.UseVisualStyleBackColor = true;
@@ -133,9 +133,9 @@
 			// checkBoxDev0
 			// 
 			this.checkBoxDev0.AutoSize = true;
-			this.checkBoxDev0.Location = new System.Drawing.Point(17, 21);
+			this.checkBoxDev0.Location = new System.Drawing.Point(20, 24);
 			this.checkBoxDev0.Name = "checkBoxDev0";
-			this.checkBoxDev0.Size = new System.Drawing.Size(208, 17);
+			this.checkBoxDev0.Size = new System.Drawing.Size(225, 19);
 			this.checkBoxDev0.TabIndex = 0;
 			this.checkBoxDev0.Text = "Device Address 0 will handle channels";
 			this.checkBoxDev0.UseVisualStyleBackColor = true;
@@ -143,45 +143,45 @@
 			// labelDev3
 			// 
 			this.labelDev3.AutoSize = true;
-			this.labelDev3.Location = new System.Drawing.Point(298, 100);
+			this.labelDev3.Location = new System.Drawing.Point(348, 115);
 			this.labelDev3.Name = "labelDev3";
-			this.labelDev3.Size = new System.Drawing.Size(31, 13);
+			this.labelDev3.Size = new System.Drawing.Size(33, 15);
 			this.labelDev3.TabIndex = 7;
 			this.labelDev3.Text = "to 32";
 			// 
 			// labelDev2
 			// 
 			this.labelDev2.AutoSize = true;
-			this.labelDev2.Location = new System.Drawing.Point(298, 74);
+			this.labelDev2.Location = new System.Drawing.Point(348, 85);
 			this.labelDev2.Name = "labelDev2";
-			this.labelDev2.Size = new System.Drawing.Size(31, 13);
+			this.labelDev2.Size = new System.Drawing.Size(33, 15);
 			this.labelDev2.TabIndex = 6;
 			this.labelDev2.Text = "to 24";
 			// 
 			// labelDev1
 			// 
 			this.labelDev1.AutoSize = true;
-			this.labelDev1.Location = new System.Drawing.Point(298, 48);
+			this.labelDev1.Location = new System.Drawing.Point(348, 55);
 			this.labelDev1.Name = "labelDev1";
-			this.labelDev1.Size = new System.Drawing.Size(31, 13);
+			this.labelDev1.Size = new System.Drawing.Size(33, 15);
 			this.labelDev1.TabIndex = 5;
 			this.labelDev1.Text = "to 16";
 			// 
 			// labelDev0
 			// 
 			this.labelDev0.AutoSize = true;
-			this.labelDev0.Location = new System.Drawing.Point(298, 22);
+			this.labelDev0.Location = new System.Drawing.Point(348, 25);
 			this.labelDev0.Name = "labelDev0";
-			this.labelDev0.Size = new System.Drawing.Size(25, 13);
+			this.labelDev0.Size = new System.Drawing.Size(27, 15);
 			this.labelDev0.TabIndex = 4;
 			this.labelDev0.Text = "to 8";
 			// 
 			// numericUpDownDev3
 			// 
 			this.numericUpDownDev3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownDev3.Location = new System.Drawing.Point(231, 98);
+			this.numericUpDownDev3.Location = new System.Drawing.Point(269, 113);
 			this.numericUpDownDev3.Name = "numericUpDownDev3";
-			this.numericUpDownDev3.Size = new System.Drawing.Size(61, 20);
+			this.numericUpDownDev3.Size = new System.Drawing.Size(71, 23);
 			this.numericUpDownDev3.TabIndex = 7;
 			this.numericUpDownDev3.Value = new decimal(new int[] {
             25,
@@ -193,9 +193,9 @@
 			// numericUpDownDev2
 			// 
 			this.numericUpDownDev2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownDev2.Location = new System.Drawing.Point(231, 72);
+			this.numericUpDownDev2.Location = new System.Drawing.Point(269, 83);
 			this.numericUpDownDev2.Name = "numericUpDownDev2";
-			this.numericUpDownDev2.Size = new System.Drawing.Size(61, 20);
+			this.numericUpDownDev2.Size = new System.Drawing.Size(71, 23);
 			this.numericUpDownDev2.TabIndex = 5;
 			this.numericUpDownDev2.Value = new decimal(new int[] {
             17,
@@ -207,9 +207,9 @@
 			// numericUpDownDev1
 			// 
 			this.numericUpDownDev1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownDev1.Location = new System.Drawing.Point(231, 46);
+			this.numericUpDownDev1.Location = new System.Drawing.Point(269, 53);
 			this.numericUpDownDev1.Name = "numericUpDownDev1";
-			this.numericUpDownDev1.Size = new System.Drawing.Size(61, 20);
+			this.numericUpDownDev1.Size = new System.Drawing.Size(71, 23);
 			this.numericUpDownDev1.TabIndex = 3;
 			this.numericUpDownDev1.Value = new decimal(new int[] {
             9,
@@ -221,9 +221,9 @@
 			// numericUpDownDev0
 			// 
 			this.numericUpDownDev0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownDev0.Location = new System.Drawing.Point(231, 20);
+			this.numericUpDownDev0.Location = new System.Drawing.Point(269, 23);
 			this.numericUpDownDev0.Name = "numericUpDownDev0";
-			this.numericUpDownDev0.Size = new System.Drawing.Size(61, 20);
+			this.numericUpDownDev0.Size = new System.Drawing.Size(71, 23);
 			this.numericUpDownDev0.TabIndex = 1;
 			this.numericUpDownDev0.Value = new decimal(new int[] {
             1,
@@ -235,9 +235,9 @@
 			// cancelButton
 			// 
 			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Location = new System.Drawing.Point(273, 201);
+			this.cancelButton.Location = new System.Drawing.Point(318, 232);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(87, 27);
 			this.cancelButton.TabIndex = 2;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -247,9 +247,9 @@
 			// okButton
 			// 
 			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Location = new System.Drawing.Point(182, 201);
+			this.okButton.Location = new System.Drawing.Point(212, 232);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(87, 27);
 			this.okButton.TabIndex = 1;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -260,18 +260,18 @@
 			// Setup
 			// 
 			this.AcceptButton = this.okButton;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.cancelButton;
-			this.ClientSize = new System.Drawing.Size(366, 247);
+			this.ClientSize = new System.Drawing.Size(427, 286);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(382, 286);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(382, 286);
+			this.MinimumSize = new System.Drawing.Size(443, 324);
 			this.Name = "Setup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "K8055 Configuration";

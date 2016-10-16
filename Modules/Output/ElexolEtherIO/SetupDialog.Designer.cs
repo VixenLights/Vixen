@@ -52,9 +52,9 @@
 			this.ethernetSettingsGroupBox.Controls.Add(this.testButton);
 			this.ethernetSettingsGroupBox.Controls.Add(this.ipAddressTextBox);
 			this.ethernetSettingsGroupBox.Controls.Add(this.ipaddressLabel);
-			this.ethernetSettingsGroupBox.Location = new System.Drawing.Point(13, 13);
+			this.ethernetSettingsGroupBox.Location = new System.Drawing.Point(15, 15);
 			this.ethernetSettingsGroupBox.Name = "ethernetSettingsGroupBox";
-			this.ethernetSettingsGroupBox.Size = new System.Drawing.Size(278, 79);
+			this.ethernetSettingsGroupBox.Size = new System.Drawing.Size(324, 91);
 			this.ethernetSettingsGroupBox.TabIndex = 0;
 			this.ethernetSettingsGroupBox.TabStop = false;
 			this.ethernetSettingsGroupBox.Text = "Ethernet Settings";
@@ -63,26 +63,26 @@
 			// portTextBox
 			// 
 			this.portTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.portTextBox.Location = new System.Drawing.Point(72, 46);
+			this.portTextBox.Location = new System.Drawing.Point(84, 53);
 			this.portTextBox.Name = "portTextBox";
-			this.portTextBox.Size = new System.Drawing.Size(112, 20);
+			this.portTextBox.Size = new System.Drawing.Size(130, 23);
 			this.portTextBox.TabIndex = 1;
 			this.portTextBox.Text = "2424";
 			// 
 			// portLabel
 			// 
 			this.portLabel.AutoSize = true;
-			this.portLabel.Location = new System.Drawing.Point(40, 49);
+			this.portLabel.Location = new System.Drawing.Point(47, 57);
 			this.portLabel.Name = "portLabel";
-			this.portLabel.Size = new System.Drawing.Size(26, 13);
+			this.portLabel.Size = new System.Drawing.Size(29, 15);
 			this.portLabel.TabIndex = 3;
 			this.portLabel.Text = "Port";
 			// 
 			// testButton
 			// 
-			this.testButton.Location = new System.Drawing.Point(197, 18);
+			this.testButton.Location = new System.Drawing.Point(230, 21);
 			this.testButton.Name = "testButton";
-			this.testButton.Size = new System.Drawing.Size(75, 48);
+			this.testButton.Size = new System.Drawing.Size(87, 55);
 			this.testButton.TabIndex = 2;
 			this.testButton.Text = "Test";
 			this.testButton.UseVisualStyleBackColor = true;
@@ -93,18 +93,18 @@
 			// ipAddressTextBox
 			// 
 			this.ipAddressTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.ipAddressTextBox.Location = new System.Drawing.Point(72, 20);
+			this.ipAddressTextBox.Location = new System.Drawing.Point(84, 23);
 			this.ipAddressTextBox.Name = "ipAddressTextBox";
-			this.ipAddressTextBox.Size = new System.Drawing.Size(112, 20);
+			this.ipAddressTextBox.Size = new System.Drawing.Size(130, 23);
 			this.ipAddressTextBox.TabIndex = 0;
 			this.ipAddressTextBox.Text = "10.10.10.10";
 			// 
 			// ipaddressLabel
 			// 
 			this.ipaddressLabel.AutoSize = true;
-			this.ipaddressLabel.Location = new System.Drawing.Point(8, 23);
+			this.ipaddressLabel.Location = new System.Drawing.Point(9, 27);
 			this.ipaddressLabel.Name = "ipaddressLabel";
-			this.ipaddressLabel.Size = new System.Drawing.Size(58, 13);
+			this.ipaddressLabel.Size = new System.Drawing.Size(62, 15);
 			this.ipaddressLabel.TabIndex = 0;
 			this.ipaddressLabel.Text = "IP Address";
 			// 
@@ -113,9 +113,9 @@
 			this.groupBox1.Controls.Add(this.minOnIntensityLabel);
 			this.groupBox1.Controls.Add(this.minIntensityLabel);
 			this.groupBox1.Controls.Add(this.sliderMinIntensityTrackBar);
-			this.groupBox1.Location = new System.Drawing.Point(12, 98);
+			this.groupBox1.Location = new System.Drawing.Point(14, 113);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(278, 91);
+			this.groupBox1.Size = new System.Drawing.Size(324, 105);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Advanced";
@@ -124,37 +124,37 @@
 			// minOnIntensityLabel
 			// 
 			this.minOnIntensityLabel.AutoSize = true;
-			this.minOnIntensityLabel.Location = new System.Drawing.Point(11, 16);
+			this.minOnIntensityLabel.Location = new System.Drawing.Point(13, 18);
 			this.minOnIntensityLabel.Name = "minOnIntensityLabel";
-			this.minOnIntensityLabel.Size = new System.Drawing.Size(144, 13);
+			this.minOnIntensityLabel.Size = new System.Drawing.Size(167, 15);
 			this.minOnIntensityLabel.TabIndex = 2;
 			this.minOnIntensityLabel.Text = "Minium \'ON\' Intensity (0-255):";
 			// 
 			// minIntensityLabel
 			// 
 			this.minIntensityLabel.AutoSize = true;
-			this.minIntensityLabel.Location = new System.Drawing.Point(126, 67);
+			this.minIntensityLabel.Location = new System.Drawing.Point(147, 77);
 			this.minIntensityLabel.Name = "minIntensityLabel";
-			this.minIntensityLabel.Size = new System.Drawing.Size(13, 13);
+			this.minIntensityLabel.Size = new System.Drawing.Size(13, 15);
 			this.minIntensityLabel.TabIndex = 1;
 			this.minIntensityLabel.Text = "1";
 			// 
 			// sliderMinIntensityTrackBar
 			// 
 			this.sliderMinIntensityTrackBar.LargeChange = 16;
-			this.sliderMinIntensityTrackBar.Location = new System.Drawing.Point(11, 35);
+			this.sliderMinIntensityTrackBar.Location = new System.Drawing.Point(13, 40);
 			this.sliderMinIntensityTrackBar.Maximum = 255;
 			this.sliderMinIntensityTrackBar.Name = "sliderMinIntensityTrackBar";
-			this.sliderMinIntensityTrackBar.Size = new System.Drawing.Size(254, 45);
+			this.sliderMinIntensityTrackBar.Size = new System.Drawing.Size(296, 45);
 			this.sliderMinIntensityTrackBar.TabIndex = 0;
 			this.sliderMinIntensityTrackBar.TickFrequency = 16;
 			this.sliderMinIntensityTrackBar.ValueChanged += new System.EventHandler(this.sliderMinIntensityTrackBar_ValueChanged);
 			// 
 			// okButton
 			// 
-			this.okButton.Location = new System.Drawing.Point(141, 197);
+			this.okButton.Location = new System.Drawing.Point(164, 227);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.Size = new System.Drawing.Size(87, 27);
 			this.okButton.TabIndex = 2;
 			this.okButton.Text = "OK";
 			this.okButton.UseVisualStyleBackColor = true;
@@ -164,9 +164,9 @@
 			// 
 			// cancelButton
 			// 
-			this.cancelButton.Location = new System.Drawing.Point(223, 196);
+			this.cancelButton.Location = new System.Drawing.Point(260, 226);
 			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.Size = new System.Drawing.Size(87, 27);
 			this.cancelButton.TabIndex = 3;
 			this.cancelButton.Text = "Cancel";
 			this.cancelButton.UseVisualStyleBackColor = true;
@@ -175,17 +175,18 @@
 			// 
 			// SetupDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(307, 237);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(358, 275);
 			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.okButton);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.ethernetSettingsGroupBox);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(323, 276);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(323, 276);
+			this.MinimumSize = new System.Drawing.Size(374, 313);
 			this.Name = "SetupDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Elexol USB I/O 24 Configuration";

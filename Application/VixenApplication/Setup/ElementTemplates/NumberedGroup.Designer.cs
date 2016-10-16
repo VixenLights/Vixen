@@ -42,9 +42,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(193, 121);
+			this.buttonCancel.Location = new System.Drawing.Point(225, 140);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -55,9 +55,9 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(97, 121);
+			this.buttonOk.Location = new System.Drawing.Point(113, 140);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 3;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -67,9 +67,9 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 28);
+			this.label1.Location = new System.Drawing.Point(14, 32);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(70, 13);
+			this.label1.Size = new System.Drawing.Size(78, 15);
 			this.label1.TabIndex = 5;
 			this.label1.Text = "Group Name:";
 			// 
@@ -78,9 +78,9 @@
 			this.textBoxGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxGroupName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxGroupName.Location = new System.Drawing.Point(98, 25);
+			this.textBoxGroupName.Location = new System.Drawing.Point(114, 29);
 			this.textBoxGroupName.Name = "textBoxGroupName";
-			this.textBoxGroupName.Size = new System.Drawing.Size(185, 20);
+			this.textBoxGroupName.Size = new System.Drawing.Size(215, 23);
 			this.textBoxGroupName.TabIndex = 0;
 			this.textBoxGroupName.Text = "Minitrees";
 			// 
@@ -89,34 +89,34 @@
 			this.textBoxItemPrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxItemPrefix.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxItemPrefix.Location = new System.Drawing.Point(98, 55);
+			this.textBoxItemPrefix.Location = new System.Drawing.Point(114, 63);
 			this.textBoxItemPrefix.Name = "textBoxItemPrefix";
-			this.textBoxItemPrefix.Size = new System.Drawing.Size(185, 20);
+			this.textBoxItemPrefix.Size = new System.Drawing.Size(215, 23);
 			this.textBoxItemPrefix.TabIndex = 1;
 			this.textBoxItemPrefix.Text = "Tree";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 58);
+			this.label2.Location = new System.Drawing.Point(14, 67);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(59, 13);
+			this.label2.Size = new System.Drawing.Size(66, 15);
 			this.label2.TabIndex = 7;
 			this.label2.Text = "Item Prefix:";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 84);
+			this.label3.Location = new System.Drawing.Point(14, 97);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(61, 13);
+			this.label3.Size = new System.Drawing.Size(70, 15);
 			this.label3.TabIndex = 9;
 			this.label3.Text = "Item Count:";
 			// 
 			// numericUpDownItemCount
 			// 
 			this.numericUpDownItemCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownItemCount.Location = new System.Drawing.Point(98, 81);
+			this.numericUpDownItemCount.Location = new System.Drawing.Point(114, 93);
 			this.numericUpDownItemCount.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -128,7 +128,7 @@
             0,
             0});
 			this.numericUpDownItemCount.Name = "numericUpDownItemCount";
-			this.numericUpDownItemCount.Size = new System.Drawing.Size(78, 20);
+			this.numericUpDownItemCount.Size = new System.Drawing.Size(91, 23);
 			this.numericUpDownItemCount.TabIndex = 2;
 			this.numericUpDownItemCount.Value = new decimal(new int[] {
             1,
@@ -138,9 +138,10 @@
 			// 
 			// NumberedGroup
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(295, 158);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(344, 183);
 			this.Controls.Add(this.numericUpDownItemCount);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.textBoxItemPrefix);
@@ -150,10 +151,10 @@
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(311, 197);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(311, 197);
+			this.MinimumSize = new System.Drawing.Size(360, 221);
 			this.Name = "NumberedGroup";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

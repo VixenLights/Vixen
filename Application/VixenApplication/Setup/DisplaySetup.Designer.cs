@@ -162,19 +162,19 @@
 			// 
 			// patchingPaneFlowLayoutPanel
 			// 
-			this.patchingPaneFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.patchingPaneFlowLayoutPanel.AutoScroll = true;
 			this.patchingPaneFlowLayoutPanel.AutoSize = true;
+			this.patchingPaneFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.patchingPaneFlowLayoutPanel.Controls.Add(this.patchingHeaderTableLayoutPanel);
 			this.patchingPaneFlowLayoutPanel.Controls.Add(this.patchingHeaderLineDivider);
 			this.patchingPaneFlowLayoutPanel.Controls.Add(this.patchingHeaderViewChoiceTableLayoutPanel);
 			this.patchingPaneFlowLayoutPanel.Controls.Add(this.tableLayoutPanelPatchingSetup);
+			this.patchingPaneFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.patchingPaneFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-			this.patchingPaneFlowLayoutPanel.Location = new System.Drawing.Point(1, 1);
+			this.patchingPaneFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
 			this.patchingPaneFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.patchingPaneFlowLayoutPanel.Name = "patchingPaneFlowLayoutPanel";
-			this.patchingPaneFlowLayoutPanel.Size = new System.Drawing.Size(513, 723);
+			this.patchingPaneFlowLayoutPanel.Size = new System.Drawing.Size(519, 733);
 			this.patchingPaneFlowLayoutPanel.TabIndex = 9;
 			this.patchingPaneFlowLayoutPanel.WrapContents = false;
 			// 
@@ -276,6 +276,7 @@
 			// tableLayoutPanelControllerSetup
 			// 
 			this.tableLayoutPanelControllerSetup.AutoSize = true;
+			this.tableLayoutPanelControllerSetup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanelControllerSetup.ColumnCount = 1;
 			this.tableLayoutPanelControllerSetup.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanelControllerSetup.Controls.Add(this.controllerHeaderTableLayoutPanel, 0, 0);

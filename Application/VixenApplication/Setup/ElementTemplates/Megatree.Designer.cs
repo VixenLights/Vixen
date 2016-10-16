@@ -43,7 +43,7 @@
 			// 
 			// numericUpDownPixelsPerString
 			// 
-			this.numericUpDownPixelsPerString.Location = new System.Drawing.Point(98, 109);
+			this.numericUpDownPixelsPerString.Location = new System.Drawing.Point(114, 126);
 			this.numericUpDownPixelsPerString.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -55,7 +55,7 @@
             0,
             0});
 			this.numericUpDownPixelsPerString.Name = "numericUpDownPixelsPerString";
-			this.numericUpDownPixelsPerString.Size = new System.Drawing.Size(78, 20);
+			this.numericUpDownPixelsPerString.Size = new System.Drawing.Size(91, 23);
 			this.numericUpDownPixelsPerString.TabIndex = 3;
 			this.numericUpDownPixelsPerString.Value = new decimal(new int[] {
             50,
@@ -66,18 +66,18 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 111);
+			this.label4.Location = new System.Drawing.Point(14, 128);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(75, 13);
+			this.label4.Size = new System.Drawing.Size(81, 15);
 			this.label4.TabIndex = 17;
 			this.label4.Text = "Pixels / String:";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 53);
+			this.label5.Location = new System.Drawing.Point(14, 61);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(68, 13);
+			this.label5.Size = new System.Drawing.Size(77, 15);
 			this.label5.TabIndex = 15;
 			this.label5.Text = "String Count:";
 			// 
@@ -86,18 +86,18 @@
 			this.textBoxTreeName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxTreeName.Location = new System.Drawing.Point(98, 20);
+			this.textBoxTreeName.Location = new System.Drawing.Point(114, 23);
 			this.textBoxTreeName.Name = "textBoxTreeName";
-			this.textBoxTreeName.Size = new System.Drawing.Size(185, 20);
+			this.textBoxTreeName.Size = new System.Drawing.Size(215, 23);
 			this.textBoxTreeName.TabIndex = 0;
 			this.textBoxTreeName.Text = "Megatree";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 23);
+			this.label6.Location = new System.Drawing.Point(14, 27);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(63, 13);
+			this.label6.Size = new System.Drawing.Size(68, 15);
 			this.label6.TabIndex = 13;
 			this.label6.Text = "Tree Name:";
 			// 
@@ -105,9 +105,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(193, 150);
+			this.buttonCancel.Location = new System.Drawing.Point(225, 173);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 5;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -118,9 +118,9 @@
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(97, 150);
+			this.buttonOk.Location = new System.Drawing.Point(113, 173);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 4;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
 			// numericUpDownStrings
 			// 
 			this.numericUpDownStrings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownStrings.Location = new System.Drawing.Point(98, 51);
+			this.numericUpDownStrings.Location = new System.Drawing.Point(114, 59);
 			this.numericUpDownStrings.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -142,7 +142,7 @@
             0,
             0});
 			this.numericUpDownStrings.Name = "numericUpDownStrings";
-			this.numericUpDownStrings.Size = new System.Drawing.Size(78, 20);
+			this.numericUpDownStrings.Size = new System.Drawing.Size(91, 23);
 			this.numericUpDownStrings.TabIndex = 1;
 			this.numericUpDownStrings.Value = new decimal(new int[] {
             16,
@@ -153,9 +153,9 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 82);
+			this.label1.Location = new System.Drawing.Point(14, 95);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(57, 13);
+			this.label1.Size = new System.Drawing.Size(60, 15);
 			this.label1.TabIndex = 22;
 			this.label1.Text = "Pixel Tree:";
 			// 
@@ -164,7 +164,7 @@
 			this.checkBoxPixelTree.AutoSize = true;
 			this.checkBoxPixelTree.Checked = true;
 			this.checkBoxPixelTree.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBoxPixelTree.Location = new System.Drawing.Point(98, 82);
+			this.checkBoxPixelTree.Location = new System.Drawing.Point(114, 95);
 			this.checkBoxPixelTree.Name = "checkBoxPixelTree";
 			this.checkBoxPixelTree.Size = new System.Drawing.Size(15, 14);
 			this.checkBoxPixelTree.TabIndex = 2;
@@ -173,9 +173,10 @@
 			// 
 			// Megatree
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(295, 187);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(344, 217);
 			this.Controls.Add(this.checkBoxPixelTree);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numericUpDownStrings);
@@ -187,10 +188,10 @@
 			this.Controls.Add(this.textBoxTreeName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(311, 226);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(311, 226);
+			this.MinimumSize = new System.Drawing.Size(360, 255);
 			this.Name = "Megatree";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

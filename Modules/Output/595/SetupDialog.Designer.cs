@@ -41,24 +41,24 @@
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(300, 64);
+			this.panel1.Size = new System.Drawing.Size(350, 74);
 			this.panel1.TabIndex = 0;
 			// 
 			// textBoxPortAddress
 			// 
 			this.textBoxPortAddress.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxPortAddress.Location = new System.Drawing.Point(197, 16);
+			this.textBoxPortAddress.Location = new System.Drawing.Point(230, 18);
 			this.textBoxPortAddress.MaxLength = 4;
 			this.textBoxPortAddress.Name = "textBoxPortAddress";
-			this.textBoxPortAddress.Size = new System.Drawing.Size(63, 20);
+			this.textBoxPortAddress.Size = new System.Drawing.Size(73, 23);
 			this.textBoxPortAddress.TabIndex = 1;
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(24, 19);
+			this.label1.Location = new System.Drawing.Point(28, 22);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(152, 13);
+			this.label1.Size = new System.Drawing.Size(168, 15);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Parallel port data address (hex)";
 			// 
@@ -66,9 +66,9 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(131, 69);
+			this.buttonOK.Location = new System.Drawing.Point(153, 80);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 1;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -80,9 +80,9 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(212, 69);
+			this.buttonCancel.Location = new System.Drawing.Point(247, 80);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 2;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -91,17 +91,17 @@
 			// 
 			// SetupDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(303, 115);
+			this.AutoSize = true;
+			this.ClientSize = new System.Drawing.Size(353, 134);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.Controls.Add(this.panel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(319, 154);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(319, 154);
+			this.MinimumSize = new System.Drawing.Size(369, 172);
 			this.Name = "SetupDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Olsen 595 Configuration";

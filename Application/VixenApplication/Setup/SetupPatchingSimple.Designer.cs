@@ -95,7 +95,7 @@ namespace VixenApplication.Setup
 			this.groupBoxElements.Controls.Add(this.buttonUnpatchElements);
 			this.groupBoxElements.Location = new System.Drawing.Point(3, 3);
 			this.groupBoxElements.Name = "groupBoxElements";
-			this.groupBoxElements.Size = new System.Drawing.Size(220, 284);
+			this.groupBoxElements.Size = new System.Drawing.Size(220, 257);
 			this.groupBoxElements.TabIndex = 0;
 			this.groupBoxElements.TabStop = false;
 			this.groupBoxElements.Text = "Selected Elements";
@@ -120,7 +120,7 @@ namespace VixenApplication.Setup
 			this.panel2.Controls.Add(this.label5);
 			this.panel2.Location = new System.Drawing.Point(6, 18);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(208, 203);
+			this.panel2.Size = new System.Drawing.Size(208, 189);
 			this.panel2.TabIndex = 23;
 			// 
 			// labelFilterCount
@@ -264,7 +264,7 @@ namespace VixenApplication.Setup
 			// buttonUnpatchElements
 			// 
 			this.buttonUnpatchElements.AutoSize = true;
-			this.buttonUnpatchElements.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchElements.Location = new System.Drawing.Point(49, 213);
 			this.buttonUnpatchElements.Name = "buttonUnpatchElements";
 			this.buttonUnpatchElements.Size = new System.Drawing.Size(120, 25);
 			this.buttonUnpatchElements.TabIndex = 22;
@@ -294,7 +294,7 @@ namespace VixenApplication.Setup
 			this.groupBoxControllers.Controls.Add(this.buttonUnpatchControllers);
 			this.groupBoxControllers.Location = new System.Drawing.Point(229, 3);
 			this.groupBoxControllers.Name = "groupBoxControllers";
-			this.groupBoxControllers.Size = new System.Drawing.Size(219, 284);
+			this.groupBoxControllers.Size = new System.Drawing.Size(214, 257);
 			this.groupBoxControllers.TabIndex = 1;
 			this.groupBoxControllers.TabStop = false;
 			this.groupBoxControllers.Text = "Selected Controllers";
@@ -315,9 +315,9 @@ namespace VixenApplication.Setup
 			this.panel1.Controls.Add(this.label16);
 			this.panel1.Controls.Add(this.label20);
 			this.panel1.Controls.Add(this.label21);
-			this.panel1.Location = new System.Drawing.Point(12, 18);
+			this.panel1.Location = new System.Drawing.Point(7, 18);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(201, 203);
+			this.panel1.Size = new System.Drawing.Size(201, 189);
 			this.panel1.TabIndex = 34;
 			// 
 			// labelLastOutput
@@ -438,7 +438,7 @@ namespace VixenApplication.Setup
 			// buttonUnpatchControllers
 			// 
 			this.buttonUnpatchControllers.AutoSize = true;
-			this.buttonUnpatchControllers.Location = new System.Drawing.Point(50, 240);
+			this.buttonUnpatchControllers.Location = new System.Drawing.Point(54, 213);
 			this.buttonUnpatchControllers.Name = "buttonUnpatchControllers";
 			this.buttonUnpatchControllers.Size = new System.Drawing.Size(120, 25);
 			this.buttonUnpatchControllers.TabIndex = 28;
@@ -469,7 +469,7 @@ namespace VixenApplication.Setup
 			this.groupBoxPatching.Controls.Add(this.labelPatchWarning);
 			this.groupBoxPatching.Controls.Add(this.labelPatchSummary);
 			this.groupBoxPatching.Controls.Add(this.buttonDoPatching);
-			this.groupBoxPatching.Location = new System.Drawing.Point(3, 293);
+			this.groupBoxPatching.Location = new System.Drawing.Point(3, 266);
 			this.groupBoxPatching.Name = "groupBoxPatching";
 			this.groupBoxPatching.Size = new System.Drawing.Size(445, 231);
 			this.groupBoxPatching.TabIndex = 2;
@@ -626,17 +626,18 @@ namespace VixenApplication.Setup
 			this.tableLayoutPanel1.RowCount = 2;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 527);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 500);
 			this.tableLayoutPanel1.TabIndex = 34;
 			// 
 			// SetupPatchingSimple
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.DoubleBuffered = true;
 			this.Name = "SetupPatchingSimple";
-			this.Size = new System.Drawing.Size(451, 550);
+			this.Size = new System.Drawing.Size(451, 507);
 			this.Load += new System.EventHandler(this.SetupPatchingSimple_Load);
 			this.groupBoxElements.ResumeLayout(false);
 			this.groupBoxElements.PerformLayout();

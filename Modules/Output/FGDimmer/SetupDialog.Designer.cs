@@ -61,9 +61,9 @@ namespace VixenModules.Output.FGDimmer
 			this.groupBox1.Controls.Add(this.checkBoxModule2);
 			this.groupBox1.Controls.Add(this.comboBoxModule1);
 			this.groupBox1.Controls.Add(this.checkBoxModule1);
-			this.groupBox1.Location = new System.Drawing.Point(12, 118);
+			this.groupBox1.Location = new System.Drawing.Point(14, 136);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(285, 140);
+			this.groupBox1.Size = new System.Drawing.Size(332, 162);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Modules";
@@ -75,18 +75,18 @@ namespace VixenModules.Output.FGDimmer
 			this.comboBoxModule4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxModule4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxModule4.FormattingEnabled = true;
-			this.comboBoxModule4.Location = new System.Drawing.Point(216, 98);
+			this.comboBoxModule4.Location = new System.Drawing.Point(252, 113);
 			this.comboBoxModule4.Name = "comboBoxModule4";
-			this.comboBoxModule4.Size = new System.Drawing.Size(56, 21);
+			this.comboBoxModule4.Size = new System.Drawing.Size(65, 24);
 			this.comboBoxModule4.TabIndex = 7;
 			this.comboBoxModule4.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// checkBoxModule4
 			// 
 			this.checkBoxModule4.AutoSize = true;
-			this.checkBoxModule4.Location = new System.Drawing.Point(18, 100);
+			this.checkBoxModule4.Location = new System.Drawing.Point(21, 115);
 			this.checkBoxModule4.Name = "checkBoxModule4";
-			this.checkBoxModule4.Size = new System.Drawing.Size(192, 17);
+			this.checkBoxModule4.Size = new System.Drawing.Size(213, 19);
 			this.checkBoxModule4.TabIndex = 6;
 			this.checkBoxModule4.Text = "Using module 4, starting at channel";
 			this.checkBoxModule4.UseVisualStyleBackColor = true;
@@ -97,18 +97,18 @@ namespace VixenModules.Output.FGDimmer
 			this.comboBoxModule3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxModule3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxModule3.FormattingEnabled = true;
-			this.comboBoxModule3.Location = new System.Drawing.Point(216, 75);
+			this.comboBoxModule3.Location = new System.Drawing.Point(252, 87);
 			this.comboBoxModule3.Name = "comboBoxModule3";
-			this.comboBoxModule3.Size = new System.Drawing.Size(56, 21);
+			this.comboBoxModule3.Size = new System.Drawing.Size(65, 24);
 			this.comboBoxModule3.TabIndex = 5;
 			this.comboBoxModule3.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// checkBoxModule3
 			// 
 			this.checkBoxModule3.AutoSize = true;
-			this.checkBoxModule3.Location = new System.Drawing.Point(18, 77);
+			this.checkBoxModule3.Location = new System.Drawing.Point(21, 89);
 			this.checkBoxModule3.Name = "checkBoxModule3";
-			this.checkBoxModule3.Size = new System.Drawing.Size(192, 17);
+			this.checkBoxModule3.Size = new System.Drawing.Size(213, 19);
 			this.checkBoxModule3.TabIndex = 4;
 			this.checkBoxModule3.Text = "Using module 3, starting at channel";
 			this.checkBoxModule3.UseVisualStyleBackColor = true;
@@ -119,18 +119,18 @@ namespace VixenModules.Output.FGDimmer
 			this.comboBoxModule2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxModule2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxModule2.FormattingEnabled = true;
-			this.comboBoxModule2.Location = new System.Drawing.Point(216, 52);
+			this.comboBoxModule2.Location = new System.Drawing.Point(252, 60);
 			this.comboBoxModule2.Name = "comboBoxModule2";
-			this.comboBoxModule2.Size = new System.Drawing.Size(56, 21);
+			this.comboBoxModule2.Size = new System.Drawing.Size(65, 24);
 			this.comboBoxModule2.TabIndex = 3;
 			this.comboBoxModule2.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// checkBoxModule2
 			// 
 			this.checkBoxModule2.AutoSize = true;
-			this.checkBoxModule2.Location = new System.Drawing.Point(18, 53);
+			this.checkBoxModule2.Location = new System.Drawing.Point(21, 61);
 			this.checkBoxModule2.Name = "checkBoxModule2";
-			this.checkBoxModule2.Size = new System.Drawing.Size(192, 17);
+			this.checkBoxModule2.Size = new System.Drawing.Size(213, 19);
 			this.checkBoxModule2.TabIndex = 2;
 			this.checkBoxModule2.Text = "Using module 2, starting at channel";
 			this.checkBoxModule2.UseVisualStyleBackColor = true;
@@ -141,18 +141,18 @@ namespace VixenModules.Output.FGDimmer
 			this.comboBoxModule1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.comboBoxModule1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.comboBoxModule1.FormattingEnabled = true;
-			this.comboBoxModule1.Location = new System.Drawing.Point(216, 29);
+			this.comboBoxModule1.Location = new System.Drawing.Point(252, 33);
 			this.comboBoxModule1.Name = "comboBoxModule1";
-			this.comboBoxModule1.Size = new System.Drawing.Size(56, 21);
+			this.comboBoxModule1.Size = new System.Drawing.Size(65, 24);
 			this.comboBoxModule1.TabIndex = 1;
 			this.comboBoxModule1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			// 
 			// checkBoxModule1
 			// 
 			this.checkBoxModule1.AutoSize = true;
-			this.checkBoxModule1.Location = new System.Drawing.Point(18, 31);
+			this.checkBoxModule1.Location = new System.Drawing.Point(21, 36);
 			this.checkBoxModule1.Name = "checkBoxModule1";
-			this.checkBoxModule1.Size = new System.Drawing.Size(192, 17);
+			this.checkBoxModule1.Size = new System.Drawing.Size(213, 19);
 			this.checkBoxModule1.TabIndex = 0;
 			this.checkBoxModule1.Text = "Using module 1, starting at channel";
 			this.checkBoxModule1.UseVisualStyleBackColor = true;
@@ -161,9 +161,9 @@ namespace VixenModules.Output.FGDimmer
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(141, 359);
+			this.buttonOK.Location = new System.Drawing.Point(164, 414);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 3;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -175,9 +175,9 @@ namespace VixenModules.Output.FGDimmer
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(222, 359);
+			this.buttonCancel.Location = new System.Drawing.Point(259, 414);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 4;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -190,9 +190,9 @@ namespace VixenModules.Output.FGDimmer
 			this.groupBox2.Controls.Add(this.lblSettingsLbl);
 			this.groupBox2.Controls.Add(this.checkBoxHoldPort);
 			this.groupBox2.Controls.Add(this.buttonSerialSetup);
-			this.groupBox2.Location = new System.Drawing.Point(12, 6);
+			this.groupBox2.Location = new System.Drawing.Point(14, 7);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(285, 105);
+			this.groupBox2.Size = new System.Drawing.Size(332, 121);
 			this.groupBox2.TabIndex = 0;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Port";
@@ -201,35 +201,35 @@ namespace VixenModules.Output.FGDimmer
 			// lblSettings
 			// 
 			this.lblSettings.AutoSize = true;
-			this.lblSettings.Location = new System.Drawing.Point(71, 14);
+			this.lblSettings.Location = new System.Drawing.Point(83, 16);
 			this.lblSettings.Name = "lblSettings";
-			this.lblSettings.Size = new System.Drawing.Size(198, 13);
+			this.lblSettings.Size = new System.Drawing.Size(209, 15);
 			this.lblSettings.TabIndex = 7;
 			this.lblSettings.Text = "COM1: 115200, Space, 8, OnePointFive";
 			// 
 			// lblSettingsLbl
 			// 
 			this.lblSettingsLbl.AutoSize = true;
-			this.lblSettingsLbl.Location = new System.Drawing.Point(13, 14);
+			this.lblSettingsLbl.Location = new System.Drawing.Point(15, 16);
 			this.lblSettingsLbl.Name = "lblSettingsLbl";
-			this.lblSettingsLbl.Size = new System.Drawing.Size(51, 13);
+			this.lblSettingsLbl.Size = new System.Drawing.Size(59, 15);
 			this.lblSettingsLbl.TabIndex = 6;
 			this.lblSettingsLbl.Text = "Currently:";
 			// 
 			// checkBoxHoldPort
 			// 
-			this.checkBoxHoldPort.Location = new System.Drawing.Point(16, 66);
+			this.checkBoxHoldPort.Location = new System.Drawing.Point(19, 76);
 			this.checkBoxHoldPort.Name = "checkBoxHoldPort";
-			this.checkBoxHoldPort.Size = new System.Drawing.Size(255, 32);
+			this.checkBoxHoldPort.Size = new System.Drawing.Size(297, 37);
 			this.checkBoxHoldPort.TabIndex = 1;
 			this.checkBoxHoldPort.Text = "Hold port open during the duration of the sequence execution.";
 			this.checkBoxHoldPort.UseVisualStyleBackColor = true;
 			// 
 			// buttonSerialSetup
 			// 
-			this.buttonSerialSetup.Location = new System.Drawing.Point(107, 38);
+			this.buttonSerialSetup.Location = new System.Drawing.Point(125, 44);
 			this.buttonSerialSetup.Name = "buttonSerialSetup";
-			this.buttonSerialSetup.Size = new System.Drawing.Size(75, 23);
+			this.buttonSerialSetup.Size = new System.Drawing.Size(87, 27);
 			this.buttonSerialSetup.TabIndex = 0;
 			this.buttonSerialSetup.Text = "Serial Setup";
 			this.buttonSerialSetup.UseVisualStyleBackColor = true;
@@ -241,9 +241,9 @@ namespace VixenModules.Output.FGDimmer
 			// 
 			this.groupBox3.Controls.Add(this.radioButtonAC);
 			this.groupBox3.Controls.Add(this.radioButtonPWM);
-			this.groupBox3.Location = new System.Drawing.Point(12, 264);
+			this.groupBox3.Location = new System.Drawing.Point(14, 305);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(285, 90);
+			this.groupBox3.Size = new System.Drawing.Size(332, 104);
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Operation";
@@ -252,9 +252,9 @@ namespace VixenModules.Output.FGDimmer
 			// radioButtonAC
 			// 
 			this.radioButtonAC.AutoSize = true;
-			this.radioButtonAC.Location = new System.Drawing.Point(33, 56);
+			this.radioButtonAC.Location = new System.Drawing.Point(38, 65);
 			this.radioButtonAC.Name = "radioButtonAC";
-			this.radioButtonAC.Size = new System.Drawing.Size(86, 17);
+			this.radioButtonAC.Size = new System.Drawing.Size(95, 19);
 			this.radioButtonAC.TabIndex = 1;
 			this.radioButtonAC.TabStop = true;
 			this.radioButtonAC.Text = "AC operation";
@@ -263,9 +263,9 @@ namespace VixenModules.Output.FGDimmer
 			// radioButtonPWM
 			// 
 			this.radioButtonPWM.AutoSize = true;
-			this.radioButtonPWM.Location = new System.Drawing.Point(33, 27);
+			this.radioButtonPWM.Location = new System.Drawing.Point(38, 31);
 			this.radioButtonPWM.Name = "radioButtonPWM";
-			this.radioButtonPWM.Size = new System.Drawing.Size(99, 17);
+			this.radioButtonPWM.Size = new System.Drawing.Size(108, 19);
 			this.radioButtonPWM.TabIndex = 0;
 			this.radioButtonPWM.TabStop = true;
 			this.radioButtonPWM.Text = "PWM operation";
@@ -274,10 +274,11 @@ namespace VixenModules.Output.FGDimmer
 			// SetupDialog
 			// 
 			this.AcceptButton = this.buttonOK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(313, 405);
+			this.ClientSize = new System.Drawing.Size(365, 468);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.buttonCancel);
@@ -285,8 +286,7 @@ namespace VixenModules.Output.FGDimmer
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximumSize = new System.Drawing.Size(329, 444);
-			this.MinimumSize = new System.Drawing.Size(329, 444);
+			this.MinimumSize = new System.Drawing.Size(381, 506);
 			this.Name = "SetupDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "FG Dimmer Configuration";

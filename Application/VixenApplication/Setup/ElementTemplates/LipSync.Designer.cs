@@ -41,9 +41,9 @@
 			this.textBoxTreeName.BackColor = System.Drawing.SystemColors.Control;
 			this.textBoxTreeName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxTreeName.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.textBoxTreeName.Location = new System.Drawing.Point(109, 23);
+			this.textBoxTreeName.Location = new System.Drawing.Point(127, 27);
 			this.textBoxTreeName.Name = "textBoxTreeName";
-			this.textBoxTreeName.Size = new System.Drawing.Size(174, 20);
+			this.textBoxTreeName.Size = new System.Drawing.Size(203, 23);
 			this.textBoxTreeName.TabIndex = 14;
 			this.textBoxTreeName.Text = "LipSync";
 			// 
@@ -51,9 +51,9 @@
 			// 
 			this.label6.AutoSize = true;
 			this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label6.Location = new System.Drawing.Point(12, 25);
+			this.label6.Location = new System.Drawing.Point(14, 29);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(79, 13);
+			this.label6.Size = new System.Drawing.Size(88, 15);
 			this.label6.TabIndex = 13;
 			this.label6.Text = "Element Name:";
 			// 
@@ -67,9 +67,9 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(193, 72);
+			this.buttonCancel.Location = new System.Drawing.Point(225, 83);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(90, 25);
+			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 20;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -86,9 +86,9 @@
 			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOk.Location = new System.Drawing.Point(97, 72);
+			this.buttonOk.Location = new System.Drawing.Point(113, 83);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(90, 25);
+			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 19;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -97,19 +97,20 @@
 			// 
 			// LipSync
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.ClientSize = new System.Drawing.Size(295, 109);
+			this.ClientSize = new System.Drawing.Size(344, 127);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.textBoxTreeName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(311, 148);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(311, 148);
+			this.MinimumSize = new System.Drawing.Size(360, 165);
 			this.Name = "LipSync";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;

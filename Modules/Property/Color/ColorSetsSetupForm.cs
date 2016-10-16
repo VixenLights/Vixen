@@ -24,7 +24,7 @@ namespace VixenModules.Property.Color
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonAddColor.Image = Tools.GetIcon(Resources.add, iconSize);
@@ -33,12 +33,23 @@ namespace VixenModules.Property.Color
 			buttonAddColorSet.Text = "";
 			buttonRemoveColorSet.Image = Tools.GetIcon(Resources.delete, iconSize);
 			buttonRemoveColorSet.Text = "";
+			ThemeUpdateControls.UpdateControls(this);
+			
 		}
 
 		private void ColorSetsSetupForm_Load(object sender, EventArgs e)
 		{
 			UpdateColorSetsList();
 			UpdateGroupBoxWithColorSet(null, null);
+		}
+
+		private void ResizeColumnHeaders()
+		{
+
+			for (int i = 0; i < listViewColorSets.Columns.Count; i++)
+			{
+				listViewColorSets.Columns[i].Width = listViewColorSets.ClientRectangle.Width;
+			}
 		}
 
 		private void UpdateColorSetsList()
@@ -49,6 +60,7 @@ namespace VixenModules.Property.Color
 				listViewColorSets.Items.Add(colorSetName);
 			}
 			listViewColorSets.EndUpdate();
+			ResizeColumnHeaders();
 		}
 
 		private void UpdateGroupBoxWithColorSet(string name, ColorSet cs)

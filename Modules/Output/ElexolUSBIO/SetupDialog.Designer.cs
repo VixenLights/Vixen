@@ -46,9 +46,9 @@ namespace VixenModules.Output.ElexolUSBIO
 			// buttonOK
 			// 
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(130, 198);
+			this.buttonOK.Location = new System.Drawing.Point(152, 228);
 			this.buttonOK.Name = "buttonOK";
-			this.buttonOK.Size = new System.Drawing.Size(75, 23);
+			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 2;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
@@ -59,9 +59,9 @@ namespace VixenModules.Output.ElexolUSBIO
 			// buttonCancel
 			// 
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(211, 198);
+			this.buttonCancel.Location = new System.Drawing.Point(246, 228);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 3;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -71,9 +71,9 @@ namespace VixenModules.Output.ElexolUSBIO
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(11, 25);
+			this.label2.Location = new System.Drawing.Point(13, 29);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(152, 13);
+			this.label2.Size = new System.Drawing.Size(178, 15);
 			this.label2.TabIndex = 5;
 			this.label2.Text = "Minimum \'ON\' Intensity (0-255):";
 			// 
@@ -82,9 +82,9 @@ namespace VixenModules.Output.ElexolUSBIO
 			this.groupBox1.Controls.Add(this.lblSettings);
 			this.groupBox1.Controls.Add(this.lblSettingsLbl);
 			this.groupBox1.Controls.Add(this.buttonPortSetup);
-			this.groupBox1.Location = new System.Drawing.Point(15, 12);
+			this.groupBox1.Location = new System.Drawing.Point(17, 14);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(270, 64);
+			this.groupBox1.Size = new System.Drawing.Size(315, 74);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Serial Port Settings";
@@ -93,26 +93,26 @@ namespace VixenModules.Output.ElexolUSBIO
 			// lblSettings
 			// 
 			this.lblSettings.AutoSize = true;
-			this.lblSettings.Location = new System.Drawing.Point(65, 16);
+			this.lblSettings.Location = new System.Drawing.Point(76, 18);
 			this.lblSettings.Name = "lblSettings";
-			this.lblSettings.Size = new System.Drawing.Size(198, 13);
+			this.lblSettings.Size = new System.Drawing.Size(209, 15);
 			this.lblSettings.TabIndex = 1;
 			this.lblSettings.Text = "COM1: 115200, Space, 8, OnePointFive";
 			// 
 			// lblSettingsLbl
 			// 
 			this.lblSettingsLbl.AutoSize = true;
-			this.lblSettingsLbl.Location = new System.Drawing.Point(8, 16);
+			this.lblSettingsLbl.Location = new System.Drawing.Point(9, 18);
 			this.lblSettingsLbl.Name = "lblSettingsLbl";
-			this.lblSettingsLbl.Size = new System.Drawing.Size(51, 13);
+			this.lblSettingsLbl.Size = new System.Drawing.Size(59, 15);
 			this.lblSettingsLbl.TabIndex = 6;
 			this.lblSettingsLbl.Text = "Currently:";
 			// 
 			// buttonPortSetup
 			// 
-			this.buttonPortSetup.Location = new System.Drawing.Point(6, 35);
+			this.buttonPortSetup.Location = new System.Drawing.Point(7, 40);
 			this.buttonPortSetup.Name = "buttonPortSetup";
-			this.buttonPortSetup.Size = new System.Drawing.Size(142, 23);
+			this.buttonPortSetup.Size = new System.Drawing.Size(166, 27);
 			this.buttonPortSetup.TabIndex = 0;
 			this.buttonPortSetup.Text = "Setup/Change Serial Port";
 			this.buttonPortSetup.UseVisualStyleBackColor = true;
@@ -125,9 +125,9 @@ namespace VixenModules.Output.ElexolUSBIO
 			this.groupBox2.Controls.Add(this.lblMinIntensity);
 			this.groupBox2.Controls.Add(this.sliderMinIntensity);
 			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Location = new System.Drawing.Point(15, 87);
+			this.groupBox2.Location = new System.Drawing.Point(17, 100);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(270, 102);
+			this.groupBox2.Size = new System.Drawing.Size(315, 118);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Pixel";
@@ -136,20 +136,20 @@ namespace VixenModules.Output.ElexolUSBIO
 			// lblMinIntensity
 			// 
 			this.lblMinIntensity.AutoSize = true;
-			this.lblMinIntensity.Location = new System.Drawing.Point(128, 73);
+			this.lblMinIntensity.Location = new System.Drawing.Point(149, 84);
 			this.lblMinIntensity.Name = "lblMinIntensity";
-			this.lblMinIntensity.Size = new System.Drawing.Size(35, 13);
+			this.lblMinIntensity.Size = new System.Drawing.Size(38, 15);
 			this.lblMinIntensity.TabIndex = 7;
 			this.lblMinIntensity.Text = "label3";
 			// 
 			// sliderMinIntensity
 			// 
 			this.sliderMinIntensity.LargeChange = 16;
-			this.sliderMinIntensity.Location = new System.Drawing.Point(14, 41);
+			this.sliderMinIntensity.Location = new System.Drawing.Point(16, 47);
 			this.sliderMinIntensity.Maximum = 255;
 			this.sliderMinIntensity.Minimum = 1;
 			this.sliderMinIntensity.Name = "sliderMinIntensity";
-			this.sliderMinIntensity.Size = new System.Drawing.Size(249, 45);
+			this.sliderMinIntensity.Size = new System.Drawing.Size(290, 45);
 			this.sliderMinIntensity.TabIndex = 0;
 			this.sliderMinIntensity.TickFrequency = 16;
 			this.sliderMinIntensity.Value = 1;
@@ -157,19 +157,19 @@ namespace VixenModules.Output.ElexolUSBIO
 			// 
 			// SetupDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoSize = true;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(297, 241);
+			this.ClientSize = new System.Drawing.Size(346, 279);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(313, 280);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(313, 280);
+			this.MinimumSize = new System.Drawing.Size(362, 317);
 			this.Name = "SetupDialog";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
