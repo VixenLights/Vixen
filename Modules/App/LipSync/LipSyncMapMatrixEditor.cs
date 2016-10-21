@@ -482,9 +482,9 @@ namespace VixenModules.App.LipSyncApp
             Color newColor =
                 (e.Button == MouseButtons.Left) ? lipSyncMapColorCtrl1.Color : Color.Black;
             
-            LipSyncMapItem item =
-                FindRenderMapItem(e.RowIndex, e.ColumnIndex);
-                dataGridView1.CurrentCell.Value = (item == null) ? Color.Gray : newColor;
+            LipSyncMapItem item = FindRenderMapItem(e.RowIndex, e.ColumnIndex);
+			item.PhonemeList[CurrentPhonemeString] = (newColor != Color.Black);
+			dataGridView1.CurrentCell.Value = (item == null) ? Color.Gray : newColor;
         }
 
         private void colsUpDown_ValueChanged(object sender, EventArgs e)

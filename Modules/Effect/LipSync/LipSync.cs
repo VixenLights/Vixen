@@ -83,7 +83,7 @@ namespace VixenModules.Effect.LipSync
                                 var level = new SetLevel.SetLevel();
                                 level.TargetNodes = new ElementNode[] { element };
                                 level.Color = mapData.ConfiguredColor(element.Name, phoneme, item);
-                                level.IntensityLevel = mapData.ConfiguredIntensity(element.Name, phoneme, item);
+	                            level.IntensityLevel = 1.0;// mapData.ConfiguredIntensity(element.Name, phoneme, item);
                                 level.TimeSpan = TimeSpan;
                                 result = level.Render();
                                 _elementData.Add(result);
