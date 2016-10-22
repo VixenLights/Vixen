@@ -25,7 +25,13 @@ namespace Vixen.IO.Xml
 			// if there was an error loading the file, back up the 'bad' one, so the user can manually recover it later if needed.
 			// This may not be needed in all cases, since this class is quite generic, but it will do for now. Can be refactored later if needed.
 			if (File.Exists(filePath)) {
-				File.Copy(filePath, string.Format("{0}.{1}", filePath, System.DateTime.Now.ToFileTime()));
+				File.Copy(filePath, string.Format("{0}.corrupt.{1}", filePath, System.DateTime.Now.ToFileTime()));
+			}
+			
+			var backupFile = string.Format("{0}_{1}", filePath, "backup");
+			if (File.Exists(backupFile))
+			{
+				File.Copy(backupFile, string.Format("{0}.protected.{1}", filePath, System.DateTime.Now.ToFileTime()));
 			}
 			return null;
 		}
