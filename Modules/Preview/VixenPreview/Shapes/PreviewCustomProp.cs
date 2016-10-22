@@ -228,13 +228,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
-				Point boundsTopLeft = new Point();
-				boundsTopLeft.X = Math.Min(_topLeft.X, _bottomRight.X);
-				boundsTopLeft.Y = Math.Min(_topLeft.Y, _bottomRight.Y);
+				Point boundsTopLeft = new Point
+				{
+					X = Math.Min(_topLeft.X, _bottomRight.X),
+					Y = Math.Min(_topLeft.Y, _bottomRight.Y)
+				};
 
-				Point bottomRight = new Point();
-				bottomRight.X = Math.Max(_topLeft.X, _bottomRight.X);
-				bottomRight.Y = Math.Max(_topLeft.Y, _bottomRight.Y);
+				Point bottomRight = new Point
+				{
+					X = Math.Max(_topLeft.X, _bottomRight.X),
+					Y = Math.Max(_topLeft.Y, _bottomRight.Y)
+				};
 
 				Rectangle rect = new Rectangle(boundsTopLeft, new Size(bottomRight.X - boundsTopLeft.X, bottomRight.Y - boundsTopLeft.Y));
 
@@ -286,8 +290,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						var cp = p as CustomPreviewPixel;
 						if (cp != null)
 						{
-							var xF = (float) cp.OriginX*wRatio;
-							var yF = (float) cp.OriginY*hRatio;
+							var xF = cp.OriginX*wRatio;
+							var yF = cp.OriginY*hRatio;
 							cp.X = (int) xF + _topLeft.X;
 							cp.Y = (int) yF + _topLeft.Y;
 						}

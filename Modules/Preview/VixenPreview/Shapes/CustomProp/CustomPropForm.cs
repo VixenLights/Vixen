@@ -2,22 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Common.Controls.ColorManagement.ColorModels;
-using Common.Controls.ColorManagement.ColorPicker;
-using VixenModules.Preview.VixenPreview.Shapes;
-using Common.Resources.Properties;
 using Common.Controls.Theme;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using Vixen.Sys;
-using Common.Controls;
+using Common.Resources.Properties;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
@@ -26,8 +20,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public CustomPropForm()
 		{
 			InitializeComponent();
-			this.DoubleBuffered = true;
-			this.textBox1.Enabled = true;
+			DoubleBuffered = true;
+			textBox1.Enabled = true;
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
@@ -41,28 +35,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			if (File.Exists(fileName))
 			{
 				_fileName = fileName;
-				this.textBox1.Enabled = false;
+				textBox1.Enabled = false;
 
 
 			}
-			else this.textBox1.Enabled = true;
+			else textBox1.Enabled = true;
 			Icon = Resources.Icon_Vixen3;
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 
 			ThemeUpdateControls.UpdateControls(this);
 		}
-		private string _fileName = null;
-		const string CHANNEL_TEMPLATE = "String_{0}";
+		private readonly string _fileName;
+		private const string ChannelTemplate = "String_{0}";
 		#region Private Variables
 		private Prop _prop;
 		private static readonly string PropDirectory = PreviewTools.PropsFolder;//Path.Combine(new FileInfo(Application.ExecutablePath).DirectoryName, "Props");
-		private const string PROP_EXTENSION = ".prop";
+		private const string PropExtension = ".prop";
 
 
 		#endregion
 		#region Properties
-		public bool BackgroundImageMaintainAspect { get { return this.chkMaintainAspect.Checked; } set { this.chkMaintainAspect.Checked = value; } }
+		public bool BackgroundImageMaintainAspect { get { return chkMaintainAspect.Checked; } set { chkMaintainAspect.Checked = value; } }
 		public int BackgroundImageOpacity { get { return _prop.BackgroundImageOpacity; } set { _prop.BackgroundImageOpacity = value; } }
 
 		public string BackgroundImageFileName
@@ -75,11 +69,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			{
 				if (_prop.BackgroundImage != value)
 				{
-					if (System.IO.File.Exists(value))
+					if (File.Exists(value))
 						BackgroundImage = Image.FromFile(value);
 				}
 
-				this.txtBackgroundImage.Text = _prop.BackgroundImage = value;
+				txtBackgroundImage.Text = _prop.BackgroundImage = value;
 
 			}
 		}
@@ -107,7 +101,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private void SaveProp(string Name)
 		{
 			if (!Directory.Exists(PropDirectory)) Directory.CreateDirectory(PropDirectory);
-			var fileName = Path.Combine(PropDirectory, Name + PROP_EXTENSION);
+			var fileName = Path.Combine(PropDirectory, Name + PropExtension);
 
 			_prop.ToFile(fileName);
 		}
@@ -120,40 +114,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void btnSave_Click(object sender, EventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(this.textBox1.Text))
+			if (!string.IsNullOrWhiteSpace(textBox1.Text))
 			{
-				_prop.Name = this.textBox1.Text;
+				_prop.Name = textBox1.Text;
 				SaveProp(_prop.Name);
-				this.Close();
-			}
-		}
-
-
-
-		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			PropChannel item = null;// listBox1.SelectedItem as PropChannel;
-			if (item == null)
-			{
-				_prop.SelectedChannelId = null;
-				_prop.SelectedChannelName = null;
-			}
-			else
-			{
-				_prop.SelectedChannelId = item.Id;
-				_prop.SelectedChannelName = item.Name;
+				Close();
 			}
 		}
 
 		private void CustomPropForm_Load(object sender, EventArgs e)
 		{
-			this.trkImageOpacity.Value = 100;
-			this.textBox1.Text = "[!Rename Me!]";
+			trkImageOpacity.Value = 100;
+			textBox1.Text = @"[!Rename Me!]";
 			if (_fileName == null)
 			{
 				_prop = new Prop();
-				this.txtBackgroundImage.Text = null;
-				this.trkImageOpacity.Value = 100;
+				txtBackgroundImage.Text = null;
+				trkImageOpacity.Value = 100;
 
 			}
 			else
@@ -165,11 +142,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				{
 					_prop = new Prop(prop);
 
-					this.textBox1.Text = _prop.Name;
+					textBox1.Text = _prop.Name;
 
 
-					this.BackgroundImageFileName = _prop.BackgroundImage;
-					this.trkImageOpacity.Value = _prop.BackgroundImageOpacity;
+					BackgroundImageFileName = _prop.BackgroundImage;
+					trkImageOpacity.Value = _prop.BackgroundImageOpacity;
 				}
 
 			}
@@ -186,7 +163,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			treeViewChannels.BeginUpdate();
 			treeViewChannels.Nodes.Clear();
 
-			foreach (var channel in this.Channels)
+			foreach (var channel in Channels)
 			{
 				AddNodeToTree(treeViewChannels.Nodes, channel);
 			}
@@ -240,7 +217,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			if (addedNode == null)
 				addedNode = new TreeNode();
 
-			addedNode.Name = channel.Id.ToString();
+			addedNode.Name = channel.Id;
 			addedNode.Text = channel.Name;
 			addedNode.Tag = channel;
 
@@ -258,7 +235,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				dlg.DefaultExt = ".prop";
 				dlg.InitialDirectory = PropDirectory;
 				var results = dlg.ShowDialog();
-				if (results == System.Windows.Forms.DialogResult.OK)
+				if (results == DialogResult.OK)
 				{
 
 
@@ -268,7 +245,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					{
 						_prop = new Prop(prop);
 
-						this.textBox1.Text = _prop.Name;
+						textBox1.Text = _prop.Name;
 						//listBox1.Items.Clear();
 						//listBox1.Items.AddRange(_prop.Channels.OrderBy(o => o.ID).ToArray());
 					}
@@ -298,9 +275,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				dlg.CheckFileExists = true;
 				dlg.Filter = GetImageFilter();
 				var result = dlg.ShowDialog();
-				if (result == System.Windows.Forms.DialogResult.OK)
+				if (result == DialogResult.OK)
 				{
-					this.BackgroundImageFileName = dlg.FileName;
+					BackgroundImageFileName = dlg.FileName;
 					DrawPreview();
 				}
 			}
@@ -321,13 +298,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Image img = image;
 
 
-			float sb = (float)value / 255F;
+			float sb = value / 255F;
 
 			float[][] colorMatrixElements =
 				  {
-                        new float[] {sb,  0,  0,  0, 0},
-                        new float[] {0,  sb,  0,  0, 0},
-                        new float[] {0,  0,  sb,  0, 0},
+                        new[] {sb,  0,  0,  0, 0},
+                        new[] {0,  sb,  0,  0, 0},
+                        new[] {0,  0,  sb,  0, 0},
                         new float[] {0,  0,  0,  1, 0},
                         new float[] {0,  0,  0,  0, 1}
 
@@ -349,34 +326,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			return img;
 		}
-		public static Color getDominantColor(Bitmap bmp)
-		{
-			//Used for tally
-			int r = 0;
-			int g = 0;
-			int b = 0;
+		//public static Color GetDominantColor(Bitmap bmp)
+		//{
+		//	//Used for tally
+		//	int r = 0;
+		//	int g = 0;
+		//	int b = 0;
 
-			int total = 0;
+		//	int total = 0;
 
-			for (int x = 0; x < bmp.Width; x++)
-			{
-				for (int y = 0; y < bmp.Height; y++)
-				{
-					Color clr = bmp.GetPixel(x, y);
-					r += clr.R;
-					g += clr.G;
-					b += clr.B;
-					total++;
-				}
-			}
+		//	for (int x = 0; x < bmp.Width; x++)
+		//	{
+		//		for (int y = 0; y < bmp.Height; y++)
+		//		{
+		//			Color clr = bmp.GetPixel(x, y);
+		//			r += clr.R;
+		//			g += clr.G;
+		//			b += clr.B;
+		//			total++;
+		//		}
+		//	}
 
-			//Calculate average
-			r /= total;
-			g /= total;
-			b /= total;
+		//	//Calculate average
+		//	r /= total;
+		//	g /= total;
+		//	b /= total;
 
-			return Color.FromArgb(r, g, b);
-		}
+		//	return Color.FromArgb(r, g, b);
+		//}
 		public string GetImageFilter()
 		{
 			StringBuilder allImageExtensions = new StringBuilder();
@@ -394,7 +371,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			StringBuilder sb = new StringBuilder();
 			if (allImageExtensions.Length > 0)
 			{
-				sb.AppendFormat("{0}|{1}", "All Images", allImageExtensions.ToString());
+				sb.AppendFormat("{0}|{1}", "All Images", allImageExtensions);
 			}
 			images.Add("All Files", "*.*");
 			foreach (KeyValuePair<string, string> image in images)
@@ -427,8 +404,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				{
 					foreach (var point in channel.Pixels)
 					{
-						bool pixelSelected = selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
-						DrawCircle(this.gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
+						bool pixelSelected = _selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
+						DrawCircle(gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
 					}
 				}
 				DrawPoints(item.Nodes);
@@ -456,7 +433,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			{
 				propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
 				DrawPreview();
-				selectedPixels.Clear();
+				_selectedPixels.Clear();
 			}
 			
 		}
@@ -468,24 +445,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				treeViewChannels.SelectedNode = SetTreeNodeValues(channel, treeViewChannels.SelectedNode);
 		}
 
-		private static void DrawGrid(Control control, int xSize, int ySize, Color backgroundColor)
-		{
-			if (control == null) return;
-			if (control.BackgroundImage == null)
-				control.BackgroundImage = new Bitmap(control.Width, control.Height);
+		//private static void DrawGrid(Control control, int xSize, int ySize, Color backgroundColor)
+		//{
+		//	if (control == null) return;
+		//	if (control.BackgroundImage == null)
+		//		control.BackgroundImage = new Bitmap(control.Width, control.Height);
 
-			using (var g = Graphics.FromImage(control.BackgroundImage))
-			{
+		//	using (var g = Graphics.FromImage(control.BackgroundImage))
+		//	{
 
-				int cellSizeX = control.BackgroundImage.Width / xSize;
-				int cellSizeY = control.BackgroundImage.Height / ySize;
+		//		int cellSizeX = control.BackgroundImage.Width / xSize;
+		//		int cellSizeY = control.BackgroundImage.Height / ySize;
 
-				var r = new Rectangle(new Point(control.Left, control.Top), control.BackgroundImage.Size);
-				ControlPaint.DrawGrid(g, r, new Size(cellSizeX, cellSizeY), backgroundColor);
+		//		var r = new Rectangle(new Point(control.Left, control.Top), control.BackgroundImage.Size);
+		//		ControlPaint.DrawGrid(g, r, new Size(cellSizeX, cellSizeY), backgroundColor);
 
-			}
+		//	}
 
-		}
+		//}
 
 		private static void DrawCircle(Control control, PreviewPixel pixel, int radius, Color color)
 		{
@@ -506,44 +483,43 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		private static Color GetDominantColor(Image image)
-		{
-			if (image == null) return Color.White;
-			//Used for tally
-			int r = 0;
-			int g = 0;
-			int b = 0;
+		//private static Color GetDominantColor(Image image)
+		//{
+		//	if (image == null) return Color.White;
+		//	//Used for tally
+		//	int r = 0;
+		//	int g = 0;
+		//	int b = 0;
 
-			int total = 0;
-			using (Bitmap bmp = new Bitmap(image))
-			{
-				for (int x = 0; x < bmp.Width; x++)
-				{
-					for (int y = 0; y < bmp.Height; y++)
-					{
-						Color clr = bmp.GetPixel(x, y);
-						r += clr.R;
-						g += clr.G;
-						b += clr.B;
-						total++;
-					}
-				}
-			}
+		//	int total = 0;
+		//	using (Bitmap bmp = new Bitmap(image))
+		//	{
+		//		for (int x = 0; x < bmp.Width; x++)
+		//		{
+		//			for (int y = 0; y < bmp.Height; y++)
+		//			{
+		//				Color clr = bmp.GetPixel(x, y);
+		//				r += clr.R;
+		//				g += clr.G;
+		//				b += clr.B;
+		//				total++;
+		//			}
+		//		}
+		//	}
 
-			//Calculate average
-			r /= total;
-			g /= total;
-			b /= total;
+		//	//Calculate average
+		//	r /= total;
+		//	g /= total;
+		//	b /= total;
 
-			return Color.FromArgb(r, g, b);
-		}
+		//	return Color.FromArgb(r, g, b);
+		//}
 
 		private static Image ResizeImage(Image image, int maximumWidth, int maximumHeight, bool enforceRatio, bool addPadding)
 		{
 
-			var imageEncoders = ImageCodecInfo.GetImageEncoders();
 			EncoderParameters encoderParameters = new EncoderParameters(1);
-			encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
+			encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
 			var canvasWidth = maximumWidth;
 			var canvasHeight = maximumHeight;
 			var newImageWidth = maximumWidth;
@@ -594,8 +570,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private static void SetGridBackground(Control control, Control control2, string fileName, int opacity = 100, bool maintainAspectRatio = true)
 		{
-			//control.BackColor = Color.Black;
-
 			if (!string.IsNullOrWhiteSpace(fileName) && File.Exists(fileName))
 			{
 				var image = Image.FromFile(fileName);
@@ -617,12 +591,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		private void DrawPreview()
 		{
 
-			if (this.gridPanel.BackgroundImage != null)
-				this.gridPanel.BackgroundImage.Dispose();
+			if (gridPanel.BackgroundImage != null)
+				gridPanel.BackgroundImage.Dispose();
 
-			this.gridPanel.BackgroundImage = new Bitmap(gridPanel.Width, gridPanel.Height);
+			gridPanel.BackgroundImage = new Bitmap(gridPanel.Width, gridPanel.Height);
 
-			SetGridBackground(this.splitContainer1.Panel1, this.gridPanel, this.BackgroundImageFileName, this.BackgroundImageOpacity, BackgroundImageMaintainAspect);
+			SetGridBackground(splitContainer1.Panel1, gridPanel, BackgroundImageFileName, BackgroundImageOpacity, BackgroundImageMaintainAspect);
 
 			//DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
 
@@ -643,16 +617,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			e.Graphics.DrawImageUnscaled(gridPanel.BackgroundImage, Point.Empty);
 		}
-		private Point start = Point.Empty;
-		private Point end = Point.Empty;
-		bool moving = false;
+		private Point _start = Point.Empty;
+		private Point _end = Point.Empty;
+		private bool _moving;
 		private void gridPanel_MouseDown(object sender, MouseEventArgs e)
 		{
 			switch (e.Button)
 			{
 				case MouseButtons.Left:
 					//Draw point
-					if ((Control.ModifierKeys & Keys.Control) != Keys.None)
+					if ((ModifierKeys & Keys.Control) != Keys.None)
 					{
 
 						if (treeViewChannels.SelectedNode != null)
@@ -660,8 +634,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 							var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
 							if (prop == null) return;
-
-							var pixelSize = prop.PixelSize;
 
 							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
 							child.IsPixel = true;
@@ -678,11 +650,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 					else
 					{
 
-						start.X = e.X;
-						start.Y = e.Y;
-						moving = treeViewChannels.SelectedNode != null;
+						_start.X = e.X;
+						_start.Y = e.Y;
+						_moving = treeViewChannels.SelectedNode != null;
 					}
-					selectedPixels.Clear();
+					_selectedPixels.Clear();
 
 					break;
 				case MouseButtons.Middle:
@@ -695,7 +667,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			DrawPreview();
 		}
-		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = CHANNEL_TEMPLATE, int index = 1)
+		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = ChannelTemplate, int index = 1)
 		{
 			int i = index;
 			if (i < 1) i = 1;
@@ -714,39 +686,38 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			return channelName;
 		}
-		private string GenerateNewChannelName(TreeNode selection, string templateName = CHANNEL_TEMPLATE, int index = 1)
+		private string GenerateNewChannelName(TreeNode selection, string templateName = ChannelTemplate, int index = 1)
 		{
 
 			return GenerateNewChannelName(selection.Nodes, templateName, index);
 		}
 
-		int _currentRowHeight = -1;
 		private void gridPanel_MouseMove(object sender, MouseEventArgs e)
 		{
 			Point p1;
 			Point p2;
-			if (((e.Button & MouseButtons.Left) != 0) && (start != Point.Empty))
+			if (((e.Button & MouseButtons.Left) != 0) && (_start != Point.Empty))
 			{
-				if (moving)
+				if (_moving)
 				{
 
-					int deltaX = e.Location.X - start.X;
-					int deltaY = e.Location.Y - start.Y;
+					int deltaX = e.Location.X - _start.X;
+					int deltaY = e.Location.Y - _start.Y;
 
 					MoveSelected(deltaX, deltaY, treeViewChannels.SelectedNode);
 				}
 				else
-					using (Graphics g = this.CreateGraphics())
+					using (Graphics g = CreateGraphics())
 					{
-						p1 = PointToScreen(start);
-						if (end != Point.Empty)
+						p1 = PointToScreen(_start);
+						if (_end != Point.Empty)
 						{
-							p2 = PointToScreen(end);
+							p2 = PointToScreen(_end);
 							ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
 						}
-						end.X = e.X;
-						end.Y = e.Y;
-						p2 = PointToScreen(end);
+						_end.X = e.X;
+						_end.Y = e.Y;
+						p2 = PointToScreen(_end);
 						ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
 					}
 			}
@@ -756,14 +727,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			var prop = selectedNode.Tag as PropChannel;
 			if (prop != null)
 			{
-				foreach (var item in prop.Pixels)
+				prop.Pixels.AsParallel().ForAll(p =>
 				{
-					prop.Pixels.AsParallel().ForAll(p =>
-					{
-						p.X += deltaX;
-						p.Y += deltaY;
-					});
-				}
+					p.X += deltaX;
+					p.Y += deltaY;
+				});
+				
 				foreach (TreeNode item in selectedNode.Nodes)
 				{
 					MoveSelected(deltaX, deltaY, item, false);
@@ -789,64 +758,58 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		}
 		private void gridPanel_MouseUp(object sender, MouseEventArgs e)
 		{
-			Point p1;
-			Point p2;
-			if ((end != Point.Empty) && (start != Point.Empty))
+			if ((_end != Point.Empty) && (_start != Point.Empty))
 			{
 
-				using (Graphics g = this.CreateGraphics())
+				using (Graphics g = CreateGraphics())
 				{
-					p1 = PointToScreen(start);
-					p2 = PointToScreen(end);
+					var p1 = PointToScreen(_start);
+					var p2 = PointToScreen(_end);
 
 					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
-					if (FindAllPointsInSelection(getRectangleForPoints(start, end)))
+					if (FindAllPointsInSelection(getRectangleForPoints(_start, _end)))
 					{
 						DrawPreview();
 					}
 				}
 			}
-			start = Point.Empty;
-			end = Point.Empty;
+			_start = Point.Empty;
+			_end = Point.Empty;
 
 		}
 
-		List<Pixel> selectedPixels = new List<Pixel>();
-		Rectangle selectPixelRect
-		{
-			get
-			{
-				if (!selectedPixels.Any()) return new Rectangle();
+		List<Pixel> _selectedPixels = new List<Pixel>();
+		//Rectangle selectPixelRect
+		//{
+		//	get
+		//	{
+		//		if (!_selectedPixels.Any()) return new Rectangle();
 
-				var minX = selectedPixels.Min(s => s.X);
-				var maxX = selectedPixels.Max(s => s.X);
-				var minY = selectedPixels.Min(s => s.Y);
-				var maxY = selectedPixels.Max(s => s.Y);
+		//		var minX = _selectedPixels.Min(s => s.X);
+		//		var maxX = _selectedPixels.Max(s => s.X);
+		//		var minY = _selectedPixels.Min(s => s.Y);
+		//		var maxY = _selectedPixels.Max(s => s.Y);
 
-				return new Rectangle(minX, minY, maxX - minX, maxY - minY);
-			}
-		}
+		//		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+		//	}
+		//}
 
 		private bool FindAllPointsInSelection(Rectangle rect)
 		{
 
 			var points = Channels.SelectMany(s => s.Pixels).ToList();
-			selectedPixels = points.Where(p =>
+			_selectedPixels = points.Where(p =>
 					p.X >= Math.Min(rect.Left, rect.Right) &&
 					p.X <= Math.Max(rect.Left, rect.Right) &&
 					p.Y >= Math.Min(rect.Top, rect.Bottom) &&
 					p.Y <= Math.Max(rect.Top, rect.Bottom)).ToList();
 
-			return selectedPixels.Any();
+			return _selectedPixels.Any();
 		}
-
-
-
-
 
 		private void contextMenuStripPixels_Opening(object sender, CancelEventArgs e)
 		{
-			e.Cancel = !selectedPixels.Any();
+			e.Cancel = !_selectedPixels.Any();
 		}
 
 		private void removeSelectedItemsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -863,10 +826,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			using (var frm = new ChannelNaming())
 			{
-				frm.Value = CHANNEL_TEMPLATE;
+				frm.Value = ChannelTemplate;
 				var dlg = frm.ShowDialog(this);
 
-				if (dlg == System.Windows.Forms.DialogResult.OK)
+				if (dlg == DialogResult.OK)
 				{
 					PropChannel child;
 					if (treeViewChannels.SelectedNode != null)
@@ -894,12 +857,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 				var dlg = frm.ShowDialog(this);
 
-				if (dlg == System.Windows.Forms.DialogResult.OK)
+				if (dlg == DialogResult.OK)
 				{
 					if (treeViewChannels.SelectedNode != null)
 					{
 
-						var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
 						for (int i = 0; i < frm.ChannelCount; i++)
 						{
 							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.TemplateName));
@@ -941,27 +903,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 		}
 
-		bool removePropChannel(PropChannel c, string propToRemove)
-		{
-			bool removed = false;
-			if (c.Children != null && c.Children.Any())
-			{
+		//bool removePropChannel(PropChannel c, string propToRemove)
+		//{
+		//	bool removed = false;
+		//	if (c.Children != null && c.Children.Any())
+		//	{
 
 
-				removed = c.Children.RemoveAll(r => r.Id.Equals(propToRemove)) > 0;
-				if (!removed)
-				{
-					foreach (var child in c.Children)
-					{
-						removed = removePropChannel(c, propToRemove);
-						if (removed) break;
-					}
-				}
+		//		removed = c.Children.RemoveAll(r => r.Id.Equals(propToRemove)) > 0;
+		//		if (!removed)
+		//		{
+		//			foreach (var child in c.Children)
+		//			{
+		//				removed = removePropChannel(c, propToRemove);
+		//				if (removed) break;
+		//			}
+		//		}
 
 
-			}
-			return removed;
-		}
+		//	}
+		//	return removed;
+		//}
 
 		private void contextMenuStripChannels_Opening(object sender, CancelEventArgs e)
 		{
