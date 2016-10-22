@@ -390,29 +390,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			DrawPreview();
 		}
 
-
-
-
-		void DrawPoints(TreeNodeCollection collection)
-		{
-			foreach (TreeNode item in collection)
-			{
-
-				bool isSelected = IsNodeInSelectedTree(item, treeViewChannels.SelectedNode);
-				var channel = item.Tag as PropChannel;
-				if (channel != null)
-				{
-					foreach (var point in channel.Pixels)
-					{
-						bool pixelSelected = _selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
-						DrawCircle(gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
-					}
-				}
-				DrawPoints(item.Nodes);
-			}
-
-		}
-
 		bool IsNodeInSelectedTree(TreeNode node, TreeNode selectedNode)
 		{
 			if (selectedNode == null) return false;
@@ -432,7 +409,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			if (propertyGrid.SelectedObject != selectedObject)
 			{
 				propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
-				DrawPreview();
+				UpdatePreview();
 				_selectedPixels.Clear();
 			}
 			
@@ -464,24 +441,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		//}
 
-		private static void DrawCircle(Control control, PreviewPixel pixel, int radius, Color color)
-		{
-			if (control.BackgroundImage == null)
-				control.BackgroundImage = new Bitmap(control.Width, control.Height);
-
-			using (var g = Graphics.FromImage(control.BackgroundImage))
-			{
-
-				using (Brush b = new SolidBrush(color))
-				{
-					using (Pen p = new Pen(b))
-					{
-						g.DrawEllipse(p, pixel.X, pixel.Y, radius, radius);
-						g.FillEllipse(b, new Rectangle(new Point(pixel.X, pixel.Y), new Size(radius * 2, radius * 2)));
-					}
-				}
-			}
-		}
+		
 
 		//private static Color GetDominantColor(Image image)
 		//{
@@ -581,7 +541,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			}
 			else
 			{
-
 				control2.BackgroundImageLayout = ImageLayout.Stretch;
 				control.BackgroundImage = null;
 			}
@@ -598,11 +557,61 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			SetGridBackground(splitContainer1.Panel1, gridPanel, BackgroundImageFileName, BackgroundImageOpacity, BackgroundImageMaintainAspect);
 
-			//DrawGrid(this.gridPanel, 100, 100, File.Exists(this.BackgroundImageFileName) ? GetDominantColor(this.gridPanel.BackgroundImage) : this.splitContainer1.Panel1.BackColor);
+			DrawPoints(treeViewChannels.Nodes);
+
+			gridPanel.Invalidate();
+		}
+
+		private void UpdatePreview()
+		{
+			if (gridPanel.BackgroundImage != null)
+				gridPanel.BackgroundImage.Dispose();
+
+			gridPanel.BackgroundImage = new Bitmap(gridPanel.Width, gridPanel.Height);
+			gridPanel.BackgroundImageLayout = splitContainer1.Panel1.BackgroundImageLayout = BackgroundImageMaintainAspect ? ImageLayout.Center : ImageLayout.Stretch;
 
 			DrawPoints(treeViewChannels.Nodes);
 
 			gridPanel.Invalidate();
+		}
+
+		private void DrawPoints(TreeNodeCollection collection)
+		{
+			foreach (TreeNode item in collection)
+			{
+
+				bool isSelected = IsNodeInSelectedTree(item, treeViewChannels.SelectedNode);
+				var channel = item.Tag as PropChannel;
+				if (channel != null)
+				{
+					foreach (var point in channel.Pixels)
+					{
+						bool pixelSelected = _selectedPixels.Any(a => a.X.Equals(point.X) && a.Y.Equals(point.Y));
+						DrawCircle(gridPanel, point, channel.PixelSize, pixelSelected ? Color.Blue : isSelected ? Color.Yellow : Color.White);
+					}
+				}
+				DrawPoints(item.Nodes);
+			}
+
+		}
+
+		private static void DrawCircle(Control control, PreviewPixel pixel, int radius, Color color)
+		{
+			if (control.BackgroundImage == null)
+				control.BackgroundImage = new Bitmap(control.Width, control.Height);
+
+			using (var g = Graphics.FromImage(control.BackgroundImage))
+			{
+
+				using (Brush b = new SolidBrush(color))
+				{
+					using (Pen p = new Pen(b))
+					{
+						g.DrawEllipse(p, pixel.X, pixel.Y, radius, radius);
+						g.FillEllipse(b, new Rectangle(new Point(pixel.X, pixel.Y), new Size(radius * 2, radius * 2)));
+					}
+				}
+			}
 		}
 
 		private void chkMaintainAspect_CheckedChanged(object sender, EventArgs e)
@@ -665,8 +674,115 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				default:
 					break;
 			}
-			DrawPreview();
+			UpdatePreview();
 		}
+		
+		private void gridPanel_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (((e.Button & MouseButtons.Left) != 0) && (_start != Point.Empty))
+			{
+				if (_moving)
+				{
+
+					int deltaX = e.Location.X - _start.X;
+					int deltaY = e.Location.Y - _start.Y;
+
+					MoveSelected(deltaX, deltaY, treeViewChannels.SelectedNode);
+
+					//update our start position with the new location
+					_start.X = e.Location.X;
+					_start.Y = e.Location.Y;
+				}
+				else
+					using (Graphics g = CreateGraphics())
+					{
+						var p1 = PointToScreen(_start);
+						Point p2;
+						if (_end != Point.Empty)
+						{
+							p2 = PointToScreen(_end);
+							ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+						}
+						_end.X = e.X;
+						_end.Y = e.Y;
+						p2 = PointToScreen(_end);
+						ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+					}
+			}
+		}
+		private void gridPanel_MouseUp(object sender, MouseEventArgs e)
+		{
+			if ((_end != Point.Empty) && (_start != Point.Empty))
+			{
+
+				using (Graphics g = CreateGraphics())
+				{
+					var p1 = PointToScreen(_start);
+					var p2 = PointToScreen(_end);
+
+					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
+					if (FindAllPointsInSelection(getRectangleForPoints(_start, _end)))
+					{
+						UpdatePreview();
+					}
+				}
+			}
+			_start = Point.Empty;
+			_end = Point.Empty;
+
+		}
+
+		private void MoveSelected(int deltaX, int deltaY, TreeNode selectedNode, bool redraw = true)
+		{
+			var prop = selectedNode.Tag as PropChannel;
+			if (prop != null)
+			{
+				prop.Pixels.AsParallel().ForAll(p =>
+				{
+					p.X += deltaX;
+					p.Y += deltaY;
+				});
+				
+				foreach (TreeNode item in selectedNode.Nodes)
+				{
+					MoveSelected(deltaX, deltaY, item, false);
+				}
+
+			}
+			if (redraw)
+			{
+				UpdatePreview();
+			}
+		}
+
+		private Rectangle getRectangleForPoints(Point beginPoint, Point endPoint)
+		{
+			int top = beginPoint.Y < endPoint.Y ? beginPoint.Y : endPoint.Y;
+			int bottom = beginPoint.Y > endPoint.Y ? beginPoint.Y : endPoint.Y;
+			int left = beginPoint.X < endPoint.X ? beginPoint.X : endPoint.X;
+			int right = beginPoint.X > endPoint.X ? beginPoint.X : endPoint.X;
+
+			Rectangle rect = new Rectangle(left, top, (right - left), (bottom - top));
+			return rect;
+		}
+		
+
+		List<Pixel> _selectedPixels = new List<Pixel>();
+		//Rectangle selectPixelRect
+		//{
+		//	get
+		//	{
+		//		if (!_selectedPixels.Any()) return new Rectangle();
+
+		//		var minX = _selectedPixels.Min(s => s.X);
+		//		var maxX = _selectedPixels.Max(s => s.X);
+		//		var minY = _selectedPixels.Min(s => s.Y);
+		//		var maxY = _selectedPixels.Max(s => s.Y);
+
+		//		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+		//	}
+		//}
+
 		private string GenerateNewChannelName(TreeNodeCollection selection, string templateName = ChannelTemplate, int index = 1)
 		{
 			int i = index;
@@ -691,108 +807,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			return GenerateNewChannelName(selection.Nodes, templateName, index);
 		}
-
-		private void gridPanel_MouseMove(object sender, MouseEventArgs e)
-		{
-			Point p1;
-			Point p2;
-			if (((e.Button & MouseButtons.Left) != 0) && (_start != Point.Empty))
-			{
-				if (_moving)
-				{
-
-					int deltaX = e.Location.X - _start.X;
-					int deltaY = e.Location.Y - _start.Y;
-
-					MoveSelected(deltaX, deltaY, treeViewChannels.SelectedNode);
-				}
-				else
-					using (Graphics g = CreateGraphics())
-					{
-						p1 = PointToScreen(_start);
-						if (_end != Point.Empty)
-						{
-							p2 = PointToScreen(_end);
-							ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
-						}
-						_end.X = e.X;
-						_end.Y = e.Y;
-						p2 = PointToScreen(_end);
-						ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
-					}
-			}
-		}
-		private void MoveSelected(int deltaX, int deltaY, TreeNode selectedNode, bool redraw = true)
-		{
-			var prop = selectedNode.Tag as PropChannel;
-			if (prop != null)
-			{
-				prop.Pixels.AsParallel().ForAll(p =>
-				{
-					p.X += deltaX;
-					p.Y += deltaY;
-				});
-				
-				foreach (TreeNode item in selectedNode.Nodes)
-				{
-					MoveSelected(deltaX, deltaY, item, false);
-				}
-
-			}
-			if (redraw)
-			{
-				PopulateChannelsFromMultiTreeSelect();
-				DrawPreview();
-			}
-		}
-
-		private Rectangle getRectangleForPoints(Point beginPoint, Point endPoint)
-		{
-			int top = beginPoint.Y < endPoint.Y ? beginPoint.Y : endPoint.Y;
-			int bottom = beginPoint.Y > endPoint.Y ? beginPoint.Y : endPoint.Y;
-			int left = beginPoint.X < endPoint.X ? beginPoint.X : endPoint.X;
-			int right = beginPoint.X > endPoint.X ? beginPoint.X : endPoint.X;
-
-			Rectangle rect = new Rectangle(left, top, (right - left), (bottom - top));
-			return rect;
-		}
-		private void gridPanel_MouseUp(object sender, MouseEventArgs e)
-		{
-			if ((_end != Point.Empty) && (_start != Point.Empty))
-			{
-
-				using (Graphics g = CreateGraphics())
-				{
-					var p1 = PointToScreen(_start);
-					var p2 = PointToScreen(_end);
-
-					ControlPaint.DrawReversibleFrame(getRectangleForPoints(p1, p2), Color.Black, FrameStyle.Dashed);
-					if (FindAllPointsInSelection(getRectangleForPoints(_start, _end)))
-					{
-						DrawPreview();
-					}
-				}
-			}
-			_start = Point.Empty;
-			_end = Point.Empty;
-
-		}
-
-		List<Pixel> _selectedPixels = new List<Pixel>();
-		//Rectangle selectPixelRect
-		//{
-		//	get
-		//	{
-		//		if (!_selectedPixels.Any()) return new Rectangle();
-
-		//		var minX = _selectedPixels.Min(s => s.X);
-		//		var maxX = _selectedPixels.Max(s => s.X);
-		//		var minY = _selectedPixels.Min(s => s.Y);
-		//		var maxY = _selectedPixels.Max(s => s.Y);
-
-		//		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
-		//	}
-		//}
 
 		private bool FindAllPointsInSelection(Rectangle rect)
 		{
@@ -899,7 +913,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				treeViewChannels.EndUpdate();
 				
 				PopulateChannelsFromMultiTreeSelect();
-				DrawPreview();
+				UpdatePreview();
 			}
 		}
 
@@ -946,7 +960,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			{
 				treeViewChannels.SelectedNode.Remove();
 				PopulateChannelsFromMultiTreeSelect();
-				DrawPreview();
+				UpdatePreview();
 			}
 		}
 

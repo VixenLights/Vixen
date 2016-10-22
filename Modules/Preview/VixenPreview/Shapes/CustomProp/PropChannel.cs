@@ -14,7 +14,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 	[DataContract, Serializable]
 	public class PropChannel
 	{
-
+		private string _text;
 		public PropChannel()
 		{
 			Id = Guid.NewGuid().ToString();
@@ -30,10 +30,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			Name = name;
 
 		}
-
-
-		private string _text;
-
+		
 		[DataMember]
 		public string Name
 		{
@@ -54,15 +51,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 			get;
 			set;
-		}
-
-		[Browsable(false)]
-		public string ID_Text
-		{
-			get
-			{
-				return string.Format("{0} -> {1}", Id.ToString().PadRight(3), Name);
-			}
 		}
 
 		List<Pixel> _pixels;
