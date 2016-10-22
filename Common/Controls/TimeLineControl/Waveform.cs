@@ -229,7 +229,7 @@ namespace Common.Controls.Timeline
 
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
-					float maxSample = Math.Max(Math.Abs(samples.Low), samples.High);
+					float maxSample = Math.Max(Math.Abs(ClampValue(samples.Low)), samples.High);
 					int workingHeight = Height - (int) (Height*.1); //Leave a little margin
 					float factor = workingHeight/maxSample;
 
@@ -262,6 +262,15 @@ namespace Common.Controls.Timeline
 			}
 
 			base.OnPaint(e);
+		}
+
+		private int ClampValue(int value)
+		{
+			if (value == -32768)
+			{
+				return -32767; //We will later use this in some abs calcs and -32768 will overflow in an integer field VIX-1859
+			}
+			return value;
 		}
 
 		private class SampleAggregator : IList<SampleAggregator.Sample>
