@@ -12,10 +12,6 @@ namespace VixenModules.Sequence.Timed
 			Visible = visible;
 		}
 
-		public RowSetting(bool expanded, bool visible):this(32, expanded, visible)
-		{
-		}
-
 		[DataMember]
 		public bool Expanded { get; set; }
 
