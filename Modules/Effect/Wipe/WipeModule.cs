@@ -205,9 +205,9 @@ namespace VixenModules.Effect.Wipe
 				if (WipeByCount)
 				{
 					int count = 0;
-					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100);
-					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
-					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
+					double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
+					TimeSpan intervalTime = TimeSpan.FromTicks( (long) ( (TimeSpan.Ticks - pulseSegment) / (renderNodes.Count() * PassCount)));
+					TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
 
 					while (count < PassCount)
 					{
@@ -379,10 +379,11 @@ namespace VixenModules.Effect.Wipe
 				TimeSpan effectTime = TimeSpan.Zero;
 				if (WipeByCount)
 				{
+					
 					int count = 0;
-					double pulseSegment = (TimeSpan.TotalMilliseconds / PassCount) * (PulsePercent / 100);
-					TimeSpan intervalTime = TimeSpan.FromMilliseconds((TimeSpan.TotalMilliseconds - pulseSegment) / (renderNodes.Count() * PassCount));
-					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(pulseSegment);
+					double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
+					TimeSpan intervalTime = TimeSpan.FromTicks((long)((TimeSpan.Ticks - pulseSegment) / (renderNodes.Count() * PassCount)));
+					TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
 
 					while (count < PassCount)
 					{
