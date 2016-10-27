@@ -352,9 +352,6 @@ namespace VixenModules.Effect.Chase
 
 		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
-			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
-			TimeSpan increment = TimeSpan.FromMilliseconds(2);
-
 			List<ElementNode> renderNodes = GetNodesToRenderOn();
 
 			int targetNodeCount = renderNodes.Count;
@@ -419,11 +416,27 @@ namespace VixenModules.Effect.Chase
 				}
 			}
 
+			
 
 			// the total chase time
 			TimeSpan chaseTime = TimeSpan.FromMilliseconds(TimeSpan.TotalMilliseconds - PulseOverlap);
 			if (chaseTime.TotalMilliseconds <= 0)
 				chaseTime = TimeSpan.FromMilliseconds(1);
+
+			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
+			//Less crappy is try to make some adjustment if there are a lot of nodes in a shorter time to sample more often. 
+			//A hard and fast 2ms was leaving gaps in larger node counts
+			var sampleMs = chaseTime.TotalMilliseconds/targetNodeCount/2.0;
+			if (sampleMs < .25)
+			{
+				sampleMs = .25;
+			}
+			else if (sampleMs > 2)
+			{
+				sampleMs = 2;
+			}
+			TimeSpan increment = TimeSpan.FromTicks((long)(sampleMs*TimeSpan.TicksPerMillisecond));
+			
 
 			// we need to keep track of the element that is 'under' the curve at a given time, to see if it changes,
 			// and when it does, we make the effect for it then (since it's a variable time pulse).

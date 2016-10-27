@@ -449,9 +449,6 @@ namespace VixenModules.Effect.Spin
 
 		private void DoRendering(CancellationTokenSource tokenSource = null)
 		{
-			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
-			TimeSpan increment = TimeSpan.FromMilliseconds(10);
-
 			List<ElementNode> renderNodes = GetNodesToRenderOn();
 			int targetNodeCount = renderNodes.Count;
 			
@@ -566,6 +563,20 @@ namespace VixenModules.Effect.Spin
 				movement = new Curve(new PointPairList(new double[] {0, 100}, new double[] {100, 0}));
 			else
 				movement = new Curve(new PointPairList(new double[] {0, 100}, new double[] {0, 100}));
+
+			//TODO: get a better increment time. doing it every X ms is..... shitty at best.
+			//Less crappy is try to make some adjustment if there are a lot of nodes in a shorter time to sample more often. 
+			//A hard and fast 2ms was leaving gaps in larger node counts
+			var sampleMs = revTimeSpan.TotalMilliseconds / targetNodeCount / 2.0;
+			if (sampleMs < .25)
+			{
+				sampleMs = .25;
+			}
+			else if (sampleMs > 2)
+			{
+				sampleMs = 2;
+			}
+			TimeSpan increment = TimeSpan.FromTicks((long)(sampleMs * TimeSpan.TicksPerMillisecond));
 
 			// iterate up to and including the last pulse generated
 			// a bit iffy, but stops 'carry over' spins past the end (when there's overlapping spins). But we need to go past
