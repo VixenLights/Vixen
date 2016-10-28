@@ -349,7 +349,7 @@ namespace VixenModules.Effect.Garlands
 					{
 						case GarlandsDirection.Down:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferHt) frameBuffer.SetPixel(x, BufferHt - yadj, hsv);
+							if (yadj < BufferHt) frameBuffer.SetPixel(x, BufferHt - 1 - yadj, hsv);
 						break;
 						case GarlandsDirection.Up:
 							if (yadj < ylimit) yadj = ylimit;
@@ -357,7 +357,7 @@ namespace VixenModules.Effect.Garlands
 						break;
 						case GarlandsDirection.Left:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferWi) frameBuffer.SetPixel(BufferWi - yadj, x, hsv);
+							if (yadj < BufferWi) frameBuffer.SetPixel(BufferWi - 1 - yadj, x, hsv);
 						break;
 						case GarlandsDirection.Right:
 							if (yadj < ylimit) yadj = ylimit;
