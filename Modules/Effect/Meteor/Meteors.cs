@@ -464,6 +464,16 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(direction - 90) / 90);
 					m.DeltaY = m.TailY * position;
+					if (_random.NextDouble() >= (double)(90 - direction) / 100)
+					{
+						m.X = 0;
+						m.Y = rand() % BufferHt;
+					}
+					else
+					{
+						m.X = rand()%BufferWi;
+						m.Y = 0;
+					}
 				}
 				else if (direction > 90 && direction <= 180)
 				{
@@ -471,6 +481,16 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 90) / 90);
 					m.DeltaY = m.TailY * position;
+					if (_random.NextDouble() >= (double)(180 - direction) / 100)
+					{
+						m.X = rand() % BufferWi;
+						m.Y = BufferHt;
+					}
+					else
+					{
+						m.X = 0;
+						m.Y = rand() % BufferHt;
+					}
 				}
 				else if (direction > 180 && direction <= 270)
 				{
@@ -478,6 +498,16 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 270) / 90);
 					m.DeltaY = m.TailY * position;
+					if (_random.NextDouble() >= (double)(270 - direction) / 100)
+					{
+						m.X = BufferWi;
+						m.Y = rand() % BufferHt;
+					}
+					else
+					{
+						m.X = rand() % BufferWi;
+						m.Y = BufferHt;
+					}
 				}
 				else if (direction > 270 && direction <= 360)
 				{
@@ -485,6 +515,16 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(270 - direction) / 90);
 					m.DeltaY = m.TailY * position;
+					if (_random.NextDouble() >= (double)(360-direction)/100)
+					{
+						m.X = rand() % BufferWi;
+						m.Y = 0;
+					}
+					else
+					{
+						m.X = BufferWi;
+						m.Y = rand() % BufferHt;
+					}
 				}
 
 				if (MeteorEffect == MeteorsEffect.Explode)
