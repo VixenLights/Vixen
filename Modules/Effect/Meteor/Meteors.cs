@@ -231,7 +231,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Tail Length")]
 		[ProviderDescription(@"Tail Length")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 50, 1)]
+		[NumberRange(1, 100, 1)]
 		[PropertyOrder(10)]
 		public int Length
 		{
@@ -530,42 +530,35 @@ namespace VixenModules.Effect.Meteors
 				meteor.DeltaY += meteor.DeltaYOrig;
 				int colorX = (meteor.X + Convert.ToInt32(meteor.DeltaX) - (BufferWi / 100));
 				int colorY = (meteor.Y + Convert.ToInt32(meteor.DeltaY) + (BufferHt / 100));
-				if (colorX >= BufferWi || colorY >= BufferHt || colorX < 0 || colorY < 0)
+
+				for (int ph = 0; ph < tailLength; ph++)
+				{
+					switch (ColorType)
+					{
+						case MeteorsColorType.RainBow: //No user colors are used for Rainbow effect.
+							meteor.Hsv.H = (float) (rand()%1000)/1000.0f;
+							meteor.Hsv.S = 1.0f;
+							meteor.Hsv.V = 1.0f;
+							break;
+						case MeteorsColorType.Gradient:
+							meteor.Hsv = HSV.FromRGB(Colors[meteor.Color].GetColorAt(_gradientPosition*ph));
+							break;
+					}
+					hsv = meteor.Hsv;
+					hsv.V *= meteor.HsvBrightness;
+					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+					//Adjusts the brightness based on the level curve
+					hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
+					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
+					if (decPlaces <= 40 || decPlaces >= 60)
+						frameBuffer.SetPixel(colorX - (int) (Math.Round(meteor.TailX*ph)), colorY - (int) (Math.Round(meteor.TailY*ph)),
+							hsv);
+				}
+				if (colorX >= BufferWi + tailLength || colorY >= BufferHt + tailLength || colorX < 0 - tailLength ||
+				    colorY < 0 - tailLength)
 				{
 					meteor.Expired = true; //flags Meteors that have reached the end of the grid as expiried.
-				//	break;
-				}
-				else
-				{
-					for (int ph = 0; ph < tailLength; ph++)
-					{
-						if (MeteorEffect != MeteorsEffect.Explode)
-						{
-							colorX = colorX%BufferWi;
-							colorY = Convert.ToInt32((colorY%BufferHt));
-						}
-
-						switch (ColorType)
-						{
-							case MeteorsColorType.RainBow: //No user colors are used for Rainbow effect.
-								meteor.Hsv.H = (float) (rand()%1000)/1000.0f;
-								meteor.Hsv.S = 1.0f;
-								meteor.Hsv.V = 1.0f;
-								break;
-							case MeteorsColorType.Gradient:
-								meteor.Hsv = HSV.FromRGB(Colors[meteor.Color].GetColorAt(_gradientPosition*ph));
-								break;
-						}
-						hsv = meteor.Hsv;
-						hsv.V *= meteor.HsvBrightness;
-						hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
-						//Adjusts the brightness based on the level curve
-						hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
-						var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
-						if (decPlaces <= 40 || decPlaces >= 60)
-							frameBuffer.SetPixel(colorX - (int) (Math.Round(meteor.TailX*ph)), colorY - (int) (Math.Round(meteor.TailY*ph)),
-								hsv);
-					}
+					//	break;
 				}
 			}
 
