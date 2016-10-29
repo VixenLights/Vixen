@@ -1364,7 +1364,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else if (row.TreeOpen)
 				{
-					rowSettings.Add(row.TreeId(), new RowSetting(true, row.Visible));
+					rowSettings.Add(row.TreeId(), new RowSetting(row.Height, true, row.Visible));
 				}
 			}
 		}
