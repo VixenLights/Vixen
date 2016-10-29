@@ -586,9 +586,9 @@ namespace VixenModules.Effect.Meteors
 					}
 					hsv = meteor.Hsv;
 					hsv.V *= meteor.HsvBrightness;
-					hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
-					//Adjusts the brightness based on the level curve
 					hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
+					//Adjusts the brightness based on the level curve
+					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 						frameBuffer.SetPixel(colorX - (int) (Math.Round(meteor.TailX*ph)), colorY - (int) (Math.Round(meteor.TailY*ph)),
