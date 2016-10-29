@@ -31,7 +31,7 @@ namespace VixenModules.Effect.Meteors
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			Length = 5;
-			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 		}
 
