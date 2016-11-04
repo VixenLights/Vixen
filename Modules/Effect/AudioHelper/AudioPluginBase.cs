@@ -48,7 +48,7 @@ namespace VixenModules.Effect.AudioHelp
         [Value]
         [ProviderCategory(@"AudioSensitivityRange", 1)]
         [ProviderDisplayName(@"LowPassFilter")]
-        [ProviderDescription(@"Ignores frequencies below a given frequency")]
+		[ProviderDescription(@"Passes frequencies below a given frequency")]
         [PropertyOrder(3)]
         public bool LowPass
         {
@@ -65,7 +65,7 @@ namespace VixenModules.Effect.AudioHelp
         [Value]
         [ProviderCategory(@"AudioSensitivityRange", 1)]
         [ProviderDisplayName(@"LowPassFrequency")]
-        [ProviderDescription(@"Ignore frequencies below this value")]
+        [ProviderDescription(@"Passes frequencies below this value")]
         [PropertyOrder(4)]
         public int LowPassFreq
         {
@@ -81,7 +81,7 @@ namespace VixenModules.Effect.AudioHelp
         [Value]
         [ProviderCategory(@"AudioSensitivityRange", 1)]
         [ProviderDisplayName(@"HighPassFilter")]
-        [ProviderDescription(@"Ignores frequencies above a given frequency")]
+        [ProviderDescription(@"Passes frequencies above a given frequency")]
         [PropertyOrder(5)]
         public bool HighPass
         {
@@ -99,7 +99,7 @@ namespace VixenModules.Effect.AudioHelp
         [Value]
         [ProviderCategory(@"AudioSensitivityRange", 1)]
         [ProviderDisplayName(@"HighPassFrequency")]
-        [ProviderDescription(@"Ignore frequencies above this value")]
+		[ProviderDescription(@"Passes frequencies above this value")]
         [PropertyOrder(6)]
         public int HighPassFreq
         {
