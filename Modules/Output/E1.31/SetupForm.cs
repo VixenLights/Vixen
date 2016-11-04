@@ -1010,8 +1010,10 @@ namespace VixenModules.Output.E131
         private void btnAdd_Click(object sender, EventArgs e)
         {
             int maxUniverse = 0;
-
-            //try to supply a more useful start value
+			object universeSize = univDGVN.RowCount > 0
+		        ? univDGVN.Rows[univDGVN.Rows.Count - 1].Cells[SIZE_COLUMN].Value
+		        : "510";
+	        //try to supply a more useful start value
             foreach (DataGridViewRow r in univDGVN.Rows)
             {
                 if (r.Cells[UNIVERSE_COLUMN].Value != null)
@@ -1020,7 +1022,7 @@ namespace VixenModules.Output.E131
             }
             maxUniverse++;
             this.univDGVN.Rows.Add(
-            new object[] { 0, true, maxUniverse.ToString(), "510"});
+			new object[] { 0, true, maxUniverse.ToString(), universeSize });
             updateDgvnStartValues();
 
             foreach (DataGridViewRow r in univDGVN.Rows)
