@@ -57,6 +57,7 @@ namespace VixenApplication
 			toolStripStatusLabelExecutionLight.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabelExecutionState.ForeColor = ThemeColorTable.ForeColor;
 			toolStripStatusLabel_memory.ForeColor = ThemeColorTable.ForeColor;
+			contextMenuStripRecent.Renderer = new ThemeToolStripRenderer();
 
 			string[] args = Environment.GetCommandLineArgs();
 			foreach (string arg in args) {
@@ -84,10 +85,12 @@ namespace VixenApplication
 			{
 				toolsMenu = new AppCommand("Tools", "Tools");
 				AppCommands.Add(toolsMenu);
-		}
+			}
 			var myMenu = new AppCommand("Options", "Options...");
 			myMenu.Click += optionsToolStripMenuItem_Click;
 			toolsMenu.Add(myMenu);
+
+			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 		}
 
 		private void StartJITProfiler()
@@ -672,7 +675,7 @@ namespace VixenApplication
 
 		#region Recent Sequences list
 
-		private const int _maxRecentSequences = 10;
+		private const int _maxRecentSequences = 20;
 
 		private void listViewRecentSequences_DoubleClick(object sender, EventArgs e)
 		{
@@ -883,6 +886,12 @@ namespace VixenApplication
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+		}
+
+		private void ClearRecentSequencesList()
+		{
+			_applicationData.RecentSequences.Clear();
+			listViewRecentSequences.Items.Clear();
 		}
 	}
 }

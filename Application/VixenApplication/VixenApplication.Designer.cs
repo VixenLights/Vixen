@@ -75,6 +75,8 @@ namespace VixenApplication
 			this.toolStripStatusLabel_memory = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.contextMenuStripRecent = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripItemClearSequences = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStripMain.SuspendLayout();
 			this.groupBoxSequences.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -82,6 +84,7 @@ namespace VixenApplication
 			this.flowLayoutPanel2.SuspendLayout();
 			this.statusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.contextMenuStripRecent.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// contextMenuStripNewSequence
@@ -292,6 +295,7 @@ namespace VixenApplication
 			this.listViewRecentSequences.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.listViewRecentSequences.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.listViewRecentSequences.ContextMenuStrip = this.contextMenuStripRecent;
 			this.listViewRecentSequences.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewRecentSequences.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.listViewRecentSequences.FullRowSelect = true;
@@ -466,6 +470,21 @@ namespace VixenApplication
 			this.pictureBox1.TabIndex = 14;
 			this.pictureBox1.TabStop = false;
 			// 
+			// contextMenuStripRecent
+			// 
+			this.contextMenuStripRecent.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripItemClearSequences});
+			this.contextMenuStripRecent.Name = "contextMenuStripRecent";
+			this.contextMenuStripRecent.Size = new System.Drawing.Size(200, 48);
+			// 
+			// toolStripItemClearSequences
+			// 
+			this.toolStripItemClearSequences.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripItemClearSequences.Name = "toolStripItemClearSequences";
+			this.toolStripItemClearSequences.Size = new System.Drawing.Size(199, 22);
+			this.toolStripItemClearSequences.Text = "Clear Recent Sequences";
+			this.toolStripItemClearSequences.ToolTipText = "Clears the Recent Sequence list";
+			// 
 			// VixenApplication
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -505,6 +524,7 @@ namespace VixenApplication
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			this.contextMenuStripRecent.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -546,6 +566,8 @@ namespace VixenApplication
 		private FlowLayoutPanel flowLayoutPanel1;
 		private FlowLayoutPanel flowLayoutPanel2;
 		private PictureBox pictureBox1;
+		private ContextMenuStrip contextMenuStripRecent;
+		private ToolStripMenuItem toolStripItemClearSequences;
 	}
 }
 
