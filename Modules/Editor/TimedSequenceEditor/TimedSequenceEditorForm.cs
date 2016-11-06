@@ -4597,6 +4597,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 				
 				case Keys.S:
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("Start");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
@@ -4604,7 +4609,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 				case Keys.E:
-					
+
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("End");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
@@ -4613,7 +4623,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 					
 				case Keys.B:
-					
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("Both");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
