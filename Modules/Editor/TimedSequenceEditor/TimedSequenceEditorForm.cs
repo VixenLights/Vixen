@@ -6060,7 +6060,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 
-			foreach (Row row in TimelineControl.Rows)
+			foreach (Row row in TimelineControl.VisibleRows)
 			{
 				List<Element> elements = new List<Element>();
 
