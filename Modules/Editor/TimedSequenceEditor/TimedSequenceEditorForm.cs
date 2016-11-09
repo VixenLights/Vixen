@@ -3087,11 +3087,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				Marks(e.Time);
+				AddMarkAtTime(e.Time);
 			}
 		}
 
-		private void Marks(TimeSpan Time)
+		private void AddMarkAtTime(TimeSpan Time)
 		{
 			MarkCollection mc = null;
 			if (_sequence.MarkCollections.Count == 0)
@@ -4586,7 +4586,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case Keys.Space:
 					if (e.Shift)
 					{
-						if (TimingSource != null) Marks(TimingSource.Position);
+						if (TimingSource != null) AddMarkAtTime(TimingSource.Position);
 					}
 					else
 					{
