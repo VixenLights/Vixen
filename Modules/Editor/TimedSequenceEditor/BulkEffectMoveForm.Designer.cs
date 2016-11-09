@@ -42,6 +42,7 @@
 			this.radioButtonBackward = new System.Windows.Forms.RadioButton();
 			this.radioButtonForward = new System.Windows.Forms.RadioButton();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.checkBoxVisibleRows = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -128,7 +129,7 @@
 			this.btnOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnOk.Location = new System.Drawing.Point(111, 213);
+			this.btnOk.Location = new System.Drawing.Point(114, 216);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 7;
@@ -146,7 +147,7 @@
 			this.btnCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnCancel.Location = new System.Drawing.Point(205, 213);
+			this.btnCancel.Location = new System.Drawing.Point(208, 216);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 8;
@@ -160,9 +161,9 @@
 			this.groupBox1.Controls.Add(this.radioButtonBackward);
 			this.groupBox1.Controls.Add(this.radioButtonForward);
 			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox1.Location = new System.Drawing.Point(54, 117);
+			this.groupBox1.Location = new System.Drawing.Point(54, 103);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(184, 84);
+			this.groupBox1.Size = new System.Drawing.Size(184, 78);
 			this.groupBox1.TabIndex = 9;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Direction";
@@ -190,6 +191,16 @@
 			this.radioButtonForward.Text = "Forward";
 			this.radioButtonForward.UseVisualStyleBackColor = true;
 			// 
+			// checkBoxVisibleRows
+			// 
+			this.checkBoxVisibleRows.AutoSize = true;
+			this.checkBoxVisibleRows.Location = new System.Drawing.Point(63, 188);
+			this.checkBoxVisibleRows.Name = "checkBoxVisibleRows";
+			this.checkBoxVisibleRows.Size = new System.Drawing.Size(156, 19);
+			this.checkBoxVisibleRows.TabIndex = 10;
+			this.checkBoxVisibleRows.Text = "Process visible rows only";
+			this.checkBoxVisibleRows.UseVisualStyleBackColor = true;
+			// 
 			// BulkEffectMoveForm
 			// 
 			this.AcceptButton = this.btnOk;
@@ -199,6 +210,7 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(307, 255);
+			this.Controls.Add(this.checkBoxVisibleRows);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -237,6 +249,7 @@
 		private System.Windows.Forms.RadioButton radioButtonBackward;
 		private System.Windows.Forms.RadioButton radioButtonForward;
 		private System.Windows.Forms.ToolTip toolTip;
+		private System.Windows.Forms.CheckBox checkBoxVisibleRows;
 
 	}
 }
