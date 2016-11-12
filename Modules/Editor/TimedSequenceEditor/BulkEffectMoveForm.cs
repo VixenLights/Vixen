@@ -85,6 +85,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
+		public bool ProcessVisibleRows
+		{
+			get { return checkBoxVisibleRows.Checked; }
+		}
+		
 		private void txtStartTime_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
 		{
 			if (txtStartTime.MaskFull)

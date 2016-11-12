@@ -6025,7 +6025,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (dialog.ShowDialog() == DialogResult.OK)
 				{
-					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward?dialog.Offset:-dialog.Offset);
+					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward ? dialog.Offset : -dialog.Offset, dialog.ProcessVisibleRows);
 				}
 			}
 		}
