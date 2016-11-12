@@ -1290,7 +1290,7 @@ namespace Common.Controls.Timeline
 		} 
 
 		/// <summary>
-		/// Get a list of elements that contain the specified time.
+		/// Get a list of elements that contain the specified time in the Visible rows.
 		/// </summary>
 		/// <param name="time"></param>
 		/// <returns>List of Element</returns>
@@ -1739,7 +1739,7 @@ namespace Common.Controls.Timeline
 			if (Rows.IndexOf(destRow) == CurrentRowIndexUnderMouse)
 				return;
 
-			List<Row> visibleRows = new List<Row>(VisibleRows);
+			List<Row> visibleRows = VisibleRows;
 
 			int visibleRowsToMove = visibleRows.IndexOf(destRow) - visibleRows.IndexOf(Rows[CurrentRowIndexUnderMouse]);
 
