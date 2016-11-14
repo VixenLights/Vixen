@@ -4611,6 +4611,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 				
 				case Keys.S:
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("Start");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
@@ -4618,7 +4623,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 				case Keys.E:
-					
+
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("End");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
@@ -4627,7 +4637,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					break;
 					
 				case Keys.B:
-					
+					if (e.Shift & e.Control)
+					{
+						AlignEffectsToNearestMarks("Both");
+						break;
+					}
 					element = TimelineControl.grid.ElementAtPosition(MousePosition);
 					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
 					{
@@ -6048,19 +6062,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="alignMethod"></param>
 		private void AlignEffectsToNearestMarks(string alignMethod)
 		{
+			IEnumerable<Row> processRows;
 			if (!TimelineControl.grid.SelectedElements.Any())
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("This action will apply to your entire sequence, are you sure ?",
+				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",
 					@"Align effects to marks", true, false);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.No) return;
+				processRows = TimelineControl.Rows;
+			}
+			else
+			{
+				processRows = TimelineControl.VisibleRows;
 			}
 
 			Dictionary<Element, Tuple<TimeSpan, TimeSpan>> moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
 
-			foreach (Row row in TimelineControl.Rows)
+			foreach (Row row in processRows)
 			{
 				List<Element> elements = new List<Element>();
 
