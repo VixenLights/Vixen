@@ -82,6 +82,7 @@
 			// 
 			this.textBoxStartLetter.Location = new System.Drawing.Point(112, 8);
 			this.textBoxStartLetter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.textBoxStartLetter.MaxLength = 1;
 			this.textBoxStartLetter.Name = "textBoxStartLetter";
 			this.textBoxStartLetter.Size = new System.Drawing.Size(64, 26);
 			this.textBoxStartLetter.TabIndex = 0;
