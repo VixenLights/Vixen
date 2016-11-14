@@ -575,7 +575,7 @@ namespace VixenModules.Effect.Chase
 		{
 			EffectIntents result = null;
 			
-			bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
+			//bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
 			IIntentNode intent;
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {
@@ -584,14 +584,21 @@ namespace VixenModules.Effect.Chase
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
-						var iintentNode = result.FirstOrDefault().Value.FirstOrDefault();
-						GenerateStartingStaticPulse(target, iintentNode);
+						foreach (var effectIntent in result)
+						{
+							var iintentNode = effectIntent.Value.FirstOrDefault();
+							GenerateStartingStaticPulse(target, iintentNode);
+						}
+						
 					}	
 					_elementData.Add(result);
 					if (ExtendPulseToEnd && result.Count > 0)
 					{
-						var iintentNode = result.FirstOrDefault().Value.LastOrDefault();
-						GenerateExtendedStaticPulse(target, iintentNode);	
+						foreach (var effectIntent in result)
+						{
+							var iintentNode = effectIntent.Value.FirstOrDefault();
+							GenerateExtendedStaticPulse(target, iintentNode);
+						}
 					}
 					break;
 
@@ -601,7 +608,7 @@ namespace VixenModules.Effect.Chase
 					if (startPos < 0.0) startPos = 0.0;
 					if (endPos > 1.0) endPos = 1.0;
 
-					if (discreteColors) {
+					if (HasDiscreteColors) {
 						double range = endPos - startPos;
 						if (range <= 0.0) {
 							Logging.Error("Chase: bad range: " + range + " (SP=" + startPos + ", EP=" + endPos + ")");
@@ -666,7 +673,7 @@ namespace VixenModules.Effect.Chase
 					break;
 
 				case ChaseColorHandling.ColorAcrossItems:
-					if (discreteColors) {
+					if (HasDiscreteColors) {
 						List<Tuple<Color, float>> colorsAtPosition = ColorGradient.GetDiscreteColorsAndProportionsAt(currentMovementPosition / 100.0);
 						foreach (Tuple<Color, float> colorProportion in colorsAtPosition) {
 							float proportion = colorProportion.Item2;

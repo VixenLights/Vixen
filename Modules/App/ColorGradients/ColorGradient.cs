@@ -693,7 +693,8 @@ namespace VixenModules.App.ColorGradients
 		public List<Tuple<Color, float>> GetDiscreteColorsAndProportionsAt(float pos)
 		{
 			List<Tuple<Color, float>> rv = new List<Tuple<Color, float>>();
-
+			//Ensure we don't have a leftover bogus blend.
+			_blend = null;
 			ColorBlend blend = GetColorBlend();
 			pos = Clamp(pos);
 
