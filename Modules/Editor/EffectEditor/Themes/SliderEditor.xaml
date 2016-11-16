@@ -14,10 +14,12 @@
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
 		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+                SmallChange="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+                LargeChange="5"
 		        AutoToolTipPlacement="BottomRight"
 		        IsDirectionReversed="False"
 		        IsMoveToPointEnabled="True"
-		        IsSnapToTickEnabled="False"
+		        IsSnapToTickEnabled="True"
 		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
@@ -30,6 +32,8 @@
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
 		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+                SmallChange="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+                LargeChange="5"
 		        AutoToolTipPlacement="BottomRight"
 		        IsDirectionReversed="False"
 		        IsMoveToPointEnabled="True"
@@ -46,10 +50,12 @@
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
 		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+                SmallChange="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+                LargeChange="5"
 		        AutoToolTipPlacement="BottomRight"
 		        IsDirectionReversed="False"
 		        IsMoveToPointEnabled="True"
-		        IsSnapToTickEnabled="False"
+		        IsSnapToTickEnabled="True"
 		        IsEnabled="{Binding IsEditable}" />
 	</DataTemplate>
 
@@ -62,6 +68,8 @@
 		        Maximum="{Binding ParentProperty.Metadata[NumberRange].Maximum, FallbackValue=100}"
 		        TickFrequency="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
 		        AutoToolTipPrecision="{Binding ParentProperty.Metadata[NumberRange].Precision, FallbackValue=0}"
+                SmallChange="{Binding ParentProperty.Metadata[NumberRange].Tick, FallbackValue=1}"
+                LargeChange="5"
 		        AutoToolTipPlacement="BottomRight"
 		        IsDirectionReversed="False"
 		        IsMoveToPointEnabled="True"
