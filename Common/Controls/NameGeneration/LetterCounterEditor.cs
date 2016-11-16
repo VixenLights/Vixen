@@ -22,6 +22,7 @@ namespace Common.Controls.NameGeneration
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			_counter = counter;
+			textBoxStartLetter.KeyPress += new KeyPressEventHandler(textBoxStartLetter_KeyPress);
 		}
 
 		private void NumericCounterEditor_Load(object sender, EventArgs e)
@@ -34,6 +35,17 @@ namespace Common.Controls.NameGeneration
 		{
 			_counter.Count = (int) numericUpDownSteps.Value;
 			OnDataChanged();
+		}
+
+
+		private void textBoxStartLetter_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		{
+			// Check for a unwanted character in the KeyDown event.
+			if (System.Text.RegularExpressions.Regex.IsMatch(e.KeyChar.ToString(), @"[^A-Z^a-z^\b]"))
+			{
+				// Stop the character from being entered into the control since it is illegal.
+				e.Handled = true;
+			}
 		}
 
 		private void textBoxStartLetter_TextChanged(object sender, EventArgs e)
