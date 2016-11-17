@@ -6,11 +6,14 @@
 	<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
 	<converters:ExpanderHeaderWidthConverter x:Key="ExpanderHeaderWidthConverter" />
 	<converters:LevelValueConverter x:Key="LevelValueConverter" />
+    <converters:LevelToIntConverter x:Key="LevelToIntConverter" />
 	<converters:SystemColorToSolidBrushConverter x:Key="SystemColorToSolidBrushConverter" />
 	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 	<converters:BitmapImageConverter x:Key="BitmapImageConverter" />
 	<converters:PercentageValueConverter x:Key="PercentageValueConverter" />
+    <converters:PercentageToIntConverter x:Key="PercentageToIntConverter"/>
 	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
+    <converters:DoubleToIntConverter x:Key="DoubleToIntConverter" />
 	<converters:CurveToImageConverter x:Key="CurveToImageConverter" />
 	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter" />
 	<converters:DebugConverter x:Key="DebugConverter" />

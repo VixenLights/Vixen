@@ -207,6 +207,7 @@
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
+    <Compile Include="Converters\DoubleToIntConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
     <Compile Include="Converters\ExpanderHeaderWidthConverter.cs" />
     <Compile Include="Converters\FontConverterDecorator.cs" />
@@ -214,6 +215,8 @@
     <Compile Include="Converters\FontStyleConverterDecorator.cs" />
     <Compile Include="Converters\FontWeightConverterDecorator.cs" />
     <Compile Include="Converters\IntToDoubleConverter.cs" />
+    <Compile Include="Converters\LevelToIntConverter.cs" />
+    <Compile Include="Converters\PercentageToIntConverter.cs" />
     <Compile Include="Converters\PercentageValueConverter.cs" />
     <Compile Include="Converters\LevelValueConverter.cs" />
     <Compile Include="Converters\MultiBooleanToVisibilityConverter.cs" />
