@@ -1,6 +1,38 @@
 Vixen Release Notes - 3.3u2
 
-  See the bug tracker for bugs in Dev build fix version.
+General
+
+* Maintenance release for Vixen 3.3u1
+
+Bug Fixes / Features by ticket
+
+VIX-1886 The keyboard tick increment for the slider in the effect editor is to small to be useful.
+VIX-1883 Enter a non letter in the Add Multiple Elements Form in Display Setup Crashes Vixen
+VIX-1880 Extend pulse to start/end in chase with multi color gradient only sees the first color on discrete items.
+VIX-1873 Numerous areas in code that loops through all Rows and doesnt need to.
+VIX-1871 Maximum number of display recent squences
+VIX-1870 Description for the low and high pass filters are opposite to what it should be. Audio Effect
+VIX-1868 Config does not duplicate channel count
+VIX-1866 The Set Level effect can create intents on elements in a group that do not support the selected color.
+VIX-1865 LipSync matrix images dim
+VIX-1863 The Chase, Spin and Wipe effects can have issues with high element counts and shorter durations
+VIX-1862 Expanded element row does not retain change in row height
+VIX-1861 Vixen 3.3u1 Crash on Render Scheduled Sequence Show
+VIX-1860 Have Vixen make a backup copy of the config files before saving a new version of them.
+VIX-1859 Vixen crashing when loading music with non-ascii characters
+VIX-1170 High DPI and scaling issues in the Display setup.
+VIX-1169 Hitting enter in one of the Text Lines boxes causes the text entry box to disappear in the Text effect
+VIX-1168 The new audio effects do not work when played in a show scheduled in Vixen
+VIX-1165 Vixen crashes if the universe configuration is edited while the controller is stopped.
+VIX-1164 Picture Effect Bug
+VIX-1162 Brightness Curve on Alternating Effect does not give the results I expected
+VIX-1161 Using a garland on a grid with a Down Direction does not use all the rows
+VIX-1157 In the new Meteors effect, the meteors disappear as soon as the head of it reaches the end of the element rather than when the tail reaches it.
+VIX-1156 Hot keys for alginment to marks
+VIX-1155 Adding RGB color handling creates 5 channels instead of 3
+VIX-1152 Text effect does not honor the effect level curve when rendered by strings.
+VIX-1150 Add Shift+Spacebar to directly add Marks when sequence is playing.
+VIX-327 Show Pause for (seconds) not working
 
 Vixen Release Notes - 3.3u1
 
