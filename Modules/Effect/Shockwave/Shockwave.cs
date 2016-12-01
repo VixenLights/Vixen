@@ -82,7 +82,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderDisplayName(@"Start Radius")]
 		[ProviderDescription(@"The starting radius of the wave.")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 250, 1)]
+		[NumberRange(0, 750, 1)]
 		[PropertyOrder(5)]
 		public int StartRadius
 		{
@@ -100,7 +100,7 @@ namespace VixenModules.Effect.Shockwave
 		[ProviderDisplayName(@"End Radius")]
 		[ProviderDescription(@"The ending radius of the wave.")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 250, 1)]
+		[NumberRange(0, 750, 1)]
 		[PropertyOrder(6)]
 		public int EndRadius
 		{
