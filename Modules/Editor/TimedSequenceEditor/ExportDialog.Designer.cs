@@ -97,6 +97,7 @@
 			this.outputFormatComboBox.Size = new System.Drawing.Size(140, 24);
 			this.outputFormatComboBox.TabIndex = 10;
 			this.outputFormatComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
+			this.outputFormatComboBox.SelectedIndexChanged += new System.EventHandler(this.outputFormatComboBox_SelectedIndexChanged);
 			// 
 			// label4
 			// 
@@ -125,6 +126,7 @@
 			this.resolutionComboBox.Size = new System.Drawing.Size(61, 24);
 			this.resolutionComboBox.TabIndex = 12;
 			this.resolutionComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
+			this.resolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.resolutionComboBox_SelectedIndexChanged);
 			// 
 			// groupBox1
 			// 
