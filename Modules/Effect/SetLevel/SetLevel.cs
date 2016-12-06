@@ -125,7 +125,7 @@ namespace VixenModules.Effect.SetLevel
 			EffectIntents effectIntents = new EffectIntents();
 			foreach (ElementNode elementNode in node.GetLeafEnumerator())
 			{
-
+				IIntent intent;
 				if (HasDiscreteColors && IsElementDiscrete(elementNode))
 				{
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
@@ -133,9 +133,13 @@ namespace VixenModules.Effect.SetLevel
 					{
 						continue;
 					}
+					intent = CreateIntent(elementNode, Color, IntensityLevel, TimeSpan);
+				}
+				else
+				{
+					intent = CreateIntent(elementNode, Color, (float) HSV.FromRGB(Color).V*IntensityLevel, TimeSpan);
 				}
 
-				var intent = CreateIntent(elementNode, Color, (float)HSV.FromRGB(Color).V * IntensityLevel, TimeSpan);
 				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
 			}
 
