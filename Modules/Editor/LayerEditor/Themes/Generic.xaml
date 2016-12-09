@@ -159,7 +159,8 @@
                                                         Visibility="{Binding Converter={converters:DefaultLayerVisibilityConverter}}">
                                                     </ComboBox>
                                                     <!--<Label Grid.Column="0" Grid.Row="2" Margin="3" Visibility="{Binding LayerMixingFilter, Converter={converters:HasSetupVisibilityConverter}}">Configuration</Label>-->
-                                                    <Button Grid.Column="1" Grid.Row="2" Margin="3" Content="Configuration" Visibility="{Binding LayerMixingFilter, Converter={converters:HasSetupVisibilityConverter}}">
+                                                    <Button Grid.Column="1" Grid.Row="2" Margin="3" Content="Configuration" Visibility="{Binding LayerMixingFilter, Converter={converters:HasSetupVisibilityConverter}}"
+															Command="{x:Static commands:LayerEditorCommands.ConfigureLayer}" CommandParameter="{Binding LayerMixingFilter}">
                                                     </Button>
                                                 </Grid>
                                         </DockPanel>

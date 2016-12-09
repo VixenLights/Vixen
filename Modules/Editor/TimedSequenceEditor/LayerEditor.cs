@@ -24,6 +24,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			host.Child = _layerEditorView;
 
 			_layerEditorView.CollectionChanged += LayerEditorViewCollectionChanged;
+			_layerEditorView.LayerChanged += LayerEditorViewOnLayerChanged;
+		}
+
+		private void LayerEditorViewOnLayerChanged(object sender, EventArgs eventArgs)
+		{
+			if (LayersChanged != null)
+				LayersChanged(this, eventArgs);
 		}
 
 		private void LayerEditorViewCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -51,6 +58,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_layerEditorView != null)
 			{
 				_layerEditorView.CollectionChanged -= LayerEditorViewCollectionChanged;
+				_layerEditorView.LayerChanged -= LayerEditorViewOnLayerChanged;
 			}
 			base.Dispose(disposing);
 		}
