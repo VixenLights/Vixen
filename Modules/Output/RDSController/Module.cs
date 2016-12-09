@@ -86,7 +86,9 @@ namespace VixenModules.Output.CommandController
 				case Hardware.HTTP:
 					System.Threading.Tasks.Task.Factory.StartNew(() => {
 						try {
-							string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
+							//string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
+							//JC 11/27/16- replaced with line below to remove lowercase force
+							string url = RdsData.HttpUrl.Replace("{text}", HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							if (sendps) {
 								//TODO: Enable the sendps code here.
 							}
