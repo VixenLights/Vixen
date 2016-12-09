@@ -306,7 +306,9 @@ namespace VixenModules.App.SuperScheduler
 			// Do this in a task so we don't stop Vixen while pre-processing!
 			if (tokenSourcePreProcessAll == null || tokenSourcePreProcessAll.IsCancellationRequested)
 				tokenSourcePreProcessAll = new CancellationTokenSource();
-
+			
+			Show.LoadShowSequencesIntoShowItems(ShowItemType.All);
+			
 			var preProcessTask = new Task(a => PreProcessActionTask(),null, tokenSourcePreProcessAll.Token);
 			preProcessTask.ContinueWith(task => BeginStartup());
 

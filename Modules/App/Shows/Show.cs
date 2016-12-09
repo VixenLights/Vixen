@@ -3,6 +3,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using System;
+using Vixen.Services;
+using Vixen.Sys;
 
 namespace VixenModules.App.Shows
 {
@@ -48,6 +50,29 @@ namespace VixenModules.App.Shows
 			{
 				_items = value;
 			}
+		}
+
+		public void LoadShowSequencesIntoShowItems(ShowItemType type)
+		{
+			//Ensure we only have one copy of each sequence
+			var sequenceFileNames = new Dictionary<string, ISequence>();
+			foreach (ShowItem item in GetItems(type))
+			{
+				if (item.Sequence_FileName != null)
+				{
+					if (sequenceFileNames.ContainsKey(item.Sequence_FileName))
+					{
+						item.Sequence = sequenceFileNames[item.Sequence_FileName];
+					}
+					else
+					{
+						var sequence = SequenceService.Instance.Load(item.Sequence_FileName);
+						sequenceFileNames[item.Sequence_FileName] = sequence;
+						item.Sequence = sequence;
+					}
+				}
+			}
+
 		}
 
 		public List<ShowItem> GetItems(ShowItemType type)
