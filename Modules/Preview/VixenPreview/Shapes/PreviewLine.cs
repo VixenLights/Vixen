@@ -20,6 +20,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
+		    AddStartPadding = false;
 			ZoomLevel = zoomLevel;
 			AddPoint(PointToZoomPoint(point1));
 			AddPoint(PointToZoomPoint(point2));
@@ -218,10 +219,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_points != null && _points.Count > 0)
 			{
-				double xSpacing = (double)(_points[0].X - _points[1].X) / (double)(PixelCount - 1);
-				double ySpacing = (double)(_points[0].Y - _points[1].Y) / (double)(PixelCount - 1);
+			    var count = AddStartPadding ? PixelCount : PixelCount - 1;
+			    double xSpacing = (double)(_points[0].X - _points[1].X) / count;
+				double ySpacing = (double)(_points[0].Y - _points[1].Y) / count;
 				double x = _points[0].X;
 				double y = _points[0].Y;
+			    if (AddStartPadding)
+			    {
+			        x -= xSpacing;
+			        y -= ySpacing;
+			    }
 				foreach (PreviewPixel pixel in Pixels)
 				{
 					pixel.X = (int)Math.Round(x);
@@ -233,6 +240,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				SetPixelZoom();
 			}
 		}
+
+        [Browsable(false)]
+        public bool AddStartPadding { get; set; }
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{

@@ -46,11 +46,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     _strings.RemoveAt(Strings.Count - 1);
                 }
+
+                bool first = true;
                 while (_strings.Count < _stringCount)
                 {
                     PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), InitialLightsPerString, null, ZoomLevel);
                     line.Parent = this;
+                    line.AddStartPadding = !first;
                     _strings.Add(line);
+                    first = false;
                 }
             }
             get { return _stringCount; }
@@ -252,8 +256,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 for (int stringNum = 0; stringNum < StringCount; stringNum++)
                 {
-                    (Strings[stringNum] as PreviewLine).Point1 = _points[stringNum].ToPoint();
-                    (Strings[stringNum] as PreviewLine).Point2 = _points[stringNum + 1].ToPoint();
+                    var line = Strings[stringNum] as PreviewLine;
+                    line.AddStartPadding = stringNum > 0;
+                    line.Point1 = _points[stringNum].ToPoint();
+                    line.Point2 = _points[stringNum + 1].ToPoint();
                 }
 
                 SetPixelZoom();

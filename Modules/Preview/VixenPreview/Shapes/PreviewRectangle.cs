@@ -391,42 +391,56 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (_topLeft != null && _bottomRight != null)
 			{
-				// Start in the lower left corner and move clockwise around the rectangle.
-				if (Direction == Directions.CounterClockwise)
+               
+			    if (Direction == Directions.CounterClockwise)
 				{
-					(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
-					(Strings[0] as PreviewLine).Point2 = BottomRightPoint;
-					(Strings[0] as PreviewLine).Layout();
+                    // Start in the lower left corner and move counter clockwise around the rectangle.
+                    PreviewLine line = Strings[0] as PreviewLine;
+                    line.Point1 = BottomLeftPoint;
+                    line.Point2 = BottomRightPoint;
+                    line.Layout();
 
-					(Strings[1] as PreviewLine).Point1 = BottomRightPoint;
-					(Strings[1] as PreviewLine).Point2 = TopRightPoint;
-					(Strings[1] as PreviewLine).Layout();
+                    line = Strings[1] as PreviewLine;
+                    var ySpacing = (BottomRightPoint.Y - TopRightPoint.Y) / (line.PixelCount + 1);
+                    
+                    line.Point1 = new Point(BottomRightPoint.X, BottomRightPoint.Y - ySpacing);
+                    line.Point2 = new Point(TopRightPoint.X, TopRightPoint.Y + ySpacing);
+                    line.Layout();
 
-					(Strings[2] as PreviewLine).Point1 = TopRightPoint;
-					(Strings[2] as PreviewLine).Point2 = TopLeftPoint;
-					(Strings[2] as PreviewLine).Layout();
+                    line = Strings[2] as PreviewLine;
+                    line.Point1 = TopRightPoint;
+                    line.Point2 = TopLeftPoint;
+                    line.Layout();
 
-					(Strings[3] as PreviewLine).Point1 = TopLeftPoint;
-					(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
-					(Strings[3] as PreviewLine).Layout();
+                    line = Strings[3] as PreviewLine;
+                    line.Point1 = new Point(TopLeftPoint.X, TopLeftPoint.Y + ySpacing);
+                    line.Point2 = new Point(BottomLeftPoint.X, BottomLeftPoint.Y - ySpacing);
+                    line.Layout();
 				}
 				else
 				{
-					(Strings[0] as PreviewLine).Point1 = BottomLeftPoint;
-					(Strings[0] as PreviewLine).Point2 = TopLeftPoint;
-					(Strings[0] as PreviewLine).Layout();
+                    // Start in the lower left corner and move clockwise around the rectangle.
+                    PreviewLine line = Strings[0] as PreviewLine;
+                    line.Point1 = BottomLeftPoint;
+					line.Point2 = TopLeftPoint;
+					line.Layout();
+                    
+                    line = Strings[1] as PreviewLine;
+                    var xSpacing = (TopRightPoint.X - TopLeftPoint.X) / (line.PixelCount+1);
+                    line.Point1 = new Point(TopLeftPoint.X + xSpacing, TopLeftPoint.Y);
+					line.Point2 = new Point(TopRightPoint.X - xSpacing, TopRightPoint.Y);
+					line.Layout();
 
-					(Strings[1] as PreviewLine).Point1 = TopLeftPoint;
-					(Strings[1] as PreviewLine).Point2 = TopRightPoint;
-					(Strings[1] as PreviewLine).Layout();
+                    
+                    line = Strings[2] as PreviewLine;
+				    line.Point1 = TopRightPoint;
+				    line.Point2 = BottomRightPoint;
+					line.Layout();
 
-					(Strings[2] as PreviewLine).Point1 = TopRightPoint;
-					(Strings[2] as PreviewLine).Point2 = BottomRightPoint;
-					(Strings[2] as PreviewLine).Layout();
-
-					(Strings[3] as PreviewLine).Point1 = BottomRightPoint;
-					(Strings[3] as PreviewLine).Point2 = BottomLeftPoint;
-					(Strings[3] as PreviewLine).Layout();
+                    line = Strings[3] as PreviewLine;
+                    line.Point1 = new Point(BottomRightPoint.X - xSpacing, BottomRightPoint.Y);
+                    line.Point2 = new Point(BottomLeftPoint.X + xSpacing, BottomLeftPoint.Y);
+                    line.Layout();
 				}
 			}
 		}
