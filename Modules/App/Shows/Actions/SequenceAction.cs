@@ -119,12 +119,10 @@ namespace VixenModules.App.Shows
 
 		private void RenderEffect(IEffectNode node)
 		{
-			if (node.Effect.SupportsMedia)
+			if (node.Effect.IsDirty)
 			{
-				node.Effect.Media = _sequence.SequenceData.Media;
+				node.Effect.PreRender();
 			}
-
-			node.Effect.PreRender();
 		}
 
 		DateTime _lastSequenceDateTime = DateTime.Now;
