@@ -43,7 +43,7 @@ namespace Vixen.Services
 			}
 			// Find all files of those types in the data branch.
 			return
-				fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories)).ToArray();
+				fileTypes.SelectMany(x => Directory.GetFiles(Paths.DataRootPath, "*" + x, SearchOption.AllDirectories)).Where(s => fileTypes.Contains(Path.GetExtension(s))).ToArray();
 		}
 
 		public void Save(ISequence sequence, string filePath)
