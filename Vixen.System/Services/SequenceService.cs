@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Cache.Sequence;
 using Vixen.Module;
+using Vixen.Module.Media;
 using Vixen.Module.SequenceType;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -58,7 +60,20 @@ namespace Vixen.Services
 			if (string.IsNullOrWhiteSpace(filePath))
 				throw new InvalidOperationException("filePath must be a file name or path.");
 
-			return FileService.Instance.LoadSequenceFile(filePath);
+			ISequence sequence = FileService.Instance.LoadSequenceFile(filePath);
+
+			Parallel.ForEach(sequence.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => AddMedia(effectNode, sequence));
+			
+			return sequence;
+		}
+
+		private void AddMedia(IEffectNode effectNode, ISequence sequence)
+		{
+			if (effectNode.Effect.SupportsMedia)
+			{
+				effectNode.Effect.Media = sequence.SequenceData.Media;
+
+			}
 		}
 
 		public void SaveCache(ISequenceCache sequenceCache, string filePath)

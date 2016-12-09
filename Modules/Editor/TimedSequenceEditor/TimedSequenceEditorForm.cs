@@ -1196,7 +1196,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SuppressInvalidate = true; //Hold off invalidating the grid while we bulk load.
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
-				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData)));
+				//The sequence loader now adds the media to the effects on sequences it loads so we don't have to do it here.
+				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData, false)));
 
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
@@ -3719,14 +3720,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="nodes">The EffectNode to make element(s) in the grid for.</param>
-		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes)
+		/// <param name="assignMedia">Option to assign media to the effect nodes or not</param>
+		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes, bool assignMedia = true)
 		{
 			Dictionary<Row, List<Element>> rowMap =
 			_elementNodeToRows.SelectMany(x => x.Value).ToList().ToDictionary(x => x, x => new List<Element>());
 
 			foreach (EffectNode node in nodes)
 			{
-				if (node.Effect.SupportsMedia)
+				if (assignMedia && node.Effect.SupportsMedia)
 				{
 					node.Effect.Media = Sequence.SequenceData.Media;
 				}
