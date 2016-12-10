@@ -83,14 +83,18 @@ namespace VixenModules.Editor.LayerEditor
 
 		private void CanExecuteConfigureLayer(object sender, CanExecuteRoutedEventArgs canExecuteRoutedEventArgs)
 		{
-			ILayer layer = canExecuteRoutedEventArgs.Parameter as ILayer;
-			canExecuteRoutedEventArgs.CanExecute = layer != null && layer.LayerMixingFilter!= null && layer.LayerMixingFilter.HasSetup;
+			ILayerMixingFilterInstance layerMixingFilterInstance = canExecuteRoutedEventArgs.Parameter as ILayerMixingFilterInstance;
+			canExecuteRoutedEventArgs.CanExecute = layerMixingFilterInstance != null && layerMixingFilterInstance.HasSetup;
 		}
 
 		private void ConfigureLayer(object sender, ExecutedRoutedEventArgs executedRoutedEventArgs)
 		{
-			ILayer layer = executedRoutedEventArgs.Parameter as ILayer;
-			var success = layer.LayerMixingFilter.Setup();
+			ILayerMixingFilterInstance layerMixingFilterInstance = executedRoutedEventArgs.Parameter as ILayerMixingFilterInstance;
+			var success = layerMixingFilterInstance.Setup();
+			if (success)
+			{
+				OnLayerChanged(EventArgs.Empty);
+			}
 		}
 		#endregion
 
@@ -229,6 +233,13 @@ namespace VixenModules.Editor.LayerEditor
 		{
 			if (CollectionChanged != null)
 				CollectionChanged(this, args);
+		}
+
+		public event EventHandler<EventArgs> LayerChanged;
+		private void OnLayerChanged(EventArgs e)
+		{
+			if (LayerChanged != null)
+				LayerChanged(this, e);
 		}
 	}
 }
