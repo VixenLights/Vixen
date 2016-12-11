@@ -74,7 +74,14 @@ namespace VixenModules.App.SuperScheduler
 				Shows.Show show = ((comboBoxShow.SelectedItem as Common.Controls.ComboBoxItem).Value) as Shows.Show;
 				_scheduleItem.ShowID = show.ID;
 			}
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			else
+			{
+				var messageBox = new MessageBoxForm("You must select a Show to run.", "Schedule Error", MessageBoxButtons.OK,
+					SystemIcons.Error);
+				messageBox.ShowDialog();
+				return;
+			}
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 

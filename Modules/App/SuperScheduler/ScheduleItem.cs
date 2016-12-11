@@ -276,8 +276,16 @@ namespace VixenModules.App.SuperScheduler
 					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Stopping action: " + RunningActions[i].ShowItem.Name);
 					RunningActions[i].Stop();
 				}
-				Show.ReleaseAllActions();
-				ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopped immediately");
+				if (Show != null)
+				{
+					Show.ReleaseAllActions();
+					ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Show stopped immediately");
+				}
+				else
+				{
+					ScheduleExecutor.AddSchedulerLogEntry("No show selected", "Nothing to stop.");
+				}
+				
 			}
 		}
 
