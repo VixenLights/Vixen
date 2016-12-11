@@ -6321,14 +6321,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					switch (alignMethod)
 					{
 						case "Start":
-							nearestStartMark = FindNearestMark(element.StartTime);
+							nearestStartMark = FindNearestMark(element.StartTime, element.EndTime, alignMethod);
 							break;
 						case "End":
-							nearestEndMark = FindNearestMark(element.EndTime);
+							nearestEndMark = FindNearestMark(element.EndTime, element.StartTime, alignMethod);
 							break;
 						case "Both":
-							nearestStartMark = FindNearestMark(element.StartTime);
-							nearestEndMark = FindNearestMark(element.EndTime);
+							nearestStartMark = FindNearestMark(element.StartTime, element.EndTime, "Start");
+							nearestEndMark = FindNearestMark(element.EndTime, nearestStartMark, "End");
 							break;
 					}
 					if (nearestStartMark != TimeSpan.Zero && !moveElements.ContainsKey(element) && nearestEndMark != TimeSpan.Zero && !moveElements.ContainsKey(element))
@@ -6353,36 +6353,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Located within the threshhold: AlignTo_Threshold
 		/// </summary>
 		/// <param name="referenceTimeSpan"></param>
+		/// <param name="referenceTimeSpan1"></param>
+		/// <param name="alignMethod"></param>
 		/// <returns></returns>
-		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan)
+		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan, TimeSpan referenceTimeSpan1, string alignMethod)
 		{
 			List<TimeSpan> marksInRange = new List<TimeSpan>();
 			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(AlignTo_Threshold));
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
-			foreach (TimeSpan markTime in _sequence.MarkCollections.SelectMany(markCollection => markCollection.Marks))
+			foreach (var markCollection in _sequence.MarkCollections)
 			{
-				if (markTime == referenceTimeSpan)
+				if (markCollection.Enabled)
 				{
-					return markTime; //That was easy
-				}
+					foreach (var markTime in markCollection.Marks)
+					{
+						if (markTime == referenceTimeSpan)
+						{
+							return markTime; //That was easy
+						}
 
-				if (markTime > referenceTimeSpan - threshold && markTime < referenceTimeSpan + threshold)
-				{
-					marksInRange.Add(markTime);
+						if (markTime > referenceTimeSpan - threshold && markTime < referenceTimeSpan + threshold)
+						{
+							marksInRange.Add(markTime);
+						}
+						marksInRange.Add(markTime);
+					}
 				}
 			}
 
 			foreach (TimeSpan markTime in marksInRange)
 			{
-				if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
+				if (markTime > referenceTimeSpan && (alignMethod == "Start" && markTime < referenceTimeSpan1 || alignMethod == "End" && markTime > referenceTimeSpan1) && markTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
 				{
 					compareResult = markTime - referenceTimeSpan;
 					result = markTime;
 				}
 
-				if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult.Duration() || result == TimeSpan.Zero)
+				if (markTime < referenceTimeSpan && (alignMethod == "Start" && markTime < referenceTimeSpan1 || alignMethod == "End" && markTime > referenceTimeSpan1) && referenceTimeSpan - markTime < compareResult.Duration() || result == TimeSpan.Zero)
 				{
 					compareResult = referenceTimeSpan - markTime;
 					result = markTime;
