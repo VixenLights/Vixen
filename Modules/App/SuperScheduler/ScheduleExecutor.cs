@@ -176,7 +176,10 @@ namespace VixenModules.App.SuperScheduler
 
 			foreach (ScheduleItem item in Data.Items)
 			{
-				item.Stop(gracefully);
+				if (item.State != StateType.Waiting)
+				{
+					item.Stop(gracefully);
+				}
 			}
 		}
 
