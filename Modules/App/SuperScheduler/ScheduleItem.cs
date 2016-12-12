@@ -143,7 +143,7 @@ namespace VixenModules.App.SuperScheduler
 
 				if (result < StartTime)
 				{
-					result = _endTime.AddDays(1);
+					result = result.AddDays(1);
 				}
 				return result;
 			}
