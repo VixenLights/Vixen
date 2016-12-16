@@ -15,8 +15,7 @@ namespace VixenModules.App.Shows
 	{
 		private ISequenceContext _sequenceContext = null;
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private ISequence _sequence = null;
-
+		
 		public SequenceAction(ShowItem showItem)
 			: base(showItem)
 		{
@@ -83,17 +82,17 @@ namespace VixenModules.App.Shows
 						DisposeCurrentContext();
 					}
 
-					_sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
+					//_sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
 
 					//Initialize the media if we have it so any audio effects can be rendered 
 					LoadMedia();
 					// Why doesn't this work?
 					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
-					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), _sequence);
+					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), ShowItem.Sequence);
 
 					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
 					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
-					Parallel.ForEach(_sequence.SequenceData.EffectData.Cast<IEffectNode>(), RenderEffect);
+					Parallel.ForEach(ShowItem.Sequence.SequenceData.EffectData.Cast<IEffectNode>(), RenderEffect);
 
 					context.SequenceEnded += sequence_Ended;
 
@@ -109,7 +108,7 @@ namespace VixenModules.App.Shows
 
 		private void LoadMedia()
 		{
-			var sequenceMedia = _sequence.GetAllMedia();
+			var sequenceMedia = ShowItem.Sequence.GetAllMedia();
 			if (sequenceMedia != null && sequenceMedia.Any())
 				foreach (IMediaModuleInstance media in sequenceMedia)
 				{
@@ -150,7 +149,7 @@ namespace VixenModules.App.Shows
 			{
 				_sequenceContext.SequenceEnded -= sequence_Ended;
 				VixenSystem.Contexts.ReleaseContext(_sequenceContext);
-				var tSequence = (_sequence as TimedSequence);
+				var tSequence = (ShowItem.Sequence as TimedSequence);
 				if (tSequence != null)
 				{
 					tSequence.Dispose();
@@ -166,7 +165,7 @@ namespace VixenModules.App.Shows
 				DisposeCurrentContext();
 				
 			}
-			_sequence = null;
+			ShowItem.Sequence = null;
 			_sequenceContext = null;
 			base.Dispose(disposing);
 		}

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Sys;
 
 namespace VixenModules.App.Shows
 {
@@ -142,6 +143,8 @@ namespace VixenModules.App.Shows
 			}
 			return currentAction;
 		}
+
+		public ISequence Sequence { get; set; }
 
 		public object Clone()
 		{
