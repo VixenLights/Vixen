@@ -180,6 +180,10 @@ namespace VixenApplication
 			}
 			
 			labelDebugVersion.Visible = true;
+
+			//Log the runtime versions 
+			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof (int).Assembly.Location).ProductVersion;
+			Logging.Info(".NET Runtime is: {0}", runtimeVersion);
 		}
 
 		private void CheckForTestBuild()

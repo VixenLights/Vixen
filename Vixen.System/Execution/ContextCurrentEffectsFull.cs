@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Vixen.Execution.DataSource;
 using Vixen.Sys;
 
@@ -11,6 +12,7 @@ namespace Vixen.Execution
 	/// </summary>
 	internal class ContextCurrentEffectsFull : List<IEffectNode> ,IContextCurrentEffects
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
 		private bool _reset = false;
 
@@ -23,6 +25,7 @@ namespace Vixen.Execution
 			if (_lastUpdateTime > currentTime)
 			{
 				//Make sure the current effects are cleared if we go back to a earlier time.
+				Logging.Info("Last time is > current time. Resetting effect list. Last time: {0}, Current time: {1}", _lastUpdateTime, currentTime);
 				Clear();
 			}
 			_lastUpdateTime = currentTime;
@@ -41,6 +44,7 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
+			Logging.Info("Current effects reset requested.");
 			_reset = true;
 		}
 
@@ -55,28 +59,30 @@ namespace Vixen.Execution
 			{
 				Clear();
 				_reset = false;
+				Logging.Info("Current effects reset request satisfied.");
 				return;
 			}
 			// Remove expired effects.
-			foreach (var effectNode1 in this.ToArray())
+			var nodes = ToArray();
+			for (int i = nodes.Length - 1; i >= 0; i--)
 			{
-				var effectNode = (EffectNode)effectNode1;
-				if (_IsExpired(currentTime, effectNode))
+				if (_IsExpired(currentTime, this[i]))
 				{
-					Remove(effectNode);
+					RemoveAt(i);
 				}
 			}
 		}
 
 		public void RemoveEffects(IEnumerable<IEffectNode> nodes)
 		{
+			Logging.Info("Remove {0} effects requested.", nodes.Count());
 			foreach (var effectNode in nodes)
 			{
 				Remove(effectNode);
 			}
 		}
 
-		private bool _IsExpired(TimeSpan currentTime, EffectNode effectNode)
+		private bool _IsExpired(TimeSpan currentTime, IEffectNode effectNode)
 		{
 			return currentTime > effectNode.EndTime;
 		}
