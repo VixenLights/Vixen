@@ -161,6 +161,7 @@ namespace Vixen.Execution.Context
 
 		private void _sequenceExecutor_SequenceReStarted(object sender, SequenceStartedEventArgs e)
 		{
+			CurrentEffects.Reset();
 			OnSequenceReStarted(e);
 		}
 

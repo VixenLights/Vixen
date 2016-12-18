@@ -41,8 +41,6 @@ namespace Vixen.Sys
 			get { return Effect == null; }
 		}
 
-		public static readonly EffectNode Empty = new EffectNode();
-
 		#region IComparable<IEffectNode>
 
 		public int CompareTo(IEffectNode other)
