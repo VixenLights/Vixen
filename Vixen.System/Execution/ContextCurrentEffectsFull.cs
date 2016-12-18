@@ -15,6 +15,7 @@ namespace Vixen.Execution
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
 		private bool _reset = false;
+		private static TimeSpan _buffer = TimeSpan.FromMilliseconds(250);
 
 		/// <summary>
 		/// Updates the collection of current effects, returning the ids of the affected elements.
@@ -22,7 +23,7 @@ namespace Vixen.Execution
 		/// <returns>Ids of the affected elements.</returns>
 		public bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
-			if (_lastUpdateTime > currentTime)
+			if (_lastUpdateTime - _buffer > currentTime)
 			{
 				//Make sure the current effects are cleared if we go back to a earlier time.
 				Logging.Info("Last time is > current time. Resetting effect list. Last time: {0}, Current time: {1}", _lastUpdateTime, currentTime);
