@@ -13,9 +13,7 @@ namespace Vixen.Execution
 	internal class ContextCurrentEffectsFull : List<IEffectNode> ,IContextCurrentEffects
 	{
 		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private TimeSpan _lastUpdateTime = TimeSpan.Zero;
-		private bool _reset = false;
-		private static TimeSpan _buffer = TimeSpan.FromMilliseconds(250);
+		private bool _reset;
 
 		/// <summary>
 		/// Updates the collection of current effects, returning the ids of the affected elements.
@@ -23,13 +21,12 @@ namespace Vixen.Execution
 		/// <returns>Ids of the affected elements.</returns>
 		public bool UpdateCurrentEffects(IDataSource dataSource, TimeSpan currentTime)
 		{
-			if (_lastUpdateTime - _buffer > currentTime)
+			if (_reset)
 			{
-				//Make sure the current effects are cleared if we go back to a earlier time.
-				Logging.Info("Last time is > current time. Resetting effect list. Last time: {0}, Current time: {1}", _lastUpdateTime, currentTime);
-				Clear();
+				Logging.Info("Resetting effect list. Current time: {0}", currentTime);
+				ResetEffectList();
 			}
-			_lastUpdateTime = currentTime;
+
 			// Get the effects that are newly qualified.
 			IEnumerable<IEffectNode> newQualifiedEffects = dataSource.GetDataAt(currentTime);
 			// Add them to the current effect list.
@@ -54,15 +51,15 @@ namespace Vixen.Execution
 			return _reset;
 		}
 
+		private void ResetEffectList()
+		{
+			Clear();
+			_reset = false;
+			Logging.Info("Current effects reset request satisfied.");
+		}
+
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
 		{
-			if (_reset)
-			{
-				Clear();
-				_reset = false;
-				Logging.Info("Current effects reset request satisfied.");
-				return;
-			}
 			// Remove expired effects.
 			var nodes = ToArray();
 			for (int i = nodes.Length - 1; i >= 0; i--)
@@ -76,7 +73,6 @@ namespace Vixen.Execution
 
 		public void RemoveEffects(IEnumerable<IEffectNode> nodes)
 		{
-			Logging.Info("Remove {0} effects requested.", nodes.Count());
 			foreach (var effectNode in nodes)
 			{
 				Remove(effectNode);
