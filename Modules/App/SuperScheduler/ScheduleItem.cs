@@ -306,15 +306,21 @@ namespace VixenModules.App.SuperScheduler
 			// Do this in a task so we don't stop Vixen while pre-processing!
 			if (tokenSourcePreProcessAll == null || tokenSourcePreProcessAll.IsCancellationRequested)
 				tokenSourcePreProcessAll = new CancellationTokenSource();
+
+			var loadSequencesTask = new Task(load => LoadShowSequences(), null, tokenSourcePreProcessAll.Token);
 			
+			var preProcessTask = loadSequencesTask.ContinueWith(a => PreProcessActionTask(),tokenSourcePreProcessAll.Token);
+
+			preProcessTask.ContinueWith(task => BeginStartup(), tokenSourcePreProcessAll.Token);
+
+			loadSequencesTask.Start();
+
+		}
+
+		private void LoadShowSequences()
+		{
+			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Loading Sequences");
 			Show.LoadShowSequencesIntoShowItems(ShowItemType.All);
-			
-			var preProcessTask = new Task(a => PreProcessActionTask(),null, tokenSourcePreProcessAll.Token);
-			preProcessTask.ContinueWith(task => BeginStartup());
-
-			preProcessTask.Start();
-
-			//BeginStartup();
 		}
 
 		private void PreProcessActionTask()
