@@ -46,12 +46,13 @@ namespace VixenModules.App.Shows
 				} 
 
 				AppCommand rootCommand = new AppCommand("ShowEditor", "Shows"); 
-				rootCommand.Click += (sender, e) =>
+				rootCommand.Click += async (sender, e) =>
 				{
 					using (ShowListForm form = new ShowListForm(_data))
 					{
 						if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 						{
+							await VixenSystem.SaveModuleConfig();
 						}
 					}
 				};

@@ -152,6 +152,19 @@ namespace Vixen.Sys
 			return taskQueue;
 		}
 
+		public static async Task<bool> SaveModuleConfig()
+		{
+			
+			if (ModuleStore != null)
+			{
+				Task t = Task.Factory.StartNew(() => ModuleStore.Save());
+				await t;
+				return true;
+			}
+			return false;
+
+		} 
+
 		public static void LoadSystemConfig()
 		{
 			Execution.initInstrumentation();
