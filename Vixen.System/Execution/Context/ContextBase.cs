@@ -33,7 +33,6 @@ namespace Vixen.Execution.Context
 
 		public void Start()
 		{
-			Logging.Info("Context {0} starting", Name);
 			try {
 				_OnStart();
 				IsRunning = true;
@@ -62,7 +61,6 @@ namespace Vixen.Execution.Context
 		public void Stop()
 		{
 			if (IsRunning) {
-				Logging.Info("Context {0} stopping", Name);
 				_OnStop();
 				IsPaused = false;
 				IsRunning = false;
@@ -166,7 +164,6 @@ namespace Vixen.Execution.Context
 
 		protected virtual void OnContextStarted(EventArgs e)
 		{
-			Logging.Info("Context {0} started", Name);
 			if (ContextStarted != null) {
 				ContextStarted(this, e);
 			}
@@ -174,7 +171,6 @@ namespace Vixen.Execution.Context
 
 		protected virtual void OnContextEnded(EventArgs e)
 		{
-			Logging.Info("Context {0} ended", Name);
 			if (ContextEnded != null) {
 				ContextEnded(this, e);
 			}

@@ -6,7 +6,6 @@ namespace Vixen.Execution.Context
 {
 	internal abstract class SequenceContext : ContextBase, ISequenceContext
 	{
-		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private ISequenceExecutor _sequenceExecutor;
 		private ISequence _sequence;
 
@@ -31,7 +30,6 @@ namespace Vixen.Execution.Context
 		{
 			if (_sequenceExecutor == null)
 				throw new InvalidOperationException("Attempt to start a sequence without an executor.");
-			Logging.Info("Context {0} playing", Name);
 			_sequenceExecutor.Play(startTime, endTime);
 		}
 
@@ -39,7 +37,6 @@ namespace Vixen.Execution.Context
 		{
 			if (_sequenceExecutor == null)
 				throw new InvalidOperationException("Attempt to start a sequence without an executor.");
-			Logging.Info("Context {0} playing loop", Name);
 			_sequenceExecutor.PlayLoop(startTime, endTime);	
 		}
 
