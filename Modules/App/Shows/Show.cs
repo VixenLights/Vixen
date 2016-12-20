@@ -58,7 +58,7 @@ namespace VixenModules.App.Shows
 			var sequenceFileNames = new Dictionary<string, ISequence>();
 			foreach (ShowItem item in GetItems(type))
 			{
-				if (item.Sequence_FileName != null)
+				if (item.Action == ActionType.Sequence && item.Sequence_FileName != null)
 				{
 					if (sequenceFileNames.ContainsKey(item.Sequence_FileName))
 					{

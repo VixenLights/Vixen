@@ -8,6 +8,7 @@ namespace VixenModules.App.Shows
 {
 	public class LaunchAction: Action
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Process process = null;
 
 		public LaunchAction(ShowItem showItem)
@@ -43,7 +44,16 @@ namespace VixenModules.App.Shows
 				}
 			});
 
-			process.Start();
+			try
+			{
+				process.Start();
+			}
+			catch (Exception e)
+			{
+				Logging.Error("An error occured during launch event.", e);
+				ResultString = e.Message;
+				Complete();
+			}
 
 			// If we're not waiting for the exit to return control, signal that this process is coplete
 			if (!ShowItem.Launch_WaitForExit)
