@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Common.Controls;
+using Vixen.Sys;
 
 namespace VixenApplication
 {
@@ -51,6 +52,11 @@ namespace VixenApplication
 		{
 			// Since we can't prevent the app from terminating, log this to the event log. 
 			Logging.Fatal(ErrorMsg, ex);
+			if (VixenSystem.IsSaving())
+			{
+				Logging.Fatal("Save was in progress during the fatal crash. Trying to pause 5 seconds to give it a chance to complete.");
+				Thread.Sleep(5000);
+			}
 			if (_app != null)
 			{
 				_app.RemoveLockFile();

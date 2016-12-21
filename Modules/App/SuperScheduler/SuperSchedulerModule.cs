@@ -109,13 +109,13 @@ namespace VixenModules.App.SuperScheduler
 			AppCommand schedulerMenu = GetSchedulerMenu();
 
 			AppCommand showCommand = new AppCommand("SuperSchedulerCreateSchedule", "Schedules");
-			showCommand.Click += async (sender, e) =>
+			showCommand.Click += (sender, e) =>
 			{
 				using (SetupForm form = new SetupForm(_data))
 				{
 					if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
-						await VixenSystem.SaveModuleConfig();
+
 					}
 				}
 			};

@@ -11,6 +11,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
+using Vixen.Sys;
 
 namespace VixenModules.App.SuperScheduler
 {
@@ -150,7 +151,7 @@ namespace VixenModules.App.SuperScheduler
 			ScheduleItem item = new ScheduleItem();
 			using (SetupScheduleForm f = new SetupScheduleForm(item))
 			{
-				if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				if (f.ShowDialog() == DialogResult.OK)
 				{
 					Data.Items.Add(item);
 					AddListItem(item);
@@ -158,7 +159,7 @@ namespace VixenModules.App.SuperScheduler
 			}
 		}
 
-		private void EditCurrentItem()
+		private async void EditCurrentItem()
 		{
 			if (listViewItems.SelectedItems.Count == 1)
 			{
@@ -166,15 +167,16 @@ namespace VixenModules.App.SuperScheduler
 				ScheduleItem scheduleItem = lvItem.Tag as ScheduleItem;
 				using (SetupScheduleForm f = new SetupScheduleForm(scheduleItem))
 				{
-					if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					if (f.ShowDialog() == DialogResult.OK)
 					{
 						UpdateListItem(scheduleItem);
+						await VixenSystem.SaveModuleConfigAsync();
 					}
 				}
 			}
 		}
 
-		private void DeleteCurrentItem()
+		private async void DeleteCurrentItem()
 		{
 			if (listViewItems.SelectedItems.Count == 1)
 			{
@@ -188,6 +190,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					listViewItems.Items.Remove(lvItem);
 					Data.Items.Remove(scheduleItem);
+					await VixenSystem.SaveModuleConfigAsync();
 				}
 			}
 		}
