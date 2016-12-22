@@ -75,6 +75,12 @@ namespace Vixen.Sys
 						Execution.OpenExecution();
 					}
 
+					var temp = Modules.ModuleManagement.GetEffect(new Guid("{32cff8e0-5b10-4466-a093-0d232c55aac0}"));
+					if (temp == null)
+					{
+						Logging.Error("Module Management init error!");
+					}
+
 					_state = RunState.Started;
 					Logging.Info("Vixen System successfully started.");
 				}

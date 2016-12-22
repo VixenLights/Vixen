@@ -7,6 +7,7 @@ using System.Drawing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Vixen.Sys;
 using VixenModules.App.Shows;
 
 namespace VixenModules.App.SuperScheduler
@@ -319,8 +320,9 @@ namespace VixenModules.App.SuperScheduler
 
 		private void LoadShowSequences()
 		{
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Loading Sequences");
+			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-Loading Sequences");
 			Show.LoadShowSequencesIntoShowItems(ShowItemType.All);
+			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Pre-Loading Sequences completed");
 		}
 
 		private void PreProcessActionTask()

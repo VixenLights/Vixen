@@ -144,15 +144,6 @@ namespace VixenModules.App.Shows
 			return currentAction;
 		}
 
-		[NonSerialized]
-		private ISequence _sequence;
-
-		public ISequence Sequence
-		{
-			get { return _sequence; } 
-			set { _sequence = value; }
-		}
-
 		public object Clone()
 		{
 			return ObjectCopier.Clone(this);

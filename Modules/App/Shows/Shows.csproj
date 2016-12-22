@@ -116,6 +116,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SequenceManager.cs" />
     <Compile Include="Show.cs" />
     <Compile Include="ShowEditorForm.cs">
       <SubType>Form</SubType>

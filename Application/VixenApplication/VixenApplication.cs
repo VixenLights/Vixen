@@ -34,7 +34,7 @@ namespace VixenApplication
 		private string _rootDataDirectory;
 		private CpuUsage _cpuUsage;
 		private bool _perfCountersAvailable;
-
+		
 		private VixenApplicationData _applicationData;
 
 		public VixenApplication()
