@@ -165,31 +165,37 @@ namespace VixenModules.Output.GenericSerial
 					_retryCounter = 0;
 					_retryTimer.Stop();
 
-					Logging.Info(
-						string.Format("Serial Port conflict has been corrected, starting controller {0} on port {1}.", _Data.ModuleTypeId,
-						              _SerialPort.PortName));
+					Logging.Info("Serial Port conflict has been corrected, starting controller type {0} on port {1}.", _Data.ModuleTypeId, _SerialPort.PortName);
 				}
 			}
 			catch (Exception ex) {
 				if (ex is UnauthorizedAccessException ||
 				    ex is InvalidOperationException ||
-				    ex is IOException) {
-					Logging.Error(String.Format("{0} is in use.  Starting controller retry timer for {1}",
-					                                                  _SerialPort.PortName, _Data.ModuleTypeId));
+				    ex is IOException)
+				{
+					Logging.Error("{0} could not be opened because {1}.  Starting controller retry timer for controller type {2}",
+						_SerialPort.PortName, ex.Message, _Data.ModuleTypeId);
 					Stop();
 					//lets set our retry timer
-					if (_retryCounter < 3) {
+					if (_retryCounter < 3)
+					{
 						_retryCounter++;
 						_retryTimer.Start();
 						Logging.Info("Starting retry counter for com port access. Retry count is " + _retryCounter);
 					}
-					else {
+					else
+					{
 						Logging.Info(
 							"Retry counter for com port access has exceeded max tries.  Controller has been stopped.");
 						_retryTimer.Stop();
 						_retryCounter = 0;
 					}
 				}
+				else
+				{
+					Logging.Error(String.Format("{0} could not be opened.", _SerialPort.PortName), ex);
+				}
+
 			}
 		}
 
