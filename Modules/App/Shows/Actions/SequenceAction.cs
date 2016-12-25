@@ -75,7 +75,6 @@ namespace VixenModules.App.Shows
 
 			try
 			{
-				//Console.WriteLine("PreProcess: " + ShowItem.Name + " : " + (_sequenceContext == null));
 				if (_sequenceContext == null || SequenceChanged())
 				{
 					if (_sequenceContext != null)
@@ -86,22 +85,34 @@ namespace VixenModules.App.Shows
 					var entry = SequenceManager.GetSequenceAsync(ShowItem.Sequence_FileName);
 					entry.Wait();
 					var sequenceEntry = entry.Result;
-					if (sequenceEntry == null || sequenceEntry.Sequence == null)
+
+					if (sequenceEntry == null)
 					{
-						Logging.Error("Failed to preprocess sequence because it could not be retrieved.");
+						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.", ShowItem.Name);
+						return;
+					}
+
+					//Give up to 30 seconds for the sequence to load.
+					int retryCount = 0;
+					while (sequenceEntry.SequenceLoading && retryCount<30)
+					{
+						retryCount++;
+						Logging.Info("Waiting for sequence to load. {1}", ShowItem.Name);
+						Thread.Sleep(1);
+					}
+
+					if (sequenceEntry.Sequence == null)
+					{
+						Logging.Error("Failed to preprocess sequence {1} because it could not be loaded.", ShowItem.Name);
 						return;
 					}
 					_sequence = sequenceEntry.Sequence;
-					//_sequence = SequenceService.Instance.Load(ShowItem.Sequence_FileName);
-
+					
 					//Initialize the media if we have it so any audio effects can be rendered 
 					LoadMedia();
-					// Why doesn't this work?
-					//IContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.ContextLevelCaching), sequence);
+					
 					ISequenceContext context = VixenSystem.Contexts.CreateSequenceContext(new ContextFeatures(ContextCaching.NoCaching), _sequence);
 
-					// Parallel doesn't work here. Causes multiple sequences to be run at the same time
-					//foreach (IEffectNode effectNode in sequence.SequenceData.EffectData.Cast<IEffectNode>())
 					Parallel.ForEach(_sequence.SequenceData.EffectData.Cast<IEffectNode>(), RenderEffect);
 
 					context.SequenceEnded += sequence_Ended;
@@ -112,7 +123,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception ex)
 			{
-				Logging.ErrorException("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
+				Logging.Error("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
 			}
 		}
 

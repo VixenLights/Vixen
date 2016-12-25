@@ -53,22 +53,6 @@ namespace VixenModules.App.Shows
 			}
 		}
 
-		public void LoadShowSequencesIntoShowItems(ShowItemType type)
-		{
-			//Ensure we only have one copy of each sequence
-			var tasks = new List<Task>();
-			foreach (ShowItem item in GetItems(type))
-			{
-				if (item.Action == ActionType.Sequence && item.Sequence_FileName != null)
-				{
-					tasks.Add(SequenceManager.PreLoadSequenceAsync(item.Sequence_FileName));
-				}
-			}
-
-			Task.WaitAll(tasks.ToArray());
-
-		}
-
 		public List<ShowItem> GetItems(ShowItemType type)
 		{
 			List<ShowItem> items = new List<ShowItem>();
