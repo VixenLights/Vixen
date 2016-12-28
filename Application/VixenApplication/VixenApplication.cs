@@ -10,6 +10,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
+using System.Threading;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -19,12 +20,17 @@ using Common.Resources.Properties;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Timer = System.Windows.Forms.Timer;
 
 namespace VixenApplication
 {
 	public partial class VixenApplication : BaseForm, IApplication
 	{
 		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
+		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
+									"with the following information:\n\n";
+
+		private const string LockFile = ".lock";
 
 		private Guid _guid = new Guid("7b903272-73d0-416c-94b1-6932758b1963");
 		private bool stopping;
@@ -67,9 +73,21 @@ namespace VixenApplication
 			StartJITProfiler();
 
 			if (_rootDataDirectory == null)
+			{
 				ProcessProfiles();
+			}
 
 			_applicationData = new VixenApplicationData(_rootDataDirectory);
+
+			_rootDataDirectory = _applicationData.DataFileDirectory;
+
+			if (!CreateLockFile())
+			{
+				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.","Error",MessageBoxButtons.OK, SystemIcons.Error);
+				form.ShowDialog();
+				form.Dispose(); 
+				Environment.Exit(0);
+			}
 
 			stopping = false;
 			PopulateVersionStrings();
@@ -91,6 +109,75 @@ namespace VixenApplication
 			toolsMenu.Add(myMenu);
 
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
+		}
+
+		private bool CreateLockFile()
+		{
+			bool success = false;
+			try
+			{
+				if (Directory.Exists(_rootDataDirectory))
+				{
+					var lockFilePath = Path.Combine(_rootDataDirectory, LockFile);
+					if (!File.Exists(lockFilePath))
+					{
+						File.Create(lockFilePath).Close();
+						success = true;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error("An error occured creating the profile lock file.", e);
+			}
+
+			return success;
+		}
+
+		internal bool RemoveLockFile()
+		{
+			bool success = false;
+			try
+			{
+				if (Directory.Exists(_rootDataDirectory))
+				{
+					var lockFilePath = Path.Combine(_rootDataDirectory, LockFile);
+					if (File.Exists(lockFilePath))
+					{
+						File.Delete(lockFilePath);
+						success = true;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error("An error occured removing the profile lock file.", e);
+			}
+
+			return success;
+		}
+
+		internal static bool IsProfileLocked(string path)
+		{
+			bool locked = false;
+			try
+			{
+				if (Directory.Exists(path))
+				{
+					var lockFilePath = Path.Combine(path, LockFile);
+					if (File.Exists(lockFilePath))
+					{
+						locked = true;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error("An error occured checking the profile lock file.", e);
+				locked = true;  //If we cannot determine if it is locked, then we can't assume it isn't.
+			}
+
+			return locked;
 		}
 
 		private void StartJITProfiler()
@@ -122,6 +209,7 @@ namespace VixenApplication
 			VixenSystem.Stop();
 
 			_applicationData.SaveData();
+			RemoveLockFile();
 			Application.Exit();
 		}
 
@@ -237,7 +325,8 @@ namespace VixenApplication
 			if (loadAction != "Ask" && profileToLoad > -1 && profileToLoad < profileCount)
 			{
 				string directory = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/DataFolder", string.Empty);
-				if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+				var isLocked = IsProfileLocked(directory);
+				if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory) && !isLocked)
 				{
 					_rootDataDirectory = directory;
 					string profileName = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
@@ -246,13 +335,7 @@ namespace VixenApplication
 				else
 				{
 					string name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + profileToLoad + "/Name", string.Empty);
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Selected profile '" + name + "' data directory does not exist!" + Environment.NewLine + Environment.NewLine +
-									directory + Environment.NewLine + Environment.NewLine +
-									"Select a different profile to load or use the Profile Editor to create a new profile.",
-									"Error", false, false);
-					messageBox.ShowDialog();
+					ShowLoadProfileErrorMessage(name, isLocked);
 				}
 			}
 
@@ -266,27 +349,20 @@ namespace VixenApplication
 				if (result == DialogResult.OK)
 				{
 					string directory = selectProfile.DataFolder;
-					if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+					var isLocked = IsProfileLocked(directory);
+					if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory) && !isLocked)
 					{
 						_rootDataDirectory = directory;
 						UpdateTitleWithProfileName(selectProfile.ProfileName);
 						break;
 					}
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("The data directory for the selected profile does not exist!" + Environment.NewLine + Environment.NewLine +
-						directory + Environment.NewLine + Environment.NewLine +
-						"Select a different profile to load or use the Profile Editor to create a new profile.",
-						"Error", false, false);
-					messageBox.ShowDialog();
+					ShowLoadProfileErrorMessage(selectProfile.ProfileName, isLocked);
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Warning;
 					var messageBox = new MessageBoxForm(Application.ProductName + " cannot continue without a vaild profile." + Environment.NewLine + Environment.NewLine +
 						"Are you sure you want to exit " + Application.ProductName + "?",
-						Application.ProductName, true, false);
+						Application.ProductName,MessageBoxButtons.YesNo, SystemIcons.Warning);
 					messageBox.ShowDialog();
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
@@ -301,6 +377,16 @@ namespace VixenApplication
 			}
 
 			SetLogFilePaths();
+		}
+
+		private static void ShowLoadProfileErrorMessage(string name, bool isLocked)
+		{
+			var message =
+				String.Format(
+					"Selected profile {0} {1}!\n\nSelect a different profile to load or use the Profile Editor to create a new profile.",
+					name, isLocked ? "is locked by another instance" : "data directory does not exist");
+			var messageBox = new MessageBoxForm(message, "Error", MessageBoxButtons.OK, SystemIcons.Error);
+			messageBox.ShowDialog();
 		}
 
 		private void UpdateTitleWithProfileName(string profileName)
