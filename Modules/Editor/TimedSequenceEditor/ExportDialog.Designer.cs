@@ -296,6 +296,8 @@
 			this.btnUserCancel.TabIndex = 18;
 			this.btnUserCancel.Text = "Close";
 			this.btnUserCancel.UseVisualStyleBackColor = false;
+			this.btnUserCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
+			this.btnUserCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
 			// ExportDialog
 			// 
