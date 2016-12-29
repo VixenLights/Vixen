@@ -50,6 +50,7 @@ namespace VixenModules.Editor.EffectEditor
 			public static readonly Type Cursor = typeof (Cursor);
 			public static readonly Type Brush = typeof (Brush);
 			public static readonly Type Integer = typeof (int);
+			public static readonly Type Double = typeof(double);
 		}
 
 		public static class Windows

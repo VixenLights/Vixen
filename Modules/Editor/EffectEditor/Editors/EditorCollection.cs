@@ -35,6 +35,7 @@ namespace VixenModules.Editor.EffectEditor.Editors
 		{
 			{typeof (bool), new TypeEditor(typeof (bool), EditorKeys.BooleanEditorKey)},
 			{KnownTypes.Wpf.Integer, new TypeEditor(KnownTypes.Wpf.Integer, EditorKeys.IntegerEditorKey)},
+			{KnownTypes.Wpf.Double, new TypeEditor(KnownTypes.Wpf.Double, EditorKeys.DoubleEditorKey)},
 			{KnownTypes.Vixen.Color, new ColorTypeEditor()},
 			{KnownTypes.Vixen.Curve, new CurveEditor()},
 			{KnownTypes.Vixen.ColorGradient, new GradientTypeEditor()},
