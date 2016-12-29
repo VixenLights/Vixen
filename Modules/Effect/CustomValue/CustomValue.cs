@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Threading;
+using NLog;
 using Vixen.Commands;
 using Vixen.Data.Value;
 using Vixen.Intent;
@@ -135,6 +136,7 @@ namespace VixenModules.Effect.CustomValue
 
 	public class CustomValueModule : EffectModuleInstanceBase
 	{
+		private static Logger Logging = LogManager.GetCurrentClassLogger();
 		private EffectIntents _elementData = null;
 
 		private CustomValueData _data;
@@ -158,6 +160,54 @@ namespace VixenModules.Effect.CustomValue
 		protected override void TargetNodesChanged()
 		{
 			//Nothing to do
+		}
+
+		public override bool ForceGenerateVisualRepresentation { get { return true; } }
+
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		{
+			try
+			{
+				string value = String.Empty;
+				switch (ValueType)
+				{
+					case CustomValueType._8Bit:
+						value = Value8Bit.ToString();
+						break;
+					case CustomValueType._16Bit:
+						value = Value16Bit.ToString();
+						break;
+					case CustomValueType._32Bit:
+						value = Value32Bit.ToString();
+						break;
+					case CustomValueType._64Bit:
+						value = Value64Bit.ToString();
+						break;
+					case CustomValueType.Color:
+						value = ColorValue.ToString();
+						break;
+					case CustomValueType.String:
+						value = StringValue;
+						break;
+				}
+
+				string displayValue = string.Format("Custom Value - {0}", value);
+
+				Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, clipRectangle, "Segoe UI");
+				using (var stringBrush = new SolidBrush(Color.White))
+				{
+					using (var backgroundBrush = new SolidBrush(Color.DarkGray))
+					{
+						g.FillRectangle(backgroundBrush, clipRectangle);
+					}
+					g.DrawString(displayValue, adjustedFont, stringBrush, 4, 4);
+				}
+
+			}
+			catch (Exception e)
+			{
+				Logging.Error("Exception rendering the visualization for the effect.", e);
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource tokenSource = null)
