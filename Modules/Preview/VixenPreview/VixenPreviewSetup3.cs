@@ -450,7 +450,7 @@ namespace VixenModules.Preview.VixenPreview {
 				if (System.IO.File.Exists(templateItem.FileName)) {
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.FileName + "'", "Delete Template", true, false);
+					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.Caption + "'?", "Delete Template", true, false);
 					messageBox.ShowDialog();
 					if (messageBox.DialogResult == DialogResult.OK)
 					{
