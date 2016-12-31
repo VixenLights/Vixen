@@ -347,7 +347,7 @@
 			this.MinimumSize = new System.Drawing.Size(398, 315);
 			this.Name = "LipSyncTextConvertFailForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "LipSyncTextConvertFailForm";
+			this.Text = "Text Conversion Failure";
 			this.Load += new System.EventHandler(this.LipSyncTextConvertFailForm_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
