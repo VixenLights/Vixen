@@ -10,6 +10,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using VixenModules.Sequence.Timed;
+using System.Text.RegularExpressions;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -42,15 +43,26 @@ namespace VixenModules.App.LipSyncApp
         private List<string> CreateSubstringList()
         {
             List<string> retVal = new List<string>();
-            foreach (string line in textBox.Lines)
+			string[] linesToConvert = new string[] {};
+			string cleanLine = "";
+			if (textBox.SelectionLength > 0 )
+			{
+				linesToConvert = textBox.SelectedText.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+			}
+			else
+			{
+				linesToConvert = textBox.Lines;
+			}
+			foreach (string line in linesToConvert)
             {
+				cleanLine = Regex.Replace(line, "[.,?!\"]", ""); //Remove punctuation marks as these always fail to match words
                 if ((alignCombo.SelectedIndex == -1) || !(alignCombo.SelectedItem.Equals("Phrase")))
                 {
-                    retVal.AddRange(line.Split());
+                    retVal.AddRange(cleanLine.Split());
                 }
                 else
                 {
-                    retVal.Add(line);
+                    retVal.Add(cleanLine);
                 }
             }
             return retVal;
@@ -354,6 +366,15 @@ namespace VixenModules.App.LipSyncApp
 
         private void textBox_TextChanged(object sender, EventArgs e)
         {
+			if (textBox.Text.Contains("\r"))
+			{
+				textBox.ScrollBars = ScrollBars.Vertical;
+			}
+			else
+			{
+				textBox.ScrollBars = ScrollBars.None;		
+			}
+			
             buttonConvert.Enabled = !String.IsNullOrWhiteSpace(textBox.Text);
         }
 
