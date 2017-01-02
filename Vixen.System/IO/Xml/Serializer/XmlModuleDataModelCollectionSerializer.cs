@@ -37,7 +37,7 @@ namespace Vixen.IO.Xml.Serializer
 
 			XmlModuleDataModelSerializer dataModelSerializer = new XmlModuleDataModelSerializer();
 
-			dataModels.AddRange(_containerElement.Elements().Select(dataModelSerializer.ReadObject).Where(x => x != null));
+			dataModels.AddRange(_containerElement.Elements().AsParallel().Select(dataModelSerializer.ReadObject).Where(x => x != null));
 
 			return dataModels;
 		}

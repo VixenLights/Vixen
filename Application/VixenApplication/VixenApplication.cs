@@ -628,45 +628,6 @@ namespace VixenApplication
 			}
 		}
 
-		private void SetupElements()
-		{
-			using (ConfigElements form = new ConfigElements()) {
-				DialogResult result = form.ShowDialog();
-				if (result == DialogResult.OK) {
-					VixenSystem.SaveSystemConfig();
-				}
-				else {
-					VixenSystem.ReloadSystemConfig();
-				}
-			}
-		}
-
-		private void SetupControllers()
-		{
-			using (ConfigControllers form = new ConfigControllers()) {
-				DialogResult result = form.ShowDialog();
-				if (result == DialogResult.OK) {
-					VixenSystem.SaveSystemConfig();
-				}
-				else {
-					VixenSystem.ReloadSystemConfig();
-				}
-			}
-		}
-
-		private void SetupFiltersAndPatching()
-		{
-			using (ConfigFiltersAndPatching form = new ConfigFiltersAndPatching(_applicationData)) {
-				DialogResult result = form.ShowDialog();
-				if (result == DialogResult.OK) {
-					VixenSystem.SaveSystemConfig();
-				}
-				else {
-					VixenSystem.ReloadSystemConfig();
-				}
-			}
-		}
-
 		private void SetupPreviews()
 		{
 			using (ConfigPreviews form = new ConfigPreviews()) {
@@ -911,21 +872,6 @@ namespace VixenApplication
 				var messageBox = new MessageBoxForm("You must re-start Vixen for the changes to take effect.", "Profiles Changed", false, false);
 				messageBox.ShowDialog();
 			}
-		}
-
-		private void setupElementsGroupsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetupElements();
-		}
-
-		private void setupControllersToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetupControllers();
-		}
-
-		private void setupFiltersPatchingToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetupFiltersAndPatching();
 		}
 
 		private void setupDisplayToolStripMenuItem_Click(object sender, EventArgs e)

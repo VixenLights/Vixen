@@ -93,7 +93,7 @@ namespace VixenApplication
 			tableLayoutPanelElementSetup.Controls.Add(control.SetupElementsControl,0,2);
 			
 
-			control.UpdatePatching();
+			//control.UpdatePatching(); //Occurs in load triggered by the table layout add above.
 		}
 
 		void control_ElementsChanged(object sender, EventArgs e)
@@ -177,7 +177,7 @@ namespace VixenApplication
 			//tableLayoutPanelControllerSetup.Controls.Clear();
 			tableLayoutPanelControllerSetup.Controls.Add(control.SetupControllersControl,0,2);
 
-			control.UpdatePatching();
+			//control.UpdatePatching();  //On load does this 
 		}
 
 		void control_ControllersChanged(object sender, EventArgs e)
