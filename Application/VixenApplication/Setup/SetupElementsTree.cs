@@ -113,6 +113,11 @@ namespace VixenApplication.Setup
 			elementTree.PopulateNodeTree();
 		}
 
+		public void UpdateScrollPosition()
+		{
+			elementTree.UpdateScrollPosition();
+		}
+
 
 		private void buttonRunSetupHelper_Click(object sender, EventArgs e)
 		{
@@ -361,7 +366,7 @@ namespace VixenApplication.Setup
 				}
 			}
 
-			MasterForm.SelectControllersAndOutputs(controllersAndOutputs);
+			MasterForm.SelectControllersAndOutputs(controllersAndOutputs, true);
 		}
 
 		private IEnumerable<IDataFlowComponent> _findComponentsOfTypeInTreeFromComponent(IDataFlowComponent dataFlowComponent, Type dfctype)

@@ -189,6 +189,11 @@ namespace VixenApplication.Setup
 			controllerTree.PopulateControllerTree();
 		}
 
+		public void UpdateScrollPosition()
+		{
+			controllerTree.UpdateScrollPosition();
+		}
+
 		public event EventHandler<ControllerSelectionEventArgs> ControllerSelectionChanged;
 		public void OnControllerSelectionChanged()
 		{
@@ -268,7 +273,7 @@ namespace VixenApplication.Setup
 				}
 			}
 
-			MasterForm.SelectElements(elementNodesToSelect);
+			MasterForm.SelectElements(elementNodesToSelect, true);
 		}
 
 		private IDataFlowComponent FindRootSourceOfDataComponent(IDataFlowComponent component)

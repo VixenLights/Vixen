@@ -22,6 +22,8 @@ namespace VixenApplication.Setup
 		DisplaySetup MasterForm { get; set; }
 
 		void UpdatePatching();
+
+		void UpdateScrollPosition();
 	}
 
 	public class ElementNodesEventArgs : EventArgs
