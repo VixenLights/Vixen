@@ -325,6 +325,8 @@ namespace Common.Controls
 				e = EventArgs.Empty;
 			EventHandler handler = ElementsChanged;
 			if (handler != null) handler(this, e);
+			if (treeview.SelectedNodes.Count > 0)
+				treeview.TopNode = treeview.SelectedNodes[0];
 		}
 
 		#endregion

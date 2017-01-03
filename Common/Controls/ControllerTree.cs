@@ -312,6 +312,8 @@ namespace Common.Controls
 				e = EventArgs.Empty;
 			if (ControllerSelectionChanged != null)
 				ControllerSelectionChanged(this, e);
+			if (treeview.SelectedNodes.Count > 0)
+				treeview.TopNode = treeview.SelectedNodes[0];
 		}
 
 
