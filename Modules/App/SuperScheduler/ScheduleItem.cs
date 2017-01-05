@@ -7,6 +7,7 @@ using System.Drawing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Vixen.Sys;
 using VixenModules.App.Shows;
 
 namespace VixenModules.App.SuperScheduler
@@ -307,20 +308,12 @@ namespace VixenModules.App.SuperScheduler
 			if (tokenSourcePreProcessAll == null || tokenSourcePreProcessAll.IsCancellationRequested)
 				tokenSourcePreProcessAll = new CancellationTokenSource();
 
-			var loadSequencesTask = new Task(load => LoadShowSequences(), null, tokenSourcePreProcessAll.Token);
-			
-			var preProcessTask = loadSequencesTask.ContinueWith(a => PreProcessActionTask(),tokenSourcePreProcessAll.Token);
+			var preProcessTask = new Task(a => PreProcessActionTask(),tokenSourcePreProcessAll.Token);
 
 			preProcessTask.ContinueWith(task => BeginStartup(), tokenSourcePreProcessAll.Token);
 
-			loadSequencesTask.Start();
+			preProcessTask.Start();
 
-		}
-
-		private void LoadShowSequences()
-		{
-			ScheduleExecutor.AddSchedulerLogEntry(Show.Name, "Loading Sequences");
-			Show.LoadShowSequencesIntoShowItems(ShowItemType.All);
 		}
 
 		private void PreProcessActionTask()
