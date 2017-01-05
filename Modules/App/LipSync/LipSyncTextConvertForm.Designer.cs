@@ -42,6 +42,7 @@
 			this.markAlignmentLabel = new System.Windows.Forms.Label();
 			this.markCollectionLabel = new System.Windows.Forms.Label();
 			this.markStartOffsetLabel = new System.Windows.Forms.Label();
+			this.checkBoxClearText = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.marksGroupBox.SuspendLayout();
 			this.SuspendLayout();
@@ -225,6 +226,16 @@
 			this.markStartOffsetLabel.TabIndex = 9;
 			this.markStartOffsetLabel.Text = "Start Offset";
 			// 
+			// checkBoxClearText
+			// 
+			this.checkBoxClearText.AutoSize = true;
+			this.checkBoxClearText.Location = new System.Drawing.Point(140, 278);
+			this.checkBoxClearText.Name = "checkBoxClearText";
+			this.checkBoxClearText.Size = new System.Drawing.Size(141, 19);
+			this.checkBoxClearText.TabIndex = 13;
+			this.checkBoxClearText.Text = "Clear after conversion";
+			this.checkBoxClearText.UseVisualStyleBackColor = true;
+			// 
 			// LipSyncTextConvertForm
 			// 
 			this.AcceptButton = this.buttonConvert;
@@ -232,6 +243,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(300, 403);
+			this.Controls.Add(this.checkBoxClearText);
 			this.Controls.Add(this.markAlignmentLabel);
 			this.Controls.Add(this.marksGroupBox);
 			this.Controls.Add(this.markCollectionLabel);
@@ -275,5 +287,6 @@
 		private System.Windows.Forms.Label markCollectionLabel;
 		private System.Windows.Forms.Label markStartOffsetLabel;
 		private System.Windows.Forms.Label markAlignmentLabel;
+		private System.Windows.Forms.CheckBox checkBoxClearText;
     }
 }
