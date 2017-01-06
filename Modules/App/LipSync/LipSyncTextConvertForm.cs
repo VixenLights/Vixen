@@ -227,7 +227,10 @@ namespace VixenModules.App.LipSyncApp
 							markIncrement = 1;
 							break;
 					}
-					startOffsetCombo.SelectedIndex = startOffsetCombo.SelectedIndex + markIncrement;
+					if (startOffsetCombo.SelectedIndex + markIncrement < startOffsetCombo.Items.Count)
+					{
+						startOffsetCombo.SelectedIndex = startOffsetCombo.SelectedIndex + markIncrement;
+					}
 				}
             }
 			
