@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Services;
 using Vixen.Sys;
@@ -101,22 +102,27 @@ namespace VixenModules.App.Shows
 
 		public class SequenceEntry
 		{
+			private long _consumerCount;
+
 			public ISequence Sequence { get; set; }
 
-			public int ConsumerCount { get; private set; }
+			public long ConsumerCount
+			{
+				get { return Interlocked.Read(ref _consumerCount); } 
+			}
 
 			public bool SequenceLoading { get; internal set; }
 
 			internal void AddConsumer()
 			{
-				ConsumerCount++;
+				Interlocked.Increment(ref _consumerCount);
 			}
 
 			internal void RemoveConsumer()
 			{
 				if (ConsumerCount > 0)
 				{
-					ConsumerCount--;
+					Interlocked.Decrement(ref _consumerCount);
 				}
 
 			}

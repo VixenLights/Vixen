@@ -75,7 +75,7 @@ namespace VixenModules.App.Shows
 
 			try
 			{
-				if (_sequenceContext == null || SequenceChanged())
+				if (_sequenceContext == null || SequenceChanged() || _sequence == null)
 				{
 					if (_sequenceContext != null)
 					{
@@ -170,13 +170,6 @@ namespace VixenModules.App.Shows
 			{
 				_sequenceContext.SequenceEnded -= sequence_Ended;
 				VixenSystem.Contexts.ReleaseContext(_sequenceContext);
-
-				//var tSequence = (ShowItem.Sequence as TimedSequence);
-				//if (tSequence != null)
-				//{
-				//	tSequence.Dispose();
-				//}
-
 			}
 		}
 
