@@ -187,6 +187,7 @@ namespace VixenModules.App.LipSyncApp
                         long startTicks = timing.Item1.Ticks + (timing.Item2.Ticks * phonemeIndex++);
                         convertData.Add(new LipSyncConvertData(startTicks, timing.Item2.Ticks, phoneme, strElem));
                     }
+					if (checkBoxClearText.Checked) { textBox.Text = ""; }
                 }
 
                 EventHandler<NewTranslationEventArgs> handler = NewTranslation;
