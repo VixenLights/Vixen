@@ -216,14 +216,18 @@ namespace VixenApplication
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Setup_Main);
 		}
 
-		public void SelectElements(IEnumerable<ElementNode> elements)
+		public void SelectElements(IEnumerable<ElementNode> elements, Boolean updateScrollPosition = false)
 		{
 			_currentElementControl.SelectedElements = elements;
+			if (updateScrollPosition)
+				_currentElementControl.UpdateScrollPosition();
 		}
 
-		public void SelectControllersAndOutputs(ControllersAndOutputsSet controllersAndOutputs)
+		public void SelectControllersAndOutputs(ControllersAndOutputsSet controllersAndOutputs, Boolean updateScrollPosition = false)
 		{
 			_currentControllersControl.SelectedControllersAndOutputs = controllersAndOutputs;
+			if (updateScrollPosition)  
+				_currentControllersControl.UpdateScrollPosition();
 		}
 
 		private void buttonOk_Click(object sender, EventArgs e)

@@ -73,7 +73,11 @@ namespace Common.Controls
 			_PopulateControllerTree(treeNodes);
 		}
 
-
+		public void UpdateScrollPosition()
+		{
+			if (treeview.SelectedNodes.Count > 0)
+				treeview.TopNode = treeview.SelectedNodes[0];
+		}
 
 
 		private void _PopulateControllerTree(IEnumerable<string> treeNodesToSelect = null)

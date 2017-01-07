@@ -37,5 +37,10 @@ namespace VixenApplication.Setup
 		{
 			throw new NotImplementedException();
 		}
+
+		public void UpdateScrollPosition()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

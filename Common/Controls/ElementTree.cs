@@ -83,6 +83,11 @@ namespace Common.Controls
 			_PopulateNodeTree();
 		}
 
+		public void UpdateScrollPosition()
+		{
+			if (treeview.SelectedNodes.Count > 0)
+				treeview.TopNode = treeview.SelectedNodes[0];
+		}
 
 		private void _PopulateNodeTree(IEnumerable<string> elementTreeNodesToSelect = null)
 		{
