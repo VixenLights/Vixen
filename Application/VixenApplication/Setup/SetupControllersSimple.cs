@@ -221,6 +221,7 @@ namespace VixenApplication.Setup
 
 			if (item != null) {
 				controllerTree.AddNewControllerOfTypeWithPrompts((Guid) item.Value);
+				UpdateScrollPosition();
 			}
 		}
 
