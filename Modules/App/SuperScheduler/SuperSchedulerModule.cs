@@ -108,7 +108,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			AppCommand schedulerMenu = GetSchedulerMenu();
 
-			AppCommand showCommand = new AppCommand("SuperSchedulerCreateSchedule", "Create Schedule...");
+			AppCommand showCommand = new AppCommand("SuperSchedulerCreateSchedule", "Schedules");
 			showCommand.Click += (sender, e) =>
 			{
 				using (SetupForm form = new SetupForm(_data))
@@ -126,9 +126,10 @@ namespace VixenModules.App.SuperScheduler
 				_data.IsEnabled = e.CheckedState;
 			};
 
-			if (schedulerMenu.Items.Length > 0)
-				schedulerMenu.Add(new AppCommand("s1", "-"));
+			/*if (schedulerMenu.Items.Length > 0)
+				schedulerMenu.Add(new AppCommand("s1", "-"));*/
 			schedulerMenu.Add(showCommand);
+			schedulerMenu.Add(new AppCommand("s1", "-"));
 			schedulerMenu.Add(enabledCommand);
 		}
 
