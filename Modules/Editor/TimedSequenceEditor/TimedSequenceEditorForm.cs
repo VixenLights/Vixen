@@ -389,6 +389,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						height));
 
 
+
 			var windowState =
 					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal");
 

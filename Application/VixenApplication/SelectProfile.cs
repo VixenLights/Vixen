@@ -47,10 +47,15 @@ namespace VixenApplication
 			int profileCount = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "ProfileCount", 0);
             for (int i = 0; i < profileCount; i++)
             {
-                ProfileItem item = new ProfileItem();
-				item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name", "New Profile");
-				item.DataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", string.Empty);
-                listBoxProfiles.Items.Add(item);
+				var dataFolder = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/DataFolder", string.Empty);
+	            if (!VixenApplication.IsProfileLocked(dataFolder)) //Only add the profile if it is not locked.
+	            {
+		            ProfileItem item = new ProfileItem();
+		            item.Name = profile.GetSetting(XMLProfileSettings.SettingType.Profiles, "Profile" + i.ToString() + "/Name",
+			            "New Profile");
+		            item.DataFolder = dataFolder;
+		            listBoxProfiles.Items.Add(item);
+	            }
             }
         }
         private void buttonLoad_Click(object sender, EventArgs e)
