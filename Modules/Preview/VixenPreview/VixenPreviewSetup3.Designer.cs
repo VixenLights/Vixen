@@ -1389,7 +1389,6 @@
 			dockPaneStripToolWindowGradient4.InactiveTabGradient = tabGradient28;
 			dockPaneStripSkin4.ToolWindowGradient = dockPaneStripToolWindowGradient4;
 			dockPanelSkin4.DockPaneStripSkin = dockPaneStripSkin4;
-			this.dockPanel.Skin = dockPanelSkin4;
 			this.dockPanel.TabIndex = 20;
 			// 
 			// VixenPreviewSetup3

@@ -152,6 +152,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this);
 			cboAudioDevices.BackColor = ThemeColorTable.BackgroundColor;
 			cboAudioDevices.ForeColor = ThemeColorTable.ForeColor;
+
+			var theme = new VS2015DarkTheme();
+			dockPanel.Theme = theme;
+
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int) (24*_scaleFactor);
 			toolStripOperations.ImageScalingSize = new Size(iconSize, iconSize);
@@ -518,6 +522,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.Size = new Size(1579, 630);
 			toolStripContainer.ContentPanel.Controls.Add(dockPanel);
 			Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
+
+			var theme = new VS2015DarkTheme();
+			dockPanel.Theme = theme;
+
 			if (_gridForm != null)
 			{
 				_gridForm.Dispose();
