@@ -212,8 +212,29 @@ namespace VixenModules.App.LipSyncApp
                 }
 
                 handler(this, args);
-            }
 
+				if (markCollectionRadio.Checked)
+				{
+					int markIncrement = 0;
+					switch (alignCombo.Text)
+					{
+						case "Phoneme":
+							markIncrement = convertData.Count;
+							break;
+						case "Word":
+							markIncrement = subStrings.Count;
+							break;
+						case "Phrase":
+							markIncrement = 1;
+							break;
+					}
+					if (startOffsetCombo.SelectedIndex + markIncrement < startOffsetCombo.Items.Count)
+					{
+						startOffsetCombo.SelectedIndex = startOffsetCombo.SelectedIndex + markIncrement;
+					}
+				}
+            }
+			
         }
 
         private void LipSyncTextConvert_Load(object sender, EventArgs e)
