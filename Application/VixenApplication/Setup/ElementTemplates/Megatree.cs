@@ -73,19 +73,22 @@ namespace VixenApplication.Setup.ElementTemplates
 				return result;
 			}
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, treename);
+			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
+			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
+
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, TemplateUtilities.Uniquify(elementNames, treename), true, false);
 			result.Add(head);
 
 			for (int i = 0; i < stringcount; i++) {
 				string stringname = head.Name + " S" + (i + 1);
-				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, stringname);
+				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, TemplateUtilities.Uniquify(elementNames, stringname), true, false);
 				result.Add(stringnode);
 
 				if (pixeltree) {
 					for (int j = 0; j < pixelsperstring; j++) {
 						string pixelname = stringnode.Name + " Px" + (j + 1);
 
-						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, pixelname);
+						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, TemplateUtilities.Uniquify(elementNames, pixelname), true, false);
 						result.Add(pixelnode);
 					}
 				}

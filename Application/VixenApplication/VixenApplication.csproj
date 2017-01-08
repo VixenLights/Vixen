@@ -225,6 +225,7 @@
       <DependentUpon>PixelGrid.cs</DependentUpon>
     </Compile>
     <Compile Include="Setup\ElementTemplates\SingleItem.cs" />
+    <Compile Include="Setup\ElementTemplates\TemplateUtilities.cs" />
     <Compile Include="Setup\ISetupControllersControl.cs" />
     <Compile Include="Setup\ISetupElementsControl.cs" />
     <Compile Include="Setup\ISetupPatchingControl.cs" />
