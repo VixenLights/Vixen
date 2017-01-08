@@ -237,6 +237,7 @@ namespace VixenApplication.Setup
 					}
 					elementTree.PopulateNodeTree(createdElements.FirstOrDefault());
 					OnElementsChanged();
+					UpdateScrollPosition();
 				}
 			}
 		}
