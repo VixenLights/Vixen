@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Vixen.Module.App;
