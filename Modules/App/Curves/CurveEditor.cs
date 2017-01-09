@@ -7,7 +7,6 @@ using Common.Resources.Properties;
 using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
-using System.Linq;
 using Common.Controls.Theme;
 
 namespace VixenModules.App.Curves

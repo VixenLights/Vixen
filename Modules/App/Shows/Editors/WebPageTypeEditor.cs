@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
-using System.Xml.Serialization;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
