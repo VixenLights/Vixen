@@ -12,6 +12,7 @@ using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
+using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 
@@ -58,6 +59,10 @@ namespace VixenModules.Preview.VixenPreview {
 				c.BackColor = Color.Black;
 			}
 			dockPanel.BackColor = ThemeColorTable.BackgroundColor;
+
+			var theme = new VS2015DarkTheme();
+			dockPanel.Theme = theme;
+
 			label9.ForeColor = Color.Turquoise;
 			label10.ForeColor = Color.LimeGreen;
 			label11.ForeColor = Color.White;
