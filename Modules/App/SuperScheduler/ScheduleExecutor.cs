@@ -93,7 +93,7 @@ namespace VixenModules.App.SuperScheduler
 		{
 			CheckSchedule();
 
-			string stateStr = "Waiting for next show to start..";
+			string stateStr = String.Empty;
 			foreach (ScheduleItem item in Data.Items)
 			{
 				if (item.State != StateType.Waiting)
@@ -116,6 +116,7 @@ namespace VixenModules.App.SuperScheduler
 					break;
 				}
 			}
+
 			if (statusForm != null)
 			{
 				if (ManuallyDisabled)
@@ -124,9 +125,27 @@ namespace VixenModules.App.SuperScheduler
 				}
 				else
 				{
+					if (stateStr == String.Empty)
+					{
+						var item = UpNext();
+						if (item != null)
+						{
+							stateStr = string.Format("Up Next: {0} at {1}", item.Show.Name, item.StartTime);
+						}
+						else
+						{
+							stateStr = "Nothing scheduled for today.... ";
+						}
+						//Determine next show
+					}
 					statusForm.Status = stateStr;
 				}
 			}
+		}
+
+		private ScheduleItem UpNext()
+		{
+			return Data.Items.Where(x => x.State == StateType.Waiting && x.Enabled && x.StartTime > DateTime.Now).OrderBy(s => s.StartTime).FirstOrDefault();
 		}
 
 		private void ShowStatusForm(bool show)
