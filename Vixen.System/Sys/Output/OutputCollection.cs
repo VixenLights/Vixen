@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Vixen.Sys.Output
 {
 	internal class OutputCollection<T> : IHasOutputs<T>, IEnumerable<T>
-		where T : Vixen.Sys.Output.Output
+		where T : Output
 	{
-		private List<T> _outputs;
+		private readonly HashSet<T> _outputs;
 		private T[] _outputArray;
 
 		public event EventHandler<OutputCollectionEventArgs<T>> OutputAdded;
@@ -14,7 +15,7 @@ namespace Vixen.Sys.Output
 
 		public OutputCollection()
 		{
-			_outputs = new List<T>();
+			_outputs = new HashSet<T>();
 		}
 
 		public int OutputCount
@@ -25,7 +26,6 @@ namespace Vixen.Sys.Output
 		public void AddOutput(T output)
 		{
 			if (output == null) throw new ArgumentNullException("output");
-			if (_outputs.Contains(output)) throw new InvalidOperationException("Output is already present in the collection.");
 
 			_AddOutput(output);
 		}
@@ -84,7 +84,7 @@ namespace Vixen.Sys.Output
 
 		private void _AddOutput(T output)
 		{
-			_outputs.Add(output);
+			if (!_outputs.Add(output)) throw new InvalidOperationException("Output is already present in the collection.");
 			_ResetOutputArray();
 			OnOutputAdded(output);
 		}

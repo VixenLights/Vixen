@@ -24,8 +24,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private int rows;
 		private int columns;
 		private bool rowsfirst;
-
-
+		
 		public PixelGrid()
 		{
 			InitializeComponent();
@@ -74,7 +73,10 @@ namespace VixenApplication.Setup.ElementTemplates
 				return result;
 			}
 
-			ElementNode head = ElementNodeService.Instance.CreateSingle(null, gridname);
+			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
+			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
+
+			ElementNode head = ElementNodeService.Instance.CreateSingle(null, TemplateUtilities.Uniquify(elementNames,gridname), true, false);
 			result.Add(head);
 
 			int firstlimit, secondlimit;
@@ -94,19 +96,19 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			for (int i = 0; i < firstlimit; i++) {
 				string firstname = head.Name + firstprefix + (i + 1);
-				ElementNode firstnode = ElementNodeService.Instance.CreateSingle(head, firstname);
+				ElementNode firstnode = ElementNodeService.Instance.CreateSingle(head, TemplateUtilities.Uniquify(elementNames,firstname),true, false);
 				result.Add(firstnode);
 
 				for (int j = 0; j < secondlimit; j++) {
 					string secondname = firstnode.Name + secondprefix + (j + 1);
-					ElementNode secondnode = ElementNodeService.Instance.CreateSingle(firstnode, secondname);
+					ElementNode secondnode = ElementNodeService.Instance.CreateSingle(firstnode, TemplateUtilities.Uniquify(elementNames, secondname), true, false);
 					result.Add(secondnode);
 				}
 			}
 
 			return result;
 		}
-
+		
 		private void PixelGrid_Load(object sender, EventArgs e)
 		{
 			textBoxName.Text = gridname;

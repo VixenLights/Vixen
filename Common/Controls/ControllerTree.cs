@@ -256,13 +256,10 @@ namespace Common.Controls
 			else
 				controllerNode.ImageKey = controllerNode.SelectedImageKey = "RedBall";
 
-			collection.Add(controllerNode);
-
 			for (int i = 0; i < controller.OutputCount; i++) {
 				TreeNode channelNode = new TreeNode();
-                channelNode.Name = controller.Outputs[i].Name;
-                channelNode.Text = controller.Outputs[i].Name;
-				channelNode.Tag = i;
+                channelNode.Name = channelNode.Text = controller.Outputs[i].Name;
+                channelNode.Tag = i;
 
 				IDataFlowComponentReference source = controller.Outputs[i].Source;
 
@@ -276,6 +273,8 @@ namespace Common.Controls
 
 				controllerNode.Nodes.Add(channelNode);
 			}
+
+			collection.Add(controllerNode);
 		}
 
 		#endregion

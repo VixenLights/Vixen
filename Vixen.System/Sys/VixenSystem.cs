@@ -205,20 +205,7 @@ namespace Vixen.Sys
 		{
 			bool wasRunning = Execution.IsOpen;
 			Execution.CloseExecution();
-
-			// purge all existing elements, nodes, and controllers (to try and clean up a bit).
-			// might not actually matter, since we're going to make new Managers for them all
-			// in a tick, but better safe than sorry.
-			foreach (ElementNode cn in Nodes.ToArray())
-				Nodes.RemoveNode(cn, null, true);
-			foreach (OutputController oc in OutputControllers.ToArray())
-				OutputControllers.Remove(oc);
-			foreach (SmartOutputController smartOutputController in SmartOutputControllers.ToArray()) {
-				SmartOutputControllers.Remove(smartOutputController);
-			}
-			foreach (OutputPreview outputPreview in Previews.ToArray())
-				Previews.Remove(outputPreview);
-
+			
 			LoadSystemConfig();
 
 			if (wasRunning)
