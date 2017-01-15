@@ -1,12 +1,12 @@
-﻿using System.IO.Ports;
+﻿using System;
+using System.IO;
+using System.IO.Ports;
 using System.Text;
+using System.Timers;
+using System.Windows.Forms;
 using Vixen.Commands;
 using Vixen.Module;
 using Vixen.Module.Controller;
-using System.Timers;
-using System;
-using System.Windows.Forms;
-using System.IO;
 
 namespace VixenModules.Output.GenericSerial
 {
@@ -37,23 +37,27 @@ namespace VixenModules.Output.GenericSerial
 
 		public override void UpdateState(int chainIndex, ICommand[] outputStates)
 		{
-			if (SerialPortIsValid && _serialPort.IsOpen) {
+			if (SerialPortIsValid && _serialPort.IsOpen)
+			{
 				_packet = new byte[_headerLen + OutputCount + _footerLen];
 				var packetLen = _packet.Length;
 
 				_header.CopyTo(_packet, 0);
 				_footer.CopyTo(_packet, packetLen - _footerLen);
 
-				for (int i = 0; i < outputStates.Length && IsRunning; i++) {
+				for (int i = 0; i < outputStates.Length && IsRunning; i++)
+				{
 					_commandHandler.Reset();
 					ICommand command = outputStates[i];
-					if (command != null) {
+					if (command != null)
+					{
 						command.Dispatch(_commandHandler);
 					}
 					_packet[i + _headerLen] = _commandHandler.Value;
 				}
 
-				if (packetLen > 0) {
+				if (packetLen > 0)
+				{
 					try
 					{
 						_serialPort.Write(_packet, 0, packetLen);
@@ -73,10 +77,13 @@ namespace VixenModules.Output.GenericSerial
 
 		public override bool Setup()
 		{
-			using (SetupDialog setup = new SetupDialog(_data)) {
-				if (setup.ShowDialog() == DialogResult.OK) {
+			using (SetupDialog setup = new SetupDialog(_data))
+			{
+				if (setup.ShowDialog() == DialogResult.OK)
+				{
 					SerialPort port = setup.Port;
-					if (port != null) {
+					if (port != null)
+					{
 						InitModule();
 						return _data.IsValid;
 					}
@@ -99,14 +106,16 @@ namespace VixenModules.Output.GenericSerial
 		public override void Start()
 		{
 			base.Start();
-			if (SerialPortIsValid && !_serialPort.IsOpen) {
+			if (SerialPortIsValid && !_serialPort.IsOpen)
+			{
 				OpenComPort();
 			}
 		}
 
 		public override void Stop()
 		{
-			if (SerialPortIsValid && _serialPort.IsOpen) {
+			if (SerialPortIsValid && _serialPort.IsOpen)
+			{
 				_serialPort.Close();
 			}
 			base.Stop();
@@ -124,7 +133,8 @@ namespace VixenModules.Output.GenericSerial
 
 		private void DropExistingSerialPort()
 		{
-			if (_serialPort != null) {
+			if (_serialPort != null)
+			{
 				_serialPort.Dispose();
 				_serialPort = null;
 			}
@@ -132,7 +142,8 @@ namespace VixenModules.Output.GenericSerial
 
 		private void CreateSerialPortFromData()
 		{
-			if (_data.IsValid) {
+			if (_data.IsValid)
+			{
 				_serialPort = new SerialPort(
 					_data.PortName,
 					_data.BaudRate,
@@ -143,11 +154,13 @@ namespace VixenModules.Output.GenericSerial
 				_serialPort.Handshake = Handshake.None;
 				_serialPort.Encoding = Encoding.UTF8;
 
-				if (IsRunning) {
+				if (IsRunning)
+				{
 					OpenComPort();
 				}
 			}
-			else {
+			else
+			{
 				_serialPort = null;
 			}
 		}
@@ -161,21 +174,25 @@ namespace VixenModules.Output.GenericSerial
 		//check if we have an access violation
 		private void OpenComPort()
 		{
-			try {
+			try
+			{
 				_serialPort.Open();
 
 				//if successfull 
 				//stop the retry counter and log that we got this going
 				//start the controller back up
 
-				if (_serialPort.IsOpen && _retryTimer.Enabled) {
+				if (_serialPort.IsOpen && _retryTimer.Enabled)
+				{
 					_retryCounter = 0;
 					_retryTimer.Stop();
 
-					Logging.Info("Serial Port conflict has been corrected, starting controller type {0} on port {1}.", _data.ModuleTypeId, _serialPort.PortName);
+					Logging.Info("Serial Port conflict has been corrected, starting controller type {0} on port {1}.",
+						_data.ModuleTypeId, _serialPort.PortName);
 				}
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				if (ex is UnauthorizedAccessException ||
 				    ex is InvalidOperationException ||
 				    ex is IOException)
@@ -202,7 +219,6 @@ namespace VixenModules.Output.GenericSerial
 				{
 					Logging.Error(ex, "{0} could not be opened.", _serialPort.PortName);
 				}
-
 			}
 		}
 
