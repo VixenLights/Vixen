@@ -192,6 +192,11 @@ namespace Vixen.Module
 			}
 		}
 
+		internal void RemoveDataModel(Tuple<Guid, Guid> model)
+		{
+			_dataModels.Remove(model);
+		}
+
 		public void RemoveModuleTypeData(IModuleInstance module)
 		{
 			_RemoveTypeData(module);
