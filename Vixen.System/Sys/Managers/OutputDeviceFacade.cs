@@ -51,7 +51,7 @@ namespace Vixen.Sys.Managers
 
 		public IOutputDevice GetDevice(Guid id)
 		{
-			return _participants.Select(x => x.GetDevice(id)).Where(x => x != null).FirstOrDefault();
+			return _participants.Select(x => x.GetDevice(id)).FirstOrDefault(x => x != null);
 		}
 
 		private void _ForAllParticipants(Action<IOutputDeviceFacadeParticipant> action)

@@ -8,8 +8,6 @@ namespace Vixen.Sys.Managers
 		where T : class, IOutputDevice, IHasOutputs
 	{
 		T GetController(Guid id);
-		T GetNext(T controller);
-		T GetPrior(T controller);
 		IDataFlowComponent GetDataFlowComponentForOutput(T controller, int outputIndex);
 	}
 }

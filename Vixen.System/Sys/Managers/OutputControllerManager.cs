@@ -12,16 +12,13 @@ namespace Vixen.Sys.Managers
 		//Logger Class
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private IControllerLinkManager<OutputController> _linkManager;
 		private OutputDeviceCollectionExecutionMediator<OutputController> _mediator;
 
 		private Dictionary<IDataFlowComponent, Tuple<IControllerDevice, int>> _outputDataFlowComponentToController;
 
-		internal OutputControllerManager(IControllerLinkManager<OutputController> linkManager,
-		                                 IOutputDeviceCollection<OutputController> deviceCollection,
+		internal OutputControllerManager(IOutputDeviceCollection<OutputController> deviceCollection,
 		                                 IOutputDeviceExecution<OutputController> deviceExecution)
 		{
-			_linkManager = linkManager;
 			_mediator = new OutputDeviceCollectionExecutionMediator<OutputController>(deviceCollection, deviceExecution);
 			_outputDataFlowComponentToController = new Dictionary<IDataFlowComponent, Tuple<IControllerDevice, int>>();
 		}
@@ -34,16 +31,6 @@ namespace Vixen.Sys.Managers
 		public OutputController GetController(Guid id)
 		{
 			return _mediator.Get(id);
-		}
-
-		public OutputController GetNext(OutputController controller)
-		{
-			return _linkManager.GetNext(controller);
-		}
-
-		public OutputController GetPrior(OutputController controller)
-		{
-			return _linkManager.GetPrior(controller);
 		}
 
 		public IDataFlowComponent GetDataFlowComponentForOutput(IOutputDevice controller, int outputIndex)
