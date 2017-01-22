@@ -70,16 +70,22 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	public class DimmingCurveModule : OutputFilterModuleInstanceBase
 	{
 		private DimmingCurveData _data;
-		private DimmingCurveOutput _output;
+		private DimmingCurveOutput[] _output;
 
 		public override void Handle(IntentsDataFlowData obj)
 		{
-			_output.ProcessInputData(obj);
+			foreach (var dimmingCurveOutput in _output)
+			{
+				dimmingCurveOutput.ProcessInputData(obj);
+			}
 		}
 
 		public override void Handle(IntentDataFlowData obj)
 		{
-			_output.ProcessInputData(obj);
+			foreach (var dimmingCurveOutput in _output)
+			{
+				dimmingCurveOutput.ProcessInputData(obj);
+			}
 		}
 
 		public override DataFlowType InputDataType
@@ -94,7 +100,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public override IDataFlowOutput[] Outputs
 		{
-			get { return new IDataFlowOutput[] {_output}; }
+			get { return _output; }
 		}
 
 		public override IModuleDataModel ModuleData
@@ -102,7 +108,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			get { return _data; }
 			set
 			{
-				_data = (DimmingCurveData) value;
+				_data = (DimmingCurveData)value;
 				_CreateOutputs();
 			}
 		}
@@ -120,8 +126,10 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public override bool Setup()
 		{
-			using (CurveEditor editor = new CurveEditor(_data.Curve)) {
-				if (editor.ShowDialog() == DialogResult.OK) {
+			using (CurveEditor editor = new CurveEditor(_data.Curve))
+			{
+				if (editor.ShowDialog() == DialogResult.OK)
+				{
 					DimmingCurve = editor.Curve;
 					_CreateOutputs();
 					return true;
@@ -132,7 +140,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		private void _CreateOutputs()
 		{
-			_output = new DimmingCurveOutput(_data.Curve);
+			_output = new[] { new DimmingCurveOutput(_data.Curve) };
 		}
 	}
 
