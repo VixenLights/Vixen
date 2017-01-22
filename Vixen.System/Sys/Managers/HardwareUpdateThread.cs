@@ -14,11 +14,10 @@ namespace Vixen.Sys.Managers
 		private EventWaitHandle _finished;
 		private AutoResetEvent _updateSignalerSync;
 		private ManualResetEvent _pauseSignal;
-		private Stopwatch _localTime;
+		private readonly Stopwatch _localTime;
 
 		private MillisecondsValue _sleepTimeActualValue;
 		private OutputDeviceRefreshRateValue _refreshRateValue;
-		private MillisecondsValue _updateTimeValue;
 		private MillisecondsValue _intervalDeltaValue;
 		private MillisecondsValue _executionTimeValue;
 
@@ -84,8 +83,7 @@ namespace Vixen.Sys.Managers
 		}
 
 		private long _lastMs = 0;
-		private long _lastMs2 = 0;
-
+		
 		private void _ThreadFunc()
 		{
 			// Thread main loop
@@ -95,21 +93,20 @@ namespace Vixen.Sys.Managers
 				while (_threadState != ExecutionState.Stopping) {
 					long nowMs = _localTime.ElapsedMilliseconds;
 					long dtMs = nowMs - _lastMs;
+					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
 					_lastMs = nowMs;
 
 					bool allowed = false;
-					var lastTS = Execution.UpdateState( out allowed);
+					Execution.UpdateState( out allowed);
 					long execMs = _localTime.ElapsedMilliseconds - nowMs;
 
 					_UpdateOutputDevice();
-					long outputMs = _localTime.ElapsedMilliseconds - nowMs - execMs;
 
-					// instrumentation counters...
-					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
-					if( allowed)
+					if (allowed)
+					{
 						_executionTimeValue.Set(execMs);
-					_updateTimeValue.Set(outputMs);
-				
+					}
+					
 					// wait for the next go 'round
 					_WaitOnSignal(signaler);
 					_WaitOnPause();
@@ -166,10 +163,8 @@ namespace Vixen.Sys.Managers
 		{
 			_intervalDeltaValue = new MillisecondsValue(string.Format("{0} delta", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
-			_executionTimeValue = new MillisecondsValue(string.Format("{0} system", OutputDevice.Name));
+			_executionTimeValue = new MillisecondsValue(string.Format("{0} triggered engine update", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
-			_updateTimeValue = new MillisecondsValue(string.Format("{0} output", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
 			_sleepTimeActualValue = new MillisecondsValue(string.Format("{0} sleep time", OutputDevice.Name));
@@ -184,8 +179,6 @@ namespace Vixen.Sys.Managers
 				VixenSystem.Instrumentation.RemoveValue(_executionTimeValue);
 			if (_refreshRateValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
-			if (_updateTimeValue != null)
-				VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
 			if (_sleepTimeActualValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_sleepTimeActualValue);
 		}
