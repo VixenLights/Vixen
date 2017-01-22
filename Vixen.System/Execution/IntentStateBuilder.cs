@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Vixen.Sys;
 
 namespace Vixen.Execution
@@ -28,36 +27,31 @@ namespace Vixen.Execution
 				{
 					value.Clear();
 				}
-			}	
+			}
 		}
 
 		public void AddElementState(Guid elementId, IIntentState state)
 		{
-			IIntentStates elementIntentList = _GetElementIntentList(elementId);
-			lock (elementIntentList)
+			lock (_elementStates)
 			{
+				IIntentStates elementIntentList;
+				if (!_elementStates.TryGetValue(elementId, out elementIntentList))
+				{
+					elementIntentList = new IntentStateList(4);
+					_elementStates[elementId] = elementIntentList;
+				}
 				elementIntentList.AddIntentState(state);
 			}
 		}
 
 		public IIntentStates GetElementState(Guid elementId)
 		{
-			return _GetElementIntentList(elementId);
-		}
-
-		private IIntentStates _GetElementIntentList(Guid elementId)
-		{
 			IIntentStates elementIntentList;
-			lock (_elementStates)
-			{
-				if (!_elementStates.TryGetValue(elementId, out elementIntentList))
-				{
-					elementIntentList = new IntentStateList(4);
-					_elementStates[elementId] = elementIntentList;
-				}
-			}
-			
+
+			_elementStates.TryGetValue(elementId, out elementIntentList);
+
 			return elementIntentList;
 		}
+
 	}
 }
