@@ -32,6 +32,15 @@ namespace Vixen.Sys
 			AddRange(intentStates);
 		}
 
+		public virtual void AddRangeIntentState(List<IIntentState> intentStates)
+		{
+			//Foreach instead of add range here as it allocates less memory via the enumerator.
+			foreach (var intentState in intentStates)
+			{
+				Add(intentState);
+			}
+		}
+
 		public virtual List<IIntentState> AsList()
 		{
 			return this;
