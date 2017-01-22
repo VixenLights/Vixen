@@ -593,32 +593,23 @@ namespace VixenModules.Controller.E131
             return (E131ModuleDataModel)this.ModuleData;
         }
 
-        ConcurrentDictionary<int, DateTime> outputStateDictionary = new ConcurrentDictionary<int, DateTime>();
+		public override void UpdateState(int chainIndex, ICommand[] outputStates)
+		{
+			_updateStateStopWatch.Start();
 
-        public override void UpdateState(int chainIndex, ICommand[] outputStates)
-        {
-            _updateStateStopWatch.Start();
+			//Make sure the setup form is closed & the plugin has started
+			if (isSetupOpen || !running)
+			{
+				return;
+			}
 
-            //Make sure the setup form is closed & the plugin has started
-            if (isSetupOpen || !running)
-            {
-                return;
-            }
+			if (channelValues == null || channelValues.Length != outputStates.Length)
+				channelValues = new byte[outputStates.Length];
 
+			for (int index = 0; index < outputStates.Length; index++)
+			{
+				var command = outputStates[index] as _8BitCommand;
 
-            if (outputStates == null)
-            {
-                channelValues = new byte[0];
-            }
-
-            if (channelValues == null || channelValues.Length != outputStates.Length)
-                channelValues = new byte[outputStates.Length];
-
-            _8BitCommand command;
-
-            for (int index = 0; index < outputStates.Length; index++)
-            {
-                command = outputStates[index] as _8BitCommand;
                 if (command == null)
                 {
                     // State reset
@@ -629,26 +620,7 @@ namespace VixenModules.Controller.E131
                 channelValues[index] = command.CommandValue;
             }
 
-			// no longer used, but I'm leaving it just in case we need it later...
-			/*
-            if (channelValues.Where(w => w == 0).Count() == channelValues.Length)
-            {
-                if (outputStateDictionary.TryGetValue(chainIndex, out lastUpdate))
-                {
-					if( DateTime.Now - lastUpdate < TimeSpan.FromSeconds(1))
-                    return;
-                }
-                outputStateDictionary[chainIndex] = DateTime.Now;
-            }
-            else
-            {
-                outputStateDictionary.TryRemove(chainIndex, out lastUpdate);
-            }
-			*/
-
-            int universeSize = 0;
-
-            this._eventCnt++;
+			_eventCnt++;
 
             if (_data.Universes == null || _data.Universes.Count == 0)
             {
@@ -666,7 +638,8 @@ namespace VixenModules.Controller.E131
 					continue;
 
                 //Check the universe size boundary.
-                if ((uE.Start + uE.Size) > OutputCount)
+	            int universeSize;
+	            if ((uE.Start + uE.Size) > OutputCount)
                 {
                     universeSize = OutputCount - uE.Start;
                 }
@@ -681,7 +654,7 @@ namespace VixenModules.Controller.E131
 
 				// do we want to suppress this one?  compare to last frame sent
 				bool sendit = true;
-				bool issame = E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize);
+				bool issame = _data.EventRepeatCount > 0 && E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, universeSize);
 				if (issame)
 				{
 					// we allow the first event repeat count dups
