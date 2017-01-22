@@ -139,7 +139,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		[DataMember]
 		public int Z
 		{
 			get { return _z; }

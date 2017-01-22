@@ -105,6 +105,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			_pixels.Clear();
 			Layout();
 		}
 

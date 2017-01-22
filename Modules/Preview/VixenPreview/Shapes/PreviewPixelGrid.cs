@@ -140,6 +140,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{
+			_pixels.Clear();
 			Layout();
 		}
 
@@ -347,16 +348,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							outPixels.Add(pixel);
 						}
 					}
-
 					return outPixels;
 				}
-				else {
-					return _pixels;
-				}
-			}
-			set
-			{
-				_pixels = value;
+				
+				return _pixels;
 			}
 		}
 

@@ -40,7 +40,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				else {
 					StringType = StringTypes.Pixel;
-					lightCount = children.Count;
 					// Just add the pixels, they will get layed out next
 					foreach (ElementNode child in children) {
 						{
