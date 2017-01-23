@@ -8,19 +8,16 @@ namespace Vixen.Sys.Managers
 {
 	internal class HardwareUpdateThread : IDisposable
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();		private Thread _thread;
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private Thread _thread;
 		private ExecutionState _threadState = ExecutionState.Stopped;
 		private EventWaitHandle _finished;
 		private AutoResetEvent _updateSignalerSync;
 		private ManualResetEvent _pauseSignal;
-		private Stopwatch _localTime;
+		private readonly Stopwatch _localTime;
 
 		private MillisecondsValue _sleepTimeActualValue;
 		private OutputDeviceRefreshRateValue _refreshRateValue;
-		private MillisecondsValue _updateTimeValue;
-		private MillisecondsValue _generateTimeValue;
-		private MillisecondsValue _extractTimeValue;
-		private MillisecondsValue _deviceTimeValue;
 		private MillisecondsValue _intervalDeltaValue;
 		private MillisecondsValue _executionTimeValue;
 
@@ -86,8 +83,7 @@ namespace Vixen.Sys.Managers
 		}
 
 		private long _lastMs = 0;
-		private long _lastMs2 = 0;
-
+		
 		private void _ThreadFunc()
 		{
 			// Thread main loop
@@ -97,73 +93,20 @@ namespace Vixen.Sys.Managers
 				while (_threadState != ExecutionState.Stopping) {
 					long nowMs = _localTime.ElapsedMilliseconds;
 					long dtMs = nowMs - _lastMs;
+					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
 					_lastMs = nowMs;
 
 					bool allowed = false;
-					var lastTS = Execution.UpdateState( out allowed);
+					Execution.UpdateState( out allowed);
 					long execMs = _localTime.ElapsedMilliseconds - nowMs;
 
 					_UpdateOutputDevice();
-					long outputMs = _localTime.ElapsedMilliseconds - nowMs - execMs;
 
-					// instrumentation counters...
-					_intervalDeltaValue.Set(Math.Abs(OutputDevice.UpdateInterval - dtMs));
-					if( allowed)
-						_executionTimeValue.Set(execMs);
-					_updateTimeValue.Set(outputMs);
-					var oc = OutputDevice as OutputController;
-					if (oc != null)
+					if (allowed)
 					{
-						long generateMs;
-						long extractMs;
-						long deviceMs;
-						oc.GetLastUpdateMs(out generateMs, out extractMs, out deviceMs);
-						_generateTimeValue.Set(generateMs);
-						_extractTimeValue.Set(extractMs);
-						_deviceTimeValue.Set(deviceMs);
+						_executionTimeValue.Set(execMs);
 					}
-
-					// log stuff after real work is done...
-
-					//// prep a sample info string for later...
-					//string sampinfo = "";
-					//long sampMs = 0;
-					//foreach (var name in lastTS.Keys)
-					//{
-					//	if (!name.Contains("System"))
-					//	{
-					//		sampMs = (long)lastTS[name].TotalMilliseconds;
-					//		sampinfo += String.Format("{0}:{1} ", name, sampMs);
-					//	}
-					//}
-
-					//// our cycle jitter was captured above
-					//bool jitter = false;
-					//if (Math.Abs(OutputDevice.UpdateInterval - dtMs) > 20) {
-					//	jitter = true;
-					//	Logging.Debug("hwt jitter:  {0}: nowMs:{1}, dtMs:{2}", OutputDevice.Name, nowMs, dtMs);
-					//}
-
-					//// only worry about state sample jitter if it is running
-					//long dtMs2 = 0;
-					//if (sampMs > 0) {
-					//	dtMs2 = sampMs - _lastMs2;
-					//	_lastMs2 = sampMs;
-					//	if (Math.Abs(OutputDevice.UpdateInterval - dtMs2) > 20 && sampMs > 0 && dtMs2 > 0)
-					//	{
-					//		jitter = true;
-					//		Logging.Debug("samp jitter:  {0}: sampMs:{1}, dts:{2}",
-					//						OutputDevice.Name, sampMs, dtMs2);
-					//	}
-					//}
-					//// summary output for all threads of jitter...
-					//// change the false in statuslog to true to get a no-preview output each time through.. 
-					//bool statuslog = false && (sampMs > 0 && dtMs2 > 0 && !OutputDevice.Name.Contains("Preview"));
-					//if ( jitter || statuslog) {
-					//		Logging.Debug("{0}: nowMs:{1}, dtMs:{2}, execMs:{3}, outMs:{4}, ts:{5}, dts={6}",
-					//						OutputDevice.Name, nowMs, dtMs, execMs, outputMs, sampinfo, dtMs2);
-					//}
-
+					
 					// wait for the next go 'round
 					_WaitOnSignal(signaler);
 					_WaitOnPause();
@@ -179,7 +122,7 @@ namespace Vixen.Sys.Managers
 				_threadState = ExecutionState.Stopped;
 				_finished.Set();
 
-				Logging.Error(string.Format("Controller {0} error", OutputDevice.Name), ex);
+				Logging.Error(ex, string.Format("Controller {0} error", OutputDevice.Name));
 				OnError();
 			}
 		}
@@ -220,16 +163,8 @@ namespace Vixen.Sys.Managers
 		{
 			_intervalDeltaValue = new MillisecondsValue(string.Format("{0} delta", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_intervalDeltaValue);
-			_executionTimeValue = new MillisecondsValue(string.Format("{0} system", OutputDevice.Name));
+			_executionTimeValue = new MillisecondsValue(string.Format("{0} triggered engine update", OutputDevice.Name));
 			VixenSystem.Instrumentation.AddValue(_executionTimeValue);
-			_updateTimeValue = new MillisecondsValue(string.Format("{0} output", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
-			_generateTimeValue = new MillisecondsValue(string.Format("{0}   generate", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_generateTimeValue);
-			_extractTimeValue = new MillisecondsValue(string.Format("{0}   extract", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_extractTimeValue);
-			_deviceTimeValue = new MillisecondsValue(string.Format("{0}   device", OutputDevice.Name));
-			VixenSystem.Instrumentation.AddValue(_deviceTimeValue);
 			_refreshRateValue = new OutputDeviceRefreshRateValue(OutputDevice);
 			VixenSystem.Instrumentation.AddValue(_refreshRateValue);
 			_sleepTimeActualValue = new MillisecondsValue(string.Format("{0} sleep time", OutputDevice.Name));
@@ -244,14 +179,6 @@ namespace Vixen.Sys.Managers
 				VixenSystem.Instrumentation.RemoveValue(_executionTimeValue);
 			if (_refreshRateValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_refreshRateValue);
-			if (_updateTimeValue != null)
-				VixenSystem.Instrumentation.RemoveValue(_updateTimeValue);
-			if (_generateTimeValue != null)
-				VixenSystem.Instrumentation.RemoveValue(_generateTimeValue);
-			if (_extractTimeValue != null)
-				VixenSystem.Instrumentation.RemoveValue(_extractTimeValue);
-			if (_deviceTimeValue != null)
-				VixenSystem.Instrumentation.RemoveValue(_deviceTimeValue);
 			if (_sleepTimeActualValue != null)
 				VixenSystem.Instrumentation.RemoveValue(_sleepTimeActualValue);
 		}

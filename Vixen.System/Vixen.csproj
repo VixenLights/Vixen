@@ -336,7 +336,6 @@
     <Compile Include="Sys\LayerMixing\StandardLayer.cs" />
     <Compile Include="Sys\LayerMixing\SequenceLayers.cs" />
     <Compile Include="Sys\Managers\ControllerFacade.cs" />
-    <Compile Include="Sys\Managers\ControllerLinkingManagement.cs" />
     <Compile Include="Sys\Managers\ExecutionState.cs" />
     <Compile Include="Sys\Managers\HardwareUpdateThread.cs" />
     <Compile Include="Sys\Managers\IControllerFacadeParticipant.cs" />
@@ -478,7 +477,6 @@
     <Compile Include="IO\Xml\Serializer\XmlCompressedFileSerializer.cs" />
     <Compile Include="IO\Xml\SystemContext\XmlSystemContextFilePolicy.cs" />
     <Compile Include="IO\Xml\Serializer\XmlControllerCollectionSerializer.cs" />
-    <Compile Include="IO\Xml\Serializer\XmlControllerLinkCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlControllerSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlDisabledControllerCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlElementNodeCollectionSerializer.cs" />
@@ -496,8 +494,6 @@
     <Compile Include="IO\Xml\Serializer\IXmlSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlElementCollectionSerializer.cs" />
     <Compile Include="IO\Xml\Serializer\XmlModuleLocalDataSetSerializer.cs" />
-    <Compile Include="Sys\ControllerLink.cs" />
-    <Compile Include="Sys\ControllerLinker.cs" />
     <Compile Include="Sys\DataStream.cs" />
     <Compile Include="Sys\DefaultValueArrayMember.cs" />
     <Compile Include="Sys\IDataNode.cs" />

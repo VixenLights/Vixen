@@ -18,8 +18,7 @@ namespace Vixen.Sys
 		private IEnumerable<ElementNode> _nodes;
 		private IEnumerable<IOutputDevice> _controllers;
 		private IEnumerable<IOutputDevice> _previews;
-		private IEnumerable<IOutputDevice> _smartControllers;
-		private IEnumerable<ControllerLink> _controllerLinking;
+		//private IEnumerable<IOutputDevice> _smartControllers;
 		private IEnumerable<IOutputFilterModuleInstance> _filters;
 		private IEnumerable<DataFlowPatch> _dataFlow;
 		private List<Guid> _disabledDevicesIds;
@@ -91,17 +90,17 @@ namespace Vixen.Sys
 			set { _previews = value; }
 		}
 
-		public IEnumerable<IOutputDevice> SmartOutputControllers
-		{
-			get
-			{
-				if (_smartControllers == null) {
-					_smartControllers = new IOutputDevice[0];
-				}
-				return _smartControllers;
-			}
-			set { _smartControllers = value; }
-		}
+		//public IEnumerable<IOutputDevice> SmartOutputControllers
+		//{
+		//	get
+		//	{
+		//		if (_smartControllers == null) {
+		//			_smartControllers = new IOutputDevice[0];
+		//		}
+		//		return _smartControllers;
+		//	}
+		//	set { _smartControllers = value; }
+		//}
 
 		//classes to handle each of these responsibilities?
 		public IEnumerable<IOutputFilterModuleInstance> Filters
@@ -114,18 +113,6 @@ namespace Vixen.Sys
 				return _filters;
 			}
 			set { _filters = value; }
-		}
-
-		public IEnumerable<ControllerLink> ControllerLinking
-		{
-			get
-			{
-				if (_controllerLinking == null) {
-					_controllerLinking = new ControllerLink[0];
-				}
-				return _controllerLinking;
-			}
-			set { _controllerLinking = value; }
 		}
 
 		public IEnumerable<DataFlowPatch> DataFlow
@@ -169,7 +156,7 @@ namespace Vixen.Sys
 		{
 			return deviceIds.Select(x =>
 			                        _controllers.FirstOrDefault(y => y.Id == x) ??
-			                        _smartControllers.FirstOrDefault(y => y.Id == x) ??
+			                        //_smartControllers.FirstOrDefault(y => y.Id == x) ??
 			                        _previews.FirstOrDefault(y => y.Id == x)).Where(x => x != null);
 		}
 	}

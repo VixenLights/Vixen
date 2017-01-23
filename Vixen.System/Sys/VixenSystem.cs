@@ -135,11 +135,10 @@ namespace Vixen.Sys
 				}
 
 				SystemConfig.OutputControllers = OutputControllers;
-				SystemConfig.SmartOutputControllers = SmartOutputControllers;
+				//SystemConfig.SmartOutputControllers = SmartOutputControllers;
 				SystemConfig.Previews = Previews;
 				SystemConfig.Elements = Elements;
 				SystemConfig.Nodes = Nodes.GetRootNodes();
-				SystemConfig.ControllerLinking = ControllerLinking;
 				SystemConfig.Filters = Filters;
 				SystemConfig.DataFlow = DataFlow;
 
@@ -160,25 +159,24 @@ namespace Vixen.Sys
 			Elements = new ElementManager();
 			Nodes = new NodeManager();
 			OutputControllers = new OutputControllerManager(
-				new ControllerLinkingManagement<OutputController>(),
 				new OutputDeviceCollection<OutputController>(),
 				new OutputDeviceExecution<OutputController>());
-			SmartOutputControllers = new SmartOutputControllerManager(
-				new ControllerLinkingManagement<SmartOutputController>(),
-				new OutputDeviceCollection<SmartOutputController>(),
-				new OutputDeviceExecution<SmartOutputController>());
+			//SmartOutputControllers = new SmartOutputControllerManager(
+			//	new ControllerLinkingManagement<SmartOutputController>(),
+			//	new OutputDeviceCollection<SmartOutputController>(),
+			//	new OutputDeviceExecution<SmartOutputController>());
 			Previews = new PreviewManager(
 				new OutputDeviceCollection<OutputPreview>(),
 				new OutputDeviceExecution<OutputPreview>());
 			Contexts = new ContextManager();
 			Filters = new FilterManager(DataFlow);
-			ControllerLinking = new ControllerLinker();
+			
 			ControllerManagement = new ControllerFacade();
 			ControllerManagement.AddParticipant(OutputControllers);
-			ControllerManagement.AddParticipant(SmartOutputControllers);
+			//ControllerManagement.AddParticipant(SmartOutputControllers);
 			OutputDeviceManagement = new OutputDeviceFacade();
 			OutputDeviceManagement.AddParticipant(OutputControllers);
-			OutputDeviceManagement.AddParticipant(SmartOutputControllers);
+			//OutputDeviceManagement.AddParticipant(SmartOutputControllers);
 			OutputDeviceManagement.AddParticipant(Previews);
 
 			// Load system data in order of dependency.
@@ -193,9 +191,8 @@ namespace Vixen.Sys
 			Elements.AddElements(SystemConfig.Elements);
 			Nodes.AddNodes(SystemConfig.Nodes);
 			OutputControllers.AddRange(SystemConfig.OutputControllers.Cast<OutputController>());
-			SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
+			//SmartOutputControllers.AddRange(SystemConfig.SmartOutputControllers.Cast<SmartOutputController>());
 			Previews.AddRange(SystemConfig.Previews.Cast<OutputPreview>());
-			ControllerLinking.AddRange(SystemConfig.ControllerLinking);
 			Filters.AddRange(SystemConfig.Filters);
 
 			DataFlow.Initialize(SystemConfig.DataFlow);
@@ -251,12 +248,11 @@ namespace Vixen.Sys
 		public static ElementManager Elements { get; private set; }
 		public static NodeManager Nodes { get; private set; }
 		public static OutputControllerManager OutputControllers { get; private set; }
-		public static SmartOutputControllerManager SmartOutputControllers { get; private set; }
+		//public static SmartOutputControllerManager SmartOutputControllers { get; private set; }
 		public static PreviewManager Previews { get; private set; }
 		public static ContextManager Contexts { get; private set; }
 		public static FilterManager Filters { get; private set; }
 		public static IInstrumentation Instrumentation { get; private set; }
-		public static ControllerLinker ControllerLinking { get; private set; }
 		public static DataFlowManager DataFlow { get; private set; }
 		public static ControllerFacade ControllerManagement { get; private set; }
 		public static OutputDeviceFacade OutputDeviceManagement { get; private set; }

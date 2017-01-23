@@ -108,7 +108,7 @@ namespace Vixen.Sys
 					var iss = ctx.GetState(Id);
 					if (iss == null)
 						continue;
-					_contextStates.AddRangeIntentState(iss);
+					_contextStates.AddRangeIntentState(iss.AsList());
 				}
 			}
 			var states = GetCombinedState(_contextStates);
