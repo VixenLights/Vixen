@@ -56,17 +56,23 @@ namespace VixenModules.Property.Color
 			if (radioButtonOptionSingle.Checked) {
 				colorType = ElementColorType.SingleColor;
 				singleColor = colorPanelSingleColor.Color;
+				colorSetName = null;
 			}
 			else if (radioButtonOptionMultiple.Checked) {
 				colorType = ElementColorType.MultipleDiscreteColors;
 				colorSetName = comboBoxColorSet.SelectedItem.ToString();
+				singleColor = System.Drawing.Color.Empty;
 			}
 			else if (radioButtonOptionFullColor.Checked) {
 				colorType = ElementColorType.FullColor;
+				singleColor = System.Drawing.Color.Empty;
+				colorSetName = null;
 			}
 			else {
 				Logging.Warn("Unexpected radio option selected");
 				colorType = ElementColorType.SingleColor;
+				singleColor = colorPanelSingleColor.Color;
+				colorSetName = null;
 			}
 
 

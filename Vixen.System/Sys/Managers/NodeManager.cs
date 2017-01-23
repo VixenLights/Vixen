@@ -99,6 +99,7 @@ namespace Vixen.Sys.Managers
 					VixenSystem.Elements.AddElement(parent.Element);
 				}
 			}
+
 		}
 
 		public void RenameNode(ElementNode node, string newName)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Vixen.Module;
 using Vixen.Module.Property;
 
@@ -57,7 +58,7 @@ namespace Vixen.Sys
 			if (_items.TryGetValue(id, out instance)) {
 				instance.Owner = null;
 				_items.Remove(id);
-				PropertyData.RemoveModuleTypeData(instance);
+				PropertyData.RemoveModuleInstanceData(instance);
 			}
 		}
 
@@ -82,6 +83,27 @@ namespace Vixen.Sys
 		public ModuleLocalDataSet PropertyData
 		{
 			get { return VixenSystem.ModuleStore.InstanceData; }
+		}
+
+		//This is a pure hack to clean up orphaned property data sets.
+		private static HashSet<Guid> _typeIds = new HashSet<Guid>
+		{
+				new Guid("{BFF34727-6B88-4F87-82B7-68424498C725}"), //Color property
+				new Guid("{3FB53423-DD2A-4719-B3E3-19AA6F062F62}")};  //Location property
+
+
+		//This is a pure hack to clean up orphaned property data sets.
+		public static void RemoveOrphanedProperties()
+		{
+			var propertyDataModules = VixenSystem.ModuleStore.InstanceData.DataModels.Where(x => _typeIds.Contains(x.ModuleTypeId));
+			var instanceIds = new HashSet<Guid>(VixenSystem.Nodes.GetLeafNodes().SelectMany(x => x.Properties._items.Values).Select(p => p.InstanceId));
+
+			var orphanedData = propertyDataModules.Where(d => !instanceIds.Contains(d.ModuleInstanceId));
+
+			foreach (var property in orphanedData)
+			{
+				VixenSystem.ModuleStore.InstanceData.RemoveDataModel(Tuple.Create(property.ModuleTypeId, property.ModuleInstanceId));
+			}
 		}
 
 		//public ModuleLocalDataSet PropertyData {

@@ -236,6 +236,7 @@ namespace VixenApplication
 			//Until we can fix up a better way to visualize unconnected filters, we will just clean them up from here.
 			//Just doing it in Ok as if we cancel it reloads the system anyway.
 			VixenSystem.Filters.RemoveOrphanedFilters();
+			Vixen.Sys.PropertyManager.RemoveOrphanedProperties();
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
