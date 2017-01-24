@@ -85,7 +85,7 @@
 			this.HelpButton = true;
 			this.Name = "MaskAndFillSetup";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "MaskAndFillSetup";
+			this.Text = "Mask And Fill Configuration";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
