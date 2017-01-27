@@ -257,6 +257,7 @@ Section "Application" SEC01
 	; Remove any old modules that are no longer used in case someone installs over an old version
 	RMDir /r $INSTDIR\Modules
 	RMDir /r $INSTDIR\Common
+	RMDir /r $INSTDIR
 
   ; only overwrite these if this installer has a newer version
   SetOverwrite ifnewer
