@@ -1,3 +1,55 @@
+Vixen Release Notes - 3.4 Beta
+
+** Bug
+    * [VIX-408] - Scheduler processes a repeated sequence multiple times
+    * [VIX-685] - Scheduler runs outside of specified hours
+    * [VIX-1134] - Export Sequence Close Button Mouse Hover
+    * [VIX-1909] - Extra Period in Export Sequence Form
+    * [VIX-1915] - Scheduler Crashing
+    * [VIX-1917] - Command Controller forces all http URLs to lowercase
+    * [VIX-1926] - Delete Template Message Box
+    * [VIX-1927] - Shockwave Effect doesnt work as expected.
+    * [VIX-1933] - VU Meter & Vertical Meter not running when Sequence activated via Web Interface
+    * [VIX-1940] - The Set Level effect does not properly handle intensity on discrete items declared with a non full brightness color.
+    * [VIX-1944] - When I stopping a running show, Vixen exist completely 
+    * [VIX-1946] - Web server sequence list returns all the backup sequences intermixed with the proper ones.
+    * [VIX-1957] - Schedules that run past midnight may not stop as intended
+    * [VIX-1958] - The Set Level effect does not properly handle intensity on full color items declared with a non full brightness color.
+    * [VIX-1965] - Lights randomly turn off 
+    * [VIX-1967] - Scheduler UI hangs while loading sequences.
+    * [VIX-1970] - Fix bug in the scheduler that launch commands will hang a show.
+    * [VIX-1982] - LipSync Text Convert Fail Form Caption
+    * [VIX-1988] - More work needs to be done to allow sequences across multiple shows to be loaded once.
+
+
+** Improvement
+    * [VIX-1908] - Option to remove/ignore punctuation in Lip Sync Text Convert.
+    * [VIX-1912] - Clear Text to Convert Text Box After Lip Sync Conversion
+    * [VIX-1913] - LipSync Start Offset Move
+    * [VIX-1936] - Custom value effect needs to render something-anything on the timeline
+    * [VIX-1938] - Increase the Max Amount of Rotations
+    * [VIX-1939] - LipSync Text Converter Whole Song
+    * [VIX-1947] - Mask And Fill Layer mixer needs option to include zero values.
+    * [VIX-1979] - Allow multiple instances of Vixen to load different profiles. 
+    * [VIX-1986] - Scroll to New Item Created with Add Element/Controller
+    * [VIX-1989] - Adjust labels on Scheduler menu
+    * [VIX-1991] - Upgrade version of NLog used to a current version.
+    * [VIX-1992] - Display Setup performance improvments.
+    * [VIX-1994] - Upgrade the version of the web server libraries to the current stable versions.
+    * [VIX-1997] - Upgrade the Dock panel suite used in the editor to the latest stable version.
+    * [VIX-1998] - Clean up unused references in the projects.
+    * [VIX-1999] - Improve logging in the Generic Serial controller 
+    * [VIX-2004] - Serialization improvements
+    * [VIX-2005] - Core engine performance improvements
+
+** New Feature
+    * [VIX-843] - Export Default
+    * [VIX-1132] - Find Patched Elements/Outputs Scroll
+
+Additional changes for the 3.4 beta releases can be tracked at bugs.vixenlights.com by searching for release version of Dev Build.
+
+
+
 Vixen Release Notes - 3.3u2
 
 General
