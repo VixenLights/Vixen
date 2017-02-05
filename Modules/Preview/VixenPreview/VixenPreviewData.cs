@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Drawing;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,10 +7,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VixenModules.Preview.VixenPreview.Shapes;
-using Vixen.Execution.Context;
-using Vixen.Module.Preview;
-using Vixen.Data.Value;
-using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -28,10 +18,6 @@ namespace VixenModules.Preview.VixenPreview
 		private string _backgroundFileName;
 		private int _backgroundAlpha = 255;
 		private bool _saveLocations = true;
-
-		public VixenPreviewData()
-		{
-		}
 
 		public override IModuleDataModel Clone()
 		{
@@ -123,6 +109,18 @@ namespace VixenModules.Preview.VixenPreview
 
 		[DataMember]
 		public Vector3D LocationOffset { get; set; }
+
+		[DataMember]
+		public bool HideStatusBar { get; set; }
+
+		[DataMember]
+		public bool HideWindowBorders { get; set; }
+
+		[DataMember]
+		public bool LockPosition { get; set; }
+
+		[DataMember]
+		public bool AlwaysOnTop { get; set; }
 
 		[DataMember]
 		public List<DisplayItem> DisplayItems

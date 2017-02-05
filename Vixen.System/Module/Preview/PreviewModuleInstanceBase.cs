@@ -74,6 +74,8 @@ namespace Vixen.Module.Preview
 			return Equals(other as IPreviewModuleInstance);
 		}
 
+		public virtual string Name { get; set; }
+
 		#endregion
 	}
 }

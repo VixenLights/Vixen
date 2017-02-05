@@ -45,9 +45,10 @@
             this.toolStripStatusPixels,
             this.toolStripStatusLabel1,
             this.toolStripStatusFPS});
-			this.statusStrip.Location = new System.Drawing.Point(0, 349);
+			this.statusStrip.Location = new System.Drawing.Point(0, 406);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(768, 22);
+			this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+			this.statusStrip.Size = new System.Drawing.Size(896, 22);
 			this.statusStrip.TabIndex = 1;
 			this.statusStrip.Text = "statusStrip1";
 			// 
@@ -82,16 +83,16 @@
 			this.gdiControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.gdiControl.FrameRate = ((long)(0));
 			this.gdiControl.Location = new System.Drawing.Point(0, 0);
-			this.gdiControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.gdiControl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
 			this.gdiControl.Name = "gdiControl";
-			this.gdiControl.Size = new System.Drawing.Size(768, 349);
+			this.gdiControl.Size = new System.Drawing.Size(896, 406);
 			this.gdiControl.TabIndex = 2;
 			// 
 			// GDIPreviewForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(768, 371);
+			this.ClientSize = new System.Drawing.Size(896, 428);
 			this.Controls.Add(this.gdiControl);
 			this.Controls.Add(this.statusStrip);
 			this.Name = "GDIPreviewForm";

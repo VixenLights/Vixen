@@ -68,6 +68,7 @@ namespace VixenModules.Preview.VixenPreview
 				if (UseGDIPreviewRendering)
 				{
 					displayForm = new GDIPreviewForm(GetDataModel());
+					displayForm.DisplayName = Name;
 				}
 				else
 				{
@@ -76,6 +77,20 @@ namespace VixenModules.Preview.VixenPreview
 				}
 
 				displayForm.Setup();
+			}
+		}
+
+		private String _name;
+		public override string Name
+		{
+			get { return _name; }
+			set
+			{
+				_name = value;
+				if (displayForm != null)
+				{
+					displayForm.DisplayName = value;
+				}
 			}
 		}
 
