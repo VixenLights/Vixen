@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Preview.VixenPreview
+﻿namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	partial class GDIPreviewForm
 	{
@@ -34,7 +34,7 @@
 			this.toolStripStatusPixels = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusFPS = new System.Windows.Forms.ToolStripStatusLabel();
-			this.gdiControl = new VixenModules.Preview.VixenPreview.GDIControl();
+			this.gdiControl = new GDIControl();
 			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 

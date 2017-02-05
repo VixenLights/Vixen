@@ -1,34 +1,34 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
-using Common.Controls;
-using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Windows.Forms;
+using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Vixen;
+using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
+using VixenModules.Preview.VixenPreview.Shapes;
 
-namespace VixenModules.Preview.VixenPreview
+namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	public partial class GDIPreviewForm : BaseForm, IDisplayForm
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private bool needsUpdate = true;
-		private bool formLoading = true;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool _needsUpdate = true;
+		private bool _formLoading = true;
 		private static MillisecondsValue _previewSetPixelsTime;
 		private Stopwatch _sw = Stopwatch.StartNew();
 		private Size? _mouseGrabOffset;
-		private ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
-		private String _displayName = "Vixen Preview";
+		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
+		private string _displayName = "Vixen Preview";
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
@@ -229,9 +229,9 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (!VixenSystem.Elements.ElementsHaveState)
 				{
-					if (needsUpdate)
+					if (_needsUpdate)
 					{
-						needsUpdate = false;
+						_needsUpdate = false;
 						gdiControl.BeginUpdate();
 						gdiControl.EndUpdate();
 						gdiControl.Invalidate();
@@ -241,7 +241,7 @@ namespace VixenModules.Preview.VixenPreview
 					return;
 				}
 
-				needsUpdate = true;
+				_needsUpdate = true;
 
 				try
 				{
@@ -388,7 +388,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Top = Top;
 			Data.Left = Left;
-			if(!formLoading) SaveWindowState();
+			if(!_formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_Resize(object sender, EventArgs e)
@@ -402,7 +402,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			Data.Width = Width;
 			Data.Height = Height;
-			if (!formLoading) SaveWindowState();
+			if (!_formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -435,9 +435,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
 		{
-			formLoading = true;
+			_formLoading = true;
 			RestoreWindowState();
-			formLoading = false;
+			_formLoading = false;
 		}
 
 		private void RestoreWindowState()

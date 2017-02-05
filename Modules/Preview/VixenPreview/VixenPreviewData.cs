@@ -13,9 +13,7 @@ namespace VixenModules.Preview.VixenPreview
 	[DataContract]
 	public class VixenPreviewData : ModuleDataModelBase
 	{
-		private int _setupTop, _setupLeft, _setupWidth, _setupHeight, _top, _left, _width, _height;
 		private List<DisplayItem> _displayItems = new List<DisplayItem>();
-		private string _backgroundFileName;
 		private int _backgroundAlpha = 255;
 		private bool _saveLocations = true;
 
@@ -38,67 +36,31 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		[DataMember]
-		public string BackgroundFileName
-		{
-			get { return _backgroundFileName; }
-			set { _backgroundFileName = value; }
-		}
+		public string BackgroundFileName { get; set; }
 
 		[DataMember]
-		public int Top
-		{
-			get { return _top; }
-			set { _top = value; }
-		}
+		public int Top { get; set; }
 
 		[DataMember]
-		public int Left
-		{
-			get { return _left; }
-			set { _left = value; }
-		}
+		public int Left { get; set; }
 
 		[DataMember]
-		public int SetupTop
-		{
-			get { return _setupTop; }
-			set { _setupTop = value; }
-		}
+		public int SetupTop { get; set; }
 
 		[DataMember]
-		public int SetupLeft
-		{
-			get { return _setupLeft; }
-			set { _setupLeft = value; }
-		}
+		public int SetupLeft { get; set; }
 
 		[DataMember]
-		public int SetupWidth
-		{
-			get { return _setupWidth; }
-			set { _setupWidth = value; }
-		}
+		public int SetupWidth { get; set; }
 
 		[DataMember]
-		public int SetupHeight
-		{
-			get { return _setupHeight; }
-			set { _setupHeight = value; }
-		}
+		public int SetupHeight { get; set; }
 
 		[DataMember]
-		public int Width
-		{
-			get { return _width; }
-			set { _width = value; }
-		}
+		public int Width { get; set; }
 
 		[DataMember]
-		public int Height
-		{
-			get { return _height; }
-			set { _height = value; }
-		}
+		public int Height { get; set; }
 
 		[DataMember]
 		public bool SaveLocations
