@@ -595,7 +595,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		}
 
-		private static void DrawCircle(Control control, PreviewPixel pixel, int radius, Color color)
+		private static void DrawCircle(Control control, Pixel pixel, int radius, Color color)
 		{
 			if (control.BackgroundImage == null)
 				control.BackgroundImage = new Bitmap(control.Width, control.Height);
@@ -647,7 +647,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
 							child.IsPixel = true;
 							if (child.Pixels == null) child.Pixels = new List<Pixel>();
-							var p = new Pixel(e.Location.X, e.Location.Y, 0, prop.PixelSize);
+							var p = new Pixel(e.Location.X, e.Location.Y, 0);
 
 							child.Pixels.Add(p);
 

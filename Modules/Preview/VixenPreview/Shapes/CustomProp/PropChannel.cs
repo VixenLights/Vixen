@@ -1,12 +1,8 @@
-﻿using Common.Controls.ColorManagement.ColorModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Vixen.Sys;
 
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
