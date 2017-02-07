@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.Shapes.CustomProp;
 
@@ -25,7 +23,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember]
 		private int _originWidth;
 
-		private ElementNode initiallyAssignedNode = null;
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, bottomRightStart;
 
@@ -34,7 +31,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Strings = new List<PreviewBaseShape>();
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);
-			initiallyAssignedNode = selectedNode;
 			Layout();
 		}
 
@@ -269,7 +265,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Name = prop.Name;
 			Strings = new List<PreviewBaseShape>();
 
-			var channels = prop.Channels;
+			var channels = prop.Elements;
 			channels.ForEach(c => { Strings.Add(new CustomPropBaseShape(_topLeft, c)); });
 			Layout();
 		}
@@ -341,9 +337,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				PointToZoomPointRef(_topLeft);
 				PointToZoomPointRef(_bottomRight);
-
-
-
 			}
 
 

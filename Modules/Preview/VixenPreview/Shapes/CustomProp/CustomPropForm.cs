@@ -77,17 +77,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 			}
 		}
-		public List<PropChannel> Channels
+		public List<Element> Channels
 		{
 			get
 			{
 				if (_prop == null) return null;
-				if (_prop.Channels == null) _prop.Channels = new List<PropChannel>();
-				return _prop.Channels;
+				if (_prop.Elements == null) _prop.Elements = new List<Element>();
+				return _prop.Elements;
 			}
 			set
 			{
-				_prop.Channels = value;
+				_prop.Elements = value;
 
 			}
 		}
@@ -173,20 +173,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void PopulateChannelsFromMultiTreeSelect()
 		{
-			if (Channels == null) Channels = new List<PropChannel>();
+			if (Channels == null) Channels = new List<Element>();
 			Channels.Clear();
 			var nodes = treeViewChannels.Nodes;
 
 			Channels = PopulateChildrenFromMultiSelectNode(nodes);
 		}
 
-		private List<PropChannel> PopulateChildrenFromMultiSelectNode(TreeNodeCollection nodes)
+		private List<Element> PopulateChildrenFromMultiSelectNode(TreeNodeCollection nodes)
 		{
 			if (nodes == null) return null;
-			var result = new List<PropChannel>();
+			var result = new List<Element>();
 			foreach (TreeNode item in nodes)
 			{
-				var prop = item.Tag as PropChannel;
+				var prop = item.Tag as Element;
 				if (prop != null)
 				{
 					prop.Children = PopulateChildrenFromMultiSelectNode(item.Nodes);
@@ -200,19 +200,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 
 
-		private void AddNodeToTree(TreeNodeCollection collection, PropChannel channel)
+		private void AddNodeToTree(TreeNodeCollection collection, Element channel)
 		{
 			TreeNode addedNode = SetTreeNodeValues(channel);
 
 			collection.Add(addedNode);
 			if (channel.Children != null)
-				foreach (PropChannel childNode in channel.Children)
+				foreach (Element childNode in channel.Children)
 				{
 					AddNodeToTree(addedNode.Nodes, childNode);
 				}
 		}
 
-		private static TreeNode SetTreeNodeValues(PropChannel channel, TreeNode addedNode = null)
+		private static TreeNode SetTreeNodeValues(Element channel, TreeNode addedNode = null)
 		{
 			if (addedNode == null)
 				addedNode = new TreeNode();
@@ -405,10 +405,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void treeViewChannels_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			var selectedObject = e.Node.Tag as PropChannel;
+			var selectedObject = e.Node.Tag as Element;
 			if (propertyGrid.SelectedObject != selectedObject)
 			{
-				propertyGrid.SelectedObject = e.Node.Tag as PropChannel;
+				propertyGrid.SelectedObject = e.Node.Tag as Element;
 				UpdatePreview();
 				_selectedPixels.Clear();
 			}
@@ -417,7 +417,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			var channel = treeViewChannels.SelectedNode.Tag as PropChannel;
+			var channel = treeViewChannels.SelectedNode.Tag as Element;
 			if (channel != null)
 				treeViewChannels.SelectedNode = SetTreeNodeValues(channel, treeViewChannels.SelectedNode);
 		}
@@ -581,7 +581,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			{
 
 				bool isSelected = IsNodeInSelectedTree(item, treeViewChannels.SelectedNode);
-				var channel = item.Tag as PropChannel;
+				var channel = item.Tag as Element;
 				if (channel != null)
 				{
 					foreach (var point in channel.Pixels)
@@ -641,10 +641,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 						if (treeViewChannels.SelectedNode != null)
 						{
 
-							var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+							var prop = treeViewChannels.SelectedNode.Tag as Element;
 							if (prop == null) return;
 
-							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
+							Element child = new Element(GenerateNewChannelName(treeViewChannels.SelectedNode, prop.Name + "_P{0}"));
 							child.IsPixel = true;
 							if (child.Pixels == null) child.Pixels = new List<Pixel>();
 							var p = new Pixel(e.Location.X, e.Location.Y, 0);
@@ -734,7 +734,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		private void MoveSelected(int deltaX, int deltaY, TreeNode selectedNode, bool redraw = true)
 		{
-			var prop = selectedNode.Tag as PropChannel;
+			var prop = selectedNode.Tag as Element;
 			if (prop != null)
 			{
 				prop.Pixels.AsParallel().ForAll(p =>
@@ -791,7 +791,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			List<string> names = new List<string>();
 			foreach (TreeNode item in selection)
 			{
-				var channel = item.Tag as PropChannel;
+				var channel = item.Tag as Element;
 				if (channel != null) names.Add(channel.Name);
 			}
 
@@ -845,16 +845,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 				if (dlg == DialogResult.OK)
 				{
-					PropChannel child;
+					Element child;
 					if (treeViewChannels.SelectedNode != null)
 					{
-						child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.Value));
+						child = new Element(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.Value));
 
 						treeViewChannels.SelectedNode.Nodes.Add(SetTreeNodeValues(child));
 					}
 					else
 					{
-						child = new PropChannel(GenerateNewChannelName(treeViewChannels.Nodes, frm.Value));
+						child = new Element(GenerateNewChannelName(treeViewChannels.Nodes, frm.Value));
 
 						treeViewChannels.Nodes.Add(SetTreeNodeValues(child));
 					}
@@ -878,7 +878,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 						for (int i = 0; i < frm.ChannelCount; i++)
 						{
-							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.TemplateName));
+							Element child = new Element(GenerateNewChannelName(treeViewChannels.SelectedNode, frm.TemplateName));
 							TreeNode addedNode = SetTreeNodeValues(child);
 							treeViewChannels.SelectedNode.Nodes.Add(addedNode);
 
@@ -890,7 +890,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 						for (int i = 0; i < frm.ChannelCount; i++)
 						{
-							PropChannel child = new PropChannel(GenerateNewChannelName(treeViewChannels.Nodes, frm.TemplateName));
+							Element child = new Element(GenerateNewChannelName(treeViewChannels.Nodes, frm.TemplateName));
 							TreeNode addedNode = SetTreeNodeValues(child);
 							treeViewChannels.Nodes.Add(addedNode);
 						}
@@ -945,7 +945,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 			removeNodesToolStripMenuItem.Visible = treeViewChannels.SelectedNode != null;
 			if (treeViewChannels.SelectedNode != null)
 			{
-				var prop = treeViewChannels.SelectedNode.Tag as PropChannel;
+				var prop = treeViewChannels.SelectedNode.Tag as Element;
 				if (prop != null)
 				{
 					addNodeToolStripMenuItem.Visible = addMultipleNodesToolStripMenuItem.Visible = removeNodesToolStripMenuItem.Visible = !prop.IsPixel;

@@ -8,18 +8,18 @@ using Vixen.Sys;
 namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 {
 	[DataContract, Serializable]
-	public class PropChannel
+	public class Element
 	{
 		private string _text;
-		public PropChannel()
+		public Element()
 		{
 			Id = Guid.NewGuid().ToString();
-			Children = new List<PropChannel>();
+			Children = new List<Element>();
 			PixelSize = 5;
 
 		}
 
-		public PropChannel(string name)
+		public Element(string name)
 			: this()
 		{
 
@@ -83,7 +83,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		[Browsable(false)]
 		[DataMember]
-		public List<PropChannel> Children { get; set; }
+		public List<Element> Children { get; set; }
 
 		 
 	}

@@ -13,7 +13,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 	public class CustomPropBaseShape : PreviewCustom
 	{
 
-		public CustomPropBaseShape(PreviewPoint point, PropChannel prop )
+		public CustomPropBaseShape(PreviewPoint point, Element prop )
 			: base(point, null)
 		{
 

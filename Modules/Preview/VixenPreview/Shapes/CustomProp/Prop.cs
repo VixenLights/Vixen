@@ -14,10 +14,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 	[DataContract]
 	public class Prop
 	{
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public Prop()
 		{
-			Channels = new List<PropChannel>();
+			Elements = new List<Element>();
 			BackgroundImageOpacity = 100;
 		}
 
@@ -31,7 +32,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		{
 
 			this.Name = obj.Name;
-			Channels = obj.Channels;
+			Elements = obj.Elements;
 
 			this.BackgroundImage = obj.BackgroundImage;
 			this.BackgroundImageOpacity = obj.BackgroundImageOpacity;
@@ -99,11 +100,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 		public string Name { get; set; }
 
 		[DataMember]
-		public List<PropChannel> Channels { get; set; }
+		public List<Element> Elements { get; set; }
 
-
-
-		public static List<Pixel> GetAllPixels(List<PropChannel> collection)
+		public static List<Pixel> GetAllPixels(List<Element> collection)
 		{
 			List<Pixel> result = collection.SelectMany(s => s.Pixels).ToList();
 			collection.ForEach(c => result.AddRange(GetAllPixels(c.Children)));
@@ -114,12 +113,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 
 		public Rectangle GetBounds()
 		{
-			var hash = ComputeHash(Channels);
+			var hash = ComputeHash(Elements);
 
 			if (hash != _currentHash)
 			{
 				_currentHash = hash;
-				_pixels = GetAllPixels(Channels);
+				_pixels = GetAllPixels(Elements);
 			}
 
 			var x_query = from Pixel p in _pixels select p.X;
@@ -178,7 +177,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes.CustomProp
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine(e.ToString());
+					Logging.Error(e, "An error occured computing the hash.");
 				}
 
 			}
