@@ -132,6 +132,14 @@
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\Common\Libraries\OpenTK.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\..\..\Common\Libraries\OpenTK.GLControl.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -204,6 +212,22 @@
     </Compile>
     <Compile Include="PreviewPixelSetupForm.Designer.cs">
       <DependentUpon>PreviewPixelSetupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OpenGL\Camera.cs" />
+    <Compile Include="OpenGL\Constructs\GLUtility.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\GlslLexer.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\ParamType.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\ProgramParam.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\Shader.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\ShaderProgram.cs" />
+    <Compile Include="OpenGL\Constructs\Shaders\Texture.cs" />
+    <Compile Include="OpenGL\Constructs\Vertex\VBO.cs" />
+    <Compile Include="OpenGL\Extensions\GlExtensions.cs" />
+    <Compile Include="OpenGL\OpenGLPreviewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenGL\OpenGLPreviewForm.Designer.cs">
+      <DependentUpon>OpenGLPreviewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
@@ -448,6 +472,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PreviewPixelSetupForm.resx">
       <DependentUpon>PreviewPixelSetupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenGL\OpenGLPreviewForm.resx">
+      <DependentUpon>OpenGLPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

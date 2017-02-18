@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.GDIPreview;
+using VixenModules.Preview.VixenPreview.OpenGL;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -38,7 +39,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public bool UseGDIPreviewRendering
 		{
-			get { return true; }
+					return false;
 		}
 
 		protected override Form Initialize()
@@ -59,8 +60,9 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				else
 				{
-					_displayForm = new VixenPreviewDisplayD2D();
-					_displayForm.Data = GetDataModel();
+					//displayForm = new VixenPreviewDisplayD2D();
+					displayForm = new OpenGLPreviewForm(GetDataModel());
+					//displayForm.Data = GetDataModel();
 				}
 
 				_displayForm.Setup();
