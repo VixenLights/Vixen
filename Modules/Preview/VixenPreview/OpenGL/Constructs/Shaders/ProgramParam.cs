@@ -2,7 +2,7 @@ using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace OpenTKDemo.Constructs.Shaders
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public class ProgramParam
 	{
@@ -83,7 +83,7 @@ namespace OpenTKDemo.Constructs.Shaders
 			Program.Use();
 			if (programid == 0)
 			{
-				programid = Program.ProgramID;
+				programid = Program.ProgramId;
 				location = (ptype == ParamType.Uniform ? Program.GetUniformLocation(name) : Program.GetAttributeLocation(name));
 			}
 		}

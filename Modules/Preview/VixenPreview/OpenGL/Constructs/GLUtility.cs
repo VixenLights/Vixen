@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using OpenGL;
 using OpenTK.Graphics.OpenGL;
-using OpenTKDemo.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 
 namespace OpenTKDemo.Constructs
 {
@@ -126,7 +126,7 @@ namespace OpenTKDemo.Constructs
 			if (vboHandle == 0) return 0;
 
 			int size = length * Marshal.SizeOf(typeof(T));
-
+		
 			GL.BindBuffer(target, vboHandle);
 			GL.BufferData<T>(target, size, data, hint);
 			GL.BindBuffer(target, 0);
@@ -140,6 +140,7 @@ namespace OpenTKDemo.Constructs
 		/// <param name="target">The VBO BufferTarget (usually ArrayBuffer or ElementArrayBuffer).</param>
 		/// <param name="data">The data to store in the VBO.</param>
 		/// <param name="hint">The buffer usage hint (usually StaticDraw).</param>
+		/// <param name="position"></param>
 		/// <param name="length">The length of the VBO (will take the first 'length' elements from data).</param>
 		/// <returns>The buffer ID of the VBO on success, 0 on failure.</returns>
 		public static uint CreateVBO<T>(BufferTarget target, [In, Out] T[] data, BufferUsageHint hint, int position, int length)
@@ -164,7 +165,7 @@ namespace OpenTKDemo.Constructs
 
 		public static void BindBufferToShaderAttribute<T>(VBO<T> buffer, ShaderProgram program, string attributeName) where T : struct
 		{
-			uint attribLocation = (uint)GL.GetAttribLocation(program.ProgramID, attributeName);
+			uint attribLocation = (uint)GL.GetAttribLocation(program.ProgramId, attributeName);
 			GL.EnableVertexAttribArray(attribLocation);
 			BindBuffer<T>(buffer);
 			GL.VertexAttribPointer(attribLocation, buffer.Size, buffer.PointerType, true, Marshal.SizeOf(typeof(T)), IntPtr.Zero);

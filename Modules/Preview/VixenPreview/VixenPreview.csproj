@@ -213,6 +213,7 @@
     <Compile Include="PreviewPixelSetupForm.Designer.cs">
       <DependentUpon>PreviewPixelSetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OpenGL\Background.cs" />
     <Compile Include="OpenGL\Camera.cs" />
     <Compile Include="OpenGL\Constructs\GLUtility.cs" />
     <Compile Include="OpenGL\Constructs\Shaders\GlslLexer.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="OpenGL\Constructs\Shaders\ShaderProgram.cs" />
     <Compile Include="OpenGL\Constructs\Shaders\Texture.cs" />
     <Compile Include="OpenGL\Constructs\Vertex\VBO.cs" />
+    <Compile Include="OpenGL\Drawable.cs" />
     <Compile Include="OpenGL\Extensions\GlExtensions.cs" />
     <Compile Include="OpenGL\OpenGLPreviewForm.cs">
       <SubType>Form</SubType>

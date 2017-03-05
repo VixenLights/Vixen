@@ -2,15 +2,25 @@
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 
-namespace OpenTKDemo.Constructs.Shaders
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public class ShaderProgram : IDisposable
 	{
+		#region Fields
+
+		public static int VertexPosition = 0;
+
+		public static int VertexColor = 1;
+
+		public static int TextureCoords = 2;
+
+		#endregion
+
 		#region Properties
 		/// <summary>
 		/// Specifies the OpenGL shader program ID.
 		/// </summary>
-		public int ProgramID { get; private set; }
+		public int ProgramId { get; private set; }
 
 		/// <summary>
 		/// Specifies the vertex shader used in this program.
@@ -45,7 +55,7 @@ namespace OpenTKDemo.Constructs.Shaders
 		/// </summary>
 		public string ProgramLog
 		{
-			get { return GL.GetProgramInfoLog(ProgramID); }
+			get { return GL.GetProgramInfoLog(ProgramId); }
 		}
 		#endregion
 
@@ -59,12 +69,16 @@ namespace OpenTKDemo.Constructs.Shaders
 		{
 			this.VertexShader = vertexShader;
 			this.FragmentShader = fragmentShader;
-			this.ProgramID = GL.CreateProgram();
+			this.ProgramId = GL.CreateProgram();
 			this.DisposeChildren = false;
 
-			GL.AttachShader(ProgramID, vertexShader.ShaderID);
-			GL.AttachShader(ProgramID, fragmentShader.ShaderID);
-			GL.LinkProgram(ProgramID);
+			GL.BindAttribLocation(ProgramId, VertexPosition, "vertexPosition");
+			GL.BindAttribLocation(ProgramId, VertexColor, "vertexColor");
+			GL.BindAttribLocation(ProgramId, TextureCoords, "textureCoord");
+
+			GL.AttachShader(ProgramId, vertexShader.ShaderID);
+			GL.AttachShader(ProgramId, fragmentShader.ShaderID);
+			GL.LinkProgram(ProgramId);
 
 			GetParams();
 		}
@@ -116,19 +130,19 @@ namespace OpenTKDemo.Constructs.Shaders
 		#region Methods
 		public void Use()
 		{
-			GL.UseProgram(this.ProgramID);
+			GL.UseProgram(this.ProgramId);
 		}
 
 		public int GetUniformLocation(string Name)
 		{
 			Use();
-			return GL.GetUniformLocation(ProgramID, Name);
+			return GL.GetUniformLocation(ProgramId, Name);
 		}
 
 		public int GetAttributeLocation(string Name)
 		{
 			Use();
-			return GL.GetAttribLocation(ProgramID, Name);
+			return GL.GetAttribLocation(ProgramId, Name);
 		}
 		#endregion
 
@@ -141,14 +155,14 @@ namespace OpenTKDemo.Constructs.Shaders
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (ProgramID != 0)
+			if (ProgramId != 0)
 			{
 				// Make sure this program isn't being used
 				//if (GL.CurrentProgram == ProgramID) GL.UseProgram(0);
 
-				GL.DetachShader(ProgramID, VertexShader.ShaderID);
-				GL.DetachShader(ProgramID, FragmentShader.ShaderID);
-				GL.DeleteProgram(ProgramID);
+				GL.DetachShader(ProgramId, VertexShader.ShaderID);
+				GL.DetachShader(ProgramId, FragmentShader.ShaderID);
+				GL.DeleteProgram(ProgramId);
 
 				if (DisposeChildren)
 				{
@@ -156,7 +170,7 @@ namespace OpenTKDemo.Constructs.Shaders
 					FragmentShader.Dispose();
 				}
 
-				ProgramID = 0;
+				ProgramId = 0;
 			}
 		}
 		#endregion

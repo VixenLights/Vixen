@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Numerics;
 #endif
 
-namespace OpenTKDemo.Constructs.Shaders
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public class Shader : IDisposable
 	{

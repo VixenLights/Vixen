@@ -1,4 +1,4 @@
-﻿namespace OpenTKDemo.Constructs.Shaders
+﻿namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public enum ParamType
 	{

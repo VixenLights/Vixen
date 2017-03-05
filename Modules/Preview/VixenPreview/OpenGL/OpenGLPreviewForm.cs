@@ -2,13 +2,15 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 using OpenGL;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTKDemo.Constructs;
-using OpenTKDemo.Constructs.Shaders;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -19,22 +21,23 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private static int _width = 1280, _height = 720;
 
 		private static ShaderProgram _program;
-		private static ShaderProgram _backgroundProgram;
+		//private static ShaderProgram _backgroundProgram;
 
-		private VBO<Vector3> _points, _background;
+		private VBO<float> _points;//, _background;
 		private VBO<Vector3> _pointsColor;
-		private VBO<Vector2> _backgroundUv;
-		private VBO<int> _backgroundElements;
+		private Background _background;
+		//private VBO<Vector2> _backgroundUv;
+		//private VBO<int> _backgroundElements;
 		private VBO<float> _pointsSizes;
-		private float _fov = .45f;
-		private bool left, right, up, down, space;
+		private float _fovy = .45f;
+		private bool _left, _right, _up, _down, _space;
 		private bool _mouseDown = false;
-		private int downX, downY;
+		private int _downX, _downY;
 		private int _prevX, _prevY;
 
-		private Texture _backgroundTexture;
+		//private Texture _backgroundTexture;
 
-		private bool _hasBackground;
+		//private bool _hasBackground;
 
 		private Stopwatch _watch;
 		private Camera _camera;
@@ -43,8 +46,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			Data = data;
 			InitializeComponent();
-			Width = _width;
-			Height = _height;
 			glControl.MouseWheel += GlControl_MouseWheel;
 		}
 
@@ -68,17 +69,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			glControl.MouseWheel -= GlControl_MouseWheel;
 			_points.Dispose();
-			_pointsColor.Dispose();
-			_pointsSizes.Dispose();
+			//_pointsColor.Dispose();
+			//_pointsSizes.Dispose();
 			_program.DisposeChildren = true;
 			_program.Dispose();
 
 			_background.Dispose();
-			_backgroundUv.Dispose();
-			_backgroundElements.Dispose();
-			_backgroundTexture.Dispose();
-			_backgroundProgram.DisposeChildren = true;
-			_backgroundProgram.Dispose();
+			_background.Dispose();
+			//_backgroundUv.Dispose();
+			//_backgroundElements.Dispose();
+			//_backgroundTexture.Dispose();
+			//_backgroundProgram.DisposeChildren = true;
+			//_backgroundProgram.Dispose();
 
 			if (disposing && (components != null))
 			{
@@ -97,6 +99,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			// enable depth testing to ensure correct z-ordering of our fragments
 			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.PointSprite);
+			GL.Enable(EnableCap.Blend);
 			GL.Enable(EnableCap.ProgramPointSize);
 		}
 
@@ -110,8 +113,19 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			// compile the shader program
 			_program = new ShaderProgram(VertexShader, FragmentShader);
-			_backgroundProgram = new ShaderProgram(VertexTextureShader, FragmentTextureShader);
-			InitializeBackground();
+
+			//InitializeBackground();
+			_background = new Background(Data);
+			if (_background.HasBackground)
+			{
+				Width = _background.Width;
+				Height = _background.Height;
+			}
+			else
+			{
+				Width = _width;
+				Height = _height;
+			}
 
 			// create our camera
 			_camera = new Camera(new Vector3(0, 0, 50), Quaternion.Identity);
@@ -119,15 +133,22 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			// set the view and projection matrix, which are static throughout this tutorial
 			_program.Use();
-			_program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(_fov, (float)_width / _height, 0.1f, 1000f));
-			_program["model_matrix"].SetValue(Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
+			//_program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(_fovy, (float)_width / _height, 0.1f, 1000f));
+			//_program["model_matrix"].SetValue(Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
 
-			// program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, new Vector3(0, 1, 0)));
+			//_points = new VBO<Vector3>(new Vector3[] { new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0), new Vector3(-1, -1, 0) });
+			//_pointsColor = new VBO<Vector3>(new Vector3[] { new Vector3(1f, 0, 0), new Vector3(0, 1f, 0), new Vector3(0, 0, 1f), new Vector3(1f, 1f, 1f) });
+			//_pointsSizes = new VBO<float>(new[] { 2f, 4f, 8f, 16f });
 
-			_points = new VBO<Vector3>(new Vector3[] { new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0), new Vector3(-1, -1, 0) });
-			_pointsColor = new VBO<Vector3>(new Vector3[] { new Vector3(1f, 0, 0), new Vector3(0, 1f, 0), new Vector3(0, 0, 1f), new Vector3(1f, 1f, 1f) });
-			_pointsSizes = new VBO<float>(new[] { 2f, 4f, 8f, 16f }, BufferTarget.ArrayBuffer);
-			
+			_points = new VBO<float>(new [] {
+
+				//Positions        /// Colors
+				-1f, 1f, 0f,     1f, 0f, 0f,
+				1f, 1f, 0f,      0f, 1f, 0f,
+				1f, -1f, 0f,      0f, 0f, 1f,
+				-1f, -1f, 0f,     1f, 1f, 1f
+			});
+
 			_watch = Stopwatch.StartNew();
 
 			Text += string.Format(" OpenGL v {0}", GL.GetString(StringName.Version));
@@ -137,46 +158,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			glControl_Resize(this, EventArgs.Empty);
 		}
 
-		private void InitializeBackground()
-		{
-			if (string.IsNullOrEmpty(Data.BackgroundFileName))
-			{
-				_hasBackground = false;
-				return;
-			}
-			var file = Path.Combine(VixenPreviewDescriptor.ModulePath, Data.BackgroundFileName);
-			var i = File.Exists(file) ? new Bitmap(Image.FromFile(file)) : null;
-
-			if (i == null)
-			{
-				_hasBackground = false;
-				return;
-			}
-
-			Height = _height = i.Height;
-			Width = _width = i.Width;
-
-			_backgroundProgram.Use();
-			_backgroundProgram["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(_fov, (float)_width / _height, 0.1f, 1000f));
-			float ratio = (float)_height / _width;
-			_backgroundProgram["model_matrix"].SetValue(Matrix4.CreateScale(new Vector3(15f, 15f * ratio, 0f)));
-			SetBackgroundBrightness(Data.BackgroundAlpha/255f);
-
-			_backgroundTexture = new Texture(i, false);
-
-			_backgroundUv = new VBO<Vector2>(new Vector2[] {new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1)});
-
-			_background = new VBO<Vector3>(new Vector3[] { new Vector3(-1, 1, -100), new Vector3(1, 1, -100), new Vector3(1, -1, -100), new Vector3(-1, -1, -100) });
-			_backgroundElements = new VBO<int>(new int[] { 0, 1, 2, 3 }, BufferTarget.ElementArrayBuffer);
-
-			_hasBackground = true;
-		}
-
-		private static void SetBackgroundBrightness(float value)
-		{
-			_backgroundProgram["ambientStrength"].SetValue(value);
-		}
-
+		
 		#region IDisplayForm
 
 		public VixenPreviewData Data { get; set; }
@@ -192,19 +174,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		public void UpdatePreview()
 		{
-			if (!VixenSystem.Elements.ElementsHaveState)
-			{
-				glControl.MakeCurrent();
-				ClearScreen();
-				if (_hasBackground)
-				{
-					DrawBackground();
-				}
-				glControl.SwapBuffers();
-				glControl.Context.MakeCurrent(null);
-				return;
-			}
-
 			OnRenderFrame();
 		}
 
@@ -215,51 +184,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (glControl.ClientSize.Height == 0)
 				glControl.ClientSize = new Size(glControl.ClientSize.Width, 1);
 
-			int w = glControl.ClientSize.Width;
-			int h = glControl.ClientSize.Height;
-
-			glControl.MakeCurrent();
-
-			_width = w;
-			_height = h;
-
-			var perspective = CreatePerspective(_width, _height);
-
-			_program.Use();
-			_program["projection_matrix"].SetValue(perspective);
-
-			if (_hasBackground)
-			{
-				_backgroundProgram.Use();
-				_backgroundProgram["projection_matrix"].SetValue(perspective);
-			}
+			_width = glControl.ClientSize.Width;
+			_height = glControl.ClientSize.Height;
 		}
+
 		private void GlControl_MouseWheel(object sender, MouseEventArgs e)
 		{
 			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
 
-			_fov += direction * .01f;
-			if (_fov <= 0.0f)
-			{
-				_fov = 0.001f;
-			}
-			else if (_fov > Math.PI)
-			{
-				_fov = 3.14f;
-			}
+			_camera.Move(new Vector3(0,0,direction));
 
-			var perspective = CreatePerspective(_width, _height);
-
-			_program.Use();
-			_program["projection_matrix"].SetValue(perspective);
-
-			if (_hasBackground)
-			{
-				_backgroundProgram.Use();
-				_backgroundProgram["projection_matrix"].SetValue(perspective);
-			}
-
-			Console.Out.WriteLine("FOV = {0}", _fov);
+			//Console.Out.WriteLine("FOV = {0}", _fovy);
 		}
 
 
@@ -268,7 +203,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (e.X == _prevX && e.Y == _prevY) return;
 
 			// move the camera when the mouse is down
-			if (_mouseDown)
+			if (_mouseDown && (e.Button == MouseButtons.Right))
 			{
 				float yaw = (_prevX - e.X) * 0.002f;
 				_camera.Yaw(yaw);
@@ -279,11 +214,20 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_prevX = e.X;
 				_prevY = e.Y;
 			}
+			else if(_mouseDown && e.Button == MouseButtons.Left)
+			{
+				float yaw = (_prevX - e.X) * 0.01f;
+				float pitch = (_prevY - e.Y) * 0.01f;
+				_camera.Move(new Vector3(yaw, -pitch, 0f));
+				
+				_prevX = e.X;
+				_prevY = e.Y;
+			}
 		}
 
 		private void glControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			if (e.Button != MouseButtons.Right) return;
+			//if (e.Button != MouseButtons.Right) return;
 
 			// this method gets called whenever a new mouse button event happens
 			_mouseDown = true;
@@ -292,14 +236,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (_mouseDown)
 			{
 				Cursor = Cursors.Hand;
-				_prevX = downX = e.X;
-				_prevY = downY = e.Y;
+				_prevX = _downX = e.X;
+				_prevY = _downY = e.Y;
 			}
 		}
 
 		private void glControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			Cursor = DefaultCursor;
+			_mouseDown = false;
 		}
 
 		private void PreviewWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
@@ -309,68 +254,71 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void glControl_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
 		{
-
 			OnRenderFrame();
+		}
 
+		private Matrix4 CreatePerspective()
+		{
+			return CreatePerspective(_width, _height);
 		}
 
 		private Matrix4 CreatePerspective(int width, int height)
 		{
-			var perspective = Matrix4.CreatePerspectiveFieldOfView(_fov, (float)width / height, 0.1f, 1000f);
+			var perspective = Matrix4.CreatePerspectiveFieldOfView(_fovy, (float)width / height, 0.1f, 1000f);
 			return perspective;
 		}
 
 
 		private void OnRenderFrame()
 		{
+			var perspective = CreatePerspective();
+			
 			glControl.MakeCurrent();
-			_watch.Stop();
-
-			_watch.Restart();
-
 			ClearScreen();
 
-			// use our shader program
-			_program.Use();
 
-			// apply our camera view matrix to the shader view matrix (this can be used for all objects in the scene)
-			_program["view_matrix"].SetValue(_camera.ViewMatrix);
-
-			//Bind up the point data
-			GlUtility.BindBufferToShaderAttribute(_points, _program, "vertexPosition");
-			GlUtility.BindBufferToShaderAttribute(_pointsColor, _program, "vertexColor");
-			GlUtility.BindBufferToShaderAttribute(_pointsSizes, _program, "pointSize");
+			float ratio = (float)Height / Width;
+			//_backgroundProgram["model_matrix"].SetValue(Matrix4.CreateScale(new Vector3(15f, 15f * ratio, 0f)));
 			
-			// draw the points
-			GL.DrawArrays(PrimitiveType.Points, 0,4);
-			if (_hasBackground)
+			var modelMatrix = Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0));
+			var mvp = modelMatrix * _camera.ViewMatrix * perspective;
+
+			if (!VixenSystem.Elements.ElementsHaveState)
 			{
-				DrawBackground();
+				DrawPoints(mvp);
 			}
 
+			_background.Draw(perspective, _camera.ViewMatrix);
 			glControl.SwapBuffers();
+			glControl.Context.MakeCurrent(null);
 
 		}
 
 		private static void ClearScreen()
 		{
-// set up the OpenGL viewport and clear both the color and depth bits
+			// set up the OpenGL viewport and clear both the color and depth bits
 			GL.Viewport(0, 0, _width, _height);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 		}
 
-		private void DrawBackground()
+		private void DrawPoints(Matrix4 mvp)
 		{
-			_backgroundProgram.Use();
-			GL.ActiveTexture(TextureUnit.Texture0);
-			GlUtility.BindTexture(_backgroundTexture);
+			// use our shader program
+			_program.Use();
 
-			_backgroundProgram["view_matrix"].SetValue(_camera.ViewMatrix);
+			_program["mvp"].SetValue(mvp);
+			_program["cameraPosition"].SetValue(_camera.Position);
+			_program["pointSize"].SetValue(8f);
 
-			GlUtility.BindBufferToShaderAttribute(_background, _backgroundProgram, "vertexPosition");
-			GlUtility.BindBufferToShaderAttribute(_backgroundUv, _backgroundProgram, "vertexUV");
-			GlUtility.BindBuffer(_backgroundElements);
-			GL.DrawElements(PrimitiveType.Quads, _backgroundElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+			GlUtility.BindBuffer(_points);
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 6* Marshal.SizeOf(typeof(float)), IntPtr.Zero);
+			GL.EnableVertexAttribArray(0);
+
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 3, VertexAttribPointerType.Float, true, 6* Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+			GL.EnableVertexAttribArray(1);
+
+			// draw the points
+			GL.DrawArrays(PrimitiveType.Points, 0, 4);
 		}
 
 		public static string VertexShader = @"
@@ -378,23 +326,70 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		in vec3 vertexPosition;
 		in vec3 vertexColor;
-		in float pointSize;
+		
 		out vec3 color;
 
-		uniform mat4 projection_matrix;
-		uniform mat4 view_matrix;
-		uniform mat4 model_matrix;
+		uniform float pointSize;
+		uniform mat4 mvp;
+		uniform vec3 cameraPosition; 
+
+		const float minPointScale = 0.1;
+		const float maxPointScale = 1;
+		const float maxDistance   = 100.0;
 
 		void main(void)
 		{
-			gl_PointSize = pointSize;
-		    color = vertexColor;
-		    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
+			color = vertexColor;
+			
+			gl_Position = mvp * vec4(vertexPosition, 1);
+
+			// Calculate point scale based on distance from the viewer
+			// to compensate for the fact that gl_PointSize is the point
+			// size in rasterized points / pixels.
+			float cameraDist = distance(vertexPosition.xyz, cameraPosition);
+			float pointScale = 1 - (cameraDist / maxDistance);
+			pointScale = max(pointScale, minPointScale);
+			//pointScale = min(pointScale, maxPointScale);
+
+			gl_PointSize = pointSize * pointScale;
 		}
 		";
 
+		//public static string VertexShader = @"
+		//#version 130
+
+		//in vec3 vertexPosition;
+		//in vec3 vertexColor;
+		//in float pointSize;
+		//out vec3 color;
+
+		//uniform mat4 mvp;
+		//uniform vec3 cameraPosition; 
+
+		//const float minPointScale = 0.1;
+		//const float maxPointScale = 1;
+		//const float maxDistance   = 100.0;
+
+		//void main(void)
+		//{
+		//	color = vertexColor;
+			
+		//	gl_Position = mvp * vec4(vertexPosition, 1);
+
+		//	// Calculate point scale based on distance from the viewer
+		//	// to compensate for the fact that gl_PointSize is the point
+		//	// size in rasterized points / pixels.
+		//	float cameraDist = distance(vertexPosition.xyz, cameraPosition);
+		//	float pointScale = 1.0 - (cameraDist / maxDistance);
+		//	pointScale = max(pointScale, minPointScale);
+		//	pointScale = min(pointScale, maxPointScale);
+
+		//	gl_PointSize = pointSize * pointScale;
+		//}
+		//";
+
 		public static string FragmentShader = @"
-		#version 130
+		#version 330
 
 		in vec3 color;
 		out vec4 gl_FragColor;
@@ -407,53 +402,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				discard;
 			}
-
 			gl_FragColor = vec4(color, 1);
 
 		}
 		";
-
-
-		public static string VertexTextureShader = @"
-#version 130
-
-in vec3 vertexPosition;
-in vec2 vertexUV;
-
-out vec2 uv;
-
-uniform mat4 projection_matrix;
-uniform mat4 view_matrix;
-uniform mat4 model_matrix;
-
-void main(void)
-{
-    uv = vertexUV;
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
-}
-";
-
-		public static string FragmentTextureShader = @"
-#version 130
-
-uniform sampler2D texture;
-uniform float ambientStrength;
-const vec3 lightColor = vec3(1,1,1);
-
-in vec2 uv;
-
-out vec4 fragment;
-
-void main(void)
-{
-   	vec4 color = texture2D(texture, uv);
-	
-	vec3 ambient = ambientStrength * lightColor;
-
-    vec3 result = ambient * color;
-    fragment = vec4(result, 1.0f);
-}
-";
 
 	}
 }

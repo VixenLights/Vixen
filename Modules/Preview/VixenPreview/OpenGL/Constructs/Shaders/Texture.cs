@@ -4,9 +4,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
+using OpenTKDemo.Constructs;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
-namespace OpenTKDemo.Constructs.Shaders
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public class Texture : IDisposable
 	{
@@ -49,7 +50,7 @@ namespace OpenTKDemo.Constructs.Shaders
 		}
 
 		/// <summary>
-		/// Create a texture from a supplie bitmap.
+		/// Create a texture from a supplied bitmap.
 		/// </summary>
 		/// <param name="BitmapImage">The already decoded bitmap image.</param>
 		/// <param name="FlipY">True if the bitmap should be flipped.</param>
@@ -100,7 +101,7 @@ namespace OpenTKDemo.Constructs.Shaders
 			GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1); // set pixel alignment
 			GL.BindTexture(TextureTarget, TextureID);     // bind the texture to memory in OpenGL
 
-			//Gl.TexParameteri(TextureTarget, TextureParameterName.GenerateMipmap, 0);
+			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 			GL.TexImage2D(TextureTarget, 0, PixelInternalFormat.Rgba8, BitmapImage.Width, BitmapImage.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bitmapData.Scan0);
 			GL.TexParameter(TextureTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 			GL.TexParameter(TextureTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);

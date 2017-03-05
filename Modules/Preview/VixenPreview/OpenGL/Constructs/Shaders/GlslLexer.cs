@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
-namespace OpenGL
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
     public static class GlslLexer
     {

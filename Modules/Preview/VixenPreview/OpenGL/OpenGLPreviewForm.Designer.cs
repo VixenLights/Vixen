@@ -41,6 +41,7 @@
 			this.Controls.Add(this.glControl);
 			this.Name = "OpenGLPreviewForm";
 			this.Text = "Preview";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PreviewWindow_FormClosing);
 			this.ResumeLayout(false);
 
 		}
