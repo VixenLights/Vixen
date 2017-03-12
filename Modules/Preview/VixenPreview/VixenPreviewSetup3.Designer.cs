@@ -30,21 +30,6 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
-			WeifenLuo.WinFormsUI.Docking.DockPanelSkin dockPanelSkin4 = new WeifenLuo.WinFormsUI.Docking.DockPanelSkin();
-			WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin autoHideStripSkin4 = new WeifenLuo.WinFormsUI.Docking.AutoHideStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient10 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient22 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin dockPaneStripSkin4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripSkin();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient dockPaneStripGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient23 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient11 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient24 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient dockPaneStripToolWindowGradient4 = new WeifenLuo.WinFormsUI.Docking.DockPaneStripToolWindowGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient25 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient26 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.DockPanelGradient dockPanelGradient12 = new WeifenLuo.WinFormsUI.Docking.DockPanelGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient27 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
-			WeifenLuo.WinFormsUI.Docking.TabGradient tabGradient28 = new WeifenLuo.WinFormsUI.Docking.TabGradient();
 			this.panelToolbar = new System.Windows.Forms.Panel();
 			this.panel11 = new System.Windows.Forms.Panel();
 			this.label14 = new System.Windows.Forms.Label();
@@ -62,15 +47,9 @@
 			this.buttonAlignHorizMid = new System.Windows.Forms.Button();
 			this.buttonAlignTop = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
-			this.panel7 = new System.Windows.Forms.Panel();
-			this.label6 = new System.Windows.Forms.Label();
-			this.buttonHelp = new System.Windows.Forms.Button();
 			this.panel6 = new System.Windows.Forms.Panel();
 			this.label8 = new System.Windows.Forms.Label();
 			this.buttonSelect = new System.Windows.Forms.Button();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.label5 = new System.Windows.Forms.Label();
-			this.buttonSave = new System.Windows.Forms.Button();
 			this.panel5 = new System.Windows.Forms.Panel();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
 			this.buttonTemplateHelp = new System.Windows.Forms.Button();
@@ -106,6 +85,7 @@
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.propInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,13 +112,13 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.trackerZoom = new Common.Controls.ControlsEx.ValueControls.HMiniTracker();
 			this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panelToolbar.SuspendLayout();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.panel8.SuspendLayout();
-			this.panel7.SuspendLayout();
 			this.panel6.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.panel5.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -154,9 +134,7 @@
 			this.panelToolbar.BackColor = System.Drawing.Color.White;
 			this.panelToolbar.Controls.Add(this.panel11);
 			this.panelToolbar.Controls.Add(this.panel8);
-			this.panelToolbar.Controls.Add(this.panel7);
 			this.panelToolbar.Controls.Add(this.panel6);
-			this.panelToolbar.Controls.Add(this.panel1);
 			this.panelToolbar.Controls.Add(this.panel5);
 			this.panelToolbar.Controls.Add(this.panel4);
 			this.panelToolbar.Controls.Add(this.panel3);
@@ -175,7 +153,7 @@
 			this.panel11.Controls.Add(this.label14);
 			this.panel11.Controls.Add(this.toolStripUndo);
 			this.panel11.Location = new System.Drawing.Point(896, 4);
-			this.panel11.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel11.Margin = new System.Windows.Forms.Padding(2);
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(142, 84);
 			this.panel11.TabIndex = 15;
@@ -409,44 +387,6 @@
 			this.label7.Text = "Align";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// panel7
-			// 
-			this.panel7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel7.Controls.Add(this.label6);
-			this.panel7.Controls.Add(this.buttonHelp);
-			this.panel7.Location = new System.Drawing.Point(1148, 4);
-			this.panel7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.panel7.Name = "panel7";
-			this.panel7.Size = new System.Drawing.Size(63, 84);
-			this.panel7.TabIndex = 13;
-			// 
-			// label6
-			// 
-			this.label6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label6.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.label6.Location = new System.Drawing.Point(0, 60);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(61, 22);
-			this.label6.TabIndex = 0;
-			this.label6.Text = "Help";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// buttonHelp
-			// 
-			this.buttonHelp.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonHelp.BackgroundImage")));
-			this.buttonHelp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonHelp.FlatAppearance.BorderSize = 0;
-			this.buttonHelp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonHelp.Location = new System.Drawing.Point(12, 13);
-			this.buttonHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(35, 36);
-			this.buttonHelp.TabIndex = 34;
-			this.buttonHelp.UseVisualStyleBackColor = true;
-			this.buttonHelp.Click += new System.EventHandler(this.toolbarButton_Click);
-			// 
 			// panel6
 			// 
 			this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -488,44 +428,6 @@
 			this.buttonSelect.Tag = "";
 			this.buttonSelect.UseVisualStyleBackColor = false;
 			this.buttonSelect.Click += new System.EventHandler(this.toolbarButton_Click);
-			// 
-			// panel1
-			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.label5);
-			this.panel1.Controls.Add(this.buttonSave);
-			this.panel1.Location = new System.Drawing.Point(1210, 4);
-			this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(63, 84);
-			this.panel1.TabIndex = 11;
-			// 
-			// label5
-			// 
-			this.label5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label5.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.label5.Location = new System.Drawing.Point(0, 60);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(61, 22);
-			this.label5.TabIndex = 0;
-			this.label5.Text = "Close";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// buttonSave
-			// 
-			this.buttonSave.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSave.BackgroundImage")));
-			this.buttonSave.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.buttonSave.FlatAppearance.BorderSize = 0;
-			this.buttonSave.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-			this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonSave.Location = new System.Drawing.Point(12, 13);
-			this.buttonSave.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-			this.buttonSave.Name = "buttonSave";
-			this.buttonSave.Size = new System.Drawing.Size(35, 36);
-			this.buttonSave.TabIndex = 31;
-			this.buttonSave.UseVisualStyleBackColor = true;
-			this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
 			// 
 			// panel5
 			// 
@@ -1067,7 +969,8 @@
             this.fileToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.settingsToolStripMenuItem});
+            this.settingsToolStripMenuItem,
+            this.helpToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -1078,8 +981,9 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem,
-            this.toolStripSeparator1});
+            this.saveToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
@@ -1087,14 +991,23 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(89, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(95, 6);
+			// 
+			// saveToolStripMenuItem
+			// 
+			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Text = "&Save";
+			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1247,7 +1160,7 @@
 			this.panel9.Controls.Add(this.trackerZoom);
 			this.panel9.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel9.Location = new System.Drawing.Point(0, 617);
-			this.panel9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel9.Margin = new System.Windows.Forms.Padding(2);
 			this.panel9.Name = "panel9";
 			this.panel9.Size = new System.Drawing.Size(1276, 32);
 			this.panel9.TabIndex = 16;
@@ -1326,7 +1239,7 @@
 			// 
 			this.trackerZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.trackerZoom.Location = new System.Drawing.Point(1122, 4);
-			this.trackerZoom.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.trackerZoom.Margin = new System.Windows.Forms.Padding(2);
 			this.trackerZoom.Maximum = 400;
 			this.trackerZoom.Minimum = 25;
 			this.trackerZoom.Name = "trackerZoom";
@@ -1344,52 +1257,24 @@
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.dockPanel.Name = "dockPanel";
 			this.dockPanel.Size = new System.Drawing.Size(1276, 503);
-			dockPanelGradient10.EndColor = System.Drawing.SystemColors.ControlLight;
-			dockPanelGradient10.StartColor = System.Drawing.SystemColors.ControlLight;
-			autoHideStripSkin4.DockStripGradient = dockPanelGradient10;
-			tabGradient22.EndColor = System.Drawing.SystemColors.Control;
-			tabGradient22.StartColor = System.Drawing.SystemColors.Control;
-			tabGradient22.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-			autoHideStripSkin4.TabGradient = tabGradient22;
-			autoHideStripSkin4.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-			dockPanelSkin4.AutoHideStripSkin = autoHideStripSkin4;
-			tabGradient23.EndColor = System.Drawing.SystemColors.ControlLightLight;
-			tabGradient23.StartColor = System.Drawing.SystemColors.ControlLightLight;
-			tabGradient23.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripGradient4.ActiveTabGradient = tabGradient23;
-			dockPanelGradient11.EndColor = System.Drawing.SystemColors.Control;
-			dockPanelGradient11.StartColor = System.Drawing.SystemColors.Control;
-			dockPaneStripGradient4.DockStripGradient = dockPanelGradient11;
-			tabGradient24.EndColor = System.Drawing.SystemColors.ControlLight;
-			tabGradient24.StartColor = System.Drawing.SystemColors.ControlLight;
-			tabGradient24.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripGradient4.InactiveTabGradient = tabGradient24;
-			dockPaneStripSkin4.DocumentGradient = dockPaneStripGradient4;
-			dockPaneStripSkin4.TextFont = new System.Drawing.Font("Segoe UI", 9F);
-			tabGradient25.EndColor = System.Drawing.SystemColors.ActiveCaption;
-			tabGradient25.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			tabGradient25.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
-			tabGradient25.TextColor = System.Drawing.SystemColors.ActiveCaptionText;
-			dockPaneStripToolWindowGradient4.ActiveCaptionGradient = tabGradient25;
-			tabGradient26.EndColor = System.Drawing.SystemColors.Control;
-			tabGradient26.StartColor = System.Drawing.SystemColors.Control;
-			tabGradient26.TextColor = System.Drawing.SystemColors.ControlText;
-			dockPaneStripToolWindowGradient4.ActiveTabGradient = tabGradient26;
-			dockPanelGradient12.EndColor = System.Drawing.SystemColors.ControlLight;
-			dockPanelGradient12.StartColor = System.Drawing.SystemColors.ControlLight;
-			dockPaneStripToolWindowGradient4.DockStripGradient = dockPanelGradient12;
-			tabGradient27.EndColor = System.Drawing.SystemColors.InactiveCaption;
-			tabGradient27.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			tabGradient27.StartColor = System.Drawing.SystemColors.GradientInactiveCaption;
-			tabGradient27.TextColor = System.Drawing.SystemColors.InactiveCaptionText;
-			dockPaneStripToolWindowGradient4.InactiveCaptionGradient = tabGradient27;
-			tabGradient28.EndColor = System.Drawing.Color.Transparent;
-			tabGradient28.StartColor = System.Drawing.Color.Transparent;
-			tabGradient28.TextColor = System.Drawing.SystemColors.ControlDarkDark;
-			dockPaneStripToolWindowGradient4.InactiveTabGradient = tabGradient28;
-			dockPaneStripSkin4.ToolWindowGradient = dockPaneStripToolWindowGradient4;
-			dockPanelSkin4.DockPaneStripSkin = dockPaneStripSkin4;
 			this.dockPanel.TabIndex = 20;
+			// 
+			// helpToolStripMenuItem
+			// 
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewHelpToolStripMenuItem});
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.helpToolStripMenuItem.Text = "Help";
+			// 
+			// viewHelpToolStripMenuItem
+			// 
+			this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+			this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
+			this.viewHelpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
+			this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(181, 30);
+			this.viewHelpToolStripMenuItem.Text = "&View Help";
+			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
 			// 
 			// VixenPreviewSetup3
 			// 
@@ -1419,9 +1304,7 @@
 			this.toolStripUndo.ResumeLayout(false);
 			this.toolStripUndo.PerformLayout();
 			this.panel8.ResumeLayout(false);
-			this.panel7.ResumeLayout(false);
 			this.panel6.ResumeLayout(false);
-			this.panel1.ResumeLayout(false);
 			this.panel5.ResumeLayout(false);
 			this.panel4.ResumeLayout(false);
 			this.panel3.ResumeLayout(false);
@@ -1463,9 +1346,6 @@
 		private System.Windows.Forms.OpenFileDialog dialogSelectBackground;
 		private System.Windows.Forms.Button buttonSemiCircle;
 		private System.Windows.Forms.Button buttonTriangle;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Button buttonSave;
 		private System.Windows.Forms.Panel panel6;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Button buttonSelect;
@@ -1480,9 +1360,6 @@
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem backgroundPropertiesToolStripMenuItem;
-		private System.Windows.Forms.Panel panel7;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Button buttonHelp;
 		private System.Windows.Forms.Button buttonAddToPreview;
 		private System.Windows.Forms.Button buttonDeleteTemplate;
 		private System.Windows.Forms.Button buttonTemplateHelp;
@@ -1528,6 +1405,8 @@
 		private System.Windows.Forms.Button buttonAddTemplate;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-
+		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
 	}
 }

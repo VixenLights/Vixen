@@ -7,11 +7,13 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
+using System.Threading.Tasks;
 using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
+using Vixen.Sys;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
@@ -141,6 +143,7 @@ namespace VixenModules.Preview.VixenPreview {
 			_undoMgr.RedoItemsChanged -= _undoMgr_RedoItemsChanged;
 			undoButton.ItemChosen -= undoButton_ItemChosen;
 			redoButton.ItemChosen -= redoButton_ItemChosen;
+			CloseSetup();
 		}
 
 		private void buttonSetBackground_Click(object sender, EventArgs e) {
@@ -243,8 +246,6 @@ namespace VixenModules.Preview.VixenPreview {
 				DrawShape = "Star Burst";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.StarBurst;
 			}
-			else if (button == buttonHelp)
-				Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
 			else if (button == buttonMegaTree)
 			{
 				DrawShape = "Mega Tree";
@@ -334,14 +335,14 @@ namespace VixenModules.Preview.VixenPreview {
 			Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
-		private void buttonSave_Click(object sender, EventArgs e) {
-			SaveLocationDataForElements();
-			DialogResult = System.Windows.Forms.DialogResult.OK;
-			previewForm.Close();
-			Close();
-		}
+		private void CloseSetup()
+	    {
+		    SaveLocationDataForElements();
+		    DialogResult = DialogResult.OK;
+		    previewForm.Close();
+	    }
 
-		private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
+	    private void VixenPreviewSetup3_Move(object sender, EventArgs e) {
 			if (Data == null) {
 				Logging.Warn("VixenPreviewSetup3_Move: Data is null. abandoning move. (Thread ID: " +
 											System.Threading.Thread.CurrentThread.ManagedThreadId + ")");
@@ -380,7 +381,6 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-			SaveLocationDataForElements();
 			Close();
 		}
 
@@ -650,6 +650,16 @@ namespace VixenModules.Preview.VixenPreview {
 			ThemeComboBoxRenderer.DrawItem(sender, e);
 		}
 
+		private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveLocationDataForElements();
+			await VixenSystem.SaveSystemAndModuleConfigAsync();
+		}
+
+		private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
+		}
 	}
 
 
