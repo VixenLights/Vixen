@@ -171,11 +171,11 @@ namespace VixenModules.Effect.Curtain
 		{
 			if (Direction == CurtainDirection.CurtainOpen || Direction == CurtainDirection.CurtainOpenClose)
 			{
-				_lastCurtainDir = 1;
+				_lastCurtainDir = 0;
 			}
 			else
 			{
-				_lastCurtainDir = 0;
+				_lastCurtainDir = 1;
 			}
 		}
 
