@@ -115,6 +115,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 					{
+
 					}
 				}
 			};

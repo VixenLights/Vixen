@@ -5755,7 +5755,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			selector.ShowDialog();
 		}
 
-        private void editMapsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void editMapsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LipSyncMapSelector mapSelector = new LipSyncMapSelector();
             DialogResult dr = mapSelector.ShowDialog();
@@ -5764,7 +5764,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 mapSelector.Changed = false;
                 SequenceModified();
                 ResetLipSyncNodes();
-                VixenSystem.SaveSystemConfig();
+                await VixenSystem.SaveSystemAndModuleConfigAsync();
 	        }
         }
 

@@ -10,7 +10,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
-using System.Threading;
+using System.Threading.Tasks;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -93,7 +93,12 @@ namespace VixenApplication
 			PopulateVersionStrings();
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
-			VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory);
+			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
+			{
+				var messageBox = new MessageBoxForm("An error occured starting the system and the application will be halted.", "Error",MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog();
+				Application.Exit();
+			}
 
 			InitStats();
 
@@ -198,7 +203,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
+		private async void VixenApp_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			// close all open editors
 			foreach (IEditorUserInterface editor in _openEditors.ToArray()) {
@@ -206,7 +211,7 @@ namespace VixenApplication
 			}
 
 			stopping = true;
-			VixenSystem.Stop();
+			await VixenSystem.Stop(false);
 
 			_applicationData.SaveData();
 			RemoveLockFile();
@@ -628,12 +633,12 @@ namespace VixenApplication
 			}
 		}
 
-		private void SetupPreviews()
+		private async void SetupPreviews()
 		{
 			using (ConfigPreviews form = new ConfigPreviews()) {
 				DialogResult result = form.ShowDialog();
 				if (result == DialogResult.OK) {
-					VixenSystem.SaveSystemConfig();
+					await VixenSystem.SaveSystemAndModuleConfigAsync();
 				}
 				else {
 					VixenSystem.ReloadSystemConfig();
@@ -641,13 +646,13 @@ namespace VixenApplication
 			}
 		}
 
-		private void SetupDisplay()
+		private async void SetupDisplay()
 		{
 			using (DisplaySetup form = new DisplaySetup()) {
 				DialogResult dr = form.ShowDialog();
 
 				if (dr == DialogResult.OK) {
-					VixenSystem.SaveSystemConfig();
+					await VixenSystem.SaveSystemAndModuleConfigAsync();
 				}
 				else {
 					VixenSystem.ReloadSystemConfig();
@@ -681,13 +686,15 @@ namespace VixenApplication
 				updateExecutionState();
 		}
 
-		private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void optionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var dlg = new OptionsDialog();
 			var res = dlg.ShowDialog();
 			// so far the dialog box does it all, no real need for this check...
-			if( res != DialogResult.OK)
-				return;
+			if (res == DialogResult.OK)
+			{
+				await VixenSystem.SaveSystemConfigAsync();
+			}
 		}
 
 		// we can't get passed in a state to display, since it may be called out-of-order if we're invoking across threads, etc.

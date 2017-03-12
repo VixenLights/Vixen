@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Vixen.Module;
 using Vixen.Instrumentation;
 using Vixen.Services;
@@ -25,8 +26,15 @@ namespace Vixen.Sys
 		};
 
 		private static RunState _state = RunState.Stopped;
+		private static bool _systemConfigSaving;
+		private static bool _moduleConfigSaving;
 
-		public static void Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false,
+		public static bool IsSaving()
+		{
+			return _systemConfigSaving | _moduleConfigSaving;
+		}
+
+		public static bool Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false,
 		                         string dataRootDirectory = null)
 		{
 			if (_state == RunState.Stopped) {
@@ -87,13 +95,15 @@ namespace Vixen.Sys
 				catch (Exception ex) {
 					// The client is expected to have subscribed to the logging event
 					// so that it knows that an exception occurred during loading.
-					Logging.Error("Error during system startup; the system has been stopped.", ex);
-					Stop();
+					Logging.Error("Error during system startup!", ex);
+					return false;
 				}
 			}
+
+			return true;
 		}
 
-		public static void Stop()
+		public static async Task Stop(bool save = true)
 		{
 			if (_state == RunState.Starting || _state == RunState.Started) {
 				_state = RunState.Stopping;
@@ -103,11 +113,14 @@ namespace Vixen.Sys
 				SaveDisabledDevices();
 				Execution.CloseExecution();
 				Modules.ClearRepositories();
-				Queue<Task> queue = SaveSystemConfig();
-				Task.WaitAll(queue.ToArray());
+				if (save)
+				{
+					await SaveSystemAndModuleConfigAsync();
+				}
 				_state = RunState.Stopped;
 				Logging.Info("Vixen System successfully stopped.");
 			}
+
 		}
 
 		public static void SaveDisabledDevices()
@@ -117,20 +130,32 @@ namespace Vixen.Sys
 			}
 		}
 
-		/// <summary>
-		/// Saves the system config. 
-		/// </summary>
-		/// <returns>Queue of Tasks that are processing the saving. Can be monitored if next steps require saving to be complete.</returns>
-		public static Queue<Task> SaveSystemConfig()
+		public static async Task<bool> SaveSystemAndModuleConfigAsync()
 		{
-			var taskQueue = new Queue<Task>();
-			if (SystemConfig != null) {
+			var systemConfig = SaveSystemConfigAsync();
+			var moduleConfig = SaveModuleConfigAsync();
+			await systemConfig;
+			await moduleConfig;
+			return true;
+		}
+
+		public static async Task<bool> SaveSystemConfigAsync()
+		{
+			if (SystemConfig != null)
+			{
+				if (_systemConfigSaving)
+				{
+					Logging.Error("System config is already being saved. Skipping duplicate request.");
+					return false;
+				}
+				_systemConfigSaving = true;
 				// 'copy' the current details (nodes/elements/controllers) from the executing state
 				// to the SystemConfig, so they're there for writing when we save
 
 				// we may not want to always save the disabled devices to the config (ie. if the system is stopped at the
 				// moment) since the disabled devices are inferred from the running status of active devices
-				if (_state == RunState.Started) {
+				if (_state == RunState.Started)
+				{
 					SaveDisabledDevices();
 				}
 
@@ -141,16 +166,33 @@ namespace Vixen.Sys
 				SystemConfig.Nodes = Nodes.GetRootNodes();
 				SystemConfig.Filters = Filters;
 				SystemConfig.DataFlow = DataFlow;
-
-				taskQueue.Enqueue(Task.Factory.StartNew(() => SystemConfig.Save()));
+			
+				await Task.Factory.StartNew(() => SystemConfig.Save());
+				_systemConfigSaving = false;
+				return true;
 			}
 
-			if (ModuleStore != null) {
-				taskQueue.Enqueue(Task.Factory.StartNew(() => ModuleStore.Save()));
-			}
-
-			return taskQueue;
+			return false;
 		}
+
+		public static async Task<bool> SaveModuleConfigAsync()
+		{
+			
+			if (ModuleStore != null)
+			{
+				if (_moduleConfigSaving)
+				{
+					Logging.Error("Module config is already being saved. Skipping duplicate request.");
+					return false;
+				}
+				_moduleConfigSaving = true;
+				await Task.Factory.StartNew(() => ModuleStore.Save());
+				_moduleConfigSaving = false;
+				return true;
+			}
+			return false;
+
+		} 
 
 		public static void LoadSystemConfig()
 		{

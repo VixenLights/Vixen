@@ -52,6 +52,7 @@ namespace VixenModules.App.Shows
 					{
 						if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 						{
+							
 						}
 					}
 				};

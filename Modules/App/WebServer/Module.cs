@@ -63,7 +63,7 @@ namespace VixenModules.App.WebServer
 				AppCommand toolsMenu = _GetToolsMenu();
 				AppCommand showCommand = new AppCommand(MENU_ID_ROOT, "Web Server");
 
-				showCommand.Click += (sender, e) =>
+				showCommand.Click += async (sender, e) =>
 				{
 					using (Settings cs = new Settings(_data))
 					{
@@ -73,6 +73,7 @@ namespace VixenModules.App.WebServer
 
 							_data.HttpPort = cs.Port;
 							_data.IsEnabled = cs.WebServerEnabled;
+							await VixenSystem.SaveModuleConfigAsync();
 
 						}
 						_SetServerEnableState(_data.IsEnabled, _data.HttpPort);
