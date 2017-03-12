@@ -32,7 +32,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception ex)
 			{
-			    Logging.Error("Could not execute sequence " + ShowItem.Sequence_FileName + "; " + ex.Message);
+			    Logging.Error("Could not execute sequence " + ShowItem.SequencePath + "; " + ex.Message);
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace VixenModules.App.Shows
 						DisposeCurrentContext();
 					}
 
-					var entry = SequenceManager.GetSequenceAsync(ShowItem.Sequence_FileName);
+					var entry = SequenceManager.GetSequenceAsync(ShowItem.SequencePath);
 					entry.Wait();
 					var sequenceEntry = entry.Result;
 
@@ -123,7 +123,7 @@ namespace VixenModules.App.Shows
 			}
 			catch (Exception ex)
 			{
-				Logging.Error("Could not pre-render sequence " + ShowItem.Sequence_FileName + "; ",ex);
+				Logging.Error("Could not pre-render sequence " + ShowItem.SequencePath + "; ",ex);
 			}
 		}
 
@@ -150,9 +150,9 @@ namespace VixenModules.App.Shows
 		{
 			bool datesEqual = false;
 
-			if (System.IO.File.Exists(ShowItem.Sequence_FileName))
+			if (System.IO.File.Exists(ShowItem.SequencePath))
 			{
-				DateTime lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.Sequence_FileName);
+				DateTime lastWriteTime = System.IO.File.GetLastWriteTime(ShowItem.SequencePath);
 				datesEqual = (_lastSequenceDateTime == lastWriteTime);
 				_lastSequenceDateTime = lastWriteTime;
 			}
@@ -180,7 +180,7 @@ namespace VixenModules.App.Shows
 				DisposeCurrentContext();
 				
 			}
-			SequenceManager.ConsumerFinished(ShowItem.Sequence_FileName);
+			SequenceManager.ConsumerFinished(ShowItem.SequencePath);
 			_sequenceContext = null;
 			base.Dispose(disposing);
 		}

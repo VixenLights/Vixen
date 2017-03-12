@@ -263,61 +263,6 @@ namespace VixenModules.App.Shows
 			buttonDeleteItem.Enabled = (listViewShowItems.SelectedItems.Count > 0);
 			comboBoxActions.Enabled = (listViewShowItems.SelectedItems.Count > 0);
 			label3.ForeColor = (listViewShowItems.SelectedItems.Count > 0) ? ThemeColorTable.ForeColor : ThemeColorTable.ForeColorDisabled;
-			if (SequenceTypeEditor._showItem != null)
-			{
-				if (listViewShowItems.SelectedItems.Count > 0)
-				{
-					SequenceTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
-					SequenceTypeEditor.ContolLabelSequence.ForeColor = ThemeColorTable.ForeColor;
-					SequenceTypeEditor.ContolTextBoxSequence.Enabled = true;
-					SequenceTypeEditor.ContolButtonSelectSequence.Enabled = true;
-				}
-				else
-				{
-					SequenceTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
-					SequenceTypeEditor.ContolLabelSequence.ForeColor = ThemeColorTable.ForeColorDisabled;
-					SequenceTypeEditor.ContolTextBoxSequence.Enabled = false;
-					SequenceTypeEditor.ContolButtonSelectSequence.Enabled = false;
-				}
-			}
-			if (PauseTypeEditor._showItem != null)
-			{
-				if (listViewShowItems.SelectedItems.Count > 0)
-				{
-					PauseTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
-					PauseTypeEditor.ContolNumericUpDownPauseSeconds.Enabled = true;
-				}
-				else
-				{
-					PauseTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
-					PauseTypeEditor.ContolNumericUpDownPauseSeconds.Enabled = false;
-				}
-			}
-			if (LaunchTypeEditor._showItem != null)
-			{
-				if (listViewShowItems.SelectedItems.Count > 0)
-				{
-					LaunchTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColor;
-					LaunchTypeEditor.ContolLabel2.ForeColor = ThemeColorTable.ForeColor;
-					LaunchTypeEditor.ContolPanel1.Enabled = true;
-					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.AutoCheck = true;
-					LaunchTypeEditor.ContolCheckBoxWaitForExit.AutoCheck = true;
-					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.ForeColor = ThemeColorTable.ForeColor;
-					LaunchTypeEditor.ContolCheckBoxWaitForExit.ForeColor = ThemeColorTable.ForeColor;
-					
-				}
-				else
-				{
-					LaunchTypeEditor.ContolLabel1.ForeColor = ThemeColorTable.ForeColorDisabled;
-					LaunchTypeEditor.ContolLabel2.ForeColor = ThemeColorTable.ForeColorDisabled;
-					LaunchTypeEditor.ContolPanel1.Enabled = false;
-					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.AutoCheck = false;
-					LaunchTypeEditor.ContolCheckBoxWaitForExit.AutoCheck = false;
-					LaunchTypeEditor.ContolCheckBoxShowCommandWindow.ForeColor = ThemeColorTable.ForeColorDisabled;
-					LaunchTypeEditor.ContolCheckBoxWaitForExit.ForeColor = ThemeColorTable.ForeColorDisabled;
-				}
-			}
-
 		}
 
 		private void SetHelpLabel()

@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Vixen.Extensions;
+using Vixen.Module;
+using Vixen.Services;
 
 namespace Vixen.IO.Xml.ModuleStore
 {
@@ -15,8 +18,9 @@ namespace Vixen.IO.Xml.ModuleStore
 		{
 			ValidMigrations = new[]
 			                  	{
-			                  		new MigrationSegment<XElement>(1, 2, _Version_1_to_2)
-			                  	};
+			                  		new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
+									new MigrationSegment<XElement>(2, 3, _Version_2_to_3)
+								  };
 		}
 
 		public XElement MigrateContent(XElement content, int fromVersion, int toVersion)
@@ -67,5 +71,35 @@ namespace Vixen.IO.Xml.ModuleStore
 			
 			return content;
 		}
+
+		private XElement _Version_2_to_3(XElement content)
+		{
+			//  3/12/2017
+			//Migrate full path name of the sequences in the scheduler to just the relative to the sequence folder. Code will now look 
+			//relative to the profile sequence folder path to the filenames
+			var namespaces = new XmlNamespaceManager(new NameTable());
+			XNamespace ns = "http://schemas.datacontract.org/2004/07/VixenModules.App.Shows";
+			namespaces.AddNamespace("ns", ns.NamespaceName);
+
+			IEnumerable<XElement> fileNameElements =
+				content.XPathSelectElements(
+					"ModuleData/Module[@dataModelType='VixenModules.App.Shows.ShowsData, Shows']/ns:ShowsData/ns:Shows/ns:Show/ns:Items/ns:ShowItem/ns:Sequence_FileName",
+					namespaces);
+
+			foreach (var fileNameElement in fileNameElements)
+			{
+				if (!string.IsNullOrEmpty(fileNameElement.Value))
+				{
+					FileSystemInfo sequenceDirectory = new DirectoryInfo(SequenceService.SequenceDirectory);
+					FileSystemInfo showPath = new FileInfo(fileNameElement.Value);
+					string fileName = sequenceDirectory.GetRelativePathTo(showPath);
+					fileNameElement.SetValue(fileName);
+				}
+				
+			}
+
+			return content;
+		}
+
 	}
 }
