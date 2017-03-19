@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Vixen.Extensions;
 using Vixen.Module;
 using Vixen.Services;
+using Vixen.Sys;
 
 namespace Vixen.IO.Xml.ModuleStore
 {
@@ -32,6 +34,7 @@ namespace Vixen.IO.Xml.ModuleStore
 				                                    toVersion);
 			}
 			content = migrationSegment.Execute(content);
+			VixenSystem.MigrationOccured = true;
 			return content;
 		}
 
@@ -90,6 +93,19 @@ namespace Vixen.IO.Xml.ModuleStore
 			{
 				if (!string.IsNullOrEmpty(fileNameElement.Value))
 				{
+					
+					if (!fileNameElement.Value.StartsWith(SequenceService.SequenceDirectory))
+					{
+						var fileInfo = CopyShowSequenceFileLocal(fileNameElement.Value);
+						if (fileInfo.Item1)
+						{
+							fileNameElement.SetValue(fileInfo.Item2);
+							continue;
+						}
+						MessageBox.Show(string.Format("A sequence path {0} referenced in a Show is unable to be migrated correctly."+
+								" Check your Shows and correct any sequence paths necessary to reference sequences from the profile sequence folder.",fileNameElement.Value), "Show Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
+					}
+					
 					FileSystemInfo sequenceDirectory = new DirectoryInfo(SequenceService.SequenceDirectory);
 					FileSystemInfo showPath = new FileInfo(fileNameElement.Value);
 					string fileName = sequenceDirectory.GetRelativePathTo(showPath);
@@ -99,6 +115,32 @@ namespace Vixen.IO.Xml.ModuleStore
 			}
 
 			return content;
+		}
+
+		private Tuple<bool, string> CopyShowSequenceFileLocal(string filePath)
+		{
+			bool success = false;
+			string fileName = Path.GetFileName(filePath);
+			if (!string.IsNullOrEmpty(fileName))
+			{
+				string newPath = Path.Combine(SequenceService.SequenceDirectory, fileName);
+				if (File.Exists(newPath))
+				{
+					MessageBox.Show(string.Format("A sequence path {0} referenced in a Show was not in the current profile sequence folder. Another sequence in the current profile sequence folder has the same name so it could not be migrated." + 
+						" The Show will be pointed to the sequence folder version.\n\nPlease verify your Show is using the correct version.", filePath), "Show Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
+					success = true;
+				}
+				else if (File.Exists(filePath))
+				{
+					File.Copy(filePath, newPath);
+					success = true;
+					MessageBox.Show(string.Format("A sequence path {0} referenced in a Show was not in the current profile." +
+								" It was copied into the local profile sequence folder as part of a Scheduler migration and the Show was updated.", filePath), "Show Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			}
+			
+			return new Tuple<bool, string>(success, fileName);
+
 		}
 
 	}
