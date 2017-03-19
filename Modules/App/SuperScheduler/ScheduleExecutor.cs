@@ -130,11 +130,11 @@ namespace VixenModules.App.SuperScheduler
 						var item = UpNext();
 						if (item != null)
 						{
-							stateStr = string.Format("Up Next: {0} at {1}", item.Show.Name, item.StartTime);
+							stateStr = string.Format("Up Next: {0} on {1}", item.Show.Name, item.NextStartDateTime);
 						}
 						else
 						{
-							stateStr = "Nothing scheduled for today.... ";
+							stateStr = "Nothing scheduled.... ";
 						}
 						//Determine next show
 					}
@@ -145,7 +145,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private ScheduleItem UpNext()
 		{
-			return Data.Items.Where(x => x.State == StateType.Waiting && x.Enabled && x.StartTime > DateTime.Now).OrderBy(s => s.StartTime).FirstOrDefault();
+			return Data.Items.Where(x => x.State == StateType.Waiting && x.Enabled && x.NextStartDateTime > DateTime.Now).OrderBy(s => s.NextStartDateTime).FirstOrDefault();
 		}
 
 		private void ShowStatusForm(bool show)
