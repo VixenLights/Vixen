@@ -122,9 +122,10 @@ namespace VixenModules.App.SuperScheduler
 
 			LatchedAppCommand enabledCommand = new LatchedAppCommand("SuperSchedulerEnabled", "Enabled");
 			enabledCommand.IsChecked = _data.IsEnabled;
-			enabledCommand.Checked += (sender, e) =>
+			enabledCommand.Checked += async (sender, e) =>
 			{
 				_data.IsEnabled = e.CheckedState;
+				await VixenSystem.SaveModuleConfigAsync();
 			};
 
 			/*if (schedulerMenu.Items.Length > 0)
