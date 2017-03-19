@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Vixen.Extensions;
-using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys;
 
@@ -126,7 +124,7 @@ namespace Vixen.IO.Xml.ModuleStore
 				string newPath = Path.Combine(SequenceService.SequenceDirectory, fileName);
 				if (File.Exists(newPath))
 				{
-					MessageBox.Show(string.Format("A sequence path {0} referenced in a Show was not in the current profile sequence folder. Another sequence in the current profile sequence folder has the same name so it could not be migrated." + 
+					MessageBox.Show(string.Format("A sequence path {0} referenced in a Show was not pointed to a sequence in the current profile sequence folder. Another sequence in the current profile sequence folder has the same name so it could not be migrated." + 
 						" The Show will be pointed to the sequence folder version.\n\nPlease verify your Show is using the correct version.", filePath), "Show Migration", MessageBoxButton.OK, MessageBoxImage.Warning);
 					success = true;
 				}
