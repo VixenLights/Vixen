@@ -151,6 +151,22 @@ namespace VixenModules.App.SuperScheduler
 			set { _endTime = value; }
 		}
 
+		public DateTime NextStartDateTime
+		{
+			get
+			{
+				var now = DateTime.Now;
+				if (_startDate < now && _endDate > now)
+				{
+					return new DateTime(now.Year, now.Month, _startTime > now?now.Day:now.Day+1,
+										 _startTime.Hour, _startTime.Minute, _startTime.Second);
+				}
+				
+				return new DateTime(_startDate.Year, _startDate.Month, _startDate.Day,
+										 _startTime.Hour, _startTime.Minute, _startTime.Second); 
+			}
+		}
+
 		private DateTime InProcessEndTime { get; set; }
 
 		private Queue<Shows.ShowItem> itemQueue;
