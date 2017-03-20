@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,6 +16,7 @@ namespace VixenApplication
 		private const string ErrorMsg = "An application error occurred. Please contact the Vixen Dev Team " +
 									"with the following information:\n\n";
 		private static VixenApplication _app;
+		internal static string LockFilePath = string.Empty;
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -51,7 +53,7 @@ namespace VixenApplication
 		private static void LogMessageAndExit(Exception ex)
 		{
 			// Since we can't prevent the app from terminating, log this to the event log. 
-			Logging.Fatal(ErrorMsg, ex);
+			Logging.Fatal(ex, ErrorMsg);
 			if (VixenSystem.IsSaving())
 			{
 				Logging.Fatal("Save was in progress during the fatal crash. Trying to pause 5 seconds to give it a chance to complete.");
@@ -60,6 +62,11 @@ namespace VixenApplication
 			if (_app != null)
 			{
 				_app.RemoveLockFile();
+			}
+			else 
+			{
+				//try the failsafe to clean up the lock file.
+				VixenApplication.RemoveLockFile(LockFilePath);
 			}
 			Environment.Exit(1);
 		}
