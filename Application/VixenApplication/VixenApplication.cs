@@ -88,7 +88,7 @@ namespace VixenApplication
 				form.Dispose(); 
 				Environment.Exit(0);
 			}
-
+			
 			stopping = false;
 			PopulateVersionStrings();
 			AppCommands = new AppCommand(this);
@@ -116,6 +116,8 @@ namespace VixenApplication
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 		}
 
+		public string LockFilePath { get; set; }
+		
 		private bool CreateLockFile()
 		{
 			bool success = false;
@@ -123,17 +125,19 @@ namespace VixenApplication
 			{
 				if (Directory.Exists(_rootDataDirectory))
 				{
-					var lockFilePath = Path.Combine(_rootDataDirectory, LockFile);
-					if (!File.Exists(lockFilePath))
+					LockFilePath = Path.Combine(_rootDataDirectory, LockFile);
+					if (!File.Exists(LockFilePath))
 					{
-						File.Create(lockFilePath).Close();
+						File.Create(LockFilePath).Close();
+						//Set this back on the root app to use in case of system errors and we need a failsafe way to delete the lock
+						Program.LockFilePath = LockFilePath; 
 						success = true;
 					}
 				}
 			}
 			catch (Exception e)
 			{
-				Logging.Error("An error occured creating the profile lock file.", e);
+				Logging.Error(e, "An error occured creating the profile lock file.");
 			}
 
 			return success;
@@ -141,22 +145,23 @@ namespace VixenApplication
 
 		internal bool RemoveLockFile()
 		{
+			return RemoveLockFile(LockFilePath);
+		}
+
+		internal static bool RemoveLockFile(string lockFilePath)
+		{
 			bool success = false;
 			try
 			{
-				if (Directory.Exists(_rootDataDirectory))
+				if (File.Exists(lockFilePath))
 				{
-					var lockFilePath = Path.Combine(_rootDataDirectory, LockFile);
-					if (File.Exists(lockFilePath))
-					{
-						File.Delete(lockFilePath);
-						success = true;
-					}
+					File.Delete(lockFilePath);
+					success = true;
 				}
 			}
 			catch (Exception e)
 			{
-				Logging.Error("An error occured removing the profile lock file.", e);
+				Logging.Error(e, "An error occured removing the profile lock file.");
 			}
 
 			return success;
@@ -178,7 +183,7 @@ namespace VixenApplication
 			}
 			catch (Exception e)
 			{
-				Logging.Error("An error occured checking the profile lock file.", e);
+				Logging.Error(e, "An error occured checking the profile lock file.");
 				locked = true;  //If we cannot determine if it is locked, then we can't assume it isn't.
 			}
 
@@ -214,7 +219,7 @@ namespace VixenApplication
 			await VixenSystem.Stop(false);
 
 			_applicationData.SaveData();
-			RemoveLockFile();
+			RemoveLockFile(LockFilePath);
 			Application.Exit();
 		}
 
