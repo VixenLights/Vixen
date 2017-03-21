@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -14,13 +9,8 @@ namespace VixenModules.App.Shows
 {
 	public partial class LaunchTypeEditor : TypeEditorBase
 	{
-		public static ShowItem _showItem;
-		public static Label ContolLabel1;
-		public static Label ContolLabel2;
-		public static Panel ContolPanel1;
-		public static CheckBox ContolCheckBoxShowCommandWindow;
-		public static CheckBox ContolCheckBoxWaitForExit;
-
+		private readonly ShowItem _showItem;
+		
 		public LaunchTypeEditor(ShowItem item)
 		{
 			InitializeComponent();
@@ -32,11 +22,6 @@ namespace VixenModules.App.Shows
 			buttonSelectProgram.Text = "";
 			buttonTest.Image = Tools.GetIcon(Resources.cog_go, iconSize);
 			buttonTest.Text = "";
-			ContolLabel1 = label1;
-			ContolLabel2 = label2;
-			ContolPanel1 = panel1;
-			ContolCheckBoxShowCommandWindow = checkBoxShowCommandWindow;
-			ContolCheckBoxWaitForExit = checkBoxWaitForExit;
 			ThemeUpdateControls.UpdateControls(this);
 			_showItem = item;
 		}

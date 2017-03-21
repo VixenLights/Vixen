@@ -16,18 +16,14 @@ namespace VixenModules.App.Shows
 
 	public partial class PauseTypeEditor : TypeEditorBase
 	{
-		public static ShowItem _showItem;
-		public static Label ContolLabel1;
-		public static NumericUpDown ContolNumericUpDownPauseSeconds;
-
+		private readonly ShowItem _showItem;
+		
 		public PauseTypeEditor(ShowItem showItem)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			ContolLabel1 = label1;
-			ContolNumericUpDownPauseSeconds = numericUpDownPauseSeconds;
 			_showItem = showItem;
 		}
 

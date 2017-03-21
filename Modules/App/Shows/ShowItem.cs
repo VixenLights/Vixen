@@ -5,8 +5,11 @@ using Vixen.Module;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Extensions;
+using Vixen.Services;
 using Vixen.Sys;
 
 namespace VixenModules.App.Shows
@@ -49,31 +52,55 @@ namespace VixenModules.App.Shows
 		public string Name { get; set; }
 
 		// Sequence
+		/// <summary>
+		/// The path to the sequence relative to the profile sequence folder. This is now a private holder.
+		/// </summary>
 		[DataMember]
-		public string Sequence_FileName { get; set; }
+		private string Sequence_FileName { get; set; }
+
+		/// <summary>
+		/// Full path to the sequence in the profile. This should be contained in the profile sequence folder.
+		/// </summary>
+		public string SequencePath
+		{
+			get
+			{
+				return SequenceService.SequenceDirectory + Path.DirectorySeparatorChar + Sequence_FileName;
+			}
+			set
+			{
+				if (!value.StartsWith(SequenceService.SequenceDirectory))
+				{
+					throw new ArgumentException("Path is not rooted in the profile sequence folder.");
+				}
+				FileSystemInfo sequenceDirectory = new DirectoryInfo(SequenceService.SequenceDirectory);
+				FileSystemInfo showPath = new FileInfo(value);
+				Sequence_FileName = sequenceDirectory.GetRelativePathTo(showPath);
+			}
+		}
 
 		// Launch
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public string Launch_ProgramName { get; set; }
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public string Launch_CommandLine { get; set; }
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool Launch_ShowCommandWindow { get; set; }
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool Launch_WaitForExit { get; set; }
 
 		// Website
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public string Website_URL { get; set; }
 
 		// Pause
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Pause_Seconds { get; set; }
 
 		// Show
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public Guid Show_ShowID;
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool Show_StopCurrentShow;
 
 		[DataMember]

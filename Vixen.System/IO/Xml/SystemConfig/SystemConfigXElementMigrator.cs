@@ -39,6 +39,7 @@ namespace Vixen.IO.Xml.SystemConfig
 				                                    toVersion);
 			}
 			content = migrationSegment.Execute(content);
+			VixenSystem.MigrationOccured = true;
 			return content;
 		}
 

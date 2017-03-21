@@ -52,9 +52,9 @@
 			this.textBoxSequence.Location = new System.Drawing.Point(50, 27);
 			this.textBoxSequence.Multiline = true;
 			this.textBoxSequence.Name = "textBoxSequence";
+			this.textBoxSequence.ReadOnly = true;
 			this.textBoxSequence.Size = new System.Drawing.Size(260, 20);
 			this.textBoxSequence.TabIndex = 1;
-			this.textBoxSequence.TextChanged += new System.EventHandler(this.textBoxSequence_TextChanged);
 			// 
 			// buttonSelectSequence
 			// 
@@ -71,6 +71,7 @@
 			// 
 			this.openFileDialog.FileName = "openFileDialog";
 			this.openFileDialog.Multiselect = true;
+			this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.OpenFileDialog_FileOk);
 			// 
 			// labelSequence
 			// 

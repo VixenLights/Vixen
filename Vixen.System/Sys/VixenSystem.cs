@@ -29,6 +29,8 @@ namespace Vixen.Sys
 		private static bool _systemConfigSaving;
 		private static bool _moduleConfigSaving;
 
+		internal static bool MigrationOccured { get; set; }	
+
 		public static bool IsSaving()
 		{
 			return _systemConfigSaving | _moduleConfigSaving;
@@ -79,6 +81,14 @@ namespace Vixen.Sys
 					if (disableDevices) {
 						SystemConfig.DisabledDevices = OutputDeviceManagement.Devices;
 					}
+
+					if (MigrationOccured)
+					{
+						//save the configs to ensure they do not get lost. We no longer automatically save on close.
+						SaveSystemAndModuleConfigAsync();
+						MigrationOccured = false;
+					}
+
 					if (openExecution) {
 						Execution.OpenExecution();
 					}
