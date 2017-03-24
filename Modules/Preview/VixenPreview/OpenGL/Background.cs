@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using OpenGL;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTKDemo.Constructs;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {

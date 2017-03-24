@@ -61,7 +61,7 @@ namespace VixenModules.Preview.VixenPreview
 				else
 				{
 					//displayForm = new VixenPreviewDisplayD2D();
-					displayForm = new OpenGLPreviewForm(GetDataModel());
+					displayForm = new OpenGlPreviewForm(GetDataModel());
 					//displayForm.Data = GetDataModel();
 				}
 

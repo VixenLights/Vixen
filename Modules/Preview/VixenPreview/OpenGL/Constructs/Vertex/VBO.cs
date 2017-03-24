@@ -1,13 +1,12 @@
 ﻿using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTKDemo.Constructs;
 
 #if USE_NUMERICS
 using System.Numerics;
 #endif
 
-namespace OpenGL
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex
 {
     public class VBO<T> : IDisposable
         where T : struct

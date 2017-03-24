@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.Preview.VixenPreview.OpenGL
 {
-	partial class OpenGLPreviewForm
+	partial class OpenGlPreviewForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -39,7 +39,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.Controls.Add(this.glControl);
-			this.Name = "OpenGLPreviewForm";
+			this.Name = "OpenGlPreviewForm";
 			this.Text = "Preview";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PreviewWindow_FormClosing);
 			this.ResumeLayout(false);

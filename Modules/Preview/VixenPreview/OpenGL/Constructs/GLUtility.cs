@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using OpenGL;
 using OpenTK.Graphics.OpenGL;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
-namespace OpenTKDemo.Constructs
+namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs
 {
 	public class GlUtility
 	{

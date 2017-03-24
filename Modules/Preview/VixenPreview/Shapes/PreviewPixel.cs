@@ -324,6 +324,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			
 		}
 
+
+		public Color GetFullColor(IIntentStates states)
+		{
+			var state = states.FirstOrDefault();
+			if (state != null)
+			{
+				Color intentColor = _fullColorHandler.GetFullColor(state);
+				return intentColor;
+			}
+			return Color.Empty;
+		}
+        
 		protected void Dispose(bool disposing)
 		{
 			_node = null;

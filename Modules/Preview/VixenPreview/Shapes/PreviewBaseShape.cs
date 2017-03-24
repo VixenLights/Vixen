@@ -4,11 +4,17 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -607,6 +613,57 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			return setupControl;
+		}
+
+		
+		public void Draw(ShaderProgram program)
+		{
+
+			//VBO<float> points = new VBO<float>(new[] {
+
+			//	//Positions        /// Colors
+			//	-1f, 1f, 0f,     1f, 0f, 0f,
+			//	1f, 1f, 0f,      0f, 1f, 0f,
+			//	1f, -1f, 0f,      0f, 0f, 1f,
+			//	-1f, -1f, 0f,     1f, 1f, 1f
+			//});
+
+			List<float> p = new List<float>();
+			int pointCount = 0;
+			foreach (PreviewPixel previewPixel in Pixels)
+			{
+				var state = previewPixel.Node.Element.State;
+				if (state.Count > 0)
+				{
+					Color c = previewPixel.GetFullColor(state);
+					if (!(Color.Empty == c))
+					{
+						p.Add( (previewPixel.X - Left) / (float)Right);
+						p.Add( (previewPixel.Y - Top) / (float)Bottom);
+						p.Add(previewPixel.Z);
+						p.Add(c.R/255f);
+						p.Add(c.G/255f);
+						p.Add(c.B/255f);
+						pointCount++;
+					}
+				}
+			}
+
+			if (pointCount == 0) return;
+			Console.Out.WriteLine("Updating");
+			VBO<float> points = new VBO<float>(p.ToArray());
+
+			GlUtility.BindBuffer(points);
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 6 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
+			GL.EnableVertexAttribArray(0);
+
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 3, VertexAttribPointerType.Float, true, 6 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+			GL.EnableVertexAttribArray(1);
+
+			// draw the points
+			GL.DrawArrays(PrimitiveType.Points, 0, pointCount);
+
+			points.Dispose();
 		}
 
 		protected void Dispose(bool disposing)

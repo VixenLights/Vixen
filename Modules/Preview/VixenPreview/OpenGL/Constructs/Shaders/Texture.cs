@@ -4,7 +4,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
-using OpenTKDemo.Constructs;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
