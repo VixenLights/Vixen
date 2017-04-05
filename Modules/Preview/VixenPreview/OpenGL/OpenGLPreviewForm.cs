@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Common.Controls.Scaling;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
-using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -24,10 +17,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private static ShaderProgram _program;
 		
-		private VBO<float> _points;
 		private Background _background;
 		private const float Fov = .45f;
-		private const float FarDistance = 100f;
+		private const float FarDistance = 10000f;
 		private const float NearDistance = .1f;
 		private bool _mouseDown;
 		private int _prevX, _prevY;
@@ -59,7 +51,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 
 			glControl.MouseWheel -= GlControl_MouseWheel;
-			_points.Dispose();
 			_program.DisposeChildren = true;
 			_program.Dispose();
 
@@ -101,8 +92,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_background = new Background(Data);
 			if (_background.HasBackground)
 			{
-				Width = _background.Width;
-				Height = _background.Height;
+				ClientSize = new Size(_background.Width, _background.Height);
+				_width = _background.Width;
+				_height = _background.Height;
 			}
 			else
 			{
@@ -111,18 +103,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 
 			// create our camera
-			_camera = new Camera(new Vector3(0, 0, 50), Quaternion.Identity);
+			_camera = new Camera(new Vector3(ClientSize.Width / 2f, ClientSize.Height / 2f, Width), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
 
-			_points = new VBO<float>(new [] {
-
-				//Positions        /// Colors
-				-1f, 1f, 0f,     1f, 0f, 0f,
-				1f, 1f, 0f,      0f, 1f, 0f,
-				1f, -1f, 0f,      0f, 0f, 1f,
-				-1f, -1f, 0f,     1f, 1f, 1f
-			});
-			
 			Logging.Info("OpenGL v {0}", GL.GetString(StringName.Version));
 			Logging.Info("Vendor {0}, Renderer {1}", GL.GetString(StringName.Vendor), GL.GetString(StringName.Renderer));
 			Logging.Info("Extensions {0}", GL.GetString(StringName.Extensions));
@@ -145,7 +128,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		public void UpdatePreview()
 		{
-			OnRenderFrame();
+			if (VixenSystem.Elements.ElementsHaveState)
+			{
+				OnRenderFrame();
+			}
 		}
 
 		#endregion
@@ -157,19 +143,44 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_width = glControl.ClientSize.Width;
 			_height = glControl.ClientSize.Height;
+			glControl.Invalidate();
+		}
+
+		private void glControl_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.I || e.KeyCode == Keys.O)
+			{
+				int direction = 3;
+				if (e.KeyCode != Keys.O)
+				{
+					direction *= -1;
+				}
+
+				var distance = _camera.Position.Z + direction;
+				if (distance > FarDistance || distance < NearDistance)
+				{
+					return;
+				}
+
+				_camera.Move(new Vector3(0, 0, direction));
+				glControl.Invalidate();
+			}
+
+			
 		}
 
 		private void GlControl_MouseWheel(object sender, MouseEventArgs e)
 		{
-			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / 120;
+			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / 60;
 
 			var distance = _camera.Position.Z + direction;
-			if (distance > 100 || distance < NearDistance)
+			if (distance > FarDistance || distance < NearDistance)
 			{
 				return;
 			}
 
 			_camera.Move(new Vector3(0,0,direction));
+			glControl.Invalidate();
 		}
 
 
@@ -180,23 +191,27 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			// move the camera when the mouse is down
 			if (_mouseDown && (e.Button == MouseButtons.Right))
 			{
-				float yaw = (_prevX - e.X) * 0.003f;
+				float yaw = (_prevX - e.X) * 0.05f;
 				_camera.Yaw(yaw);
 
-				float pitch = (_prevY - e.Y) * 0.003f;
+				float pitch = (_prevY - e.Y) * 0.05f;
 				_camera.Pitch(pitch);
 
 				_prevX = e.X;
 				_prevY = e.Y;
+
+				glControl.Invalidate();
 			}
 			else if(_mouseDown && e.Button == MouseButtons.Left)
 			{
-				float yaw = (_prevX - e.X) * 0.02f;
-				float pitch = (_prevY - e.Y) * 0.02f;
+				float yaw = (_prevX - e.X) * 0.5f;
+				float pitch = (_prevY - e.Y) * 0.5f;
 				_camera.Move(new Vector3(yaw, -pitch, 0f));
 				
 				_prevX = e.X;
 				_prevY = e.Y;
+
+				glControl.Invalidate();
 			}
 		}
 
@@ -250,12 +265,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 			glControl.MakeCurrent();
 			ClearScreen();
+			
 
-			if (!VixenSystem.Elements.ElementsHaveState)
+			if (VixenSystem.Elements.ElementsHaveState)
 			{
-				float ratio = (float)Height / Width;
-				var modelMatrix = Matrix4.CreateScale(new Vector3(15f, 15f * ratio, 0));
-				var mvp = modelMatrix * _camera.ViewMatrix * perspective;
+				var mvp = Matrix4.Identity * _camera.ViewMatrix * perspective;
 				DrawPoints(mvp);
 			}
 
@@ -279,20 +293,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_program["mvp"].SetValue(mvp);
 			_program["cameraPosition"].SetValue(_camera.Position);
-			_program["pointSize"].SetValue(8f);
-
-			//GlUtility.BindBuffer(_points);
-			//GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 6* Marshal.SizeOf(typeof(float)), IntPtr.Zero);
-			//GL.EnableVertexAttribArray(0);
-
-			//GL.VertexAttribPointer(ShaderProgram.VertexColor, 3, VertexAttribPointerType.Float, true, 6* Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
-			//GL.EnableVertexAttribArray(1);
-
-			//// draw the points
-			//GL.DrawArrays(PrimitiveType.Points, 0, 4);
+		
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
-				dataDisplayItem.Shape.Draw(_program);
+				dataDisplayItem.Shape.Draw(_program, _background.Height);
 			}
 		}
 
@@ -300,9 +304,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		#version 130
 
 		in vec3 vertexPosition;
-		in vec3 vertexColor;
+		in vec4 vertexColor;
 		
-		out vec3 color;
+		out vec4 color;
 
 		uniform float pointSize;
 		uniform mat4 mvp;
@@ -310,7 +314,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		const float minPointScale = 0.1;
 		const float maxPointScale = 1;
-		const float maxDistance   = 100.0;
+		const float maxDistance   = 10000.0;
 
 		void main(void)
 		{
@@ -329,44 +333,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			gl_PointSize = pointSize * pointScale;
 		}
 		";
-
-		//public static string VertexShader = @"
-		//#version 130
-
-		//in vec3 vertexPosition;
-		//in vec3 vertexColor;
-		//in float pointSize;
-		//out vec3 color;
-
-		//uniform mat4 mvp;
-		//uniform vec3 cameraPosition; 
-
-		//const float minPointScale = 0.1;
-		//const float maxPointScale = 1;
-		//const float maxDistance   = 100.0;
-
-		//void main(void)
-		//{
-		//	color = vertexColor;
-			
-		//	gl_Position = mvp * vec4(vertexPosition, 1);
-
-		//	// Calculate point scale based on distance from the viewer
-		//	// to compensate for the fact that gl_PointSize is the point
-		//	// size in rasterized points / pixels.
-		//	float cameraDist = distance(vertexPosition.xyz, cameraPosition);
-		//	float pointScale = 1.0 - (cameraDist / maxDistance);
-		//	pointScale = max(pointScale, minPointScale);
-		//	pointScale = min(pointScale, maxPointScale);
-
-		//	gl_PointSize = pointSize * pointScale;
-		//}
-		//";
-
+		
 		public static string FragmentShader = @"
 		#version 330
 
-		in vec3 color;
+		in vec4 color;
 		out vec4 gl_FragColor;
 
 		void main(void)
@@ -377,7 +348,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				discard;
 			}
-			gl_FragColor = vec4(color, 1);
+			gl_FragColor = color;
 
 		}
 		";

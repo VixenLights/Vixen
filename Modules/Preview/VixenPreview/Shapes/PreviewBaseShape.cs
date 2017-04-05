@@ -616,48 +616,45 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		
-		public void Draw(ShaderProgram program)
+		public void Draw(ShaderProgram program, int referenceHeight)
 		{
-
-			//VBO<float> points = new VBO<float>(new[] {
-
-			//	//Positions        /// Colors
-			//	-1f, 1f, 0f,     1f, 0f, 0f,
-			//	1f, 1f, 0f,      0f, 1f, 0f,
-			//	1f, -1f, 0f,      0f, 0f, 1f,
-			//	-1f, -1f, 0f,     1f, 1f, 1f
-			//});
-
 			List<float> p = new List<float>();
 			int pointCount = 0;
 			foreach (PreviewPixel previewPixel in Pixels)
 			{
+				if (previewPixel.Node == null || previewPixel.Node.Element == null)
+				{
+					//Figure out why thses are null!!!!!!!!!!!
+					continue;
+				}
 				var state = previewPixel.Node.Element.State;
 				if (state.Count > 0)
 				{
 					Color c = previewPixel.GetFullColor(state);
-					if (!(Color.Empty == c))
+					if (!(Color.Empty == c) && c.A > 0)
 					{
-						p.Add( (previewPixel.X - Left) / (float)Right);
-						p.Add( (previewPixel.Y - Top) / (float)Bottom);
+						p.Add(previewPixel.X);
+						p.Add(referenceHeight - previewPixel.Y);
 						p.Add(previewPixel.Z);
 						p.Add(c.R/255f);
 						p.Add(c.G/255f);
 						p.Add(c.B/255f);
+						p.Add(c.A/255f);
 						pointCount++;
 					}
 				}
 			}
 
 			if (pointCount == 0) return;
-			Console.Out.WriteLine("Updating");
+
+			program["pointSize"].SetValue((float)PixelSize);
 			VBO<float> points = new VBO<float>(p.ToArray());
 
 			GlUtility.BindBuffer(points);
-			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 6 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 7 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
 			GL.EnableVertexAttribArray(0);
 
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 3, VertexAttribPointerType.Float, true, 6 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, 7 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(1);
 
 			// draw the points

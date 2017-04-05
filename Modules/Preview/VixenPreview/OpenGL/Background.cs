@@ -81,7 +81,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_backgroundProgram.Use();
 			//_backgroundProgram["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(_fov, (float)_width / _height, 0.1f, 1000f));
 			float ratio = (float)Height / Width;
-			_backgroundProgram["model_matrix"].SetValue(Matrix4.CreateScale(new Vector3(15f, 15f * ratio, 0f)));
+			_backgroundProgram["model_matrix"].SetValue(   Matrix4.Identity);
 			SetBackgroundBrightness(_data.BackgroundAlpha / 255f);
 
 			_backgroundTexture = new Texture(i);
@@ -89,10 +89,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_points = new VBO<float>(new[] {
 
 				//Positions        /// Tex Coord
-				1f, 1f, -.001f,     1f, 1f,         //Top Right
-				1f, -1f, -.001f,      1f, 0f,		//Bottom Right
-				-1f, -1f, -.001f,      0f, 0f,		//Bottom Left
-				-1f, 1f, -.001f,     0f, 1f			//Top Left
+				Width, Height, -.001f,     1f, 1f,         //Top Right
+				Width, 0f, -.001f,      1f, 0f,		//Bottom Right
+				0f, 0f, -.001f,      0f, 0f,		//Bottom Left
+				0f, Height, -.001f,     0f, 1f			//Top Left
 			});
 
 			//Form two triangles

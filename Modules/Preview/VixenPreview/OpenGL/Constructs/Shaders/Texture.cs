@@ -99,11 +99,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
 			GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1); // set pixel alignment
 			GL.BindTexture(TextureTarget, TextureID);     // bind the texture to memory in OpenGL
-
-			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+			
 			GL.TexImage2D(TextureTarget, 0, PixelInternalFormat.Rgba8, BitmapImage.Width, BitmapImage.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bitmapData.Scan0);
-			GL.TexParameter(TextureTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-			GL.TexParameter(TextureTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+			GL.TexParameter(TextureTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+			GL.TexParameter(TextureTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+			GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
 			BitmapImage.UnlockBits(bitmapData);
 			BitmapImage.Dispose();
