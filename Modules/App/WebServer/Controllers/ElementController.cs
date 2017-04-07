@@ -54,6 +54,12 @@ namespace VixenModules.App.WebServer.Controllers
 		}
 
 		[HttpPost]
+		public Status ClearAll()
+		{
+			return ElementsHelper.ClearActiveEffects();
+		}
+
+		[HttpPost]
 		public Status Effect(ElementEffect effect)
 		{
 			return ElementsHelper.Effect(effect);

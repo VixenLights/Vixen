@@ -107,7 +107,7 @@ namespace VixenModules.App.WebServer.Service
 
 			if (!VixenSystem.Nodes.ElementNodeExists(elementId))
 			{
-				throw new ArgumentException(@"Invalid Element id.", "id");
+				throw new ArgumentException(@"Element id does not exist.", "id");
 			}
 
 			var elements = new List<Element>();
@@ -162,9 +162,23 @@ namespace VixenModules.App.WebServer.Service
 			}
 			else
 			{
-				throw new ArgumentException(@"Element id is invalid", "id");
+				throw new ArgumentException(@"Element id is invalid.", "id");
 			}
 			
+			return status;
+		}
+
+		/// <summary>
+		/// Clears all current effects on all elements in the live context
+		/// </summary>
+		/// <returns>Status</returns>
+		public static Status ClearActiveEffects()
+		{
+			var status = new Status();
+
+			Module.LiveContext.Clear();
+			status.Message = "Clear active live context effects requested.";
+
 			return status;
 		}
 

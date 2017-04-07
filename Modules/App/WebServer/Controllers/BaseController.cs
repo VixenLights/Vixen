@@ -19,7 +19,8 @@ namespace VixenModules.App.WebServer.Controllers
 			var resp = new HttpResponseMessage(code)
 				{
 					Content = new StringContent(content),
-					ReasonPhrase = reason
+					ReasonPhrase = reason,
+					StatusCode = code
 				};
 				throw new HttpResponseException(resp);
 		}
