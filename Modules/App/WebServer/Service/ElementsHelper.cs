@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using Vixen.Module;
 using Vixen.Module.Effect;
 using Vixen.Services;
@@ -183,6 +184,51 @@ namespace VixenModules.App.WebServer.Service
 		}
 
 		/// <summary>
+		/// Turns on a given set of elements with a SetLevel effect given the parameters. If the seconds are zero, the 
+		/// effect will be given a duration of 30 days to simulate the element staying on. 
+		/// </summary>
+		/// <param name="states"></param>
+		/// <returns></returns>
+		public static Status TurnOnElements(IEnumerable<ElementState> states)
+		{
+			var status = new Status();
+			var effectNodes = new List<EffectNode>();
+			var count = 0;
+			foreach (var elementState in states)
+			{
+				ElementNode node = VixenSystem.Nodes.GetElementNode(elementState.Id);
+				if (node == null)
+				{
+					status.Details.Add(string.Format("Element not found. {0}", elementState.Id));
+					continue;
+				}
+
+				if (elementState.Intensity > 100 || elementState.Intensity < 0)
+				{
+					elementState.Intensity = 100;
+				}
+
+				var effect = CreateEffect(node, elementState.Duration, elementState.Intensity, elementState.Color);
+
+				effectNodes.Add(new EffectNode(effect, TimeSpan.Zero));
+				if (elementState.Duration == 0)
+				{
+					status.Details.Add(string.Format("{0} turned on at {1}% intensity.", node.Name, elementState.Intensity));
+				}
+				else
+				{
+					status.Details.Add(string.Format("{0} turned on for {1} seconds at {2}% intensity.", node.Name, elementState.Duration, elementState.Intensity));
+				}
+
+				count++;
+			}
+
+			Module.LiveContext.Execute(effectNodes);
+			status.Message = string.Format("{0} elements turned on.", count);
+			return status;
+		}
+
+		/// <summary>
 		/// Turns on a given element with a SetLevel effect given the parameters. If the seconds are zero, the 
 		/// effect will be given a duration of 30 days to simulate the element staying on. 
 		/// </summary>
@@ -193,38 +239,20 @@ namespace VixenModules.App.WebServer.Service
 		/// <returns></returns>
 		public static Status TurnOnElement(Guid id, int seconds, double intensity, string color)
 		{
+			var status = new Status();
 			ElementNode node = VixenSystem.Nodes.GetElementNode(id);
 			if (node == null)
 			{
 				throw new ArgumentException(@"Invalid element id.", "id");
 			}
 
-			var status = new Status();
-
-			if (!string.IsNullOrEmpty(color) && (color.Length != 7 || !	color.StartsWith("#")))
-			{
-				throw new ArgumentException(@"Invalid color", color);
-			}
-
 			if (intensity > 100 || intensity < 0)
 			{
 				intensity = 100;
 			}
-			
-			var effect = new SetLevel
-			{
-				TimeSpan = seconds>0?TimeSpan.FromSeconds(seconds):TimeSpan.FromDays(30),
-				IntensityLevel = intensity/100,
-				TargetNodes = new[] { node }
-			};
 
-			//TODO check the passed color against the element to see if the element supports it
-			if (!string.IsNullOrEmpty(color))
-			{
-				Color elementColor = ColorTranslator.FromHtml(color);
-				effect.Color = elementColor;	
-			}
-			
+			var effect = CreateEffect(node, seconds, intensity, color);
+
 			Module.LiveContext.Execute(new EffectNode(effect, TimeSpan.Zero));
 			if (seconds == 0)
 			{
@@ -237,8 +265,31 @@ namespace VixenModules.App.WebServer.Service
 				node.Name, seconds, intensity);	
 			}
 			
-
 			return status;
+		}
+
+		private static IEffectModuleInstance CreateEffect(ElementNode node, int seconds, double intensity, string color)
+		{
+			
+			if (!string.IsNullOrEmpty(color) && (color.Length != 7 || !color.StartsWith("#")))
+			{
+				throw new ArgumentException(@"Invalid color", color);
+			}
+
+			var effect = new SetLevel
+			{
+				TimeSpan = seconds > 0 ? TimeSpan.FromSeconds(seconds) : TimeSpan.FromDays(30),
+				IntensityLevel = intensity / 100,
+				TargetNodes = new[] {node}
+			};
+
+			//TODO check the passed color against the element to see if the element supports it
+			if (!string.IsNullOrEmpty(color))
+			{
+				Color elementColor = ColorTranslator.FromHtml(color);
+				effect.Color = elementColor;
+			}
+			return effect;
 		}
 
 		/// <summary>
