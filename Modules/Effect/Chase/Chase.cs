@@ -515,68 +515,66 @@ namespace VixenModules.Effect.Chase
 			return renderNodes.ToList();
 		}
 
-		private void GenerateExtendedStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
-		{
-			if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
-			var lightingIntent = intentNode.Intent as LightingIntent;
-			if (lightingIntent != null && lightingIntent.EndValue.Intensity > 0)
-			{
-				var newCurve = new Curve(lightingIntent.EndValue.Intensity*100);
-				GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
-					TimeSpan - intentNode.EndTime, intentNode.EndTime);
-			}
-			else
-			{
-				var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
-				if (discreteIntent != null && discreteIntent.EndValue.Intensity > 0)
-				{
-					var newCurve = new Curve(discreteIntent.EndValue.Intensity*100);
-					GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.EndValue.FullColor),
-						TimeSpan - intentNode.EndTime, intentNode.EndTime);
-				}
-			}
-		}
+		//private void GenerateExtendedStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
+		//{
+		//	if (intentNode == null || intentNode.EndTime >= TimeSpan) return;
+		//	var lightingIntent = intentNode.Intent as LightingIntent;
+		//	if (lightingIntent != null && lightingIntent.EndValue.Intensity > 0)
+		//	{
+		//		var newCurve = new Curve(lightingIntent.EndValue.Intensity*100);
+		//		GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(lightingIntent.EndValue.FullColor),
+		//			TimeSpan - intentNode.EndTime, intentNode.EndTime);
+		//	}
+		//	else
+		//	{
+		//		var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
+		//		if (discreteIntent != null && discreteIntent.EndValue.Intensity > 0)
+		//		{
+		//			var newCurve = new Curve(discreteIntent.EndValue.Intensity*100);
+		//			GenerateExtendedStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.EndValue.FullColor),
+		//				TimeSpan - intentNode.EndTime, intentNode.EndTime);
+		//		}
+		//	}
+		//}
 
-		private void GenerateExtendedStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan duration, TimeSpan offset)
-		{
-			var result = PulseRenderer.RenderNode(target, newCurve, gradient, duration, HasDiscreteColors);
-			result.OffsetAllCommandsByTime(offset);
-			_elementData.Add(result);
-		}
+		//private void GenerateExtendedStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan duration, TimeSpan offset)
+		//{
+		//	var result = PulseRenderer.RenderNode(target, newCurve, gradient, duration, HasDiscreteColors);
+		//	result.OffsetAllCommandsByTime(offset);
+		//	_elementData.Add(result);
+		//}
 
-		private void GenerateStartingStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
-		{
-			if (intentNode == null || intentNode.StartTime <= TimeSpan.Zero) return;
-			var lightingIntent = intentNode.Intent as LightingIntent;
-			if (lightingIntent != null && lightingIntent.StartValue.Intensity > 0)
-			{
-				var newCurve = new Curve(lightingIntent.StartValue.Intensity*100);
-				GenerateStartingStaticPulse(target,newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime);
-			}
-			else
-			{
-				var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
-				if (discreteIntent != null && discreteIntent.StartValue.Intensity > 0)
-				{
-					var newCurve = new Curve(discreteIntent.StartValue.Intensity*100);
-					GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.StartValue.FullColor),
-						intentNode.StartTime);
-				}
-			}
-		}
+		//private void GenerateStartingStaticPulse(ElementNode target, IIntentNode intentNode, ColorGradient gradient=null)
+		//{
+		//	if (intentNode == null || intentNode.StartTime <= TimeSpan.Zero) return;
+		//	var lightingIntent = intentNode.Intent as LightingIntent;
+		//	if (lightingIntent != null && lightingIntent.StartValue.Intensity > 0)
+		//	{
+		//		var newCurve = new Curve(lightingIntent.StartValue.Intensity*100);
+		//		GenerateStartingStaticPulse(target,newCurve, gradient ?? new ColorGradient(lightingIntent.StartValue.FullColor), intentNode.StartTime);
+		//	}
+		//	else
+		//	{
+		//		var discreteIntent = intentNode.Intent as DiscreteLightingIntent;
+		//		if (discreteIntent != null && discreteIntent.StartValue.Intensity > 0)
+		//		{
+		//			var newCurve = new Curve(discreteIntent.StartValue.Intensity*100);
+		//			GenerateStartingStaticPulse(target, newCurve, gradient ?? new ColorGradient(discreteIntent.StartValue.FullColor),
+		//				intentNode.StartTime);
+		//		}
+		//	}
+		//}
 
-		private void GenerateStartingStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan time)
-		{
-			var result = PulseRenderer.RenderNode(target, newCurve, gradient, time, HasDiscreteColors);
-			_elementData.Add(result);
-		}
+		//private void GenerateStartingStaticPulse(ElementNode target, Curve newCurve, ColorGradient gradient, TimeSpan time)
+		//{
+		//	var result = PulseRenderer.RenderNode(target, newCurve, gradient, time, HasDiscreteColors);
+		//	_elementData.Add(result);
+		//}
 
 		private void GeneratePulse(ElementNode target, TimeSpan startTime, TimeSpan duration, double currentMovementPosition)
 		{
 			EffectIntents result = null;
 			
-			//bool discreteColors = ColorModule.isElementNodeDiscreteColored(target);
-			IIntentNode intent;
 			// figure out what color gradient to use for the pulse
 			switch (ColorHandling) {
 				case ChaseColorHandling.GradientForEachPulse:
@@ -584,20 +582,18 @@ namespace VixenModules.Effect.Chase
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
-						foreach (var effectIntent in result)
-						{
-							var iintentNode = effectIntent.Value.FirstOrDefault();
-							GenerateStartingStaticPulse(target, iintentNode);
+						foreach (var effectIntent in result.FirstOrDefault().Value)
+						{ 
+							_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, effectIntent, HasDiscreteColors));
 						}
 						
 					}	
 					_elementData.Add(result);
 					if (ExtendPulseToEnd && result.Count > 0)
 					{
-						foreach (var effectIntent in result)
+						foreach (var effectIntent in result.FirstOrDefault().Value)
 						{
-							var iintentNode = effectIntent.Value.FirstOrDefault();
-							GenerateExtendedStaticPulse(target, iintentNode);
+							_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, effectIntent, TimeSpan, HasDiscreteColors));
 						}
 					}
 					break;
@@ -628,14 +624,18 @@ namespace VixenModules.Effect.Chase
 							result.OffsetAllCommandsByTime(startTime);
 							if (ExtendPulseToStart && result.Count > 0)
 							{
-								intent = result.FirstOrDefault().Value.FirstOrDefault();
-								GenerateStartingStaticPulse(target, intent, new ColorGradient(color));
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, effectIntent, HasDiscreteColors, new ColorGradient(color)));
+								}
 							}
 							if(result.Count>0) _elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count>0)
 							{
-								intent = result.FirstOrDefault().Value.LastOrDefault();
-								GenerateExtendedStaticPulse(target, intent, new ColorGradient(color));
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, effectIntent, TimeSpan, HasDiscreteColors, new ColorGradient(color)));
+								}
 							}
 						}
 					} else {
@@ -643,14 +643,18 @@ namespace VixenModules.Effect.Chase
 						result.OffsetAllCommandsByTime(startTime);
 						if (ExtendPulseToStart && result.Count > 0)
 						{
-							intent = result.FirstOrDefault().Value.FirstOrDefault();
-							GenerateStartingStaticPulse(target, intent, ColorGradient.GetSubGradient(0, startPos));
+							foreach (var effectIntent in result.FirstOrDefault().Value)
+							{
+								_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, effectIntent, HasDiscreteColors, ColorGradient.GetSubGradient(0, startPos)));
+							}
 						}
 						_elementData.Add(result);
 						if (ExtendPulseToEnd && result.Count > 0)
 						{
-							intent = result.FirstOrDefault().Value.LastOrDefault();
-							GenerateExtendedStaticPulse(target, intent, ColorGradient.GetSubGradient(endPos,1));
+							foreach (var effectIntent in result.FirstOrDefault().Value)
+							{
+								_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, effectIntent, TimeSpan, HasDiscreteColors, ColorGradient.GetSubGradient(endPos,1)));
+							}
 						}
 					}
 
@@ -661,14 +665,14 @@ namespace VixenModules.Effect.Chase
 					result.OffsetAllCommandsByTime(startTime);
 					if (ExtendPulseToStart && result.Count > 0)
 					{
-						intent = result.FirstOrDefault().Value.FirstOrDefault();
-						GenerateStartingStaticPulse(target, intent);
+						var intent = result.FirstOrDefault().Value.FirstOrDefault();
+						_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, intent, HasDiscreteColors));
 					}
 					_elementData.Add(result);
 					if (ExtendPulseToEnd && result.Count > 0)
 					{
-						intent = result.FirstOrDefault().Value.LastOrDefault();
-						GenerateExtendedStaticPulse(target, intent);
+						var intent = result.FirstOrDefault().Value.LastOrDefault();
+						_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, intent, TimeSpan, HasDiscreteColors));
 					}
 					break;
 
@@ -686,14 +690,18 @@ namespace VixenModules.Effect.Chase
 							result.OffsetAllCommandsByTime(startTime);
 							if (ExtendPulseToStart && result.Count > 0)
 							{
-								intent = result.FirstOrDefault().Value.FirstOrDefault();
-								GenerateStartingStaticPulse(target, intent, new ColorGradient(colorProportion.Item1));
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, effectIntent, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
+								}
 							}
 							if(result.Count>0)_elementData.Add(result);
 							if (ExtendPulseToEnd && result.Count > 0)
 							{
-								intent = result.FirstOrDefault().Value.LastOrDefault();
-								GenerateExtendedStaticPulse(target, intent, new ColorGradient(colorProportion.Item1));
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, effectIntent, TimeSpan, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
+								}
 							}
 						}
 					} else {
@@ -701,14 +709,18 @@ namespace VixenModules.Effect.Chase
 						result.OffsetAllCommandsByTime(startTime);
 						if (ExtendPulseToStart && result.Count > 0)
 						{
-							intent = result.FirstOrDefault().Value.FirstOrDefault();
-							GenerateStartingStaticPulse(target, intent);
+							foreach (var effectIntent in result.FirstOrDefault().Value)
+							{
+								_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(target, effectIntent, HasDiscreteColors));
+							}
 						}
 						_elementData.Add(result);
 						if (ExtendPulseToEnd && result.Count > 0)
 						{
-							intent = result.FirstOrDefault().Value.LastOrDefault();
-							GenerateExtendedStaticPulse(target, intent);
+							foreach (var effectIntent in result.FirstOrDefault().Value)
+							{
+								_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(target, effectIntent, TimeSpan, HasDiscreteColors));
+							}
 						}
 					}
 					break;

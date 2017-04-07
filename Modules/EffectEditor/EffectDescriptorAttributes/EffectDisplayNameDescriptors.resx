@@ -414,4 +414,10 @@
   <data name="PulseShape" xml:space="preserve">
     <value>Pulse Intensity</value>
   </data>
+  <data name="WipeOff" xml:space="preserve">
+    <value>Wipe Off</value>
+  </data>
+  <data name="WipeOn" xml:space="preserve">
+    <value>Wipe On</value>
+  </data>
 </root>

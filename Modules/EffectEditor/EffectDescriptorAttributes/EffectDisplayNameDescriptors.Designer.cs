@@ -926,6 +926,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wipe Off.
+        /// </summary>
+        internal static string WipeOff {
+            get {
+                return ResourceManager.GetString("WipeOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wipe On.
+        /// </summary>
+        internal static string WipeOn {
+            get {
+                return ResourceManager.GetString("WipeOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to X Offset.
         /// </summary>
         internal static string XOffset {
