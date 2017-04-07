@@ -33,6 +33,11 @@ namespace VixenModules.Effect.Alternating
 			if (TargetNodes.Any())
 			{
 				CheckForInvalidColorData();
+				var firstNode = TargetNodes.FirstOrDefault();
+				if (firstNode != null && DepthOfEffect > firstNode.GetMaxChildDepth() - 1)
+				{
+					DepthOfEffect = 0;
+				}
 			}
 		}
 
@@ -40,13 +45,38 @@ namespace VixenModules.Effect.Alternating
 		{
 			_elementData = new EffectIntents();
 
-			foreach (ElementNode node in TargetNodes)
+			List<ElementNode> renderNodes = GetNodesToRenderOn();
+			foreach (ElementNode node in renderNodes)
 			{
 				if (node != null)
 					_elementData.Add(RenderNode(node));
 			}
 
-			//_elementData = IntentBuilder.ConvertToStaticArrayIntents(_elementData, TimeSpan, IsDiscrete());
+		}
+
+		private List<ElementNode> GetNodesToRenderOn()
+		{
+			IEnumerable<ElementNode> renderNodes = null;
+
+			if (DepthOfEffect == 0)
+			{
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+			}
+			else
+			{
+				renderNodes = TargetNodes;
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
+			}
+
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			return renderNodes.ToList();
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -192,6 +222,27 @@ namespace VixenModules.Effect.Alternating
 
 		#endregion
 
+		#region Depth
+
+		[Value]
+		[ProviderCategory(@"Depth", 4)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[MergableProperty(false)]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
 
 		#region Attributes
 
