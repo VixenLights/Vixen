@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.InteropServices;
+﻿using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
-using ZedGraph;
 
 namespace VixenModules.Effect.Effect
 {
