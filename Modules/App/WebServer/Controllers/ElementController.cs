@@ -48,9 +48,21 @@ namespace VixenModules.App.WebServer.Controllers
 		}
 
 		[HttpPost]
+		public Status GroupOn([FromBody] List<ElementState> elementState)
+		{
+			return ElementsHelper.TurnOnElements(elementState);
+		}
+
+		[HttpPost]
 		public Status Off(Element element)
 		{
 			return ElementsHelper.TurnOffElement(element.Id);
+		}
+
+		[HttpPost]
+		public Status ClearAll()
+		{
+			return ElementsHelper.ClearActiveEffects();
 		}
 
 		[HttpPost]
