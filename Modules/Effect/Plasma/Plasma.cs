@@ -238,6 +238,7 @@ namespace VixenModules.Effect.Plasma
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
+				frameBuffer.CurrentFrame = frame;
 				double position = GetEffectTimeIntervalPosition(frame) * Speed * 100;
 				double plasmaSpeed = (101 - Speed) * 3;
 				var time = (position + 1.0) / plasmaSpeed;

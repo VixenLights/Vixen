@@ -295,6 +295,7 @@ namespace VixenModules.Effect.Shockwave
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
 			{
+				frameBuffer.CurrentFrame = effectFrame;
 				double position = GetEffectTimeIntervalPosition(effectFrame);
 				double effectPositionAdjust = CalculateAcceleration(position, Acceleration);
 				Color c = Color.GetColorAt(position);

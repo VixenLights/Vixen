@@ -421,6 +421,7 @@ namespace VixenModules.Effect.Bars
 			var evenHalfCount = nodeCount%2!=0;
 			for (int frame = 0; frame < numFrames; frame++)
 			{
+				frameBuffer.CurrentFrame = frame;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
 

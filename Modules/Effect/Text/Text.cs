@@ -457,6 +457,7 @@ namespace VixenModules.Effect.Text
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
+				frameBuffer.CurrentFrame = frame;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{

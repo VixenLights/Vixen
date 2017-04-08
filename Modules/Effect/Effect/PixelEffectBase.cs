@@ -324,7 +324,7 @@ namespace VixenModules.Effect.Effect
 			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
-			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations.Distinct().ToList(), nFrames);
+			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames);
 			
 			TimeSpan startTime = TimeSpan.Zero;
 
@@ -334,14 +334,11 @@ namespace VixenModules.Effect.Effect
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
 
-			foreach (var tuple in buffer.GetElementData())
+			foreach (var elementLocation in ElementLocations)
 			{
-				if (tuple.Item2.Count != nFrames)
-				{
-					Logging.Error("{0} count has {1} instead of {2}", tuple.Item1.ElementNode.Name, tuple.Item2.Count, nFrames );
-				}
-				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, tuple.Item2.ToArray(), TimeSpan);
-				effectIntents.AddIntentForElement(tuple.Item1.ElementNode.Element.Id, intent, startTime);
+				var frameData = buffer.GetFrameDataAt(elementLocation.X, elementLocation.Y);
+				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, frameData, TimeSpan);
+				effectIntents.AddIntentForElement(elementLocation.ElementNode.Element.Id, intent, startTime);
 			}
 			
 			return effectIntents;
@@ -408,8 +405,8 @@ namespace VixenModules.Effect.Effect
 
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
-			List<Element> elements = node.ToList();
-			int numElements = node.Count();
+			List<Element> elements = node.Distinct().ToList();
+			int numElements = elements.Count();
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);

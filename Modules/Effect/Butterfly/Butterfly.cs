@@ -276,6 +276,7 @@ namespace VixenModules.Effect.Butterfly
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
 			{
+				frameBuffer.CurrentFrame = effectFrame;
 				double position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
 				int curState = (int)(TimeSpan.TotalMilliseconds * position * repeat);
 				int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;

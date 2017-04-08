@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 
@@ -8,16 +8,26 @@ namespace VixenModules.Effect.Effect.Location
 {
 	public class PixelLocationFrameBuffer:IPixelFrameBuffer
 	{
-		private readonly SparseMatrix<Tuple<ElementLocation,List<RGBValue>>> _data;
+		private readonly SparseMatrix<RGBValue[]> _data;
 		
-		public PixelLocationFrameBuffer(List<ElementLocation> nodes, int numFrames)
+		public PixelLocationFrameBuffer(List<ElementLocation> elementLocations, int numFrames)
 		{
-			ElementLocations = nodes;
-			_data = new SparseMatrix<Tuple<ElementLocation, List<RGBValue>>>();
-			AddData(nodes, numFrames);
+			CurrentFrame = 0;
+			ElementLocations = elementLocations.Distinct();
+			_data = new SparseMatrix<RGBValue[]>();
+			AddData(elementLocations, numFrames);
 		}
 		
-		public List<ElementLocation> ElementLocations { get; private set; }
+		/// <summary>
+		/// Retrieves the list of all the distinct element locations
+		/// </summary>
+		public IEnumerable<ElementLocation> ElementLocations { get; private set; }
+
+		/// <summary>
+		/// Holds the current frame for data within the buffer. Any updates or retrievals will be made based on this frame setting.
+		/// Consumers should advance this as needed to keep the buffer on the current frame
+		/// </summary>
+		public int CurrentFrame { get; set; }
 
 		/// <summary>
 		/// Add a frame and set the pixel to the given color. This cannot be used to update a pixel that 
@@ -28,10 +38,10 @@ namespace VixenModules.Effect.Effect.Location
 		/// <param name="c"></param>
 		public void SetPixel(int x, int y, Color c)
 		{
-			Tuple<ElementLocation, List<RGBValue>> elementData;
+			RGBValue[] elementData;
 			if (_data.TryGetAt(x,y, out elementData))
 			{
-				elementData.Item2.Add(new RGBValue(c));
+				elementData[CurrentFrame] = new RGBValue(c);
 			}
 		}
 
@@ -50,62 +60,31 @@ namespace VixenModules.Effect.Effect.Location
 
 		public Color GetColorAt(int x, int y)
 		{
-			throw new NotImplementedException();
+			var frameData = GetFrameDataAt(x, y);
+			return frameData[CurrentFrame].FullColor;
 		}
 
 		/// <summary>
-		/// This adds a frame worth of data to the buffer in a transparent color.
+		/// Sets all the locations in the current frame with a transparent color.
 		/// </summary>
-		public void InitializeNextFrame()
+		public void ClearFrame()
 		{
 			foreach (var tuple in _data.GetData())
 			{
-				tuple.Item2.Add(new RGBValue(Color.Transparent));
+				tuple[CurrentFrame] = new RGBValue(Color.Transparent);
 			}
 		}
 
-		/// <summary>
-		/// Update a existing pixel in the specified frame. The pixel must exist from either the InitializeNextFrame
-		/// or the SetPixel methods or an exception will occur.
-		/// </summary>
-		/// <param name="frame"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="c"></param>
-		public void UpdatePixel(int frame, int x, int y, Color c)
+		public RGBValue[] GetFrameDataAt(int x, int y)
 		{
-			Tuple<ElementLocation, List<RGBValue>> elementData;
-			if (_data.TryGetAt(x, y, out elementData))
-			{
-				elementData.Item2[frame]= new RGBValue(c);
-			}
+			return _data.GetAt(x, y);
 		}
-
-		/// <summary>
-		/// Update a existing pixel in the specified frame. The pixel must exist from either the InitializeNextFrame
-		/// or the SetPixel methods or an exception will occur.
-		/// </summary>
-		/// <param name="frame"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="hsv"></param>
-		public void UpdatePixel(int frame, int x, int y, HSV hsv)
-		{
-			var color = hsv.ToRGB();
-			UpdatePixel(frame, x, y, color);
-		}
-
-
-		public List<Tuple<ElementLocation, List<RGBValue>>> GetElementData()
-		{
-			return _data.GetData();
-		} 
 
 		private void AddData(List<ElementLocation> nodes, int numFrames)
 		{
 			foreach (var elementLocation in nodes)
 			{
-				_data.SetAt(elementLocation.X, elementLocation.Y, new Tuple<ElementLocation, List<RGBValue>>(elementLocation, new List<RGBValue>(numFrames)));
+				_data.SetAt(elementLocation.X, elementLocation.Y, new RGBValue[numFrames]);
 			}
 
 		}
