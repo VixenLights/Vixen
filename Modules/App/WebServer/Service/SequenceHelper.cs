@@ -19,11 +19,12 @@ namespace VixenModules.App.WebServer.Service
 
 		public static IEnumerable<Sequence> GetSequences()
 		{
-			var sequenceNames = SequenceService.Instance.GetAllSequenceFileNames().Select(Path.GetFileName);
+			var sequenceNames = SequenceService.Instance.GetAllSequenceFileNames();
+
 			var sequences = sequenceNames.Select(sequenceName => new Sequence
 			{
 				Name = Path.GetFileNameWithoutExtension(sequenceName),
-				FileName = sequenceName
+				FileName = sequenceName 
 			}).ToList();
 
 			return sequences;
