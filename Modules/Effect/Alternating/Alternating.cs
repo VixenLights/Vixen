@@ -45,7 +45,7 @@ namespace VixenModules.Effect.Alternating
 		{
 			_elementData = new EffectIntents();
 
-			List<ElementNode> renderNodes = GetNodesToRenderOn();
+			var renderNodes = GetNodesToRenderOn();
 			foreach (ElementNode node in renderNodes)
 			{
 				if (node != null)
@@ -54,29 +54,20 @@ namespace VixenModules.Effect.Alternating
 
 		}
 
-		private List<ElementNode> GetNodesToRenderOn()
+		private IEnumerable<ElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = null;
-
-			if (DepthOfEffect == 0)
+			IEnumerable<ElementNode> renderNodes = TargetNodes;
+			for (int i = 0; i < DepthOfEffect; i++)
 			{
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator()).ToList();
+				renderNodes = renderNodes.SelectMany(x => x.Children);
 			}
-			else
-			{
-				renderNodes = TargetNodes;
-				for (int i = 0; i < DepthOfEffect; i++)
-				{
-					renderNodes = renderNodes.SelectMany(x => x.Children);
-				}
-			}
-
+			
 			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
 			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
 			if (!renderNodes.Any())
 				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 
-			return renderNodes.ToList();
+			return renderNodes;
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
