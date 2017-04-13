@@ -381,6 +381,9 @@
   <data name="EnableMinimumBrightness" xml:space="preserve">
     <value>Enables a default brightness for the background in the effect. The background will be based on the foreground color selections.</value>
   </data>
+  <data name="BladeType" xml:space="preserve">
+    <value>Determines the look of the blade.</value>
+  </data>
   <data name="AlternatingDepth" xml:space="preserve">
     <value>Controls whether each individual element is alternated independantly or controlled by the depth of the effect.</value>
   </data>

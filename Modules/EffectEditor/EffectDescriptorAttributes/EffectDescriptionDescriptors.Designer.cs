@@ -107,6 +107,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines the look of the blade..
+        /// </summary>
+        internal static string BladeType {
+            get {
+                return ResourceManager.GetString("BladeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applies the gradient blend vertically..
         /// </summary>
         internal static string Blend {

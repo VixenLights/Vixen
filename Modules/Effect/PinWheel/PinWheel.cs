@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -9,6 +10,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.PinWheel
@@ -23,6 +25,7 @@ namespace VixenModules.Effect.PinWheel
 		public PinWheel()
 		{
 			_data = new PinWheelData();
+			EnableTargetPositioning(true, true);
 		}
 
 		public override bool IsDirty
@@ -219,15 +222,15 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"3D")]
-		[ProviderDescription(@"3D")]
-		[PropertyOrder(9)]
-		public bool PinWheel3D
+		[ProviderDisplayName(@"BladeType")]
+		[ProviderDescription(@"BladeType")]
+		[PropertyOrder(10)]
+		public PinWheelBladeType PinWheelBladeType
 		{
-			get { return _data.PinWheel3D; }
+			get { return _data.PinWheelBladeType; }
 			set
 			{
-				_data.PinWheel3D = value;
+				_data.PinWheelBladeType = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -349,85 +352,209 @@ namespace VixenModules.Effect.PinWheel
 			_newColors = null;
 		}
 
-		private HSV _hsv;
-		
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-			int colorcnt = Colors.Count;
 
-			var xc = Math.Max(BufferWi, BufferHt)/2;
+			var origin = new Point(BufferWi / 2 + BufferWiOffset + XOffset, BufferHt / 2 + BufferHtOffset + YOffset);
 
-			double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
+			var xc = DistanceFromCenter(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 			int degreesPerArm = 1;
-			if (Arms > 0) degreesPerArm = 360/Arms;
-			float armsize = (float) (Size/100.0);
+			if (Arms > 0) degreesPerArm = 360 / Arms;
+			float armsize = (float)(Size / 100.0);
+			
+			double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
+			var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+			var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
+
+			var maxRadius = xc * armsize;
+
+			var angleRange = Thickness / 100.0f * degreesPerArm / 2.0f;
+
+			for (int x = 0; x < BufferWi; x++)
+			{
+				for (int y = 0; y < BufferHt; y++)
+				{
+					RenderPoint(frameBuffer, x, y, origin, maxRadius, arms, angleRange, overallLevel, true);
+				}
+			}
+			
+		}
+		
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var origin = new Point(BufferWi/2+BufferWiOffset + XOffset, BufferHt / 2 + BufferHtOffset + YOffset);
+
+			var xc = DistanceFromCenter(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+
+			int degreesPerArm = 1;
+			if (Arms > 0) degreesPerArm = 360 / Arms;
+			float armsize = (float)(Size / 100.0);
+
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				frameBuffer.CurrentFrame = frame;
+				double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
+				var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+				var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
+
+				var maxRadius = xc * armsize;
+
+				var angleRange = Thickness / 100.0f * degreesPerArm / 2.0f;
+
+				foreach (var elementLocation in frameBuffer.ElementLocations)
+				{
+					RenderPoint(frameBuffer, elementLocation.X, elementLocation.Y, origin, maxRadius, arms, angleRange, overallLevel, false);			
+				}
+			}			
+		}
+
+		private List<Tuple<int, HSV>> CreateArms(int degreesPerArm, double pos, int frame, double overallLevel)
+		{
+			var arms = new List<Tuple<int, HSV>>();
+			int colorcnt = Colors.Count;
 			for (int a = 1; a <= Arms; a++)
 			{
-				var colorIdx = a%colorcnt;
-				switch (ColorType)
-				{
-					case PinWheelColorType.Rainbow: //No user colors are used for Rainbow effect.
-						_hsv.H = Rand();
-						_hsv.S = 1.0f;
-						_hsv.V = 1.0f;
-						break;
-					case PinWheelColorType.Random:
-						_hsv = HSV.FromRGB(_newColors[colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-						break;
-					case PinWheelColorType.Standard:
-						_hsv = HSV.FromRGB(Colors[colorIdx].ColorGradient.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-						break;
-				}
-
-				var baseDegrees = Rotation==RotationType.Backward ? (int) ((a + 1)*degreesPerArm + pos) : (int) ((a + 1)*degreesPerArm - pos);
-				_hsv.V = _hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				_hsv.V = _hsv.V * overallLevel;
-				Draw_arm(frameBuffer, baseDegrees, xc * armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
-				
-				//Adjusts arm thickness
-				var tmax = (float)((Thickness / 100.0) * degreesPerArm / 2.0);
-				float t;
-				for (t = 1; t <= tmax; t++)
-				{
-					if (PinWheel3D)
-					{
-						_hsv.V = _hsv.V*((tmax - t)/tmax);
-					}
-					Draw_arm(frameBuffer, baseDegrees - t, xc*armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
-					Draw_arm(frameBuffer, baseDegrees + t, xc*armsize, Twist, _hsv, XOffset, YOffset, frame, colorIdx, overallLevel);
-				}
+				var armAngle = (Rotation == RotationType.Backward
+					? (int) (AddDegrees((a + 1) * degreesPerArm, pos))
+					: (int) (AddDegrees((a + 1) * degreesPerArm, -pos)));
+				var colorIdx = (a - 1) % colorcnt;
+				var hsv = GetColor(colorIdx, frame);
+				hsv.V = hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				hsv.V = hsv.V * overallLevel;
+				arms.Add(new Tuple<int, HSV>(armAngle, hsv));
 			}
+			return arms;
 		}
 
-		private void Draw_arm(IPixelFrameBuffer frameBuffer, float baseDegrees, float maxRadius, int twist, HSV hsv, int xOffset, int yOffset, int frame, int colorIdx, double overallLevel)
+		private void RenderPoint(IPixelFrameBuffer frameBuffer, int x, int y, Point origin, double maxRadius, List<Tuple<int, HSV>> arms, double angleRange, double overallLevel, bool invertY )
 		{
-			int xc = BufferWi/2;
-			int yc = BufferHt/2;
-			xc = (int)(xc + (xOffset / 100.0) * xc); // XOffset is from -100 to 100
-			yc = (int)(yc + (yOffset / 100.0) * yc);
-
-			for (double r = 0.0; r <= maxRadius; r += 0.5)
+			var radius = DistanceFromCenter(origin, x, y);
+			if (radius > maxRadius || radius <= CenterStart)
 			{
-				int degreesTwist = (int) ((r/maxRadius)*twist);
-				int degrees = (int)(baseDegrees + degreesTwist);
-				double phi = degrees*Pi180;
-				int x = (int) (r*Math.Cos(phi) + xc);
-				int y = (int) (r*Math.Sin(phi) + yc);
-				switch (ColorType)
+				return;
+			}
+			var angle = GetAngleDegree(origin, x, y);
+
+			int degreesTwist = (int)(radius / maxRadius * Twist);
+
+			for (int i = 0; i < arms.Count; i++)
+			{
+				double degrees = AddDegrees(arms[i].Item1, degreesTwist);
+
+				if (IsAngleBetween(AddDegrees(degrees, -angleRange), AddDegrees(degrees, angleRange), angle))
 				{
-					case PinWheelColorType.Gradient: //Applies gradient over each arm
-						hsv = HSV.FromRGB(maxRadius > (double)(Math.Max(BufferHt, BufferWi)) / 2 ? Colors[colorIdx].ColorGradient.GetColorAt((100 / ((double)(Math.Max(BufferHt, BufferWi)) / 2) * r) / 100) : Colors[colorIdx].ColorGradient.GetColorAt((100 / maxRadius * r) / 100));
-						hsv.V = hsv.V * Colors[colorIdx].Curve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					HSV hsv;
+					if (ColorType == PinWheelColorType.Gradient)
+					{
+						var colorIdx = i % Colors.Count;
+						hsv = HSV.FromRGB(Colors[colorIdx].ColorGradient.GetColorAt(radius / maxRadius));
+						hsv.V = hsv.V * Colors[colorIdx].Curve.GetValue(radius / maxRadius * 100) / 100;
 						hsv.V = hsv.V * overallLevel;
-						break;
+
+					}
+					else
+					{
+						hsv = arms[i].Item2;
+					}
+
+					switch (PinWheelBladeType)
+					{
+						case PinWheelBladeType.ThreeD:
+							hsv.V = hsv.V * (1 - (DegreesDiffernce(degrees, angle) / angleRange));
+							break;
+						case PinWheelBladeType.Inverted3D:
+							hsv.V = hsv.V * (DegreesDiffernce(degrees, angle) / angleRange);
+							break;
+						case PinWheelBladeType.Fan:
+							var frontAngle = Rotation == RotationType.Forward ? angleRange : -angleRange;
+							hsv.V = hsv.V * (DegreesDiffernce(AddDegrees(degrees, frontAngle), angle) / (2 * angleRange));
+							break;
+					}
+
+					if (invertY)
+					{
+						frameBuffer.SetPixel(x, BufferHt - 1 - y, hsv);
+					}
+					else
+					{
+						frameBuffer.SetPixel(x, y, hsv);
+					}
+					
 				}
-				if (r > CenterStart)
-					frameBuffer.SetPixel(x, y, hsv);
 			}
 		}
 
+		private HSV GetColor(int colorIdx, int frame)
+		{
+			HSV hsv = new HSV(0,0,0);
+			switch (ColorType)
+			{
+				case PinWheelColorType.Rainbow: //No user colors are used for Rainbow effect.
+					hsv.H = Rand();
+					hsv.S = 1.0f;
+					hsv.V = 1.0f;
+					break;
+				case PinWheelColorType.Random:
+					hsv = HSV.FromRGB(_newColors[colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+					break;
+				case PinWheelColorType.Standard:
+					hsv = HSV.FromRGB(Colors[colorIdx].ColorGradient.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+					break;
+			}
+
+			return hsv;
+		}
+
+
+		private static bool IsAngleBetween(double a, double b, double n)
+		{
+			n = (360 + (n % 360)) % 360;
+			a = (3600000 + a) % 360;
+			b = (3600000 + b) % 360;
+
+			if (a < b)
+			{
+				return a <= n && n <= b;
+			}
+			return a <= n || n <= b;
+		
+		}
+
+		private static double DegreesDiffernce(double angle1, double angle2)
+		{
+			return Math.Min(360 - Math.Abs(angle1 - angle2), Math.Abs(angle1 - angle2));
+		}
+
+		private static double GetAngleDegree(Point origin, int x, int y)
+		{
+			var n = 270 - (Math.Atan2(origin.Y - y, origin.X - x)) * 180 / Math.PI;
+			return n % 360;
+		}
+
+		private static double DistanceFromCenter(Point origin, int x, int y)
+		{
+			return Math.Sqrt(Math.Pow((x - origin.X), 2) + Math.Pow((y - origin.Y), 2));
+		}
+
+		private static double DistanceFromCenter(Point origin, Point point)
+		{
+			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
+		}
+
+		private static double AddDegrees(double angle, double degrees)
+		{
+			var newAngle = (angle + degrees) % 360;
+			if (newAngle < 0)
+			{
+				newAngle += 360;
+			}
+
+			return newAngle;
+		}
+		
 		private static double Rand()
 		{
 			return Random.NextDouble();
