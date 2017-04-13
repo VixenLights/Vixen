@@ -503,7 +503,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Individual Elements.
+        ///   Looks up a localized string similar to Choose Effect Depth.
         /// </summary>
         internal static string IndividualElements {
             get {
