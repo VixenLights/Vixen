@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -29,6 +28,9 @@ namespace VixenModules.Effect.Alternating {
 		[DataMember]
 		public int DepthOfEffect { get; set; }
 
+		[DataMember]
+		public bool EnableDepth { get; set; }
+
 		public AlternatingData()
 		{
 			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100)};
@@ -38,6 +40,7 @@ namespace VixenModules.Effect.Alternating {
 			GroupLevel = 1;
 			IntervalSkipCount = 1;
 			DepthOfEffect = 0;
+			EnableDepth = false;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -50,7 +53,8 @@ namespace VixenModules.Effect.Alternating {
 				Interval = Interval,
 				GroupLevel = GroupLevel,
 				IntervalSkipCount = IntervalSkipCount,
-				DepthOfEffect = DepthOfEffect
+				DepthOfEffect = DepthOfEffect,
+				EnableDepth = EnableDepth
 			};
 			return result;
 		}

@@ -337,7 +337,7 @@
     <value>Controls how much of the effect by percent is covered in twinkles.</value>
   </data>
   <data name="TwinkleDepth" xml:space="preserve">
-    <value>Controls whether each individual element is twinkled independantly or all at once.</value>
+    <value>Controls whether each individual element is twinkled independantly or controled by the depth of the effect.</value>
   </data>
   <data name="TwinkleLevelVariation" xml:space="preserve">
     <value>Controls how much percent variation in the brightness level of each pulse in the twinkle.</value>
@@ -380,5 +380,8 @@
   </data>
   <data name="EnableMinimumBrightness" xml:space="preserve">
     <value>Enables a default brightness for the background in the effect. The background will be based on the foreground color selections.</value>
+  </data>
+  <data name="AlternatingDepth" xml:space="preserve">
+    <value>Controls whether each individual element is alternated independantly or controlled by the depth of the effect.</value>
   </data>
 </root>

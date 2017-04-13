@@ -62,6 +62,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls whether each individual element is alternated independantly or controlled by the depth of the effect..
+        /// </summary>
+        internal static string AlternatingDepth {
+            get {
+                return ResourceManager.GetString("AlternatingDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the amount of background chunks..
         /// </summary>
         internal static string BackgroundChunks {
@@ -755,7 +764,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls whether each individual element is twinkled independantly or all at once..
+        ///   Looks up a localized string similar to Controls whether each individual element is twinkled independantly or controled by the depth of the effect..
         /// </summary>
         internal static string TwinkleDepth {
             get {
