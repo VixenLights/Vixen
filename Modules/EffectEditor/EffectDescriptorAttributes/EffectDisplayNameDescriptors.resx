@@ -420,4 +420,7 @@
   <data name="WipeOn" xml:space="preserve">
     <value>Wipe On</value>
   </data>
+  <data name="BladeType" xml:space="preserve">
+    <value>Blade Type</value>
+  </data>
 </root>

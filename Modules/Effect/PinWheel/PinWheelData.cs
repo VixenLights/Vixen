@@ -28,6 +28,7 @@ namespace VixenModules.Effect.PinWheel
 			PinWheel3D = false;
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
+			PinWheelBladeType = PinWheelBladeType.Flat;
 		}
 
 		[DataMember]
@@ -63,14 +64,27 @@ namespace VixenModules.Effect.PinWheel
 		[DataMember]
 		public RotationType Rotation { get; set; }
 
+		[DataMember(EmitDefaultValue = false)]
+		public bool PinWheel3D { get; set; } //Deprecated
+
 		[DataMember]
-		public bool PinWheel3D { get; set; }
+		public PinWheelBladeType PinWheelBladeType { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			if (PinWheel3D)
+			{
+				PinWheelBladeType = PinWheelBladeType.ThreeD;
+				PinWheel3D = false;
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -90,7 +104,8 @@ namespace VixenModules.Effect.PinWheel
 				Thickness = Thickness,
 				Rotation = Rotation,
 				Size = Size,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				PinWheelBladeType = PinWheelBladeType
 			};
 			return result;
 		}
