@@ -93,6 +93,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap alignBothMark {
+            get {
+                object obj = ResourceManager.GetObject("alignBothMark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap alignCenter {
             get {
                 object obj = ResourceManager.GetObject("alignCenter", resourceCulture);
@@ -113,6 +123,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap alignEndMark {
+            get {
+                object obj = ResourceManager.GetObject("alignEndMark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap alignment {
             get {
                 object obj = ResourceManager.GetObject("alignment", resourceCulture);
@@ -126,6 +146,26 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap alignStart {
             get {
                 object obj = ResourceManager.GetObject("alignStart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignStartEnd {
+            get {
+                object obj = ResourceManager.GetObject("alignStartEnd", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap alignStartMark {
+            get {
+                object obj = ResourceManager.GetObject("alignStartMark", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1053,6 +1093,16 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap distribute {
+            get {
+                object obj = ResourceManager.GetObject("distribute", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap divide {
             get {
                 object obj = ResourceManager.GetObject("divide", resourceCulture);
@@ -1696,6 +1746,16 @@ namespace Common.Resources.Properties {
         public static System.Drawing.Bitmap magnifier_zoom_out {
             get {
                 object obj = ResourceManager.GetObject("magnifier_zoom_out", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap matchDuration {
+            get {
+                object obj = ResourceManager.GetObject("matchDuration", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
