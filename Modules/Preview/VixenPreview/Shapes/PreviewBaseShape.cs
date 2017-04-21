@@ -335,13 +335,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             else
             {
                 Color pixelColor = Color.White;
-                if (
-                    (_pixels.Count > 0) &&
-                    (pixel == _pixels[0] || (_strings != null && _strings.Count > 0 && _strings[0].Pixels != null && _strings[0].Pixels.Count > 0 && _strings[0].Pixels[0] == pixel))
-                   )
-                {
-                    pixelColor = Color.Yellow;
-                    pixel.PixelSize = PixelSize + 2;
+                if (StringType==StringTypes.Pixel && IsPixelOne(pixel))
+	            {
+		            pixelColor = Color.Yellow;
+		            pixel.PixelSize = PixelSize + 2;
+	      
                 }
                 else
                 {
@@ -366,6 +364,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 }
                 pixel.Draw(fp, pixelColor);
             }
+		}
+
+		private bool IsPixelOne(PreviewPixel pixel)
+		{
+			if (_pixels.Count > 0 && pixel == _pixels[0] ||
+				 _strings != null && _strings.Count > 0 && _strings[0].Pixels != null &&
+				 _strings[0].Pixels.Count > 0 && _strings[0].Pixels[0] == pixel)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		public virtual void Draw(FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements, bool selected,
