@@ -10,6 +10,7 @@ using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Curtain
@@ -23,6 +24,8 @@ namespace VixenModules.Effect.Curtain
 		public Curtain()
 		{
 			_data = new CurtainData();
+			EnableTargetPositioning(true, true);
+			InitAllAttributes();
 		}
 
 		#region Setup
@@ -152,6 +155,11 @@ namespace VixenModules.Effect.Curtain
 
 		#endregion
 
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+		}
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -177,6 +185,8 @@ namespace VixenModules.Effect.Curtain
 			{
 				_lastCurtainDir = 1;
 			}
+
+			_lastCurtainLimit = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -263,14 +273,232 @@ namespace VixenModules.Effect.Curtain
 			}
 		}
 
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var swagArray = new List<int>();
+			int swaglen = BufferHt > 1 ? Swag * BufferWi / 40 : 0;
+
+			var swagBufferHt = BufferHt;
+			switch (Edge)
+			{
+					case CurtainEdge.Middle:
+					case CurtainEdge.Top:
+					case CurtainEdge.Bottom:
+					swagBufferHt = BufferWi;
+					break;
+
+			}
+
+			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
+			{
+				frameBuffer.CurrentFrame = effectFrame;
+				var timeIntervalPosition = GetEffectTimeIntervalPosition(effectFrame);
+				double position = (timeIntervalPosition * Speed) % 1;
+				double level = LevelCurve.GetValue(timeIntervalPosition * 100) / 100;
+
+				if (swaglen > 0)
+				{
+					swagArray.Clear();
+					double a = (double)(swagBufferHt) / (swaglen * swaglen);
+					for (int x = 0; x < swaglen; x++)
+					{
+						swagArray.Add((int)(a * x * x));
+					}
+				}
+				int xlimit;
+				int ylimit;
+				if (Direction < CurtainDirection.CurtainOpenClose)
+				{
+					xlimit = (int)(position * BufferWi);
+					ylimit = (int)(position * BufferHt);
+				}
+				else
+				{
+					xlimit = (int)(position <= .5 ? position * 2 * BufferWi : (position - .5) * 2 * BufferWi);
+					ylimit = (int)(position <= .5 ? position * 2 * BufferHt : (position - .5) * 2 * BufferHt);
+				}
+				int curtainDir;
+				if (Direction < CurtainDirection.CurtainOpenClose)
+				{
+					curtainDir = (int)Direction % 2;
+				}
+				else if (xlimit < _lastCurtainLimit)
+				{
+					curtainDir = 1 - _lastCurtainDir;
+				}
+				else
+				{
+					curtainDir = _lastCurtainDir;
+				}
+				_lastCurtainDir = curtainDir;
+				_lastCurtainLimit = xlimit;
+				if (curtainDir == 0)
+				{
+					xlimit = BufferWi - xlimit;
+					ylimit = BufferHt - ylimit;
+				}
+
+				int middle;
+				switch (Edge)
+				{
+					case CurtainEdge.Left:
+						// left
+						DrawCurtainLocation(true, xlimit, swagArray, frameBuffer, level, BufferWi);
+						break;
+					case CurtainEdge.Center:
+						// center
+						middle = xlimit / 2;
+						DrawCurtainLocation(true, middle, swagArray, frameBuffer, level, BufferWi / 2);
+						DrawCurtainLocation(false, middle, swagArray, frameBuffer, level, BufferWi / 2);
+						break;
+					case CurtainEdge.Right:
+						// right
+						DrawCurtainLocation(false, xlimit, swagArray, frameBuffer, level, BufferWi);
+						break;
+					case CurtainEdge.Bottom:
+
+						// bottom
+						DrawCurtainVerticalLocation(false, ylimit, swagArray, frameBuffer, level, BufferHt);
+						break;
+					case CurtainEdge.Middle:
+						// middle
+						middle = ylimit / 2;
+						DrawCurtainVerticalLocation(true, middle, swagArray, frameBuffer, level, BufferHt / 2);
+						DrawCurtainVerticalLocation(false, middle, swagArray, frameBuffer, level, BufferHt / 2);
+						break;
+					case CurtainEdge.Top:
+						// top
+						DrawCurtainVerticalLocation(true, ylimit, swagArray, frameBuffer, level, BufferHt);
+						break;
+				}
+			}
+
+			
+		}
+
+		private void DrawCurtainLocation(bool leftEdge, int xlimit, List<int> swagArray, PixelLocationFrameBuffer frameBuffer,
+			double level, int width)
+		{
+
+			var rightBufferLimit = BufferWi + BufferWiOffset;
+
+			var elements = leftEdge
+				? frameBuffer.ElementLocations.Where(e => e.X >= (rightBufferLimit) - xlimit)
+				: frameBuffer.ElementLocations.Where(e => e.X <= xlimit + BufferWiOffset);
+
+			foreach (var elementLocation in elements)
+			{
+				var hsv = GetLocationColor(leftEdge, width, elementLocation);
+				hsv.V = hsv.V * level;
+				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+			}
+
+			// swag
+			if (swagArray.Count > 0)
+			{
+				var swagElements = leftEdge ? frameBuffer.ElementLocations.Where(e => e.X <= (BufferWi + BufferWiOffset) - xlimit && e.X >= (BufferWi + BufferWiOffset) - (xlimit + swagArray.Count)).ToLookup(e => e.X) : frameBuffer.ElementLocations.Where(e => e.X >= xlimit + BufferWiOffset && e.X <= xlimit + swagArray.Count + BufferWiOffset).ToLookup(e => e.X);
+				
+				for (int i = 0; i < swagArray.Count; i++)
+				{
+					int x = leftEdge? rightBufferLimit - (xlimit + i):xlimit+i+BufferWiOffset;
+				
+					if (x > rightBufferLimit) break;
+
+					var limit = BufferHt - swagArray[i] + BufferHtOffset;
+					foreach (var elementLocation in swagElements[x])
+					{
+						if (elementLocation.Y < limit)
+						{
+							var hsv = GetLocationColor(leftEdge, width, elementLocation);
+							hsv.V = hsv.V * level;
+							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+						}
+					}
+
+				}
+			}
+		}
+
+		private HSV GetLocationColor(bool leftEdge, int width, ElementLocation elementLocation)
+		{
+			HSV hsv;
+			if (!leftEdge || BufferWi == width)
+			{
+				var percent = (double) (elementLocation.X - BufferWiOffset) / width;
+				hsv = HSV.FromRGB(Color.GetColorAt(leftEdge ? 1 - percent : percent));
+			}
+			else
+			{
+				var percent = (double) (elementLocation.X - BufferWiOffset - (BufferWi - width)) / width;
+				hsv = HSV.FromRGB(Color.GetColorAt(1 - percent));
+			}
+			return hsv;
+		}
+
+		private void DrawCurtainVerticalLocation(bool topEdge, int ylimit, List<int> swagArray, PixelLocationFrameBuffer frameBuffer,
+			double level, int width)
+		{
+			var topBufferLimit = BufferHt + BufferHtOffset;
+			var elements = topEdge ? frameBuffer.ElementLocations.Where(e => e.Y > topBufferLimit - ylimit) : frameBuffer.ElementLocations.Where(e => e.Y < ylimit + BufferHtOffset);
+
+			foreach (var elementLocation in elements)
+			{
+				var hsv = GetVerticalLocationColor(topEdge, width, elementLocation);
+				hsv.V = hsv.V * level;
+				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+			}
+
+			//Swag
+			if (swagArray.Count > 0)
+			{
+				var swagElements = topEdge ? frameBuffer.ElementLocations.Where(e => e.Y <= topBufferLimit - ylimit && e.Y >= topBufferLimit - (ylimit + swagArray.Count)).ToLookup(e => e.Y) : frameBuffer.ElementLocations.Where(e => e.Y >= ylimit + BufferHtOffset && e.Y <= ylimit + swagArray.Count + BufferHtOffset).ToLookup(e => e.Y);
+
+				for (int i = 0; i < swagArray.Count; i++)
+				{
+					int x = topEdge ? topBufferLimit - (ylimit + i) : ylimit + i + BufferHtOffset;
+
+					if (x > topBufferLimit) break;
+
+					var limit = BufferWiOffset + swagArray[i];
+					foreach (var elementLocation in swagElements[x])
+					{
+						if (elementLocation.X > limit)
+						{
+							var hsv = GetVerticalLocationColor(topEdge, width, elementLocation);
+							hsv.V = hsv.V * level;
+							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+						}
+					}
+
+				}
+			}
+		}
+
+		private HSV GetVerticalLocationColor(bool topEdge, int width, ElementLocation elementLocation)
+		{
+			HSV hsv;
+			if (!topEdge || BufferHt == width)
+			{
+				var percent = (double) (elementLocation.Y - BufferHtOffset) / width;
+				hsv = HSV.FromRGB(Color.GetColorAt(topEdge ? 1 - percent : percent));
+			}
+			else
+			{
+				var percent = (double) (elementLocation.Y - BufferHtOffset - (BufferHt - width)) / width;
+				hsv = HSV.FromRGB(Color.GetColorAt(1 - percent));
+			}
+			return hsv;
+		}
+
+
 		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, IPixelFrameBuffer frameBuffer, double level, int width)
 		{
-			int i, x, y;
-			for (i = 0; i < xlimit; i++)
+			for (int i = 0; i < xlimit; i++)
 			{
 				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)i / width));
-				x = leftEdge ? BufferWi - i - 1 : i;
-				for (y = BufferHt - 1; y >= 0; y--)
+				int x = leftEdge ? BufferWi - i - 1 : i;
+				for (int y = BufferHt - 1; y >= 0; y--)
 				{
 					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);
@@ -278,12 +506,12 @@ namespace VixenModules.Effect.Curtain
 			}
 
 			// swag
-			for (i = 0; i < swagArray.Count; i++)
+			for (int i = 0; i < swagArray.Count; i++)
 			{
-				x = xlimit + i;
+				int x = xlimit + i;
 				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)x / width));
 				if (leftEdge) x = BufferWi - x - 1;
-				for (y = BufferHt - 1; y > swagArray[i]; y--)
+				for (int y = BufferHt - 1; y > swagArray[i]; y--)
 				{
 					hsv.V = hsv.V*level;
 					frameBuffer.SetPixel(x, y, hsv);

@@ -26,7 +26,7 @@ namespace VixenModules.Effect.Effect
 	{
 
 		protected const short FrameTime = 50;
-		private static Logger Logging = LogManager.GetCurrentClassLogger();
+		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		protected readonly List<int> StringPixelCounts = new List<int>();
 		protected List<ElementLocation> ElementLocations; 
 
