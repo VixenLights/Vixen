@@ -209,29 +209,42 @@ namespace VixenModules.App.Curves
 			LibraryReferencedCurve = null;
 		}
 
-		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false)
+		public Bitmap GenerateGenericCurveImage(Size size, bool inactive=false, bool drawPoints=false, bool editable=false)
 		{
-			Bitmap result = new Bitmap(size.Width, size.Height);
+			var adjust = editable ? 2 : 0;
+
+			Bitmap result = new Bitmap(size.Width+adjust, size.Height+adjust);
 
 			using (Graphics g = Graphics.FromImage(result))
 			{
 				using (Brush b = new SolidBrush(inactive?Color.DimGray:Color.Black))
 				{
-					using (Pen p = new Pen(Color.FromArgb(255,136,136,136), 2))
+					using (Pen p = new Pen(editable?Color.FromArgb(0,128,255) : Color.FromArgb(255,136,136,136), 2))
 					{
-						g.FillRectangle(b, new Rectangle(0, 0, size.Width, size.Height));
-					
-						PointPair lastPoint = null;
-						foreach (var point in Points)
+						using (Brush pointBrush = new SolidBrush(Color.FromArgb(255, 136, 136, 136)))
 						{
-							if (lastPoint == null)
+							g.FillRectangle(b, new Rectangle(0, 0, size.Width+adjust, size.Height+adjust));
+					
+							PointPair lastPoint = null;
+							foreach (var point in Points)
 							{
+								if (lastPoint == null)
+								{
+									lastPoint = point;
+									continue;
+								}
+
+								var tPoint = TransformPoint(point, size);
+								var tLastPoint = TransformPoint(lastPoint, size);
+								g.DrawLine(p, tLastPoint, tPoint);
+								if (drawPoints)
+								{
+									g.FillEllipse(pointBrush, tPoint.X - 3, tPoint.Y - 3, 6, 6);
+									g.FillEllipse(pointBrush, tLastPoint.X - 3, tLastPoint.Y - 3, 6, 6);
+								}
 								lastPoint = point;
-								continue;
 							}
-							g.DrawLine(p, TransformPoint(lastPoint, size), TransformPoint(point, size));
-							lastPoint = point;
-						}	
+						}
 					}
 				}
 				
@@ -245,7 +258,7 @@ namespace VixenModules.App.Curves
 			int X = (int)points.X;
 			int Y = Math.Abs((int)points.Y - 100);
 			Y = (int)(Y*(bounds.Height/100f));
-			X = (int)(X*(bounds.Width/100f));
+			X = (int)(X*((bounds.Width-1)/100f));
 			return new Point(X,Y);
 		}
 

@@ -290,7 +290,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					var image = c.GenerateGenericCurveImage(_imageSize);
 					Graphics gfx = Graphics.FromImage(image);
-					gfx.DrawRectangle(p, 0, 0, _imageSize.Width, _imageSize.Height);
+					gfx.DrawRectangle(p, 0, 0, image.Width, image.Height);
 					gfx.Dispose();
 					listViewCurves.LargeImageList.Images.Add(name, image);
 

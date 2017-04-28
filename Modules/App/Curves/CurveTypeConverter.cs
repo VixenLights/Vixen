@@ -4,6 +4,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Drawing;
 using System.Globalization;
 using System.Reflection;
+using ZedGraph;
 
 namespace VixenModules.App.Curves
 {
@@ -32,6 +33,17 @@ namespace VixenModules.App.Curves
 			return base.CanConvertTo(context, destinationType);
 		}
 
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			if (value is double)
+			{
+				var curveValue = Convert.ToDouble(value);
+				return new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
+			}
+
+			return base.ConvertFrom(context, culture, value);
+		}
+
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
 			if (destinationType == null)
@@ -53,12 +65,13 @@ namespace VixenModules.App.Curves
 					{
 						return string.Format("Library: {0}", cg.LibraryReferenceName);
 					}
-					return "";
+					return string.Empty;
 				}
 			}
 			
 
 			return base.ConvertTo(context, culture, value, destinationType);
 		}
+
 	}
 }
