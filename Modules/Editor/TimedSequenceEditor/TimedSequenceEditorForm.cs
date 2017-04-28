@@ -4048,7 +4048,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ShowMultiDropMessage()
 		{
-			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 4);
+			UpdateToolStrip4("Choose the property to set, press Escape to cancel.", 8);
 		}
 
 		private void CompleteDrop(Dictionary<Element, Tuple<object, PropertyDescriptor>> elementValues, Element element, string type)
@@ -4230,7 +4230,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				//We have more than one property of the same type
-				List<EffectParameterPickerControl> parameterPickerControls = properties.Select(propertyData => new EffectParameterPickerControl
+				List<EffectParameterPickerControl> parameterPickerControls = properties.Where(p => p.PropertyType == typeof(Curve)).Select(propertyData => new EffectParameterPickerControl
 				{
 					PropertyInfo = propertyData.Descriptor,
 					ParameterImage = GetCurveBitmap((Curve)propertyData.Descriptor.GetValue(element.EffectNode.Effect))

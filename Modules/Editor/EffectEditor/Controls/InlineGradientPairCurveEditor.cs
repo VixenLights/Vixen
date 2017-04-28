@@ -11,9 +11,9 @@ using ZedGraph;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
-	public class InlineCollectionCurveEditor : Control
+	public class InlineGradientPairCurveEditor : Control
 	{
-		private static readonly Type ThisType = typeof(InlineCollectionCurveEditor);
+		private static readonly Type ThisType = typeof(InlineGradientPairCurveEditor);
 
 		#region Fields
 
@@ -25,11 +25,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private Curve _holdValue;
 
 		private const double DragTolerance = 2.0;
-		private const double DistanceTolerance = 7.0;
+		private const double DistanceTolerance = 8.0;
 
 		#endregion Fields
 
-		static InlineCollectionCurveEditor()
+		static InlineGradientPairCurveEditor()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));
 		}
@@ -143,7 +143,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private static void ValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var inlineCurveEditor = (InlineCollectionCurveEditor)d;
+			var inlineCurveEditor = (InlineGradientPairCurveEditor)d;
 			if (!inlineCurveEditor.IsInitialized)
 				return;
 			inlineCurveEditor.Value = (GradientLevelPair)e.NewValue;
@@ -153,7 +153,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private static void OnIsDraggingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var inlineCurveEditor = (InlineCollectionCurveEditor)d;
+			var inlineCurveEditor = (InlineGradientPairCurveEditor)d;
 			inlineCurveEditor.OnIsDraggingChanged();
 		}
 

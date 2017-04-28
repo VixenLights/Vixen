@@ -17,7 +17,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		/// <param name="controls">The controls to render the items in the picker.</param>
 		/// <param name="closeInterval">The auto cancel interval.</param>
-		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, double closeInterval=4000)
+		public FormParameterPicker(IEnumerable<EffectParameterPickerControl> controls, double closeInterval=8000)
 		{
 			InitializeComponent();
 

@@ -26,7 +26,7 @@
                                     Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
 							<Border BorderThickness="1" BorderBrush="#888888">
 								<Image input:DragDropTargetType.TargetType="ColorGradient" Source="{Binding Value.ColorGradient, Converter={StaticResource ColorGradientToImageConverter}}" 
-									   Height="32" Width="30" Focusable="True" Stretch="Fill"
+									   Height="32" Width="32" Focusable="True" Stretch="Fill"
 									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.ColorGradient.LibraryReferenceName}">
 									<Image.InputBindings>
 										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
@@ -34,12 +34,12 @@
 									</Image.InputBindings>
 								</Image>
 							</Border>
-                            <controls:InlineCollectionCurveEditor
+                            <controls:InlineGradientPairCurveEditor
 			                    x:Name="CollectionCurveEditor"
 			                    Value="{Binding Value, Mode=TwoWay}"
                                 IsEnabled="True">
                                
-                            </controls:InlineCollectionCurveEditor>
+                            </controls:InlineGradientPairCurveEditor>
                         </StackPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>
