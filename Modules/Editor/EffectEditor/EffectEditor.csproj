@@ -215,6 +215,8 @@
     <Compile Include="CategoryItem.cs" />
     <Compile Include="Controls\CollectionView.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
+    <Compile Include="Controls\InlineGradientPairCurveEditor.cs" />
+    <Compile Include="Controls\InlineCurveEditor.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
     <Compile Include="Controls\NavigatableHyperLink.cs" />
     <Compile Include="Controls\RepeatEditor.cs" />
@@ -223,7 +225,9 @@
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
+    <Compile Include="Converters\CurveToDoubleConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
+    <Compile Include="Converters\ToolTipVisibilityConverter.cs" />
     <Compile Include="Converters\DebugConverter.cs" />
     <Compile Include="Converters\DoubleToIntConverter.cs" />
     <Compile Include="Converters\EnumValueConverter.cs" />
@@ -234,6 +238,8 @@
     <Compile Include="Converters\FontWeightConverterDecorator.cs" />
     <Compile Include="Converters\IntToDoubleConverter.cs" />
     <Compile Include="Converters\LevelToIntConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\AdditionConverter.cs" />
     <Compile Include="Converters\PercentageToIntConverter.cs" />
     <Compile Include="Converters\PercentageValueConverter.cs" />
     <Compile Include="Converters\LevelValueConverter.cs" />
@@ -241,6 +247,7 @@
     <Compile Include="Converters\NullValueConverter.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Converters\SystemColorToSolidBrushConverter.cs" />
+    <Compile Include="Converters\WidthToVisibilityConverter.cs" />
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
     <Compile Include="Editors\EditorCollection.cs" />

@@ -22,10 +22,11 @@
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<StackPanel Orientation="Horizontal" Margin="5">
+						<StackPanel Name="CollectionContainer" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5"
+                                    Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
 							<Border BorderThickness="1" BorderBrush="#888888">
 								<Image input:DragDropTargetType.TargetType="ColorGradient" Source="{Binding Value.ColorGradient, Converter={StaticResource ColorGradientToImageConverter}}" 
-									   Height="25" Width="25" Focusable="True"
+									   Height="32" Width="32" Focusable="True" Stretch="Fill"
 									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.ColorGradient.LibraryReferenceName}">
 									<Image.InputBindings>
 										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
@@ -33,17 +34,13 @@
 									</Image.InputBindings>
 								</Image>
 							</Border>
-							<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
-								<Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
-									   Height="25" Width="25" Focusable="True"
-									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
-									<Image.InputBindings>
-										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-						              CommandParameter="{Binding}" />
-									</Image.InputBindings>
-								</Image>
-							</Border>
-						</StackPanel>
+                            <controls:InlineGradientPairCurveEditor
+			                    x:Name="CollectionCurveEditor"
+			                    Value="{Binding Value, Mode=TwoWay}"
+                                IsEnabled="True">
+                               
+                            </controls:InlineGradientPairCurveEditor>
+                        </StackPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</controls:CollectionView>
@@ -58,5 +55,17 @@
 			</WrapPanel>
 		</StackPanel>
 	</DataTemplate>
+
+    <!--<Border BorderThickness="1" BorderBrush="#888888" Margin="10 0 0 0">
+        <Image input:DragDropTargetType.TargetType="Curve"  Source="{Binding Value.Curve, Converter={StaticResource CurveToImageConverter}}" 
+									   Height="25" Width="25" Focusable="True"
+									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.Curve.LibraryReferenceName}">
+            <Image.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+						              CommandParameter="{Binding}" />
+            </Image.InputBindings>
+        </Image>
+    </Border>-->
+
 
 </ResourceDictionary>

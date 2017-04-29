@@ -15,6 +15,11 @@
 	<converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
     <converters:DoubleToIntConverter x:Key="DoubleToIntConverter" />
 	<converters:CurveToImageConverter x:Key="CurveToImageConverter" />
+    <converters:CurveToDoubleConverter x:Key="CurveToDoubleConverter" />
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
 	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter" />
 	<converters:DebugConverter x:Key="DebugConverter" />
+    <converters:WidthToVisibilityConverter x:Key="WidthToVisibilityConverter"/>
+    <converters:AdditionConverter x:Key="AdditionConverter"/>
+    <converters:ToolTipVisibilityConverter x:Key="ToolTipVisibilityConverter"/>
 </ResourceDictionary>

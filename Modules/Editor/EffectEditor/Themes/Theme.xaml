@@ -9,7 +9,7 @@
   
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-	<Style TargetType="ToolTip">
+    <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
 		<Setter Property="OverridesDefaultStyle" Value="True"/>
 		<Setter Property="Foreground" Value="#DDD"/>
 		<Setter Property="Template">
