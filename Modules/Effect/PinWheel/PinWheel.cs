@@ -180,36 +180,18 @@ namespace VixenModules.Effect.PinWheel
 			}
 		}
 
-		//[Value]
-		//[ProviderCategory(@"Config", 1)]
-		//[ProviderDisplayName(@"Center Start")]
-		//[ProviderDescription(@"Center Start")]
-		//[PropertyEditor("SliderEditor")]
-		//[NumberRange(0, 100, 1)]
-		//[PropertyOrder(8)]
-		//public int CenterStart
-		//{
-		//	get { return _data.CenterStart; }
-		//	set
-		//	{
-		//		_data.CenterStart = value;
-		//		IsDirty = true;
-		//		OnPropertyChanged();
-		//	}
-		//}
-
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Center Start")]
-		[ProviderDescription(@"Center Start")]
+		[ProviderDisplayName(@"Center Hub")]
+		[ProviderDescription(@"CenterHub")]
 		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(8)]
-		public Curve CenterStartCurve
+		public Curve CenterHubCurve
 		{
-			get { return _data.CenterStartCurve; }
+			get { return _data.CenterHubCurve; }
 			set
 			{
-				_data.CenterStartCurve = value;
+				_data.CenterHubCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -479,7 +461,7 @@ namespace VixenModules.Effect.PinWheel
 
 		private double CalculateCenterStartPct(double intervalPos)
 		{
-			var value = CenterStartCurve.GetValue(intervalPos);
+			var value = CenterHubCurve.GetValue(intervalPos);
 			if (value < 1) value = 1;
 
 			return value/100.0;

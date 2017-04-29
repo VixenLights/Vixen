@@ -26,7 +26,7 @@ namespace VixenModules.Effect.PinWheel
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			CenterStart = 0;
-			CenterStartCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			CenterHubCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PinWheel3D = false;
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
@@ -61,7 +61,7 @@ namespace VixenModules.Effect.PinWheel
 		public int CenterStart { get; set; }
 
 		[DataMember]
-		public Curve CenterStartCurve { get; set; }
+		public Curve CenterHubCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int Twist { get; set; }
@@ -147,10 +147,10 @@ namespace VixenModules.Effect.PinWheel
 					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					YOffset = 0;
 				}
-				if (CenterStartCurve == null)
+				if (CenterHubCurve == null)
 				{
 					value = PixelEffectBase.ScaleValueToCurve(Size, 100, 0);
-					CenterStartCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					CenterHubCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					CenterStart = 0;
 				}
 			}
@@ -171,7 +171,7 @@ namespace VixenModules.Effect.PinWheel
 				Arms = Arms,
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
-				CenterStartCurve = new Curve(CenterStartCurve),
+				CenterHubCurve = new Curve(CenterHubCurve),
 				TwistCurve = new Curve(TwistCurve),
 				ThicknessCurve = new Curve(ThicknessCurve),
 				Rotation = Rotation,
