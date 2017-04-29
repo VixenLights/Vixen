@@ -387,4 +387,10 @@
   <data name="AlternatingDepth" xml:space="preserve">
     <value>Controls whether each individual element is alternated independantly or controlled by the depth of the effect.</value>
   </data>
+  <data name="CenterHub" xml:space="preserve">
+    <value>Configures the size of the hub or hole in the center of the Pinwheel.</value>
+  </data>
+  <data name="Twist" xml:space="preserve">
+    <value>Configures the amount of rotation or twist the Pinwheel arm has.</value>
+  </data>
 </root>

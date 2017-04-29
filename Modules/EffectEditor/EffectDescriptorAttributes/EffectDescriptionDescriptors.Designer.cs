@@ -143,6 +143,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configures the size of the hub or hole in the center of the Pinwheel..
+        /// </summary>
+        internal static string CenterHub {
+            get {
+                return ResourceManager.GetString("CenterHub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moves the text into view and stops it in the center..
         /// </summary>
         internal static string CenterStop {
@@ -796,6 +805,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TwinklePulseTimeVariation {
             get {
                 return ResourceManager.GetString("TwinklePulseTimeVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configures the amount of rotation or twist the Pinwheel arm has..
+        /// </summary>
+        internal static string Twist {
+            get {
+                return ResourceManager.GetString("Twist", resourceCulture);
             }
         }
         

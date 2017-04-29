@@ -20,12 +20,12 @@ namespace VixenModules.Effect.PinWheel
 		private PinWheelData _data;
 		private static readonly Random Random = new Random();
 		private List<ColorGradient> _newColors = new List<ColorGradient>();
-		private const double Pi180 = (Math.PI / 180);
-
+		
 		public PinWheel()
 		{
 			_data = new PinWheelData();
 			EnableTargetPositioning(true, true);
+			UpdateAttributes();
 		}
 
 		public override bool IsDirty
@@ -62,17 +62,16 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Iterations")]
-		[ProviderDescription(@"Iterations")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 50, 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		//[NumberRange(1, 50, 1)]
 		[PropertyOrder(0)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -100,15 +99,14 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Thickness")]
 		[ProviderDescription(@"Thickness")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)] Keep for range reference
 		[PropertyOrder(2)]
-		public int Thickness
+		public Curve ThicknessCurve
 		{
-			get { return _data.Thickness; }
+			get { return _data.ThicknessCurve; }
 			set
 			{
-				_data.Thickness = value;
+				_data.ThicknessCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -118,15 +116,14 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Size")]
 		[ProviderDescription(@"Size")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 400, 1)]
+		//[NumberRange(1, 400, 1)]
 		[PropertyOrder(3)]
-		public int Size
+		public Curve SizeCurve
 		{
-			get { return _data.Size; }
+			get { return _data.SizeCurve; }
 			set
 			{
-				_data.Size = value;
+				_data.SizeCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -136,33 +133,31 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Twist")]
 		[ProviderDescription(@"Twist")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-500, 500, 1)]
-		[PropertyOrder(4)]
-		public int Twist
+		//[NumberRange(-500, 500, 1)] Keep for range reference
+		[PropertyOrder(5)]
+		public Curve TwistCurve
 		{
-			get { return _data.Twist; }
+			get { return _data.TwistCurve; }
 			set
 			{
-				_data.Twist = value;
+				_data.TwistCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
-		[PropertyOrder(5)]
-		public int XOffset
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(6)]
+		public Curve XOffsetCurve
 		{
-			get { return _data.XOffset; }
+			get { return _data.XOffsetCurve; }
 			set
 			{
-				_data.XOffset = value;
+				_data.XOffsetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -172,15 +167,14 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
-		[PropertyOrder(6)]
-		public int YOffset
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(7)]
+		public Curve YOffsetCurve
 		{
-			get { return _data.YOffset; }
+			get { return _data.YOffsetCurve; }
 			set
 			{
-				_data.YOffset = value;
+				_data.YOffsetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -188,17 +182,16 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Center Start")]
-		[ProviderDescription(@"Center Start")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
-		[PropertyOrder(7)]
-		public int CenterStart
+		[ProviderDisplayName(@"Center Hub")]
+		[ProviderDescription(@"CenterHub")]
+		//[NumberRange(0, 100, 1)]
+		[PropertyOrder(8)]
+		public Curve CenterHubCurve
 		{
-			get { return _data.CenterStart; }
+			get { return _data.CenterHubCurve; }
 			set
 			{
-				_data.CenterStart = value;
+				_data.CenterHubCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -208,7 +201,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"Direction")]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public RotationType Rotation
 		{
 			get { return _data.Rotation; }
@@ -281,6 +274,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Brightness", 3)]
 		[ProviderDisplayName(@"Overall Brightness")]
 		[ProviderDescription(@"Overall Brightness")]
+		[NumberRange(0, 100, 1)]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
@@ -298,6 +292,7 @@ namespace VixenModules.Effect.PinWheel
 		private void UpdateAttributes()
 		{
 			UpdateColorAttribute(false);
+			UpdateStringOrientationAttributes(true);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -313,6 +308,20 @@ namespace VixenModules.Effect.PinWheel
 				TypeDescriptor.Refresh(this);
 			}
 		}
+		#endregion
+
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/pinwheel/"; }
+		}
+
 		#endregion
 
 		public override IModuleDataModel ModuleData
@@ -354,29 +363,34 @@ namespace VixenModules.Effect.PinWheel
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-
-			var origin = new Point(BufferWi / 2 + BufferWiOffset + XOffset, BufferHt / 2 + BufferHtOffset + YOffset);
-
-			var xc = DistanceFromCenter(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
-
 			int degreesPerArm = 1;
 			if (Arms > 0) degreesPerArm = 360 / Arms;
-			float armsize = (float)(Size / 100.0);
 			
-			double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
-			var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			double pos = intervalPos * CalculateSpeed(intervalPosFactor) * GetNumberFrames();
+			var overallLevel = LevelCurve.GetValue(intervalPosFactor) / 100;
+
+			int currentTwist = CalculateTwist(intervalPosFactor);
 
 			var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
+			float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
+
+			var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
+
+			var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 			var maxRadius = xc * armsize;
 
-			var angleRange = Thickness / 100.0f * degreesPerArm / 2.0f;
+			var angleRange = CalculateThickness(intervalPosFactor) / 100.0f * degreesPerArm / 2.0f;
+
+			var centerStartPct = CalculateCenterStartPct(intervalPosFactor);
 
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
 				{
-					RenderPoint(frameBuffer, x, y, origin, maxRadius, arms, angleRange, overallLevel, true);
+					RenderPoint(frameBuffer,currentTwist,  x, y, origin, maxRadius, arms, angleRange, overallLevel, true, centerStartPct);
 				}
 			}
 			
@@ -384,32 +398,90 @@ namespace VixenModules.Effect.PinWheel
 		
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			var origin = new Point(BufferWi/2+BufferWiOffset + XOffset, BufferHt / 2 + BufferHtOffset + YOffset);
-
-			var xc = DistanceFromCenter(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
-
 			int degreesPerArm = 1;
 			if (Arms > 0) degreesPerArm = 360 / Arms;
-			float armsize = (float)(Size / 100.0);
-
+			
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
-				double pos = (GetEffectTimeIntervalPosition(frame) * Speed * 360);
-				var overallLevel = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				var intervalPos = GetEffectTimeIntervalPosition(frame);
+
+				var intervalPosFactor = intervalPos * 100;
+
+				double pos = intervalPos * CalculateSpeed(intervalPosFactor) * GetNumberFrames();
+				var overallLevel = LevelCurve.GetValue(intervalPosFactor) / 100;
+
+				int currentTwist = CalculateTwist(intervalPosFactor);
 
 				var arms = CreateArms(degreesPerArm, pos, frame, overallLevel);
 
+				float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
+
+				var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
+
+				var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+
 				var maxRadius = xc * armsize;
 
-				var angleRange = Thickness / 100.0f * degreesPerArm / 2.0f;
+				var angleRange = CalculateThickness(intervalPosFactor) / 100.0f * degreesPerArm / 2.0f;
+
+				var centerStartPct = CalculateCenterStartPct(intervalPosFactor);
 
 				foreach (var elementLocation in frameBuffer.ElementLocations)
 				{
-					RenderPoint(frameBuffer, elementLocation.X, elementLocation.Y, origin, maxRadius, arms, angleRange, overallLevel, false);			
+					RenderPoint(frameBuffer, currentTwist, elementLocation.X, elementLocation.Y, origin, maxRadius, arms, angleRange, overallLevel, false, centerStartPct);			
 				}
 			}			
 		}
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 50, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateSize(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPos), 400, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateTwist(double intervalPos)
+		{
+			return (int) ScaleCurveToValue(TwistCurve.GetValue(intervalPos), 500, -500);
+		}
+
+		private int CalculateThickness(double intervalPos)
+		{
+			var value = ThicknessCurve.GetIntValue(intervalPos);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private double CalculateCenterStartPct(double intervalPos)
+		{
+			var value = CenterHubCurve.GetValue(intervalPos);
+			if (value < 1) value = 1;
+
+			return value/100.0;
+		}
+
+
 
 		private List<Tuple<int, HSV>> CreateArms(int degreesPerArm, double pos, int frame, double overallLevel)
 		{
@@ -429,16 +501,16 @@ namespace VixenModules.Effect.PinWheel
 			return arms;
 		}
 
-		private void RenderPoint(IPixelFrameBuffer frameBuffer, int x, int y, Point origin, double maxRadius, List<Tuple<int, HSV>> arms, double angleRange, double overallLevel, bool invertY )
+		private void RenderPoint(IPixelFrameBuffer frameBuffer, int twist, int x, int y, Point origin, double maxRadius, List<Tuple<int, HSV>> arms, double angleRange, double overallLevel, bool invertY, double centerStartPct)
 		{
-			var radius = DistanceFromCenter(origin, x, y);
-			if (radius > maxRadius || radius <= CenterStart)
+			var radius = DistanceFromPoint(origin, x, y);
+			if (radius > maxRadius || radius <= (centerStartPct*maxRadius))
 			{
 				return;
 			}
 			var angle = GetAngleDegree(origin, x, y);
 
-			int degreesTwist = (int)(radius / maxRadius * Twist);
+			int degreesTwist = (int)(radius / maxRadius * twist);
 
 			for (int i = 0; i < arms.Count; i++)
 			{
@@ -508,53 +580,6 @@ namespace VixenModules.Effect.PinWheel
 			return hsv;
 		}
 
-
-		private static bool IsAngleBetween(double a, double b, double n)
-		{
-			n = (360 + (n % 360)) % 360;
-			a = (3600000 + a) % 360;
-			b = (3600000 + b) % 360;
-
-			if (a < b)
-			{
-				return a <= n && n <= b;
-			}
-			return a <= n || n <= b;
-		
-		}
-
-		private static double DegreesDiffernce(double angle1, double angle2)
-		{
-			return Math.Min(360 - Math.Abs(angle1 - angle2), Math.Abs(angle1 - angle2));
-		}
-
-		private static double GetAngleDegree(Point origin, int x, int y)
-		{
-			var n = 270 - (Math.Atan2(origin.Y - y, origin.X - x)) * 180 / Math.PI;
-			return n % 360;
-		}
-
-		private static double DistanceFromCenter(Point origin, int x, int y)
-		{
-			return Math.Sqrt(Math.Pow((x - origin.X), 2) + Math.Pow((y - origin.Y), 2));
-		}
-
-		private static double DistanceFromCenter(Point origin, Point point)
-		{
-			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
-		}
-
-		private static double AddDegrees(double angle, double degrees)
-		{
-			var newAngle = (angle + degrees) % 360;
-			if (newAngle < 0)
-			{
-				newAngle += 360;
-			}
-
-			return newAngle;
-		}
-		
 		private static double Rand()
 		{
 			return Random.NextDouble();

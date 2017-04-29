@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using ZedGraph;
 
 namespace VixenModules.Effect.PinWheel
 {
@@ -16,15 +17,16 @@ namespace VixenModules.Effect.PinWheel
 		{
 			Colors = new List<GradientLevelPair> { new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100), new GradientLevelPair(Color.Blue, CurveType.Flat100) };
 			ColorType = PinWheelColorType.Standard;
-			Speed = 1;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
 			Arms = 8;
-			Twist = 60;
+			TwistCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 56.0, 56.0 }));
+			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
 			Rotation = RotationType.Forward;
-			Size = 90;
-			Thickness = 15;
-			XOffset = 0;
-			YOffset = 0;
+			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			CenterStart = 0;
+			CenterHubCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PinWheel3D = false;
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
@@ -37,29 +39,50 @@ namespace VixenModules.Effect.PinWheel
 		[DataMember]
 		public PinWheelColorType ColorType { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
 
 		[DataMember]
+		public Curve SpeedCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int XOffset { get; set; }
 
 		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int YOffset { get; set; }
 
 		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int CenterStart { get; set; }
 
 		[DataMember]
+		public Curve CenterHubCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int Twist { get; set; }
+
+		[DataMember]
+		public Curve TwistCurve { get; set; }
 
 		[DataMember]
 		public int Arms { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Thickness { get; set; }
 
 		[DataMember]
+		public Curve ThicknessCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int Size { get; set; }
+
+		[DataMember]
+		public Curve SizeCurve { get; set; }
 
 		[DataMember]
 		public RotationType Rotation { get; set; }
@@ -84,6 +107,55 @@ namespace VixenModules.Effect.PinWheel
 				PinWheelBladeType = PinWheelBladeType.ThreeD;
 				PinWheel3D = false;
 			}
+
+
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (TwistCurve == null) 
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(Twist, 500d, -500d);
+				TwistCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				Twist = 0;
+
+				if (ThicknessCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Twist, 100, 1);
+					ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					Thickness = 0;
+				}
+				if (SizeCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Size, 400, 1);
+					SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					Size = 0;
+				}
+				if (SpeedCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Size, 50, 1);
+					SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					Speed = 0;
+				}
+				if (XOffsetCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Size, 100, -100);
+					XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					XOffset = 0;
+				}
+				if (YOffsetCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Size, 100, -100);
+					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					YOffset = 0;
+				}
+				if (CenterHubCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Size, 100, 0);
+					CenterHubCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					CenterStart = 0;
+				}
+			}
+			
+
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -93,17 +165,17 @@ namespace VixenModules.Effect.PinWheel
 			{
 				Colors = gradientLevelList,
 				ColorType = ColorType,
-				Speed = Speed,
+				SpeedCurve = new Curve(SpeedCurve),
 				PinWheel3D = PinWheel3D,
 				Orientation = Orientation,
 				Arms = Arms,
-				YOffset = YOffset,
-				XOffset = XOffset,
-				CenterStart = CenterStart,
-				Twist = Twist,
-				Thickness = Thickness,
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve),
+				CenterHubCurve = new Curve(CenterHubCurve),
+				TwistCurve = new Curve(TwistCurve),
+				ThicknessCurve = new Curve(ThicknessCurve),
 				Rotation = Rotation,
-				Size = Size,
+				SizeCurve = new Curve(SizeCurve),
 				LevelCurve = new Curve(LevelCurve),
 				PinWheelBladeType = PinWheelBladeType
 			};
