@@ -19,11 +19,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		
 		private Background _background;
 		private const float Fov = .45f;
-		private const float FarDistance = 10000f;
-		private const float NearDistance = .1f;
+		private const float FarDistance = 7000f;
+		private const float NearDistance = 1f;
 		private bool _mouseDown;
 		private int _prevX, _prevY;
 		private Camera _camera;
+		private bool _needsUpdate = true;
 
 		public OpenGlPreviewForm(VixenPreviewData data)
 		{
@@ -74,6 +75,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			GL.Enable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.PointSprite);
 			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 			GL.Enable(EnableCap.ProgramPointSize);
 		}
 
@@ -98,12 +100,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			else
 			{
-				Width = _width;
-				Height = _height;
+				ClientSize = new Size(_width, _height);
 			}
 
 			// create our camera
-			_camera = new Camera(new Vector3(ClientSize.Width / 2f, ClientSize.Height / 2f, Width), Quaternion.Identity);
+			_camera = new Camera(new Vector3(ClientSize.Width / 2f, ClientSize.Height / 2f, ClientSize.Width), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
 
 			Logging.Info("OpenGL v {0}", GL.GetString(StringName.Version));
@@ -131,6 +132,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (VixenSystem.Elements.ElementsHaveState)
 			{
 				OnRenderFrame();
+				_needsUpdate = true;
+			}
+			else
+			{
+				if (_needsUpdate)
+				{
+					OnRenderFrame();
+					_needsUpdate = false;
+				}
 			}
 		}
 
@@ -139,7 +149,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void glControl_Resize(object sender, EventArgs e)
 		{
 			if (glControl.ClientSize.Height == 0)
-				glControl.ClientSize = new Size(glControl.ClientSize.Width, 1);
+				glControl.ClientSize = new Size(glControl.ClientSize.Width, 100);
 
 			_width = glControl.ClientSize.Width;
 			_height = glControl.ClientSize.Height;
@@ -153,7 +163,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				int direction = 3;
 				if (e.KeyCode != Keys.O)
 				{
-					direction *= -1;
+					direction *= -5;
 				}
 
 				var distance = _camera.Position.Z + direction;
@@ -162,7 +172,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					return;
 				}
 
-				_camera.Move(new Vector3(0, 0, direction));
+				_camera.MoveRelative(new Vector3(0, 0, direction));
 				glControl.Invalidate();
 			}
 
@@ -171,15 +181,29 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void GlControl_MouseWheel(object sender, MouseEventArgs e)
 		{
-			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / 60;
+			int factor = 30;
+			if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+			{
+				factor = 10;
+			}
+			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / factor;
 
 			var distance = _camera.Position.Z + direction;
+			Console.Out.WriteLine(distance);
 			if (distance > FarDistance || distance < NearDistance)
 			{
 				return;
 			}
 
-			_camera.Move(new Vector3(0,0,direction));
+			var moveFactor = Math.Abs(distance) / _camera.Position.Z;
+			if (direction < 0)
+			{
+				moveFactor *= -1;
+			}
+			
+			_camera.MoveRelative(new Vector3(0,0, direction));
+			//_camera.Move(new Vector3(moveFactor, moveFactor, 0f));
+
 			glControl.Invalidate();
 		}
 
@@ -204,8 +228,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			else if(_mouseDown && e.Button == MouseButtons.Left)
 			{
-				float yaw = (_prevX - e.X) * 0.5f;
-				float pitch = (_prevY - e.Y) * 0.5f;
+				
+				var moveFactor = (_camera.Position.Z / FarDistance) * 3;
+				float yaw = (_prevX - e.X) * moveFactor;
+				float pitch = (_prevY - e.Y) * moveFactor;
 				_camera.Move(new Vector3(yaw, -pitch, 0f));
 				
 				_prevX = e.X;
@@ -254,7 +280,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private Matrix4 CreatePerspective(int width, int height)
 		{
-			var perspective = Matrix4.CreatePerspectiveFieldOfView(Fov, (float)width / height, NearDistance, FarDistance);
+			var perspective = Matrix4.CreatePerspectiveFieldOfView(Fov, (float)width / height, 1f, 7500f);
 			return perspective;
 		}
 
@@ -292,7 +318,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_program.Use();
 
 			_program["mvp"].SetValue(mvp);
-			_program["cameraPosition"].SetValue(_camera.Position);
+			//_program["cameraPosition"].SetValue(_camera.Position);
 		
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
@@ -307,30 +333,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		in vec4 vertexColor;
 		
 		out vec4 color;
+		out float pSize;
 
 		uniform float pointSize;
 		uniform mat4 mvp;
-		uniform vec3 cameraPosition; 
-
-		const float minPointScale = 0.1;
-		const float maxPointScale = 1;
-		const float maxDistance   = 10000.0;
-
+		
 		void main(void)
 		{
 			color = vertexColor;
+			gl_PointSize = pointSize;
+			pSize = pointSize; //pass through
 			
 			gl_Position = mvp * vec4(vertexPosition, 1);
-
-			// Calculate point scale based on distance from the viewer
-			// to compensate for the fact that gl_PointSize is the point
-			// size in rasterized points / pixels.
-			float cameraDist = distance(vertexPosition.xyz, cameraPosition);
-			float pointScale = 1 - (cameraDist / maxDistance);
-			pointScale = max(pointScale, minPointScale);
-			//pointScale = min(pointScale, maxPointScale);
-
-			gl_PointSize = pointSize * pointScale;
 		}
 		";
 		
@@ -338,16 +352,20 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		#version 330
 
 		in vec4 color;
+		in float pSize;
 		out vec4 gl_FragColor;
 
 		void main(void)
 		{
-
-		    vec2 circCoord = 2.0 * gl_PointCoord - 1.0;
-			if (dot(circCoord, circCoord) > 1)
+			if(pSize > 1) //We only need to round points that are bigger than 1
 			{
-				discard;
+				vec2 circCoord = 2.0 * gl_PointCoord - 1.0;
+				if (dot(circCoord, circCoord) > 1)
+				{
+					discard;
+				}
 			}
+
 			gl_FragColor = color;
 
 		}

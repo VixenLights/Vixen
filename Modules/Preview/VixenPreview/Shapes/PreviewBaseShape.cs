@@ -618,36 +618,27 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		
 		public void Draw(ShaderProgram program, int referenceHeight)
 		{
-			List<float> p = new List<float>();
-			int pointCount = 0;
-			foreach (PreviewPixel previewPixel in Pixels)
-			{
-				if (previewPixel.Node == null || previewPixel.Node.Element == null)
-				{
-					//Figure out why thses are null!!!!!!!!!!!
-					continue;
-				}
-				var state = previewPixel.Node.Element.State;
-				if (state.Count > 0)
-				{
-					Color c = previewPixel.GetFullColor(state);
-					if (!(Color.Empty == c) && c.A > 0)
-					{
-						p.Add(previewPixel.X);
-						p.Add(referenceHeight - previewPixel.Y);
-						p.Add(previewPixel.Z);
-						p.Add(c.R/255f);
-						p.Add(c.G/255f);
-						p.Add(c.B/255f);
-						p.Add(c.A/255f);
-						pointCount++;
-					}
-				}
-			}
 
+			int pointCount = 0;
+			List<float> p;
+
+			if (StringType == StringTypes.Pixel)
+			{
+				var fullColorPoints = CreateFullColorPoints(referenceHeight);
+				pointCount = fullColorPoints.Item1;
+				p = fullColorPoints.Item2;
+
+			}
+			else
+			{
+				var discreteColorPoints = CreateDiscreteColorPoints(referenceHeight);
+				pointCount = discreteColorPoints.Item1;
+				p = discreteColorPoints.Item2;
+			}
+			
 			if (pointCount == 0) return;
 
-			program["pointSize"].SetValue((float)PixelSize);
+			program["pointSize"].SetValue((float)PixelSize);//>1?PixelSize:2
 			VBO<float> points = new VBO<float>(p.ToArray());
 
 			GlUtility.BindBuffer(points);
@@ -661,6 +652,95 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			GL.DrawArrays(PrimitiveType.Points, 0, pointCount);
 
 			points.Dispose();
+		}
+
+		private Tuple<int, List<float>> CreateDiscreteColorPoints(int referenceHeight)
+		{
+			//All points are the same in standard discrete 
+			List<float> p = new List<float>();
+			int pointCount = 0;
+
+			var previewPixel = Pixels.FirstOrDefault();
+			if (previewPixel==null || (previewPixel.Node == null || previewPixel.Node.Element == null))
+			{
+				//Figure out why thses are null!!!!!!!!!!!
+				return new Tuple<int, List<float>>(pointCount,p);
+			}
+
+			var state = previewPixel.Node.Element.State;
+
+			if (state.Count > 0)
+			{
+				List<Color> colors = previewPixel.GetDiscreteColors(state);
+
+				foreach (var pixel in Pixels)
+				{
+					int col = 1;
+					Point xy = new Point(pixel.X, pixel.Y);
+					foreach (Color c in colors)
+					{
+						if (c != Color.Transparent && c.A > byte.MinValue)
+						{
+							p.Add(xy.X);
+							p.Add(referenceHeight - xy.Y);
+							p.Add(pixel.Z);
+							p.Add(c.R / 255f);
+							p.Add(c.G / 255f);
+							p.Add(c.B / 255f);
+							p.Add(c.A / 255f);
+							pointCount++;
+
+							if (col % 2 == 0)
+							{
+								xy.Y += PixelSize;
+								xy.X = xy.X;
+							}
+							else
+							{
+								xy.X = xy.X + PixelSize;
+							}
+
+							col++;
+						}
+					}
+				}
+			}
+			return new Tuple<int, List<float>>(pointCount, p);
+			
+		}
+
+		private Tuple<int, List<float>> CreateFullColorPoints(int referenceHeight)
+		{
+			List<float> p = new List<float>();
+			int pointCount = 0;
+			foreach (PreviewPixel previewPixel in Pixels)
+			{
+				if (previewPixel.Node == null || previewPixel.Node.Element == null)
+				{
+					//Figure out why thses are null!!!!!!!!!!!
+					continue;
+				}
+
+				var state = previewPixel.Node.Element.State;
+
+				if (state.Count > 0)
+				{
+					Color c = previewPixel.GetFullColor(state);
+					if (!(Color.Empty == c) && c.A > 0)
+					{
+						p.Add(previewPixel.X);
+						p.Add(referenceHeight - previewPixel.Y);
+						p.Add(previewPixel.Z);
+						p.Add(c.R / 255f);
+						p.Add(c.G / 255f);
+						p.Add(c.B / 255f);
+						p.Add(c.A / 255f);
+						pointCount++;
+					}
+				}
+			}
+
+			return new Tuple<int, List<float>>(pointCount,p);
 		}
 
 		protected void Dispose(bool disposing)
