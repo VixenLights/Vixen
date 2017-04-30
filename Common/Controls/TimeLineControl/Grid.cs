@@ -2116,10 +2116,11 @@ namespace Common.Controls.Timeline
 			_RenderProgressChanged(e.ProgressPercentage);
 		}
 
-		private int _renderQueueSize = 0;
+		private long _renderQueueSize = 0;
+		private long _processed = 0;
 
-        //This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
-        //from it.
+		//This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
+		//from it.
 		private void renderWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			BackgroundWorker worker = sender as BackgroundWorker;
@@ -2130,18 +2131,17 @@ namespace Common.Controls.Timeline
             CancellationTokenSource cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.CancellationToken = cts.Token;
-            //po.MaxDegreeOfParallelism = Environment.ProcessorCount;
-
-			long processed = 0;
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+			
 			try
 		    {
 		        if (_blockingElementQueue != null)
 		        {
                     //Use or fancy multi cpu boxes more effectively.
-		            foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) 
-		            //Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
+		            //foreach (Element element in _blockingElementQueue.GetConsumingEnumerable()) 
+		            Parallel.ForEach(_blockingElementQueue.GetConsumingPartitioner(), po, element =>
 		            {
-			            Interlocked.Increment(ref processed);
+			            
 		                // This will likely never be hit: the blocking element queue above will always block waiting for more
 		                // elements, until it completes because CompleteAdding() is called. At which point it will exit the loop,
 		                // as it will be empty, and this function will terminate normally.
@@ -2166,21 +2166,18 @@ namespace Common.Controls.Timeline
                             //in a task. Reporting progress from Tasks is not well supported until 4.5
                             //With the multi-threading the last element can be processed before the count is 
                             //fully updated
-							var progress = (int)(((float)(Interlocked.Read(ref processed)) / _renderQueueSize) * 100);
-							worker.ReportProgress(progress);
-			                if (_blockingElementQueue.Count == 0)
+			                lock (worker)
 			                {
-				                _renderQueueSize = 0;
-				                Interlocked.Exchange(ref processed, 0);
-				                worker.ReportProgress(100);
-			                }
-			               
-		                }
+								var progress = (int)((float)Interlocked.Increment(ref _processed) / _renderQueueSize * 100);
+								worker.ReportProgress(progress);
+							}
+						}
 		                catch (Exception ex)
 		                {
-		                    Logging.Error("Error in rendering.", ex);
+							worker.ReportProgress(100);
+							Logging.Error(ex, "Error in rendering.");
 		                }
-		            }//);
+		            });
 		        }
 		    }
 		    catch (OperationCanceledException ce)
@@ -2257,6 +2254,8 @@ namespace Common.Controls.Timeline
 				_blockingElementQueue.TryTake(out element);
 			}
 	        _renderQueueSize = 0;
+	        _processed = 0;
+			renderWorker.ReportProgress(100);
 			SupressRendering=false;
 			
         }
