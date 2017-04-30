@@ -119,7 +119,7 @@ namespace VixenModules.Effect.PinWheel
 
 				if (ThicknessCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(Twist, 100, 1);
+					value = PixelEffectBase.ScaleValueToCurve(Thickness, 100, 1);
 					ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					Thickness = 0;
 				}
@@ -131,25 +131,25 @@ namespace VixenModules.Effect.PinWheel
 				}
 				if (SpeedCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(Size, 50, 1);
+					value = PixelEffectBase.ScaleValueToCurve(Speed, 50, 1);
 					SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					Speed = 0;
 				}
 				if (XOffsetCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(Size, 100, -100);
+					value = PixelEffectBase.ScaleValueToCurve(XOffset, 100, -100);
 					XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					XOffset = 0;
 				}
 				if (YOffsetCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(Size, 100, -100);
+					value = PixelEffectBase.ScaleValueToCurve(YOffset, 100, -100);
 					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					YOffset = 0;
 				}
 				if (CenterHubCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(Size, 100, 0);
+					value = PixelEffectBase.ScaleValueToCurve(CenterStart, 100, 0);
 					CenterHubCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					CenterStart = 0;
 				}
