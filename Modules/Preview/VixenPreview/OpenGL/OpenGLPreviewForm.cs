@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using Common.Controls;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
@@ -14,12 +16,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		private static int _width = 1280, _height = 720;
+		private static float _focalDepth = 0;
+		private static float _aspectRatio;
 
 		private static ShaderProgram _program;
 		
 		private Background _background;
-		private const float Fov = .45f;
-		private const float FarDistance = 7000f;
+		private const double Fov = 45.0;
+		private const float FarDistance = 4000f;
 		private const float NearDistance = 1f;
 		private bool _mouseDown;
 		private int _prevX, _prevY;
@@ -103,9 +107,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				ClientSize = new Size(_width, _height);
 			}
 
+			_aspectRatio = (float)_width / _height;
+
+			_focalDepth = (float)( 1 / Math.Tan(ConvertToRadians(Fov / 2)) * (ClientSize.Height / 2.0));
+
 			// create our camera
-			_camera = new Camera(new Vector3(ClientSize.Width / 2f, ClientSize.Height / 2f, ClientSize.Width), Quaternion.Identity);
+			_camera = new Camera(new Vector3(ClientSize.Width / 2f, ClientSize.Height / 2f, _focalDepth), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
+
+			//RestoreWindowState();
 
 			Logging.Info("OpenGL v {0}", GL.GetString(StringName.Version));
 			Logging.Info("Vendor {0}, Renderer {1}", GL.GetString(StringName.Vendor), GL.GetString(StringName.Renderer));
@@ -154,6 +164,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_width = glControl.ClientSize.Width;
 			_height = glControl.ClientSize.Height;
 			glControl.Invalidate();
+			//SaveWindowState();
 		}
 
 		private void glControl_KeyDown(object sender, KeyEventArgs e)
@@ -195,15 +206,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				return;
 			}
 
-			var moveFactor = Math.Abs(distance) / _camera.Position.Z;
-			if (direction < 0)
-			{
-				moveFactor *= -1;
-			}
-			
 			_camera.MoveRelative(new Vector3(0,0, direction));
-			//_camera.Move(new Vector3(moveFactor, moveFactor, 0f));
-
+			
 			glControl.Invalidate();
 		}
 
@@ -275,12 +279,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private Matrix4 CreatePerspective()
 		{
-			return CreatePerspective(_width, _height);
-		}
-
-		private Matrix4 CreatePerspective(int width, int height)
-		{
-			var perspective = Matrix4.CreatePerspectiveFieldOfView(Fov, (float)width / height, 1f, 7500f);
+			var perspective = Matrix4.CreatePerspectiveFieldOfView((float)ConvertToRadians(Fov), _aspectRatio, 1f, 7500f);
 			return perspective;
 		}
 
@@ -318,12 +317,95 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_program.Use();
 
 			_program["mvp"].SetValue(mvp);
-			//_program["cameraPosition"].SetValue(_camera.Position);
+
+			float scale = _focalDepth / _camera.Position.Z;
+
+			var sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+
+			scale *= sizeScale;
+
+			scale = scale >= .1f ? scale : .1f;
+
+			Console.Out.WriteLine("Scale {0}", scale);
+			_program["pointScale"].SetValue(scale);
 		
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
 				dataDisplayItem.Shape.Draw(_program, _background.Height);
 			}
+		}
+
+		private double ConvertToRadians(double angle)
+		{
+			return angle * Math.PI / 180;
+		}
+
+		private void SaveWindowState()
+		{
+			XMLProfileSettings xml = new XMLProfileSettings();
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), glControl.ClientSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), glControl.ClientSize.Width);
+
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", Name), _camera.Position.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", Name), _camera.Position.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name), _camera.Position.Z);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
+		}
+
+		private void RestoreWindowState()
+		{
+			WindowState = FormWindowState.Normal;
+			StartPosition = FormStartPosition.WindowsDefaultBounds;
+			XMLProfileSettings xml = new XMLProfileSettings();
+
+			var desktopBounds =
+				new Rectangle(
+					new Point(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
+					new Size(
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), glControl.ClientSize.Width),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), glControl.ClientSize.Height)));
+
+			if (desktopBounds.Width > 50 && desktopBounds.Height > 50)
+			{
+				if (IsVisibleOnAnyScreen(desktopBounds))
+				{
+					StartPosition = FormStartPosition.Manual;
+					DesktopBounds = desktopBounds;
+
+					if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal").Equals("Maximized"))
+					{
+						WindowState = FormWindowState.Maximized;
+					}
+				}
+				else
+				{
+					// this resets the upper left corner of the window to windows standards
+					StartPosition = FormStartPosition.WindowsDefaultLocation;
+
+					// we can still apply the saved size
+					Size = new Size(desktopBounds.Width, desktopBounds.Height);
+				}
+			}
+
+			ClientSize = new Size(desktopBounds.Width, desktopBounds.Height);
+
+			_camera.Position = new Vector3(
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", Name),
+					_camera.Position.X),
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", Name),
+					_camera.Position.Y),
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name),
+					_camera.Position.Z));
+
+		}
+
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 		public static string VertexShader = @"
@@ -336,15 +418,24 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		out float pSize;
 
 		uniform float pointSize;
+		uniform float pointScale;
 		uniform mat4 mvp;
-		
+
 		void main(void)
 		{
 			color = vertexColor;
-			gl_PointSize = pointSize;
-			pSize = pointSize; //pass through
-			
+
 			gl_Position = mvp * vec4(vertexPosition, 1);
+
+			gl_PointSize = pointSize * pointScale;
+			
+			if(pointSize < 1)
+			{
+				gl_PointSize = 1;
+			}
+			
+			pSize = gl_PointSize; //pass through
+			
 		}
 		";
 		

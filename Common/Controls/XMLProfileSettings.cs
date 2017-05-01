@@ -52,6 +52,11 @@ namespace Common.Controls
 			PutSetting(type, xPath, Convert.ToString(value));
 		}
 
+		public void PutSetting(SettingType type, string xPath, double  value)
+		{
+			PutSetting(type, xPath, Convert.ToString(value));
+		}
+
 		public void PutSetting(SettingType type, string xPath, bool value)
 		{
 			PutSetting(type, xPath, Convert.ToString(value));
@@ -72,6 +77,11 @@ namespace Common.Controls
 		public int GetSetting(SettingType type, string xPath, int defaultValue)
 		{
 			return Convert.ToInt32(GetSetting(type, xPath, Convert.ToString(defaultValue)));
+		}
+
+		public float GetSetting(SettingType type, string xPath, float defaultValue)
+		{
+			return (float)Convert.ToDouble(GetSetting(type, xPath, Convert.ToString(defaultValue)));
 		}
 
 		public bool GetSetting(SettingType type, string xPath, bool defaultValue)
