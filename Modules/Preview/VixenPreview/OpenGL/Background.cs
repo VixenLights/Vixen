@@ -12,6 +12,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 {
 	public class Background: IDrawable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private VixenPreviewData _data;
 		private Texture _backgroundTexture;
 		
@@ -79,8 +80,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			Width = i.Width;
 
 			_backgroundProgram.Use();
-			//_backgroundProgram["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(_fov, (float)_width / _height, 0.1f, 1000f));
-			float ratio = (float)Height / Width;
+
+			var log = _backgroundProgram.ProgramLog;
+			if (!string.IsNullOrWhiteSpace(log))
+			{
+				Logging.Info("Texture program log: {0}", log);
+			}
+
 			_backgroundProgram["model_matrix"].SetValue(   Matrix4.Identity);
 			SetBackgroundBrightness(_data.BackgroundAlpha / 255f);
 
@@ -123,7 +129,7 @@ uniform mat4 model_matrix;
 void main(void)
 {
     texCoord = textureCoord;
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
+    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition.xyz, 1);
 }
 ";
 
@@ -131,7 +137,7 @@ void main(void)
 		public static string FragmentTextureShader = @"
 #version 130
 
-uniform sampler2D texture;
+uniform sampler2D textureIn;
 uniform float ambientStrength;
 const vec3 lightColor = vec3(1,1,1);
 
@@ -141,12 +147,12 @@ out vec4 fragment;
 
 void main(void)
 {
-   	vec4 color = texture(texture, texCoord);
+   	vec4 color = texture(textureIn, texCoord);
 	
 	vec3 ambient = ambientStrength * lightColor;
 
     vec3 result = ambient * color;
-    fragment = vec4(result, 1.0f);
+    fragment = vec4(result.xyz, 1.0f);
 }
 ";
 

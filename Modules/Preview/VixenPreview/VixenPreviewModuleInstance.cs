@@ -60,9 +60,16 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				else
 				{
-					//displayForm = new VixenPreviewDisplayD2D();
-					displayForm = new OpenGlPreviewForm(GetDataModel());
-					//displayForm.Data = GetDataModel();
+					try
+					{
+						displayForm = new OpenGlPreviewForm(GetDataModel());
+					}
+					catch (Exception ex)
+					{
+
+						Logging.Error(ex, "An error occured trying to create the OpenGL Preview.");
+					}
+					
 				}
 
 				_displayForm.Setup();

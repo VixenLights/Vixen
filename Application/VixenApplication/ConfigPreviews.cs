@@ -203,12 +203,6 @@ namespace VixenApplication
 				var preview = listViewControllers.SelectedItems[0].Tag as OutputPreview;
 				if (preview != null)
 				{
-					var running = preview.IsRunning;
-					if (running)
-					{
-						preview.Stop();
-					}
-					preview.Setup();
 					if (running)
 					{
 						preview.Start();

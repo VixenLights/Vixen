@@ -11,6 +11,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 {
 	public class Shader : IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		#region Properties
 		/// <summary>
 		/// Specifies the OpenGL ShaderID.
@@ -48,6 +50,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 			this.ShaderID = GL.CreateShader(type);
 			GL.ShaderSource(ShaderID, source);
 			GL.CompileShader(ShaderID);
+
+			int status;
+			GL.GetShader(ShaderID, ShaderParameter.CompileStatus, out status);
+			if (status == 0)
+
+				Logging.Error("Error compiling shader: {0}", GL.GetShaderInfoLog(ShaderID));
 
 			GetParams(source);
 		}

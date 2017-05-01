@@ -7,6 +7,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 	public class ShaderProgram : IDisposable
 	{
 		#region Fields
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public static int VertexPosition = 0;
 
@@ -78,7 +79,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
 			GL.AttachShader(ProgramId, vertexShader.ShaderID);
 			GL.AttachShader(ProgramId, fragmentShader.ShaderID);
+
 			GL.LinkProgram(ProgramId);
+
+			int status;
+			GL.GetProgram(ProgramId, GetProgramParameterName.LinkStatus, out status);
+			if (status == 0)
+			{
+				Logging.Error("Error Linking Program: {0}", ProgramLog);
+			}
 
 			GetParams();
 		}
