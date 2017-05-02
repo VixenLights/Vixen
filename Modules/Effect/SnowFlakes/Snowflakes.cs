@@ -164,15 +164,14 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 60, 1)]
+//		[NumberRange(1, 60, 1)]
 		[PropertyOrder(7)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -180,19 +179,16 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Min Speed")]
-		[ProviderDescription(@"Min Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 60, 1)]
+		[ProviderDisplayName(@"CenterSpeed")]
+		[ProviderDescription(@"CenterSpeed")]
+//		[NumberRange(1, 60, 1)]
 		[PropertyOrder(8)]
-		public int MinSpeed
+		public Curve CenterSpeedCurve
 		{
-			get { return _data.MinSpeed; }
+			get { return _data.CenterSpeedCurve; }
 			set
 			{
-				if (MaxSpeed <= value)
-					value = MaxSpeed - 1; //Ensures MinSpeed is below MaxSpeed
-				_data.MinSpeed = value;
+				_data.CenterSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -200,19 +196,16 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Max Speed")]
-		[ProviderDescription(@"Max Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(2, 60, 1)]
+		[ProviderDisplayName(@"SpreadSpeed")]
+		[ProviderDescription(@"SpreadSpeed")]
+//		[NumberRange(2, 60, 1)]
 		[PropertyOrder(9)]
-		public int MaxSpeed
+		public Curve SpreadSpeedCurve
 		{
-			get { return _data.MaxSpeed; }
+			get { return _data.SpreadSpeedCurve; }
 			set
 			{
-				if (MinSpeed > value)
-					value = MinSpeed + 1;  //Ensures MaxSpeed is above MinSpeed
-				_data.MaxSpeed = value;
+				_data.SpreadSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -222,15 +215,14 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+	//	[NumberRange(1, 100, 1)]
 		[PropertyOrder(10)]
-		public int FlakeCount
+		public Curve FlakeCountCurve
 		{
-			get { return _data.FlakeCount; }
+			get { return _data.FlakeCountCurve; }
 			set
 			{
-				_data.FlakeCount = value;
+				_data.FlakeCountCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -337,9 +329,9 @@ namespace VixenModules.Effect.Snowflakes
 		private void UpdateRandomSpeedAttribute(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("Speed", !RandomSpeed);
-			propertyStates.Add("MaxSpeed", RandomSpeed);
-			propertyStates.Add("MinSpeed", RandomSpeed);
+			propertyStates.Add("SpeedCurve", !RandomSpeed);
+			propertyStates.Add("MaxSpeedCurve", RandomSpeed);
+			propertyStates.Add("MinSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -417,14 +409,25 @@ namespace VixenModules.Effect.Snowflakes
 			int colorcntInside = InnerColor.Count;
 			int minDirection = 1;
 			int maxDirection = 360;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
 
 			// create new SnowFlakes and maintain maximum number as per users selection.
+			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor);
 
-			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < FlakeCount ? 1 : FlakeCount;
+			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
+			var spreadSpeed = CalculateSpreadSpeed(intervalPosFactor);
+			var minSpeed = centerSpeed - (spreadSpeed / 2);
+			var maxSpeed = centerSpeed + (spreadSpeed / 2);
+			if (minSpeed < 1)
+				minSpeed = 1;
+			if (maxSpeed > 60)
+				maxSpeed = 60;
+			
 			for (int i = 0; i < flakeCount; i++)
 			{
-				double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed) / 5 : (double)Speed / 5;
-				if (_snowFlakes.Count >= FlakeCount) continue;
+				double position = RandomSpeed ? (double)_random.Next(minSpeed, maxSpeed) / 5 : (double)CalculateSpeed(intervalPosFactor) / 5;
+				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor)) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
@@ -493,17 +496,17 @@ namespace VixenModules.Effect.Snowflakes
 				switch (ColorType)
 				{
 					case SnowflakeColorType.Range: //Random two colors are selected from the list for each SnowFlake and then the color range between them are used.
-						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)),
-								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)));
-						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)),
-								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)));
+						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100)),
+								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100)));
+						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100)),
+								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100)));
 						break;
 					case SnowflakeColorType.Palette: //All user colors are used
-						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100));
 						break;
 					default:
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100));
 					break;
 				}
 				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1; //Adds a random brightness to each Snowflake making it look more realistic
@@ -536,8 +539,8 @@ namespace VixenModules.Effect.Snowflakes
 					//Added the color and then adjusts brightness based on effect time position, randon Brightness and over all brightness level.
 					HSV hsvInner = snowFlakes.OuterHsv;
 					HSV hsvOuter = snowFlakes.InnerHsv;
-					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPos * 100) / 100;
+					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPos * 100) / 100;
 
 					if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
 					{
@@ -674,6 +677,38 @@ namespace VixenModules.Effect.Snowflakes
 			public bool Expired = false;
 			public SnowflakeType Type;
 			public double HsvBrightness;
+		}
+
+		private int CalculateCount(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(FlakeCountCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 60, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateSpreadSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpreadSpeedCurve.GetValue(intervalPos), 60, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateCenterSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 60, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
 		// generates a random number between Color num1 and and Color num2.
