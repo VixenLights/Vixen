@@ -196,20 +196,21 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			if (e.KeyCode == Keys.I || e.KeyCode == Keys.O)
 			{
-				int direction = 3;
-				if (e.KeyCode != Keys.O)
+				int factor = 30;
+				if ((ModifierKeys & Keys.Shift) == Keys.Shift)
 				{
-					direction *= -5;
+					factor = 10;
 				}
 
-				var distance = _camera.Position.Z + direction;
-				if (distance > FarDistance || distance < NearDistance)
+				int delta = 120;
+				if (e.KeyCode != Keys.I)
 				{
-					return;
+					delta = -delta;
 				}
 
-				_camera.MoveRelative(new Vector3(0, 0, direction));
-				glControl.Invalidate();
+				int direction = -(delta * SystemInformation.MouseWheelScrollLines / factor);
+
+				Zoom(direction);
 			}
 
 			
@@ -224,15 +225,20 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
+			Zoom(direction);
+		}
+
+		private void Zoom(int direction)
+		{
 			var distance = _camera.Position.Z + direction;
-			Console.Out.WriteLine(distance);
+
 			if (distance > FarDistance || distance < NearDistance)
 			{
 				return;
 			}
 
-			_camera.MoveRelative(new Vector3(0,0, direction));
-			
+			_camera.MoveRelative(new Vector3(0, 0, direction));
+
 			glControl.Invalidate();
 		}
 

@@ -24,7 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private List<float> _points = new List<float>();
 		public string _name;
-
+		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
 
@@ -73,6 +73,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{
+			
 			ResizePixels();
 		}
 
@@ -659,7 +660,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Logging.Debug("Created VBO.");
 
 			GlUtility.BindBuffer(points);
-<<<<<<< HEAD
 
 			//Logging.Debug("Buffer Bound.");
 			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
@@ -668,12 +668,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Logging.Debug("Point pointer set.");
 
 			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
-=======
-			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 7 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
-			GL.EnableVertexAttribArray(0);
-
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, 7 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
->>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			GL.EnableVertexAttribArray(1);
 
 			//Logging.Debug("Color pointer set.");
@@ -746,28 +740,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void CreateDiscreteColorPoints(int referenceHeight)
 		{
 			//All points are the same in standard discrete 
-<<<<<<< HEAD
 			var previewPixel = _pixelCache.First();
 			var state = previewPixel.Node.Element.State;
 			
-=======
-			List<float> p = new List<float>();
-			int pointCount = 0;
-
-			var previewPixel = Pixels.FirstOrDefault();
-			if (previewPixel==null || (previewPixel.Node == null || previewPixel.Node.Element == null))
-			{
-				//Figure out why thses are null!!!!!!!!!!!
-				return new Tuple<int, List<float>>(pointCount,p);
-			}
-
-			var state = previewPixel.Node.Element.State;
-
->>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			if (state.Count > 0)
 			{
 				List<Color> colors = previewPixel.GetDiscreteColors(state);
-
 				foreach (var pixel in Pixels)
 				{
 					int col = 1;
@@ -803,13 +781,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void CreateFullColorPoints(int referenceHeight)
 		{
-<<<<<<< HEAD
 			foreach (PreviewPixel previewPixel in _pixelCache)
-=======
-			List<float> p = new List<float>();
-			int pointCount = 0;
-			foreach (PreviewPixel previewPixel in Pixels)
->>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			{
 				var state = previewPixel.Node.Element.State;
 				
