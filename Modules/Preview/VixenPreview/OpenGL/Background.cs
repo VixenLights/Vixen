@@ -129,7 +129,7 @@ uniform mat4 model_matrix;
 void main(void)
 {
     texCoord = textureCoord;
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition.xyz, 1);
+    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
 }
 ";
 
@@ -151,33 +151,11 @@ void main(void)
 	
 	vec3 ambient = ambientStrength * lightColor;
 
-    vec3 result = ambient * color;
-    fragment = vec4(result.xyz, 1.0f);
+    vec3 result = ambient * color.rgb;
+    fragment = vec4(result, 1.0f);
 }
 ";
 
-
-//		public static string FragmentTextureShader = @"
-//#version 130
-
-//uniform sampler2D texture;
-//uniform float ambientStrength;
-//const vec3 lightColor = vec3(1,1,1);
-
-//in vec2 uv;
-
-//out vec4 fragment;
-
-//void main(void)
-//{
-//   	vec4 color = texture2D(texture, uv);
-	
-//	vec3 ambient = ambientStrength * lightColor;
-
-//    vec3 result = ambient * color;
-//    fragment = vec4(result, 1.0f);
-//}
-//";
 
 		public void Dispose()
 		{

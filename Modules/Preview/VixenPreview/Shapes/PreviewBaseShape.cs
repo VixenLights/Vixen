@@ -22,7 +22,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	public abstract class PreviewBaseShape : ICloneable, IDisposable
 	{
 		public string _name;
-
+		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
 
@@ -642,10 +642,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			VBO<float> points = new VBO<float>(p.ToArray());
 
 			GlUtility.BindBuffer(points);
-			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 7 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
 			GL.EnableVertexAttribArray(0);
 
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, 7 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(1);
 
 			// draw the points
@@ -657,22 +657,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private Tuple<int, List<float>> CreateDiscreteColorPoints(int referenceHeight)
 		{
 			//All points are the same in standard discrete 
-			List<float> p = new List<float>();
-			int pointCount = 0;
-
 			var previewPixel = Pixels.FirstOrDefault();
 			if (previewPixel==null || (previewPixel.Node == null || previewPixel.Node.Element == null))
 			{
 				//Figure out why thses are null!!!!!!!!!!!
-				return new Tuple<int, List<float>>(pointCount,p);
+				return new Tuple<int, List<float>>(0, new List<float>(0));
 			}
 
 			var state = previewPixel.Node.Element.State;
+			List<float> p = new List<float>(Pixels.Count * 7);
+			int pointCount = 0;
 
 			if (state.Count > 0)
 			{
 				List<Color> colors = previewPixel.GetDiscreteColors(state);
-
 				foreach (var pixel in Pixels)
 				{
 					int col = 1;
@@ -711,7 +709,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private Tuple<int, List<float>> CreateFullColorPoints(int referenceHeight)
 		{
-			List<float> p = new List<float>();
+			List<float> p = new List<float>(7 * Pixels.Count);
 			int pointCount = 0;
 			foreach (PreviewPixel previewPixel in Pixels)
 			{

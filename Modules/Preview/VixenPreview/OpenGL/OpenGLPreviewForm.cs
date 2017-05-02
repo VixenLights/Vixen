@@ -441,7 +441,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			color = vertexColor;
 
-			gl_Position = mvp * vec4(vertexPosition.xyz, 1);
+			gl_Position = mvp * vec4(vertexPosition, 1);
 
 			gl_PointSize = pointSize * pointScale;
 			
