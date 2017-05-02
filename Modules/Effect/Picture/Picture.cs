@@ -126,15 +126,14 @@ namespace VixenModules.Effect.Picture
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
+		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(4)]
-		public int XOffset
+		public Curve XOffsetCurve
 		{
-			get { return _data.XOffset; }
+			get { return _data.XOffsetCurve; }
 			set
 			{
-				_data.XOffset = value;
+				_data.XOffsetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -144,15 +143,14 @@ namespace VixenModules.Effect.Picture
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
+		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(5)]
-		public int YOffset
+		public Curve YOffsetCurve
 		{
-			get { return _data.YOffset; }
+			get { return _data.YOffsetCurve; }
 			set
 			{
-				_data.YOffset = value;
+				_data.YOffsetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -348,15 +346,14 @@ namespace VixenModules.Effect.Picture
 		[ProviderCategory(@"Brightness", 3)]
 		[ProviderDisplayName(@"Increase Brightness")]
 		[ProviderDescription(@"Increase Brightness")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(10, 100, 1)]
+		//[NumberRange(10, 100, 1)]
 		[PropertyOrder(1)]
-		public int IncreaseBrightness
+		public Curve IncreaseBrightnessCurve
 		{
-			get { return _data.IncreaseBrightness; }
+			get { return _data.IncreaseBrightnessCurve; }
 			set
 			{
-				_data.IncreaseBrightness = value;
+				_data.IncreaseBrightnessCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -531,7 +528,7 @@ namespace VixenModules.Effect.Picture
 				{
 					Colors = new ColorGradient(Color.DodgerBlue);
 					Direction = 0;
-					IncreaseBrightness = 10;
+			//		IncreaseBrightness = 10;
 					GifSpeed = 1;
 					ColorEffect = ColorEffect.None;
 					MovementRate = 4;
@@ -563,6 +560,10 @@ namespace VixenModules.Effect.Picture
 			}
 			var dir = 360 - Direction;
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+
 			int speedFactor = 4;
 			int state = MovementRate * frame;
 			if (Type != EffectType.RenderPictureTiles && Type != EffectType.RenderPictureNone)
@@ -657,8 +658,8 @@ namespace VixenModules.Effect.Picture
 
 				int yoffset = (BufferHt + imageHeight)/2;
 				int xoffset = (imageWidth - BufferWi)/2;
-				int xOffsetAdj = XOffset*BufferWi/100;
-				int yOffsetAdj = YOffset*BufferHt/100;
+				int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
+				int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
 				int imageHt = imageHeight;
 				int imageWi = imageWidth;
 
@@ -732,7 +733,7 @@ namespace VixenModules.Effect.Picture
 						}
 
 						var hsv = HSV.FromRGB(fpColor);
-						double tempV = hsv.V*level*((double) (IncreaseBrightness)/10);
+						double tempV = hsv.V * level * ((double)(CalculateIncreaseBrightness(intervalPosFactor)) / 10);
 						if (tempV > 1)
 							tempV = 1;
 						hsv.V = tempV;
@@ -744,69 +745,69 @@ namespace VixenModules.Effect.Picture
 								if (fpColor != Color.Transparent)
 								{
 									//Peek a boo
-									hsv = CustomColor(hsv, frame, level, fpColor);
+									hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, hsv);
 								}
 								break;
 							case EffectType.RenderPictureWiggle:
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPicturePeekaboo90:
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPicturePeekaboo180:
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPicturePeekaboo270:
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureLeft:
 								// left
 								int leftX = x + (BufferWi - (int) (_position*(imageWi + BufferWi)));
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureRight:
 								// right
 								int rightX = x + -imageWi + (int) (_position*(imageWi + BufferWi));
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureUp:
 								// up
 								int upY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, hsv);
 								break;
 
 							case EffectType.RenderPictureUpleft:
 								int upLeftY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(
 									Convert.ToInt32(x + BufferWi - (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor) + xOffsetAdj,
 									upLeftY + yOffsetAdj, hsv);
 								break; // up-left
 							case EffectType.RenderPictureDownleft:
 								int downLeftY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(
 									Convert.ToInt32(x + BufferWi - (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor) + xOffsetAdj,
 									downLeftY + yOffsetAdj, hsv);
 								break; // down-left
 							case EffectType.RenderPictureUpright:
 								int upRightY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(
 									Convert.ToInt32(x + (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor - imageWi) + xOffsetAdj,
 									upRightY + yOffsetAdj, hsv);
 								break; // up-right
 							case EffectType.RenderPictureDownright:
 								int downRightY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(
 									Convert.ToInt32(x + (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor - imageWi) + xOffsetAdj,
 									downRightY + yOffsetAdj, hsv);
@@ -814,16 +815,16 @@ namespace VixenModules.Effect.Picture
 							case EffectType.RenderPictureDown:
 								// down
 								int downY = (BufferHt + imageHt - 1) - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureNone:
-								hsv = CustomColor(hsv, frame, level, fpColor);
+								hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
 								break;
 							case EffectType.RenderPictureTiles:
-								int colorX = x + Convert.ToInt32(_movementX) - (XOffset*BufferWi/100);
-								int colorY = y + Convert.ToInt32(_movementY) + (YOffset*BufferHt/100);
+								int colorX = x + Convert.ToInt32(_movementX) - (CalculateXOffset(intervalPosFactor) * BufferWi / 100);
+								int colorY = y + Convert.ToInt32(_movementY) + (CalculateYOffset(intervalPosFactor) * BufferHt / 100);
 
 								if (colorX >= 0)
 								{
@@ -847,7 +848,7 @@ namespace VixenModules.Effect.Picture
 									fpColor = _fp.GetPixel(colorX, colorY);
 
 									hsv = HSV.FromRGB(fpColor);
-									hsv = CustomColor(hsv, frame, level, fpColor);
+									hsv = CustomColor(hsv, frame, level, fpColor, intervalPosFactor);
 									frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
 								}
 								break;
@@ -860,7 +861,22 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
-		private HSV CustomColor(HSV hsv, int frame, double level, Color fpColor)
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateIncreaseBrightness(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
+		}
+
+		private HSV CustomColor(HSV hsv, int frame, double level, Color fpColor, double intervalPosFactor)
 		{
 			if (ColorEffect == ColorEffect.CustomColor)
 			{
@@ -871,7 +887,7 @@ namespace VixenModules.Effect.Picture
 				hsv.V = hsvLevel/100;
 			}
 
-			double tempV = hsv.V*level*((double) (IncreaseBrightness)/10);
+			double tempV = hsv.V*level*((double) (CalculateIncreaseBrightness(intervalPosFactor))/10);
 			if (tempV > 1)
 				tempV = 1;
 			hsv.V = tempV;
