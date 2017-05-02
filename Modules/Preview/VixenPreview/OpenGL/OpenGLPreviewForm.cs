@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,6 +12,7 @@ using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -18,8 +21,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private static MillisecondsValue _previewSetPixelsTime;
-		private Stopwatch _sw = Stopwatch.StartNew();
+		private static MillisecondsValue _backgroundDraw;
+		private static MillisecondsValue _pointsUpdate;
+		private static MillisecondsValue _pointsDraw;
+		private static MillisecondsValue _previewUpdate;
+		private readonly Stopwatch _sw = Stopwatch.StartNew();
+		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 
 		private static int _width = 1280, _height = 720;
 		private static float _focalDepth = 0;
@@ -40,8 +47,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			Data = data;
 			InitializeComponent();
-			_previewSetPixelsTime = new MillisecondsValue("OpenGL Preview update time");
-			VixenSystem.Instrumentation.AddValue(_previewSetPixelsTime);
+			_backgroundDraw = new MillisecondsValue("OpenGL preview background draw");
+			_pointsUpdate = new MillisecondsValue("OpenGL preview points update");
+			_pointsDraw = new MillisecondsValue("OpenGL preview points draw");
+			_previewUpdate = new MillisecondsValue("OpenGL preview update");
+			VixenSystem.Instrumentation.AddValue(_backgroundDraw);
+			VixenSystem.Instrumentation.AddValue(_pointsUpdate);
+			VixenSystem.Instrumentation.AddValue(_pointsDraw);
+			VixenSystem.Instrumentation.AddValue(_previewUpdate);
 			glControl.MouseWheel += GlControl_MouseWheel;
 		}
 
@@ -106,6 +119,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_background = new Background(Data);
 			if (_background.HasBackground)
 			{
+				
 				ClientSize = new Size(_background.Width, _background.Height);
 				_width = _background.Width;
 				_height = _background.Height;
@@ -142,7 +156,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		public VixenPreviewData Data { get; set; }
 		public void Setup()
 		{
-
+			foreach (var dataDisplayItem in Data.DisplayItems)
+			{
+				dataDisplayItem.Shape.UpdatePixelCache();
+			}
 		}
 		
 		public void UpdatePreview()
@@ -205,7 +222,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				factor = 10;
 			}
-			int direction = e.Delta * SystemInformation.MouseWheelScrollLines / factor;
+			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
 			var distance = _camera.Position.Z + direction;
 			Console.Out.WriteLine(distance);
@@ -294,26 +311,41 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void OnRenderFrame()
 		{
-
+			Logging.Debug("Entering RenderFrame");
 			_sw.Restart();
 			var perspective = CreatePerspective();
 			
-			glControl.MakeCurrent();
-			ClearScreen();
-			
-
 			if (VixenSystem.Elements.ElementsHaveState)
 			{
+				Logging.Debug("Elements have state.");
+				_sw2.Restart();
+				UpdateShapePoints();
+				_pointsUpdate.Set(_sw2.ElapsedMilliseconds);
 				var mvp = Matrix4.Identity * _camera.ViewMatrix * perspective;
+				glControl.MakeCurrent();
+				ClearScreen();
+				_sw2.Restart();
 				DrawPoints(mvp);
+				_pointsDraw.Set(_sw2.ElapsedMilliseconds);
+				_sw2.Restart();
+				_background.Draw(perspective, _camera.ViewMatrix);
+				_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+				glControl.SwapBuffers();
+				glControl.Context.MakeCurrent(null);
 			}
-
-			_background.Draw(perspective, _camera.ViewMatrix);
-			glControl.SwapBuffers();
-			glControl.Context.MakeCurrent(null);
-
-			_previewSetPixelsTime.Set(_sw.ElapsedMilliseconds);
-
+			else
+			{
+				glControl.MakeCurrent();
+				ClearScreen();
+				_sw2.Restart();
+				_background.Draw(perspective, _camera.ViewMatrix);
+				_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+				glControl.SwapBuffers();
+				glControl.Context.MakeCurrent(null);
+			}
+			
+			_previewUpdate.Set(_sw.ElapsedMilliseconds);
+			Logging.Debug("Exiting RenderFrame");
 		}
 
 		private static void ClearScreen()
@@ -325,6 +357,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void DrawPoints(Matrix4 mvp)
 		{
+			//Logging.Debug("Entering DrawPoints");
 			// calculate our point scaling
 			float scale = _focalDepth / _camera.Position.Z;
 
@@ -334,21 +367,32 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			scale = scale >= .1f ? scale : .1f;
 
+			//Logging.Debug("Point Scale is {0}",scale);
+
 			try
 			{
+				//Logging.Debug("Selecting point program.");
 				_program.Use();
 				_program["mvp"].SetValue(mvp);
 				_program["pointScale"].SetValue(scale);
 
 				foreach (var dataDisplayItem in Data.DisplayItems)
 				{
-					dataDisplayItem.Shape.Draw(_program, _background.Height);
+					dataDisplayItem.Shape.Draw(_program);
 				}
 			}
 			catch (Exception e)
 			{
 				Logging.Error(e, "An error occured rendering display items.");
 			}
+			//Logging.Debug("Exiting DrawPoints.");
+		}
+
+		private void UpdateShapePoints()
+		{
+			//Prepare the points
+			//Logging.Debug("Begin Update Shape Points.");
+			Data.DisplayItems.AsParallel().ForAll(d => d.Shape.UpdateDrawPoints(_background.Height));
 		}
 
 		private double ConvertToRadians(double angle)
@@ -424,6 +468,37 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
+		//public static string VertexShader = @"
+		//#version 130
+
+		//in vec3 vertexPosition;
+		//in vec4 vertexColor;
+		//in float pointSize;
+
+		//out vec4 color;
+		//out float pSize;
+
+		//uniform float pointScale;
+		//uniform mat4 mvp;
+
+		//void main(void)
+		//{
+		//	color = vertexColor;
+
+		//	gl_Position = mvp * vec4(vertexPosition, 1);
+
+		//	gl_PointSize = pointSize * pointScale;
+
+		//	if(pointSize < 1)
+		//	{
+		//		gl_PointSize = 1;
+		//	}
+
+		//	pSize = gl_PointSize; //pass through
+
+		//}
+		//";
+
 		public static string VertexShader = @"
 		#version 130
 
@@ -441,7 +516,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			color = vertexColor;
 
-			gl_Position = mvp * vec4(vertexPosition, 1);
+			gl_Position = mvp * vec4(vertexPosition.xyz, 1);
 
 			gl_PointSize = pointSize * pointScale;
 			
@@ -454,7 +529,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 		}
 		";
-		
+
 		public static string FragmentShader = @"
 		#version 330
 
@@ -472,8 +547,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					discard;
 				}
 			}
-
-			gl_FragColor = color;
+			
+			gl_FragColor = vec4(color.r/255.0, color.g/255.0, color.b/255.0, color.a/255.0);
 
 		}
 		";

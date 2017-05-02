@@ -153,6 +153,91 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
+	public struct RGBA
+	{
+		private double _r, _g, _b, _a;
+
+		#region ctor
+
+		public RGBA(double r, double g, double b, double a)
+		{
+			_r = r;
+			_g = g;
+			_b = b;
+			_a = a;
+		}
+
+		public RGBA(Color value) :
+			this(
+			(double)(value.R) / 255.0,
+			(double)(value.G) / 255.0,
+			(double)(value.B) / 255.0,
+			(double)(value.A) / 255.0)
+		{
+		}
+
+		#endregion
+
+		#region operators
+
+		public static bool operator ==(RGBA a, RGBA b)
+		{
+			return
+				a._r == b._r &&
+				a._g == b._g &&
+				a._b == b._b &&
+				a._a == b._a;
+		}
+
+		public static bool operator !=(RGBA a, RGBA b)
+		{
+			return !(a == b);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is RGBA)
+			{
+				return ((RGBA)obj) == this;
+			}
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+
+			return string.Format("{0}:{1}:{2}:{3}", _r, _g, _b, _a).GetHashCode();
+
+		}
+
+		#endregion
+
+		public double R
+		{
+			get { return _r; }
+			set { _r = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double G
+		{
+			get { return _g; }
+			set { _g = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double B
+		{
+			get { return _b; }
+			set { _b = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double A
+		{
+			get { return _a; }
+			set { _a = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+	}
+
+
 	[DataContract]
 	public struct RGB
 	{

@@ -21,10 +21,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public abstract class PreviewBaseShape : ICloneable, IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private List<float> _points = new List<float>();
 		public string _name;
-		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
+
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
+
+		private List<PreviewPixel> _pixelCache = new List<PreviewPixel>();
 
 		public enum StringTypes
 		{
@@ -226,6 +230,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		private double _zoomLevel = 1;
+		
+
 		[Browsable(false)]
 		public virtual double ZoomLevel
 		{
@@ -615,79 +621,169 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return setupControl;
 		}
 
-		
-		public void Draw(ShaderProgram program, int referenceHeight)
+		public void UpdatePixelCache()
 		{
+			_pixelCache = Pixels.Where(x => x.Node != null).ToList();
+			_points = new List<float>(_pixelCache.Count * 7);
+		}
 
-			int pointCount = 0;
-			List<float> p;
+		public void UpdateDrawPoints(int referenceHeight)
+		{
+			//Logging.Debug("Drawing Shape {0}.", ToString());
 
+			_points.Clear();
+			if (!_pixelCache.Any()) return;
+			
 			if (StringType == StringTypes.Pixel)
 			{
-				var fullColorPoints = CreateFullColorPoints(referenceHeight);
-				pointCount = fullColorPoints.Item1;
-				p = fullColorPoints.Item2;
-
+				//Logging.Debug("Pixel Type.");
+				CreateFullColorPoints(referenceHeight);
 			}
 			else
 			{
-				var discreteColorPoints = CreateDiscreteColorPoints(referenceHeight);
-				pointCount = discreteColorPoints.Item1;
-				p = discreteColorPoints.Item2;
+				//Logging.Debug("Standard Type.");
+				CreateDiscreteColorPoints(referenceHeight);
 			}
-			
-			if (pointCount == 0) return;
 
-			program["pointSize"].SetValue((float)PixelSize);//>1?PixelSize:2
-			VBO<float> points = new VBO<float>(p.ToArray());
+			//Logging.Debug("{0} Points generated.", _points.Count() / 7);
+
+		}
+
+		public void Draw(ShaderProgram program)
+		{
+			if (!_points.Any()) return;
+
+			program["pointSize"].SetValue((float)PixelSize);
+			VBO<float> points = new VBO<float>(_points.ToArray());
+
+			//Logging.Debug("Created VBO.");
 
 			GlUtility.BindBuffer(points);
+<<<<<<< HEAD
+
+			//Logging.Debug("Buffer Bound.");
 			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
 			GL.EnableVertexAttribArray(0);
 
+			//Logging.Debug("Point pointer set.");
+
 			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
+=======
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, 7 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
+			GL.EnableVertexAttribArray(0);
+
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, 7 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+>>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			GL.EnableVertexAttribArray(1);
 
-			// draw the points
-			GL.DrawArrays(PrimitiveType.Points, 0, pointCount);
+			//Logging.Debug("Color pointer set.");
 
+			//Logging.Debug("Beginning draw.");
+
+			// draw the points
+			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 7);
+
+			//Logging.Debug("Draw completed for shape.");
 			points.Dispose();
+
+			//Logging.Debug("VBO Disposed.");
 		}
 
-		private Tuple<int, List<float>> CreateDiscreteColorPoints(int referenceHeight)
+		
+		//public void Draw(ShaderProgram program, int referenceHeight)
+		//{
+		//	Logging.Debug("Drawing Shape {0}.", ToString());
+		//	int pointCount = 0;
+		//	List<float> p;
+
+		//	if (StringType == StringTypes.Pixel)
+		//	{
+		//		Logging.Debug("Pixel Type.");
+		//		var fullColorPoints = CreateFullColorPoints(referenceHeight);
+		//		p = fullColorPoints;
+
+		//	}
+		//	else
+		//	{
+		//		Logging.Debug("Standard Type.");
+		//		var discreteColorPoints = CreateDiscreteColorPoints(referenceHeight);
+		//		p = discreteColorPoints;
+		//	}
+
+		//	Logging.Debug("{0} Points generated.", pointCount);
+
+		//	if (!p.Any()) return;
+
+		//	program["pointSize"].SetValue((float)PixelSize);//>1?PixelSize:2
+		//	VBO<float> points = new VBO<float>(p.ToArray());
+
+		//	Logging.Debug("Created VBO.");
+
+		//	GlUtility.BindBuffer(points);
+
+		//	Logging.Debug("Buffer Bound.");
+		//	GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
+		//	GL.EnableVertexAttribArray(0);
+
+		//	Logging.Debug("Point pointer set.");
+
+		//	GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
+		//	GL.EnableVertexAttribArray(1);
+
+		//	Logging.Debug("Color pointer set.");
+
+		//	Logging.Debug("Beginning draw.");
+
+		//	// draw the points
+		//	GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 7);
+
+		//	Logging.Debug("Draw completed for shape.");
+		//	points.Dispose();
+
+		//	Logging.Debug("VBO Disposed.");
+		//}
+
+		private void CreateDiscreteColorPoints(int referenceHeight)
 		{
 			//All points are the same in standard discrete 
+<<<<<<< HEAD
+			var previewPixel = _pixelCache.First();
+			var state = previewPixel.Node.Element.State;
+			
+=======
+			List<float> p = new List<float>();
+			int pointCount = 0;
+
 			var previewPixel = Pixels.FirstOrDefault();
 			if (previewPixel==null || (previewPixel.Node == null || previewPixel.Node.Element == null))
 			{
 				//Figure out why thses are null!!!!!!!!!!!
-				return new Tuple<int, List<float>>(0, new List<float>(0));
+				return new Tuple<int, List<float>>(pointCount,p);
 			}
 
 			var state = previewPixel.Node.Element.State;
-			List<float> p = new List<float>(Pixels.Count * 7);
-			int pointCount = 0;
 
+>>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			if (state.Count > 0)
 			{
 				List<Color> colors = previewPixel.GetDiscreteColors(state);
+
 				foreach (var pixel in Pixels)
 				{
 					int col = 1;
 					Point xy = new Point(pixel.X, pixel.Y);
 					foreach (Color c in colors)
 					{
-						if (c != Color.Transparent && c.A > byte.MinValue)
+						if (c.A > 0)
 						{
-							p.Add(xy.X);
-							p.Add(referenceHeight - xy.Y);
-							p.Add(pixel.Z);
-							p.Add(c.R / 255f);
-							p.Add(c.G / 255f);
-							p.Add(c.B / 255f);
-							p.Add(c.A / 255f);
-							pointCount++;
-
+							_points.Add(xy.X);
+							_points.Add(referenceHeight - xy.Y);
+							_points.Add(pixel.Z);
+							_points.Add(c.R);
+							_points.Add(c.G);
+							_points.Add(c.B);
+							_points.Add(c.A);
+							
 							if (col % 2 == 0)
 							{
 								xy.Y += PixelSize;
@@ -703,42 +799,35 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 				}
 			}
-			return new Tuple<int, List<float>>(pointCount, p);
-			
 		}
 
-		private Tuple<int, List<float>> CreateFullColorPoints(int referenceHeight)
+		private void CreateFullColorPoints(int referenceHeight)
 		{
-			List<float> p = new List<float>(7 * Pixels.Count);
+<<<<<<< HEAD
+			foreach (PreviewPixel previewPixel in _pixelCache)
+=======
+			List<float> p = new List<float>();
 			int pointCount = 0;
 			foreach (PreviewPixel previewPixel in Pixels)
+>>>>>>> parent of 8798cc9a5... Make a few changes to get the shaders compiling on NVidia cards.
 			{
-				if (previewPixel.Node == null || previewPixel.Node.Element == null)
-				{
-					//Figure out why thses are null!!!!!!!!!!!
-					continue;
-				}
-
 				var state = previewPixel.Node.Element.State;
-
+				
 				if (state.Count > 0)
 				{
 					Color c = previewPixel.GetFullColor(state);
-					if (!(Color.Empty == c) && c.A > 0)
+					if (c.A > 0)
 					{
-						p.Add(previewPixel.X);
-						p.Add(referenceHeight - previewPixel.Y);
-						p.Add(previewPixel.Z);
-						p.Add(c.R / 255f);
-						p.Add(c.G / 255f);
-						p.Add(c.B / 255f);
-						p.Add(c.A / 255f);
-						pointCount++;
+						_points.Add(previewPixel.X);
+						_points.Add(referenceHeight - previewPixel.Y);
+						_points.Add(previewPixel.Z);
+						_points.Add(c.R);
+						_points.Add(c.G);
+						_points.Add(c.B);
+						_points.Add(c.A);
 					}
 				}
 			}
-
-			return new Tuple<int, List<float>>(pointCount,p);
 		}
 
 		protected void Dispose(bool disposing)

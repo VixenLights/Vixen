@@ -8,11 +8,10 @@ namespace Vixen.Interpolator
 	{
 		protected override RGBValue InterpolateValue(double percent, RGBValue startValue, RGBValue endValue)
 		{
-			RGBValue rv;
-			rv.R = (byte)(startValue.R + (endValue.R - startValue.R)*percent);
-			rv.G = (byte)(startValue.G + (endValue.G - startValue.G)*percent);
-			rv.B = (byte)(startValue.B + (endValue.B - startValue.B)*percent);
-			return rv;
+			var r = (byte)(startValue.R + (endValue.R - startValue.R)*percent);
+			var g = (byte)(startValue.G + (endValue.G - startValue.G)*percent);
+			var b = (byte)(startValue.B + (endValue.B - startValue.B)*percent);
+			return new RGBValue(r, g, b);
 		}
 	}
 }

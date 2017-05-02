@@ -55,7 +55,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 			GL.GetShader(ShaderID, ShaderParameter.CompileStatus, out status);
 			if (status == 0)
 
-				Logging.Error("Error compiling shader type{0}: Log: {1}", type.ToString(),GL.GetShaderInfoLog(ShaderID));
+				Logging.Error("Error compiling shader: {0}", GL.GetShaderInfoLog(ShaderID));
 
 			GetParams(source);
 		}
