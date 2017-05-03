@@ -7,6 +7,7 @@ using Vixen.Module;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using ZedGraph;
 
 namespace VixenModules.Effect.Text
 {
@@ -23,6 +24,8 @@ namespace VixenModules.Effect.Text
 			Speed = 1;
 			Position = 0;
 			PositionX = 0;
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			ScaleText = 0;
 			CenterStop = false;
 			Text = new List<string>{String.Empty};
@@ -69,11 +72,17 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public TextMode TextMode { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Position { get; set; }
 
 		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int PositionX { get; set; }
+
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
 
 		[DataMember]
 		public List<string> Text { get; set; }
@@ -85,7 +94,7 @@ namespace VixenModules.Effect.Text
 		public StringOrientation Orientation { get; set; }
 
 		[OnDeserialized]
-		void OnDeserialized(StreamingContext c)
+		public void OnDeserialized(StreamingContext c)
 		{
 			//Ensure defaults for new fields that might not be in older effects.
 			if (LevelCurve == null)
@@ -96,6 +105,23 @@ namespace VixenModules.Effect.Text
 			if (BaseLevelCurve == null)
 			{
 				BaseLevelCurve = new Curve(CurveType.Flat100);
+			}
+
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+
+			if (XOffsetCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(PositionX, 100, -100);
+				XOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				PositionX = 0;
+
+				if (YOffsetCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Position, 100, -100);
+					YOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+					Position = 0;
+				}
 			}
 		}
 
@@ -108,8 +134,8 @@ namespace VixenModules.Effect.Text
 				Speed = Speed,
 				CenterStop = CenterStop,
 				Orientation = Orientation,
-				Position = Position,
-				PositionX = PositionX,
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve),
 				Text = Text.ToList(),
 				ScaleText = ScaleText,
 				GradientMode = GradientMode,
