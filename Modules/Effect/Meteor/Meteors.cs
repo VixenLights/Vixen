@@ -154,15 +154,14 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 200, 1)]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(6)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -172,17 +171,16 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Min Speed")]
 		[ProviderDescription(@"Min Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 200, 1)]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(7)]
-		public int MinSpeed
+		public Curve MinSpeedCurve
 		{
-			get { return _data.MinSpeed; }
+			get { return _data.MinSpeedCurve; }
 			set
 			{
-				if (MaxSpeed <= value)
-					value = MaxSpeed - 1; //Ensures MinSpeed is below MaxSpeed
-				_data.MinSpeed = value;
+				//if (MaxSpeedCurve <= value)
+				//	value = MaxSpeedCurve - 1; //Ensures MinSpeed is below MaxSpeed
+				_data.MinSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -192,17 +190,16 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Max Speed")]
 		[ProviderDescription(@"Max Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 200, 1)]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(8)]
-		public int MaxSpeed
+		public Curve MaxSpeedCurve
 		{
-			get { return _data.MaxSpeed; }
+			get { return _data.MaxSpeedCurve; }
 			set
 			{
-				if (MinSpeed > value)
-					value = MinSpeed + 1;  //Ensures MaxSpeed is above MinSpeed
-				_data.MaxSpeed = value;
+				//if (MinSpeed > value)
+				//	value = MinSpeedCurve + 1;  //Ensures MaxSpeed is above MinSpeed
+				_data.MaxSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -212,15 +209,14 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Count")]
 		[ProviderDescription(@"Count")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 200, 1)]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(9)]
-		public int PixelCount
+		public Curve PixelCountCurve
 		{
-			get { return _data.PixelCount; }
+			get { return _data.PixelCountCurve; }
 			set
 			{
-				_data.PixelCount = value;
+				_data.PixelCountCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -230,15 +226,14 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Tail Length")]
 		[ProviderDescription(@"Tail Length")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(10)]
-		public int Length
+		public Curve LengthCurve
 		{
-			get { return _data.Length; }
+			get { return _data.LengthCurve; }
 			set
 			{
-				_data.Length = value;
+				_data.LengthCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -329,6 +324,20 @@ namespace VixenModules.Effect.Meteors
 			TypeDescriptor.Refresh(this);
 		}
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/meteors/"; }
+		}
+
+		#endregion
+
 		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
 		private void UpdateColorAttribute(bool refresh = true)
 		{
@@ -344,9 +353,9 @@ namespace VixenModules.Effect.Meteors
 		private void UpdateRandomSpeedAttribute(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("Speed", !RandomSpeed);
-			propertyStates.Add("MaxSpeed", RandomSpeed);
-			propertyStates.Add("MinSpeed", RandomSpeed);
+			propertyStates.Add("SpeedCurve", !RandomSpeed);
+			propertyStates.Add("MaxSpeedCurve", RandomSpeed);
+			propertyStates.Add("MinSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -411,23 +420,36 @@ namespace VixenModules.Effect.Meteors
 			if (frame == 0)
 				_meteors.Clear();
 			int colorcnt = Colors.Count();
-			int tailLength = (BufferHt < 10) ? Length/10 : BufferHt*Length/100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			var length = CalculateLength(intervalPosFactor);
+			int tailLength = (BufferHt < 10) ? length / 10 : BufferHt * length / 100;
 			int minDirection = 1;
 			int maxDirection = 360;
+			int pixelCount = CalculatePixelCount(intervalPosFactor);
+			var minSpeed = CalculateMinSpeed(intervalPosFactor);
+			var maxSpeed = CalculateMaxSpeed(intervalPosFactor);
+			if (minSpeed > maxSpeed)
+			{
+				var tempSpeed = minSpeed;
+				minSpeed = maxSpeed;
+				maxSpeed = tempSpeed;
+			}
+
 			if (tailLength < 1) tailLength = 1;
 			int tailStart = BufferHt;
 			if (tailStart < 1) tailStart = 1;
 
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv = new HSV();
-			int pixelCount = frame < PixelCount
-				? (!RandomMeteorPosition && frame > PixelCount ? 1 : (PixelCount < 10 ? PixelCount : PixelCount / 10))
-				: PixelCount;
+			int adjustedPixelCount = frame < pixelCount
+				? (!RandomMeteorPosition && frame > pixelCount ? 1 : (pixelCount < 10 ? pixelCount : pixelCount / 10))
+				: pixelCount;
 
-			for (int i = 0; i < pixelCount; i++)
+			for (int i = 0; i < adjustedPixelCount; i++)
 			{
-				double position = RandomSpeed ? (double)_random.Next(MinSpeed, MaxSpeed + 1) / 20 : (double)Speed / 20;
-				if (_meteors.Count >= PixelCount) continue;
+				double position = RandomSpeed ? (double)_random.Next(minSpeed, maxSpeed + 1) / 20 : (double)CalculateSpeed(intervalPosFactor) / 20;
+				if (_meteors.Count >= pixelCount) continue;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
 				{
@@ -534,7 +556,7 @@ namespace VixenModules.Effect.Meteors
 				}
 				else
 				{
-					if (RandomMeteorPosition || frame < PixelCount)
+					if (RandomMeteorPosition || frame < pixelCount)
 					{
 						m.X = rand() % BufferWi;
 						m.Y = (BufferHt - 1 - (rand() % tailStart));
@@ -617,19 +639,46 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
-		#region Information
-
-		public override string Information
+		private int CalculateSpeed(double intervalPos)
 		{
-			get { return "Visit the Vixen Lights website for more information on this effect."; }
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 200, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
-		public override string InformationLink
+		private int CalculateMaxSpeed(double intervalPos)
 		{
-			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/meteors/"; }
+			var value = (int)ScaleCurveToValue(MaxSpeedCurve.GetValue(intervalPos), 200, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
-		#endregion
+		private int CalculateMinSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(MinSpeedCurve.GetValue(intervalPos), 200, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculatePixelCount(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(PixelCountCurve.GetValue(intervalPos), 200, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateLength(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(LengthCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
 
 		// for Meteor effects
 		public class MeteorClass
