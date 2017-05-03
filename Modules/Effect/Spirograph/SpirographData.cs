@@ -18,18 +18,14 @@ namespace VixenModules.Effect.Spirograph
 		public SpirographData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			//Speed = 2;
 			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 2.0, 2.0 }));
 			Animate = true;
 			OCR = 88;
 			ICR = 21;
-			//SpirographRange = 100;
 			SpirographRangeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 33.0, 33.0 }));
 			Type = ColorType.Standard;
-			//Range = 70;
 			RangeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 35.0, 35.0 }));
 			ColorChase = false;
-			//Distance = 50;
 			DistanceCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
