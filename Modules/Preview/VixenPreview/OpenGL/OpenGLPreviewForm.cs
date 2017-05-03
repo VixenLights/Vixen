@@ -363,7 +363,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void DrawPoints(Matrix4 mvp)
 		{
-			//Logging.Debug("Entering DrawPoints");
+			Logging.Debug("Entering DrawPoints");
 			// calculate our point scaling
 			float scale = _focalDepth / _camera.Position.Z;
 
@@ -373,7 +373,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			scale = scale >= .1f ? scale : .1f;
 
-			//Logging.Debug("Point Scale is {0}",scale);
+			Logging.Debug("Point Scale is {0}",scale);
 
 			try
 			{
@@ -391,7 +391,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				Logging.Error(e, "An error occured rendering display items.");
 			}
-			//Logging.Debug("Exiting DrawPoints.");
+			Logging.Debug("Exiting DrawPoints.");
 		}
 
 		private void UpdateShapePoints()

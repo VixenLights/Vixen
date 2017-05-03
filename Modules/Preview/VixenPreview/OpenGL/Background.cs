@@ -37,25 +37,44 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		public void Draw(Matrix4 fov, Matrix4 cameraView)
 		{
 			if (!HasBackground) return;
+			Logging.Debug("We have a background.");
 			_backgroundProgram.Use();
+			Logging.Debug("Set background program.");
 			GL.ActiveTexture(TextureUnit.Texture0);
+			Logging.Debug("Set active texture.");
 			GlUtility.BindTexture(_backgroundTexture);
+
+			Logging.Debug("Bound background texture.");
 
 			_backgroundProgram["projection_matrix"].SetValue(fov);
 			_backgroundProgram["view_matrix"].SetValue(cameraView);
 
+			Logging.Debug("Bound background uniforms.");
+
 			GlUtility.BindBuffer(_points);
+
+			Logging.Debug("Bound background points.");
 
 			//vertexPosition
 			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, _points.PointerType, false, 5 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
-			GL.EnableVertexAttribArray(0);
+			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
+
+			Logging.Debug("Bound background positions to array.");
+
+			GL.DisableVertexAttribArray(ShaderProgram.VertexColor);
+
+			Logging.Debug("Disabled VertexColor array.");
 
 			//textureCoords
 			GL.VertexAttribPointer(ShaderProgram.TextureCoords, 2, _points.PointerType, true, 5 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
-			GL.EnableVertexAttribArray(2);
+			GL.EnableVertexAttribArray(ShaderProgram.TextureCoords);
+
+			Logging.Debug("Bound background texture coords to array.");
 
 			GlUtility.BindBuffer(_backgroundElements);
 			GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
+
+			Logging.Debug("Exit background draw.");
 		}
 
 		private void InitializeBackground()
