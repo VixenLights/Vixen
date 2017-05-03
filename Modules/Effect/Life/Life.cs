@@ -62,15 +62,14 @@ namespace VixenModules.Effect.Life
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
+		//[NumberRange(1, 20, 1)]
 		[PropertyOrder(1)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -220,9 +219,11 @@ namespace VixenModules.Effect.Life
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer) 
 		{
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
 			int i, x, y;
 			Color color;
-			int state = frame * Speed;
+			int state = frame * CalculateSpeed(intervalPosFactor);
 			int count = BufferWi * BufferHt * CellsToStart / 200 + 1;
 			if (frame == 0)
 			{
@@ -349,6 +350,14 @@ namespace VixenModules.Effect.Life
 			}
 			// copy new life state to tempbuf
 			CopyPixelsToTempBuf(frameBuffer);
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 20, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
 		public Color GetMultiColorBlend(double n, int frame)
