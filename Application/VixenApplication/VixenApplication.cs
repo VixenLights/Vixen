@@ -117,6 +117,20 @@ namespace VixenApplication
 		}
 
 		public string LockFilePath { get; set; }
+
+		private static string _uniqueProcessId = null;
+
+		public static string GetUniqueProcessId()
+		{
+			if (_uniqueProcessId == null)
+			{
+				var id = Process.GetCurrentProcess().Id;
+				var machineName = Environment.MachineName;
+				_uniqueProcessId = string.Format("{0}@{1}", id, machineName);
+			}
+
+			return _uniqueProcessId;
+		}
 		
 		private bool CreateLockFile()
 		{
@@ -128,7 +142,7 @@ namespace VixenApplication
 					LockFilePath = Path.Combine(_rootDataDirectory, LockFile);
 					if (!File.Exists(LockFilePath))
 					{
-						File.Create(LockFilePath).Close();
+						File.WriteAllText(LockFilePath, GetUniqueProcessId());
 						//Set this back on the root app to use in case of system errors and we need a failsafe way to delete the lock
 						Program.LockFilePath = LockFilePath; 
 						success = true;
@@ -177,7 +191,40 @@ namespace VixenApplication
 					var lockFilePath = Path.Combine(path, LockFile);
 					if (File.Exists(lockFilePath))
 					{
-						locked = true;
+						var lockProcessInfo = File.ReadAllText(lockFilePath).Split('@');
+						var myProcessInfo = GetUniqueProcessId().Split('@');
+						if (lockProcessInfo[1].Equals(myProcessInfo[1]))
+						{
+							//The machine name is the same so it was locked by this machine
+							var lockProcessId = Convert.ToInt32(lockProcessInfo[0]);
+							try
+							{
+								//See if the locking process is still running
+								var process = Process.GetProcessById(lockProcessId);
+								if (process.ProcessName.StartsWith("Vixen"))
+								{
+									//The process is running and it is Vixen so we ae locked.
+									locked = true;
+								}
+								else
+								{
+									//Process is something other than Vixen so we can release the lock
+									RemoveLockFile(lockFilePath);
+								}
+
+							}
+							catch (Exception e)
+							{
+								//No process with that id so release the lock.
+								RemoveLockFile(lockFilePath);
+							}
+						}
+						else
+						{
+							//The machine name is not us, so we have to assume it is locked on some other device.
+							locked = true;
+						}
+						
 					}
 				}
 			}
