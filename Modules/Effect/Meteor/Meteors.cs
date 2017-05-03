@@ -617,6 +617,20 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/meteors/"; }
+		}
+
+		#endregion
+
 		// for Meteor effects
 		public class MeteorClass
 		{
