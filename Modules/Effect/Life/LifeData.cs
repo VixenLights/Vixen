@@ -18,7 +18,7 @@ namespace VixenModules.Effect.Life
 		public LifeData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			Speed = 5;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 25.0, 25.0 }));
 			CellsToStart = 50;
 			Type = 1;
 			Repeat = 1;
@@ -29,8 +29,11 @@ namespace VixenModules.Effect.Life
 		[DataMember]
 		public List<ColorGradient> Colors { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
 
 		[DataMember]
 		public int Type { get; set; }
@@ -47,12 +50,26 @@ namespace VixenModules.Effect.Life
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+
+			if (SpeedCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(Speed, 20, 1);
+				SpeedCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				Speed = 0;
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LifeData result = new LifeData
 			{
 				Colors = Colors.ToList(),
-				Speed = Speed,
+				SpeedCurve = new Curve(SpeedCurve),
 				CellsToStart = CellsToStart,
 				Repeat = Repeat,
 				Type = Type,
