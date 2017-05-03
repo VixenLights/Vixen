@@ -18,7 +18,6 @@ namespace VixenModules.Effect.Life
 		public LifeData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			Speed = 5;
 			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 25.0, 25.0 }));
 			CellsToStart = 50;
 			Type = 1;
