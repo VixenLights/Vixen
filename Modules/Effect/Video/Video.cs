@@ -400,6 +400,20 @@ namespace VixenModules.Effect.Video
 			get { return _data; }
 		}
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/video/"; }
+		}
+
+		#endregion
+
 		private string CopyLocal(string path)
 		{
 			string name = Path.GetFileName(path);
