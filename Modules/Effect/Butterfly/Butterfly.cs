@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -163,6 +165,7 @@ namespace VixenModules.Effect.Butterfly
 			{
 				_data.ColorScheme = value;
 				IsDirty = true;
+				UpdateGradientColorAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -217,7 +220,22 @@ namespace VixenModules.Effect.Butterfly
 
 		private void InitAllAttributes()
 		{
-			UpdateStringOrientationAttributes(true);
+			UpdateGradientColorAttribute(false);
+			UpdateStringOrientationAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateGradientColorAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"Color", ColorScheme == ColorScheme.Gradient}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
