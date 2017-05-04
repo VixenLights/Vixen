@@ -26,7 +26,7 @@ namespace VixenModules.Effect.Picture
 			ScalePercent = 50;
 			MovementRate = 4;
 			Direction = 0;
-			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
+			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			ScaleToGrid = true;
 			TilePictures = TilePictures.BlueGlowDots;
 			GifSpeed = 1;
