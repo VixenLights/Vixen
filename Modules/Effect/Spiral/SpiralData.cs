@@ -20,8 +20,8 @@ namespace VixenModules.Effect.Spiral
 			Speed = 1;
 			Repeat = 1;
 			Blend = false;
-			Rotation = 20;
-			Thickness = 60;
+			RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
 		}
@@ -38,11 +38,17 @@ namespace VixenModules.Effect.Spiral
 		[DataMember]
 		public int Repeat { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Thickness { get; set; }
 
 		[DataMember]
+		public Curve ThicknessCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int Rotation { get; set; }
+
+		[DataMember]
+		public Curve RotationCurve { get; set; }
 
 		[DataMember]
 		public bool Blend { get; set; }
@@ -61,6 +67,25 @@ namespace VixenModules.Effect.Spiral
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (RotationCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(Rotation, 50d, -50d);
+				RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				Rotation = 0;
+
+				if (ThicknessCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Thickness, 100, 1);
+					ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					Thickness = 0;
+				}
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -72,8 +97,8 @@ namespace VixenModules.Effect.Spiral
 				Repeat = Repeat,
 				Orientation = Orientation,
 				Show3D = Show3D,
-				Thickness = Thickness,
-				Rotation = Rotation,
+				ThicknessCurve = new Curve(ThicknessCurve),
+				RotationCurve = new Curve(RotationCurve),
 				Blend = Blend,
 				LevelCurve = new Curve(LevelCurve),
 				Grow = Grow,
