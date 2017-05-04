@@ -602,7 +602,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the  Type of Movement..
+        ///   Looks up a localized string similar to Controls the Type of Movement..
         /// </summary>
         internal static string MovementType {
             get {
@@ -742,6 +742,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Repeat {
             get {
                 return ResourceManager.GetString("Repeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes direction of effect..
+        /// </summary>
+        internal static string ReverseDirection {
+            get {
+                return ResourceManager.GetString("ReverseDirection", resourceCulture);
             }
         }
         

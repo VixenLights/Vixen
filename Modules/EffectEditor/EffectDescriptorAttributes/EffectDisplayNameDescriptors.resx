@@ -450,14 +450,8 @@
   <data name="Include45Pt" xml:space="preserve">
     <value>Include 45Pt</value>
   </data>
-  <data name="MaxAngle" xml:space="preserve">
-    <value>Max Angle</value>
-  </data>
   <data name="MaxDirection" xml:space="preserve">
     <value>Max Direction</value>
-  </data>
-  <data name="MinAngle" xml:space="preserve">
-    <value>Min Angle</value>
   </data>
   <data name="MinDirection" xml:space="preserve">
     <value>Min Direction</value>
@@ -470,5 +464,8 @@
   </data>
   <data name="Spacing" xml:space="preserve">
     <value>Spacing</value>
+  </data>
+  <data name="ReverseDirection" xml:space="preserve">
+    <value>Reverse Direction</value>
   </data>
 </root>
