@@ -4,15 +4,15 @@ namespace VixenModules.Effect.Plasma
 {
 	public enum PlasmaColorType
 	{
-		[Description("Normal")]
+		[Description("Custom")]
 		Normal,
-		[Description("Preset 1")]
+		[Description("Red & Green")]
 		Preset1,
-		[Description("Preset 2")]
+		[Description("Blue & Green")]
 		Preset2,
-		[Description("Preset 3")]
+		[Description("Rainbow")]
 		Preset3,
-		[Description("Preset 4")]
+		[Description("Black & White")]
 		Preset4
 	}
 }
