@@ -299,9 +299,11 @@ namespace VixenModules.Effect.Spirograph
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+			
+			int rangeAdjust = CalculateRange(intervalPosFactor);
 			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, d_mod;
 			srand(1);
@@ -333,12 +335,12 @@ namespace VixenModules.Effect.Spirograph
 					x = Convert.ToInt32((R - r)*Math.Cos(t) + d*Math.Cos(((R - r)/r)*t) + xc);
 					y = Convert.ToInt32((R - r)*Math.Sin(t) + d*Math.Sin(((R - r)/r)*t) + yc);
 
-					if (colorcnt > 0) d_mod = (int)(CalculateRange(intervalPosFactor)) / colorcnt;
+					if (colorcnt > 0) d_mod = rangeAdjust / colorcnt;
 					else d_mod = 1;
 
 					x2 = Math.Pow((x - xc), 2);
 					y2 = Math.Pow((y - yc), 2);
-					hyp = Math.Sqrt(x2 + y2) / (CalculateRange(intervalPosFactor)) * 100.0;
+					hyp = Math.Sqrt(x2 + y2) / rangeAdjust * 100.0;
 
 					switch (Type)
 					{
