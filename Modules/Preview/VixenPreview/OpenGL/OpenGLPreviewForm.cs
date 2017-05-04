@@ -42,6 +42,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private int _prevX, _prevY;
 		private Camera _camera;
 		private bool _needsUpdate = true;
+		private bool _isRendering;
 
 		public OpenGlPreviewForm(VixenPreviewData data)
 		{
@@ -212,8 +213,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 				Zoom(direction);
 			}
-
-			
 		}
 
 		private void GlControl_MouseWheel(object sender, MouseEventArgs e)
@@ -317,13 +316,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void OnRenderFrame()
 		{
-			Logging.Debug("Entering RenderFrame");
+			//Logging.Debug("Entering RenderFrame");
+			if (_isRendering) return;
+			_isRendering = true;
 			_sw.Restart();
 			var perspective = CreatePerspective();
 			
 			if (VixenSystem.Elements.ElementsHaveState)
 			{
-				Logging.Debug("Elements have state.");
+				//Logging.Debug("Elements have state.");
 				_sw2.Restart();
 				UpdateShapePoints();
 				_pointsUpdate.Set(_sw2.ElapsedMilliseconds);
@@ -349,9 +350,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				glControl.SwapBuffers();
 				glControl.Context.MakeCurrent(null);
 			}
-			
+			_isRendering = false;
 			_previewUpdate.Set(_sw.ElapsedMilliseconds);
-			Logging.Debug("Exiting RenderFrame");
+			//Logging.Debug("Exiting RenderFrame");
 		}
 
 		private static void ClearScreen()
@@ -363,7 +364,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void DrawPoints(Matrix4 mvp)
 		{
-			Logging.Debug("Entering DrawPoints");
+			//Logging.Debug("Entering DrawPoints");
 			// calculate our point scaling
 			float scale = _focalDepth / _camera.Position.Z;
 
@@ -373,7 +374,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			scale = scale >= .1f ? scale : .1f;
 
-			Logging.Debug("Point Scale is {0}",scale);
+			//Logging.Debug("Point Scale is {0}",scale);
 
 			try
 			{
@@ -391,7 +392,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				Logging.Error(e, "An error occured rendering display items.");
 			}
-			Logging.Debug("Exiting DrawPoints.");
+			//Logging.Debug("Exiting DrawPoints.");
 		}
 
 		private void UpdateShapePoints()

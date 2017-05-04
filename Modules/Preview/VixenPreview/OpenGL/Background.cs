@@ -36,45 +36,46 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		public void Draw(Matrix4 fov, Matrix4 cameraView)
 		{
+			//Logging.Debug("Entering background draw.");
 			if (!HasBackground) return;
-			Logging.Debug("We have a background.");
+			//Logging.Debug("We have a background.");
 			_backgroundProgram.Use();
-			Logging.Debug("Set background program.");
+			//Logging.Debug("Set background program.");
 			GL.ActiveTexture(TextureUnit.Texture0);
-			Logging.Debug("Set active texture.");
+			//Logging.Debug("Set active texture.");
 			GlUtility.BindTexture(_backgroundTexture);
 
-			Logging.Debug("Bound background texture.");
+			//Logging.Debug("Bound background texture.");
 
 			_backgroundProgram["projection_matrix"].SetValue(fov);
 			_backgroundProgram["view_matrix"].SetValue(cameraView);
 
-			Logging.Debug("Bound background uniforms.");
+			//Logging.Debug("Bound background uniforms.");
 
 			GlUtility.BindBuffer(_points);
 
-			Logging.Debug("Bound background points.");
+			//Logging.Debug("Bound background points.");
 
 			//vertexPosition
 			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, _points.PointerType, false, 5 * Marshal.SizeOf(typeof(float)), IntPtr.Zero);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
 
-			Logging.Debug("Bound background positions to array.");
+			//Logging.Debug("Bound background positions to array.");
 
 			GL.DisableVertexAttribArray(ShaderProgram.VertexColor);
 
-			Logging.Debug("Disabled VertexColor array.");
+			//Logging.Debug("Disabled VertexColor array.");
 
 			//textureCoords
 			GL.VertexAttribPointer(ShaderProgram.TextureCoords, 2, _points.PointerType, true, 5 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.TextureCoords);
 
-			Logging.Debug("Bound background texture coords to array.");
+			//Logging.Debug("Bound background texture coords to array.");
 
 			GlUtility.BindBuffer(_backgroundElements);
 			GL.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-			Logging.Debug("Exit background draw.");
+			//Logging.Debug("Exit background draw.");
 		}
 
 		private void InitializeBackground()
@@ -170,8 +171,8 @@ void main(void)
 	
 	vec3 ambient = ambientStrength * lightColor;
 
-    vec3 result = ambient * color;
-    fragment = vec4(result.xyz, 1.0f);
+    vec3 result = ambient * color.rgb;
+    fragment = vec4(result, 1.0f);
 }
 ";
 

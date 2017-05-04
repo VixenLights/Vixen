@@ -630,7 +630,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void UpdateDrawPoints(int referenceHeight)
 		{
-			//Logging.Debug("Drawing Shape {0}.", ToString());
+			//Logging.Debug("Updating Drawing Shape {0}.", ToString());
 
 			_points.Clear();
 			if (!_pixelCache.Any()) return;
@@ -652,37 +652,43 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Draw(ShaderProgram program)
 		{
-			if (!_points.Any()) return;
+			//Logging.Debug("Entering Draw.");
+			if (!_points.Any())
+			{
+				//Logging.Debug("Exiting Draw.");
+				return;
+			}
 
 			program["pointSize"].SetValue((float)PixelSize);
 			VBO<float> points = new VBO<float>(_points.ToArray());
 
-			Logging.Debug("Created VBO.");
+			//Logging.Debug("Created VBO.");
 
 			GlUtility.BindBuffer(points);
 
-			Logging.Debug("Buffer Bound.");
+			//Logging.Debug("Buffer Bound.");
 			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
 
-			Logging.Debug("Point pointer set.");
+			//Logging.Debug("Point pointer set.");
 
 			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
 
 			GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
 
-			Logging.Debug("Color pointer set.");
+			//Logging.Debug("Color pointer set.");
 
-			Logging.Debug("Beginning draw.");
+			//Logging.Debug("Beginning draw.");
 
 			// draw the points
 			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 7);
 
-			Logging.Debug("Draw completed for shape.");
+			//Logging.Debug("Draw completed for shape.");
 			points.Dispose();
 
-			Logging.Debug("VBO Disposed.");
+			//Logging.Debug("VBO Disposed.");
+			//Logging.Debug("Exiting Draw.");
 		}
 
 		
