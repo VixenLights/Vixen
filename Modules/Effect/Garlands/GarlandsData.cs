@@ -20,9 +20,9 @@ namespace VixenModules.Effect.Garlands
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
 			Direction = GarlandsDirection.Up;
 			Iterations = 1;
-			Speed = 30;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 30.0, 30.0 }));
 			MovementType = MovementType.Iterations;
-			Spacing = 2;
+			SpacingCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			Type = 0;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
@@ -40,20 +40,46 @@ namespace VixenModules.Effect.Garlands
 		[DataMember]
 		public int Iterations { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
 
 		[DataMember]
 		public int Type { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int Spacing { get; set; }
+
+		[DataMember]
+		public Curve SpacingCurve { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (SpacingCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(Spacing, 20, 1);
+				SpacingCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				Spacing = 0;
+
+				if (SpeedCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(Speed, 100, 1);
+					SpeedCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+					Speed = 0;
+				}
+			}
+		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -62,9 +88,9 @@ namespace VixenModules.Effect.Garlands
 				Colors = Colors.ToList(),
 				Direction = Direction,
 				Iterations = Iterations,
-				Speed = Speed,
+				SpeedCurve = new Curve(SpeedCurve),
 				Orientation = Orientation,
-				Spacing = Spacing,
+				SpacingCurve = new Curve(SpacingCurve),
 				Type = Type,
 				MovementType = MovementType,
 				LevelCurve = new Curve(LevelCurve)
