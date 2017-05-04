@@ -97,18 +97,12 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
-		[ProviderCategory(@"Setup", 0)]
-		[ProviderDisplayName(@"Orientation")]
-		[ProviderDescription(@"Orientation")]
-		[PropertyOrder(2)]
-		public abstract StringOrientation StringOrientation { get; set; }
-
 		[Value]
 		[Browsable(false)]
 		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"TargetPositioning")]
 		[ProviderDescription(@"TargetPositioning")]
-		[PropertyOrder(3)]
+		[PropertyOrder(2)]
 		public TargetPositioningType TargetPositioning
 		{
 			get { return EffectModuleData.TargetPositioning; }
@@ -125,6 +119,12 @@ namespace VixenModules.Effect.Effect
 				OnPropertyChanged();
 			}
 		}
+
+		[ProviderCategory(@"Setup", 0)]
+		[ProviderDisplayName(@"Orientation")]
+		[ProviderDescription(@"Orientation")]
+		[PropertyOrder(3)]
+		public abstract StringOrientation StringOrientation { get; set; }
 
 		[Browsable(false)]
 		public virtual Color BaseColor { 
