@@ -234,10 +234,10 @@ namespace VixenModules.Effect.Plasma
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			var speed = CalculateSpeed(intervalPosFactor);
-			double position = GetEffectTimeIntervalPosition(frame) * speed * 100;
+			double position = intervalPos * speed * 100;
 			double plasmaSpeed = (101 - speed) * 3;
 			var time = (position + 1.0)/plasmaSpeed;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 
 			for (int x = 0; x < BufferWi; x++)
 			{
@@ -257,10 +257,10 @@ namespace VixenModules.Effect.Plasma
 				var intervalPosFactor = intervalPos * 100;
 				var speed = CalculateSpeed(intervalPosFactor);
 				frameBuffer.CurrentFrame = frame;
-				double position = GetEffectTimeIntervalPosition(frame) * speed * 100;
+				double position = intervalPos * speed * 100;
 				double plasmaSpeed = (101 - speed) * 3;
 				var time = (position + 1.0) / plasmaSpeed;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{

@@ -76,8 +76,8 @@ namespace VixenModules.Effect.Plasma
 			PlasmaData result = new PlasmaData
 			{
 				Colors = Colors.ToList(),
-				SpeedCurve = new Curve(LevelCurve),
-				LineDensityCurve = new Curve(LevelCurve),
+				SpeedCurve = new Curve(SpeedCurve),
+				LineDensityCurve = new Curve(LineDensityCurve),
 				PlasmaStyle = PlasmaStyle,
 				Orientation = Orientation,
 				ColorType = ColorType,
