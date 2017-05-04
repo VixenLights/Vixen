@@ -94,15 +94,14 @@ namespace VixenModules.Effect.Garlands
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(2)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -148,15 +147,14 @@ namespace VixenModules.Effect.Garlands
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Spacing")]
 		[ProviderDescription(@"Adjusts the space between garlands.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
+		//[NumberRange(1, 20, 1)]
 		[PropertyOrder(5)]
-		public int Spacing
+		public Curve SpacingCurve
 		{
-			get { return _data.Spacing; }
+			get { return _data.SpacingCurve; }
 			set
 			{
-				_data.Spacing = value;
+				_data.SpacingCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -230,7 +228,7 @@ namespace VixenModules.Effect.Garlands
 		{
 			bool movementType = MovementType == MovementType.Speed;
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
-			propertyStates.Add("Speed", movementType);
+			propertyStates.Add("SpeedCurve", movementType);
 			propertyStates.Add("Iterations", !movementType);
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -251,11 +249,13 @@ namespace VixenModules.Effect.Garlands
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 			int width, height;
 			double totalFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime) -1;
-			
-			int pixelSpacing = Spacing * BufferHt / 100 + 3;
+
+			int pixelSpacing = CalculateSpacing(intervalPosFactor) * BufferHt / 100 + 3;
 			if (Direction == GarlandsDirection.Up || Direction == GarlandsDirection.Down)
 			{
 				width = BufferWi;
@@ -276,7 +276,7 @@ namespace VixenModules.Effect.Garlands
 			}
 			else
 			{
-				_speed += Speed;
+				_speed += CalculateSpeed(intervalPosFactor);
 				garlandsState = (limit - _speed % limit) / 4; //Speed
 			}
 			_frames++;
@@ -366,6 +366,22 @@ namespace VixenModules.Effect.Garlands
 					}
 				}
 			}
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateSpacing(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpacingCurve.GetValue(intervalPos), 20, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
 		// return a value between c1 and c2
