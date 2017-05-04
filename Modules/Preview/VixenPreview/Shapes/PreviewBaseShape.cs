@@ -672,7 +672,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 			//Logging.Debug("Point pointer set.");
 
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, SevenFloatDataSize, Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
 
 			GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);

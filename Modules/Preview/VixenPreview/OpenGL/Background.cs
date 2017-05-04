@@ -67,7 +67,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Logging.Debug("Disabled VertexColor array.");
 
 			//textureCoords
-			GL.VertexAttribPointer(ShaderProgram.TextureCoords, 2, _points.PointerType, true, 5 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
+			GL.VertexAttribPointer(ShaderProgram.TextureCoords, 2, _points.PointerType, false, 5 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.TextureCoords);
 
 			//Logging.Debug("Bound background texture coords to array.");
@@ -115,10 +115,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_points = new VBO<float>(new[] {
 
 				//Positions        /// Tex Coord
-				Width, Height, -.001f,     1f, 1f,         //Top Right
-				Width, 0f, -.001f,      1f, 0f,		//Bottom Right
-				0f, 0f, -.001f,      0f, 0f,		//Bottom Left
-				0f, Height, -.001f,     0f, 1f			//Top Left
+				Width, Height, -.1f,     1f, 1f,         //Top Right
+				Width, 0f, -.1f,      1f, 0f,		//Bottom Right
+				0f, 0f, -.1f,      0f, 0f,		//Bottom Left
+				0f, Height, -.1f,     0f, 1f			//Top Left
 			});
 
 			//Form two triangles
@@ -149,7 +149,7 @@ uniform mat4 model_matrix;
 void main(void)
 {
     texCoord = textureCoord;
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition.xyz, 1);
+    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
 }
 ";
 

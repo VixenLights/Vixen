@@ -43,6 +43,7 @@
 			this.Name = "OpenGlPreviewForm";
 			this.Text = "Preview";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PreviewWindow_FormClosing);
+			this.Move += new System.EventHandler(this.OpenGlPreviewForm_Move);
 			this.Resize += new System.EventHandler(this.glControl_Resize);
 			this.ResumeLayout(false);
 
