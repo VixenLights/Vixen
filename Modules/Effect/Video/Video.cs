@@ -504,11 +504,12 @@ namespace VixenModules.Effect.Video
 		#region Render Video Effect
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
+			double position = (intervalPos * Speed) % 1;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			double adjustBrightness = CalculateIncreaseBrightness(intervalPosFactor);
+
 
 			// If we don't have any pictures, do nothing!
 			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
@@ -604,7 +605,7 @@ namespace VixenModules.Effect.Video
 					if (fpColor != Color.Transparent && fpColor != Color.Black)
 					{
 						var hsv = HSV.FromRGB(fpColor);
-						double tempV = hsv.V * level * ((double)CalculateIncreaseBrightness(intervalPosFactor) / 10);
+						double tempV = hsv.V * level * (adjustBrightness / 10);
 						if (tempV > 1)
 							tempV = 1;
 						hsv.V = tempV;
