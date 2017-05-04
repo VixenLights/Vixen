@@ -65,6 +65,7 @@ namespace VixenModules.Effect.Effect
 		}
 
 		[ReadOnly(true)]
+		[Browsable(false)]
 		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"StringCount")]
 		[ProviderDescription(@"StringCount")]
@@ -81,6 +82,7 @@ namespace VixenModules.Effect.Effect
 		}
 
 		[ReadOnly(true)]
+		[Browsable(false)]
 		[ProviderCategory(@"Setup", 0)]
 		[ProviderDisplayName(@"PixelsPerString")]
 		[ProviderDescription(@"PixelsPerString")]
