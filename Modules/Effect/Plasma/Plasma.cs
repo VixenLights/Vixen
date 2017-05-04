@@ -62,15 +62,14 @@ namespace VixenModules.Effect.Plasma
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(1)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -98,15 +97,14 @@ namespace VixenModules.Effect.Plasma
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Line Density")]
 		[ProviderDescription(@"Line Density")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 10, 1)]
+		//[NumberRange(1, 10, 1)]
 		[PropertyOrder(2)]
-		public int LineDensity
+		public Curve LineDensityCurve
 		{
-			get { return _data.LineDensity; }
+			get { return _data.LineDensityCurve; }
 			set
 			{
-				_data.LineDensity = value;
+				_data.LineDensityCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -191,6 +189,20 @@ namespace VixenModules.Effect.Plasma
 		}
 		#endregion
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/plasma/"; }
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -219,16 +231,19 @@ namespace VixenModules.Effect.Plasma
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double position = GetEffectTimeIntervalPosition(frame)*Speed*100;
-			double plasmaSpeed = (101 - Speed)*3;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			var speed = CalculateSpeed(intervalPosFactor);
+			double position = intervalPos * speed * 100;
+			double plasmaSpeed = (101 - speed) * 3;
 			var time = (position + 1.0)/plasmaSpeed;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
 				{
-					CalculatePixel(x, y, time, frame, level, frameBuffer);
+					CalculatePixel(x, y, time, frame, level, frameBuffer, intervalPosFactor);
 				}
 			}
 		}
@@ -238,26 +253,31 @@ namespace VixenModules.Effect.Plasma
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
+				var intervalPos = GetEffectTimeIntervalPosition(frame);
+				var intervalPosFactor = intervalPos * 100;
+				var speed = CalculateSpeed(intervalPosFactor);
 				frameBuffer.CurrentFrame = frame;
-				double position = GetEffectTimeIntervalPosition(frame) * Speed * 100;
-				double plasmaSpeed = (101 - Speed) * 3;
+				double position = intervalPos * speed * 100;
+				double plasmaSpeed = (101 - speed) * 3;
 				var time = (position + 1.0) / plasmaSpeed;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
 					foreach (var elementLocation in elementLocations)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, time, frame, level, frameBuffer);
+						CalculatePixel(elementLocation.X, elementLocation.Y, time, frame, level, frameBuffer, intervalPosFactor);
 					}
 				}
 			}
 		}
 
-		private void CalculatePixel(int x, int y, double time, int frame, double level, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, double time, int frame, double level, IPixelFrameBuffer frameBuffer, double intervalPosFactor)
 		{
 			int yCoord = y;
 			int xCoord = x;
+			var lineDensity = CalculateLineDensity(intervalPosFactor);
+
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				//Flip me over so and offset my coordinates I can act like the string version
@@ -291,31 +311,47 @@ namespace VixenModules.Effect.Plasma
 			{
 				case PlasmaColorType.Normal:
 
-					var h = Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1*0.5;
+					var h = Math.Sin(v * lineDensity * Pi + 2 * Pi / 3) + 1 * 0.5;
 					color = GetMultiColorBlend(h/2, frame);
 					break;
 				case PlasmaColorType.Preset1:
-					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
+					color = Color.FromArgb((int)((Math.Sin(v * lineDensity * Pi) + 1) * 128), (int)((Math.Cos(v * lineDensity * Pi) + 1) * 128),
 						0);
 					break;
 				case PlasmaColorType.Preset2:
-					color = Color.FromArgb(1, (int) ((Math.Cos(v*LineDensity*Pi) + 1)*128),
-						(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
+					color = Color.FromArgb(1, (int)((Math.Cos(v * lineDensity * Pi) + 1) * 128),
+						(int)((Math.Sin(v * lineDensity * Pi) + 1) * 128));
 					break;
 
 				case PlasmaColorType.Preset3:
-					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
-						(int) ((Math.Sin(v*LineDensity*Pi + 2*Pi/3) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi + 4*Pi/3) + 1)*128));
+					color = Color.FromArgb((int)((Math.Sin(v * lineDensity * Pi) + 1) * 128),
+						(int)((Math.Sin(v * lineDensity * Pi + 2 * Pi / 3) + 1) * 128), (int)((Math.Sin(v * lineDensity * Pi + 4 * Pi / 3) + 1) * 128));
 					break;
 				case PlasmaColorType.Preset4:
-					color = Color.FromArgb((int) ((Math.Sin(v*LineDensity*Pi) + 1)*128), (int) ((Math.Sin(v*LineDensity*Pi) + 1)*128),
-						(int) ((Math.Sin(v*LineDensity*Pi) + 1)*128));
+					color = Color.FromArgb((int)((Math.Sin(v * lineDensity * Pi) + 1) * 128), (int)((Math.Sin(v * lineDensity * Pi) + 1) * 128),
+						(int)((Math.Sin(v * lineDensity * Pi) + 1) * 128));
 					break;
 			}
 			HSV hsv = HSV.FromRGB(color);
 			hsv.V = hsv.V*level;
 			frameBuffer.SetPixel(xCoord, yCoord, hsv);
 
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateLineDensity(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(LineDensityCurve.GetValue(intervalPos), 10, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
 		public Color GetMultiColorBlend(double n, int frame)
