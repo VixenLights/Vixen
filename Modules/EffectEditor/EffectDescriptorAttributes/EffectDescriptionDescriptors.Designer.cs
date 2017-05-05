@@ -170,6 +170,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the horizontal plane..
+        /// </summary>
+        internal static string CenterX {
+            get {
+                return ResourceManager.GetString("CenterX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the vertical plane..
+        /// </summary>
+        internal static string CenterY {
+            get {
+                return ResourceManager.GetString("CenterY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets percentage of change..
         /// </summary>
         internal static string ChangePercent {
@@ -584,6 +602,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The radius of the circle over the time of the effect..
+        /// </summary>
+        internal static string RadiusCurve {
+            get {
+                return ResourceManager.GetString("RadiusCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the number of times the color pattern repeats within the pattern..
         /// </summary>
         internal static string Repeat {
@@ -841,6 +868,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalBlend {
             get {
                 return ResourceManager.GetString("VerticalBlend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how the wave accelerates out from the center over time. .
+        /// </summary>
+        internal static string WaveAcceleration {
+            get {
+                return ResourceManager.GetString("WaveAcceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The width over time of the effect..
+        /// </summary>
+        internal static string WidthCurve {
+            get {
+                return ResourceManager.GetString("WidthCurve", resourceCulture);
             }
         }
         

@@ -45,7 +45,7 @@ namespace VixenModules.Effect.Shockwave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Center X")]
-		[ProviderDescription(@"The X adjustment for the center of the wave.")]
+		[ProviderDescription(@"CenterX")]
 		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(3)]
 		public Curve CenterXCurve
@@ -62,7 +62,7 @@ namespace VixenModules.Effect.Shockwave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Center Y")]
-		[ProviderDescription(@"The Y adjustment for the center of the wave.")]
+		[ProviderDescription(@"CenterY")]
 		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(4)]
 		public Curve CenterYCurve
@@ -78,8 +78,8 @@ namespace VixenModules.Effect.Shockwave
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Start Radius")]
-		[ProviderDescription(@"The starting radius of the wave.")]
+		[ProviderDisplayName(@"Radius")]
+		[ProviderDescription(@"RadiusCurve")]
 		//[NumberRange(0, 750, 1)]
 		[PropertyOrder(5)]
 		public Curve RadiusCurve
@@ -92,29 +92,11 @@ namespace VixenModules.Effect.Shockwave
 				OnPropertyChanged();
 			}
 		}
-
-		//[Value]
-		//[ProviderCategory(@"Config", 1)]
-		//[ProviderDisplayName(@"End Radius")]
-		//[ProviderDescription(@"The ending radius of the wave.")]
-		////[NumberRange(0, 750, 1)]
-		//[PropertyOrder(6)]
-		//public Curve EndRadiusCurve
-		//{
-		//	get { return _data.EndRadiusCurve; }
-		//	set
-		//	{
-		//		_data.EndRadiusCurve = value;
-		//		IsDirty = true;
-		//		OnPropertyChanged();
-		//	}
-		//}
-
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Start Width")]
-		[ProviderDescription(@"The starting width of the wave.")]
+		[ProviderDisplayName(@"Width")]
+		[ProviderDescription(@"WidthCurve")]
 		//[NumberRange(0, 255, 1)]
 		[PropertyOrder(7)]
 		public Curve WidthCurve
@@ -127,29 +109,11 @@ namespace VixenModules.Effect.Shockwave
 				OnPropertyChanged();
 			}
 		}
-
-		//[Value]
-		//[ProviderCategory(@"Config", 1)]
-		//[ProviderDisplayName(@"End Width")]
-		//[ProviderDescription(@"The ending width of the wave.")]
-		////[NumberRange(0, 255, 1)]
-		//[PropertyOrder(8)]
-		//public Curve EndWidthCurve
-		//{
-		//	get { return _data.EndWidthCurve; }
-		//	set
-		//	{
-		//		_data.EndWidthCurve = value;
-		//		IsDirty = true;
-		//		OnPropertyChanged();
-		//	}
-		//}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Acceleration")]
-		[ProviderDescription(@"Controls how the wave accelerates out from the center."
-				+" Positive numbers will go faster the further from the center it gets, while negative will slow it down.")]
+		[ProviderDescription(@"WaveAcceleration")]
 		//[NumberRange(-10, 10, 1)]
 		[PropertyOrder(9)]
 		public Curve AccelerationCurve

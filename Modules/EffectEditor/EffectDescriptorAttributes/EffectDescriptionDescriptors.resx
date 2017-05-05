@@ -393,4 +393,19 @@
   <data name="Twist" xml:space="preserve">
     <value>Configures the amount of rotation or twist the Pinwheel arm has.</value>
   </data>
+  <data name="CenterX" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the horizontal plane.</value>
+  </data>
+  <data name="CenterY" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the vertical plane.</value>
+  </data>
+  <data name="RadiusCurve" xml:space="preserve">
+    <value>The radius of the circle over the time of the effect.</value>
+  </data>
+  <data name="WaveAcceleration" xml:space="preserve">
+    <value>Controls how the wave accelerates out from the center over time. </value>
+  </data>
+  <data name="WidthCurve" xml:space="preserve">
+    <value>The width over time of the effect.</value>
+  </data>
 </root>
