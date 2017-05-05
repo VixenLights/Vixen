@@ -220,8 +220,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextMode")]
-		[ProviderDescription(@"TextMode")]
+		[ProviderDisplayName(@"Text Layout")]
+		[ProviderDescription(@"Text Layout")]
 		[PropertyOrder(5)]
 		public TextMode TextMode
 		{
