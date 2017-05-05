@@ -620,7 +620,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to String Orientation.
+        ///   Looks up a localized string similar to Orientation.
         /// </summary>
         internal static string Orientation {
             get {

@@ -253,7 +253,7 @@
     <value>Min</value>
   </data>
   <data name="Orientation" xml:space="preserve">
-    <value>String Orientation</value>
+    <value>Orientation</value>
   </data>
   <data name="OuterColor" xml:space="preserve">
     <value>Outer Color</value>
