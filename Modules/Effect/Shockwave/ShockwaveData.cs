@@ -94,6 +94,17 @@ namespace VixenModules.Effect.Shockwave
 				}
 				if (CenterYCurve == null)
 				{
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						CenterY = 100 - CenterY;
+					}
+					else if(Orientation == StringOrientation.Vertical)
+					{
+						//fix the backwards x y adjustment when strings are vertical
+						var tempX = CenterX;
+						CenterX = CenterY;
+						CenterY = tempX;
+					}
 					CenterYCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new double[] { CenterY, CenterY }));
 					CenterY = 0;
 				}

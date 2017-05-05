@@ -219,8 +219,20 @@ namespace VixenModules.Effect.Shockwave
 			double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor))*100.0;
 			Color c = Color.GetColorAt(intervalPos);
 
-			double posX = BufferWi * CalculateCenterX(intervalPosFactor) / 100.0;
-			double posY = BufferHt * CalculateCenterY(intervalPosFactor) / 100.0;
+			double posX;
+			double posY;
+
+			if (StringOrientation == StringOrientation.Vertical)
+			{
+				posX = BufferWi * CalculateCenterY(intervalPosFactor) / 100.0;
+				posY = BufferHt * CalculateCenterX(intervalPosFactor) / 100.0;
+			}
+			else
+			{
+				posX = BufferWi * CalculateCenterX(intervalPosFactor) / 100.0;
+				posY = BufferHt * CalculateCenterY(intervalPosFactor) / 100.0;
+			}
+
 			Point centerPoint = new Point((int)posX, (int)posY);
 			double centerRadius = CalculateRadius(effectPositionAdjust);
 			double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
@@ -267,8 +279,8 @@ namespace VixenModules.Effect.Shockwave
 			{
 				var intervalPos = GetEffectTimeIntervalPosition(effectFrame);
 				var intervalPosFactor = intervalPos * 100;
-				double posX = BufferWi * (CalculateCenterX(intervalPosFactor) / 100.0) + BufferWiOffset; 
-				double posY = BufferHt * (CalculateCenterY(intervalPosFactor) / 100.0) + BufferHtOffset;
+				double posX = BufferWi * CalculateCenterX(intervalPosFactor) / 100.0 + BufferWiOffset; 
+				double posY = BufferHt * (100-CalculateCenterY(intervalPosFactor)) / 100.0 + BufferHtOffset;
 
 				Point centerPoint = new Point((int)posX, (int)posY);
 
