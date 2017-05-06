@@ -6,6 +6,7 @@ using Vixen.Attributes;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -44,16 +45,15 @@ namespace VixenModules.Effect.Shockwave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Center X")]
-		[ProviderDescription(@"The X adjustment for the center of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
+		[ProviderDescription(@"CenterX")]
+		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(3)]
-		public int CenterX
+		public Curve CenterXCurve
 		{
-			get { return _data.CenterX; }
+			get { return _data.CenterXCurve; }
 			set
 			{
-				_data.CenterX = value;
+				_data.CenterXCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -62,16 +62,15 @@ namespace VixenModules.Effect.Shockwave
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Center Y")]
-		[ProviderDescription(@"The Y adjustment for the center of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
+		[ProviderDescription(@"CenterY")]
+		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(4)]
-		public int CenterY
+		public Curve CenterYCurve
 		{
-			get { return _data.CenterY; }
+			get { return _data.CenterYCurve; }
 			set
 			{
-				_data.CenterY = value;
+				_data.CenterYCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -79,91 +78,50 @@ namespace VixenModules.Effect.Shockwave
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Start Radius")]
-		[ProviderDescription(@"The starting radius of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 750, 1)]
+		[ProviderDisplayName(@"Radius")]
+		[ProviderDescription(@"RadiusCurve")]
+		//[NumberRange(0, 750, 1)]
 		[PropertyOrder(5)]
-		public int StartRadius
+		public Curve RadiusCurve
 		{
-			get { return _data.StartRadius; }
+			get { return _data.RadiusCurve; }
 			set
 			{
-				_data.StartRadius = value;
+				_data.RadiusCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"End Radius")]
-		[ProviderDescription(@"The ending radius of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 750, 1)]
-		[PropertyOrder(6)]
-		public int EndRadius
-		{
-			get { return _data.EndRadius; }
-			set
-			{
-				_data.EndRadius = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Start Width")]
-		[ProviderDescription(@"The starting width of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 255, 1)]
+		[ProviderDisplayName(@"Width")]
+		[ProviderDescription(@"WidthCurve")]
+		//[NumberRange(0, 255, 1)]
 		[PropertyOrder(7)]
-		public int StartWidth
+		public Curve WidthCurve
 		{
-			get { return _data.StartWidth; }
+			get { return _data.WidthCurve; }
 			set
 			{
-				_data.StartWidth = value;
+				_data.WidthCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"End Width")]
-		[ProviderDescription(@"The ending width of the wave.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 255, 1)]
-		[PropertyOrder(8)]
-		public int EndWidth
-		{
-			get { return _data.EndWidth; }
-			set
-			{
-				_data.EndWidth = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
+		
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Acceleration")]
-		[ProviderDescription(@"Controls how the wave accelerates out from the center."
-				+" Positive numbers will go faster the further from the center it gets, while negative will slow it down.")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-10, 10, 1)]
+		[ProviderDescription(@"WaveAcceleration")]
+		//[NumberRange(-10, 10, 1)]
 		[PropertyOrder(9)]
-		public int Acceleration
+		public Curve AccelerationCurve
 		{
-			get { return _data.Acceleration; }
+			get { return _data.AccelerationCurve; }
 			set
 			{
-				_data.Acceleration = value;
+				_data.AccelerationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -209,6 +167,20 @@ namespace VixenModules.Effect.Shockwave
 
 		#endregion
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/shockwave/"; }
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -242,15 +214,28 @@ namespace VixenModules.Effect.Shockwave
 
 		protected override void RenderEffect(int effectFrame, IPixelFrameBuffer frameBuffer)
 		{
-			double position = GetEffectTimeIntervalPosition(effectFrame);
-			double effectPositionAdjust = CalculateAcceleration(position, Acceleration);
-			Color c = Color.GetColorAt(position);
+			var intervalPos = GetEffectTimeIntervalPosition(effectFrame);
+			var intervalPosFactor = intervalPos * 100;
+			double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor))*100.0;
+			Color c = Color.GetColorAt(intervalPos);
 
-			double posX = BufferWi * CenterX / 100.0;
-			double posY = BufferHt * CenterY / 100.0;
+			double posX;
+			double posY;
+
+			if (StringOrientation == StringOrientation.Vertical)
+			{
+				posX = BufferWi * CalculateCenterY(intervalPosFactor) / 100.0;
+				posY = BufferHt * CalculateCenterX(intervalPosFactor) / 100.0;
+			}
+			else
+			{
+				posX = BufferWi * CalculateCenterX(intervalPosFactor) / 100.0;
+				posY = BufferHt * CalculateCenterY(intervalPosFactor) / 100.0;
+			}
+
 			Point centerPoint = new Point((int)posX, (int)posY);
-			double centerRadius = StartRadius + (EndRadius - StartRadius) * effectPositionAdjust;
-			double halfWidth = (StartWidth + (EndWidth - StartWidth) * effectPositionAdjust) / 2.0;
+			double centerRadius = CalculateRadius(effectPositionAdjust);
+			double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
 			var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 			var radius2 = centerRadius + halfWidth;
 			
@@ -287,20 +272,24 @@ namespace VixenModules.Effect.Shockwave
 			//It kinda stinks so much of this code duplicates the RenderEffect method, but 
 			//there are enough differences in the two that it needs to be. Trying to refactor
 			//small parts of it out into reusable chunks is probably not fruitful at this time.
-			double posX = (BufferWi * CenterX / 100.0) + BufferWiOffset;
-			double posY = (BufferHt * CenterY / 100.0) + BufferHtOffset;
-			Point centerPoint = new Point((int)posX, (int)posY);
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			Point currentPoint = Point.Empty;
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
 			{
+				var intervalPos = GetEffectTimeIntervalPosition(effectFrame);
+				var intervalPosFactor = intervalPos * 100;
+				double posX = BufferWi * CalculateCenterX(intervalPosFactor) / 100.0 + BufferWiOffset; 
+				double posY = BufferHt * (100-CalculateCenterY(intervalPosFactor)) / 100.0 + BufferHtOffset;
+
+				Point centerPoint = new Point((int)posX, (int)posY);
+
 				frameBuffer.CurrentFrame = effectFrame;
-				double position = GetEffectTimeIntervalPosition(effectFrame);
-				double effectPositionAdjust = CalculateAcceleration(position, Acceleration);
-				Color c = Color.GetColorAt(position);
-				double centerRadius = StartRadius + (EndRadius - StartRadius) * effectPositionAdjust;
-				double halfWidth = (StartWidth + (EndWidth - StartWidth) * effectPositionAdjust) / 2.0;
+				double effectPositionAdjust = CalculateAcceleration(intervalPos, CalculateAcceleration(intervalPosFactor))*100.0;
+				Color c = Color.GetColorAt(intervalPos);
+				double centerRadius = CalculateRadius(effectPositionAdjust);
+				double halfWidth = CalculateWidth(effectPositionAdjust) / 2.0;
+
 				var radius1 = Math.Max(0.0, centerRadius - halfWidth);
 				var radius2 = centerRadius + halfWidth;
 
@@ -343,6 +332,31 @@ namespace VixenModules.Effect.Shockwave
 
 			}
 
+		}
+
+		private double CalculateWidth(double intervalPos)
+		{
+			return ScaleCurveToValue(WidthCurve.GetValue(intervalPos), 255, 0);
+		}
+
+		private int CalculateCenterX(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(CenterXCurve.GetValue(intervalPos), 100, 0);
+		}
+
+		private int CalculateCenterY(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(CenterYCurve.GetValue(intervalPos), 100, 0);
+		}
+
+		private int CalculateAcceleration(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(AccelerationCurve.GetValue(intervalPos), 10, -10);
+		}
+
+		private double CalculateRadius(double intervalPos)
+		{
+			return ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), 750, 0);
 		}
 
 		private double DistanceFromCenter(Point center, Point point)
