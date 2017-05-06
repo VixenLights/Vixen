@@ -269,28 +269,11 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Color Effect")]
-		[ProviderDescription(@"ColorEffect")]
-		[PropertyOrder(5)]
-		public ColorEffect ColorEffect
-		{
-			get { return _data.ColorEffect; }
-			set
-			{
-				_data.ColorEffect = value;
-				IsDirty = true;
-				UpdateColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Movement Rate")]
 		[ProviderDescription(@"MovementRate")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(5)]
 		public int MovementRate
 		{
 			get { return _data.MovementRate; }
@@ -323,9 +306,26 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Effect Color", 3)]
+		[ProviderDisplayName(@"Color Effect")]
+		[ProviderDescription(@"ColorEffect")]
+		[PropertyOrder(0)]
+		public ColorEffect ColorEffect
+		{
+			get { return _data.ColorEffect; }
+			set
+			{
+				_data.ColorEffect = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Effect Color", 3)]
 		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(0)]
+		[PropertyOrder(1)]
 		public ColorGradient Colors
 		{
 			get { return _data.Colors; }
@@ -342,9 +342,10 @@ namespace VixenModules.Effect.Picture
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(0)]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
@@ -357,7 +358,7 @@ namespace VixenModules.Effect.Picture
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Increase Brightness")]
 		[ProviderDescription(@"Increase Brightness")]
 		//[NumberRange(10, 100, 1)]
