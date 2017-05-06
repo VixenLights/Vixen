@@ -115,23 +115,6 @@ namespace VixenModules.Effect.SnowStorm
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
-		[PropertyOrder(4)]
-		public SnowStormColorType ColorType
-		{
-			get { return _data.ColorType; }
-			set
-			{
-				_data.ColorType = value;
-				IsDirty = true;
-				UpdateColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Reverse Direction")]
 		[ProviderDescription(@"Reverse Direction")]
 		[PropertyOrder(5)]
@@ -149,6 +132,23 @@ namespace VixenModules.Effect.SnowStorm
 		#endregion
 
 		#region Color properties
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"Color Type")]
+		[ProviderDescription(@"Color Type")]
+		[PropertyOrder(0)]
+		public SnowStormColorType ColorType
+		{
+			get { return _data.ColorType; }
+			set
+			{
+				_data.ColorType = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
