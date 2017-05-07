@@ -74,28 +74,13 @@ namespace VixenModules.Effect.Garlands
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Direction")]
-		[ProviderDescription(@"Changes the direction that the garlands stack.")]
-		[PropertyOrder(1)]
-		public GarlandsDirection Direction
-		{
-			get { return _data.Direction; }
-			set
-			{
-				_data.Direction = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 		//[NumberRange(1, 100, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(1)]
 		public Curve SpeedCurve
 		{
 			get { return _data.SpeedCurve; }
@@ -113,13 +98,29 @@ namespace VixenModules.Effect.Garlands
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(2)]
 		public int Iterations
 		{
 			get { return _data.Iterations; }
 			set
 			{
 				_data.Iterations = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Changes the direction that the garlands stack.")]
+		[PropertyOrder(3)]
+		public GarlandsDirection Direction
+		{
+			get { return _data.Direction; }
+			set
+			{
+				_data.Direction = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
