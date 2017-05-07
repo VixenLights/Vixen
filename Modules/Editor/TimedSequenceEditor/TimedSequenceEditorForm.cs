@@ -2406,7 +2406,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ToolStripMenuItem contextMenuItemEditTime = new ToolStripMenuItem("Edit Time") { Image = Resources.clock_edit };
 					contextMenuItemEditTime.Click += (mySender, myE) =>
 					{
-						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan);
+						EffectTimeEditor editor = new EffectTimeEditor(tse.EffectNode.StartTime, tse.EffectNode.TimeSpan, SequenceLength);
 						if (editor.ShowDialog(this) != DialogResult.OK) return;
 
 						if (TimelineControl.SelectedElements.Any())
