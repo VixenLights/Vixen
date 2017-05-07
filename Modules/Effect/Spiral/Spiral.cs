@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -66,6 +67,7 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data.Direction = value;
+				UpdateDirectionAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -247,6 +249,7 @@ namespace VixenModules.Effect.Spiral
 		#endregion
 
 		#region Information
+		#region Update Attributes
 
 		public override string Information
 		{
@@ -261,6 +264,26 @@ namespace VixenModules.Effect.Spiral
 		#endregion
 
 
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+			UpdateDirectionAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateDirectionAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("Speed", Direction != SpiralDirection.None);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -271,13 +294,7 @@ namespace VixenModules.Effect.Spiral
 				IsDirty = true;
 			}
 		}
-
-		private void InitAllAttributes()
-		{
-			UpdateStringOrientationAttributes(true);
-		}
-
-
+	
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
