@@ -591,8 +591,14 @@ namespace VixenModules.Effect.Meteors
 					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					if (decPlaces <= 40 || decPlaces >= 60)
-						frameBuffer.SetPixel(colorX - (int) (Math.Round(meteor.TailX*ph)), colorY - (int) (Math.Round(meteor.TailY*ph)),
+					{
+						if (MeteorEffect == MeteorsEffect.Explode && ph > 0 && (colorX == (BufferWi / 2) + (int)(Math.Round(meteor.TailX * ph)) || colorX == (BufferWi / 2) - (int)(Math.Round(meteor.TailX * ph)) || colorY == (BufferHt / 2) + (int)(Math.Round(meteor.TailY * ph)) || colorY == (BufferHt / 2) - (int)(Math.Round(meteor.TailY * ph))))
+						{
+							break;
+						}
+						frameBuffer.SetPixel(colorX - (int)(Math.Round(meteor.TailX * ph)), colorY - (int)(Math.Round(meteor.TailY * ph)),
 							hsv);
+					}
 				}
 				if (colorX >= BufferWi + tailLength || colorY >= BufferHt + tailLength || colorX < 0 - tailLength ||
 				    colorY < 0 - tailLength)
