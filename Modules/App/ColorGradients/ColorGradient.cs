@@ -1026,7 +1026,7 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
+		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors, bool drawPoints=false)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
 

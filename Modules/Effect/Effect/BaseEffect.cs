@@ -18,14 +18,25 @@ namespace VixenModules.Effect.Effect
 	/// </summary>
 	public abstract class BaseEffect : EffectModuleInstanceBase
 	{
-		
+		private bool _hasDiscreteColors;
+
 		protected abstract EffectTypeModuleData EffectModuleData { get; }
+
 
 		/// <summary>
 		/// Indicates if there is any discrete colors assigned to any elements this effect targets. It does not mean all of the elements are discrete if true.
 		/// Each effect should set this if it can work on discrete elements
 		/// </summary>
-		protected bool HasDiscreteColors { get; set; }
+		[Browsable(false)]
+		public bool HasDiscreteColors
+		{
+			get { return _hasDiscreteColors; }
+			set
+			{
+				_hasDiscreteColors = value;
+				OnPropertyChanged();
+			}
+		}
 
 		/// <summary>
 		/// Gets the list of valid colors this effect can use and sets the hasDiscreteColors flag if any of it's targeted elements are discrete and have a restricted list.
@@ -38,6 +49,10 @@ namespace VixenModules.Effect.Effect
 			if (validColors.Any())
 			{
 				HasDiscreteColors = true;
+			}
+			else
+			{
+				HasDiscreteColors = false;
 			}
 			return validColors;
 		}

@@ -215,6 +215,7 @@
     <Compile Include="CategoryItem.cs" />
     <Compile Include="Controls\CollectionView.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
+    <Compile Include="Controls\InlineGradientEditor.cs" />
     <Compile Include="Controls\InlineGradientPairCurveEditor.cs" />
     <Compile Include="Controls\InlineCurveEditor.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
