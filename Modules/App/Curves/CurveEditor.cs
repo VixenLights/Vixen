@@ -8,6 +8,7 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
+using System.Windows.Input;
 using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
@@ -15,6 +16,7 @@ namespace VixenModules.App.Curves
 	public partial class CurveEditor : BaseForm
 	{
 		private bool _isMouseDown;
+		private double _tempLocation;
 
 		public CurveEditor()
 		{
@@ -106,28 +108,48 @@ namespace VixenModules.App.Curves
 				pointList.Sort();
 			}
 
-			if (_isMouseDown && ModifierKeys.HasFlag(Keys.Shift))
+			if (_isMouseDown)
 			{
-				double newX, newY;
-				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
-				//Verify the point is in the usable bounds.
-				if (newY > 100)
+				if (ModifierKeys.HasFlag(Keys.Shift))
 				{
-					newY = 100;
-				}
-				else if (newY < 0)
-				{
-					newY = 0;
-				}
-				var points = new PointPairList(new[] {0.0, 100.0}, new[] {newY, newY});
+					double newX, newY;
+					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+					//Verify the point is in the usable bounds.
+					if (newY > 100)
+					{
+						newY = 100;
+					}
+					else if (newY < 0)
+					{
+						newY = 0;
+					}
+					var points = new PointPairList(new[] {0.0, 100.0}, new[] {newY, newY});
 
-				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
-				pointList.Clear();
-				pointList.Add(points);
-				zedGraphControl.Invalidate();
-				txtYValue.Text = newY.ToString();
-				txtXValue.Text = "";
+					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+					pointList.Clear();
+					pointList.Add(points);
+					zedGraphControl.Invalidate();
+					txtYValue.Text = newY.ToString();
+					txtXValue.Text = "";
+				}
+				else
+				{
+					if (Cursor.Current == Cursors.Default)
+					{
+						double newX, newY;
+						zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+						PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+						foreach (var points in pointList)
+						{
+							points.Y = points.Y + (newY - _tempLocation);
+						}
+						_tempLocation = newY;
+						zedGraphControl.Invalidate();
+					}
+				}
 			}
+
+
 			return false;
 		}
 
@@ -204,10 +226,12 @@ namespace VixenModules.App.Curves
 				}
 			}
 			//If Shift key was pressed then Flatten an ddrag curve up or down. 
-			if (ModifierKeys.HasFlag(Keys.Shift))
-			{
-				_isMouseDown = true;
-			}
+		//	if (ModifierKeys.HasFlag(Keys.Shift))
+			//	
+			double new1X;
+			zedGraphControl.GraphPane.ReverseTransform(e.Location, out new1X, out _tempLocation);
+			_isMouseDown = true;
+		//	}
 
 			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null && !ModifierKeys.HasFlag(Keys.Shift))
 			{
