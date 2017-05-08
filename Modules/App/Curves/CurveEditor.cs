@@ -8,11 +8,14 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
 {
 	public partial class CurveEditor : BaseForm
 	{
+		private bool _isMouseDown;
+
 		public CurveEditor()
 		{
 			InitializeComponent();
@@ -102,6 +105,29 @@ namespace VixenModules.App.Curves
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				pointList.Sort();
 			}
+
+			if (_isMouseDown && ModifierKeys.HasFlag(Keys.Shift))
+			{
+				double newX, newY;
+				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+				//Verify the point is in the usable bounds.
+				if (newY > 100)
+				{
+					newY = 100;
+				}
+				else if (newY < 0)
+				{
+					newY = 0;
+				}
+				var points = new PointPairList(new[] {0.0, 100.0}, new[] {newY, newY});
+
+				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+				pointList.Clear();
+				pointList.Add(points);
+				zedGraphControl.Invalidate();
+				txtYValue.Text = newY.ToString();
+				txtXValue.Text = "";
+			}
 			return false;
 		}
 
@@ -119,7 +145,7 @@ namespace VixenModules.App.Curves
 			if (sender.DragEditingPair.Y > 100)
 				sender.DragEditingPair.Y = 100;
 
-			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left)
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && !ModifierKeys.HasFlag(Keys.Shift))
 			{
 				txtXValue.Text = sender.DragEditingPair.X.ToString();
 				txtYValue.Text = sender.DragEditingPair.Y.ToString();
@@ -177,8 +203,13 @@ namespace VixenModules.App.Curves
 					zedGraphControl.Invalidate();
 				}
 			}
+			//If Shift key was pressed then Flatten an ddrag curve up or down. 
+			if (ModifierKeys.HasFlag(Keys.Shift))
+			{
+				_isMouseDown = true;
+			}
 
-			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null)
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null && !ModifierKeys.HasFlag(Keys.Shift))
 			{
 				txtXValue.Text = sender.DragEditingPair.X.ToString();
 				txtYValue.Text = sender.DragEditingPair.Y.ToString();
@@ -190,6 +221,7 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			_isMouseDown = false;
 			return false;
 		}
 
