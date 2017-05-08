@@ -415,7 +415,7 @@
     <value>Min angle the Meteor moves.</value>
   </data>
   <data name="MovementType" xml:space="preserve">
-    <value>Controls the  Type of Movement.</value>
+    <value>Switches effect between speed or iterations.</value>
   </data>
   <data name="RandomPosition" xml:space="preserve">
     <value>Creates new Meteors at a Random Position</value>
@@ -449,5 +449,11 @@
   </data>
   <data name="RandomIntensity" xml:space="preserve">
     <value>Chnages the Intensity for each SnowFlake.</value>
+  </data>
+  <data name="GarlandType" xml:space="preserve">
+    <value>Changes the garland type.</value>
+  </data>
+  <data name="Spacing" xml:space="preserve">
+    <value>Adjusts the space between garlands.</value>
   </data>
 </root>

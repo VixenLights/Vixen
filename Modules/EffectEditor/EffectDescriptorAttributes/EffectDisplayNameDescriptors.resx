@@ -465,4 +465,10 @@
   <data name="RandomIntensity" xml:space="preserve">
     <value>Random Intensity</value>
   </data>
+  <data name="GarlandType" xml:space="preserve">
+    <value>Garland Type</value>
+  </data>
+  <data name="Spacing" xml:space="preserve">
+    <value>Spacing</value>
+  </data>
 </root>

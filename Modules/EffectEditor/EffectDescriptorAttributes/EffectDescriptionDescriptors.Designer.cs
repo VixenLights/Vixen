@@ -377,6 +377,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changes the garland type..
+        /// </summary>
+        internal static string GarlandType {
+            get {
+                return ResourceManager.GetString("GarlandType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the speed at which a gif animates if the image is a animated gif..
         /// </summary>
         internal static string GifSpeed {
@@ -592,8 +601,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Controls the  Type of Movement..
+        ///   Looks up a localized string similar to Switches effect between speed or iterations..
         /// </summary>
         internal static string MovementType {
             get {
@@ -824,6 +832,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string SpeedVariation {
             get {
                 return ResourceManager.GetString("SpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the space between garlands..
+        /// </summary>
+        internal static string Spacing {
+            get {
+                return ResourceManager.GetString("Spacing", resourceCulture);
             }
         }
         
