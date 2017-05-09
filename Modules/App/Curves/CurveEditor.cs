@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources.Properties;
@@ -8,15 +9,13 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
-using System.Windows.Input;
 using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
 {
 	public partial class CurveEditor : BaseForm
 	{
-		private bool _isMouseDown;
-		private double _tempLocation;
+		private double _previousCurveYLocation;
 
 		public CurveEditor()
 		{
@@ -106,15 +105,17 @@ namespace VixenModules.App.Curves
 			if (zedGraphControl.IsEditing) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				pointList.Sort();
+				return false;
 			}
 
-			if (_isMouseDown)
+			//Used to move Curve higher or lower on the grid or when shift is pressed will flatten curve and then move higher or lower on the grid.
+			if (e.Button == MouseButtons.Left)
 			{
+				double newX, newY;
+				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
 				if (ModifierKeys.HasFlag(Keys.Shift))
 				{
-					double newX, newY;
-					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
-					//Verify the point is in the usable bounds.
+					//Verify the point is in the usable bounds. only care about the Y axis.
 					if (newY > 100)
 					{
 						newY = 100;
@@ -134,22 +135,45 @@ namespace VixenModules.App.Curves
 				}
 				else
 				{
-					if (Cursor.Current == Cursors.Default)
+					if (ModifierKeys == Keys.None)
 					{
-						double newX, newY;
-						zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+						//Move curve higher or lower on the Y axis.
+						bool stopUpdating = false;
+
 						PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+
+						//Check if any curve point extends past the Y axis.
 						foreach (var points in pointList)
 						{
-							points.Y = points.Y + (newY - _tempLocation);
+							if ((points.Y >= 100 && newY > _previousCurveYLocation) || (points.Y <= 0 && newY < _previousCurveYLocation))
+							{
+								double adjustedPoint = 0;
+								if (points.Y > 100)
+									adjustedPoint = points.Y - 100;
+								if (points.Y < 0)
+									adjustedPoint = points.Y;
+								//ensures the curve remains bound by the upper and lower limits.
+								foreach (var updatePoints in pointList)
+								{
+									updatePoints.Y = updatePoints.Y - adjustedPoint;
+								}
+								stopUpdating = true;
+								break;
+							}
 						}
-						_tempLocation = newY;
+						if (!stopUpdating)
+						{
+							//New curve location
+							foreach (var points in pointList)
+							{
+								points.Y = points.Y + (newY - _previousCurveYLocation);
+							}
+						}
+						_previousCurveYLocation = newY;
 						zedGraphControl.Invalidate();
 					}
 				}
 			}
-
-
 			return false;
 		}
 
@@ -186,12 +210,13 @@ namespace VixenModules.App.Curves
 			int dragPointIndex;
 
 			// if CTRL is pressed, and we're not near a specific point, add a new point
+
+			double newX, newY;
 			if (Control.ModifierKeys.HasFlag(Keys.Control) &&
 			    !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null) {
 					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
-					double newX, newY;
 					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
 					//Verify the point is in the usable bounds.
 					if (newX > 100)
@@ -225,13 +250,9 @@ namespace VixenModules.App.Curves
 					zedGraphControl.Invalidate();
 				}
 			}
-			//If Shift key was pressed then Flatten an ddrag curve up or down. 
-		//	if (ModifierKeys.HasFlag(Keys.Shift))
-			//	
-			double new1X;
-			zedGraphControl.GraphPane.ReverseTransform(e.Location, out new1X, out _tempLocation);
-			_isMouseDown = true;
-		//	}
+
+			zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+			_previousCurveYLocation = newY;
 
 			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null && !ModifierKeys.HasFlag(Keys.Shift))
 			{
@@ -245,7 +266,6 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
-			_isMouseDown = false;
 			return false;
 		}
 
