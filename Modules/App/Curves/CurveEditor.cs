@@ -16,6 +16,8 @@ namespace VixenModules.App.Curves
 	public partial class CurveEditor : BaseForm
 	{
 		private double _previousCurveYLocation;
+		private double _tempX;
+		private bool _drawCurve;
 
 		public CurveEditor()
 		{
@@ -102,6 +104,47 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			double newX, newY;
+			if (e.Button == MouseButtons.Left && _drawCurve)
+			{
+				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
+				if (zedGraphControl.MasterPane.FindPane(e.Location) != null)
+				{
+					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+					if (pointList.Count == 0 && _tempX < newX - 1)
+					{
+						pointList.Insert(0, 0, newY);
+					}
+					//Verify the point is in the usable bounds.
+					if (newX > 100)
+					{
+						newX = 100;
+					}
+					else if (newX < 0)
+					{
+						newX = 0;
+					}
+					if (newY > 100)
+					{
+						newY = 100;
+					}
+					else if (newY < 0)
+					{
+						newY = 0;
+					}
+
+					if (_tempX < newX - valueUpDownDrawCurve.Value)
+					{
+						if (newX >= 0)
+							pointList.Insert(0, newX, newY);
+						pointList.Sort();
+						zedGraphControl.Invalidate();
+						_tempX = newX;
+					}
+				}
+			}
+
 			if (zedGraphControl.IsEditing) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				pointList.Sort();
@@ -109,9 +152,8 @@ namespace VixenModules.App.Curves
 			}
 
 			//Used to move Curve higher or lower on the grid or when shift is pressed will flatten curve and then move higher or lower on the grid.
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left && !_drawCurve)
 			{
-				double newX, newY;
 				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
 				if (ModifierKeys.HasFlag(Keys.Shift))
 				{
@@ -266,6 +308,17 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_drawCurve)
+			{
+				double newX, newY;
+				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+				pointList.Insert(0, 100, newY);
+				pointList.Sort();
+				zedGraphControl.Invalidate();
+				_drawCurve = false;
+			}
+			
 			return false;
 		}
 
@@ -470,6 +523,16 @@ namespace VixenModules.App.Curves
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void btnDraw_Click(object sender, EventArgs e)
+		{
+			toolTip.ToolTipTitle = "Draw Curve";
+			toolTip.Show("Draw curve from left side to right side of grid using the left mouse button", btnDraw, -100, -400, 4000);
+			zedGraphControl.GraphPane.CurveList[0].Clear();
+			zedGraphControl.Invalidate();
+			_tempX = 0;
+			_drawCurve = true;
 		}
 	}
 }
