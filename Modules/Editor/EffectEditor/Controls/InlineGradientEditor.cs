@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,6 +9,8 @@ using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Converters;
 using ZedGraph;
+using Image = System.Windows.Controls.Image;
+using Point = System.Windows.Point;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
@@ -278,7 +281,17 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 			else
 			{
-				var point = TranslateMouseLocation(position);
+				if (IsMouseInDragZone(position))
+				{
+					var point = TranslateMouseLocation(position);
+					//var index = FindClosestPoint(Value.Points, point);
+					Cursor = Cursors.SizeWE;
+				}
+				else
+				{
+					Cursor = Cursors.Arrow;
+				}
+				
 				//var index = FindClosestPoint(Value.Points, point);
 				//if (Dist(point, Value.Points[index]) < DistanceTolerance)
 				//{
@@ -392,6 +405,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				{
 					imageControl.Source = (BitmapImage) Converter.Convert(colorGradient, null, IsDiscrete, null);
 				}
+
+				var faderControl = (Image)template.FindName("FaderImage", this);
+				if (faderControl != null)
+				{
+					//Todo make a converter.
+					faderControl.Source = (BitmapImage)BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateFaderPointsStrip(new System.Drawing.Size(300, 10), IsDiscrete));
+				}
 			}
 		}
 
@@ -440,6 +460,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private static double Dist(PointPair origin, PointPair point)
 		{
 			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
+		}
+
+		private bool IsMouseInDragZone(Point position)
+		{
+			return position.Y >= ActualHeight - 10;
 		}
 
 		private PointPair TranslateMouseLocation(Point position)

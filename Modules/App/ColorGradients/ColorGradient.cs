@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Configuration;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
@@ -1040,25 +1042,24 @@ namespace VixenModules.App.ColorGradients
 				}
 				float sliceHeight = size.Height/(float) uniqueColors.Count;
 
-				using (Graphics g = Graphics.FromImage(result)) {
-					int i = 0;
-					foreach (XYZ color in uniqueColors.Values) {
-						float startY = sliceHeight*i;
-						float endY = sliceHeight*(i + 1);
-						float midY = (startY + endY)/2;
-						PointF point1 = new PointF(0, midY);
-						PointF point2 = new PointF(size.Width, midY);
+				int i = 0;
+				foreach (XYZ color in uniqueColors.Values) {
+					float startY = sliceHeight*i;
+					float endY = sliceHeight*(i + 1);
+					float midY = (startY + endY)/2;
+					PointF point1 = new PointF(0, midY);
+					PointF point2 = new PointF(size.Width, midY);
 
-						using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
-						using (Graphics subg = Graphics.FromImage(result)) {
-							ColorBlend cb = GetColorBlend(color.ToRGB());
-							lnbrs.InterpolationColors = cb;
-							subg.FillRectangle(lnbrs, 0, startY, size.Width, sliceHeight);
-						}
-
-						i++;
+					using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
+					using (Graphics subg = Graphics.FromImage(result)) {
+						ColorBlend cb = GetColorBlend(color.ToRGB());
+						lnbrs.InterpolationColors = cb;
+						subg.FillRectangle(lnbrs, 0, startY, size.Width, sliceHeight);
 					}
+
+					i++;
 				}
+				
 			}
 			else {
 				System.Drawing.Point point1 = new System.Drawing.Point(0, size.Height/2);
@@ -1070,8 +1071,107 @@ namespace VixenModules.App.ColorGradients
 					g.FillRectangle(lnbrs, 0, 0, size.Width, size.Height);
 				}
 			}
+			return result;
+		}
+
+		public Bitmap GenerateFaderPointsStrip(Size size, bool discreteColors)
+		{
+			Bitmap result = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppPArgb);
+			result.MakeTransparent();
+
+			List<ColorPoint> sortedColors = new List<ColorPoint>(Colors.SortedArray());
+			// we'll assume they're sorted, so any colorpoints at the same position are contiguous in the array
+			using (Graphics g = Graphics.FromImage(result))
+			{
+				for (int i = 0; i < sortedColors.Count; i++)
+				{
+					ColorPoint currentPoint = sortedColors[i];
+					double currentPos = currentPoint.Position;
+					List<Color> currentColors = new List<Color>();
+					currentColors.Add(currentPoint.GetColor(Color.Black));
+
+					while (i + 1 < sortedColors.Count && sortedColors[i + 1].Position == currentPos)
+					{
+						currentColors.Add(sortedColors[i + 1].GetColor(Color.Black));
+						i++;
+					}
+
+					DrawFader(g, currentPoint.Position, currentColors, size.Width, size.Height);
+				}
+			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// gets the polygon of a fader in the selected rectangle
+		/// </summary>
+		private System.Drawing.Point[] GetFaderPolygon(Rectangle fader)
+		{
+			
+			return new[]
+					   {
+							new System.Drawing.Point(fader.Left, fader.Bottom), 
+						   new System.Drawing.Point(fader.Right, fader.Bottom), 
+							new System.Drawing.Point(fader.Right, fader.Bottom - fader.Height /2), 
+						    new System.Drawing.Point(fader.Left + fader.Width/2, fader.Top), //Top point
+						    new System.Drawing.Point(fader.Left, fader.Bottom - fader.Height /2)
+					   };
+		}
+
+		/// <summary>
+		/// draws a fader
+		/// </summary>
+		private void DrawFader(Graphics gr, double pos, IEnumerable<Color> colors, int width, int height)
+		{
+			int size = 8;
+			Rectangle fader = new Rectangle((int)(pos * (width-size)), 0, size, size);
+			System.Drawing.Point[] pts = GetFaderPolygon(fader);
+			//RectangleF field = new RectangleF(fader.Left, fader.Bottom -fader.Height/2, size / 2, size);
+			//draw fader
+
+			using (Brush faderBrush = new SolidBrush(Color.FromArgb(255, 136, 136, 136)))
+			{
+				gr.FillPolygon(faderBrush, pts);
+			}
+			//draw background
+
+			//if (colors.Any(x => x.A != 255))
+			//	using (HatchBrush brs = new HatchBrush(HatchStyle.SmallCheckerBoard,
+			//										   Color.Gray, Color.White))
+			//	{
+			//		gr.RenderingOrigin = System.Drawing.Point.Truncate(field.Location);
+			//		gr.FillRectangle(brs, field);
+			//	}
+			////draw color
+			//int count = colors.Count();
+			//if (count == 1)
+			//{
+			//	using (SolidBrush brs = new SolidBrush(colors.First()))
+			//	{
+			//		gr.FillRectangle(brs, field);
+			//	}
+			//}
+			//else
+			//{
+			//	using (LinearGradientBrush lgb = new LinearGradientBrush(field, Color.Black, Color.White, 0.0))
+			//	{
+			//		ColorBlend cb = new ColorBlend(count);
+			//		double increment = 1.0 / (count - 1);
+			//		cb.Positions = new float[count];
+			//		for (int i = 0; i < count; i++)
+			//		{
+			//			cb.Positions[i] = (float)Math.Min((increment * i), 1.0);
+			//		}
+			//		cb.Colors = colors.ToArray();
+
+			//		lgb.InterpolationColors = cb;
+			//		gr.FillRectangle(lgb, field);
+			//	}
+			//}
+
+			//frame
+			//gr.DrawPolygon(Pens.Black, pts);
 		}
 
 		#region Equals

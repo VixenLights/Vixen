@@ -38,7 +38,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientEditor}">
                     <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                        <Border BorderThickness="1" BorderBrush="#888888">
+                        <Border BorderThickness="1" BorderBrush="#888888" Margin="4,0,4,0">
                             <Image x:Name="GradientImage" Height="32"
 					            Focusable="True" ToolTip="{Binding StringValue}"
 				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
@@ -53,7 +53,13 @@
                                 </Image.InputBindings>
                             </Image>
                         </Border>
+                        <Image x:Name="FaderImage" Height="10" 
+                               Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                Stretch="Fill" >
+
+                        </Image>
                     </StackPanel>
+                    
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
