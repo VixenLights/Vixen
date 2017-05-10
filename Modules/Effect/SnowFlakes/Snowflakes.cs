@@ -75,26 +75,9 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"ColorType")]
-		[ProviderDescription(@"ColorType")]
-		[PropertyOrder(2)]
-		public SnowflakeColorType ColorType
-		{
-			get { return _data.ColorType; }
-			set
-			{
-				_data.ColorType = value;
-				IsDirty = true;
-				UpdateColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MovementType")]
 		[ProviderDescription(@"MovementType")]
-		[PropertyOrder(3)]
+		[PropertyOrder(2)]
 		public SnowflakeEffect SnowflakeEffect
 		{
 			get { return _data.SnowflakeEffect; }
@@ -113,7 +96,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDescription(@"MinAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(3)]
 		public int MinDirection
 		{
 			get { return _data.MinDirection; }
@@ -131,7 +114,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDescription(@"MaxAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(4)]
 		public int MaxDirection
 		{
 			get { return _data.MaxDirection; }
@@ -147,7 +130,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomSpeed")]
 		[ProviderDescription(@"RandomSpeed")]
-		[PropertyOrder(6)]
+		[PropertyOrder(5)]
 		public bool RandomSpeed
 		{
 			get { return _data.RandomSpeed; }
@@ -165,7 +148,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 //		[NumberRange(1, 60, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(6)]
 		public Curve SpeedCurve
 		{
 			get { return _data.SpeedCurve; }
@@ -182,7 +165,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"CenterSpeed")]
 		[ProviderDescription(@"CenterSpeed")]
 //		[NumberRange(1, 60, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
@@ -199,7 +182,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"SpreadSpeed")]
 		[ProviderDescription(@"SpreadSpeed")]
 //		[NumberRange(2, 60, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(8)]
 		public Curve SpreadSpeedCurve
 		{
 			get { return _data.SpreadSpeedCurve; }
@@ -216,7 +199,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 	//	[NumberRange(1, 100, 1)]
-		[PropertyOrder(10)]
+		[PropertyOrder(9)]
 		public Curve FlakeCountCurve
 		{
 			get { return _data.FlakeCountCurve; }
@@ -234,9 +217,26 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"ColorType")]
+		[ProviderDescription(@"ColorType")]
+		[PropertyOrder(0)]
+		public SnowflakeColorType ColorType
+		{
+			get { return _data.ColorType; }
+			set
+			{
+				_data.ColorType = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(2)]
+		[PropertyOrder(1)]
 		public List<ColorGradient> InnerColor
 		{
 			get { return _data.InnerColor; }
@@ -252,7 +252,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"OuterColor")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(4)]
+		[PropertyOrder(2)]
 		public List<ColorGradient> OutSideColor
 		{
 			get { return _data.OutSideColor; }
