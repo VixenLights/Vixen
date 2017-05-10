@@ -41,8 +41,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SnowFlake Type")]
-		[ProviderDescription(@"SnowFlake Type")]
+		[ProviderDisplayName(@"FlakeType")]
+		[ProviderDescription(@"FlakeType")]
 		[PropertyOrder(0)]
 		public SnowflakeType SnowflakeType
 		{
@@ -59,8 +59,8 @@ namespace VixenModules.Effect.Snowflakes
 		//This is done so the user can exclude 45 Point Flakes from the Random selection as they would be too big on a small Matrix.
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Include 45Pt Flakes")]
-		[ProviderDescription(@"Include 45 Point Flakes")]
+		[ProviderDisplayName(@"Include45Pt")]
+		[ProviderDescription(@"Include45Pt")]
 		[PropertyOrder(1)]
 		public bool PointFlake45
 		{
@@ -75,8 +75,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
+		[ProviderDisplayName(@"ColorType")]
+		[ProviderDescription(@"ColorType")]
 		[PropertyOrder(2)]
 		public SnowflakeColorType ColorType
 		{
@@ -92,8 +92,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SnowFlake Effects")]
-		[ProviderDescription(@"SnowFlake Effects")]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
 		[PropertyOrder(3)]
 		public SnowflakeEffect SnowflakeEffect
 		{
@@ -109,8 +109,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Min Direction")]
-		[ProviderDescription(@"Min Direction in Degrees")]
+		[ProviderDisplayName(@"MinAngle")]
+		[ProviderDescription(@"MinAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
 		[PropertyOrder(4)]
@@ -127,8 +127,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Max Direction")]
-		[ProviderDescription(@"Max Direction in Degrees")]
+		[ProviderDisplayName(@"MaxAngle")]
+		[ProviderDescription(@"MaxAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
 		[PropertyOrder(5)]
@@ -145,8 +145,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Random Speed")]
-		[ProviderDescription(@"Random Speed")]
+		[ProviderDisplayName(@"RandomSpeed")]
+		[ProviderDescription(@"RandomSpeed")]
 		[PropertyOrder(6)]
 		public bool RandomSpeed
 		{
@@ -270,8 +270,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Brightness", 3)]
-		[ProviderDisplayName(@"Random Intensity")]
-		[ProviderDescription(@"Chnages the Intensity for each SnowFlake")]
+		[ProviderDisplayName(@"RandomIntensity")]
+		[ProviderDescription(@"RandomIntensity")]
 		[PropertyOrder(0)]
 		public bool RandomBrightness
 		{

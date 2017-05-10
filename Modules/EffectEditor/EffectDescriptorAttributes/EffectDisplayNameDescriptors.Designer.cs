@@ -386,6 +386,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flake Type.
+        /// </summary>
+        internal static string FlakeType {
+            get {
+                return ResourceManager.GetString("FlakeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Flicker.
         /// </summary>
         internal static string FlickerPercent {
@@ -521,6 +530,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include 45Pt.
+        /// </summary>
+        internal static string Include45Pt {
+            get {
+                return ResourceManager.GetString("Include45Pt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose Effect Depth.
         /// </summary>
         internal static string IndividualElements {
@@ -602,6 +620,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max Direction.
+        /// </summary>
+        internal static string MaxDirection {
+            get {
+                return ResourceManager.GetString("MaxDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meteor Type.
         /// </summary>
         internal static string MeteorType {
@@ -625,6 +652,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinBrightness {
             get {
                 return ResourceManager.GetString("MinBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min Direction.
+        /// </summary>
+        internal static string MinDirection {
+            get {
+                return ResourceManager.GetString("MinDirection", resourceCulture);
             }
         }
         
@@ -773,6 +809,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random Intensity.
+        /// </summary>
+        internal static string RandomIntensity {
+            get {
+                return ResourceManager.GetString("RandomIntensity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat.
         /// </summary>
         internal static string Repeat {
@@ -841,15 +886,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Show3D {
             get {
                 return ResourceManager.GetString("Show3D", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Snowflake Type.
-        /// </summary>
-        internal static string SnowflakeType {
-            get {
-                return ResourceManager.GetString("SnowflakeType", resourceCulture);
             }
         }
         

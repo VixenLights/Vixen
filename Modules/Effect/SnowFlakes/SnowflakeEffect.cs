@@ -4,7 +4,7 @@ namespace VixenModules.Effect.Snowflakes
 {
 	public enum SnowflakeEffect
 	{
-		[Description("None")]
+		[Description("Falling")]
 		None,
 		[Description("Random Direction")]
 		RandomDirection,

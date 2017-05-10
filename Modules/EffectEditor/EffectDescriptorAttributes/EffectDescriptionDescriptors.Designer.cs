@@ -332,6 +332,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the type of snowflake..
+        /// </summary>
+        internal static string FlakeType {
+            get {
+                return ResourceManager.GetString("FlakeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets flicker frequency in changes per second..
         /// </summary>
         internal static string FlickerFrequency {
@@ -449,6 +458,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include 45 Point Flakes..
+        /// </summary>
+        internal static string Include45Pt {
+            get {
+                return ResourceManager.GetString("Include45Pt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specifies how often the effect should switch in milliseconds..
         /// </summary>
         internal static string Interval {
@@ -485,6 +503,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max angle the Snowflake moves..
+        /// </summary>
+        internal static string MaxAngle {
+            get {
+                return ResourceManager.GetString("MaxAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the maximum brightness of a pulse..
         /// </summary>
         internal static string MaxBrightness {
@@ -503,6 +530,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max Direction in Degrees..
+        /// </summary>
+        internal static string MaxDirection {
+            get {
+                return ResourceManager.GetString("MaxDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colors are not used when Rainbow is selected..
         /// </summary>
         internal static string MeteorType {
@@ -512,11 +548,29 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Min angle the Snowflake moves..
+        /// </summary>
+        internal static string MinAngle {
+            get {
+                return ResourceManager.GetString("MinAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the minimum brightness of a pulse..
         /// </summary>
         internal static string MinBrightness {
             get {
                 return ResourceManager.GetString("MinBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min Direction in Degrees..
+        /// </summary>
+        internal static string MinDirection {
+            get {
+                return ResourceManager.GetString("MinDirection", resourceCulture);
             }
         }
         
@@ -665,6 +719,16 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chnages the Intensity for each SnowFlake..
+        /// </summary>
+        internal static string RandomIntensity {
+            get {
+                return ResourceManager.GetString("RandomIntensity", resourceCulture);
+            }
+        }
+        
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the number of times the color pattern repeats within the pattern..
         /// </summary>
         internal static string Repeat {
@@ -751,15 +815,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Shrink {
             get {
                 return ResourceManager.GetString("Shrink", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Controls the type of snowflake..
-        /// </summary>
-        internal static string SnowflakeType {
-            get {
-                return ResourceManager.GetString("SnowflakeType", resourceCulture);
             }
         }
         
