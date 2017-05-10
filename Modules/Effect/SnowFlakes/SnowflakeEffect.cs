@@ -6,7 +6,7 @@ namespace VixenModules.Effect.Snowflakes
 	{
 		[Description("Falling")]
 		None,
-		[Description("Random Direction")]
+		[Description("Random")]
 		RandomDirection,
 		[Description("Explode")]
 		Explode

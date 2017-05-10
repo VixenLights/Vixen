@@ -23,7 +23,7 @@ namespace VixenModules.Effect.Snowflakes
 			FlakeCountCurve =  new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			LevelCurve = new Curve(CurveType.Flat100);
 			PixelCount = 15;
-			SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 8.0, 8.0 }));
+			SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 8.0, 8.0 }));
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 11.0, 11.0 }));
 			MinDirection = 145;
 			MaxDirection = 215;
@@ -69,7 +69,7 @@ namespace VixenModules.Effect.Snowflakes
 		public int MaxSpeed { get; set; }
 
 		[DataMember]
-		public Curve SpreadSpeedCurve { get; set; }
+		public Curve SpeedVariationCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int MinSpeed { get; set; }
@@ -104,11 +104,11 @@ namespace VixenModules.Effect.Snowflakes
 
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
-			if (SpreadSpeedCurve == null)
+			if (SpeedVariationCurve == null)
 			{
-				int spread = MaxSpeed - MinSpeed;
-				double value = PixelEffectBase.ScaleValueToCurve(spread, 60, 1);
-				SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				int variation = MaxSpeed - MinSpeed;
+				double value = PixelEffectBase.ScaleValueToCurve(variation, 60, 1);
+				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 
 				if (FlakeCountCurve == null)
 				{
@@ -150,7 +150,7 @@ namespace VixenModules.Effect.Snowflakes
 				InnerColor = InnerColor.ToList(),
 				OutSideColor = OutSideColor.ToList(),
 				ColorType = ColorType,
-				SpreadSpeedCurve = new Curve(SpreadSpeedCurve),
+				SpeedVariationCurve = new Curve(SpeedVariationCurve),
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				RandomBrightness = RandomBrightness,
 				MinDirection = MinDirection,

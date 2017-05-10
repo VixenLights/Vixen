@@ -162,8 +162,8 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CenterSpeed")]
-		[ProviderDescription(@"CenterSpeed")]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
 //		[NumberRange(1, 60, 1)]
 		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
@@ -179,16 +179,16 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SpreadSpeed")]
-		[ProviderDescription(@"SpreadSpeed")]
+		[ProviderDisplayName(@"SpeedVariation")]
+		[ProviderDescription(@"SpeedVariation")]
 //		[NumberRange(2, 60, 1)]
 		[PropertyOrder(8)]
-		public Curve SpreadSpeedCurve
+		public Curve SpeedVariationCurve
 		{
-			get { return _data.SpreadSpeedCurve; }
+			get { return _data.SpeedVariationCurve; }
 			set
 			{
-				_data.SpreadSpeedCurve = value;
+				_data.SpeedVariationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -330,8 +330,8 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
 			propertyStates.Add("SpeedCurve", !RandomSpeed);
-			propertyStates.Add("MaxSpeedCurve", RandomSpeed);
-			propertyStates.Add("MinSpeedCurve", RandomSpeed);
+			propertyStates.Add("SpeedVariationCurve", RandomSpeed);
+			propertyStates.Add("CenterSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -430,7 +430,7 @@ namespace VixenModules.Effect.Snowflakes
 			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor);
 
 			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
-			var spreadSpeed = CalculateSpreadSpeed(intervalPosFactor);
+			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
 			var minSpeed = centerSpeed - (spreadSpeed / 2);
 			var maxSpeed = centerSpeed + (spreadSpeed / 2);
 			if (minSpeed < 1)
@@ -709,9 +709,9 @@ namespace VixenModules.Effect.Snowflakes
 			return value;
 		}
 
-		private int CalculateSpreadSpeed(double intervalPos)
+		private int CalculateSpeedVariation(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpreadSpeedCurve.GetValue(intervalPos), 60, 1);
+			var value = (int)ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 60, 1);
 			if (value < 1) value = 1;
 
 			return value;
