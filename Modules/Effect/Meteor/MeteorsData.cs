@@ -21,8 +21,8 @@ namespace VixenModules.Effect.Meteors
 			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
 			PixelCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			Direction = 180;
-			MaxSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
-			MinSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 8.0, 8.0 }));
+			SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 12.0, 12.0 }));
+			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 14.0, 14.0 }));
 			MinDirection = 0;
 			MaxDirection = 360;
 			RandomBrightness = false;
@@ -60,13 +60,13 @@ namespace VixenModules.Effect.Meteors
 		public int MaxSpeed { get; set; }
 
 		[DataMember]
-		public Curve MaxSpeedCurve { get; set; }
+		public Curve SpreadSpeedCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int MinSpeed { get; set; }
 
 		[DataMember]
-		public Curve MinSpeedCurve { get; set; }
+		public Curve CenterSpeedCurve { get; set; }
 
 		[DataMember]
 		public int MaxDirection { get; set; }
@@ -104,11 +104,11 @@ namespace VixenModules.Effect.Meteors
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
 
-			if (MaxSpeedCurve == null)
+			if (SpreadSpeedCurve == null)
 			{
-				double value = PixelEffectBase.ScaleValueToCurve(MaxSpeed, 200, 1);
-				MaxSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
-				MaxSpeed = 0;
+				int spread = MaxSpeed - MinSpeed;
+				double value = PixelEffectBase.ScaleValueToCurve(spread, 200, 1);
+				SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 
 				if (SpeedCurve == null)
 				{
@@ -117,11 +117,13 @@ namespace VixenModules.Effect.Meteors
 					Speed = 0;
 				}
 
-				if (MinSpeedCurve == null)
+				if (CenterSpeedCurve == null)
 				{
-					value = PixelEffectBase.ScaleValueToCurve(MinSpeed, 200, 1);
-					MinSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					double center = (double)(MaxSpeed + MinSpeed)/2;
+					value = PixelEffectBase.ScaleValueToCurve(center, 200, 1);
+					CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					MinSpeed = 0;
+					MaxSpeed = 0;
 				}
 
 				if (PixelCountCurve == null)
@@ -148,8 +150,8 @@ namespace VixenModules.Effect.Meteors
 				SpeedCurve = new Curve(SpeedCurve),
 				ColorType = ColorType,
 				LengthCurve = new Curve(LengthCurve),
-				MaxSpeedCurve = new Curve(MaxSpeedCurve),
-				MinSpeedCurve = new Curve(MinSpeedCurve),
+				SpreadSpeedCurve = new Curve(SpreadSpeedCurve),
+				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				RandomBrightness = RandomBrightness,
 				MinDirection = MinDirection,
 				MaxDirection = MaxDirection,

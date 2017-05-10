@@ -169,18 +169,18 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Min Speed")]
-		[ProviderDescription(@"Min Speed")]
+		[ProviderDisplayName(@"CenterSpeed")]
+		[ProviderDescription(@"CenterSpeed")]
 		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(7)]
-		public Curve MinSpeedCurve
+		public Curve CenterSpeedCurve
 		{
-			get { return _data.MinSpeedCurve; }
+			get { return _data.CenterSpeedCurve; }
 			set
 			{
 				//if (MaxSpeedCurve <= value)
 				//	value = MaxSpeedCurve - 1; //Ensures MinSpeed is below MaxSpeed
-				_data.MinSpeedCurve = value;
+				_data.CenterSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -188,18 +188,18 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Max Speed")]
-		[ProviderDescription(@"Max Speed")]
+		[ProviderDisplayName(@"SpeedSpread")]
+		[ProviderDescription(@"SpeedSpread")]
 		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(8)]
-		public Curve MaxSpeedCurve
+		public Curve SpreadSpeedCurve
 		{
-			get { return _data.MaxSpeedCurve; }
+			get { return _data.SpreadSpeedCurve; }
 			set
 			{
 				//if (MinSpeed > value)
 				//	value = MinSpeedCurve + 1;  //Ensures MaxSpeed is above MinSpeed
-				_data.MaxSpeedCurve = value;
+				_data.SpreadSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -427,15 +427,14 @@ namespace VixenModules.Effect.Meteors
 			int minDirection = 1;
 			int maxDirection = 360;
 			int pixelCount = CalculatePixelCount(intervalPosFactor);
-			var minSpeed = CalculateMinSpeed(intervalPosFactor);
-			var maxSpeed = CalculateMaxSpeed(intervalPosFactor);
-			if (minSpeed > maxSpeed)
-			{
-				var tempSpeed = minSpeed;
-				minSpeed = maxSpeed;
-				maxSpeed = tempSpeed;
-			}
-
+			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
+			var spreadSpeed = CalculateSpreadSpeed(intervalPosFactor);
+			var minSpeed = centerSpeed - (spreadSpeed / 2);
+			var maxSpeed = centerSpeed + (spreadSpeed / 2);
+			if (minSpeed < 1)
+				minSpeed = 1;
+			if (maxSpeed > 200)
+				maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
 			int tailStart = BufferHt;
 			if (tailStart < 1) tailStart = 1;
@@ -647,17 +646,17 @@ namespace VixenModules.Effect.Meteors
 			return value;
 		}
 
-		private int CalculateMaxSpeed(double intervalPos)
+		private int CalculateSpreadSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(MaxSpeedCurve.GetValue(intervalPos), 200, 1);
+			var value = (int)ScaleCurveToValue(SpreadSpeedCurve.GetValue(intervalPos), 200, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateMinSpeed(double intervalPos)
+		private int CalculateCenterSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(MinSpeedCurve.GetValue(intervalPos), 200, 1);
+			var value = (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 1);
 			if (value < 1) value = 1;
 
 			return value;
