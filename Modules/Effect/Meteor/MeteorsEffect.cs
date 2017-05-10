@@ -4,9 +4,9 @@ namespace VixenModules.Effect.Meteors
 {
 	public enum MeteorsEffect
 	{
-		[Description("None")]
+		[Description("Falling")]
 		None,
-		[Description("Random Direction")]
+		[Description("Random")]
 		RandomDirection,
 		[Description("Explode")]
 		Explode

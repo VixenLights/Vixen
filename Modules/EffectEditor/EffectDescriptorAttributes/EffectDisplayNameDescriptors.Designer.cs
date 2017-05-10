@@ -260,6 +260,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Type.
+        /// </summary>
+        internal static string ColorType {
+            get {
+                return ResourceManager.GetString("ColorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Coverage.
         /// </summary>
         internal static string Coverage {
@@ -575,6 +584,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max Angle.
+        /// </summary>
+        internal static string MaxAngle {
+            get {
+                return ResourceManager.GetString("MaxAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max.
         /// </summary>
         internal static string MaxBrightness {
@@ -589,6 +607,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MeteorType {
             get {
                 return ResourceManager.GetString("MeteorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min Angle.
+        /// </summary>
+        internal static string MinAngle {
+            get {
+                return ResourceManager.GetString("MinAngle", resourceCulture);
             }
         }
         
@@ -616,6 +643,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinimumLevel {
             get {
                 return ResourceManager.GetString("MinimumLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movement Type.
+        /// </summary>
+        internal static string MovementType {
+            get {
+                return ResourceManager.GetString("MovementType", resourceCulture);
             }
         }
         
@@ -719,6 +755,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random Position.
+        /// </summary>
+        internal static string RandomPosition {
+            get {
+                return ResourceManager.GetString("RandomPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Speed.
+        /// </summary>
+        internal static string RandomSpeed {
+            get {
+                return ResourceManager.GetString("RandomSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repeat.
         /// </summary>
         internal static string Repeat {
@@ -818,6 +872,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speed Variation.
+        /// </summary>
+        internal static string SpeedVariation {
+            get {
+                return ResourceManager.GetString("SpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Static Effect.
         /// </summary>
         internal static string StaticEffect {
@@ -832,6 +895,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tail Length.
+        /// </summary>
+        internal static string TailLength {
+            get {
+                return ResourceManager.GetString("TailLength", resourceCulture);
             }
         }
         

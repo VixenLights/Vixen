@@ -21,7 +21,7 @@ namespace VixenModules.Effect.Meteors
 			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
 			PixelCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			Direction = 180;
-			SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 12.0, 12.0 }));
+			SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 12.0, 12.0 }));
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 14.0, 14.0 }));
 			MinDirection = 0;
 			MaxDirection = 360;
@@ -60,7 +60,7 @@ namespace VixenModules.Effect.Meteors
 		public int MaxSpeed { get; set; }
 
 		[DataMember]
-		public Curve SpreadSpeedCurve { get; set; }
+		public Curve SpeedVariationCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int MinSpeed { get; set; }
@@ -104,11 +104,11 @@ namespace VixenModules.Effect.Meteors
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
 
-			if (SpreadSpeedCurve == null)
+			if (SpeedVariationCurve == null)
 			{
-				int spread = MaxSpeed - MinSpeed;
-				double value = PixelEffectBase.ScaleValueToCurve(spread, 200, 1);
-				SpreadSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				int variation = MaxSpeed - MinSpeed;
+				double value = PixelEffectBase.ScaleValueToCurve(variation, 200, 1);
+				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 
 				if (SpeedCurve == null)
 				{
@@ -150,7 +150,7 @@ namespace VixenModules.Effect.Meteors
 				SpeedCurve = new Curve(SpeedCurve),
 				ColorType = ColorType,
 				LengthCurve = new Curve(LengthCurve),
-				SpreadSpeedCurve = new Curve(SpreadSpeedCurve),
+				SpeedVariationCurve = new Curve(SpeedVariationCurve),
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				RandomBrightness = RandomBrightness,
 				MinDirection = MinDirection,

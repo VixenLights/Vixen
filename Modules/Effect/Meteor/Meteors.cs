@@ -48,25 +48,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
-		[PropertyOrder(0)]
-		public MeteorsColorType ColorType
-		{
-			get { return _data.ColorType; }
-			set
-			{
-				_data.ColorType = value;
-				IsDirty = true;
-				UpdateColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Meteor Effects")]
-		[ProviderDescription(@"Meteor Effects")]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
 		[PropertyOrder(1)]
 		public MeteorsEffect MeteorEffect
 		{
@@ -99,8 +82,8 @@ namespace VixenModules.Effect.Meteors
 		}
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Min Direction")]
-		[ProviderDescription(@"Min Direction in Degrees")]
+		[ProviderDisplayName(@"MinAngle")]
+		[ProviderDescription(@"MinMeteorAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
 		[PropertyOrder(3)]
@@ -117,8 +100,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Max Direction")]
-		[ProviderDescription(@"Max Direction in Degrees")]
+		[ProviderDisplayName(@"MaxAngle")]
+		[ProviderDescription(@"MaxMeteorAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
 		[PropertyOrder(4)]
@@ -135,8 +118,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Random Speed")]
-		[ProviderDescription(@"Random Meteor Speed Between Min and Max value")]
+		[ProviderDisplayName(@"RandomSpeed")]
+		[ProviderDescription(@"RandomSpeed")]
 		[PropertyOrder(5)]
 		public bool RandomSpeed
 		{
@@ -169,8 +152,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CenterSpeed")]
-		[ProviderDescription(@"CenterSpeed")]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
 		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
@@ -188,18 +171,16 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SpeedSpread")]
-		[ProviderDescription(@"SpeedSpread")]
+		[ProviderDisplayName(@"SpeedVariation")]
+		[ProviderDescription(@"SpeedVariation")]
 		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(8)]
-		public Curve SpreadSpeedCurve
+		public Curve SpeedVariationCurve
 		{
-			get { return _data.SpreadSpeedCurve; }
+			get { return _data.SpeedVariationCurve; }
 			set
 			{
-				//if (MinSpeed > value)
-				//	value = MinSpeedCurve + 1;  //Ensures MaxSpeed is above MinSpeed
-				_data.SpreadSpeedCurve = value;
+				_data.SpeedVariationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -224,8 +205,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Tail Length")]
-		[ProviderDescription(@"Tail Length")]
+		[ProviderDisplayName(@"TailLength")]
+		[ProviderDescription(@"TailLength")]
 		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(10)]
 		public Curve LengthCurve
@@ -239,11 +220,10 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
-
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Random Meteor Position")]
-		[ProviderDescription(@"Creates new Meteors at a Random Position")]
+		[ProviderDisplayName(@"RandomPosition")]
+		[ProviderDescription(@"RandomPosition")]
 		[PropertyOrder(11)]
 		public bool RandomMeteorPosition
 		{
@@ -260,6 +240,22 @@ namespace VixenModules.Effect.Meteors
 
 		#region Color properties
 
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"ColorType")]
+		[ProviderDescription(@"ColorType")]
+		[PropertyOrder(0)]
+		public MeteorsColorType ColorType
+		{
+			get { return _data.ColorType; }
+			set
+			{
+				_data.ColorType = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
@@ -340,8 +336,8 @@ namespace VixenModules.Effect.Meteors
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
 			propertyStates.Add("SpeedCurve", !RandomSpeed);
-			propertyStates.Add("MaxSpeedCurve", RandomSpeed);
-			propertyStates.Add("MinSpeedCurve", RandomSpeed);
+			propertyStates.Add("SpeedVariationCurve", RandomSpeed);
+			propertyStates.Add("CenterSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -375,7 +371,7 @@ namespace VixenModules.Effect.Meteors
 
 		#endregion
 
-#region Information
+		#region Information
 
 		public override string Information
 		{
@@ -428,7 +424,7 @@ namespace VixenModules.Effect.Meteors
 			int maxDirection = 360;
 			int pixelCount = CalculatePixelCount(intervalPosFactor);
 			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
-			var spreadSpeed = CalculateSpreadSpeed(intervalPosFactor);
+			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
 			var minSpeed = centerSpeed - (spreadSpeed / 2);
 			var maxSpeed = centerSpeed + (spreadSpeed / 2);
 			if (minSpeed < 1)
@@ -568,11 +564,11 @@ namespace VixenModules.Effect.Meteors
 				{
 					case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
 						m.Hsv =
-							SetRangeColor(HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)),
-								HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)));
+							SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100)),
+								HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100)));
 						break;
 					case MeteorsColorType.Palette: //All colors are used
-						m.Hsv = HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
+						m.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100));
 						break;
 					case MeteorsColorType.Gradient:
 						m.Color = rand() % colorcnt;
@@ -609,7 +605,7 @@ namespace VixenModules.Effect.Meteors
 					hsv.V *= meteor.HsvBrightness;
 					hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
 					//Adjusts the brightness based on the level curve
-					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					hsv.V = hsv.V * LevelCurve.GetValue(intervalPos * 100) / 100;
 					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 						frameBuffer.SetPixel(colorX - (int) (Math.Round(meteor.TailX*ph)), colorY - (int) (Math.Round(meteor.TailY*ph)),
@@ -646,9 +642,9 @@ namespace VixenModules.Effect.Meteors
 			return value;
 		}
 
-		private int CalculateSpreadSpeed(double intervalPos)
+		private int CalculateSpeedVariation(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpreadSpeedCurve.GetValue(intervalPos), 200, 1);
+			var value = (int)ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 1);
 			if (value < 1) value = 1;
 
 			return value;
