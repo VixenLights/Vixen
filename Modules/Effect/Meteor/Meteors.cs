@@ -324,20 +324,6 @@ namespace VixenModules.Effect.Meteors
 			TypeDescriptor.Refresh(this);
 		}
 
-		#region Information
-
-		public override string Information
-		{
-			get { return "Visit the Vixen Lights website for more information on this effect."; }
-		}
-
-		public override string InformationLink
-		{
-			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/meteors/"; }
-		}
-
-		#endregion
-
 		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
 		private void UpdateColorAttribute(bool refresh = true)
 		{
@@ -385,6 +371,20 @@ namespace VixenModules.Effect.Meteors
 			{
 				TypeDescriptor.Refresh(this);
 			}
+		}
+
+		#endregion
+
+#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/meteors/"; }
 		}
 
 		#endregion
