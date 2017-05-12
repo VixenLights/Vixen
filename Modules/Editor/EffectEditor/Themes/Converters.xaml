@@ -22,4 +22,5 @@
     <converters:WidthToVisibilityConverter x:Key="WidthToVisibilityConverter"/>
     <converters:AdditionConverter x:Key="AdditionConverter"/>
     <converters:ToolTipVisibilityConverter x:Key="ToolTipVisibilityConverter"/>
+    <converters:ColorGradientIsLibraryToVisibilityConverter x:Key="ColorGradientIsLibraryToVisibilityConverter"/>
 </ResourceDictionary>

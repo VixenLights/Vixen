@@ -24,7 +24,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private Curve _holdValue;
 
 		private const double DragTolerance = 2.0;
-		private const double DistanceTolerance = 7.0;
+		private const double DistanceTolerance = 8.0;
 
 		#endregion Fields
 
@@ -179,6 +179,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseDown(MouseButtonEventArgs e)
 		{
 			base.OnMouseDown(e);
+			if (Value == null) return;
 			if (e.LeftButton == MouseButtonState.Pressed) 
 			{
 				_dragStartPoint = e.GetPosition(this);
@@ -206,6 +207,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if (Value==null) return;
 			Point position = e.GetPosition(this);
 			Vector vector = position - _dragStartPoint;
 
@@ -259,7 +261,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseUp(MouseButtonEventArgs e)
 		{
 			base.OnMouseUp(e);
-
+			if (Value == null) return;
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 			{
 				AddPoint(_dragStartPoint);

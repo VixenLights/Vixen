@@ -29,11 +29,45 @@
 			x:Name="PART_editor"
 			Value="{Binding Value, Mode=TwoWay}"
 			IsEnabled="{Binding IsEditable}"
-            IsDiscrete="{Binding ParentProperty.Component.HasDiscreteColors}">
+            Component="{Binding ParentProperty.Component}">
         </controls:InlineGradientEditor>
     </DataTemplate>
 
     <Style TargetType="{x:Type controls:InlineGradientEditor}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:InlineGradientEditor}">
+                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                        <Border BorderThickness="1" BorderBrush="#888888" >
+                            <Image x:Name="GradientImage" Height="32"
+					            Focusable="True" ToolTip="{Binding StringValue}"
+				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
+                                   input:DragDropManager.DragSourceAdvisor="{Binding}"
+                                   Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                   Stretch="Fill">
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
+						              CommandParameter="{Binding}" />
+                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
+												CommandParameter="{Binding}"/>
+                                </Image.InputBindings>
+                            </Image>
+                        </Border>
+                        <Canvas x:Name="FaderCanvas" Height="10" 
+                                Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                Visibility="{Binding Value, Converter={StaticResource ColorGradientIsLibraryToVisibilityConverter}}">
+                            <Canvas.Background>
+                                <VisualBrush Opacity="1"></VisualBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                    </StackPanel>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--<Style TargetType="{x:Type controls:InlineGradientEditor}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientEditor}">
@@ -63,5 +97,5 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 </ResourceDictionary>

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ControlsEx;
+using Common.Controls.Theme;
 using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys;
@@ -1028,7 +1029,7 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors, bool drawPoints=false)
+		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
@@ -1124,15 +1125,21 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		private void DrawFader(Graphics gr, double pos, IEnumerable<Color> colors, int width, int height)
 		{
-			int size = 8;
-			Rectangle fader = new Rectangle((int)(pos * (width-size)), 0, size, size);
+			int faderHeight = 8;
+			int faderWidth = 10;
+			Rectangle fader = new Rectangle((int)(pos * (width-faderWidth)), 0, faderWidth, faderHeight);
 			System.Drawing.Point[] pts = GetFaderPolygon(fader);
 			//RectangleF field = new RectangleF(fader.Left, fader.Bottom -fader.Height/2, size / 2, size);
 			//draw fader
 
-			using (Brush faderBrush = new SolidBrush(Color.FromArgb(255, 136, 136, 136)))
+			using (Brush faderBrush = new SolidBrush(ThemeColorTable.ForeColor))
 			{
 				gr.FillPolygon(faderBrush, pts);
+			}
+
+			using (Pen p = new Pen(ThemeColorTable.ButtonBorderColor))
+			{
+				gr.DrawPolygon(p, pts);
 			}
 			//draw background
 

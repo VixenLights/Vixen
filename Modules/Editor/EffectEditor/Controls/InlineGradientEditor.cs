@@ -1,35 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Common.Controls;
+using Common.Controls.ColorManagement.ColorPicker;
+using Vixen.Sys;
 using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 using VixenModules.Editor.EffectEditor.Converters;
-using ZedGraph;
+using VixenModules.Effect.Effect;
+using Color = System.Drawing.Color;
+using Control = System.Windows.Controls.Control;
+using Cursors = System.Windows.Input.Cursors;
 using Image = System.Windows.Controls.Image;
-using Point = System.Windows.Point;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
-	public class InlineGradientEditor : Control
+	public class InlineGradientEditor : BaseInlineGradientEditor
 	{
 		private static readonly Type ThisType = typeof(InlineGradientEditor);
 
 		#region Fields
 
-		private int _dragStartPointIndex;
-		private Point _dragStartPoint;
-		private static readonly ColorGradientToImageConverter Converter = new ColorGradientToImageConverter();
-
-		private bool _isMouseDown;
 		private ColorGradient _holdValue;
 
-		private const double DragTolerance = 2.0;
-		private const double DistanceTolerance = 7.0;
-
+		
+		//private Canvas _canvas;
+		
 		#endregion Fields
 
 		static InlineGradientEditor()
@@ -39,14 +45,127 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		public InlineGradientEditor()
 		{
-			Loaded += InlineGradientEditor_Loaded;	
+			//Loaded += InlineGradientEditor_Loaded;
 		}
 
 		#region Events
 
 		private void InlineGradientEditor_Loaded(object sender, RoutedEventArgs e)
 		{
+			//_canvas = (Canvas)Template.FindName("FaderCanvas", this);
+			//_canvas.MouseMove += _canvas_MouseMove; ;
+			_canvas.MouseDown += CanvasOnMouseDown;
+			_canvas.MouseLeftButtonDown += CanvasOnMouseLeftButtonDown;
+			OnComponentChanged();
+			ReloadPoints();
 			UpdateImage(Value);
+		}
+
+		private void _canvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (IsMouseOverAnyHandle())
+			{
+				Cursor = Cursors.SizeWE;
+			}
+			else
+			{
+				Cursor = Cursors.Arrow;
+			}
+			
+		}
+
+		private void CanvasOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ClickCount == 2)
+			{
+				if (IsMouseOverAnyHandle())
+				{
+					//launch the color editor.
+					ShowColorPicker();
+				}
+				e.Handled = true;
+			}
+		}
+
+		private void CanvasOnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+		{
+			var mousePoint = Mouse.GetPosition(sender as IInputElement);
+			if (mousePoint.X < 0 || mousePoint.X > _canvas.Width || mousePoint.Y < 0 || mousePoint.Y > _canvas.Height) return;
+			if (IsMouseOverAnyHandle()) return;
+			AddColorPoint(mousePoint.X / _canvas.Width);
+		}
+
+		//private bool IsMouseOverAnyHandle()
+		//{
+		//	return _points.Any(q => q.IsMouseOver);
+		//}
+
+		private void OnAddItem(SliderPoint sliderPoint)
+		{
+			sliderPoint.Parent = _canvas;
+			sliderPoint.SliderShape.Style = SliderStyle;
+			sliderPoint.SliderShape.KeyDown += GradientPoint_KeyDown; ;
+			sliderPoint.PropertyChanged += GradientPoint_PropertyChanged;
+			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			try
+			{
+				_canvas.Children.Add(sliderPoint.SliderShape);
+			}
+			catch { }
+		}
+
+		private void SliderPoint_DragCompleted(object sender, EventArgs e)
+		{
+			_holdValue = new ColorGradient(_holdValue);
+			SetValue();
+		}
+
+		private void GradientPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName.Equals("center", StringComparison.OrdinalIgnoreCase))
+			{
+				if (_holdValue == null)
+				{
+					_holdValue = new ColorGradient(Value);
+
+				}
+				SliderPoint point = sender as SliderPoint;
+				if (point != null)
+				{
+					var pointIndexes = point.Tag as List<int>;
+					var colorPoints = _holdValue.Colors;
+					if (pointIndexes != null)
+					{
+						foreach (var index in pointIndexes)
+						{
+							colorPoints[index].Position = point.NormalizedPosition;
+						}
+					}
+					
+					UpdateImage(_holdValue);
+				}
+			}
+		}
+
+		private void GradientPoint_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Delete)
+			{
+				DeletePoint();
+				e.Handled = true;
+			}
+		}
+
+		private void OnRemoveItem(SliderPoint sliderPoint)
+		{
+			sliderPoint.SliderShape.KeyDown -= GradientPoint_KeyDown;
+			sliderPoint.PropertyChanged -= GradientPoint_PropertyChanged;
+			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			try
+			{
+				_canvas.Children.Remove(sliderPoint.SliderShape);
+			}
+			catch { }
 		}
 
 		#region PropertyEditingStarted Event
@@ -97,17 +216,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(ColorGradient),
 			ThisType, new PropertyMetadata(new ColorGradient(), ValueChanged));
 
-		/// <summary>
-		/// Identifies the <see cref="IsDragging"/> dependency property.
-		/// </summary>
-		public static readonly DependencyProperty IsDraggingProperty = DependencyProperty.Register("IsDragging", typeof(bool),
-			ThisType, new PropertyMetadata(false, OnIsDraggingChanged));
-
-		/// <summary>
-		/// Identifies the <see cref="IsDiscrete"/> dependency property.
-		/// </summary>
-		public static readonly DependencyProperty IsDiscreteProperty = DependencyProperty.Register("IsDiscrete", typeof(bool),
-			ThisType, new PropertyMetadata(false, OnIsDiscreteChanged));
+		
 
 		#endregion Dependency Property Fields
 
@@ -132,42 +241,27 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#endregion PropertyDescriptor Property
 
+		public int SelectedIndex
+		{
+			get
+			{
+				var selectedPoint = _points.FirstOrDefault(x => x.SliderShape.IsFocused);
+				return selectedPoint != null ? _points.IndexOf(selectedPoint) : -1;
+			}
+		}
+
 		/// <summary>
 		/// Gets or sets the value. This is a dependency property.
 		/// </summary>
 		/// <value>The value.</value>
-		//[TypeConverter(typeof(LengthConverter))]
 		public ColorGradient Value
 		{
 			get { return (ColorGradient)GetValue(ValueProperty); }
 			set { SetValue(ValueProperty, value); }
 		}
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this instance is dragging.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance is dragging; otherwise, <c>false</c>.
-		/// </value>
-		[Browsable(false)]
-		public bool IsDragging
-		{
-			get { return (bool)GetValue(IsDraggingProperty); }
-			set { SetValue(IsDraggingProperty, value); }
-		}
+		
 
-		/// <summary>
-		/// Gets or sets a value indicating whether this instance is dragging.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance is dragging; otherwise, <c>false</c>.
-		/// </value>
-		[Browsable(false)]
-		public bool IsDiscrete
-		{
-			get { return (bool)GetValue(IsDiscreteProperty); }
-			set { SetValue(IsDiscreteProperty, value); }
-		}
 
 		#endregion Properties
 
@@ -175,251 +269,217 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private static void ValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var inlineCurveEditor = (InlineGradientEditor)d;
-			if (!inlineCurveEditor.IsInitialized)
+			var inlineGradientEditor = (InlineGradientEditor)d;
+			if (!inlineGradientEditor.IsInitialized)
 				return;
-			inlineCurveEditor.Value = (ColorGradient) e.NewValue;
-			inlineCurveEditor.UpdateImage(inlineCurveEditor.Value);
-
+			inlineGradientEditor.Value = (ColorGradient) e.NewValue;
+			inlineGradientEditor.UpdateImage(inlineGradientEditor.Value);
+			inlineGradientEditor.ReloadPoints();
 		}
 
-		private static void OnIsDraggingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			var inlineCurveEditor = (InlineGradientEditor)d;
-			inlineCurveEditor.OnIsDraggingChanged();
-		}
-
-		private static void OnIsDiscreteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			var inlineCurveEditor = (InlineGradientEditor)d;
-			inlineCurveEditor.OnIsDiscreteChanged();
-		}
-
-		protected virtual void OnIsDraggingChanged()
-		{
-			if (IsDragging)
-			{
-				OnPropertyEditingStarted();
-			}
-			else
-			{
-				OnPropertyEditingFinished();
-			}
-		}
-
-		protected virtual void OnIsDiscreteChanged()
-		{
-			UpdateImage(Value);
-		}
+		
 
 		#endregion Property Changed Callbacks
 
 		#region Base Class Overrides
 
-		/// <summary>
-		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
-		/// </summary>
-		/// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs"/> that contains the event data. This event data reports details about the mouse button that was pressed and the handled state.</param>
-		protected override void OnMouseDown(MouseButtonEventArgs e)
-		{
-			base.OnMouseDown(e);
-			if (e.LeftButton == MouseButtonState.Pressed) 
-			{
-				_dragStartPoint = e.GetPosition(this);
-				var point = TranslateMouseLocation(_dragStartPoint);
-				//_dragStartPointIndex = FindClosestPoint(Value.Points, point);
-				//if (Keyboard.Modifiers == ModifierKeys.Shift || 
-				//	Keyboard.Modifiers == ModifierKeys.Control || 
-				//	Dist(point, Value.Points[_dragStartPointIndex]) < DistanceTolerance)
-				//{
-				//	_holdValue = Value;
-				//	_isMouseDown = true;
 
-				//	Focus();
-				//	CaptureMouse();
-
-				//	e.Handled = true;
-				//}
-			}
-		}
-
-		/// <summary>
-		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseMove"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
-		/// </summary>
-		/// <param name="e">The <see cref="T:System.Windows.Input.MouseEventArgs"/> that contains the event data.</param>
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-			Point position = e.GetPosition(this);
-			Vector vector = position - _dragStartPoint;
-
-			if (_isMouseDown)
-			{
-				if (!IsDragging)
-				{
-					if (vector.Length > DragTolerance)
-					{
-						IsDragging = true;
-						e.Handled = true;
-
-						_dragStartPoint = position;
-					}
-				}
-				else
-				{
-					if (Keyboard.Modifiers == ModifierKeys.Shift)
-					{
-						SetLevel(position);
-					}
-					else
-					{
-						MovePoint(position);
-					}
-
-					e.Handled = true;
-				}
-			}
-			else
-			{
-				if (IsMouseInDragZone(position))
-				{
-					var point = TranslateMouseLocation(position);
-					//var index = FindClosestPoint(Value.Points, point);
-					Cursor = Cursors.SizeWE;
-				}
-				else
-				{
-					Cursor = Cursors.Arrow;
-				}
-				
-				//var index = FindClosestPoint(Value.Points, point);
-				//if (Dist(point, Value.Points[index]) < DistanceTolerance)
-				//{
-				//	Cursor = Cursors.Cross;
-				//}
-				//else
-				//{
-
-				//	Cursor = Cursors.Arrow;
-				//}
-			}
-			
-		}
-
-		/// <summary>
-		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseUp"/> routed event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
-		/// </summary>
-		/// <param name="e">The <see cref="T:System.Windows.Input.MouseButtonEventArgs"/> that contains the event data. The event data reports that the mouse button was released.</param>
-		protected override void OnMouseUp(MouseButtonEventArgs e)
-		{
-			base.OnMouseUp(e);
-
-			if (Keyboard.Modifiers == ModifierKeys.Control)
-			{
-				AddPoint(_dragStartPoint);
-			}
-			else if (Keyboard.Modifiers == ModifierKeys.Alt && _isMouseDown)
-			{
-				RemovePoint(_dragStartPoint);
-			}
-			
-			if (IsDragging || _isMouseDown)
-			{
-				e.Handled = true;
-				IsDragging = false;
-				_isMouseDown = false;
-				SetValue();
-			}
-
-			ReleaseMouseCapture();
-
-		}
 
 		#endregion Base Class Overrides
 
 		#region Helpers
 
-		private void MovePoint(Point mousePosition)
+		private void ShowColorPicker()
 		{
-			if (mousePosition.X > ActualWidth+5 || mousePosition.Y > ActualHeight+5) return;
-			var point = TranslateMouseLocation(mousePosition);
-
-			//var points = Value.Points.Clone();
-
-			//points[_dragStartPointIndex] = EnforcePointBounds(point);
-
-			//_holdValue = new ColorGradient(points);
-
-			UpdateImage(_holdValue);
-		}
-
-		private void SetLevel(Point mousePosition)
-		{
-			var point = TranslateMouseLocation(mousePosition);
-
-			var levelPoint = EnforcePointBounds(point);
-			//var points = new PointPairList(new[] { 0.0, 100.0}, new[] { levelPoint.Y, levelPoint.Y });
-
-			//_holdValue = new ColorGradient(points);
-
-			UpdateImage(_holdValue);
-		}
-
-		private void AddPoint(Point mousePosition)
-		{
-			var point = TranslateMouseLocation(mousePosition);
-
-			//var points = Value.Points.Clone();
-
-			//points.Add(EnforcePointBounds(point));
-
-			//points.Sort();
-
-			//_holdValue = new ColorGradient(points);
-
-			UpdateImage(_holdValue);		
-		}
-
-		private void RemovePoint(Point mousePosition)
-		{
-			var point = TranslateMouseLocation(mousePosition);
-
-			//var index = FindClosestPoint(Value.Points, point);
-
-			//var points = Value.Points.Clone();
-			
-			//points.Remove(points[index]);
-
-			//_holdValue = new ColorGradient(points);
-
-			UpdateImage(_holdValue);
-		}
-
-		private void UpdateImage(ColorGradient colorGradient)
-		{
-			if (IsInitialized)
+			var selectedIndex = SelectedIndex;
+			if (selectedIndex < 0) return;
+			var handle = _points[selectedIndex];
+			var colorPointIndexes = (List<int>)handle.Tag;
+			if (IsDiscrete)
 			{
-				var template = Template;
-				var imageControl = (Image) template.FindName("GradientImage", this);
-				if (imageControl != null)
+				_holdValue = new ColorGradient(Value);
+				List<Color> selectedColors = new List<Color>();
+				List<ColorPoint> colorPoints = new List<ColorPoint>();
+				foreach (int index in colorPointIndexes)
 				{
-					imageControl.Source = (BitmapImage) Converter.Convert(colorGradient, null, IsDiscrete, null);
+					ColorPoint pt = _holdValue.Colors[index];
+					if (pt == null)
+						continue;
+					colorPoints.Add(pt);
+					selectedColors.Add(pt.Color.ToRGB().ToArgb());
 				}
 
-				var faderControl = (Image)template.FindName("FaderImage", this);
-				if (faderControl != null)
+				using (DiscreteColorPicker picker = new DiscreteColorPicker())
 				{
-					//Todo make a converter.
-					faderControl.Source = (BitmapImage)BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateFaderPointsStrip(new System.Drawing.Size(300, 10), IsDiscrete));
+					picker.ValidColors = ValidColors;
+					picker.SelectedColors = selectedColors;
+					if (picker.ShowDialog() == DialogResult.OK)
+					{
+						if (!picker.SelectedColors.Any())
+						{
+							DeletePoint();
+						}
+						else
+						{
+							double position = colorPoints.First().Position;
+							foreach (var colorPoint in colorPoints)
+							{
+								_holdValue.Colors.Remove(colorPoint);
+							}
+
+							foreach (Color selectedColor in picker.SelectedColors)
+							{
+								ColorPoint newPoint = new ColorPoint(selectedColor, position);
+								_holdValue.Colors.Add(newPoint);
+							}
+							SetValue();
+						}
+					}
+				}
+			}
+			else
+			{
+				if (colorPointIndexes.Count > 1)
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("Non-discrete color gradient, >1 selected point. oops! please report it.", "Delete library gradient?", false, false);
+					messageBox.ShowDialog();
+				}
+				_holdValue = new ColorGradient(Value);
+				ColorPoint pt = _holdValue.Colors[colorPointIndexes.FirstOrDefault()];
+				if (pt == null)
+					return;
+				using (ColorPicker frm = new ColorPicker(Mode, Fader))
+				{
+					frm.LockValue_V = false;
+					frm.Color = pt.Color;
+					if (frm.ShowDialog() == DialogResult.OK)
+					{
+						pt.Color = frm.Color;
+						Mode = frm.SecondaryMode;
+						Fader = frm.PrimaryFader;
+						SetValue();
+					}
 				}
 			}
 		}
 
+		
+
 		protected void SetValue()
 		{
 			Value = _holdValue;
+			_holdValue = null;
 		}
 
+		private void ClearPoints()
+		{
+			_points.ToList().ForEach(OnRemoveItem);
+			_points.Clear();
+		}
+
+		private SliderPoint AddPoint(double position, bool isSelected = false)
+		{
+			var point = new SliderPoint(position, _canvas);
+
+			//point.SliderShape.MouseDown += (s, a) => SelectedIndex = _points.IndexOf(point);
+			if (point.Center >= 0 && point.Center <= _canvas.Width)
+			{
+				_points.Add(point);
+				_points.Sort(new SliderPointPositionComparer());
+				OnAddItem(point);
+				if (isSelected)
+				{
+					point.SliderShape.Focus();
+				}
+				//OnValueAdded(e);
+			}
+
+			return point;
+		}
+
+		private void DeletePoint()
+		{
+			var selectedIndex = SelectedIndex;
+			if (selectedIndex >= 0)
+			{
+				var selectedPoint = _points[selectedIndex];
+				List<int> colorPointIndexes = (List<int>)selectedPoint.Tag;
+				_holdValue = new ColorGradient(Value);
+
+				List<ColorPoint> colorPoints = new List<ColorPoint>();
+				foreach (int index in colorPointIndexes)
+				{
+					ColorPoint pt = _holdValue.Colors[index];
+					if (pt == null)
+						continue;
+					colorPoints.Add(pt);
+				}
+
+				foreach (var colorpoint in colorPoints)
+				{
+					_holdValue.Colors.Remove(colorpoint);
+				}
+			}
+
+			SetValue();
+
+		}
+
+		
+		private void ReloadPoints()
+		{
+			if (Value != null)
+			{
+				ClearPoints();
+				List<ColorPoint> sortedColors = new List<ColorPoint>(Value.Colors.SortedArray());
+				// we'll assume they're sorted, so any colorpoints at the same position are contiguous in the array
+				for (int i = 0; i < sortedColors.Count; i++)
+				{
+					ColorPoint currentPoint = sortedColors[i];
+					double currentPos = currentPoint.Position;
+					List<int> indexes = new List<int>();
+
+					indexes.Add(Value.Colors.IndexOf(currentPoint));
+					while (i + 1 < sortedColors.Count && sortedColors[i + 1].Position == currentPos)
+					{
+						indexes.Add(Value.Colors.IndexOf(sortedColors[i + 1]));
+						i++;
+					}
+
+					var point = AddPoint(currentPos);
+					point.Tag = indexes;
+				}
+			}
+		}
+
+		private void AddColorPoint(double pos)
+		{
+			List<ColorPoint> newColorPoints;
+			if (IsDiscrete)
+			{
+				newColorPoints = new List<ColorPoint>();
+				
+				if (ValidColors.Any())
+				{
+					newColorPoints.Add(new ColorPoint(ValidColors.FirstOrDefault(), pos));
+				}
+
+			}
+			else
+			{
+				newColorPoints = new List<ColorPoint> { new ColorPoint(Value.GetColorAt((float)pos), pos) };
+			}
+
+			_holdValue = new ColorGradient(Value);
+			foreach (ColorPoint newColorPoint in newColorPoints)
+			{
+				_holdValue.Colors.Add(newColorPoint);
+			}
+
+			SetValue();
+		}
 
 		#endregion Helpers
 
@@ -439,68 +499,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			RaiseEvent(new PropertyEditingEventArgs(PropertyEditingFinishedEvent, this, PropertyDescriptor));
 		}
 
-
-		private int FindClosestPoint(PointPairList points, PointPair point)
+		protected override ColorGradient GetColorGradientValue()
 		{
-			int closestIndex = -1;
-			double minDist = Double.MaxValue;
-			for (int i = 0; i < points.Count; i++)
-			{
-				var dist = Dist(point, points[i]);
-				if (dist < minDist)
-				{
-					minDist = dist;
-					closestIndex = i;
-				}
-			}
-
-			return closestIndex;
+			return Value;
 		}
-
-		private static double Dist(PointPair origin, PointPair point)
-		{
-			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
-		}
-
-		private bool IsMouseInDragZone(Point position)
-		{
-			return position.Y >= ActualHeight - 10;
-		}
-
-		private PointPair TranslateMouseLocation(Point position)
-		{
-			Console.Out.WriteLine("Mouse Location;{0},{1}", position.X, position.Y);
-			var pct = position.X / ActualWidth;
-			var x = 100 * pct;
-
-			pct = (ActualHeight - position.Y) / ActualHeight;
-			var y = 100 * pct;
-
-			return new PointPair(x, y);
-		}
-
-		private PointPair EnforcePointBounds(PointPair p)
-		{
-			if (p.X > 100)
-			{
-				p.X = 100;
-			}
-			else if (p.X < 0)
-			{
-				p.X = 0;
-			}
-
-			if (p.Y > 100)
-			{
-				p.Y = 100;
-			}
-			else if (p.Y < 0)
-			{
-				p.Y = 0;
-			}
-
-			return p;
-		}
-
 	}
 }
