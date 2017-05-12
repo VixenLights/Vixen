@@ -56,7 +56,8 @@ namespace Common.Controls.Timeline
 				beginDrawBox(gridLocation);
 				m_lastSingleSelectedElementLocation = Point.Empty;				
 			}
-			if (e.Button == MouseButtons.Left) {
+			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+			{
 				_workingElement = elementAt(gridLocation);
 				if ((EnableDrawMode && !AltPressed) && SelectedEffect != Guid.Empty && m_mouseResizeZone == ResizeZone.None)
 				{
@@ -68,8 +69,9 @@ namespace Common.Controls.Timeline
 					beginDrawBox(gridLocation);
 					m_lastSingleSelectedElementLocation = Point.Empty;
 					return;
-				}				
-				if (m_mouseDownElements.Count <= 0) {
+				}
+				if (m_mouseDownElements.Count <= 0 && e.Button != MouseButtons.Right)
+				{
 					// we clicked on the background - clear anything that is selected, and begin a 'selection' drag.
 					if (!CtrlPressed)
 					{
@@ -159,12 +161,17 @@ namespace Common.Controls.Timeline
 						
 					}
 
-					if (m_mouseResizeZone == ResizeZone.None) {
-						//waitForDragMove(e.Location);	// begin waiting for a normal drag
-						waitForDragMove(gridLocation);
-					}
-					else if (!CtrlPressed) {
-						beginHResize(gridLocation); // begin a resize.
+					if (e.Button == MouseButtons.Left)
+					{
+						if (m_mouseResizeZone == ResizeZone.None)
+						{
+							//waitForDragMove(e.Location);	// begin waiting for a normal drag
+							waitForDragMove(gridLocation);
+						}
+						else if (!CtrlPressed)
+						{
+							beginHResize(gridLocation); // begin a resize.
+						}
 					}
 				}
 				//Invalidate();
