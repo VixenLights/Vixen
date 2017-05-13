@@ -408,4 +408,28 @@
   <data name="WidthCurve" xml:space="preserve">
     <value>The width over time of the effect.</value>
   </data>
+  <data name="ColorType" xml:space="preserve">
+    <value>Controls the Type of Color.</value>
+  </data>
+  <data name="MaxMeteorAngle" xml:space="preserve">
+    <value>Max angle the Meteor moves.</value>
+  </data>
+  <data name="MinMeteorAngle" xml:space="preserve">
+    <value>Min angle the Meteor moves.</value>
+  </data>
+  <data name="MovementType" xml:space="preserve">
+    <value>Controls the  Type of Movement.</value>
+  </data>
+  <data name="RandomPosition" xml:space="preserve">
+    <value>Creates new Meteors at a Random Position</value>
+  </data>
+  <data name="RandomSpeed" xml:space="preserve">
+    <value>Enables Random Speed settings.</value>
+  </data>
+  <data name="TailLength" xml:space="preserve">
+    <value>Controls the amount of TailLength.</value>
+  </data>
+  <data name="SpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the Speed level by the amount of variation..</value>
+  </data>
 </root>

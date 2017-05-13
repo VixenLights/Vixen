@@ -423,4 +423,28 @@
   <data name="BladeType" xml:space="preserve">
     <value>Blade Type</value>
   </data>
+  <data name="ColorType" xml:space="preserve">
+    <value>Color Type</value>
+  </data>
+  <data name="MaxAngle" xml:space="preserve">
+    <value>Max Angle</value>
+  </data>
+  <data name="MinAngle" xml:space="preserve">
+    <value>Min Angle</value>
+  </data>
+  <data name="MovementType" xml:space="preserve">
+    <value>Movement Type</value>
+  </data>
+  <data name="RandomPosition" xml:space="preserve">
+    <value>Random Position</value>
+  </data>
+  <data name="RandomSpeed" xml:space="preserve">
+    <value>Random Speed</value>
+  </data>
+  <data name="TailLength" xml:space="preserve">
+    <value>Tail Length</value>
+  </data>
+  <data name="SpeedVariation" xml:space="preserve">
+    <value>Speed Variation</value>
+  </data>
 </root>

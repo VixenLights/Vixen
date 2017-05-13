@@ -224,6 +224,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls the Type of Color..
+        /// </summary>
+        internal static string ColorType {
+            get {
+                return ResourceManager.GetString("ColorType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
@@ -485,6 +494,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max angle the Meteor moves..
+        /// </summary>
+        internal static string MaxMeteorAngle {
+            get {
+                return ResourceManager.GetString("MaxMeteorAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colors are not used when Rainbow is selected..
         /// </summary>
         internal static string MeteorType {
@@ -508,6 +526,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MinimumBrightness {
             get {
                 return ResourceManager.GetString("MinimumBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min angle the Meteor moves..
+        /// </summary>
+        internal static string MinMeteorAngle {
+            get {
+                return ResourceManager.GetString("MinMeteorAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the  Type of Movement..
+        /// </summary>
+        internal static string MovementType {
+            get {
+                return ResourceManager.GetString("MovementType", resourceCulture);
             }
         }
         
@@ -611,6 +647,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates new Meteors at a Random Position.
+        /// </summary>
+        internal static string RandomPosition {
+            get {
+                return ResourceManager.GetString("RandomPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enables Random Speed settings..
+        /// </summary>
+        internal static string RandomSpeed {
+            get {
+                return ResourceManager.GetString("RandomSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the number of times the color pattern repeats within the pattern..
         /// </summary>
         internal static string Repeat {
@@ -710,6 +764,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Speed around the Speed level by the amount of variation...
+        /// </summary>
+        internal static string SpeedVariation {
+            get {
+                return ResourceManager.GetString("SpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how the individual spins occur..
         /// </summary>
         internal static string SpinSpeedFormat {
@@ -742,6 +805,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the amount of TailLength..
+        /// </summary>
+        internal static string TailLength {
+            get {
+                return ResourceManager.GetString("TailLength", resourceCulture);
             }
         }
         
