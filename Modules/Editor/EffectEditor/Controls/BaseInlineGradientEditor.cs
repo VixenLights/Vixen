@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -358,6 +359,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void ShowColorPicker()
 		{
+			var value = GetColorGradientValue();
+			if (value == null) return;
 			var selectedIndex = SelectedIndex;
 			if (selectedIndex < 0) return;
 			var handle = _points[selectedIndex];
@@ -365,7 +368,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			ColorGradient holdValue;
 			if (IsDiscrete)
 			{
-				holdValue = new ColorGradient(GetColorGradientValue());
+				holdValue = new ColorGradient(value);
 				List<Color> selectedColors = new List<Color>();
 				List<ColorPoint> colorPoints = new List<ColorPoint>();
 				foreach (int index in colorPointIndexes)
@@ -414,7 +417,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					var messageBox = new MessageBoxForm("Non-discrete color gradient, >1 selected point. oops! please report it.", "Delete library gradient?", false, false);
 					messageBox.ShowDialog();
 				}
-				holdValue = new ColorGradient(GetColorGradientValue());
+
+				holdValue = new ColorGradient(value);
 				ColorPoint pt = holdValue.Colors[colorPointIndexes.FirstOrDefault()];
 				if (pt == null)
 					return;
