@@ -7,7 +7,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	public class InlineGradientPairGradientEditor:BaseInlineGradientEditor
 	{
 
-		private static readonly Type ThisType = typeof(InlineGradientEditor);
+		private static readonly Type ThisType = typeof(InlineGradientPairGradientEditor);
+
+		static InlineGradientPairGradientEditor()
+		{
+			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));
+		}
 
 		#region Dependency Property Fields
 

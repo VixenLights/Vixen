@@ -80,6 +80,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		}
 
+		protected override void OnMouseDown(MouseButtonEventArgs e)
+		{
+			base.OnMouseDown(e);
+			e.Handled = true;
+		}
+
 		private void CanvasOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.ClickCount == 2)
@@ -93,12 +99,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 		}
 
-		private void CanvasOnMouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+		private void CanvasOnMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			var mousePoint = Mouse.GetPosition(sender as IInputElement);
 			if (mousePoint.X < 0 || mousePoint.X > _canvas.Width || mousePoint.Y < 0 || mousePoint.Y > _canvas.Height) return;
 			if (IsMouseOverAnyHandle()) return;
 			AddColorPoint(mousePoint.X / _canvas.Width);
+			e.Handled = true;
 		}
 
 		private void OnAddItem(SliderPoint sliderPoint)
@@ -150,7 +157,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				if (_holdValue == null)
 				{
 					_holdValue = new ColorGradient(GetColorGradientValue());
-
 				}
 				SliderPoint point = sender as SliderPoint;
 				if (point != null)

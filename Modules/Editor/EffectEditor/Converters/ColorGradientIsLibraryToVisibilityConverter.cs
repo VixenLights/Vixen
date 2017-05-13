@@ -16,9 +16,17 @@ namespace VixenModules.Editor.EffectEditor.Converters
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			ColorGradient cg = value as ColorGradient;
-			if (value != null)
+			if (cg != null)
 			{
-				return cg.IsLibraryReference?Visibility.Hidden : Visibility.Visible;
+				return cg.IsLibraryReference ? Visibility.Hidden : Visibility.Visible;
+			}
+			else
+			{
+				var glp = value as GradientLevelPair;
+				if (glp != null)
+				{
+					return glp.ColorGradient.IsLibraryReference ? Visibility.Hidden : Visibility.Visible;
+				}
 			}
 
 			return Visibility.Hidden;

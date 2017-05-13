@@ -13,6 +13,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	public class InlineCurveEditor : Control
 	{
 		private static readonly Type ThisType = typeof(InlineCurveEditor);
+		private Image _image;
 
 		#region Fields
 
@@ -31,6 +32,17 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		static InlineCurveEditor()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));
+		}
+
+		public InlineCurveEditor()
+		{
+			Loaded += InlineCurveEditor_Loaded;
+		}
+
+		private void InlineCurveEditor_Loaded(object sender, RoutedEventArgs e)
+		{
+			var template = Template;
+			_image = (Image)template.FindName("CurveImage", this);
 		}
 
 		#region Events
@@ -345,9 +357,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void UpdateImage(Curve curve)
 		{
-			var template = Template;
-			var imageControl = (Image)template.FindName("CurveImage", this);
-			imageControl.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
+			_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
 		}
 
 		protected void SetValue()
@@ -397,13 +407,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
 
-		private PointPair TranslateMouseLocation(Point position)
+		private PointPair TranslateMouseLocation(Point pos)
 		{
-			Console.Out.WriteLine("Mouse Location;{0},{1}", position.X, position.Y);
-			var pct = position.X / ActualWidth;
+			var position = TranslatePoint(pos, _image);
+			//Console.Out.WriteLine("Mouse Location;{0},{1}", position.X, position.Y);
+			var pct = position.X / _image.Width;
 			var x = 100 * pct;
 
-			pct = (ActualHeight - position.Y) / ActualHeight;
+			pct = (_image.Height - position.Y) / _image.Height;
 			var y = 100 * pct;
 
 			return new PointPair(x, y);

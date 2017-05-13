@@ -83,38 +83,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientPairCurveEditor}">
-                   
-                        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" >
-                            <Border BorderThickness="1" BorderBrush="#888888" Margin="5,0,5,0">
-                                <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
-                                    Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32" 
+
+                    <StackPanel Name="CurveContainer"  VerticalAlignment="Center" Margin="0,5,0,5" 
+                                Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
+                        <Border BorderThickness="1" BorderBrush="#888888">
+                            <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
+                                    Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
 					                Focusable="True" 
 				                        input:DragDropManager.DropTargetAdvisor="{Binding}" 
                                        input:DragDropManager.DragSourceAdvisor="{Binding}"
                                        input:DragDropTargetType.TargetType="Curve" 
-                                       Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-55'}"
+                                       Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                        Stretch="Fill">
-                                    <Image.InputBindings>
-                                        <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
 						                  CommandParameter="{Binding}" />
-                                        <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
 												    CommandParameter="{Binding}"/>
-                                    </Image.InputBindings>
-                                    <Image.ToolTip>
-                                        <ToolTip Content="{Binding Value.Curve}" Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
-                            </Border>
-                        </StackPanel>
-                   
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True" SourceName="CurveImage">
-                            <Setter Property="Cursor" Value="Cross" />
-                        </Trigger>
-                        <Trigger Property="IsDragging" Value="True">
-                            <Setter Property="Cursor" Value="SizeAll" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                                </Image.InputBindings>
+                                <Image.ToolTip>
+                                    <ToolTip Content="{Binding Value.Curve}" Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
+                                </Image.ToolTip>
+                            </Image>
+                        </Border>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

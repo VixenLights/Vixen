@@ -8,6 +8,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	public class InlineGradientEditor : BaseInlineGradientEditor
 	{
 		private static readonly Type ThisType = typeof(InlineGradientEditor);
+		private BadImageFormatException _image;
 
 		static InlineGradientEditor()
 		{

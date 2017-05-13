@@ -27,11 +27,24 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private const double DragTolerance = 2.0;
 		private const double DistanceTolerance = 8.0;
 
+		private Image _image;
+
 		#endregion Fields
 
 		static InlineGradientPairCurveEditor()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));
+		}
+
+		public InlineGradientPairCurveEditor()
+		{
+			Loaded += InlineCurveEditor_Loaded;
+		}
+
+		private void InlineCurveEditor_Loaded(object sender, RoutedEventArgs e)
+		{
+			var template = Template;
+			_image = (Image)template.FindName("CurveImage", this);
 		}
 
 		#region Events
@@ -194,11 +207,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 					Focus();
 					CaptureMouse();
-
-					e.Handled = true;
 				}
+				e.Handled = true;
 			}
 		}
+
+
 
 		/// <summary>
 		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseMove"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
@@ -279,6 +293,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 
 			ReleaseMouseCapture();
+			e.Handled = true;
 
 		}
 
@@ -344,10 +359,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void UpdateImage(Curve curve)
 		{
-			var template = Template;
-			var imageControl = (Image)template.FindName("CurveImage", this);
-			imageControl.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
-			imageControl.ToolTip = TypeDescriptor.GetConverter(typeof(Curve)).ConvertToString(curve);
+			//var template = Template;
+			//var imageControl = (Image)template.FindName("CurveImage", this);
+			_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
+			_image.ToolTip = TypeDescriptor.GetConverter(typeof(Curve)).ConvertToString(curve);
 		}
 
 		protected void SetValue()
@@ -397,13 +412,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
 		}
 
-		private PointPair TranslateMouseLocation(Point position)
+		private PointPair TranslateMouseLocation(Point pos)
 		{
-			Console.Out.WriteLine("Mouse Location;{0},{1}", position.X, position.Y);
-			var pct = position.X / ActualWidth;
+			var position = TranslatePoint(pos, _image);
+			//Console.Out.WriteLine("Mouse Location:{0},{1} Size:{2},{3}", position.X, position.Y, _image.Width, _image.Height);
+			var pct = position.X / _image.Width;
 			var x = 100 * pct;
 
-			pct = (ActualHeight - position.Y) / ActualHeight;
+			pct = (_image.Height - position.Y) / _image.Height;
 			var y = 100 * pct;
 
 			return new PointPair(x, y);
