@@ -46,9 +46,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		protected BaseInlineGradientEditor()
 		{
+			InitializeStyle();
 			_points = new List<SliderPoint>();
 			Loaded += InlineGradientEditor_Loaded;
-			InitializeStyle();
 		}
 
 		private void InlineGradientEditor_Loaded(object sender, RoutedEventArgs e)
@@ -126,12 +126,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			sliderPoint.SliderShape.KeyDown -= GradientPoint_KeyDown;
 			sliderPoint.PropertyChanged -= GradientPoint_PropertyChanged;
-			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			sliderPoint.DragCompleted -= SliderPoint_DragCompleted;
 			try
 			{
 				_canvas.Children.Remove(sliderPoint.SliderShape);
 			}
 			catch { }
+
+			sliderPoint.Dispose();
 		}
 
 		private void GradientPoint_KeyDown(object sender, KeyEventArgs e)

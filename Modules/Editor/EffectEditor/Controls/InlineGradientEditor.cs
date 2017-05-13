@@ -46,7 +46,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			var inlineGradientEditor = (InlineGradientEditor)d;
 			if (!inlineGradientEditor.IsInitialized)
 				return;
-			inlineGradientEditor.Value = (ColorGradient) e.NewValue;
+			//inlineGradientEditor.Value = (ColorGradient) e.NewValue;
 			inlineGradientEditor.OnGradientValueChanged();
 		}
 

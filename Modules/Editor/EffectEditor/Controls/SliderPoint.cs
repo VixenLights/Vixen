@@ -8,10 +8,11 @@ using System.Windows.Shapes;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
-    public class SliderPoint : INotifyPropertyChanging, INotifyPropertyChanged
+    public class SliderPoint : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
         private const double DefaultWidth = 10;
         private const double DefaultHeight = 10;
+	    private double _normalizedPosition;
 		
         internal Polygon SliderShape { get; private set; }
         internal double Left
@@ -19,6 +20,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
             get { return (double)SliderShape.GetValue(Canvas.LeftProperty); }
             set
             {
+	            if (double.IsInfinity(value)) return;
                 var changing = value == Left;
                 if (changing)
                     OnPropertyChanging(new PropertyChangingEventArgs("Left"));
@@ -32,7 +34,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
             get { return Left + Width / 2; }
             set
             {
-                var changing = value == Center;
+				if (double.IsInfinity(value)) return;
+				var changing = value == Center;
                 if (changing)
                     OnPropertyChanging(new PropertyChangingEventArgs("Center"));
                 Left = value - Width / 2;
@@ -79,7 +82,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 	    public double NormalizedPosition
 	    {
-		    get { return Center / Parent.Width; }
+		    get { return _normalizedPosition; }
 	    }
 
         internal Panel Parent { get; set; }
@@ -111,6 +114,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
         {
             Parent = parent;
 	        SliderShape = new Polygon { Width = DefaultWidth, Height = DefaultHeight };
+	        _normalizedPosition = position;
 	        if (parent != null)
 	        {
 		        Center = position * parent.Width;
@@ -129,15 +133,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void Parent_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
-			var relativePosition = Center / e.PreviousSize.Width;
-			Center = relativePosition * Parent.Width;
+			//if (e.PreviousSize.Width == 0.0) return;
+			//var relativePosition = Center / e.PreviousSize.Width;
+			Center = _normalizedPosition * Parent.Width;
 		}
-
-		~SliderPoint()
-        {
-            try { Parent.Children.Remove(SliderShape); }
-            catch { }
-        }
 
         private void Handle_MouseMove(object sender, MouseEventArgs e)
         {
@@ -147,10 +146,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				IsDragging = true;
 			}
             var point = Mouse.GetPosition(Parent);
+			//Console.Out.WriteLine("Location: {0},{1} - Canvas Size: {2}, {3}", point.X, point.Y, Parent.Width, Parent.Height);
             var center = point.X;
 	        if (center >= 0 && center <= Parent.Width)
 	        {
 		        Center = center;
+		        _normalizedPosition = center / Parent.Width;
 		        SliderShape.Focus();
 	        }
         }
@@ -202,7 +203,34 @@ namespace VixenModules.Editor.EffectEditor.Controls
             if (PropertyChanging != null)
                 PropertyChanging(this, e);
         }
-        #endregion
+
+	    private void ReleaseUnmanagedResources()
+	    {
+		    // TODO release unmanaged resources here
+	    }
+
+	    public void Dispose()
+	    {
+
+		    try
+		    {
+			    Parent.Children.Remove(SliderShape);
+				SliderShape.MouseMove -= Handle_MouseMove;
+				SliderShape.MouseUp -= Handle_MouseUp;
+				SliderShape.MouseDown -= Handle_MouseDown;
+				Parent.SizeChanged -= Parent_SizeChanged;
+			}
+			catch { }
+			ReleaseUnmanagedResources();
+		    GC.SuppressFinalize(this);
+	    }
+
+	    ~SliderPoint()
+	    {
+		    ReleaseUnmanagedResources();
+	    }
+
+	    #endregion
     }
 
 	public class SliderPointPositionComparer : IComparer<SliderPoint>
