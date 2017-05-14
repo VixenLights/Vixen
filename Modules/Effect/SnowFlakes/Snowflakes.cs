@@ -510,17 +510,17 @@ namespace VixenModules.Effect.Snowflakes
 				switch (ColorType)
 				{
 					case SnowflakeColorType.Range: //Random two colors are selected from the list for each SnowFlake and then the color range between them are used.
-						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100)),
-								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100)));
-						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100)),
-								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100)));
+						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)));
+						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)));
 						break;
 					case SnowflakeColorType.Palette: //All user colors are used
-						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPos * 100) / 100));
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100));
+						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
 						break;
 					default:
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPos * 100) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
 					break;
 				}
 				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1; //Adds a random brightness to each Snowflake making it look more realistic
@@ -553,8 +553,8 @@ namespace VixenModules.Effect.Snowflakes
 					//Added the color and then adjusts brightness based on effect time position, randon Brightness and over all brightness level.
 					HSV hsvInner = snowFlakes.OuterHsv;
 					HSV hsvOuter = snowFlakes.InnerHsv;
-					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPos * 100) / 100;
-					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPos * 100) / 100;
+					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPosFactor) / 100;
+					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPosFactor) / 100;
 
 					if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
 					{
