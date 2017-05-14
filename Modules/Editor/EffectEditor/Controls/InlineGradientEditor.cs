@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using NLog;
 using VixenModules.App.ColorGradients;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
 	public class InlineGradientEditor : BaseInlineGradientEditor
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly Type ThisType = typeof(InlineGradientEditor);
 		private BadImageFormatException _image;
 
@@ -46,7 +48,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			var inlineGradientEditor = (InlineGradientEditor)d;
 			if (!inlineGradientEditor.IsInitialized)
 				return;
-			//inlineGradientEditor.Value = (ColorGradient) e.NewValue;
+			if (e.NewValue == null)
+			{
+				Logging.Warn("Null gradient presented!");
+			}
 			inlineGradientEditor.OnGradientValueChanged();
 		}
 

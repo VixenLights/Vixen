@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorPicker;
+using NLog;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.Editor.EffectEditor.Converters;
@@ -30,7 +31,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 {
 	public abstract class BaseInlineGradientEditor: Control
 	{
-
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private static readonly Type ThisType = typeof(BaseInlineGradientEditor);
 		private static readonly ColorGradientToImageConverter Converter = new ColorGradientToImageConverter();
 		private bool _isDiscrete;
@@ -170,7 +171,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					{
 						foreach (var index in pointIndexes)
 						{
-							colorPoints[index].Position = point.NormalizedPosition;
+							if (index < colorPoints.Count)
+							{
+								colorPoints[index].Position = point.NormalizedPosition;
+							}
+							else
+							{
+								Logging.Error("Index out of bounds for colorpoint. Index:{0}, colorpoint size:{1}, position:{3}",index, colorPoints.Count, point.NormalizedPosition);
+							}
 						}
 					}
 
