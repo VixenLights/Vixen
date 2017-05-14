@@ -301,7 +301,7 @@ namespace VixenModules.Effect.Spirograph
 		{
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
-			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			
 			int rangeAdjust = CalculateRange(intervalPosFactor);
 			int i, x, y, xc, yc, ColorIdx;
@@ -362,7 +362,7 @@ namespace VixenModules.Effect.Spirograph
 
 					if (Type != ColorType.Rainbow)
 					{
-						hsv = HSV.FromRGB(Colors[ColorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
+						hsv = HSV.FromRGB(Colors[ColorIdx].GetColorAt((intervalPosFactor) / 100));
 						hsv.V = hsv.V*level;
 					}
 					frameBuffer.SetPixel(x, y, hsv);
