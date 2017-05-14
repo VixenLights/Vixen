@@ -306,9 +306,6 @@
   <data name="Show3D" xml:space="preserve">
     <value>3D</value>
   </data>
-  <data name="SnowflakeType" xml:space="preserve">
-    <value>Snowflake Type</value>
-  </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
   </data>
@@ -446,5 +443,26 @@
   </data>
   <data name="SpeedVariation" xml:space="preserve">
     <value>Speed Variation</value>
+  </data>
+  <data name="FlakeType" xml:space="preserve">
+    <value>Flake Type</value>
+  </data>
+  <data name="Include45Pt" xml:space="preserve">
+    <value>Include 45Pt</value>
+  </data>
+  <data name="MaxAngle" xml:space="preserve">
+    <value>Max Angle</value>
+  </data>
+  <data name="MaxDirection" xml:space="preserve">
+    <value>Max Direction</value>
+  </data>
+  <data name="MinAngle" xml:space="preserve">
+    <value>Min Angle</value>
+  </data>
+  <data name="MinDirection" xml:space="preserve">
+    <value>Min Direction</value>
+  </data>
+  <data name="RandomIntensity" xml:space="preserve">
+    <value>Random Intensity</value>
   </data>
 </root>

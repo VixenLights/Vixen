@@ -300,9 +300,6 @@
   <data name="Shrink" xml:space="preserve">
     <value>Shrink the legs of the spiral.</value>
   </data>
-  <data name="SnowflakeType" xml:space="preserve">
-    <value>Controls the type of snowflake.</value>
-  </data>
   <data name="SpinSpeedFormat" xml:space="preserve">
     <value>Controls how the individual spins occur.</value>
   </data>
@@ -431,5 +428,26 @@
   </data>
   <data name="SpeedVariation" xml:space="preserve">
     <value>Randomly adjust the Speed around the Speed level by the amount of variation..</value>
+  </data>
+  <data name="FlakeType" xml:space="preserve">
+    <value>Controls the type of snowflake.</value>
+  </data>
+  <data name="Include45Pt" xml:space="preserve">
+    <value>Include 45 Point Flakes.</value>
+  </data>
+  <data name="MaxAngle" xml:space="preserve">
+    <value>Max angle the Snowflake moves.</value>
+  </data>
+  <data name="MaxDirection" xml:space="preserve">
+    <value>Max Direction in Degrees.</value>
+  </data>
+  <data name="MinAngle" xml:space="preserve">
+    <value>Min angle the Snowflake moves.</value>
+  </data>
+  <data name="MinDirection" xml:space="preserve">
+    <value>Min Direction in Degrees.</value>
+  </data>
+  <data name="RandomIntensity" xml:space="preserve">
+    <value>Chnages the Intensity for each SnowFlake.</value>
   </data>
 </root>
