@@ -111,15 +111,14 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Thickness")]
 		[ProviderDescription(@"Thickness")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(4)]
-		public int Thickness
+		public Curve ThicknessCurve
 		{
-			get { return _data.Thickness; }
+			get { return _data.ThicknessCurve; }
 			set
 			{
-				_data.Thickness = value;
+				_data.ThicknessCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -129,15 +128,14 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"Rotation")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-50, 50, 1)]
+		//[NumberRange(-50, 50, 1)]
 		[PropertyOrder(5)]
-		public int Rotation
+		public Curve RotationCurve
 		{
-			get { return _data.Rotation; }
+			get { return _data.RotationCurve; }
 			set
 			{
-				_data.Rotation = value;
+				_data.RotationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -248,6 +246,20 @@ namespace VixenModules.Effect.Spiral
 
 		#endregion
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/spiral/"; }
+		}
+
+		#endregion
+
 
 		public override IModuleDataModel ModuleData
 		{
@@ -283,14 +295,17 @@ namespace VixenModules.Effect.Spiral
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
 			int colorcnt = Colors.Count();
 			int spiralCount = colorcnt * Repeat;
 			int deltaStrands = BufferWi / spiralCount;
-			int spiralThickness = (deltaStrands * Thickness / 100)+1;
+			int spiralThickness = (deltaStrands * CalculateThickness(intervalPosFactor) / 100) + 1;
+			double adjustRotation = CalculateRotation(intervalPosFactor);
 			int spiralGap = deltaStrands - spiralThickness;
 			int thicknessState = 0;
 			int spiralState = 0;
-			double position = (GetEffectTimeIntervalPosition(frame) * Speed)%1;
+			double position = (intervalPos * Speed) % 1;
 
 			switch (Direction)
 			{
@@ -316,7 +331,7 @@ namespace VixenModules.Effect.Spiral
 			}
 
 			spiralThickness += thicknessState;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
 			
 			for (int ns = 0; ns < spiralCount; ns++)
 			{
@@ -331,7 +346,7 @@ namespace VixenModules.Effect.Spiral
 					for (y = 0; y < BufferHt; y++)
 					{
 						Color color;
-						var x = (strand + (spiralState / 10) + (y * Rotation / BufferHt)) % BufferWi;
+						var x = (strand + (spiralState / 10) + (y * (int)adjustRotation / BufferHt)) % BufferWi;
 						if (x < 0) x += BufferWi;
 						if (Blend)
 						{
@@ -344,8 +359,8 @@ namespace VixenModules.Effect.Spiral
 						if (Show3D)
 						{
 							var hsv = HSV.FromRGB(color);
-							
-							if (Rotation < 0)
+
+							if (adjustRotation < 0)
 							{
 								hsv.V = (float)((double)(thick + 1) / spiralThickness);
 							}
@@ -367,6 +382,21 @@ namespace VixenModules.Effect.Spiral
 			}
 		}
 
+		private int CalculateThickness(double intervalPos)
+		{
+			var value = ThicknessCurve.GetIntValue(intervalPos);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private double CalculateRotation(double intervalPos)
+		{
+			var value = RotationCurve.GetValue(intervalPos);
+			if (value < 1) value = 1;
+
+			return value;
+		}
 		
 	}
 }
