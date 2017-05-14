@@ -6,7 +6,7 @@ namespace VixenModules.Effect.Text
 	{
 		[Description("Normal")]
 		Normal,
-		[Description("Rotated")]
+		[Description("Stacked")]
 		Rotated
 	}
 }

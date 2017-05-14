@@ -100,8 +100,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"YOffset")]
-		[ProviderDescription(@"YOffset")]
+		[ProviderDisplayName(@"Vertical Offset")]
+		[ProviderDescription(@"Vertical Offset")]
 		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(2)]
 		public Curve YOffsetCurve
@@ -117,8 +117,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
-		[ProviderDisplayName(@"XOffset")]
-		[ProviderDescription(@"XOffset")]
+		[ProviderDisplayName(@"Horizontal Offset")]
+		[ProviderDescription(@"Horizontal Offset")]
 		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(2)]
 		public Curve XOffsetCurve
@@ -220,8 +220,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"TextMode")]
-		[ProviderDescription(@"TextMode")]
+		[ProviderDisplayName(@"Text Layout")]
+		[ProviderDescription(@"Text Layout")]
 		[PropertyOrder(5)]
 		public TextMode TextMode
 		{
