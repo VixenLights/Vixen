@@ -59,7 +59,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		protected override void SetColorGradientValue(ColorGradient cg)
 		{
-			Value = cg;
+			if (cg != null)
+			{
+				Value = cg;
+			}
 		}
 	}
 }
