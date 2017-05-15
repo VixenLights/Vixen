@@ -178,17 +178,18 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	        {
 				var poly = sender as Polygon;
 				poly.ReleaseMouseCapture();
-				poly.Focus();
-		        e.Handled = true;
+		        poly.Focus();
 		        _mouseDown = false;
 		        if (IsDragging)
 		        {
 			        IsDragging = false;
-			        OnDragCompleted(EventArgs.Empty);
+					e.Handled = true;
+					OnDragCompleted(EventArgs.Empty);
 		        }
 		        else if(Keyboard.Modifiers == ModifierKeys.Alt)
 		        {
-			        OnAltClick(EventArgs.Empty);
+					e.Handled = true;
+					OnAltClick(EventArgs.Empty);
 		        }
 			}
             
@@ -203,7 +204,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				poly.Focus();
 				_mouseDown = true;
 				_dragStartPoint = e.GetPosition(Parent);
-				e.Handled = true;
 			}
 		}
 

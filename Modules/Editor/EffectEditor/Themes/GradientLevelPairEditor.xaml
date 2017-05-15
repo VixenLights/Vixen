@@ -24,19 +24,18 @@
 					<DataTemplate>
                         <StackPanel Name="CollectionContainer" Orientation="Vertical"  Margin="0"
                                     Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
-                            <controls:InlineGradientPairGradientEditor
-			                    x:Name="CollectionGradientEditor"
-			                    Value="{Binding Value, Mode=TwoWay}"
-                                IsEnabled="True">
-
-                            </controls:InlineGradientPairGradientEditor>
-
                             <controls:InlineGradientPairCurveEditor
 			                    x:Name="CollectionCurveEditor"
 			                    Value="{Binding Value, Mode=TwoWay}"
                                 IsEnabled="True">
                                
                             </controls:InlineGradientPairCurveEditor>
+                            <controls:InlineGradientPairGradientEditor
+			                    x:Name="CollectionGradientEditor"
+			                    Value="{Binding Value, Mode=TwoWay}"
+                                IsEnabled="True">
+
+                            </controls:InlineGradientPairGradientEditor>
                         </StackPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>

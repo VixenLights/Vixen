@@ -53,10 +53,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				Logging.Warn("Null gradient presented!");
 				return;
 			}
-			if (e.NewValue.Equals(e.OldValue))
-			{
-				Logging.Warn("Same gradient in value changed.");
-			}
+			//if (e.NewValue.Equals(e.OldValue))
+			//{
+			//	Logging.Warn("Same gradient in value changed.");
+			//}
 			inlineGradientEditor.OnGradientValueChanged();
 		}
 

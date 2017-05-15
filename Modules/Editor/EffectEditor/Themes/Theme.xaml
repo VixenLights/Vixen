@@ -500,7 +500,7 @@
     </Setter>
   </Style>
 
-    <Style x:Key="SliderPointStyle" TargetType="{x:Type controls:InlineGradientEditor}">
+    <Style x:Key="SliderPointStyle" TargetType="{x:Type controls:BaseInlineGradientEditor}">
        <Setter Property="SliderStyle">
             <Setter.Value>
                 <Style>
