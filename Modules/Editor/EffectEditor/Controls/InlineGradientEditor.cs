@@ -51,6 +51,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			if (e.NewValue == null)
 			{
 				Logging.Warn("Null gradient presented!");
+				return;
+			}
+			if (e.NewValue.Equals(e.OldValue))
+			{
+				Logging.Warn("Same gradient in value changed.");
 			}
 			inlineGradientEditor.OnGradientValueChanged();
 		}

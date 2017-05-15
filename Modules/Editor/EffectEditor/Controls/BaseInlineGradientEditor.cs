@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorPicker;
 using NLog;
@@ -35,10 +30,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private static readonly Type ThisType = typeof(BaseInlineGradientEditor);
 		private static readonly ColorGradientToImageConverter Converter = new ColorGradientToImageConverter();
 		private bool _isDiscrete;
-		protected static ColorPicker.Mode Mode = ColorPicker.Mode.HSV_RGB;
-		protected static ColorPicker.Fader Fader = ColorPicker.Fader.HSV_H;
-		protected Canvas _canvas;
-		protected readonly List<SliderPoint> _points;
+		private static ColorPicker.Mode _mode = ColorPicker.Mode.HSV_RGB;
+		private static ColorPicker.Fader _fader = ColorPicker.Fader.HSV_H;
+		private Canvas _canvas;
+		private readonly List<SliderPoint> _points;
 		private ColorGradient _holdValue;
 
 		static BaseInlineGradientEditor()
@@ -48,7 +43,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		protected BaseInlineGradientEditor()
 		{
-			InitializeStyle();
 			_points = new List<SliderPoint>();
 			Loaded += InlineGradientEditor_Loaded;
 		}
@@ -103,11 +97,15 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void CanvasOnMouseDown(object sender, MouseButtonEventArgs e)
 		{
-			var mousePoint = Mouse.GetPosition(sender as IInputElement);
-			if (mousePoint.X < 0 || mousePoint.X > _canvas.Width || mousePoint.Y < 0 || mousePoint.Y > _canvas.Height) return;
-			if (IsMouseOverAnyHandle()) return;
-			AddColorPoint(mousePoint.X / _canvas.Width);
-			e.Handled = true;
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				var mousePoint = Mouse.GetPosition(sender as IInputElement);
+				if (mousePoint.X < 0 || mousePoint.X > _canvas.Width || mousePoint.Y < 0 || mousePoint.Y > _canvas.Height) return;
+				if (IsMouseOverAnyHandle()) return;
+				AddColorPoint(mousePoint.X / _canvas.Width);
+				e.Handled = true;
+			}
+			
 		}
 
 		private void OnAddItem(SliderPoint sliderPoint)
@@ -117,6 +115,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			sliderPoint.SliderShape.KeyDown += GradientPoint_KeyDown; ;
 			sliderPoint.PropertyChanged += GradientPoint_PropertyChanged;
 			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			sliderPoint.AltClick += SliderPoint_AltClick;
 			try
 			{
 				_canvas.Children.Add(sliderPoint.SliderShape);
@@ -124,11 +123,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			catch { }
 		}
 
+		
+
 		private void OnRemoveItem(SliderPoint sliderPoint)
 		{
 			sliderPoint.SliderShape.KeyDown -= GradientPoint_KeyDown;
 			sliderPoint.PropertyChanged -= GradientPoint_PropertyChanged;
 			sliderPoint.DragCompleted -= SliderPoint_DragCompleted;
+			sliderPoint.AltClick -= SliderPoint_AltClick;
 			try
 			{
 				_canvas.Children.Remove(sliderPoint.SliderShape);
@@ -147,42 +149,58 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 		}
 
+		private void SliderPoint_AltClick(object sender, EventArgs e)
+		{
+			DeletePoint();
+		}
+
 		private void SliderPoint_DragCompleted(object sender, EventArgs e)
 		{
-			SetColorGradientValue(_holdValue);
-			_holdValue = null;
+			//Logging.Debug("Enter drag completed");
+			if (_holdValue != null)
+			{
+				SetColorGradientValue(_holdValue);
+				_holdValue = null;
+			}
+			//Logging.Debug("Exit drag completed");
 		}
 
 
 		private void GradientPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			
 			if (e.PropertyName.Equals("center", StringComparison.OrdinalIgnoreCase))
 			{
 				if (_holdValue == null)
 				{
 					_holdValue = new ColorGradient(GetColorGradientValue());
+					//Logging.Debug("Position changed, initialized holdvalue");
 				}
 				SliderPoint point = sender as SliderPoint;
 				if (point != null)
 				{
-					var pointIndexes = point.Tag as List<int>;
-					var colorPoints = _holdValue.Colors;
-					if (pointIndexes != null)
+					if (point.IsDragging)
 					{
-						foreach (var index in pointIndexes)
+						var pointIndexes = point.Tag as List<int>;
+						var colorPoints = _holdValue.Colors;
+						if (pointIndexes != null)
 						{
-							if (index < colorPoints.Count)
+							foreach (var index in pointIndexes)
 							{
-								colorPoints[index].Position = point.NormalizedPosition;
-							}
-							else
-							{
-								Logging.Error("Index out of bounds for colorpoint. Index:{0}, colorpoint size:{1}, position:{3}",index, colorPoints.Count, point.NormalizedPosition);
+								if (index < colorPoints.Count)
+								{
+									colorPoints[index].Position = point.NormalizedPosition;
+								}
+								else
+								{
+									Logging.Error("Index out of bounds for colorpoint. Index:{0}, colorpoint size:{1}, position:{3}", index,
+										colorPoints.Count, point.NormalizedPosition);
+								}
 							}
 						}
-					}
 
-					UpdateImage(_holdValue);
+						UpdateImage(_holdValue);
+					}
 				}
 			}
 		}
@@ -346,16 +364,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		}
 
 
-		private void InitializeStyle()
-		{
-			SliderStyle = new Style();
-			var brush = new LinearGradientBrush(Colors.LightGray, System.Windows.Media.Color.FromRgb((byte)(Colors.LightGray.R * 0.5), (byte)(Colors.LightGray.G * 0.5), (byte)(Colors.LightGray.B * 0.5)), 0);
-			SliderStyle.Setters.Add(new Setter(Shape.FillProperty, brush));
-			brush = new LinearGradientBrush(Colors.Gray, System.Windows.Media.Color.FromRgb((byte)(Colors.Gray.R * 0.5), (byte)(Colors.Gray.G * 0.5), (byte)(Colors.Gray.B * 0.5)), 0);
-			var trigger = new Trigger { Setters = { new Setter(Shape.FillProperty, brush) }, Value = true, Property = IsFocusedProperty };
-			SliderStyle.Triggers.Add(trigger);
-		}
-
 		private bool IsMouseOverAnyHandle()
 		{
 			return _points.Any(q => q.IsMouseOver);
@@ -367,6 +375,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void ShowColorPicker()
 		{
+			//Logging.Debug("Enter color picker");
 			var value = GetColorGradientValue();
 			if (value == null) return;
 			var selectedIndex = SelectedIndex;
@@ -429,20 +438,23 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				holdValue = new ColorGradient(value);
 				ColorPoint pt = holdValue.Colors[colorPointIndexes.FirstOrDefault()];
 				if (pt == null)
+				{
 					return;
-				using (ColorPicker frm = new ColorPicker(Mode, Fader))
+				}
+				using (ColorPicker frm = new ColorPicker(_mode, _fader))
 				{
 					frm.LockValue_V = false;
 					frm.Color = pt.Color;
 					if (frm.ShowDialog() == DialogResult.OK)
 					{
 						pt.Color = frm.Color;
-						Mode = frm.SecondaryMode;
-						Fader = frm.PrimaryFader;
+						_mode = frm.SecondaryMode;
+						_fader = frm.PrimaryFader;
 						SetColorGradientValue(holdValue);
 					}
 				}
 			}
+			//Logging.Debug("Exit normally color picker");
 		}
 
 		private int SelectedIndex
@@ -456,6 +468,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void ReloadPoints()
 		{
+			//Logging.Debug("Enter Reload");
 			if (GetColorGradientValue() != null)
 			{
 				ClearPoints();
@@ -479,6 +492,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					point.Tag = indexes;
 				}
 			}
+			//Logging.Debug("Exit Reload");
 		}
 
 
@@ -490,6 +504,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private SliderPoint AddPoint(double position, bool isSelected = false)
 		{
+			//Logging.Debug("Enter Add Point");
 			var point = new SliderPoint(position, _canvas);
 
 			if (point.Center >= 0 && point.Center <= _canvas.Width)
@@ -502,7 +517,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					point.SliderShape.Focus();
 				}
 			}
-
+			//Logging.Debug("Exit Add Point");
 			return point;
 		}
 
@@ -534,6 +549,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		protected void AddColorPoint(double pos)
 		{
+			//Logging.Debug("Enter Add Color Point");
 			List<ColorPoint> newColorPoints;
 			if (IsDiscrete)
 			{
@@ -557,6 +573,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 
 			SetColorGradientValue(holdValue);
+			//Logging.Debug("Exit Add Color Point");
 		}
 
 		private void UpdateImage(ColorGradient colorGradient)

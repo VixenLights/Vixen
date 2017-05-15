@@ -13,8 +13,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
         private const double DefaultWidth = 10;
         private const double DefaultHeight = 10;
 	    private double _normalizedPosition;
-		
-        internal Polygon SliderShape { get; private set; }
+
+		private Point _dragStartPoint;
+		private const double DragTolerance = 2.0;
+		private bool _mouseDown;
+
+		internal Polygon SliderShape { get; private set; }
         internal double Left
         {
             get { return (double)SliderShape.GetValue(Canvas.LeftProperty); }
@@ -140,48 +144,84 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
         private void Handle_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed) return;
-	        if (!IsDragging)
+	        if (_mouseDown)
 	        {
-				IsDragging = true;
+				var point = Mouse.GetPosition(Parent);
+				Vector vector = point - _dragStartPoint;
+
+				if (!IsDragging)
+				{
+					if (vector.Length > DragTolerance)
+					{
+						IsDragging = true;
+						SliderShape.Focus();
+						e.Handled = true;
+					}
+				}
+				else
+				{
+					var center = point.X;
+					if (center >= 0 && center <= Parent.Width)
+					{
+						Center = center;
+						_normalizedPosition = center / Parent.Width;
+						SliderShape.Focus();
+					}
+				}
 			}
-            var point = Mouse.GetPosition(Parent);
-			//Console.Out.WriteLine("Location: {0},{1} - Canvas Size: {2}, {3}", point.X, point.Y, Parent.Width, Parent.Height);
-            var center = point.X;
-	        if (center >= 0 && center <= Parent.Width)
-	        {
-		        Center = center;
-		        _normalizedPosition = center / Parent.Width;
-		        SliderShape.Focus();
-	        }
+			
         }
 
         private void Handle_MouseUp(object sender, MouseEventArgs e)
         {
-            var poly = sender as Polygon;
-	        poly.ReleaseMouseCapture();
-			poly.Focus();
-	        if (IsDragging)
+	        if (IsDragging || _mouseDown)
 	        {
-				IsDragging = false;
-				OnDragCompleted(EventArgs.Empty);
+				var poly = sender as Polygon;
+				poly.ReleaseMouseCapture();
+				poly.Focus();
+		        e.Handled = true;
+		        _mouseDown = false;
+		        if (IsDragging)
+		        {
+			        IsDragging = false;
+			        OnDragCompleted(EventArgs.Empty);
+		        }
+		        else if(Keyboard.Modifiers == ModifierKeys.Alt)
+		        {
+			        OnAltClick(EventArgs.Empty);
+		        }
 			}
+            
 		}
 
         private void Handle_MouseDown(object sender, MouseEventArgs e)
         {
-            var poly = sender as Polygon;
-            poly.CaptureMouse();
-            poly.Focus();
-        }
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				var poly = sender as Polygon;
+				poly.CaptureMouse();
+				poly.Focus();
+				_mouseDown = true;
+				_dragStartPoint = e.GetPosition(Parent);
+				e.Handled = true;
+			}
+		}
 
 		public delegate void DragCompletedEventHandler(object sender, EventArgs e);
 
-	    public event DragCompletedEventHandler DragCompleted;
+		public event DragCompletedEventHandler DragCompleted;
 		protected virtual void OnDragCompleted(EventArgs e)
 		{
 			if (DragCompleted != null)
 				DragCompleted(this, e);
+		}
+
+		public delegate void AltClickEventHandler(object sender, EventArgs e);
+		public event AltClickEventHandler AltClick;
+		protected virtual void OnAltClick(EventArgs e)
+		{
+			if (AltClick != null)
+				AltClick(this, e);
 		}
 
 		#region INotifyPropertyChanged Members
