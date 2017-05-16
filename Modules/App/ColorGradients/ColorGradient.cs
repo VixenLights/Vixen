@@ -10,6 +10,7 @@ using System.Runtime.Serialization;
 using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ControlsEx;
 using Common.Controls.Theme;
+using Common.Resources.Properties;
 using Vixen.Module;
 using Vixen.Services;
 using Vixen.Sys;
@@ -1029,7 +1030,7 @@ namespace VixenModules.App.ColorGradients
 			}
 		}
 
-		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors)
+		public Bitmap GenerateColorGradientImage(Size size, bool discreteColors, bool drawLibraryLink=false)
 		{
 			Bitmap result = new Bitmap(size.Width, size.Height);
 
@@ -1072,6 +1073,26 @@ namespace VixenModules.App.ColorGradients
 					g.FillRectangle(lnbrs, 0, 0, size.Width, size.Height);
 				}
 			}
+
+			if (drawLibraryLink)
+			{
+				if (IsLibraryReference)
+				{
+					using (Graphics g = Graphics.FromImage(result))
+					{
+						var link = Resources.LibraryLink;
+						link.MakeTransparent();
+						var trianglePoints = new List<System.Drawing.Point>();
+						trianglePoints.Add(new System.Drawing.Point(0,0));
+						trianglePoints.Add(new System.Drawing.Point(0, (int)(size.Height*.75)));
+						trianglePoints.Add(new System.Drawing.Point((int)(size.Height*.75), 0));
+						g.FillPolygon(Brushes.Black, trianglePoints.ToArray());
+						g.DrawImage(link, new Rectangle(0, 0, size.Height/2, size.Height/2));
+					}
+				}
+			}
+			
+			
 			return result;
 		}
 
