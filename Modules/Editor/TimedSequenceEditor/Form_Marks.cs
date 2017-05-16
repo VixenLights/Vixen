@@ -10,6 +10,7 @@ using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Module.Effect;
 using Vixen.Services;
+using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 

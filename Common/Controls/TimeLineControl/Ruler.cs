@@ -21,6 +21,8 @@ namespace Common.Controls.Timeline
 		private const int maxDxForClick = 2;
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
+		private bool _mouseUp;
+		private TimeSpan _originalMarkTime; 
 
 
 		public Ruler(TimeInfo timeinfo)
@@ -449,6 +451,8 @@ namespace Common.Controls.Timeline
 						m_markDetails = d;
 				}
 				m_mouseState = MouseState.DraggingMark;
+				_mouseUp = false; //Lets the undo manager know not to check that the Mark is being used and we don't need to store every mark movement, just the start and end time.
+				_originalMarkTime = m_mark; //Will store the selected Mark time before the move, to use in the under manager.
 			}
 			else if (Cursor == Cursors.HSplit)
 				m_mouseState = MouseState.ResizeRuler;
@@ -517,7 +521,7 @@ namespace Common.Controls.Timeline
 							markTime = string.Format("{0:s\\.fff}", m_mark);
 						}
 
-						OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
+						OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails, _originalMarkTime, _mouseUp));
 						Refresh();
 						m_mark = pixelsToTime(e.X) + VisibleTimeStart;
 						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, m_mark));
@@ -605,8 +609,10 @@ namespace Common.Controls.Timeline
 								else
 								{
 									ClearSelectedMarks();
-									OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails));
-									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
+									_mouseUp = true; //End of Mark move so undo manager can use the last Mark time.
+									m_mark = pixelsToTime(e.X) + VisibleTimeStart;
+									OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails, _originalMarkTime, _mouseUp));
+									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, m_mark));
 								}
 							}
 							break;
@@ -650,15 +656,15 @@ namespace Common.Controls.Timeline
 
 		public void NudgeMark(int offset)
 		{
-			TimeSpan timeOffset;
-			timeOffset = TimeSpan.FromMilliseconds(offset);
+			TimeSpan timeOffset = TimeSpan.FromMilliseconds(offset);
+
+			OnMarkNudge(new MarkNudgeEventArgs(selectedMarks, timeOffset));
 
 			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 
 			foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in selectedMarks)
 			{
 				newSelectedMarks.Add(kvp.Key + timeOffset, kvp.Value);
-				OnMarkMoved(new MarkMovedEventArgs(kvp.Key, kvp.Key + timeOffset, kvp.Value));
 			}
 
 			selectedMarks = newSelectedMarks;
@@ -671,11 +677,18 @@ namespace Common.Controls.Timeline
 
 		public void DeleteSelectedMarks()
 		{
+			bool markFound = false;
 			foreach (TimeSpan mark in selectedMarks.Keys)
 			{
-				OnDeleteMark(new DeleteMarkEventArgs(mark));
+				if (mark == m_mark)
+				{
+					markFound = true;
+					break;
+				}
 			}
-			OnDeleteMark(new DeleteMarkEventArgs(m_mark));
+			if (!markFound)
+					selectedMarks.Add(m_mark, m_markDetails);
+			OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
 		}
 
 		protected override void OnMouseEnter(EventArgs e)
@@ -692,6 +705,7 @@ namespace Common.Controls.Timeline
 		}
 
 		public event EventHandler<MarkMovedEventArgs> MarkMoved;
+		public event EventHandler<MarkNudgeEventArgs> MarkNudge;
 		public event EventHandler<DeleteMarkEventArgs> DeleteMark;
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
@@ -708,6 +722,12 @@ namespace Common.Controls.Timeline
 		{
 			if (MarkMoved != null)
 				MarkMoved(this, e);
+		}
+
+		protected virtual void OnMarkNudge(MarkNudgeEventArgs e)
+		{
+			if (MarkNudge != null)
+				MarkNudge(this, e);
 		}
 
 		protected virtual void OnDeleteMark(DeleteMarkEventArgs e)
@@ -924,25 +944,43 @@ namespace Common.Controls.Timeline
 
 	public class MarkMovedEventArgs : EventArgs
 	{
-		public MarkMovedEventArgs(TimeSpan originalMark, TimeSpan newMark, SnapDetails details)
+		public MarkMovedEventArgs(TimeSpan previousMark, TimeSpan newMark, SnapDetails details, TimeSpan originalMarkTime, bool _mouseUp)
 		{
-			OriginalMark = originalMark;
+			PreviousMark = previousMark; //This is effectivlly the previous Mark time as moving the generate many adds and removes so the MArk can be displayed during the move.
 			NewMark = newMark;
 			SnapDetails = details;
+			OriginalMarkTime = originalMarkTime; //Mark time before the MArk was moved. 
+			MouseUp = _mouseUp;
 		}
 
-		public TimeSpan OriginalMark { get; private set; }
+		public TimeSpan PreviousMark { get; private set; }
 		public TimeSpan NewMark { get; private set; }
 		public SnapDetails SnapDetails { get; private set; }
+		public TimeSpan OriginalMarkTime { get; private set; }
+		public bool MouseUp { get; private set; }
+	}
+
+	public class MarkNudgeEventArgs : EventArgs
+	{
+		public MarkNudgeEventArgs(SortedDictionary<TimeSpan, SnapDetails> selectedMarks, TimeSpan offset)
+		{
+			SelectedMarks = selectedMarks; //This is effectivlly the previous Mark time as moving the generate many adds and removes so the MArk can be displayed during the move.
+			Offset = offset;
+		}
+
+		public SortedDictionary<TimeSpan, SnapDetails> SelectedMarks { get; set; }
+		public TimeSpan Offset { get; private set; }
 	}
 
 	public class DeleteMarkEventArgs : EventArgs
 	{
-		public DeleteMarkEventArgs(TimeSpan mark)
+		public DeleteMarkEventArgs(SortedDictionary<TimeSpan, SnapDetails>.KeyCollection marks)
 		{
-			Mark = mark;
+			Marks = marks;
 		}
 
-		public TimeSpan Mark { get; private set; }
+		public SortedDictionary<TimeSpan, SnapDetails>.KeyCollection Marks { get; private set; }
 	}
+
+	
 }
