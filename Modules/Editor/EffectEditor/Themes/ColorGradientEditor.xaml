@@ -76,7 +76,7 @@
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
                         <Border BorderThickness="1" BorderBrush="#888888" >
                             <Image x:Name="GradientImage" Height="32"
-					            Focusable="True" ToolTip="{Binding StringValue}"
+					            Focusable="True" 
                                    input:DragDropTargetType.TargetType="ColorGradient"
 				                   input:DragDropManager.DropTargetAdvisor="{Binding}" 
                                    input:DragDropManager.DragSourceAdvisor="{Binding}"
@@ -86,6 +86,9 @@
                                     <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
 						              CommandParameter="{Binding}" />
                                 </Image.InputBindings>
+                                <Image.ToolTip>
+                                    <ToolTip Content="{Binding Value.ColorGradient}" Visibility="{Binding Value.ColorGradient, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
+                                </Image.ToolTip>
                             </Image>
                         </Border>
                         <Canvas x:Name="FaderCanvas" Height="10" 
