@@ -37,7 +37,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineCurveEditor}">
-                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0">
                         <Border BorderThickness="1" BorderBrush="#888888">
                             <Image x:Name="CurveImage" Source="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
                                 Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"

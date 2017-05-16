@@ -507,18 +507,18 @@
                     <Setter Property="Polygon.Fill">
                         <Setter.Value>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Offset="0.05" Color="#666"/>
-                                <GradientStop Offset="0.25" Color="#404040"/>
-                                <GradientStop Offset="0.95" Color="#FF222222"/>
+                                <GradientStop Offset="0.05" Color="#C5C5C5"/>
+                                <GradientStop Offset="0.5" Color="#606060"/>
+                                <GradientStop Offset="0.95" Color="#404040"/>
                             </LinearGradientBrush>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="Polygon.Stroke">
                         <Setter.Value>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Offset="0.0" Color="#FFC5C5C5"/>
-                                <GradientStop Offset="0.4" Color="#FF5F5F5F"/>
-                                <GradientStop Offset="0.8" Color="#FF494949"/>
+                                <GradientStop Offset="0.0" Color="#C5C5C5"/>
+                                <GradientStop Offset="0.5" Color="#808080"/>
+                                <GradientStop Offset="0.95" Color="#606060"/>
                             </LinearGradientBrush>
                         </Setter.Value>
                     </Setter>
@@ -528,18 +528,18 @@
                             <Setter Property="Polygon.Fill">
                                 <Setter.Value>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Offset="0.05" Color="#909090"/>
-                                        <GradientStop Offset="0.25" Color="#606060"/>
-                                        <GradientStop Offset="0.95" Color="#FF222222"/>
+                                        <GradientStop Offset="0.05" Color="#D7D7D7"/>
+                                        <GradientStop Offset="0.5" Color="#909090"/>
+                                        <GradientStop Offset="0.95" Color="#606060"/>
                                     </LinearGradientBrush>
                                 </Setter.Value>
                             </Setter>
                             <Setter Property="Polygon.Stroke">
                                 <Setter.Value>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Offset="0.0" Color="#FFC5C5C5"/>
-                                        <GradientStop Offset="0.4" Color="#FF5F5F5F"/>
-                                        <GradientStop Offset="0.8" Color="#FF494949"/>
+                                        <GradientStop Offset="0.0" Color="#C5C5C5"/>
+                                        <GradientStop Offset="0.5" Color="#808080"/>
+                                        <GradientStop Offset="0.95" Color="#606060"/>
                                     </LinearGradientBrush>
                                 </Setter.Value>
                             </Setter>
