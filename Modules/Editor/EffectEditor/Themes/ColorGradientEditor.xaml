@@ -39,22 +39,28 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientEditor}">
                     <StackPanel x:Name="Container"  Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,5,0">
+						
                         <Border BorderThickness="1" BorderBrush="#888888" >
-                            <Image x:Name="GradientImage" Height="32"
-					            Focusable="True" ToolTip="{Binding StringValue}"
-				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                   input:DragDropManager.DragSourceAdvisor="{Binding}"
-                                   Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                   Stretch="Fill">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
-						              CommandParameter="{Binding}" />
-                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
-												CommandParameter="{Binding}"/>
-                                </Image.InputBindings>
-                            </Image>
-                        </Border>
-                        <Canvas x:Name="FaderCanvas" Height="10" 
+							<Grid>
+								<Image x:Name="GradientImage" Height="32"
+									Focusable="True" ToolTip="{Binding StringValue}"
+										input:DragDropManager.DropTargetAdvisor="{Binding}" 
+									   input:DragDropManager.DragSourceAdvisor="{Binding}"
+									   Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+									   Stretch="Fill">
+									<Image.InputBindings>
+										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
+										  CommandParameter="{Binding}" />
+										<KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
+													CommandParameter="{Binding}"/>
+									</Image.InputBindings>
+								</Image>
+								<Image Source="Images/librarylink.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="22"
+									   Visibility="{Binding Value, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
+							</Grid>
+						</Border>
+						
+						<Canvas x:Name="FaderCanvas" Height="10" 
                                 Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                 Visibility="{Binding Value, Converter={StaticResource ColorGradientIsLibraryToVisibilityConverter}}">
                             <Canvas.Background>
@@ -75,22 +81,27 @@
                     <StackPanel x:Name="GradientContainer"   VerticalAlignment="Center" Margin="0,0,0,5"
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
                         <Border BorderThickness="1" BorderBrush="#888888" >
-                            <Image x:Name="GradientImage" Height="32"
-					            Focusable="True" 
-                                   input:DragDropTargetType.TargetType="ColorGradient"
-				                   input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                   input:DragDropManager.DragSourceAdvisor="{Binding}"
-                                   Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                   Stretch="Fill">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
-						              CommandParameter="{Binding}" />
-                                </Image.InputBindings>
-                                <Image.ToolTip>
-                                    <ToolTip Content="{Binding Value.ColorGradient}" Visibility="{Binding Value.ColorGradient, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
-                                </Image.ToolTip>
-                            </Image>
-                        </Border>
+							<Grid>
+								<Image x:Name="GradientImage" Height="32"
+									Focusable="True" 
+									   input:DragDropTargetType.TargetType="ColorGradient"
+									   input:DragDropManager.DropTargetAdvisor="{Binding}" 
+									   input:DragDropManager.DragSourceAdvisor="{Binding}"
+									   Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+									   Stretch="Fill">
+									<Image.InputBindings>
+										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
+										  CommandParameter="{Binding}" />
+									</Image.InputBindings>
+									<Image.ToolTip>
+										<ToolTip Content="{Binding Value.ColorGradient}" Visibility="{Binding Value.ColorGradient, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
+									</Image.ToolTip>
+								</Image>
+								<Image Source="Images/librarylink.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="22"
+									Visibility="{Binding Value.ColorGradient, Converter={StaticResource ToolTipVisibilityConverter}}">
+								</Image>
+							</Grid>
+						</Border>
                         <Canvas x:Name="FaderCanvas" Height="10" 
                                 Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                 Visibility="{Binding Value, Converter={StaticResource ColorGradientIsLibraryToVisibilityConverter}}">
