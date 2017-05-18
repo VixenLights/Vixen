@@ -61,15 +61,14 @@ namespace VixenModules.Effect.Spirograph
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(0)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -119,15 +118,14 @@ namespace VixenModules.Effect.Spirograph
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Spirographs")]
 		[ProviderDescription(@"Spirographs")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 300, 1)]
+		//[NumberRange(1, 300, 1)]
 		[PropertyOrder(3)]
-		public int SpirographRange
+		public Curve SpirographRangeCurve
 		{
-			get { return _data.SpirographRange; }
+			get { return _data.SpirographRangeCurve; }
 			set
 			{
-				_data.SpirographRange = value;
+				_data.SpirographRangeCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -137,15 +135,14 @@ namespace VixenModules.Effect.Spirograph
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Distance")]
 		[ProviderDescription(@"Distance")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(4)]
-		public int Distance
+		public Curve DistanceCurve
 		{
-			get { return _data.Distance; }
+			get { return _data.DistanceCurve; }
 			set
 			{
-				_data.Distance = value;
+				_data.DistanceCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -155,15 +152,14 @@ namespace VixenModules.Effect.Spirograph
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Color Range")]
 		[ProviderDescription(@"Color Range")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 200, 1)]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(5)]
-		public int Range
+		public Curve RangeCurve
 		{
-			get { return _data.Range; }
+			get { return _data.RangeCurve; }
 			set
 			{
-				_data.Range = value;
+				_data.RangeCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -243,6 +239,20 @@ namespace VixenModules.Effect.Spirograph
 
 		#endregion
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/spirograph/"; }
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -289,11 +299,15 @@ namespace VixenModules.Effect.Spirograph
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			
+			int rangeAdjust = CalculateRange(intervalPosFactor);
 			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, d_mod;
 			srand(1);
-			int state = frame*Speed;
+			int state = frame * CalculateSpeed(intervalPosFactor);
 			float R, r, d, d_orig, t;
 			double hyp, x2, y2;
 			HSV hsv = new HSV(); //   we will define an hsv color model.
@@ -304,7 +318,7 @@ namespace VixenModules.Effect.Spirograph
 			R = (float) (xc*(OCR / 100.0)); //  Radius of the large circle just fits in the width of model
 			r = (float)(xc * (ICR / 100.0)); // start little circle at 1/4 of max width
 			if (r > R) r = R;
-			d = (float) (xc*(Distance/100.0));
+			d = (float)(xc * (CalculateDistance(intervalPosFactor) / 100.0));
 
 			//    A hypotrochoid is a roulette traced by a point attached to a circle of radius r rolling around the inside of a fixed circle of radius R, where the point is a distance d from the center of the interior circle.
 			//The parametric equations for a hypotrochoid are:[citation needed]
@@ -314,19 +328,19 @@ namespace VixenModules.Effect.Spirograph
 			try {
 				mod1440 = Convert.ToInt32(state % 1440);
 				d_orig = d;
-				for (i = 1; i <= SpirographRange * 18; i++)
+				for (i = 1; i <= CalculateSpirographRange(intervalPosFactor) * 18; i++)
 				{
 					if (Animate) d = (int)(d_orig + state / 2) % 100; // should we modify the distance variable each pass through?
 					t = (float) ((i + mod1440)*Math.PI/180);
 					x = Convert.ToInt32((R - r)*Math.Cos(t) + d*Math.Cos(((R - r)/r)*t) + xc);
 					y = Convert.ToInt32((R - r)*Math.Sin(t) + d*Math.Sin(((R - r)/r)*t) + yc);
 
-					if (colorcnt > 0) d_mod = (int)(Range) / colorcnt;
+					if (colorcnt > 0) d_mod = rangeAdjust / colorcnt;
 					else d_mod = 1;
 
 					x2 = Math.Pow((x - xc), 2);
 					y2 = Math.Pow((y - yc), 2);
-					hyp = Math.Sqrt(x2 + y2) / (Range) * 100.0;
+					hyp = Math.Sqrt(x2 + y2) / rangeAdjust * 100.0;
 
 					switch (Type)
 					{
@@ -348,7 +362,7 @@ namespace VixenModules.Effect.Spirograph
 
 					if (Type != ColorType.Rainbow)
 					{
-						hsv = HSV.FromRGB(Colors[ColorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
+						hsv = HSV.FromRGB(Colors[ColorIdx].GetColorAt((intervalPosFactor) / 100));
 						hsv.V = hsv.V*level;
 					}
 					frameBuffer.SetPixel(x, y, hsv);
@@ -356,6 +370,31 @@ namespace VixenModules.Effect.Spirograph
 			}
 			catch {
 			}
+		}
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateDistance(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(DistanceCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
+		}
+
+		private int CalculateRange(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(RangeCurve.GetValue(intervalPos), 200, 1);
+		}
+
+		private int CalculateSpirographRange(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(SpirographRangeCurve.GetValue(intervalPos), 300, 1);
 		}
 
 		private void srand(int seed)
