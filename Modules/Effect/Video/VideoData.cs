@@ -21,23 +21,26 @@ namespace VixenModules.Effect.Video
 			MaintainAspect = false;
 			AdvancedSettings = false;
 			Speed = 1;
-			IncreaseBrightness = 10;
+			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			PlayBackSpeed = 0;
 			StartTime = 0;
 			RotateVideo = 0;
 			Video_DataPath = string.Empty;
 			FileName = String.Empty;
 			Orientation = StringOrientation.Vertical;
-			XOffset = 0;
-			YOffset = 0;
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 		}
 
 		[DataMember]
 		public EffectType EffectType { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int IncreaseBrightness { get; set; }
+
+		[DataMember]
+		public Curve IncreaseBrightnessCurve { get; set; }
 
 		[DataMember]
 		public EffectColorType EffectColorType { get; set; }
@@ -69,11 +72,17 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public int ScalePercent { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int XOffset { get; set; }
 
 		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
 		public int YOffset { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
 
 		[DataMember]
 		public bool AdvancedSettings { get; set; }
@@ -90,6 +99,34 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public string Video_DataPath { get; set; }
 
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+
+			if (XOffsetCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(XOffset, 100, -100);
+				XOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				XOffset = 0;
+
+				if (YOffsetCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(YOffset, 100, -100);
+					YOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+					YOffset = 0;
+				}
+
+				if (IncreaseBrightnessCurve == null)
+				{
+					value = PixelEffectBase.ScaleValueToCurve(IncreaseBrightness, 100, 10);
+					IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					IncreaseBrightness = 0;
+				}
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			VideoData result = new VideoData
@@ -97,10 +134,10 @@ namespace VixenModules.Effect.Video
 				EffectType = EffectType,
 				Video_DataPath = Video_DataPath,
 				FitToTime = FitToTime,
-				XOffset = XOffset,
-				YOffset = YOffset,
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve),
 				Speed = Speed,
-				IncreaseBrightness = IncreaseBrightness,
+				IncreaseBrightnessCurve = new Curve(IncreaseBrightnessCurve),
 				VideoLength = VideoLength,
 				RotateVideo =RotateVideo,
 				AdvancedSettings = AdvancedSettings,

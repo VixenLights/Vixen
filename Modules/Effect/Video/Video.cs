@@ -94,15 +94,14 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
+		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(3)]
-		public int XOffset
+		public Curve XOffsetCurve
 		{
-			get { return _data.XOffset; }
+			get { return _data.XOffsetCurve; }
 			set
 			{
-				_data.XOffset = value;
+				_data.XOffsetCurve = value;
 				IsDirty = true;
 				_processVideo = false;
 				OnPropertyChanged();
@@ -113,15 +112,14 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(-100, 100, 1)]
+		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(3)]
-		public int YOffset
+		public Curve YOffsetCurve
 		{
-			get { return _data.YOffset; }
+			get { return _data.YOffsetCurve; }
 			set
 			{
-				_data.YOffset = value;
+				_data.YOffsetCurve = value;
 				IsDirty = true;
 				_processVideo = false;
 				OnPropertyChanged();
@@ -320,15 +318,14 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Advanced Settings", 3)]
 		[ProviderDisplayName(@"Increase Brightness")]
 		[ProviderDescription(@"Increase Brightness")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(10, 100, 1)]
+		//[NumberRange(10, 100, 1)]
 		[PropertyOrder(7)]
-		public int IncreaseBrightness
+		public Curve IncreaseBrightnessCurve
 		{
-			get { return _data.IncreaseBrightness; }
+			get { return _data.IncreaseBrightnessCurve; }
 			set
 			{
-				_data.IncreaseBrightness = value;
+				_data.IncreaseBrightnessCurve = value;
 				IsDirty = true;
 				_processVideo = false;
 				OnPropertyChanged();
@@ -402,6 +399,20 @@ namespace VixenModules.Effect.Video
 		{
 			get { return _data; }
 		}
+
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/video/"; }
+		}
+
+		#endregion
 
 		private string CopyLocal(string path)
 		{
@@ -493,8 +504,12 @@ namespace VixenModules.Effect.Video
 		#region Render Video Effect
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double position = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			double position = (intervalPos * Speed) % 1;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			double adjustBrightness = CalculateIncreaseBrightness(intervalPosFactor);
+
 
 			// If we don't have any pictures, do nothing!
 			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
@@ -527,8 +542,8 @@ namespace VixenModules.Effect.Video
 			int imght = currentMovieImage.Height;
 			int yoffset = (BufferHt + imght) / 2;
 			int xoffset = (imgwidth - BufferWi) / 2;
-			int xOffsetAdj = XOffset * BufferWi / 100;
-			int yOffsetAdj = YOffset * BufferHt / 100;
+			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
+			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
 
 			switch (Type)
 			{
@@ -590,7 +605,7 @@ namespace VixenModules.Effect.Video
 					if (fpColor != Color.Transparent && fpColor != Color.Black)
 					{
 						var hsv = HSV.FromRGB(fpColor);
-						double tempV = hsv.V * level * ((double)(IncreaseBrightness)/10);
+						double tempV = hsv.V * level * (adjustBrightness / 10);
 						if (tempV > 1)
 							tempV = 1;
 						hsv.V = tempV;
@@ -682,5 +697,20 @@ namespace VixenModules.Effect.Video
 			resizeImage.Dispose();
 		}
 		#endregion
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateIncreaseBrightness(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
+		}
 	}
 }
