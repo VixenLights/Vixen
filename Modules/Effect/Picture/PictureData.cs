@@ -24,6 +24,7 @@ namespace VixenModules.Effect.Picture
 			Colors = new ColorGradient(Color.DodgerBlue);
 			ColorEffect = ColorEffect.None;
 			ScalePercent = 50;
+			Source = PictureSource.Embedded;
 			MovementRate = 4;
 			Direction = 0;
 			IncreaseBrightnessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
@@ -37,6 +38,9 @@ namespace VixenModules.Effect.Picture
 
 		[DataMember]
 		public EffectType EffectType { get; set; }
+
+		[DataMember]
+		public PictureSource Source { get; set; }
 
 		[DataMember]
 		public TilePictures TilePictures { get; set; }
@@ -95,6 +99,14 @@ namespace VixenModules.Effect.Picture
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
+			//The following is due to adding the PictureSource datamember and also no longer requiring the None selection for Embedded picture tiles.
+			if (string.IsNullOrEmpty(FileName))
+			{
+				Source = PictureSource.Embedded;
+			}
+			if (TilePictures == TilePictures.None)
+				TilePictures = TilePictures.BlueGlowDots;
+
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
 
@@ -140,7 +152,8 @@ namespace VixenModules.Effect.Picture
 				TilePictures = TilePictures,
 				Direction = Direction,
 				GifSpeed = GifSpeed,
-				Colors = Colors
+				Colors = Colors,
+				Source = Source
 			};
 			return result;
 		}

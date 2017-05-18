@@ -178,10 +178,27 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"Picture Source")]
+		[ProviderDescription(@"Picture Source")]
+		[PropertyOrder(0)]
+		public PictureSource Source
+		{
+			get { return _data.Source; }
+			set
+			{
+				_data.Source = value;
+				IsDirty = true;
+				UpdatePictureSourceAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Filename")]
 		[ProviderDescription(@"Filename")]
 		[PropertyEditor("ImagePathEditor")]
-		[PropertyOrder(0)]
+		[PropertyOrder(1)]
 		public String FileName
 		{
 			get { return _data.FileName; }
@@ -189,8 +206,6 @@ namespace VixenModules.Effect.Picture
 			{
 				_data.FileName = ConvertPath(value);
 				IsDirty = true;
-				if (FileName != null)
-					TilePictures = TilePictures.None;
 				OnPropertyChanged();
 			}
 		}
@@ -199,7 +214,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Embeded Pictures")]
 		[ProviderDescription(@"Embeded Pictures")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public TilePictures TilePictures
 		{
 			get { return _data.TilePictures; }
@@ -207,8 +222,7 @@ namespace VixenModules.Effect.Picture
 			{
 				_data.TilePictures = value;
 				IsDirty = true;
-				if (TilePictures != TilePictures.None)
-					FileName = null;
+
 				if (TilePictures == TilePictures.Checkers)
 				{
 					ColorEffect = ColorEffect.CustomColor;
@@ -222,7 +236,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"ScaleToGrid")]
 		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public bool ScaleToGrid
 		{
 			get { return _data.ScaleToGrid; }
@@ -241,7 +255,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDescription(@"ScalePercent")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public int ScalePercent
 		{
 			get { return _data.ScalePercent; }
@@ -255,28 +269,11 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Color Effect")]
-		[ProviderDescription(@"ColorEffect")]
-		[PropertyOrder(4)]
-		public ColorEffect ColorEffect
-		{
-			get { return _data.ColorEffect; }
-			set
-			{
-				_data.ColorEffect = value;
-				IsDirty = true;
-				UpdateColorAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"Movement Rate")]
 		[ProviderDescription(@"MovementRate")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(5)]
 		public int MovementRate
 		{
 			get { return _data.MovementRate; }
@@ -309,9 +306,26 @@ namespace VixenModules.Effect.Picture
 
 		[Value]
 		[ProviderCategory(@"Effect Color", 3)]
+		[ProviderDisplayName(@"Color Effect")]
+		[ProviderDescription(@"ColorEffect")]
+		[PropertyOrder(0)]
+		public ColorEffect ColorEffect
+		{
+			get { return _data.ColorEffect; }
+			set
+			{
+				_data.ColorEffect = value;
+				IsDirty = true;
+				UpdateColorAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Effect Color", 3)]
 		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
-		[PropertyOrder(0)]
+		[PropertyOrder(1)]
 		public ColorGradient Colors
 		{
 			get { return _data.Colors; }
@@ -328,9 +342,10 @@ namespace VixenModules.Effect.Picture
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(0)]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
@@ -343,7 +358,7 @@ namespace VixenModules.Effect.Picture
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Increase Brightness")]
 		[ProviderDescription(@"Increase Brightness")]
 		//[NumberRange(10, 100, 1)]
@@ -368,7 +383,23 @@ namespace VixenModules.Effect.Picture
 			UpdateGifSpeedAttribute(false);
 			UpdateScaleAttribute(false);
 			UpdateMovementRateAttribute(false);
+			UpdatePictureSourceAttribute(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdatePictureSourceAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"FileName", Source == PictureSource.File},
+				{"TilePictures", Source != PictureSource.File}
+			};
+			
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		private void UpdateColorAttribute(bool refresh = true)
@@ -499,7 +530,7 @@ namespace VixenModules.Effect.Picture
 			{
 				_scaledImage.Dispose();
 			}
-			if (!string.IsNullOrEmpty(FileName))
+			if (!string.IsNullOrEmpty(FileName) && Source == PictureSource.File)
 			{
 				var filePath = Path.Combine(PictureDescriptor.ModulePath, FileName);
 				if (File.Exists(filePath))
@@ -517,14 +548,18 @@ namespace VixenModules.Effect.Picture
 				else
 				{
 					Logging.Error("File is missing or invalid path. {0}",filePath);
+					FileName = "";
 				}
 			}
 			else
 			{
-				var fs =
-					   typeof(Picture).Assembly.GetManifestResourceStream("VixenModules.Effect.Picture.PictureTiles." +
-																			   TilePictures + ".png");
-				_image = Image.FromStream(fs);
+				if (Source == PictureSource.Embedded)
+				{
+					var fs =
+						typeof (Picture).Assembly.GetManifestResourceStream("VixenModules.Effect.Picture.PictureTiles." +
+						                                                    TilePictures + ".png");
+					_image = Image.FromStream(fs);
+				}
 			}
 
 			if (_image != null)
