@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -138,6 +139,7 @@ namespace VixenModules.Effect.Snowflakes
 			{
 				CenterSpeedCurve = SpeedCurve;
 				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				RandomSpeed = true;
 			}
 		}
 

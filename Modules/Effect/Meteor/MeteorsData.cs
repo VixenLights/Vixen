@@ -145,6 +145,7 @@ namespace VixenModules.Effect.Meteors
 			{
 				CenterSpeedCurve = SpeedCurve;
 				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				RandomSpeed = true;
 			}
 		}
 
