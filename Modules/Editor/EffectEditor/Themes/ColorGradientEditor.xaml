@@ -80,14 +80,14 @@
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientPairGradientEditor}">
                     <StackPanel x:Name="GradientContainer"   VerticalAlignment="Center" Margin="0,0,0,5"
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
-                        <Border BorderThickness="1" BorderBrush="#888888" >
+                        <Border BorderThickness="1" BorderBrush="#888888">
 							<Grid>
 								<Image x:Name="GradientImage" Height="32"
 									Focusable="True" 
 									   input:DragDropTargetType.TargetType="ColorGradient"
 									   input:DragDropManager.DropTargetAdvisor="{Binding}" 
 									   input:DragDropManager.DragSourceAdvisor="{Binding}"
-									   Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+									   Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-5'}"
 									   Stretch="Fill">
 									<Image.InputBindings>
 										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
@@ -103,7 +103,7 @@
 							</Grid>
 						</Border>
                         <Canvas x:Name="FaderCanvas" Height="10" 
-                                Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                Width="{Binding Path=ActualWidth, ElementName=GradientContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-5'}"
                                 Visibility="{Binding Value, Converter={StaticResource ColorGradientIsLibraryToVisibilityConverter}}">
                             <Canvas.Background>
                                 <VisualBrush Opacity="1"></VisualBrush>
