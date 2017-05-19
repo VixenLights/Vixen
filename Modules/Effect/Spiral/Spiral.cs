@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -66,6 +67,7 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data.Direction = value;
+				UpdateDirectionAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -143,25 +145,9 @@ namespace VixenModules.Effect.Spiral
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"VerticalBlend")]
-		[ProviderDescription(@"VerticalBlend")]
-		[PropertyOrder(6)]
-		public bool Blend
-		{
-			get { return _data.Blend; }
-			set
-			{
-				_data.Blend = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Show3D")]
 		[ProviderDescription(@"Show3D")]
-		[PropertyOrder(7)]
+		[PropertyOrder(6)]
 		public bool Show3D
 		{
 			get { return _data.Show3D; }
@@ -177,7 +163,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Grow")]
 		[ProviderDescription(@"Grow")]
-		[PropertyOrder(8)]
+		[PropertyOrder(7)]
 		public bool Grow
 		{
 			get { return _data.Grow; }
@@ -193,7 +179,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Shrink")]
 		[ProviderDescription(@"Shrink")]
-		[PropertyOrder(9)]
+		[PropertyOrder(8)]
 		public bool Shrink
 		{
 			get { return _data.Shrink; }
@@ -220,6 +206,22 @@ namespace VixenModules.Effect.Spiral
 			set
 			{
 				_data.Colors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"VerticalBlend")]
+		[ProviderDescription(@"VerticalBlend")]
+		[PropertyOrder(2)]
+		public bool Blend
+		{
+			get { return _data.Blend; }
+			set
+			{
+				_data.Blend = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -260,6 +262,27 @@ namespace VixenModules.Effect.Spiral
 
 		#endregion
 
+		#region Update Attributes
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+			UpdateDirectionAttribute(false);
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateDirectionAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("Speed", Direction != SpiralDirection.None);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		#endregion
 
 		public override IModuleDataModel ModuleData
 		{
@@ -271,13 +294,7 @@ namespace VixenModules.Effect.Spiral
 				IsDirty = true;
 			}
 		}
-
-		private void InitAllAttributes()
-		{
-			UpdateStringOrientationAttributes(true);
-		}
-
-
+	
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
@@ -360,7 +377,7 @@ namespace VixenModules.Effect.Spiral
 						{
 							var hsv = HSV.FromRGB(color);
 
-							if (adjustRotation < 0)
+							if (Direction != SpiralDirection.Backwards)
 							{
 								hsv.V = (float)((double)(thick + 1) / spiralThickness);
 							}
