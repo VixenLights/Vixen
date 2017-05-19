@@ -249,7 +249,6 @@ namespace VixenModules.Effect.Spiral
 		#endregion
 
 		#region Information
-		#region Update Attributes
 
 		public override string Information
 		{
@@ -263,6 +262,7 @@ namespace VixenModules.Effect.Spiral
 
 		#endregion
 
+		#region Update Attributes
 
 		private void InitAllAttributes()
 		{
@@ -377,7 +377,7 @@ namespace VixenModules.Effect.Spiral
 						{
 							var hsv = HSV.FromRGB(color);
 
-							if (adjustRotation < 0)
+							if (Direction != SpiralDirection.Backwards)
 							{
 								hsv.V = (float)((double)(thick + 1) / spiralThickness);
 							}
