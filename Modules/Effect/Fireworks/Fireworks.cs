@@ -313,15 +313,34 @@ namespace VixenModules.Effect.Fireworks
 
 		[Value]
 		[ProviderCategory(@"Audio", 2)]
-		[ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the effect")]
-		[PropertyOrder(3)]
-		public bool Normalize
+		[ProviderDisplayName(@"HighPassFilter")]
+		[ProviderDescription(@"Ignores frequencies below a given frequency")]
+		[PropertyOrder(2)]
+		public bool HighPass
 		{
-			get { return _data.Normalize; }
+			get { return _data.HighPass; }
 			set
 			{
-				_audioUtilities.Normalize = value;
-				_data.Normalize = value;
+				_data.HighPass = value;
+				_audioUtilities.HighPass = value;
+				IsDirty = true;
+				UpdateLowHighPassAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Audio", 2)]
+		[ProviderDisplayName(@"HighPassFrequency")]
+		[ProviderDescription(@"Ignore frequencies below this value")]
+		[PropertyOrder(3)]
+		public int HighPassFreq
+		{
+			get { return _data.HighPassFreq; }
+			set
+			{
+				_data.HighPassFreq = value;
+				_audioUtilities.HighPassFreq = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -362,36 +381,37 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
+
 		[Value]
 		[ProviderCategory(@"Audio", 2)]
-		[ProviderDisplayName(@"HighPassFilter")]
-		[ProviderDescription(@"Ignores frequencies below a given frequency")]
+		[ProviderDescription(@"Brings the peak volume of the selected audio range to the top of the effect")]
 		[PropertyOrder(6)]
-		public bool HighPass
+		public bool Normalize
 		{
-			get { return _data.HighPass; }
+			get { return _data.Normalize; }
 			set
 			{
-				_data.HighPass = value;
-				_audioUtilities.HighPass = value;
+				_audioUtilities.Normalize = value;
+				_data.Normalize = value;
 				IsDirty = true;
-				UpdateLowHighPassAttributes();
 				OnPropertyChanged();
 			}
 		}
 
 		[Value]
 		[ProviderCategory(@"Audio", 2)]
-		[ProviderDisplayName(@"HighPassFrequency")]
-		[ProviderDescription(@"Ignore frequencies below this value")]
+		[ProviderDisplayName(@"AttackTime")]
+		[ProviderDescription(@"How quickly the effect initially reacts to a volume peak")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 300, 10)]
 		[PropertyOrder(7)]
-		public int HighPassFreq
+		public int AttackTime
 		{
-			get { return _data.HighPassFreq; }
+			get { return _data.AttackTime; }
 			set
 			{
-				_data.HighPassFreq = value;
-				_audioUtilities.HighPassFreq = value;
+				_data.AttackTime = value;
+				_audioUtilities.AttackTime = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -415,26 +435,6 @@ namespace VixenModules.Effect.Fireworks
 				OnPropertyChanged();
 			}
 		}
-
-		[Value]
-		[ProviderCategory(@"Audio", 2)]
-		[ProviderDisplayName(@"AttackTime")]
-		[ProviderDescription(@"How quickly the effect initially reacts to a volume peak")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 300, 10)]
-		[PropertyOrder(9)]
-		public int AttackTime
-		{
-			get { return _data.AttackTime; }
-			set
-			{
-				_data.AttackTime = value;
-				_audioUtilities.AttackTime = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
 
 		#endregion
 
