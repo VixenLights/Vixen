@@ -39,30 +39,26 @@
                 <ControlTemplate TargetType="{x:Type controls:InlineCurveEditor}">
                     <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0">
                         <Border BorderThickness="1" BorderBrush="#888888">
-                            <Image x:Name="CurveImage" Source="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
+                            <Grid>
+                                <Image x:Name="CurveImage" Source="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
                                 Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
 					            Focusable="True" ToolTip="{Binding StringValue}"
 				                    input:DragDropManager.DropTargetAdvisor="{Binding}" 
                                    input:DragDropManager.DragSourceAdvisor="{Binding}"
                                    Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                    Stretch="Fill">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
+                                    <Image.InputBindings>
+                                        <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowDialogEditor"
 						              CommandParameter="{Binding}" />
-                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
+                                        <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowDialogEditor"
 												CommandParameter="{Binding}"/>
-                                </Image.InputBindings>
-                            </Image>
+                                    </Image.InputBindings>
+                                </Image>
+                                <Image Source="Images/librarylink.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="22" Margin="0,1,0,0"
+									   Visibility="{Binding Value, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
+                            </Grid>
                         </Border>
                     </StackPanel>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True" SourceName="CurveImage">
-                            <Setter Property="Cursor" Value="Cross" />
-                        </Trigger>
-                        <Trigger Property="IsDragging" Value="True">
-                            <Setter Property="Cursor" Value="SizeAll" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -87,24 +83,28 @@
                     <StackPanel Name="CurveContainer"  VerticalAlignment="Center" Margin="0,5,0,5" 
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
                         <Border BorderThickness="1" BorderBrush="#888888">
-                            <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
-                                    Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
-					                Focusable="True" 
-				                        input:DragDropManager.DropTargetAdvisor="{Binding}" 
-                                       input:DragDropManager.DragSourceAdvisor="{Binding}"
-                                       input:DragDropTargetType.TargetType="Curve" 
-                                       Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                       Stretch="Fill">
-                                <Image.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-						                  CommandParameter="{Binding}" />
-                                    <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
-												    CommandParameter="{Binding}"/>
-                                </Image.InputBindings>
-                                <Image.ToolTip>
-                                    <ToolTip Content="{Binding Value.Curve}" Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
-                                </Image.ToolTip>
-                            </Image>
+                            <Grid>
+                                <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
+                                        Converter={StaticResource CurveToImageConverter}, ConverterParameter=true }" Height="32"
+					                    Focusable="True" 
+				                            input:DragDropManager.DropTargetAdvisor="{Binding}" 
+                                           input:DragDropManager.DragSourceAdvisor="{Binding}"
+                                           input:DragDropTargetType.TargetType="Curve" 
+                                           Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                           Stretch="Fill">
+                                    <Image.InputBindings>
+                                        <MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+						                      CommandParameter="{Binding}" />
+                                        <KeyBinding Key="Enter" Command="input:PropertyEditorCommands.ShowGradientLevelCurveEditor"
+												        CommandParameter="{Binding}"/>
+                                    </Image.InputBindings>
+                                    <Image.ToolTip>
+                                        <ToolTip Content="{Binding Value.Curve}" Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                                <Image Source="Images/librarylink.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="22" Height="22" Margin="0,1,0,0"
+									   Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
+                            </Grid>
                         </Border>
                     </StackPanel>
                 </ControlTemplate>

@@ -12,13 +12,13 @@ namespace VixenModules.Editor.EffectEditor.Converters
 
 			var width = 25;
 			var height = 25;
-			var editable = false;
+			var drawPoints = false;
 			
 			if (parameter != null)
 			{
-				editable = System.Convert.ToBoolean(parameter);
+				drawPoints = System.Convert.ToBoolean(parameter);
 			}
-			if (editable)
+			if (drawPoints)
 			{
 				width = 300;
 				height = 30;
@@ -29,7 +29,7 @@ namespace VixenModules.Editor.EffectEditor.Converters
 			{
 				Curve curve = (Curve) value;
 				
-				return BitmapImageConverter.BitmapToMediaImage(curve.GenerateGenericCurveImage(new System.Drawing.Size(width, height), false, editable, editable));
+				return BitmapImageConverter.BitmapToMediaImage(curve.GenerateGenericCurveImage(new System.Drawing.Size(width, height), false, drawPoints, !curve.IsLibraryReference));
 			}
 
 			return BitmapImageConverter.BitmapToMediaImage(new Curve().GenerateGenericCurveImage(new System.Drawing.Size(width, height), true));

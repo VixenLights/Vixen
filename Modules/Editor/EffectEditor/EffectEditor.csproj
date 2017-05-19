@@ -213,6 +213,7 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
+    <Compile Include="Controls\BaseInlineCurveEditor.cs" />
     <Compile Include="Controls\BaseInlineGradientEditor.cs" />
     <Compile Include="Controls\CollectionView.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
