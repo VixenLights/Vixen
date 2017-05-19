@@ -213,17 +213,22 @@
   <ItemGroup>
     <Compile Include="CategoryEditor.cs" />
     <Compile Include="CategoryItem.cs" />
+    <Compile Include="Controls\BaseInlineGradientEditor.cs" />
     <Compile Include="Controls\CollectionView.cs" />
     <Compile Include="Controls\IndexingStackPanel.cs" />
+    <Compile Include="Controls\InlineGradientEditor.cs" />
     <Compile Include="Controls\InlineGradientPairCurveEditor.cs" />
     <Compile Include="Controls\InlineCurveEditor.cs" />
+    <Compile Include="Controls\InlineGradientPairGradientEditor.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
+    <Compile Include="Controls\SliderPoint.cs" />
     <Compile Include="Controls\NavigatableHyperLink.cs" />
     <Compile Include="Controls\RepeatEditor.cs" />
     <Compile Include="Controls\Reveal.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
+    <Compile Include="Converters\ColorGradientIsLibraryToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
     <Compile Include="Converters\CurveToDoubleConverter.cs" />
     <Compile Include="Converters\CurveToImageConverter.cs" />
@@ -364,6 +369,11 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
+      <Project>{af76c902-a776-49c3-9019-d7cb0a53fb2f}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
@@ -384,6 +394,9 @@
       <Name>ValueTypes</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\librarylink.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,7 +7,7 @@
 		<ResourceDictionary Source="Converters.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
-	<DataTemplate x:Key="{x:Static editors:EditorKeys.ColorGradientPaletteEditorKey}">
+	<!--<DataTemplate x:Key="{x:Static editors:EditorKeys.ColorGradientPaletteEditorKey}">
 		<StackPanel>
 			<controls:CollectionView
 				x:Name="PART_editor"
@@ -48,6 +48,47 @@
 					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 			</WrapPanel>
 		</StackPanel>
-	</DataTemplate>
+	</DataTemplate>-->
+
+    <DataTemplate x:Key="{x:Static editors:EditorKeys.ColorGradientPaletteEditorKey}">
+        <StackPanel>
+            <controls:CollectionView
+				x:Name="PART_editor"
+				Style="{DynamicResource {x:Type ListView}}"
+				PropertyValue="{Binding}"
+				IsEnabled="{Binding IsEditable}"
+				KeyboardNavigation.TabNavigation="Continue">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"></WrapPanel>
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel  Name="CollectionContainer" HorizontalAlignment="Stretch" Orientation="Vertical"  Margin="5,5,0,5" 
+                                     Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth,
+                                    Converter={StaticResource AdditionConverter}, ConverterParameter='-20'}">
+                            <controls:InlineGradientEditor
+                                x:Name="GradientEditor"
+			                    Value="{Binding Value, Mode=TwoWay}"
+			                    IsEnabled="True"
+                                Component="{Binding ParentProperty.Component}">
+                            </controls:InlineGradientEditor>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </controls:CollectionView>
+            <WrapPanel Orientation="Horizontal">
+                <Button Margin="5" Content="Add" HorizontalAlignment="Left" Padding="5,2"
+					  Command="input:PropertyEditorCommands.AddCollectionItem"
+					  CommandParameter="{Binding}"
+					  Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <Button Margin="5" Content="Remove" HorizontalAlignment="Left" Padding="5,2" FocusManager.IsFocusScope="True"
+					  Command="input:PropertyEditorCommands.RemoveCollectionItem"
+					  CommandParameter="{Binding}" Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </WrapPanel>
+        </StackPanel>
+    </DataTemplate>
 
 </ResourceDictionary>

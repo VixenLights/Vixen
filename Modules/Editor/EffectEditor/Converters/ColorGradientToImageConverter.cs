@@ -10,15 +10,30 @@ namespace VixenModules.Editor.EffectEditor.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
+			var width = 300;
+			var height = 30;
+			var isDiscrete = false;
+
+			if (parameter != null)
+			{
+				isDiscrete = System.Convert.ToBoolean(parameter);
+			}
+			//if (editable)
+			//{
+			//	width = 300;
+			//	height = 30;
+
+			//}
+
 			if (value is ColorGradient)
 			{
 				ColorGradient colorGradient = (ColorGradient) value;
-				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateColorGradientImage(new Size(25, 25), false));
+				return BitmapImageConverter.BitmapToMediaImage(colorGradient.GenerateColorGradientImage(new Size(width, height), isDiscrete));
 			}
 
 			return
 				BitmapImageConverter.BitmapToMediaImage(
-					new ColorGradient(Color.DimGray).GenerateColorGradientImage(new Size(25, 25), false));
+					new ColorGradient(Color.DimGray).GenerateColorGradientImage(new Size(width, height), false));
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

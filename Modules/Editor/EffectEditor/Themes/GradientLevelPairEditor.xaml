@@ -17,29 +17,26 @@
 				KeyboardNavigation.TabNavigation="Continue">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, Path=ActualWidth}"></WrapPanel>
+						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-10'}"></WrapPanel>
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<StackPanel Name="CollectionContainer" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5"
+                        <StackPanel Name="CollectionContainer" Orientation="Vertical"  Margin="-5,0,0,0"
                                     Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth}">
-							<Border BorderThickness="1" BorderBrush="#888888">
-								<Image input:DragDropTargetType.TargetType="ColorGradient" Source="{Binding Value.ColorGradient, Converter={StaticResource ColorGradientToImageConverter}}" 
-									   Height="32" Width="32" Focusable="True" Stretch="Fill"
-									input:DragDropManager.DropTargetAdvisor="{Binding}" input:DragDropManager.DragSourceAdvisor="{Binding}" ToolTip="{Binding Value.ColorGradient.LibraryReferenceName}">
-									<Image.InputBindings>
-										<MouseBinding Gesture="LeftDoubleClick" Command="input:PropertyEditorCommands.ShowGradientLevelGradientEditor"
-												CommandParameter="{Binding}" />
-									</Image.InputBindings>
-								</Image>
-							</Border>
                             <controls:InlineGradientPairCurveEditor
 			                    x:Name="CollectionCurveEditor"
 			                    Value="{Binding Value, Mode=TwoWay}"
                                 IsEnabled="True">
                                
                             </controls:InlineGradientPairCurveEditor>
+                            <controls:InlineGradientPairGradientEditor
+			                    x:Name="CollectionGradientEditor"
+			                    Value="{Binding Value, Mode=TwoWay}"
+                                IsEnabled="True">
+
+                            </controls:InlineGradientPairGradientEditor>
                         </StackPanel>
 					</DataTemplate>
 				</ListView.ItemTemplate>

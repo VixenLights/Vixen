@@ -265,7 +265,7 @@ namespace VixenModules.Editor.EffectEditor
 
 		public bool IsDraggable(UIElement dragElt)
 		{
-			if (SupportsCurve() || SupportsColor())
+			if ( (SupportsCurve() || SupportsColor()) && Value!=null)
 			{
 				return true;	
 			}

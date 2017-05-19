@@ -278,6 +278,7 @@
     <None Include="Resources\Reset.png" />
     <Content Include="layers.png" />
     <None Include="Resources\layers.bmp" />
+    <None Include="Resources\LibraryLink.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />

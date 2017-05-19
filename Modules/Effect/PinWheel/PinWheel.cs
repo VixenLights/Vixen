@@ -272,8 +272,8 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Brightness", 3)]
-		[ProviderDisplayName(@"Overall Brightness")]
-		[ProviderDescription(@"Overall Brightness")]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
 		[NumberRange(0, 100, 1)]
 		public Curve LevelCurve
 		{
