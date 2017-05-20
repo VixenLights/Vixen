@@ -530,20 +530,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max angle the Meteor moves..
-        /// </summary>
-        internal static string MaxMeteorAngle {
-            get {
-                return ResourceManager.GetString("MaxMeteorAngle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Max Direction in Degrees..
         /// </summary>
         internal static string MaxDirection {
             get {
                 return ResourceManager.GetString("MaxDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max angle the Meteor moves..
+        /// </summary>
+        internal static string MaxMeteorAngle {
+            get {
+                return ResourceManager.GetString("MaxMeteorAngle", resourceCulture);
             }
         }
         
@@ -601,7 +601,8 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
             }
         }
         
-        ///   Looks up a localized string similar to Switches effect between speed or iterations..
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the  Type of Movement..
         /// </summary>
         internal static string MovementType {
             get {
@@ -709,6 +710,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chnages the Intensity for each SnowFlake..
+        /// </summary>
+        internal static string RandomIntensity {
+            get {
+                return ResourceManager.GetString("RandomIntensity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates new Meteors at a Random Position.
         /// </summary>
         internal static string RandomPosition {
@@ -725,16 +735,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
                 return ResourceManager.GetString("RandomSpeed", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chnages the Intensity for each SnowFlake..
-        /// </summary>
-        internal static string RandomIntensity {
-            get {
-                return ResourceManager.GetString("RandomIntensity", resourceCulture);
-            }
-        }
-        
         
         /// <summary>
         ///   Looks up a localized string similar to Controls the number of times the color pattern repeats within the pattern..
@@ -827,20 +827,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Randomly adjust the Speed around the Speed level by the amount of variation...
-        /// </summary>
-        internal static string SpeedVariation {
-            get {
-                return ResourceManager.GetString("SpeedVariation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Adjusts the space between garlands..
         /// </summary>
         internal static string Spacing {
             get {
                 return ResourceManager.GetString("Spacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Speed around the Speed level by the amount of variation...
+        /// </summary>
+        internal static string SpeedVariation {
+            get {
+                return ResourceManager.GetString("SpeedVariation", resourceCulture);
             }
         }
         

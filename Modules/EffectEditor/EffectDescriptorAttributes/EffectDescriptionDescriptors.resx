@@ -415,7 +415,7 @@
     <value>Min angle the Meteor moves.</value>
   </data>
   <data name="MovementType" xml:space="preserve">
-    <value>Switches effect between speed or iterations.</value>
+    <value>Controls the Type of Movement.</value>
   </data>
   <data name="RandomPosition" xml:space="preserve">
     <value>Creates new Meteors at a Random Position</value>
