@@ -170,6 +170,36 @@ namespace VixenModules.App.WebServer.Service
 		}
 
 		/// <summary>
+		/// Turns off all the elements for a given list of nodes. Looks for any active effects in the Live Context we 
+		/// are using and clears them on that node. Does not distinguish between effects or who originated them.
+		/// </summary>
+		/// <param name="states"></param>
+		/// <returns>Status</returns>
+		public static Status TurnOffElements(IEnumerable<ElementState> states)
+		{
+			var status = new Status();
+			
+			List<Guid> nodesToRemove = new List<Guid>();
+			foreach (var elementState in states)
+			{
+				ElementNode node = VixenSystem.Nodes.GetElementNode(elementState.Id);
+				if (node == null)
+				{
+					status.Details.Add(string.Format("Element not found. {0}", elementState.Id));
+					continue;
+				}
+
+				nodesToRemove.Add(node.Id);
+				status.Details.Add(string.Format("{0} turned off.", node.Name));
+			}
+
+			Module.LiveContext.TerminateNodes(nodesToRemove);
+			status.Message = string.Format("{0} elements turned off.", nodesToRemove.Count);
+
+			return status;
+		}
+
+		/// <summary>
 		/// Clears all current effects on all elements in the live context
 		/// </summary>
 		/// <returns>Status</returns>

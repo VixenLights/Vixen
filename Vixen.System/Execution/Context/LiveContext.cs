@@ -31,6 +31,16 @@ namespace Vixen.Execution.Context
 			CurrentEffects.RemoveEffects(nodes);
 		}
 
+		public void TerminateNodes(IEnumerable<Guid> targetNodes)
+		{
+			HashSet<IEffectNode> nodes = new HashSet<IEffectNode>();
+			foreach (var targetNode in targetNodes)
+			{
+				 nodes.AddRange(CurrentEffects.Where(x => x.Effect.TargetNodes.Any(t => t.Id.Equals(targetNode))));
+			}
+			CurrentEffects.RemoveEffects(nodes);
+		}
+
 		public override string Name
 		{
 			get { return _name; }
@@ -94,6 +104,19 @@ namespace Vixen.Execution.Context
 		public override IExecutor Executor
 		{
 			set { ; }
+		}
+
+		private class TargetNodesComparer:IEqualityComparer<ElementNode>
+		{
+			public bool Equals(ElementNode x, ElementNode y)
+			{
+				return x.Id.Equals(y.Id);
+			}
+
+			public int GetHashCode(ElementNode obj)
+			{
+				return obj.Id.GetHashCode();
+			}
 		}
 	}
 }
