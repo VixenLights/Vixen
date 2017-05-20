@@ -116,6 +116,12 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(5)]
 		public Curve CenterSpeedCurve
 		{
