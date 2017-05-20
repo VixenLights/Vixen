@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Vixen.Module;
 using Vixen.Module.App;
+using Vixen.Sys;
 
 namespace VixenModules.App.ColorGradients
 {
@@ -64,6 +65,7 @@ namespace VixenModules.App.ColorGradients
 			cg.LibraryReferenceName = string.Empty;
 			Library[name] = cg;
 			_GradientChanged(name);
+			VixenSystem.SaveModuleConfigAsync();
 			return inLibrary;
 		}
 
@@ -73,6 +75,7 @@ namespace VixenModules.App.ColorGradients
 			if (removed)
 			{
 				_GradientChanged(name);
+				VixenSystem.SaveModuleConfigAsync();
 			}
 
 			return removed;
