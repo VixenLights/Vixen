@@ -445,6 +445,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
 			TimelineControl.MarkMoved += timelineControl_MarkMoved;
+			TimelineControl.MarkNudge += timelineControl_MarkNudge;
 			TimelineControl.DeleteMark += timelineControl_DeleteMark;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
@@ -615,6 +616,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
 			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
+			TimelineControl.MarkNudge -= timelineControl_MarkNudge;
 			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
@@ -3134,6 +3136,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				mc.Marks.Add(Time);
 				PopulateMarkSnapTimes();
 				SequenceModified();
+				Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
+				mcs.Add(Time, mc);
+				var act = new MarksAddedUndoAction(this, mcs);
+				_undoMgr.AddUndoAction(act);
 			}
 		}
 
@@ -3153,32 +3159,76 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_MarkMoved(object sender, MarkMovedEventArgs e)
 		{
+			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
+		//	MarkCollection markCollection = new MarkCollection();
 			foreach (MarkCollection mc in _sequence.MarkCollections)
 			{
 				if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
 				{
-					if (mc.Marks.Contains(e.OriginalMark))
+					if (mc.Marks.Contains(e.PreviousMark))
 					{
-						mc.Marks.Remove(e.OriginalMark);
+						mc.Marks.Remove(e.PreviousMark);
 						mc.Marks.Add(e.NewMark);
+						if (e.MouseUp)
+						{
+							markCollection.Add(new MarkNdugeCollection(mc, e.NewMark, e.OriginalMarkTime));
+						}
 					}
 				}
 			}
 			PopulateMarkSnapTimes();
 			SequenceModified();
+			//Will only add the undo action after the move is complete and mouse button is released.
+			if (e.MouseUp)
+			{
+				_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
+			}
 		}
 
-		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
+
+		private void timelineControl_MarkNudge(object sender, MarkNudgeEventArgs e)
 		{
-			foreach (MarkCollection mc in _sequence.MarkCollections)
+			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
+			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
+			foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in e.SelectedMarks)
 			{
-				if (mc.Marks.Contains(e.Mark))
+				newSelectedMarks.Add(kvp.Key + e.Offset, kvp.Value);
+				foreach (MarkCollection mc in _sequence.MarkCollections)
 				{
-					mc.Marks.Remove(e.Mark);
+					if (kvp.Value.SnapLevel == mc.Level)
+					{
+						if (mc.Marks.Contains(kvp.Key))
+						{
+							markCollection.Add(new MarkNdugeCollection(mc, kvp.Key + e.Offset, kvp.Key));
+							mc.Marks.Remove(kvp.Key);
+							mc.Marks.Add(kvp.Key + e.Offset);
+						}
+					}
 				}
 			}
 			PopulateMarkSnapTimes();
 			SequenceModified();
+			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
+		}
+
+		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
+		{
+			Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
+			foreach (TimeSpan mark in e.Marks)
+			{
+				foreach (MarkCollection mc in _sequence.MarkCollections)
+				{
+					if (mc.Marks.Contains(mark))
+					{
+						mc.Marks.Remove(mark);
+						mcs.Add(mark, mc);
+					}
+				}
+			}
+			PopulateMarkSnapTimes();
+			SequenceModified();
+			var act = new MarksRemovedUndoAction(this, mcs);
+			_undoMgr.AddUndoAction(act);
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
@@ -3574,6 +3624,64 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var element =  AddElementForEffectNodeTpl(node);
 			Sequence.GetSequenceLayerManager().AssignEffectNodeToLayer(node, layer);
 			return element;
+		}
+
+		/// <summary>
+		/// Adds a Mark to a Mark Collection.
+		/// </summary>
+		/// <param name="markCollections"></param>
+		public void AddMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		{
+			foreach (var mark in markCollections)
+			{
+				mark.Value.Marks.Add(mark.Key);
+			}
+			
+			PopulateMarkSnapTimes();
+			SequenceModified();
+		}
+
+		/// <summary>
+		/// Remove a Mark to a Mark Collection.
+		/// </summary>
+		/// <param name="markCollections"></param>
+		public void RemoveMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		{
+			foreach (var mark in markCollections)
+			{
+				mark.Value.Marks.Remove(mark.Key);
+			}
+			PopulateMarkSnapTimes();
+			SequenceModified();
+		}
+
+
+		/// <summary>
+		/// Moves a Mark on the timeline/ruler in a Mark Collection.
+		/// </summary>
+		/// <param name="markCollections"></param>
+		/// <param name="mark1"></param>
+		/// <param name="mark2"></param>
+		public void MovedMark(MarkCollection markCollections, TimeSpan mark1, TimeSpan mark2)
+		{
+			markCollections.Marks.Remove(mark1);
+			markCollections.Marks.Add(mark2);
+			PopulateMarkSnapTimes();
+			SequenceModified();
+		}
+
+		public class MarkNdugeCollection
+		{
+			public MarkNdugeCollection(MarkCollection markcollection, TimeSpan newMark, TimeSpan oldMark)
+			{
+				OldMark = oldMark;
+				NewMark = newMark;
+				MarkCollection = markcollection;
+			}
+
+			public TimeSpan OldMark { get; private set; }
+			public TimeSpan NewMark { get; private set; }
+			public MarkCollection MarkCollection { get; private set; }
 		}
 
 		/// <summary>

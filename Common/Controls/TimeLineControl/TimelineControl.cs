@@ -612,6 +612,12 @@ namespace Common.Controls.Timeline
 			remove { ruler.MarkMoved -= value; }
 		}
 
+		public event EventHandler<MarkNudgeEventArgs> MarkNudge
+		{
+			add { ruler.MarkNudge += value; }
+			remove { ruler.MarkNudge -= value; }
+		}
+
 		public event EventHandler<DeleteMarkEventArgs> DeleteMark
 		{
 			add { ruler.DeleteMark += value; }
