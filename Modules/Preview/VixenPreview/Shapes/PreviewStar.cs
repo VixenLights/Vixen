@@ -254,7 +254,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
         [DataMember]
-        int _XYRotation = 0;
+        int _XYRotation = 18;
         [CategoryAttribute("Settings"),
         DescriptionAttribute("The prop can be rotated about the Z axis in the XY plane. This is the rotation angle."),
         DisplayName("XY Rotation")]
