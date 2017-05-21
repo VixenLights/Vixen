@@ -351,7 +351,7 @@ namespace Common.Controls.Timeline
 		public event EventHandler<ContextSelectedEventArgs> ContextSelected;
 		public event EventHandler<RenderElementEventArgs> RenderProgressChanged;
 
-		private void _SelectionChanged()
+		public void _SelectionChanged()
 		{
 			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)

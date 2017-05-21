@@ -114,6 +114,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_RIColor_White = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_RIColor_Red = new System.Windows.Forms.ToolStripMenuItem();
 			this.cADStyleSelectionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItemFindEffects = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -148,6 +150,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.lyricConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.papagayoImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkEffectMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.effectSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -852,7 +855,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator10,
             this.toolStripMenuItem_SnapTo,
             this.toolStripMenuItem_ResizeIndicator,
-            this.cADStyleSelectionBoxToolStripMenuItem});
+            this.cADStyleSelectionBoxToolStripMenuItem,
+            this.toolStripSeparator17,
+            this.toolStripMenuItemFindEffects});
 			this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -1026,6 +1031,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.cADStyleSelectionBoxToolStripMenuItem.Text = "CAD Style Selection Box";
 			this.cADStyleSelectionBoxToolStripMenuItem.Click += new System.EventHandler(this.cADStyleSelectionBoxToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator17
+			// 
+			this.toolStripSeparator17.Name = "toolStripSeparator17";
+			this.toolStripSeparator17.Size = new System.Drawing.Size(212, 6);
+			// 
+			// toolStripMenuItemFindEffects
+			// 
+			this.toolStripMenuItemFindEffects.Name = "toolStripMenuItemFindEffects";
+			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(215, 22);
+			this.toolStripMenuItemFindEffects.Text = "Find Effects";
+			this.toolStripMenuItemFindEffects.Click += new System.EventHandler(this.toolStripMenuItemFindEffects_Click);
+			// 
 			// viewToolStripMenuItem
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1180,7 +1197,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.colorGradientEditorToolStripMenuItem,
             this.ColorCollectionsToolStripMenuItem,
             this.lipSyncMappingsToolStripMenuItem,
-            this.bulkEffectMoveToolStripMenuItem});
+            this.bulkEffectMoveToolStripMenuItem,
+            this.effectSearchToolStripMenuItem});
 			this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
@@ -1331,6 +1349,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.bulkEffectMoveToolStripMenuItem.Text = "Bulk Effects Move";
 			this.bulkEffectMoveToolStripMenuItem.Click += new System.EventHandler(this.bulkEffectMoveToolStripMenuItem_Click);
 			// 
+			// effectSearchToolStripMenuItem
+			// 
+			this.effectSearchToolStripMenuItem.Name = "effectSearchToolStripMenuItem";
+			this.effectSearchToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			// 
 			// helpDocumentationToolStripMenuItem
 			// 
 			this.helpDocumentationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
@@ -1461,7 +1484,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
+			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1436, 630);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
@@ -1487,7 +1510,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DockLeftPortion = 200D;
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
-			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
+			this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.dockPanel.Name = "dockPanel";
 			this.dockPanel.Size = new System.Drawing.Size(1436, 630);
 			this.dockPanel.TabIndex = 13;
@@ -1524,7 +1547,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.DoubleBuffered = true;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Margin = new System.Windows.Forms.Padding(4);
+			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
@@ -1576,9 +1599,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_zoomRowsOut;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_deleteElements;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private Common.Controls.UndoButton undoButton;
-        private Common.Controls.UndoButton redoButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private Common.Controls.UndoButton undoButton;
+		private Common.Controls.UndoButton redoButton;
 		private System.Windows.Forms.ToolStripButton toolStripButton_Start;
 		private System.Windows.Forms.ToolStripButton toolStripButton_End;
 		private System.Windows.Forms.ToolStripMenuItem selectAllElementsToolStripMenuItem;
@@ -1602,8 +1625,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem modifySequenceLengthToolStripMenuItem;
 		private System.Windows.Forms.SaveFileDialog saveFileDialog;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripElementSelection;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_RenderingElements;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_RenderingElements;
 		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_RenderingElements;
 		private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
@@ -1613,18 +1636,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SnapTo;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeedLabel;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeed;
-        private System.Windows.Forms.ToolStripButton toolStripButton_IncreaseTimingSpeed;
-        private System.Windows.Forms.ToolStripButton toolStripButton_DecreaseTimingSpeed;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
-        private System.Windows.Forms.ToolStripComboBox cboAudioDevices;
-        private System.Windows.Forms.ToolStripMenuItem playOptionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem delayOffToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem delay30SecondsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem delay60SecondsToolStripMenuItem;
-        private System.Windows.Forms.Timer timerPostponePlay;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeedLabel;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel_TimingSpeed;
+		private System.Windows.Forms.ToolStripButton toolStripButton_IncreaseTimingSpeed;
+		private System.Windows.Forms.ToolStripButton toolStripButton_DecreaseTimingSpeed;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+		private System.Windows.Forms.ToolStripComboBox cboAudioDevices;
+		private System.Windows.Forms.ToolStripMenuItem playOptionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem delayOffToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem delay30SecondsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem delay60SecondsToolStripMenuItem;
+		private System.Windows.Forms.Timer timerPostponePlay;
 		private System.Windows.Forms.ToolStripMenuItem delay5SecondsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem delay10SecondsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem delay20SecondsToolStripMenuItem;
@@ -1642,11 +1665,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SnapStrength_4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_SnapStrength_1;
-        private System.Windows.Forms.ToolStripMenuItem lipSyncMappingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem phonemeMappingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem defaultMapToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem papagayoImportToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem lyricConverterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem lipSyncMappingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem phonemeMappingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem defaultMapToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem papagayoImportToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem lyricConverterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem changeMapToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
@@ -1695,5 +1718,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo1000;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo2000;
 		private System.Windows.Forms.ToolStripMenuItem mixingFilterEditorWindowToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem effectSearchToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFindEffects;
 	}
 }
