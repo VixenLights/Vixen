@@ -18,7 +18,6 @@ namespace VixenModules.Effect.Meteors
 		public MeteorsData()
 		{
 			Colors = new List<ColorGradient>{new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue)};
-			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
 			PixelCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			Direction = 180;
 			SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 12.0, 12.0 }));
@@ -26,7 +25,6 @@ namespace VixenModules.Effect.Meteors
 			MinDirection = 0;
 			MaxDirection = 360;
 			RandomBrightness = false;
-			RandomSpeed = true;
 			RandomMeteorPosition = false;
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
@@ -44,7 +42,7 @@ namespace VixenModules.Effect.Meteors
 		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public Curve SpeedCurve { get; set; }
 
 		[DataMember]
@@ -86,7 +84,7 @@ namespace VixenModules.Effect.Meteors
 		[DataMember]
 		public MeteorsEffect MeteorEffect { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool RandomSpeed { get; set; }
 
 		[DataMember]
@@ -140,6 +138,15 @@ namespace VixenModules.Effect.Meteors
 					Length = 0;
 				}
 			}
+
+			//Due to the upgrade to a center Speed and Spead Variation there was no need to have the Speedcurve and Random checkbox.
+			//This is to convert any existing effects that didn't use Random Speed.
+			if (!RandomSpeed)
+			{
+				CenterSpeedCurve = SpeedCurve;
+				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				RandomSpeed = true;
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -147,7 +154,6 @@ namespace VixenModules.Effect.Meteors
 			MeteorsData result = new MeteorsData
 			{
 				Colors = Colors.ToList(),
-				SpeedCurve = new Curve(SpeedCurve),
 				ColorType = ColorType,
 				LengthCurve = new Curve(LengthCurve),
 				SpeedVariationCurve = new Curve(SpeedVariationCurve),
@@ -158,7 +164,6 @@ namespace VixenModules.Effect.Meteors
 				MeteorEffect = MeteorEffect,
 				PixelCountCurve = new Curve(PixelCountCurve),
 				RandomMeteorPosition = RandomMeteorPosition,
-				RandomSpeed = RandomSpeed,
 				Orientation = Orientation,
 				Direction = Direction,
 				LevelCurve = new Curve(LevelCurve)

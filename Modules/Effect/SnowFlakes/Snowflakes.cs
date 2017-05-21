@@ -128,44 +128,10 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RandomSpeed")]
-		[ProviderDescription(@"RandomSpeed")]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+//		[NumberRange(1, 60, 1)]
 		[PropertyOrder(5)]
-		public bool RandomSpeed
-		{
-			get { return _data.RandomSpeed; }
-			set
-			{
-				_data.RandomSpeed = value;
-				IsDirty = true;
-				UpdateRandomSpeedAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-//		[NumberRange(1, 60, 1)]
-		[PropertyOrder(6)]
-		public Curve SpeedCurve
-		{
-			get { return _data.SpeedCurve; }
-			set
-			{
-				_data.SpeedCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-//		[NumberRange(1, 60, 1)]
-		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
@@ -182,7 +148,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
 //		[NumberRange(2, 60, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(6)]
 		public Curve SpeedVariationCurve
 		{
 			get { return _data.SpeedVariationCurve; }
@@ -199,7 +165,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 	//	[NumberRange(1, 100, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(7)]
 		public Curve FlakeCountCurve
 		{
 			get { return _data.FlakeCountCurve; }
@@ -307,7 +273,6 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
-			UpdateRandomSpeedAttribute(false);
 			UpdateFlakeAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
@@ -319,19 +284,6 @@ namespace VixenModules.Effect.Snowflakes
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("InnerColor", snowFlakeType);
 			propertyStates.Add("OutSideColor", snowFlakeType);
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateRandomSpeedAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("SpeedCurve", !RandomSpeed);
-			propertyStates.Add("SpeedVariationCurve", RandomSpeed);
-			propertyStates.Add("CenterSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -440,7 +392,7 @@ namespace VixenModules.Effect.Snowflakes
 			
 			for (int i = 0; i < flakeCount; i++)
 			{
-				double position = RandomSpeed ? (double)_random.Next(minSpeed, maxSpeed) / 5 : (double)CalculateSpeed(intervalPosFactor) / 5;
+				double position = (double)_random.Next(minSpeed, maxSpeed + 1) / 5;
 				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor)) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
@@ -696,14 +648,6 @@ namespace VixenModules.Effect.Snowflakes
 		private int CalculateCount(double intervalPos)
 		{
 			var value = (int)ScaleCurveToValue(FlakeCountCurve.GetValue(intervalPos), 100, 1);
-			if (value < 1) value = 1;
-
-			return value;
-		}
-
-		private int CalculateSpeed(double intervalPos)
-		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 60, 1);
 			if (value < 1) value = 1;
 
 			return value;

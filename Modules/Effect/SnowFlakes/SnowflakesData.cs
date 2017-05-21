@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -19,7 +20,6 @@ namespace VixenModules.Effect.Snowflakes
 			InnerColor = new List<ColorGradient> { new ColorGradient(Color.Blue) };
 			OutSideColor = new List<ColorGradient> { new ColorGradient(Color.White) };
 			SnowflakeType = SnowflakeType.Random;
-			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 8.0, 8.0 }));
 			FlakeCountCurve =  new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			LevelCurve = new Curve(CurveType.Flat100);
 			PixelCount = 15;
@@ -27,7 +27,6 @@ namespace VixenModules.Effect.Snowflakes
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 11.0, 11.0 }));
 			MinDirection = 145;
 			MaxDirection = 215;
-			RandomSpeed = true;
 			RandomBrightness = false;
 			PointFlake45 = false;
 			SnowflakeEffect = SnowflakeEffect.None;
@@ -47,7 +46,7 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public Curve SpeedCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
@@ -86,7 +85,7 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public SnowflakeEffect SnowflakeEffect { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool RandomSpeed { get; set; }
 
 		[DataMember]
@@ -132,7 +131,15 @@ namespace VixenModules.Effect.Snowflakes
 					MinSpeed = 0;
 					MaxSpeed = 0;
 				}
+			}
 
+			//Due to the upgrade to a center Speed and Spead Variation there was no need to have the Speedcurve and Random checkbox.
+			//This is to convert any existing effects that didn't use Random Speed.
+			if (!RandomSpeed)
+			{
+				CenterSpeedCurve = SpeedCurve;
+				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				RandomSpeed = true;
 			}
 		}
 
@@ -142,7 +149,6 @@ namespace VixenModules.Effect.Snowflakes
 			SnowflakesData result = new SnowflakesData
 			{
 				SnowflakeType = SnowflakeType,
-				SpeedCurve = new Curve(SpeedCurve),
 				FlakeCountCurve = new Curve(FlakeCountCurve),
 				Orientation = Orientation,
 				PointFlake45 = PointFlake45,
@@ -156,8 +162,7 @@ namespace VixenModules.Effect.Snowflakes
 				MinDirection = MinDirection,
 				MaxDirection = MaxDirection,
 				SnowflakeEffect = SnowflakeEffect,
-				PixelCount = PixelCount,
-				RandomSpeed = RandomSpeed
+				PixelCount = PixelCount
 			};
 			return result;
 		}

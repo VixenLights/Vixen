@@ -116,53 +116,18 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RandomSpeed")]
-		[ProviderDescription(@"RandomSpeed")]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(5)]
-		public bool RandomSpeed
-		{
-			get { return _data.RandomSpeed; }
-			set
-			{
-				_data.RandomSpeed = value;
-				IsDirty = true;
-				UpdateRandomSpeedAttribute();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-		//[NumberRange(1, 200, 1)]
-		[PropertyOrder(6)]
-		public Curve SpeedCurve
-		{
-			get { return _data.SpeedCurve; }
-			set
-			{
-				_data.SpeedCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
-		//[NumberRange(1, 200, 1)]
-		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
 			set
 			{
-				//if (MaxSpeedCurve <= value)
-				//	value = MaxSpeedCurve - 1; //Ensures MinSpeed is below MaxSpeed
 				_data.CenterSpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
@@ -174,7 +139,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
 		//[NumberRange(1, 200, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(6)]
 		public Curve SpeedVariationCurve
 		{
 			get { return _data.SpeedVariationCurve; }
@@ -191,7 +156,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"Count")]
 		[ProviderDescription(@"Count")]
 		//[NumberRange(1, 200, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(7)]
 		public Curve PixelCountCurve
 		{
 			get { return _data.PixelCountCurve; }
@@ -208,7 +173,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"TailLength")]
 		[ProviderDescription(@"TailLength")]
 		//[NumberRange(1, 100, 1)]
-		[PropertyOrder(10)]
+		[PropertyOrder(8)]
 		public Curve LengthCurve
 		{
 			get { return _data.LengthCurve; }
@@ -224,7 +189,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomPosition")]
 		[ProviderDescription(@"RandomPosition")]
-		[PropertyOrder(11)]
+		[PropertyOrder(9)]
 		public bool RandomMeteorPosition
 		{
 			get { return _data.RandomMeteorPosition; }
@@ -316,7 +281,6 @@ namespace VixenModules.Effect.Meteors
 		{
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
-			UpdateRandomSpeedAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -326,18 +290,6 @@ namespace VixenModules.Effect.Meteors
 			bool meteorType = ColorType != MeteorsColorType.RainBow;
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
 			propertyStates.Add("Colors", meteorType);
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-		private void UpdateRandomSpeedAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("SpeedCurve", !RandomSpeed);
-			propertyStates.Add("SpeedVariationCurve", RandomSpeed);
-			propertyStates.Add("CenterSpeedCurve", RandomSpeed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -443,7 +395,7 @@ namespace VixenModules.Effect.Meteors
 
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
-				double position = RandomSpeed ? (double)_random.Next(minSpeed, maxSpeed + 1) / 20 : (double)CalculateSpeed(intervalPosFactor) / 20;
+				double position = (double) _random.Next(minSpeed, maxSpeed + 1)/20;
 				if (_meteors.Count >= pixelCount) continue;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
@@ -638,14 +590,6 @@ namespace VixenModules.Effect.Meteors
 					meteorNum++;
 				}
 			}
-		}
-
-		private int CalculateSpeed(double intervalPos)
-		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 200, 1);
-			if (value < 1) value = 1;
-
-			return value;
 		}
 
 		private int CalculateSpeedVariation(double intervalPos)
