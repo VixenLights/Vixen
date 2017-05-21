@@ -59,8 +59,8 @@ namespace VixenModules.Effect.Garlands
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Movement Type")]
-		[ProviderDescription(@"Switches between speed or iterations")]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
 		[PropertyOrder(0)]
 		public MovementType MovementType
 		{
@@ -74,6 +74,21 @@ namespace VixenModules.Effect.Garlands
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Direction")]
+		[ProviderDescription(@"Direction")]
+		[PropertyOrder(1)]
+		public GarlandsDirection Direction
+		{
+			get { return _data.Direction; }
+			set
+			{
+				_data.Direction = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -112,24 +127,8 @@ namespace VixenModules.Effect.Garlands
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Direction")]
-		[ProviderDescription(@"Changes the direction that the garlands stack.")]
-		[PropertyOrder(3)]
-		public GarlandsDirection Direction
-		{
-			get { return _data.Direction; }
-			set
-			{
-				_data.Direction = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Garland Type")]
-		[ProviderDescription(@"Changes the garland type")]
+		[ProviderDisplayName(@"GarlandType")]
+		[ProviderDescription(@"GarlandType")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 4, 1)]
 		[PropertyOrder(4)]
@@ -147,7 +146,7 @@ namespace VixenModules.Effect.Garlands
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Spacing")]
-		[ProviderDescription(@"Adjusts the space between garlands.")]
+		[ProviderDescription(@"Spacing")]
 		//[NumberRange(1, 20, 1)]
 		[PropertyOrder(5)]
 		public Curve SpacingCurve
@@ -202,7 +201,6 @@ namespace VixenModules.Effect.Garlands
 		}
 
 		#endregion
-
 
 		#region Information
 
