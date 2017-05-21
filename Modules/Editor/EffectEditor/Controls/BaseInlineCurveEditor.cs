@@ -195,6 +195,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			if (curve == null || curve.IsLibraryReference) return;
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
+				_isMouseDown = true;
 				_dragStartPoint = e.GetPosition(this);
 				var point = TranslateMouseLocation(_dragStartPoint);
 				_dragStartPointIndex = FindClosestPoint(curve.Points, point);
@@ -203,7 +204,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					Dist(point, curve.Points[_dragStartPointIndex]) < DistanceTolerance)
 				{
 					_holdValue = curve;
-					_isMouseDown = true;
 
 					Focus();
 					CaptureMouse();
@@ -277,7 +277,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseUp(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
-			if (Keyboard.Modifiers == ModifierKeys.Control)
+			if (_isMouseDown && ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0) && ((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) != 0))
+			{
+				InvertReverseCurve();
+			}
+			else if (Keyboard.Modifiers == ModifierKeys.Control)
 			{
 				AddPoint(_dragStartPoint);
 			}
@@ -301,6 +305,31 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		#endregion Base Class Overrides
 
 		#region Helpers
+
+		private void InvertReverseCurve()
+		{
+			var points = GetCurveValue().Points.Clone();
+			if ((Keyboard.Modifiers & (ModifierKeys.Alt)) != 0)
+			{
+				//Reverses the Curve
+				for (int i = 0; i < points.Count; i++)
+				{
+					points[i].X = 100 - points[i].X;
+				}
+			}
+			else
+			{
+				//Inverts teh Curve
+				for (int i = 0; i < points.Count; i++)
+				{
+					points[i].Y = 100 - points[i].Y;
+				}
+			}
+
+			points.Sort();
+			_holdValue = new Curve(points);
+			UpdateImage(_holdValue);
+		}
 
 		private void MovePoint(Point mousePosition)
 		{
