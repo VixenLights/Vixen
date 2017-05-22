@@ -11,6 +11,8 @@ using System.Windows.Media.Imaging;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorPicker;
 using NLog;
+using Vixen.Module.Effect;
+using Vixen.Module.EffectEditor;
 using Vixen.Sys;
 using VixenModules.App.ColorGradients;
 using VixenModules.Editor.EffectEditor.Converters;
@@ -331,12 +333,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 			else if (Component is Array)
 			{
-				var effects = (BaseEffect[])Component;
-				IsDiscrete = effects.Any(e => e.HasDiscreteColors);
+				var effects = (IEffectModuleInstance[])Component;
+				IsDiscrete = effects.Cast<BaseEffect>().Any(e => e.HasDiscreteColors);
 				if (IsDiscrete)
 				{
 					ValidColors.Clear();
-					foreach (var baseEffect in effects)
+					foreach (var baseEffect in effects.Cast<BaseEffect>())
 					{
 						ValidColors.AddRange(baseEffect.GetValidColors());
 					}
