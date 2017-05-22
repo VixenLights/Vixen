@@ -1,9 +1,17 @@
-Vixen Release Notes - 3.4 Beta
+Vixen Release Notes - 3.4
+
+Initial release for the 2017 season.
 
 ** Bug
     * [VIX-408] - Scheduler processes a repeated sequence multiple times
     * [VIX-685] - Scheduler runs outside of specified hours
+    * [VIX-951] - Change absolute paths in scheduler "show" to use relative paths.
+    * [VIX-1113] - Pixel #1 indicator missing
+    * [VIX-1127] - Web Server Internal Server Error Windows 10 playing sequence
     * [VIX-1134] - Export Sequence Close Button Mouse Hover
+    * [VIX-1167] - Editing multipe effects of the same type won't allow color gradient change
+    * [VIX-1902] - Mark manager active filter sticks
+    * [VIX-1906] - Assigned layer display
     * [VIX-1909] - Extra Period in Export Sequence Form
     * [VIX-1915] - Scheduler Crashing
     * [VIX-1917] - Command Controller forces all http URLs to lowercase
@@ -13,6 +21,7 @@ Vixen Release Notes - 3.4 Beta
     * [VIX-1940] - The Set Level effect does not properly handle intensity on discrete items declared with a non full brightness color.
     * [VIX-1944] - When I stopping a running show, Vixen exist completely 
     * [VIX-1946] - Web server sequence list returns all the backup sequences intermixed with the proper ones.
+    * [VIX-1951] - Align to nearest visible mark
     * [VIX-1957] - Schedules that run past midnight may not stop as intended
     * [VIX-1958] - The Set Level effect does not properly handle intensity on full color items declared with a non full brightness color.
     * [VIX-1965] - Lights randomly turn off 
@@ -20,9 +29,49 @@ Vixen Release Notes - 3.4 Beta
     * [VIX-1970] - Fix bug in the scheduler that launch commands will hang a show.
     * [VIX-1982] - LipSync Text Convert Fail Form Caption
     * [VIX-1988] - More work needs to be done to allow sequences across multiple shows to be loaded once.
+    * [VIX-2003] - Mask and Fill Setup Form Caption
+    * [VIX-2012] - Curtain incorrect Direction in Timeline when reopening a sequence
+    * [VIX-2013] - Lock file prevents Profile from Opening afte crash
+    * [VIX-2017] - The up next feature in the scheduler status shows items that are not scheduled to play today.
+    * [VIX-2022] - The location render buffer does not handle elements with the same location very well.
+    * [VIX-2030] - Pixel one does not light up in yellow on some preview object.
+    * [VIX-2032] - Profile not showing up on development build 
+    * [VIX-2058] - The setup preview form does not honor the preview on off state when editing a preview.
+    * [VIX-2085] - Gradients added to the library do not save.
+    * [VIX-2096] - Selecting multiple effects of the same type will cause a crash.
+    * [VIX-2097] - New Meteor and Snowflake effects added to a sequence will not load after saving.
+    * [VIX-2098] - Multi editing effects with a list of gradients throws errors because they cannot be properly merged for edit.
+    * [VIX-2104] - Mark Manager crashes on exit when there is no audio.
+    * [VIX-2106] - Alt + Click Direction Curve crashes Vixen
+    * [VIX-2107] - Drag and drop between inline curves leaves source curve in a editing state.
+    * [VIX-2112] - Pinwheel Inlinecurve Scale conversion is wrong 
+    * [VIX-2113] - Shockwave effect Y axis conversion to inlinecurve is incorrect
+    * [VIX-2114] - Check all Effects that use Integer inlinecurve calulation.
+    * [VIX-2117] - Inline gradient and curve editor bugs
+    * [VIX-2118] - Drag Box Filter menu icon has no indication if it's on
+    * [VIX-2122] - When saving sequence vixen shuts down.(3.3u2 build #305)
+    * [VIX-2123] - Delete Elements also deleted any selected Marks
+    * [VIX-2130] - Curtain effect when configured to Close - Open doesn't save correctly
+    * [VIX-2131] - Curtain Effect finishes when swag hits edge
+    * [VIX-2133] - Pinwheel Effect debug config points output to 64 bit folder.
+    * [VIX-2135] - The Balls effect has incorrect debug output targets.
+    * [VIX-2136] - The wipe effect does not properly account for many closely placed elements.
+    * [VIX-2137] - Pulse renderer does not render full color items if included in discrete groups.
+    * [VIX-2138] - fresh install first run failed
+    * [VIX-2139] - Changes to add more contrast to arrows under VIX-2119 don't draw arrows correct directions.
+    * [VIX-2140] - Picture effect throws an error when a newly added effect is switched to a file vs the embedded types.
+    * [VIX-2142] - If the Plasma effect is set to locations on a single string, it will not render and throw an exception.
+    * [VIX-2143] - Picture effect - Peekaboo 90, 180 and 270 displays a mirrored image.
 
 
 ** Improvement
+    * [VIX-715] - Save on Preview Setup
+    * [VIX-953] - Provide File Locking / Sharing for Network Sharing of Profiles
+    * [VIX-1086] - Add description and more info link to Picture effect
+    * [VIX-1103] - Star Smart Object defaults to odd angle.
+    * [VIX-1142] - Add End Time to Effect Time Editor
+    * [VIX-1885] - Alternate effect needs depth option
+    * [VIX-1895] - Bulk exporter
     * [VIX-1908] - Option to remove/ignore punctuation in Lip Sync Text Convert.
     * [VIX-1912] - Clear Text to Convert Text Box After Lip Sync Conversion
     * [VIX-1913] - LipSync Start Offset Move
@@ -31,22 +80,89 @@ Vixen Release Notes - 3.4 Beta
     * [VIX-1939] - LipSync Text Converter Whole Song
     * [VIX-1947] - Mask And Fill Layer mixer needs option to include zero values.
     * [VIX-1979] - Allow multiple instances of Vixen to load different profiles. 
+    * [VIX-1980] - Improve when system and module configuration is saved.
     * [VIX-1986] - Scroll to New Item Created with Add Element/Controller
     * [VIX-1989] - Adjust labels on Scheduler menu
     * [VIX-1991] - Upgrade version of NLog used to a current version.
     * [VIX-1992] - Display Setup performance improvments.
     * [VIX-1994] - Upgrade the version of the web server libraries to the current stable versions.
+    * [VIX-1995] - Investigate and enable the debug build targets for all projects.
+    * [VIX-1996] - Upgrade the project to target .NET 4.6 instead of 4.5.
     * [VIX-1997] - Upgrade the Dock panel suite used in the editor to the latest stable version.
     * [VIX-1998] - Clean up unused references in the projects.
     * [VIX-1999] - Improve logging in the Generic Serial controller 
     * [VIX-2004] - Serialization improvements
     * [VIX-2005] - Core engine performance improvements
+    * [VIX-2018] - Add web interface command to turn OFF all elements at once
+    * [VIX-2019] - Process many elements at once in api/element/on and api/element/off WEB API POST calls
+    * [VIX-2033] - New curve editor control for Effect Editor Pane
+    * [VIX-2034] - Pinwheel Effect: convert level parameters to support curves.
+    * [VIX-2036] - Improve the startup render times in the Editor
+    * [VIX-2041] - Add Curve Support to Garlands Effect
+    * [VIX-2042] - Add Curve Support to Life Effect
+    * [VIX-2043] - Add Curve Support to Meteors Effect
+    * [VIX-2044] - Add Curve Support to Picture Effect
+    * [VIX-2045] - Add Curve Support to Plasma Effect
+    * [VIX-2046] - Add Curve Support to Shockwave Effect
+    * [VIX-2047] - Add Curve Support to Snowflakes Effect
+    * [VIX-2048] - Add Curve Support to Snowstorm Effect
+    * [VIX-2049] - Add Curve Support to Spiral effect
+    * [VIX-2050] - Add Curve Support to Spirograph Effect
+    * [VIX-2051] - Add Curve Support to Text Effect
+    * [VIX-2053] - Add Curve Support to Video Effect
+    * [VIX-2054] - Change order of String Setup properties in Location Based effects
+    * [VIX-2056] - Do we really need String Count and Pixel Count in the String Setup section of the effect editor?
+    * [VIX-2057] - Butterfly Effect: Gradient should be hidden when Color Scheme is Rainbow.
+    * [VIX-2059] - Garlands Effect: Speed/iterations params should immediately follow movement type
+    * [VIX-2063] - Picture Effect: FIle name and Embedded Pictures should be mutually exclusive
+    * [VIX-2064] - Picture Effect: Color Gradient should appear directly below the color effect param
+    * [VIX-2065] - Plasma Effect Color type labels
+    * [VIX-2066] - Shockwave effect: alter effect behavior to reduce start and end param pairs to a single curve
+    * [VIX-2067] - Snowflake effect param labels & Random Max and Min Direction
+    * [VIX-2068] - Snowflake Effect: Move color type param to color section
+    * [VIX-2069] - Snowstorm effect:  Move color type param to color section.
+    * [VIX-2071] - Spiral Effect: Move Vertical Blend param to color section.
+    * [VIX-2072] - Spiral Effect: 3D option should change fade direction with the movement direction.
+    * [VIX-2073] - Text Effect: Change Y Offset Label to Vertical Offset
+    * [VIX-2075] - Text Effect:  Change text mode label
+    * [VIX-2077] - Audio Param Order for all audio effects
+    * [VIX-2078] - Add ability to Invert and Reverse Curve in the Editor Dock
+    * [VIX-2079] - Add /api/element/groupoff to the Web API 
+    * [VIX-2081] - Spiral Effect: When no direction is selected, Iterations should be hidden.
+    * [VIX-2082] - Garlands Effect - Refactor label and descriptions to use the common resource file.
+    * [VIX-2083] - Add modifiers to adjust curve in Curve Form and Effect Editor.
+    * [VIX-2084] - Update sequence grid context menu.
+    * [VIX-2086] - Refactor the new inline curve editor to be more reusable like the gradient editor.
+    * [VIX-2087] - Add Marks to the undo_redo manager.
+    * [VIX-2092] - Meteor & Snowflakes: remove random checkbox and adjust curve default
+    * [VIX-2100] - Mark and Preset Forms - Change Toolstrip images and minor updates.
+    * [VIX-2101] - Improve multi-edit functions. 
+    * [VIX-2102] - The Random Intensity tool tip in the Meteors effect has a misspelling.
+    * [VIX-2103] - Split command controller into seperate RDS and Launcher controllers.
+    * [VIX-2115] - Add a level slider to the new inline curve editor to make adjusting a level easier and similar to the previous level sliders.
+    * [VIX-2119] - Drop down arrows in main menu needs more contrast.
+    * [VIX-2124] - Convert Hue property in the Fire effect to an inlinecurve.
+    * [VIX-2127] - Increase the rotation range on the Spiral effect.
+    * [VIX-2141] - Make allowances to try and copy some layer information between sequences or even profiles.
+    * [VIX-2145] - Enable the multi edit feature on the gradient pairs in the Alternate now that support exists for it.
+    * [VIX-2146] - When the application loads, the previews will most times end up on top of the main application screen.
 
 ** New Feature
+    * [VIX-640] - Invert/reverse in context menu
     * [VIX-843] - Export Default
+    * [VIX-949] - Add depth level to alternate effect
     * [VIX-1132] - Find Patched Elements/Outputs Scroll
-
-Additional changes for the 3.4 beta releases can be tracked at bugs.vixenlights.com by searching for release version of Dev Build.
+    * [VIX-1146] - Request to add Location support to Curtain effect
+    * [VIX-1919] - add extend pulse to end/start to wipe effect
+    * [VIX-2026] - Add Location support to the Pinwheel effect.
+    * [VIX-2035] - Create New Effect editor Gradient Control
+    * [VIX-2061] - Meteors Effect: Move Color Type to Color section
+    * [VIX-2062] - Meteors Effect, explode doesn't seem to start from the center
+    * [VIX-2093] - Create new border effect
+    * [VIX-2099] - Add Find Effects Form to Sequence editor
+    * [VIX-2108] - Create new Circles Effect
+    * [VIX-2110] - Create new Ball Effect
+    * [VIX-2144] - Preview Location Offset Support
 
 
 
