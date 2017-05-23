@@ -47,9 +47,6 @@ namespace VixenModules.Effect.Snowflakes
 		public int Speed { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
-		public Curve SpeedCurve { get; set; }
-
-		[DataMember(EmitDefaultValue = false)]
 		public int FlakeCount { get; set; }
 
 		[DataMember]
@@ -105,7 +102,7 @@ namespace VixenModules.Effect.Snowflakes
 			//Try to save some cycles on every load
 			if (SpeedVariationCurve == null)
 			{
-				int variation = MaxSpeed - MinSpeed;
+				double variation = RandomSpeed ? (MaxSpeed - MinSpeed) : 0.0;
 				double value = PixelEffectBase.ScaleValueToCurve(variation, 60, 1);
 				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 
@@ -116,30 +113,17 @@ namespace VixenModules.Effect.Snowflakes
 					FlakeCount = 0;
 				}
 
-				if (SpeedCurve == null)
-				{
-					value = PixelEffectBase.ScaleValueToCurve(Speed, 60, 1);
-					SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
-					Speed = 0;
-				}
-
 				if (CenterSpeedCurve == null)
 				{
-					double center = (double)(MaxSpeed + MinSpeed) / 2;
+					double center = RandomSpeed ? (double)(MaxSpeed + MinSpeed) / 2 : Speed;
+
 					value = PixelEffectBase.ScaleValueToCurve(center, 60, 1);
 					CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					MinSpeed = 0;
 					MaxSpeed = 0;
+					Speed = 0;
+					RandomSpeed = true;
 				}
-			}
-
-			//Due to the upgrade to a center Speed and Spead Variation there was no need to have the Speedcurve and Random checkbox.
-			//This is to convert any existing effects that didn't use Random Speed.
-			if (!RandomSpeed)
-			{
-				CenterSpeedCurve = SpeedCurve;
-				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
-				RandomSpeed = true;
 			}
 		}
 
