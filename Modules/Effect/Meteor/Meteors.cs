@@ -227,6 +227,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderDisplayName(@"ColorGradients")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
+		[MergableProperty(false)]
 		public List<ColorGradient> Colors
 		{
 			get { return _data.Colors; }
