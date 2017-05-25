@@ -240,7 +240,7 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				else if (((obj2 != null) || (obj3 != null)) && ((obj2 == null) || !obj2.Equals(obj3)))
 				{
 					allEqual = false;
-					return null;
+					return obj2;
 				}
 			}
 
