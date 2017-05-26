@@ -1110,8 +1110,9 @@ namespace VixenModules.App.ColorGradients
 					PointF point1 = new PointF(0, midY);
 					PointF point2 = new PointF(size.Width, midY);
 
-						}
-					using (Graphics subg = Graphics.FromImage(result)) {
+					using (LinearGradientBrush lnbrs = new LinearGradientBrush(point1, point2, Color.Transparent, Color.Transparent))
+					using (Graphics subg = Graphics.FromImage(result))
+					{
 						ColorBlend cb = GetColorBlend(color.ToRGB());
 						lnbrs.InterpolationColors = cb;
 						subg.FillRectangle(lnbrs, 0, startY, size.Width, sliceHeight);
