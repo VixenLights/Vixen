@@ -955,6 +955,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarkManager_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			_audio.Dispose();
 			_executionControl.Stop();
 			timerMarkHit.Dispose();
 			timerPlayback.Dispose();
