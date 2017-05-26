@@ -456,4 +456,7 @@
   <data name="Spacing" xml:space="preserve">
     <value>Adjusts the space between garlands.</value>
   </data>
+  <data name="ReverseDirection" xml:space="preserve">
+    <value>Changes direction of effect.</value>
+  </data>
 </root>

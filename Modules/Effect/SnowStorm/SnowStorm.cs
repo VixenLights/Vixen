@@ -63,15 +63,14 @@ namespace VixenModules.Effect.SnowStorm
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(1)]
-		public int Speed
+		public Curve SpeedCurve
 		{
-			get { return _data.Speed; }
+			get { return _data.SpeedCurve; }
 			set
 			{
-				_data.Speed = value;
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -81,15 +80,14 @@ namespace VixenModules.Effect.SnowStorm
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Count")]
 		[ProviderDescription(@"Count")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
+		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(2)]
-		public int Count
+		public Curve CountCurve
 		{
-			get { return _data.Count; }
+			get { return _data.CountCurve; }
 			set
 			{
-				_data.Count = value;
+				_data.CountCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -99,15 +97,14 @@ namespace VixenModules.Effect.SnowStorm
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Length")]
 		[ProviderDescription(@"Length")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
+		//[NumberRange(1, 20, 1)]
 		[PropertyOrder(3)]
-		public int Length
+		public Curve LengthCurve
 		{
-			get { return _data.Length; }
+			get { return _data.LengthCurve; }
 			set
 			{
-				_data.Length = value;
+				_data.LengthCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -115,8 +112,8 @@ namespace VixenModules.Effect.SnowStorm
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Reverse Direction")]
-		[ProviderDescription(@"Reverse Direction")]
+		[ProviderDisplayName(@"ReverseDirection")]
+		[ProviderDescription(@"ReverseDirection")]
 		[PropertyOrder(5)]
 		public bool ReverseDirection
 		{
@@ -135,8 +132,8 @@ namespace VixenModules.Effect.SnowStorm
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Color Type")]
-		[ProviderDescription(@"Color Type")]
+		[ProviderDisplayName(@"ColorType")]
+		[ProviderDescription(@"ColorType")]
 		[PropertyOrder(0)]
 		public SnowStormColorType ColorType
 		{
@@ -152,7 +149,7 @@ namespace VixenModules.Effect.SnowStorm
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"ColorGradients")]
+		[ProviderDisplayName(@"Color")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
 		public List<ColorGradient> Colors
@@ -183,6 +180,20 @@ namespace VixenModules.Effect.SnowStorm
 				IsDirty = true;
 				OnPropertyChanged();
 			}
+		}
+
+		#endregion
+
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/snowstorm/"; }
 		}
 
 		#endregion
@@ -322,13 +333,15 @@ namespace VixenModules.Effect.SnowStorm
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			int colorcnt = Colors.Count;
-			int count = Convert.ToInt32(BufferWi * BufferHt * Count / 2000) + 1;
-			int tailLength = BufferWi * BufferHt * Length / 2000 + 2;
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			var adjustSpeed = CalculateSpeed(intervalPosFactor);
+			int count = Convert.ToInt32(BufferWi * BufferHt * CalculateCount(intervalPosFactor) / 2000) + 1;
+			int tailLength = BufferWi * BufferHt * CalculateLength(intervalPosFactor) / 2000 + 2;
 			Point xy = new Point();
 			int r;
-			if (frame == 0 || count != _lastSnowstormCount)
+			if (frame == 0)
 			{
-				_lastSnowstormCount = count;
 				_snowstormItems.Clear();
 			}
 			// create snowstorm elements
@@ -344,11 +357,11 @@ namespace VixenModules.Effect.SnowStorm
 					{
 						case SnowStormColorType.Range: //Random two colors are selected from the list for each Snowstorms.
 							ssItem.Hsv =
-								SetRangeColor(HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)),
-									HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100)));
+								SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
+									HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
 							break;
 						case SnowStormColorType.Palette: //All colors are used
-							ssItem.Hsv = HSV.FromRGB(Colors[rand()%colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame)*100)/100));
+							ssItem.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
 							break;
 						case SnowStormColorType.Gradient:
 							ssItem.Color = rand()%colorcnt;
@@ -387,7 +400,7 @@ namespace VixenModules.Effect.SnowStorm
 					xy.Y = rand() % BufferHt;
 					it.Points.Add(xy);
 				}
-				else if (rand() % 20 < Speed)
+				else if (rand() % 20 < adjustSpeed)
 				{
 					SnowstormAdvance(it);
 				}
@@ -407,7 +420,7 @@ namespace VixenModules.Effect.SnowStorm
 					}
 					var hsv = it.Hsv;
 					hsv.V = (float)(1.0 - (double)(sz - pt + it.SsDecay) / tailLength);
-					hsv.V = hsv.V * LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
 					if (it.Points[pt].X >= BufferWi - 1 || it.Points[pt].Y >= BufferHt - 1 || it.Points[pt].X <= 1 || it.Points[pt].Y <= 1)
 					{
 						it.Expired = true; //flags Snowstorms that have reached the end of the grid as expiried.
@@ -437,6 +450,24 @@ namespace VixenModules.Effect.SnowStorm
 					snowStorms++;
 				}
 			}
+		}
+
+		private int CalculateLength(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(LengthCurve.GetValue(intervalPos), 20, 1);
+		}
+
+		private int CalculateCount(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(CountCurve.GetValue(intervalPos), 100, 1);
+		}
+
+		private int CalculateSpeed(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			if (value < 1) value = 1;
+
+			return value;
 		}
 
 		private int rand()

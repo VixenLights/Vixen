@@ -800,6 +800,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Random Intensity.
+        /// </summary>
+        internal static string RandomIntensity {
+            get {
+                return ResourceManager.GetString("RandomIntensity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Random Position.
         /// </summary>
         internal static string RandomPosition {
@@ -818,20 +827,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Random Intensity.
-        /// </summary>
-        internal static string RandomIntensity {
-            get {
-                return ResourceManager.GetString("RandomIntensity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Repeat.
         /// </summary>
         internal static string Repeat {
             get {
                 return ResourceManager.GetString("Repeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverse Direction.
+        /// </summary>
+        internal static string ReverseDirection {
+            get {
+                return ResourceManager.GetString("ReverseDirection", resourceCulture);
             }
         }
         
