@@ -517,11 +517,11 @@ namespace VixenModules.Effect.Meteors
 				{
 					case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
 						m.Hsv =
-							SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100)),
-								HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100)));
+							SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
 						break;
 					case MeteorsColorType.Palette: //All colors are used
-						m.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPos * 100) / 100));
+						m.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
 						break;
 					case MeteorsColorType.Gradient:
 						m.Color = rand() % colorcnt;
@@ -558,7 +558,7 @@ namespace VixenModules.Effect.Meteors
 					hsv.V *= meteor.HsvBrightness;
 					hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
 					//Adjusts the brightness based on the level curve
-					hsv.V = hsv.V * LevelCurve.GetValue(intervalPos * 100) / 100;
+					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
 					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 					{
