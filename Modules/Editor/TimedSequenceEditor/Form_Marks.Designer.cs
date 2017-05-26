@@ -103,7 +103,7 @@
 			// 
 			this.numericUpDownStandardNudge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.numericUpDownStandardNudge.AutoSize = true;
-			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(45, 2);
+			this.numericUpDownStandardNudge.Location = new System.Drawing.Point(54, 6);
 			this.numericUpDownStandardNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownStandardNudge.Maximum = new decimal(new int[] {
             1000,
@@ -119,7 +119,7 @@
 			// numericUpDownSuperNudge
 			// 
 			this.numericUpDownSuperNudge.AutoSize = true;
-			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(90, 2);
+			this.numericUpDownSuperNudge.Location = new System.Drawing.Point(105, 6);
 			this.numericUpDownSuperNudge.Margin = new System.Windows.Forms.Padding(2);
 			this.numericUpDownSuperNudge.Maximum = new decimal(new int[] {
             1000,
@@ -138,10 +138,10 @@
 			this.labelNudge.AutoSize = true;
 			this.labelNudge.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.labelNudge.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.labelNudge.Location = new System.Drawing.Point(4, 8);
+			this.labelNudge.Location = new System.Drawing.Point(5, 8);
 			this.labelNudge.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.labelNudge.Name = "labelNudge";
-			this.labelNudge.Size = new System.Drawing.Size(50, 17);
+			this.labelNudge.Size = new System.Drawing.Size(39, 13);
 			this.labelNudge.TabIndex = 4;
 			this.labelNudge.Text = "Nudge";
 			// 
@@ -186,13 +186,13 @@
             this.toolStripSeparator1,
             this.toolStripMenuItemNudgeSettings});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(203, 114);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(169, 98);
 			// 
 			// toolStripMenuItemBold
 			// 
 			this.toolStripMenuItemBold.Enabled = false;
 			this.toolStripMenuItemBold.Name = "toolStripMenuItemBold";
-			this.toolStripMenuItemBold.Size = new System.Drawing.Size(202, 26);
+			this.toolStripMenuItemBold.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItemBold.Text = "Normal/Bold Line";
 			this.toolStripMenuItemBold.ToolTipText = "Toggles the Selected Mark Collection";
 			this.toolStripMenuItemBold.Click += new System.EventHandler(this.boldToolStripMenuItem_Click);
@@ -201,7 +201,7 @@
 			// 
 			this.toolStripMenuItemDottedSolid.Enabled = false;
 			this.toolStripMenuItemDottedSolid.Name = "toolStripMenuItemDottedSolid";
-			this.toolStripMenuItemDottedSolid.Size = new System.Drawing.Size(202, 26);
+			this.toolStripMenuItemDottedSolid.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItemDottedSolid.Text = "Dotted/Solid Line";
 			this.toolStripMenuItemDottedSolid.ToolTipText = "Toggles the Selected Mark Collection";
 			this.toolStripMenuItemDottedSolid.Click += new System.EventHandler(this.dottedSolidToolStripMenuItem_Click);
@@ -210,7 +210,7 @@
 			// 
 			this.ToolStripMenuItemChangeColor.Enabled = false;
 			this.ToolStripMenuItemChangeColor.Name = "ToolStripMenuItemChangeColor";
-			this.ToolStripMenuItemChangeColor.Size = new System.Drawing.Size(202, 26);
+			this.ToolStripMenuItemChangeColor.Size = new System.Drawing.Size(168, 22);
 			this.ToolStripMenuItemChangeColor.Text = "Change Color";
 			this.ToolStripMenuItemChangeColor.ToolTipText = "Change Mark Collection color";
 			this.ToolStripMenuItemChangeColor.Click += new System.EventHandler(this.changeColorToolStripMenuItem_Click);
@@ -218,12 +218,12 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(199, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
 			// 
 			// toolStripMenuItemNudgeSettings
 			// 
 			this.toolStripMenuItemNudgeSettings.Name = "toolStripMenuItemNudgeSettings";
-			this.toolStripMenuItemNudgeSettings.Size = new System.Drawing.Size(202, 26);
+			this.toolStripMenuItemNudgeSettings.Size = new System.Drawing.Size(168, 22);
 			this.toolStripMenuItemNudgeSettings.Text = "Nudge Settings";
 			this.toolStripMenuItemNudgeSettings.Click += new System.EventHandler(this.toolStripMenuItemNudgeSettings_Click);
 			// 

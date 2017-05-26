@@ -137,7 +137,6 @@
 			this.listViewColors.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.listViewColors.Location = new System.Drawing.Point(0, 25);
 			this.listViewColors.Margin = new System.Windows.Forms.Padding(6);
-			this.listViewColors.MultiSelect = false;
 			this.listViewColors.Name = "listViewColors";
 			this.listViewColors.ShowItemToolTips = true;
 			this.listViewColors.Size = new System.Drawing.Size(594, 368);

@@ -89,6 +89,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl = timelineControl;
 			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
+			toolStripColors.Renderer = new ThemeToolStripRenderer();
+			toolStripCurves.Renderer = new ThemeToolStripRenderer();
+			toolStripGradients.Renderer = new ThemeToolStripRenderer();
 			var t = (int)(48*ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t,t);
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
@@ -96,36 +99,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripGradients.ImageScalingSize = new Size(iconSize, iconSize);
 			toolStripColors.ImageScalingSize = new Size(iconSize, iconSize);
 			toolStripButtonEditColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditColor.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStripButtonEditColor.Image = Tools.GetIcon(Resources.configuration, iconSize);
 
 			toolStripButtonNewColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewColor.Image = Tools.GetIcon(Resources.add, iconSize);
+			toolStripButtonNewColor.Image = Tools.GetIcon(Resources.addItem, iconSize);
 			toolStripButtonDeleteColor.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteColor.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonDeleteColor.Image = Tools.GetIcon(Resources.delete_32, iconSize);
 			toolStripButtonExportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportColors.Image = Tools.GetIcon(Resources.disk, iconSize);
+			toolStripButtonExportColors.Image = Tools.GetIcon(Resources.folder_go, iconSize);
 			toolStripButtonImportColors.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonImportColors.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			toolStripButtonEditCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditCurve.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStripButtonEditCurve.Image = Tools.GetIcon(Resources.configuration, iconSize);
 			toolStripButtonNewCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewCurve.Image = Tools.GetIcon(Resources.add, iconSize);
+			toolStripButtonNewCurve.Image = Tools.GetIcon(Resources.addItem, iconSize);
 			toolStripButtonDeleteCurve.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteCurve.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonDeleteCurve.Image = Tools.GetIcon(Resources.delete_32, iconSize);
 			toolStripButtonExportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportCurves.Image = Tools.GetIcon(Resources.disk, iconSize);
+			toolStripButtonExportCurves.Image = Tools.GetIcon(Resources.folder_go, iconSize);
 			toolStripButtonImportCurves.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonImportCurves.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			toolStripButtonEditGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditGradient.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStripButtonEditGradient.Image = Tools.GetIcon(Resources.configuration, iconSize);
 			toolStripButtonNewGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonNewGradient.Image = Tools.GetIcon(Resources.add, iconSize);
+			toolStripButtonNewGradient.Image = Tools.GetIcon(Resources.addItem, iconSize);
 			toolStripButtonDeleteGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteGradient.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonDeleteGradient.Image = Tools.GetIcon(Resources.delete_32, iconSize);
 			toolStripButtonExportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonExportGradients.Image = Tools.GetIcon(Resources.disk, iconSize);
+			toolStripButtonExportGradients.Image = Tools.GetIcon(Resources.folder_go, iconSize);
 			toolStripButtonImportGradients.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonImportGradients.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
@@ -362,7 +365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonEditColor_Click(object sender, EventArgs e)
 		{
-			if (listViewColors.SelectedItems.Count != 1)
+			if (listViewColors.SelectedItems.Count == 0)
 				return;
 
 			using (ColorPicker cp = new ColorPicker())
@@ -407,12 +410,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Are you sure you want to delete this color?", "Delete color?", true, true);
+			var messageBox = new MessageBoxForm("Are you sure you want to delete the selected color(s)?", "Delete color?", true, true);
 			messageBox.ShowDialog();
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				_colors.Remove((Color)listViewColors.SelectedItems[0].Tag);
+				foreach (ListViewItem item in listViewColors.SelectedItems)
+				{
+					_colors.Remove((Color)item.Tag);
+				}
 			}
 
 			PopulateColors();
@@ -421,7 +427,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewColors_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolStripButtonEditColor.Enabled = toolStripButtonDeleteColor.Enabled = (listViewColors.SelectedItems.Count == 1);
+			toolStripButtonDeleteColor.Enabled = (listViewColors.SelectedItems.Count > 0);
+			toolStripButtonEditColor.Enabled = (listViewColors.SelectedItems.Count == 1);
 		}
 
 		private void listViewColors_MouseDoubleClick(object sender, EventArgs e)
@@ -436,7 +443,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonEditCurve_Click(object sender, EventArgs e)
 		{
-			if (listViewCurves.SelectedItems.Count != 1)
+			if (listViewCurves.SelectedItems.Count == 0)
 				return;
 
 			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
@@ -502,20 +509,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete this library curve, ALL places it is used will be unlinked and will" +
+			var messageBox = new MessageBoxForm("If you delete the Selected library curve(s), ALL places it is used will be unlinked and will" +
 								@" become independent curves. Are you sure you want to continue?", "Delete library curve?", true, true);
 			messageBox.ShowDialog();
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				_curveLibrary.RemoveCurve(listViewCurves.SelectedItems[0].Name);
-
+				foreach (ListViewItem item in listViewCurves.SelectedItems)
+				{
+					_curveLibrary.RemoveCurve(item.Name);
+				}
 			}
 		}
 
 		private void listViewCurves_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolStripButtonEditCurve.Enabled = toolStripButtonDeleteCurve.Enabled = (listViewCurves.SelectedItems.Count == 1);
+			toolStripButtonDeleteCurve.Enabled = (listViewCurves.SelectedItems.Count > 0);
+			toolStripButtonEditCurve.Enabled = (listViewCurves.SelectedItems.Count == 1);
 		}
 
 		private void listViewCurves_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -535,7 +545,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonEditGradient_Click(object sender, EventArgs e)
 		{
-			if (listViewGradients.SelectedItems.Count != 1)
+			if (listViewGradients.SelectedItems.Count == 0)
 				return;
 
 			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
@@ -601,19 +611,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("If you delete this library gradient, ALL places it is used will be unlinked and will" +
+			var messageBox = new MessageBoxForm("If you delete the selected library gradient(s), ALL places it is used will be unlinked and will" +
 								@" become independent gradients. Are you sure you want to continue?", "Delete library gradient?", true, true);
 			messageBox.ShowDialog();
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				_colorGradientLibrary.RemoveColorGradient(listViewGradients.SelectedItems[0].Name);
+				foreach (ListViewItem item in listViewGradients.SelectedItems)
+				{
+					_colorGradientLibrary.RemoveColorGradient(item.Name);
+				}
 			}
 		}
 
 		private void listViewGradients_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolStripButtonEditGradient.Enabled = toolStripButtonDeleteGradient.Enabled = (listViewGradients.SelectedItems.Count == 1);
+			toolStripButtonDeleteGradient.Enabled = (listViewGradients.SelectedItems.Count > 0);
+			toolStripButtonEditGradient.Enabled = (listViewGradients.SelectedItems.Count == 1);
 		}
 
 		private void listViewGradients_MouseDoubleClick(object sender, EventArgs e)

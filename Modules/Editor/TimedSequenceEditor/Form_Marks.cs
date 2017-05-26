@@ -17,7 +17,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_Marks(TimelineControl timelineControl)
 		{
 			InitializeComponent();
-			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.addItem, iconSize);
 			toolStripButtonAddMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete_32, iconSize);
@@ -43,13 +43,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var xml = new XMLProfileSettings();
 			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
 			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20);
-			toolStripMenuItemNudgeSettings.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), !toolStripMenuItemNudgeSettings.Checked);
+			toolStripMenuItemNudgeSettings.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), false);
 			//xml = null;
 
-			if (toolStripMenuItemNudgeSettings.Checked)
-			{
-				panel1.Visible = true;
-			}
+			panel1.Visible = toolStripMenuItemNudgeSettings.Checked;
 			ResizeColumnHeaders();
 		}
 
