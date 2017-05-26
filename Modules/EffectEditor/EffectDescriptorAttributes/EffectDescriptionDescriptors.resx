@@ -448,7 +448,7 @@
     <value>Min Direction in Degrees.</value>
   </data>
   <data name="RandomIntensity" xml:space="preserve">
-    <value>Chnages the Intensity for each SnowFlake.</value>
+    <value>Changes the Intensity for each element of the effect.</value>
   </data>
   <data name="GarlandType" xml:space="preserve">
     <value>Changes the garland type.</value>
