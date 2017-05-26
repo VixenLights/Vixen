@@ -42,6 +42,12 @@ namespace Vixen.Module.Effect
 		[Browsable(false)]
 		public virtual bool IsDirty { get; protected set; }
 
+		[Browsable(false)]
+		public void MarkDirty()
+		{
+			IsDirty = true;
+		}
+
 		private bool IsRendering;
 
 		[Browsable(false)]

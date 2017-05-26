@@ -337,7 +337,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				IsDiscrete = effects.Cast<BaseEffect>().Any(e => e.HasDiscreteColors);
 				if (IsDiscrete)
 				{
-					ValidColors.Clear();
+					ValidColors = new HashSet<Color>();
 					foreach (var baseEffect in effects.Cast<BaseEffect>())
 					{
 						ValidColors.AddRange(baseEffect.GetValidColors());

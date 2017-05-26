@@ -242,7 +242,6 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"TextColors")]
 		[ProviderDescription(@"Color")]
-		[MergableProperty(false)]
 		[PropertyOrder(0)]
 		public List<ColorGradient> Colors
 		{
