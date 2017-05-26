@@ -42,7 +42,7 @@ namespace VixenModules.App.Curves
 			this.yLabel = new System.Windows.Forms.Label();
 			this.xLabel = new System.Windows.Forms.Label();
 			this.grpCurve = new System.Windows.Forms.GroupBox();
-			this.valueUpDownDrawCurve = new Common.Controls.ControlsEx.ValueControls.ValueUpDown();
+			this.textBoxThreshold = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnDraw = new System.Windows.Forms.Button();
 			this.btnUpdateCoordinates = new System.Windows.Forms.Button();
@@ -219,7 +219,7 @@ namespace VixenModules.App.Curves
 			// yLabel
 			// 
 			this.yLabel.AutoSize = true;
-			this.yLabel.Location = new System.Drawing.Point(378, 57);
+			this.yLabel.Location = new System.Drawing.Point(434, 64);
 			this.yLabel.Name = "yLabel";
 			this.yLabel.Size = new System.Drawing.Size(17, 15);
 			this.yLabel.TabIndex = 6;
@@ -228,7 +228,7 @@ namespace VixenModules.App.Curves
 			// xLabel
 			// 
 			this.xLabel.AutoSize = true;
-			this.xLabel.Location = new System.Drawing.Point(377, 29);
+			this.xLabel.Location = new System.Drawing.Point(434, 30);
 			this.xLabel.Name = "xLabel";
 			this.xLabel.Size = new System.Drawing.Size(17, 15);
 			this.xLabel.TabIndex = 5;
@@ -236,7 +236,7 @@ namespace VixenModules.App.Curves
 			// 
 			// grpCurve
 			// 
-			this.grpCurve.Controls.Add(this.valueUpDownDrawCurve);
+			this.grpCurve.Controls.Add(this.textBoxThreshold);
 			this.grpCurve.Controls.Add(this.label1);
 			this.grpCurve.Controls.Add(this.btnDraw);
 			this.grpCurve.Controls.Add(this.btnUpdateCoordinates);
@@ -250,29 +250,28 @@ namespace VixenModules.App.Curves
 			this.grpCurve.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpCurve.Location = new System.Drawing.Point(13, 497);
 			this.grpCurve.Name = "grpCurve";
-			this.grpCurve.Size = new System.Drawing.Size(551, 98);
+			this.grpCurve.Size = new System.Drawing.Size(549, 99);
 			this.grpCurve.TabIndex = 9;
 			this.grpCurve.TabStop = false;
 			this.grpCurve.Text = "Curve";
 			this.grpCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
-			// valueUpDownDrawCurve
+			// textBoxThreshold
 			// 
-			this.valueUpDownDrawCurve.Location = new System.Drawing.Point(176, 69);
-			this.valueUpDownDrawCurve.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-			this.valueUpDownDrawCurve.Maximum = 10;
-			this.valueUpDownDrawCurve.Minimum = 2;
-			this.valueUpDownDrawCurve.Name = "valueUpDownDrawCurve";
-			this.valueUpDownDrawCurve.Size = new System.Drawing.Size(63, 25);
-			this.valueUpDownDrawCurve.TabIndex = 18;
-			this.valueUpDownDrawCurve.Text = "valueUpDown1";
-			this.toolTip.SetToolTip(this.valueUpDownDrawCurve, "Min distance to create Curve point");
-			this.valueUpDownDrawCurve.Value = 5;
+			this.textBoxThreshold.Location = new System.Drawing.Point(267, 61);
+			this.textBoxThreshold.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+			this.textBoxThreshold.Name = "textBoxThreshold";
+			this.textBoxThreshold.Size = new System.Drawing.Size(36, 23);
+			this.textBoxThreshold.TabIndex = 18;
+			this.textBoxThreshold.Text = "5";
+			this.textBoxThreshold.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.textBoxThreshold.TextChanged += new System.EventHandler(this.textBoxThreshold_TextChanged);
+			this.textBoxThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxThreshold_KeyPress);
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(163, 52);
+			this.label1.Location = new System.Drawing.Point(162, 64);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(90, 15);
 			this.label1.TabIndex = 17;
@@ -288,7 +287,7 @@ namespace VixenModules.App.Curves
 			this.btnDraw.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnDraw.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnDraw.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnDraw.Location = new System.Drawing.Point(159, 20);
+			this.btnDraw.Location = new System.Drawing.Point(186, 20);
 			this.btnDraw.Name = "btnDraw";
 			this.btnDraw.Size = new System.Drawing.Size(99, 29);
 			this.btnDraw.TabIndex = 16;
@@ -308,7 +307,7 @@ namespace VixenModules.App.Curves
 			this.btnUpdateCoordinates.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnUpdateCoordinates.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnUpdateCoordinates.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnUpdateCoordinates.Location = new System.Drawing.Point(288, 50);
+			this.btnUpdateCoordinates.Location = new System.Drawing.Point(345, 57);
 			this.btnUpdateCoordinates.Name = "btnUpdateCoordinates";
 			this.btnUpdateCoordinates.Size = new System.Drawing.Size(79, 29);
 			this.btnUpdateCoordinates.TabIndex = 15;
@@ -321,7 +320,7 @@ namespace VixenModules.App.Curves
 			// lblSelectedPoint
 			// 
 			this.lblSelectedPoint.AutoSize = true;
-			this.lblSelectedPoint.Location = new System.Drawing.Point(280, 25);
+			this.lblSelectedPoint.Location = new System.Drawing.Point(343, 27);
 			this.lblSelectedPoint.Name = "lblSelectedPoint";
 			this.lblSelectedPoint.Size = new System.Drawing.Size(82, 15);
 			this.lblSelectedPoint.TabIndex = 14;
@@ -334,9 +333,9 @@ namespace VixenModules.App.Curves
 			this.txtYValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtYValue.Enabled = false;
 			this.txtYValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtYValue.Location = new System.Drawing.Point(405, 57);
+			this.txtYValue.Location = new System.Drawing.Point(467, 62);
 			this.txtYValue.Name = "txtYValue";
-			this.txtYValue.Size = new System.Drawing.Size(137, 23);
+			this.txtYValue.Size = new System.Drawing.Size(62, 23);
 			this.txtYValue.TabIndex = 13;
 			// 
 			// txtXValue
@@ -346,9 +345,9 @@ namespace VixenModules.App.Curves
 			this.txtXValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtXValue.Enabled = false;
 			this.txtXValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.txtXValue.Location = new System.Drawing.Point(405, 22);
+			this.txtXValue.Location = new System.Drawing.Point(467, 25);
 			this.txtXValue.Name = "txtXValue";
-			this.txtXValue.Size = new System.Drawing.Size(137, 23);
+			this.txtXValue.Size = new System.Drawing.Size(62, 23);
 			this.txtXValue.TabIndex = 12;
 			// 
 			// btnInvert
@@ -441,7 +440,7 @@ namespace VixenModules.App.Curves
 			this.DoubleBuffered = true;
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MinimumSize = new System.Drawing.Size(591, 786);
+			this.MinimumSize = new System.Drawing.Size(591, 784);
 			this.Name = "CurveEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Curve Editor";
@@ -478,7 +477,7 @@ namespace VixenModules.App.Curves
 		private System.Windows.Forms.Button btnUpdateCoordinates;
 		private System.Windows.Forms.Button btnDraw;
 		private System.Windows.Forms.ToolTip toolTip;
-		private Common.Controls.ControlsEx.ValueControls.ValueUpDown valueUpDownDrawCurve;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TextBox textBoxThreshold;
 	}
 }

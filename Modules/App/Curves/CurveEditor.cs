@@ -28,6 +28,8 @@ namespace VixenModules.App.Curves
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 
+			textBoxThreshold.MaxLength = 2;
+
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = ThemeColorTable.GroupBoxBorderColor;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.DashOff = 4;
@@ -134,7 +136,7 @@ namespace VixenModules.App.Curves
 						newY = 0;
 					}
 
-					if (_tempX < newX - valueUpDownDrawCurve.Value)
+					if (_tempX < newX - Convert.ToInt16(textBoxThreshold.Text))
 					{
 						if (newX >= 0)
 							pointList.Insert(0, newX, newY);
@@ -172,7 +174,7 @@ namespace VixenModules.App.Curves
 					pointList.Clear();
 					pointList.Add(points);
 					zedGraphControl.Invalidate();
-					txtYValue.Text = newY.ToString();
+					txtYValue.Text = newY.ToString("0.####");
 					txtXValue.Text = "";
 				}
 				else
@@ -235,8 +237,8 @@ namespace VixenModules.App.Curves
 
 			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && !ModifierKeys.HasFlag(Keys.Shift))
 			{
-				txtXValue.Text = sender.DragEditingPair.X.ToString();
-				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Text = sender.DragEditingPair.X.ToString("0.####");
+				txtYValue.Text = sender.DragEditingPair.Y.ToString("0.####");
 				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
 			}
 			// actually does nothing, just haven't changed the event handler definition
@@ -298,8 +300,8 @@ namespace VixenModules.App.Curves
 
 			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null && !ModifierKeys.HasFlag(Keys.Shift))
 			{
-				txtXValue.Text = sender.DragEditingPair.X.ToString();
-				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Text = sender.DragEditingPair.X.ToString("0.####");
+				txtYValue.Text = sender.DragEditingPair.Y.ToString("0.####");
 				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
 			}
 
@@ -533,6 +535,20 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 			_tempX = 0;
 			_drawCurve = true;
+		}
+
+		private void textBoxThreshold_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+		}
+
+		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
+		{
+			if (Convert.ToInt16(textBoxThreshold.Text) > 10)
+			{
+				textBoxThreshold.Text = "10";
+				toolTip.Show("Draw Threshold has a maximun value of 10", textBoxThreshold, 0, 30, 3000);
+			}
 		}
 	}
 }
