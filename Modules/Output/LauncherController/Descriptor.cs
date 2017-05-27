@@ -34,7 +34,7 @@ namespace VixenModules.Output.LauncherController
 
 		public override string TypeName
 		{
-			get { return "Launcher Controller"; }
+			get { return "Launcher"; }
 		}
 
 		public override string Version
