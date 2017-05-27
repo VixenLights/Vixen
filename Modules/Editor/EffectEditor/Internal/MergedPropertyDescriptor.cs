@@ -24,6 +24,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using Vixen.Module.Effect;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
@@ -234,23 +235,25 @@ namespace VixenModules.Editor.EffectEditor.Internal
 					if (!this.collection.MergeCollection((ICollection) obj3))
 					{
 						allEqual = false;
-						return null;
+						return obj2;
 					}
 				}
 				else if (((obj2 != null) || (obj3 != null)) && ((obj2 == null) || !obj2.Equals(obj3)))
 				{
 					allEqual = false;
-					return null;
+					return obj2;
 				}
 			}
 
 			if ((allEqual && (this.collection != null)) && (this.collection.Count == 0))
 				return null;
 
-			if (this.collection == null)
-				return obj2;
+			return obj2;
 
-			return this.collection;
+			//if (this.collection == null)
+			//	return obj2;
+
+			//return this.collection;
 		}
 
 		public object[] GetValues(Array components)
@@ -288,6 +291,15 @@ namespace VixenModules.Editor.EffectEditor.Internal
 						list.Clear();
 						foreach (object obj2 in array)
 							list.Add(obj2);
+						//This is a bit wonky. Our collection types are unable to bubble internal changes within
+						//them up to the the effect level to set the dirtly flag and they won't render.
+						//Hopefully this can be better addressed in the future and this hack can be removed.
+						var instance = a.GetValue(i) as IEffectModuleInstance;
+						if (instance != null)
+						{
+							instance.MarkDirty();
+						}
+						//End hack
 					}
 				}
 			}

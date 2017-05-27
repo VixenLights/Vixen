@@ -646,20 +646,39 @@ namespace VixenModules.Editor.EffectEditor
 			if (!IsCollection || IsReadOnly) return;
 			//TODO Implement some flavor of generic equals on the collection as some point
 			var collectionValue = (IList)GetValue();
+			var oldValue = CloneValues();
 			if (collectionValue != null)
 			{
-				var oldValue = CreateList(PropertyType, collectionValue);
-				if (oldValue != null && oldValue.Count-1 >= index && oldValue[index].Equals(value))
+				
+				if (collectionValue[index].Equals(value))
 				{
 					//old and new values are the same
 					return;
 				}
+
 				collectionValue[index] = value;
 				SetValueCore(collectionValue);
-				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnValueChanged(oldValue, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}
 
+		}
+
+		private object[] CloneValues()
+		{
+			if (GetValues() == null)
+			{
+				return new object[] { CreateList(PropertyType, GetValue() as IList)};
+			}
+
+			var multiValues = GetValues();
+			var cloneValues = new object[multiValues.Length];
+			for (int i = 0; i < multiValues.Length; i++)
+			{
+				cloneValues[i] = CreateList(PropertyType, multiValues[i] as IList);
+			}
+
+			return cloneValues;
 		}
 
 		internal void AddCollectionValue(object value)
@@ -669,10 +688,10 @@ namespace VixenModules.Editor.EffectEditor
 			var collectionValue = (IList)GetValue();
 			if (collectionValue != null)
 			{
-				var oldValue = CreateList(PropertyType, collectionValue);
+				var oldValue = CloneValues();
 				collectionValue.Add(value);
 				SetValueCore(collectionValue);
-				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnValueChanged(oldValue, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}
 
@@ -684,10 +703,10 @@ namespace VixenModules.Editor.EffectEditor
 			var collectionValue = (IList)GetValue();
 			if (collectionValue != null)
 			{
-				var oldValue = CreateList(PropertyType, collectionValue);
+				var oldValue = CloneValues();
 				collectionValue.RemoveAt(index);
 				SetValueCore(collectionValue);
-				OnValueChanged(new object[] { oldValue }, GetValue());
+				OnValueChanged(oldValue, GetValue());
 				OnPropertyChanged("PropertyValue");
 			}
 
@@ -696,9 +715,12 @@ namespace VixenModules.Editor.EffectEditor
 		private IList CreateList(Type t, IList values)
 		{
 			var instance = (IList)Activator.CreateInstance(t);
-			foreach (var value in values)
+			if (values != null)
 			{
-				instance.Add(value);
+				foreach (var value in values)
+				{
+					instance.Add(value);
+				}
 			}
 			return instance;
 		}
