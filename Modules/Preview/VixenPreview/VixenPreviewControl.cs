@@ -349,6 +349,8 @@ namespace VixenModules.Preview.VixenPreview
 				if (_background == null)
 				{
 					DefaultBackground = true;
+					if (Width == 0 || Height == 0)
+						Width = Height = 1;
 					_background = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
 
 					Graphics gfx = Graphics.FromImage(_background);

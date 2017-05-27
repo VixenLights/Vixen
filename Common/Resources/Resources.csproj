@@ -278,7 +278,12 @@
     <None Include="Resources\Reset.png" />
     <Content Include="layers.png" />
     <None Include="Resources\layers.bmp" />
-    <None Include="Resources\LibraryLink.png" />
+    <None Include="Resources\LibraryLink.png" />    <None Include="Resources\alignStartMark.png" />
+    <None Include="Resources\alignEndMark.png" />
+    <None Include="Resources\alignBothMark.png" />
+    <None Include="Resources\matchDuration.png" />
+    <None Include="Resources\alignStartEnd.png" />
+    <None Include="Resources\distribute.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />

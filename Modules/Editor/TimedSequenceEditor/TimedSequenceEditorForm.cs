@@ -2254,7 +2254,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					contextMenuItemAlignment.ToolTipText = @"Disabled, maximum selected effects per row is 32.";
 				}
 
-				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times (shift)")
+				ToolStripMenuItem contextMenuItemAlignStart = new ToolStripMenuItem("Align Start Times")
 				{
 					ToolTipText = @"Holding shift will align the start times, while holding duration.",
 					Image = Resources.alignStart
@@ -2262,8 +2262,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignStart.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+				contextMenuItemAlignStart.ShortcutKeyDisplayString = @"(Shift)+S";
 
-				ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times (shift)")
+				ToolStripMenuItem contextMenuItemAlignEnd = new ToolStripMenuItem("Align End Times")
 				{
 					ToolTipText = @"Holding shift will align the end times, while holding duration.",
 					Image = Resources.alignEnd
@@ -2271,41 +2272,49 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignEnd.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+				contextMenuItemAlignEnd.ShortcutKeyDisplayString = @"(Shift)+E";
 
 				ToolStripMenuItem contextMenuItemAlignBoth = new ToolStripMenuItem("Align Both Times") { Image = Resources.alignBoth };
 				contextMenuItemAlignBoth.Click +=
 					(mySender, myE) => TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
+				contextMenuItemAlignBoth.ShortcutKeyDisplayString = @"B";
 
-				ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration (shift)")
+				ToolStripMenuItem contextMenuItemMatchDuration = new ToolStripMenuItem("Match Duration")
 				{
 					ToolTipText =
-						@"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted."
+						@"Holding shift will hold the effects end time and adjust the start time, by default the end time is adjusted.",
+					Image = Resources.matchDuration
 				};
 				contextMenuItemMatchDuration.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementDurations(TimelineControl.SelectedElements, element, ModifierKeys == Keys.Shift);
+				contextMenuItemMatchDuration.ShortcutKeyDisplayString = @"(Shift)";
 
-				ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End (shift)")
+				ToolStripMenuItem contextMenuItemAlignStartToEnd = new ToolStripMenuItem("Align Start to End")
 				{
 					ToolTipText =
-						@"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved."
+						@"Holding shift will hold the effects end time and only adjust the start time, by default the entire effect is moved.",
+					Image = Resources.alignStartEnd
 				};
 				contextMenuItemAlignStartToEnd.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementStartToEndTimes(TimelineControl.SelectedElements, element,
 							ModifierKeys == Keys.Shift);
+				contextMenuItemAlignStartToEnd.ShortcutKeyDisplayString = @"(Shift)";
 
-				ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start (shift)")
+				ToolStripMenuItem contextMenuItemAlignEndToStart = new ToolStripMenuItem("Align End to Start")
 				{
 					ToolTipText =
-						@"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved."
+						@"Holding shift will hold the effects start time and only adjust the end time, by default the entire effect is moved.",
+					Image = Resources.alignStartEnd
 				};
 				contextMenuItemAlignEndToStart.Click +=
 					(mySender, myE) =>
 						TimelineControl.grid.AlignElementEndToStartTime(TimelineControl.SelectedElements, element,
 							ModifierKeys == Keys.Shift);
+				contextMenuItemAlignEndToStart.ShortcutKeyDisplayString = @"(Shift)";
 
-				ToolStripMenuItem contextMenuItemDistDialog = new ToolStripMenuItem("Distribute Effects");
+				ToolStripMenuItem contextMenuItemDistDialog = new ToolStripMenuItem("Distribute Effects") { Image = Resources.distribute };
 				contextMenuItemDistDialog.Click += (mySender, myE) => DistributeSelectedEffects();
 
 				ToolStripMenuItem contextMenuItemAlignCenter = new ToolStripMenuItem("Align Centerpoints") { Image = Resources.alignCenter };
@@ -2315,18 +2324,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItem contextMenuItemDistributeEqually = new ToolStripMenuItem("Distribute Equally")
 				{
 					ToolTipText =
-						@"This will stair step the selected elements, starting with the element that has the earlier start mouseLocation on the time line."
+						@"This will stair step the selected elements, starting with the element that has the earlier start mouseLocation on the time line.",
+					Image = Resources.distribute
 				};
 				contextMenuItemDistributeEqually.Click += (mySender, myE) => DistributeSelectedEffectsEqually();
 
-				ToolStripMenuItem contextMenuItemAlignStartToMark = new ToolStripMenuItem("Align Start to nearest mark");
+				ToolStripMenuItem contextMenuItemAlignStartToMark = new ToolStripMenuItem("Align Start to nearest mark") { Image = Resources.alignStartMark };
 				contextMenuItemAlignStartToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("Start");
+				contextMenuItemAlignStartToMark.ShortcutKeyDisplayString = @"Ctrl+Shift+S";
 
-				ToolStripMenuItem contextMenuItemAlignEndToMark = new ToolStripMenuItem("Align End to nearest mark");
+				ToolStripMenuItem contextMenuItemAlignEndToMark = new ToolStripMenuItem("Align End to nearest mark") {Image = Resources.alignEndMark};
 				contextMenuItemAlignEndToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("End");
+				contextMenuItemAlignEndToMark.ShortcutKeyDisplayString = @"Ctrl+Shift+E";
 
-				ToolStripMenuItem contextMenuItemAlignBothToMark = new ToolStripMenuItem("Align Both to nearest mark");
+				ToolStripMenuItem contextMenuItemAlignBothToMark = new ToolStripMenuItem("Align Both to nearest mark") { Image = Resources.alignBothMark };
 				contextMenuItemAlignBothToMark.Click += (mySender, myE) => AlignEffectsToNearestMarks("Both");
+				contextMenuItemAlignBothToMark.ShortcutKeyDisplayString = @"Ctrl+Shift+B";
 
 				_contextMenuStrip.Items.Add(contextMenuItemAlignment);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStart);
@@ -2341,6 +2354,59 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignStartToMark);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEndToMark);
 				contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBothToMark);
+
+				if (TimelineControl.SelectedElements.Count() > 1 || (TimelineControl.SelectedElements.Any() && !element.Selected))
+				{
+					contextMenuItemDistributeEqually.Enabled = true;
+					contextMenuItemDistDialog.Enabled = true;
+					contextMenuItemAlignStart.Enabled = true;
+					contextMenuItemAlignEnd.Enabled = true;
+					contextMenuItemAlignBoth.Enabled = true;
+					contextMenuItemAlignCenter.Enabled = true;
+					contextMenuItemMatchDuration.Enabled = true;
+					contextMenuItemAlignEndToStart.Enabled = true;
+					contextMenuItemAlignStartToEnd.Enabled = true;
+					contextMenuItemAlignment.Enabled = true;
+					contextMenuItemAlignment.ToolTipText = string.Empty;
+				}
+				else
+				{
+					contextMenuItemDistributeEqually.Enabled = false;
+					contextMenuItemDistDialog.Enabled = false;
+					contextMenuItemAlignStart.Enabled = false;
+					contextMenuItemAlignEnd.Enabled = false;
+					contextMenuItemAlignBoth.Enabled = false;
+					contextMenuItemAlignCenter.Enabled = false;
+					contextMenuItemMatchDuration.Enabled = false;
+					contextMenuItemAlignEndToStart.Enabled = false;
+					contextMenuItemAlignStartToEnd.Enabled = false;
+					contextMenuItemAlignment.Enabled = false;
+					if (TimelineControl.SelectedElements.Count() == 1)
+					{
+						contextMenuItemAlignment.ToolTipText = @"Select more then one effect or ensure you have Marks added to enable the Alignment feature.";
+					}
+					else
+					{
+						contextMenuItemAlignment.ToolTipText = @"Select more then one effect to enable the Alignment feature.";
+					}
+				}
+
+				contextMenuItemAlignStartToMark.Enabled = false;
+				contextMenuItemAlignEndToMark.Enabled = false;
+				contextMenuItemAlignBothToMark.Enabled = false;
+
+				foreach (MarkCollection mc in _sequence.MarkCollections)
+				{
+					if (mc.MarkCount > 0)
+					{
+						contextMenuItemAlignStartToMark.Enabled = true;
+						contextMenuItemAlignEndToMark.Enabled = true;
+						contextMenuItemAlignBothToMark.Enabled = true;
+						contextMenuItemAlignment.Enabled = true;
+						contextMenuItemAlignment.ToolTipText = string.Empty;
+						break;
+					}
+				}
 
 				if (tse != null)
 				{
