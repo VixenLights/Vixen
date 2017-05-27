@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Resources.Properties;
@@ -8,11 +9,16 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
 {
 	public partial class CurveEditor : BaseForm
 	{
+		private double _previousCurveYLocation;
+		private double _tempX;
+		private bool _drawCurve;
+
 		public CurveEditor()
 		{
 			InitializeComponent();
@@ -21,6 +27,8 @@ namespace VixenModules.App.Curves
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
+
+			textBoxThreshold.MaxLength = 2;
 
 			zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
 			zedGraphControl.GraphPane.XAxis.MajorGrid.Color = ThemeColorTable.GroupBoxBorderColor;
@@ -98,9 +106,117 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_PreMouseMoveEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			double newX, newY;
+			if (e.Button == MouseButtons.Left && _drawCurve)
+			{
+				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
+				if (zedGraphControl.MasterPane.FindPane(e.Location) != null)
+				{
+					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+					if (pointList.Count == 0 && _tempX < newX - 1)
+					{
+						pointList.Insert(0, 0, newY);
+					}
+					//Verify the point is in the usable bounds.
+					if (newX > 100)
+					{
+						newX = 100;
+					}
+					else if (newX < 0)
+					{
+						newX = 0;
+					}
+					if (newY > 100)
+					{
+						newY = 100;
+					}
+					else if (newY < 0)
+					{
+						newY = 0;
+					}
+
+					if (_tempX < newX - Convert.ToInt16(textBoxThreshold.Text))
+					{
+						if (newX >= 0)
+							pointList.Insert(0, newX, newY);
+						pointList.Sort();
+						zedGraphControl.Invalidate();
+						_tempX = newX;
+					}
+				}
+			}
+
 			if (zedGraphControl.IsEditing) {
 				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
 				pointList.Sort();
+				return false;
+			}
+
+			//Used to move Curve higher or lower on the grid or when shift is pressed will flatten curve and then move higher or lower on the grid.
+			if (e.Button == MouseButtons.Left && !_drawCurve)
+			{
+				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+				if (ModifierKeys.HasFlag(Keys.Shift))
+				{
+					//Verify the point is in the usable bounds. only care about the Y axis.
+					if (newY > 100)
+					{
+						newY = 100;
+					}
+					else if (newY < 0)
+					{
+						newY = 0;
+					}
+					var points = new PointPairList(new[] {0.0, 100.0}, new[] {newY, newY});
+
+					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+					pointList.Clear();
+					pointList.Add(points);
+					zedGraphControl.Invalidate();
+					txtYValue.Text = newY.ToString("0.####");
+					txtXValue.Text = "";
+				}
+				else
+				{
+					if (ModifierKeys == Keys.None)
+					{
+						//Move curve higher or lower on the Y axis.
+						bool stopUpdating = false;
+
+						PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+
+						//Check if any curve point extends past the Y axis.
+						foreach (var points in pointList)
+						{
+							if ((points.Y >= 100 && newY > _previousCurveYLocation) || (points.Y <= 0 && newY < _previousCurveYLocation))
+							{
+								double adjustedPoint = 0;
+								if (points.Y > 100)
+									adjustedPoint = points.Y - 100;
+								if (points.Y < 0)
+									adjustedPoint = points.Y;
+								//ensures the curve remains bound by the upper and lower limits.
+								foreach (var updatePoints in pointList)
+								{
+									updatePoints.Y = updatePoints.Y - adjustedPoint;
+								}
+								stopUpdating = true;
+								break;
+							}
+						}
+						if (!stopUpdating)
+						{
+							//New curve location
+							foreach (var points in pointList)
+							{
+								points.Y = points.Y + (newY - _previousCurveYLocation);
+							}
+						}
+						_previousCurveYLocation = newY;
+						zedGraphControl.Invalidate();
+					}
+				}
 			}
 			return false;
 		}
@@ -119,10 +235,10 @@ namespace VixenModules.App.Curves
 			if (sender.DragEditingPair.Y > 100)
 				sender.DragEditingPair.Y = 100;
 
-			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left)
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && !ModifierKeys.HasFlag(Keys.Shift))
 			{
-				txtXValue.Text = sender.DragEditingPair.X.ToString();
-				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Text = sender.DragEditingPair.X.ToString("0.####");
+				txtYValue.Text = sender.DragEditingPair.Y.ToString("0.####");
 				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
 			}
 			// actually does nothing, just haven't changed the event handler definition
@@ -138,12 +254,13 @@ namespace VixenModules.App.Curves
 			int dragPointIndex;
 
 			// if CTRL is pressed, and we're not near a specific point, add a new point
+
+			double newX, newY;
 			if (Control.ModifierKeys.HasFlag(Keys.Control) &&
 			    !zedGraphControl.GraphPane.FindNearestPoint(e.Location, out curve, out dragPointIndex)) {
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null) {
 					PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
-					double newX, newY;
 					zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
 					//Verify the point is in the usable bounds.
 					if (newX > 100)
@@ -178,10 +295,13 @@ namespace VixenModules.App.Curves
 				}
 			}
 
-			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null)
+			zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+			_previousCurveYLocation = newY;
+
+			if (!Curve.IsLibraryReference && e.Button == MouseButtons.Left && sender.DragEditingPair != null && !ModifierKeys.HasFlag(Keys.Shift))
 			{
-				txtXValue.Text = sender.DragEditingPair.X.ToString();
-				txtYValue.Text = sender.DragEditingPair.Y.ToString();
+				txtXValue.Text = sender.DragEditingPair.X.ToString("0.####");
+				txtYValue.Text = sender.DragEditingPair.Y.ToString("0.####");
 				txtXValue.Enabled = txtYValue.Enabled = btnUpdateCoordinates.Enabled = true;
 			}
 
@@ -190,6 +310,17 @@ namespace VixenModules.App.Curves
 
 		private bool zedGraphControl_MouseUpEvent(ZedGraphControl sender, MouseEventArgs e)
 		{
+			if (_drawCurve)
+			{
+				double newX, newY;
+				zedGraphControl.GraphPane.ReverseTransform(e.Location, out newX, out newY);
+				PointPairList pointList = zedGraphControl.GraphPane.CurveList[0].Points as PointPairList;
+				pointList.Insert(0, 100, newY);
+				pointList.Sort();
+				zedGraphControl.Invalidate();
+				_drawCurve = false;
+			}
+			
 			return false;
 		}
 
@@ -394,6 +525,30 @@ namespace VixenModules.App.Curves
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
+		}
+
+		private void btnDraw_Click(object sender, EventArgs e)
+		{
+			toolTip.ToolTipTitle = "Draw Curve";
+			toolTip.Show("Draw curve from left side to right side of grid using the left mouse button", btnDraw, -100, -400, 4000);
+			zedGraphControl.GraphPane.CurveList[0].Clear();
+			zedGraphControl.Invalidate();
+			_tempX = 0;
+			_drawCurve = true;
+		}
+
+		private void textBoxThreshold_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+		}
+
+		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
+		{
+			if (Convert.ToInt16(textBoxThreshold.Text) > 10)
+			{
+				textBoxThreshold.Text = "10";
+				toolTip.Show("Draw Threshold has a maximun value of 10", textBoxThreshold, 0, 30, 3000);
+			}
 		}
 	}
 }
