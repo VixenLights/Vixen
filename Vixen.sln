@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -389,6 +389,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plasma", "Modules\Effect\Plasma\Plasma.csproj", "{F250EE2E-F556-4207-9485-E52F30C42597}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shockwave", "Modules\Effect\Shockwave\Shockwave.csproj", "{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherController", "Modules\Output\LauncherController\LauncherController.csproj", "{52FE5E03-F65F-4F61-915F-740BAE28C395}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1837,6 +1839,20 @@ Global
 		{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}.Release|x64.Build.0 = Release|x64
 		{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}.Release|x86.ActiveCfg = Release|x86
 		{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522}.Release|x86.Build.0 = Release|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|x64.ActiveCfg = Debug|x64
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|x64.Build.0 = Debug|x64
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|x86.ActiveCfg = Debug|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Debug|x86.Build.0 = Debug|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|Any CPU.ActiveCfg = Release|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|Mixed Platforms.Build.0 = Release|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x64.ActiveCfg = Release|x64
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x64.Build.0 = Release|x64
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x86.ActiveCfg = Release|x86
+		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1966,6 +1982,7 @@ Global
 		{BE0266F4-6100-4457-91EC-4BE370DC5C5E} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{F250EE2E-F556-4207-9485-E52F30C42597} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{52FE5E03-F65F-4F61-915F-740BAE28C395} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
