@@ -34,7 +34,7 @@ namespace VixenModules.Output.CommandController
 
 		public override string TypeName
 		{
-			get { return "Command Controller"; }
+			get { return "RDS"; }
 		}
 
 		public override string Version
