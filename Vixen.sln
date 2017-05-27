@@ -239,7 +239,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastPixel", "Common\FastPix
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS", "Modules\Effect\RDS\RDS.csproj", "{D9A2A1D3-C76E-4756-B16D-852C48FF6A83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandController", "Modules\Output\RDSController\CommandController.csproj", "{9B9214AF-B94B-43DD-8FEB-13DEBF50123F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS", "Modules\Output\RDSController\RDS.csproj", "{9B9214AF-B94B-43DD-8FEB-13DEBF50123F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenHelp", "Common\Help\VixenHelp.csproj", "{BD12BFFC-7039-4C79-ABA0-51F99773A916}"
 EndProject
