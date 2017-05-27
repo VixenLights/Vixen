@@ -48,7 +48,6 @@ namespace VixenModules.Output.CommandController
 				cboPortName.SelectedItem = data.PortName;
 			}
 			 
-
 			switch (data.HardwareID) {
 				case Hardware.MRDS1322:
 					radioMRDS1322.Checked=true;
@@ -63,9 +62,7 @@ namespace VixenModules.Output.CommandController
 					radioHttp.Checked=true;
 					break;
 			}
-
 			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
-
 		}
 
 		private void radioVFMT212R_CheckedChanged(object sender, EventArgs e)
@@ -73,7 +70,6 @@ namespace VixenModules.Output.CommandController
 			cboPortName.Enabled= !radioVFMT212R.Checked;
 			RdsData.HardwareID =  Hardware.VFMT212R;
 			SetFormDefaults();
-
 		}
 
 		private void radioMRDS1322_CheckedChanged(object sender, EventArgs e)
@@ -122,36 +118,6 @@ namespace VixenModules.Output.CommandController
 			this.txtUrl.ReadOnly= false;
 			SetFormDefaults();
 
-		}
-
-		private void radioPorts_CheckedChanged(object sender, EventArgs e)
-		{
-			var button = (RadioButton)sender;
-			RdsData.PortName= button.Text;
-			switch (button.Text) {
-				case "LPT1":
-					RdsData.PortNumber = 0x378;
-					break;
-				case "COM1":
-					RdsData.PortNumber = 1;
-					break;
-				case "COM2":
-					RdsData.PortNumber = 2;
-					break;
-				case "COM3":
-					RdsData.PortNumber = 3;
-					break;
-				case "COM4":
-					RdsData.PortNumber = 4;
-					break;
-				case "COM6":
-					RdsData.PortNumber = 6;
-
-					break;
-				default:
-					throw new NotImplementedException();
-
-			}
 		}
 
 		private void btnTX_Click(object sender, EventArgs e)
@@ -205,13 +171,7 @@ namespace VixenModules.Output.CommandController
 
 		private void txtUrl_TextChanged(object sender, EventArgs e)
 		{
-			//Regex urlRx = new Regex(@"^((http|https)://)?([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?$", RegexOptions.IgnoreCase);
-
-			//if (urlRx.IsMatch(txtUrl.Text)) {
 			RdsData.HttpUrl= txtUrl.Text;
-			//	StatusLbl1.Text="";
-			//} else
-			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
 		}
 
 		private void chkRequiresAuthentication_CheckedChanged(object sender, EventArgs e)
@@ -244,7 +204,6 @@ namespace VixenModules.Output.CommandController
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

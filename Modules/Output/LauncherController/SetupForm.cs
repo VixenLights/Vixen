@@ -29,7 +29,6 @@ namespace VixenModules.Output.LauncherController
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-
 			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
 		}
 
@@ -50,17 +49,5 @@ namespace VixenModules.Output.LauncherController
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 
-		private void groupBoxes_Paint(object sender, PaintEventArgs e)
-		{
-			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
-		}
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-        }
-
-        private void StatusLbl1_Click(object sender, EventArgs e)
-        {
-        }
 	}
 }
