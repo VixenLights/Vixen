@@ -244,8 +244,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Brightness", 3)]
-		[ProviderDisplayName(@"Random Intensity")]
-		[ProviderDescription(@"Chnages the Intensity for each Meteor")]
+		[ProviderDisplayName(@"RandomIntensity")]
+		[ProviderDescription(@"RandomIntensity")]
 		[PropertyOrder(0)]
 		public bool RandomBrightness
 		{
