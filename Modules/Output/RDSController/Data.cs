@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO.Ports;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 using Vixen.Module;
 
 namespace VixenModules.Output.CommandController

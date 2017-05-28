@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vixen.Commands;
-using Vixen.Data.Value;
+﻿using Vixen.Commands;
 using Vixen.Sys.Dispatch;
 
 namespace VixenModules.Output.CommandController

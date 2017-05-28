@@ -41,7 +41,7 @@ namespace VixenModules.Output.CommandController
 					return false;
 				case Hardware.VFMT212R:
 				case Hardware.HTTP:
-					System.Threading.Tasks.Task.Factory.StartNew(() => {
+					Task.Factory.StartNew(() => {
 						try {
 							//string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							//JC 11/27/16- replaced with line below to remove lowercase force
@@ -120,7 +120,7 @@ namespace VixenModules.Output.CommandController
 						}
 						var args = cmd.CommandValue.Split('|')[1].Split(',');
 
-						Module.Launch(_Data, args[0], args[1]);
+						Launch(_Data, args[0], args[1]);
 							 
 						break;
 				}

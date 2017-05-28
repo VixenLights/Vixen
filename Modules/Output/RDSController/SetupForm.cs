@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
-using System.Resources;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using VixenModules.Output.CommandController.Properties;
-using Common.Resources.Properties;
 using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.CommandController
@@ -42,7 +31,7 @@ namespace VixenModules.Output.CommandController
 
 			chkBiDirectional.Checked= data.BiDirectional;
 			chkSlow.Checked= data.Slow;
-			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+			txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 			if (ports.Contains(data.PortName))
 			{
 				cboPortName.SelectedItem = data.PortName;
@@ -91,31 +80,29 @@ namespace VixenModules.Output.CommandController
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
-					this.txtPSInterface.MaxLength=8;
-					this.txtUrl.Enabled=	this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
+					txtPSInterface.MaxLength=8;
+					txtUrl.Enabled=	lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=false;
 					break;
 				case Hardware.VFMT212R:
-					this.txtUrl.Enabled=this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
-					this.txtPSInterface.MaxLength=64;
+					txtUrl.Enabled=lblPassword.Enabled=lblUserName.Enabled=	chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
+					txtPSInterface.MaxLength=64;
 					chkRequiresAuthentication.Checked=true;
 					chkRequiresAuthentication.Enabled=false;
 					if (!RdsData.HttpUrl.ToLower().EndsWith(@"?action=update_rt&update_rt={text}") || string.IsNullOrWhiteSpace(RdsData.HttpUrl))
-						this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+						txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 					break;
 				case Hardware.HTTP:
-					this.txtUrl.Enabled=true;
-					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
-					this.txtPSInterface.MaxLength=128;
-					break;
-				default:
+					txtUrl.Enabled=true;
+					lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
+					txtPSInterface.MaxLength=128;
 					break;
 			}
 		}
 		private void radioHttp_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID= Hardware.HTTP;
-			this.txtUrl.Enabled = radioHttp.Checked;
-			this.txtUrl.ReadOnly= false;
+			txtUrl.Enabled = radioHttp.Checked;
+			txtUrl.ReadOnly= false;
 			SetFormDefaults();
 
 		}
