@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO.Ports;
-using System.Linq;
-using System.Resources;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using VixenModules.Output.LauncherController.Properties;
-using Common.Resources.Properties;
 using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.LauncherController

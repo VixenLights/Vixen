@@ -73,7 +73,7 @@ namespace VixenModules.Output.LauncherController
 							continue;
 						}
 						var args = cmd.CommandValue.Split('|')[1].Split(',');
-						Module.Launch(_Data, args[0], args[1]);							 
+						Launch(_Data, args[0], args[1]);							 
 						break;
 				}
 				Logging.Info("Launcher Value Sent: " + cmd.CommandValue);

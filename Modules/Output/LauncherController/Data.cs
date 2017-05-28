@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO.Ports;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
+﻿using System.Runtime.Serialization;
 using Vixen.Module;
 
 namespace VixenModules.Output.LauncherController
@@ -14,7 +11,7 @@ namespace VixenModules.Output.LauncherController
 
         public override IModuleDataModel Clone()
 		{
-			return this.MemberwiseClone() as IModuleDataModel;
+			return MemberwiseClone() as IModuleDataModel;
 		}
 	}
 }
