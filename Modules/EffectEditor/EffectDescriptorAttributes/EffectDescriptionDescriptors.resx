@@ -462,4 +462,7 @@
   <data name="Movement" xml:space="preserve">
     <value>Control type of movement, either Speed and Iterations.</value>
   </data>
+  <data name="BorderThickness" xml:space="preserve">
+    <value>Controls how thick the Border is.</value>
+  </data>
 </root>

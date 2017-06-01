@@ -125,6 +125,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Controls how thick the Border is..
+        /// </summary>
+        internal static string BorderThickness {
+            get {
+                return ResourceManager.GetString("BorderThickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the brightness of the effect..
         /// </summary>
         internal static string Brightness {

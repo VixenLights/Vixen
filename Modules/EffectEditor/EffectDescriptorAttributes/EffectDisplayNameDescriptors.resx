@@ -471,4 +471,7 @@
   <data name="Movement" xml:space="preserve">
     <value>Movement</value>
   </data>
+  <data name="BorderThickness" xml:space="preserve">
+    <value>Border Thickness</value>
+  </data>
 </root>
