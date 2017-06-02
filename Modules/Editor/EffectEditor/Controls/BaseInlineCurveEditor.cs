@@ -374,17 +374,22 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void RemovePoint(Point mousePosition)
 		{
+			var curve = GetCurveValue();
+
+			if (curve.Points.Count < 3) return; //Curve must contain two points to be valid
+
 			var point = TranslateMouseLocation(mousePosition);
 
-			var index = FindClosestPoint(GetCurveValue().Points, point);
+			var index = FindClosestPoint(curve.Points, point);
 
-			var points = GetCurveValue().Points.Clone();
-
+			var points = curve.Points.Clone();
+			
 			points.Remove(points[index]);
 
 			_holdValue = new Curve(points);
 
 			UpdateImage(_holdValue);
+			
 		}
 
 		private void UpdateImage(Curve curve)
