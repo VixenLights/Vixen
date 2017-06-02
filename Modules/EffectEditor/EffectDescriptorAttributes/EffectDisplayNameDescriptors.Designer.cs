@@ -143,6 +143,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Border Type.
+        /// </summary>
+        internal static string BorderType {
+            get {
+                return ResourceManager.GetString("BorderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Intensity.
         /// </summary>
         internal static string Brightness {

@@ -474,4 +474,7 @@
   <data name="BorderThickness" xml:space="preserve">
     <value>Border Thickness</value>
   </data>
+  <data name="BorderType" xml:space="preserve">
+    <value>Border Type</value>
+  </data>
 </root>

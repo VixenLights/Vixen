@@ -18,8 +18,13 @@ namespace VixenModules.Effect.Borders
 			Gradient.Colors.Clear();
 			Gradient.Colors.Add(new ColorPoint(Color.Red,0.0));
 			Gradient.Colors.Add(new ColorPoint(Color.Lime, 1.0));
-			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
+			TopThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			BottomThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			LeftThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			RightThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			BorderType = BorderType.Single;
 			Orientation=StringOrientation.Vertical;
 		}
 
@@ -27,10 +32,25 @@ namespace VixenModules.Effect.Borders
 		public ColorGradient Gradient { get; set; }
 
 		[DataMember]
+		public BorderType BorderType { get; set; }
+
+		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public Curve ThicknessCurve { get; set; }
+
+		[DataMember]
+		public Curve TopThicknessCurve { get; set; }
+
+		[DataMember]
+		public Curve BottomThicknessCurve { get; set; }
+
+		[DataMember]
+		public Curve LeftThicknessCurve { get; set; }
+
+		[DataMember]
+		public Curve RightThicknessCurve { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
@@ -42,6 +62,11 @@ namespace VixenModules.Effect.Borders
 				Orientation = Orientation,
 				LevelCurve = new Curve(LevelCurve),
 				ThicknessCurve = new Curve(ThicknessCurve),
+				TopThicknessCurve = new Curve(TopThicknessCurve),
+				BottomThicknessCurve = new Curve(BottomThicknessCurve),
+				LeftThicknessCurve = new Curve(LeftThicknessCurve),
+				RightThicknessCurve = new Curve(RightThicknessCurve),
+				BorderType = BorderType,
 				Gradient = Gradient
 			};
 			return result;

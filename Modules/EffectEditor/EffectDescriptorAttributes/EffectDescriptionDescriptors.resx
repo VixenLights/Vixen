@@ -465,4 +465,7 @@
   <data name="BorderThickness" xml:space="preserve">
     <value>Controls how thick the Border is.</value>
   </data>
+  <data name="BorderType" xml:space="preserve">
+    <value>ENable Independent Border control.</value>
+  </data>
 </root>

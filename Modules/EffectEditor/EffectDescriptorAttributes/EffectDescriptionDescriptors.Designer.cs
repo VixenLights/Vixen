@@ -134,6 +134,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ENable Independent Border control..
+        /// </summary>
+        internal static string BorderType {
+            get {
+                return ResourceManager.GetString("BorderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the brightness of the effect..
         /// </summary>
         internal static string Brightness {

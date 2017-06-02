@@ -80,7 +80,7 @@
     <Compile Include="Border.cs" />
     <Compile Include="BorderData.cs" />
     <Compile Include="BorderDescriptor.cs" />
-    <Compile Include="BorderDirection.cs" />
+    <Compile Include="BorderType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
