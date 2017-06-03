@@ -195,7 +195,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			if (curve == null || curve.IsLibraryReference) return;
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
-				_isMouseDown = true;
 				_dragStartPoint = e.GetPosition(this);
 				var point = TranslateMouseLocation(_dragStartPoint);
 				_dragStartPointIndex = FindClosestPoint(curve.Points, point);
@@ -203,6 +202,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					Keyboard.Modifiers == ModifierKeys.Control ||
 					Dist(point, curve.Points[_dragStartPointIndex]) < DistanceTolerance)
 				{
+					_isMouseDown = true;
 					_holdValue = curve;
 
 					Focus();
@@ -277,7 +277,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseUp(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
-			if (_isMouseDown && ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0) && ((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) != 0))
+			if ( (Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) != 0)
 			{
 				InvertReverseCurve();
 			}
@@ -290,7 +290,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				RemovePoint(_dragStartPoint);
 			}
 
-			if (IsDragging || _isMouseDown)
+			if (IsDragging || _isMouseDown || !curve.Equals(_holdValue))
 			{
 				e.Handled = true;
 				IsDragging = false;
