@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using Common.Controls;
@@ -8,9 +7,6 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources;
 using Common.Resources.Properties;
-using Vixen.Module.Effect;
-using Vixen.Services;
-using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 
@@ -21,12 +17,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public Form_Marks(TimelineControl timelineControl)
 		{
 			InitializeComponent();
-			int iconSize = (int)(20 * ScalingTools.GetScaleFactor());
-			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.add, iconSize);
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
+			toolStripButtonAddMarkCollection.Image = Tools.GetIcon(Resources.addItem, iconSize);
 			toolStripButtonAddMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete, iconSize);
+			toolStripButtonDeleteMarkCollection.Image = Tools.GetIcon(Resources.delete_32, iconSize);
 			toolStripButtonDeleteMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButtonEditMarkCollection.Image = Tools.GetIcon(Resources.pencil, iconSize);
+			toolStripButtonEditMarkCollection.Image = Tools.GetIcon(Resources.configuration, iconSize);
 			toolStripButtonEditMarkCollection.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStrip1.ImageScalingSize = new Size(iconSize, iconSize);
 			TimelineControl = timelineControl;
@@ -34,6 +30,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
+			toolStrip1.Renderer = new ThemeToolStripRenderer();
+			toolStripMenuItemBold.Image = Tools.GetIcon(Resources.boldLine, iconSize);
+			toolStripMenuItemDottedSolid.Image = Tools.GetIcon(Resources.dottedLine, iconSize);
+			ToolStripMenuItemChangeColor.Image = Tools.GetIcon(Resources.colors, iconSize);
 			listViewMarkCollections.BackColor = ThemeColorTable.BackgroundColor; //Over-rides the default Listview background
 			toolStripButtonDeleteMarkCollection.Enabled = false;
 		}
@@ -43,7 +43,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var xml = new XMLProfileSettings();
 			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
 			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20);
+			toolStripMenuItemNudgeSettings.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), false);
 			//xml = null;
+
+			panel1.Visible = toolStripMenuItemNudgeSettings.Checked;
 			ResizeColumnHeaders();
 		}
 
@@ -57,10 +60,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				ListViewItem item = new ListViewItem();
 				item.Text = mc.Name;
-				item.ForeColor = mc.MarkColor;// : Color.FromArgb(221,221,221);
-				//item.ForeColor = (mc.Enabled)
-				//					? ((GetGrayValueForColor(mc.MarkColor) > 128) ? Color.Black : Color.White)
-				//					: SystemColors.InactiveCaptionText;
+				item.ForeColor = mc.MarkColor;
 				item.Tag = mc;
 				item.Checked = mc.Enabled;
 				listViewMarkCollections.Items.Add(item);
@@ -88,16 +88,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					MarkCollection item = listViewMarkCollections.SelectedItems[0].Tag as MarkCollection;
 					return item;
 				}
-				else
-				{
-					return null;
-				}
+				return null;
 			}
-		}
-
-		private double GetGrayValueForColor(Color c)
-		{
-			return c.R * 0.299 + c.G * 0.587 + c.B * 0.114;
 		}
 
 		public TimedSequence Sequence { get; set; }
@@ -125,8 +117,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewMarkCollections_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
-			Point mousePoint = PointToClient(new Point(MousePosition.X, MousePosition.Y));
-			ListViewItem mouseItem = listViewMarkCollections.GetItemAt(mousePoint.X, mousePoint.Y);
 			ListViewItem item = listViewMarkCollections.Items[e.Index];
 			MarkCollection mc = item.Tag as MarkCollection;
 			mc.Enabled = (e.NewValue == CheckState.Checked);
@@ -176,6 +166,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), Convert.ToInt32(numericUpDownStandardNudge.Value));
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), Convert.ToInt32(numericUpDownSuperNudge.Value));
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), toolStripMenuItemNudgeSettings.Checked);
 		}
 
 		private void listViewMarkCollections_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -204,13 +195,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			e.Cancel = (listViewMarkCollections.SelectedItems.Count == 0);
-			boldToolStripMenuItem.Enabled = true;
-			dottedSolidToolStripMenuItem.Enabled = true;
-		}
-
 		private void boldToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var menuAction = sender;
@@ -224,12 +208,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		private void changeColorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var menuAction = sender;
-			changeMarkCollection(menuAction);
-		}
-
-		private void deleteMarksToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var menuAction = sender;
 			changeMarkCollection(menuAction);
@@ -274,7 +252,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewMarkCollections_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolStripButtonDeleteMarkCollection.Enabled = listViewMarkCollections.SelectedItems.Count > 0;
+			if (listViewMarkCollections.SelectedItems.Count > 0)
+			{
+				toolStripButtonDeleteMarkCollection.Enabled = true;
+				toolStripMenuItemDottedSolid.Enabled = true;
+				toolStripMenuItemBold.Enabled = true;
+				ToolStripMenuItemChangeColor.Enabled = true;
+			}
+			else
+			{
+				toolStripButtonDeleteMarkCollection.Enabled = false;
+				toolStripMenuItemDottedSolid.Enabled = false;
+				toolStripMenuItemBold.Enabled = false;
+				ToolStripMenuItemChangeColor.Enabled = false;
+			}
+		}
+
+		private void toolStripMenuItemNudgeSettings_Click(object sender, EventArgs e)
+		{
+			toolStripMenuItemNudgeSettings.Checked = !toolStripMenuItemNudgeSettings.Checked;
+			panel1.Visible = !panel1.Visible;
 		}
 
 	}

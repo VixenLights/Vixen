@@ -5683,6 +5683,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Clean up any old locations from before we organized the settings.
 			xml.RemoveNode("StandardNudge");
 			xml.RemoveNode("SuperNudge");
+			xml.RemoveNode("NudgeSettings");
 			xml.RemoveNode(Name);
 
 		}
