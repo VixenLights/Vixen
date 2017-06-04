@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -351,7 +352,7 @@ namespace Common.Controls.Timeline
 		public event EventHandler<ContextSelectedEventArgs> ContextSelected;
 		public event EventHandler<RenderElementEventArgs> RenderProgressChanged;
 
-		public void _SelectionChanged()
+		private void _SelectionChanged()
 		{
 			if (SupressSelectionEvents) return;
 			if (SelectionChanged != null)
@@ -710,6 +711,57 @@ namespace Common.Controls.Timeline
 					return false;
 			}
 			return true;
+		}
+
+		//Locates and Displays selected effects on the Find Effects Form
+		public void DisplaySelectedEffects(int rowVerticleOffset, ListView.SelectedListViewItemCollection selectedItems, List<Element> elements)
+		{
+			ClearSelectedElements();
+			TimeSpan effectStartTime = new TimeSpan();
+
+			foreach (ListViewItem currentEffect in selectedItems)
+			{
+				TimeSpan.TryParseExact(currentEffect.SubItems[1].Text, @"hh\:mm\:ss\.fffffff",
+					CultureInfo.InvariantCulture, out effectStartTime);
+				Guid effectId = Guid.Parse(currentEffect.Tag.ToString());
+
+				foreach (var element in elements)
+				{
+					if (element.EffectNode.Effect.InstanceId == effectId) //Compares Effect GUID and proceed when matched found.
+					{
+						element.Selected = true;
+						foreach (Row row in Rows)
+						{
+							if (row.ParentRow != null && row.Name == element.Row.Name)
+							{
+								//Make selected effect and any Parent nodes visible and Tree expanded.
+								Row parent = row.ParentRow;
+								do
+								{
+									if (element.Row.ParentRow != null)
+									{
+										parent.TreeOpen = true;
+										parent.Visible = true;
+										foreach (var childRows in parent.ChildRows)
+										{
+											childRows.Visible = true;
+										}
+										parent = parent.ParentRow;
+									}
+								} while (parent != null);
+								element.EndUpdate();
+							}
+						}
+						rowVerticleOffset = element.Row.DisplayTop;
+						element.Row.Visible = true;
+					}
+				}
+			}
+
+			VisibleTimeStart = effectStartTime; //Adjusts the Horixontal Start Time position so the last selected effect is visible
+			VerticalOffset = rowVerticleOffset; //Adjust the vertical grid position so the last selected effect is visible.
+			_SelectionChanged(); //Ensures Effect editor docker is updated with the Selected effects.
+			Refresh();
 		}
 
 		/// <summary>

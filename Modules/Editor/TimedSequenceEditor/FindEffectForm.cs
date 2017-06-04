@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Windows.Media.Animation;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
@@ -15,8 +16,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<Element> _elements = new List<Element>();
 
 		public TimelineControl TimelineControl { get; set; }
-
-		private const string TimeFormat = @"hh\:mm\:ss\.fffffff";
 
 		public FindEffectForm(TimelineControl timelineControl)
 		{
@@ -105,68 +104,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DisplaySelectedEffects()
 		{
-			TimelineControl.grid.ClearSelectedElements();
-			TimeSpan effectStartTime = new TimeSpan();
 			int rowVerticleOffset = 0;
 
 			if (checkBoxCollapseAllGroups.Checked)
 				TimelineControl.RowListMenuCollapse();
 
-			foreach (ListViewItem currentEffect in listViewEffectStartTime.SelectedItems)
-			{
-				TimeSpan.TryParseExact(listViewEffectStartTime.Items[currentEffect.Index].SubItems[1].Text, TimeFormat,
-					CultureInfo.InvariantCulture, out effectStartTime);
-				Guid effectId = Guid.Parse(listViewEffectStartTime.Items[currentEffect.Index].Tag.ToString());
-
-				foreach (var element in _elements)
-				{
-					if (element.EffectNode.Effect.InstanceId == effectId) //Compares Effect GUID and proceed when matched found.
-					{
-						element.Selected = true;
-						foreach (Row row in TimelineControl.Rows)
-						{
-							if (row.ParentRow != null && row.Name == element.Row.Name)
-							{
-								//Make selected effect and any Parent nodes visible and Tree expanded.
-								Row parent = row.ParentRow;
-								do
-								{
-									if (element.Row.ParentRow != null)
-									{
-										parent.TreeOpen = true;
-										parent.Visible = true;
-										foreach (var childRows in parent.ChildRows)
-										{
-											childRows.Visible = true;
-										}
-										parent = parent.ParentRow;
-									}
-								} while (parent != null);
-								element.EndUpdate();
-							}
-						}
-						rowVerticleOffset = element.Row.DisplayTop;
-						element.Row.Visible = true;
-					}
-				}
-			}
-
-			TimelineControl.VisibleTimeStart = effectStartTime; //Adjusts the Horixontal Start Time position so the last selected effect is visible
-			TimelineControl.VerticalOffset = rowVerticleOffset; //Adjust the vertical grid position so the last selected effect is visible.
-			TimelineControl.grid._SelectionChanged(); //Ensures Effect editor docker is updated with the Selected effects.
-			TimelineControl.Refresh();
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
+			TimelineControl.grid.DisplaySelectedEffects(rowVerticleOffset, listViewEffectStartTime.SelectedItems, _elements);
 		}
 
 		private void listViewEffectStartTime_MouseUp(object sender, MouseEventArgs e)
