@@ -2,11 +2,11 @@
 
 namespace VixenModules.Effect.Borders
 {
-	public enum BorderMode
+	public enum BorderType
 	{
-		[Description("Simple")]
-		Simple,
-		[Description("Advanced")]
-		Advanced
+		[Description("Single")]
+		Single,
+		[Description("Independent")]
+		Independent
 	}
 }

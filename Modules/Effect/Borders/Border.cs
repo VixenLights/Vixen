@@ -388,11 +388,19 @@ namespace VixenModules.Effect.Borders
 				int rightThickness = Convert.ToInt16(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 				int borderWidth = Convert.ToInt16(OuterBorderStartsCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
 
+				if (BorderMode == BorderMode.Simple)
+				{
+					thickness = SimpleBorderWidth;
+					borderWidth = 0;
+				}
+
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
 					foreach (var elementLocation in elementLocations)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, thickness, topThickness, bottomThickness, leftThickness, rightThickness, intervalPosFactor, level, effectFrame, borderWidth);
+						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, thickness,
+							topThickness, bottomThickness, leftThickness, rightThickness,
+							intervalPosFactor, level, effectFrame, borderWidth);
 					}
 				}
 			}
