@@ -134,6 +134,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Border Mode.
+        /// </summary>
+        internal static string BorderMode {
+            get {
+                return ResourceManager.GetString("BorderMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Border Thickness.
         /// </summary>
         internal static string BorderThickness {
@@ -148,6 +157,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string BorderType {
             get {
                 return ResourceManager.GetString("BorderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Border Width.
+        /// </summary>
+        internal static string BorderWidth {
+            get {
+                return ResourceManager.GetString("BorderWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bottom Border.
+        /// </summary>
+        internal static string BottomBorder {
+            get {
+                return ResourceManager.GetString("BottomBorder", resourceCulture);
             }
         }
         
@@ -602,6 +629,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Left Border.
+        /// </summary>
+        internal static string LeftBorder {
+            get {
+                return ResourceManager.GetString("LeftBorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         internal static string Location {
@@ -733,6 +769,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Orientation {
             get {
                 return ResourceManager.GetString("Orientation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outer Border Starts.
+        /// </summary>
+        internal static string OuterBorderStarts {
+            get {
+                return ResourceManager.GetString("OuterBorderStarts", resourceCulture);
             }
         }
         
@@ -899,11 +944,29 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Right Border.
+        /// </summary>
+        internal static string RightBorder {
+            get {
+                return ResourceManager.GetString("RightBorder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rotation.
         /// </summary>
         internal static string Rotation {
             get {
                 return ResourceManager.GetString("Rotation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Round Edges.
+        /// </summary>
+        internal static string RoundEdges {
+            get {
+                return ResourceManager.GetString("RoundEdges", resourceCulture);
             }
         }
         
@@ -1039,6 +1102,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Thickness {
             get {
                 return ResourceManager.GetString("Thickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top Border.
+        /// </summary>
+        internal static string TopBorder {
+            get {
+                return ResourceManager.GetString("TopBorder", resourceCulture);
             }
         }
         
