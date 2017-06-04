@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
-using System.Resources;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using VixenModules.Output.CommandController.Properties;
-using Common.Resources.Properties;
 using Resources = Common.Resources.Properties.Resources;
 
 namespace VixenModules.Output.CommandController
@@ -42,13 +31,12 @@ namespace VixenModules.Output.CommandController
 
 			chkBiDirectional.Checked= data.BiDirectional;
 			chkSlow.Checked= data.Slow;
-			this.txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+			txtUrl.Text = data.HttpUrl ?? "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 			if (ports.Contains(data.PortName))
 			{
 				cboPortName.SelectedItem = data.PortName;
 			}
 			 
-
 			switch (data.HardwareID) {
 				case Hardware.MRDS1322:
 					radioMRDS1322.Checked=true;
@@ -63,9 +51,7 @@ namespace VixenModules.Output.CommandController
 					radioHttp.Checked=true;
 					break;
 			}
-
 			chkHideLaunchedWindows.Checked= data.HideLaunchedWindows;
-
 		}
 
 		private void radioVFMT212R_CheckedChanged(object sender, EventArgs e)
@@ -73,7 +59,6 @@ namespace VixenModules.Output.CommandController
 			cboPortName.Enabled= !radioVFMT212R.Checked;
 			RdsData.HardwareID =  Hardware.VFMT212R;
 			SetFormDefaults();
-
 		}
 
 		private void radioMRDS1322_CheckedChanged(object sender, EventArgs e)
@@ -95,63 +80,31 @@ namespace VixenModules.Output.CommandController
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
-					this.txtPSInterface.MaxLength=8;
-					this.txtUrl.Enabled=	this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=false;
+					txtPSInterface.MaxLength=8;
+					txtUrl.Enabled=	lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=false;
 					break;
 				case Hardware.VFMT212R:
-					this.txtUrl.Enabled=this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
-					this.txtPSInterface.MaxLength=64;
+					txtUrl.Enabled=lblPassword.Enabled=lblUserName.Enabled=	chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
+					txtPSInterface.MaxLength=64;
 					chkRequiresAuthentication.Checked=true;
 					chkRequiresAuthentication.Enabled=false;
 					if (!RdsData.HttpUrl.ToLower().EndsWith(@"?action=update_rt&update_rt={text}") || string.IsNullOrWhiteSpace(RdsData.HttpUrl))
-						this.txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
+						txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 					break;
 				case Hardware.HTTP:
-					this.txtUrl.Enabled=true;
-					this.lblPassword.Enabled=this.lblUserName.Enabled=	this.chkRequiresAuthentication.Enabled=this.txtHttpPassword.Enabled=this.txtHttpUsername.Enabled=true;
-					this.txtPSInterface.MaxLength=128;
-					break;
-				default:
+					txtUrl.Enabled=true;
+					lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
+					txtPSInterface.MaxLength=128;
 					break;
 			}
 		}
 		private void radioHttp_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID= Hardware.HTTP;
-			this.txtUrl.Enabled = radioHttp.Checked;
-			this.txtUrl.ReadOnly= false;
+			txtUrl.Enabled = radioHttp.Checked;
+			txtUrl.ReadOnly= false;
 			SetFormDefaults();
 
-		}
-
-		private void radioPorts_CheckedChanged(object sender, EventArgs e)
-		{
-			var button = (RadioButton)sender;
-			RdsData.PortName= button.Text;
-			switch (button.Text) {
-				case "LPT1":
-					RdsData.PortNumber = 0x378;
-					break;
-				case "COM1":
-					RdsData.PortNumber = 1;
-					break;
-				case "COM2":
-					RdsData.PortNumber = 2;
-					break;
-				case "COM3":
-					RdsData.PortNumber = 3;
-					break;
-				case "COM4":
-					RdsData.PortNumber = 4;
-					break;
-				case "COM6":
-					RdsData.PortNumber = 6;
-
-					break;
-				default:
-					throw new NotImplementedException();
-
-			}
 		}
 
 		private void btnTX_Click(object sender, EventArgs e)
@@ -205,13 +158,7 @@ namespace VixenModules.Output.CommandController
 
 		private void txtUrl_TextChanged(object sender, EventArgs e)
 		{
-			//Regex urlRx = new Regex(@"^((http|https)://)?([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?$", RegexOptions.IgnoreCase);
-
-			//if (urlRx.IsMatch(txtUrl.Text)) {
 			RdsData.HttpUrl= txtUrl.Text;
-			//	StatusLbl1.Text="";
-			//} else
-			//	StatusLbl1.Text= "Http Url is NOT well formed and will not be saved";
 		}
 
 		private void chkRequiresAuthentication_CheckedChanged(object sender, EventArgs e)
@@ -244,7 +191,6 @@ namespace VixenModules.Output.CommandController
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

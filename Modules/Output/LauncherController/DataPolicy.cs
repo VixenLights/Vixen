@@ -3,7 +3,7 @@ using Vixen.Data.Evaluator;
 using Vixen.Data.Policy;
 using Vixen.Sys;
 
-namespace VixenModules.Output.CommandController {
+namespace VixenModules.Output.LauncherController {
 	internal class DataPolicy : ControllerDataPolicy {
 		protected override IEvaluator GetEvaluator()
 		{

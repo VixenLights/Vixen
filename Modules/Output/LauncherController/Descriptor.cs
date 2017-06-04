@@ -1,20 +1,20 @@
 ﻿using System;
 using Vixen.Module.Controller;
 
-namespace VixenModules.Output.CommandController
+namespace VixenModules.Output.LauncherController
 {
 	public class Descriptor : ControllerModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{692B66B9-E831-4F39-BB73-7653FA62B053}");
+		private Guid _typeId = new Guid("{1C4BFD64-3172-43A7-A7FC-0A77C88B0489}");
 
 		public override string Author
 		{
-			get { return "Darren McDaniel / Steve Dupuis"; }
+			get { return "Jon Chuchla / Darren McDaniel / Steve Dupuis"; }
 		}
 
 		public override string Description
 		{
-			get { return "Generic Windows Command and RDS hardware module"; }
+			get { return "Generic Windows Command / App Launcher"; }
 		}
 
 		public override Type ModuleClass
@@ -34,7 +34,7 @@ namespace VixenModules.Output.CommandController
 
 		public override string TypeName
 		{
-			get { return "RDS"; }
+			get { return "Launcher"; }
 		}
 
 		public override string Version

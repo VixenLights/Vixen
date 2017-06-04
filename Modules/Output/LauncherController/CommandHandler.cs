@@ -1,7 +1,7 @@
 ﻿using Vixen.Commands;
 using Vixen.Sys.Dispatch;
 
-namespace VixenModules.Output.CommandController
+namespace VixenModules.Output.LauncherController
 {
 
 	internal class CommandHandler : CommandDispatch
