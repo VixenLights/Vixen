@@ -28,25 +28,25 @@ namespace VixenModules.Output.LauncherController
 						Stopwatch w = Stopwatch.StartNew();
 						Process proc = new Process();
 
-                        proc.StartInfo.FileName = executable;
-                        if (!string.IsNullOrWhiteSpace(arguments))
-                            proc.StartInfo.Arguments = arguments;
+						proc.StartInfo.FileName = executable;
+						if (!string.IsNullOrWhiteSpace(arguments))
+							proc.StartInfo.Arguments = arguments;
 
-                        proc.StartInfo.CreateNoWindow = launcherData.HideLaunchedWindows;
+						proc.StartInfo.CreateNoWindow = launcherData.HideLaunchedWindows;
 
 						proc.Start();
 						proc.WaitForExit();
 						w.Stop();
-                        Logging.Info("Process {0} Completed After {1} with Exit code {2}", executable, w.Elapsed, proc.ExitCode);
+						Logging.Info("Process {0} Completed After {1} with Exit code {2}", executable, w.Elapsed, proc.ExitCode);
 
 					} catch (Exception e) {
 
-                        Logging.Error(e, e.Message);
+						Logging.Error(e, e.Message);
 					}
 
 				});
 			} else
-                Logging.Error("File Not found to Launch: [{0}]", executable);
+				Logging.Error("File Not found to Launch: [{0}]", executable);
 			return false;
 		}
 
@@ -58,16 +58,16 @@ namespace VixenModules.Output.LauncherController
 				var item = outputStates[idx];
 				var cmd = item as StringCommand;
 				if( cmd == null) {
-                    _lastCommandValues[idx] = null;
+					_lastCommandValues[idx] = null;
 					continue;
 				}
 				String lastVal;
-                _lastCommandValues.TryGetValue(idx, out lastVal);
-                _lastCommandValues[idx] = cmd.CommandValue;
+				_lastCommandValues.TryGetValue(idx, out lastVal);
+				_lastCommandValues[idx] = cmd.CommandValue;
 
 				var cmdType = cmd.CommandValue.Split('|')[0];
 				switch (cmdType.ToUpper()) {
-                    case "LAUNCHER":
+					case "LAUNCHER":
 						if (lastVal != null && cmd.CommandValue.Equals(lastVal))
 						{
 							continue;
@@ -89,8 +89,8 @@ namespace VixenModules.Output.LauncherController
 		{
 			using (var setupForm = new SetupForm(_Data)) {
 				if (setupForm.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
-                {
-                    _Data = setupForm.LauncherData;
+				{
+					_Data = setupForm.LauncherData;
 					return true;
 				}
 				return false;
@@ -106,5 +106,5 @@ namespace VixenModules.Output.LauncherController
 			}
 		}
 
-   }
+	}
 }
