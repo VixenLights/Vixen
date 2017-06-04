@@ -18,11 +18,11 @@ namespace VixenModules.Output.LauncherController
 			DataPolicyFactory = new DataPolicyFactory();
 		}
 
-        internal static bool Launch(Data launcherData, string executable, string arguments)
+		internal static bool Launch(Data launcherData, string executable, string arguments)
 		{
-            if (File.Exists(executable))
-            {
-                Logging.Info("Launching Executable: {0} with arguments [{1}]", executable, arguments);
+			if (File.Exists(executable))
+			{
+				Logging.Info("Launching Executable: {0} with arguments [{1}]", executable, arguments);
 				Task.Factory.StartNew(() => {
 					try {
 						Stopwatch w = Stopwatch.StartNew();

@@ -9,7 +9,7 @@ namespace VixenModules.Output.LauncherController
 		[DataMember]
 		public bool HideLaunchedWindows { get; set; }
 
-        public override IModuleDataModel Clone()
+		public override IModuleDataModel Clone()
 		{
 			return MemberwiseClone() as IModuleDataModel;
 		}

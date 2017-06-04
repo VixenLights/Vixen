@@ -21,7 +21,7 @@ namespace VixenModules.Output.LauncherController
 
 		private void chkHideLaunchedWindows_CheckedChanged(object sender, EventArgs e)
 		{
-            LauncherData.HideLaunchedWindows = chkHideLaunchedWindows.Checked;
+			LauncherData.HideLaunchedWindows = chkHideLaunchedWindows.Checked;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)

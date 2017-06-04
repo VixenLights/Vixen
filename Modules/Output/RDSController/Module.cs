@@ -54,7 +54,7 @@ namespace VixenModules.Output.CommandController
 								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
 							}
 						} catch (Exception e) {
-                            Logging.Error(e, e.Message);
+							Logging.Error(e, e.Message);
 							lastRdsText=string.Empty;
 						}
 					});
@@ -65,31 +65,31 @@ namespace VixenModules.Output.CommandController
 		}
 		internal static bool Launch(Data launcherData, string executable, string arguments)
 		{
-            if (File.Exists(executable))
-            {
-                Logging.Info("Launching Executable: {0} with arguments [{1}]", executable, arguments);
+			if (File.Exists(executable))
+			{
+				Logging.Info("Launching Executable: {0} with arguments [{1}]", executable, arguments);
 				Task.Factory.StartNew(() => {
 					try {
 						Stopwatch w = Stopwatch.StartNew();
 						Process proc = new Process();
 
-                        proc.StartInfo.FileName = executable;
-                        if (!string.IsNullOrWhiteSpace(arguments))
-                            proc.StartInfo.Arguments = arguments;
+						proc.StartInfo.FileName = executable;
+						if (!string.IsNullOrWhiteSpace(arguments))
+							proc.StartInfo.Arguments = arguments;
 
-                        proc.StartInfo.CreateNoWindow = launcherData.HideLaunchedWindows;
+						proc.StartInfo.CreateNoWindow = launcherData.HideLaunchedWindows;
 						proc.Start();
 						proc.WaitForExit();
 						w.Stop();
-                        Logging.Info("Process {0} Completed After {1} with Exit code {2}", executable, w.Elapsed, proc.ExitCode);
+						Logging.Info("Process {0} Completed After {1} with Exit code {2}", executable, w.Elapsed, proc.ExitCode);
 
 					} catch (Exception e) {
 
-                        Logging.Error(e, e.Message);
+						Logging.Error(e, e.Message);
 					}
 				});
 			} else
-                Logging.Error("File Not found to Launch: [{0}]", executable);
+				Logging.Error("File Not found to Launch: [{0}]", executable);
 			return false;
 		}
 
