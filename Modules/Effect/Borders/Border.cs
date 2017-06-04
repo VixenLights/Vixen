@@ -48,16 +48,16 @@ namespace VixenModules.Effect.Borders
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"BorderType")]
-		[ProviderDescription(@"BorderType")]
+		[ProviderDisplayName(@"BorderMode")]
+		[ProviderDescription(@"BorderMode")]
 		[PropertyOrder(0)]
-		public BorderType BorderType
+		public BorderMode BorderMode
 		{
-			get { return _data.BorderType; }
+			get { return _data.BorderMode; }
 			set
 			{
-				_data.BorderType = value;
-				UpdateBoderControlAttribute();
+				_data.BorderMode = value;
+				UpdateBorderControlAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -67,13 +67,49 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BorderWidth")]
 		[ProviderDescription(@"BorderWidth")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 20, 1)]
 		[PropertyOrder(1)]
-		public Curve BorderWidthCurve
+		public int SimpleBorderWidth
 		{
-			get { return _data.BorderWidthCurve; }
+			get { return _data.SimpleBorderWidth; }
 			set
 			{
-				_data.BorderWidthCurve = value;
+				_data.SimpleBorderWidth = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BorderType")]
+		[ProviderDescription(@"BorderType")]
+		[PropertyOrder(2)]
+		public BorderType BorderType
+		{
+			get { return _data.BorderType; }
+			set
+			{
+				_data.BorderType = value;
+				UpdateBorderControlAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RoundEdges")]
+		[ProviderDescription(@"RoundEdges")]
+		[PropertyOrder(3)]
+		public bool RoundEdges
+		{
+			get { return _data.RoundEdges; }
+			set
+			{
+				_data.RoundEdges = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -83,7 +119,7 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Border")]
 		[ProviderDescription(@"Border")]
-		[PropertyOrder(2)]
+		[PropertyOrder(4)]
 		public Curve ThicknessCurve
 		{
 			get { return _data.ThicknessCurve; }
@@ -99,7 +135,7 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"TopBorder")]
 		[ProviderDescription(@"TopBorder")]
-		[PropertyOrder(2)]
+		[PropertyOrder(5)]
 		public Curve TopThicknessCurve
 		{
 			get { return _data.TopThicknessCurve; }
@@ -115,7 +151,7 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BottomBorder")]
 		[ProviderDescription(@"BottomBorder")]
-		[PropertyOrder(3)]
+		[PropertyOrder(6)]
 		public Curve BottomThicknessCurve
 		{
 			get { return _data.BottomThicknessCurve; }
@@ -131,7 +167,7 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"LeftBorder")]
 		[ProviderDescription(@"LeftBorder")]
-		[PropertyOrder(4)]
+		[PropertyOrder(7)]
 		public Curve LeftThicknessCurve
 		{
 			get { return _data.LeftThicknessCurve; }
@@ -147,7 +183,7 @@ namespace VixenModules.Effect.Borders
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RightBorder")]
 		[ProviderDescription(@"RightBorder")]
-		[PropertyOrder(5)]
+		[PropertyOrder(8)]
 		public Curve RightThicknessCurve
 		{
 			get { return _data.RightThicknessCurve; }
@@ -161,15 +197,15 @@ namespace VixenModules.Effect.Borders
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RoundEdges")]
-		[ProviderDescription(@"RoundEdges")]
-		[PropertyOrder(6)]
-		public bool RoundEdges
+		[ProviderDisplayName(@"OuterBorderStarts")]
+		[ProviderDescription(@"OuterBorderStarts")]
+		[PropertyOrder(9)]
+		public Curve OuterBorderStartsCurve
 		{
-			get { return _data.RoundEdges; }
+			get { return _data.OuterBorderStartsCurve; }
 			set
 			{
-				_data.RoundEdges = value;
+				_data.OuterBorderStartsCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -245,7 +281,7 @@ namespace VixenModules.Effect.Borders
 
 		private void InitAllAttributes()
 		{
-			UpdateBoderControlAttribute(false);
+			UpdateBorderControlAttribute(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
@@ -255,17 +291,39 @@ namespace VixenModules.Effect.Borders
 			get { return _data; }
 		}
 
-		private void UpdateBoderControlAttribute(bool refresh = true)
+		private void UpdateBorderControlAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			if (BorderMode == BorderMode.Simple)
 			{
-				{"ThicknessCurve", BorderType == BorderType.Single},
-				{"TopThicknessCurve", BorderType != BorderType.Single},
-				{"BottomThicknessCurve", BorderType != BorderType.Single},
-				{"LeftThicknessCurve", BorderType != BorderType.Single},
-				{"RightThicknessCurve", BorderType != BorderType.Single}
-			};
-			SetBrowsable(propertyStates);
+				Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(8)
+				{
+					{"SimpleBorderWidth", true},
+					{"ThicknessCurve", false},
+					{"TopThicknessCurve", false},
+					{"BottomThicknessCurve", false},
+					{"LeftThicknessCurve", false},
+					{"RightThicknessCurve", false},
+					{"OuterBorderStartsCurve", false},
+					{"BorderType", false}
+				};
+				SetBrowsable(propertyStates);
+			}
+			else
+			{
+				Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(8)
+				{
+					{"SimpleBorderWidth", false},
+					{"ThicknessCurve", BorderType == BorderType.Single},
+					{"TopThicknessCurve", BorderType != BorderType.Single},
+					{"BottomThicknessCurve", BorderType != BorderType.Single},
+					{"LeftThicknessCurve", BorderType != BorderType.Single},
+					{"RightThicknessCurve", BorderType != BorderType.Single},
+					{"OuterBorderStartsCurve", true},
+					{"BorderType", true}
+				};
+				SetBrowsable(propertyStates);
+			}
+
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
@@ -287,13 +345,19 @@ namespace VixenModules.Effect.Borders
 			var intervalPosFactor = GetEffectTimeIntervalPosition(effectFrame) * 100;
 
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
-			double thickness = ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2;
-			double topThickness = TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100;
-			double bottomThickness = BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100;
-			double leftThickness = LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100;
-			double rightThickness = RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100;
-			double borderWidth = BorderWidthCurve.GetValue(intervalPosFactor) * _minBufferSize / 2;
-			
+			int thickness = Convert.ToInt16(ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
+			int topThickness = Convert.ToInt16(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+			int bottomThickness = Convert.ToInt16(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+			int leftThickness = Convert.ToInt16(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+			int rightThickness = Convert.ToInt16(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+			int borderWidth = Convert.ToInt16(OuterBorderStartsCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
+
+			if (BorderMode == BorderMode.Simple)
+			{
+				thickness = SimpleBorderWidth;
+				borderWidth = 0;
+			}
+
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
@@ -317,12 +381,12 @@ namespace VixenModules.Effect.Borders
 
 				var intervalPosFactor = GetEffectTimeIntervalPosition(effectFrame) * 100;
 				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-				double thickness = ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2;
-				double topThickness = TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100;
-				double bottomThickness = BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100;
-				double leftThickness = LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100;
-				double rightThickness = RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100;
-				double borderWidth = BorderWidthCurve.GetValue(intervalPosFactor) * _minBufferSize / 2;
+				int thickness = Convert.ToInt16(ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
+				int topThickness = Convert.ToInt16(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+				int bottomThickness = Convert.ToInt16(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+				int leftThickness = Convert.ToInt16(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+				int rightThickness = Convert.ToInt16(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+				int borderWidth = Convert.ToInt16(OuterBorderStartsCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
 
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
@@ -335,7 +399,7 @@ namespace VixenModules.Effect.Borders
 
 		}
 
-		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, double thickness, double topThickness, double bottomThickness, double leftThickness, double rightThickness, double intervalPosFactor, double level, int effectFrame, double borderWidth)
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int thickness, int topThickness, int bottomThickness, int leftThickness, int rightThickness, double intervalPosFactor, double level, int effectFrame, double borderWidth)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -369,7 +433,7 @@ namespace VixenModules.Effect.Borders
 			HSV hsv = HSV.FromRGB(color);
 			hsv.V = hsv.V * level;
 
-			if (BorderType == BorderType.Single)//Single Border Control
+			if (BorderType == BorderType.Single || BorderMode == BorderMode.Simple)//Single Border Control
 			{
 				//Displays borders 
 				if ((y <= thickness || y >= BufferHt - thickness || x <= thickness || x >= BufferWi - thickness)
@@ -378,7 +442,7 @@ namespace VixenModules.Effect.Borders
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
 				//Displays Single borders with curved inner
-				if (RoundEdges && ((y == Convert.ToInt16(thickness) + 1 && x == BufferWi - Convert.ToInt16(thickness) - 1) || (x == Convert.ToInt16(thickness) + 1 && y == BufferHt - Convert.ToInt16(thickness) - 1) || (y == Convert.ToInt16(thickness) + 1 && x == Convert.ToInt16(thickness) + 1) || (y == BufferHt - Convert.ToInt16(thickness) - 1 && x == BufferWi - Convert.ToInt16(thickness) - 1)))
+				if (RoundEdges && ((y == thickness + 1 && x == BufferWi - thickness - 1) || (x == thickness + 1 && y == BufferHt - thickness - 1) || (y == thickness + 1 && x == thickness + 1) || (y == BufferHt - thickness - 1 && x == BufferWi - thickness - 1)))
 				{
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
@@ -392,7 +456,7 @@ namespace VixenModules.Effect.Borders
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
 				//Displays Independent borders with curved inner
-				if (RoundEdges && ((y == Convert.ToInt16(bottomThickness) + 1 && x == BufferWi - Convert.ToInt16(rightThickness) - 1) || (x == Convert.ToInt16(leftThickness) + 1 && y == BufferHt - Convert.ToInt16(topThickness) - 1) || (y == Convert.ToInt16(bottomThickness) + 1 && x == Convert.ToInt16(leftThickness) + 1) || (y == BufferHt - Convert.ToInt16(topThickness) - 1 && x == BufferWi - Convert.ToInt16(rightThickness) - 1)))
+				if (RoundEdges && ((y == bottomThickness + 1 && x == BufferWi - rightThickness - 1) || (x == leftThickness + 1 && y == BufferHt - topThickness - 1) || (y == bottomThickness + 1 && x == leftThickness + 1) || (y == BufferHt - topThickness - 1 && x == BufferWi - rightThickness - 1)))
 				{
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
