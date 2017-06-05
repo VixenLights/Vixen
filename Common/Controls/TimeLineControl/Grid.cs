@@ -714,47 +714,39 @@ namespace Common.Controls.Timeline
 		}
 
 		//Locates and Displays selected effects on the Find Effects Form
-		public void DisplaySelectedEffects(int rowVerticleOffset, ListView.SelectedListViewItemCollection selectedItems, List<Element> elements)
+		public void DisplaySelectedEffects(TimeSpan effectStartTime, Guid effectId, List<Element> elements)
 		{
-			ClearSelectedElements();
-			TimeSpan effectStartTime = new TimeSpan();
+			int rowVerticleOffset = 0;
 
-			foreach (ListViewItem currentEffect in selectedItems)
+			foreach (var element in elements)
 			{
-				TimeSpan.TryParseExact(currentEffect.SubItems[1].Text, @"hh\:mm\:ss\.fffffff",
-					CultureInfo.InvariantCulture, out effectStartTime);
-				Guid effectId = Guid.Parse(currentEffect.Tag.ToString());
-
-				foreach (var element in elements)
+				if (element.EffectNode.Effect.InstanceId == effectId) //Compares Effect GUID and proceed when matched found.
 				{
-					if (element.EffectNode.Effect.InstanceId == effectId) //Compares Effect GUID and proceed when matched found.
+					element.Selected = true;
+					foreach (Row row in Rows)
 					{
-						element.Selected = true;
-						foreach (Row row in Rows)
+						if (row.ParentRow != null && row.Name == element.Row.Name)
 						{
-							if (row.ParentRow != null && row.Name == element.Row.Name)
+							//Make selected effect and any Parent nodes visible and Tree expanded.
+							Row parent = row.ParentRow;
+							do
 							{
-								//Make selected effect and any Parent nodes visible and Tree expanded.
-								Row parent = row.ParentRow;
-								do
+								if (element.Row.ParentRow != null)
 								{
-									if (element.Row.ParentRow != null)
+									parent.TreeOpen = true;
+									parent.Visible = true;
+									foreach (var childRows in parent.ChildRows)
 									{
-										parent.TreeOpen = true;
-										parent.Visible = true;
-										foreach (var childRows in parent.ChildRows)
-										{
-											childRows.Visible = true;
-										}
-										parent = parent.ParentRow;
+										childRows.Visible = true;
 									}
-								} while (parent != null);
-								element.EndUpdate();
-							}
+									parent = parent.ParentRow;
+								}
+							} while (parent != null);
+							element.EndUpdate();
 						}
-						rowVerticleOffset = element.Row.DisplayTop;
-						element.Row.Visible = true;
 					}
+					rowVerticleOffset = element.Row.DisplayTop;
+					element.Row.Visible = true;
 				}
 			}
 

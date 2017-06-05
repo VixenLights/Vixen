@@ -115,7 +115,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_RIColor_Red = new System.Windows.Forms.ToolStripMenuItem();
 			this.cADStyleSelectionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripMenuItemFindEffects = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -170,6 +169,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
 			this.timerDelayCountdown = new System.Windows.Forms.Timer(this.components);
+			this.toolStripMenuItemFindEffects = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripOperations.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.statusStrip.SuspendLayout();
@@ -856,8 +856,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_SnapTo,
             this.toolStripMenuItem_ResizeIndicator,
             this.cADStyleSelectionBoxToolStripMenuItem,
-            this.toolStripSeparator17,
-            this.toolStripMenuItemFindEffects});
+            this.toolStripSeparator17});
 			this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -1036,13 +1035,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripSeparator17.Name = "toolStripSeparator17";
 			this.toolStripSeparator17.Size = new System.Drawing.Size(212, 6);
 			// 
-			// toolStripMenuItemFindEffects
-			// 
-			this.toolStripMenuItemFindEffects.Name = "toolStripMenuItemFindEffects";
-			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(215, 22);
-			this.toolStripMenuItemFindEffects.Text = "Find Effects";
-			this.toolStripMenuItemFindEffects.Click += new System.EventHandler(this.toolStripMenuItemFindEffects_Click);
-			// 
 			// viewToolStripMenuItem
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1060,7 +1052,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolWindowToolStripMenuItem,
             this.gridWindowToolStripMenuItem,
             this.effectEditorWindowToolStripMenuItem,
-            this.mixingFilterEditorWindowToolStripMenuItem});
+            this.mixingFilterEditorWindowToolStripMenuItem,
+            this.toolStripMenuItemFindEffects});
 			this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -1533,6 +1526,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.timerDelayCountdown.Interval = 1000;
 			this.timerDelayCountdown.Tick += new System.EventHandler(this.timerDelayCountdown_Tick);
+			// 
+			// toolStripMenuItemFindEffects
+			// 
+			this.toolStripMenuItemFindEffects.Name = "toolStripMenuItemFindEffects";
+			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(215, 22);
+			this.toolStripMenuItemFindEffects.Text = "Find Effects";
+			this.toolStripMenuItemFindEffects.Click += new System.EventHandler(this.toolStripMenuItemFindEffects_Click);
 			// 
 			// TimedSequenceEditorForm
 			// 

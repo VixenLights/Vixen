@@ -63,7 +63,7 @@
 			this.comboBoxAvailableEffect.Name = "comboBoxAvailableEffect";
 			this.comboBoxAvailableEffect.Size = new System.Drawing.Size(248, 21);
 			this.comboBoxAvailableEffect.TabIndex = 12;
-			this.comboBoxAvailableEffect.SelectedIndexChanged += new System.EventHandler(this.listViewEffectStartTime_UpdateListView);
+			this.comboBoxAvailableEffect.SelectedIndexChanged += new System.EventHandler(this.comboBoxAvailableEffect_SelectedIndexChanged);
 			this.comboBoxAvailableEffect.Click += new System.EventHandler(this.comboBoxAvailableEffect_Click);
 			// 
 			// label4

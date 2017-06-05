@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Windows.Media.Animation;
@@ -34,12 +35,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewEffectStartTime.EndUpdate();
 		}
 
-		private void comboBoxAvailableEffect_Click(object sender, EventArgs e)
-		{
-			GetAllEffects();
-		}
+		#region Methods
 
-		private void listViewEffectStartTime_UpdateListView(object sender, EventArgs e)
+		private void UpdateListView()
 		{
 			if (comboBoxAvailableEffect.SelectedItem != null)
 			{
@@ -53,7 +51,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						//only unique effects will be added as there is no point adding the same effect just becasue it's in a different Element group
 						if ((!uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) &&
-						     element.EffectNode.Effect.EffectName == comboBoxAvailableEffect.SelectedItem.ToString()))
+							 element.EffectNode.Effect.EffectName == comboBoxAvailableEffect.SelectedItem.ToString()))
 						{
 							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
 							_elements.Add(element);
@@ -76,7 +74,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					listViewEffectStartTime.Items.Add(item);
 				}
 
-				listViewEffectStartTime.ColumnAutoSize();
 				listViewEffectStartTime.SetLastColumnWidth();
 				listViewEffectStartTime.EndUpdate();
 			}
@@ -104,13 +101,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void DisplaySelectedEffects()
 		{
-			int rowVerticleOffset = 0;
-
 			if (checkBoxCollapseAllGroups.Checked)
 				TimelineControl.RowListMenuCollapse();
 
-			TimelineControl.grid.DisplaySelectedEffects(rowVerticleOffset, listViewEffectStartTime.SelectedItems, _elements);
+			TimeSpan effectStartTime;
+			TimelineControl.grid.ClearSelectedElements();
+
+			foreach (ListViewItem currentEffect in listViewEffectStartTime.SelectedItems)
+			{
+				TimeSpan.TryParseExact(currentEffect.SubItems[1].Text, @"hh\:mm\:ss\.fffffff",
+					CultureInfo.InvariantCulture, out effectStartTime);
+				Guid effectId = Guid.Parse(currentEffect.Tag.ToString());
+				TimelineControl.grid.DisplaySelectedEffects(effectStartTime, effectId, _elements);
+			}
 		}
+
+		#endregion
+
+		#region Event
 
 		private void listViewEffectStartTime_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -133,5 +141,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			comboBoxAvailableEffect.Refresh(); //Ensure the combobox is redrawn to display correctly.
 		}
+
+		private void comboBoxAvailableEffect_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateListView();
+			listViewEffectStartTime.ColumnAutoSize();
+		}
+
+		private void comboBoxAvailableEffect_Click(object sender, EventArgs e)
+		{
+			GetAllEffects();
+		}
+
+		private void listViewEffectStartTime_UpdateListView(object sender, EventArgs e)
+		{
+			UpdateListView();
+		}
+		#endregion
+
 	}
 }
