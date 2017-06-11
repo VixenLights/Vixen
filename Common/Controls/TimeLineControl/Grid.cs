@@ -714,44 +714,29 @@ namespace Common.Controls.Timeline
 		}
 
 		//Locates and Displays selected effects on the Find Effects Form
-		public void DisplaySelectedEffects(TimeSpan effectStartTime, Guid effectId, List<Element> elements)
+		public void DisplaySelectedEffects(List<Element> elements)
 		{
-			int rowVerticleOffset = 0;
-
+			//int rowVerticleOffset = 0;
+			if (!elements.Any()) return;
 			foreach (var element in elements)
 			{
-				if (element.EffectNode.Effect.InstanceId == effectId) //Compares Effect GUID and proceed when matched found.
+				element.Selected = true;
+				element.Row.Visible = true;
+
+				//Make selected effect and any Parent nodes visible and Tree expanded.
+				Row parent = element.Row.ParentRow;
+				while (parent != null)
 				{
-					element.Selected = true;
-					foreach (Row row in Rows)
-					{
-						if (row.ParentRow != null && row.Name == element.Row.Name)
-						{
-							//Make selected effect and any Parent nodes visible and Tree expanded.
-							Row parent = row.ParentRow;
-							do
-							{
-								if (element.Row.ParentRow != null)
-								{
-									parent.TreeOpen = true;
-									parent.Visible = true;
-									foreach (var childRows in parent.ChildRows)
-									{
-										childRows.Visible = true;
-									}
-									parent = parent.ParentRow;
-								}
-							} while (parent != null);
-							element.EndUpdate();
-						}
-					}
-					rowVerticleOffset = element.Row.DisplayTop;
-					element.Row.Visible = true;
-				}
+					parent.TreeOpen = true;
+					parent.Visible = true;
+					parent = parent.ParentRow;	
+				} 
+				element.EndUpdate();
 			}
 
-			VisibleTimeStart = effectStartTime; //Adjusts the Horixontal Start Time position so the last selected effect is visible
-			VerticalOffset = rowVerticleOffset; //Adjust the vertical grid position so the last selected effect is visible.
+			var lastElement = elements.Last();
+			VisibleTimeStart = lastElement.StartTime; //Adjusts the Horixontal Start Time position so the last selected effect is visible
+			VerticalOffset = lastElement.Row.DisplayTop; //Adjust the vertical grid position so the last selected effect is visible.
 			_SelectionChanged(); //Ensures Effect editor docker is updated with the Selected effects.
 			Refresh();
 		}

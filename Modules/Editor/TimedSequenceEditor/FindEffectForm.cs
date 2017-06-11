@@ -7,6 +7,7 @@ using System.Windows.Media.Animation;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
+using Vixen.Sys;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 
@@ -14,8 +15,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class FindEffectForm : DockContent
 	{
-		private List<Element> _elements = new List<Element>();
-
 		public TimelineControl TimelineControl { get; set; }
 
 		public FindEffectForm(TimelineControl timelineControl)
@@ -42,7 +41,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (comboBoxAvailableEffect.SelectedItem != null)
 			{
 				//gets the Effect data of all Effects in the sequence of the same type as per combobox selection
-				_elements.Clear();
+				var elements = new List<Element>();
 
 				HashSet<string> uniqueStrings = new HashSet<string>();
 				foreach (Row row in TimelineControl.Rows)
@@ -54,29 +53,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							 element.EffectNode.Effect.EffectName == comboBoxAvailableEffect.SelectedItem.ToString()))
 						{
 							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
-							_elements.Add(element);
+							elements.Add(element);
 						}
 					}
 				}
 
-				_elements.Sort(); //Puts the effects into Start Time order
+				elements.Sort(); //Puts the effects into Start Time order
 
 				//Add Effect data to listview.
 				listViewEffectStartTime.BeginUpdate();
 				listViewEffectStartTime.Items.Clear();
 
-				foreach (Element element in _elements)
+				foreach (Element element in elements)
 				{
-					ListViewItem item = new ListViewItem();
-					item.Text = element.EffectNode.Effect.TargetNodes[0].ToString();
-					item.SubItems.Add(element.StartTime.ToString());
-					item.Tag = element.EffectNode.Effect.InstanceId.ToString(); //GUID added so it can be used to find selected effects.
-					listViewEffectStartTime.Items.Add(item);
+					AddElementToListView(element);
 				}
 
 				listViewEffectStartTime.SetLastColumnWidth();
 				listViewEffectStartTime.EndUpdate();
 			}
+		}
+
+		private void AddElementToListView(Element element)
+		{
+			ListViewItem item = new ListViewItem();
+			item.Text = element.Row.RowLabel.Name;//  element.EffectNode.Effect.TargetNodes[0].ToString();
+			item.SubItems.Add(element.StartTime.ToString());
+			item.Tag = element; 
+			listViewEffectStartTime.Items.Add(item);
 		}
 
 		private void GetAllEffects()
@@ -85,7 +89,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			comboBoxAvailableEffect.Items.Clear();
 			comboBoxAvailableEffect.BeginUpdate();
 			HashSet<string> uniqueStrings = new HashSet<string>();
-
+			
 			foreach (Row row in TimelineControl.Rows)
 				foreach (Element effect in row)
 				{
@@ -104,16 +108,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (checkBoxCollapseAllGroups.Checked)
 				TimelineControl.RowListMenuCollapse();
 
-			TimeSpan effectStartTime;
 			TimelineControl.grid.ClearSelectedElements();
 
-			foreach (ListViewItem currentEffect in listViewEffectStartTime.SelectedItems)
+			var selectedElements = new List<Element>();
+			foreach (ListViewItem item in listViewEffectStartTime.SelectedItems)
 			{
-				TimeSpan.TryParseExact(currentEffect.SubItems[1].Text, @"hh\:mm\:ss\.fffffff",
-					CultureInfo.InvariantCulture, out effectStartTime);
-				Guid effectId = Guid.Parse(currentEffect.Tag.ToString());
-				TimelineControl.grid.DisplaySelectedEffects(effectStartTime, effectId, _elements);
+				selectedElements.Add(item.Tag as Element);
 			}
+
+			TimelineControl.grid.DisplaySelectedEffects(selectedElements);
+
 		}
 
 		#endregion
