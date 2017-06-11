@@ -7,6 +7,8 @@ namespace VixenModules.Effect.Circles
 		[Description("Bounce")]
 		Bounce,
 		[Description("Wrap")]
-		Wrap
+		Wrap,
+		[Description("Circles")]
+		Circles
 	}
 }

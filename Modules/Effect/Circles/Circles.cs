@@ -24,6 +24,7 @@ namespace VixenModules.Effect.Circles
 		private readonly List<BallClass> _balls = new List<BallClass>();
 		private int _circleCount;
 		private static Random _random = new Random();
+		private int _maxBuffer;
 
 		public Circles()
 		{
@@ -74,22 +75,7 @@ namespace VixenModules.Effect.Circles
 			set
 			{
 				_data.CircleType = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CircleRadialDirection")]
-		[ProviderDescription(@"CircleRadialDirection")]
-		[PropertyOrder(1)]
-		public CircleRadialDirection CircleRadialDirection
-		{
-			get { return _data.CircleRadialDirection; }
-			set
-			{
-				_data.CircleRadialDirection = value;
+				UpdateTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -99,7 +85,7 @@ namespace VixenModules.Effect.Circles
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CircleFill")]
 		[ProviderDescription(@"CircleFill")]
-		[PropertyOrder(2)]
+		[PropertyOrder(1)]
 		public CircleFill CircleFill
 		{
 			get { return _data.CircleFill; }
@@ -111,6 +97,22 @@ namespace VixenModules.Effect.Circles
 				OnPropertyChanged();
 			}
 		}
+
+		//[Value]
+		//[ProviderCategory(@"Config", 1)]
+		//[ProviderDisplayName(@"CircleRadialDirection")]
+		//[ProviderDescription(@"CircleRadialDirection")]
+		//[PropertyOrder(2)]
+		//public CircleRadialDirection CircleRadialDirection
+		//{
+		//	get { return _data.CircleRadialDirection; }
+		//	set
+		//	{
+		//		_data.CircleRadialDirection = value;
+		//		IsDirty = true;
+		//		OnPropertyChanged();
+		//	}
+		//}
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -270,6 +272,7 @@ namespace VixenModules.Effect.Circles
 		private void UpdateAttributes()
 		{
 			UpdateColorAttribute(false);
+			UpdateTypeAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -279,6 +282,20 @@ namespace VixenModules.Effect.Circles
 			{
 				propertyStates.Add("Colors", CircleFill != CircleFill.Inverse);
 				propertyStates.Add("BackgroundColor", CircleFill == CircleFill.Inverse);
+			}
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateTypeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
+			{
+				propertyStates.Add("RandomRadius", CircleType != CircleType.Circles);
+				propertyStates.Add("Collide", CircleType != CircleType.Circles);
 			}
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -308,6 +325,7 @@ namespace VixenModules.Effect.Circles
 		protected override void SetupRender()
 		{
 			//Nothing to setup
+			_maxBuffer = Math.Max(BufferHt, BufferWi);
 		}
 
 		protected override void CleanUpRender()
@@ -334,13 +352,121 @@ namespace VixenModules.Effect.Circles
 
 			_circleCount = Convert.ToInt16(CircleCountCurve.GetValue(intervalPosFactor));
 
+			//Generates Circles from center of grid.
+			if (CircleType == CircleType.Circles)
+			{
+				for (int y = 0; y < BufferHt; y++)
+				{
+					for (int x = 0; x < BufferWi; x++)
+					{
+						HSV hsv = new HSV();
+						double radius1 = (CalculateRadialRadius(intervalPosFactor) / (double)2 / (_circleCount + 1));
+						double currentRadius = radius1;
+						int colorIndex = 0;
+						double distanceFromBallCenter = DistanceFromPoint(new Point(BufferWi / 2, BufferHt / 2), x, y);//, x + frame, y + frame will move the Circle around the grid.
+
+						int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
+							? 2
+							: (int)Math.Round(distanceFromBallCenter);
+
+						if (distance >= CalculateRadialRadius(intervalPosFactor) && CircleFill == CircleFill.Inverse) //distance - frame makes Circle go in or out.
+						{
+							Color backColor = BackgroundColor.GetColorAt(intervalPos);
+							frameBuffer.SetPixel(x, y, backColor);
+							continue;
+						}
+
+						for (int i = 0; i < _circleCount; i++)
+						{
+							if (colorIndex == Colors.Count)
+								colorIndex = 0;
+
+							hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(intervalPos));
+							if (distance <= radius1 && distance >= radius1 - currentRadius) //distance - frame makes Circle go in or out.
+							{
+								switch (CircleFill)
+								{
+									case CircleFill.Solid:
+										hsv.V = hsv.V * level;
+										frameBuffer.SetPixel(x, y, hsv);
+										break;
+									case CircleFill.Gradient:
+										hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(distance / radius1));
+										hsv.V = hsv.V * level;
+										frameBuffer.SetPixel(x, y, hsv);
+										break;
+									case CircleFill.Empty:
+										if (distance == (int) radius1)
+										{
+											hsv.V = hsv.V*level;
+											frameBuffer.SetPixel(x, y, hsv);
+										}
+										break;
+									case CircleFill.Fade:
+										if (distance <= radius1)
+										{
+											hsv.V *= 1.0 - distance / radius1;
+											hsv.V = hsv.V * level;
+											frameBuffer.SetPixel(x, y, hsv);
+										}
+										break;
+								}
+							}
+							colorIndex++;
+
+							radius1 = radius1 + currentRadius;
+						}
+					}
+				}
+				return;
+			}
+
+			//HSV hsv = new HSV();
+			//int ii, n;
+			//int colorIdx;
+
+			//int position = Convert.ToInt16(intervalPos * 1000) % 1;
+			//int minBufferSize = Math.Max(BufferWi, BufferHt);
+			//int barht = minBufferSize / (11 + 1);// 11 was thickness
+			//if (barht < 1) barht = 1;
+			//int maxRadius = effectState > minBufferSize ? minBufferSize : effectState / 2 + thickness;
+			//int blockHt = Colors.Count * barht;
+			//int f_offset = effectState / 4 % (blockHt + 1);
+
+			//barht = barht > 0 ? barht : 1;
+
+			//HSV lastColor = new HSV();
+			//for (ii = maxRadius; ii >= 0; ii--)
+			//{
+			//	n = ii - f_offset + blockHt;
+			//	colorIdx = (n) % blockHt / barht;
+			//	hsv = HSV.FromRGB(Colors[colorIdx].GetColorAt(intervalPos));
+
+			//	hsv.V = hsv.V * level;
+			//	if (CircleType == CircleType.Radial3D)
+			//	{
+			//		hsv.H *= (float)(barht - n % barht - 1) / barht; //= (float)((double)(ii + 1) / maxRadius); //1.0 * (ii - intervalPos) / maxRadius;// / ((double)maxRadius / number * 70);
+			//		//hsv.hue = 1.0*(ii+effectState)/(maxRadius/number);
+			//		//			if (hsv.H > 1.0) hsv.H = hsv.H - (long)hsv.H;
+			//		//			hsv.S = 1.0;
+			//	}
+			//	if (lastColor != hsv)
+			//	{
+			//		DrawCircle(x, y, ii, hsv, true, frameBuffer, ball);
+			//		lastColor = hsv;
+			//	}
+			//}
+
 			if (frame == 0)
 			{
-				// Create initial Balls/Circles.
-				for (int i = 0; i < _circleCount; i++)
+				if (CircleType != CircleType.Circles)
 				{
-					int rad = RandomRadius ? _random.Next(3, radius) : radius;
-					CreateBalls(minSpeed, maxSpeed, rad);
+					// Create initial Balls/Circles.
+					for (int i = 0; i < _circleCount; i++)
+					{
+						int rad = RandomRadius ? _random.Next(3, radius) : radius;
+						CreateBalls(minSpeed, maxSpeed, rad);
+					}
 				}
 			}
 
@@ -595,6 +721,13 @@ namespace VixenModules.Effect.Circles
 		private int CalculateRadius(double intervalPos)
 		{
 			var value = (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), 20, 1);
+
+			return value;
+		}
+
+		private int CalculateRadialRadius(double intervalPos)
+		{
+			var value = (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), _maxBuffer, 1);
 
 			return value;
 		}
