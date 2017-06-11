@@ -81,7 +81,6 @@
     <Compile Include="BorderData.cs" />
     <Compile Include="BorderDescriptor.cs" />
     <Compile Include="BorderMode.cs" />
-    <Compile Include="BorderShape.cs" />
     <Compile Include="BorderType.cs" />
     <Compile Include="GradientMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

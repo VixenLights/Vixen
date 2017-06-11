@@ -27,7 +27,6 @@ namespace VixenModules.Effect.Borders
 			OuterBorderStartsCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			BorderType = BorderType.Single;
 			GradientMode = GradientMode.OverTime;
-			BorderShape = BorderShape.Rectangle;
 			BorderMode = BorderMode.Simple;
 			Orientation=StringOrientation.Vertical;
 			SimpleBorderWidth = 1;
@@ -35,9 +34,6 @@ namespace VixenModules.Effect.Borders
 
 		[DataMember]
 		public ColorGradient Gradient { get; set; }
-
-		[DataMember]
-		public BorderShape BorderShape { get; set; }
 
 		[DataMember]
 		public int SimpleBorderWidth { get; set; }
@@ -90,7 +86,6 @@ namespace VixenModules.Effect.Borders
 				BorderType = BorderType,
 				GradientMode = GradientMode,
 				BorderMode = BorderMode,
-				BorderShape = BorderShape,
 				SimpleBorderWidth = SimpleBorderWidth,
 				Gradient = Gradient
 			};

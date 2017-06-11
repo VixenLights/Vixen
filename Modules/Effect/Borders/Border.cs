@@ -67,27 +67,10 @@ namespace VixenModules.Effect.Borders
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"BorderShape")]
-		[ProviderDescription(@"BorderShape")]
-		[PropertyOrder(1)]
-		public BorderShape BorderShape
-		{
-			get { return _data.BorderShape; }
-			set
-			{
-				_data.BorderShape = value;
-	//			UpdateBorderShapeAttribute();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BorderWidth")]
 		[ProviderDescription(@"BorderWidth")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 50, 1)]
+		[NumberRange(1, 100, 1)]
 		[PropertyOrder(2)]
 		public int SimpleBorderWidth
 		{
@@ -285,7 +268,6 @@ namespace VixenModules.Effect.Borders
 		{
 			UpdateBorderControlAttribute(false);
 			UpdateStringOrientationAttributes();
-		//	UpdateBorderShapeAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -333,23 +315,6 @@ namespace VixenModules.Effect.Borders
 			}
 		}
 
-		private void UpdateBorderShapeAttribute(bool refresh = true)
-		{
-			if (BorderShape == BorderShape.Rectangle)
-			{
-				Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-				{
-					
-				};
-				SetBrowsable(propertyStates);
-			}
-
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
 		protected override void SetupRender()
 		{
 			_minBufferSize = (double)(Math.Min(BufferHt, BufferWi)) / 100;
@@ -385,12 +350,6 @@ namespace VixenModules.Effect.Borders
 				bottomThickness = thickness;
 			}
 
-			if (BorderShape == BorderShape.Ellipse)
-			{
-				FillEllipse(rightThickness, topThickness, leftThickness, bottomThickness, frameBuffer, effectFrame, borderWidth);
-				return;
-			}
-
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
@@ -404,8 +363,6 @@ namespace VixenModules.Effect.Borders
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-
-			_minBufferSize = (double)(Math.Min(BufferHt, BufferWi)) / 100;
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 
 			for (int effectFrame = 0; effectFrame < numFrames; effectFrame++)
@@ -425,6 +382,13 @@ namespace VixenModules.Effect.Borders
 				{
 					thickness = SimpleBorderWidth;
 					borderWidth = 0;
+				}
+				else if (BorderType == BorderType.Single)
+				{
+					rightThickness = thickness;
+					topThickness = thickness;
+					leftThickness = thickness;
+					bottomThickness = thickness;
 				}
 
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
@@ -451,16 +415,14 @@ namespace VixenModules.Effect.Borders
 				x = x - BufferWiOffset;
 			}
 
-			Color color = GraidentColorSelection(x, y, effectFrame);
-
-			HSV hsv = HSV.FromRGB(color);
+			HSV hsv = GraidentColorSelection(x, y, effectFrame);
 			hsv.V = hsv.V * level;
 
 			if (BorderType == BorderType.Single || BorderMode == BorderMode.Simple)//Single Border Control
 			{
 				//Displays borders 
-				if ((y <= thickness || y >= BufferHt - thickness || x <= thickness || x >= BufferWi - thickness)
-					&& x > borderWidth && y < BufferHt - borderWidth && y > borderWidth && x < BufferWi - borderWidth)//&& x > thickness - borderWidth && y < BufferHt - thickness - 1 + borderWidth && y > thickness - borderWidth && x < BufferWi - thickness - 1 + borderWidth)
+				if ((y < thickness || y >= BufferHt - thickness || x < thickness || x >= BufferWi - thickness)
+					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
@@ -468,186 +430,15 @@ namespace VixenModules.Effect.Borders
 			else
 			{
 				//Displays Independent Borders
-				if ((y <= bottomThickness || y >= BufferHt - topThickness || x <= leftThickness || x >= BufferWi - rightThickness)
-					&& x > borderWidth && y < BufferHt - borderWidth && y > borderWidth && x < BufferWi - borderWidth)
+				if ((y < bottomThickness || y >= BufferHt - topThickness || x < leftThickness || x >= BufferWi - rightThickness)
+					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
 			}
 		}
-		private void FillEllipse(int rightThickness, int topThickness, int leftThickness, int bottomThickness, IPixelFrameBuffer frameBuffer, int effectFrame, int borderWidth)
-		{
-			int right = SimpleBorderWidth;
-			int left = BufferHt - SimpleBorderWidth - 1;
-			int top = SimpleBorderWidth;
-			int bottom = BufferWi - SimpleBorderWidth - 1;
 
-			if (BorderMode == BorderMode.Advanced)
-			{
-				right = bottomThickness;
-				left = BufferHt - topThickness - 1;
-				top = leftThickness;
-				bottom = BufferWi - rightThickness - 1;
-			}
-
-			int a, b, x, y, temp;
-			int old_y;
-			int d1, d2;
-			int a2, b2, a2b2, a2sqr, b2sqr, a4sqr, b4sqr;
-			int a8sqr, b8sqr, a4sqr_b4sqr;
-			int fn, fnw, fw;
-			int fnn, fnnw, fnwn, fnwnw, fnww, fww, fwnw;
-
-			if (right < left)
-			{
-				temp = left;
-				left = right;
-				right = temp;
-			}
-			if (bottom < top)
-			{
-				temp = top;
-				top = bottom;
-				bottom = temp;
-			}
-
-			a = (right - left) / 2;
-			b = (bottom - top) / 2;
-
-			x = 0;
-			y = b;
-
-			a2 = a * a;
-			b2 = b * b;
-			a2b2 = a2 + b2;
-			a2sqr = a2 + a2;
-			b2sqr = b2 + b2;
-			a4sqr = a2sqr + a2sqr;
-			b4sqr = b2sqr + b2sqr;
-			a8sqr = a4sqr + a4sqr;
-			b8sqr = b4sqr + b4sqr;
-			a4sqr_b4sqr = a4sqr + b4sqr;
-
-			fn = a8sqr + a4sqr;
-			fnn = a8sqr;
-			fnnw = a8sqr;
-			fnw = a8sqr + a4sqr - b8sqr * a + b8sqr;
-			fnwn = a8sqr;
-			fnwnw = a8sqr + b8sqr;
-			fnww = b8sqr;
-			fwnw = b8sqr;
-			fww = b8sqr;
-			d1 = b2 - b4sqr * a + a4sqr;
-
-			Color color = System.Drawing.Color.Black;
-			HSV hsv = HSV.FromRGB(color);
-
-			while ((fnw < a2b2) || (d1 < 0) || ((fnw - fn > b2) && (y > 0)))
-			{
-				DrawVLine(top + y, left + x, right - x, hsv, false, frameBuffer);
-				// Replace with your own span filling function. The hard-coded numbers were color values for testing purposes and can be ignored.
-				DrawVLine(bottom - y, left + x, right - x, hsv, false, frameBuffer);
-
-				y--;
-				if ((d1 < 0) || (fnw - fn > b2))
-				{
-					d1 += fn;
-					fn += fnn;
-					fnw += fnwn;
-				}
-				else
-				{
-					x++;
-					d1 += fnw;
-					fn += fnnw;
-					fnw += fnwnw;
-				}
-			}
-
-			fw = fnw - fn + b4sqr;
-			d2 = d1 + (fw + fw - fn - fn + a4sqr_b4sqr + a8sqr) / 4;
-			fnw += b4sqr - a4sqr;
-
-			old_y = y + 1;
-
-			
-			while (x <= a)
-			{
-				
-				if (y != old_y) // prevent overdraw
-				{
-					DrawVLine(top + y, left + x, right - x, hsv, false, frameBuffer);
-					DrawVLine(bottom - y, left + x, right - x, hsv, false, frameBuffer);
-				}
-
-				old_y = y;
-				x++;
-				if (d2 < 0)
-				{
-					y--;
-					d2 += fnw;
-					fw += fwnw;
-					fnw += fnwnw;
-				}
-				else
-				{
-					d2 += fw;
-					fw += fww;
-					fnw += fnww;
-				}
-			}
-
-			//Inverses the generated Ellipse and applies the correct Gradient Color
-			for (int i = 0 + borderWidth; i < BufferWi - borderWidth; i++)
-			{
-				for (int j = 0 + borderWidth; j < BufferHt - borderWidth; j++)
-				{
-					if (frameBuffer.GetColorAt(i, j) == System.Drawing.Color.Transparent)
-					{
-						color = GraidentColorSelection(i, j, effectFrame);
-						frameBuffer.SetPixel(i, j, color);
-					}
-				}
-			}
-		}
-
-		private void DrawVLine(int x, int ystart, int yend, HSV hsv, bool wrap, IPixelFrameBuffer framBuffer)
-		{
-			if (ystart > yend)
-			{
-				int i = ystart;
-				ystart = yend;
-				yend = i;
-			}
-			for (int y = ystart; y <= yend; y++)
-			{
-				if (wrap)
-				{
-					while (x < 0)
-					{
-						x += BufferWi;
-					}
-					while (y < 0)
-					{
-						y += BufferHt;
-					}
-					while (x > BufferWi)
-					{
-						x -= BufferWi;
-					}
-					while (y > BufferHt)
-					{
-						y -= BufferHt;
-					}
-				}
-				if (x < BufferWi && y < BufferHt && x >= 0 && y >= 0)
-				{
-					framBuffer.SetPixel(x, y, hsv);
-				}
-			}
-		}
-
-		private Color GraidentColorSelection(int x, int y, int effectFrame)
+		private HSV GraidentColorSelection(int x, int y, int effectFrame)
 		{
 			Color color = new Color();
 			switch (GradientMode)
@@ -668,7 +459,7 @@ namespace VixenModules.Effect.Borders
 					color = Color.GetColorAt(((100 / (double)(BufferHt - 1) * y) + (100 / (double)(BufferWi - 1) * x)) / 200);
 					break;
 			}
-			return color;
+			return HSV.FromRGB(color);
 		}
 	}
 }
