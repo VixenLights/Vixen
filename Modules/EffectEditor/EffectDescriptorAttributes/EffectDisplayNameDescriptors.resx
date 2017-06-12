@@ -471,8 +471,8 @@
   <data name="Movement" xml:space="preserve">
     <value>Movement</value>
   </data>
-  <data name="BorderThickness" xml:space="preserve">
-    <value>Border Thickness</value>
+  <data name="BorderSize" xml:space="preserve">
+    <value>Size</value>
   </data>
   <data name="BorderType" xml:space="preserve">
     <value>Border Type</value>
@@ -481,24 +481,24 @@
     <value>Border Mode</value>
   </data>
   <data name="BorderWidth" xml:space="preserve">
-    <value>Border Width</value>
+    <value>Width</value>
   </data>
-  <data name="BottomBorder" xml:space="preserve">
-    <value>Bottom Border</value>
+  <data name="BottomBorderWidth" xml:space="preserve">
+    <value>Bottom Width</value>
   </data>
-  <data name="LeftBorder" xml:space="preserve">
-    <value>Left Border</value>
+  <data name="LeftBorderWidth" xml:space="preserve">
+    <value>Left Width</value>
   </data>
   <data name="OuterBorderStarts" xml:space="preserve">
     <value>Outer Border Starts</value>
   </data>
-  <data name="RightBorder" xml:space="preserve">
-    <value>Right Border</value>
+  <data name="RightBorderWidth" xml:space="preserve">
+    <value>Right Width</value>
   </data>
   <data name="RoundEdges" xml:space="preserve">
     <value>Round Edges</value>
   </data>
-  <data name="TopBorder" xml:space="preserve">
-    <value>Top Border</value>
+  <data name="TopBorderWidth" xml:space="preserve">
+    <value>Top Width</value>
   </data>
 </root>

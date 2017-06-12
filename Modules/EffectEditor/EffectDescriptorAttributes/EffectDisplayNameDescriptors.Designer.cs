@@ -143,11 +143,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Border Thickness.
+        ///   Looks up a localized string similar to Size.
         /// </summary>
-        internal static string BorderThickness {
+        internal static string BorderSize {
             get {
-                return ResourceManager.GetString("BorderThickness", resourceCulture);
+                return ResourceManager.GetString("BorderSize", resourceCulture);
             }
         }
         
@@ -161,7 +161,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Border Width.
+        ///   Looks up a localized string similar to Width.
         /// </summary>
         internal static string BorderWidth {
             get {
@@ -170,11 +170,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bottom Border.
+        ///   Looks up a localized string similar to Bottom Width.
         /// </summary>
-        internal static string BottomBorder {
+        internal static string BottomBorderWidth {
             get {
-                return ResourceManager.GetString("BottomBorder", resourceCulture);
+                return ResourceManager.GetString("BottomBorderWidth", resourceCulture);
             }
         }
         
@@ -629,11 +629,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Left Border.
+        ///   Looks up a localized string similar to Left Width.
         /// </summary>
-        internal static string LeftBorder {
+        internal static string LeftBorderWidth {
             get {
-                return ResourceManager.GetString("LeftBorder", resourceCulture);
+                return ResourceManager.GetString("LeftBorderWidth", resourceCulture);
             }
         }
         
@@ -944,11 +944,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Right Border.
+        ///   Looks up a localized string similar to Right Width.
         /// </summary>
-        internal static string RightBorder {
+        internal static string RightBorderWidth {
             get {
-                return ResourceManager.GetString("RightBorder", resourceCulture);
+                return ResourceManager.GetString("RightBorderWidth", resourceCulture);
             }
         }
         
@@ -1106,11 +1106,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top Border.
+        ///   Looks up a localized string similar to Top Width.
         /// </summary>
-        internal static string TopBorder {
+        internal static string TopBorderWidth {
             get {
-                return ResourceManager.GetString("TopBorder", resourceCulture);
+                return ResourceManager.GetString("TopBorderWidth", resourceCulture);
             }
         }
         

@@ -462,34 +462,34 @@
   <data name="Movement" xml:space="preserve">
     <value>Control type of movement, either Speed and Iterations.</value>
   </data>
-  <data name="BorderThickness" xml:space="preserve">
-    <value>Controls how thick the Border is.</value>
-  </data>
   <data name="BorderType" xml:space="preserve">
-    <value>Enable Independent Border control.</value>
+    <value>Enable Single or Independent Border width control.</value>
   </data>
   <data name="BorderMode" xml:space="preserve">
-    <value>Enables Simple or Advanced border control.</value>
+    <value>Enables Simple or Advanced border width control.</value>
   </data>
   <data name="BorderWidth" xml:space="preserve">
     <value>Adjusts the Border width.</value>
   </data>
-  <data name="BottomBorder" xml:space="preserve">
+  <data name="BottomBorderWidth" xml:space="preserve">
     <value>Adjust the Bottom Border Width.</value>
   </data>
-  <data name="LeftBorder" xml:space="preserve">
+  <data name="LeftBorderWidth" xml:space="preserve">
     <value>Adjust the Left Border Width.</value>
   </data>
   <data name="OuterBorderStarts" xml:space="preserve">
     <value>Adjusts the Outer border start location.</value>
   </data>
-  <data name="RightBorder" xml:space="preserve">
+  <data name="RightBorderWidth" xml:space="preserve">
     <value>Adjust the Right Border Width.</value>
   </data>
   <data name="RoundEdges" xml:space="preserve">
     <value>Adds a pixel to the inner corners of the border.</value>
   </data>
-  <data name="TopBorder" xml:space="preserve">
+  <data name="TopBorderWidth" xml:space="preserve">
     <value>Adjust the Top Border Width.</value>
+  </data>
+  <data name="BorderSize" xml:space="preserve">
+    <value>Adjusts the overall size of the border.</value>
   </data>
 </root>

@@ -24,7 +24,7 @@ namespace VixenModules.Effect.Borders
 			LeftThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			RightThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
-			OuterBorderStartsCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			BorderSizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			BorderType = BorderType.Single;
 			GradientMode = GradientMode.OverTime;
 			BorderMode = BorderMode.Simple;
@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Borders
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public Curve OuterBorderStartsCurve { get; set; }
+		public Curve BorderSizeCurve { get; set; }
 
 		[DataMember]
 		public Curve ThicknessCurve { get; set; }
@@ -82,7 +82,7 @@ namespace VixenModules.Effect.Borders
 				BottomThicknessCurve = new Curve(BottomThicknessCurve),
 				LeftThicknessCurve = new Curve(LeftThicknessCurve),
 				RightThicknessCurve = new Curve(RightThicknessCurve),
-				OuterBorderStartsCurve = new Curve(OuterBorderStartsCurve),
+				BorderSizeCurve = new Curve(BorderSizeCurve),
 				BorderType = BorderType,
 				GradientMode = GradientMode,
 				BorderMode = BorderMode,

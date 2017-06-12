@@ -125,7 +125,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enables Simple or Advanced border control..
+        ///   Looks up a localized string similar to Enables Simple or Advanced border width control..
         /// </summary>
         internal static string BorderMode {
             get {
@@ -134,16 +134,16 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls how thick the Border is..
+        ///   Looks up a localized string similar to Adjusts the overall size of the border..
         /// </summary>
-        internal static string BorderThickness {
+        internal static string BorderSize {
             get {
-                return ResourceManager.GetString("BorderThickness", resourceCulture);
+                return ResourceManager.GetString("BorderSize", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Independent Border control..
+        ///   Looks up a localized string similar to Enable Single or Independent Border width control..
         /// </summary>
         internal static string BorderType {
             get {
@@ -163,9 +163,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Adjust the Bottom Border Width..
         /// </summary>
-        internal static string BottomBorder {
+        internal static string BottomBorderWidth {
             get {
-                return ResourceManager.GetString("BottomBorder", resourceCulture);
+                return ResourceManager.GetString("BottomBorderWidth", resourceCulture);
             }
         }
         
@@ -550,9 +550,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Adjust the Left Border Width..
         /// </summary>
-        internal static string LeftBorder {
+        internal static string LeftBorderWidth {
             get {
-                return ResourceManager.GetString("LeftBorder", resourceCulture);
+                return ResourceManager.GetString("LeftBorderWidth", resourceCulture);
             }
         }
         
@@ -856,9 +856,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Adjust the Right Border Width..
         /// </summary>
-        internal static string RightBorder {
+        internal static string RightBorderWidth {
             get {
-                return ResourceManager.GetString("RightBorder", resourceCulture);
+                return ResourceManager.GetString("RightBorderWidth", resourceCulture);
             }
         }
         
@@ -1036,9 +1036,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Adjust the Top Border Width..
         /// </summary>
-        internal static string TopBorder {
+        internal static string TopBorderWidth {
             get {
-                return ResourceManager.GetString("TopBorder", resourceCulture);
+                return ResourceManager.GetString("TopBorderWidth", resourceCulture);
             }
         }
         
