@@ -1,0 +1,745 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
+using System.Linq;
+using Common.Controls.ColorManagement.ColorModels;
+using Vixen.Annotations;
+using Vixen.Attributes;
+using Vixen.Module;
+using Vixen.Sys;
+using Vixen.Sys.Attribute;
+using VixenModules.App.ColorGradients;
+using VixenModules.App.Curves;
+using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
+using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using ZedGraph;
+
+namespace VixenModules.Effect.Balls
+{
+	public class Balls : PixelEffectBase
+	{
+		private BallData _data;
+		private readonly List<BallClass> _balls = new List<BallClass>();
+		private List<BallClass> _removeBalls = new List<BallClass>();
+		private int _ballCount;
+		private static Random _random = new Random();
+		private int _minBuffer;
+		private int _maxBuffer;
+		private double _intervalPos;
+		private double _intervalPosFactor;
+		private int _radius;
+		private double _centerSpeed;
+		private double _speedVariation;
+		private double _level;
+		private int _newX;
+		private int _newY;
+
+		public Balls()
+		{
+			_data = new BallData();
+			EnableTargetPositioning(true, true);
+			UpdateAttributes();
+		}
+
+		#region Setup
+
+		[Value]
+		public override StringOrientation StringOrientation
+		{
+			get { return _data.Orientation; }
+			set
+			{
+				_data.Orientation = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Config properties
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BallType")]
+		[ProviderDescription(@"BallType")]
+		[PropertyOrder(0)]
+		public BallType BallType
+		{
+			get { return _data.BallType; }
+			set
+			{
+				_data.BallType = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BallFill")]
+		[ProviderDescription(@"BallFill")]
+		[PropertyOrder(1)]
+		public BallFill BallFill
+		{
+			get { return _data.BallFill; }
+			set
+			{
+				_data.BallFill = value;
+				UpdateFillAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		[PropertyOrder(2)]
+		public Curve CenterSpeedCurve
+		{
+			get { return _data.CenterSpeedCurve; }
+			set
+			{
+				_data.CenterSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SpeedVariation")]
+		[ProviderDescription(@"SpeedVariation")]
+		[PropertyOrder(3)]
+		public Curve SpeedVariationCurve
+		{
+			get { return _data.SpeedVariationCurve; }
+			set
+			{
+				_data.SpeedVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Radius")]
+		[ProviderDescription(@"Radius")]
+		[PropertyOrder(4)]
+		public Curve RadiusCurve
+		{
+			get { return _data.RadiusCurve; }
+			set
+			{
+				_data.RadiusCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BallCount")]
+		[ProviderDescription(@"BallCount")]
+		[PropertyOrder(5)]
+		public Curve BallCountCurve
+		{
+			get { return _data.BallCountCurve; }
+			set
+			{
+				_data.BallCountCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BallEdgeWidth")]
+		[ProviderDescription(@"BallEdgeWidth")]
+		[PropertyOrder(6)]
+		public Curve BallEdgeWidthCurve
+		{
+			get { return _data.BallEdgeWidthCurve; }
+			set
+			{
+				_data.BallEdgeWidthCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RandomRadius")]
+		[ProviderDescription(@"RandomRadius")]
+		[PropertyOrder(7)]
+		public bool RandomRadius
+		{
+			get { return _data.RandomRadius; }
+			set
+			{
+				_data.RandomRadius = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Collide")]
+		[ProviderDescription(@"Collide")]
+		[PropertyOrder(8)]
+		public bool Collide
+		{
+			get { return _data.Collide; }
+			set
+			{
+				_data.Collide = value;
+				UpdateCollideAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"ChangeCollideColor")]
+		[ProviderDescription(@"ChangeCollideColor")]
+		[PropertyOrder(9)]
+		public bool ChangeCollideColor
+		{
+			get { return _data.ChangeCollideColor; }
+			set
+			{
+				_data.ChangeCollideColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Color properties
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"ColorGradients")]
+		[ProviderDescription(@"Color")]
+		[PropertyOrder(1)]
+		public List<ColorGradient> Colors
+		{
+			get { return _data.Colors; }
+			set
+			{
+				_data.Colors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"BackGroundColor")]
+		[ProviderDescription(@"BackGroundColor")]
+		[PropertyOrder(3)]
+		public ColorGradient BackgroundColor
+		{
+			get { return _data.BackgroundColor; }
+			set
+			{
+				_data.BackgroundColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Level properties
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"Brightness")]
+		[ProviderDescription(@"Brightness")]
+		public Curve LevelCurve
+		{
+			get { return _data.LevelCurve; }
+			set
+			{
+				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Update Attributes
+
+		private void UpdateAttributes()
+		{
+			UpdateFillAttribute(false);
+			UpdateCollideAttributes(false);
+			UpdateStringOrientationAttributes();
+			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateFillAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
+			{
+				propertyStates.Add("Colors", BallFill != BallFill.Inverse);
+				propertyStates.Add("BackgroundColor", BallFill == BallFill.Inverse);
+				propertyStates.Add("BallCountCurve", BallFill != BallFill.Inverse);
+				propertyStates.Add("BallEdgeWidthCurve", BallFill == BallFill.Empty);
+			}
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateCollideAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			{
+				propertyStates.Add("ChangeCollideColor", Collide);
+			}
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		#endregion
+
+		public override IModuleDataModel ModuleData
+		{
+			get { return _data; }
+			set
+			{
+				_data = value as BallData;
+				UpdateAttributes();
+				IsDirty = true;
+			}
+		}
+
+		protected override EffectTypeModuleData EffectModuleData
+		{
+			get { return _data; }
+		}
+
+		protected override void SetupRender()
+		{
+			_minBuffer = Math.Min(BufferHt, BufferWi);
+			_maxBuffer = Math.Max(BufferHt, BufferWi);
+		}
+
+		protected override void CleanUpRender()
+		{
+			_balls.Clear();
+			_removeBalls.Clear();
+		}
+
+		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
+		{
+			_intervalPos = GetEffectTimeIntervalPosition(frame);
+			_intervalPosFactor = _intervalPos * 100;
+
+			_radius = CalculateRadius(_intervalPosFactor);
+			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
+			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
+			_level = LevelCurve.GetValue(_intervalPosFactor) / 100;
+
+			double minSpeed = _centerSpeed - (_speedVariation / 2);
+			double maxSpeed = _centerSpeed + (_speedVariation / 2);
+			if (minSpeed < 1) minSpeed = 1;
+
+			_ballCount = CalculateBallCount(_intervalPosFactor);
+
+			// Create Balls.
+			while (_ballCount > _balls.Count)
+			{
+				CreateBalls(minSpeed, maxSpeed);
+			}
+
+			foreach (var ball in _balls)
+			{
+				PreRender(ball);
+
+				for (int y = _newY - (int)ball.Radius; y < _newY + (int)ball.Radius + 1; y++)
+				{
+					for (int x = _newX - (int)ball.Radius; x < _newX + (int)ball.Radius + 1; x++)
+					{
+						CalculatePixel(x, y, frameBuffer, ball);
+					}
+				}
+			}
+
+			//Inverse grid so Balls are black and background color added.
+			if (BallFill == BallFill.Inverse)
+			{
+				Inverse(frameBuffer);
+			}
+
+			//Remove Excess Balls due to BallCount Curve.
+			if (_ballCount < _balls.Count)
+			{
+				RemoveBalls();
+			}
+		}
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.Y).ThenBy(x => x.X).GroupBy(x => x.Y);
+
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				frameBuffer.CurrentFrame = frame;
+				_intervalPos = GetEffectTimeIntervalPosition(frame);
+				_intervalPosFactor = _intervalPos*100;
+
+				_radius = CalculateRadius(_intervalPosFactor);
+				_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
+				_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
+				_level = LevelCurve.GetValue(_intervalPosFactor)/100;
+
+				double minSpeed = _centerSpeed - (_speedVariation/2);
+				double maxSpeed = _centerSpeed + (_speedVariation/2);
+				if (minSpeed < 1) minSpeed = 1;
+
+				_ballCount = CalculateBallCount(_intervalPosFactor);
+
+				// Create Balls.
+				while (_ballCount > _balls.Count)
+				{
+					CreateBalls(minSpeed, maxSpeed);
+				}
+
+				foreach (var ball in _balls)
+				{
+					PreRender(ball);
+
+					//	for (int y = new_y - ball.Radius; y < new_y + ball.Radius + 1; y++)
+					//	for (int x = new_x - ball.Radius; x < new_x + ball.Radius + 1; x++)
+
+					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					{
+						foreach (var elementLocation in elementLocations)
+						{
+							CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, ball);
+						}
+					}
+				}
+
+				//Inverse grid so Balls are black and background color added.
+				if (BallFill == BallFill.Inverse)
+				{
+					Inverse(frameBuffer);
+				}
+
+				//Remove Excess Balls due to BallCount Curve.
+				if (_ballCount < _balls.Count)
+				{
+					RemoveBalls();
+				}
+			}
+		}
+
+		private void PreRender(BallClass ball)
+		{
+			if (_ballCount < _balls.Count - _removeBalls.Count)
+			{
+				//Removes balls if ball count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
+				if (ball.LocationX + _radius >= BufferWi - 1 || ball.LocationY + _radius >= BufferHt - 1 ||
+					ball.LocationX - _radius <= 1 || ball.LocationY + _radius <= 1)
+				{
+					_removeBalls.Add(ball);
+				}
+			}
+
+			//Adjust ball speeds when user adjust Speed curve
+			if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
+			    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
+			{
+				double ratio = CalculateCenterSpeed(_intervalPosFactor)/CalculateCenterSpeed(_intervalPosFactor - 1);
+				ball.VelocityX *= ratio;
+				ball.VelocityY *= ratio;
+			}
+
+			if (_speedVariation > CalculateSpeedVariation(_intervalPosFactor - 1) ||
+			    _speedVariation < CalculateSpeedVariation(_intervalPosFactor - 1))
+			{
+				double ratio = CalculateSpeedVariation(_intervalPosFactor)/CalculateSpeedVariation(_intervalPosFactor - 1);
+				ball.VelocityX *= ratio;
+				ball.VelocityY *= ratio;
+			}
+
+			if (_radius > CalculateRadius(_intervalPosFactor - 1) || _radius < CalculateRadius(_intervalPosFactor - 1))
+			{
+				double ratio = (double) CalculateRadius(_intervalPosFactor)/CalculateRadius(_intervalPosFactor - 1);
+				ball.Radius *= ratio;
+			}
+
+			// Move the ball.
+			_newX = (int) (ball.LocationX + ball.VelocityX);
+			_newY = (int) (ball.LocationY + ball.VelocityY);
+
+			//Checks to see if any are going to collide and if they are then adjust their location and change to opposite direction.
+			if (Collide)
+			{
+				foreach (var ball1 in _balls)
+				{
+					var maxRadius = Math.Max(ball.Radius, ball1.Radius);
+					if ((ball1.LocationX + maxRadius >= _newX && ball1.LocationX - maxRadius < _newX &&
+					     ball1.LocationY + maxRadius >= _newY && ball1.LocationY - maxRadius < _newY) &&
+						ball1.BallGuid != ball.BallGuid)
+					{
+						ball.VelocityX = -ball.VelocityX;
+						ball.VelocityY = -ball.VelocityY;
+						ball1.VelocityX = -ball1.VelocityX;
+						ball1.VelocityY = -ball1.VelocityY;
+						ball.LocationY = ball.LocationY + ball.VelocityY;
+						ball.LocationX = ball.LocationX + ball.VelocityX;
+						ball1.LocationY = ball1.LocationY + ball1.VelocityY;
+						ball1.LocationX = ball1.LocationX + ball1.VelocityX;
+
+						//Changes the Ball color when it collides with another ball and will not change to the same color.
+						if (Colors.Count > 1 && ChangeCollideColor)
+						{
+							var colorIndex = 0;
+							do
+							{
+								colorIndex = _random.Next(0, Colors.Count);
+							} while (ball.ColorIndex == colorIndex);
+							ball.ColorIndex = colorIndex;
+
+							do
+							{
+								colorIndex = _random.Next(0, Colors.Count);
+							} while (ball1.ColorIndex == colorIndex);
+							ball1.ColorIndex = colorIndex;
+						}
+						break;
+					}
+				}
+			}
+
+			ball.LocationX = _newX;
+			ball.LocationY = _newY;
+
+			switch (BallType)
+			{
+				case BallType.Bounce:
+					if (_newX - ball.Radius < 0)
+					{
+						ball.LocationX = 0 + ball.Radius;
+						ball.VelocityX = -ball.VelocityX;
+					}
+					else if (_newX + ball.Radius >= BufferWi)
+					{
+						ball.LocationX = BufferWi - ball.Radius - 1;
+						ball.VelocityX = -ball.VelocityX;
+					}
+					if (_newY - ball.Radius < 0)
+					{
+						ball.LocationY = 0 + ball.Radius;
+						ball.VelocityY = -ball.VelocityY;
+					}
+					else if (_newY + ball.Radius >= BufferHt)
+					{
+						ball.LocationY = BufferHt - ball.Radius - 1;
+						ball.VelocityY = -ball.VelocityY;
+					}
+					break;
+
+				case BallType.Wrap:
+					if (_newX < 0)
+					{
+						ball.LocationX = _newX += BufferWi;
+					}
+					if (_newY < 0)
+					{
+						ball.LocationY = _newY += BufferHt;
+					}
+					if (_newX > BufferWi)
+					{
+						ball.LocationX = _newX -= BufferWi;
+					}
+					if (_newY > BufferHt)
+					{
+						ball.LocationY = _newY -= BufferHt;
+					}
+					break;
+			}
+		}
+
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, BallClass ball)
+		{
+			int yCoord = y;
+			int xCoord = x;
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				//Flip me over so and offset my coordinates I can act like the string version
+				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = y - BufferHtOffset;
+				x = x - BufferWiOffset;
+			}
+
+			//This saves going through all X and Y locations reducing render times.
+			if ((y >= _newY + ball.Radius + 1 || y <= _newY - ball.Radius) && (x >= _newX + ball.Radius + 1 || x <= _newX - ball.Radius)) return;
+
+			double distanceFromBallCenter = DistanceFromPoint(new Point(_newX, _newY), x, y);
+			HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((_intervalPos)));
+			hsv.V = hsv.V * _level;
+
+			int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
+				? 2
+				: (int)Math.Round(distanceFromBallCenter);
+
+			switch (BallFill)
+			{
+				case BallFill.Solid:
+					if (distance <= ball.Radius)
+						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					break;
+				case BallFill.Empty:
+					if (distance >= ball.Radius - CalculateEdgeWidth(_intervalPosFactor) && distance < ball.Radius)
+						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					break;
+				case BallFill.Inverse:
+					hsv = HSV.FromRGB(Color.Black);
+					if (distance <= ball.Radius)
+						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					break;
+				case BallFill.Fade:
+					if (distance <= ball.Radius * 0.9 )
+					{
+						hsv.V *= 1.0 - distance / (double)ball.Radius;
+						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					}
+					break;
+				case BallFill.Gradient:
+					if (distance <= ball.Radius)
+					{
+						hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt(distance / (double)ball.Radius));
+						hsv.V = hsv.V * _level;
+						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					}
+					break;
+			}
+		}
+
+		private void Inverse(IPixelFrameBuffer frameBuffer)
+		{
+			Color backColor = BackgroundColor.GetColorAt(_intervalPos);
+			for (int x = 0; x < BufferWi; x++)
+			{
+				for (int y = 0; y < BufferHt; y++)
+				{
+					if (frameBuffer.GetColorAt(x, y) == Color.Transparent)
+					{
+						frameBuffer.SetPixel(x, y, backColor);
+					}
+				}
+			}
+		}
+
+		private void CreateBalls(double minSpeed, double maxSpeed)
+		{
+			BallClass m = new BallClass();
+
+			//Sets Radius size and Ball location
+			int radius = RandomRadius ? _random.Next(1, _radius + 1) : _radius;
+			m.LocationX = _random.Next(radius, BufferWi - radius);
+			m.LocationY = _random.Next(radius, BufferHt - radius);
+
+			if (Collide)
+			{
+				//Will not add a ball if one exists in the same spot.
+				foreach (BallClass ball in _balls)
+				{
+					if ((m.LocationX >= ball.LocationX && m.LocationX - radius < ball.LocationX) || (m.LocationY >= ball.LocationY && m.LocationY - radius < ball.LocationY))
+					{
+						return;
+					}
+				}
+			}
+
+			double vx = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
+			double vy = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
+			if (_random.Next(0, 2) == 0) vx = -vx;
+			if (_random.Next(0, 2) == 0) vy = -vy;
+			m.VelocityX = vx;
+			m.VelocityY = vy;
+			m.Radius = radius;
+			m.BallGuid = Guid.NewGuid();
+			m.ColorIndex = _random.Next(0, Colors.Count);
+			_balls.Add(m);
+		}
+
+		private void RemoveBalls()
+		{
+			foreach (var balls in _removeBalls)
+			{
+				_balls.Remove(balls);
+			}
+			_removeBalls.Clear();
+		}
+
+		public class BallClass
+		{
+			public double LocationX;
+			public double LocationY;
+			public double VelocityX;
+			public double VelocityY;
+			public int ColorIndex;
+			public double Radius;
+			public Guid BallGuid;
+		}
+
+		private double CalculateCenterSpeed(double intervalPosFactor)
+		{
+			double value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), 5 * (_maxBuffer / 40), 1);
+			if (value < 1) value = 1;
+			return value;
+		}
+
+		private double CalculateSpeedVariation(double intervalPosFactor)
+		{
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), 5 * (_maxBuffer / 40), 0);
+		}
+
+		private int CalculateRadius(double intervalPosFactor)
+		{
+			int value = (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPosFactor), (int)(_minBuffer / 2), 1);
+			if (value < 1) value = 1;
+			return value;
+		}
+
+		private int CalculateEdgeWidth(double intervalPosFactor)
+		{
+			int value = (int)ScaleCurveToValue(BallEdgeWidthCurve.GetValue(intervalPosFactor), 40, 1);
+			if (value < 1) value = 1;
+			return value;
+		}
+
+		private int CalculateBallCount(double intervalPosFactor)
+		{
+			int value = (int)ScaleCurveToValue(BallCountCurve.GetValue(intervalPosFactor), 100, 1);
+			if (value < 1) value = 1;
+			return value;
+		}
+	}
+}
