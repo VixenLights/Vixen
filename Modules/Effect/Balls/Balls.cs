@@ -35,8 +35,6 @@ namespace VixenModules.Effect.Balls
 		private double _centerSpeed;
 		private double _speedVariation;
 		private double _level;
-		private int _newX;
-		private int _newY;
 
 		public Balls()
 		{
@@ -368,17 +366,16 @@ namespace VixenModules.Effect.Balls
 
 			_ballCount = CalculateBallCount(_intervalPosFactor);
 
-			// Create Balls.
-			while (_ballCount > _balls.Count)
-			{
-				CreateBalls(minSpeed, maxSpeed);
-			}
+			// Create new Balls and add balls due to increase in ball count curve.
+			CreateBalls(minSpeed, maxSpeed);
 
-			foreach (var ball in _balls)
-			{
-				PreRender(ball);
-			}
+			// Update Ball location, radius and speed.
+			UpdateBalls();
 
+			//Remove Excess Balls due to BallCount Curve.
+			RemoveBalls();
+
+			//Iterate through all grid locations.
 			for (int y = 0; y < BufferHt; y++)
 			{
 				for (int x = 0; x < BufferWi; x++)
@@ -387,18 +384,8 @@ namespace VixenModules.Effect.Balls
 				}
 			}
 
-
-			//Inverse grid so Balls are black and background color added.
-			if (BallFill == BallFill.Inverse)
-			{
-				Inverse(frameBuffer);
-			}
-
-			//Remove Excess Balls due to BallCount Curve.
-			if (_ballCount < _balls.Count)
-			{
-				RemoveBalls();
-			}
+			//Inverse grid so Balls are black and add background color, can be used as a good mask effect.
+			Inverse(frameBuffer);
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
@@ -422,168 +409,154 @@ namespace VixenModules.Effect.Balls
 
 				_ballCount = CalculateBallCount(_intervalPosFactor);
 
-				// Create Balls.
-				while (_ballCount > _balls.Count)
-				{
-					CreateBalls(minSpeed, maxSpeed);
-				}
+				// Create new Balls and add balls due to increase in ball count curve.
+				CreateBalls(minSpeed, maxSpeed);
 
-				foreach (var ball in _balls)
-				{
-					PreRender(ball);
-				}
-
-				//	for (int y = new_y - ball.Radius; y < new_y + ball.Radius + 1; y++)
-					//	for (int x = new_x - ball.Radius; x < new_x + ball.Radius + 1; x++)
-
-					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
-					{
-						foreach (var elementLocation in elementLocations)
-						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer);
-						}
-					}
-				//}
-
-				//Inverse grid so Balls are black and background color added.
-				if (BallFill == BallFill.Inverse)
-				{
-					Inverse(frameBuffer);
-				}
+				// Update Ball location, radius and speed.
+				UpdateBalls();
 
 				//Remove Excess Balls due to BallCount Curve.
-				if (_ballCount < _balls.Count)
+				RemoveBalls();
+
+				//Iterate through all grid locations.
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
-					RemoveBalls();
+					foreach (var elementLocation in elementLocations)
+					{
+						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer);
+					}
 				}
+
+				//Inverse grid so Balls are black and add background color, can be used as a good mask effect.
+				Inverse(frameBuffer);
 			}
 		}
 
-		private void PreRender(BallClass ball)
+		private void UpdateBalls()
 		{
-			if (_ballCount < _balls.Count - _removeBalls.Count)
+			foreach (var ball in _balls)
 			{
-				//Removes balls if ball count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
-				if (ball.LocationX + _radius >= BufferWi - 1 || ball.LocationY + _radius >= BufferHt - 1 ||
-					ball.LocationX - _radius <= 1 || ball.LocationY + _radius <= 1)
+				if (_ballCount < _balls.Count - _removeBalls.Count)
 				{
-					_removeBalls.Add(ball);
-				}
-			}
-
-			//Adjust ball speeds when user adjust Speed curve
-			if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
-			    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
-			{
-				double ratio = CalculateCenterSpeed(_intervalPosFactor)/CalculateCenterSpeed(_intervalPosFactor - 1);
-				ball.VelocityX *= ratio;
-				ball.VelocityY *= ratio;
-			}
-
-			if (_speedVariation > CalculateSpeedVariation(_intervalPosFactor - 1) ||
-			    _speedVariation < CalculateSpeedVariation(_intervalPosFactor - 1))
-			{
-				double ratio = CalculateSpeedVariation(_intervalPosFactor)/CalculateSpeedVariation(_intervalPosFactor - 1);
-				ball.VelocityX *= ratio;
-				ball.VelocityY *= ratio;
-			}
-
-			if (_radius > CalculateRadius(_intervalPosFactor - 1) || _radius < CalculateRadius(_intervalPosFactor - 1))
-			{
-				double ratio = (double) CalculateRadius(_intervalPosFactor)/CalculateRadius(_intervalPosFactor - 1);
-				ball.Radius *= ratio;
-			}
-
-			// Move the ball.
-			_newX = (int) (ball.LocationX + ball.VelocityX);
-			_newY = (int) (ball.LocationY + ball.VelocityY);
-
-			//Checks to see if any are going to collide and if they are then adjust their location and change to opposite direction.
-			if (Collide)
-			{
-				foreach (var ball1 in _balls)
-				{
-					var maxRadius = Math.Max(ball.Radius, ball1.Radius);
-					if ((ball1.LocationX + maxRadius >= _newX && ball1.LocationX - maxRadius < _newX &&
-					     ball1.LocationY + maxRadius >= _newY && ball1.LocationY - maxRadius < _newY) &&
-						ball1.BallGuid != ball.BallGuid)
+					//Removes balls if ball count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
+					if (ball.LocationX + _radius >= BufferWi - 1 || ball.LocationY + _radius >= BufferHt - 1 ||
+					    ball.LocationX - _radius <= 1 || ball.LocationY + _radius <= 1)
 					{
-						ball.VelocityX = -ball.VelocityX;
-						ball.VelocityY = -ball.VelocityY;
-						ball1.VelocityX = -ball1.VelocityX;
-						ball1.VelocityY = -ball1.VelocityY;
-						ball.LocationY = ball.LocationY + ball.VelocityY;
-						ball.LocationX = ball.LocationX + ball.VelocityX;
-						ball1.LocationY = ball1.LocationY + ball1.VelocityY;
-						ball1.LocationX = ball1.LocationX + ball1.VelocityX;
+						_removeBalls.Add(ball);
+					}
+				}
 
-						//Changes the Ball color when it collides with another ball and will not change to the same color.
-						if (Colors.Count > 1 && ChangeCollideColor)
+				//Adjust ball speeds when user adjust Speed curve
+				if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
+				    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
+				{
+					double ratio = CalculateCenterSpeed(_intervalPosFactor)/CalculateCenterSpeed(_intervalPosFactor - 1);
+					ball.VelocityX *= ratio;
+					ball.VelocityY *= ratio;
+				}
+
+				if (_speedVariation > CalculateSpeedVariation(_intervalPosFactor - 1) ||
+				    _speedVariation < CalculateSpeedVariation(_intervalPosFactor - 1))
+				{
+					double ratio = CalculateSpeedVariation(_intervalPosFactor)/CalculateSpeedVariation(_intervalPosFactor - 1);
+					ball.VelocityX *= ratio;
+					ball.VelocityY *= ratio;
+				}
+
+				if (_radius > CalculateRadius(_intervalPosFactor - 1) || _radius < CalculateRadius(_intervalPosFactor - 1))
+				{
+					double ratio = (double) CalculateRadius(_intervalPosFactor)/CalculateRadius(_intervalPosFactor - 1);
+					ball.Radius *= ratio;
+				}
+
+				// Move the ball.
+				ball.LocationX = (int)(ball.LocationX + ball.VelocityX);
+				ball.LocationY = (int)(ball.LocationY + ball.VelocityY);
+
+				//Checks to see if any are going to collide and if they are then adjust their location and change to opposite direction.
+				if (Collide)
+				{
+					foreach (var ball1 in _balls)
+					{
+						var maxRadius = Math.Max(ball.Radius, ball1.Radius);
+						if ((ball1.LocationX + maxRadius >= ball.LocationX && ball1.LocationX - maxRadius < ball.LocationX &&
+							 ball1.LocationY + maxRadius >= ball.LocationY && ball1.LocationY - maxRadius < ball.LocationY) &&
+						    ball1.BallGuid != ball.BallGuid)
 						{
-							var colorIndex = 0;
-							do
-							{
-								colorIndex = _random.Next(0, Colors.Count);
-							} while (ball.ColorIndex == colorIndex);
-							ball.ColorIndex = colorIndex;
+							ball.VelocityX = -ball.VelocityX;
+							ball.VelocityY = -ball.VelocityY;
+							ball1.VelocityX = -ball1.VelocityX;
+							ball1.VelocityY = -ball1.VelocityY;
+							ball.LocationY = ball.LocationY + ball.VelocityY;
+							ball.LocationX = ball.LocationX + ball.VelocityX;
+							ball1.LocationY = ball1.LocationY + ball1.VelocityY;
+							ball1.LocationX = ball1.LocationX + ball1.VelocityX;
 
-							do
+							//Changes the Ball color when it collides with another ball and will not change to the same color.
+							if (Colors.Count > 1 && ChangeCollideColor)
 							{
-								colorIndex = _random.Next(0, Colors.Count);
-							} while (ball1.ColorIndex == colorIndex);
-							ball1.ColorIndex = colorIndex;
+								var colorIndex = 0;
+								do
+								{
+									colorIndex = _random.Next(0, Colors.Count);
+								} while (ball.ColorIndex == colorIndex);
+								ball.ColorIndex = colorIndex;
+
+								do
+								{
+									colorIndex = _random.Next(0, Colors.Count);
+								} while (ball1.ColorIndex == colorIndex);
+								ball1.ColorIndex = colorIndex;
+							}
+							break;
+						}
+					}
+				}
+
+				switch (BallType)
+				{
+					case BallType.Bounce:
+						if (ball.LocationX - ball.Radius < 0)
+						{
+							ball.LocationX = ball.Radius;
+							ball.VelocityX = -ball.VelocityX;
+						}
+						else if (ball.LocationX + ball.Radius >= BufferWi)
+						{
+							ball.LocationX = BufferWi - ball.Radius - 1;
+							ball.VelocityX = -ball.VelocityX;
+						}
+						if (ball.LocationY - ball.Radius < 0)
+						{
+							ball.LocationY = ball.Radius;
+							ball.VelocityY = -ball.VelocityY;
+						}
+						else if (ball.LocationY + ball.Radius >= BufferHt)
+						{
+							ball.LocationY = BufferHt - ball.Radius - 1;
+							ball.VelocityY = -ball.VelocityY;
 						}
 						break;
-					}
+
+					case BallType.Wrap:
+						if (ball.LocationX < 0)
+						{
+							ball.LocationX += BufferWi;
+						}
+						if (ball.LocationY < 0)
+						{
+							ball.LocationY += BufferHt;
+						}
+						if (ball.LocationX > BufferWi)
+						{
+							ball.LocationX -= BufferWi;
+						}
+						if (ball.LocationY > BufferHt)
+						{
+							ball.LocationY -= BufferHt;
+						}
+						break;
 				}
-			}
-
-			ball.LocationX = _newX;
-			ball.LocationY = _newY;
-
-			switch (BallType)
-			{
-				case BallType.Bounce:
-					if (_newX - ball.Radius < 0)
-					{
-						ball.LocationX = 0 + ball.Radius;
-						ball.VelocityX = -ball.VelocityX;
-					}
-					else if (_newX + ball.Radius >= BufferWi)
-					{
-						ball.LocationX = BufferWi - ball.Radius - 1;
-						ball.VelocityX = -ball.VelocityX;
-					}
-					if (_newY - ball.Radius < 0)
-					{
-						ball.LocationY = 0 + ball.Radius;
-						ball.VelocityY = -ball.VelocityY;
-					}
-					else if (_newY + ball.Radius >= BufferHt)
-					{
-						ball.LocationY = BufferHt - ball.Radius - 1;
-						ball.VelocityY = -ball.VelocityY;
-					}
-					break;
-
-				case BallType.Wrap:
-					if (_newX < 0)
-					{
-						ball.LocationX = _newX += BufferWi;
-					}
-					if (_newY < 0)
-					{
-						ball.LocationY = _newY += BufferHt;
-					}
-					if (_newX > BufferWi)
-					{
-						ball.LocationX = _newX -= BufferWi;
-					}
-					if (_newY > BufferHt)
-					{
-						ball.LocationY = _newY -= BufferHt;
-					}
-					break;
 			}
 		}
 
@@ -600,7 +573,7 @@ namespace VixenModules.Effect.Balls
 			}
 			foreach (var ball in _balls)
 			{
-				//This saves going through all X and Y locations reducing render times.
+				//This saves going through all X and Y locations significantly reducing render times.
 				if ((y >= ball.LocationY + ball.Radius + 1 || y <= ball.LocationY - ball.Radius) &&
 					(x >= ball.LocationX + ball.Radius + 1 || x <= ball.LocationX - ball.Radius)) continue;
 
@@ -611,7 +584,6 @@ namespace VixenModules.Effect.Balls
 					: (int) Math.Round(distanceFromBallCenter);
 				HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((_intervalPos)));
 				hsv.V = hsv.V*_level;
-
 
 				switch (BallFill)
 				{
@@ -647,61 +619,68 @@ namespace VixenModules.Effect.Balls
 			}
 		}
 
-		private void Inverse(IPixelFrameBuffer frameBuffer)
-		{
-			Color backColor = BackgroundColor.GetColorAt(_intervalPos);
-			for (int x = 0; x < BufferWi; x++)
-			{
-				for (int y = 0; y < BufferHt; y++)
-				{
-					if (frameBuffer.GetColorAt(x, y) == Color.Transparent)
-					{
-						frameBuffer.SetPixel(x, y, backColor);
-					}
-				}
-			}
-		}
-
 		private void CreateBalls(double minSpeed, double maxSpeed)
 		{
-			BallClass m = new BallClass();
-
-			//Sets Radius size and Ball location
-			int radius = RandomRadius ? _random.Next(1, _radius + 1) : _radius;
-			m.LocationX = _random.Next(radius, BufferWi - radius);
-			m.LocationY = _random.Next(radius, BufferHt - radius);
-
-			if (Collide)
+			while (_ballCount > _balls.Count)
 			{
-				//Will not add a ball if one exists in the same spot.
-				foreach (BallClass ball in _balls)
+				BallClass m = new BallClass();
+
+				//Sets Radius size and Ball location
+				int radius = RandomRadius ? _random.Next(1, _radius + 1) : _radius;
+				m.LocationX = _random.Next(radius, BufferWi - radius);
+				m.LocationY = _random.Next(radius, BufferHt - radius);
+
+				if (Collide)
 				{
-					if ((m.LocationX >= ball.LocationX && m.LocationX - radius < ball.LocationX) || (m.LocationY >= ball.LocationY && m.LocationY - radius < ball.LocationY))
+					//Will not add a ball if one exists in the same spot.
+					foreach (BallClass ball in _balls)
 					{
-						return;
+						if ((m.LocationX >= ball.LocationX && m.LocationX - radius < ball.LocationX) ||
+						    (m.LocationY >= ball.LocationY && m.LocationY - radius < ball.LocationY)) return;
 					}
 				}
-			}
 
-			double vx = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
-			double vy = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
-			if (_random.Next(0, 2) == 0) vx = -vx;
-			if (_random.Next(0, 2) == 0) vy = -vy;
-			m.VelocityX = vx;
-			m.VelocityY = vy;
-			m.Radius = radius;
-			m.BallGuid = Guid.NewGuid();
-			m.ColorIndex = _random.Next(0, Colors.Count);
-			_balls.Add(m);
+				double vx = _random.NextDouble()*(maxSpeed - minSpeed) + minSpeed;
+				double vy = _random.NextDouble()*(maxSpeed - minSpeed) + minSpeed;
+				if (_random.Next(0, 2) == 0) vx = -vx;
+				if (_random.Next(0, 2) == 0) vy = -vy;
+				m.VelocityX = vx;
+				m.VelocityY = vy;
+				m.Radius = radius;
+				m.BallGuid = Guid.NewGuid();
+				m.ColorIndex = _random.Next(0, Colors.Count);
+				_balls.Add(m);
+			}
 		}
 
 		private void RemoveBalls()
 		{
-			foreach (var balls in _removeBalls)
+			if (_ballCount < _balls.Count)
 			{
-				_balls.Remove(balls);
+				foreach (var balls in _removeBalls)
+				{
+					_balls.Remove(balls);
+				}
+				_removeBalls.Clear();
 			}
-			_removeBalls.Clear();
+		}
+
+		private void Inverse(IPixelFrameBuffer frameBuffer)
+		{
+			if (BallFill == BallFill.Inverse)
+			{
+				Color backColor = BackgroundColor.GetColorAt(_intervalPos);
+				for (int x = 0; x < BufferWi; x++)
+				{
+					for (int y = 0; y < BufferHt; y++)
+					{
+						if (frameBuffer.GetColorAt(x, y) == Color.Transparent)
+						{
+							frameBuffer.SetPixel(x, y, backColor);
+						}
+					}
+				}
+			}
 		}
 
 		public class BallClass
