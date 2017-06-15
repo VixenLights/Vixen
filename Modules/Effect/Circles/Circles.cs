@@ -22,7 +22,6 @@ namespace VixenModules.Effect.Circles
 	public class Circles : PixelEffectBase
 	{
 		private CirclesData _data;
-		private readonly List<BallClass> _balls = new List<BallClass>();
 		private int _circleCount;
 		private static Random _random = new Random();
 		private int _maxBuffer;
@@ -34,20 +33,6 @@ namespace VixenModules.Effect.Circles
 			EnableTargetPositioning(true, true);
 			UpdateAttributes();
 		}
-
-		//public override bool IsDirty
-		//{
-		//	get
-		//	{
-		//		if (Colors.Any(x => !x.CheckLibraryReference()))
-		//		{
-		//			base.IsDirty = true;
-		//		}
-
-		//		return base.IsDirty;
-		//	}
-		//	protected set { base.IsDirty = value; }
-		//}
 
 		#region Setup
 
@@ -176,6 +161,22 @@ namespace VixenModules.Effect.Circles
 			set
 			{
 				_data.CircleCountCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BallEdgeWidth")]
+		[ProviderDescription(@"BallEdgeWidth")]
+		[PropertyOrder(6)]
+		public Curve BallEdgeWidthCurve
+		{
+			get { return _data.BallEdgeWidthCurve; }
+			set
+			{
+				_data.BallEdgeWidthCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -337,7 +338,7 @@ namespace VixenModules.Effect.Circles
 
 		protected override void CleanUpRender()
 		{
-			_balls.Clear();
+			
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -359,75 +360,12 @@ namespace VixenModules.Effect.Circles
 
 			_circleCount = Convert.ToInt16(CircleCountCurve.GetValue(intervalPosFactor));
 
-			//Generates Circles from center of grid.
-			if (CircleType == CircleType.Circles)
+			for (int y = 0; y < BufferHt; y++)
 			{
-				for (int y = 0; y < BufferHt; y++)
+				for (int x = 0; x < BufferWi; x++)
 				{
-					for (int x = 0; x < BufferWi; x++)
-					{
-						HSV hsv = new HSV();
-						double radius1 = (CalculateRadialRadius(intervalPosFactor)/(double) 2/(_circleCount + 1));
-						double currentRadius = radius1;
-						int colorIndex = 0;
-						double distanceFromBallCenter = DistanceFromPoint(new Point(BufferWi/2, BufferHt/2), x, y);
-							//, x + frame, y + frame will move the Circle around the grid.
-
-						int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
-							? 2
-							: (int) Math.Round(distanceFromBallCenter);
-
-						if (distance >= CalculateRadialRadius(intervalPosFactor) && CircleFill == CircleFill.Inverse)
-							//distance - frame makes Circle go in or out.
-						{
-							Color backColor = BackgroundColor.GetColorAt(intervalPos);
-							frameBuffer.SetPixel(x, y, backColor);
-							continue;
-						}
-
-						for (int i = 0; i < _circleCount; i++)
-						{
-							if (colorIndex == Colors.Count)
-								colorIndex = 0;
-
-							hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(intervalPos));
-							if (distance <= radius1 && distance >= radius1 - currentRadius) //distance - frame makes Circle go in or out.
-							{
-								switch (CircleFill)
-								{
-									case CircleFill.Solid:
-										hsv.V = hsv.V*level;
-										frameBuffer.SetPixel(x, y, hsv);
-										break;
-									case CircleFill.Gradient:
-										hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(distance/radius1));
-										hsv.V = hsv.V*level;
-										frameBuffer.SetPixel(x, y, hsv);
-										break;
-									case CircleFill.Empty:
-										if (distance == (int) radius1)
-										{
-											hsv.V = hsv.V*level;
-											frameBuffer.SetPixel(x, y, hsv);
-										}
-										break;
-									case CircleFill.Fade:
-										if (distance <= radius1)
-										{
-											hsv.V *= 1.0 - distance/radius1;
-											hsv.V = hsv.V*level;
-											frameBuffer.SetPixel(x, y, hsv);
-										}
-										break;
-								}
-							}
-							colorIndex++;
-
-							radius1 = radius1 + currentRadius;
-						}
-					}
+					CalculatePixel(x, y, level, frameBuffer, intervalPosFactor, intervalPos);
 				}
-				return;
 			}
 
 			//HSV hsv = new HSV();
@@ -466,475 +404,26 @@ namespace VixenModules.Effect.Circles
 			//	}
 			//}
 
-			if (frame == 0)
-			{
-				if (CircleType != CircleType.Circles)
-				{
-					// Create initial Balls/Circles.
-					for (int i = 0; i < _circleCount; i++)
-					{
-						int rad = RandomRadius ? _random.Next(1, radius + 1) : radius;
-						CreateBalls(minSpeed, maxSpeed, rad);
-					}
-				}
-			}
-
-			//Creates more balls if the Circle count curve position is above the current number of balls
-			if (_circleCount > _balls.Count)
-			{
-				int rad = RandomRadius ? _random.Next(1, radius + 1) : radius;
-				CreateBalls(minSpeed, maxSpeed, rad);
-			}
-
-			foreach (var ball in _balls)
-			{
-				if (_circleCount < _balls.Count)
-				{
-					//Removes balls if circle count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
-					if (ball.LocationX + radius == BufferWi || ball.LocationY + radius == BufferHt ||
-					    ball.LocationX - radius == 0 || ball.LocationY + radius == 0)
-					{
-						_balls.Remove(ball);
-						break;
-					}
-				}
-
-				//Adjust ball speeds when user adjust Speed curve
-				if (centerSpeed > CalculateCenterSpeed(intervalPosFactor - 1) ||
-				    centerSpeed < CalculateCenterSpeed(intervalPosFactor - 1))
-				{
-					double ratio = (double) CalculateCenterSpeed(intervalPosFactor)/CalculateCenterSpeed(intervalPosFactor - 1);
-					ball.VelocityX *= ratio;
-					ball.VelocityY *= ratio;
-				}
-
-				if (speedVariation > CalculateSpeedVariation(intervalPosFactor - 1) ||
-				    speedVariation < CalculateSpeedVariation(intervalPosFactor - 1))
-				{
-					double ratio = (double) CalculateSpeedVariation(intervalPosFactor)/CalculateSpeedVariation(intervalPosFactor - 1);
-					ball.VelocityX *= ratio;
-					ball.VelocityY *= ratio;
-				}
-
-				if (radius > CalculateRadius(intervalPosFactor - 1) || radius < CalculateRadius(intervalPosFactor - 1))
-				{
-					//	double ratio = (double)CalculateRadius(intervalPosFactor) / CalculateRadius(intervalPosFactor - 1);
-					ball.Radius = CalculateRadius(intervalPosFactor);
-				}
-
-				// Move the ball.
-				int new_x = (int) (ball.LocationX + ball.VelocityX);
-				int new_y = (int) (ball.LocationY + ball.VelocityY);
-
-				//Checks to see if any are going to collide and if they are then adjust there location and change to opposite direction.
-				if (Collide)
-				{
-					foreach (var ball1 in _balls)
-					{
-						var minRadius = Math.Min(ball.Radius, ball1.Radius);
-						if ((ball1.LocationX + minRadius >= new_x && ball1.LocationX - minRadius < new_x &&
-						     ball1.LocationY + minRadius >= new_y && ball1.LocationY - minRadius < new_y) &&
-						    ball1.BallGuid != ball.BallGuid)
-						{
-							ball.VelocityX = -ball.VelocityX;
-							ball.VelocityY = -ball.VelocityY;
-							ball1.VelocityX = -ball1.VelocityX;
-							ball1.VelocityY = -ball1.VelocityY;
-							ball.LocationY = ball.LocationY + ball.VelocityY;
-							ball.LocationX = ball.LocationX + ball.VelocityX;
-							ball1.LocationY = ball1.LocationY + ball1.VelocityY;
-							ball1.LocationX = ball1.LocationX + ball1.VelocityX;
-							if (Colors.Count > 1)
-							{
-								var colorIndex = 0;
-								do
-								{
-									colorIndex = _random.Next(0, Colors.Count);
-								} while (ball.ColorIndex == colorIndex);
-								ball.ColorIndex = colorIndex;
-
-								do
-								{
-									colorIndex = _random.Next(0, Colors.Count);
-								} while (ball1.ColorIndex == colorIndex);
-								ball1.ColorIndex = colorIndex;
-							}
-							break;
-						}
-					}
-				}
-
-				ball.LocationX = new_x;
-				ball.LocationY = new_y;
-
-				switch (CircleType)
-				{
-					case CircleType.Bounce:
-						if (new_x - ball.Radius < 0)
-						{
-							ball.LocationX = 0 + ball.Radius;
-							ball.VelocityX = -ball.VelocityX;
-						}
-						else if (new_x + ball.Radius >= BufferWi)
-						{
-							ball.LocationX = BufferWi - ball.Radius - 1;
-							ball.VelocityX = -ball.VelocityX;
-						}
-						if (new_y - ball.Radius < 0)
-						{
-							ball.LocationY = 0 + ball.Radius;
-							ball.VelocityY = -ball.VelocityY;
-						}
-						else if (new_y + ball.Radius >= BufferHt)
-						{
-							ball.LocationY = BufferHt - ball.Radius - 1;
-							ball.VelocityY = -ball.VelocityY;
-						}
-						break;
-
-					case CircleType.Wrap:
-						if (new_x < 0)
-						{
-							ball.LocationX = new_x += BufferWi;
-						}
-						if (new_y < 0)
-						{
-							ball.LocationY = new_y += BufferHt;
-						}
-						if (new_x > BufferWi)
-						{
-							ball.LocationX = new_x -= BufferWi;
-						}
-						if (new_y > BufferHt)
-						{
-							ball.LocationY = new_y -= BufferHt;
-						}
-						break;
-				}
-
-				for (int y = new_y - ball.Radius; y < new_y + ball.Radius + 1; y++)
-				{
-					for (int x = new_x - ball.Radius; x < new_x + ball.Radius + 1; x++)
-					{
-						HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((intervalPos)));
-						hsv.V = hsv.V*level;
-						double distanceFromBallCenter = DistanceFromPoint(new Point(new_x, new_y), x, y);
-
-						int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
-							? 2
-							: (int) Math.Round(distanceFromBallCenter);
-
-						switch (CircleFill)
-						{
-							case CircleFill.Solid:
-								if (distance <= ball.Radius) frameBuffer.SetPixel(x, y, hsv);
-								break;
-							case CircleFill.Empty:
-								if (distance == ball.Radius) frameBuffer.SetPixel(x, y, hsv);
-								break;
-							case CircleFill.Inverse:
-								hsv = HSV.FromRGB(Color.Black);
-								if (distance <= ball.Radius) frameBuffer.SetPixel(x, y, hsv);
-								break;
-							case CircleFill.Fade:
-								if (distance <= ball.Radius)
-								{
-									hsv.V *= 1.0 - distance/(double) ball.Radius;
-									frameBuffer.SetPixel(x, y, hsv);
-								}
-								break;
-							case CircleFill.Gradient:
-								if (distance <= ball.Radius)
-								{
-									hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt(distance/(double) ball.Radius));
-									hsv.V = hsv.V*level;
-									frameBuffer.SetPixel(x, y, hsv);
-								}
-								break;
-						}
-					}
-				}
-
-				if (CircleFill == CircleFill.Inverse)
-				{
-					Color backColor = BackgroundColor.GetColorAt(intervalPos);
-					for (int i = 0; i < BufferWi; i++)
-					{
-						for (int j = 0; j < BufferHt; j++)
-						{
-							if (frameBuffer.GetColorAt(i, j) == Color.Transparent)
-							{
-								frameBuffer.SetPixel(i, j, backColor);
-							}
-						}
-					}
-				}
-			}
 		}
-
-		//protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
-		//{
-		//	var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
-		//	for (int frame = 0; frame < numFrames; frame++)
-		//	{
-
-		//		frameBuffer.CurrentFrame = frame;
-		//		double intervalPos = GetEffectTimeIntervalPosition(frame);
-		//		double intervalPosFactor = intervalPos*100;
-		//		double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-		//		_circleCount = (int)(CircleCountCurve.GetValue(intervalPosFactor));
-		//		foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
-		//		{
-		//			foreach (var elementLocation in elementLocations)
-		//			{
-		//				CalculatePixel(elementLocation.X, elementLocation.Y, level, frameBuffer, intervalPosFactor, intervalPos);
-		//			}
-		//		}
-		//	}
-		//}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.Y).ThenBy(x => x.X).GroupBy(x => x.Y);
-			
-			
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
-				double intervalPos = GetEffectTimeIntervalPosition(frame);
-				double intervalPosFactor = intervalPos * 100;
-
-				int radius = CalculateRadius(intervalPosFactor);
-				double centerSpeed = CalculateCenterSpeed(intervalPosFactor);
-				double speedVariation = CalculateSpeedVariation(intervalPosFactor);
-				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-
-				double minSpeed = centerSpeed - (speedVariation / 2);
-				double maxSpeed = centerSpeed + (speedVariation / 2);
-				if (minSpeed < 100)
-					minSpeed = 100;
-				if (maxSpeed > 350)
-					maxSpeed = 350;
-
-				_circleCount = (int)(CircleCountCurve.GetValue(intervalPosFactor));
 
 				frameBuffer.CurrentFrame = frame;
-				if (frame == 0)
+				double intervalPos = GetEffectTimeIntervalPosition(frame);
+				double intervalPosFactor = intervalPos * 100;
+				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+				_circleCount = (int)(CircleCountCurve.GetValue(intervalPosFactor));
+				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
-					if (CircleType != CircleType.Circles)
+					foreach (var elementLocation in elementLocations)
 					{
-						// Create initial Balls/Circles.
-						for (int i = 0; i < _circleCount; i++)
-						{
-							int rad = RandomRadius ? _random.Next(1, radius + 1) : radius;
-							CreateBalls(minSpeed, maxSpeed, rad);
-						}
+						CalculatePixel(elementLocation.X, elementLocation.Y, level, frameBuffer, intervalPosFactor, intervalPos);
 					}
 				}
-
-				foreach (var ball in _balls)
-				{
-					if (_circleCount < _balls.Count)
-					{
-						//Removes balls if circle count curve position is below the current number of balls. Will only remove ones that hit the edge of the grid.
-						if (ball.LocationX + radius == BufferWi || ball.LocationY + radius == BufferHt ||
-						    ball.LocationX - radius == 0 || ball.LocationY + radius == 0)
-						{
-							_balls.Remove(ball);
-							break;
-						}
-					}
-
-					//Adjust ball speeds when user adjust Speed curve
-					if (centerSpeed > CalculateCenterSpeed(intervalPosFactor - 1) ||
-					    centerSpeed < CalculateCenterSpeed(intervalPosFactor - 1))
-					{
-						double ratio = (double) CalculateCenterSpeed(intervalPosFactor)/CalculateCenterSpeed(intervalPosFactor - 1);
-						ball.VelocityX *= ratio;
-						ball.VelocityY *= ratio;
-					}
-
-					if (speedVariation > CalculateSpeedVariation(intervalPosFactor - 1) ||
-					    speedVariation < CalculateSpeedVariation(intervalPosFactor - 1))
-					{
-						double ratio = (double) CalculateSpeedVariation(intervalPosFactor)/CalculateSpeedVariation(intervalPosFactor - 1);
-						ball.VelocityX *= ratio;
-						ball.VelocityY *= ratio;
-					}
-
-					if (radius > CalculateRadius(intervalPosFactor - 1) || radius < CalculateRadius(intervalPosFactor - 1))
-					{
-						//	double ratio = (double)CalculateRadius(intervalPosFactor) / CalculateRadius(intervalPosFactor - 1);
-						ball.Radius = CalculateRadius(intervalPosFactor);
-					}
-
-					// Move the ball.
-					int new_x = (int) (ball.LocationX + ball.VelocityX);
-					int new_y = (int) (ball.LocationY + ball.VelocityY);
-
-					//Checks to see if any are going to collide and if they are then adjust there location and change to opposite direction.
-					if (Collide)
-					{
-						foreach (var ball1 in _balls)
-						{
-							var minRadius = Math.Min(ball.Radius, ball1.Radius);
-							if ((ball1.LocationX + minRadius >= new_x && ball1.LocationX - minRadius < new_x &&
-							     ball1.LocationY + minRadius >= new_y && ball1.LocationY - minRadius < new_y) &&
-							    ball1.BallGuid != ball.BallGuid)
-							{
-								ball.VelocityX = -ball.VelocityX;
-								ball.VelocityY = -ball.VelocityY;
-								ball1.VelocityX = -ball1.VelocityX;
-								ball1.VelocityY = -ball1.VelocityY;
-								ball.LocationY = ball.LocationY + ball.VelocityY;
-								ball.LocationX = ball.LocationX + ball.VelocityX;
-								ball1.LocationY = ball1.LocationY + ball1.VelocityY;
-								ball1.LocationX = ball1.LocationX + ball1.VelocityX;
-								if (Colors.Count > 1)
-								{
-									var colorIndex = 0;
-									do
-									{
-										colorIndex = _random.Next(0, Colors.Count);
-									} while (ball.ColorIndex == colorIndex);
-									ball.ColorIndex = colorIndex;
-
-									do
-									{
-										colorIndex = _random.Next(0, Colors.Count);
-									} while (ball1.ColorIndex == colorIndex);
-									ball1.ColorIndex = colorIndex;
-								}
-								break;
-							}
-						}
-					}
-
-					ball.LocationX = new_x;
-					ball.LocationY = new_y;
-
-					switch (CircleType)
-					{
-						case CircleType.Bounce:
-							if (new_x - ball.Radius < 0)
-							{
-								ball.LocationX = 0 + ball.Radius;
-								ball.VelocityX = -ball.VelocityX;
-							}
-							else if (new_x + ball.Radius >= BufferWi)
-							{
-								ball.LocationX = BufferWi - ball.Radius - 1;
-								ball.VelocityX = -ball.VelocityX;
-							}
-							if (new_y - ball.Radius < 0)
-							{
-								ball.LocationY = 0 + ball.Radius;
-								ball.VelocityY = -ball.VelocityY;
-							}
-							else if (new_y + ball.Radius >= BufferHt)
-							{
-								ball.LocationY = BufferHt - ball.Radius - 1;
-								ball.VelocityY = -ball.VelocityY;
-							}
-							break;
-
-						case CircleType.Wrap:
-							if (new_x < 0)
-							{
-								ball.LocationX = new_x += BufferWi;
-							}
-							if (new_y < 0)
-							{
-								ball.LocationY = new_y += BufferHt;
-							}
-							if (new_x > BufferWi)
-							{
-								ball.LocationX = new_x -= BufferWi;
-							}
-							if (new_y > BufferHt)
-							{
-								ball.LocationY = new_y -= BufferHt;
-							}
-							break;
-					}
-
-				//	for (int y = new_y - ball.Radius; y < new_y + ball.Radius + 1; y++)
-					//	for (int x = new_x - ball.Radius; x < new_x + ball.Radius + 1; x++)
-
-					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
-					{
-						foreach (var elementLocation in elementLocations)
-						{
-							CalculateBallPixel(elementLocation.X, elementLocation.Y, new_x, new_y, level, frameBuffer, intervalPosFactor, intervalPos,
-								ball);
-						}
-					}
-
-					if (CircleFill == CircleFill.Inverse)
-					{
-						Color backColor = BackgroundColor.GetColorAt(intervalPos);
-						for (int i = 0; i < BufferWi; i++)
-						{
-							for (int j = 0; j < BufferHt; j++)
-							{
-								if (frameBuffer.GetColorAt(i, j) == Color.Transparent)
-								{
-									frameBuffer.SetPixel(i, j, backColor);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		private void CalculateBallPixel(int x, int y, int new_x, int new_y, double level, IPixelFrameBuffer frameBuffer, double intervalPosFactor,
-			double intervalPos, BallClass ball)
-		{
-			int yCoord = y;
-			int xCoord = x;
-			if (TargetPositioning == TargetPositioningType.Locations)
-			{
-				//Flip me over so and offset my coordinates I can act like the string version
-				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
-				y = y - BufferHtOffset;
-				x = x - BufferWiOffset;
-			}
-
-			double distanceFromBallCenter = DistanceFromPoint(new Point(new_x, new_y), x, y);
-			HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((intervalPos)));
-			hsv.V = hsv.V * level;
-
-			int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
-				? 2
-				: (int)Math.Round(distanceFromBallCenter);
-
-			switch (CircleFill)
-			{
-				case CircleFill.Solid:
-					if (distance <= ball.Radius) frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Empty:
-					if (distance == ball.Radius) frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Inverse:
-					hsv = HSV.FromRGB(Color.Black);
-					if (distance <= ball.Radius) frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Fade:
-					if (distance <= ball.Radius)
-					{
-						hsv.V *= 1.0 - distance / (double)ball.Radius;
-						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					}
-					break;
-				case CircleFill.Gradient:
-					if (distance <= ball.Radius)
-					{
-						hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt(distance / (double)ball.Radius));
-						hsv.V = hsv.V * level;
-						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					}
-					break;
 			}
 		}
 
@@ -949,8 +438,12 @@ namespace VixenModules.Effect.Circles
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
-			
-			double radius1 = (CalculateRadialRadius(intervalPosFactor)/(double) 2/(_circleCount + 1));
+
+			double radius = CalculateRadialRadius(intervalPosFactor);
+			//This saves going through all X and Y locations significantly reducing render times.
+			if ((y >= (BufferHt / 2) + radius + 1 || y <= (BufferHt / 2) - radius) && (x >= (BufferWi / 2) + radius + 1 || x <= (BufferWi / 2) - radius)) return;
+
+			double radius1 = (CalculateRadialRadius(intervalPosFactor) / (double)2 / (_circleCount + 1));
 			double currentRadius = radius1;
 			int colorIndex = 0;
 			double distanceFromBallCenter = DistanceFromPoint(new Point(BufferWi / 2, BufferHt / 2), x, y);
@@ -987,11 +480,8 @@ namespace VixenModules.Effect.Circles
 							frameBuffer.SetPixel(xCoord, yCoord, hsv);
 							break;
 						case CircleFill.Empty:
-							if (distance == (int) radius1)
-							{
-								hsv.V = hsv.V*level;
-								frameBuffer.SetPixel(xCoord, yCoord, hsv);
-							}
+							if (distance >= radius1 - CalculateEdgeWidth(intervalPosFactor) && distance < radius1)
+							frameBuffer.SetPixel(xCoord, yCoord, hsv);
 							break;
 						case CircleFill.Fade:
 							if (distance <= radius1)
@@ -1008,44 +498,6 @@ namespace VixenModules.Effect.Circles
 
 				radius1 = radius1 + currentRadius;
 			}
-		}
-
-		private void CreateBalls(double minSpeed, double maxSpeed, int radius)
-		{
-			BallClass m = new BallClass();
-			m.LocationX = _random.Next(radius, BufferWi - radius);
-			m.LocationY = _random.Next(radius, BufferHt - radius);
-
-			//Will not add a ball if one exists in the same spot.
-			//foreach (var ball in _balls)
-			//{
-			//	if ((m.LocationX >= ball.LocationX && m.LocationX - radius < ball.LocationX) || (m.LocationY >= ball.LocationY && m.LocationY - radius < ball.LocationY))
-			//	{
-			//		return;
-			//	}
-			//}
-
-			double vx = ((double)_random.Next((int)(minSpeed), (int)(maxSpeed)) / 100) * 3;
-			double vy = ((double)_random.Next((int)(minSpeed), (int)(maxSpeed)) / 100) * 3;
-			if (_random.Next(0, 2) == 0) vx = -vx;
-			if (_random.Next(0, 2) == 0) vy = -vy;
-			m.VelocityX = vx;
-			m.VelocityY = vy;
-			m.Radius = radius;
-			m.BallGuid = Guid.NewGuid();
-			m.ColorIndex = _random.Next(0, Colors.Count);
-			_balls.Add(m);
-		}
-
-		public class BallClass
-		{
-			public double LocationX;
-			public double LocationY;
-			public double VelocityX;
-			public double VelocityY;
-			public int ColorIndex;
-			public int Radius;
-			public Guid BallGuid;
 		}
 
 		private int CalculateCenterSpeed(double intervalPos)
@@ -1066,6 +518,13 @@ namespace VixenModules.Effect.Circles
 		private int CalculateRadialRadius(double intervalPos)
 		{
 			return (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), _maxBuffer, 1);
+		}
+
+		private int CalculateEdgeWidth(double intervalPosFactor)
+		{
+			int value = (int)ScaleCurveToValue(BallEdgeWidthCurve.GetValue(intervalPosFactor), 40, 1);
+			if (value < 1) value = 1;
+			return value;
 		}
 	}
 }

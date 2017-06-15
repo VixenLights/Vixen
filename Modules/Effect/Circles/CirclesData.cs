@@ -25,14 +25,15 @@ namespace VixenModules.Effect.Circles
 			Inverse = false;
 			RandomRadius = false;
 			Collide = false;
-			CircleType = CircleType.Bounce;
-			CircleFill = CircleFill.Fade;
+			CircleType = CircleType.Circles;
+			CircleFill = CircleFill.Solid;
 			BackgroundColor = new ColorGradient(Color.Snow);
 			Fade = true;
 			CircleRadialDirection = CircleRadialDirection.Out;
-			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 30.0, 30.0 }));
+			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 7.0, 7.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			BallEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
 			Orientation = StringOrientation.Vertical;
 		}
 
@@ -65,6 +66,9 @@ namespace VixenModules.Effect.Circles
 
 		[DataMember]
 		public Curve CenterSpeedCurve { get; set; }
+
+		[DataMember]
+		public Curve BallEdgeWidthCurve { get; set; }
 
 		[DataMember]
 		public bool Filled { get; set; }
@@ -101,6 +105,7 @@ namespace VixenModules.Effect.Circles
 				Collide = Collide,
 				CircleFill = CircleFill,
 				Fade = Fade,
+				BallEdgeWidthCurve = new Curve(BallEdgeWidthCurve),
 				CircleRadialDirection = CircleRadialDirection,
 				CircleType = CircleType,
 				RandomRadius = RandomRadius,
