@@ -11,8 +11,6 @@ namespace VixenModules.Effect.Circles
 		[Description("Solid")]
 		Solid,
 		[Description("Gradient")]
-		Gradient,
-		[Description("Inverse")]
-		Inverse
+		Gradient
 	}
 }

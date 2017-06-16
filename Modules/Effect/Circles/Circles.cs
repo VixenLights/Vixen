@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Annotations;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -22,10 +18,9 @@ namespace VixenModules.Effect.Circles
 	public class Circles : PixelEffectBase
 	{
 		private CirclesData _data;
-		private int _circleCount;
-		private static Random _random = new Random();
+		private double _circleCount;
 		private int _maxBuffer;
-		private int _minBuffer;
+		private int _colorIndex;
 
 		public Circles()
 		{
@@ -54,24 +49,6 @@ namespace VixenModules.Effect.Circles
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CircleType")]
-		[ProviderDescription(@"CircleType")]
-		[PropertyOrder(0)]
-		public CircleType CircleType
-		{
-			get { return _data.CircleType; }
-			set
-			{
-				_data.CircleType = value;
-				if (CircleType == CircleType.Circles) CircleRadialDirection = CircleRadialDirection.Out;
-				UpdateTypeAttribute();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CircleFill")]
 		[ProviderDescription(@"CircleFill")]
 		[PropertyOrder(1)]
@@ -89,8 +66,8 @@ namespace VixenModules.Effect.Circles
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CircleRadialDirection")]
-		[ProviderDescription(@"CircleRadialDirection")]
+		[ProviderDisplayName(@"RadialDirection")]
+		[ProviderDescription(@"RadialDirection")]
 		[PropertyOrder(2)]
 		public CircleRadialDirection CircleRadialDirection
 		{
@@ -105,8 +82,8 @@ namespace VixenModules.Effect.Circles
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDisplayName(@"RadialSpeed")]
+		[ProviderDescription(@"RadialSpeed")]
 		[PropertyOrder(3)]
 		public Curve CenterSpeedCurve
 		{
@@ -153,15 +130,15 @@ namespace VixenModules.Effect.Circles
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"BallEdgeWidth")]
-		[ProviderDescription(@"BallEdgeWidth")]
+		[ProviderDisplayName(@"CircleEdgeWidth")]
+		[ProviderDescription(@"CircleEdgeWidth")]
 		[PropertyOrder(6)]
-		public Curve BallEdgeWidthCurve
+		public Curve CircleEdgeWidthCurve
 		{
-			get { return _data.BallEdgeWidthCurve; }
+			get { return _data.CircleEdgeWidthCurve; }
 			set
 			{
-				_data.BallEdgeWidthCurve = value;
+				_data.CircleEdgeWidthCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -169,10 +146,46 @@ namespace VixenModules.Effect.Circles
 
 		#endregion
 
+		#region Movement
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"HorizontalOffset")]
+		[ProviderDescription(@"HorizontalOffset")]
+		[PropertyOrder(1)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"VerticalOffset")]
+		[ProviderDescription(@"VerticalOffset")]
+		[PropertyOrder(2)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+#endregion
+
 		#region Color properties
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"ColorGradients")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
@@ -187,29 +200,12 @@ namespace VixenModules.Effect.Circles
 			}
 		}
 
-
-		[Value]
-		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"BackGroundColor")]
-		[ProviderDescription(@"BackGroundColor")]
-		[PropertyOrder(3)]
-		public ColorGradient BackgroundColor
-		{
-			get { return _data.BackgroundColor; }
-			set
-			{
-				_data.BackgroundColor = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		public Curve LevelCurve
@@ -230,7 +226,6 @@ namespace VixenModules.Effect.Circles
 		private void UpdateAttributes()
 		{
 			UpdateColorAttribute(false);
-			UpdateTypeAttribute(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
@@ -239,25 +234,7 @@ namespace VixenModules.Effect.Circles
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
 			{
-				propertyStates.Add("Colors", CircleFill != CircleFill.Inverse);
-				propertyStates.Add("BackgroundColor", CircleFill == CircleFill.Inverse);
-				propertyStates.Add("CircleCountCurve", CircleFill != CircleFill.Inverse);
-				propertyStates.Add("BallEdgeWidthCurve", CircleFill == CircleFill.Empty);
-			}
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateTypeAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
-			{
-				propertyStates.Add("CircleRadialDirection", CircleType != CircleType.Circles);
-				propertyStates.Add("CenterSpeedCurve", CircleType != CircleType.Circles);
-				propertyStates.Add("RadiusCurve", CircleType == CircleType.Circles);
+				propertyStates.Add("CircleEdgeWidthCurve", CircleFill == CircleFill.Empty);
 			}
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -286,25 +263,22 @@ namespace VixenModules.Effect.Circles
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
 			_maxBuffer = Math.Max(BufferHt - 1, BufferWi - 1);
-			_minBuffer = Math.Min(BufferHt - 1, BufferWi - 1);
 		}
 
 		protected override void CleanUpRender()
 		{
-			
+			//Nothing to do
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double intervalPos = GetEffectTimeIntervalPosition(frame);
 			double intervalPosFactor = intervalPos*100;
-
-			double centerSpeed = CalculateCenterSpeed(intervalPosFactor);
 			double level = LevelCurve.GetValue(intervalPosFactor)/100;
 
-			_circleCount = Convert.ToInt16(CircleCountCurve.GetValue(intervalPosFactor));
+			_circleCount = CalculateCircleCount(intervalPosFactor);
+			if (CircleFill == CircleFill.Solid || CircleFill == CircleFill.Gradient) _circleCount *= 4;
 
 			for (int y = 0; y < BufferHt; y++)
 			{
@@ -325,7 +299,8 @@ namespace VixenModules.Effect.Circles
 				double intervalPos = GetEffectTimeIntervalPosition(frame);
 				double intervalPosFactor = intervalPos * 100;
 				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-				_circleCount = (int)(CircleCountCurve.GetValue(intervalPosFactor));
+				_circleCount = CalculateCircleCount(intervalPosFactor);
+				if (CircleFill == CircleFill.Solid || CircleFill == CircleFill.Gradient) _circleCount *= 7;
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
 					foreach (var elementLocation in elementLocations)
@@ -348,112 +323,118 @@ namespace VixenModules.Effect.Circles
 				x = x - BufferWiOffset;
 			}
 
-			double radius1 = CircleType == CircleType.Radial ? _maxBuffer : CalculateRadialRadius(intervalPosFactor);
+			double radius1 = CalculateRadialRadius(intervalPosFactor);
 			
 			//This saves going through all X and Y locations significantly reducing render times.
 			if ((y >= ((BufferWi - 1) / 2) + radius1 + 1 || y <= ((BufferWi - 1) / 2) - radius1) && (x >= ((BufferWi - 1) / 2) + radius1 + 1 || x <= ((BufferWi - 1) / 2) - radius1)) return;
 
-			double radius = radius1 / 2 / (_circleCount + 1);
+			double radius = radius1 / 2 / (_circleCount);
 			double currentRadius = radius;
-			int colorIndex = 0;
-			double distanceFromBallCenter = DistanceFromPoint(new Point((BufferWi - 1) / 2, (BufferHt - 1) / 2), x, y);
+		//	_colorIndex = 0;
+			double distanceFromBallCenter = DistanceFromPoint(new Point((BufferWi - 1) / 2, (BufferHt - 1) / 2), x + CalculateXOffset(intervalPosFactor), y + CalculateYOffset(intervalPosFactor));
 			//, x + frame, y + frame will move the Circle around the grid.
 
 			int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
 				? 2
 				: (int) Math.Round(distanceFromBallCenter);
 
-			if (distance >= CalculateRadialRadius(intervalPosFactor) && CircleFill == CircleFill.Inverse)
-			{
-				Color backColor = BackgroundColor.GetColorAt(intervalPos);
-				frameBuffer.SetPixel(xCoord, yCoord, backColor);
-				return;
-			}
-
-			int barht = _maxBuffer / _circleCount;
+			double barht = _maxBuffer / _circleCount;
+		//	if (CircleFill == CircleFill.Empty || CircleFill == CircleFill.Fade) barht /= 5;
 			if (barht < 1) barht = 1;
-			int blockHt = Colors.Count * barht;
-			int f_offset = frame * CalculateCenterSpeed(intervalPosFactor) / 4 % (blockHt + 1);
+			double blockHt = Colors.Count * barht;
+			double foffset = frame * CalculateCenterSpeed(intervalPosFactor) / 4 % (blockHt + 1);
 			barht = barht > 0 ? barht : 1;
 
-			int outerRadius = _circleCount;
-			if (CircleType == CircleType.Radial)
+			double outerRadius = _circleCount;
+
+			switch (CircleRadialDirection)
 			{
-				outerRadius = _maxBuffer;
-				radius = radius1 / 2 / (_circleCount + 1);
-			}
-
-			for (int i = 0; i <= outerRadius; i++)
-			{
-
-				if (colorIndex >= Colors.Count)
-					colorIndex = 0;
-
-				if (CircleRadialDirection == CircleRadialDirection.In)
-				{
-					if (distance <= radius1 && distance >= radius1 - currentRadius)
+				case CircleRadialDirection.In:
+					for (int i = (int) outerRadius; i >= 0; i--)
 					{
-						SetFramePixel(i, f_offset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord, distance, radius1, colorIndex);
+						SetFramePixel(i, foffset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord,
+							distance, radius, currentRadius);
+						radius = radius + currentRadius;
 					}
-					radius1 = radius1 - currentRadius;
-				}
-				else if (distance <= radius && distance >= radius - currentRadius) //distance - frame makes Circle go in or out.
-				{
-					SetFramePixel(i, f_offset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord, distance, radius, colorIndex);
-				}
-
-				colorIndex++;
-				radius = radius + currentRadius;
+					break;
+				case CircleRadialDirection.Out:
+					for (int i = 0; i <= outerRadius; i++)
+					{
+						SetFramePixel(i, foffset, blockHt, barht, intervalPos, intervalPosFactor, level, frameBuffer, xCoord, yCoord,
+							distance, radius, currentRadius);
+						radius = radius + currentRadius;
+					}
+					break;
 			}
 		}
 
-		private void SetFramePixel(int i, int f_offset, int blockHt, int barht, double intervalPos, double intervalPosFactor, double level, IPixelFrameBuffer frameBuffer, int xCoord, int yCoord, int distance, double radius, int colorIndex)
+		private void SetFramePixel(int i, double foffset, double blockHt, double barht, double intervalPos, double intervalPosFactor, double level, IPixelFrameBuffer frameBuffer, int xCoord, int yCoord, int distance, double radius, double currentRadius)
 		{
-			int n = i - f_offset + blockHt;
-			if (CircleType == CircleType.Radial) colorIndex = (n) % blockHt / barht;
-
-			HSV hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(intervalPos));
-			switch (CircleFill)
+			if (distance <= radius && distance >= radius - currentRadius)
 			{
-				case CircleFill.Solid:
-					hsv.V = hsv.V * level;
-					frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Gradient:
-					hsv = HSV.FromRGB(Colors[colorIndex].GetColorAt(distance / radius));
-					hsv.V = hsv.V * level;
-					frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Empty:
-					if (distance >= radius - CalculateEdgeWidth(intervalPosFactor) && distance < radius)
+				double n = i - foffset + blockHt;
+				_colorIndex = (int) ((n)%blockHt/barht);
+
+				HSV hsv = HSV.FromRGB(Colors[_colorIndex].GetColorAt(intervalPos));
+				switch (CircleFill)
+				{
+					case CircleFill.Solid:
+						hsv.V = hsv.V*level;
 						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					break;
-				case CircleFill.Fade:
-					if (distance <= radius)
-					{
-						hsv.V *= 1.0 - distance / radius;
-						hsv.V = hsv.V * level;
+						break;
+					case CircleFill.Gradient:
+						if (distance <= radius)
+						{
+							hsv = HSV.FromRGB(Colors[_colorIndex].GetColorAt((1/radius)*currentRadius));
+							hsv.V = hsv.V*level;
+							frameBuffer.SetPixel(xCoord, yCoord, hsv);
+						}
+						break;
+					case CircleFill.Empty:
+						if (distance >= radius - CalculateEdgeWidth(intervalPosFactor, currentRadius))
+							frameBuffer.SetPixel(xCoord, yCoord, hsv);
+						break;
+					case CircleFill.Fade:
+						hsv.V *= 1.0 - distance/radius;
+						hsv.V = hsv.V*level;
 						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-					}
-					break;
+						break;
+				}
 			}
 		}
 
 		private int CalculateCenterSpeed(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 10, 1); //34
+			return (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 10, 0);
 		}
 
 		private int CalculateRadialRadius(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), _maxBuffer, 1);
+			return (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), _maxBuffer * 1.1, 1);
 		}
 
-		private int CalculateEdgeWidth(double intervalPosFactor)
+		private int CalculateEdgeWidth(double intervalPosFactor, double currentRadius)
 		{
-			int value = (int)ScaleCurveToValue(BallEdgeWidthCurve.GetValue(intervalPosFactor), 40, 1);
+			int value = (int)ScaleCurveToValue(CircleEdgeWidthCurve.GetValue(intervalPosFactor), currentRadius, 1);
 			if (value < 1) value = 1;
 			return value;
+		}
+
+		private double CalculateCircleCount(double intervalPosFactor)
+		{
+			double value = (int)ScaleCurveToValue(CircleCountCurve.GetValue(intervalPosFactor), 10, 1);
+			if (value < 1) value = 1;
+			return value;
+		}
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), -_maxBuffer * 1.1, _maxBuffer * 1.1);
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), -_maxBuffer * 1.1, _maxBuffer * 1.1);
 		}
 	}
 }

@@ -314,6 +314,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Circles or radial patterns in the effect..
+        /// </summary>
+        internal static string CircleCount {
+            get {
+                return ResourceManager.GetString("CircleCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width of the individual circles, may need to increase when using Loaction..
+        /// </summary>
+        internal static string CircleEdgeWidth {
+            get {
+                return ResourceManager.GetString("CircleEdgeWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the color of the effect..
         /// </summary>
         internal static string Color {
@@ -571,6 +589,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Highlight {
             get {
                 return ResourceManager.GetString("Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the horizontal plane..
+        /// </summary>
+        internal static string HorizontalOffset {
+            get {
+                return ResourceManager.GetString("HorizontalOffset", resourceCulture);
             }
         }
         
@@ -841,6 +868,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string PulseType {
             get {
                 return ResourceManager.GetString("PulseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed of the radial pattern..
+        /// </summary>
+        internal static string RadialSpeed {
+            get {
+                return ResourceManager.GetString("RadialSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radius of the radial effect..
+        /// </summary>
+        internal static string Radius {
+            get {
+                return ResourceManager.GetString("Radius", resourceCulture);
             }
         }
         
@@ -1201,6 +1246,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalBlend {
             get {
                 return ResourceManager.GetString("VerticalBlend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the vertical plane..
+        /// </summary>
+        internal static string VerticalOffset {
+            get {
+                return ResourceManager.GetString("VerticalOffset", resourceCulture);
             }
         }
         

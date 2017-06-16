@@ -66,7 +66,6 @@
     <Compile Include="CircleFill.cs" />
     <Compile Include="CircleRadialDirection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CircleType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">

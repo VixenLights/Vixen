@@ -18,16 +18,16 @@ namespace VixenModules.Effect.Circles
 		public CirclesData()
 		{
 			Colors = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue) };
-			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
+			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			Inverse = false;
-			CircleType = CircleType.Circles;
 			CircleFill = CircleFill.Solid;
-			BackgroundColor = new ColorGradient(Color.Snow);
 			CircleRadialDirection = CircleRadialDirection.Out;
-			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 49.0, 49.0 }));
-			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 7.0, 7.0 }));
+			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
-			BallEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
+			CircleEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			Orientation = StringOrientation.Vertical;
 		}
 
@@ -41,19 +41,13 @@ namespace VixenModules.Effect.Circles
 		public CircleFill CircleFill { get; set; }
 
 		[DataMember]
-		public CircleType CircleType { get; set; }
-
-		[DataMember]
 		public bool Inverse { get; set; }
-
-		[DataMember]
-		public ColorGradient BackgroundColor { get; set; }
 
 		[DataMember]
 		public Curve CenterSpeedCurve { get; set; }
 
 		[DataMember]
-		public Curve BallEdgeWidthCurve { get; set; }
+		public Curve CircleEdgeWidthCurve { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
@@ -67,6 +61,12 @@ namespace VixenModules.Effect.Circles
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			CirclesData result = new CirclesData
@@ -76,11 +76,12 @@ namespace VixenModules.Effect.Circles
 				Orientation = Orientation,
 				Inverse = Inverse,
 				CircleFill = CircleFill,
-				BallEdgeWidthCurve = new Curve(BallEdgeWidthCurve),
+				CircleEdgeWidthCurve = new Curve(CircleEdgeWidthCurve),
 				CircleRadialDirection = CircleRadialDirection,
-				CircleType = CircleType,
 				RadiusCurve = new Curve(RadiusCurve),
 				CircleCountCurve = new Curve(CircleCountCurve),
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve),
 				LevelCurve = new Curve(LevelCurve)
 			};
 			return result;
