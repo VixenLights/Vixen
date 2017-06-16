@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -710,6 +711,34 @@ namespace Common.Controls.Timeline
 					return false;
 			}
 			return true;
+		}
+
+		//Locates and Displays selected effects on the Find Effects Form
+		public void DisplaySelectedEffects(List<Element> elements)
+		{
+			//int rowVerticleOffset = 0;
+			if (!elements.Any()) return;
+			foreach (var element in elements)
+			{
+				element.Selected = true;
+				element.Row.Visible = true;
+
+				//Make selected effect and any Parent nodes visible and Tree expanded.
+				Row parent = element.Row.ParentRow;
+				while (parent != null)
+				{
+					parent.TreeOpen = true;
+					parent.Visible = true;
+					parent = parent.ParentRow;	
+				} 
+				element.EndUpdate();
+			}
+
+			var lastElement = elements.Last();
+			VisibleTimeStart = lastElement.StartTime; //Adjusts the Horixontal Start Time position so the last selected effect is visible
+			VerticalOffset = lastElement.Row.DisplayTop; //Adjust the vertical grid position so the last selected effect is visible.
+			_SelectionChanged(); //Ensures Effect editor docker is updated with the Selected effects.
+			Refresh();
 		}
 
 		/// <summary>

@@ -251,11 +251,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return MarksForm;
 			if (persistString == typeof (Form_ToolPalette).ToString())
 				return ToolsForm;
-			if (persistString == typeof(FormEffectEditor).ToString())
+			if (persistString == typeof (FindEffectForm).ToString())
+				return FindEffects;
+			if (persistString == typeof (FormEffectEditor).ToString())
 				return EffectEditorForm;
-			if (persistString == typeof(LayerEditor).ToString())
+			if (persistString == typeof (LayerEditor).ToString())
 				return LayerEditor;
-			
+
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
 		}
@@ -557,6 +559,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_effectsForm.Dispose();
 				_effectsForm = null;
 			}
+			if (_findEffects != null)
+			{
+				_findEffects.Dispose();
+				_findEffects = null;
+			}
 			SetDockDefaults();
 		}
 
@@ -566,6 +573,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ToolsForm.Show(dockPanel, DockState.DockRight);
 			MarksForm.Show(dockPanel, DockState.DockRight);
 			LayerEditor.Show(dockPanel, DockState.DockRight);
+			FindEffects.Show(dockPanel, DockState.DockRight);
 			EffectsForm.Show(dockPanel, DockState.DockLeft);
 			EffectEditorForm.Show(ToolsForm.Pane, DockAlignment.Top, .6);
 		}
@@ -642,6 +650,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_layerEditor != null && !_layerEditor.IsDisposed)
 			{
 				_layerEditor.Dispose();
+			}
+
+			if (_findEffects != null && !_findEffects.IsDisposed)
+			{
+				_findEffects.Dispose();
 			}
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
@@ -903,6 +916,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				_effectEditorForm = new FormEffectEditor(this);
 				return _effectEditorForm;
+			}
+		}
+
+		private FindEffectForm _findEffects;
+
+		private FindEffectForm FindEffects
+		{
+			get
+			{
+				if (_findEffects != null && !_findEffects.IsDisposed)
+				{
+					return _findEffects;
+				}
+
+				_findEffects = new FindEffectForm(TimelineControl);
+
+				return _findEffects;
 			}
 		}
 
@@ -5314,6 +5344,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			HandleDockContentToolStripMenuClick(LayerEditor, DockState.DockLeft);
 			}
 
+		private void toolStripMenuItemFindEffects_Click(object sender, EventArgs e)
+		{
+			HandleDockContentToolStripMenuClick(FindEffects, DockState.DockLeft);
+		}
+
 		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)
 		{
 			if (dockWindow.IsHidden || dockWindow.DockState == DockState.Unknown)
@@ -5649,6 +5684,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			MarksForm.Close();
 			EffectsForm.Close();
 			LayerEditor.Close();
+			FindEffects.Close();
 
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DockLeftPortion", Name), (int)dockPanel.DockLeftPortion);
@@ -5890,10 +5926,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//to create the form if the user does not activate it. 
 			effectWindowToolStripMenuItem.Checked = !(_effectsForm == null || _effectsForm.DockState == DockState.Unknown);
 			markWindowToolStripMenuItem.Checked = !(_marksForm == null || _marksForm.DockState == DockState.Unknown);
-			mixingFilterEditorWindowToolStripMenuItem.Checked = !(_layerEditor == null || _layerEditor.DockState == DockState.Unknown);
-			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm==null || _toolPaletteForm.DockState == DockState.Unknown);
+			mixingFilterEditorWindowToolStripMenuItem.Checked =
+				!(_layerEditor == null || _layerEditor.DockState == DockState.Unknown);
+			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm == null || _toolPaletteForm.DockState == DockState.Unknown);
+			toolStripMenuItemFindEffects.Checked = !(_findEffects == null || _findEffects.DockState == DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
-			effectEditorWindowToolStripMenuItem.Checked = !(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
+			effectEditorWindowToolStripMenuItem.Checked =
+				!(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)
