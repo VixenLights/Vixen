@@ -5,6 +5,8 @@ namespace VixenModules.Effect.Circles
 	public enum CircleType
 	{
 		[Description("Circles")]
-		Circles
+		Circles,
+		[Description("Radial")]
+		Radial
 	}
 }
