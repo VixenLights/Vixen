@@ -293,11 +293,10 @@ namespace VixenModules.Effect.Balls
 
 		private void UpdateFillAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
 			{
 				propertyStates.Add("Colors", BallFill != BallFill.Inverse);
 				propertyStates.Add("BackgroundColor", BallFill == BallFill.Inverse);
-				propertyStates.Add("BallCountCurve", BallFill != BallFill.Inverse);
 				propertyStates.Add("BallEdgeWidthCurve", BallFill == BallFill.Empty);
 			}
 			SetBrowsable(propertyStates);
@@ -321,6 +320,8 @@ namespace VixenModules.Effect.Balls
 		}
 
 		#endregion
+
+
 
 		public override IModuleDataModel ModuleData
 		{
@@ -359,6 +360,7 @@ namespace VixenModules.Effect.Balls
 			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 			_level = LevelCurve.GetValue(_intervalPosFactor) / 100;
+			Color inverseBackColor = BackgroundColor.GetColorAt(_intervalPos);
 
 			double minSpeed = _centerSpeed - (_speedVariation / 2);
 			double maxSpeed = _centerSpeed + (_speedVariation / 2);
@@ -380,12 +382,9 @@ namespace VixenModules.Effect.Balls
 			{
 				for (int x = 0; x < BufferWi; x++)
 				{
-					CalculatePixel(x, y, frameBuffer);
+					CalculatePixel(x, y, frameBuffer, inverseBackColor);
 				}
 			}
-
-			//Inverse grid so Balls are black and add background color, can be used as a good mask effect.
-			Inverse(frameBuffer);
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
@@ -402,6 +401,7 @@ namespace VixenModules.Effect.Balls
 				_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 				_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 				_level = LevelCurve.GetValue(_intervalPosFactor)/100;
+				Color inverseBackColor = BackgroundColor.GetColorAt(_intervalPos);
 
 				double minSpeed = _centerSpeed - (_speedVariation/2);
 				double maxSpeed = _centerSpeed + (_speedVariation/2);
@@ -423,12 +423,9 @@ namespace VixenModules.Effect.Balls
 				{
 					foreach (var elementLocation in elementLocations)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer);
+						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, inverseBackColor);
 					}
 				}
-
-				//Inverse grid so Balls are black and add background color, can be used as a good mask effect.
-				Inverse(frameBuffer);
 			}
 		}
 
@@ -560,7 +557,7 @@ namespace VixenModules.Effect.Balls
 			}
 		}
 
-		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, Color inverseBackColor)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -571,9 +568,10 @@ namespace VixenModules.Effect.Balls
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
+			bool inverseColor = false;
 			foreach (var ball in _balls)
 			{
-				//This saves going through all X and Y locations significantly reducing render times.
+				//This saves going through all X and Y locations, significantly reducing render times.
 				if ((y >= ball.LocationY + ball.Radius + 1 || y <= ball.LocationY - ball.Radius) &&
 					(x >= ball.LocationX + ball.Radius + 1 || x <= ball.LocationX - ball.Radius)) continue;
 
@@ -596,9 +594,12 @@ namespace VixenModules.Effect.Balls
 							frameBuffer.SetPixel(xCoord, yCoord, hsv);
 						break;
 					case BallFill.Inverse:
-						hsv = HSV.FromRGB(Color.Black);
 						if (distance <= ball.Radius)
+						{
+							inverseColor = true;
+							hsv = HSV.FromRGB(Color.Black);
 							frameBuffer.SetPixel(xCoord, yCoord, hsv);
+						}
 						break;
 					case BallFill.Fade:
 						if (distance <= ball.Radius*0.9)
@@ -616,6 +617,12 @@ namespace VixenModules.Effect.Balls
 						}
 						break;
 				}
+			}
+
+			//Add the background color when no other color has been used for the balls.
+			if (!inverseColor && BallFill == BallFill.Inverse)
+			{
+				frameBuffer.SetPixel(xCoord, yCoord, inverseBackColor);
 			}
 		}
 
@@ -662,24 +669,6 @@ namespace VixenModules.Effect.Balls
 					_balls.Remove(balls);
 				}
 				_removeBalls.Clear();
-			}
-		}
-
-		private void Inverse(IPixelFrameBuffer frameBuffer)
-		{
-			if (BallFill == BallFill.Inverse)
-			{
-				Color backColor = BackgroundColor.GetColorAt(_intervalPos);
-				for (int x = 0; x < BufferWi; x++)
-				{
-					for (int y = 0; y < BufferHt; y++)
-					{
-						if (frameBuffer.GetColorAt(x, y) == Color.Transparent)
-						{
-							frameBuffer.SetPixel(x, y, backColor);
-						}
-					}
-				}
 			}
 		}
 
