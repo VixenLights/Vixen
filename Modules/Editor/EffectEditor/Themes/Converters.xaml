@@ -23,4 +23,5 @@
     <converters:AdditionConverter x:Key="AdditionConverter"/>
     <converters:ToolTipVisibilityConverter x:Key="ToolTipVisibilityConverter"/>
     <converters:ColorGradientIsLibraryToVisibilityConverter x:Key="ColorGradientIsLibraryToVisibilityConverter"/>
+    <converters:CurveIsLibraryToVisibilityConverter x:Key="CurveIsLibraryToVisibilityConverter"/>
 </ResourceDictionary>

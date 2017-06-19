@@ -229,6 +229,7 @@
     <Compile Include="Controls\SliderEditorBase.cs" />
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
+    <Compile Include="Converters\CurveIsLibraryToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorGradientIsLibraryToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorGradientToImageConverter.cs" />
     <Compile Include="Converters\CurveToDoubleConverter.cs" />

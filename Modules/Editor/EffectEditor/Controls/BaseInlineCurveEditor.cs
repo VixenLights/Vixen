@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	{
 		private static readonly Type ThisType = typeof(BaseInlineCurveEditor);
 		private Image _image;
+		private Canvas _canvas;
+		private SliderPoint _levelPoint;
 
 		#region Fields
 
@@ -45,11 +48,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			var template = Template;
 			_image = (Image)template.FindName("CurveImage", this);
+			_canvas = (Canvas)Template.FindName("FaderCanvas", this);
+			AddLevelSlider();
 			OnCurveValueChanged();
 		}
 
 		protected void OnCurveValueChanged()
 		{
+			UpdateLevelSliderPosition();
 			UpdateImage(GetCurveValue());
 		}
 
@@ -105,7 +111,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		public static readonly DependencyProperty IsDraggingProperty = DependencyProperty.Register("IsDragging", typeof(bool),
 			ThisType, new PropertyMetadata(false, OnIsDraggingChanged));
 
-		
+		public static readonly DependencyProperty SliderStyleProperty = DependencyProperty.Register("SliderStyle", typeof(Style), ThisType);
 
 		#region PropertyDescriptor Property
 
@@ -139,6 +145,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			get { return (bool)GetValue(IsDraggingProperty); }
 			set { SetValue(IsDraggingProperty, value); }
+		}
+
+		public Style SliderStyle
+		{
+			get { return (Style)GetValue(SliderStyleProperty); }
+			set { SetValue(SliderStyleProperty, value); }
 		}
 
 		#endregion Properties
@@ -193,6 +205,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseDown(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
+			_holdValue = curve;
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
 				_dragStartPoint = e.GetPosition(this);
@@ -258,6 +271,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				if (Dist(point, curve.Points[index]) < DistanceTolerance)
 				{
 					Cursor = Cursors.Cross;
+				}
+				else if (IsMouseOverLevelHandle())
+				{
+					Cursor = Cursors.SizeWE;
 				}
 				else
 				{
@@ -329,6 +346,94 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			points.Sort();
 			_holdValue = new Curve(points);
 			UpdateImage(_holdValue);
+		}
+
+		private void AddLevelSlider()
+		{
+			var points = GetCurveValue().Points;
+
+			if (points.Count == 2 && points[0].Y == points[1].Y)
+			{
+				_levelPoint = new SliderPoint(GetCurveValue().Points[0].Y / 100.0, _canvas, true);
+			}
+			else
+			{
+				_levelPoint = new SliderPoint(0.0, _canvas, true);
+			}
+			
+
+			if (_levelPoint.Center >= 0 && _levelPoint.Center <= _canvas.Width)
+			{
+				OnAddItem(_levelPoint);
+			}
+		}
+
+		private void UpdateLevelSliderPosition()
+		{
+			
+			if (_levelPoint != null)
+			{
+				var points = GetCurveValue().Points;
+				if (points.Count == 2 && points[0].Y == points[1].Y)
+				{
+					_levelPoint.NormalizedPosition = points[0].Y / 100.0;
+				}
+				else
+				{
+					_levelPoint.NormalizedPosition = 0.0;
+				}
+			}
+		}
+
+		private void OnAddItem(SliderPoint sliderPoint)
+		{
+			sliderPoint.Parent = _canvas;
+			sliderPoint.SliderShape.Style = SliderStyle;
+			sliderPoint.PropertyChanged += LevelPoint_PropertyChanged;
+			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			
+			try
+			{
+				_canvas.Children.Add(sliderPoint.SliderShape);
+			}
+			catch { }
+		}
+
+		private void SliderPoint_DragCompleted(object sender, EventArgs e)
+		{
+			//Logging.Debug("Enter drag completed");
+			if (_holdValue != null)
+			{
+				SetCurveValue(_holdValue);
+				_holdValue = null;
+			}
+			//Logging.Debug("Exit drag completed");
+		}
+
+
+		private void LevelPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+
+			if (e.PropertyName.Equals("center", StringComparison.OrdinalIgnoreCase))
+			{
+				if (_holdValue == null)
+				{
+					_holdValue = new Curve(GetCurveValue());
+					//Logging.Debug("Position changed, initialized holdvalue");
+				}
+				SliderPoint point = sender as SliderPoint;
+				if (point != null)
+				{
+					if (point.IsDragging)
+					{
+						var level = Math.Round(point.NormalizedPosition * 100);
+						
+						_holdValue = new Curve(new PointPairList(new[] { 0.0, 100.0}, new[] { level, level }));
+
+						UpdateImage(_holdValue);
+					}
+				}
+			}
 		}
 
 		private void MovePoint(Point mousePosition)
@@ -409,6 +514,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#endregion Helpers
 
+		private bool IsMouseOverLevelHandle()
+		{
+			return _levelPoint.IsMouseOver;
+		}
 
 		private int FindClosestPoint(PointPairList points, PointPair point)
 		{
