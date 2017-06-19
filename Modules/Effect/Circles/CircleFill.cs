@@ -8,9 +8,9 @@ namespace VixenModules.Effect.Circles
 		Fade,
 		[Description("Empty")]
 		Empty,
-		[Description("Solid")]
-		Solid,
-		[Description("Gradient")]
-		Gradient
+		[Description("Gradient over Time")]
+		GradientOverTime,
+		[Description("Gradient over Element")]
+		GradientOverElement
 	}
 }
