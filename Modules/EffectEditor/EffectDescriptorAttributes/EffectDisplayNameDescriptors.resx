@@ -501,4 +501,27 @@
   <data name="TopBorderWidth" xml:space="preserve">
     <value>Top Width</value>
   </data>
-</root>
+  <data name="BackGroundColor" xml:space="preserve">
+    <value>BackGround Color</value>
+  </data>
+  <data name="BallCount" xml:space="preserve">
+    <value>Ball Count</value>
+  </data>
+  <data name="BallEdgeWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="BallFill" xml:space="preserve">
+    <value>Fill</value>
+  </data>
+  <data name="BallType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ChangeCollideColor" xml:space="preserve">
+    <value>Collide Color</value>
+  </data>
+  <data name="Collide" xml:space="preserve">
+    <value>Collide</value>
+  </data>
+  <data name="RandomRadius" xml:space="preserve">
+    <value>Random Radius</value>
+  </data></root>

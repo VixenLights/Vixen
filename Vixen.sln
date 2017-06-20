@@ -1886,7 +1886,8 @@ Global
 		{D6DFE715-3D3C-4178-B698-798DB0FD36DB}.Release|x64.ActiveCfg = Release|x64
 		{D6DFE715-3D3C-4178-B698-798DB0FD36DB}.Release|x64.Build.0 = Release|x64
 		{D6DFE715-3D3C-4178-B698-798DB0FD36DB}.Release|x86.ActiveCfg = Release|x86
-		{D6DFE715-3D3C-4178-B698-798DB0FD36DB}.Release|x86.Build.0 = Release|x86	EndGlobalSection
+		{D6DFE715-3D3C-4178-B698-798DB0FD36DB}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

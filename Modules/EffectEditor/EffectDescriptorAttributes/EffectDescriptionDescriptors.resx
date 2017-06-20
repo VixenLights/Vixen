@@ -492,4 +492,27 @@
   <data name="BorderSize" xml:space="preserve">
     <value>Adjusts the overall size of the border.</value>
   </data>
-</root>
+  <data name="BackGroundColor" xml:space="preserve">
+    <value>Changes Background color.</value>
+  </data>
+  <data name="BallCount" xml:space="preserve">
+    <value>Controls the number of Balls displayed.</value>
+  </data>
+  <data name="BallEdgeWidth" xml:space="preserve">
+    <value>Width of the individual empty balls.</value>
+  </data>
+  <data name="BallFill" xml:space="preserve">
+    <value>Selects the type of fill for the balls.</value>
+  </data>
+  <data name="BallType" xml:space="preserve">
+    <value>Selects between Bounce and Wrap.</value>
+  </data>
+  <data name="ChangeCollideColor" xml:space="preserve">
+    <value>Change ball color when balls collide.</value>
+  </data>
+  <data name="Collide" xml:space="preserve">
+    <value>Change the ball direction when balls collide.</value>
+  </data>
+  <data name="RandomRadius" xml:space="preserve">
+    <value>Creates random size balls up to the Radius value..</value>
+  </data></root>

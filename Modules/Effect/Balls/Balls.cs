@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Annotations;
 using Vixen.Attributes;
 using Vixen.Module;
-using Vixen.Sys;
 using Vixen.Sys.Attribute;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using ZedGraph;
 
 namespace VixenModules.Effect.Balls
 {
@@ -24,9 +19,9 @@ namespace VixenModules.Effect.Balls
 	{
 		private BallData _data;
 		private readonly List<BallClass> _balls = new List<BallClass>();
-		private List<BallClass> _removeBalls = new List<BallClass>();
+		private readonly List<BallClass> _removeBalls = new List<BallClass>();
 		private int _ballCount;
-		private static Random _random = new Random();
+		private readonly Random _random = new Random();
 		private int _minBuffer;
 		private int _maxBuffer;
 		private double _intervalPos;
