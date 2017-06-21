@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MovementType.cs" />
     <Compile Include="PinWheelBladeType.cs" />
     <Compile Include="PinWheelColorType.cs" />
     <Compile Include="PinWheelDescriptor.cs" />
