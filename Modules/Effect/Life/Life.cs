@@ -237,7 +237,7 @@ namespace VixenModules.Effect.Life
 			var intervalPosFactor = intervalPos * 100;
 			int i, x, y;
 			Color color;
-			int state = frame * CalculateSpeed(intervalPosFactor);
+			double state = frame * CalculateSpeed(intervalPosFactor);
 			int count = BufferWi * BufferHt * CellsToStart / 200 + 1;
 			if (frame == 0)
 			{
@@ -253,7 +253,7 @@ namespace VixenModules.Effect.Life
 					SetTempPixel(x, y, color);
 				}
 			}
-			long tempState = (state % 400) / 20;
+			long tempState = (long)(state % 400) / 20;
 			if (tempState == _lastLifeState)
 			{
 				//Pixels=tempbuf;
@@ -366,9 +366,9 @@ namespace VixenModules.Effect.Life
 			CopyPixelsToTempBuf(frameBuffer);
 		}
 
-		private int CalculateSpeed(double intervalPos)
+		private double CalculateSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 20, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 20, 1);
 			if (value < 1) value = 1;
 
 			return value;
