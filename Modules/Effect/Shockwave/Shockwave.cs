@@ -339,19 +339,19 @@ namespace VixenModules.Effect.Shockwave
 			return ScaleCurveToValue(WidthCurve.GetValue(intervalPos), 255, 0);
 		}
 
-		private int CalculateCenterX(double intervalPos)
+		private double CalculateCenterX(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(CenterXCurve.GetValue(intervalPos), 100, 0);
+			return ScaleCurveToValue(CenterXCurve.GetValue(intervalPos), 100, 0);
 		}
 
-		private int CalculateCenterY(double intervalPos)
+		private double CalculateCenterY(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(CenterYCurve.GetValue(intervalPos), 100, 0);
+			return ScaleCurveToValue(CenterYCurve.GetValue(intervalPos), 100, 0);
 		}
 
-		private int CalculateAcceleration(double intervalPos)
+		private double CalculateAcceleration(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(AccelerationCurve.GetValue(intervalPos), 10, -10);
+			return ScaleCurveToValue(AccelerationCurve.GetValue(intervalPos), 10, -10);
 		}
 
 		private double CalculateRadius(double intervalPos)
