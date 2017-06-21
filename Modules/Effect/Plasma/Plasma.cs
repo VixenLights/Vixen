@@ -234,10 +234,10 @@ namespace VixenModules.Effect.Plasma
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			var speed = CalculateSpeed(intervalPosFactor);
-			double position = intervalPos * speed * 100;
+			double position = intervalPosFactor * speed;
 			double plasmaSpeed = (101 - speed) * 3;
 			var time = (position + 1.0)/plasmaSpeed;
-			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 
 			for (int x = 0; x < BufferWi; x++)
 			{
@@ -257,10 +257,10 @@ namespace VixenModules.Effect.Plasma
 				var intervalPosFactor = intervalPos * 100;
 				var speed = CalculateSpeed(intervalPosFactor);
 				frameBuffer.CurrentFrame = frame;
-				double position = intervalPos * speed * 100;
+				double position = intervalPosFactor * speed;
 				double plasmaSpeed = (101 - speed) * 3;
 				var time = (position + 1.0) / plasmaSpeed;
-				double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 
 				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 				{
@@ -338,17 +338,17 @@ namespace VixenModules.Effect.Plasma
 
 		}
 
-		private int CalculateSpeed(double intervalPos)
+		private double CalculateSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateLineDensity(double intervalPos)
+		private double CalculateLineDensity(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(LineDensityCurve.GetValue(intervalPos), 10, 1);
+			var value = ScaleCurveToValue(LineDensityCurve.GetValue(intervalPos), 10, 1);
 			if (value < 1) value = 1;
 
 			return value;
