@@ -384,7 +384,7 @@ namespace VixenModules.Effect.Garlands
 
 		private int CalculateSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			var value = (int)Math.Round(ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1));
 			if (value < 1) value = 1;
 
 			return value;
@@ -392,7 +392,7 @@ namespace VixenModules.Effect.Garlands
 
 		private int CalculateSpacing(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpacingCurve.GetValue(intervalPos), 20, 1);
+			var value = (int)Math.Round(ScaleCurveToValue(SpacingCurve.GetValue(intervalPos), 20, 1));
 			if (value < 1) value = 1;
 
 			return value;
@@ -402,11 +402,6 @@ namespace VixenModules.Effect.Garlands
 		private int ChannelBlend(int c1, int c2, double ratio)
 		{
 			return c1 + (int)Math.Floor(ratio * (double)(c2 - c1) + 0.5);
-		}
-
-		public int GetColorCount()
-		{
-			return Colors.Count();
 		}
 
 		public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
@@ -422,7 +417,7 @@ namespace VixenModules.Effect.Garlands
 
 		public Color GetMultiColorBlend(double n, bool circular, int frame)
 		{
-			int colorcnt = GetColorCount();
+			int colorcnt = Colors.Count;
 			if (colorcnt <= 1)
 			{
 				return Colors[0].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
