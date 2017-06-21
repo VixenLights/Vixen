@@ -337,7 +337,7 @@ namespace VixenModules.Effect.SnowStorm
 			var intervalPosFactor = intervalPos * 100;
 			var adjustSpeed = CalculateSpeed(intervalPosFactor);
 			int count = Convert.ToInt32(BufferWi * BufferHt * CalculateCount(intervalPosFactor) / 2000) + 1;
-			int tailLength = BufferWi * BufferHt * CalculateLength(intervalPosFactor) / 2000 + 2;
+			int tailLength = (int)Math.Round(BufferWi * BufferHt * CalculateLength(intervalPosFactor) / 2000 + 2);
 			Point xy = new Point();
 			int r;
 			if (frame == 0)
@@ -452,19 +452,19 @@ namespace VixenModules.Effect.SnowStorm
 			}
 		}
 
-		private int CalculateLength(double intervalPos)
+		private double CalculateLength(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(LengthCurve.GetValue(intervalPos), 20, 1);
+			return ScaleCurveToValue(LengthCurve.GetValue(intervalPos), 20, 1);
 		}
 
-		private int CalculateCount(double intervalPos)
+		private double CalculateCount(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(CountCurve.GetValue(intervalPos), 100, 1);
+			return ScaleCurveToValue(CountCurve.GetValue(intervalPos), 100, 1);
 		}
 
-		private int CalculateSpeed(double intervalPos)
+		private double CalculateSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
 			if (value < 1) value = 1;
 
 			return value;
