@@ -700,17 +700,17 @@ namespace VixenModules.Effect.Video
 
 		private int CalculateXOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
-		private int CalculateIncreaseBrightness(double intervalPos)
+		private double CalculateIncreaseBrightness(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
+			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
 		}
 	}
 }
