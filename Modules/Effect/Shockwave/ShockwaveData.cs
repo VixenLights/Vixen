@@ -87,11 +87,6 @@ namespace VixenModules.Effect.Shockwave
 				StartWidth = 0;
 				EndWidth = 0;
 
-				if (CenterXCurve == null)
-				{
-					CenterXCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new double[] { CenterX, CenterX }));
-					CenterX = 0;
-				}
 				if (CenterYCurve == null)
 				{
 					if (TargetPositioning == TargetPositioningType.Locations)
@@ -108,6 +103,13 @@ namespace VixenModules.Effect.Shockwave
 					CenterYCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new double[] { CenterY, CenterY }));
 					CenterY = 0;
 				}
+
+				if (CenterXCurve == null)
+				{
+					CenterXCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new double[] { CenterX, CenterX }));
+					CenterX = 0;
+				}
+
 				if (AccelerationCurve == null)
 				{
 					value = PixelEffectBase.ScaleValueToCurve(Acceleration, 10, -10);
