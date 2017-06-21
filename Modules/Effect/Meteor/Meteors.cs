@@ -375,10 +375,10 @@ namespace VixenModules.Effect.Meteors
 			int minDirection = 1;
 			int maxDirection = 360;
 			int pixelCount = CalculatePixelCount(intervalPosFactor);
-			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
-			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
-			var minSpeed = centerSpeed - (spreadSpeed / 2);
-			var maxSpeed = centerSpeed + (spreadSpeed / 2);
+			double centerSpeed = CalculateCenterSpeed(intervalPosFactor);
+			double spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
+			double minSpeed = centerSpeed - (spreadSpeed / 2);
+			double maxSpeed = centerSpeed + (spreadSpeed / 2);
 			if (minSpeed < 1)
 				minSpeed = 1;
 			if (maxSpeed > 200)
@@ -395,7 +395,7 @@ namespace VixenModules.Effect.Meteors
 
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
-				double position = (double) _random.Next(minSpeed, maxSpeed + 1)/20;
+				double position = (_random.NextDouble() * ((maxSpeed+ 1) - minSpeed) + minSpeed)/20;
 				if (_meteors.Count >= pixelCount) continue;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
@@ -592,17 +592,17 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
-		private int CalculateSpeedVariation(double intervalPos)
+		private double CalculateSpeedVariation(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 1);
+			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateCenterSpeed(double intervalPos)
+		private double CalculateCenterSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 1);
+			var value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 200, 1);
 			if (value < 1) value = 1;
 
 			return value;
