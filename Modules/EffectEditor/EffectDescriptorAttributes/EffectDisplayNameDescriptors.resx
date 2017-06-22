@@ -468,4 +468,7 @@
   <data name="ReverseDirection" xml:space="preserve">
     <value>Reverse Direction</value>
   </data>
+  <data name="Movement" xml:space="preserve">
+    <value>Movement</value>
+  </data>
 </root>

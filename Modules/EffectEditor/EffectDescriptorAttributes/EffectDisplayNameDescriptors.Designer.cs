@@ -692,6 +692,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Movement.
+        /// </summary>
+        internal static string Movement {
+            get {
+                return ResourceManager.GetString("Movement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Movement Type.
         /// </summary>
         internal static string MovementType {

@@ -18,7 +18,6 @@ namespace VixenModules.Effect.PinWheel
 			Colors = new List<GradientLevelPair> { new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100), new GradientLevelPair(Color.Blue, CurveType.Flat100) };
 			ColorType = PinWheelColorType.Standard;
 			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
-			IterationsCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
 			Arms = 8;
 			TwistCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 56.0, 56.0 }));
 			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
@@ -46,9 +45,6 @@ namespace VixenModules.Effect.PinWheel
 
 		[DataMember]
 		public Curve SpeedCurve { get; set; }
-
-		[DataMember]
-		public Curve IterationsCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int XOffset { get; set; }
@@ -137,15 +133,11 @@ namespace VixenModules.Effect.PinWheel
 					SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 					Size = 0;
 				}
-				if (IterationsCurve == null)
-				{
-					value = PixelEffectBase.ScaleValueToCurve(Speed, 50, 1);
-					IterationsCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
-					Speed = 0;
-				}
 				if (SpeedCurve == null)
 				{
-					SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+					value = PixelEffectBase.ScaleValueToCurve(Speed, 50, 1);
+					SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					Speed = 0;
 				}
 				if (XOffsetCurve == null)
 				{
@@ -176,7 +168,6 @@ namespace VixenModules.Effect.PinWheel
 				Colors = gradientLevelList,
 				ColorType = ColorType,
 				SpeedCurve = new Curve(SpeedCurve),
-				IterationsCurve = new Curve(IterationsCurve),
 				PinWheel3D = PinWheel3D,
 				Orientation = Orientation,
 				Arms = Arms,

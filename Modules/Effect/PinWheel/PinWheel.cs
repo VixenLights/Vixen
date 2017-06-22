@@ -71,7 +71,6 @@ namespace VixenModules.Effect.PinWheel
 			set
 			{
 				_data.MovementType = value;
-				UpdateMovementTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -79,8 +78,8 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Speed")]
-		[ProviderDescription(@"Speed")]
+		[ProviderDisplayName(@"Movement")]
+		[ProviderDescription(@"Movement")]
 		//[NumberRange(1, 50, 1)]
 		[PropertyOrder(1)]
 		public Curve SpeedCurve
@@ -96,28 +95,11 @@ namespace VixenModules.Effect.PinWheel
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Iterations")]
-		[ProviderDescription(@"Iterations")]
-		//[NumberRange(1, 20, 1)]
-		[PropertyOrder(2)]
-		public Curve IterationsCurve
-		{
-			get { return _data.IterationsCurve; }
-			set
-			{
-				_data.IterationsCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Arms")]
 		[ProviderDescription(@"Arms")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(2)]
 		public int Arms
 		{
 			get { return _data.Arms; }
@@ -134,7 +116,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Thickness")]
 		[ProviderDescription(@"Thickness")]
 		//[NumberRange(1, 100, 1)] Keep for range reference
-		[PropertyOrder(4)]
+		[PropertyOrder(3)]
 		public Curve ThicknessCurve
 		{
 			get { return _data.ThicknessCurve; }
@@ -151,7 +133,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Size")]
 		[ProviderDescription(@"Size")]
 		//[NumberRange(1, 400, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(4)]
 		public Curve SizeCurve
 		{
 			get { return _data.SizeCurve; }
@@ -168,7 +150,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Twist")]
 		[ProviderDescription(@"Twist")]
 		//[NumberRange(-500, 500, 1)] Keep for range reference
-		[PropertyOrder(6)]
+		[PropertyOrder(5)]
 		public Curve TwistCurve
 		{
 			get { return _data.TwistCurve; }
@@ -185,7 +167,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(6)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -202,7 +184,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(7)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -219,7 +201,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Center Hub")]
 		[ProviderDescription(@"CenterHub")]
 		//[NumberRange(0, 100, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(8)]
 		public Curve CenterHubCurve
 		{
 			get { return _data.CenterHubCurve; }
@@ -235,7 +217,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"Direction")]
-		[PropertyOrder(10)]
+		[PropertyOrder(9)]
 		public RotationType Rotation
 		{
 			get { return _data.Rotation; }
@@ -251,7 +233,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BladeType")]
 		[ProviderDescription(@"BladeType")]
-		[PropertyOrder(11)]
+		[PropertyOrder(10)]
 		public PinWheelBladeType PinWheelBladeType
 		{
 			get { return _data.PinWheelBladeType; }
@@ -326,7 +308,6 @@ namespace VixenModules.Effect.PinWheel
 		private void UpdateAttributes()
 		{
 			UpdateColorAttribute(false);
-			UpdateMovementTypeAttribute(false);
 			UpdateStringOrientationAttributes(true);
 			TypeDescriptor.Refresh(this);
 		}
@@ -337,19 +318,6 @@ namespace VixenModules.Effect.PinWheel
 			bool colorType = ColorType != PinWheelColorType.Rainbow && ColorType != PinWheelColorType.Random;
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
 			propertyStates.Add("Colors", colorType);
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateMovementTypeAttribute(bool refresh = true)
-		{
-			bool movementType = MovementType == MovementType.Speed;
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
-			propertyStates.Add("SpeedCurve", movementType);
-			propertyStates.Add("Iterations", !movementType);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -418,7 +386,7 @@ namespace VixenModules.Effect.PinWheel
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			double pos = MovementType == MovementType.Iterations
-				? intervalPos * CalculateIterations(intervalPosFactor) * 360
+				? intervalPos * CalculateSpeed(intervalPosFactor) * 360
 				: intervalPos*CalculateSpeed(intervalPosFactor)*GetNumberFrames();
 			var overallLevel = LevelCurve.GetValue(intervalPosFactor) / 100;
 
@@ -460,7 +428,7 @@ namespace VixenModules.Effect.PinWheel
 				var intervalPosFactor = intervalPos * 100;
 
 				double pos = MovementType == MovementType.Iterations
-					? intervalPos * CalculateIterations(intervalPosFactor) * 360
+					? intervalPos * CalculateSpeed(intervalPosFactor) * 360
 					: intervalPos * CalculateSpeed(intervalPosFactor) * GetNumberFrames();
 				var overallLevel = LevelCurve.GetValue(intervalPosFactor) / 100;
 
@@ -500,14 +468,6 @@ namespace VixenModules.Effect.PinWheel
 		private double CalculateSpeed(double intervalPos)
 		{
 			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 50, 1);
-			if (value < 1) value = 1;
-
-			return value;
-		}
-
-		private double CalculateIterations(double intervalPos)
-		{
-			var value = ScaleCurveToValue(IterationsCurve.GetValue(intervalPos), 50, 1);
 			if (value < 1) value = 1;
 
 			return value;
