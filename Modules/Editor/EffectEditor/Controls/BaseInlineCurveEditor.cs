@@ -196,6 +196,19 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#region Base Class Overrides
 
+		protected override void OnMouseEnter(MouseEventArgs e)
+		{
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
+			{
+				_canvas.Visibility = Visibility.Visible;
+			}
+		}
+
+		protected override void OnMouseLeave(MouseEventArgs e)
+		{
+			_canvas.Visibility = Visibility.Collapsed;
+		}
+
 		/// <summary>
 		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
 		/// </summary>
