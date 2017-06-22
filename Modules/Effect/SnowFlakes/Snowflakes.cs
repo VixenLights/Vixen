@@ -379,7 +379,7 @@ namespace VixenModules.Effect.Snowflakes
 			var intervalPosFactor = intervalPos * 100;
 
 			// create new SnowFlakes and maintain maximum number as per users selection.
-			int flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor);
+			double flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor);
 
 			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
 			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
@@ -392,7 +392,7 @@ namespace VixenModules.Effect.Snowflakes
 			
 			for (int i = 0; i < flakeCount; i++)
 			{
-				double position = (double)_random.Next(minSpeed, maxSpeed + 1) / 5;
+				double position = (_random.NextDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
 				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor)) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
@@ -645,25 +645,25 @@ namespace VixenModules.Effect.Snowflakes
 			public double HsvBrightness;
 		}
 
-		private int CalculateCount(double intervalPos)
+		private double CalculateCount(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(FlakeCountCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(FlakeCountCurve.GetValue(intervalPos), 100, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateSpeedVariation(double intervalPos)
+		private double CalculateSpeedVariation(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 60, 1);
+			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 60, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateCenterSpeed(double intervalPos)
+		private double CalculateCenterSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 60, 1);
+			var value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 60, 1);
 			if (value < 1) value = 1;
 
 			return value;

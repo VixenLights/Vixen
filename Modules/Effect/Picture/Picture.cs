@@ -610,7 +610,7 @@ namespace VixenModules.Effect.Picture
 			var dir = 360 - Direction;
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			double adjustedBrightness = (double)(CalculateIncreaseBrightness(intervalPosFactor)) / 10;
 
 			int speedFactor = 4;
@@ -912,17 +912,17 @@ namespace VixenModules.Effect.Picture
 
 		private int CalculateXOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
-		private int CalculateIncreaseBrightness(double intervalPos)
+		private double CalculateIncreaseBrightness(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
+			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
 		}
 
 		private HSV CustomColor(HSV hsv, int frame, double level, Color fpColor, double adjustedBrightness)

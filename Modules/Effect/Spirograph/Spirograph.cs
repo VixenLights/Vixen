@@ -302,12 +302,12 @@ namespace VixenModules.Effect.Spirograph
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			
-			int rangeAdjust = CalculateRange(intervalPosFactor);
+
+			double rangeAdjust = CalculateRange(intervalPosFactor);
 			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, d_mod;
 			srand(1);
-			int state = frame * CalculateSpeed(intervalPosFactor);
+			double state = frame * CalculateSpeed(intervalPosFactor);
 			float R, r, d, d_orig, t;
 			double hyp, x2, y2;
 			HSV hsv = new HSV(); //   we will define an hsv color model.
@@ -335,7 +335,7 @@ namespace VixenModules.Effect.Spirograph
 					x = Convert.ToInt32((R - r)*Math.Cos(t) + d*Math.Cos(((R - r)/r)*t) + xc);
 					y = Convert.ToInt32((R - r)*Math.Sin(t) + d*Math.Sin(((R - r)/r)*t) + yc);
 
-					if (colorcnt > 0) d_mod = rangeAdjust / colorcnt;
+					if (colorcnt > 0) d_mod = (int)Math.Round(rangeAdjust / colorcnt);
 					else d_mod = 1;
 
 					x2 = Math.Pow((x - xc), 2);
@@ -371,30 +371,30 @@ namespace VixenModules.Effect.Spirograph
 			catch {
 			}
 		}
-		private int CalculateSpeed(double intervalPos)
+		private double CalculateSpeed(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateDistance(double intervalPos)
+		private double CalculateDistance(double intervalPos)
 		{
-			var value = (int)ScaleCurveToValue(DistanceCurve.GetValue(intervalPos), 100, 1);
+			var value = ScaleCurveToValue(DistanceCurve.GetValue(intervalPos), 100, 1);
 			if (value < 1) value = 1;
 
 			return value;
 		}
 
-		private int CalculateRange(double intervalPos)
+		private double CalculateRange(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(RangeCurve.GetValue(intervalPos), 200, 1);
+			return ScaleCurveToValue(RangeCurve.GetValue(intervalPos), 200, 1);
 		}
 
-		private int CalculateSpirographRange(double intervalPos)
+		private double CalculateSpirographRange(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(SpirographRangeCurve.GetValue(intervalPos), 300, 1);
+			return ScaleCurveToValue(SpirographRangeCurve.GetValue(intervalPos), 300, 1);
 		}
 
 		private void srand(int seed)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -401,18 +402,12 @@ namespace VixenModules.Effect.Spiral
 
 		private int CalculateThickness(double intervalPos)
 		{
-			var value = ThicknessCurve.GetIntValue(intervalPos);
-			if (value < 1) value = 1;
-
-			return value;
+			return (int)Math.Round(ScaleCurveToValue(ThicknessCurve.GetValue(intervalPos), 100, 1));
 		}
 
 		private double CalculateRotation(double intervalPos)
 		{
-			var value = RotationCurve.GetValue(intervalPos);
-			if (value < 1) value = 1;
-
-			return value;
+			return ScaleCurveToValue(RotationCurve.GetValue(intervalPos), 50, -50);
 		}
 		
 	}
