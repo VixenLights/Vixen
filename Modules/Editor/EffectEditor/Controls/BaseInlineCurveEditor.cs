@@ -248,6 +248,16 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseMove(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
+
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
+			{
+				_canvas.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				_canvas.Visibility = Visibility.Collapsed;
+			}
+
 			Point position = e.GetPosition(this);
 			Vector vector = position - _dragStartPoint;
 
