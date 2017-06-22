@@ -331,7 +331,7 @@ namespace VixenModules.Effect.Borders
 
 		protected override void SetupRender()
 		{
-			_minBufferSize = (double)(Math.Min(BufferHt, BufferWi)) / 100;
+			_minBufferSize = Math.Min(BufferHt, BufferWi);
 		}
 
 		protected override void CleanUpRender()
@@ -345,12 +345,12 @@ namespace VixenModules.Effect.Borders
 			var intervalPosFactor = intervalPos * 100;
 
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			int thickness = (int)(ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
-			int topThickness = (int)(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-			int bottomThickness = (int)(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-			int leftThickness = (int)(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
-			int rightThickness = (int)(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
-			int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) * _minBufferSize / 2);
+			int thickness = (int)Math.Round(CalculateBorderThickness(intervalPosFactor) / 2);
+			int topThickness = (int)Math.Round(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+			int bottomThickness = (int)Math.Round(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
+			int leftThickness = (int)Math.Round(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+			int rightThickness = (int)Math.Round(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+			int borderWidth = (int)Math.Round(CalculateBorderSize(intervalPosFactor) / 2);
 
 			if (BorderMode == BorderMode.Simple)
 			{
@@ -388,12 +388,12 @@ namespace VixenModules.Effect.Borders
 				var intervalPosFactor = intervalPos * 100;
 
 				double level = LevelCurve.GetValue(intervalPos);
-				int thickness = (int)(ThicknessCurve.GetValue(intervalPosFactor) * _minBufferSize / 2);
+				int thickness = (int)Math.Round(CalculateBorderThickness(intervalPosFactor) / 2);
 				int topThickness = (int)(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
 				int bottomThickness = (int)(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
 				int leftThickness = (int)(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 				int rightThickness = (int)(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
-				int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) * _minBufferSize / 2);
+				int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) / 2);
 
 				if (BorderMode == BorderMode.Simple)
 				{
@@ -481,7 +481,11 @@ namespace VixenModules.Effect.Borders
 
 		private double CalculateBorderSize(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(BorderSizeCurve.GetValue(intervalPosFactor), 0, 100);
+			return ScaleCurveToValue(BorderSizeCurve.GetValue(intervalPosFactor), 1, _minBufferSize - 2);
+		}
+		private double CalculateBorderThickness(double intervalPosFactor)
+		{
+			return ScaleCurveToValue(ThicknessCurve.GetValue(intervalPosFactor), _minBufferSize, 2);
 		}
 	}
 }

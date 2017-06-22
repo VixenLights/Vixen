@@ -55,7 +55,7 @@ namespace VixenModules.Effect.Borders
 
 		public override string EffectName
 		{
-			get { return "Borders"; }
+			get { return "Border"; }
 		}
 	}
 }
