@@ -459,4 +459,7 @@
   <data name="ReverseDirection" xml:space="preserve">
     <value>Changes direction of effect.</value>
   </data>
+  <data name="Movement" xml:space="preserve">
+    <value>Control type of movement, either Speed and Iterations.</value>
+  </data>
 </root>

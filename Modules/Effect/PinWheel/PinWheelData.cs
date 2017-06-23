@@ -17,7 +17,7 @@ namespace VixenModules.Effect.PinWheel
 		{
 			Colors = new List<GradientLevelPair> { new GradientLevelPair(Color.Red, CurveType.Flat100), new GradientLevelPair(Color.Lime, CurveType.Flat100), new GradientLevelPair(Color.Blue, CurveType.Flat100) };
 			ColorType = PinWheelColorType.Standard;
-			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			Arms = 8;
 			TwistCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 56.0, 56.0 }));
 			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
@@ -30,7 +30,8 @@ namespace VixenModules.Effect.PinWheel
 			PinWheel3D = false;
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
-			PinWheelBladeType = PinWheelBladeType.Flat;
+			PinWheelBladeType = PinWheelBladeType.Flat; 
+			MovementType = MovementType.Iterations;
 		}
 
 		[DataMember]
@@ -99,6 +100,9 @@ namespace VixenModules.Effect.PinWheel
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public MovementType MovementType { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -154,8 +158,6 @@ namespace VixenModules.Effect.PinWheel
 					CenterStart = 0;
 				}
 			}
-			
-
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -177,6 +179,7 @@ namespace VixenModules.Effect.PinWheel
 				Rotation = Rotation,
 				SizeCurve = new Curve(SizeCurve),
 				LevelCurve = new Curve(LevelCurve),
+				MovementType = MovementType,
 				PinWheelBladeType = PinWheelBladeType
 			};
 			return result;

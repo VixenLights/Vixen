@@ -602,6 +602,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Control type of movement, either Speed and Iterations..
+        /// </summary>
+        internal static string Movement {
+            get {
+                return ResourceManager.GetString("Movement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the Type of Movement..
         /// </summary>
         internal static string MovementType {
@@ -710,7 +719,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chnages the Intensity for each SnowFlake..
+        ///   Looks up a localized string similar to Changes the Intensity for each element of the effect..
         /// </summary>
         internal static string RandomIntensity {
             get {
