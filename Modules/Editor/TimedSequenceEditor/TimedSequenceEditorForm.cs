@@ -6305,7 +6305,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="alignMethod"></param>
 		private void AlignEffectsToNearestMarks(string alignMethod)
 		{
-			List<Element> elements = new List<Element>();
+			IEnumerable elements;
 			if (!TimelineControl.grid.SelectedElements.Any())
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -6314,11 +6314,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					@"Align effects to marks", true, false);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.No) return;
-				elements.AddRange(TimelineControl.Rows.SelectMany(row => row)); //add all elements within the sequence to elements list
+				elements = TimelineControl.Rows.SelectMany(row => row); //add all elements within the sequence to elements list
 			}
 			else
 			{
-				elements = TimelineControl.SelectedElements.ToList();
+				elements = TimelineControl.SelectedElements;
 			}
 
 			var moveElements = new Dictionary<Element, Tuple<TimeSpan, TimeSpan>>();
