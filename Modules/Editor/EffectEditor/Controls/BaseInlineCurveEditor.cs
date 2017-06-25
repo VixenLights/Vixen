@@ -55,7 +55,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		protected void OnCurveValueChanged()
 		{
-			UpdateLevelSliderPosition();
+			UpdateLevelSliderPosition(GetCurveValue());
 			UpdateImage(GetCurveValue());
 		}
 
@@ -391,12 +391,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 		}
 
-		private void UpdateLevelSliderPosition()
+		private void UpdateLevelSliderPosition(Curve curve)
 		{
 			
 			if (_levelPoint != null)
 			{
-				var points = GetCurveValue().Points;
+				var points = curve.Points;
 				if (points.Count == 2 && points[0].Y == points[1].Y)
 				{
 					_levelPoint.NormalizedPosition = points[0].Y / 100.0;
@@ -424,15 +424,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void SliderPoint_DragCompleted(object sender, EventArgs e)
 		{
-			//Logging.Debug("Enter drag completed");
 			if (_holdValue != null)
 			{
 				SetCurveValue(_holdValue);
 				_holdValue = null;
 			}
-			//Logging.Debug("Exit drag completed");
 		}
-
 
 		private void LevelPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
@@ -442,7 +439,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				if (_holdValue == null)
 				{
 					_holdValue = new Curve(GetCurveValue());
-					//Logging.Debug("Position changed, initialized holdvalue");
 				}
 				SliderPoint point = sender as SliderPoint;
 				if (point != null)
@@ -481,6 +477,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			var points = new PointPairList(new[] { 0.0, 100.0 }, new[] { levelPoint.Y, levelPoint.Y });
 
 			_holdValue = new Curve(points);
+
+			UpdateLevelSliderPosition(_holdValue);
 
 			UpdateImage(_holdValue);
 		}
@@ -525,17 +523,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
 		}
 
-		//protected void SetValue()
-		//{
-		//	Value = _holdValue;
-		//}
-
 		protected abstract void SetCurveValue(Curve c);
 
 		protected abstract Curve GetCurveValue();
-
-
-		#endregion Helpers
 
 		private bool IsMouseOverLevelHandle()
 		{
@@ -599,5 +589,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			return p;
 		}
+		#endregion Helpers
 	}
 }
