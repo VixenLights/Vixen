@@ -332,6 +332,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changes the way the circle is filled..
+        /// </summary>
+        internal static string CircleFill {
+            get {
+                return ResourceManager.GetString("CircleFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the color of the effect..
         /// </summary>
         internal static string Color {
@@ -868,6 +877,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string PulseType {
             get {
                 return ResourceManager.GetString("PulseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes the direction of the effect to In or out..
+        /// </summary>
+        internal static string RadialDirection {
+            get {
+                return ResourceManager.GetString("RadialDirection", resourceCulture);
             }
         }
         

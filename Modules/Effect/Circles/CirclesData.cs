@@ -18,12 +18,12 @@ namespace VixenModules.Effect.Circles
 		public CirclesData()
 		{
 			Colors = new List<ColorGradient> { new ColorGradient(Color.Red), new ColorGradient(Color.Lime), new ColorGradient(Color.Blue) };
-			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
+			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 8.0, 8.0 }));
 			Inverse = false;
-			CircleFill = CircleFill.GradientOverTime;
+			CircleFill = CircleFill.Fade;
 			CircleRadialDirection = CircleRadialDirection.Out;
 			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
-			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
+			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			CircleEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
