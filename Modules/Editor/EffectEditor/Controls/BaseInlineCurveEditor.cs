@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using VixenModules.App.Curves;
@@ -17,6 +18,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private Image _image;
 		private Canvas _canvas;
 		private SliderPoint _levelPoint;
+		private ToolTip _toolTip;
 
 		#region Fields
 
@@ -40,6 +42,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected BaseInlineCurveEditor()
 		{
 			Loaded += InlineCurveEditor_Loaded;
+			ShowToolTip = true;
 		}
 
 		#region Events
@@ -152,6 +155,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			get { return (Style)GetValue(SliderStyleProperty); }
 			set { SetValue(SliderStyleProperty, value); }
 		}
+
+		public bool ShowToolTip { get; set; }
 
 		#endregion Properties
 
@@ -297,11 +302,15 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				}
 				else if (IsMouseOverLevelHandle())
 				{
+					DisableToolTip();
 					Cursor = Cursors.SizeWE;
+				}
+				else if (Keyboard.Modifiers == ModifierKeys.Shift)
+				{
+					Cursor = Cursors.SizeNS;
 				}
 				else
 				{
-
 					Cursor = Cursors.Arrow;
 				}
 			}
@@ -338,6 +347,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				SetCurveValue(_holdValue);
 			}
 
+			DisableToolTip();
 			ReleaseMouseCapture();
 
 		}
@@ -459,10 +469,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			if (mousePosition.X > ActualWidth + 5 || mousePosition.Y > ActualHeight + 5) return;
 			var point = TranslateMouseLocation(mousePosition);
-
+			
 			var points = GetCurveValue().Points.Clone();
-
-			points[_dragStartPointIndex] = EnforcePointBounds(point);
+			var boundedPoint = EnforcePointBounds(point);
+			points[_dragStartPointIndex] = boundedPoint;
+			EnableToolTip();
+			SetToolTip(string.Format("{0:0}, {1:0}", boundedPoint.X, boundedPoint.Y));
 
 			_holdValue = new Curve(points);
 
@@ -475,6 +487,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			var levelPoint = EnforcePointBounds(point);
 			var points = new PointPairList(new[] { 0.0, 100.0 }, new[] { levelPoint.Y, levelPoint.Y });
+
+			EnableToolTip();
+			SetToolTip(string.Format("{0:0}", levelPoint.Y));
 
 			_holdValue = new Curve(points);
 
@@ -567,8 +582,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			return new PointPair(x, y);
 		}
 
-		private PointPair EnforcePointBounds(PointPair p)
+		private PointPair EnforcePointBounds(PointPair p, bool round = true)
 		{
+			if (round)
+			{
+				p.X = Math.Round(p.X, MidpointRounding.AwayFromZero);
+				p.Y = Math.Round(p.Y, MidpointRounding.AwayFromZero);
+			}
 			if (p.X > 100)
 			{
 				p.X = 100;
@@ -589,6 +609,47 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			return p;
 		}
+
+		private void SetToolTip(string formattedValue)
+		{
+			if (ShowToolTip)
+			{
+				if (_toolTip == null)
+				{
+					_toolTip = new ToolTip
+					{
+						PlacementTarget = _image,
+						Placement = PlacementMode.Bottom
+					};
+					_image.ToolTip = _toolTip;
+				}
+
+				_toolTip.Content = formattedValue;
+				//This hack is to get the tooltip position to update.
+				_toolTip.HorizontalOffset += 1;
+				_toolTip.HorizontalOffset -= 1;
+			}
+		}
+
+		private void EnableToolTip()
+		{
+			if (_toolTip != null && ShowToolTip)
+			{
+				_toolTip.IsEnabled = true;
+				_toolTip.IsOpen = true;
+			}
+		}
+
+		private void DisableToolTip()
+		{
+			if (_toolTip != null)
+			{
+				_toolTip.Content = null;
+				_toolTip.IsEnabled = false;
+				_toolTip.IsOpen = false;
+			}
+		}
+
 		#endregion Helpers
 	}
 }
