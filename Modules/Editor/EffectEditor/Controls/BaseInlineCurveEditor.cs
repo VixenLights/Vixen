@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using VixenModules.App.Curves;
@@ -14,6 +16,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	{
 		private static readonly Type ThisType = typeof(BaseInlineCurveEditor);
 		private Image _image;
+		private Canvas _canvas;
+		private SliderPoint _levelPoint;
+		private ToolTip _toolTip;
 
 		#region Fields
 
@@ -37,6 +42,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected BaseInlineCurveEditor()
 		{
 			Loaded += InlineCurveEditor_Loaded;
+			ShowToolTip = true;
 		}
 
 		#region Events
@@ -45,11 +51,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			var template = Template;
 			_image = (Image)template.FindName("CurveImage", this);
+			_canvas = (Canvas)Template.FindName("FaderCanvas", this);
+			AddLevelSlider();
 			OnCurveValueChanged();
 		}
 
 		protected void OnCurveValueChanged()
 		{
+			UpdateLevelSliderPosition(GetCurveValue());
 			UpdateImage(GetCurveValue());
 		}
 
@@ -105,7 +114,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		public static readonly DependencyProperty IsDraggingProperty = DependencyProperty.Register("IsDragging", typeof(bool),
 			ThisType, new PropertyMetadata(false, OnIsDraggingChanged));
 
-		
+		public static readonly DependencyProperty SliderStyleProperty = DependencyProperty.Register("SliderStyle", typeof(Style), ThisType);
 
 		#region PropertyDescriptor Property
 
@@ -140,6 +149,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			get { return (bool)GetValue(IsDraggingProperty); }
 			set { SetValue(IsDraggingProperty, value); }
 		}
+
+		public Style SliderStyle
+		{
+			get { return (Style)GetValue(SliderStyleProperty); }
+			set { SetValue(SliderStyleProperty, value); }
+		}
+
+		public bool ShowToolTip { get; set; }
 
 		#endregion Properties
 
@@ -184,6 +201,19 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#region Base Class Overrides
 
+		protected override void OnMouseEnter(MouseEventArgs e)
+		{
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
+			{
+				_canvas.Visibility = Visibility.Visible;
+			}
+		}
+
+		protected override void OnMouseLeave(MouseEventArgs e)
+		{
+			_canvas.Visibility = Visibility.Collapsed;
+		}
+
 		/// <summary>
 		/// Invoked when an unhandled <see cref="E:System.Windows.Input.Mouse.MouseDown"/> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.
 		/// </summary>
@@ -193,6 +223,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseDown(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
+			_holdValue = curve;
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
 				_dragStartPoint = e.GetPosition(this);
@@ -222,6 +253,16 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			base.OnMouseMove(e);
 			var curve = GetCurveValue();
 			if (curve == null || curve.IsLibraryReference) return;
+
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
+			{
+				_canvas.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				_canvas.Visibility = Visibility.Collapsed;
+			}
+
 			Point position = e.GetPosition(this);
 			Vector vector = position - _dragStartPoint;
 
@@ -259,9 +300,17 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				{
 					Cursor = Cursors.Cross;
 				}
+				else if (IsMouseOverLevelHandle())
+				{
+					DisableToolTip();
+					Cursor = Cursors.SizeWE;
+				}
+				else if (Keyboard.Modifiers == ModifierKeys.Shift)
+				{
+					Cursor = Cursors.SizeNS;
+				}
 				else
 				{
-
 					Cursor = Cursors.Arrow;
 				}
 			}
@@ -298,6 +347,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				SetCurveValue(_holdValue);
 			}
 
+			DisableToolTip();
 			ReleaseMouseCapture();
 
 		}
@@ -331,14 +381,100 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			UpdateImage(_holdValue);
 		}
 
+		private void AddLevelSlider()
+		{
+			var points = GetCurveValue().Points;
+
+			if (points.Count == 2 && points[0].Y == points[1].Y)
+			{
+				_levelPoint = new SliderPoint(GetCurveValue().Points[0].Y / 100.0, _canvas, true);
+			}
+			else
+			{
+				_levelPoint = new SliderPoint(0.0, _canvas, true);
+			}
+			
+
+			if (_levelPoint.Center >= 0 && _levelPoint.Center <= _canvas.Width)
+			{
+				OnAddItem(_levelPoint);
+			}
+		}
+
+		private void UpdateLevelSliderPosition(Curve curve)
+		{
+			
+			if (_levelPoint != null)
+			{
+				var points = curve.Points;
+				if (points.Count == 2 && points[0].Y == points[1].Y)
+				{
+					_levelPoint.NormalizedPosition = points[0].Y / 100.0;
+				}
+				else
+				{
+					_levelPoint.NormalizedPosition = 0.0;
+				}
+			}
+		}
+
+		private void OnAddItem(SliderPoint sliderPoint)
+		{
+			sliderPoint.Parent = _canvas;
+			sliderPoint.SliderShape.Style = SliderStyle;
+			sliderPoint.PropertyChanged += LevelPoint_PropertyChanged;
+			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
+			
+			try
+			{
+				_canvas.Children.Add(sliderPoint.SliderShape);
+			}
+			catch { }
+		}
+
+		private void SliderPoint_DragCompleted(object sender, EventArgs e)
+		{
+			if (_holdValue != null)
+			{
+				SetCurveValue(_holdValue);
+				_holdValue = null;
+			}
+		}
+
+		private void LevelPoint_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+
+			if (e.PropertyName.Equals("center", StringComparison.OrdinalIgnoreCase))
+			{
+				if (_holdValue == null)
+				{
+					_holdValue = new Curve(GetCurveValue());
+				}
+				SliderPoint point = sender as SliderPoint;
+				if (point != null)
+				{
+					if (point.IsDragging)
+					{
+						var level = Math.Round(point.NormalizedPosition * 100, MidpointRounding.AwayFromZero);
+						
+						_holdValue = new Curve(new PointPairList(new[] { 0.0, 100.0}, new[] { level, level }));
+
+						UpdateImage(_holdValue);
+					}
+				}
+			}
+		}
+
 		private void MovePoint(Point mousePosition)
 		{
 			if (mousePosition.X > ActualWidth + 5 || mousePosition.Y > ActualHeight + 5) return;
 			var point = TranslateMouseLocation(mousePosition);
-
+			
 			var points = GetCurveValue().Points.Clone();
-
-			points[_dragStartPointIndex] = EnforcePointBounds(point);
+			var boundedPoint = EnforcePointBounds(point);
+			points[_dragStartPointIndex] = boundedPoint;
+			EnableToolTip();
+			SetToolTip(string.Format("{0:0}, {1:0}", boundedPoint.X, boundedPoint.Y));
 
 			_holdValue = new Curve(points);
 
@@ -352,7 +488,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			var levelPoint = EnforcePointBounds(point);
 			var points = new PointPairList(new[] { 0.0, 100.0 }, new[] { levelPoint.Y, levelPoint.Y });
 
+			EnableToolTip();
+			SetToolTip(string.Format("{0:0}", levelPoint.Y));
+
 			_holdValue = new Curve(points);
+
+			UpdateLevelSliderPosition(_holdValue);
 
 			UpdateImage(_holdValue);
 		}
@@ -397,18 +538,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			_image.Source = (BitmapImage)Converter.Convert(curve, null, true, null);
 		}
 
-		//protected void SetValue()
-		//{
-		//	Value = _holdValue;
-		//}
-
 		protected abstract void SetCurveValue(Curve c);
 
 		protected abstract Curve GetCurveValue();
 
-
-		#endregion Helpers
-
+		private bool IsMouseOverLevelHandle()
+		{
+			return _levelPoint.IsMouseOver;
+		}
 
 		private int FindClosestPoint(PointPairList points, PointPair point)
 		{
@@ -445,8 +582,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			return new PointPair(x, y);
 		}
 
-		private PointPair EnforcePointBounds(PointPair p)
+		private PointPair EnforcePointBounds(PointPair p, bool round = true)
 		{
+			if (round)
+			{
+				p.X = Math.Round(p.X, MidpointRounding.AwayFromZero);
+				p.Y = Math.Round(p.Y, MidpointRounding.AwayFromZero);
+			}
 			if (p.X > 100)
 			{
 				p.X = 100;
@@ -467,5 +609,47 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			return p;
 		}
+
+		private void SetToolTip(string formattedValue)
+		{
+			if (ShowToolTip)
+			{
+				if (_toolTip == null)
+				{
+					_toolTip = new ToolTip
+					{
+						PlacementTarget = _image,
+						Placement = PlacementMode.Bottom
+					};
+					_image.ToolTip = _toolTip;
+				}
+
+				_toolTip.Content = formattedValue;
+				//This hack is to get the tooltip position to update.
+				_toolTip.HorizontalOffset += 1;
+				_toolTip.HorizontalOffset -= 1;
+			}
+		}
+
+		private void EnableToolTip()
+		{
+			if (_toolTip != null && ShowToolTip)
+			{
+				_toolTip.IsEnabled = true;
+				_toolTip.IsOpen = true;
+			}
+		}
+
+		private void DisableToolTip()
+		{
+			if (_toolTip != null)
+			{
+				_toolTip.Content = null;
+				_toolTip.IsEnabled = false;
+				_toolTip.IsOpen = false;
+			}
+		}
+
+		#endregion Helpers
 	}
 }

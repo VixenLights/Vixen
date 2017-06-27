@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
 
@@ -17,6 +18,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		private Point _dragStartPoint;
 		private const double DragTolerance = 2.0;
 		private bool _mouseDown;
+	    private ToolTip _toolTip;
 
 		internal Polygon SliderShape { get; private set; }
         internal double Left
@@ -87,7 +89,18 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	    public double NormalizedPosition
 	    {
 		    get { return _normalizedPosition; }
+		    set
+		    {
+			    if (value >= 0 && value <= 1)
+			    {
+					_normalizedPosition = value;
+				    Center = value * Parent.Width;
+					SetToolTip();
+				}
+		    }
 	    }
+
+	    public bool ShowToolTip { get; set; }
 
         internal Panel Parent { get; set; }
         internal bool IsMouseCaptured { get { return (bool)SliderShape.GetValue(UIElement.IsMouseCapturedProperty); } }
@@ -109,14 +122,16 @@ namespace VixenModules.Editor.EffectEditor.Controls
             }
         }
 
-		/// <summary>
-		/// Creates a slider handle at the relative position within the parent panel
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="parent"></param>
-        public SliderPoint(double position, Panel parent)
+	    /// <summary>
+	    /// Creates a slider handle at the relative position within the parent panel
+	    /// </summary>
+	    /// <param name="position"></param>
+	    /// <param name="parent"></param>
+	    /// <param name="showToolTip"></param>
+	    public SliderPoint(double position, Panel parent, bool showToolTip=false)
         {
             Parent = parent;
+	        ShowToolTip = showToolTip;
 	        SliderShape = new Polygon { Width = DefaultWidth, Height = DefaultHeight };
 	        _normalizedPosition = position;
 	        if (parent != null)
@@ -133,6 +148,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
             SliderShape.MouseUp += Handle_MouseUp;
             SliderShape.MouseDown += Handle_MouseDown;
             SliderShape.Focusable = true;
+			SetToolTip();
         }
 
 		private void Parent_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -160,19 +176,20 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				}
 				else
 				{
-					var center = point.X;
+					var center = Math.Round(point.X);
 					if (center >= 0 && center <= Parent.Width)
 					{
 						Center = center;
 						_normalizedPosition = center / Parent.Width;
 						SliderShape.Focus();
+						SetToolTip();
 					}
 				}
 			}
 			
         }
 
-        private void Handle_MouseUp(object sender, MouseEventArgs e)
+		private void Handle_MouseUp(object sender, MouseEventArgs e)
         {
 	        if (IsDragging || _mouseDown)
 	        {
@@ -191,6 +208,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					e.Handled = true;
 					OnAltClick(EventArgs.Empty);
 		        }
+
+				DisableToolTip();
 			}
             
 		}
@@ -204,6 +223,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				poly.Focus();
 				_mouseDown = true;
 				_dragStartPoint = e.GetPosition(Parent);
+				EnableToolTip();
+				e.Handled = true;
 			}
 		}
 
@@ -244,7 +265,44 @@ namespace VixenModules.Editor.EffectEditor.Controls
                 PropertyChanging(this, e);
         }
 
-	    private void ReleaseUnmanagedResources()
+	    private void SetToolTip()
+	    {
+		    if (ShowToolTip)
+		    {
+			    if (_toolTip == null)
+			    {
+				    _toolTip = new ToolTip
+				    {
+					    PlacementTarget = SliderShape,
+					    Placement = PlacementMode.Bottom
+				    };
+				    SliderShape.ToolTip = _toolTip;
+			    }
+
+			    _toolTip.Content = string.Format("{0:0}", _normalizedPosition * 100.0);
+				//This hack is to get the tooltip position to update.
+			    _toolTip.HorizontalOffset += 1;
+			    _toolTip.HorizontalOffset -= 1;
+		    }
+	    }
+
+	    private void EnableToolTip()
+	    {
+		    if (_toolTip != null && ShowToolTip)
+		    {
+			    _toolTip.IsOpen = true;
+		    }
+	    }
+
+	    private void DisableToolTip()
+	    {
+		    if (_toolTip != null)
+		    {
+			    _toolTip.IsOpen = false;
+		    }
+	    }
+
+		private void ReleaseUnmanagedResources()
 	    {
 		    // TODO release unmanaged resources here
 	    }

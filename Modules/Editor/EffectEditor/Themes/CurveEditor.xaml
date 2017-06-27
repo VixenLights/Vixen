@@ -6,6 +6,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
+	    <ResourceDictionary Source="Theme.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 
     <!--<DataTemplate x:Key="{x:Static editors:EditorKeys.CurveEditorKey}">
@@ -33,11 +34,11 @@
         </controls:InlineCurveEditor>
     </DataTemplate>
 
-    <Style TargetType="{x:Type controls:InlineCurveEditor}">
+    <Style TargetType="{x:Type controls:InlineCurveEditor}" BasedOn="{StaticResource CurveSliderPointStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineCurveEditor}">
-                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <StackPanel x:Name="Container"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,5,0" Background="Transparent">
                         <Border BorderThickness="1" BorderBrush="#888888">
                             <Grid>
                                 <Image x:Name="CurveImage" Source="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, 
@@ -58,6 +59,13 @@
 									   Visibility="{Binding Value, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
                             </Grid>
                         </Border>
+                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,1"
+                                Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                Visibility="Collapsed">
+                            <Canvas.Background>
+                                <VisualBrush Opacity="1"></VisualBrush>
+                            </Canvas.Background>
+                        </Canvas>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -75,7 +83,7 @@
         </Image>
     </Border>-->
 
-    <Style TargetType="{x:Type controls:InlineGradientPairCurveEditor}">
+    <Style TargetType="{x:Type controls:InlineGradientPairCurveEditor}" BasedOn="{StaticResource CurveSliderPointStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientPairCurveEditor}">
@@ -106,6 +114,13 @@
 									   Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
                             </Grid>
                         </Border>
+                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,1"
+                                Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
+                                Visibility="{Binding Value, Converter={StaticResource CurveIsLibraryToVisibilityConverter}}">
+                            <Canvas.Background>
+                                <VisualBrush Opacity="1"></VisualBrush>
+                            </Canvas.Background>
+                        </Canvas>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

@@ -606,6 +606,56 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CurveSliderPointStyle" TargetType="{x:Type controls:BaseInlineCurveEditor}">
+        <Setter Property="SliderStyle">
+            <Setter.Value>
+                <Style>
+                    <Setter Property="Polygon.Fill">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0.05" Color="#C5C5C5"/>
+                                <GradientStop Offset="0.5" Color="#606060"/>
+                                <GradientStop Offset="0.95" Color="#404040"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Polygon.Stroke">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0.0" Color="#C5C5C5"/>
+                                <GradientStop Offset="0.5" Color="#808080"/>
+                                <GradientStop Offset="0.95" Color="#606060"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="Polygon.IsFocused">
+                            <Trigger.Value>True</Trigger.Value>
+                            <Setter Property="Polygon.Fill">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Offset="0.05" Color="#D7D7D7"/>
+                                        <GradientStop Offset="0.5" Color="#909090"/>
+                                        <GradientStop Offset="0.95" Color="#606060"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Polygon.Stroke">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Offset="0.0" Color="#C5C5C5"/>
+                                        <GradientStop Offset="0.5" Color="#808080"/>
+                                        <GradientStop Offset="0.95" Color="#606060"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <ControlTemplate x:Key="HorizontalSliderTemplate" TargetType="{x:Type Slider}">
     <Grid>
       <TickBar x:Name="TopTick" Height="1" Fill="#7FFF" Placement="Top" SnapsToDevicePixels="True" Visibility="Collapsed"/>
