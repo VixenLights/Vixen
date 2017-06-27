@@ -455,7 +455,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				{
 					if (point.IsDragging)
 					{
-						var level = Math.Round(point.NormalizedPosition * 100);
+						var level = Math.Round(point.NormalizedPosition * 100, MidpointRounding.AwayFromZero);
 						
 						_holdValue = new Curve(new PointPairList(new[] { 0.0, 100.0}, new[] { level, level }));
 
