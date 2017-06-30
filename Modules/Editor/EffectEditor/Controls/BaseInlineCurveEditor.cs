@@ -623,11 +623,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					};
 					_image.ToolTip = _toolTip;
 				}
-
-				_toolTip.Content = formattedValue;
-				//This hack is to get the tooltip position to update.
-				_toolTip.HorizontalOffset += 1;
-				_toolTip.HorizontalOffset -= 1;
+				else
+				{
+					_toolTip.Content = formattedValue;
+					//This hack is to get the tooltip position to update.
+					_toolTip.HorizontalOffset += 1;
+					_toolTip.HorizontalOffset -= 1;
+				}
 			}
 		}
 

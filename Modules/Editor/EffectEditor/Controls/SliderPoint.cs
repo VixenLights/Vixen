@@ -146,10 +146,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
             SliderShape.Points.Add(new Point(SliderShape.Width, SliderShape.Height));
             SliderShape.MouseMove += Handle_MouseMove;
             SliderShape.MouseUp += Handle_MouseUp;
-            SliderShape.MouseDown += Handle_MouseDown;
+           // SliderShape.MouseDown += Handle_MouseDown;
+			SliderShape.MouseLeftButtonDown += Handle_MouseLeftButtonDown;
             SliderShape.Focusable = true;
 			SetToolTip();
         }
+
+		
 
 		private void Parent_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
@@ -214,7 +217,21 @@ namespace VixenModules.Editor.EffectEditor.Controls
             
 		}
 
-        private void Handle_MouseDown(object sender, MouseEventArgs e)
+	    private void Handle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	    {
+			if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount < 2)
+			{
+				var poly = sender as Polygon;
+				poly.CaptureMouse();
+				poly.Focus();
+				_mouseDown = true;
+				_dragStartPoint = e.GetPosition(Parent);
+				EnableToolTip();
+				e.Handled = true;
+			}
+		}
+
+		private void Handle_MouseDown(object sender, MouseEventArgs e)
         {
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
@@ -315,7 +332,8 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			    Parent.Children.Remove(SliderShape);
 				SliderShape.MouseMove -= Handle_MouseMove;
 				SliderShape.MouseUp -= Handle_MouseUp;
-				SliderShape.MouseDown -= Handle_MouseDown;
+				//SliderShape.MouseDown -= Handle_MouseDown;
+			    SliderShape.MouseLeftButtonDown -= Handle_MouseLeftButtonDown;
 				Parent.SizeChanged -= Parent_SizeChanged;
 			}
 			catch { }
