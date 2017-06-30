@@ -296,21 +296,25 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			{
 				var point = TranslateMouseLocation(position);
 				var index = FindClosestPoint(curve.Points, point);
-				if (Dist(point, curve.Points[index]) < DistanceTolerance)
+				if (Keyboard.Modifiers == ModifierKeys.Shift)
+				{
+					if (IsMouseOverLevelHandle())
+					{
+						DisableToolTip();
+						Cursor = Cursors.SizeWE;
+					}
+					else
+					{
+						Cursor = Cursors.SizeNS;
+					}
+				}
+				else if (Dist(point, curve.Points[index]) < DistanceTolerance)
 				{
 					Cursor = Cursors.Cross;
 				}
-				else if (IsMouseOverLevelHandle())
-				{
-					DisableToolTip();
-					Cursor = Cursors.SizeWE;
-				}
-				else if (Keyboard.Modifiers == ModifierKeys.Shift)
-				{
-					Cursor = Cursors.SizeNS;
-				}
 				else
 				{
+					DisableToolTip();
 					Cursor = Cursors.Arrow;
 				}
 			}
@@ -644,7 +648,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void DisableToolTip()
 		{
-			if (_toolTip != null)
+			if (_toolTip != null && _toolTip.IsEnabled)
 			{
 				_toolTip.Content = null;
 				_toolTip.IsEnabled = false;

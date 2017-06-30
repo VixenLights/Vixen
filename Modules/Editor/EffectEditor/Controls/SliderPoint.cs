@@ -231,20 +231,6 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			}
 		}
 
-		private void Handle_MouseDown(object sender, MouseEventArgs e)
-        {
-			if (e.LeftButton == MouseButtonState.Pressed)
-			{
-				var poly = sender as Polygon;
-				poly.CaptureMouse();
-				poly.Focus();
-				_mouseDown = true;
-				_dragStartPoint = e.GetPosition(Parent);
-				EnableToolTip();
-				e.Handled = true;
-			}
-		}
-
 		public delegate void DragCompletedEventHandler(object sender, EventArgs e);
 
 		public event DragCompletedEventHandler DragCompleted;
