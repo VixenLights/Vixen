@@ -623,16 +623,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 					_toolTip = new ToolTip
 					{
 						PlacementTarget = this,
-						Placement = PlacementMode.Bottom
+						Placement = PlacementMode.Bottom,
+						VerticalOffset = -20
 					};
 					ToolTip = _toolTip;
 				}
 				else
 				{
 					_toolTip.Content = formattedValue;
-					//This hack is to get the tooltip position to update.
-					_toolTip.HorizontalOffset += 1;
-					_toolTip.HorizontalOffset -= 1;
 				}
 			}
 		}
