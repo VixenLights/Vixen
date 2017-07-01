@@ -296,21 +296,25 @@ namespace VixenModules.Editor.EffectEditor.Controls
 			{
 				var point = TranslateMouseLocation(position);
 				var index = FindClosestPoint(curve.Points, point);
-				if (Dist(point, curve.Points[index]) < DistanceTolerance)
+				if (Keyboard.Modifiers == ModifierKeys.Shift)
+				{
+					if (IsMouseOverLevelHandle())
+					{
+						DisableToolTip();
+						Cursor = Cursors.SizeWE;
+					}
+					else
+					{
+						Cursor = Cursors.SizeNS;
+					}
+				}
+				else if (Dist(point, curve.Points[index]) < DistanceTolerance)
 				{
 					Cursor = Cursors.Cross;
 				}
-				else if (IsMouseOverLevelHandle())
-				{
-					DisableToolTip();
-					Cursor = Cursors.SizeWE;
-				}
-				else if (Keyboard.Modifiers == ModifierKeys.Shift)
-				{
-					Cursor = Cursors.SizeNS;
-				}
 				else
 				{
+					DisableToolTip();
 					Cursor = Cursors.Arrow;
 				}
 			}
@@ -618,16 +622,16 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				{
 					_toolTip = new ToolTip
 					{
-						PlacementTarget = _image,
-						Placement = PlacementMode.Bottom
+						PlacementTarget = this,
+						Placement = PlacementMode.Bottom,
+						VerticalOffset = -20
 					};
-					_image.ToolTip = _toolTip;
+					ToolTip = _toolTip;
 				}
-
-				_toolTip.Content = formattedValue;
-				//This hack is to get the tooltip position to update.
-				_toolTip.HorizontalOffset += 1;
-				_toolTip.HorizontalOffset -= 1;
+				else
+				{
+					_toolTip.Content = formattedValue;
+				}
 			}
 		}
 
@@ -642,7 +646,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void DisableToolTip()
 		{
-			if (_toolTip != null)
+			if (_toolTip != null && _toolTip.IsEnabled)
 			{
 				_toolTip.Content = null;
 				_toolTip.IsEnabled = false;
