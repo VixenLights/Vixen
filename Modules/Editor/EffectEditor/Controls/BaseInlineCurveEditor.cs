@@ -622,10 +622,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				{
 					_toolTip = new ToolTip
 					{
-						PlacementTarget = _image,
+						PlacementTarget = this,
 						Placement = PlacementMode.Bottom
 					};
-					_image.ToolTip = _toolTip;
+					ToolTip = _toolTip;
 				}
 				else
 				{
