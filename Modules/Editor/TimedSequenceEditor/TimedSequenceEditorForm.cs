@@ -202,10 +202,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripSplitButton_CloseGaps.Image = Resources.fill_gaps;
-			toolStripSplitButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_CloseGaps.Image = Resources.fill_gaps;
+			toolStripButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripDropDownButton_AlignTo.Image = Resources.alignment;
 			toolStripDropDownButton_AlignTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripDropDownButton_AlignTo.ShowDropDownArrow = false;
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -216,7 +217,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			foreach (ToolStripItem toolStripItem in toolStripSplitButton_CloseGaps.DropDownItems)
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_CloseGaps.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
 				if (toolStripMenuItem != null)
@@ -342,7 +343,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			foreach (ToolStripItem toolStripItem in toolStripSplitButton_CloseGaps.DropDownItems)
+			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_CloseGaps.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
 				if (toolStripMenuItem != null)

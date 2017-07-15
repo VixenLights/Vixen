@@ -58,11 +58,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_AlignTo800 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_AlignTo1000 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_AlignTo2000 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSplitButton_CloseGaps = new System.Windows.Forms.ToolStripSplitButton();
-			this.toolStripMenuItem_CloseGap100 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_CloseGap200 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_CloseGap300 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem_CloseGap400 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripButton_CloseGaps = new System.Windows.Forms.ToolStripButton();
+			this.toolStripDropDownButton_CloseGaps = new System.Windows.Forms.ToolStripDropDownButton();
+			this.toolStripMenuItemCloseGap100 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemCloseGap200 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemCloseGap300 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItemCloseGap400 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripLabel_TimingSpeedLabel = new System.Windows.Forms.ToolStripLabel();
 			this.toolStripLabel_TimingSpeed = new System.Windows.Forms.ToolStripLabel();
@@ -211,7 +212,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripButton_DragBoxFilter,
             this.toolStripDropDownButton_DragBoxFilter,
             this.toolStripDropDownButton_AlignTo,
-            this.toolStripSplitButton_CloseGaps,
+            this.toolStripButton_CloseGaps,
+            this.toolStripDropDownButton_CloseGaps,
             this.toolStripSeparator11,
             this.toolStripLabel_TimingSpeedLabel,
             this.toolStripLabel_TimingSpeed,
@@ -536,47 +538,58 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_AlignTo2000.Size = new System.Drawing.Size(101, 22);
 			this.toolStripMenuItem_AlignTo2000.Text = "2.000";
 			// 
-			// toolStripSplitButton_CloseGaps
+			// toolStripButton_CloseGaps
 			// 
-			this.toolStripSplitButton_CloseGaps.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripSplitButton_CloseGaps.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_CloseGap100,
-            this.toolStripMenuItem_CloseGap200,
-            this.toolStripMenuItem_CloseGap300,
-            this.toolStripMenuItem_CloseGap400});
-			this.toolStripSplitButton_CloseGaps.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripSplitButton_CloseGaps.Name = "toolStripSplitButton_CloseGaps";
-			this.toolStripSplitButton_CloseGaps.Size = new System.Drawing.Size(81, 24);
-			this.toolStripSplitButton_CloseGaps.Text = "Close Gaps";
-			this.toolStripSplitButton_CloseGaps.ButtonClick += new System.EventHandler(this.toolStripSplitButton_CloseGaps_ButtonClick);
+			this.toolStripButton_CloseGaps.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButton_CloseGaps.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton_CloseGaps.Image")));
+			this.toolStripButton_CloseGaps.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton_CloseGaps.Name = "toolStripButton_CloseGaps";
+			this.toolStripButton_CloseGaps.Size = new System.Drawing.Size(69, 24);
+			this.toolStripButton_CloseGaps.Text = "Close Gaps";
+			this.toolStripButton_CloseGaps.Click += new System.EventHandler(this.toolStripSplitButton_CloseGaps_ButtonClick);
 			// 
-			// toolStripMenuItem_CloseGap100
+			// toolStripDropDownButton_CloseGaps
 			// 
-			this.toolStripMenuItem_CloseGap100.Name = "toolStripMenuItem_CloseGap100";
-			this.toolStripMenuItem_CloseGap100.Size = new System.Drawing.Size(95, 22);
-			this.toolStripMenuItem_CloseGap100.Tag = ".100";
-			this.toolStripMenuItem_CloseGap100.Text = ".100";
+			this.toolStripDropDownButton_CloseGaps.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+			this.toolStripDropDownButton_CloseGaps.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemCloseGap100,
+            this.toolStripMenuItemCloseGap200,
+            this.toolStripMenuItemCloseGap300,
+            this.toolStripMenuItemCloseGap400});
+			this.toolStripDropDownButton_CloseGaps.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton_CloseGaps.Image")));
+			this.toolStripDropDownButton_CloseGaps.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripDropDownButton_CloseGaps.Name = "toolStripDropDownButton_CloseGaps";
+			this.toolStripDropDownButton_CloseGaps.Size = new System.Drawing.Size(13, 24);
+			this.toolStripDropDownButton_CloseGaps.Text = "Close Gaps";
+			this.toolStripDropDownButton_CloseGaps.ToolTipText = "Close Gaps";
 			// 
-			// toolStripMenuItem_CloseGap200
+			// toolStripMenuItemCloseGap100
 			// 
-			this.toolStripMenuItem_CloseGap200.Name = "toolStripMenuItem_CloseGap200";
-			this.toolStripMenuItem_CloseGap200.Size = new System.Drawing.Size(95, 22);
-			this.toolStripMenuItem_CloseGap200.Tag = ".200";
-			this.toolStripMenuItem_CloseGap200.Text = ".200";
+			this.toolStripMenuItemCloseGap100.Name = "toolStripMenuItemCloseGap100";
+			this.toolStripMenuItemCloseGap100.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap100.Tag = ".100";
+			this.toolStripMenuItemCloseGap100.Text = ".100";
 			// 
-			// toolStripMenuItem_CloseGap300
+			// toolStripMenuItemCloseGap200
 			// 
-			this.toolStripMenuItem_CloseGap300.Name = "toolStripMenuItem_CloseGap300";
-			this.toolStripMenuItem_CloseGap300.Size = new System.Drawing.Size(95, 22);
-			this.toolStripMenuItem_CloseGap300.Tag = ".300";
-			this.toolStripMenuItem_CloseGap300.Text = ".300";
+			this.toolStripMenuItemCloseGap200.Name = "toolStripMenuItemCloseGap200";
+			this.toolStripMenuItemCloseGap200.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap200.Tag = ".200";
+			this.toolStripMenuItemCloseGap200.Text = ".200";
 			// 
-			// toolStripMenuItem_CloseGap400
+			// toolStripMenuItemCloseGap300
 			// 
-			this.toolStripMenuItem_CloseGap400.Name = "toolStripMenuItem_CloseGap400";
-			this.toolStripMenuItem_CloseGap400.Size = new System.Drawing.Size(95, 22);
-			this.toolStripMenuItem_CloseGap400.Tag = ".400";
-			this.toolStripMenuItem_CloseGap400.Text = ".400";
+			this.toolStripMenuItemCloseGap300.Name = "toolStripMenuItemCloseGap300";
+			this.toolStripMenuItemCloseGap300.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap300.Tag = ".300";
+			this.toolStripMenuItemCloseGap300.Text = ".300";
+			// 
+			// toolStripMenuItemCloseGap400
+			// 
+			this.toolStripMenuItemCloseGap400.Name = "toolStripMenuItemCloseGap400";
+			this.toolStripMenuItemCloseGap400.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap400.Tag = ".400";
+			this.toolStripMenuItemCloseGap400.Text = ".400";
 			// 
 			// toolStripSeparator11
 			// 
@@ -1182,7 +1195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripMenuItemFindEffects
 			// 
 			this.toolStripMenuItemFindEffects.Name = "toolStripMenuItemFindEffects";
-			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(283, 26);
+			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(234, 22);
 			this.toolStripMenuItemFindEffects.Text = "Find Effects";
 			this.toolStripMenuItemFindEffects.Click += new System.EventHandler(this.toolStripMenuItemFindEffects_Click);
 			// 
@@ -1477,7 +1490,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1436, 630);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
@@ -1503,7 +1516,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DockLeftPortion = 200D;
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
-			this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
 			this.dockPanel.Size = new System.Drawing.Size(1436, 630);
 			this.dockPanel.TabIndex = 13;
@@ -1540,7 +1553,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.DoubleBuffered = true;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
@@ -1684,11 +1697,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-		private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton_CloseGaps;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_CloseGap100;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_CloseGap200;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_CloseGap300;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_CloseGap400;
 		private System.Windows.Forms.ToolStripMenuItem audioToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem beatBarDetectionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_associateAudio;
@@ -1713,5 +1721,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem mixingFilterEditorWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFindEffects;
+		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_CloseGaps;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCloseGap100;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCloseGap200;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCloseGap300;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCloseGap400;
+		private System.Windows.Forms.ToolStripButton toolStripButton_CloseGaps;
 	}
 }
