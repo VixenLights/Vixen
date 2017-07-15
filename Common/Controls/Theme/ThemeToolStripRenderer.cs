@@ -114,19 +114,9 @@ namespace Common.Controls.Theme
 				RenderSelectedButtonFill(bounds, g);
 			}
 			
-			GraphicsPath path = new GraphicsPath();
-			path.AddEllipse(bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
-			using (PathGradientBrush pthGrBrush = new PathGradientBrush(path))
-			{
-				// Set the color at the center of the path.
-				pthGrBrush.CenterColor = ColorTable.ButtonPressedGradientBegin;
-
-				Color[] colors = { item.Selected?ColorTable.ButtonSelectedGradientEnd:ColorTable.ButtonPressedGradientEnd };
-				pthGrBrush.SurroundColors = colors;
-
-				g.FillEllipse(pthGrBrush, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
-			}
-			
+			// Set the color of border when item is selected.
+			Pen pen = new Pen(ThemeColorTable.ForeColor);
+			g.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width - 1, bounds.Height - 1);
 			
 		}
 
