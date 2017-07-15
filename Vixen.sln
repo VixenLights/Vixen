@@ -392,6 +392,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shockwave", "Modules\Effect
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LauncherController", "Modules\Output\LauncherController\LauncherController.csproj", "{52FE5E03-F65F-4F61-915F-740BAE28C395}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Border", "Modules\Effect\Borders\Border.csproj", "{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1853,6 +1855,22 @@ Global
 		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x64.Build.0 = Release|x64
 		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x86.ActiveCfg = Release|x86
 		{52FE5E03-F65F-4F61-915F-740BAE28C395}.Release|x86.Build.0 = Release|x86
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|x64.ActiveCfg = Debug|x64
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|x64.Build.0 = Debug|x64
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|x86.ActiveCfg = Debug|x86
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Debug|x86.Build.0 = Debug|x86
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|x64.ActiveCfg = Release|x64
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|x64.Build.0 = Release|x64
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|x86.ActiveCfg = Release|x86
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1983,6 +2001,7 @@ Global
 		{F250EE2E-F556-4207-9485-E52F30C42597} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{D6494CE3-3C8D-4C7C-8FBD-6CBFAEAA5522} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{52FE5E03-F65F-4F61-915F-740BAE28C395} = {01824B6E-B567-4974-849B-44A1ABEB4B39}
+		{F2DC1D7A-9A86-46FB-84F6-9A07CFCCE023} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi

@@ -471,4 +471,34 @@
   <data name="Movement" xml:space="preserve">
     <value>Movement</value>
   </data>
+  <data name="BorderSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="BorderType" xml:space="preserve">
+    <value>Border Type</value>
+  </data>
+  <data name="BorderMode" xml:space="preserve">
+    <value>Border Mode</value>
+  </data>
+  <data name="BorderWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="BottomBorderWidth" xml:space="preserve">
+    <value>Bottom Width</value>
+  </data>
+  <data name="LeftBorderWidth" xml:space="preserve">
+    <value>Left Width</value>
+  </data>
+  <data name="OuterBorderStarts" xml:space="preserve">
+    <value>Outer Border Starts</value>
+  </data>
+  <data name="RightBorderWidth" xml:space="preserve">
+    <value>Right Width</value>
+  </data>
+  <data name="RoundEdges" xml:space="preserve">
+    <value>Round Edges</value>
+  </data>
+  <data name="TopBorderWidth" xml:space="preserve">
+    <value>Top Width</value>
+  </data>
 </root>
