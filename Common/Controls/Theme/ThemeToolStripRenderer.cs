@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -17,6 +18,28 @@ namespace Common.Controls.Theme
 		{
 			e.TextColor = ThemeColorTable.ForeColor;
 			base.OnRenderItemText(e);
+		}
+		protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+		{
+			ToolStripItem toolStripItem = e.Item;
+			//e.ArrowColor = toolStripItem.Enabled ? ThemeColorTable.ForeColor : SystemColors.ControlDark;
+			if (toolStripItem is ToolStripDropDownItem)
+			{
+				Rectangle r = e.ArrowRectangle;
+				List<Point> points = new List<Point>();
+				points.Add(new Point(r.Left - 2, r.Height / 2 - 3));
+				points.Add(new Point(r.Right + 2, r.Height / 2 - 3));
+				points.Add(new Point(r.Left + (r.Width / 2),
+					r.Height / 2 + 3));
+				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+				e.Graphics.FillPolygon(new SolidBrush(ThemeColorTable.ForeColor), points.ToArray());
+				e.ArrowColor = toolStripItem.Enabled ? ThemeColorTable.ButtonTextColor : SystemColors.ControlDark;
+
+			}
+			else
+			{
+				base.OnRenderArrow(e);
+			}
 		}
 
 		protected override void OnRenderSplitButtonBackground(ToolStripItemRenderEventArgs e)
