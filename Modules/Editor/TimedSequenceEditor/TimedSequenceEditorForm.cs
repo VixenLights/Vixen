@@ -5952,6 +5952,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 			effectEditorWindowToolStripMenuItem.Checked =
 				!(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
+			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.selectedMarks.Any() ||
+													   TimelineControl.grid.SelectedElements.Any();
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)
