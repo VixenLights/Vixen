@@ -407,7 +407,7 @@ namespace VixenModules.Effect.Spiral
 
 		private double CalculateRotation(double intervalPos)
 		{
-			return ScaleCurveToValue(RotationCurve.GetValue(intervalPos), 50, -50);
+			return ScaleCurveToValue(RotationCurve.GetValue(intervalPos), 150, -150);
 		}
 		
 	}
