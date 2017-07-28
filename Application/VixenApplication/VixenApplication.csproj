@@ -117,6 +117,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkExport\BulkExportSources.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExport\BulkExportSources.Designer.cs">
+      <DependentUpon>BulkExportSources.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExport\BulkExportWizard.cs" />
+    <Compile Include="BulkExport\BulkExportWizardData.cs" />
     <Compile Include="ConfigControllersOutputs.cs">
       <SubType>Form</SubType>
     </Compile>
