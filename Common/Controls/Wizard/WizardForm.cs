@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 
 namespace Common.Controls.Wizard
@@ -15,7 +16,10 @@ namespace Common.Controls.Wizard
 		public WizardForm(Wizard wizard)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
+			ThemeUpdateControls.UpdateControls(this);
 			_wizard = wizard;
 		}
 
@@ -80,6 +84,7 @@ namespace Common.Controls.Wizard
 		{
 			buttonNext.Enabled = _wizard.CanMoveNext;
 			buttonPrevious.Enabled = _wizard.CanMovePrevious;
+			buttonPrevious.Visible = !_wizard.IsFirstStage;
 		}
 
 		public event EventHandler WizardFormFinished;

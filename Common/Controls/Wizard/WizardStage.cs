@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls.Wizard
 {
@@ -11,6 +12,13 @@ namespace Common.Controls.Wizard
 	// permissions may have changed).
 	public class WizardStage : UserControl
 	{
+		public WizardStage()
+		{
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+		}
+
 		public virtual bool CanMoveNext
 		{
 			get { return true; }
