@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Common.Controls.Timeline
@@ -94,7 +96,8 @@ namespace Common.Controls.Timeline
 			get { return m_rowLabel; }
 			set
 			{
-				if (m_rowLabel != null) {
+				if (m_rowLabel != null)
+				{
 					m_rowLabel.ParentRow = null;
 					m_rowLabel.TreeToggled -= TreeToggledHandler;
 					m_rowLabel.HeightChanged -= HeightChangedHandler;
@@ -115,29 +118,41 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		private Row m_parentRow;
+		private static string CalculateMd5Hash(string input)
+		{
+			string hash;
+			using (MD5 md5 = MD5.Create())
+			{
+				hash = BitConverter.ToString(
+					md5.ComputeHash(Encoding.UTF8.GetBytes(input))
+				).Replace("-", String.Empty);
+			}
+
+			return hash;
+		}
 
 		/// <summary>
 		/// This is a hash id based on its position in the tree. It is based on the hash of it's name and all it's parents. 
-		/// This should provide a pretty unique that is fairly static for restoring row settings. This can change if the user 
+		/// This should provide a pretty unique id that is fairly static for restoring row settings. This can change if the user 
 		/// restructures the group, but then the settings are probably not valid anyway.
 		/// </summary>
 		/// <returns></returns>
-		public double TreeId()
+		public string TreeId()
+		{
+			return CalculateMd5Hash(TreePathName());
+		}
+
+		public string TreePathName()
 		{
 			if (ParentRow == null)
 			{
-				return Name.GetHashCode();
+				return Name;
 			}
-
-			return Name.GetHashCode() + ParentRow.TreeId();
+			
+			return Name + ParentRow.TreePathName();
 		}
 
-		public Row ParentRow
-		{
-			get { return m_parentRow; }
-			set { m_parentRow = value; }
-		}
+		public Row ParentRow { get; set; }
 
 		public int ParentDepth
 		{
