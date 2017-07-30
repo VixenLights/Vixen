@@ -23,6 +23,9 @@ namespace VixenModules.Effect.Text
 		private TextData _data;
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
 		private Font _font;
+		private Font _newfont;
+		private static Random _random = new Random();
+		private float _newFontSize;
 
 		public Text()
 		{
@@ -134,6 +137,22 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"Angle")]
+		[ProviderDescription(@"Angle")]
+		[PropertyOrder(2)]
+		public Curve AngleCurve
+		{
+			get { return _data.AngleCurve; }
+			set
+			{
+				_data.AngleCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"CenterStop")]
 		[ProviderDescription(@"CenterStop")]
 		[PropertyOrder(3)]
@@ -185,18 +204,16 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Text", 2)]
-		[ProviderDisplayName(@"Scale Text")]
-		[ProviderDescription(@"Scale Text")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
-		[PropertyOrder(3)]
-		public int ScaleText
+		[ProviderCategory(@"Text", 1)]
+		[ProviderDisplayName(@"FontScale")]
+		[ProviderDescription(@"FontScale")]
+		[PropertyOrder(4)]
+		public Curve FontScaleCurve
 		{
-			get { return _data.ScaleText; }
+			get { return _data.FontScaleCurve; }
 			set
 			{
-				_data.ScaleText = value;
+				_data.FontScaleCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -206,7 +223,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Text", 2)]
 		[ProviderDisplayName(@"CenterText")]
 		[ProviderDescription(@"CenterText")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public bool CenterText
 		{
 			get { return _data.CenterText; }
@@ -222,7 +239,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Text", 2)]
 		[ProviderDisplayName(@"Text Layout")]
 		[ProviderDescription(@"Text Layout")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public TextMode TextMode
 		{
 			get { return _data.TextMode; }
@@ -371,14 +388,8 @@ namespace VixenModules.Effect.Text
 			get { return _data; }
 		}
 
-		protected override void TargetPositioningChanged()
-		{
-			UpdateScaleTextAttribute();
-		}
-
 		private void UpdateAllAttributes()
 		{
-			UpdateScaleTextAttribute(false);
 			UpdateBaseColorAttribute(false);
 			UpdatePositionXAttribute(false);
 			UpdateStringOrientationAttributes();
@@ -391,19 +402,6 @@ namespace VixenModules.Effect.Text
 			{
 				{"BaseColor", UseBaseColor},
 				{"BaseLevelCurve", UseBaseColor}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
-		private void UpdateScaleTextAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
-			{
-				{"ScaleText", TargetPositioning == TargetPositioningType.Locations}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -426,11 +424,13 @@ namespace VixenModules.Effect.Text
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
+
+				{"YOffsetCurve", !hideYOffsetCurve},
 				
-				{"YOffsetCurve", !hideYOffsetCurve}
+				{"AngleCurve", Direction == TextDirection.Rotate}
 			};
 			SetBrowsable(propertyStates);
 
@@ -448,16 +448,19 @@ namespace VixenModules.Effect.Text
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
 				// Font is further adjusted using the scale text slider.
-				double newFontSize = ((StringCount - ((StringCount - Font.Size) / 100) * (100 - ScaleText))) * ((double)BufferHt / StringCount);
-				_font = new Font(Font.FontFamily.Name,  (int)newFontSize, Font.Style);
+				double newFontSize = ((StringCount - ((StringCount - Font.Size) / 100) * 100)) * ((double)BufferHt / StringCount);
+				_font = new Font(Font.FontFamily.Name, (int)newFontSize, Font.Style);
+				_newFontSize = _font.Size;
 				return;
 			}
 			_font = Font;
+			_newFontSize = Font.Size;
 		}
 
 		protected override void CleanUpRender()
 		{
 			_font = null;
+			_newfont = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -500,6 +503,10 @@ namespace VixenModules.Effect.Text
 
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			var textAngle = CalculateAngle(intervalPosFactor);
+			
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{
 				var text = TextMode == TextMode.Normal
@@ -508,24 +515,41 @@ namespace VixenModules.Effect.Text
 				int numberLines = text.Count();
 
 				SizeF textsize = new SizeF(0, 0);
+				
+				//Adjust Font Size based on the Font scaling factor
+				_newFontSize = _font.SizeInPoints*(CalculateFontScale(intervalPosFactor)/100);
+				_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
 
 				foreach (string t in text)
 				{
 					if (!String.IsNullOrEmpty(t))
 					{
-						var size = graphics.MeasureString(t, _font);
+						var size = graphics.MeasureString(t, _newfont);
 						if (size.Width > textsize.Width)
 						{
 							textsize = size;
 						}
 					}
 				}
-				_maxTextSize = Convert.ToInt32(textsize.Width*.95);
-				var intervalPos = GetEffectTimeIntervalPosition(frame);
-				var intervalPosFactor = intervalPos * 100;
-				int maxht = Convert.ToInt32(textsize.Height*numberLines);
+
+				_maxTextSize = Convert.ToInt32(textsize.Width * .95);
+				int maxht = Convert.ToInt32(textsize.Height * numberLines);
+
 				int xOffset = CalculateXOffset(intervalPosFactor);
 				int yOffset = CalculateYOffset(intervalPosFactor);
+
+				//Rotate the text based off the angle setting
+				if (Direction == TextDirection.Rotate)
+				{
+					//move rotation point to center of image
+					graphics.TranslateTransform((float)(bitmap.Width / 2 + xOffset), (float)(bitmap.Height / 2 + (yOffset/2)));
+					//rotate
+					graphics.SmoothingMode = SmoothingMode.HighQuality;
+					graphics.RotateTransform(textAngle);
+					//move image back
+					graphics.TranslateTransform(-(float)(bitmap.Width / 2 + xOffset), -(float)(bitmap.Height / 2 + (yOffset/2)));
+				}
+
 				switch (Direction)
 				{
 					case TextDirection.Left:
@@ -584,12 +608,13 @@ namespace VixenModules.Effect.Text
 						break;
 					default:
 						// no movement - centered
-						point = new Point(((BufferWi - _maxTextSize) / 2) + xOffset, offsetTop);
+						point = new Point((BufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
 						DrawText(text, graphics, point);
 						break;
 				}
 			}
 		}
+
 		private int CalculateXOffset(double intervalPos)
 		{
 			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100);
@@ -598,6 +623,16 @@ namespace VixenModules.Effect.Text
 		private int CalculateYOffset(double intervalPos)
 		{
 			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+		}
+
+		private int CalculateAngle(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(AngleCurve.GetValue(intervalPos), 360, 0);
+		}
+
+		private float CalculateFontScale(double intervalPos)
+		{
+			return (float)ScaleCurveToValue(FontScaleCurve.GetValue(intervalPos), 100, 1);
 		}
 
 		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
@@ -677,7 +712,7 @@ namespace VixenModules.Effect.Text
 			foreach (var text in textLines)
 			{
 
-				var size = g.MeasureString(text, _font);
+				var size = g.MeasureString(text, _newfont);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 				var brushPointX = p.X;
@@ -717,7 +752,7 @@ namespace VixenModules.Effect.Text
 			int i = 0;
 			foreach (var text in textLines)
 			{
-				var size = g.MeasureString(text, _font);
+				var size = g.MeasureString(text, _newfont);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 
@@ -746,7 +781,8 @@ namespace VixenModules.Effect.Text
 		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-			g.DrawString(text, _font, brush, p);
+			g.DrawString(text, _newfont, brush, p);
+
 		}
 	}
 }

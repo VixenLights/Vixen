@@ -19,7 +19,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class EffectDescriptionDescriptors {
@@ -67,6 +67,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string AlternatingDepth {
             get {
                 return ResourceManager.GetString("AlternatingDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the rotation angle of the text..
+        /// </summary>
+        internal static string Angle {
+            get {
+                return ResourceManager.GetString("Angle", resourceCulture);
             }
         }
         
@@ -526,6 +535,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Font {
             get {
                 return ResourceManager.GetString("Font", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Font size..
+        /// </summary>
+        internal static string FontScale {
+            get {
+                return ResourceManager.GetString("FontScale", resourceCulture);
             }
         }
         

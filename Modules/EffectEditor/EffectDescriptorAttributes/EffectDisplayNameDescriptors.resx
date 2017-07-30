@@ -564,4 +564,10 @@
   <data name="EnableGroundLevel" xml:space="preserve">
     <value>Ground Level</value>
   </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Angle</value>
+  </data>
+  <data name="FontScale" xml:space="preserve">
+    <value>Scale Font</value>
+  </data>
 </root>
