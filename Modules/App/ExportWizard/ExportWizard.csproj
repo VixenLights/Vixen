@@ -73,6 +73,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -80,17 +81,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BulkExportControllers.cs">
+    <Compile Include="BulkExportControllersStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BulkExportControllers.Designer.cs">
-      <DependentUpon>BulkExportControllers.cs</DependentUpon>
+    <Compile Include="BulkExportControllersStage.Designer.cs">
+      <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
     </Compile>
-    <Compile Include="BulkExportSources.cs">
+    <Compile Include="BulkExportOutputFormatStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BulkExportSources.Designer.cs">
-      <DependentUpon>BulkExportSources.cs</DependentUpon>
+    <Compile Include="BulkExportOutputFormatStage.Designer.cs">
+      <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportSourcesStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportSourcesStage.Designer.cs">
+      <DependentUpon>BulkExportSourcesStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportSummaryStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportSummaryStage.Designer.cs">
+      <DependentUpon>BulkExportSummaryStage.cs</DependentUpon>
     </Compile>
     <Compile Include="BulkExportWizard.cs" />
     <Compile Include="BulkExportWizardData.cs" />
@@ -99,11 +112,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BulkExportControllers.resx">
-      <DependentUpon>BulkExportControllers.cs</DependentUpon>
+    <EmbeddedResource Include="BulkExportControllersStage.resx">
+      <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BulkExportSources.resx">
-      <DependentUpon>BulkExportSources.cs</DependentUpon>
+    <EmbeddedResource Include="BulkExportOutputFormatStage.resx">
+      <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportSourcesStage.resx">
+      <DependentUpon>BulkExportSourcesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportSummaryStage.resx">
+      <DependentUpon>BulkExportSummaryStage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

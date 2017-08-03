@@ -1,21 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms;
 using Common.Controls.Wizard;
+using Vixen.Sys;
 
 namespace VixenModules.App.ExportWizard
 {
 	internal class BulkExportWizard : Wizard
 	{
-
+		private readonly BulkExportWizardData _data;
 		private readonly List<WizardStage> _stages;
-		private BulkExportWizardData _data = new BulkExportWizardData();
 
-		public BulkExportWizard()
+		public BulkExportWizard(BulkExportWizardData data)
 		{
+			_data = data;
 			_stages = new List<WizardStage>
 			{
-				new BulkExportSources(_data),
-				new BulkExportControllers(_data)
+				new BulkExportSourcesStage(_data),
+				new BulkExportControllersStage(_data),
+				new BulkExportOutputFormatStage(_data),
+				new BulkExportSummaryStage(_data)
 			};
+
+			
+		}
+
+		public BulkExportWizardData Data
+		{
+			get { return _data; }
 		}
 
 		protected override List<WizardStage> Stages

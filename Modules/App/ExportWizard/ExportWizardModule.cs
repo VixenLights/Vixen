@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Forms;
+using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
 
@@ -9,6 +11,7 @@ namespace VixenModules.App.ExportWizard
 		private const string MenuId = "ExportWizard_Main";
 		private IApplication _application;
 		private BulkExportWizard _exportWizard;
+		private BulkExportWizardData _data;
 
 		public override IApplication Application
 		{
@@ -33,7 +36,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void InitializeForm()
 		{
-			_exportWizard = new BulkExportWizard();
+			_exportWizard = new BulkExportWizard(_data.Clone() as BulkExportWizardData);
 			_exportWizard.WizardFinished += ExportWizardClosed;
 		}
 
@@ -70,10 +73,26 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		private void ExportWizardClosed(object sender, EventArgs e)
+		private async void ExportWizardClosed(object sender, EventArgs e)
 		{
 			//_exportWizard.Dispose();
+			if (_exportWizard.WizardDialogResult != DialogResult.Cancel)
+			{
+				_exportWizard.Data.CopyInto(StaticModuleData as BulkExportWizardData);
+				await VixenSystem.SaveModuleConfigAsync();
+			}
+			
 			_exportWizard = null;
+			
+		}
+
+		public override IModuleDataModel StaticModuleData
+		{
+			get { return _data; }
+			set
+			{
+				_data = value as BulkExportWizardData;
+			}
 		}
 	}
 }

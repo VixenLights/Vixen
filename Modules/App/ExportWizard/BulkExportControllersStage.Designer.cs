@@ -1,6 +1,6 @@
 ﻿namespace VixenModules.App.ExportWizard
 {
-	partial class BulkExportControllers
+	partial class BulkExportControllersStage
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -33,7 +33,9 @@
 			this.networkListView = new Common.Controls.ListViewEx();
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.mappingColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.startColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.endColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.btnReset = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// lblConfigureOutput
@@ -41,9 +43,9 @@
 			this.lblConfigureOutput.AutoSize = true;
 			this.lblConfigureOutput.Location = new System.Drawing.Point(10, 13);
 			this.lblConfigureOutput.Name = "lblConfigureOutput";
-			this.lblConfigureOutput.Size = new System.Drawing.Size(99, 15);
+			this.lblConfigureOutput.Size = new System.Drawing.Size(269, 15);
 			this.lblConfigureOutput.TabIndex = 1;
-			this.lblConfigureOutput.Text = "Configure output";
+			this.lblConfigureOutput.Text = "Step 2:  Configure the required outputs and order.";
 			// 
 			// networkListView
 			// 
@@ -57,7 +59,8 @@
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
-            this.mappingColumn});
+            this.startColumn,
+            this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
@@ -66,10 +69,11 @@
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;
-			this.networkListView.Size = new System.Drawing.Size(544, 292);
+			this.networkListView.Size = new System.Drawing.Size(546, 276);
 			this.networkListView.TabIndex = 2;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
+			this.networkListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.networkListView_KeyUp);
 			// 
 			// controllerColumn
 			// 
@@ -81,18 +85,33 @@
 			this.channelsColumn.Text = "Channels";
 			this.channelsColumn.Width = 76;
 			// 
-			// mappingColumn
+			// startColumn
 			// 
-			this.mappingColumn.Text = "Mapping";
-			this.mappingColumn.Width = 292;
+			this.startColumn.Text = "Start";
+			// 
+			// endColumn
+			// 
+			this.endColumn.Text = "End";
+			this.endColumn.Width = 234;
+			// 
+			// btnReset
+			// 
+			this.btnReset.Location = new System.Drawing.Point(13, 324);
+			this.btnReset.Name = "btnReset";
+			this.btnReset.Size = new System.Drawing.Size(75, 23);
+			this.btnReset.TabIndex = 3;
+			this.btnReset.Text = "Reset";
+			this.btnReset.UseVisualStyleBackColor = true;
+			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
 			// 
 			// BulkExportControllers
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btnReset);
 			this.Controls.Add(this.networkListView);
 			this.Controls.Add(this.lblConfigureOutput);
-			this.Name = "BulkExportControllers";
+			this.Name = "BulkExportControllersStage";
 			this.Size = new System.Drawing.Size(573, 355);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -104,6 +123,8 @@
 		private Common.Controls.ListViewEx networkListView;
 		private System.Windows.Forms.ColumnHeader controllerColumn;
 		private System.Windows.Forms.ColumnHeader channelsColumn;
-		private System.Windows.Forms.ColumnHeader mappingColumn;
+		private System.Windows.Forms.ColumnHeader startColumn;
+		private System.Windows.Forms.ColumnHeader endColumn;
+		private System.Windows.Forms.Button btnReset;
 	}
 }

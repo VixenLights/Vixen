@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Wizard;
 using Dataweb.NShape;
@@ -62,9 +63,9 @@ namespace VixenApplication.FiltersAndPatching
 			_data.FilterSetupForm.DiagramShapesSelected += FilterSetupForm_DiagramShapesSelected;
 		}
 
-		public override void StageEnd()
+		public override async Task StageEnd()
 		{
-			_data.FilterSetupForm.DiagramShapesSelected -= FilterSetupForm_DiagramShapesSelected;
+			 _data.FilterSetupForm.DiagramShapesSelected -= FilterSetupForm_DiagramShapesSelected;
 		}
 
 		public override bool CanMoveNext

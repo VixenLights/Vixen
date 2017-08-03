@@ -5,7 +5,7 @@ namespace VixenModules.App.ExportWizard
 {
 	public class ExportWizardDescriptor : AppModuleDescriptorBase
 	{
-		private Guid _typeId = new Guid("{8BF8D0C5-B7D6-417C-9EFF-EC1C5E1EF9AB}");
+		private readonly Guid _typeId = new Guid("{8BF8D0C5-B7D6-417C-9EFF-EC1C5E1EF9AB}");
 
 		public override string TypeName
 		{
@@ -35,6 +35,11 @@ namespace VixenModules.App.ExportWizard
 		public override Type ModuleClass
 		{
 			get { return typeof (ExportWizardModule); }
+		}
+
+		public override Type ModuleStaticDataClass
+		{
+			get { return typeof(BulkExportWizardData); }
 		}
 	}
 }

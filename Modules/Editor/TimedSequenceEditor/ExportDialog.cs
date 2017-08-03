@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -22,8 +20,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private string _outFileName;
         private readonly ISequence _sequence;
         private readonly Export _exportOps;
-        private bool _doProgressUpdate;
-	    private readonly string _sequenceFileName;
+        private readonly string _sequenceFileName;
         private readonly string _audioFileName;
         private ExportNotifyType _currentState;
 	    private bool _cancelled;
@@ -71,64 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             _cancelled = false;
 
-            backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-
             _profile = new XMLProfileSettings();
-        }
-        #endregion
-
-        #region Background Thread
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-		{
-           while (_doProgressUpdate)
-            {
-                Thread.Sleep(25); 
-                switch (_currentState)
-                {
-                   
-                    case ExportNotifyType.SAVING:
-                    {
-                        backgroundWorker1_Saving(sender, e);
-                        break;
-                    }
-
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            UseWaitCursor = false;
-			backgroundWorker1.ReportProgress(0);
-        }
-
-        private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
-        {
-	        try
-	        {
-		        //currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
-		        backgroundWorker1.ReportProgress((int) _exportOps.SavePosition);
-	        }
-	        catch (Exception ex)
-	        {
-		        Logging.Error("An error occured while updating the progress in the export.", ex);
-	        }
-            
-        }
-
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
-        {
-	        try
-	        {
-		        exportProgressBar.Value = args.ProgressPercentage;
-				currentTimeLabel.Text = string.Format("{0}%", args.ProgressPercentage);
-	        }
-	        catch (Exception e)
-	        {
-				Logging.Error("An error occured while updating the progress percentage in the export.", e);
-	        }
-            
         }
         #endregion
 
@@ -168,7 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
-        private void buttonStart_Click(object sender, EventArgs e)
+        private async void buttonStart_Click(object sender, EventArgs e)
         {
             
             _cancelled = false;
@@ -197,20 +137,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 return;
             }
 			UseWaitCursor = true;
-			_doProgressUpdate = true;
-			backgroundWorker1.RunWorkerAsync();
-
+			
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
-            _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString());
-            _exportOps.AudioFilename = _audioFileName;
 
+			var progress = new Progress<ExportProgressStatus>(ReportExportProgress);
+	        _exportOps.AudioFilename = _audioFileName;
 
-           
-        }
+			await _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString(), progress);
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+			UseWaitCursor = false;
+		}
+
+	    private void ReportExportProgress(ExportProgressStatus exportProgressStatus)
+	    {
+			exportProgressBar.Value = exportProgressStatus.TaskProgressValue;
+		    currentTimeLabel.Text = string.Format("{0}%", exportProgressStatus.TaskProgressValue);
+		}
+
+	    private void buttonCancel_Click(object sender, EventArgs e)
         {
             _cancelled = true;
 			_exportOps.Cancel();
@@ -292,7 +238,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             buttonStop.Enabled = allowStop;
             outputFormatComboBox.Enabled = !isWorking;
             resolutionComboBox.Enabled = !isWorking;
-            _doProgressUpdate = isWorking;
             exportProgressBar.Visible = isWorking;
             currentTimeLabel.Visible = isWorking;
 
@@ -364,9 +309,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void ExportDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             _exportOps.SequenceNotify -= SequenceNotify;
-            backgroundWorker1.DoWork -= backgroundWorker1_DoWork;
-            backgroundWorker1.ProgressChanged -= backgroundWorker1_ProgressChanged;
-
         }
 
         #endregion

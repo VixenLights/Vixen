@@ -74,8 +74,15 @@ namespace Common.Controls.Wizard
 			WizardActive = false;
 			WizardForm form = sender as WizardForm;
 			if (form != null)
+			{
 				WizardDialogResult = form.DialogResult;
+			}
 			_wizardFinished();
+
+			if (form!=null && !form.IsDisposed)
+			{
+				form.Dispose();
+			}
 		}
 
 		public DialogResult WizardDialogResult { get; private set; }

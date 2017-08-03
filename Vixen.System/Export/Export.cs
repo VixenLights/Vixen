@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -62,8 +63,6 @@ namespace Vixen.Export
             _exporting = false;
             _cancelling = false;
 
-            SavePosition = 0;
-
 			InitializeControllerInfo();
         }
 
@@ -110,7 +109,7 @@ namespace Vixen.Export
             }
         }
 
-        private List<OutputController> SystemControllers
+        private static List<OutputController> SystemControllers
         {
             get
             {
@@ -125,6 +124,7 @@ namespace Vixen.Export
         public List<ControllerExportInfo> ControllerExportInfo
         {
             get { return _controllerExportInfos; }
+			set { _controllerExportInfos = value; }
         }
 
         #endregion
@@ -133,10 +133,16 @@ namespace Vixen.Export
 
 		private void InitializeControllerInfo()
 		{
-			int index = 0;
-			_controllerExportInfos = new List<ControllerExportInfo>();
-			SystemControllers.ForEach(x => _controllerExportInfos.Add(new ControllerExportInfo(x, index++)));
+			_controllerExportInfos = CreateControllerInfo();
 		}
+
+	    public static List<ControllerExportInfo> CreateControllerInfo()
+	    {
+			int index = 0;
+		    var controllerExportInfos = new List<ControllerExportInfo>();
+		    SystemControllers.ForEach(x => controllerExportInfos.Add(new ControllerExportInfo(x, index++)));
+		    return controllerExportInfos;
+	    }
 
         private bool CheckExportdir()
         {
@@ -197,7 +203,7 @@ namespace Vixen.Export
 
         }
 
-        public void DoExport(ISequence sequence, string outFormat)
+        public async Task DoExport(ISequence sequence, string outFormat, IProgress<ExportProgressStatus> progress = null)
         {
             string fileType;
 
@@ -210,7 +216,7 @@ namespace Vixen.Export
                 {
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     WriteControllerInfo(sequence);
-					Task.Factory.StartNew(ProcessExport);
+					await Task.Factory.StartNew(() => ProcessExport(progress));
                 }
             }
         }
@@ -287,14 +293,16 @@ namespace Vixen.Export
             return retVal;
         }
 
-        private void ProcessExport()
+        private void ProcessExport(IProgress<ExportProgressStatus> progress)
         {
             SequenceSessionData sessionData = new SequenceSessionData();
 			
             if (_exporting)
             {
-				SavePosition = 0;
-				SequenceNotify(ExportNotifyType.SAVING);
+				if (SequenceNotify != null)
+	            {
+		            SequenceNotify(ExportNotifyType.SAVING);
+	            }
              	_generator.BeginGeneration();
                 
 	            IEnumerable<Guid> outIds = _generator.State.GetOutputIds();
@@ -308,7 +316,7 @@ namespace Vixen.Export
 
 				List<ICommand> commandList = new List<ICommand>(controllerOutputs.Count);
 	            _eventData = new List<byte>(controllerOutputs.Count);
-
+				var progressData = new ExportProgressStatus(ExportProgressStatus.ProgressType.Task);
 	            if (_cancelling == false)
                 {
                     sessionData.OutFileName = OutFileName;
@@ -320,10 +328,15 @@ namespace Vixen.Export
 	                try
 	                {
 		                _output.OpenSession(sessionData);
-		                int j = 0;
+		                double j = 0;
 		                while (_generator.HasNextInterval() && _cancelling == false)
 		                {
-			                SavePosition = Decimal.Round(((Decimal) j/periods)*100, 2);
+			                if (progress != null)
+			                {
+				                progressData.TaskProgressValue = (int)(j / periods * 100);
+								progressData.TaskProgressMessage = string.Format("Exporting {0}", _generator.Sequence.Name);
+				                progress.Report(progressData);
+			                }
 			                commandList.Clear();
 			                //Iterate the controller output groups.
 			                foreach (var controller in controllerOutputs)
@@ -362,7 +375,8 @@ namespace Vixen.Export
 
     }
 
-    public class ControllerExportInfo
+	[DataContract]
+    public class ControllerExportInfo:ICloneable
     {
         public ControllerExportInfo(OutputController controller, int index)
         {
@@ -372,10 +386,20 @@ namespace Vixen.Export
 	        Id = controller.Id;
         }
 
+		[DataMember]
         public int Index { get; set; }
-        public int Channels { get; set; }
-        public string Name { get; set; }
+	    [DataMember]
+		public int Channels { get; set; }
+	    [DataMember]
+		public string Name { get; set; }
+	    [DataMember]
 		public Guid Id { get; private set; }
+
+	    public object Clone()
+	    {
+			//All my members are value types. If that changes so must this!
+		    return MemberwiseClone();
+	    }
     }
 
     public class SequenceSessionData
