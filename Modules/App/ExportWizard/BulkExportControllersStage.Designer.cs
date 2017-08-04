@@ -56,6 +56,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.networkListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.networkListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.networkListView.CheckBoxes = true;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
@@ -63,6 +64,7 @@
             this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			listViewItem1.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
 			this.networkListView.Location = new System.Drawing.Point(13, 41);
@@ -73,7 +75,6 @@
 			this.networkListView.TabIndex = 2;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
-			this.networkListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.networkListView_KeyUp);
 			// 
 			// controllerColumn
 			// 
@@ -104,7 +105,7 @@
 			this.btnReset.UseVisualStyleBackColor = true;
 			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
 			// 
-			// BulkExportControllers
+			// BulkExportControllersStage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

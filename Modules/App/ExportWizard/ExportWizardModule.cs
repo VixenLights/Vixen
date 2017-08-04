@@ -20,7 +20,7 @@ namespace VixenModules.App.ExportWizard
 
 		public override void Loading()
 		{
-			InitializeForm();
+			//InitializeForm();
 			_AddMenu();
 		}
 

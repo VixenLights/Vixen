@@ -231,11 +231,28 @@ namespace Common.Controls
 			{
 				e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
 			}
+
+			var textBounds = e.Bounds;
+			if (CheckBoxes && e.ColumnIndex == 0)
+			{
+				Size cbSize = CalculateCheckBoxSize(e.SubItem);
+				int top = e.Bounds.Top + (int)((e.Bounds.Height - cbSize.Height) / 2d);
+				Rectangle cbBounds = new Rectangle(new Point(e.Bounds.X+1, top), cbSize);
+				
+				ControlPaint.DrawCheckBox(e.Graphics, cbBounds, (e.Item.Checked?ButtonState.Checked:ButtonState.Normal) | ButtonState.Flat);
+				
+				textBounds.X = textBounds.X + cbSize.Width + 1;
+			}
 			
-			TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);
+			TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.Item.Font, textBounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);
 		}
 
-		private void List_DrawItem(object sender, DrawListViewItemEventArgs e)
+		private Size CalculateCheckBoxSize(ListViewItem.ListViewSubItem lvsi)
+		{   
+			return new Size(lvsi.Bounds.Height - 4, lvsi.Bounds.Height - 4);
+		}
+
+	private void List_DrawItem(object sender, DrawListViewItemEventArgs e)
 		{
 
 			if (View != View.Details)
@@ -252,6 +269,7 @@ namespace Common.Controls
 				{
 					e.Graphics.FillRectangle(new SolidBrush(backgroundColor), e.Bounds);
 				}
+
 				TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, e.Bounds, ThemeColorTable.ForeColor, backgroundColor, TextFormatFlags.VerticalCenter);
 			}
 		}

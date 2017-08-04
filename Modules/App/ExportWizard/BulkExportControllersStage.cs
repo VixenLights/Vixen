@@ -9,16 +9,20 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportControllersStage : WizardStage
 	{
-		private readonly BulkExportWizardData _data;
+		private readonly ExportProfile _profile;
 		public BulkExportControllersStage(BulkExportWizardData data)
 		{
-			_data = data;
+			_profile = data.ActiveProfile;
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
+		}
 
-			networkListView.DragDrop += networkListView_DragDrop;
-			
+		protected override void OnLoad(EventArgs e)
+		{
+			_profile.SyncronizeControllerInfo();
 			UpdateNetworkList();
+			networkListView.DragDrop += networkListView_DragDrop;
+			networkListView.ItemChecked += NetworkListView_ItemChecked;
 		}
 
 		private void UpdateNetworkList()
@@ -26,17 +30,26 @@ namespace VixenModules.App.ExportWizard
 			networkListView.Items.Clear();
 			int startChan = 1;
 
-			foreach (ControllerExportInfo info in _data.ControllerInfo.OrderBy(x => x.Index))
+			foreach (Controller info in _profile.Controllers.OrderBy(x => x.Index))
 			{
 				ListViewItem item = new ListViewItem(info.Name);
 				item.Tag = info;
 				item.SubItems.Add(info.Channels.ToString());
-				item.SubItems.Add(startChan.ToString());
-				item.SubItems.Add((startChan + info.Channels - 1).ToString());
 
+				if (info.IsActive)
+				{
+					item.Checked = info.IsActive;
+					item.SubItems.Add(startChan.ToString());
+					item.SubItems.Add((startChan + info.Channels - 1).ToString());
+					startChan += info.Channels;
+				}
+				else
+				{
+					item.SubItems.Add(String.Empty);
+					item.SubItems.Add(String.Empty);
+				}
+				
 				networkListView.Items.Add(item);
-
-				startChan += info.Channels;
 			}
 
 			networkListView.ColumnAutoSize();
@@ -50,23 +63,14 @@ namespace VixenModules.App.ExportWizard
 			ReIndexControllerChannels();
 		}
 
-		private void networkListView_KeyUp(object sender, KeyEventArgs e)
+		private void NetworkListView_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
-			if (e.KeyCode == Keys.Delete && networkListView.SelectedItems.Count > 0)
-			{
-				foreach (ListViewItem item in networkListView.SelectedItems)
-				{
-					_data.ControllerInfo.Remove(item.Tag as ControllerExportInfo);
-					item.Remove();
-				}
-			}
-
 			ReIndexControllerChannels();
 		}
 
 		public override bool CanMoveNext
 		{
-			get { return _data.ControllerInfo.Count > 0; }
+			get { return _profile.Controllers.Count > 0; }
 		}
 
 		private void ReIndexControllerChannels()
@@ -75,12 +79,27 @@ namespace VixenModules.App.ExportWizard
 			int index = 0;
 			foreach (ListViewItem item in networkListView.Items)
 			{
-				var info = item.Tag as ControllerExportInfo;
-				if (info != null) { info.Index = index;}
-				int channels = Convert.ToInt32(item.SubItems[1].Text); //.Add(info.Channels.ToString());
-				item.SubItems[2].Text = startChan.ToString();
-				item.SubItems[3].Text = (startChan + info.Channels - 1).ToString();
-				startChan += channels;
+				var info = item.Tag as Controller;
+				if (info == null)
+				{
+					continue; // This should not happen!
+				}
+				info.Index = index;
+				info.IsActive = item.Checked;
+
+				if (info.IsActive)
+				{
+					int channels = Convert.ToInt32(item.SubItems[1].Text);
+					item.SubItems[2].Text = startChan.ToString();
+					item.SubItems[3].Text = (startChan + info.Channels - 1).ToString();
+					startChan += channels;
+				}
+				else
+				{
+					item.SubItems[2].Text = String.Empty;
+					item.SubItems[3].Text = String.Empty;
+				}
+				
 				index++;
 			}
 
@@ -89,7 +108,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void btnReset_Click(object sender, EventArgs e)
 		{
-			_data.InitializeControllerInfo();
+			_profile.SyncronizeControllerInfo();
 			UpdateNetworkList();
 		}
 	}

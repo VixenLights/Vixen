@@ -98,7 +98,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			int index = 0;
 			foreach (ListViewItem item in networkListView.Items)
 			{
-				var info = item.Tag as ControllerExportInfo;
+				var info = item.Tag as Controller;
 				if(info != null) info.Index = index;
 				int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
 				item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
@@ -188,12 +188,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void UpdateNetworkList()
         {
-            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportInfo;
+            List<Controller> exportInfo = _exportOps.ControllerExportInfo;
 
             networkListView.Items.Clear();
             int startChan = 1;
 
-            foreach (ControllerExportInfo info in exportInfo)
+            foreach (Controller info in exportInfo)
             {
                 ListViewItem item = new ListViewItem(info.Name);
 	            item.Tag = info;

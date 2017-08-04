@@ -33,7 +33,7 @@ namespace Vixen.Export
 		private SequenceIntervalGenerator _generator;
         private readonly ExportCommandHandler _exporterCommandHandler;
         private List<byte> _eventData;
-	    private List<ControllerExportInfo> _controllerExportInfos; 
+	    private List<Controller> _controllerExportInfos; 
 
         public delegate void SequenceEventHandler(ExportNotifyType notify);
         public event SequenceEventHandler SequenceNotify;
@@ -95,6 +95,12 @@ namespace Vixen.Export
             }
         }
 
+	    public string DefaultFormatType()
+	    {
+			//This is sketchy at best
+			return ExportFileTypes.ContainsKey("Falcon Player Sequence") ? "Falcon Player Sequence" : FormatTypes[0];
+		}
+
         public string OutFileName { get; set; }
 
         public int UpdateInterval { get; set; }
@@ -121,7 +127,7 @@ namespace Vixen.Export
 
         public decimal SavePosition { get; set; }
 
-        public List<ControllerExportInfo> ControllerExportInfo
+        public List<Controller> ControllerExportInfo
         {
             get { return _controllerExportInfos; }
 			set { _controllerExportInfos = value; }
@@ -133,14 +139,14 @@ namespace Vixen.Export
 
 		private void InitializeControllerInfo()
 		{
-			_controllerExportInfos = CreateControllerInfo();
+			_controllerExportInfos = CreateControllerInfo(true);
 		}
 
-	    public static List<ControllerExportInfo> CreateControllerInfo()
+	    public static List<Controller> CreateControllerInfo(bool index)
 	    {
-			int index = 0;
-		    var controllerExportInfos = new List<ControllerExportInfo>();
-		    SystemControllers.ForEach(x => controllerExportInfos.Add(new ControllerExportInfo(x, index++)));
+			int i = 0;
+		    var controllerExportInfos = new List<Controller>();
+		    SystemControllers.ForEach(x => controllerExportInfos.Add(new Controller(x, index?i++:Int32.MaxValue)));
 		    return controllerExportInfos;
 	    }
 
@@ -184,7 +190,7 @@ namespace Vixen.Export
                 writer.WriteElementString("Duration", sequence.Length.ToString());
 
                 writer.WriteStartElement("Network");
-                foreach (ControllerExportInfo exportInfo in ControllerExportInfo.OrderBy(x => x.Index))
+                foreach (Controller exportInfo in ControllerExportInfo.OrderBy(x => x.Index))
                 {
                     writer.WriteStartElement("Controller");
                     writer.WriteElementString("Index", exportInfo.Index.ToString());
@@ -269,10 +275,10 @@ namespace Vixen.Export
             }
             return nameVal;
         }
-        List<string> BuildChannelNames(IEnumerable<Guid> outIds)
+        List<string> BuildChannelNames(IEnumerable<OutputController> outControllers)
         {
             List<string> retVal = new List<string>();
-	        IEnumerable<OutputController> outControllers = VixenSystem.OutputControllers.GetAll();
+	       // IEnumerable<OutputController> outControllers = VixenSystem.OutputControllers.GetAll();
             foreach (OutputController oc in outControllers)
             {
                 for (int j = 0; j < oc.OutputCount; j++)
@@ -305,14 +311,16 @@ namespace Vixen.Export
 	            }
              	_generator.BeginGeneration();
                 
-	            IEnumerable<Guid> outIds = _generator.State.GetOutputIds();
+	            //IEnumerable<Guid> outIds = _generator.State.GetOutputIds();
 	            int periods = (int)_generator.Sequence.Length.TotalMilliseconds / _generator.Interval;//outAggregator.GetCommandsForOutput(outIds.First()).Count() - 1;
 
 				//Get a list of controller ids by index order
-				IEnumerable<Guid> controllers = ControllerExportInfo.OrderBy(x => x.Index).Select(i => i.Id);
+				IEnumerable<Guid> controllerIds = ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index).Select(i => i.Id);
+
+	            var controllers = controllerIds.Select(controller => VixenSystem.OutputControllers.GetController(controller));
 
 				//Now assemble a all their outputs by controller order.
-				List<List<Guid>> controllerOutputs = controllers.Select(controller => VixenSystem.OutputControllers.GetController(controller).Outputs.Select(x => x.Id).ToList()).ToList();
+				List<List<Guid>> controllerOutputs = controllers.Select(controller => controller.Outputs.Select(x => x.Id).ToList()).ToList();
 
 				List<ICommand> commandList = new List<ICommand>(controllerOutputs.Count);
 	            _eventData = new List<byte>(controllerOutputs.Count);
@@ -322,7 +330,7 @@ namespace Vixen.Export
                     sessionData.OutFileName = OutFileName;
                     sessionData.NumPeriods = periods;
                     sessionData.PeriodMS = UpdateInterval;
-                    sessionData.ChannelNames = BuildChannelNames(outIds);
+                    sessionData.ChannelNames = BuildChannelNames(controllers);
                     sessionData.TimeMS = _generator.Sequence.Length.TotalMilliseconds;
                     sessionData.AudioFileName = AudioFilename;
 	                try
@@ -376,21 +384,24 @@ namespace Vixen.Export
     }
 
 	[DataContract]
-    public class ControllerExportInfo:ICloneable
+    public class Controller:ICloneable, IEqualityComparer<Controller>
     {
-        public ControllerExportInfo(OutputController controller, int index)
+        public Controller(OutputController controller, int index)
         {
             Name = controller.Name;
             Index = index;
             Channels = controller.OutputCount;
 	        Id = controller.Id;
+	        IsActive = true;
         }
 
 		[DataMember]
         public int Index { get; set; }
-	    [DataMember]
+		[DataMember]
+	    public bool IsActive { get; set; }
+	   
 		public int Channels { get; set; }
-	    [DataMember]
+	   
 		public string Name { get; set; }
 	    [DataMember]
 		public Guid Id { get; private set; }
@@ -399,6 +410,16 @@ namespace Vixen.Export
 	    {
 			//All my members are value types. If that changes so must this!
 		    return MemberwiseClone();
+	    }
+
+	    public bool Equals(Controller x, Controller y)
+	    {
+		    return x.Id == y.Id; //Controller ids determine equality in this case.
+	    }
+
+	    public int GetHashCode(Controller obj)
+	    {
+		    return Id.GetHashCode();
 	    }
     }
 

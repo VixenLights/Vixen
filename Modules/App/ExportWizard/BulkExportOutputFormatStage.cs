@@ -11,19 +11,19 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportOutputFormatStage : WizardStage
 	{
-		private readonly BulkExportWizardData _data;
+		private readonly ExportProfile _profile;
 		public BulkExportOutputFormatStage(BulkExportWizardData data)
 		{
-			_data = data;
+			_profile = data.ActiveProfile;
 			InitializeComponent();
 			
 			outputFormatComboBox.Items.Clear();
-			outputFormatComboBox.Items.AddRange(_data.Export.FormatTypes);
+			outputFormatComboBox.Items.AddRange(data.Export.FormatTypes);
 			outputFormatComboBox.Sorted = true;
 
-			outputFormatComboBox.SelectedItem = _data.Format;
+			outputFormatComboBox.SelectedItem = _profile.Format;
 
-			resolutionComboBox.SelectedItem = _data.Interval.ToString();
+			resolutionComboBox.SelectedItem = _profile.Interval.ToString();
 
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 
@@ -33,13 +33,13 @@ namespace VixenModules.App.ExportWizard
 			btnAudioOutputFolder.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
 			btnAudioOutputFolder.Text = "";
 
-			txtOutputFolder.Text = _data.OutputFolder;
+			txtOutputFolder.Text = _profile.OutputFolder;
 
-			chkIncludeAudio.Checked = _data.IncludeAudio;
-			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _data.IncludeAudio;
-			chkRenameAudio.Checked = _data.RenameAudio;
+			chkIncludeAudio.Checked = _profile.IncludeAudio;
+			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _profile.IncludeAudio;
+			chkRenameAudio.Checked = _profile.RenameAudio;
 
-			txtAudioOutputFolder.Text = _data.AudioOutputFolder;
+			txtAudioOutputFolder.Text = _profile.AudioOutputFolder;
 
 			ThemeUpdateControls.UpdateControls(this);
 
@@ -49,14 +49,14 @@ namespace VixenModules.App.ExportWizard
 		{
 			var folderBrowserDialog = new FolderBrowserDialog();
 			folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
-			folderBrowserDialog.SelectedPath = _data.OutputFolder;
+			folderBrowserDialog.SelectedPath = _profile.OutputFolder;
 			folderBrowserDialog.Description = @"Select the sequence export location";
 
 			DialogResult dr = folderBrowserDialog.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				_data.OutputFolder = folderBrowserDialog.SelectedPath;
-				txtOutputFolder.Text = _data.OutputFolder;
+				_profile.OutputFolder = folderBrowserDialog.SelectedPath;
+				txtOutputFolder.Text = _profile.OutputFolder;
 			}
 
 		}
@@ -65,20 +65,20 @@ namespace VixenModules.App.ExportWizard
 		{
 			var folderBrowserDialog = new FolderBrowserDialog();
 			folderBrowserDialog.RootFolder = Environment.SpecialFolder.Desktop;
-			folderBrowserDialog.SelectedPath = _data.AudioOutputFolder;
+			folderBrowserDialog.SelectedPath = _profile.AudioOutputFolder;
 			folderBrowserDialog.Description = @"Select the audio export location";
 
 			DialogResult dr = folderBrowserDialog.ShowDialog();
 			if (dr == DialogResult.OK)
 			{
-				_data.AudioOutputFolder = folderBrowserDialog.SelectedPath;
-				txtAudioOutputFolder.Text = _data.AudioOutputFolder;
+				_profile.AudioOutputFolder = folderBrowserDialog.SelectedPath;
+				txtAudioOutputFolder.Text = _profile.AudioOutputFolder;
 			}
 		}
 
 		public override bool CanMoveNext
 		{
-			get { return Directory.Exists(_data.OutputFolder); }
+			get { return Directory.Exists(_profile.OutputFolder); }
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
@@ -94,24 +94,24 @@ namespace VixenModules.App.ExportWizard
 		private void outputFormatComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox comboBox = (ComboBox)sender;
-			_data.Format = comboBox.SelectedItem.ToString();
+			_profile.Format = comboBox.SelectedItem.ToString();
 		}
 
 		private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox comboBox = (ComboBox)sender;
-			_data.Interval = Convert.ToInt32(comboBox.SelectedItem);
+			_profile.Interval = Convert.ToInt32(comboBox.SelectedItem);
 		}
 
 		private void chkIncludeAudio_CheckedChanged(object sender, EventArgs e)
 		{
 			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = chkIncludeAudio.Checked;
-			_data.IncludeAudio = chkIncludeAudio.Checked;
+			_profile.IncludeAudio = chkIncludeAudio.Checked;
 		}
 
 		private void chkRenameAudio_CheckedChanged(object sender, EventArgs e)
 		{
-			_data.RenameAudio = chkRenameAudio.Checked;
+			_profile.RenameAudio = chkRenameAudio.Checked;
 		}
 
 		

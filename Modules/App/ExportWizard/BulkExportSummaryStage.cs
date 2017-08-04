@@ -17,11 +17,13 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportSummaryStage : WizardStage
 	{
+		private readonly ExportProfile _profile;
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
 		public BulkExportSummaryStage(BulkExportWizardData data)
 		{
 			_data = data;
+			_profile = data.ActiveProfile;
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new [] {txtSummary}));
 			txtSummary.BackColor = ThemeColorTable.BackgroundColor;
@@ -41,12 +43,12 @@ namespace VixenModules.App.ExportWizard
 				"Summary:  The export will process {0} sequence(s) and output them in the {1} "+
 				"format on an interval of {2} ms into the the following folder: {3} \r\n"+
 				"  If there are audio files associated with the sequences, they will{4}be exported.", 
-				_data.SequenceFiles.Count, _data.Format, _data.Interval, _data.OutputFolder, _data.IncludeAudio?" ":" not "));
+				_profile.SequenceFiles.Count, _profile.Format, _profile.Interval, _profile.OutputFolder, _profile.IncludeAudio?" ":" not "));
 
-			if (_data.IncludeAudio)
+			if (_profile.IncludeAudio)
 			{
 				text.Append(string.Format(" The audio will{0}be renamed when they are exported to the following folder: {1}",
-					_data.RenameAudio ? " " : " not ", _data.AudioOutputFolder));
+					_profile.RenameAudio ? " " : " not ", _profile.AudioOutputFolder));
 			}
 
 			txtSummary.Text = text.ToString();
@@ -79,11 +81,11 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
-			
-			_data.ConfigureExport();
+
+			_data.ConfigureExport(_profile);
 
 			var exportProgressStatus = new ExportProgressStatus();
-			var overallProgressSteps = _data.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
+			var overallProgressSteps = _profile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
 			var overallProgressStep = 0;
 
 			exportProgressStatus.OverallProgressMessage = "Overall Progress";
@@ -91,7 +93,7 @@ namespace VixenModules.App.ExportWizard
 
 			await Task.Run(async () =>
 			{
-				foreach (var sequenceFile in _data.SequenceFiles)
+				foreach (var sequenceFile in _profile.SequenceFiles)
 				{
 					if (_cancelled)
 					{
@@ -165,15 +167,15 @@ namespace VixenModules.App.ExportWizard
 				_data.Export.AudioFilename = String.Empty;
 			}
 
-			if (_data.IncludeAudio && _data.Export.AudioFilename != String.Empty)
+			if (_profile.IncludeAudio && _data.Export.AudioFilename != String.Empty)
 			{
-				string audioOutputPath = Path.Combine(_data.AudioOutputFolder, 
-					_data.RenameAudio? sequence.Name + Path.GetExtension(_data.Export.AudioFilename): Path.GetFileName(_data.Export.AudioFilename));
+				string audioOutputPath = Path.Combine(_profile.AudioOutputFolder, 
+					_profile.RenameAudio? sequence.Name + Path.GetExtension(_data.Export.AudioFilename): Path.GetFileName(_data.Export.AudioFilename));
 				File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
 			}
 
-			_data.Export.OutFileName = Path.Combine(_data.OutputFolder,sequence.Name+"."+_data.Export.ExportFileTypes[_data.Format]);
-			await _data.Export.DoExport(sequence, _data.Format, progress);
+			_data.Export.OutFileName = Path.Combine(_profile.OutputFolder,sequence.Name+"."+ _data.Export.ExportFileTypes[_profile.Format]);
+			await _data.Export.DoExport(sequence, _profile.Format, progress);
 		}
 
 		private void LoadMedia(ISequence sequence)

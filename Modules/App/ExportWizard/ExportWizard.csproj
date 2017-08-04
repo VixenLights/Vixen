@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="BulkExportWizard.cs" />
     <Compile Include="BulkExportWizardData.cs" />
+    <Compile Include="ExportProfile.cs" />
     <Compile Include="ExportWizardDescriptor.cs" />
     <Compile Include="ExportWizardModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
