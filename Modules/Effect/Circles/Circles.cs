@@ -98,15 +98,15 @@ namespace VixenModules.Effect.Circles
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Radius")]
-		[ProviderDescription(@"Radius")]
+		[ProviderDisplayName(@"Size")]
+		[ProviderDescription(@"Size")]
 		[PropertyOrder(5)]
-		public Curve RadiusCurve
+		public Curve SizeCurve
 		{
-			get { return _data.RadiusCurve; }
+			get { return _data.SizeCurve; }
 			set
 			{
-				_data.RadiusCurve = value;
+				_data.SizeCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -245,6 +245,20 @@ namespace VixenModules.Effect.Circles
 
 		#endregion
 
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/circles/"; }
+		}
+
+		#endregion
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -276,7 +290,7 @@ namespace VixenModules.Effect.Circles
 			double intervalPos = GetEffectTimeIntervalPosition(frame);
 			double intervalPosFactor = intervalPos*100;
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			double radius1 = CalculateRadialRadius(intervalPosFactor);
+			double radius1 = CalculateRadialSize(intervalPosFactor);
 			double radius = radius1 / 2 / _circleCount;
 			double currentRadius = radius;
 			double barht = _maxBuffer / _circleCount;
@@ -308,7 +322,7 @@ namespace VixenModules.Effect.Circles
 				double intervalPos = GetEffectTimeIntervalPosition(frame);
 				double intervalPosFactor = intervalPos * 100;
 				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-				double radius1 = CalculateRadialRadius(intervalPosFactor);
+				double radius1 = CalculateRadialSize(intervalPosFactor);
 				double radius = radius1 / 2 / _circleCount;
 				double currentRadius = radius;
 				double barht = _maxBuffer / _circleCount;
@@ -413,9 +427,9 @@ namespace VixenModules.Effect.Circles
 			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPos), 10, 0);
 		}
 
-		private double CalculateRadialRadius(double intervalPos)
+		private double CalculateRadialSize(double intervalPos)
 		{
-			return ScaleCurveToValue(RadiusCurve.GetValue(intervalPos), _maxBuffer * 1.1, 1);
+			return ScaleCurveToValue(SizeCurve.GetValue(intervalPos), _maxBuffer * 1.1, 1);
 		}
 
 		private double CalculateEdgeWidth(double intervalPosFactor, double currentRadius)

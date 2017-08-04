@@ -528,7 +528,7 @@
   <data name="BallSize" xml:space="preserve">
     <value>Size</value>
   </data>
-</root>  <data name="CircleCount" xml:space="preserve">
+  <data name="CircleCount" xml:space="preserve">
     <value>Circles</value>
   </data>
   <data name="CircleEdgeWidth" xml:space="preserve">
@@ -546,9 +546,10 @@
   <data name="RadialSpeed" xml:space="preserve">
     <value>Speed</value>
   </data>
-  <data name="Radius" xml:space="preserve">
-    <value>Radius</value>
+  <data name="Size" xml:space="preserve">
+    <value>Size</value>
   </data>
   <data name="VerticalOffset" xml:space="preserve">
     <value>Vertical Offset</value>
-  </data></root>
+  </data>
+</root>

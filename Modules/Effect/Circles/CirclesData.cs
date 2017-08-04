@@ -22,7 +22,7 @@ namespace VixenModules.Effect.Circles
 			Inverse = false;
 			CircleFill = CircleFill.Fade;
 			CircleRadialDirection = CircleRadialDirection.Out;
-			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			CircleCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			CircleEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
@@ -53,7 +53,7 @@ namespace VixenModules.Effect.Circles
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public Curve RadiusCurve { get; set; }
+		public Curve SizeCurve { get; set; }
 
 		[DataMember]
 		public Curve CircleCountCurve { get; set; }
@@ -78,7 +78,7 @@ namespace VixenModules.Effect.Circles
 				CircleFill = CircleFill,
 				CircleEdgeWidthCurve = new Curve(CircleEdgeWidthCurve),
 				CircleRadialDirection = CircleRadialDirection,
-				RadiusCurve = new Curve(RadiusCurve),
+				SizeCurve = new Curve(SizeCurve),
 				CircleCountCurve = new Curve(CircleCountCurve),
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),

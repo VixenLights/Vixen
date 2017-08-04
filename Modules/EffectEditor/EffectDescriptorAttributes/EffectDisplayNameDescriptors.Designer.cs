@@ -998,15 +998,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Radius.
-        /// </summary>
-        internal static string Radius {
-            get {
-                return ResourceManager.GetString("Radius", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Random Intensity.
         /// </summary>
         internal static string RandomIntensity {
@@ -1138,6 +1129,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Show3D {
             get {
                 return ResourceManager.GetString("Show3D", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

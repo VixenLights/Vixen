@@ -899,15 +899,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Radius of the radial effect..
-        /// </summary>
-        internal static string Radius {
-            get {
-                return ResourceManager.GetString("Radius", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The radius of the circle over the time of the effect..
         /// </summary>
         internal static string RadiusCurve {
@@ -1066,6 +1057,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Shrink {
             get {
                 return ResourceManager.GetString("Shrink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the radial effect..
+        /// </summary>
+        internal static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

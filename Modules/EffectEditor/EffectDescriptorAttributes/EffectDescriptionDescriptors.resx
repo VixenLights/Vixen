@@ -531,8 +531,8 @@
   <data name="RadialSpeed" xml:space="preserve">
     <value>Speed of the radial pattern.</value>
   </data>
-  <data name="Radius" xml:space="preserve">
-    <value>Radius of the radial effect.</value>
+  <data name="Size" xml:space="preserve">
+    <value>Size of the radial effect.</value>
   </data>
   <data name="VerticalOffset" xml:space="preserve">
     <value>Controls the center positioning of the effect in the vertical plane.</value>
