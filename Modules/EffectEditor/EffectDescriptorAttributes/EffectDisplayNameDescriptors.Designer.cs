@@ -134,6 +134,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string BallSize {
+            get {
+                return ResourceManager.GetString("BallSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         internal static string BallType {

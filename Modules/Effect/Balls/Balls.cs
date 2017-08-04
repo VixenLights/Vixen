@@ -123,15 +123,15 @@ namespace VixenModules.Effect.Balls
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Radius")]
-		[ProviderDescription(@"Radius")]
+		[ProviderDisplayName(@"BallSize")]
+		[ProviderDescription(@"BallSize")]
 		[PropertyOrder(4)]
-		public Curve RadiusCurve
+		public Curve SizeCurve
 		{
-			get { return _data.RadiusCurve; }
+			get { return _data.SizeCurve; }
 			set
 			{
-				_data.RadiusCurve = value;
+				_data.SizeCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -363,7 +363,7 @@ namespace VixenModules.Effect.Balls
 			_intervalPos = GetEffectTimeIntervalPosition(frame);
 			_intervalPosFactor = _intervalPos * 100;
 
-			_radius = CalculateRadius(_intervalPosFactor);
+			_radius = CalculateSize(_intervalPosFactor);
 			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 			_level = LevelCurve.GetValue(_intervalPosFactor) / 100;
@@ -371,7 +371,6 @@ namespace VixenModules.Effect.Balls
 
 			double minSpeed = _centerSpeed - (_speedVariation / 2);
 			double maxSpeed = _centerSpeed + (_speedVariation / 2);
-			if (minSpeed < 1) minSpeed = 1;
 
 			_ballCount = CalculateBallCount(_intervalPosFactor);
 
@@ -404,7 +403,7 @@ namespace VixenModules.Effect.Balls
 				_intervalPos = GetEffectTimeIntervalPosition(frame);
 				_intervalPosFactor = _intervalPos*100;
 
-				_radius = CalculateRadius(_intervalPosFactor);
+				_radius = CalculateSize(_intervalPosFactor);
 				_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 				_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 				_level = LevelCurve.GetValue(_intervalPosFactor)/100;
@@ -412,7 +411,6 @@ namespace VixenModules.Effect.Balls
 
 				double minSpeed = _centerSpeed - (_speedVariation/2);
 				double maxSpeed = _centerSpeed + (_speedVariation/2);
-				if (minSpeed < 1) minSpeed = 1;
 
 				_ballCount = CalculateBallCount(_intervalPosFactor);
 
@@ -467,15 +465,16 @@ namespace VixenModules.Effect.Balls
 					ball.VelocityY *= ratio;
 				}
 
-				if (_radius > CalculateRadius(_intervalPosFactor - 1) || _radius < CalculateRadius(_intervalPosFactor - 1))
+				int previousBallSize = CalculateSize(_intervalPosFactor - 1);
+				if (_radius > previousBallSize || _radius < previousBallSize)
 				{
-					double ratio = (double) CalculateRadius(_intervalPosFactor)/CalculateRadius(_intervalPosFactor - 1);
+					double ratio = (double)CalculateSize(_intervalPosFactor) / previousBallSize;
 					ball.Radius *= ratio;
 				}
 
 				// Move the ball.
-				ball.LocationX = (int)(ball.LocationX + ball.VelocityX);
-				ball.LocationY = (int)(ball.LocationY + ball.VelocityY);
+				ball.LocationX = ball.LocationX + ball.VelocityX;
+				ball.LocationY = ball.LocationY + ball.VelocityY;
 
 				//Checks to see if any are going to collide and if they are then adjust their location and change to opposite direction.
 				if (Collide)
@@ -543,21 +542,21 @@ namespace VixenModules.Effect.Balls
 						break;
 
 					case BallType.Wrap:
-						if (ball.LocationX < 0)
+						if (ball.LocationX + ball.Radius < 0)
 						{
-							ball.LocationX += BufferWi;
+							ball.LocationX += BufferWi + (ball.Radius* 2);
 						}
-						if (ball.LocationY < 0)
+						if (ball.LocationY + ball.Radius < 0)
 						{
-							ball.LocationY += BufferHt;
+							ball.LocationY += BufferHt + (ball.Radius * 2);
 						}
-						if (ball.LocationX > BufferWi)
+						if (ball.LocationX - ball.Radius > BufferWi)
 						{
-							ball.LocationX -= BufferWi;
+							ball.LocationX -= BufferWi + (ball.Radius * 2);
 						}
-						if (ball.LocationY > BufferHt)
+						if (ball.LocationY - ball.Radius > BufferHt)
 						{
-							ball.LocationY -= BufferHt;
+							ball.LocationY -= BufferHt + (ball.Radius * 2);
 						}
 						break;
 				}
@@ -582,11 +581,11 @@ namespace VixenModules.Effect.Balls
 				if ((y >= ball.LocationY + ball.Radius + 1 || y <= ball.LocationY - ball.Radius) &&
 					(x >= ball.LocationX + ball.Radius + 1 || x <= ball.LocationX - ball.Radius)) continue;
 
-				double distanceFromBallCenter = DistanceFromPoint(new Point((int)ball.LocationX, (int) ball.LocationY), x, y);
+				double distanceFromBallCenter = DistanceFromPoint(new Point((int)Math.Round(ball.LocationX), (int)Math.Round(ball.LocationY)), x, y);
 
-				int distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
+				double distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
 					? 2
-					: (int) Math.Round(distanceFromBallCenter);
+					: distanceFromBallCenter;
 				HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((_intervalPos)));
 				hsv.V = hsv.V*_level;
 
@@ -654,8 +653,9 @@ namespace VixenModules.Effect.Balls
 					}
 				}
 
-				double vx = _random.NextDouble()*(maxSpeed - minSpeed) + minSpeed;
-				double vy = _random.NextDouble()*(maxSpeed - minSpeed) + minSpeed;
+				double speed = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
+				double vx = _random.NextDouble() + speed;
+				double vy = _random.NextDouble() + speed;
 				if (_random.Next(0, 2) == 0) vx = -vx;
 				if (_random.Next(0, 2) == 0) vy = -vy;
 				m.VelocityX = vx;
@@ -692,19 +692,17 @@ namespace VixenModules.Effect.Balls
 
 		private double CalculateCenterSpeed(double intervalPosFactor)
 		{
-			double value = ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), 5 * (_maxBuffer / 40), 1);
-			if (value < 1) value = 1;
-			return value;
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 40, 0);
 		}
 
 		private double CalculateSpeedVariation(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), 5 * (_maxBuffer / 40), 0);
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 40, 0);
 		}
 
-		private int CalculateRadius(double intervalPosFactor)
+		private int CalculateSize(double intervalPosFactor)
 		{
-			int value = (int)ScaleCurveToValue(RadiusCurve.GetValue(intervalPosFactor), (int)(_minBuffer / 2), 1);
+			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer / 2), 1);
 			if (value < 1) value = 1;
 			return value;
 		}

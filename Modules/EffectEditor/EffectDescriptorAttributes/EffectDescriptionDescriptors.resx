@@ -515,4 +515,8 @@
   </data>
   <data name="RandomRadius" xml:space="preserve">
     <value>Creates random size balls up to the Radius value..</value>
-  </data></root>
+  </data>
+  <data name="BallSize" xml:space="preserve">
+    <value>Size of the Ball.</value>
+  </data>
+</root>

@@ -524,4 +524,8 @@
   </data>
   <data name="RandomRadius" xml:space="preserve">
     <value>Random Radius</value>
-  </data></root>
+  </data>
+  <data name="BallSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+</root>

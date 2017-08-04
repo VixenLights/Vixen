@@ -29,7 +29,7 @@ namespace VixenModules.Effect.Balls
 			BackgroundColor = new ColorGradient(Color.Snow);
 			Fade = true;
 			ChangeCollideColor = true;
-			RadiusCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 30.0, 30.0 }));
+			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 30.0, 30.0 }));
 			BallCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 7.0, 7.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			BallEdgeWidthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 1.0, 1.0 }));
@@ -82,7 +82,7 @@ namespace VixenModules.Effect.Balls
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
-		public Curve RadiusCurve { get; set; }
+		public Curve SizeCurve { get; set; }
 
 		[DataMember]
 		public Curve BallCountCurve { get; set; }
@@ -107,7 +107,7 @@ namespace VixenModules.Effect.Balls
 				ChangeCollideColor = ChangeCollideColor,
 				BallType = BallType,
 				RandomRadius = RandomRadius,
-				RadiusCurve = new Curve(RadiusCurve),
+				SizeCurve = new Curve(SizeCurve),
 				BallCountCurve = new Curve(BallCountCurve),
 				LevelCurve = new Curve(LevelCurve),
 				BallEdgeWidthCurve = new Curve(BallEdgeWidthCurve)
