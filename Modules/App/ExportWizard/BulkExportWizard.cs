@@ -18,7 +18,8 @@ namespace VixenModules.App.ExportWizard
 				new BulkExportSourcesStage(_data),
 				new BulkExportControllersStage(_data),
 				new BulkExportOutputFormatStage(_data),
-				new BulkExportSummaryStage(_data)
+				new BulkExportSummaryStage(_data),
+				new BulkExportFinishedStage()
 			};
 
 			

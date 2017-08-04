@@ -25,9 +25,6 @@ namespace VixenModules.App.ExportWizard
 			_data = data;
 			_profile = data.ActiveProfile;
 			InitializeComponent();
-			ThemeUpdateControls.UpdateControls(this, new List<Control>(new [] {txtSummary}));
-			txtSummary.BackColor = ThemeColorTable.BackgroundColor;
-			txtSummary.ForeColor = ThemeColorTable.ForeColor;
 			taskProgress.Minimum = 0;
 			taskProgress.Maximum = 100;
 			overallProgress.Minimum = 0;
@@ -37,21 +34,35 @@ namespace VixenModules.App.ExportWizard
 
 		private void ConfigureSummary()
 		{
-			StringBuilder text = new StringBuilder();
-				
-			text.Append(string.Format(
-				"Summary:  The export will process {0} sequence(s) and output them in the {1} "+
-				"format on an interval of {2} ms into the the following folder: {3} \r\n"+
-				"  If there are audio files associated with the sequences, they will{4}be exported.", 
-				_profile.SequenceFiles.Count, _profile.Format, _profile.Interval, _profile.OutputFolder, _profile.IncludeAudio?" ":" not "));
-
+			lblSequenceCount.Text = _profile.SequenceFiles.Count().ToString();
+			lblTimingValue.Text = string.Format("{0} ms",_profile.Interval);
+			lblFormatName.Text = _profile.Format;
+			lblAudioOutputFolder.Text = _profile.OutputFolder;
+			
+			string audioOption = "Not included.";
+			lblAudioOutputFolder.Visible = lblAudioDestination.Visible = _profile.IncludeAudio;
 			if (_profile.IncludeAudio)
 			{
-				text.Append(string.Format(" The audio will{0}be renamed when they are exported to the following folder: {1}",
-					_profile.RenameAudio ? " " : " not ", _profile.AudioOutputFolder));
+				audioOption = _profile.RenameAudio ? "Rename to match sequence name." : "Include as is.";
+				lblAudioOutputFolder.Text = _profile.AudioOutputFolder;
 			}
+			
+			lblAudioOption.Text = audioOption;
+			//StringBuilder text = new StringBuilder();
 
-			txtSummary.Text = text.ToString();
+			//text.Append(string.Format(
+			//	"Summary:  The export will process {0} sequence(s) and output them in the {1} "+
+			//	"format on an interval of {2} ms into the the following folder: {3} \r\n"+
+			//	"  If there are audio files associated with the sequences, they will{4}be exported.", 
+			//	_profile.SequenceFiles.Count, _profile.Format, _profile.Interval, _profile.OutputFolder, _profile.IncludeAudio?" ":" not "));
+
+			//if (_profile.IncludeAudio)
+			//{
+			//	text.Append(string.Format(" The audio will{0}be renamed when they are exported to the following folder: {1}",
+			//		_profile.RenameAudio ? " " : " not ", _profile.AudioOutputFolder));
+			//}
+
+			//txtSummary.Text = text.ToString();
 		}
 
 		public override void StageStart()
