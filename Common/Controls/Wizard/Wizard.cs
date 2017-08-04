@@ -106,6 +106,11 @@ namespace Common.Controls.Wizard
 			}
 		}
 
+		public bool IsPreviousVisible
+		{
+			get { return CurrentStage.IsPreviousVisible; }
+		}
+
 		public void MovePrevious()
 		{
 			if (_currentStageIndex > 0)

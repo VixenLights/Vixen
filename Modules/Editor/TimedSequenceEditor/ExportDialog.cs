@@ -84,27 +84,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
             resolutionComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), exportResolutionDefault);
 
             buttonStop.Enabled = false;
+	        UpdateNetworkList();
+
 			networkListView.DragDrop += networkListView_DragDrop;
-            //networkListView.Enabled = false;
-
-			UpdateNetworkList();
-
+			networkListView.ItemChecked += NetworkListView_ItemChecked;
+            
         }
+
+		private void NetworkListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+		{
+			ReIndexControllerChannels();
+		}
 
 		void networkListView_DragDrop(object sender, DragEventArgs e)
 		{
-			
-			int startChan = 1;
-			int index = 0;
-			foreach (ListViewItem item in networkListView.Items)
-			{
-				var info = item.Tag as Controller;
-				if(info != null) info.Index = index;
-				int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
-				item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
-				startChan += channels;
-				index++;
-			}
+			ReIndexControllerChannels();
+			//int startChan = 1;
+			//int index = 0;
+			//foreach (ListViewItem item in networkListView.Items)
+			//{
+			//	var info = item.Tag as Controller;
+			//	if(info != null) info.Index = index;
+			//	int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
+			//	item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
+			//	startChan += channels;
+			//	index++;
+			//}
 
 		}
 
@@ -193,21 +198,74 @@ namespace VixenModules.Editor.TimedSequenceEditor
             networkListView.Items.Clear();
             int startChan = 1;
 
-            foreach (Controller info in exportInfo)
-            {
-                ListViewItem item = new ListViewItem(info.Name);
-	            item.Tag = info;
-                item.SubItems.Add(info.Channels.ToString());
-                item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
+			//foreach (Controller info in exportInfo)
+			//{
+			//    ListViewItem item = new ListViewItem(info.Name);
+			// item.Tag = info;
+			//    item.SubItems.Add(info.Channels.ToString());
+			//    item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
 
-                networkListView.Items.Add(item);
-                
-                startChan += info.Channels;
-            }
+			//    networkListView.Items.Add(item);
 
-	        networkListView.ColumnAutoSize();
+			//    startChan += info.Channels;
+			//}
+
+			foreach (Controller info in exportInfo.OrderBy(x => x.Index))
+			{
+				ListViewItem item = new ListViewItem(info.Name);
+				item.Tag = info;
+				item.SubItems.Add(info.Channels.ToString());
+
+				if (info.IsActive)
+				{
+					item.Checked = info.IsActive;
+					item.SubItems.Add(startChan.ToString());
+					item.SubItems.Add((startChan + info.Channels - 1).ToString());
+					startChan += info.Channels;
+				}
+				else
+				{
+					item.SubItems.Add(String.Empty);
+					item.SubItems.Add(String.Empty);
+				}
+
+				networkListView.Items.Add(item);
+			}
+
+			networkListView.ColumnAutoSize();
 			networkListView.SetLastColumnWidth();
         }
+
+	    private void ReIndexControllerChannels()
+	    {
+		    int startChan = 1;
+		    int index = 0;
+		    foreach (ListViewItem item in networkListView.Items)
+		    {
+			    var info = item.Tag as Controller;
+			    if (info == null)
+			    {
+				    continue; // This should not happen!
+			    }
+			    info.Index = index;
+			    info.IsActive = item.Checked;
+
+			    if (info.IsActive)
+			    {
+				    int channels = Convert.ToInt32(item.SubItems[1].Text);
+				    item.SubItems[2].Text = startChan.ToString();
+				    item.SubItems[3].Text = (startChan + info.Channels - 1).ToString();
+				    startChan += channels;
+			    }
+			    else
+			    {
+				    item.SubItems[2].Text = String.Empty;
+				    item.SubItems[3].Text = String.Empty;
+			    }
+
+			    index++;
+		    }
+	    }
 
 		private string SetToolbarStatus(string progressText, bool showLiveProgress)
 		{

@@ -30,6 +30,11 @@ namespace Common.Controls.Wizard
 			get { return true; }
 		}
 
+		public virtual bool IsPreviousVisible
+		{
+			get { return true; }
+		}
+
 		public virtual void StageStart()
 		{
 		}

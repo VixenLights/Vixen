@@ -32,6 +32,11 @@
 			this.lblTaskProgress = new System.Windows.Forms.Label();
 			this.lblOverallProgress = new System.Windows.Forms.Label();
 			this.mainLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+			this.lblAudioOutputFolder = new System.Windows.Forms.Label();
+			this.lblAudioOption = new System.Windows.Forms.Label();
+			this.lblOutputFolder = new System.Windows.Forms.Label();
+			this.lblTimingValue = new System.Windows.Forms.Label();
+			this.lblFormatName = new System.Windows.Forms.Label();
 			this.lblSummary = new System.Windows.Forms.Label();
 			this.lblSequences = new System.Windows.Forms.Label();
 			this.lblFormat = new System.Windows.Forms.Label();
@@ -40,11 +45,6 @@
 			this.lblAudio = new System.Windows.Forms.Label();
 			this.lblAudioDestination = new System.Windows.Forms.Label();
 			this.lblSequenceCount = new System.Windows.Forms.Label();
-			this.lblFormatName = new System.Windows.Forms.Label();
-			this.lblTimingValue = new System.Windows.Forms.Label();
-			this.lblOutputFolder = new System.Windows.Forms.Label();
-			this.lblAudioOption = new System.Windows.Forms.Label();
-			this.lblAudioOutputFolder = new System.Windows.Forms.Label();
 			this.overallProgress = new System.Windows.Forms.ProgressBar();
 			this.mainLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -62,6 +62,7 @@
 			// lblTaskProgress
 			// 
 			this.lblTaskProgress.AutoSize = true;
+			this.mainLayoutPanel.SetColumnSpan(this.lblTaskProgress, 2);
 			this.lblTaskProgress.Location = new System.Drawing.Point(3, 231);
 			this.lblTaskProgress.Name = "lblTaskProgress";
 			this.lblTaskProgress.Size = new System.Drawing.Size(39, 15);
@@ -71,6 +72,7 @@
 			// lblOverallProgress
 			// 
 			this.lblOverallProgress.AutoSize = true;
+			this.mainLayoutPanel.SetColumnSpan(this.lblOverallProgress, 2);
 			this.lblOverallProgress.Location = new System.Drawing.Point(3, 275);
 			this.lblOverallProgress.Name = "lblOverallProgress";
 			this.lblOverallProgress.Size = new System.Drawing.Size(39, 15);
@@ -122,6 +124,51 @@
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.Size = new System.Drawing.Size(613, 318);
 			this.mainLayoutPanel.TabIndex = 6;
+			// 
+			// lblAudioOutputFolder
+			// 
+			this.lblAudioOutputFolder.AutoSize = true;
+			this.lblAudioOutputFolder.Location = new System.Drawing.Point(111, 110);
+			this.lblAudioOutputFolder.Name = "lblAudioOutputFolder";
+			this.lblAudioOutputFolder.Size = new System.Drawing.Size(182, 15);
+			this.lblAudioOutputFolder.TabIndex = 13;
+			this.lblAudioOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			// 
+			// lblAudioOption
+			// 
+			this.lblAudioOption.AutoSize = true;
+			this.lblAudioOption.Location = new System.Drawing.Point(111, 95);
+			this.lblAudioOption.Name = "lblAudioOption";
+			this.lblAudioOption.Size = new System.Drawing.Size(161, 15);
+			this.lblAudioOption.TabIndex = 12;
+			this.lblAudioOption.Text = "Renamed to match sequence";
+			// 
+			// lblOutputFolder
+			// 
+			this.lblOutputFolder.AutoSize = true;
+			this.lblOutputFolder.Location = new System.Drawing.Point(111, 80);
+			this.lblOutputFolder.Name = "lblOutputFolder";
+			this.lblOutputFolder.Size = new System.Drawing.Size(182, 15);
+			this.lblOutputFolder.TabIndex = 11;
+			this.lblOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			// 
+			// lblTimingValue
+			// 
+			this.lblTimingValue.AutoSize = true;
+			this.lblTimingValue.Location = new System.Drawing.Point(111, 65);
+			this.lblTimingValue.Name = "lblTimingValue";
+			this.lblTimingValue.Size = new System.Drawing.Size(38, 15);
+			this.lblTimingValue.TabIndex = 10;
+			this.lblTimingValue.Text = "50 ms";
+			// 
+			// lblFormatName
+			// 
+			this.lblFormatName.AutoSize = true;
+			this.lblFormatName.Location = new System.Drawing.Point(111, 50);
+			this.lblFormatName.Name = "lblFormatName";
+			this.lblFormatName.Size = new System.Drawing.Size(131, 15);
+			this.lblFormatName.TabIndex = 9;
+			this.lblFormatName.Text = "Falcon Sequence Player";
 			// 
 			// lblSummary
 			// 
@@ -195,51 +242,6 @@
 			this.lblSequenceCount.Size = new System.Drawing.Size(13, 15);
 			this.lblSequenceCount.TabIndex = 7;
 			this.lblSequenceCount.Text = "5";
-			// 
-			// lblFormatName
-			// 
-			this.lblFormatName.AutoSize = true;
-			this.lblFormatName.Location = new System.Drawing.Point(111, 50);
-			this.lblFormatName.Name = "lblFormatName";
-			this.lblFormatName.Size = new System.Drawing.Size(131, 15);
-			this.lblFormatName.TabIndex = 9;
-			this.lblFormatName.Text = "Falcon Sequence Player";
-			// 
-			// lblTimingValue
-			// 
-			this.lblTimingValue.AutoSize = true;
-			this.lblTimingValue.Location = new System.Drawing.Point(111, 65);
-			this.lblTimingValue.Name = "lblTimingValue";
-			this.lblTimingValue.Size = new System.Drawing.Size(38, 15);
-			this.lblTimingValue.TabIndex = 10;
-			this.lblTimingValue.Text = "50 ms";
-			// 
-			// lblOutputFolder
-			// 
-			this.lblOutputFolder.AutoSize = true;
-			this.lblOutputFolder.Location = new System.Drawing.Point(111, 80);
-			this.lblOutputFolder.Name = "lblOutputFolder";
-			this.lblOutputFolder.Size = new System.Drawing.Size(182, 15);
-			this.lblOutputFolder.TabIndex = 11;
-			this.lblOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
-			// 
-			// lblAudioOption
-			// 
-			this.lblAudioOption.AutoSize = true;
-			this.lblAudioOption.Location = new System.Drawing.Point(111, 95);
-			this.lblAudioOption.Name = "lblAudioOption";
-			this.lblAudioOption.Size = new System.Drawing.Size(161, 15);
-			this.lblAudioOption.TabIndex = 12;
-			this.lblAudioOption.Text = "Renamed to match sequence";
-			// 
-			// lblAudioOutputFolder
-			// 
-			this.lblAudioOutputFolder.AutoSize = true;
-			this.lblAudioOutputFolder.Location = new System.Drawing.Point(111, 110);
-			this.lblAudioOutputFolder.Name = "lblAudioOutputFolder";
-			this.lblAudioOutputFolder.Size = new System.Drawing.Size(182, 15);
-			this.lblAudioOutputFolder.TabIndex = 13;
-			this.lblAudioOutputFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
 			// 
 			// overallProgress
 			// 

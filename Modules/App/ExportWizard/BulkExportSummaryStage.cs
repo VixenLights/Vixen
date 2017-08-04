@@ -37,8 +37,7 @@ namespace VixenModules.App.ExportWizard
 			lblSequenceCount.Text = _profile.SequenceFiles.Count().ToString();
 			lblTimingValue.Text = string.Format("{0} ms",_profile.Interval);
 			lblFormatName.Text = _profile.Format;
-			lblAudioOutputFolder.Text = _profile.OutputFolder;
-			
+			lblOutputFolder.Text = _profile.OutputFolder;
 			string audioOption = "Not included.";
 			lblAudioOutputFolder.Visible = lblAudioDestination.Visible = _profile.IncludeAudio;
 			if (_profile.IncludeAudio)
@@ -48,21 +47,6 @@ namespace VixenModules.App.ExportWizard
 			}
 			
 			lblAudioOption.Text = audioOption;
-			//StringBuilder text = new StringBuilder();
-
-			//text.Append(string.Format(
-			//	"Summary:  The export will process {0} sequence(s) and output them in the {1} "+
-			//	"format on an interval of {2} ms into the the following folder: {3} \r\n"+
-			//	"  If there are audio files associated with the sequences, they will{4}be exported.", 
-			//	_profile.SequenceFiles.Count, _profile.Format, _profile.Interval, _profile.OutputFolder, _profile.IncludeAudio?" ":" not "));
-
-			//if (_profile.IncludeAudio)
-			//{
-			//	text.Append(string.Format(" The audio will{0}be renamed when they are exported to the following folder: {1}",
-			//		_profile.RenameAudio ? " " : " not ", _profile.AudioOutputFolder));
-			//}
-
-			//txtSummary.Text = text.ToString();
 		}
 
 		public override void StageStart()

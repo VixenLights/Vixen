@@ -106,10 +106,5 @@ namespace VixenModules.App.ExportWizard
 			_WizardStageChanged();
 		}
 
-		private void btnReset_Click(object sender, EventArgs e)
-		{
-			_profile.SyncronizeControllerInfo();
-			UpdateNetworkList();
-		}
 	}
 }

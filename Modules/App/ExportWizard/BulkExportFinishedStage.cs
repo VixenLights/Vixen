@@ -8,5 +8,15 @@ namespace VixenModules.App.ExportWizard
 		{
 			InitializeComponent();
 		}
+
+		public override bool CanMovePrevious
+		{
+			get { return false; }
+		}
+
+		public override bool IsPreviousVisible
+		{
+			get { return false; }
+		}
 	}
 }

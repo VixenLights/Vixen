@@ -35,7 +35,6 @@
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.startColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.endColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.btnReset = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// lblConfigureOutput
@@ -71,7 +70,7 @@
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
 			this.networkListView.OwnerDraw = true;
-			this.networkListView.Size = new System.Drawing.Size(546, 276);
+			this.networkListView.Size = new System.Drawing.Size(546, 296);
 			this.networkListView.TabIndex = 2;
 			this.networkListView.UseCompatibleStateImageBehavior = false;
 			this.networkListView.View = System.Windows.Forms.View.Details;
@@ -95,21 +94,10 @@
 			this.endColumn.Text = "End";
 			this.endColumn.Width = 234;
 			// 
-			// btnReset
-			// 
-			this.btnReset.Location = new System.Drawing.Point(13, 324);
-			this.btnReset.Name = "btnReset";
-			this.btnReset.Size = new System.Drawing.Size(75, 23);
-			this.btnReset.TabIndex = 3;
-			this.btnReset.Text = "Reset";
-			this.btnReset.UseVisualStyleBackColor = true;
-			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
-			// 
 			// BulkExportControllersStage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.btnReset);
 			this.Controls.Add(this.networkListView);
 			this.Controls.Add(this.lblConfigureOutput);
 			this.Name = "BulkExportControllersStage";
@@ -126,6 +114,5 @@
 		private System.Windows.Forms.ColumnHeader channelsColumn;
 		private System.Windows.Forms.ColumnHeader startColumn;
 		private System.Windows.Forms.ColumnHeader endColumn;
-		private System.Windows.Forms.Button btnReset;
 	}
 }
