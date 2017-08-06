@@ -158,6 +158,7 @@ namespace VixenModules.Effect.Curtain
 		private void InitAllAttributes()
 		{
 			UpdateStringOrientationAttributes(true);
+			TypeDescriptor.Refresh(this);
 		}
 
 		public override IModuleDataModel ModuleData
@@ -166,6 +167,7 @@ namespace VixenModules.Effect.Curtain
 			set
 			{
 				_data = value as CurtainData;
+				InitAllAttributes();
 				IsDirty = true;
 			}
 		}
@@ -212,19 +214,35 @@ namespace VixenModules.Effect.Curtain
 			}
 			if (Direction < CurtainDirection.CurtainOpenClose)
 			{
-				xlimit = (int) (position*BufferWi);
-				ylimit = (int) (position*BufferHt);
+				if (Direction == CurtainDirection.CurtainOpen)
+				{
+					xlimit = (int)((position * BufferWi) + (swaglen * position * 2));
+					ylimit = (int)((position * BufferHt) + (swaglen * position * 2));
+				}
+				else
+				{
+					xlimit = (int)((position * BufferWi) - (swaglen * (1 - position) * 2));
+					ylimit = (int)((position * BufferHt) - (swaglen * (1 - position) * 2));
+				}
 			}
 			else
 			{
-				xlimit = (int) (position <= .5 ? position*2*BufferWi : (position - .5)*2*BufferWi);
-				ylimit = (int) (position <= .5 ? position*2*BufferHt : (position - .5)*2*BufferHt);
+				if (Direction == CurtainDirection.CurtainOpenClose)
+				{
+					xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) + (swaglen * position * 4) : ((position - .5) * 2 * BufferWi) - (swaglen * (1 - position) * 4));
+					ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) + (swaglen * position * 4) : ((position - .5) * 2 * BufferHt) - (swaglen * (1 - position) * 4));
+				}
+				else
+				{
+					xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferWi) + (swaglen * position * 2));
+					ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferHt) + (swaglen * position * 2));
+				}
 			}
 			if (Direction < CurtainDirection.CurtainOpenClose)
 			{
 				curtainDir = (int)Direction % 2;
 			}
-			else if (xlimit < _lastCurtainLimit)
+			else if (xlimit < _lastCurtainLimit - swaglen * 2)
 			{
 				curtainDir = 1 - _lastCurtainDir;
 			}
@@ -310,20 +328,36 @@ namespace VixenModules.Effect.Curtain
 				int ylimit;
 				if (Direction < CurtainDirection.CurtainOpenClose)
 				{
-					xlimit = (int)(position * BufferWi);
-					ylimit = (int)(position * BufferHt);
+					if (Direction == CurtainDirection.CurtainOpen)
+					{
+						xlimit = (int)((position * BufferWi) + (swaglen * position * 2));
+						ylimit = (int)((position * BufferHt) + (swaglen * position * 2));
+					}
+					else
+					{
+						xlimit = (int)((position * BufferWi) - (swaglen * (1 - position) * 2));
+						ylimit = (int)((position * BufferHt) - (swaglen * (1 - position) * 2));
+					}
 				}
 				else
 				{
-					xlimit = (int)(position <= .5 ? position * 2 * BufferWi : (position - .5) * 2 * BufferWi);
-					ylimit = (int)(position <= .5 ? position * 2 * BufferHt : (position - .5) * 2 * BufferHt);
+					if (Direction == CurtainDirection.CurtainOpenClose)
+					{
+						xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) + (swaglen * position * 4) : ((position - .5) * 2 * BufferWi) - (swaglen * (1 - position) * 4));
+						ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) + (swaglen * position * 4) : ((position - .5) * 2 * BufferHt) - (swaglen * (1 - position) * 4));
+					}
+					else
+					{
+						xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferWi) + (swaglen * position * 2));
+						ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferHt) + (swaglen * position * 2));
+					}
 				}
 				int curtainDir;
 				if (Direction < CurtainDirection.CurtainOpenClose)
 				{
 					curtainDir = (int)Direction % 2;
 				}
-				else if (xlimit < _lastCurtainLimit)
+				else if (xlimit < _lastCurtainLimit - swaglen * 2)
 				{
 					curtainDir = 1 - _lastCurtainDir;
 				}
@@ -402,8 +436,6 @@ namespace VixenModules.Effect.Curtain
 				for (int i = 0; i < swagArray.Count; i++)
 				{
 					int x = leftEdge? rightBufferLimit - (xlimit + i):xlimit+i+BufferWiOffset;
-				
-					if (x > rightBufferLimit) break;
 
 					var limit = BufferHt - swagArray[i] + BufferHtOffset;
 					foreach (var elementLocation in swagElements[x])
@@ -457,8 +489,6 @@ namespace VixenModules.Effect.Curtain
 				for (int i = 0; i < swagArray.Count; i++)
 				{
 					int x = topEdge ? topBufferLimit - (ylimit + i) : ylimit + i + BufferHtOffset;
-
-					if (x > topBufferLimit) break;
 
 					var limit = BufferWiOffset + swagArray[i];
 					foreach (var elementLocation in swagElements[x])
