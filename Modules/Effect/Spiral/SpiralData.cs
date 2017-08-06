@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Spiral
 			Speed = 1;
 			Repeat = 1;
 			Blend = false;
-			RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 57.0, 57.0 }));
 			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
@@ -74,7 +74,7 @@ namespace VixenModules.Effect.Spiral
 			//Try to save some cycles on every load
 			if (RotationCurve == null)
 			{
-				double value = PixelEffectBase.ScaleValueToCurve(Rotation, 50d, -50d);
+				double value = PixelEffectBase.ScaleValueToCurve(Rotation, 150d, -150d);
 				RotationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
 				Rotation = 0;
 
