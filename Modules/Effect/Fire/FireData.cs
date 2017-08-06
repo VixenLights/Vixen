@@ -13,8 +13,8 @@ namespace VixenModules.Effect.Fire
 		{
 			Location = FireDirection.Bottom;
 			Height = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
-			HueShift = 0;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			HueShiftCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			Orientation = StringOrientation.Vertical;
 		}
 
@@ -27,11 +27,27 @@ namespace VixenModules.Effect.Fire
 		[DataMember]
 		public Curve Height { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public int HueShift { get; set; }
 
 		[DataMember]
+		public Curve HueShiftCurve { get; set; }
+
+		[DataMember]
 		public Curve LevelCurve { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (HueShiftCurve == null)
+			{
+				double value = PixelEffectBase.ScaleValueToCurve(HueShift, 100, 0);
+				HueShiftCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				HueShift = 0;
+			}
+		}
 		
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -39,9 +55,9 @@ namespace VixenModules.Effect.Fire
 			{
 				Location = Location,
 				Height = Height,
-				HueShift = HueShift,
 				Orientation = Orientation,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				HueShiftCurve = new Curve(HueShiftCurve)
 			};
 			return result;
 		}

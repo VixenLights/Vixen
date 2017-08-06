@@ -80,15 +80,14 @@ namespace VixenModules.Effect.Fire
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"HueShift")]
 		[ProviderDescription(@"Color")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(0, 100, 1)]
+		//[NumberRange(0, 100, 1)]
 		[PropertyOrder(1)]
-		public int HueShift
+		public Curve HueShiftCurve
 		{
-			get { return _data.HueShift; }
+			get { return _data.HueShiftCurve; }
 			set
 			{
-				_data.HueShift = value;
+				_data.HueShiftCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -114,8 +113,6 @@ namespace VixenModules.Effect.Fire
 		}
 
 		#endregion
-
-		
 
 		public override IModuleDataModel ModuleData
 		{
@@ -170,7 +167,8 @@ namespace VixenModules.Effect.Fire
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double position = GetEffectTimeIntervalPosition(frame);
+			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+
 			int x, y;
 			if (frame == 0)
 			{
@@ -196,11 +194,8 @@ namespace VixenModules.Effect.Fire
 				SetFireBuffer(x, 0, r, maxWi, maxHt);
 			}
 
-			double interval = GetEffectTimeIntervalPosition(frame);
+			int h = (int)Height.GetValue(intervalPosFactor);
 
-			int h = (int)Height.GetValue(interval*100);
-
-			
 			if(h <= 0)
 			{
 				h = 1;
@@ -266,12 +261,12 @@ namespace VixenModules.Effect.Fire
 
 					Color color = FirePalette.GetColor(GetFireBuffer(x, y, maxWi, maxHt));
 					var hsv = HSV.FromRGB(color);
-					if (HueShift > 0)
+					if (CalculateHueShift(intervalPosFactor) > 0)
 					{
-						hsv.H = hsv.H + (HueShift / 100.0f);
+						hsv.H = hsv.H + (CalculateHueShift(intervalPosFactor) / 100.0f);
 					}
 
-					hsv.V = hsv.V * LevelCurve.GetValue(position * 100) / 100;
+					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
 					//if (color.R == 0 && color.G == 0 && color.B == 0)
 					//{
 					//	color = Color.Transparent;
@@ -282,6 +277,10 @@ namespace VixenModules.Effect.Fire
 			}
 		}
 
+		private double CalculateHueShift(double intervalPos)
+		{
+			return ScaleCurveToValue(HueShiftCurve.GetValue(intervalPos), 100, 0);
+		}
 		
 	}
 }
