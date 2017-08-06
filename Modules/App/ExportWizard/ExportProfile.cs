@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Vixen.Annotations;
 using Vixen.Export;
 
 namespace VixenModules.App.ExportWizard
 {
 	[DataContract]
-	public class ExportProfile:ICloneable
+	public class ExportProfile:ICloneable, INotifyPropertyChanged
 	{
+		private string _name;
+
 		public ExportProfile(string name, string format, string sequenceFolder, string audioFolder)
 		{
 			SequenceFiles = new List<string>();
@@ -27,7 +32,15 @@ namespace VixenModules.App.ExportWizard
 		}
 
 		[DataMember]
-		public string Name { get; set; }
+		public string Name				
+		{
+			get { return _name; }
+			set
+			{
+				_name = value; 
+				OnPropertyChanged();
+			}
+		}
 
 		[DataMember]
 		public Guid Id { get; set; }
@@ -55,6 +68,11 @@ namespace VixenModules.App.ExportWizard
 
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 
 		internal void SyncronizeControllerInfo()
 		{
@@ -106,6 +124,15 @@ namespace VixenModules.App.ExportWizard
 				AudioOutputFolder = AudioOutputFolder
 			};
 			return data;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

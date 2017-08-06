@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -15,11 +13,11 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportSourcesStage : WizardStage
 	{
-		private readonly ExportProfile _profile;
-		
+		private readonly BulkExportWizardData _data;
+
 		public BulkExportSourcesStage(BulkExportWizardData data)
 		{
-			_profile = data.ActiveProfile;
+			_data = data;
 			InitializeComponent();
 
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
@@ -32,18 +30,18 @@ namespace VixenModules.App.ExportWizard
 			ThemeUpdateControls.UpdateControls(this);
 		}
 
-		protected override void OnLoad(EventArgs e)
+		public override void StageStart()
 		{
 			InitializeSequenceList();
 		}
 
 		private void InitializeSequenceList()
 		{
-			if (_profile.SequenceFiles.Any())
+			lstSequences.Items.Clear();
+			if (_data.ActiveProfile.SequenceFiles.Any())
 			{
-				
 				lstSequences.BeginUpdate();
-				foreach (var fileName in _profile.SequenceFiles)
+				foreach (var fileName in _data.ActiveProfile.SequenceFiles)
 				{
 					if (File.Exists(fileName))
 					{
@@ -53,14 +51,13 @@ namespace VixenModules.App.ExportWizard
 					}
 					else
 					{
-						_profile.SequenceFiles.Remove(fileName);
+						_data.ActiveProfile.SequenceFiles.Remove(fileName);
 					}
 				}
 				lstSequences.EndUpdate();
 				ColumnAutoSize();
 
 				_WizardStageChanged();
-				
 			}
 		}
 
@@ -93,7 +90,7 @@ namespace VixenModules.App.ExportWizard
 					ListViewItem item = new ListViewItem(Path.GetFileName(fileName));
 					item.Tag = fileName;
 					lstSequences.Items.Add(item);
-					_profile.SequenceFiles.Add(fileName);
+					_data.ActiveProfile.SequenceFiles.Add(fileName);
 				}
 				lstSequences.EndUpdate();
 				ColumnAutoSize();
@@ -114,7 +111,7 @@ namespace VixenModules.App.ExportWizard
 
 		public override bool CanMoveNext
 		{
-			get { return _profile.SequenceFiles.Count > 0; }
+			get { return _data.ActiveProfile.SequenceFiles.Count > 0; }
 		}
 
 		private void lstSequences_KeyUp(object sender, KeyEventArgs e)
@@ -123,7 +120,7 @@ namespace VixenModules.App.ExportWizard
 			{
 				foreach (ListViewItem item in lstSequences.SelectedItems)
 				{
-					_profile.SequenceFiles.Remove(item.Tag as string);
+					_data.ActiveProfile.SequenceFiles.Remove(item.Tag as string);
 					item.Remove();
 				}
 			}
@@ -138,7 +135,7 @@ namespace VixenModules.App.ExportWizard
 		{
 			foreach (ListViewItem item in lstSequences.SelectedItems)
 			{
-				_profile.SequenceFiles.Remove(item.Tag as string);
+				_data.ActiveProfile.SequenceFiles.Remove(item.Tag as string);
 				item.Remove();
 			}
 		}

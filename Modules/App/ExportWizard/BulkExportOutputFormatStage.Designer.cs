@@ -126,7 +126,7 @@
 			this.lblChooseOutputFormat.Name = "lblChooseOutputFormat";
 			this.lblChooseOutputFormat.Size = new System.Drawing.Size(279, 15);
 			this.lblChooseOutputFormat.TabIndex = 15;
-			this.lblChooseOutputFormat.Text = "Step 3:   Choose the Output Format and Destination";
+			this.lblChooseOutputFormat.Text = "Step 4:   Choose the Output Format and Destination";
 			// 
 			// btnOuputFolderSelect
 			// 

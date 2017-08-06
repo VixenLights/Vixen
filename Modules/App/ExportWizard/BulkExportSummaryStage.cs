@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Common.Controls.Theme;
 using Common.Controls.Wizard;
 using Vixen.Export;
 using Vixen.Module.Media;
@@ -17,13 +13,11 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportSummaryStage : WizardStage
 	{
-		private readonly ExportProfile _profile;
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
 		public BulkExportSummaryStage(BulkExportWizardData data)
 		{
 			_data = data;
-			_profile = data.ActiveProfile;
 			InitializeComponent();
 			taskProgress.Minimum = 0;
 			taskProgress.Maximum = 100;
@@ -34,16 +28,17 @@ namespace VixenModules.App.ExportWizard
 
 		private void ConfigureSummary()
 		{
-			lblSequenceCount.Text = _profile.SequenceFiles.Count().ToString();
-			lblTimingValue.Text = string.Format("{0} ms",_profile.Interval);
-			lblFormatName.Text = _profile.Format;
-			lblOutputFolder.Text = _profile.OutputFolder;
+			lblProfileSelected.Text = _data.ActiveProfile.Name;
+			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
+			lblTimingValue.Text = string.Format("{0} ms", _data.ActiveProfile.Interval);
+			lblFormatName.Text = _data.ActiveProfile.Format;
+			lblOutputFolder.Text = _data.ActiveProfile.OutputFolder;
 			string audioOption = "Not included.";
-			lblAudioOutputFolder.Visible = lblAudioDestination.Visible = _profile.IncludeAudio;
-			if (_profile.IncludeAudio)
+			lblAudioOutputFolder.Visible = lblAudioDestination.Visible = _data.ActiveProfile.IncludeAudio;
+			if (_data.ActiveProfile.IncludeAudio)
 			{
-				audioOption = _profile.RenameAudio ? "Rename to match sequence name." : "Include as is.";
-				lblAudioOutputFolder.Text = _profile.AudioOutputFolder;
+				audioOption = _data.ActiveProfile.RenameAudio ? "Rename to match sequence name." : "Include as is.";
+				lblAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
 			}
 			
 			lblAudioOption.Text = audioOption;
@@ -77,10 +72,10 @@ namespace VixenModules.App.ExportWizard
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
 
-			_data.ConfigureExport(_profile);
+			_data.ConfigureExport(_data.ActiveProfile);
 
 			var exportProgressStatus = new ExportProgressStatus();
-			var overallProgressSteps = _profile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
+			var overallProgressSteps = _data.ActiveProfile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
 			var overallProgressStep = 0;
 
 			exportProgressStatus.OverallProgressMessage = "Overall Progress";
@@ -88,7 +83,7 @@ namespace VixenModules.App.ExportWizard
 
 			await Task.Run(async () =>
 			{
-				foreach (var sequenceFile in _profile.SequenceFiles)
+				foreach (var sequenceFile in _data.ActiveProfile.SequenceFiles)
 				{
 					if (_cancelled)
 					{
@@ -162,15 +157,15 @@ namespace VixenModules.App.ExportWizard
 				_data.Export.AudioFilename = String.Empty;
 			}
 
-			if (_profile.IncludeAudio && _data.Export.AudioFilename != String.Empty)
+			if (_data.ActiveProfile.IncludeAudio && _data.Export.AudioFilename != String.Empty)
 			{
-				string audioOutputPath = Path.Combine(_profile.AudioOutputFolder, 
-					_profile.RenameAudio? sequence.Name + Path.GetExtension(_data.Export.AudioFilename): Path.GetFileName(_data.Export.AudioFilename));
+				string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
+					_data.ActiveProfile.RenameAudio? sequence.Name + Path.GetExtension(_data.Export.AudioFilename): Path.GetFileName(_data.Export.AudioFilename));
 				File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
 			}
 
-			_data.Export.OutFileName = Path.Combine(_profile.OutputFolder,sequence.Name+"."+ _data.Export.ExportFileTypes[_profile.Format]);
-			await _data.Export.DoExport(sequence, _profile.Format, progress);
+			_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder,sequence.Name+"."+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+			await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress);
 		}
 
 		private void LoadMedia(ISequence sequence)

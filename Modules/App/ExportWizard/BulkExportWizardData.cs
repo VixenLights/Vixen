@@ -23,6 +23,11 @@ namespace VixenModules.App.ExportWizard
 			Profiles.Add(new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir));
 		}
 
+		internal ExportProfile CreateDefaultProfile()
+		{
+			return new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir);
+		}
+
 		public Export Export
 		{
 			get { return _export ?? (_export = new Export()); }

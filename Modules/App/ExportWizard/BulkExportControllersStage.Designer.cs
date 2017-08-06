@@ -44,7 +44,7 @@
 			this.lblConfigureOutput.Name = "lblConfigureOutput";
 			this.lblConfigureOutput.Size = new System.Drawing.Size(269, 15);
 			this.lblConfigureOutput.TabIndex = 1;
-			this.lblConfigureOutput.Text = "Step 2:  Configure the required outputs and order.";
+			this.lblConfigureOutput.Text = "Step 3:  Configure the required outputs and order.";
 			// 
 			// networkListView
 			// 

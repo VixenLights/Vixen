@@ -43,7 +43,7 @@
 			this.lblChooseSequences.Name = "lblChooseSequences";
 			this.lblChooseSequences.Size = new System.Drawing.Size(190, 15);
 			this.lblChooseSequences.TabIndex = 0;
-			this.lblChooseSequences.Text = "Step 1:  Select sequences to export.";
+			this.lblChooseSequences.Text = "Step 2:  Select sequences to export.";
 			// 
 			// lstSequences
 			// 

@@ -9,20 +9,25 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportControllersStage : WizardStage
 	{
-		private readonly ExportProfile _profile;
+		private readonly BulkExportWizardData _data;
+
 		public BulkExportControllersStage(BulkExportWizardData data)
 		{
-			_profile = data.ActiveProfile;
+			_data = data;
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		protected override void OnLoad(EventArgs e)
 		{
-			_profile.SyncronizeControllerInfo();
-			UpdateNetworkList();
 			networkListView.DragDrop += networkListView_DragDrop;
 			networkListView.ItemChecked += NetworkListView_ItemChecked;
+		}
+
+		public override void StageStart()
+		{
+			_data.ActiveProfile.SyncronizeControllerInfo();
+			UpdateNetworkList();
 		}
 
 		private void UpdateNetworkList()
@@ -30,7 +35,7 @@ namespace VixenModules.App.ExportWizard
 			networkListView.Items.Clear();
 			int startChan = 1;
 
-			foreach (Controller info in _profile.Controllers.OrderBy(x => x.Index))
+			foreach (Controller info in _data.ActiveProfile.Controllers.OrderBy(x => x.Index))
 			{
 				ListViewItem item = new ListViewItem(info.Name);
 				item.Tag = info;
@@ -70,7 +75,7 @@ namespace VixenModules.App.ExportWizard
 
 		public override bool CanMoveNext
 		{
-			get { return _profile.Controllers.Count > 0; }
+			get { return _data.ActiveProfile.Controllers.Count > 0; }
 		}
 
 		private void ReIndexControllerChannels()
