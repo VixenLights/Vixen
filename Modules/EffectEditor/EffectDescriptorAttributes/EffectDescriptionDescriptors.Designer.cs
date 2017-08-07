@@ -80,11 +80,65 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changes Background color..
+        /// </summary>
+        internal static string BackGroundColor {
+            get {
+                return ResourceManager.GetString("BackGroundColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the amount of background skips..
         /// </summary>
         internal static string BackgroundSkips {
             get {
                 return ResourceManager.GetString("BackgroundSkips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the number of Balls displayed..
+        /// </summary>
+        internal static string BallCount {
+            get {
+                return ResourceManager.GetString("BallCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width of the individual empty balls..
+        /// </summary>
+        internal static string BallEdgeWidth {
+            get {
+                return ResourceManager.GetString("BallEdgeWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects the type of fill for the balls..
+        /// </summary>
+        internal static string BallFill {
+            get {
+                return ResourceManager.GetString("BallFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the Ball..
+        /// </summary>
+        internal static string BallSize {
+            get {
+                return ResourceManager.GetString("BallSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects between Bounce and Wrap..
+        /// </summary>
+        internal static string BallType {
+            get {
+                return ResourceManager.GetString("BallType", resourceCulture);
             }
         }
         
@@ -233,11 +287,29 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change ball color when balls collide..
+        /// </summary>
+        internal static string ChangeCollideColor {
+            get {
+                return ResourceManager.GetString("ChangeCollideColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets percentage of change..
         /// </summary>
         internal static string ChangePercent {
             get {
                 return ResourceManager.GetString("ChangePercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the ball direction when balls collide..
+        /// </summary>
+        internal static string Collide {
+            get {
+                return ResourceManager.GetString("Collide", resourceCulture);
             }
         }
         
@@ -796,6 +868,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RandomPosition {
             get {
                 return ResourceManager.GetString("RandomPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates random size balls up to the Radius value...
+        /// </summary>
+        internal static string RandomRadius {
+            get {
+                return ResourceManager.GetString("RandomRadius", resourceCulture);
             }
         }
         
