@@ -99,11 +99,11 @@
     <Compile Include="BulkExportOutputFormatStage.Designer.cs">
       <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
     </Compile>
-    <Compile Include="BulkExportProfileStage.cs">
+    <Compile Include="BulkExportConfigStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="BulkExportProfileStage.Designer.cs">
-      <DependentUpon>BulkExportProfileStage.cs</DependentUpon>
+    <Compile Include="BulkExportConfigStage.Designer.cs">
+      <DependentUpon>BulkExportConfigStage.cs</DependentUpon>
     </Compile>
     <Compile Include="BulkExportSourcesStage.cs">
       <SubType>UserControl</SubType>
@@ -134,8 +134,8 @@
     <EmbeddedResource Include="BulkExportOutputFormatStage.resx">
       <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BulkExportProfileStage.resx">
-      <DependentUpon>BulkExportProfileStage.cs</DependentUpon>
+    <EmbeddedResource Include="BulkExportConfigStage.resx">
+      <DependentUpon>BulkExportConfigStage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BulkExportSourcesStage.resx">
       <DependentUpon>BulkExportSourcesStage.cs</DependentUpon>

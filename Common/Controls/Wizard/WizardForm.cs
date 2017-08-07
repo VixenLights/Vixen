@@ -97,6 +97,7 @@ namespace Common.Controls.Wizard
 			buttonNext.Enabled = _wizard.CanMoveNext;
 			buttonPrevious.Enabled = _wizard.CanMovePrevious;
 			buttonPrevious.Visible = !_wizard.IsFirstStage && _wizard.IsPreviousVisible;
+			buttonCancel.Visible = _wizard.IsCancelVisible;
 		}
 
 		public event EventHandler WizardFormFinished;

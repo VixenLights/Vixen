@@ -111,6 +111,11 @@ namespace Common.Controls.Wizard
 			get { return CurrentStage.IsPreviousVisible; }
 		}
 
+		public bool IsCancelVisible
+		{
+			get { return CurrentStage.IsCancelVisible; }
+		}
+
 		public void MovePrevious()
 		{
 			if (_currentStageIndex > 0)

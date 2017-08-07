@@ -15,7 +15,7 @@ namespace VixenModules.App.ExportWizard
 			_data = data;
 			_stages = new List<WizardStage>
 			{
-				new BulkExportProfileStage(_data),
+				new BulkExportConfigStage(_data),
 				new BulkExportSourcesStage(_data),
 				new BulkExportControllersStage(_data),
 				new BulkExportOutputFormatStage(_data),

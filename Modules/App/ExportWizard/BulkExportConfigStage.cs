@@ -12,11 +12,11 @@ using Common.Resources.Properties;
 
 namespace VixenModules.App.ExportWizard
 {
-	public partial class BulkExportProfileStage : WizardStage
+	public partial class BulkExportConfigStage : WizardStage
 	{
 		private readonly BulkExportWizardData _data;
 		private BindingList<ExportProfile> _profiles;
-		public BulkExportProfileStage(BulkExportWizardData data)
+		public BulkExportConfigStage(BulkExportWizardData data)
 		{
 
 			_data = data;
