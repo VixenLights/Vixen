@@ -9,7 +9,9 @@ using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using VixenModules.Preview.VixenPreview.Shapes;
 using Vixen.Execution.Context;
 using Vixen.Module.Preview;
@@ -118,6 +120,9 @@ namespace VixenModules.Preview.VixenPreview
 			get { return _saveLocations; }
 			set { _saveLocations = value; }
 		}
+
+		[DataMember]
+		public Vector3D LocationOffset { get; set; }
 
 		[DataMember]
 		public List<DisplayItem> DisplayItems

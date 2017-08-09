@@ -1,26 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using Common.Controls;
+using Common.Controls.Theme;
 
 namespace VixenModules.Preview.VixenPreview
 {
     public partial class LocationOffsetForm : BaseForm
     {
-        public LocationOffsetForm()
+        public LocationOffsetForm(Vector3D offset)
         {
             InitializeComponent();
+			ThemeUpdateControls.UpdateControls(this);
+	        ;
+	        txtX.Text = offset.X.ToString();
+	        txtY.Text = offset.Y.ToString();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Close();
+			Offset = new Vector3D(txtX.IntValue, txtY.IntValue, 0);
+
+            //Close();
         }
+
+	    public Vector3D Offset { get; set; }
     }
 }
