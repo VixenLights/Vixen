@@ -26,17 +26,13 @@ namespace VixenModules.App.ExportWizard
 
 		public override void Unloading()
 		{
-			if (_exportWizard != null) {
-				//_form.Dispose();
-				_exportWizard = null;
-			}
-
+			_exportWizard = null;
 			_RemoveMenu();
 		}
 
 		private void InitializeForm()
 		{
-			_exportWizard = new BulkExportWizard(_data.Clone() as BulkExportWizardData);
+			_exportWizard = new BulkExportWizard(_data);
 			_exportWizard.WizardFinished += ExportWizardClosed;
 		}
 
@@ -73,17 +69,10 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		private async void ExportWizardClosed(object sender, EventArgs e)
+		private void ExportWizardClosed(object sender, EventArgs e)
 		{
-			//_exportWizard.Dispose();
-			if (_exportWizard.WizardDialogResult != DialogResult.Cancel)
-			{
-				_exportWizard.Data.CopyInto(StaticModuleData as BulkExportWizardData);
-				await VixenSystem.SaveModuleConfigAsync();
-			}
-			
+			_exportWizard.WizardFinished -= ExportWizardClosed;
 			_exportWizard = null;
-			
 		}
 
 		public override IModuleDataModel StaticModuleData

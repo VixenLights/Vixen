@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Common.Controls.Wizard;
 using Vixen.Export;
 using Vixen.Module.Media;
@@ -15,6 +17,9 @@ namespace VixenModules.App.ExportWizard
 	{
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
+		private AutoCompleteStringCollection namesCollection = new AutoCompleteStringCollection();
+		private BindingList<ExportProfile> _profiles;
+
 		public BulkExportSummaryStage(BulkExportWizardData data)
 		{
 			_data = data;
@@ -28,7 +33,8 @@ namespace VixenModules.App.ExportWizard
 
 		private void ConfigureSummary()
 		{
-			lblProfileSelected.Text = _data.ActiveProfile.Name;
+			chkSaveConfig.Checked = false;
+			comboConfigName.Visible = false;
 			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
 			lblTimingValue.Text = string.Format("{0} ms", _data.ActiveProfile.Interval);
 			lblFormatName.Text = _data.ActiveProfile.Format;
@@ -44,17 +50,39 @@ namespace VixenModules.App.ExportWizard
 			lblAudioOption.Text = audioOption;
 		}
 
+		private void PopulateProfiles()
+		{
+			_profiles = new BindingList<ExportProfile>(_data.Profiles);
+			comboConfigName.DataSource = new BindingSource { DataSource = _profiles };
+			var index = _data.Profiles.FindIndex(x => x.Id == _data.ActiveProfile.Id);
+			comboConfigName.SelectedIndex = index;
+			if (index < 0)
+			{
+				comboConfigName.Text = _data.ActiveProfile.Name;
+			}
+		}
+
 		public override void StageStart()
 		{
 			taskProgress.Visible = false;
 			overallProgress.Visible = false;
 			lblTaskProgress.Visible = false;
 			lblOverallProgress.Visible = false;
+			comboConfigName.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+			comboConfigName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+			namesCollection = new AutoCompleteStringCollection();
+			comboConfigName.AutoCompleteCustomSource = namesCollection;
+			namesCollection.AddRange(_data.Profiles.Select(x => x.Name).ToArray());
+			PopulateProfiles();
 			ConfigureSummary();
 		}
 
 		public override async Task StageEnd()
 		{
+			if (chkSaveConfig.Checked)
+			{
+				SaveActiveConfig();
+			}
 			IProgress<ExportProgressStatus> progress = new Progress<ExportProgressStatus>(ReportProgress);
 			taskProgress.Visible = true;
 			overallProgress.Visible = true;
@@ -67,6 +95,24 @@ namespace VixenModules.App.ExportWizard
 		{
 			_cancelled = true;
 			_data.Export.Cancel();
+		}
+
+		private async void SaveActiveConfig()
+		{
+			if (comboConfigName.SelectedIndex >= 0)
+			{
+				//we are replacing an existing config.
+				_data.ActiveProfile.Name = comboConfigName.Text;
+				_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
+			}
+			else
+			{
+				//Save as new with text from combo as name
+				_data.ActiveProfile.Name = comboConfigName.Text;
+				_data.Profiles.Add(_data.ActiveProfile);
+			}
+
+			await VixenSystem.SaveModuleConfigAsync();
 		}
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
@@ -214,6 +260,24 @@ namespace VixenModules.App.ExportWizard
 		{
 			taskProgress.Value = progressStatus.TaskProgressValue;
 			lblTaskProgress.Text = progressStatus.TaskProgressMessage;
+		}
+
+		private void chkSaveConfig_CheckedChanged(object sender, EventArgs e)
+		{
+			comboConfigName.Visible = chkSaveConfig.Checked;
+		}
+
+		private void comboConfigName_TextChanged(object sender, EventArgs e)
+		{
+			//if(chkSaveConfig.Checked)
+			//{
+			//	_data.ActiveProfile.Name = comboConfigName.Text;
+			//}
+		}
+
+		private void comboConfigName_TextUpdate(object sender, EventArgs e)
+		{
+			//Console.Out.WriteLine("TextUpdate");
 		}
 	}
 }

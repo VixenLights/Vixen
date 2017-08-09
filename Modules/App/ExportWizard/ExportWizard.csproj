@@ -87,6 +87,12 @@
     <Compile Include="BulkExportControllersStage.Designer.cs">
       <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
     </Compile>
+    <Compile Include="BulkExportCreateOrSelectStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportCreateOrSelectStage.Designer.cs">
+      <DependentUpon>BulkExportCreateOrSelectStage.cs</DependentUpon>
+    </Compile>
     <Compile Include="BulkExportFinishedStage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -127,6 +133,9 @@
   <ItemGroup>
     <EmbeddedResource Include="BulkExportControllersStage.resx">
       <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportCreateOrSelectStage.resx">
+      <DependentUpon>BulkExportCreateOrSelectStage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BulkExportFinishedStage.resx">
       <DependentUpon>BulkExportFinishedStage.cs</DependentUpon>

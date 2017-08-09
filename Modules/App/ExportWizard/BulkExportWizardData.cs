@@ -14,13 +14,13 @@ namespace VixenModules.App.ExportWizard
 		public BulkExportWizardData()
 		{
 			InitializeProfiles();
-			ActiveProfile = Profiles[0];
+			//ActiveProfile = Profiles[0];
 		}
 
 		private void InitializeProfiles()
 		{
 			Profiles = new List<ExportProfile>();
-			Profiles.Add(new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir));
+			//Profiles.Add(new ExportProfile("Default", Export.DefaultFormatType(), Export.ExportDir, Export.ExportDir));
 		}
 
 		internal ExportProfile CreateDefaultProfile()
@@ -47,12 +47,15 @@ namespace VixenModules.App.ExportWizard
 		[OnDeserialized]
 		private void OnDeserialization(StreamingContext context)
 		{
-			if (Profiles == null || Profiles.Count == 0)
+			if (Profiles == null)
 			{
 				InitializeProfiles();
 			}
 			
-			ActiveProfile = Profiles[0];
+			//if(Profiles.Any())
+			//{
+			//	ActiveProfile = Profiles[0];
+			//}
 		}
 
 		public BulkExportWizardData CopyInto(BulkExportWizardData data)
@@ -70,7 +73,10 @@ namespace VixenModules.App.ExportWizard
 				Profiles = Profiles.Select(x => x.Clone() as ExportProfile).ToList(),
 			};
 
-			data.ActiveProfile = data.Profiles.FirstOrDefault(x => ActiveProfile.Id == x.Id);
+			if(ActiveProfile != null)
+			{
+				data.ActiveProfile = data.Profiles.FirstOrDefault(x => ActiveProfile.Id == x.Id);
+			}
 			return data;
 		}
 	}
