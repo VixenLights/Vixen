@@ -663,8 +663,8 @@ namespace VixenModules.Preview.VixenPreview {
 
         private void locationOffsetSetupToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LocationOffsetForm OffsetForm = new LocationOffsetForm;
-            //OffsetForm.Load();
+            LocationOffsetForm offsetForm = new LocationOffsetForm();
+	        var result = offsetForm.ShowDialog();
         }
 	}
 

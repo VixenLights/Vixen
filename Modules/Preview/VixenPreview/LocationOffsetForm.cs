@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls;
 
 namespace VixenModules.Preview.VixenPreview
 {
-    public partial class LocationOffsetForm : Form
+    public partial class LocationOffsetForm : BaseForm
     {
         public LocationOffsetForm()
         {
@@ -19,7 +20,7 @@ namespace VixenModules.Preview.VixenPreview
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }
