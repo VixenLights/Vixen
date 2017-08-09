@@ -660,6 +660,12 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
 		}
+
+        private void locationOffsetSetupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocationOffsetForm OffsetForm = new LocationOffsetForm;
+            //OffsetForm.Load();
+        }
 	}
 
 
