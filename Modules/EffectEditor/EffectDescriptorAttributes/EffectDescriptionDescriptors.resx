@@ -519,4 +519,28 @@
   <data name="BallSize" xml:space="preserve">
     <value>Size of the Ball.</value>
   </data>
+  <data name="CircleCount" xml:space="preserve">
+    <value>Adjust the number of Circles or radial patterns in the effect.</value>
+  </data>
+  <data name="CircleEdgeWidth" xml:space="preserve">
+    <value>Width of the individual circles, may need to increase when using Loaction.</value>
+  </data>
+  <data name="HorizontalOffset" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the horizontal plane.</value>
+  </data>
+  <data name="RadialSpeed" xml:space="preserve">
+    <value>Speed of the radial pattern.</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size of the radial effect.</value>
+  </data>
+  <data name="VerticalOffset" xml:space="preserve">
+    <value>Controls the center positioning of the effect in the vertical plane.</value>
+  </data>
+  <data name="CircleFill" xml:space="preserve">
+    <value>Changes the way the circle is filled.</value>
+  </data>
+  <data name="RadialDirection" xml:space="preserve">
+    <value>Changes the direction of the effect to In or out.</value>
+  </data>
 </root>

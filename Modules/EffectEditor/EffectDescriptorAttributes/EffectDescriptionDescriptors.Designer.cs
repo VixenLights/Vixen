@@ -314,6 +314,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the number of Circles or radial patterns in the effect..
+        /// </summary>
+        internal static string CircleCount {
+            get {
+                return ResourceManager.GetString("CircleCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width of the individual circles, may need to increase when using Loaction..
+        /// </summary>
+        internal static string CircleEdgeWidth {
+            get {
+                return ResourceManager.GetString("CircleEdgeWidth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes the way the circle is filled..
+        /// </summary>
+        internal static string CircleFill {
+            get {
+                return ResourceManager.GetString("CircleFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the color of the effect..
         /// </summary>
         internal static string Color {
@@ -571,6 +598,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Highlight {
             get {
                 return ResourceManager.GetString("Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the horizontal plane..
+        /// </summary>
+        internal static string HorizontalOffset {
+            get {
+                return ResourceManager.GetString("HorizontalOffset", resourceCulture);
             }
         }
         
@@ -845,6 +881,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changes the direction of the effect to In or out..
+        /// </summary>
+        internal static string RadialDirection {
+            get {
+                return ResourceManager.GetString("RadialDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed of the radial pattern..
+        /// </summary>
+        internal static string RadialSpeed {
+            get {
+                return ResourceManager.GetString("RadialSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The radius of the circle over the time of the effect..
         /// </summary>
         internal static string RadiusCurve {
@@ -1003,6 +1057,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Shrink {
             get {
                 return ResourceManager.GetString("Shrink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the radial effect..
+        /// </summary>
+        internal static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         
@@ -1201,6 +1264,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string VerticalBlend {
             get {
                 return ResourceManager.GetString("VerticalBlend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the center positioning of the effect in the vertical plane..
+        /// </summary>
+        internal static string VerticalOffset {
+            get {
+                return ResourceManager.GetString("VerticalOffset", resourceCulture);
             }
         }
         
