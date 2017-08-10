@@ -32,7 +32,7 @@ namespace VixenModules.Effect.Pulse
 
 				//ElementColorType colorType = ColorModule.getColorTypeForElementNode(elementNode);
 
-				if (isDiscrete && IsElementDiscrete(node))
+				if (isDiscrete && IsElementDiscrete(elementNode))
 				{
 					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false)
 						 .Intersect(colorGradient.GetColorsInGradient());
