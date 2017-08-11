@@ -32,6 +32,8 @@ namespace VixenModules.App.ExportWizard
 
 		private void UpdateNetworkList()
 		{
+
+			networkListView.BeginUpdate();
 			networkListView.Items.Clear();
 			int startChan = 1;
 
@@ -60,6 +62,8 @@ namespace VixenModules.App.ExportWizard
 			networkListView.ColumnAutoSize();
 			networkListView.SetLastColumnWidth();
 
+			networkListView.EndUpdate();
+
 			_WizardStageChanged();
 		}
 
@@ -80,6 +84,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void ReIndexControllerChannels()
 		{
+			networkListView.BeginUpdate();
 			int startChan = 1;
 			int index = 0;
 			foreach (ListViewItem item in networkListView.Items)
@@ -107,6 +112,7 @@ namespace VixenModules.App.ExportWizard
 				
 				index++;
 			}
+			networkListView.EndUpdate();
 
 			_WizardStageChanged();
 		}
