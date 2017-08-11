@@ -11,6 +11,7 @@ namespace VixenModules.App.ExportWizard
 	{
 		private readonly BulkExportWizardData _data;
 		private BindingList<ExportProfile> _profiles;
+		private bool _initializing;
 		
 		public BulkExportCreateOrSelectStage(BulkExportWizardData data)
 		{
@@ -21,9 +22,34 @@ namespace VixenModules.App.ExportWizard
 
 		public override void StageStart()
 		{
-			radioCreateNew.Checked = true;
+			_initializing = true;
 			radioSelectExisting.Enabled = _data.Profiles.Any();
 			PopulateProfiles();
+			if (_data.ActiveProfile != null)
+			{
+				var index = _data.Profiles.FindIndex(x => x.Id == _data.ActiveProfile.Id);
+				if (index >= 0)
+				{
+					comboProfiles.SelectedIndex = index;
+					radioSelectExisting.Checked = true;
+					radioCreateNew.Checked = false;
+				}
+				else
+				{
+					radioSelectExisting.Checked = comboProfiles.Enabled = false;
+					radioCreateNew.Checked = true;
+				}
+			}
+			else
+			{
+				radioCreateNew.Checked = true;
+				radioSelectExisting.Checked = lblSelect.Visible = comboProfiles.Visible = false;
+				_data.ActiveProfile = _data.CreateDefaultProfile();
+			}
+
+			_initializing = false;
+
+			_WizardStageChanged();
 		}
 
 		public override bool CanMoveNext
@@ -31,34 +57,26 @@ namespace VixenModules.App.ExportWizard
 			get { return _data.ActiveProfile != null; }
 		}
 
-
 		private void PopulateProfiles()
 		{
-			//if (!_data.Profiles.Any())
-			//{
-			//	ExportProfile profile = _data.CreateDefaultProfile();
-			//	_data.Profiles.Add(profile);
-			//}
-
 			_profiles = new BindingList<ExportProfile>(_data.Profiles);
 
 			comboProfiles.DataSource = new BindingSource {DataSource = _profiles};
-			if (_profiles.Any()){
-				comboProfiles.SelectedIndex = 0;
-			}
-
+			
 			_WizardStageChanged();
 		}
 
 		private void comboProfiles_SelectedIndexChanged(object sender, EventArgs e)
 		{
+
+			if (_initializing) return;
 			ExportProfile item = comboProfiles.SelectedItem as ExportProfile;
 			if (item == null)
 				return;
 
 			if (radioSelectExisting.Checked)
 			{
-				_data.ActiveProfile = item;
+				_data.ActiveProfile = item.Clone() as ExportProfile;
 			}
 
 			_WizardStageChanged();
@@ -66,6 +84,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void radioCreateNew_CheckedChanged(object sender, System.EventArgs e)
 		{
+			if (_initializing) return;
 			radioSelectExisting.Checked = !radioCreateNew.Checked;
 			lblSelect.Visible = comboProfiles.Visible = radioSelectExisting.Checked;
 			if (radioCreateNew.Checked)
@@ -78,6 +97,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void radioSelectExisting_CheckedChanged(object sender, System.EventArgs e)
 		{
+			if (_initializing) return;
 			radioCreateNew.Checked = !radioSelectExisting.Checked;
 			lblSelect.Visible = comboProfiles.Visible = radioSelectExisting.Checked;
 			if (radioSelectExisting.Checked)

@@ -89,6 +89,7 @@ namespace VixenModules.App.ExportWizard
 			lblTaskProgress.Visible = true;
 			lblOverallProgress.Visible = true;
 			await DoExport(progress);
+			_data.ActiveProfile = null;
 		}
 
 		public override void StageCancelled()
@@ -103,12 +104,14 @@ namespace VixenModules.App.ExportWizard
 			{
 				//we are replacing an existing config.
 				_data.ActiveProfile.Name = comboConfigName.Text;
+				_data.ActiveProfile.Id = (comboConfigName.SelectedItem as ExportProfile).Id;
 				_data.Profiles[comboConfigName.SelectedIndex] = _data.ActiveProfile;
 			}
 			else
 			{
 				//Save as new with text from combo as name
 				_data.ActiveProfile.Name = comboConfigName.Text;
+				_data.ActiveProfile.Id = Guid.NewGuid();
 				_data.Profiles.Add(_data.ActiveProfile);
 			}
 
