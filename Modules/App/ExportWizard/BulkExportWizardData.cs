@@ -51,11 +51,6 @@ namespace VixenModules.App.ExportWizard
 			{
 				InitializeProfiles();
 			}
-			
-			//if(Profiles.Any())
-			//{
-			//	ActiveProfile = Profiles[0];
-			//}
 		}
 
 		public BulkExportWizardData CopyInto(BulkExportWizardData data)

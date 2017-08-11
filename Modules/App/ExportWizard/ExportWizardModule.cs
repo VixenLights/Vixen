@@ -71,6 +71,10 @@ namespace VixenModules.App.ExportWizard
 
 		private void ExportWizardClosed(object sender, EventArgs e)
 		{
+			if (_exportWizard.WizardDialogResult == DialogResult.Cancel)
+			{
+				_data.ActiveProfile = null;
+			}
 			_exportWizard.WizardFinished -= ExportWizardClosed;
 			_exportWizard = null;
 		}
