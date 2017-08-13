@@ -137,17 +137,20 @@ namespace VixenApplication
 			bool success = false;
 			try
 			{
-				if (Directory.Exists(_rootDataDirectory))
+				if (!Directory.Exists(_rootDataDirectory))
 				{
-					LockFilePath = Path.Combine(_rootDataDirectory, LockFile);
-					if (!File.Exists(LockFilePath))
-					{
-						File.WriteAllText(LockFilePath, GetUniqueProcessId());
-						//Set this back on the root app to use in case of system errors and we need a failsafe way to delete the lock
-						Program.LockFilePath = LockFilePath; 
-						success = true;
-					}
+					//Our startup folder is not present, so create it.
+					Directory.CreateDirectory(_rootDataDirectory);
 				}
+				LockFilePath = Path.Combine(_rootDataDirectory, LockFile);
+				if (!File.Exists(LockFilePath))
+				{
+					File.WriteAllText(LockFilePath, GetUniqueProcessId());
+					//Set this back on the root app to use in case of system errors and we need a failsafe way to delete the lock
+					Program.LockFilePath = LockFilePath;
+					success = true;
+				}
+
 			}
 			catch (Exception e)
 			{
