@@ -22,24 +22,76 @@ namespace Common.Controls.Theme
 		protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
 		{
 			ToolStripItem toolStripItem = e.Item;
-			//e.ArrowColor = toolStripItem.Enabled ? ThemeColorTable.ForeColor : SystemColors.ControlDark;
 			if (toolStripItem is ToolStripDropDownItem)
 			{
-				Rectangle r = e.ArrowRectangle;
-				List<Point> points = new List<Point>();
-				points.Add(new Point(r.Left - 2, r.Height / 2 - 3));
-				points.Add(new Point(r.Right + 2, r.Height / 2 - 3));
-				points.Add(new Point(r.Left + (r.Width / 2),
-					r.Height / 2 + 3));
-				e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-				e.Graphics.FillPolygon(new SolidBrush(ThemeColorTable.ForeColor), points.ToArray());
-				e.ArrowColor = toolStripItem.Enabled ? ThemeColorTable.ButtonTextColor : SystemColors.ControlDark;
+				Graphics g = e.Graphics;
+				Rectangle dropDownRect = e.ArrowRectangle;
+				using (Brush brush = new SolidBrush(toolStripItem.Enabled ? ThemeColorTable.ForeColor : SystemColors.ControlDark))
+				{
+					Point middle = new Point(dropDownRect.Left + dropDownRect.Width / 2, dropDownRect.Top + dropDownRect.Height / 2);
+					Point[] arrow;
+					int hor=2 , ver = 2;
 
+					switch (e.Direction)
+					{
+						case ArrowDirection.Up:
+
+							arrow = new Point[] {
+								new Point(middle.X - hor, middle.Y + 1),
+								new Point(middle.X + hor + 1, middle.Y + 1),
+								new Point(middle.X, middle.Y - ver)};
+
+							break;
+						case ArrowDirection.Left:
+							arrow = new Point[] {
+								new Point(middle.X + hor, middle.Y - 2 * ver),
+								new Point(middle.X + hor, middle.Y + 2 * ver),
+								new Point(middle.X - hor, middle.Y)};
+
+							break;
+						case ArrowDirection.Right:
+							arrow = new Point[] {
+								new Point(middle.X - hor, middle.Y - 2 * ver),
+								new Point(middle.X - hor, middle.Y + 2 * ver),
+								new Point(middle.X + hor, middle.Y)};
+
+							break;
+						default:
+							arrow = new Point[] {
+								new Point(middle.X - hor, middle.Y - 1),
+								new Point(middle.X + hor + 1, middle.Y - 1),
+								new Point(middle.X, middle.Y + ver) };
+							break;
+					}
+					g.FillPolygon(brush, arrow);
+				}
 			}
 			else
 			{
 				base.OnRenderArrow(e);
 			}
+		}
+
+		private List<Point> GetArrow(ArrowDirection direction, Rectangle r)
+		{
+			List<Point> points = new List<Point>();
+			
+			switch (direction)
+			{
+				case ArrowDirection.Down:
+					points.Add(new Point(r.Left - 2, r.Height / 2 - 3));
+					points.Add(new Point(r.Right + 2, r.Height / 2 - 3));
+					points.Add(new Point(r.Left + (r.Width / 2), r.Height / 2 + 3));
+					break;
+				case ArrowDirection.Right:
+					points.Add(new Point(r.Left - 2, r.Height / 2 - 3));
+					points.Add(new Point(r.Right + 2, r.Height / 2 - 3));
+					points.Add(new Point(r.Left + (r.Width / 2),
+						r.Height / 2 + 3));
+					break;
+			}
+
+			return points;
 		}
 
 		protected override void OnRenderSplitButtonBackground(ToolStripItemRenderEventArgs e)
