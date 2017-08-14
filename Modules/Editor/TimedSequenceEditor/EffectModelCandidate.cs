@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Vixen.Module;
 using Vixen.Module.Effect;
-using Vixen.Sys.LayerMixing;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -33,6 +32,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public TimeSpan Duration { get; set; }
 		public Guid TypeId { get; private set; }
 		public Guid LayerId { get; set; }
+		public Guid LayerTypeId { get; set; }
+		public string LayerName { get; set; }
 
 		public IModuleDataModel GetEffectData()
 		{
