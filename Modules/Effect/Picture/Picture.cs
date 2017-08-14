@@ -597,316 +597,315 @@ namespace VixenModules.Effect.Picture
 			if (_image != null)
 			{
 				_image.Dispose();
+				_image = null;
 			}
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			if (_image == null)
+			if (_image != null)
 			{
-				Logging.Error("Image object is null");
-				return;
-			}
-			var dir = 360 - Direction;
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
-			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			double adjustedBrightness = (double)(CalculateIncreaseBrightness(intervalPosFactor)) / 10;
+				var dir = 360 - Direction;
+				var intervalPos = GetEffectTimeIntervalPosition(frame);
+				var intervalPosFactor = intervalPos*100;
+				double level = LevelCurve.GetValue(intervalPosFactor)/100;
+				double adjustedBrightness = (double) (CalculateIncreaseBrightness(intervalPosFactor))/10;
 
-			int speedFactor = 4;
-			int state = MovementRate * frame;
-			if (Type != EffectType.RenderPictureTiles && Type != EffectType.RenderPictureNone)
-			{
-				_position = ((GetEffectTimeIntervalPosition(frame) * Speed) % 1);
-			}
-			else if (frame == 0)
-			{
-				_position = ((GetEffectTimeIntervalPosition(frame + 1) * Speed) % 1);
-			}
-
-			CalculateImageNumberByPosition((GetEffectTimeIntervalPosition(frame)*GifSpeed)%1);
-			_image.SelectActiveFrame(_dimension, (int) _currentGifImageNum);
-			_scaledImage = ScaleToGrid
-				? ScalePictureImage(_image, BufferWi, BufferHt)
-				: ScaleImage(_image, (double) ScalePercent/100);
-
-			if (ColorEffect == ColorEffect.GreyScale)
-			{
-				_scaledImage = (Bitmap) ConvertToGrayScale(_scaledImage);
-			}
-			_fp = new FastPixel.FastPixel(_scaledImage);
-
-			if (_fp != null)
-			{
-				int imageWidth = _fp.Width;
-				int imageHeight = _fp.Height;
-				double deltaX = 0;
-				double deltaY = 0;
-				double angleOffset;
-
-				if (dir > 45 && dir <= 90)
-					angleOffset = -(dir - 90);
-				else if (dir > 90 && dir <= 135)
-					angleOffset = dir - 90;
-				else if (dir > 135 && dir <= 180)
-					angleOffset = -(dir - 180);
-				else if (dir > 180 && dir <= 225)
-					angleOffset = dir - 180;
-				else if (dir > 225 && dir <= 270)
-					angleOffset = -(dir - 270);
-				else if (dir > 270 && dir <= 315)
-					angleOffset = dir - 270;
-				else if (dir > 315 && dir <= 360)
-					angleOffset = -(dir - 360);
-				else
-					angleOffset = dir;
-
-				double imageSpeed = _position*(imageWidth/(Math.Cos((Math.PI/180)*angleOffset)));
-
-				//Moving left and right
-				if (dir > 0 && dir <= 90)
+				int speedFactor = 4;
+				int state = MovementRate*frame;
+				if (Type != EffectType.RenderPictureTiles && Type != EffectType.RenderPictureNone)
 				{
-					deltaX = ((double) dir/90)*(imageSpeed);
+					_position = ((GetEffectTimeIntervalPosition(frame)*Speed)%1);
 				}
-				else if (dir > 90 && dir <= 180)
+				else if (frame == 0)
 				{
-					deltaX = ((double) Math.Abs(dir - 180)/90)*(imageSpeed);
-				}
-				else if (dir > 180 && dir <= 270)
-				{
-					deltaX = -1*(((double) Math.Abs(dir - 180)/90)*(imageSpeed));
-				}
-				else if (dir > 270 && dir <= 360)
-				{
-					deltaX = -1*(((double) Math.Abs(dir - 360)/90)*(imageSpeed));
+					_position = ((GetEffectTimeIntervalPosition(frame + 1)*Speed)%1);
 				}
 
-				//Moving up and down
-				if (dir >= 0 && dir <= 90)
+				CalculateImageNumberByPosition((GetEffectTimeIntervalPosition(frame)*GifSpeed)%1);
+				_image.SelectActiveFrame(_dimension, (int) _currentGifImageNum);
+				_scaledImage = ScaleToGrid
+					? ScalePictureImage(_image, BufferWi, BufferHt)
+					: ScaleImage(_image, (double) ScalePercent/100);
+
+				if (ColorEffect == ColorEffect.GreyScale)
 				{
-					deltaY = (((double) Math.Abs(dir - 90)/90))*(imageSpeed);
+					_scaledImage = (Bitmap) ConvertToGrayScale(_scaledImage);
 				}
-				else if (dir > 90 && dir <= 180)
+				_fp = new FastPixel.FastPixel(_scaledImage);
+
+				if (_fp != null)
 				{
-					deltaY = -1*(((double) Math.Abs(dir - 90)/90)*(imageSpeed));
-				}
-				else if (dir > 180 && dir <= 270)
-				{
-					deltaY = -1*(((double) Math.Abs(dir - 270)/90)*(imageSpeed));
-				}
-				else if (dir > 270 && dir <= 360)
-				{
-					deltaY = ((double) Math.Abs(270 - dir)/90)*(imageSpeed);
-				}
+					int imageWidth = _fp.Width;
+					int imageHeight = _fp.Height;
+					double deltaX = 0;
+					double deltaY = 0;
+					double angleOffset;
 
-				_movementX += deltaX;
-				_movementY += deltaY;
+					if (dir > 45 && dir <= 90)
+						angleOffset = -(dir - 90);
+					else if (dir > 90 && dir <= 135)
+						angleOffset = dir - 90;
+					else if (dir > 135 && dir <= 180)
+						angleOffset = -(dir - 180);
+					else if (dir > 180 && dir <= 225)
+						angleOffset = dir - 180;
+					else if (dir > 225 && dir <= 270)
+						angleOffset = -(dir - 270);
+					else if (dir > 270 && dir <= 315)
+						angleOffset = dir - 270;
+					else if (dir > 315 && dir <= 360)
+						angleOffset = -(dir - 360);
+					else
+						angleOffset = dir;
 
-				_fp.Lock();
-				Color fpColor = new Color();
+					double imageSpeed = _position*(imageWidth/(Math.Cos((Math.PI/180)*angleOffset)));
 
-				int yoffset = (BufferHt + imageHeight)/2;
-				int xoffset = (imageWidth - BufferWi)/2;
-				int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
-				int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
-				int imageHt = imageHeight;
-				int imageWi = imageWidth;
-
-				switch (Type)
-				{
-					case EffectType.RenderPicturePeekaboo0:
-					case EffectType.RenderPicturePeekaboo180:
-						//Peek a boo
-						yoffset = -(BufferHt) + (int) ((BufferHt + 5)*_position*2);
-						if (yoffset > 10)
-						{
-							yoffset = -yoffset + 10; //reverse direction
-						}
-						else if (yoffset >= -1)
-						{
-							yoffset = -1; //pause in middle
-						}
-						break;
-					case EffectType.RenderPictureWiggle:
-						if (_position >= 0.5)
-						{
-							xoffset += (int) (BufferWi*((1.0 - _position)*2.0 - 0.5));
-						}
-						else
-						{
-							xoffset += (int) (BufferWi*(_position*2.0 - 0.5));
-						}
-						break;
-					case EffectType.RenderPicturePeekaboo90: //peekaboo 90
-					case EffectType.RenderPicturePeekaboo270: //peekaboo 270
-						if (Orientation == StringOrientation.Vertical)
-						{
-							yoffset = (imageHt - BufferWi)/2; //adjust offsets for other axis
-						}
-						else
-						{
-							yoffset = (imageWi - BufferHt)/2; //adjust offsets for other axis	
-						}
-
-						if (Orientation == StringOrientation.Vertical)
-						{
-							xoffset = -(BufferHt) + (int) ((BufferHt + 5)*_position*2);
-						}
-						else
-						{
-							xoffset = -(BufferWi) + (int) ((BufferWi + 5)*_position*2);
-						}
-						if (xoffset > 10)
-						{
-							xoffset = -xoffset + 10; //reverse direction
-						}
-						else if (xoffset >= -1)
-						{
-							xoffset = -1; //pause in middle
-						}
-
-						break;
-					case EffectType.RenderPictureTiles:
-						imageHt = BufferHt;
-						imageWi = BufferWi;
-						break;
-
-				}
-				for (int x = 0; x < imageWi; x++)
-				{
-					for (int y = 0; y < imageHt; y++)
+					//Moving left and right
+					if (dir > 0 && dir <= 90)
 					{
-						if (Type != EffectType.RenderPictureTiles) // change this so only when tiles are disabled
+						deltaX = ((double) dir/90)*(imageSpeed);
+					}
+					else if (dir > 90 && dir <= 180)
+					{
+						deltaX = ((double) Math.Abs(dir - 180)/90)*(imageSpeed);
+					}
+					else if (dir > 180 && dir <= 270)
+					{
+						deltaX = -1*(((double) Math.Abs(dir - 180)/90)*(imageSpeed));
+					}
+					else if (dir > 270 && dir <= 360)
+					{
+						deltaX = -1*(((double) Math.Abs(dir - 360)/90)*(imageSpeed));
+					}
+
+					//Moving up and down
+					if (dir >= 0 && dir <= 90)
+					{
+						deltaY = (((double) Math.Abs(dir - 90)/90))*(imageSpeed);
+					}
+					else if (dir > 90 && dir <= 180)
+					{
+						deltaY = -1*(((double) Math.Abs(dir - 90)/90)*(imageSpeed));
+					}
+					else if (dir > 180 && dir <= 270)
+					{
+						deltaY = -1*(((double) Math.Abs(dir - 270)/90)*(imageSpeed));
+					}
+					else if (dir > 270 && dir <= 360)
+					{
+						deltaY = ((double) Math.Abs(270 - dir)/90)*(imageSpeed);
+					}
+
+					_movementX += deltaX;
+					_movementY += deltaY;
+
+					_fp.Lock();
+					Color fpColor = new Color();
+
+					int yoffset = (BufferHt + imageHeight)/2;
+					int xoffset = (imageWidth - BufferWi)/2;
+					int xOffsetAdj = CalculateXOffset(intervalPosFactor)*BufferWi/100;
+					int yOffsetAdj = CalculateYOffset(intervalPosFactor)*BufferHt/100;
+					int imageHt = imageHeight;
+					int imageWi = imageWidth;
+
+					switch (Type)
+					{
+						case EffectType.RenderPicturePeekaboo0:
+						case EffectType.RenderPicturePeekaboo180:
+							//Peek a boo
+							yoffset = -(BufferHt) + (int) ((BufferHt + 5)*_position*2);
+							if (yoffset > 10)
+							{
+								yoffset = -yoffset + 10; //reverse direction
+							}
+							else if (yoffset >= -1)
+							{
+								yoffset = -1; //pause in middle
+							}
+							break;
+						case EffectType.RenderPictureWiggle:
+							if (_position >= 0.5)
+							{
+								xoffset += (int) (BufferWi*((1.0 - _position)*2.0 - 0.5));
+							}
+							else
+							{
+								xoffset += (int) (BufferWi*(_position*2.0 - 0.5));
+							}
+							break;
+						case EffectType.RenderPicturePeekaboo90: //peekaboo 90
+						case EffectType.RenderPicturePeekaboo270: //peekaboo 270
+							if (Orientation == StringOrientation.Vertical)
+							{
+								yoffset = (imageHt - BufferWi)/2; //adjust offsets for other axis
+							}
+							else
+							{
+								yoffset = (imageWi - BufferHt)/2; //adjust offsets for other axis	
+							}
+
+							if (Orientation == StringOrientation.Vertical)
+							{
+								xoffset = -(BufferHt) + (int) ((BufferHt + 5)*_position*2);
+							}
+							else
+							{
+								xoffset = -(BufferWi) + (int) ((BufferWi + 5)*_position*2);
+							}
+							if (xoffset > 10)
+							{
+								xoffset = -xoffset + 10; //reverse direction
+							}
+							else if (xoffset >= -1)
+							{
+								xoffset = -1; //pause in middle
+							}
+
+							break;
+						case EffectType.RenderPictureTiles:
+							imageHt = BufferHt;
+							imageWi = BufferWi;
+							break;
+
+					}
+					for (int x = 0; x < imageWi; x++)
+					{
+						for (int y = 0; y < imageHt; y++)
 						{
-							fpColor = _fp.GetPixel(x, y);
-						}
+							if (Type != EffectType.RenderPictureTiles) // change this so only when tiles are disabled
+							{
+								fpColor = _fp.GetPixel(x, y);
+							}
 
-						var hsv = HSV.FromRGB(fpColor);
-						double tempV = hsv.V * level * adjustedBrightness;
-						if (tempV > 1)
-							tempV = 1;
-						hsv.V = tempV;
+							var hsv = HSV.FromRGB(fpColor);
+							double tempV = hsv.V*level*adjustedBrightness;
+							if (tempV > 1)
+								tempV = 1;
+							hsv.V = tempV;
 
-						switch (Type)
-						{
-							case EffectType.RenderPicturePeekaboo0:
+							switch (Type)
+							{
+								case EffectType.RenderPicturePeekaboo0:
 
-								if (fpColor != Color.Transparent)
-								{
-									//Peek a boo
+									if (fpColor != Color.Transparent)
+									{
+										//Peek a boo
+										hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+										frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, hsv);
+									}
+									break;
+								case EffectType.RenderPictureWiggle:
 									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, hsv);
-								}
-								break;
-							case EffectType.RenderPictureWiggle:
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPicturePeekaboo90:
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPicturePeekaboo180:
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPicturePeekaboo270:
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPictureLeft:
-								// left
-								int leftX = x + (BufferWi - (int) (_position*(imageWi + BufferWi)));
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPictureRight:
-								// right
-								int rightX = x + -imageWi + (int) (_position*(imageWi + BufferWi));
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPictureUp:
-								// up
-								int upY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, hsv);
-								break;
-
-							case EffectType.RenderPictureUpleft:
-								int upLeftY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(
-									Convert.ToInt32(x + BufferWi - (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor) + xOffsetAdj,
-									upLeftY + yOffsetAdj, hsv);
-								break; // up-left
-							case EffectType.RenderPictureDownleft:
-								int downLeftY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(
-									Convert.ToInt32(x + BufferWi - (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor) + xOffsetAdj,
-									downLeftY + yOffsetAdj, hsv);
-								break; // down-left
-							case EffectType.RenderPictureUpright:
-								int upRightY = (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(
-									Convert.ToInt32(x + (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor - imageWi) + xOffsetAdj,
-									upRightY + yOffsetAdj, hsv);
-								break; // up-right
-							case EffectType.RenderPictureDownright:
-								int downRightY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(
-									Convert.ToInt32(x + (state % ((imageWi + BufferWi) * speedFactor)) / speedFactor - imageWi) + xOffsetAdj,
-									downRightY + yOffsetAdj, hsv);
-								break; // down-right
-							case EffectType.RenderPictureDown:
-								// down
-								int downY = (BufferHt + imageHt - 1) - (int) ((imageHt + BufferHt)*_position) - y;
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPictureNone:
-								hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
-								break;
-							case EffectType.RenderPictureTiles:
-								int colorX = x + Convert.ToInt32(_movementX) - (xOffsetAdj * BufferWi / 100);
-								int colorY = y + Convert.ToInt32(_movementY) + (yOffsetAdj * BufferHt / 100);
-
-								if (colorX >= 0)
-								{
-									colorX = colorX%imageWidth;
-								}
-								else if (colorX < 0)
-								{
-									colorX = Convert.ToInt32(colorX%imageWidth) + imageWidth - 1;
-								}
-
-								if (colorY >= 0)
-								{
-									colorY = Convert.ToInt32((colorY%imageHeight));
-								}
-								else if (colorY < 0)
-								{
-									colorY = Convert.ToInt32(colorY%imageHeight) + imageHeight - 1;
-								}
-								if (colorX <= _fp.Width && colorY <= _fp.Height)
-								{
-									fpColor = _fp.GetPixel(colorX, colorY);
-
-									hsv = HSV.FromRGB(fpColor);
+									frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPicturePeekaboo90:
 									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-									frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
-								}
-								break;
+									frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPicturePeekaboo180:
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPicturePeekaboo270:
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPictureLeft:
+									// left
+									int leftX = x + (BufferWi - (int) (_position*(imageWi + BufferWi)));
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPictureRight:
+									// right
+									int rightX = x + -imageWi + (int) (_position*(imageWi + BufferWi));
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPictureUp:
+									// up
+									int upY = (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, hsv);
+									break;
+
+								case EffectType.RenderPictureUpleft:
+									int upLeftY = (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(
+										Convert.ToInt32(x + BufferWi - (state%((imageWi + BufferWi)*speedFactor))/speedFactor) + xOffsetAdj,
+										upLeftY + yOffsetAdj, hsv);
+									break; // up-left
+								case EffectType.RenderPictureDownleft:
+									int downLeftY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(
+										Convert.ToInt32(x + BufferWi - (state%((imageWi + BufferWi)*speedFactor))/speedFactor) + xOffsetAdj,
+										downLeftY + yOffsetAdj, hsv);
+									break; // down-left
+								case EffectType.RenderPictureUpright:
+									int upRightY = (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(
+										Convert.ToInt32(x + (state%((imageWi + BufferWi)*speedFactor))/speedFactor - imageWi) + xOffsetAdj,
+										upRightY + yOffsetAdj, hsv);
+									break; // up-right
+								case EffectType.RenderPictureDownright:
+									int downRightY = BufferHt + imageHt - (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(
+										Convert.ToInt32(x + (state%((imageWi + BufferWi)*speedFactor))/speedFactor - imageWi) + xOffsetAdj,
+										downRightY + yOffsetAdj, hsv);
+									break; // down-right
+								case EffectType.RenderPictureDown:
+									// down
+									int downY = (BufferHt + imageHt - 1) - (int) ((imageHt + BufferHt)*_position) - y;
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPictureNone:
+									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+									break;
+								case EffectType.RenderPictureTiles:
+									int colorX = x + Convert.ToInt32(_movementX) - (xOffsetAdj*BufferWi/100);
+									int colorY = y + Convert.ToInt32(_movementY) + (yOffsetAdj*BufferHt/100);
+
+									if (colorX >= 0)
+									{
+										colorX = colorX%imageWidth;
+									}
+									else if (colorX < 0)
+									{
+										colorX = Convert.ToInt32(colorX%imageWidth) + imageWidth - 1;
+									}
+
+									if (colorY >= 0)
+									{
+										colorY = Convert.ToInt32((colorY%imageHeight));
+									}
+									else if (colorY < 0)
+									{
+										colorY = Convert.ToInt32(colorY%imageHeight) + imageHeight - 1;
+									}
+									if (colorX <= _fp.Width && colorY <= _fp.Height)
+									{
+										fpColor = _fp.GetPixel(colorX, colorY);
+
+										hsv = HSV.FromRGB(fpColor);
+										hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
+										frameBuffer.SetPixel(x, BufferHt - y - 1, hsv);
+									}
+									break;
+							}
 						}
 					}
+					_fp.Unlock(false);
+					_fp.Dispose();
+					_scaledImage.Dispose();
 				}
-				_fp.Unlock(false);
-				_fp.Dispose();
-				_scaledImage.Dispose();
 			}
 		}
 
