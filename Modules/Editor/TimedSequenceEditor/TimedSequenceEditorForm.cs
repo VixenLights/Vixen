@@ -4971,13 +4971,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						result.FirstVisibleRow = rownum;
 
 					int relativeVisibleRow = rownum - result.FirstVisibleRow;
-
+					var layer = layerManager.GetLayer(elem.EffectNode);
 					EffectModelCandidate modelCandidate =
 						new EffectModelCandidate(elem.EffectNode.Effect)
 							{
 								Duration = elem.Duration,
 								StartTime = elem.StartTime,
-								LayerId = layerManager.GetLayer(elem.EffectNode).Id
+								LayerId = layer.Id,
+								LayerName = layer.LayerName,
+								LayerTypeId = layer.FilterTypeId
 							};
 					result.EffectModelCandidates.Add(modelCandidate, relativeVisibleRow);
 
@@ -5064,7 +5066,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				var newEffect = ApplicationServices.Get<IEffectModuleInstance>(effectModelCandidate.TypeId);
 				newEffect.ModuleData = effectModelCandidate.GetEffectData();
 				var node = CreateEffectNode(newEffect, visibleRows[targetRowIndex], targetTime, effectModelCandidate.Duration);
-				LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
+
+				if(LayerManager.ContainsLayer(effectModelCandidate.LayerId))
+				{
+					LayerManager.AssignEffectNodeToLayer(node, effectModelCandidate.LayerId);
+				}
+				else
+				{
+					//Best efforts to try and find a layer of the same name and type before letting it assign default.
+					var layer = LayerManager.GetLayer(effectModelCandidate.LayerName, effectModelCandidate.LayerTypeId);
+					if (layer != null)
+					{
+						LayerManager.AssignEffectNodeToLayer(node, layer.Id);
+					}
+
+				}
 				nodesToAdd.Add(node);
 				
 				result++;

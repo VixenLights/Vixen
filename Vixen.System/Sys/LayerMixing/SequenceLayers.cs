@@ -145,6 +145,22 @@ namespace Vixen.Sys.LayerMixing
 
 		}
 
+		public bool ContainsLayer(Guid layerId)
+		{
+			return _layerMap.ContainsKey(layerId);
+		}
+
+		/// <summary>
+		/// Get the layer with the name and type specified
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="typeId"></param>
+		/// <returns>ILayer if it exists or null</returns>
+		public ILayer GetLayer(string name, Guid typeId)
+		{
+			return _layerMap.Values.First(x => x.LayerName.Equals(name) && x.FilterTypeId.Equals(typeId));
+		}
+
 		private string EnsureUniqueName(string name)
 		{
 			if (Layers.Any(x => x.LayerName == name))
