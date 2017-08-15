@@ -285,8 +285,8 @@ namespace VixenModules.Effect.Plasma
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
-			double rx = ((float) x/(BufferWi - 1));
-			double ry = ((float) y/(BufferHt - 1));
+			double rx = ((float) x/(BufferWi));
+			double ry = ((float) y/(BufferHt));
 			
 			// 1st equation
 			var v = Math.Sin(rx*10 + time);
