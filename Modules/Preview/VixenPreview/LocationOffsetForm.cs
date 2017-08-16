@@ -24,5 +24,10 @@ namespace VixenModules.Preview.VixenPreview
         }
 
 	    public Vector3D Offset { get; set; }
+
+        private void txtX_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
