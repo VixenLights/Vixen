@@ -127,7 +127,6 @@ namespace VixenModules.Effect.Alternating
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"GradientLevelPair")]
 		[ProviderDescription(@"GradientLevelPair")]
-		[MergableProperty(false)]
 		public List<GradientLevelPair> Colors
 		{
 			get { return _data.Colors; }
