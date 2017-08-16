@@ -293,10 +293,16 @@ namespace VixenApplication
 			PopulateRecentSequencesList();
 		}
 
-		private void VixenApplication_Shown(object sender, EventArgs e)
+		private async void VixenApplication_Shown(object sender, EventArgs e)
 		{
 			CheckForTestBuild();
 			//Try to make sure at load we are on top.
+			await Task.Delay(750);
+			MakeTopMost();
+		}
+
+		private void MakeTopMost()
+		{
 			TopMost = true;
 			TopMost = false;
 		}
