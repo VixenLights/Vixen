@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -195,7 +196,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void ConfigureSelectedController()
+		private async void ConfigureSelectedController()
 		{
 			if (listViewControllers.SelectedItems.Count == 1)
 			{
@@ -211,7 +212,7 @@ namespace VixenApplication
 					if (running)
 					{
 						preview.Start();
-						Thread.Sleep(250);
+						await Task.Delay(250);
 						TopMost = true;
 						Focus();
 						BringToFront();
@@ -222,7 +223,7 @@ namespace VixenApplication
 			}
 		}
 
-		private void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
+		private async void listViewControllers_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			OutputPreview preview = (listViewControllers.Items[e.Index].Tag as OutputPreview);
 			if (e.NewValue == CheckState.Unchecked) {
@@ -235,7 +236,7 @@ namespace VixenApplication
 					VixenSystem.Previews.Start(preview);
 					//A bit of a kludge, but need a bit of delay to give the preview a chance to load
 					//before we force ourselves back on top.
-					Thread.Sleep(10); 
+					await Task.Delay(250);
 					TopMost = true;
 					TopMost = false;
 				}	
