@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{36351875-49EF-43A3-A175-032673FDC9A4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VixenModules.App.ExportWizard</RootNamespace>
+    <AssemblyName>ExportWizard</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\Release\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Release64\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>..\..\..\Debug\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutputPath>..\..\..\Debug64\Modules\App\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
+      <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
+      <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BulkExportControllersStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportControllersStage.Designer.cs">
+      <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportCreateOrSelectStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportCreateOrSelectStage.Designer.cs">
+      <DependentUpon>BulkExportCreateOrSelectStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportFinishedStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportFinishedStage.Designer.cs">
+      <DependentUpon>BulkExportFinishedStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportOutputFormatStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportOutputFormatStage.Designer.cs">
+      <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportConfigStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportConfigStage.Designer.cs">
+      <DependentUpon>BulkExportConfigStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportSourcesStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportSourcesStage.Designer.cs">
+      <DependentUpon>BulkExportSourcesStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportSummaryStage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BulkExportSummaryStage.Designer.cs">
+      <DependentUpon>BulkExportSummaryStage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BulkExportWizard.cs" />
+    <Compile Include="BulkExportWizardData.cs" />
+    <Compile Include="ExportProfile.cs" />
+    <Compile Include="ExportWizardDescriptor.cs" />
+    <Compile Include="ExportWizardModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BulkExportControllersStage.resx">
+      <DependentUpon>BulkExportControllersStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportCreateOrSelectStage.resx">
+      <DependentUpon>BulkExportCreateOrSelectStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportFinishedStage.resx">
+      <DependentUpon>BulkExportFinishedStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportOutputFormatStage.resx">
+      <DependentUpon>BulkExportOutputFormatStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportConfigStage.resx">
+      <DependentUpon>BulkExportConfigStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportSourcesStage.resx">
+      <DependentUpon>BulkExportSourcesStage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BulkExportSummaryStage.resx">
+      <DependentUpon>BulkExportSummaryStage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

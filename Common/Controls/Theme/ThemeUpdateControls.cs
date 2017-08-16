@@ -51,7 +51,20 @@ namespace Common.Controls.Theme
 					TextBox btn = c as TextBox;
 					btn.ForeColor = ThemeColorTable.ForeColor;
 					btn.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-					btn.BorderStyle = BorderStyle.FixedSingle;
+					if (btn.BorderStyle != BorderStyle.None)
+					{
+						btn.BorderStyle = BorderStyle.FixedSingle;
+					}
+				}
+				if (c is RichTextBox)
+				{
+					RichTextBox txt = c as RichTextBox;
+					txt.ForeColor = ThemeColorTable.ForeColor;
+					txt.BackColor = ThemeColorTable.TextBoxBackgroundColor;
+					if (txt.BorderStyle != BorderStyle.None)
+					{
+						txt.BorderStyle = BorderStyle.FixedSingle;
+					}
 				}
 				if (c is MaskedTextBox & !c.ToString().Contains("UpDown"))
 				{
@@ -102,6 +115,11 @@ namespace Common.Controls.Theme
 				btn.ForeColor = ThemeColorTable.ForeColor;
 			}
 			
+		}
+
+		public static Font SizeAndStyleFont(Font f, float fontsize, FontStyle style)
+		{
+			return new Font(f.FontFamily, fontsize, style);
 		}
 	}
 }

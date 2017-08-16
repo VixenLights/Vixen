@@ -74,8 +74,15 @@ namespace Common.Controls.Wizard
 			WizardActive = false;
 			WizardForm form = sender as WizardForm;
 			if (form != null)
+			{
 				WizardDialogResult = form.DialogResult;
+			}
 			_wizardFinished();
+
+			if (form!=null && !form.IsDisposed)
+			{
+				form.Dispose();
+			}
 		}
 
 		public DialogResult WizardDialogResult { get; private set; }
@@ -97,6 +104,16 @@ namespace Common.Controls.Wizard
 					return false;
 				return CurrentStage.CanMovePrevious;
 			}
+		}
+
+		public bool IsPreviousVisible
+		{
+			get { return CurrentStage.IsPreviousVisible; }
+		}
+
+		public bool IsCancelVisible
+		{
+			get { return CurrentStage.IsCancelVisible; }
 		}
 
 		public void MovePrevious()

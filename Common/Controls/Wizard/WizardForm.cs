@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 
 namespace Common.Controls.Wizard
@@ -15,12 +16,16 @@ namespace Common.Controls.Wizard
 		public WizardForm(Wizard wizard)
 		{
 			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Properties.Resources.Icon_Vixen3;
+			ThemeUpdateControls.UpdateControls(this);
 			_wizard = wizard;
 		}
 
 		private void WizardForm_Load(object sender, EventArgs e)
 		{
+			Text = _wizard.WizardTitle;
 			_changeDisplayToCurrentStage();
 			_currentStage.StageStart();
 		}
@@ -32,9 +37,19 @@ namespace Common.Controls.Wizard
 			_currentStage.StageStart();
 		}
 
-		private void buttonNext_Click(object sender, EventArgs e)
+		private async void buttonNext_Click(object sender, EventArgs e)
 		{
-			_currentStage.StageEnd();
+			UseWaitCursor = true;
+
+			buttonNext.Enabled = false;
+			buttonPrevious.Enabled = false;
+
+			await _currentStage.StageEnd();
+
+			buttonNext.Enabled = true;
+			buttonPrevious.Enabled = true;
+
+			UseWaitCursor = false;
 
 			if (_wizard.IsFinalStage) {
 				DialogResult = DialogResult.OK;
@@ -72,6 +87,7 @@ namespace Common.Controls.Wizard
 		private void buttonCancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
+			_currentStage.StageCancelled();
 			Close();
 			_wizardFinished();
 		}
@@ -80,6 +96,8 @@ namespace Common.Controls.Wizard
 		{
 			buttonNext.Enabled = _wizard.CanMoveNext;
 			buttonPrevious.Enabled = _wizard.CanMovePrevious;
+			buttonPrevious.Visible = !_wizard.IsFirstStage && _wizard.IsPreviousVisible;
+			buttonCancel.Visible = _wizard.IsCancelVisible;
 		}
 
 		public event EventHandler WizardFormFinished;

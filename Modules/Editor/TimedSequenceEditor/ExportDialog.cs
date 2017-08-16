@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -22,8 +20,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private string _outFileName;
         private readonly ISequence _sequence;
         private readonly Export _exportOps;
-        private bool _doProgressUpdate;
-	    private readonly string _sequenceFileName;
+        private readonly string _sequenceFileName;
         private readonly string _audioFileName;
         private ExportNotifyType _currentState;
 	    private bool _cancelled;
@@ -71,64 +68,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             _cancelled = false;
 
-            backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-
             _profile = new XMLProfileSettings();
-        }
-        #endregion
-
-        #region Background Thread
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-		{
-           while (_doProgressUpdate)
-            {
-                Thread.Sleep(25); 
-                switch (_currentState)
-                {
-                   
-                    case ExportNotifyType.SAVING:
-                    {
-                        backgroundWorker1_Saving(sender, e);
-                        break;
-                    }
-
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            UseWaitCursor = false;
-			backgroundWorker1.ReportProgress(0);
-        }
-
-        private void backgroundWorker1_Saving(object sender, DoWorkEventArgs e)
-        {
-	        try
-	        {
-		        //currentTimeLabel.Text = string.Format("{0}%", _exportOps.SavePosition);
-		        backgroundWorker1.ReportProgress((int) _exportOps.SavePosition);
-	        }
-	        catch (Exception ex)
-	        {
-		        Logging.Error("An error occured while updating the progress in the export.", ex);
-	        }
-            
-        }
-
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs args)
-        {
-	        try
-	        {
-		        exportProgressBar.Value = args.ProgressPercentage;
-				currentTimeLabel.Text = string.Format("{0}%", args.ProgressPercentage);
-	        }
-	        catch (Exception e)
-	        {
-				Logging.Error("An error occured while updating the progress percentage in the export.", e);
-	        }
-            
         }
         #endregion
 
@@ -144,31 +84,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
             resolutionComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), exportResolutionDefault);
 
             buttonStop.Enabled = false;
+	        UpdateNetworkList();
+
 			networkListView.DragDrop += networkListView_DragDrop;
-            //networkListView.Enabled = false;
-
-			UpdateNetworkList();
-
+			networkListView.ItemChecked += NetworkListView_ItemChecked;
+            
         }
+
+		private void NetworkListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+		{
+			ReIndexControllerChannels();
+		}
 
 		void networkListView_DragDrop(object sender, DragEventArgs e)
 		{
-			
-			int startChan = 1;
-			int index = 0;
-			foreach (ListViewItem item in networkListView.Items)
-			{
-				var info = item.Tag as ControllerExportInfo;
-				if(info != null) info.Index = index;
-				int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
-				item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
-				startChan += channels;
-				index++;
-			}
+			ReIndexControllerChannels();
+			//int startChan = 1;
+			//int index = 0;
+			//foreach (ListViewItem item in networkListView.Items)
+			//{
+			//	var info = item.Tag as Controller;
+			//	if(info != null) info.Index = index;
+			//	int channels = Convert.ToInt32(item.SubItems[1].Text);  //.Add(info.Channels.ToString());
+			//	item.SubItems[2].Text = string.Format("Channels {0} to {1}", startChan, startChan + channels - 1);
+			//	startChan += channels;
+			//	index++;
+			//}
 
 		}
 
-        private void buttonStart_Click(object sender, EventArgs e)
+        private async void buttonStart_Click(object sender, EventArgs e)
         {
             
             _cancelled = false;
@@ -197,20 +142,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 return;
             }
 			UseWaitCursor = true;
-			_doProgressUpdate = true;
-			backgroundWorker1.RunWorkerAsync();
-
+			
             _outFileName = saveDialog.FileName;
             _exportOps.OutFileName = _outFileName;
             _exportOps.UpdateInterval = Convert.ToInt32(resolutionComboBox.Text);
-            _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString());
-            _exportOps.AudioFilename = _audioFileName;
 
+			var progress = new Progress<ExportProgressStatus>(ReportExportProgress);
+	        _exportOps.AudioFilename = _audioFileName;
 
-           
-        }
+			await _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString(), progress);
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+			UseWaitCursor = false;
+		}
+
+	    private void ReportExportProgress(ExportProgressStatus exportProgressStatus)
+	    {
+			exportProgressBar.Value = exportProgressStatus.TaskProgressValue;
+		    currentTimeLabel.Text = string.Format("{0}%", exportProgressStatus.TaskProgressValue);
+		}
+
+	    private void buttonCancel_Click(object sender, EventArgs e)
         {
             _cancelled = true;
 			_exportOps.Cancel();
@@ -242,26 +193,79 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void UpdateNetworkList()
         {
-            List<ControllerExportInfo> exportInfo = _exportOps.ControllerExportInfo;
+            List<Controller> exportInfo = _exportOps.ControllerExportInfo;
 
             networkListView.Items.Clear();
             int startChan = 1;
 
-            foreach (ControllerExportInfo info in exportInfo)
-            {
-                ListViewItem item = new ListViewItem(info.Name);
-	            item.Tag = info;
-                item.SubItems.Add(info.Channels.ToString());
-                item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
+			//foreach (Controller info in exportInfo)
+			//{
+			//    ListViewItem item = new ListViewItem(info.Name);
+			// item.Tag = info;
+			//    item.SubItems.Add(info.Channels.ToString());
+			//    item.SubItems.Add(string.Format("Channels {0} to {1}", startChan, startChan + info.Channels - 1));
 
-                networkListView.Items.Add(item);
-                
-                startChan += info.Channels;
-            }
+			//    networkListView.Items.Add(item);
 
-	        networkListView.ColumnAutoSize();
+			//    startChan += info.Channels;
+			//}
+
+			foreach (Controller info in exportInfo.OrderBy(x => x.Index))
+			{
+				ListViewItem item = new ListViewItem(info.Name);
+				item.Tag = info;
+				item.SubItems.Add(info.Channels.ToString());
+
+				if (info.IsActive)
+				{
+					item.Checked = info.IsActive;
+					item.SubItems.Add(startChan.ToString());
+					item.SubItems.Add((startChan + info.Channels - 1).ToString());
+					startChan += info.Channels;
+				}
+				else
+				{
+					item.SubItems.Add(String.Empty);
+					item.SubItems.Add(String.Empty);
+				}
+
+				networkListView.Items.Add(item);
+			}
+
+			networkListView.ColumnAutoSize();
 			networkListView.SetLastColumnWidth();
         }
+
+	    private void ReIndexControllerChannels()
+	    {
+		    int startChan = 1;
+		    int index = 0;
+		    foreach (ListViewItem item in networkListView.Items)
+		    {
+			    var info = item.Tag as Controller;
+			    if (info == null)
+			    {
+				    continue; // This should not happen!
+			    }
+			    info.Index = index;
+			    info.IsActive = item.Checked;
+
+			    if (info.IsActive)
+			    {
+				    int channels = Convert.ToInt32(item.SubItems[1].Text);
+				    item.SubItems[2].Text = startChan.ToString();
+				    item.SubItems[3].Text = (startChan + info.Channels - 1).ToString();
+				    startChan += channels;
+			    }
+			    else
+			    {
+				    item.SubItems[2].Text = String.Empty;
+				    item.SubItems[3].Text = String.Empty;
+			    }
+
+			    index++;
+		    }
+	    }
 
 		private string SetToolbarStatus(string progressText, bool showLiveProgress)
 		{
@@ -292,7 +296,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             buttonStop.Enabled = allowStop;
             outputFormatComboBox.Enabled = !isWorking;
             resolutionComboBox.Enabled = !isWorking;
-            _doProgressUpdate = isWorking;
             exportProgressBar.Visible = isWorking;
             currentTimeLabel.Visible = isWorking;
 
@@ -364,9 +367,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
         private void ExportDialog_FormClosed(object sender, FormClosedEventArgs e)
         {
             _exportOps.SequenceNotify -= SequenceNotify;
-            backgroundWorker1.DoWork -= backgroundWorker1_DoWork;
-            backgroundWorker1.ProgressChanged -= backgroundWorker1_ProgressChanged;
-
         }
 
         #endregion

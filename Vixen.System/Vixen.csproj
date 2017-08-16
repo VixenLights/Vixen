@@ -201,6 +201,7 @@
     <Compile Include="Export\Export.cs" />
     <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\ESEQWriter.cs" />
+    <Compile Include="Export\ExportProgressStatus.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
     <Compile Include="Export\Vir2Writer.cs" />

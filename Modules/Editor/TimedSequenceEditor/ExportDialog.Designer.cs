@@ -44,7 +44,8 @@
 			this.networkListView = new Common.Controls.ListViewEx();
 			this.controllerColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.channelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.mappingColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.startColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.endColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.btnUserCancel = new System.Windows.Forms.Button();
@@ -80,9 +81,9 @@
 			this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.label3.Location = new System.Drawing.Point(19, 28);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(89, 15);
+			this.label3.Size = new System.Drawing.Size(48, 15);
 			this.label3.TabIndex = 9;
-			this.label3.Text = "Output Format:";
+			this.label3.Text = "Format:";
 			// 
 			// outputFormatComboBox
 			// 
@@ -92,9 +93,9 @@
 			this.outputFormatComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.outputFormatComboBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.outputFormatComboBox.FormattingEnabled = true;
-			this.outputFormatComboBox.Location = new System.Drawing.Point(115, 24);
+			this.outputFormatComboBox.Location = new System.Drawing.Point(73, 23);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
-			this.outputFormatComboBox.Size = new System.Drawing.Size(140, 24);
+			this.outputFormatComboBox.Size = new System.Drawing.Size(244, 24);
 			this.outputFormatComboBox.TabIndex = 10;
 			this.outputFormatComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.outputFormatComboBox.SelectedIndexChanged += new System.EventHandler(this.outputFormatComboBox_SelectedIndexChanged);
@@ -103,11 +104,11 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.label4.Location = new System.Drawing.Point(274, 28);
+			this.label4.Location = new System.Drawing.Point(323, 28);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(93, 15);
+			this.label4.Size = new System.Drawing.Size(75, 15);
 			this.label4.TabIndex = 11;
-			this.label4.Text = "Resolution (ms):";
+			this.label4.Text = "Timing (ms):";
 			// 
 			// resolutionComboBox
 			// 
@@ -121,7 +122,7 @@
             "25",
             "50",
             "100"});
-			this.resolutionComboBox.Location = new System.Drawing.Point(377, 24);
+			this.resolutionComboBox.Location = new System.Drawing.Point(404, 23);
 			this.resolutionComboBox.Name = "resolutionComboBox";
 			this.resolutionComboBox.Size = new System.Drawing.Size(61, 24);
 			this.resolutionComboBox.TabIndex = 12;
@@ -227,12 +228,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.networkListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.networkListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.networkListView.CheckBoxes = true;
 			this.networkListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.controllerColumn,
             this.channelsColumn,
-            this.mappingColumn});
+            this.startColumn,
+            this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			listViewItem4.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem4});
 			this.networkListView.Location = new System.Drawing.Point(7, 22);
@@ -255,10 +259,14 @@
 			this.channelsColumn.Text = "Channels";
 			this.channelsColumn.Width = 76;
 			// 
-			// mappingColumn
+			// startColumn
 			// 
-			this.mappingColumn.Text = "Mapping";
-			this.mappingColumn.Width = 221;
+			this.startColumn.Text = "Start";
+			// 
+			// endColumn
+			// 
+			this.endColumn.Text = "End";
+			this.endColumn.Width = 161;
 			// 
 			// backgroundWorker1
 			// 
@@ -318,6 +326,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "ExportDialog";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Export Sequence";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ExportDialog_FormClosed);
 			this.Load += new System.EventHandler(this.ExportForm_Load);
@@ -350,7 +359,8 @@
 		private Common.Controls.ListViewEx networkListView;
 		private System.Windows.Forms.ColumnHeader controllerColumn;
 		private System.Windows.Forms.ColumnHeader channelsColumn;
-		private System.Windows.Forms.ColumnHeader mappingColumn;
+		private System.Windows.Forms.ColumnHeader startColumn;
 		private System.Windows.Forms.Button btnUserCancel;
-    }
+		private System.Windows.Forms.ColumnHeader endColumn;
+	}
 }
