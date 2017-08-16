@@ -802,15 +802,23 @@ namespace VixenModules.Effect.Picture
 									break;
 								case EffectType.RenderPicturePeekaboo90:
 									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-									frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, hsv);
+									frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, BufferHt - x - yoffset + yOffsetAdj, hsv);
 									break;
 								case EffectType.RenderPicturePeekaboo180:
 									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-									frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
+									if (StringOrientation == StringOrientation.Vertical)
+									{
+										frameBuffer.SetPixel((BufferWi - x) - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
+									}
+									else
+									{
+										frameBuffer.SetPixel((BufferWi - x) - xoffset + xOffsetAdj - (BufferWi/2), y - yoffset + yOffsetAdj, hsv);
+									}
+									
 									break;
 								case EffectType.RenderPicturePeekaboo270:
 									hsv = CustomColor(hsv, frame, level, fpColor, adjustedBrightness);
-									frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, hsv);
+									frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - (BufferHt - x) + yOffsetAdj, hsv);
 									break;
 								case EffectType.RenderPictureLeft:
 									// left
