@@ -479,22 +479,14 @@ namespace VixenModules.Preview.VixenPreview {
 				Cursor = Cursors.WaitCursor;
 				foreach (var d in _data.DisplayItems)
 				{
-					//_data.DisplayItems.ForEach(d => {
 					foreach (var p in d.Shape.Pixels.Where(pi => pi != null && pi.Node != null))
 					{
-
-						//LocationModule prop= null;
 						if (!p.Node.Properties.Contains(LocationDescriptor._typeId))
 							p.Node.Properties.Add(LocationDescriptor._typeId);
 
-						//d.Shape._pixels.ForEach(p => {
-
 						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-						((LocationData) prop.ModuleData).X = p.X;
-						((LocationData) prop.ModuleData).Y = p.Y;
-
-						//});
-						//});
+					    ((LocationData) prop.ModuleData).X = p.X + Convert.ToInt32(Data.LocationOffset.X);
+						((LocationData) prop.ModuleData).Y = p.Y + Convert.ToInt32(Data.LocationOffset.Y);
 					}
 				}
 				Cursor = Cursors.Default;
@@ -660,6 +652,16 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_Main);
 		}
+
+        private void locationOffsetSetupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LocationOffsetForm offsetForm = new LocationOffsetForm(Data.LocationOffset);
+	        var result = offsetForm.ShowDialog();
+	        if (result == DialogResult.OK)
+	        {
+		        Data.LocationOffset = offsetForm.Offset;
+	        }
+        }
 	}
 
 
