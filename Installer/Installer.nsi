@@ -119,10 +119,10 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 	!define PRODUCT_NAME_FULL "Vixen Development Build"
 	Name "${PRODUCT_NAME} Development Build ${BUILDNUMBER} (${BITS_READABLE})"
 	OutFile ".\${PRODUCT_NAME}-DevBuild-${BUILDNUMBER}-Setup-${BITS}bit.exe"
-	InstallDir "${PROG_FILES}\Vixen Development Build"
+	InstallDir "${PROG_FILES}\Vixen Development Build\"
 !else
 	!define PRODUCT_NAME_FULL "Vixen"
-	InstallDir "${PROG_FILES}\Vixen"
+	InstallDir "${PROG_FILES}\Vixen\"
 	!if ${PATCHNUMBER} == 0
 		Name "${PRODUCT_NAME} ${MAJORVERSION}.${MINORVERSION} (${BITS_READABLE})"
 		OutFile ".\${PRODUCT_NAME}-${MAJORVERSION}.${MINORVERSION}-Setup-${BITS}bit.exe"
@@ -184,7 +184,9 @@ VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${Assem
 !insertmacro MUI_PAGE_LICENSE "${BUILD_DIR}\Release Notes.txt"
 
 ; Directory page
-DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\nTo install in a different folder (such as a USB Drive), click Browse and select another folder. $\nWhen ready, click next to continue."
+DirText "Setup will install ${PRODUCT_NAME_FULL} in the following folder. $\n$\nTo install in a different folder (such as a USB Drive), click Browse and select another folder. $\n$\nDO NOT select any of your profile folders! $\n$\nWhen ready, click next to continue."
+!define MUI_DIRECTORYPAGE_VERIFYONLEAVE
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE DirectoryLeave
 !insertmacro MUI_PAGE_DIRECTORY
 ; Start menu page
 var ICONS_GROUP
@@ -235,6 +237,15 @@ Function .onInit
 		Return
 	${EndIf}
 	
+FunctionEnd
+
+Function DirectoryLeave
+  GetInstDirError $0
+  
+  ;=== Does it look like a profile folder?
+	IfFileExists "$INSTDIR\SystemData\ModuleStore.xml" 0 +3
+		MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "'$INSTDIR' appears to be a Vixen profile folder. Any profile data in that folder will be permanently lost.$\n$\nAre you sure?" IDYES +2
+				Abort
 FunctionEnd
 
 
