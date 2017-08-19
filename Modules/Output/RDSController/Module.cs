@@ -29,7 +29,7 @@ namespace VixenModules.Output.CommandController
 			else
 				lastRdsText=rdsText;
 
-			Console.WriteLine("Sending {0}: {1}", rdsText, DateTime.Now);
+			Logging.Info("Sending {0}: {1}", rdsText, DateTime.Now);
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
@@ -53,6 +53,8 @@ namespace VixenModules.Output.CommandController
 							if (RdsData.RequireHTTPAuthentication) {
 								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
 							}
+							request.GetResponse();
+
 						} catch (Exception e) {
 							Logging.Error(e, e.Message);
 							lastRdsText=string.Empty;
