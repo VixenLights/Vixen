@@ -158,7 +158,7 @@ namespace Vixen.Sys.LayerMixing
 		/// <returns>ILayer if it exists or null</returns>
 		public ILayer GetLayer(string name, Guid typeId)
 		{
-			return _layerMap.Values.First(x => x.LayerName.Equals(name) && x.FilterTypeId.Equals(typeId));
+			return _layerMap.Values.FirstOrDefault(x => x.LayerName.Equals(name) && x.FilterTypeId.Equals(typeId));
 		}
 
 		private string EnsureUniqueName(string name)
