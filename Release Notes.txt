@@ -62,6 +62,8 @@ Initial release for the 2017 season.
     * [VIX-2140] - Picture effect throws an error when a newly added effect is switched to a file vs the embedded types.
     * [VIX-2142] - If the Plasma effect is set to locations on a single string, it will not render and throw an exception.
     * [VIX-2143] - Picture effect - Peekaboo 90, 180 and 270 displays a mirrored image.
+    * [VIX-2148] - The RDS controller creates the web request, but does not actually send it.
+    * [VIX-2149] - If an effect with a layer associated to it is copied into a sequence without a similar layer, the paste operation will crash the app.
 
 
 ** Improvement
@@ -163,7 +165,7 @@ Initial release for the 2017 season.
     * [VIX-2108] - Create new Circles Effect
     * [VIX-2110] - Create new Ball Effect
     * [VIX-2144] - Preview Location Offset Support
-
+    * [VIX-2147] - Warn users if they attempt to install Vixen into a destination that appears to be one of their profile folders.
 
 
 Vixen Release Notes - 3.3u2
