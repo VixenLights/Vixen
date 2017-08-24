@@ -654,8 +654,8 @@ namespace VixenModules.Effect.Balls
 				}
 
 				double speed = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
-				double vx = _random.NextDouble() + speed;
-				double vy = _random.NextDouble() + speed;
+				double vx = _random.NextDouble() * speed;
+				double vy = _random.NextDouble() * speed;
 				if (_random.Next(0, 2) == 0) vx = -vx;
 				if (_random.Next(0, 2) == 0) vy = -vy;
 				m.VelocityX = vx;
@@ -692,12 +692,12 @@ namespace VixenModules.Effect.Balls
 
 		private double CalculateCenterSpeed(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 40, 0);
+			return ScaleCurveToValue(CenterSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0);
 		}
 
 		private double CalculateSpeedVariation(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 40, 0);
+			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0);
 		}
 
 		private int CalculateSize(double intervalPosFactor)
