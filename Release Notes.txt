@@ -64,6 +64,8 @@ Initial release for the 2017 season.
     * [VIX-2143] - Picture effect - Peekaboo 90, 180 and 270 displays a mirrored image.
     * [VIX-2148] - The RDS controller creates the web request, but does not actually send it.
     * [VIX-2149] - If an effect with a layer associated to it is copied into a sequence without a similar layer, the paste operation will crash the app.
+    * [VIX-2150] - Issue with the speed setting on the Ball Effect
+    * [VIX-2154] - In the color property setup form, when a new color is added, it defaults to white, however the way the color is created is not the same as it is in other places and can lead to color match issues.
 
 
 ** Improvement
