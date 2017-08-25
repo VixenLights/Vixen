@@ -147,7 +147,7 @@ namespace VixenModules.Property.Color
 
 		private void buttonAddColor_Click(object sender, EventArgs e)
 		{
-			ColorPanel colorPanel = new ColorPanel(System.Drawing.Color.White);
+			ColorPanel colorPanel = new ColorPanel(System.Drawing.Color.FromArgb(255,255,255));
 			tableLayoutPanelColors.Controls.Add(colorPanel);
 		}
 
