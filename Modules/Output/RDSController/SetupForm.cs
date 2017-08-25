@@ -81,10 +81,10 @@ namespace VixenModules.Output.CommandController
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
 					txtPSInterface.MaxLength=8;
-					txtUrl.Enabled=	lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=false;
+					txtUrl.Enabled=	lblUrl.Enabled=lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=false;
 					break;
 				case Hardware.VFMT212R:
-					txtUrl.Enabled=lblPassword.Enabled=lblUserName.Enabled=	chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
+					txtUrl.Enabled=lblUrl.Enabled=lblPassword.Enabled=lblUserName.Enabled=	chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
 					txtPSInterface.MaxLength=64;
 					chkRequiresAuthentication.Checked=true;
 					chkRequiresAuthentication.Enabled=false;
@@ -92,7 +92,7 @@ namespace VixenModules.Output.CommandController
 						txtUrl.Text =   "http://127.0.0.1:8080/?action=update_rt&update_rt={text}";
 					break;
 				case Hardware.HTTP:
-					txtUrl.Enabled=true;
+					txtUrl.Enabled=lblUrl.Enabled=true;
 					lblPassword.Enabled=lblUserName.Enabled=chkRequiresAuthentication.Enabled=txtHttpPassword.Enabled=txtHttpUsername.Enabled=true;
 					txtPSInterface.MaxLength=128;
 					break;
@@ -101,7 +101,7 @@ namespace VixenModules.Output.CommandController
 		private void radioHttp_CheckedChanged(object sender, EventArgs e)
 		{
 			RdsData.HardwareID= Hardware.HTTP;
-			txtUrl.Enabled = radioHttp.Checked;
+			txtUrl.Enabled = lblUrl.Enabled = radioHttp.Checked;
 			txtUrl.ReadOnly= false;
 			SetFormDefaults();
 
@@ -109,7 +109,7 @@ namespace VixenModules.Output.CommandController
 
 		private void btnTX_Click(object sender, EventArgs e)
 		{
-			if (Module.Send(RdsData, txtPSInterface.Text)) {
+			if (Module.Send(RdsData, txtPSInterface.Text, true)) {
 				StatusLbl1.Text="Data Sent";
 			} else {
 				StatusLbl1.Text="Data Not Sent";

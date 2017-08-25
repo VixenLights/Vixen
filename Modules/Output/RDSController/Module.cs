@@ -20,22 +20,24 @@ namespace VixenModules.Output.CommandController
 			DataPolicyFactory = new DataPolicyFactory();
 		}
 		static string lastRdsText= string.Empty;
-		internal static bool Send(Data RdsData, string rdsText, string rdsArtist = null, bool sendps=false)
+		internal static bool Send(Data RdsData, string rdsText, bool force=false)
 		{
 			// Darren... is this still needed?
 			//We dont want to keep hammering the RDS device with updates if they havent changed.
-			if (lastRdsText.Equals(rdsText))
-				return true;
-			else
-				lastRdsText=rdsText;
+			if (!force && lastRdsText.Equals(rdsText))
+			{
+				return false;
+			}
+			
+			lastRdsText=rdsText;
 
-			Logging.Info("Sending {0}: {1}", rdsText, DateTime.Now);
 			switch (RdsData.HardwareID) {
 				case Hardware.MRDS192:
 				case Hardware.MRDS1322:
 					var portName = string.Format("COM{0}", RdsData.PortNumber);
 					using (var rdsPort = new RdsSerialPort(portName, RdsData.Slow ? 2400 : 19200))
 					{
+						Logging.Info("Sending to RDS serial device data:{0} at time:{1}", rdsText, DateTime.Now);
 						rdsPort.Send(rdsText);
 					}
 					return false;
@@ -46,9 +48,7 @@ namespace VixenModules.Output.CommandController
 							//string url = RdsData.HttpUrl.ToLower().Replace("{text}",HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
 							//JC 11/27/16- replaced with line below to remove lowercase force
 							string url = RdsData.HttpUrl.Replace("{text}", HttpUtility.UrlEncode(rdsText)).Replace("{time}", HttpUtility.UrlEncode(DateTime.Now.ToLocalTime().ToShortTimeString()));
-							if (sendps) {
-								//TODO: Enable the sendps code here.
-							}
+							Logging.Info("Sending web request to url:{0} at time:{1}", url, DateTime.Now);
 							WebRequest request = WebRequest.Create(url);
 							if (RdsData.RequireHTTPAuthentication) {
 								request.Credentials= new NetworkCredential(RdsData.HttpUsername, RdsData.HttpPassword);
