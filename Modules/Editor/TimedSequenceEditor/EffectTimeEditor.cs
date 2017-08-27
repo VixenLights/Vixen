@@ -67,9 +67,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			get
 			{
-				TimeSpan End;
-				TimeSpan.TryParseExact(txtEndTime.Text, timeFormat, CultureInfo.InvariantCulture, out End);
-				return End;
+				TimeSpan end;
+				TimeSpan.TryParseExact(txtEndTime.Text, timeFormat, CultureInfo.InvariantCulture, out end);
+				return end;
 			}
 		}
 
@@ -98,11 +98,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void EffectTimeEditor_Load(object sender, EventArgs e)
 		{
-			txtStartTime.Mask = txtDuration.Mask = @"00:00.000";
+			txtStartTime.Mask = txtStartTime.Mask = @"00:00.000";
 			txtStartTime.MaskInputRejected += new MaskInputRejectedEventHandler(txtStartTime_MaskInputRejected);
 			txtStartTime.KeyDown += new KeyEventHandler(txtStartTime_KeyDown);
 			txtDuration.MaskInputRejected += new MaskInputRejectedEventHandler(txtDuration_MaskInputRejected);
 			txtDuration.KeyDown += new KeyEventHandler(txtDuration_KeyDown);
+			txtDuration.Mask = txtDuration.Mask = @"00:00.000";
 			txtEndTime.Mask = txtEndTime.Mask = @"00:00.000";
 			txtEndTime.MaskInputRejected += new MaskInputRejectedEventHandler(txtEndTime_MaskInputRejected);
 			txtEndTime.KeyDown += new KeyEventHandler(txtEndTime_KeyDown);
@@ -285,21 +286,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void txtDuration_Enter(object sender, EventArgs e)
 		{
 			_previousTime = Duration;
-		}
-
-		private void txtStartTime_Leave(object sender, EventArgs e)
-		{
-				Start = _previousTime;
-		}
-
-		private void txtDuration_Leave(object sender, EventArgs e)
-		{
-				Duration = _previousTime;
-		}
-
-		private void txtEndTime_Leave(object sender, EventArgs e)
-		{
-				End = _previousTime;
 		}
 	}
 }
