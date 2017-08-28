@@ -1682,8 +1682,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					newDisplayItem.Shape.Name = f.TemplateName;
 					newDisplayItem.Shape.Select(true);
-
-					string xml = PreviewTools.SerializeToString(newDisplayItem);
+					string xml = PreviewTools.SerializeToString(newDisplayItem.Clone());
 					string destFileName = PreviewTools.TemplateWithFolder(f.TemplateName + ".xml");
 					System.IO.File.WriteAllText(destFileName, xml);
 				}
@@ -1696,19 +1695,51 @@ namespace VixenModules.Preview.VixenPreview
 			if (System.IO.File.Exists(fileName))
 			{
 				// Read the entire template file (stoopid waste of resources, but how else?)
-				string xml = System.IO.File.ReadAllText(fileName);
+				string xml = File.ReadAllText(fileName);
 				DisplayItem newDisplayItem = PreviewTools.DeSerializeToDisplayItem(xml, typeof (DisplayItem));
+				
 				if (newDisplayItem != null)
 				{
+					foreach (var previewPixel in newDisplayItem.Shape.Pixels)
+					{
+						//Remove any node associations from the template that may have been saved in old versions
+						previewPixel.Node = null;
+						previewPixel.NodeId = Guid.Empty;
+					}
+
 					DeSelectSelectedDisplayItem();
+
+					if (elementsForm.SelectedNode != null)
+					{
+						//try to associate the template to the nodes by suffix for Previewsingle types
+
+						var children = elementsForm.SelectedNode.GetLeafEnumerator().ToDictionary(x => x.Name);
+						foreach (var previewBaseShape in newDisplayItem.Shape.Strings)
+						{
+							if (previewBaseShape is PreviewSingle)
+							{
+								var element = children.Keys.FirstOrDefault(x => x.EndsWith(previewBaseShape.Name));
+								if (element != null)
+								{
+									var pixel = previewBaseShape.Pixels.FirstOrDefault();
+									if (pixel != null)
+									{
+										var elementNode = children[element];
+										pixel.Node = elementNode;
+										pixel.NodeId = elementNode.Id;
+									}
+								}
+							}
+
+						}
+					}
 
 					AddDisplayItem(newDisplayItem);
 					_selectedDisplayItem = newDisplayItem;
-					OnSelectDisplayItem(this, _selectedDisplayItem);
+					if (OnSelectDisplayItem != null) OnSelectDisplayItem(this, _selectedDisplayItem);
 					_selectedDisplayItem.Shape.MoveTo(10, 10);
 					_selectedDisplayItem.Shape.Select(true);
 					_selectedDisplayItem.Shape.SetSelectPoint(null);
-					List<DisplayItem> selected = new List<DisplayItem> {_selectedDisplayItem};
 
 					PreviewItemAddAction(); //starts Undo_Redo Action
 				}

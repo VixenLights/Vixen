@@ -1,18 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using System.Runtime.Serialization;
 using System.Drawing;
-using Vixen.Data.Flow;
-using Vixen.Module;
-using Vixen.Module.OutputFilter;
-using Vixen.Services;
 using Vixen.Sys;
-using Vixen.Sys.Output;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -36,7 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof (PreviewIcicle))]
     [KnownType(typeof(PreviewPolyLine))]
     [KnownType(typeof(PreviewMultiString))]
-	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>
+	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable
 	{
 		private PreviewBaseShape _shape;
 
@@ -126,6 +118,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		public object Clone()
+		{
+			DisplayItem item = new DisplayItem();
+			item.Shape = Shape.Clone() as PreviewBaseShape;
+			return item;
 		}
 	}
 }
