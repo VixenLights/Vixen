@@ -2029,6 +2029,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
+			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.selectedMarks.Any() ||
+			                                           TimelineControl.SelectedElements.Any();
 		}
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)
@@ -5239,13 +5241,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
 		{
-			if (TimelineControl.ruler.selectedMarks.Any())
-			{
-				TimelineControl.ruler.DeleteSelectedMarks();
-			}
-			
+			TimelineControl.ruler.DeleteSelectedMarks();
 			RemoveSelectedElements();
-			
 		}
 
 		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -5968,8 +5965,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 			effectEditorWindowToolStripMenuItem.Checked =
 				!(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
-			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.selectedMarks.Any() ||
-													   TimelineControl.grid.SelectedElements.Any();
 		}
 
 		private void timerPostponePlay_Tick(object sender, EventArgs e)

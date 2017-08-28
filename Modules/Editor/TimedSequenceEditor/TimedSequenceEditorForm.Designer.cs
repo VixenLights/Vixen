@@ -566,28 +566,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripMenuItemCloseGap100
 			// 
 			this.toolStripMenuItemCloseGap100.Name = "toolStripMenuItemCloseGap100";
-			this.toolStripMenuItemCloseGap100.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap100.Size = new System.Drawing.Size(95, 22);
 			this.toolStripMenuItemCloseGap100.Tag = ".100";
 			this.toolStripMenuItemCloseGap100.Text = ".100";
 			// 
 			// toolStripMenuItemCloseGap200
 			// 
 			this.toolStripMenuItemCloseGap200.Name = "toolStripMenuItemCloseGap200";
-			this.toolStripMenuItemCloseGap200.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap200.Size = new System.Drawing.Size(95, 22);
 			this.toolStripMenuItemCloseGap200.Tag = ".200";
 			this.toolStripMenuItemCloseGap200.Text = ".200";
 			// 
 			// toolStripMenuItemCloseGap300
 			// 
 			this.toolStripMenuItemCloseGap300.Name = "toolStripMenuItemCloseGap300";
-			this.toolStripMenuItemCloseGap300.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap300.Size = new System.Drawing.Size(95, 22);
 			this.toolStripMenuItemCloseGap300.Tag = ".300";
 			this.toolStripMenuItemCloseGap300.Text = ".300";
 			// 
 			// toolStripMenuItemCloseGap400
 			// 
 			this.toolStripMenuItemCloseGap400.Name = "toolStripMenuItemCloseGap400";
-			this.toolStripMenuItemCloseGap400.Size = new System.Drawing.Size(152, 22);
+			this.toolStripMenuItemCloseGap400.Size = new System.Drawing.Size(95, 22);
 			this.toolStripMenuItemCloseGap400.Tag = ".400";
 			this.toolStripMenuItemCloseGap400.Text = ".400";
 			// 
@@ -954,6 +954,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// toolStripMenuItem_deleteElements
 			// 
+			this.toolStripMenuItem_deleteElements.Enabled = false;
 			this.toolStripMenuItem_deleteElements.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripMenuItem_deleteElements.Name = "toolStripMenuItem_deleteElements";
 			this.toolStripMenuItem_deleteElements.ShortcutKeys = System.Windows.Forms.Keys.Delete;
