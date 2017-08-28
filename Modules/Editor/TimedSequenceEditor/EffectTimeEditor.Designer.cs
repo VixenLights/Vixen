@@ -99,7 +99,6 @@
 			this.txtStartTime.Enter += new System.EventHandler(this.txtStartTime_Enter);
 			this.txtStartTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyDown);
 			this.txtStartTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtStartTime_KeyUp);
-			this.txtStartTime.Leave += new System.EventHandler(this.txtStartTime_Leave);
 			// 
 			// txtDuration
 			// 
@@ -115,7 +114,6 @@
 			this.txtDuration.Enter += new System.EventHandler(this.txtDuration_Enter);
 			this.txtDuration.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDuration_KeyDown);
 			this.txtDuration.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtDuration_KeyUp);
-			this.txtDuration.Leave += new System.EventHandler(this.txtDuration_Leave);
 			// 
 			// toolTip
 			// 
@@ -137,7 +135,6 @@
 			this.txtEndTime.Enter += new System.EventHandler(this.txtEndTime_Enter);
 			this.txtEndTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyDown);
 			this.txtEndTime.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtEndTime_KeyUp);
-			this.txtEndTime.Leave += new System.EventHandler(this.txtEndTime_Leave);
 			// 
 			// label3
 			// 
