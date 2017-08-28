@@ -677,18 +677,23 @@ namespace Common.Controls.Timeline
 
 		public void DeleteSelectedMarks()
 		{
-			bool markFound = false;
-			foreach (TimeSpan mark in selectedMarks.Keys)
+
+			if (selectedMarks.Any())
 			{
-				if (mark == m_mark)
+				bool markFound = false;
+				foreach (TimeSpan mark in selectedMarks.Keys)
 				{
-					markFound = true;
-					break;
+					if (mark == m_mark)
+					{
+						markFound = true;
+						break;
+					}
 				}
-			}
-			if (!markFound)
+				if (!markFound)
 					selectedMarks.Add(m_mark, m_markDetails);
-			OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
+				OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
+			}
+			
 		}
 
 		protected override void OnMouseEnter(EventArgs e)
