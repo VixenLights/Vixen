@@ -145,7 +145,7 @@
 			this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel11.Controls.Add(this.toolStripUndo);
 			this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel11.Location = new System.Drawing.Point(950, 2);
+			this.panel11.Location = new System.Drawing.Point(950, 24);
 			this.panel11.Margin = new System.Windows.Forms.Padding(2);
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(125, 82);
@@ -156,7 +156,7 @@
 			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label14.Location = new System.Drawing.Point(951, 86);
+			this.label14.Location = new System.Drawing.Point(951, 0);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(123, 22);
 			this.label14.TabIndex = 3;
@@ -229,7 +229,7 @@
 			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label7.Location = new System.Drawing.Point(527, 86);
+			this.label7.Location = new System.Drawing.Point(527, 0);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(167, 22);
 			this.label7.TabIndex = 0;
@@ -394,7 +394,7 @@
 			this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel6.Controls.Add(this.buttonSelect);
 			this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel6.Location = new System.Drawing.Point(172, 4);
+			this.panel6.Location = new System.Drawing.Point(172, 26);
 			this.panel6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.panel6.Name = "panel6";
 			this.panel6.Size = new System.Drawing.Size(63, 78);
@@ -405,7 +405,7 @@
 			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label8.Location = new System.Drawing.Point(172, 86);
+			this.label8.Location = new System.Drawing.Point(172, 0);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(63, 22);
 			this.label8.TabIndex = 0;
@@ -518,12 +518,13 @@
 			this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label4.Location = new System.Drawing.Point(700, 86);
+			this.label4.Location = new System.Drawing.Point(700, 0);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(245, 22);
 			this.label4.TabIndex = 0;
 			this.label4.Text = "Templates";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label4.Click += new System.EventHandler(this.label4_Click);
 			// 
 			// buttonMultiString
 			// 
@@ -677,12 +678,13 @@
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label3.Location = new System.Drawing.Point(356, 86);
+			this.label3.Location = new System.Drawing.Point(356, 0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(165, 22);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Smart Objects";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label3.Click += new System.EventHandler(this.label3_Click);
 			// 
 			// buttonSemiCircle
 			// 
@@ -751,7 +753,7 @@
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label2.Location = new System.Drawing.Point(241, 86);
+			this.label2.Location = new System.Drawing.Point(241, 0);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(109, 22);
 			this.label2.TabIndex = 0;
@@ -890,7 +892,7 @@
 			this.panel2.Controls.Add(this.trackBarBackgroundAlpha);
 			this.panel2.Controls.Add(this.buttonSetBackground);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(3, 4);
+			this.panel2.Location = new System.Drawing.Point(3, 26);
 			this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(163, 78);
@@ -901,7 +903,7 @@
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label1.Location = new System.Drawing.Point(3, 86);
+			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(163, 22);
 			this.label1.TabIndex = 0;
@@ -1339,25 +1341,26 @@
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tlpToolBar.Controls.Add(this.label14, 6, 1);
-			this.tlpToolBar.Controls.Add(this.label4, 5, 1);
-			this.tlpToolBar.Controls.Add(this.label2, 2, 1);
-			this.tlpToolBar.Controls.Add(this.label1, 0, 1);
-			this.tlpToolBar.Controls.Add(this.panel11, 6, 0);
-			this.tlpToolBar.Controls.Add(this.panel2, 0, 0);
-			this.tlpToolBar.Controls.Add(this.panel6, 1, 0);
-			this.tlpToolBar.Controls.Add(this.label3, 3, 1);
-			this.tlpToolBar.Controls.Add(this.label8, 1, 1);
-			this.tlpToolBar.Controls.Add(this.label7, 4, 1);
-			this.tlpToolBar.Controls.Add(this.pnlBasicDrawing, 2, 0);
-			this.tlpToolBar.Controls.Add(this.pnlSmartObjects, 3, 0);
-			this.tlpToolBar.Controls.Add(this.panel4, 4, 0);
-			this.tlpToolBar.Controls.Add(this.panel5, 5, 0);
+			this.tlpToolBar.Controls.Add(this.panel11, 6, 1);
+			this.tlpToolBar.Controls.Add(this.panel2, 0, 1);
+			this.tlpToolBar.Controls.Add(this.panel6, 1, 1);
+			this.tlpToolBar.Controls.Add(this.pnlBasicDrawing, 2, 1);
+			this.tlpToolBar.Controls.Add(this.pnlSmartObjects, 3, 1);
+			this.tlpToolBar.Controls.Add(this.panel4, 4, 1);
+			this.tlpToolBar.Controls.Add(this.panel5, 5, 1);
+			this.tlpToolBar.Controls.Add(this.label1, 0, 0);
+			this.tlpToolBar.Controls.Add(this.label8, 1, 0);
+			this.tlpToolBar.Controls.Add(this.label2, 2, 0);
+			this.tlpToolBar.Controls.Add(this.label3, 3, 0);
+			this.tlpToolBar.Controls.Add(this.label7, 4, 0);
+			this.tlpToolBar.Controls.Add(this.label4, 5, 0);
+			this.tlpToolBar.Controls.Add(this.label14, 6, 0);
 			this.tlpToolBar.Location = new System.Drawing.Point(3, 3);
 			this.tlpToolBar.Name = "tlpToolBar";
 			this.tlpToolBar.RowCount = 2;
 			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tlpToolBar.Size = new System.Drawing.Size(1077, 108);
 			this.tlpToolBar.TabIndex = 21;
 			// 
@@ -1366,7 +1369,7 @@
 			this.pnlBasicDrawing.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pnlBasicDrawing.Controls.Add(this.tableLayoutPanel3);
 			this.pnlBasicDrawing.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlBasicDrawing.Location = new System.Drawing.Point(241, 3);
+			this.pnlBasicDrawing.Location = new System.Drawing.Point(241, 25);
 			this.pnlBasicDrawing.Name = "pnlBasicDrawing";
 			this.pnlBasicDrawing.Size = new System.Drawing.Size(109, 80);
 			this.pnlBasicDrawing.TabIndex = 23;
@@ -1376,7 +1379,7 @@
 			this.pnlSmartObjects.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.pnlSmartObjects.Controls.Add(this.tableLayoutPanel1);
 			this.pnlSmartObjects.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlSmartObjects.Location = new System.Drawing.Point(356, 3);
+			this.pnlSmartObjects.Location = new System.Drawing.Point(356, 25);
 			this.pnlSmartObjects.Name = "pnlSmartObjects";
 			this.pnlSmartObjects.Size = new System.Drawing.Size(165, 80);
 			this.pnlSmartObjects.TabIndex = 24;
@@ -1386,7 +1389,7 @@
 			this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel4.Controls.Add(this.tableLayoutPanel2);
 			this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel4.Location = new System.Drawing.Point(527, 3);
+			this.panel4.Location = new System.Drawing.Point(527, 25);
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(167, 80);
 			this.panel4.TabIndex = 25;
@@ -1396,7 +1399,7 @@
 			this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel5.Controls.Add(this.tableLayoutPanel4);
 			this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel5.Location = new System.Drawing.Point(700, 3);
+			this.panel5.Location = new System.Drawing.Point(700, 25);
 			this.panel5.Name = "panel5";
 			this.panel5.Size = new System.Drawing.Size(245, 80);
 			this.panel5.TabIndex = 26;
