@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using Common.Controls.Scaling;
 using Common.Resources.Properties;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -21,9 +22,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				else
 					icon = Resources.bullet_toggle_plus_16px;
 
-				int x = (IconArea.Width - icon.Width)/2;
-				int y = (IconArea.Height - icon.Height)/2;
-				e.Graphics.DrawImage(icon, new Point(x, y));
+				int x = (int)(IconArea.Width - icon.Width*ScalingTools.GetScaleFactor())/2;
+				int y = (int)(IconArea.Height - icon.Height*ScalingTools.GetScaleFactor())/2;
+				e.Graphics.DrawImage(icon, x, y);
 			}
 		}
 	}
