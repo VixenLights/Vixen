@@ -54,6 +54,13 @@ namespace VixenModules.Preview.VixenPreview {
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
+			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
+			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			redoButton.ButtonType = UndoButtonType.RedoButton;
+			tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			ThemeUpdateControls.UpdateControls(this);
 			panel10.BackColor = Color.Black;
 			foreach (Control c in panel10.Controls)
@@ -72,12 +79,6 @@ namespace VixenModules.Preview.VixenPreview {
 			label13.ForeColor = Color.Yellow;
 
 			this.ShowInTaskbar = false;
-			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
-			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
-		    undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-		    redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
-		    redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-		    redoButton.ButtonType = UndoButtonType.RedoButton;
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
@@ -620,22 +621,39 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void buttonShapeSelected(Control selectedButton)
 	    {
-			foreach (Control c in panel3.Controls)
-			{
-				if (c is Button)
-				{
-					c.BackColor = ThemeColorTable.BackgroundColor;
-				}
-			}
-			foreach (Control c in panel4.Controls)
-			{
-				if (c is Button)
-				{
-					c.BackColor = ThemeColorTable.BackgroundColor;
-				}
-			}
+			//foreach (Control c in pnlBasicDrawing.Controls)
+			//{
+			//	if (c is Button)
+			//	{
+			//		c.BackColor = ThemeColorTable.BackgroundColor;
+			//	}
+			//}
+			//foreach (Control c in pnlSmartObjects.Controls)
+			//{
+			//	if (c is Button)
+			//	{
+			//		c.BackColor = ThemeColorTable.BackgroundColor;
+			//	}
+			//}
+			ResetButtonBackground(pnlBasicDrawing);
+			ResetButtonBackground(pnlSmartObjects);
 			selectedButton.BackColor = ThemeColorTable.TextBoxBackgroundColor;
 	    }
+
+	    private void ResetButtonBackground(Control c)
+	    {
+		    if (c is Button)
+		    {
+			    c.BackColor = ThemeColorTable.BackgroundColor;
+		    }
+		    else
+		    {
+			    foreach (Control cControl in c.Controls)
+			    {
+				    ResetButtonBackground(cControl);
+			    }
+		    }
+		}
 
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
@@ -662,6 +680,11 @@ namespace VixenModules.Preview.VixenPreview {
 		        Data.LocationOffset = offsetForm.Offset;
 	        }
         }
+
+		private void label14_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 
 
