@@ -124,8 +124,8 @@ namespace VixenModules.Output.E131
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
 	        tabControlEX1.SelectedTab = tabPageEX1;
-	        tabControlEX1.SizeMode = TabSizeMode.FillToRight;
-	        SizeF size = ScalingTools.MeasureString(Font, "Advanced Options");
+	        tabControlEX1.SizeMode = TabSizeMode.Fixed;
+	        SizeF size = ScalingTools.MeasureString(Font, "Advanced Optionsss");
 	        tabControlEX1.ItemSize = size.ToSize();
 			univDGVN.EnableHeadersVisualStyles = false;
 			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
@@ -142,6 +142,7 @@ namespace VixenModules.Output.E131
 	        univDGVN.RowHeadersDefaultCellStyle.ForeColor = Color.Empty;
 			univDGVN.RowHeadersDefaultCellStyle.SelectionForeColor = Color.Empty;
 			univDGVN.RowHeadersDefaultCellStyle.SelectionBackColor = Color.Empty;
+			univDGVN.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			autoPopulateStateUpdate();
 
         }
