@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Common.Controls.Theme;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 
@@ -310,7 +311,7 @@ namespace Common.Controls.Timeline
 					//border.DashStyle = DashStyle.Dot;
 					border.Width = 1;
 					border.DashPattern = new float[] { 1.0F, 2.0F};
-					border.Color = Color.FromArgb(221,221,221);
+					border.Color = ThemeColorTable.ForeColor;
 					DrawBorder(g, includeLeft, includeRight, border, borderRectangle);
 				}
 			}

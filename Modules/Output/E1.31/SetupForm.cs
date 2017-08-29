@@ -124,6 +124,9 @@ namespace VixenModules.Output.E131
 			tabControlEX1.SelectedTabColor = ThemeColorTable.BackgroundColor;
 			tabControlEX1.TabColor = ThemeColorTable.BackgroundColor;
 	        tabControlEX1.SelectedTab = tabPageEX1;
+	        tabControlEX1.SizeMode = TabSizeMode.FillToRight;
+	        SizeF size = ScalingTools.MeasureString(Font, "Advanced Options");
+	        tabControlEX1.ItemSize = size.ToSize();
 			univDGVN.EnableHeadersVisualStyles = false;
 			univDGVN.BackgroundColor = ThemeColorTable.BackgroundColor;
 			univDGVN.ForeColor = ThemeColorTable.ForeColor;

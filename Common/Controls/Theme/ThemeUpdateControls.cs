@@ -24,6 +24,8 @@ namespace Common.Controls.Theme
 		public static void UpdateControls(Control control, List<Control> excludes = null)
 		{
 			control.Font = SystemFonts.MessageBoxFont;
+			control.ForeColor = ThemeColorTable.ForeColor;
+			control.BackColor = ThemeColorTable.BackgroundColor;
 			foreach (Control c in control.Controls)
 			{
 				if (excludes != null && excludes.Contains(c)) continue;
