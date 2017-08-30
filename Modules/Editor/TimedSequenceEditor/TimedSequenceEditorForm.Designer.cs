@@ -1197,7 +1197,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripMenuItemFindEffects.Name = "toolStripMenuItemFindEffects";
 			this.toolStripMenuItemFindEffects.Size = new System.Drawing.Size(234, 22);
-			this.toolStripMenuItemFindEffects.Text = "Find Effects";
+			this.toolStripMenuItemFindEffects.Text = "Find Effects or Layers";
 			this.toolStripMenuItemFindEffects.Click += new System.EventHandler(this.toolStripMenuItemFindEffects_Click);
 			// 
 			// toolsToolStripMenuItem
