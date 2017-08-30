@@ -173,6 +173,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Load_ColorPaletteFile();
 				PopulateColors();
 			}
+			else
+			{
+				//VIX-2163
+				listViewColors.LargeImageList = new ImageList { ColorDepth = ColorDepth.Depth32Bit, ImageSize = _imageSize };
+			}
 
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
