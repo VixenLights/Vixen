@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -208,6 +209,17 @@ namespace Common.Controls.Theme
 				}
 			}
 		}
+		
+		protected override void OnRenderItemImage(ToolStripItemImageRenderEventArgs e)
+		{
+			base.OnRenderItemImage(e);
+			var menuItem = e.Item as ToolStripMenuItem;
+			if (menuItem != null && menuItem.CheckOnClick && menuItem.Checked && e.ImageRectangle != Rectangle.Empty)
+			{
+				Pen p = new Pen(ThemeColorTable.HighlightColor, 1);
+				e.Graphics.DrawRectangle(p, 2, 0, e.ImageRectangle.Width + 5, e.ImageRectangle.Height + 5);
+			}
+		}
 
 		protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
 		{
@@ -222,7 +234,7 @@ namespace Common.Controls.Theme
 				{
 					image = CreateDisabledImage(image);
 				}
-
+				
 				e.Graphics.DrawImage(image, imageRect, new Rectangle(Point.Empty, imageRect.Size), GraphicsUnit.Pixel);
 			}
 
