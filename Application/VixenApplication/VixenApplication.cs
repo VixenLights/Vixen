@@ -81,7 +81,7 @@ namespace VixenApplication
 
 			_rootDataDirectory = _applicationData.DataFileDirectory;
 
-			if (!CreateLockFile())
+			if (IsProfileLocked(_rootDataDirectory) || !CreateLockFile())
 			{
 				var form = new MessageBoxForm("Profile is already in use or unable to the lock the profile.","Error",MessageBoxButtons.OK, SystemIcons.Error);
 				form.ShowDialog();
