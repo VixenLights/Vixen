@@ -10,7 +10,7 @@
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
     <!-- This is a start on extracting the colors to variables. This needs a lot more work. -->
-    <Color x:Key="ForeColor">#E6E6E6</Color>
+    <Color x:Key="ForeColor">#EBEBEB</Color>
     <Color x:Key="BackColor">#444444</Color>
     <Color x:Key="BorderColor">#888888</Color>
     

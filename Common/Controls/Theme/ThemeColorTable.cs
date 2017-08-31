@@ -7,7 +7,7 @@ namespace Common.Controls.Theme
 	{
 		//General
 		private static Color _backgroundColor = Color.FromArgb(68, 68, 68);
-		private static Color _foreColor = Color.FromArgb(230, 230, 230);
+		private static Color _foreColor = Color.FromArgb(235, 235, 235);
 		private static Color _inputBackColor = Color.FromArgb(90, 90, 90);
 		private static Color _highlightColor = Color.FromArgb(68, 68, 68);
 		private static Color _borderColor = Color.FromArgb(136, 136, 136);
