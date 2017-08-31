@@ -5,8 +5,12 @@ namespace Common.Controls.Theme
 {
 	public class ThemeColorTable : ProfessionalColorTable
 	{
-		//Form
+		//General
 		private static Color _backgroundColor = Color.FromArgb(68, 68, 68);
+		private static Color _foreColor = Color.FromArgb(235, 235, 235);
+		private static Color _inputBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _highlightColor = Color.FromArgb(68, 68, 68);
+		private static Color _borderColor = Color.FromArgb(136, 136, 136);
 
 		//Buttons
 		private static Color _buttonBorderColor = Color.FromArgb(40, 40, 40);
@@ -16,27 +20,23 @@ namespace Common.Controls.Theme
 
 		//Text
 		private static Color _foreColorDisabled = Color.FromArgb(119, 119, 119);
-		private static Color _foreColor = Color.FromArgb(221, 221, 221);
 
 		//TextBoxes
-		private static Color _textBoxBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _textBoxBackColor = _inputBackColor;
 
 		//ComboBoxes
-		private static Color _comboBoxBackColor = Color.FromArgb(90, 90, 90);
-		private static Color _comboBoxHighlightColor = Color.FromArgb(68, 68, 68);
-
-		//GroupBox
-		private static Color _borderColor = Color.FromArgb(136, 136, 136);
+		private static Color _comboBoxBackColor = _inputBackColor;
+		private static Color _comboBoxHighlightColor = _highlightColor;
 
 		//ListBoxes
-		private static Color _listBoxBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _listBoxBackColor = _inputBackColor;
 
 		//NumericBoxes
-		private static Color _numericBackColor = Color.FromArgb(90, 90, 90);
+		private static Color _numericBackColor = _inputBackColor;
 
 		//MenuStrips
-		private static Color _menuMenuSelectedHighlightBackColor = Color.FromArgb(68, 68, 68);
-		private static Color _highlightColor = Color.FromArgb(90, 90, 90);
+		private static Color _menuMenuSelectedHighlightBackColor = _highlightColor;
+		
 
 		private static Color _selectionHighlightColor = _foreColor;
 
@@ -50,9 +50,9 @@ namespace Common.Controls.Theme
 		//Sequence TimeLine
 		private static Color _timeLinePanel1BackColor = Color.FromArgb(40, 40, 40);
 		private static Color _timeLineGridColor = Color.FromArgb(0, 0, 0);
-		private static Color _timeLineEffectsBackColor = Color.FromArgb(68, 68, 68);
-		private static Color _timeLineForeColor = Color.FromArgb(221, 221, 221);
-		private static Color _timeLineLabelBackColor = Color.FromArgb(68, 68, 68);
+		private static Color _timeLineEffectsBackColor = _highlightColor;
+		private static Color _timeLineForeColor = _foreColor;
+		private static Color _timeLineLabelBackColor = _highlightColor;
 
 		//Forms
 		public static Color BackgroundColor

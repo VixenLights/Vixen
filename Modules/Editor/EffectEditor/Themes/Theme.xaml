@@ -9,14 +9,24 @@
   
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
+    <!-- This is a start on extracting the colors to variables. This needs a lot more work. -->
+    <Color x:Key="ForeColor">#EBEBEB</Color>
+    <Color x:Key="BackColor">#444444</Color>
+    <Color x:Key="BorderColor">#888888</Color>
+    
+    <SolidColorBrush x:Key="ForeColorBrush" Color="{StaticResource ForeColor}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BackColorBrush" Color="{StaticResource BackColor}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}"></SolidColorBrush>
+    
+    
     <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
 		<Setter Property="OverridesDefaultStyle" Value="True"/>
-		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type ToolTip}" >
 					<StackPanel Margin="7,1" >
-						<Border Background="#444444" CornerRadius="3" BorderThickness="1" BorderBrush="#888888">
+						<Border Background="{StaticResource BackColorBrush}" CornerRadius="3" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}">
 							<ContentPresenter Margin="7" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 						</Border>
 					</StackPanel>
@@ -26,7 +36,7 @@
 		<Setter Property="ContentTemplate">
 			<Setter.Value>
 				<DataTemplate>
-					<TextBlock TextWrapping="Wrap" MaxWidth="400" TextAlignment="Left" Text="{Binding}" Foreground="#DDD" Background="#444444"/>
+					<TextBlock TextWrapping="Wrap" MaxWidth="400" TextAlignment="Left" Text="{Binding}" Foreground="{StaticResource ForeColorBrush}" Background="{StaticResource BackColorBrush}"/>
 				</DataTemplate>
 			</Setter.Value>
 		</Setter>
@@ -50,7 +60,7 @@
     <Setter Property="SnapsToDevicePixels" Value="true"/>
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <!--<Setter Property="FontSize" Value="7.5pt"/>-->
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -60,7 +70,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Button}">
           <Grid>
-            <Border x:Name="Background" CornerRadius="3" BorderBrush="#888888" BorderThickness="0,1,0,0">
+            <Border x:Name="Background" CornerRadius="3" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,1,0,0">
               <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                   <GradientStop Offset="0.0" Color="#585858" />
@@ -84,7 +94,7 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <ColorAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#888888" Duration="0:0:0.1" />
+                    <ColorAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="{StaticResource BorderColor}" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].(GradientStop.Color)" To="#686868" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Background" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[1].(GradientStop.Color)" To="#282828" Duration="0:0:0.1" />
                   </Storyboard>
@@ -151,7 +161,7 @@
     <Setter Property="SnapsToDevicePixels" Value="true"/>
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -195,19 +205,19 @@
 	<!-- Label -->
 	
 	<Style TargetType="{x:Type Label}">
-		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 	</Style>
 
 	<!-- ListView -->
 
     <Style TargetType="{x:Type ListView}">
-        <Setter Property="Foreground" Value="#DDD"/>
+        <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="Background" Value="#FF333333"/>
 		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
 
 	<Style TargetType="{x:Type ItemsControl}">
-		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="Background" Value="#FF333333"/>
 		<Setter Property="BorderThickness" Value="1"/>
 		
@@ -285,7 +295,7 @@
 	<Style TargetType="{x:Type TextBox}">
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
 		<Setter Property="OverridesDefaultStyle" Value="True"/>
-		<Setter Property="Foreground" Value="#DDD"/>
+		<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
 		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 		<Setter Property="MinWidth" Value="200"/>
@@ -296,14 +306,14 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type TextBoxBase}">
 					<Grid>
-						<Border x:Name="Background" Background="#444444" CornerRadius="2" />
+						<Border x:Name="Background" Background="{StaticResource BackColorBrush}" CornerRadius="2" />
 						<Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="2" />
 						<Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="2" />
 						<ScrollViewer Margin="0,2,0,0" x:Name="PART_ContentHost" />
 					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Foreground" Value="#DDD"/>
+							<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 							<Setter Property="Opacity" Value="1"/>
 							<Setter Property="IsTabStop" Value="False"/>
 						</Trigger>
@@ -321,7 +331,7 @@
   <Style TargetType="{x:Type PasswordBox}">
     <Setter Property="SnapsToDevicePixels" Value="True"/>
     <Setter Property="OverridesDefaultStyle" Value="True"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="MinWidth" Value="100"/>
@@ -331,7 +341,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type PasswordBox}">
           <Grid>
-            <Border x:Name="Bg" Background="#444444" CornerRadius="2" />
+            <Border x:Name="Bg" Background="{StaticResource BackColorBrush}" CornerRadius="2" />
             <Border x:Name="Hl" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="2" />
             <Border x:Name="Sh" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="2" />
             <ScrollViewer Margin="0,2,0,0" x:Name="PART_ContentHost" />
@@ -713,7 +723,7 @@
         <ColumnDefinition Width="20" />
       </Grid.ColumnDefinitions>
       <Grid Grid.ColumnSpan="2">
-        <Border x:Name="Bg" CornerRadius="3" BorderBrush="#888888" BorderThickness="0,1,0,0">
+        <Border x:Name="Bg" CornerRadius="3" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,1,0,0">
           <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
               <GradientStop Offset="0.0" Color="#585858" />
@@ -739,7 +749,7 @@
         <Trigger.EnterActions>
           <BeginStoryboard>
             <Storyboard>
-              <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#888888" Duration="0:0:0.1" />
+              <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="{StaticResource BorderColor}" Duration="0:0:0.1" />
               <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].(GradientStop.Color)" To="#686868" Duration="0:0:0.1" />
               <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[1].(GradientStop.Color)" To="#282828" Duration="0:0:0.1" />
             </Storyboard>
@@ -773,7 +783,7 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
     <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="MinWidth" Value="70"/>
     <!--<Setter Property="ItemContainerStyle" Value="{DynamicResource ComboBoxItem}"/>-->
@@ -973,7 +983,7 @@
     <Setter Property="SnapsToDevicePixels" Value="true"/>
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <!--<Setter Property="FontSize" Value="7.5pt"/>-->
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="MinWidth" Value="20"/>
@@ -984,7 +994,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ToggleButton}">
           <Grid>
-            <Border x:Name="Bg" CornerRadius="3" BorderBrush="#888888" BorderThickness="0,1,0,0">
+            <Border x:Name="Bg" CornerRadius="3" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,1,0,0">
               <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                   <GradientStop Offset="0.0" Color="#585858" />
@@ -1008,7 +1018,7 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#888888" Duration="0:0:0.1" />
+                    <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="{StaticResource BorderColor}" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].(GradientStop.Color)" To="#686868" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[1].(GradientStop.Color)" To="#282828" Duration="0:0:0.1" />
                   </Storyboard>
@@ -1078,7 +1088,7 @@
     <Setter Property="SnapsToDevicePixels" Value="true"/>
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Foreground" Value="#DDD"/>
+    <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     <Setter Property="FontSize" Value="7.5pt"/>
     <Setter Property="MinHeight" Value="20"/>
     <Setter Property="MinWidth" Value="70"/>
@@ -1089,7 +1099,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ToggleButton}">
           <Grid>
-            <Border x:Name="Bg" CornerRadius="3" BorderBrush="#888888" BorderThickness="0,1,0,0">
+            <Border x:Name="Bg" CornerRadius="3" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,1,0,0">
               <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                   <GradientStop Offset="0.0" Color="#585858" />
@@ -1113,7 +1123,7 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#888888" Duration="0:0:0.1" />
+                    <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="{StaticResource BorderColorBrush}" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].(GradientStop.Color)" To="#686868" Duration="0:0:0.1" />
                     <ColorAnimation Storyboard.TargetName="Bg" Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[1].(GradientStop.Color)" To="#282828" Duration="0:0:0.1" />
                   </Storyboard>
@@ -1182,7 +1192,7 @@
 	<Style TargetType="{x:Type controls:ToggleSwitch}">
 		<Setter Property="Background" Value="Black"/>
 		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="CheckedForeground" Value="#DDD"/>
+		<Setter Property="CheckedForeground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="CornerRadius" Value="3"/>
 		<!--<Setter Property="FontSize" Value="7.5pt"/>
 		<Setter Property="FontWeight" Value="Normal"/>-->
@@ -1190,7 +1200,7 @@
 		<Setter Property="ThumbCornerRadius" Value="3"/>
 		<Setter Property="ThumbGlowColor" Value="#FCFCF6"/>
 		<Setter Property="ThumbShineCornerRadius" Value="6,6,5,5"/>
-		<Setter Property="UncheckedForeground" Value="#DDD"/>
+		<Setter Property="UncheckedForeground" Value="{StaticResource ForeColorBrush}"/>
 		<Setter Property="BorderBrush">
 			<Setter.Value>
 				<LinearGradientBrush EndPoint="0,0"
@@ -1261,7 +1271,7 @@
       </Setter.Value>
     </Setter>
     <Setter Property="ItemsBackground" Value="#FF333333"/>
-    <Setter Property="ItemsForeground" Value="#DDDDDD"/>
+    <Setter Property="ItemsForeground" Value="{StaticResource ForeColorBrush}"/>
   </Style>
   
   <!-- TabbedLayout -->

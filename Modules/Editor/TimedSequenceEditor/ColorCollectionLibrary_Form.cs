@@ -39,13 +39,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
 			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
 			buttonNewCollection.Image = Tools.GetIcon(Resources.add, iconSize);
 			buttonNewCollection.Text = "";
 			buttonDeleteCollection.Image = Tools.GetIcon(Resources.minus, iconSize);
 			buttonDeleteCollection.Text = "";
+			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
 			ColorCollections = collections;
 			PopulateCollectionList();
