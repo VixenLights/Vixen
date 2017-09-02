@@ -176,5 +176,10 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
 		}
+
+		private void DimmingCurveHelper_HelpButtonClicked(object sender, CancelEventArgs e)
+		{
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Patching);
+		}
 	}
 }

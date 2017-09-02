@@ -41,7 +41,9 @@ namespace Common.VixenHelp
 			[Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/nutcracker-effects/")]
 			Effect_Nutcracker,
 			[Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/")]
-			Setup_Main
+			Setup_Main,
+	        [Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/link-elements-to-controllers/")]
+	        Patching
 		}
 		
 		public static void ShowHelp(HelpStrings helpString)
