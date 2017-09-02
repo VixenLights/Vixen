@@ -36,6 +36,7 @@
 			this.radioButtonExistingAddNew = new System.Windows.Forms.RadioButton();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
+			this.label4 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -43,22 +44,22 @@
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(28, 35);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(346, 15);
+			this.label1.Size = new System.Drawing.Size(319, 15);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "This will set up a dimming curve filter for each selected element.";
+			this.label1.Text = "This will set up a dimming curve for each selected element.";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(28, 61);
+			this.label2.Location = new System.Drawing.Point(28, 67);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(295, 15);
+			this.label2.Size = new System.Drawing.Size(430, 15);
 			this.label2.TabIndex = 1;
-			this.label2.Text = "Use the button below to configure the dimming curve.";
+			this.label2.Text = "Use the button below to configure the dimming curve for the selected elements.";
 			// 
 			// buttonSetupCurve
 			// 
-			this.buttonSetupCurve.Location = new System.Drawing.Point(182, 100);
+			this.buttonSetupCurve.Location = new System.Drawing.Point(189, 110);
 			this.buttonSetupCurve.Name = "buttonSetupCurve";
 			this.buttonSetupCurve.Size = new System.Drawing.Size(152, 35);
 			this.buttonSetupCurve.TabIndex = 2;
@@ -138,12 +139,22 @@
 			this.buttonOk.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonOk.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(138, 92);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(254, 15);
+			this.label4.TabIndex = 25;
+			this.label4.Text = "Hint: Use a library curve to make editing easier.";
+			// 
 			// DimmingCurveHelper
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.ClientSize = new System.Drawing.Size(518, 338);
+			this.Controls.Add(this.label4);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
 			this.Controls.Add(this.radioButtonExistingAddNew);
@@ -155,12 +166,16 @@
 			this.Controls.Add(this.label1);
 			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.HelpButton = true;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(534, 376);
 			this.Name = "DimmingCurveHelper";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Dimming Curve Configuration";
+			this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.DimmingCurveHelper_HelpButtonClicked);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -177,5 +192,6 @@
 		private System.Windows.Forms.RadioButton radioButtonExistingAddNew;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
+		private System.Windows.Forms.Label label4;
 	}
 }
