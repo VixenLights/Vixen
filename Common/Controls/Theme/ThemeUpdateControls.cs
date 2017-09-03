@@ -40,12 +40,17 @@ namespace Common.Controls.Theme
 					Button btn = c as Button;
 					btn.FlatStyle = FlatStyle.Flat;
 					btn.FlatAppearance.BorderSize = 0;
-					if (btn.BackgroundImage==null && btn.Image==null)
+					if (btn.BackgroundImage == null && btn.Image == null)
 					{
 						btn.BackgroundImageLayout = ImageLayout.Stretch;
 						btn.BackgroundImage = Resources.Properties.Resources.ButtonBackgroundImage;
 						btn.BackColor = Color.Transparent;
 						btn.ForeColor = ThemeColorTable.ForeColor;
+					}
+					else
+					{
+						btn.FlatAppearance.MouseOverBackColor = Color.Transparent;
+						btn.FlatAppearance.MouseDownBackColor = Color.Transparent;
 					}
 				}
 				if (c is TextBox & !c.ToString().Contains("UpDown"))
