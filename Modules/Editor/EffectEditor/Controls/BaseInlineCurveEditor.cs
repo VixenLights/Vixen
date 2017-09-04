@@ -16,7 +16,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 	{
 		private static readonly Type ThisType = typeof(BaseInlineCurveEditor);
 		private Image _image;
-		private Canvas _canvas;
+		protected Canvas Canvas;
 		private SliderPoint _levelPoint;
 		private ToolTip _toolTip;
 
@@ -51,7 +51,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			var template = Template;
 			_image = (Image)template.FindName("CurveImage", this);
-			_canvas = (Canvas)Template.FindName("FaderCanvas", this);
+			Canvas = (Canvas)Template.FindName("FaderCanvas", this);
 			AddLevelSlider();
 			OnCurveValueChanged();
 		}
@@ -205,13 +205,13 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
 			{
-				_canvas.Visibility = Visibility.Visible;
+				Canvas.Visibility = Visibility.Visible;
 			}
 		}
 
 		protected override void OnMouseLeave(MouseEventArgs e)
 		{
-			_canvas.Visibility = Visibility.Collapsed;
+			Canvas.Visibility = Visibility.Collapsed;
 		}
 
 		/// <summary>
@@ -256,11 +256,11 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
 			{
-				_canvas.Visibility = Visibility.Visible;
+				Canvas.Visibility = Visibility.Visible;
 			}
 			else
 			{
-				_canvas.Visibility = Visibility.Collapsed;
+				Canvas.Visibility = Visibility.Collapsed;
 			}
 
 			Point position = e.GetPosition(this);
@@ -391,15 +391,15 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			if (points.Count == 2 && points[0].Y == points[1].Y)
 			{
-				_levelPoint = new SliderPoint(GetCurveValue().Points[0].Y / 100.0, _canvas, true);
+				_levelPoint = new SliderPoint(GetCurveValue().Points[0].Y / 100.0, Canvas, true);
 			}
 			else
 			{
-				_levelPoint = new SliderPoint(0.0, _canvas, true);
+				_levelPoint = new SliderPoint(0.0, Canvas, true);
 			}
 			
 
-			if (_levelPoint.Center >= 0 && _levelPoint.Center <= _canvas.Width)
+			if (_levelPoint.Center >= 0 && _levelPoint.Center <= Canvas.Width)
 			{
 				OnAddItem(_levelPoint);
 			}
@@ -424,14 +424,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void OnAddItem(SliderPoint sliderPoint)
 		{
-			sliderPoint.Parent = _canvas;
+			sliderPoint.Parent = Canvas;
 			sliderPoint.SliderShape.Style = SliderStyle;
 			sliderPoint.PropertyChanged += LevelPoint_PropertyChanged;
 			sliderPoint.DragCompleted += SliderPoint_DragCompleted;
 			
 			try
 			{
-				_canvas.Children.Add(sliderPoint.SliderShape);
+				Canvas.Children.Add(sliderPoint.SliderShape);
 			}
 			catch { }
 		}

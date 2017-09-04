@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using NLog;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
@@ -81,6 +82,22 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#endregion Property Changed Callbacks
 
+		protected override void OnGotMouseCapture(MouseEventArgs e)
+		{
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
+			{
+				Canvas.Visibility = Visibility.Visible;
+			}
+		}
 
+		protected override void OnLostMouseCapture(MouseEventArgs e)
+		{
+			Canvas.Visibility = Visibility.Collapsed;
+		}
+
+		protected override void OnMouseLeave(MouseEventArgs e)
+		{
+		
+		}
 	}
 }
