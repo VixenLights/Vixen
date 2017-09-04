@@ -90,6 +90,7 @@
 
                     <StackPanel Name="CurveContainer"  VerticalAlignment="Center" Margin="0,5,0,5" 
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
+                        
                         <Border BorderThickness="1" BorderBrush="#888888">
                             <Grid>
                                 <Image Name="CurveImage"  Source="{Binding Value.Curve, RelativeSource={RelativeSource TemplatedParent}, 
@@ -116,7 +117,7 @@
                         </Border>
                         <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,1"
                                 Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
-                                Visibility="{Binding Value, Converter={StaticResource CurveIsLibraryToVisibilityConverter}}">
+                                Visibility="Collapsed">
                             <Canvas.Background>
                                 <VisualBrush Opacity="1"></VisualBrush>
                             </Canvas.Background>
