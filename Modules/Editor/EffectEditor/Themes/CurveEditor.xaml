@@ -59,7 +59,7 @@
 									   Visibility="{Binding Value, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
                             </Grid>
                         </Border>
-                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,1"
+                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,3"
                                 Width="{Binding Path=ActualWidth, ElementName=Container, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                 Visibility="Collapsed">
                             <Canvas.Background>
@@ -88,7 +88,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:InlineGradientPairCurveEditor}">
 
-                    <StackPanel Name="CurveContainer"  VerticalAlignment="Center" Margin="0,5,0,5" 
+                    <StackPanel Name="CurveContainer"  VerticalAlignment="Center" Margin="0,5,0,5" Background="Transparent"
                                 Width="{Binding Path=ActualWidth, ElementName=CollectionContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='-25'}">
                         
                         <Border BorderThickness="1" BorderBrush="#888888">
@@ -115,7 +115,7 @@
 									   Visibility="{Binding Value.Curve, Converter={StaticResource ToolTipVisibilityConverter}}"></Image>
                             </Grid>
                         </Border>
-                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,1"
+                        <Canvas x:Name="FaderCanvas" Height="10" Margin="0,3,0,3"
                                 Width="{Binding Path=ActualWidth, ElementName=CurveContainer, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"
                                 Visibility="Collapsed">
                             <Canvas.Background>

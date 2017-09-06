@@ -53,7 +53,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				return;
 			if (e.NewValue == null)
 			{
-				Logging.Warn("Null GradinePair presented!");
+				Logging.Warn("Null Gradient Pair presented!");
 				return;
 			}
 			inlineCurveEditor.OnCurveValueChanged();
@@ -82,22 +82,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#endregion Property Changed Callbacks
 
-		protected override void OnGotMouseCapture(MouseEventArgs e)
-		{
-			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
-			{
-				Canvas.Visibility = Visibility.Visible;
-			}
-		}
-
-		protected override void OnLostMouseCapture(MouseEventArgs e)
-		{
-			Canvas.Visibility = Visibility.Collapsed;
-		}
-
-		protected override void OnMouseLeave(MouseEventArgs e)
-		{
 		
-		}
+		
 	}
 }
