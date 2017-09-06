@@ -1239,7 +1239,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
 				//The sequence loader now adds the media to the effects on sequences it loads so we don't have to do it here.
-				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData, false)));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData.ToList(), false)));
 
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
@@ -3962,6 +3962,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (EffectNode node in nodes)
 			{
+				if (node.StartTime > _sequence.Length)
+				{
+					Logging.Warn("Effect start time {0} is beyond the sequence end time {1}. Dropping the effect.", node.StartTime, _sequence.Length);
+					_sequence.RemoveData(node);
+					continue;
+				}
+				if (node.EndTime > _sequence.Length)
+				{
+					Logging.Warn("Effect end time {0} is beyond the sequence end time {1}. Adjusting the effect length to fit.", node.StartTime, _sequence.Length);
+					if (node.Effect != null)
+					{
+						node.Effect.TimeSpan = _sequence.Length - node.StartTime;
+					}
+				}
 				if (assignMedia && node.Effect.SupportsMedia)
 				{
 					node.Effect.Media = Sequence.SequenceData.Media;
