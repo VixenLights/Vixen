@@ -1713,7 +1713,7 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						//try to associate the template to the nodes by suffix for Previewsingle types
 
-						var children = elementsForm.SelectedNode.GetLeafEnumerator().ToDictionary(x => x.Name);
+						var children = elementsForm.SelectedNode.GetLeafEnumerator().GroupBy(l => l.Name).Select(x => x.FirstOrDefault()).ToDictionary(x => x.Name);
 						foreach (var previewBaseShape in newDisplayItem.Shape.Strings)
 						{
 							if (previewBaseShape is PreviewSingle)
