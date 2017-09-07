@@ -1718,7 +1718,7 @@ namespace VixenModules.Preview.VixenPreview
 						{
 							if (previewBaseShape is PreviewSingle)
 							{
-								var element = children.Keys.FirstOrDefault(x => x.EndsWith(previewBaseShape.Name));
+								var element = children.Keys.FirstOrDefault(x => x.Contains(previewBaseShape.Name));
 								if (element != null)
 								{
 									var pixel = previewBaseShape.Pixels.FirstOrDefault();
