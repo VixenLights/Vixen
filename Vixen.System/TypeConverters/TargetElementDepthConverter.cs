@@ -47,13 +47,38 @@ namespace Vixen.TypeConverters
 			int depth = 0;
 			if (context != null)
 			{
-				IEffect effect = (IEffect) context.Instance;
-
-				if (effect.TargetNodes.FirstOrDefault() != null)
+				if (context.Instance is Array)
 				{
-					//IEnumerable<ElementNode> leafs = effect.TargetNodes.SelectMany(x => x.GetLeafEnumerator());
-					depth = effect.TargetNodes.FirstOrDefault().GetMaxChildDepth();
+					IEffect[] effects = context.Instance as IEffect[];
+
+					if (effects != null)
+					{
+						int tempDepth = Int32.MaxValue;
+						foreach (var effect in effects)
+						{
+							var node = effect.TargetNodes.FirstOrDefault();
+							if (node != null)
+							{
+								tempDepth = Math.Min(node.GetMaxChildDepth(), tempDepth);
+							}
+						}
+						if (tempDepth < Int32.MaxValue)
+						{
+							depth = tempDepth;
+						}
+					}
+					
 				}
+				else
+				{
+					IEffect effect = (IEffect)context.Instance;
+					var node = effect.TargetNodes.FirstOrDefault();
+					if (node != null)
+					{
+						depth = node.GetMaxChildDepth();
+					}
+				}
+				
 			}
 
 			PropertyDescriptor propertyDescriptor = context.PropertyDescriptor;

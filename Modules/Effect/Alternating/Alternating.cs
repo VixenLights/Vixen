@@ -225,7 +225,6 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[MergableProperty(false)]
 		public int DepthOfEffect
 		{
 			get { return _data.DepthOfEffect; }
