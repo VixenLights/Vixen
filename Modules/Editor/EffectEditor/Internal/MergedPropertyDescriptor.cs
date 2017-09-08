@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using Vixen.Module.Effect;
+using Vixen.TypeConverters;
 
 namespace VixenModules.Editor.EffectEditor.Internal
 {
@@ -241,6 +242,12 @@ namespace VixenModules.Editor.EffectEditor.Internal
 				else if (((obj2 != null) || (obj3 != null)) && ((obj2 == null) || !obj2.Equals(obj3)))
 				{
 					allEqual = false;
+					//This is a bit wonky, but we want certain type that use drop down editors to require a selection to 
+					//change the value.
+					if (Converter is TargetElementDepthConverter || obj2 is Enum)
+					{
+						return null;
+					}
 					return obj2;
 				}
 			}

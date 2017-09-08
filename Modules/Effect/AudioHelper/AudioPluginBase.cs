@@ -315,7 +315,6 @@ namespace VixenModules.Effect.AudioHelp
 		[ProviderDescription(@"Depth")]
 		[TypeConverter(typeof(TargetElementDepthConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[MergableProperty(false)]
 		public virtual int DepthOfEffect
 		{
 			get { return Data.DepthOfEffect; }
