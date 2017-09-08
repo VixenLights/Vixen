@@ -19,18 +19,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		public TimelineControl TimelineControl { get; set; }
 
-		public TimedSequence Sequence { get; set; }
+		private readonly SequenceLayers _layerManager;
 
-		private readonly SequenceLayers _sequenceLayers;
-
-		public FindEffectForm(TimelineControl timelineControl, TimedSequence sequence)
+		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			Sequence = sequence;
-			_sequenceLayers = Sequence.GetSequenceLayerManager();
+			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
 			TimelineControl = timelineControl;
@@ -41,6 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			listViewEffectStartTime.ColumnAutoSize();
 			listViewEffectStartTime.SetLastColumnWidth();
 			listViewEffectStartTime.EndUpdate();
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		#region Methods
@@ -68,7 +63,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						else
 						{
 							if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
-							     _sequenceLayers.GetLayer(element.EffectNode).LayerName != comboBoxAvailableEffect.SelectedItem.ToString()))
+							     _layerManager.GetLayer(element.EffectNode).LayerName != comboBoxAvailableEffect.SelectedItem.ToString()))
 								continue;
 							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
 							elements.Add(element);
@@ -98,7 +93,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			item.Text = element.Row.RowLabel.Name;
 			item.SubItems.Add(element.StartTime.ToString());
 			item.SubItems.Add(comboBoxFind.SelectedIndex == 0
-				? _sequenceLayers.GetLayer(element.EffectNode).LayerName
+				? _layerManager.GetLayer(element.EffectNode).LayerName
 				: element.EffectNode.Effect.EffectName);
 			item.Tag = element; 
 			listViewEffectStartTime.Items.Add(item);
@@ -122,9 +117,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					else
 					{
-						if (uniqueStrings.Contains(_sequenceLayers.GetLayer(effect.EffectNode).LayerName)) continue;
-						uniqueStrings.Add(_sequenceLayers.GetLayer(effect.EffectNode).LayerName);
-						comboBoxAvailableEffect.Items.Add(_sequenceLayers.GetLayer(effect.EffectNode).LayerName);
+						if (uniqueStrings.Contains(_layerManager.GetLayer(effect.EffectNode).LayerName)) continue;
+						uniqueStrings.Add(_layerManager.GetLayer(effect.EffectNode).LayerName);
+						comboBoxAvailableEffect.Items.Add(_layerManager.GetLayer(effect.EffectNode).LayerName);
 					}
 				}
 			comboBoxAvailableEffect.Sorted = true; //sort effects in combobox
