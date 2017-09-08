@@ -50,6 +50,9 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Tools _currentTool = Tools.Select;
 
+		internal string ItemName = String.Empty;
+		internal int ItemIndex = 0;
+
 
 		public DisplayMoveType Type { get; private set; }
 
@@ -659,6 +662,10 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								Shape = new PreviewSingle(translatedPoint, elementsForm.SelectedNode, ZoomLevel)
 							};
+							if (ItemName != String.Empty)
+							{
+								newDisplayItem.Shape.Name = ItemName + "-" + ItemIndex++;
+							}
 						}
 						else if (_currentTool == Tools.Ellipse)
 						{

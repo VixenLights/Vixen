@@ -8,6 +8,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -17,6 +18,7 @@ using Vixen.Sys;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
+using Cursors = System.Windows.Forms.Cursors;
 
 namespace VixenModules.Preview.VixenPreview {
 	public partial class VixenPreviewSetup3 : BaseForm
@@ -187,8 +189,10 @@ namespace VixenModules.Preview.VixenPreview {
 	    {
 		    Button button = sender as Button;
 		    buttonShapeSelected(button);
-		    //reenableToolButtons();
-
+			//reenableToolButtons();
+		    previewForm.Preview.ItemIndex = 1;
+		    previewForm.Preview.ItemName = String.Empty;
+		   
 		    // There must be a way to iterate through an enum so we don't have to do all this crap...
 
 		    // Select Button
@@ -197,6 +201,31 @@ namespace VixenModules.Preview.VixenPreview {
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Select;
 			else if (button == buttonDrawPixel)
 			{
+				if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
+				{
+					using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
+					{
+						if (textDialog.ShowDialog() == DialogResult.OK)
+						{
+							if (textDialog.Response != string.Empty)
+							{
+								previewForm.Preview.ItemName = textDialog.Response;
+							}
+						}
+					}
+
+					if (previewForm.Preview.ItemName != String.Empty)
+					{
+						using (NumberDialog numberDialog = new NumberDialog("Item Index", "Item Start Index", 1, 1))
+						{
+							if (numberDialog.ShowDialog() == DialogResult.OK)
+							{
+								previewForm.Preview.ItemIndex = numberDialog.Value;
+							}
+						}
+					}
+
+				}
 				DrawShape = "Pixel";
 				previewForm.Preview.CurrentTool = VixenPreviewControl.Tools.Single;
 			}
