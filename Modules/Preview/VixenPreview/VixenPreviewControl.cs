@@ -664,7 +664,7 @@ namespace VixenModules.Preview.VixenPreview
 							};
 							if (ItemName != String.Empty)
 							{
-								newDisplayItem.Shape.Name = ItemName + "-" + ItemIndex++;
+								newDisplayItem.Shape.Name = ItemName + ItemIndex++;
 							}
 						}
 						else if (_currentTool == Tools.Ellipse)
