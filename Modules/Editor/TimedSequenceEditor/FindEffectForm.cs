@@ -8,6 +8,8 @@ using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
 using Vixen.Sys;
+using Vixen.Sys.LayerMixing;
+using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 
@@ -17,21 +19,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	{
 		public TimelineControl TimelineControl { get; set; }
 
-		public FindEffectForm(TimelineControl timelineControl)
+		private readonly SequenceLayers _layerManager;
+
+		public FindEffectForm(TimelineControl timelineControl, SequenceLayers layerManager)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
+			_layerManager = layerManager;
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			Icon = Resources.Icon_Vixen3;
 			TimelineControl = timelineControl;
-			GetAllEffects();
+
+			comboBoxFind.SelectedIndex = 0;
 
 			listViewEffectStartTime.BeginUpdate();
 			listViewEffectStartTime.ColumnAutoSize();
 			listViewEffectStartTime.SetLastColumnWidth();
 			listViewEffectStartTime.EndUpdate();
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		#region Methods
@@ -48,10 +52,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					foreach (Element element in row)
 					{
-						//only unique effects will be added as there is no point adding the same effect just becasue it's in a different Element group
-						if ((!uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) &&
-							 element.EffectNode.Effect.EffectName == comboBoxAvailableEffect.SelectedItem.ToString()))
+						if (comboBoxFind.SelectedIndex == 0) //0 is to find effects and 1 will find layers
 						{
+							//only unique effects will be added as there is no point adding the same effect just becasue it's in a different Element group
+							if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
+							     element.EffectNode.Effect.EffectName != comboBoxAvailableEffect.SelectedItem.ToString())) continue;
+							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
+							elements.Add(element);
+						}
+						else
+						{
+							if ((uniqueStrings.Contains(element.EffectNode.Effect.InstanceId.ToString()) ||
+							     _layerManager.GetLayer(element.EffectNode).LayerName != comboBoxAvailableEffect.SelectedItem.ToString()))
+								continue;
 							uniqueStrings.Add(element.EffectNode.Effect.InstanceId.ToString());
 							elements.Add(element);
 						}
@@ -77,13 +90,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AddElementToListView(Element element)
 		{
 			ListViewItem item = new ListViewItem();
-			item.Text = element.Row.RowLabel.Name;//  element.EffectNode.Effect.TargetNodes[0].ToString();
+			item.Text = element.Row.RowLabel.Name;
 			item.SubItems.Add(element.StartTime.ToString());
+			item.SubItems.Add(comboBoxFind.SelectedIndex == 0
+				? _layerManager.GetLayer(element.EffectNode).LayerName
+				: element.EffectNode.Effect.EffectName);
 			item.Tag = element; 
 			listViewEffectStartTime.Items.Add(item);
 		}
 
-		private void GetAllEffects()
+		private void GetAllElements()
 		{
 			//Locate all used Effects within the sequence and add to combobox.
 			comboBoxAvailableEffect.Items.Clear();
@@ -93,10 +109,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (Row row in TimelineControl.Rows)
 				foreach (Element effect in row)
 				{
-					if (!uniqueStrings.Contains(effect.EffectNode.Effect.EffectName))
+					if (comboBoxFind.SelectedIndex == 0) //0 is to find effects and 1 will find layers
 					{
+						if (uniqueStrings.Contains(effect.EffectNode.Effect.EffectName)) continue;
 						uniqueStrings.Add(effect.EffectNode.Effect.EffectName);
 						comboBoxAvailableEffect.Items.Add(effect.EffectNode.Effect.EffectName);
+					}
+					else
+					{
+						if (uniqueStrings.Contains(_layerManager.GetLayer(effect.EffectNode).LayerName)) continue;
+						uniqueStrings.Add(_layerManager.GetLayer(effect.EffectNode).LayerName);
+						comboBoxAvailableEffect.Items.Add(_layerManager.GetLayer(effect.EffectNode).LayerName);
 					}
 				}
 			comboBoxAvailableEffect.Sorted = true; //sort effects in combobox
@@ -150,11 +173,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			UpdateListView();
 			listViewEffectStartTime.ColumnAutoSize();
+			listViewEffectStartTime.Refresh();
 		}
 
 		private void comboBoxAvailableEffect_Click(object sender, EventArgs e)
 		{
-			GetAllEffects();
+			GetAllElements();
 		}
 
 		private void listViewEffectStartTime_UpdateListView(object sender, EventArgs e)
@@ -163,5 +187,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		#endregion
 
+		private void comboBoxFind_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			LayerEffectHeader.Text = comboBoxFind.SelectedIndex == 0 ? "Layers" : "Effects";
+			GetAllElements();
+			listViewEffectStartTime.Items.Clear();
+		}
 	}
 }

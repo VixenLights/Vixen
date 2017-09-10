@@ -931,7 +931,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _findEffects;
 				}
 
-				_findEffects = new FindEffectForm(TimelineControl);
+				_findEffects = new FindEffectForm(TimelineControl, Sequence.GetSequenceLayerManager());
 
 				return _findEffects;
 			}
