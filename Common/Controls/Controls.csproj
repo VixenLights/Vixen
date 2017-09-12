@@ -109,6 +109,12 @@
     <Compile Include="MessageBoxForm.Designer.cs">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NameGeneration\SubstitutionRenamer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NameGeneration\SubstitutionRenamer.Designer.cs">
+      <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -426,6 +432,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MessageBoxForm.resx">
       <DependentUpon>MessageBoxForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NameGeneration\SubstitutionRenamer.resx">
+      <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

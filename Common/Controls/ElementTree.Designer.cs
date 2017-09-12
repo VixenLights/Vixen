@@ -46,12 +46,13 @@ namespace Common.Controls
 			this.deleteNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.createGroupWithNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameNodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.patternRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.reverseElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
-			this.reverseElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.contextMenuStripDragging.SuspendLayout();
 			this.SuspendLayout();
@@ -84,10 +85,11 @@ namespace Common.Controls
             this.deleteNodesToolStripMenuItem,
             this.createGroupWithNodesToolStripMenuItem,
             this.renameNodesToolStripMenuItem,
+            this.patternRenameToolStripMenuItem,
             this.collapseAllToolStripMenuItem,
             this.reverseElementsToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 302);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 324);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -192,12 +194,26 @@ namespace Common.Controls
 			this.renameNodesToolStripMenuItem.Text = "Rename";
 			this.renameNodesToolStripMenuItem.Click += new System.EventHandler(this.renameNodesToolStripMenuItem_Click);
 			// 
+			// patternRenameToolStripMenuItem
+			// 
+			this.patternRenameToolStripMenuItem.Name = "patternRenameToolStripMenuItem";
+			this.patternRenameToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.patternRenameToolStripMenuItem.Text = "Find/Replace";
+			this.patternRenameToolStripMenuItem.Click += new System.EventHandler(this.patternRenameToolStripMenuItem_Click);
+			// 
 			// collapseAllToolStripMenuItem
 			// 
 			this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
 			this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.collapseAllToolStripMenuItem.Text = "Collapse All";
 			this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
+			// 
+			// reverseElementsToolStripMenuItem
+			// 
+			this.reverseElementsToolStripMenuItem.Name = "reverseElementsToolStripMenuItem";
+			this.reverseElementsToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.reverseElementsToolStripMenuItem.Text = "Reverse Elements";
+			this.reverseElementsToolStripMenuItem.Click += new System.EventHandler(this.reverseElementsToolStripMenuItem_Click);
 			// 
 			// contextMenuStripDragging
 			// 
@@ -246,13 +262,6 @@ namespace Common.Controls
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			// 
-			// reverseElementsToolStripMenuItem
-			// 
-			this.reverseElementsToolStripMenuItem.Name = "reverseElementsToolStripMenuItem";
-			this.reverseElementsToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.reverseElementsToolStripMenuItem.Text = "Reverse Elements";
-			this.reverseElementsToolStripMenuItem.Click += new System.EventHandler(this.reverseElementsToolStripMenuItem_Click);
-			// 
 			// ElementTree
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -292,5 +301,6 @@ namespace Common.Controls
 		private System.Windows.Forms.ToolStripMenuItem pasteAsNewToolStripMenuItem;
 		private ToolStripMenuItem collapseAllToolStripMenuItem;
 		private ToolStripMenuItem reverseElementsToolStripMenuItem;
+		private ToolStripMenuItem patternRenameToolStripMenuItem;
 	}
 }
