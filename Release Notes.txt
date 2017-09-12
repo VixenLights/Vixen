@@ -2,7 +2,24 @@ Vixen Release Notes - 3.4u1
 
 Maintenance release 1 for version 3.4
 
+** Bug
+    * [VIX-2156] - Edit time glitch
+    * [VIX-2157] - Delete key in the editor randomly quits working.
+    * [VIX-2163] - Vixen crashes when dragging color from set level to color preset library
+    * [VIX-2164] - Profile stays locked if there is only the default profile and Vixen does not shutdown cleanly.
+    * [VIX-2169] - Display setup image buttons have annoying background hover color change. 
+    * [VIX-2172] - If a sequence is resized smaller and there are effects beyond the end of it, they are not removed and can cause issues later on.
+    * [VIX-2173] - The level slider on curves that are part of a gradient level pair will not stay active to grab and use them.
 
+
+** Improvement
+    * [VIX-2158] - Improve the way current preview templates are handled. 
+    * [VIX-2159] - Change selection border color for dragboxfilter effect images
+    * [VIX-2160] - The find effects function could have a column to indicate what layer the effect is in.
+    * [VIX-2161] - A few more areas need high DPI fixes.
+    * [VIX-2166] - Add hints in the Dimming curve setup to use a library curve. Add link to website for help.
+    * [VIX-2176] - Enable multi edit on the depth of effect property.
+    * [VIX-2178] - Create a means in the display setup to rename elements with a find and replace style mechanism.
 
 
 Vixen Release Notes - 3.4
