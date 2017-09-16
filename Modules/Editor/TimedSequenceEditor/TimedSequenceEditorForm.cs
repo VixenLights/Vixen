@@ -6396,7 +6396,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <returns></returns>
 		private TimeSpan FindNearestMark(TimeSpan referenceTimeSpan, TimeSpan referenceTimeSpan1, string alignMethod)
 		{
-			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(AlignTo_Threshold));
+			var threshold = TimeSpan.FromSeconds(Convert.ToDouble(AlignTo_Threshold, CultureInfo.InvariantCulture));
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
