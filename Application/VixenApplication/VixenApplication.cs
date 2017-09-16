@@ -10,6 +10,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
+using System.Threading;
 using System.Threading.Tasks;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
@@ -265,11 +266,18 @@ namespace VixenApplication
 				editor.CloseEditor();
 			}
 
+			while (VixenSystem.IsSaving())
+			{
+				Logging.Warn("Waiting for save to finish before closing.");
+				Thread.Sleep(250);
+			}
+
 			stopping = true;
 			await VixenSystem.Stop(false);
 
 			_applicationData.SaveData();
 			RemoveLockFile(LockFilePath);
+			
 			Application.Exit();
 		}
 
