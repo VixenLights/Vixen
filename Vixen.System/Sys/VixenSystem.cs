@@ -33,7 +33,7 @@ namespace Vixen.Sys
 
 		public static bool IsSaving()
 		{
-			return _systemConfigSaving | _moduleConfigSaving;
+			return _systemConfigSaving || _moduleConfigSaving;
 		}
 
 		public static bool Start(IApplication clientApplication, bool openExecution = true, bool disableDevices = false,
@@ -153,6 +153,7 @@ namespace Vixen.Sys
 		{
 			if (SystemConfig != null)
 			{
+				Logging.Info("Saving System Config.");
 				if (_systemConfigSaving)
 				{
 					Logging.Error("System config is already being saved. Skipping duplicate request.");
@@ -177,9 +178,14 @@ namespace Vixen.Sys
 				SystemConfig.Filters = Filters;
 				SystemConfig.DataFlow = DataFlow;
 			
-				await Task.Factory.StartNew(() => SystemConfig.Save());
-				_systemConfigSaving = false;
-				return true;
+				return await Task.Factory.StartNew(() =>
+				{
+					SystemConfig.Save();
+					_systemConfigSaving = false;
+					Logging.Info("System Config saved.");
+					return true;
+				});
+				
 			}
 
 			return false;
@@ -195,14 +201,21 @@ namespace Vixen.Sys
 					Logging.Error("Module config is already being saved. Skipping duplicate request.");
 					return false;
 				}
+
 				_moduleConfigSaving = true;
-				await Task.Factory.StartNew(() => ModuleStore.Save());
-				_moduleConfigSaving = false;
-				return true;
+				Logging.Info("Saving Module Config.");
+				return await Task.Factory.StartNew(() =>
+				{
+					ModuleStore.Save();
+					_moduleConfigSaving = false;
+					Logging.Info("Module Config saved.");
+					return true;
+				});
+
 			}
 			return false;
 
-		} 
+		}
 
 		public static void LoadSystemConfig()
 		{
