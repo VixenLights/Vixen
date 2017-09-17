@@ -19,6 +19,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		private readonly List<SnowFlakeClass> _snowFlakes = new List<SnowFlakeClass>();
 		private static Random _random = new Random();
+		private int _increaseFlakeCount;
 		
 		public Snowflakes()
 		{
@@ -75,9 +76,25 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SnowBuildUp")]
+		[ProviderDescription(@"SnowBuildUp")]
+		[PropertyOrder(2)]
+		public bool SnowBuildUp
+		{
+			get { return _data.SnowBuildUp; }
+			set
+			{
+				_data.SnowBuildUp = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MovementType")]
 		[ProviderDescription(@"MovementType")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public SnowflakeEffect SnowflakeEffect
 		{
 			get { return _data.SnowflakeEffect; }
@@ -96,7 +113,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDescription(@"MinAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public int MinDirection
 		{
 			get { return _data.MinDirection; }
@@ -114,7 +131,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDescription(@"MaxAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public int MaxDirection
 		{
 			get { return _data.MaxDirection; }
@@ -131,7 +148,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 //		[NumberRange(1, 60, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
@@ -148,7 +165,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
 //		[NumberRange(2, 60, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public Curve SpeedVariationCurve
 		{
 			get { return _data.SpeedVariationCurve; }
@@ -165,7 +182,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 	//	[NumberRange(1, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public Curve FlakeCountCurve
 		{
 			get { return _data.FlakeCountCurve; }
@@ -361,7 +378,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		protected override void SetupRender()
 		{
-			//Not needed
+			_increaseFlakeCount = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -393,7 +410,7 @@ namespace VixenModules.Effect.Snowflakes
 			for (int i = 0; i < flakeCount; i++)
 			{
 				double position = (_random.NextDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
-				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor)) continue;
+				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
@@ -476,14 +493,19 @@ namespace VixenModules.Effect.Snowflakes
 					break;
 				}
 				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1; //Adds a random brightness to each Snowflake making it look more realistic
+				m.BuildUp = false;
 				_snowFlakes.Add(m);
 			}
 
 			// render all SnowFlakes
 			foreach (SnowFlakeClass snowFlakes in _snowFlakes)
 			{
-				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
-				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
+				if (!snowFlakes.BuildUp)
+				{
+					snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
+					snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
+				}
+
 				for (int c = 0; c < 1; c++)
 				{
 					//Sets the new position the SnowFlake is moving to
@@ -510,7 +532,18 @@ namespace VixenModules.Effect.Snowflakes
 
 					if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
 					{
-						snowFlakes.Expired = true; //flags SnowFlakes that have reached the end of the grid as expiried. Allows new Snowflakes to be created.
+						//flags SnowFlakes that have reached the end of the grid as expiried. Allows new Snowflakes to be created.
+						if (SnowBuildUp && colorY <= 0)
+						{
+							snowFlakes.DeltaX -= snowFlakes.DeltaXOrig;
+							snowFlakes.DeltaY -= snowFlakes.DeltaYOrig;
+							snowFlakes.BuildUp = true;
+							_increaseFlakeCount++; 
+						}
+						else
+						{
+							snowFlakes.Expired = true;
+						}
 						break;
 					}
 
@@ -615,7 +648,7 @@ namespace VixenModules.Effect.Snowflakes
 			}
 
 			// deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
-			int snowFlakeNum = 0;
+				int snowFlakeNum = 0;
 			while (snowFlakeNum < _snowFlakes.Count)
 			{
 				if (_snowFlakes[snowFlakeNum].Expired)
@@ -643,6 +676,7 @@ namespace VixenModules.Effect.Snowflakes
 			public bool Expired = false;
 			public SnowflakeType Type;
 			public double HsvBrightness;
+			public bool BuildUp;
 		}
 
 		private double CalculateCount(double intervalPos)
