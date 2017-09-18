@@ -52,6 +52,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal string ItemName = String.Empty;
 		internal int ItemIndex = 0;
+		internal int ItemBulbSize = 0;
 
 
 		public DisplayMoveType Type { get; private set; }
@@ -665,6 +666,7 @@ namespace VixenModules.Preview.VixenPreview
 							if (ItemName != String.Empty)
 							{
 								newDisplayItem.Shape.Name = ItemName + ItemIndex++;
+								newDisplayItem.Shape.PixelSize = ItemBulbSize;
 							}
 						}
 						else if (_currentTool == Tools.Ellipse)
@@ -736,7 +738,7 @@ namespace VixenModules.Preview.VixenPreview
 							AddDisplayItem(newDisplayItem);
 							newDisplayItem.ZoomLevel = ZoomLevel;
 							_selectedDisplayItem = newDisplayItem;
-							_selectedDisplayItem.Shape.PixelSize = 3;
+							//_selectedDisplayItem.Shape.PixelSize = 3;
 							_selectedDisplayItem.Shape.Select(true);
 							_selectedDisplayItem.Shape.SelectDefaultSelectPoint();
 							dragStart = translatedPoint.ToPoint();
@@ -992,8 +994,11 @@ namespace VixenModules.Preview.VixenPreview
 			_mouseCaptured = true;
 		}
 
+		private bool _mouseMoveInProgress = false;
 		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
 		{
+			if (_mouseMoveInProgress) return;
+			_mouseMoveInProgress = true;
 			if (_editMode)
 			{
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
@@ -1078,6 +1083,7 @@ namespace VixenModules.Preview.VixenPreview
 					}
 				}
 			}
+			_mouseMoveInProgress = false;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

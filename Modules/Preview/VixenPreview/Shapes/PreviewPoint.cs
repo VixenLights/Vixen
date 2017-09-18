@@ -68,5 +68,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			return new Point(_x, _y);
 		}
+
+		public override string ToString()
+		{
+			return string.Format("{{{0},{1}}}", X,Y);
+		}
 	}
 }

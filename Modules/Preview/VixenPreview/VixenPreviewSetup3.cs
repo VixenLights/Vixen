@@ -203,27 +203,39 @@ namespace VixenModules.Preview.VixenPreview {
 			{
 				if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 				{
-					using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
+					using (PreviewPixelSetupForm inputDialog = new PreviewPixelSetupForm("Pixel", 0, 3))
 					{
-						if (textDialog.ShowDialog() == DialogResult.OK)
+						if (inputDialog.ShowDialog() == DialogResult.OK)
 						{
-							if (textDialog.Response != string.Empty)
+							if (inputDialog.PrefixName != string.Empty)
 							{
-								previewForm.Preview.ItemName = textDialog.Response;
+								previewForm.Preview.ItemName = inputDialog.PrefixName;
 							}
+							previewForm.Preview.ItemIndex = inputDialog.StartingIndex;
+							previewForm.Preview.ItemBulbSize = inputDialog.BulbSize;
 						}
 					}
+					//using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
+					//{
+					//	if (textDialog.ShowDialog() == DialogResult.OK)
+					//	{
+					//		if (textDialog.Response != string.Empty)
+					//		{
+					//			previewForm.Preview.ItemName = textDialog.Response;
+					//		}
+					//	}
+					//}
 
-					if (previewForm.Preview.ItemName != String.Empty)
-					{
-						using (NumberDialog numberDialog = new NumberDialog("Item Index", "Item Start Index", 1, 1))
-						{
-							if (numberDialog.ShowDialog() == DialogResult.OK)
-							{
-								previewForm.Preview.ItemIndex = numberDialog.Value;
-							}
-						}
-					}
+					//if (previewForm.Preview.ItemName != String.Empty)
+					//{
+					//	using (NumberDialog numberDialog = new NumberDialog("Item Index", "Item Start Index", 1, 1))
+					//	{
+					//		if (numberDialog.ShowDialog() == DialogResult.OK)
+					//		{
+					//			previewForm.Preview.ItemIndex = numberDialog.Value;
+					//		}
+					//	}
+					//}
 
 				}
 				DrawShape = "Pixel";
