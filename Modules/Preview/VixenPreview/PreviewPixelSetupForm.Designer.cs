@@ -35,8 +35,8 @@
 			this.bulbSizeChooser = new System.Windows.Forms.NumericUpDown();
 			this.txtPrefixName = new System.Windows.Forms.TextBox();
 			this.lblPixelSize = new System.Windows.Forms.Label();
-			this.button2 = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.suffixIndexChooser)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.bulbSizeChooser)).BeginInit();
@@ -58,6 +58,7 @@
 			this.tableLayoutPanel1.Controls.Add(this.button2, 2, 4);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 5;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -124,18 +125,6 @@
 			this.lblPixelSize.TabIndex = 5;
 			this.lblPixelSize.Text = "Bulb Size";
 			// 
-			// button2
-			// 
-			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.AutoSize = true;
-			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button2.Location = new System.Drawing.Point(216, 113);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(93, 29);
-			this.button2.TabIndex = 4;
-			this.button2.Text = "Cancel";
-			this.button2.UseVisualStyleBackColor = true;
-			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -150,6 +139,18 @@
 			this.button1.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.button1.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
+			// button2
+			// 
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button2.AutoSize = true;
+			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button2.Location = new System.Drawing.Point(216, 113);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(93, 29);
+			this.button2.TabIndex = 4;
+			this.button2.Text = "Cancel";
+			this.button2.UseVisualStyleBackColor = true;
+			// 
 			// PreviewPixelSetupForm
 			// 
 			this.AllowDrop = true;
@@ -160,6 +161,7 @@
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Name = "PreviewPixelSetupForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Single Bulb Configuration";
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
