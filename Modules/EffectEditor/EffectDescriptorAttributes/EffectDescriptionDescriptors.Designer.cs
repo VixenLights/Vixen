@@ -305,15 +305,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change the ball direction when balls collide..
-        /// </summary>
-        internal static string Collide {
-            get {
-                return ResourceManager.GetString("Collide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Adjust the number of Circles or radial patterns in the effect..
         /// </summary>
         internal static string CircleCount {
@@ -337,6 +328,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string CircleFill {
             get {
                 return ResourceManager.GetString("CircleFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the ball direction when balls collide..
+        /// </summary>
+        internal static string Collide {
+            get {
+                return ResourceManager.GetString("Collide", resourceCulture);
             }
         }
         
@@ -625,6 +625,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Include45Pt {
             get {
                 return ResourceManager.GetString("Include45Pt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add the selected number of Snowflakes to the bottom of the element..
+        /// </summary>
+        internal static string InitialBuildUp {
+            get {
+                return ResourceManager.GetString("InitialBuildUp", resourceCulture);
             }
         }
         
@@ -1066,6 +1075,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows the Snowflakes to build up at the bottom of the Element..
+        /// </summary>
+        internal static string SnowBuildUp {
+            get {
+                return ResourceManager.GetString("SnowBuildUp", resourceCulture);
             }
         }
         

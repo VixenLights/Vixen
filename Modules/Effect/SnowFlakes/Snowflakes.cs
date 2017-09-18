@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -20,6 +21,7 @@ namespace VixenModules.Effect.Snowflakes
 		private readonly List<SnowFlakeClass> _snowFlakes = new List<SnowFlakeClass>();
 		private static Random _random = new Random();
 		private int _increaseFlakeCount;
+		private int _snowfalakeCountAdjust;
 		
 		public Snowflakes()
 		{
@@ -76,25 +78,9 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SnowBuildUp")]
-		[ProviderDescription(@"SnowBuildUp")]
-		[PropertyOrder(2)]
-		public bool SnowBuildUp
-		{
-			get { return _data.SnowBuildUp; }
-			set
-			{
-				_data.SnowBuildUp = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MovementType")]
 		[ProviderDescription(@"MovementType")]
-		[PropertyOrder(3)]
+		[PropertyOrder(2)]
 		public SnowflakeEffect SnowflakeEffect
 		{
 			get { return _data.SnowflakeEffect; }
@@ -109,11 +95,46 @@ namespace VixenModules.Effect.Snowflakes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SnowBuildUp")]
+		[ProviderDescription(@"SnowBuildUp")]
+		[PropertyOrder(3)]
+		public bool SnowBuildUp
+		{
+			get { return _data.SnowBuildUp; }
+			set
+			{
+				_data.SnowBuildUp = value;
+				IsDirty = true;
+				UpdateFlakeBuildUpAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"InitialBuildUp")]
+		[ProviderDescription(@"InitialBuildUp")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 200, 1)]
+		[PropertyOrder(4)]
+		public int InitialBuildUp
+		{
+			get { return _data.InitialBuildUp; }
+			set
+			{
+				_data.InitialBuildUp = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MinAngle")]
 		[ProviderDescription(@"MinAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public int MinDirection
 		{
 			get { return _data.MinDirection; }
@@ -131,7 +152,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDescription(@"MaxAngle")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 360, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public int MaxDirection
 		{
 			get { return _data.MaxDirection; }
@@ -148,7 +169,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
 //		[NumberRange(1, 60, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
@@ -165,7 +186,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
 //		[NumberRange(2, 60, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public Curve SpeedVariationCurve
 		{
 			get { return _data.SpeedVariationCurve; }
@@ -182,7 +203,7 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
 	//	[NumberRange(1, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public Curve FlakeCountCurve
 		{
 			get { return _data.FlakeCountCurve; }
@@ -291,6 +312,7 @@ namespace VixenModules.Effect.Snowflakes
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
 			UpdateFlakeAttribute(false);
+			UpdateFlakeBuildUpAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -301,6 +323,17 @@ namespace VixenModules.Effect.Snowflakes
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("InnerColor", snowFlakeType);
 			propertyStates.Add("OutSideColor", snowFlakeType);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateFlakeBuildUpAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("InitialBuildUp", SnowBuildUp);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -321,21 +354,23 @@ namespace VixenModules.Effect.Snowflakes
 				direction = true;
 				variableDirection = true;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
 			propertyStates.Add("Direction", !direction);
 			propertyStates.Add("MinDirection", variableDirection);
 			propertyStates.Add("MaxDirection", variableDirection);
+			propertyStates.Add("SnowBuildUp", SnowflakeEffect != SnowflakeEffect.Explode);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
 			}
+			UpdateFlakeBuildUpAttribute();
 		}
 
 		private void UpdateFlakeAttribute(bool refresh = true)
 		{
 			bool snowFlakeType = SnowflakeType == SnowflakeType.Random;
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("PointFlake45", snowFlakeType);
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -379,6 +414,7 @@ namespace VixenModules.Effect.Snowflakes
 		protected override void SetupRender()
 		{
 			_increaseFlakeCount = 0;
+			_snowfalakeCountAdjust = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -396,7 +432,7 @@ namespace VixenModules.Effect.Snowflakes
 			var intervalPosFactor = intervalPos * 100;
 
 			// create new SnowFlakes and maintain maximum number as per users selection.
-			double flakeCount = SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor);
+			int flakeCount = (int) (SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor));
 
 			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
 			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
@@ -406,11 +442,58 @@ namespace VixenModules.Effect.Snowflakes
 				minSpeed = 1;
 			if (maxSpeed > 60)
 				maxSpeed = 60;
+
+			//Adjust initial Build up of Snowflakes based on user input.
+			if (SnowBuildUp && SnowflakeEffect != SnowflakeEffect.Explode && frame == 0)
+			{
+				for (int i = 0; i < InitialBuildUp; i++)
+				{
+					SnowFlakeClass initialSnowflakeBuildUp = new SnowFlakeClass();
+					initialSnowflakeBuildUp.BuildUpX = _random.Next() % BufferWi;
+					initialSnowflakeBuildUp.Type = SnowflakeType == SnowflakeType.Random ? RandomFlakeType<SnowflakeType>() : SnowflakeType;
+					initialSnowflakeBuildUp.BuildUpY = 1;
+					//If BuildUp is checked then check to see if a flake lands on another flake that's already at the bottom.
+					foreach (SnowFlakeClass snowFlake in _snowFlakes.Where(snowFlake => (snowFlake.BuildUpX == initialSnowflakeBuildUp.BuildUpX - 1 && snowFlake.BuildUpX <= initialSnowflakeBuildUp.BuildUpX + 1) &&
+					                                                                    initialSnowflakeBuildUp.BuildUpY <= snowFlake.BuildUpY))
+					{
+						initialSnowflakeBuildUp.BuildUpY = initialSnowflakeBuildUp.Type <= (SnowflakeType) 2
+							? snowFlake.BuildUpY + 1
+							: snowFlake.BuildUpY + 2;
+
+						break;
+					}
+
+					initialSnowflakeBuildUp.BuildUpY = 1;
+					initialSnowflakeBuildUp.BuildUp = true;
+
+					//Set the SnowFlake colors during the creation of the snowflake.
+					switch (ColorType)
+					{
+						case SnowflakeColorType.Range: //Random two colors are selected from the list for each SnowFlake and then the color range between them are used.
+							initialSnowflakeBuildUp.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)),
+									HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)));
+							initialSnowflakeBuildUp.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)),
+									HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)));
+							break;
+						case SnowflakeColorType.Palette: //All user colors are used
+							initialSnowflakeBuildUp.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100));
+							initialSnowflakeBuildUp.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+							break;
+						default:
+							initialSnowflakeBuildUp.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+							break;
+					}
+					initialSnowflakeBuildUp.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1; //Adds a random brightness to each Snowflake making it look more realistic
+				
+					_snowFlakes.Add(initialSnowflakeBuildUp);
+				}
+				_snowfalakeCountAdjust = -InitialBuildUp + (int)(CalculateCount(intervalPosFactor) - CalculateCount(intervalPosFactor - 1));
+			}
 			
 			for (int i = 0; i < flakeCount; i++)
 			{
 				double position = (_random.NextDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
-				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount) continue;
+				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount - _snowfalakeCountAdjust) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
@@ -500,52 +583,80 @@ namespace VixenModules.Effect.Snowflakes
 			// render all SnowFlakes
 			foreach (SnowFlakeClass snowFlakes in _snowFlakes)
 			{
-				if (!snowFlakes.BuildUp)
-				{
-					snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
-					snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
-				}
+				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
+				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
 
 				for (int c = 0; c < 1; c++)
 				{
-					//Sets the new position the SnowFlake is moving to
-					int colorX = (snowFlakes.X + Convert.ToInt32(snowFlakes.DeltaX) - (BufferWi / 100));
-					int colorY = (snowFlakes.Y + Convert.ToInt32(snowFlakes.DeltaY) + (BufferHt / 100));
-
-					if (SnowflakeEffect != SnowflakeEffect.Explode)//Modifies the colorX and colorY when the Explode effect is not used.
+					int colorX;
+					int colorY;
+					if (!snowFlakes.BuildUp) //Skips the location processing part to not waste time as the Snowflake is no longer moving and sitting on the bottom.
 					{
-						colorX = colorX%BufferWi;
-						colorY = colorY%BufferHt;
+						//Sets the new position the SnowFlake is moving to
+						colorX = (snowFlakes.X + Convert.ToInt32(snowFlakes.DeltaX) - (BufferWi/100));
+						colorY = (snowFlakes.Y + Convert.ToInt32(snowFlakes.DeltaY) + (BufferHt/100));
+
+						if (SnowflakeEffect != SnowflakeEffect.Explode)
+						{
+							//Modifies the colorX and colorY when the Explode effect is not used.
+							colorX = colorX%BufferWi;
+							colorY = colorY%BufferHt;
+
+							if (SnowBuildUp) //Will detect snowflake hits up to 3 pixels wide
+							{
+								//If BuildUp is checked then check to see if a flake lands on another flake that's already at the bottom.
+								foreach (SnowFlakeClass snowFlake in _snowFlakes.Where(snowFlake => snowFlake.BuildUp && (colorX >= snowFlake.BuildUpX - 1 && colorX <= snowFlake.BuildUpX + 1) &&
+								                                                                    colorY <= snowFlake.BuildUpY))
+								{
+									snowFlakes.BuildUp = true;
+									snowFlakes.BuildUpX = colorX;
+									snowFlakes.BuildUpY = snowFlakes.Type <= (SnowflakeType) 2 ? snowFlake.BuildUpY + 1 : snowFlake.BuildUpY + 2;
+									  
+									_increaseFlakeCount++; //Ensures a new Snowflake is added on the next frame to replace this one as its now resting on the bottom of the grid.
+									break;
+								}
+							}
+						}
+
+						if (ColorType == SnowflakeColorType.RainBow)
+							//No user colors are used for Rainbow effect. Color selection for user will be hidden.
+						{
+							snowFlakes.OuterHsv.H = (float) (rand()%1000)/1000.0f;
+							snowFlakes.OuterHsv.S = 1.0f;
+							snowFlakes.OuterHsv.V = 1.0f;
+						}
+
+						if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
+						{
+							//Flags SnowFlakes that have reached the end of the grid as expiried unless Buildup is checked and then record the Snowflake
+							//position to be used in future frames. Allows new Snowflakes to be created.
+							if (SnowBuildUp && colorY <= 0 && !snowFlakes.BuildUp && SnowflakeEffect != SnowflakeEffect.Explode)
+							{
+								snowFlakes.BuildUp = true;
+								snowFlakes.BuildUpX = colorX;
+								snowFlakes.BuildUpY = 1;
+								_increaseFlakeCount++;  //Ensures a new Snowflake is added on the next frame to replace this one as its now resting on the bottom of the grid.  
+							}
+							else
+							{
+								if (!snowFlakes.BuildUp)
+									snowFlakes.Expired = true;
+							}
+							break;
+						}
+					}
+					else
+					{
+						//Sets the color location of the snowflake if building up at the bottom.
+						colorX = snowFlakes.BuildUpX;
+						colorY = snowFlakes.BuildUpY;
 					}
 
-					if (ColorType == SnowflakeColorType.RainBow) //No user colors are used for Rainbow effect. Color selection for user will be hidden.
-					{
-						snowFlakes.OuterHsv.H = (float) (rand()%1000)/1000.0f;
-						snowFlakes.OuterHsv.S = 1.0f;
-						snowFlakes.OuterHsv.V = 1.0f;
-					}
 					//Added the color and then adjusts brightness based on effect time position, randon Brightness and over all brightness level.
 					HSV hsvInner = snowFlakes.OuterHsv;
 					HSV hsvOuter = snowFlakes.InnerHsv;
 					hsvInner.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPosFactor) / 100;
 					hsvOuter.V *= snowFlakes.HsvBrightness * LevelCurve.GetValue(intervalPosFactor) / 100;
-
-					if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= 0)
-					{
-						//flags SnowFlakes that have reached the end of the grid as expiried. Allows new Snowflakes to be created.
-						if (SnowBuildUp && colorY <= 0)
-						{
-							snowFlakes.DeltaX -= snowFlakes.DeltaXOrig;
-							snowFlakes.DeltaY -= snowFlakes.DeltaYOrig;
-							snowFlakes.BuildUp = true;
-							_increaseFlakeCount++; 
-						}
-						else
-						{
-							snowFlakes.Expired = true;
-						}
-						break;
-					}
 
 					//Render SnowFlakes
 					switch (snowFlakes.Type)
@@ -647,7 +758,7 @@ namespace VixenModules.Effect.Snowflakes
 				}
 			}
 
-			// deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
+			// Deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
 				int snowFlakeNum = 0;
 			while (snowFlakeNum < _snowFlakes.Count)
 			{
@@ -677,6 +788,8 @@ namespace VixenModules.Effect.Snowflakes
 			public SnowflakeType Type;
 			public double HsvBrightness;
 			public bool BuildUp;
+			public int BuildUpX;
+			public int BuildUpY;
 		}
 
 		private double CalculateCount(double intervalPos)
