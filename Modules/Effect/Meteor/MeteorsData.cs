@@ -29,8 +29,10 @@ namespace VixenModules.Effect.Meteors
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
 			LengthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+			GroundLevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
+			GroundColor = new ColorGradient(Color.ForestGreen);
 		}
 
 		[DataMember]
@@ -79,6 +81,9 @@ namespace VixenModules.Effect.Meteors
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
+		public Curve GroundLevelCurve { get; set; }
+
+		[DataMember]
 		public MeteorsEffect MeteorEffect { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
@@ -89,6 +94,9 @@ namespace VixenModules.Effect.Meteors
 
 		[DataMember]
 		public bool RandomBrightness { get; set; }
+
+		[DataMember]
+		public ColorGradient GroundColor { get; set; }
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
@@ -149,7 +157,9 @@ namespace VixenModules.Effect.Meteors
 				RandomMeteorPosition = RandomMeteorPosition,
 				Orientation = Orientation,
 				Direction = Direction,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				GroundLevelCurve = new Curve(GroundLevelCurve),
+				GroundColor = GroundColor
 			};
 			return result;
 		}
