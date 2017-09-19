@@ -32,14 +32,14 @@
 			this.lblPrefixName = new System.Windows.Forms.Label();
 			this.lblIndex = new System.Windows.Forms.Label();
 			this.suffixIndexChooser = new System.Windows.Forms.NumericUpDown();
-			this.bulbSizeChooser = new System.Windows.Forms.NumericUpDown();
+			this.lightSizeChooser = new System.Windows.Forms.NumericUpDown();
 			this.txtPrefixName = new System.Windows.Forms.TextBox();
-			this.lblPixelSize = new System.Windows.Forms.Label();
+			this.lblLightSize = new System.Windows.Forms.Label();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.suffixIndexChooser)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.bulbSizeChooser)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.lightSizeChooser)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tableLayoutPanel1
@@ -51,9 +51,9 @@
 			this.tableLayoutPanel1.Controls.Add(this.lblPrefixName, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.lblIndex, 0, 1);
 			this.tableLayoutPanel1.Controls.Add(this.suffixIndexChooser, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.bulbSizeChooser, 1, 2);
+			this.tableLayoutPanel1.Controls.Add(this.lightSizeChooser, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.txtPrefixName, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.lblPixelSize, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.lblLightSize, 0, 2);
 			this.tableLayoutPanel1.Controls.Add(this.button1, 1, 4);
 			this.tableLayoutPanel1.Controls.Add(this.button2, 2, 4);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -97,13 +97,13 @@
 			this.suffixIndexChooser.Size = new System.Drawing.Size(98, 20);
 			this.suffixIndexChooser.TabIndex = 1;
 			// 
-			// bulbSizeChooser
+			// lightSizeChooser
 			// 
-			this.bulbSizeChooser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.bulbSizeChooser.Location = new System.Drawing.Point(110, 55);
-			this.bulbSizeChooser.Name = "bulbSizeChooser";
-			this.bulbSizeChooser.Size = new System.Drawing.Size(98, 20);
-			this.bulbSizeChooser.TabIndex = 2;
+			this.lightSizeChooser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.lightSizeChooser.Location = new System.Drawing.Point(110, 55);
+			this.lightSizeChooser.Name = "lightSizeChooser";
+			this.lightSizeChooser.Size = new System.Drawing.Size(98, 20);
+			this.lightSizeChooser.TabIndex = 2;
 			// 
 			// txtPrefixName
 			// 
@@ -115,15 +115,15 @@
 			this.txtPrefixName.Size = new System.Drawing.Size(199, 20);
 			this.txtPrefixName.TabIndex = 0;
 			// 
-			// lblPixelSize
+			// lblLightSize
 			// 
-			this.lblPixelSize.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.lblPixelSize.AutoSize = true;
-			this.lblPixelSize.Location = new System.Drawing.Point(3, 58);
-			this.lblPixelSize.Name = "lblPixelSize";
-			this.lblPixelSize.Size = new System.Drawing.Size(51, 13);
-			this.lblPixelSize.TabIndex = 5;
-			this.lblPixelSize.Text = "Bulb Size";
+			this.lblLightSize.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblLightSize.AutoSize = true;
+			this.lblLightSize.Location = new System.Drawing.Point(3, 58);
+			this.lblLightSize.Name = "lblLightSize";
+			this.lblLightSize.Size = new System.Drawing.Size(53, 13);
+			this.lblLightSize.TabIndex = 5;
+			this.lblLightSize.Text = "Light Size";
 			// 
 			// button1
 			// 
@@ -166,7 +166,7 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.suffixIndexChooser)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.bulbSizeChooser)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.lightSizeChooser)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -177,9 +177,9 @@
 		private System.Windows.Forms.Label lblPrefixName;
 		private System.Windows.Forms.Label lblIndex;
 		private System.Windows.Forms.NumericUpDown suffixIndexChooser;
-		private System.Windows.Forms.NumericUpDown bulbSizeChooser;
+		private System.Windows.Forms.NumericUpDown lightSizeChooser;
 		private System.Windows.Forms.TextBox txtPrefixName;
-		private System.Windows.Forms.Label lblPixelSize;
+		private System.Windows.Forms.Label lblLightSize;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
 	}

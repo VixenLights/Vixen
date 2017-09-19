@@ -135,6 +135,11 @@ namespace VixenModules.Preview.VixenPreview {
 			InitUndo();
 		}
 
+	    private bool IsVisibleOnAnyScreen(Rectangle rect)
+	    {
+		    return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+	    }
+
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
@@ -212,7 +217,7 @@ namespace VixenModules.Preview.VixenPreview {
 								previewForm.Preview.ItemName = inputDialog.PrefixName;
 							}
 							previewForm.Preview.ItemIndex = inputDialog.StartingIndex;
-							previewForm.Preview.ItemBulbSize = inputDialog.BulbSize;
+							previewForm.Preview.ItemBulbSize = inputDialog.LightSize;
 						}
 					}
 					//using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
@@ -372,9 +377,26 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 		}
 
-		public void Setup() {
-			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
-			Size = new Size(Data.SetupWidth, Data.SetupHeight);
+		public void Setup()
+		{
+
+			var desktopBounds =
+				new Rectangle(
+					new Point(Data.SetupLeft, Data.SetupTop),
+					new Size(Data.SetupWidth, Data.SetupHeight));
+
+			if (IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopBounds = desktopBounds;
+			}
+			else
+			{
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+			}
+
+			//SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
+			//Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
 		private void CloseSetup()

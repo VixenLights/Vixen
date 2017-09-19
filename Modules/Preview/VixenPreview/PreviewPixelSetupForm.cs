@@ -6,7 +6,7 @@ namespace VixenModules.Preview.VixenPreview
 {
 	public partial class PreviewPixelSetupForm : Form
 	{
-		public PreviewPixelSetupForm(string prefixName, int startingIndex, int bulbSize)
+		public PreviewPixelSetupForm(string prefixName, int startingIndex, int lightSize)
 		{
 			InitializeComponent();
 			ThemeUpdateControls.UpdateControls(this);
@@ -15,16 +15,16 @@ namespace VixenModules.Preview.VixenPreview
 			suffixIndexChooser.Maximum = Int32.MaxValue;
 			suffixIndexChooser.Value = startingIndex;
 
-			bulbSizeChooser.Minimum = 1;
-			bulbSizeChooser.Maximum = 100;
-			bulbSizeChooser.Value = bulbSize;
+			lightSizeChooser.Minimum = 1;
+			lightSizeChooser.Maximum = 100;
+			lightSizeChooser.Value = lightSize;
 
 			txtPrefixName.Text = prefixName;
 		}
 
-		public int BulbSize
+		public int LightSize
 		{
-			get { return decimal.ToInt32(bulbSizeChooser.Value); }
+			get { return decimal.ToInt32(lightSizeChooser.Value); }
 		}
 
 		public int StartingIndex
