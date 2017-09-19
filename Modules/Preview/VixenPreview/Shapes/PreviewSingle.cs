@@ -177,7 +177,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			else {
 				if (p1 != null) {
-					if (p.X >= p1.X && p.X <= p1.X + PixelSize && p.Y >= p1.Y && p.Y <= p1.Y + PixelSize) {
+					if (p.X >= p1.X-PixelSize/2 && p.X <= p1.X + PixelSize/2 && p.Y >= p1.Y-PixelSize/2 && p.Y <= p1.Y + PixelSize/2) {
 						return true;
 					}
 				}
