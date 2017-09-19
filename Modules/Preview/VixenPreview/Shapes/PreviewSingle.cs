@@ -167,15 +167,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override bool PointInShape(PreviewPoint point)
 		{
-			if (PixelSize < 5) {
-				Rectangle r = new Rectangle(p1.X - (SelectPointSize/2), p1.Y - (SelectPointSize/2), SelectPointSize, SelectPointSize);
-				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
+			var p = PointToZoomPoint(point);
+			if (PixelSize < 5)
+			{
+				Rectangle r = new Rectangle(p1.X - SelectPointSize / 2, p1.Y - SelectPointSize / 2, SelectPointSize, SelectPointSize);
+				if (p.X >= r.X && p.X <= r.X + r.Width && p.Y >= r.Y && p.Y <= r.Y + r.Height) {
 					return true;
 				}
 			}
 			else {
 				if (p1 != null) {
-					if (point.X >= p1.X && point.X <= p1.X + PixelSize && point.Y >= p1.Y && point.Y <= p1.Y + PixelSize) {
+					if (p.X >= p1.X-PixelSize/2 && p.X <= p1.X + PixelSize/2 && p.Y >= p1.Y-PixelSize/2 && p.Y <= p1.Y + PixelSize/2) {
 						return true;
 					}
 				}

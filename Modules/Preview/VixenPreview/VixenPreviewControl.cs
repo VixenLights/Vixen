@@ -52,6 +52,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal string ItemName = String.Empty;
 		internal int ItemIndex = 0;
+		internal int ItemBulbSize = 0;
 
 
 		public DisplayMoveType Type { get; private set; }
@@ -665,6 +666,7 @@ namespace VixenModules.Preview.VixenPreview
 							if (ItemName != String.Empty)
 							{
 								newDisplayItem.Shape.Name = ItemName + ItemIndex++;
+								newDisplayItem.Shape.PixelSize = ItemBulbSize;
 							}
 						}
 						else if (_currentTool == Tools.Ellipse)
@@ -736,7 +738,7 @@ namespace VixenModules.Preview.VixenPreview
 							AddDisplayItem(newDisplayItem);
 							newDisplayItem.ZoomLevel = ZoomLevel;
 							_selectedDisplayItem = newDisplayItem;
-							_selectedDisplayItem.Shape.PixelSize = 3;
+							//_selectedDisplayItem.Shape.PixelSize = 3;
 							_selectedDisplayItem.Shape.Select(true);
 							_selectedDisplayItem.Shape.SelectDefaultSelectPoint();
 							dragStart = translatedPoint.ToPoint();

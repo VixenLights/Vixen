@@ -163,6 +163,12 @@
     <Compile Include="LocationOffsetForm.Designer.cs">
       <DependentUpon>LocationOffsetForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PreviewPixelSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewPixelSetupForm.Designer.cs">
+      <DependentUpon>PreviewPixelSetupForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResizePreviewForm.cs">
       <SubType>Form</SubType>
@@ -386,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LocationOffsetForm.resx">
       <DependentUpon>LocationOffsetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewPixelSetupForm.resx">
+      <DependentUpon>PreviewPixelSetupForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

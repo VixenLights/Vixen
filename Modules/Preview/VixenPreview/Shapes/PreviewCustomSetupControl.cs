@@ -82,9 +82,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void ShowSetupControl(PreviewBaseShape shape)
 		{
 			panelProperties.Controls.Clear();
-			Shapes.DisplayItemBaseControl setupControl = shape.GetSetupControl();
+			DisplayItemBaseControl setupControl = shape.GetSetupControl();
 			if (setupControl != null) {
 				panelProperties.Controls.Add(setupControl);
+				//setupControl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 				setupControl.Dock = DockStyle.Fill;
 			}
 		}
@@ -118,6 +119,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ThemeComboBoxRenderer.DrawItem(sender, e);
+		}
+
+		private void btnSyncBulbSize_Click(object sender, EventArgs e)
+		{
+			Common.Controls.ComboBoxItem item = comboBoxStringToEdit.SelectedItem as Common.Controls.ComboBoxItem;
+			if (item != null)
+			{
+				PreviewBaseShape shape = item.Value as PreviewBaseShape;
+				if (shape != null)
+				{
+					var size = shape.PixelSize;
+					foreach (PreviewBaseShape s in Shape._strings)
+					{
+						s.PixelSize = size;
+					}
+				}
+			}
 		}
 	}
 }

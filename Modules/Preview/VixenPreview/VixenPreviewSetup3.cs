@@ -135,6 +135,11 @@ namespace VixenModules.Preview.VixenPreview {
 			InitUndo();
 		}
 
+	    private bool IsVisibleOnAnyScreen(Rectangle rect)
+	    {
+		    return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+	    }
+
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
@@ -203,27 +208,39 @@ namespace VixenModules.Preview.VixenPreview {
 			{
 				if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 				{
-					using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
+					using (PreviewPixelSetupForm inputDialog = new PreviewPixelSetupForm("Pixel", 1, 3))
 					{
-						if (textDialog.ShowDialog() == DialogResult.OK)
+						if (inputDialog.ShowDialog() == DialogResult.OK)
 						{
-							if (textDialog.Response != string.Empty)
+							if (inputDialog.PrefixName != string.Empty)
 							{
-								previewForm.Preview.ItemName = textDialog.Response;
+								previewForm.Preview.ItemName = inputDialog.PrefixName;
 							}
+							previewForm.Preview.ItemIndex = inputDialog.StartingIndex;
+							previewForm.Preview.ItemBulbSize = inputDialog.LightSize;
 						}
 					}
+					//using (TextDialog textDialog = new TextDialog("Item Name?", "Item Name", "Pixel", true))
+					//{
+					//	if (textDialog.ShowDialog() == DialogResult.OK)
+					//	{
+					//		if (textDialog.Response != string.Empty)
+					//		{
+					//			previewForm.Preview.ItemName = textDialog.Response;
+					//		}
+					//	}
+					//}
 
-					if (previewForm.Preview.ItemName != String.Empty)
-					{
-						using (NumberDialog numberDialog = new NumberDialog("Item Index", "Item Start Index", 1, 1))
-						{
-							if (numberDialog.ShowDialog() == DialogResult.OK)
-							{
-								previewForm.Preview.ItemIndex = numberDialog.Value;
-							}
-						}
-					}
+					//if (previewForm.Preview.ItemName != String.Empty)
+					//{
+					//	using (NumberDialog numberDialog = new NumberDialog("Item Index", "Item Start Index", 1, 1))
+					//	{
+					//		if (numberDialog.ShowDialog() == DialogResult.OK)
+					//		{
+					//			previewForm.Preview.ItemIndex = numberDialog.Value;
+					//		}
+					//	}
+					//}
 
 				}
 				DrawShape = "Pixel";
@@ -360,9 +377,26 @@ namespace VixenModules.Preview.VixenPreview {
 			previewForm.Preview.BackgroundAlpha = trackBarBackgroundAlpha.Value;
 		}
 
-		public void Setup() {
-			SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
-			Size = new Size(Data.SetupWidth, Data.SetupHeight);
+		public void Setup()
+		{
+
+			var desktopBounds =
+				new Rectangle(
+					new Point(Data.SetupLeft, Data.SetupTop),
+					new Size(Data.SetupWidth, Data.SetupHeight));
+
+			if (IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopBounds = desktopBounds;
+			}
+			else
+			{
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+			}
+
+			//SetDesktopLocation(Data.SetupLeft, Data.SetupTop);
+			//Size = new Size(Data.SetupWidth, Data.SetupHeight);
 		}
 
 		private void CloseSetup()

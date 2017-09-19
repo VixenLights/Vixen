@@ -36,7 +36,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[XmlIgnore] public List<PreviewPoint> _selectPoints = null;
 		public const int SelectPointSize = 6;
 		private Color _pixelColor = Color.White;
-		public int _pixelSize = 2;
+		public int _pixelSize = 3;
 
 		[DataMember(Name = "Pixels")]
 		public List<PreviewPixel> _pixels = new List<PreviewPixel>();
@@ -204,14 +204,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-				if (_zoomLevel == 0)
+				if (_zoomLevel <= 0)
 					_zoomLevel = 1;
 				return _zoomLevel;
 			}
 			set
 			{
-				if (value > 0)
-					_zoomLevel = value;
 				_zoomLevel = value;
 				if (_strings != null)
 				{

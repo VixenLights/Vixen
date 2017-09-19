@@ -82,14 +82,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get
 			{
-				int x = int.MinValue;
-				int y = int.MinValue;
-				foreach (PreviewBaseShape shape in Strings) {
-					x = Math.Max(x, shape.Right);
-					y = Math.Max(y, shape.Bottom);
-				}
-
-				Point p = new Point(x, y);
+				Point p = new Point(Right, Bottom);
 				return p;
 			}
 			set { Layout(); }
@@ -139,10 +132,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int x = 0;
+	            int x = 0;
                 foreach (PreviewBaseShape shape in Strings)
                 {
-                    x = Math.Min(x, shape.Right);
+                    x = Math.Max(x, shape.Right);
                 }
                 return x;
 			}
@@ -152,7 +145,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
             get
             {
-                int x = int.MaxValue;
+                int x = 0;
                 foreach (PreviewBaseShape shape in Strings)
                 {
                     x = Math.Max(x, shape.Bottom);
@@ -189,12 +182,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-            PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+            //PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
 			// See if we're resizing
-			if (_selectedPoint != null) {
-				_selectedPoint.X = point.X;
-                _selectedPoint.Y = point.Y;
-
+			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size)
+			{
 				double aspect = ((double) startWidth + (double) changeX)/(double) startWidth;
 				//Resize(aspect);
                 foreach (PreviewBaseShape shape in Strings)
@@ -202,6 +193,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     shape.ResizeFromOriginal(aspect);
                 }
 				MoveTo(topLeftStart.X, topLeftStart.Y);
+				//This is still not great, but it acts a little better until I can put more time into it.
+				_selectedPoint.X = Right;
+				_selectedPoint.Y = Bottom;
+				
 			}
 				// If we get here, we're moving
 			else {
@@ -239,18 +234,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override void SelectDragPoints()
 		{
 			List<PreviewPoint> points = new List<PreviewPoint>();
-			points.Add(new PreviewPoint(TopLeft));
+			//points.Add(new PreviewPoint(TopLeft));
 			points.Add(new PreviewPoint(BottomRight));
 			SetSelectPoints(points, null);
 		}
 
 		public override bool PointInShape(PreviewPoint point)
 		{
-			foreach (PreviewBaseShape shape in Strings) {
-				if (shape.PointInShape(point))
-					return true;
-			}
-			return false;
+			//foreach (PreviewBaseShape shape in Strings) {
+			//	if (shape.PointInShape(point))
+			//		return true;
+			//}
+			PreviewPoint p = PointToZoomPoint(point);
+			Rectangle r = new Rectangle(Left, Top, Right - Left, Bottom - Top);
+			return r.Contains(p.X, p.Y);
 		}
 
 		public override void SelectDefaultSelectPoint()
