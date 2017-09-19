@@ -208,7 +208,7 @@ namespace VixenModules.Preview.VixenPreview {
 			{
 				if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 				{
-					using (PreviewPixelSetupForm inputDialog = new PreviewPixelSetupForm("Pixel", 0, 3))
+					using (PreviewPixelSetupForm inputDialog = new PreviewPixelSetupForm("Pixel", 1, 3))
 					{
 						if (inputDialog.ShowDialog() == DialogResult.OK)
 						{

@@ -994,11 +994,8 @@ namespace VixenModules.Preview.VixenPreview
 			_mouseCaptured = true;
 		}
 
-		private bool _mouseMoveInProgress = false;
 		private void VixenPreviewControl_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (_mouseMoveInProgress) return;
-			_mouseMoveInProgress = true;
 			if (_editMode)
 			{
 				PreviewPoint translatedPoint = new PreviewPoint(e.X + hScroll.Value, e.Y + vScroll.Value);
@@ -1083,7 +1080,6 @@ namespace VixenModules.Preview.VixenPreview
 					}
 				}
 			}
-			_mouseMoveInProgress = false;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
