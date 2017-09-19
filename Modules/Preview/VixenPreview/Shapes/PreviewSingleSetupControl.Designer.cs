@@ -29,33 +29,33 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewSingleSetupControl));
-			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.buttonHelp = new System.Windows.Forms.Button();
+			this.propertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.SuspendLayout();
-			// 
-			// propertyGrid
-			// 
-			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.propertyGrid.Name = "propertyGrid";
-			this.propertyGrid.Size = new System.Drawing.Size(213, 239);
-			this.propertyGrid.TabIndex = 13;
 			// 
 			// buttonHelp
 			// 
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonHelp.AutoSize = true;
+			this.buttonHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(152, 1);
+			this.buttonHelp.Location = new System.Drawing.Point(188, 0);
 			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+			this.buttonHelp.Size = new System.Drawing.Size(22, 22);
 			this.buttonHelp.TabIndex = 63;
-			this.buttonHelp.Text = "Help";
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
+			// 
+			// propertyGrid
+			// 
+			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
+			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.propertyGrid.Name = "propertyGrid";
+			this.propertyGrid.Size = new System.Drawing.Size(213, 239);
+			this.propertyGrid.TabIndex = 13;
 			// 
 			// PreviewSingleSetupControl
 			// 
@@ -67,6 +67,7 @@
 			this.Size = new System.Drawing.Size(213, 239);
 			this.Title = "Single Pixel Properties";
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
