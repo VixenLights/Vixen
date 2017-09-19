@@ -29,96 +29,52 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewCustomSetupControl));
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.panelProperties = new System.Windows.Forms.Panel();
-			this.panel5 = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
 			this.buttonHelp = new System.Windows.Forms.Button();
-			this.panel3 = new System.Windows.Forms.Panel();
+			this.btnSyncLightSize = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.comboBoxStringToEdit = new System.Windows.Forms.ComboBox();
-			this.panel1.SuspendLayout();
-			this.panel5.SuspendLayout();
-			this.panel3.SuspendLayout();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.panelProperties = new System.Windows.Forms.Panel();
+			this.lblSync = new System.Windows.Forms.Label();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// panel1
-			// 
-			this.panel1.AutoScroll = true;
-			this.panel1.Controls.Add(this.panelProperties);
-			this.panel1.Controls.Add(this.panel5);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(467, 468);
-			this.panel1.TabIndex = 55;
-			// 
-			// panelProperties
-			// 
-			this.panelProperties.AutoScroll = true;
-			this.panelProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelProperties.Location = new System.Drawing.Point(0, 72);
-			this.panelProperties.Name = "panelProperties";
-			this.panelProperties.Size = new System.Drawing.Size(467, 396);
-			this.panelProperties.TabIndex = 61;
-			// 
-			// panel5
-			// 
-			this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel5.Controls.Add(this.label1);
-			this.panel5.Controls.Add(this.buttonHelp);
-			this.panel5.Controls.Add(this.panel3);
-			this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel5.Location = new System.Drawing.Point(0, 0);
-			this.panel5.Name = "panel5";
-			this.panel5.Size = new System.Drawing.Size(467, 72);
-			this.panel5.TabIndex = 60;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(8, 9);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(78, 13);
-			this.label1.TabIndex = 59;
-			this.label1.Text = "Custom Prop";
 			// 
 			// buttonHelp
 			// 
 			this.buttonHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonHelp.AutoSize = true;
+			this.buttonHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(401, 4);
+			this.buttonHelp.Location = new System.Drawing.Point(387, 3);
 			this.buttonHelp.Name = "buttonHelp";
-			this.buttonHelp.Size = new System.Drawing.Size(60, 23);
+			this.buttonHelp.Size = new System.Drawing.Size(22, 22);
 			this.buttonHelp.TabIndex = 57;
-			this.buttonHelp.Text = "Help";
 			this.buttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.buttonHelp.UseVisualStyleBackColor = true;
 			this.buttonHelp.Click += new System.EventHandler(this.buttonHelp_Click);
-			this.buttonHelp.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
-			this.buttonHelp.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// panel3
+			// btnSyncLightSize
 			// 
-			this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.panel3.Controls.Add(this.label6);
-			this.panel3.Controls.Add(this.comboBoxStringToEdit);
-			this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel3.Location = new System.Drawing.Point(0, 34);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(465, 36);
-			this.panel3.TabIndex = 58;
+			this.btnSyncLightSize.AutoSize = true;
+			this.btnSyncLightSize.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.btnSyncLightSize.Location = new System.Drawing.Point(3, 31);
+			this.btnSyncLightSize.Name = "btnSyncLightSize";
+			this.btnSyncLightSize.Size = new System.Drawing.Size(41, 23);
+			this.btnSyncLightSize.TabIndex = 56;
+			this.btnSyncLightSize.Text = "Sync";
+			this.btnSyncLightSize.UseVisualStyleBackColor = true;
+			this.btnSyncLightSize.Click += new System.EventHandler(this.btnSyncBulbSize_Click);
 			// 
 			// label6
 			// 
+			this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(8, 9);
+			this.label6.Location = new System.Drawing.Point(3, 7);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(37, 13);
+			this.label6.Size = new System.Drawing.Size(34, 13);
 			this.label6.TabIndex = 54;
-			this.label6.Text = "String:";
+			this.label6.Text = "String";
 			// 
 			// comboBoxStringToEdit
 			// 
@@ -131,41 +87,79 @@
 			this.comboBoxStringToEdit.Items.AddRange(new object[] {
             "Standard",
             "Pixel"});
-			this.comboBoxStringToEdit.Location = new System.Drawing.Point(51, 6);
+			this.comboBoxStringToEdit.Location = new System.Drawing.Point(50, 3);
 			this.comboBoxStringToEdit.Name = "comboBoxStringToEdit";
-			this.comboBoxStringToEdit.Size = new System.Drawing.Size(409, 21);
+			this.comboBoxStringToEdit.Size = new System.Drawing.Size(331, 21);
 			this.comboBoxStringToEdit.TabIndex = 55;
 			this.comboBoxStringToEdit.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboBoxStringToEdit.SelectedIndexChanged += new System.EventHandler(this.comboBoxStringToEdit_SelectedIndexChanged);
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.AutoSize = true;
+			this.tableLayoutPanel1.ColumnCount = 3;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.Controls.Add(this.buttonHelp, 2, 0);
+			this.tableLayoutPanel1.Controls.Add(this.label6, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.comboBoxStringToEdit, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.panelProperties, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.btnSyncLightSize, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.lblSync, 1, 1);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(412, 468);
+			this.tableLayoutPanel1.TabIndex = 56;
+			// 
+			// panelProperties
+			// 
+			this.tableLayoutPanel1.SetColumnSpan(this.panelProperties, 3);
+			this.panelProperties.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelProperties.Location = new System.Drawing.Point(3, 60);
+			this.panelProperties.Name = "panelProperties";
+			this.panelProperties.Size = new System.Drawing.Size(406, 405);
+			this.panelProperties.TabIndex = 58;
+			// 
+			// lblSync
+			// 
+			this.lblSync.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblSync.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.lblSync, 2);
+			this.lblSync.Location = new System.Drawing.Point(50, 36);
+			this.lblSync.Name = "lblSync";
+			this.lblSync.Size = new System.Drawing.Size(173, 13);
+			this.lblSync.TabIndex = 59;
+			this.lblSync.Text = "Syncronize all light sizes with string.";
 			// 
 			// PreviewCustomSetupControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "PreviewCustomSetupControl";
-			this.Size = new System.Drawing.Size(467, 468);
-			this.Title = "Custom Properties";
+			this.Size = new System.Drawing.Size(412, 468);
+			this.Title = "Custom Prop Properties";
 			this.Load += new System.EventHandler(this.PreviewCustomSetupControl_Load);
-			this.panel1.ResumeLayout(false);
-			this.panel5.ResumeLayout(false);
-			this.panel5.PerformLayout();
-			this.panel3.ResumeLayout(false);
-			this.panel3.PerformLayout();
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button buttonHelp;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxStringToEdit;
-        private System.Windows.Forms.Panel panelProperties;
-        private System.Windows.Forms.Label label1;
-
-    }
+		private System.Windows.Forms.Button btnSyncLightSize;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.Panel panelProperties;
+		private System.Windows.Forms.Label lblSync;
+	}
 }
