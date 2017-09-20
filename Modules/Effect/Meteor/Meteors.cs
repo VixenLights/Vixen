@@ -23,6 +23,7 @@ namespace VixenModules.Effect.Meteors
 		private static Random _random = new Random();
 		private double _gradientPosition = 0;
 		private IPixelFrameBuffer _tempBuffer;
+		private int _maxGroundHeight;
 
 		public Meteors()
 		{
@@ -387,12 +388,16 @@ namespace VixenModules.Effect.Meteors
 
 		protected override void SetupRender()
 		{
+			_maxGroundHeight = 0;
 			_tempBuffer = new PixelFrameBuffer(BufferWi + 10, BufferHt + 10);
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
 				{
 					_tempBuffer.SetPixel(x, y, GroundColor.GetColorAt(0));
+					int temp = (int)CalculateGroundLevel(y);
+					if (temp > _maxGroundHeight)
+						_maxGroundHeight = temp;
 				}
 			}
 		}
@@ -405,7 +410,10 @@ namespace VixenModules.Effect.Meteors
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			if (frame == 0)
+			{
 				_meteors.Clear();
+			}
+
 			int colorcnt = Colors.Count();
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
@@ -425,6 +433,8 @@ namespace VixenModules.Effect.Meteors
 			if (tailLength < 1) tailLength = 1;
 			int tailStart = BufferHt;
 			if (tailStart < 1) tailStart = 1;
+
+			
 
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv = new HSV();
@@ -497,7 +507,7 @@ namespace VixenModules.Effect.Meteors
 					else
 					{
 						m.X = 0;
-						m.Y = BufferHt; //rand() % BufferHt;
+						m.Y = rand() % BufferHt;
 					}
 				}
 				else if (direction > 180 && direction <= 270)
@@ -509,7 +519,7 @@ namespace VixenModules.Effect.Meteors
 					if (_random.NextDouble() >= (double)(270 - direction) / 100)
 					{
 						m.X = BufferWi;
-						m.Y = BufferHt; //rand() % BufferHt;
+						m.Y = rand() % BufferHt;
 					}
 					else
 					{
@@ -537,15 +547,15 @@ namespace VixenModules.Effect.Meteors
 
 				if (MeteorEffect == MeteorsEffect.Explode)
 				{
-					m.X = BufferWi/2;
-					m.Y = BufferHt/2;
+					m.X = ( BufferWi - 1 ) / 2;
+					m.Y = ( BufferHt - 1 ) / 2;
 				}
 				else
 				{
 					if (RandomMeteorPosition || frame < pixelCount)
 					{
-						m.X = rand() % BufferWi;
-						m.Y = BufferHt; //(BufferHt - 1 - (rand() % tailStart));
+						m.X = rand() % BufferWi - 1;
+						m.Y = _random.Next(_maxGroundHeight + 5, BufferHt - 1);
 					}
 				}
 				m.DeltaXOrig = m.DeltaX;
@@ -567,7 +577,7 @@ namespace VixenModules.Effect.Meteors
 						m.Hsv = HSV.FromRGB(Colors[m.Color].GetColorAt(0));
 						break;
 				}
-				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .25) + .25 : 1;
+				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .20) + .20 : 1;
 				_meteors.Add(m);
 			}
 
@@ -700,7 +710,7 @@ namespace VixenModules.Effect.Meteors
 
 		private double CalculateGroundLevel(double intervalPos)
 		{
-			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt, 1);
+			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt - 6, 0);
 		}
 
 		// for Meteor effects
