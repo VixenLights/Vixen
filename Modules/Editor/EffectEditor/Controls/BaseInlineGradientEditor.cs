@@ -81,7 +81,51 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseDown(MouseButtonEventArgs e)
 		{
 			base.OnMouseDown(e);
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && (Keyboard.Modifiers & (ModifierKeys.Alt)) != 0)
+			{
+				_holdValue = GetColorGradientValue();
+				if (!_holdValue.IsLibraryReference && _holdValue.Colors.Count > 1)
+					ReverseGradient(); //Will not reverse gradient if linked to Library.
+			}
 			e.Handled = true;
+		}
+
+		private void ReverseGradient()
+		{
+			int colorPosition = 0;
+			ColorGradient value = new ColorGradient(_holdValue);
+			value.Colors.Clear();
+
+			//We need to first sort the colors based on the position, reason is that when adding a color point it is added to the end of the Color list
+			//and we need to have the colors in position order so we can use the appropiate Focus point.
+			foreach (var colors in _holdValue.Colors)
+			{
+				for (int color = 0; color < value.Colors.Count; color++)
+				{
+					if (colors.Position > value.Colors[color].Position)
+					{
+						colorPosition = color + 1;
+					}
+				}
+				value.Colors.Insert(colorPosition, colors);
+			}
+
+			//Now that its sorted by position we can use the color position and focus point of the next color. 
+			ColorGradient newValue = new ColorGradient(value);
+			int colorCount = value.Colors.Count - 1;
+			for (int i = colorCount; 0 <= i; i--)
+			{
+				newValue.Colors[colorCount - i] = new ColorPoint(value.Colors[i])
+				{
+					Position = 1 - value.Colors[i].Position
+				};
+
+				if (i < colorCount)
+					newValue.Colors[colorCount - i].Focus = 1 - value.Colors[i + 1].Focus;
+			}
+
+			_holdValue = newValue; //copy back to _holdValue so it refreshes the effect on the timeline.
+			SetColorGradientValue(_holdValue);
 		}
 
 		private void CanvasOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
