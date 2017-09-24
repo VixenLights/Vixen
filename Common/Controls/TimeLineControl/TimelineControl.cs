@@ -330,13 +330,22 @@ namespace Common.Controls.Timeline
 				return;
 			grid.BeginDraw();
 			if (VisibleTimeSpan.Scale(scale) > TotalTime) {
-				TimePerPixel = TimeSpan.FromTicks(TotalTime.Ticks/grid.Width);
-				VisibleTimeStart = TimeSpan.Zero;
+				var t = TimeSpan.FromTicks(TotalTime.Ticks / grid.Width);
+				if(t.Ticks > 2000)
+				{
+					TimePerPixel = t;
+					VisibleTimeStart = TimeSpan.Zero;
+				}
 			}
 			else {
-				TimePerPixel = TimePerPixel.Scale(scale);
-				if (VisibleTimeEnd >= TotalTime)
-					VisibleTimeStart = TotalTime - VisibleTimeSpan;
+				var t = TimePerPixel.Scale(scale);
+				if (t.Ticks > 2000)
+				{
+					TimePerPixel = t;
+					if (VisibleTimeEnd >= TotalTime)
+						VisibleTimeStart = TotalTime - VisibleTimeSpan;
+				} 
+				
 			}
 			grid.EndDraw();
 			}
