@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VixenModules.Preview.VixenPreview.Shapes;
 
