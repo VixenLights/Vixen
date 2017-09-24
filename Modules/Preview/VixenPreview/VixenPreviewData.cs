@@ -69,18 +69,6 @@ namespace VixenModules.Preview.VixenPreview
 		public Vector3D LocationOffset { get; set; }
 
 		[DataMember]
-		public bool HideStatusBar { get; set; }
-
-		[DataMember]
-		public bool HideWindowBorders { get; set; }
-
-		[DataMember]
-		public bool LockPosition { get; set; }
-
-		[DataMember]
-		public bool AlwaysOnTop { get; set; }
-
-		[DataMember]
 		public List<DisplayItem> DisplayItems
 		{
 			get { return _displayItems ?? (_displayItems = new List<DisplayItem>()); }

@@ -29,6 +29,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private Size? _mouseGrabOffset;
 		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
 		private string _displayName = "Vixen Preview";
+		private bool _showBorders;
+		private bool _showStatus;
+		private bool _alwaysOnTop;
+		private bool _lockPosition;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
@@ -45,16 +49,13 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			int imageSize = (int)(16 * scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			UpdateDisplayName();
-			ConfigureStatusBar();
-			ConfigureBorders();
-			ConfigureAlwaysOnTop();
 			_previewSetPixelsTime = new MillisecondsValue("Preview pixel set time");
 			VixenSystem.Instrumentation.AddValue(_previewSetPixelsTime);
 		}
 
 		private void ConfigureAlwaysOnTop()
 		{
-			if (Data.AlwaysOnTop)
+			if (_alwaysOnTop)
 			{
 				TopMost = true;
 			}
@@ -66,7 +67,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		private void ConfigureBorders()
 		{
-			if (Data.HideWindowBorders)
+			if (!_showBorders)
 			{
 				FormBorderStyle = FormBorderStyle.None;
 			}
@@ -78,7 +79,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		private void ConfigureStatusBar()
 		{
-			if (Data.HideStatusBar)
+			if (!_showStatus)
 			{
 				statusStrip.Visible = false;
 			}
@@ -114,7 +115,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		private void GdiControl_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (!Data.LockPosition && e.Button == MouseButtons.Left)
+			if (!_lockPosition && e.Button == MouseButtons.Left)
 			{
 				_mouseGrabOffset = new Size(e.Location);
 			}
@@ -133,15 +134,16 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			var item = new ToolStripMenuItem("Show Status");
 			item.ToolTipText = @"Enable/Disable the preview status bar.";
 
-			if (!Data.HideStatusBar)
+			if (_showStatus)
 			{
 				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
 			}
 
 			item.Click += (sender, args) =>
 			{
-				Data.HideStatusBar = !Data.HideStatusBar;
+				_showStatus = !_showStatus;
 				ConfigureStatusBar();
+				SaveWindowState();
 			};
 
 			_contextMenuStrip.Items.Add(item);
@@ -149,15 +151,16 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			item = new ToolStripMenuItem("Show Borders");
 			item.ToolTipText = @"Enable/Disable the preview borders.";
 
-			if (!Data.HideWindowBorders)
+			if (_showBorders)
 			{
 				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
 			}
 
 			item.Click += (sender, args) =>
 			{
-				Data.HideWindowBorders = !Data.HideWindowBorders;
+				_showBorders = !_showBorders;
 				ConfigureBorders();
+				SaveWindowState();
 			};
 
 			_contextMenuStrip.Items.Add(item);
@@ -165,14 +168,15 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			item = new ToolStripMenuItem("Lock Position");
 			item.ToolTipText = @"Enable/Disable the window position lock.";
 
-			if (Data.LockPosition)
+			if (_lockPosition)
 			{
 				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
 			}
 
 			item.Click += (sender, args) =>
 			{
-				Data.LockPosition = !Data.LockPosition;
+				_lockPosition = !_lockPosition;
+				SaveWindowState();
 			};
 
 			_contextMenuStrip.Items.Add(item);
@@ -180,15 +184,16 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			item = new ToolStripMenuItem("Always On Top");
 			item.ToolTipText = @"Enable/Disable the window always on top.";
 
-			if (Data.AlwaysOnTop)
+			if (_alwaysOnTop)
 			{
 				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
 			}
 
 			item.Click += (sender, args) =>
 			{
-				Data.AlwaysOnTop = !Data.AlwaysOnTop;
+				_alwaysOnTop = !_alwaysOnTop;
 				ConfigureAlwaysOnTop();
+				SaveWindowState();
 			};
 
 			_contextMenuStrip.Items.Add(item);
@@ -198,7 +203,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			item.Click += (sender, args) =>
 			{
-				ClientSize = new Size(gdiControl.Background.Width, gdiControl.Background.Height);
+				ClientSize = new Size(gdiControl.Background.Width, gdiControl.Background.Height+ (statusStrip.Visible?statusStrip.Height:0));
 				SaveWindowState();
 			};
 
@@ -386,8 +391,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				return;
 			}
 
-			Data.Top = Top;
-			Data.Left = Left;
+			//Data.Top = Top;
+			//Data.Left = Left;
 			if(!_formLoading) SaveWindowState();
 		}
 
@@ -400,8 +405,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				return;
 			}
 
-			Data.Width = Width;
-			Data.Height = Height;
+			//Data.Width = Width;
+			//Data.Height = Height;
 			if (!_formLoading) SaveWindowState();
 		}
 
@@ -431,6 +436,10 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", name),
 				WindowState.ToString());
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), _showBorders);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), _lockPosition);
 		}
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
@@ -446,6 +455,16 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
 			var name = DisplayName.Replace(' ', '_');
+
+			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
+			_showBorders = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), true);
+			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
+			_lockPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), false);
+
+			ConfigureStatusBar();
+			ConfigureBorders();
+			ConfigureAlwaysOnTop();
+
 			var desktopBounds =
 				new Rectangle(
 					new Point(
