@@ -81,6 +81,14 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		protected override void OnMouseDown(MouseButtonEventArgs e)
 		{
 			base.OnMouseDown(e);
+			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && (Keyboard.Modifiers & (ModifierKeys.Alt)) != 0)
+			{
+				var value = GetColorGradientValue();
+				if (!value.IsLibraryReference && value.Colors.Count > 1)
+				{
+					SetColorGradientValue(value.GetReverseColorGradient());  //Will not reverse gradient if linked to Library.
+				}
+			}
 			e.Handled = true;
 		}
 
