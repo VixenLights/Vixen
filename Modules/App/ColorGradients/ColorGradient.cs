@@ -757,6 +757,43 @@ namespace VixenModules.App.ColorGradients
 			return GetDiscreteColorsAndProportionsAt((float) pos);
 		}
 
+		public ColorGradient GetReverseColorGradient()
+		{
+			int colorPosition = 0;
+			ColorGradient value = new ColorGradient();
+			value.Colors.Clear();
+
+			//We need to first sort the colors based on the position, reason is that when adding a color point it is added to the end of the Color list
+			//and we need to have the colors in position order so we can use the appropiate Focus point.
+			foreach (var colors in Colors)
+			{
+				for (int color = 0; color < value.Colors.Count; color++)
+				{
+					if (colors.Position > value.Colors[color].Position)
+					{
+						colorPosition = color + 1;
+					}
+				}
+				value.Colors.Insert(colorPosition, colors);
+			}
+
+			//Now that its sorted by position we can use the color position and focus point of the next color. 
+			ColorGradient newValue = new ColorGradient(value);
+			int colorCount = value.Colors.Count - 1;
+			for (int i = colorCount; 0 <= i; i--)
+			{
+				newValue.Colors[colorCount - i] = new ColorPoint(value.Colors[i])
+				{
+					Position = 1 - value.Colors[i].Position
+				};
+
+				if (i < colorCount)
+					newValue.Colors[colorCount - i].Focus = 1 - value.Colors[i + 1].Focus;
+			}
+
+			return newValue;
+		}
+
 		#region properties
 
 		/// <summary>
