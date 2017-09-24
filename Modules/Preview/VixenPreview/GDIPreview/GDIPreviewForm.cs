@@ -414,9 +414,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				messageBox.ShowDialog();
 				e.Cancel = true;
 			}
-			gdiControl.MouseMove += GdiControl_MouseMove;
-			gdiControl.MouseUp += GdiControl_MouseUp;
-			gdiControl.MouseDown += GdiControl_MouseDown;
+			gdiControl.MouseMove -= GdiControl_MouseMove;
+			gdiControl.MouseUp -= GdiControl_MouseUp;
+			gdiControl.MouseDown -= GdiControl_MouseDown;
 
 			SaveWindowState();
 		}
