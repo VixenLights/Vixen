@@ -477,7 +477,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			if (desktopBounds.Width < 20)
 			{
 				if (gdiControl.Background != null && gdiControl.Background.Width > 20)
-					desktopBounds.Width = gdiControl.Background.Width;
+					desktopBounds.Width = gdiControl.Background.Width + Width-ClientSize.Width;
 				else
 					desktopBounds.Width = 400;
 			}
@@ -485,7 +485,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			if (desktopBounds.Height < 10)
 			{
 				if (gdiControl.Background != null && gdiControl.Background.Height > 10)
-					desktopBounds.Height = gdiControl.Background.Height;
+					desktopBounds.Height = gdiControl.Background.Height + Height-ClientSize.Height + (statusStrip.Visible?statusStrip.Height:0);
 				else
 					desktopBounds.Height = 300;
 			}
