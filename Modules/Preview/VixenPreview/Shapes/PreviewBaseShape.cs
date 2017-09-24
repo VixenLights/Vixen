@@ -326,6 +326,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
+			int origPixelSize = PixelSize;
             if (forceDraw)
             {
                 pixel.Draw(fp, forceDraw);
@@ -361,6 +362,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	                } 
                 }
                 pixel.Draw(fp, pixelColor);
+				//Restore the size if we changed it.
+	            pixel.PixelSize = origPixelSize;
             }
 		}
 
