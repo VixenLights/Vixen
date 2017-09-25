@@ -19,10 +19,10 @@ namespace Vixen.Sys.Output
 			if (executionControl == null) throw new ArgumentNullException("executionControl");
 			if (outputModuleConsumer == null) throw new ArgumentNullException("outputModuleConsumer");
 
-			Id = id;
-			Name = name;
 			_executionControl = executionControl;
 			_outputModuleConsumer = outputModuleConsumer;
+			Id = id;
+			Name = name;
 		}
 
 		public void UpdateCommands()
@@ -37,7 +37,18 @@ namespace Vixen.Sys.Output
 
 		public Guid Id { get; private set; }
 
-		public string Name { get; set; }
+		public string Name
+		{
+			get
+			{
+				return _outputModuleConsumer.Module.Name;
+				
+			}
+			set
+			{
+				_outputModuleConsumer.Module.Name = value;
+			} 
+		}
 
 		public Guid ModuleId
 		{

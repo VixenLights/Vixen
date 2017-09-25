@@ -19,6 +19,7 @@ namespace Vixen.Factory
 			IModuleDataRetriever dataRetriever = new ModuleInstanceDataRetriever(VixenSystem.ModuleStore.InstanceData);
 			IOutputModuleConsumer<IPreviewModuleInstance> outputModuleConsumer =
 				new OutputModuleConsumer<IPreviewModuleInstance>(moduleId, moduleInstanceId, dataRetriever);
+			outputModuleConsumer.Module.Name = name;
 			IHardware executionControl = new BasicOutputModuleExecutionControl(outputModuleConsumer.Module);
 			// Yes, we are intentionally using the module instance id as the device id.
 			// Previews are not referenced by id at runtime in the way that controllers are referenced for linking.

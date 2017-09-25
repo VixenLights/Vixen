@@ -9,5 +9,7 @@ namespace VixenModules.Preview.VixenPreview {
 		void Setup();
 		void Close();
 		void UpdatePreview();
+
+		String DisplayName { get; set; }
 	}
 }

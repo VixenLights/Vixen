@@ -1,4 +1,4 @@
-﻿namespace VixenModules.Preview.VixenPreview
+﻿namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	partial class GDIControl
 	{

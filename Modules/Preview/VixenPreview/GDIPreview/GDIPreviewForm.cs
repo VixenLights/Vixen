@@ -1,35 +1,92 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
-using Common.Controls;
-using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Windows.Forms;
+using Common.Controls;
+using Common.Controls.Scaling;
+using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
+using Vixen;
+using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
+using VixenModules.Preview.VixenPreview.Shapes;
 
-namespace VixenModules.Preview.VixenPreview
+namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	public partial class GDIPreviewForm : BaseForm, IDisplayForm
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private bool needsUpdate = true;
-		private bool formLoading = true;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool _needsUpdate = true;
+		private bool _formLoading = true;
 		private static MillisecondsValue _previewSetPixelsTime;
 		private Stopwatch _sw = Stopwatch.StartNew();
+		private Size? _mouseGrabOffset;
+		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
+		private string _displayName = "Vixen Preview";
+		private bool _showBorders;
+		private bool _showStatus;
+		private bool _alwaysOnTop;
+		private bool _lockPosition;
 
 		public GDIPreviewForm(VixenPreviewData data)
 		{
 			Icon = Resources.Icon_Vixen3;
 			InitializeComponent();
 			Data = data;
+			gdiControl.Margin = Padding.Empty;
+			gdiControl.Padding = Padding.Empty;
+			gdiControl.MouseMove += GdiControl_MouseMove;
+			gdiControl.MouseUp += GdiControl_MouseUp;
+			gdiControl.MouseDown += GdiControl_MouseDown;
+			double scaleFactor = ScalingTools.GetScaleFactor();
+			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
+			int imageSize = (int)(16 * scaleFactor);
+			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
+			UpdateDisplayName();
 			_previewSetPixelsTime = new MillisecondsValue("Preview pixel set time");
 			VixenSystem.Instrumentation.AddValue(_previewSetPixelsTime);
+		}
+
+		private void ConfigureAlwaysOnTop()
+		{
+			if (_alwaysOnTop)
+			{
+				TopMost = true;
+			}
+			else
+			{
+				TopMost = false;
+			}
+		}
+
+		private void ConfigureBorders()
+		{
+			if (!_showBorders)
+			{
+				FormBorderStyle = FormBorderStyle.None;
+			}
+			else
+			{
+				FormBorderStyle = FormBorderStyle.Sizable;
+			}
+		}
+
+		private void ConfigureStatusBar()
+		{
+			if (!_showStatus)
+			{
+				statusStrip.Visible = false;
+			}
+			else
+			{
+				statusStrip.Visible = true;
+			}
 		}
 
 		private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -41,6 +98,127 @@ namespace VixenModules.Preview.VixenPreview
 				myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
 				return myCp;
 			}
+		}
+
+		private void GdiControl_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (_mouseGrabOffset.HasValue)
+			{
+				this.Location = Cursor.Position - _mouseGrabOffset.Value;
+			}
+		}
+
+		private void GdiControl_MouseUp(object sender, MouseEventArgs e)
+		{
+			_mouseGrabOffset = null;
+		}
+
+		private void GdiControl_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (!_lockPosition && e.Button == MouseButtons.Left)
+			{
+				_mouseGrabOffset = new Size(e.Location);
+			}
+			else if(e.Button == MouseButtons.Right)
+			{
+				HandleContextMenu();
+			}
+		}
+
+		private void HandleContextMenu()
+		{
+			_contextMenuStrip.Items.Clear();
+
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			
+			var item = new ToolStripMenuItem("Show Status");
+			item.ToolTipText = @"Enable/Disable the preview status bar.";
+
+			if (_showStatus)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_showStatus = !_showStatus;
+				ConfigureStatusBar();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Show Borders");
+			item.ToolTipText = @"Enable/Disable the preview borders.";
+
+			if (_showBorders)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_showBorders = !_showBorders;
+				ConfigureBorders();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Lock Position");
+			item.ToolTipText = @"Enable/Disable the window position lock.";
+
+			if (_lockPosition)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_lockPosition = !_lockPosition;
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Always On Top");
+			item.ToolTipText = @"Enable/Disable the window always on top.";
+
+			if (_alwaysOnTop)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_alwaysOnTop = !_alwaysOnTop;
+				ConfigureAlwaysOnTop();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Reset Size");
+			item.ToolTipText = @"Resets the viewable size to match the background size.";
+
+			item.Click += (sender, args) =>
+			{
+				ClientSize = new Size(gdiControl.Background.Width, gdiControl.Background.Height+ (statusStrip.Visible?statusStrip.Height:0));
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			var seperator = new ToolStripSeparator();
+			_contextMenuStrip.Items.Add(seperator);
+
+			var locationLabel = new ToolStripLabel(string.Format("Location: {0},{1}", DesktopLocation.X, DesktopLocation.Y));
+			_contextMenuStrip.Items.Add(locationLabel);
+
+			var sizeLabel = new ToolStripLabel(string.Format("Size: {0} X {1}", ClientSize.Width, ClientSize.Height));
+			_contextMenuStrip.Items.Add(sizeLabel);
+
+			_contextMenuStrip.Show(MousePosition);
 		}
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
@@ -56,9 +234,9 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (!VixenSystem.Elements.ElementsHaveState)
 				{
-					if (needsUpdate)
+					if (_needsUpdate)
 					{
-						needsUpdate = false;
+						_needsUpdate = false;
 						gdiControl.BeginUpdate();
 						gdiControl.EndUpdate();
 						gdiControl.Invalidate();
@@ -68,7 +246,7 @@ namespace VixenModules.Preview.VixenPreview
 					return;
 				}
 
-				needsUpdate = true;
+				_needsUpdate = true;
 
 				try
 				{
@@ -213,9 +391,9 @@ namespace VixenModules.Preview.VixenPreview
 				return;
 			}
 
-			Data.Top = Top;
-			Data.Left = Left;
-			if(!formLoading) SaveWindowState();
+			//Data.Top = Top;
+			//Data.Left = Left;
+			if(!_formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_Resize(object sender, EventArgs e)
@@ -227,9 +405,9 @@ namespace VixenModules.Preview.VixenPreview
 				return;
 			}
 
-			Data.Width = Width;
-			Data.Height = Height;
-			if (!formLoading) SaveWindowState();
+			//Data.Width = Width;
+			//Data.Height = Height;
+			if (!_formLoading) SaveWindowState();
 		}
 
 		private void GDIPreviewForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -241,6 +419,9 @@ namespace VixenModules.Preview.VixenPreview
 				messageBox.ShowDialog();
 				e.Cancel = true;
 			}
+			gdiControl.MouseMove -= GdiControl_MouseMove;
+			gdiControl.MouseUp -= GdiControl_MouseUp;
+			gdiControl.MouseDown -= GdiControl_MouseDown;
 
 			SaveWindowState();
 		}
@@ -248,19 +429,24 @@ namespace VixenModules.Preview.VixenPreview
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name),
+			var name = DisplayName.Replace(' ', '_');
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", name), Size.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", name), Size.Width);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", name),
 				WindowState.ToString());
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), _showBorders);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), _lockPosition);
 		}
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
 		{
-			formLoading = true;
+			_formLoading = true;
 			RestoreWindowState();
-			formLoading = false;
+			_formLoading = false;
 		}
 
 		private void RestoreWindowState()
@@ -268,28 +454,38 @@ namespace VixenModules.Preview.VixenPreview
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
+			var name = DisplayName.Replace(' ', '_');
+
+			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
+			_showBorders = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), true);
+			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
+			_lockPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), false);
+
+			ConfigureStatusBar();
+			ConfigureBorders();
+			ConfigureAlwaysOnTop();
 
 			var desktopBounds =
 				new Rectangle(
 					new Point(
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y)),
 					new Size(
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", Name), Size.Width),
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", Name), Size.Height)));
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", name), 0),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", name), 0)));
 
-			if (desktopBounds.Width < 300)
+			if (desktopBounds.Width < 20)
 			{
-				if (gdiControl.Background != null && gdiControl.Background.Width > 300)
-					desktopBounds.Width = gdiControl.Background.Width;
+				if (gdiControl.Background != null && gdiControl.Background.Width > 20)
+					desktopBounds.Width = gdiControl.Background.Width + Width-ClientSize.Width;
 				else
 					desktopBounds.Width = 400;
 			}
 
-			if (desktopBounds.Height < 200)
+			if (desktopBounds.Height < 10)
 			{
-				if (gdiControl.Background != null && gdiControl.Background.Height > 200)
-					desktopBounds.Height = gdiControl.Background.Height;
+				if (gdiControl.Background != null && gdiControl.Background.Height > 10)
+					desktopBounds.Height = gdiControl.Background.Height + Height-ClientSize.Height + (statusStrip.Visible?statusStrip.Height:0);
 				else
 					desktopBounds.Height = 300;
 			}
@@ -299,7 +495,7 @@ namespace VixenModules.Preview.VixenPreview
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;
 
-				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal").Equals("Maximized"))
+				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", name), "Normal").Equals("Maximized"))
 				{
 					WindowState = FormWindowState.Maximized;
 				}
@@ -315,5 +511,29 @@ namespace VixenModules.Preview.VixenPreview
 
 			
 		}
+
+		public string DisplayName
+		{
+			get { return _displayName; }
+			set
+			{
+				_displayName = value;
+				if (InvokeRequired)
+				{
+					Invoke(new Delegates.GenericDelegate(UpdateDisplayName));
+				}
+				else
+				{
+					UpdateDisplayName();
+				}
+				
+			}
+		}
+
+		public void UpdateDisplayName()
+		{
+			Text = _displayName;
+		}
+		
 	}
 }

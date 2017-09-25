@@ -145,5 +145,6 @@ namespace VixenModules.Preview.VixenPreview {
 			Data.Height = Height;
 		}
 
+		public string DisplayName { get; set; }
 	}
 }

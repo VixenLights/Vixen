@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Windows.Forms;
 
-namespace VixenModules.Preview.VixenPreview
+namespace VixenModules.Preview.VixenPreview.GDIPreview
 {
 	public partial class GDIControl : UserControl
 	{
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-
 		private Image _background;
 		private Bitmap _backgroundAlphaImage;
 		private int _backgroundAlpha;
@@ -20,7 +15,7 @@ namespace VixenModules.Preview.VixenPreview
 		private FastPixel.FastPixel _fastPixel;
 		private DateTime _frameRateTime;
 		private long _frameCount;
-        private bool DefaultBackground = true;
+        private bool _defaultBackground = true;
 
 		public GDIControl()
 		{
@@ -42,7 +37,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
                 if (value == null)
                 {
-                    DefaultBackground = true;
+                    _defaultBackground = true;
                     _background = new Bitmap(Width>0?Width:1, Height>0?Height:1, PixelFormat.Format32bppPArgb);
 
                     Graphics gfx = Graphics.FromImage(_background);
@@ -51,7 +46,7 @@ namespace VixenModules.Preview.VixenPreview
                 }
                 else
                 {
-                    DefaultBackground = false;
+                    _defaultBackground = false;
                     _background = value;
                 }
 				CreateAlphaBackground();
@@ -171,7 +166,7 @@ namespace VixenModules.Preview.VixenPreview
         {
             if (Width > 0 && Height > 0)
             {
-                if (DefaultBackground)
+                if (_defaultBackground)
                 {
                     Background = null;
                 }

@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Diagnostics;
-using Vixen.Execution.Context;
-using Vixen.Module.Preview;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
-using VixenModules.Preview.VixenPreview.Direct2D;
+using VixenModules.Preview.VixenPreview.GDIPreview;
 
 namespace VixenModules.Preview.VixenPreview
 {
 	public partial class VixenPreviewModuleInstance
 	{
-		private VixenPreviewSetup3 setupForm;
-		private IDisplayForm displayForm;
-		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
-		private MillisecondsValue _updateTimeValue = new MillisecondsValue("Update time for preview");
+		private VixenPreviewSetup3 _setupForm;
+		private IDisplayForm _displayForm;
+		private static readonly NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private readonly MillisecondsValue _updateTimeValue = new MillisecondsValue("Update time for preview");
 
 		public VixenPreviewModuleInstance()
 		{
@@ -40,42 +38,46 @@ namespace VixenModules.Preview.VixenPreview
 
 		public bool UseGDIPreviewRendering
 		{
-			get {
-				 
-				// if (new Properties.Settings().UseGDIRendering)
-					return true;
-
-				// return !Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
-			}
+			get { return true; }
 		}
 
 		protected override Form Initialize()
 		{
-			Execution.NodesChanged += ExecutionNodesChanged;
-			VixenSystem.Contexts.ContextCreated += ProgramContextCreated;
-			VixenSystem.Contexts.ContextReleased += ProgramContextReleased;
- 
 			SetupPreviewForm();
-
-			return (Form)displayForm;
+			return (Form)_displayForm;
 		}
 
-		private object formLock = new object();
+		private readonly object _formLock = new object();
 		private void SetupPreviewForm()
 		{
-			lock (formLock) {
+			lock (_formLock) {
 
 				if (UseGDIPreviewRendering)
 				{
-					displayForm = new GDIPreviewForm(GetDataModel());
+					_displayForm = new GDIPreviewForm(GetDataModel());
+					_displayForm.DisplayName = Name;
 				}
 				else
 				{
-					displayForm = new VixenPreviewDisplayD2D();
-					displayForm.Data = GetDataModel();
+					_displayForm = new VixenPreviewDisplayD2D();
+					_displayForm.Data = GetDataModel();
 				}
 
-				displayForm.Setup();
+				_displayForm.Setup();
+			}
+		}
+
+		private String _name;
+		public override string Name
+		{
+			get { return _name; }
+			set
+			{
+				_name = value;
+				if (_displayForm != null)
+				{
+					_displayForm.DisplayName = value;
+				}
 			}
 		}
 
@@ -86,15 +88,15 @@ namespace VixenModules.Preview.VixenPreview
 
 		public override bool Setup()
 		{
-			setupForm = new VixenPreviewSetup3();
-			setupForm.Data = GetDataModel();
+			_setupForm = new VixenPreviewSetup3();
+			_setupForm.Data = GetDataModel();
 
-			setupForm.ShowDialog();
+			_setupForm.ShowDialog();
 
-			if (displayForm != null)
+			if (_displayForm != null)
 			{
-				displayForm.Data = GetDataModel();
-				displayForm.Setup();
+				_displayForm.Data = GetDataModel();
+				_displayForm.Setup();
 			}
 
 			return base.Setup();
@@ -104,95 +106,21 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			if (disposing)
 			{
-				if (displayForm != null)
-					displayForm.Close();
-				VixenSystem.Contexts.ContextCreated -= ProgramContextCreated;
-				VixenSystem.Contexts.ContextReleased -= ProgramContextReleased;	
+				if (_displayForm != null)
+					_displayForm.Close();
 			}
 			
 			base.Dispose(disposing);
 		}
-
-		private void ExecutionNodesChanged(object sender, EventArgs e)
-		{
-			//Console.WriteLine("hanged");
-			//if (setupForm != null)
-			//{
-			//    setupForm.elementsForm.PopulateElementTree();
-			//}
-		}
-
-		private void ProgramContextCreated(object sender, ContextEventArgs contextEventArgs)
-		{
-			var programContext = contextEventArgs.Context as IProgramContext;
-			//
-			// This is always null... why does this event get called?
-			//
-			if (programContext != null) {
-				//_programContexts.Add(programContext);
-				programContext.ProgramStarted += ProgramContextProgramStarted;
-				programContext.ProgramEnded += ProgramContextProgramEnded;
-				programContext.SequenceStarted += context_SequenceStarted;
-				programContext.SequenceEnded += context_SequenceEnded;
-			}
-		}
-
-		private void ProgramContextProgramEnded(object sender, ProgramEventArgs e)
-		{
-			Stop();
-		}
-
-		private void ProgramContextProgramStarted(object sender, ProgramEventArgs e)
-		{
-			Start();
-		}
-
-		protected void context_SequenceStarted(object sender, SequenceStartedEventArgs e)
-		{
-		}
-
-		protected void context_SequenceEnded(object sender, SequenceEventArgs e)
-		{
-		}
-
-		private void ProgramContextReleased(object sender, ContextEventArgs contextEventArgs)
-		{
-			var programContext = contextEventArgs.Context as IProgramContext;
-			if (programContext != null) {
-				programContext.ProgramStarted -= ProgramContextProgramStarted;
-				programContext.ProgramEnded -= ProgramContextProgramEnded;
-				programContext.SequenceStarted -= context_SequenceStarted;
-				programContext.SequenceEnded -= context_SequenceEnded;
-			}
-		}
-
-		//bool isGdiVersion = false;
+		
 		protected override void Update()
 		{
 			var sw = Stopwatch.StartNew();
 			try {
-				// displayForm.Scene.ElementStates = ElementStates;
-				//if the Preview form style changes re-setup the form
-				//if ((UseGDIPreviewRendering && !isGdiVersion) || (!UseGDIPreviewRendering && isGdiVersion) || displayForm == null) {
-				//	SetupPreviewForm();
-				//	isGdiVersion = UseGDIPreviewRendering;
-				//	Stop();
-				//	Start();
-				//}
-
-				//if (!UseGDIPreviewRendering) {
-				//	((VixenPreviewDisplayD2D)displayForm).Scene.Update(/*ElementStates*/);
-				//}
-				//else {
-				//	if (UseOldPreview)
-				//		((VixenPreviewDisplay)displayForm).PreviewControl.ProcessUpdateParallel(/*ElementStates*/);
-				//	else
-					displayForm.UpdatePreview();
-				//}
+				_displayForm.UpdatePreview();
 			}
 			catch (Exception e) {
 				Logging.Error("Exception in preview update {0} - {1}", e.Message, e.StackTrace);
-				//Console.WriteLine(e.ToString());
 			}
 			_updateTimeValue.Set(sw.ElapsedMilliseconds);
 		}
