@@ -105,6 +105,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				foreach (PreviewBaseShape shape in Strings) {
 					shape.Top -= delta;
 				}
+				Layout();
 			}
 		}
 
@@ -125,6 +126,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				foreach (PreviewBaseShape shape in Strings) {
 					shape.Left -= delta;
 				}
+				Layout();
 			}
 		}
 
