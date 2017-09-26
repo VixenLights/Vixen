@@ -296,15 +296,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collide.
-        /// </summary>
-        internal static string Collide {
-            get {
-                return ResourceManager.GetString("Collide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Circles.
         /// </summary>
         internal static string CircleCount {
@@ -328,6 +319,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string CircleFill {
             get {
                 return ResourceManager.GetString("CircleFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collide.
+        /// </summary>
+        internal static string Collide {
+            get {
+                return ResourceManager.GetString("Collide", resourceCulture);
             }
         }
         
@@ -706,6 +706,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string IndividualElements {
             get {
                 return ResourceManager.GetString("IndividualElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial Build Up.
+        /// </summary>
+        internal static string InitialBuildUp {
+            get {
+                return ResourceManager.GetString("InitialBuildUp", resourceCulture);
             }
         }
         
@@ -1138,6 +1147,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Size {
             get {
                 return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snow Buildup.
+        /// </summary>
+        internal static string SnowBuildUp {
+            get {
+                return ResourceManager.GetString("SnowBuildUp", resourceCulture);
             }
         }
         

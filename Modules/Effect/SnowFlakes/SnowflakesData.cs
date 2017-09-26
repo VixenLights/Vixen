@@ -32,6 +32,8 @@ namespace VixenModules.Effect.Snowflakes
 			SnowflakeEffect = SnowflakeEffect.None;
 			ColorType = SnowflakeColorType.Palette;
 			Orientation=StringOrientation.Vertical;
+			SnowBuildUp = false;
+			InitialBuildUp = 0;
 		}
 
 		[DataMember]
@@ -42,6 +44,9 @@ namespace VixenModules.Effect.Snowflakes
 
 		[DataMember]
 		public SnowflakeType SnowflakeType { get; set; }
+
+		[DataMember]
+		public bool SnowBuildUp { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int Speed { get; set; }
@@ -78,6 +83,9 @@ namespace VixenModules.Effect.Snowflakes
 
 		[DataMember]
 		public int MinDirection { get; set; }
+
+		[DataMember]
+		public int InitialBuildUp { get; set; }
 
 		[DataMember]
 		public SnowflakeEffect SnowflakeEffect { get; set; }
@@ -146,7 +154,9 @@ namespace VixenModules.Effect.Snowflakes
 				MinDirection = MinDirection,
 				MaxDirection = MaxDirection,
 				SnowflakeEffect = SnowflakeEffect,
-				PixelCount = PixelCount
+				PixelCount = PixelCount,
+				SnowBuildUp = SnowBuildUp,
+				InitialBuildUp = InitialBuildUp
 			};
 			return result;
 		}
