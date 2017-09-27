@@ -167,6 +167,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		
 		public void UpdatePreview()
 		{
+			if (_formLoading) return;
 			if (VixenSystem.Elements.ElementsHaveState)
 			{
 				OnRenderFrame();
@@ -351,7 +352,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void OnRenderFrame()
 		{
 			//Logging.Debug("Entering RenderFrame");
-			if (_isRendering) return;
+			if (_isRendering || _formLoading) return;
 			_isRendering = true;
 			_sw.Restart();
 			var perspective = CreatePerspective();
