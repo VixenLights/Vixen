@@ -11,6 +11,7 @@ using Common.Controls;
 using Common.Resources.Properties;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
@@ -46,6 +47,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _needsUpdate = true;
 		private bool _isRendering;
 		private bool _formLoading;
+		private string _displayName = "Vixen Preview";
 
 		public OpenGlPreviewForm(VixenPreviewData data)
 		{
@@ -178,6 +180,29 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_needsUpdate = false;
 				}
 			}
+		}
+
+		public string DisplayName
+		{
+			get { return _displayName; }
+			set
+			{
+				_displayName = value;
+				if (InvokeRequired)
+				{
+					Invoke(new Delegates.GenericDelegate(UpdateDisplayName));
+				}
+				else
+				{
+					UpdateDisplayName();
+				}
+
+			}
+		}
+
+		public void UpdateDisplayName()
+		{
+			Text = _displayName;
 		}
 
 		#endregion

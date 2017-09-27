@@ -39,7 +39,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		public bool UseGDIPreviewRendering
 		{
-					return false;
+			get { return false; }
 		}
 
 		protected override Form Initialize()
@@ -62,7 +62,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					try
 					{
-						displayForm = new OpenGlPreviewForm(GetDataModel());
+						_displayForm = new OpenGlPreviewForm(GetDataModel());
 					}
 					catch (Exception ex)
 					{
