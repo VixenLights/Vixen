@@ -558,4 +558,7 @@
   <data name="InitialBuildUp" xml:space="preserve">
     <value>Initial Build Up</value>
   </data>
+  <data name="BuildUpSpeed" xml:space="preserve">
+    <value>Build Up Speed</value>
+  </data>
 </root>

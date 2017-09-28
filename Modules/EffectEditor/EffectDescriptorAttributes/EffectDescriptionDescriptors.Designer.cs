@@ -233,6 +233,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the how fast the build of the Snow is..
+        /// </summary>
+        internal static string BuildUpSpeed {
+            get {
+                return ResourceManager.GetString("BuildUpSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the type of pattern..
         /// </summary>
         internal static string ButterflyType {

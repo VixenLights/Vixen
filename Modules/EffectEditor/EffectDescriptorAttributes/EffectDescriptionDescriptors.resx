@@ -549,4 +549,7 @@
   <data name="InitialBuildUp" xml:space="preserve">
     <value>Add the selected number of Snowflakes to the bottom of the element.</value>
   </data>
+  <data name="BuildUpSpeed" xml:space="preserve">
+    <value>Adjusts the how fast the build of the Snow is.</value>
+  </data>
 </root>

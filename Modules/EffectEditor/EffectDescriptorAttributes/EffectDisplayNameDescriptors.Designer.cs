@@ -242,6 +242,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Build Up Speed.
+        /// </summary>
+        internal static string BuildUpSpeed {
+            get {
+                return ResourceManager.GetString("BuildUpSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Butterfly Type.
         /// </summary>
         internal static string ButterflyType {

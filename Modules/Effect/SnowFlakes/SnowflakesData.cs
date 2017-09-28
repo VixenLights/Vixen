@@ -34,6 +34,7 @@ namespace VixenModules.Effect.Snowflakes
 			Orientation=StringOrientation.Vertical;
 			SnowBuildUp = false;
 			InitialBuildUp = 0;
+			BuildUpSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 })); ;
 		}
 
 		[DataMember]
@@ -86,6 +87,9 @@ namespace VixenModules.Effect.Snowflakes
 
 		[DataMember]
 		public int InitialBuildUp { get; set; }
+
+		[DataMember]
+		public Curve BuildUpSpeedCurve { get; set; }
 
 		[DataMember]
 		public SnowflakeEffect SnowflakeEffect { get; set; }
@@ -156,7 +160,8 @@ namespace VixenModules.Effect.Snowflakes
 				SnowflakeEffect = SnowflakeEffect,
 				PixelCount = PixelCount,
 				SnowBuildUp = SnowBuildUp,
-				InitialBuildUp = InitialBuildUp
+				InitialBuildUp = InitialBuildUp,
+				BuildUpSpeedCurve = new Curve(BuildUpSpeedCurve)
 			};
 			return result;
 		}
