@@ -429,7 +429,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = DisplayName.Replace(' ', '_');
+			var name = string.Format("Preview_{0}", DisplayName.Replace(' ', '_'));
+
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowHeight", name), Size.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowWidth", name), Size.Width);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
@@ -454,7 +455,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = DisplayName.Replace(' ', '_');
+			var name = string.Format("Preview_{0}", DisplayName.Replace(' ', '_'));
 
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_showBorders = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), true);
