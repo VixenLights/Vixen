@@ -242,7 +242,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Build Up Speed.
+        ///   Looks up a localized string similar to Build-up Speed.
         /// </summary>
         internal static string BuildUpSpeed {
             get {
@@ -719,7 +719,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initial Build Up.
+        ///   Looks up a localized string similar to Initial Build-up.
         /// </summary>
         internal static string InitialBuildUp {
             get {
@@ -1160,7 +1160,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Snow Buildup.
+        ///   Looks up a localized string similar to Snow Build-up.
         /// </summary>
         internal static string SnowBuildUp {
             get {

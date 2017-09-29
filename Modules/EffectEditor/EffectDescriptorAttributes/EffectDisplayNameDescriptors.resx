@@ -553,12 +553,12 @@
     <value>Vertical Offset</value>
   </data>
   <data name="SnowBuildUp" xml:space="preserve">
-    <value>Snow Buildup</value>
+    <value>Snow Build-up</value>
   </data>
   <data name="InitialBuildUp" xml:space="preserve">
-    <value>Initial Build Up</value>
+    <value>Initial Build-up</value>
   </data>
   <data name="BuildUpSpeed" xml:space="preserve">
-    <value>Build Up Speed</value>
+    <value>Build-up Speed</value>
   </data>
 </root>
