@@ -456,7 +456,7 @@ namespace VixenModules.Effect.Snowflakes
 
 			int initialBuildUp = !SnowBuildUp
 				? 0
-				: (int) (CalculateInitialBuildUp() + (CalculateBuildUpSpeed(intervalPosFactor)*(frame/(double) 50)));
+				: (int) (CalculateInitialBuildUp() + (CalculateBuildUpSpeed(intervalPosFactor)*(frame/(double) 100)));
 
 			var centerSpeed = CalculateCenterSpeed(intervalPosFactor);
 			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
@@ -576,6 +576,29 @@ namespace VixenModules.Effect.Snowflakes
 				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
 				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
 
+				int snowflakeWidth = 1;
+				switch (snowFlakes.Type)
+				{
+					case SnowflakeType.Single:
+						snowflakeWidth = 1;
+						break;
+					case SnowflakeType.Three:
+						snowflakeWidth = 1;
+						break;
+					case SnowflakeType.Five:
+						snowflakeWidth = 2;
+						break;
+					case SnowflakeType.Nine:
+						snowflakeWidth = 2;
+						break;
+					case SnowflakeType.Thirteen:
+						snowflakeWidth = 3;
+						break;
+					case SnowflakeType.FortyFive:
+						snowflakeWidth = 3;
+						break;
+				}
+
 				for (int c = 0; c < 1; c++)
 				{
 					int colorX;
@@ -606,7 +629,7 @@ namespace VixenModules.Effect.Snowflakes
 									snowFlakes.BuildUpX = colorX;
 									snowFlakes.InnerHsv = HSV.FromRGB(InnerColor[0].GetColorAt((intervalPosFactor) / 100));
 									snowFlakes.OuterHsv = HSV.FromRGB(OutSideColor[0].GetColorAt((intervalPosFactor) / 100));
-									snowFlakes.BuildUpY = snowFlakes.Type <= (SnowflakeType) 2 ? snowFlake.BuildUpY + 1 : snowFlake.BuildUpY + 2;
+									snowFlakes.BuildUpY = snowflakeWidth < 3 ? snowFlake.BuildUpY + 1 : snowFlake.BuildUpY + 2;
 
 									_increaseFlakeCount++; //Ensures a new Snowflake is added on the next frame to replace this one as its now resting on the bottom of the grid.
 									break;
@@ -661,10 +684,10 @@ namespace VixenModules.Effect.Snowflakes
 					{
 						if (snowFlakes.BuildUp)
 						{
-							//Renders a flat Snowflake on the ground.
+							//Renders a flat Snowflake on the ground with a width based of size of the flake.
 							for (int y = 0; y <= colorY - initialBuildUp; y++)
 							{
-								for (int x = -y - 3; x <= y + 3; x++)
+								for (int x = -y - snowflakeWidth; x <= y + snowflakeWidth; x++)
 								{
 									frameBuffer.SetPixel(colorX + x, colorY - y, hsvInner);
 								}
@@ -839,7 +862,7 @@ namespace VixenModules.Effect.Snowflakes
 
 		private double CalculateBuildUpSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(BuildUpSpeedCurve.GetValue(intervalPos), 40, 1);
+			return ScaleCurveToValue(BuildUpSpeedCurve.GetValue(intervalPos), 80, 1);
 		}
 
 
