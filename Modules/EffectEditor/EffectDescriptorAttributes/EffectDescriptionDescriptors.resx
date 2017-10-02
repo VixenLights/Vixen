@@ -544,9 +544,12 @@
     <value>Changes the direction of the effect to In or out.</value>
   </data>
   <data name="SnowBuildUp" xml:space="preserve">
-    <value>Allows the Snowflakes to build up at the bottom of the Element.</value>
+    <value>Allows the Snowflakes to build-up at the bottom of the Element.</value>
   </data>
   <data name="InitialBuildUp" xml:space="preserve">
-    <value>Add the selected number of Snowflakes to the bottom of the element.</value>
+    <value>Sets the height level of the Initial Snow build-up at the bottom of the element.</value>
+  </data>
+  <data name="BuildUpSpeed" xml:space="preserve">
+    <value>Adjusts how fast the build-up of Snow is.</value>
   </data>
 </root>

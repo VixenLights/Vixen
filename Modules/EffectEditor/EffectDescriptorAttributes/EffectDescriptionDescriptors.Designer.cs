@@ -233,6 +233,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts how fast the build-up of Snow is..
+        /// </summary>
+        internal static string BuildUpSpeed {
+            get {
+                return ResourceManager.GetString("BuildUpSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the type of pattern..
         /// </summary>
         internal static string ButterflyType {
@@ -629,7 +638,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add the selected number of Snowflakes to the bottom of the element..
+        ///   Looks up a localized string similar to Sets the height level of the Initial Snow build-up at the bottom of the element..
         /// </summary>
         internal static string InitialBuildUp {
             get {
@@ -1079,7 +1088,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows the Snowflakes to build up at the bottom of the Element..
+        ///   Looks up a localized string similar to Allows the Snowflakes to build-up at the bottom of the Element..
         /// </summary>
         internal static string SnowBuildUp {
             get {
