@@ -422,6 +422,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adds a Ground level for the Meteors to hit..
+        /// </summary>
+        internal static string EnableGroundLevel {
+            get {
+                return ResourceManager.GetString("EnableGroundLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enables a default brightness for the background in the effect. The background will be based on the foreground color selections..
         /// </summary>
         internal static string EnableMinimumBrightness {

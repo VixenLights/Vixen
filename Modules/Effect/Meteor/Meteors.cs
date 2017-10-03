@@ -188,15 +188,15 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"GroundLevel")]
-		[ProviderDescription(@"GroundLevel")]
+		[ProviderDisplayName(@"RandomPosition")]
+		[ProviderDescription(@"RandomPosition")]
 		[PropertyOrder(9)]
-		public Curve GroundLevelCurve
+		public bool RandomMeteorPosition
 		{
-			get { return _data.GroundLevelCurve; }
+			get { return _data.RandomMeteorPosition; }
 			set
 			{
-				_data.GroundLevelCurve = value;
+				_data.RandomMeteorPosition = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -204,15 +204,32 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RandomPosition")]
-		[ProviderDescription(@"RandomPosition")]
+		[ProviderDisplayName(@"EnableGroundLevel")]
+		[ProviderDescription(@"EnableGroundLevel")]
 		[PropertyOrder(10)]
-		public bool RandomMeteorPosition
+		public bool EnableGroundLevel
 		{
-			get { return _data.RandomMeteorPosition; }
+			get { return _data.EnableGroundLevel; }
 			set
 			{
-				_data.RandomMeteorPosition = value;
+				_data.EnableGroundLevel = value;
+				IsDirty = true;
+				UpdateGroundLevelAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"GroundLevel")]
+		[ProviderDescription(@"GroundLevel")]
+		[PropertyOrder(11)]
+		public Curve GroundLevelCurve
+		{
+			get { return _data.GroundLevelCurve; }
+			set
+			{
+				_data.GroundLevelCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -314,6 +331,7 @@ namespace VixenModules.Effect.Meteors
 		{
 			UpdateColorAttribute(false);
 			UpdateDirectionAttribute(false);
+			UpdateGroundLevelAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -347,6 +365,17 @@ namespace VixenModules.Effect.Meteors
 			propertyStates.Add("Direction", !direction);
 			propertyStates.Add("MinDirection", variableDirection);
 			propertyStates.Add("MaxDirection", variableDirection);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateGroundLevelAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("GroundLevelCurve", EnableGroundLevel);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -389,15 +418,18 @@ namespace VixenModules.Effect.Meteors
 		protected override void SetupRender()
 		{
 			_maxGroundHeight = 0;
-			_tempBuffer = new PixelFrameBuffer(BufferWi + 10, BufferHt + 10);
-			for (int x = 0; x < BufferWi; x++)
+			if (EnableGroundLevel)
 			{
-				for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
+				_tempBuffer = new PixelFrameBuffer(BufferWi + 10, BufferHt + 10);
+				for (int x = 0; x < BufferWi; x++)
 				{
-					_tempBuffer.SetPixel(x, y, GroundColor.GetColorAt(0));
-					int temp = (int)CalculateGroundLevel(y);
-					if (temp > _maxGroundHeight)
-						_maxGroundHeight = temp;
+					for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
+					{
+						_tempBuffer.SetPixel(x, y, GroundColor.GetColorAt(0));
+						int temp = (int) CalculateGroundLevel(y);
+						if (temp > _maxGroundHeight)
+							_maxGroundHeight = temp;
+					}
 				}
 			}
 		}
@@ -581,12 +613,15 @@ namespace VixenModules.Effect.Meteors
 				_meteors.Add(m);
 			}
 
-			for (int x = 0; x < BufferWi; x++)
+			if (EnableGroundLevel)
 			{
-				for (int y = 0; y < CalculateGroundLevel(((double)100 / BufferWi) * x); y++)
+				for (int x = 0; x < BufferWi; x++)
 				{
-					if (_tempBuffer.GetColorAt(x, y) != Color.Empty)
-						frameBuffer.SetPixel(x, y, GroundColor.GetColorAt((intervalPosFactor)/100));
+					for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
+					{
+						if (_tempBuffer.GetColorAt(x, y) != Color.Empty)
+							frameBuffer.SetPixel(x, y, GroundColor.GetColorAt((intervalPosFactor)/100));
+					}
 				}
 			}
 
@@ -628,7 +663,7 @@ namespace VixenModules.Effect.Meteors
 					}
 				}
 
-				if (colorX > 0 && colorX < BufferWi - 1 && colorY > 0 && colorY < BufferHt)
+				if (colorX > 0 && colorX < BufferWi - 1 && colorY > 0 && colorY < BufferHt && EnableGroundLevel)
 				{
 					if (!_tempBuffer.GetColorAt(colorX, colorY).IsEmpty)
 					{

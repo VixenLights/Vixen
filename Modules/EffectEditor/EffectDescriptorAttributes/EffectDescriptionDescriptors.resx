@@ -552,4 +552,7 @@
   <data name="BuildUpSpeed" xml:space="preserve">
     <value>Adjusts how fast the build-up of Snow is.</value>
   </data>
+  <data name="EnableGroundLevel" xml:space="preserve">
+    <value>Adds a Ground level for the Meteors to hit.</value>
+  </data>
 </root>

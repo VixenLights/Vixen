@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ground Level.
+        /// </summary>
+        internal static string EnableGroundLevel {
+            get {
+                return ResourceManager.GetString("EnableGroundLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minimum Brightness.
         /// </summary>
         internal static string EnableMinimumBrightness {
