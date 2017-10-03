@@ -561,4 +561,7 @@
   <data name="BuildUpSpeed" xml:space="preserve">
     <value>Build-up Speed</value>
   </data>
+  <data name="EnableGroundLevel" xml:space="preserve">
+    <value>Ground Level</value>
+  </data>
 </root>
