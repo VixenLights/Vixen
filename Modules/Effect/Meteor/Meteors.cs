@@ -374,8 +374,9 @@ namespace VixenModules.Effect.Meteors
 
 		private void UpdateGroundLevelAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("GroundLevelCurve", EnableGroundLevel);
+			propertyStates.Add("GroundColor", EnableGroundLevel);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -682,6 +683,15 @@ namespace VixenModules.Effect.Meteors
 							_tempBuffer.SetPixel(colorX - 1, colorY + 3, Color.Empty);
 							_tempBuffer.SetPixel(colorX + 2, colorY + 3, Color.Empty);
 							_tempBuffer.SetPixel(colorX - 2, colorY + 3, Color.Empty);
+							_tempBuffer.SetPixel(colorX + 2, colorY + 2, Color.Empty);
+							_tempBuffer.SetPixel(colorX - 2, colorY + 2, Color.Empty);
+							_tempBuffer.SetPixel(colorX, colorY + 2, Color.Empty);
+							_tempBuffer.SetPixel(colorX, colorY + 3, Color.Empty);
+							_tempBuffer.SetPixel(colorX - 2, colorY + 4, Color.Empty);
+							_tempBuffer.SetPixel(colorX - 1, colorY + 4, Color.Empty);
+							_tempBuffer.SetPixel(colorX, colorY + 4, Color.Empty);
+							_tempBuffer.SetPixel(colorX + 1, colorY + 4, Color.Empty);
+							_tempBuffer.SetPixel(colorX + 2, colorY + 4, Color.Empty);
 						}
 						meteor.Expired = true;
 					}

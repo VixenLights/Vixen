@@ -110,18 +110,24 @@ namespace VixenModules.Effect.Meteors
 		{
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
-
-			if (SpeedVariationCurve == null)
+			if (GroundLevelCurve == null)
 			{
-				double variation = RandomSpeed ? (MaxSpeed - MinSpeed) : 0.0;
-				double value = PixelEffectBase.ScaleValueToCurve(variation, 200, 1);
-				SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+				double value;
 
+				GroundLevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				GroundColor = new ColorGradient(Color.ForestGreen);
+
+				if (SpeedVariationCurve == null)
+				{
+					double variation = RandomSpeed ? (MaxSpeed - MinSpeed) : 0.0;
+					value = PixelEffectBase.ScaleValueToCurve(variation, 200, 1);
+					SpeedVariationCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
+				}
 				if (CenterSpeedCurve == null)
 				{
-					double center = RandomSpeed ? (double)(MaxSpeed + MinSpeed) / 2 : Speed;
+					double center = RandomSpeed ? (double) (MaxSpeed + MinSpeed)/2 : Speed;
 					value = PixelEffectBase.ScaleValueToCurve(center, 200, 1);
-					CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					CenterSpeedCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
 					MinSpeed = 0;
 					MaxSpeed = 0;
 					Speed = 0;
@@ -131,14 +137,14 @@ namespace VixenModules.Effect.Meteors
 				if (PixelCountCurve == null)
 				{
 					value = PixelEffectBase.ScaleValueToCurve(PixelCount, 200, 1);
-					PixelCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					PixelCountCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
 					PixelCount = 0;
 				}
 
 				if (LengthCurve == null)
 				{
 					value = PixelEffectBase.ScaleValueToCurve(Length, 100, 1);
-					LengthCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { value, value }));
+					LengthCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {value, value}));
 					Length = 0;
 				}
 			}
