@@ -1,3 +1,27 @@
+Release Notes - Vixen 3 - Version 3.4u2
+
+Maintenance release 2 for version 3.4
+
+** Bug
+    * [VIX-2182] - Crash when aligning effects to nearest mark in cultures that use a comma for a decimal separator.
+    * [VIX-2183] - If the user modifies Display setup and then immediately closes it and the application, corruption of the module store configuration can occur. 
+    * [VIX-2188] - Make some improvements and fix a few bugs that are related to templates in the preview setup.
+    * [VIX-2193] - Zooming in on timeline will eventually cause an overflow exception.
+    * [VIX-2194] - The Pixel 1 enhanced size from the preview setup stays in effect on the actual preview.
+    * [VIX-2195] - Preview Alignment Buttons Don't Work on Custom Templates
+    * [VIX-2198] - Snow fall accumulation effect doesn't build up as expected
+    * [VIX-2202] - Unhandled exception error when exiting Setup Preview
+    * [VIX-2207] - Applying Meteor ground level to existing effect consistently crashes Vixen
+
+
+** Improvement
+    * [VIX-2008] - Preview window options
+    * [VIX-2189] - Gradient Reverse Option
+    * [VIX-2191] - Add ground surface to the Meteor Effect
+
+** New Feature
+    * [VIX-2186] - Create accumulating snowfall effect for Mega tree
+
 Vixen Release Notes - 3.4u1
 
 Maintenance release 1 for version 3.4
