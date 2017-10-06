@@ -25,6 +25,7 @@ namespace VixenApplication
 		{
 			try
 			{
+				Logging.Info("Vixen app starting.");
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 				Application.ThreadException += Application_ThreadException;
 				Application.EnableVisualStyles();
