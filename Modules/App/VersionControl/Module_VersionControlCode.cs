@@ -22,12 +22,15 @@ namespace VersionControl
 
         private void EnableDisableSourceControl(bool enabled)
         {
-            _showCommand.Enabled = enabled;
+	        Logging.Info("Initializing version control. Enabled:{0}.", enabled);
+
+			_showCommand.Enabled = enabled;
 
             DisableWatchers();
 
             if (enabled)
             {
+				
                 var repoCreated = CreateRepositoryIfNotExists();
 
                 repo = new GitSharp.Repository(GitRepositoryFolder);
@@ -37,8 +40,10 @@ namespace VersionControl
                 AddItemsToGit(repoCreated);
                 
                 CreateWatcher(GitRepositoryFolder, true);
-            }
-        }
+			}
+
+	        Logging.Info("Initializing version control complete.");
+		}
 
         private void AddItemsToGit(bool initialCheckin)
         {

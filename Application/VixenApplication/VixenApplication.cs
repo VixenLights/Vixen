@@ -71,11 +71,15 @@ namespace VixenApplication
 				_ProcessArg(arg);
 			}
 
+			Logging.Info("Starting JIT Profiler");
 			StartJITProfiler();
+			Logging.Info("Completed JIT Profiler");
 
 			if (_rootDataDirectory == null)
 			{
+				Logging.Info("Processing Profiles");
 				ProcessProfiles();
+				Logging.Info("Finished Processing Profiles");
 			}
 
 			_applicationData = new VixenApplicationData(_rootDataDirectory);

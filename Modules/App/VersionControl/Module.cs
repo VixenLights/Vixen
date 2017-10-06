@@ -108,14 +108,12 @@ namespace VersionControl
         {
             LatchedAppCommand enabledCommand = new LatchedAppCommand("VersionControlEnabled", "Enabled");
             enabledCommand.IsChecked = _data.IsEnabled;
-            enabledCommand.Checked += (sender, e) =>
+            enabledCommand.Checked += async (sender, e) =>
             {
-                // Not setting the data member in _SetSchedulerEnableState because we want to be
-                // able to call _SetSchedulerEnableState without affecting the data (to stop
-                // the scheduler upon shutdown).
                 _data.IsEnabled = e.CheckedState;
                 EnableDisableSourceControl(_data.IsEnabled);
-            };
+	            await VixenSystem.SaveModuleConfigAsync();
+			};
 
             return enabledCommand;
         }
