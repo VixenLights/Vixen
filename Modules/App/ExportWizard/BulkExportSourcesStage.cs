@@ -41,7 +41,7 @@ namespace VixenModules.App.ExportWizard
 			if (_data.ActiveProfile.SequenceFiles.Any())
 			{
 				lstSequences.BeginUpdate();
-				foreach (var fileName in _data.ActiveProfile.SequenceFiles)
+				foreach (var fileName in _data.ActiveProfile.SequenceFiles.ToList())
 				{
 					if (File.Exists(fileName))
 					{
