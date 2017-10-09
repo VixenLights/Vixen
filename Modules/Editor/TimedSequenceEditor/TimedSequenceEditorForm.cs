@@ -132,6 +132,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//for external clipboard events.
 		IntPtr _clipboardViewerNext;
 
+		private Dictionary<TimeSpan, MarkCollection> _mcs;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -2583,6 +2585,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			}
 
+			ToolStripMenuItem contextMenuItemAddMark = new ToolStripMenuItem("Add Marks to Effects")
+			{
+				Image = Resources.marks
+			};
+			contextMenuItemAddMark.Click += (mySender, myE) => AddMarksToSelectedEffects();
+			_contextMenuStrip.Items.Add(contextMenuItemAddMark);
+
 			ToolStripMenuItem contextMenuItemResetTimeLineSettings = new ToolStripMenuItem("Reset Timeline Settings"){ Image = Resources.Reset};
 			contextMenuItemResetTimeLineSettings.ToolTipText = "Resets TimeLine Start to Zero and Timeline Zoom to 14sec";
 			contextMenuItemResetTimeLineSettings.Click += (mySender, myE) => ResetTimeLineSettings();
@@ -3216,11 +3225,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				AddMarkAtTime(e.Time);
+				AddMarkAtTime(e.Time, false);
 			}
 		}
 
-		private void AddMarkAtTime(TimeSpan Time)
+		private void AddMarkAtTime(TimeSpan Time, bool MarkEffects)
 		{
 			MarkCollection mc = null;
 			if (_sequence.MarkCollections.Count == 0)
@@ -3253,10 +3262,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				mc.Marks.Add(Time);
 				PopulateMarkSnapTimes();
 				SequenceModified();
-				Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
-				mcs.Add(Time, mc);
-				var act = new MarksAddedUndoAction(this, mcs);
-				_undoMgr.AddUndoAction(act);
+				if (!MarkEffects)
+				{
+					_mcs = new Dictionary<TimeSpan, MarkCollection>();
+					_mcs.Add(Time, mc);
+					var act = new MarksAddedUndoAction(this, _mcs);
+					_undoMgr.AddUndoAction(act);
+				}
+				else
+				{
+					_mcs.Add(Time, mc);
+				}
+				
 			}
 		}
 
@@ -4836,7 +4853,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				case Keys.Space:
 					if (e.Shift)
 					{
-						if (TimingSource != null) AddMarkAtTime(TimingSource.Position);
+						if (TimingSource != null) AddMarkAtTime(TimingSource.Position, false);
 					}
 					else
 					{
@@ -6385,6 +6402,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//Make sure we have elements in the list to move.
 			if (moveElements.Any()) TimelineControl.grid.MoveResizeElements(moveElements);
+		}
+
+		private void AddMarksToSelectedEffects()
+		{
+			IEnumerable elements;
+			if (!TimelineControl.grid.SelectedElements.Any())
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
+				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",
+					@"Align effects to marks", true, false);
+				messageBox.ShowDialog();
+				if (messageBox.DialogResult == DialogResult.No) return;
+				elements = TimelineControl.Rows.SelectMany(row => row); //add all elements within the sequence to elements list
+			}
+			else
+			{
+				elements = TimelineControl.SelectedElements;
+			}
+			_mcs = new Dictionary<TimeSpan, MarkCollection>();
+			foreach (Element element in elements)
+			{
+				AddMarkAtTime(element.StartTime, true);
+			}
+			var act = new MarksAddedUndoAction(this, _mcs);
+			_undoMgr.AddUndoAction(act);
 		}
 
 		private void ResetTimeLineSettings()

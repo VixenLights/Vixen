@@ -292,6 +292,7 @@
     <None Include="Resources\add_Collection.png" />
     <None Include="Resources\dottedLine.png" />
     <None Include="Resources\delete_32.png" />
+    <None Include="Resources\marks.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
