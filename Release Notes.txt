@@ -14,6 +14,7 @@ Maintenance release 2 for version 3.4
     * [VIX-2202] - Unhandled exception error when exiting Setup Preview
     * [VIX-2207] - Applying Meteor ground level to existing effect consistently crashes Vixen
     * [VIX-2216] - Changing the enable/disable on the version control does not save unless you open the Display Setup or other area that saves the config.
+    * [VIX-2218] - The export wizard will crash if a sequence in a previously saved export config is removed.
 
 
 ** Improvement
@@ -25,6 +26,7 @@ Maintenance release 2 for version 3.4
 ** New Feature
     * [VIX-1922] - Add Always On Top for Preview Window
     * [VIX-2186] - Create accumulating snowfall effect for Mega tree
+
 
 
 Vixen Release Notes - 3.4u1
