@@ -126,7 +126,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.effectWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.markWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gridWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.effectEditorWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mixingFilterEditorWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1047,7 +1046,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem1,
             this.effectWindowToolStripMenuItem,
             this.markWindowToolStripMenuItem,
-            this.toolWindowToolStripMenuItem,
             this.gridWindowToolStripMenuItem,
             this.effectEditorWindowToolStripMenuItem,
             this.mixingFilterEditorWindowToolStripMenuItem,
@@ -1149,14 +1147,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.markWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.markWindowToolStripMenuItem.Text = "Mark Window";
 			this.markWindowToolStripMenuItem.Click += new System.EventHandler(this.markWindowToolStripMenuItem_Click);
-			// 
-			// toolWindowToolStripMenuItem
-			// 
-			this.toolWindowToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.toolWindowToolStripMenuItem.Name = "toolWindowToolStripMenuItem";
-			this.toolWindowToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
-			this.toolWindowToolStripMenuItem.Text = "Preset Window";
-			this.toolWindowToolStripMenuItem.Click += new System.EventHandler(this.toolWindowToolStripMenuItem_Click);
 			// 
 			// gridWindowToolStripMenuItem
 			// 
@@ -1690,7 +1680,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripButton toolStripButton_DragBoxFilter;
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_DragBoxFilter;
 		private System.Windows.Forms.ToolStripMenuItem ColorCollectionsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpDocumentationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem bulkEffectMoveToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cADStyleSelectionBoxToolStripMenuItem;

@@ -338,12 +338,6 @@
     </Compile>
     <Compile Include="TimedSequenceElement.cs" />
     <Compile Include="TimedSequenceRowLabel.cs" />
-    <Compile Include="Forms\Form_ToolPalette.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Form_ToolPalette.Designer.cs">
-      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
-    </Compile>
     <Compile Include="Undo\MarksRemovedUndoAction.cs" />
     <Compile Include="Undo\MarksAddedUndoAction .cs" />
     <Compile Include="Undo\MarksAddedRemovedUndoAction.cs" />
@@ -446,9 +440,6 @@
     <EmbeddedResource Include="TimedSequenceEditorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TimedSequenceEditorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_ToolPalette.resx">
-      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LayerEditor.resx">
       <DependentUpon>LayerEditor.cs</DependentUpon>

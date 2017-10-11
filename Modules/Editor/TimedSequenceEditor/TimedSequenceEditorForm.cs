@@ -258,8 +258,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return GridForm;
 			if (persistString == typeof (Form_Marks).ToString())
 				return MarksForm;
-			if (persistString == typeof (Form_ToolPalette).ToString())
-				return ToolsForm;
 			if (persistString == typeof(Form_ColorLibrary).ToString())
 				return ColorLibraryForm;
 			if (persistString == typeof(Form_CurveLibrary).ToString())
@@ -336,8 +334,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), false);
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
-			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), false);
-			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
 			CurveLibraryForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLinkCurves", Name), false);
 			GradientLibraryForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLinkGradients", Name), false);
 			cADStyleSelectionBoxToolStripMenuItem.Checked = TimelineControl.grid.aCadStyleSelectionBox = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
@@ -552,11 +548,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_gridForm.Dispose();
 				_gridForm = null;
 			}
-			if (_toolPaletteForm != null)
-			{
-				_toolPaletteForm.Dispose();
-				_toolPaletteForm = null;
-			}
 			if (_colorLibraryForm != null)
 			{
 				_colorLibraryForm.Dispose();
@@ -603,7 +594,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void SetDockDefaults()
 		{
 			GridForm.Show(dockPanel, DockState.Document);
-			ToolsForm.Show(dockPanel, DockState.DockRight);
 			ColorLibraryForm.Show(dockPanel, DockState.DockRight);
 			CurveLibraryForm.Show(dockPanel, DockState.DockRight);
 			GradientLibraryForm.Show(dockPanel, DockState.DockRight);
@@ -611,7 +601,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			LayerEditor.Show(dockPanel, DockState.DockRight);
 			FindEffects.Show(dockPanel, DockState.DockRight);
 			EffectsForm.Show(dockPanel, DockState.DockLeft);
-			EffectEditorForm.Show(ToolsForm.Pane, DockAlignment.Top, .6);
 		}
 
 
@@ -677,11 +666,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_marksForm != null && !_marksForm.IsDisposed)
 			{
 				_marksForm.Dispose();	
-			}
-
-			if (_toolPaletteForm != null && !_toolPaletteForm.IsDisposed)
-			{
-				ToolsForm.Dispose();
 			}
 
 			if (_colorLibraryForm != null && !_colorLibraryForm.IsDisposed)
@@ -937,22 +921,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_layerEditor.Closing +=LayerEditorOnClosing;
 
 				return _layerEditor;
-			}
-		}
-
-		private Form_ToolPalette _toolPaletteForm;
-
-		private Form_ToolPalette ToolsForm
-		{
-			get
-			{
-				if (_toolPaletteForm != null && !_toolPaletteForm.IsDisposed)
-				{
-					return _toolPaletteForm;
-				}
-				
-				_toolPaletteForm = new Form_ToolPalette(TimelineControl);
-				return _toolPaletteForm;
 			}
 		}
 
@@ -4743,8 +4711,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), TimelineControl.grid.ResizeIndicator_Enabled);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), cADStyleSelectionBoxToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), ToolsForm.LinkCurves);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), ToolsForm.LinkGradients);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLinkCurves", Name), CurveLibraryForm.LinkCurves);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLinkGradients", Name), GradientLibraryForm.LinkGradients);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
@@ -4752,7 +4718,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
-			ToolsForm.Close();
 			ColorLibraryForm.Close();
 			GradientLibraryForm.Close();
 			CurveLibraryForm.Close();
@@ -4973,7 +4938,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			markWindowToolStripMenuItem.Checked = !(_marksForm == null || _marksForm.DockState == DockState.Unknown);
 			mixingFilterEditorWindowToolStripMenuItem.Checked =
 				!(_layerEditor == null || _layerEditor.DockState == DockState.Unknown);
-			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm == null || _toolPaletteForm.DockState == DockState.Unknown);
 			toolStripMenuItemFindEffects.Checked = !(_findEffects == null || _findEffects.DockState == DockState.Unknown);
 			toolStripMenuItemColorLibrary.Checked = !(_colorLibraryForm == null || _colorLibraryForm.DockState == DockState.Unknown);
 			toolStripMenuItemGradientLibrary.Checked = !(_gradientLibraryForm == null || _gradientLibraryForm.DockState == DockState.Unknown);
