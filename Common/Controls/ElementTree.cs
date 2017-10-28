@@ -687,6 +687,7 @@ namespace Common.Controls
 			renameNodesToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			patternRenameToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			reverseElementsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 1) && (treeview.CanReverseElements());
+			sortToolStripMenuItem.Enabled = CanSortSelected();
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
@@ -952,6 +953,40 @@ namespace Common.Controls
 						
 			PopulateNodeTree();
 		}
+
+		private void sortToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SortNodes();
+		}
+
+		private bool CanSortSelected()
+		{
+			if (SelectedTreeNodes.Count != 1) return false;
+			var sourceNode = SelectedTreeNodes[0].Tag as ElementNode;
+			if (sourceNode != null && !sourceNode.IsLeaf) return true;
+
+			return false;
+		}
+
+		private void SortNodes()
+		{
+			if (SelectedTreeNodes.Count != 1) return;
+			var sourceNode = SelectedTreeNodes[0].Tag as ElementNode;
+			if (sourceNode != null && !sourceNode.IsLeaf)
+			{
+				var nodes = sourceNode.Children.OrderBy(n => n.Name);
+				var index = 0;
+				foreach (var node in nodes)
+				{
+					VixenSystem.Nodes.MoveNode(node, sourceNode, sourceNode, index);
+					index++;
+				}
+
+				PopulateNodeTree();
+			}
+		}
+
+
 		#endregion
 
 

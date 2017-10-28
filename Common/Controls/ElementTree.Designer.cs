@@ -53,6 +53,7 @@ namespace Common.Controls
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
+			this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.contextMenuStripDragging.SuspendLayout();
 			this.SuspendLayout();
@@ -87,9 +88,10 @@ namespace Common.Controls
             this.renameNodesToolStripMenuItem,
             this.patternRenameToolStripMenuItem,
             this.collapseAllToolStripMenuItem,
-            this.reverseElementsToolStripMenuItem});
+            this.reverseElementsToolStripMenuItem,
+            this.sortToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 324);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 346);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -262,6 +264,13 @@ namespace Common.Controls
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			// 
+			// sortToolStripMenuItem
+			// 
+			this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
+			this.sortToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.sortToolStripMenuItem.Text = "Sort";
+			this.sortToolStripMenuItem.Click += new System.EventHandler(this.sortToolStripMenuItem_Click);
+			// 
 			// ElementTree
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -302,5 +311,6 @@ namespace Common.Controls
 		private ToolStripMenuItem collapseAllToolStripMenuItem;
 		private ToolStripMenuItem reverseElementsToolStripMenuItem;
 		private ToolStripMenuItem patternRenameToolStripMenuItem;
+		private ToolStripMenuItem sortToolStripMenuItem;
 	}
 }
