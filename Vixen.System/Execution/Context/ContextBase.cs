@@ -121,6 +121,7 @@ namespace Vixen.Execution.Context
 				var layer = GetLayerForNode(effectNode);
 				TimeSpan effectRelativeTime = _currentTime - effectNode.StartTime;
 				EffectIntents effectIntents = effectNode.Effect.Render();
+				if(effectIntents==null)continue;
 				foreach (var effectIntent in effectIntents)
 				{
 					foreach (IIntentNode intentNode in effectIntent.Value)
