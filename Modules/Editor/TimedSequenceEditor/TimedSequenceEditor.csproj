@@ -82,6 +82,16 @@
       <Name>Marks</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Effect\Effect.csproj">
+      <Project>{AF76C902-A776-49C3-9019-D7CB0A53FB2F}</Project>
+      <Name>Effect</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\Picture\Picture.csproj">
+      <Project>{2aae930f-8d4a-451b-b66e-2f3024f079fb}</Project>
+      <Name>Picture</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Video\Video.csproj">
       <Project>{c5606015-2166-4866-a856-8eab67a5de26}</Project>
       <Name>Video</Name>

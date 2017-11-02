@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Scaling;
@@ -32,6 +34,8 @@ using Vixen.Marks;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
+using VixenModules.Effect.Effect;
+using VixenModules.Effect.Picture;
 using VixenModules.Effect.Video;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
@@ -57,6 +61,10 @@ using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
 using ListView = System.Windows.Forms.ListView;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.App.Marks.MarkCollection;
+using Cursor = System.Windows.Forms.Cursor;
+using Cursors = System.Windows.Forms.Cursors;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -736,48 +744,99 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
+		private string filename;
+		private bool HorizontalStringOrientation;
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
-			Point p = new Point(e.X, e.Y);
-			//Check for effect drop
-			if (e.Data.GetDataPresent(typeof(Guid)))
+			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				Guid g = (Guid)e.Data.GetData(typeof(Guid));
-				EffectDropped(g,TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop)); //Stores the file path for each selected file
+				string[] imageExtentions = new[] {".jpg", ".jpeg", ".png", ".gif", ".bmp"};
+				string[] videoExtentions = new[] { ".mp4", ".avi", ".mov", ".MTS" };
+				HorizontalStringOrientation = ModifierKeys == Keys.Alt; //Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
+				foreach (string fileLoc in filePaths)
+				{
+					filename = fileLoc;
+					string name = Path.GetFileName(filename);
+					var destPath = "";
+					Point p = new Point(e.X, e.Y);
+					var fileExtension = Path.GetExtension(filename);
+					Guid guid = new Guid();
+					if (imageExtentions.Contains(fileExtension))
+					{
+						destPath = Path.Combine(PictureDescriptor.ModulePath, name);
+						guid = new Guid("5f33435c-eb96-4018-ae56-07e8e14e9ec9"); //Picture GUID
+					}
+					else if (videoExtentions.Contains(fileExtension))
+					{
+						destPath = Path.Combine(VideoDescriptor.ModulePath, name);
+						guid = new Guid("5f33435c-eb96-4321-ae56-07e8e14e9251"); //Video GUID
+					}
+					else
+					{
+						return;
+					}
+
+					if (filename != destPath)
+					{
+						File.Copy(filename, destPath, true);
+					}
+
+					EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				}
+				filename = string.Empty;
+			}
+			else
+			{
+				Point p = new Point(e.X, e.Y);
+				//Check for effect drop
+				if (e.Data.GetDataPresent(typeof (Guid)))
+				{
+					Guid g = (Guid) e.Data.GetData(typeof (Guid));
+					EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				}
+
+				//Everything else applies to a element
+				Element element = TimelineControl.grid.ElementAtPosition(p);
+				if (element != null)
+				{
+					if (e.Data.GetDataPresent(typeof (ColorGradient)))
+					{
+						ColorGradient cg = (ColorGradient) e.Data.GetData(typeof (ColorGradient));
+						HandleGradientDrop(element, cg);
+					}
+					else if (e.Data.GetDataPresent(typeof (Curve)))
+					{
+						Curve curve = (Curve) e.Data.GetData(typeof (Curve));
+						HandleCurveDrop(element, curve);
+					}
+					else if (e.Data.GetDataPresent(typeof (Color)))
+					{
+						Color color = (Color) e.Data.GetData(typeof (Color));
+						HandleColorDrop(element, color);
+					}
+
+				}
 			}
 
-			//Everything else applies to a element
-			Element element = TimelineControl.grid.ElementAtPosition(p);
-			if (element != null)
-			{
-				if (e.Data.GetDataPresent(typeof (ColorGradient)))
-				{
-					ColorGradient cg = (ColorGradient)e.Data.GetData(typeof (ColorGradient));
-					HandleGradientDrop(element, cg);
-				}
-				else if (e.Data.GetDataPresent(typeof (Curve)))
-				{
-					Curve curve = (Curve) e.Data.GetData(typeof (Curve));
-					HandleCurveDrop(element, curve);
-				}
-				else if (e.Data.GetDataPresent(typeof(Color)))
-				{
-					Color color = (Color)e.Data.GetData(typeof(Color));
-					HandleColorDrop(element, color);
-				}
-				
-			}
-			
 		}
 
 		private void TimelineControlGrid_DragEnter(object sender, DragEventArgs e)
 		{
+			//if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			//	e.Effect = DragDropEffects.Copy;
+			//else
 			e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
+
 		}
 
 		private void TimelineControlGrid_DragOver(object sender, DragEventArgs e)
 		{
-			e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				e.Effect = DragDropEffects.Copy;
+			else
+				e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
 		}
 
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
@@ -3301,6 +3360,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
+
+				if (filename != String.Empty)
+				{
+					foreach (var propertyData in MetadataRepository.GetProperties(effectNode.Effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
+					{
+						if (propertyData.PropertyType == typeof(PictureSource)) propertyData.Descriptor.SetValue(effectNode.Effect, PictureSource.File);
+						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, filename);
+						if (HorizontalStringOrientation)
+						{
+							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effectNode.Effect, StringOrientation.Horizontal);
+						}
+					}
+				}
+
 				// put it in the sequence and in the timeline display
 				Element element = AddEffectNode(effectNode);
 				if (select)
