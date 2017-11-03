@@ -4,6 +4,7 @@ using Vixen.Module.Effect;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using System.Drawing;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Spin
 {
@@ -32,6 +33,18 @@ namespace VixenModules.Effect.Spin
 		public override Type ModuleClass
 		{
 			get { return typeof (Spin); }
+		}
+
+		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
+		public override string MediaPath
+		{
+			get { return "Test"; }
+		}
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportsExtensions
+		{
+			get { return SupportedMediaExtensions.SupportedImageExtensions; }
 		}
 
 		public override Type ModuleDataClass

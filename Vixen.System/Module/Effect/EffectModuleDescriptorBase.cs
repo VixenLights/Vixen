@@ -50,9 +50,7 @@ namespace Vixen.Module.Effect {
 			{
 				return false;
 			}
-		}
-
-		public virtual string MediaPath
+		}		public virtual string MediaPath
 		{
 			get
 			{

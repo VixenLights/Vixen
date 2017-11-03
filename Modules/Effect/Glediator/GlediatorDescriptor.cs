@@ -2,6 +2,7 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Glediator
 {
@@ -40,6 +41,18 @@ namespace VixenModules.Effect.Glediator
 		public override Type ModuleClass
 		{
 			get { return typeof(Glediator); }
+		}
+
+		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
+		public override string MediaPath
+		{
+			get { return ModulePath; }
+		}
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportsExtensions
+		{
+			get { return SupportedMediaExtensions.SupportedGlediatorExtensions; }
 		}
 
 		public override Type ModuleDataClass

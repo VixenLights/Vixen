@@ -2,6 +2,7 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Video
 {
@@ -47,19 +48,16 @@ namespace VixenModules.Effect.Video
 			get { return typeof(VideoData); }
 		}
 
-		public override bool SupportsVideo
-		{
-			get { return true; }
-		}
-
+		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
 		public override string MediaPath
 		{
-			get { return VideoDescriptor.ModulePath; }
+			get { return ModulePath; }
 		}
 
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
 		public override string[] SupportsExtensions
 		{
-			get { return new[] { ".mp4", ".avi", ".mov", ".MTS" };}
+			get { return SupportedMediaExtensions.SupportedVideoExtensions; }
 		}
 
 		public override string Author

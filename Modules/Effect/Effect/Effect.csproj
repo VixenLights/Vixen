@@ -75,6 +75,7 @@
     <Compile Include="PixelEffectBase.cs" />
     <Compile Include="PixelFrameBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuppotedMedia.cs" />
     <Compile Include="StringOrientation.cs" />
     <Compile Include="TargetPositioningType.cs" />
   </ItemGroup>

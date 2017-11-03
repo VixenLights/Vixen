@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Life
 {
@@ -31,6 +32,18 @@ namespace VixenModules.Effect.Life
 		public override Type ModuleClass
 		{
 			get { return typeof(Life); }
+		}
+
+		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
+		public override string MediaPath
+		{
+			get { return "Test"; }
+		}
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportsExtensions
+		{
+			get { return SupportedMediaExtensions.SupportedImageExtensions; }
 		}
 
 		public override Type ModuleDataClass

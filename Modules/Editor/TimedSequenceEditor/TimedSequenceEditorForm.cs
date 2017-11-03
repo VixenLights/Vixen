@@ -748,65 +748,75 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
+		private bool _sequencialEffectPlacement;
+
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
 			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
+				_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
 				//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
-				_horizontalStringOrientation = ModifierKeys == Keys.Alt; string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+				if (ModifierKeys == (Keys.Alt | Keys.Control))
+				{
+					_horizontalStringOrientation = true;
+					_sequencialEffectPlacement = true;
+				}
+				else
+				{
+					_horizontalStringOrientation = ModifierKeys == Keys.Alt;
+					_sequencialEffectPlacement = ModifierKeys == Keys.Control;
+				}
+				
+				string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+				int i = 0;
+				//Iterate through each selected file that was dragged.
 				foreach (string fileLoc in filePaths)
 				{
-					Dictionary<Guid, String> effectList = new Dictionary<Guid, string>();
 					//Check each Effect to see if it supports any File type
+					List<IEffectModuleDescriptor> effectDescriptors = new List<IEffectModuleDescriptor>();
 					foreach (IEffectModuleDescriptor effectDesriptor in
 						ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 					{
 						if (effectDesriptor.SupportsExtensions != null)
 						{
-
 							_filename = fileLoc;
 							string name = Path.GetFileName(_filename);
 							var destPath = "";
 							var fileExtension = Path.GetExtension(_filename);
-							if (effectDesriptor.SupportsExtensions.Contains(fileExtension) && effectDesriptor.SupportsImage)
-							{
-								destPath = Path.Combine(effectDesriptor.MediaPath, name);
-							}
-							else if (effectDesriptor.SupportsExtensions.Contains(fileExtension) && effectDesriptor.SupportsVideo)
-							{
-								destPath = Path.Combine(effectDesriptor.MediaPath, name);
-							}
-							else
-							{
-								continue;
-							}
-
+							if (!effectDesriptor.SupportsExtensions.Contains(fileExtension)) continue;
+							destPath = Path.Combine(effectDesriptor.MediaPath, name);
+							
 							//if (_filename != destPath)
 							//{
 							//	File.Copy(_filename, destPath, true);
 							//}
-							effectList.Add(effectDesriptor.TypeId, effectDesriptor.EffectName);
 
+							effectDescriptors.Add(effectDesriptor);
 						}
 					}
 
 					Point p = new Point(e.X, e.Y);
-					if (effectList.Count > 1)
+					if (effectDescriptors.Count > 1)
 					{
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("You have more then one effect that uses this File", "Warning", false, false);
-						messageBox.ShowDialog();
-					}
-					else if (effectList.Count == 1)
-					{
-						foreach (var VARIABLE in effectList)
+						Guid guid = HandleFileDropOnEffectList(effectDescriptors);
+						if (guid != Guid.Empty)
 						{
-							EffectDropped(VARIABLE.Key, TimelineControl.grid.TimeAtPosition(p),
+							if (!_sequencialEffectPlacement) i = 0;
+							EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
 								TimelineControl.grid.RowAtPosition(p));
 						}
 					}
+					else if (effectDescriptors.Count == 1)
+					{
+						foreach (var effectDescriptor in effectDescriptors)
+						{
+							if (!_sequencialEffectPlacement) i = 0;
+							EffectDropped(effectDescriptor.TypeId, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
+								TimelineControl.grid.RowAtPosition(p));
+						}
+					}
+					i++;
 				}
 				_filename = string.Empty;
 			}
@@ -845,13 +855,47 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		}
 
+		#region Dragging Windows Explorer Files to Timeline support Modules
+		private Guid HandleFileDropOnEffectList(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var parameterPickerControls = CreateEffectListPickerControls(effectDescriptors);
+
+			var parameterPicker = CreateParameterPicker(parameterPickerControls);
+
+			UpdateToolStrip4("Choose the Effect to use, press Escape to cancel.", 8);
+			var dr = parameterPicker.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				return parameterPicker.EffectPropertyInfo.TypeId;
+			}
+			return Guid.Empty;
+		}
+
+		private List<EffectParameterPickerControl> CreateEffectListPickerControls(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var parameterPickerControls = new List<EffectParameterPickerControl>();
+
+			var effectModuleDescriptors = effectDescriptors as IList<IEffectModuleDescriptor> ?? effectDescriptors.ToList();
+
+			foreach (EffectParameterPickerControl control in effectModuleDescriptors.Select((t, i) =>
+			{
+				return new EffectParameterPickerControl
+				{
+					Index = i,
+					EffectPropertyInfo = t,
+					ParameterImage = (Bitmap)t.GetRepresentativeImage(48, 48),
+					DisplayName = t.EffectName
+				};
+			}))
+				parameterPickerControls.Add(control);
+
+			return parameterPickerControls;
+		}
+		#endregion
+
 		private void TimelineControlGrid_DragEnter(object sender, DragEventArgs e)
 		{
-			//if (e.Data.GetDataPresent(DataFormats.FileDrop))
-			//	e.Effect = DragDropEffects.Copy;
-			//else
 			e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
-
 		}
 
 		private void TimelineControlGrid_DragOver(object sender, DragEventArgs e)
@@ -3682,7 +3726,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
 			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
 
-			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
+			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any() && _filename == string.Empty)
 			{
 
 				var message = string.Format("This action will replace {0} effects, are you sure ?",
