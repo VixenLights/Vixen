@@ -149,6 +149,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
+		//Used for Dragging of Files from Windows Explorer
+		private string _filename = string.Empty;
+		private bool _horizontalStringOrientation;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -744,48 +748,67 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
-		private string filename;
-		private bool HorizontalStringOrientation;
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
 			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop)); //Stores the file path for each selected file
-				string[] imageExtentions = new[] {".jpg", ".jpeg", ".png", ".gif", ".bmp"};
-				string[] videoExtentions = new[] { ".mp4", ".avi", ".mov", ".MTS" };
-				HorizontalStringOrientation = ModifierKeys == Keys.Alt; //Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
+				//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
+				_horizontalStringOrientation = ModifierKeys == Keys.Alt; string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
 				foreach (string fileLoc in filePaths)
 				{
-					filename = fileLoc;
-					string name = Path.GetFileName(filename);
-					var destPath = "";
+					Dictionary<Guid, String> effectList = new Dictionary<Guid, string>();
+					//Check each Effect to see if it supports any File type
+					foreach (IEffectModuleDescriptor effectDesriptor in
+						ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+					{
+						if (effectDesriptor.SupportsExtensions != null)
+						{
+
+							_filename = fileLoc;
+							string name = Path.GetFileName(_filename);
+							var destPath = "";
+							var fileExtension = Path.GetExtension(_filename);
+							if (effectDesriptor.SupportsExtensions.Contains(fileExtension) && effectDesriptor.SupportsImage)
+							{
+								destPath = Path.Combine(effectDesriptor.MediaPath, name);
+							}
+							else if (effectDesriptor.SupportsExtensions.Contains(fileExtension) && effectDesriptor.SupportsVideo)
+							{
+								destPath = Path.Combine(effectDesriptor.MediaPath, name);
+							}
+							else
+							{
+								continue;
+							}
+
+							//if (_filename != destPath)
+							//{
+							//	File.Copy(_filename, destPath, true);
+							//}
+							effectList.Add(effectDesriptor.TypeId, effectDesriptor.EffectName);
+
+						}
+					}
+
 					Point p = new Point(e.X, e.Y);
-					var fileExtension = Path.GetExtension(filename);
-					Guid guid = new Guid();
-					if (imageExtentions.Contains(fileExtension))
+					if (effectList.Count > 1)
 					{
-						destPath = Path.Combine(PictureDescriptor.ModulePath, name);
-						guid = new Guid("5f33435c-eb96-4018-ae56-07e8e14e9ec9"); //Picture GUID
+						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+						var messageBox = new MessageBoxForm("You have more then one effect that uses this File", "Warning", false, false);
+						messageBox.ShowDialog();
 					}
-					else if (videoExtentions.Contains(fileExtension))
+					else if (effectList.Count == 1)
 					{
-						destPath = Path.Combine(VideoDescriptor.ModulePath, name);
-						guid = new Guid("5f33435c-eb96-4321-ae56-07e8e14e9251"); //Video GUID
+						foreach (var VARIABLE in effectList)
+						{
+							EffectDropped(VARIABLE.Key, TimelineControl.grid.TimeAtPosition(p),
+								TimelineControl.grid.RowAtPosition(p));
+						}
 					}
-					else
-					{
-						return;
-					}
-
-					if (filename != destPath)
-					{
-						File.Copy(filename, destPath, true);
-					}
-
-					EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
 				}
-				filename = string.Empty;
+				_filename = string.Empty;
 			}
 			else
 			{
@@ -3361,13 +3384,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
 
-				if (filename != String.Empty)
+				//Enter here if a File is being dragged from Windows Explorer and modify Effect accordingly.
+				if (_filename != String.Empty)
 				{
 					foreach (var propertyData in MetadataRepository.GetProperties(effectNode.Effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
 					{
 						if (propertyData.PropertyType == typeof(PictureSource)) propertyData.Descriptor.SetValue(effectNode.Effect, PictureSource.File);
-						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, filename);
-						if (HorizontalStringOrientation)
+						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, _filename);
+						if (_horizontalStringOrientation)
 						{
 							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effectNode.Effect, StringOrientation.Horizontal);
 						}

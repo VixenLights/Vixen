@@ -37,6 +37,21 @@ namespace VixenModules.Effect.Picture
 			get { return _typeId; }
 		}
 
+		public override bool SupportsImage
+		{
+			get { return true; }
+		}
+
+		public override string MediaPath
+		{
+			get { return PictureDescriptor.ModulePath; }
+		}
+
+		public override string[] SupportsExtensions
+		{
+			get { return new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };}
+		}
+
 		public override Type ModuleClass
 		{
 			get { return typeof(Picture); }

@@ -47,6 +47,21 @@ namespace VixenModules.Effect.Video
 			get { return typeof(VideoData); }
 		}
 
+		public override bool SupportsVideo
+		{
+			get { return true; }
+		}
+
+		public override string MediaPath
+		{
+			get { return VideoDescriptor.ModulePath; }
+		}
+
+		public override string[] SupportsExtensions
+		{
+			get { return new[] { ".mp4", ".avi", ".mov", ".MTS" };}
+		}
+
 		public override string Author
 		{
 			get { return "Geoff Armstrong"; }

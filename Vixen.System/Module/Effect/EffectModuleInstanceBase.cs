@@ -235,6 +235,30 @@ namespace Vixen.Module.Effect
 		}
 
 		[Browsable(false)]
+		public bool SupportsVideo
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).SupportsVideo; }
+		}
+
+		[Browsable(false)]
+		public bool SupportsImage
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).SupportsImage; }
+		}
+
+		[Browsable(false)]
+		public string MediaPath
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).MediaPath; }
+		}
+
+		[Browsable(false)]
+		public string[] SupportsExtensions
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).SupportsExtensions; }
+		}
+
+		[Browsable(false)]
 		public List<IMediaModuleInstance> Media
 		{
 			get { return _media; }

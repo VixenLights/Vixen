@@ -32,6 +32,20 @@ namespace VixenModules.Effect.Meteors
 		{
 			get { return typeof(Meteors); }
 		}
+		public override bool SupportsImage
+		{
+			get { return true; }
+		}
+
+		public override string MediaPath
+		{
+			get { return "test this"; }
+		}
+
+		public override string[] SupportsExtensions
+		{
+			get { return new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp" }; }
+		}
 
 		public override Type ModuleDataClass
 		{
