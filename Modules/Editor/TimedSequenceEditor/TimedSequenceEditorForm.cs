@@ -150,8 +150,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		//Used for Dragging of Files from Windows Explorer
-		private string _filename = string.Empty;
-		private bool _horizontalStringOrientation;
+		private string _dragFileName = string.Empty;
+		private bool _dragFileHorizontalStringOrientation;
+		private bool _dragFileSequencialEffectPlacement;
 
 		#endregion
 
@@ -748,77 +749,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
-		private bool _sequencialEffectPlacement;
-
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
 			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
 				_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
-				//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
-				if (ModifierKeys == (Keys.Alt | Keys.Control))
-				{
-					_horizontalStringOrientation = true;
-					_sequencialEffectPlacement = true;
-				}
-				else
-				{
-					_horizontalStringOrientation = ModifierKeys == Keys.Alt;
-					_sequencialEffectPlacement = ModifierKeys == Keys.Control;
-				}
-				
-				string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-				int i = 0;
-				//Iterate through each selected file that was dragged.
-				foreach (string fileLoc in filePaths)
-				{
-					//Check each Effect to see if it supports any File type
-					List<IEffectModuleDescriptor> effectDescriptors = new List<IEffectModuleDescriptor>();
-					foreach (IEffectModuleDescriptor effectDesriptor in
-						ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
-					{
-						if (effectDesriptor.SupportsExtensions != null)
-						{
-							_filename = fileLoc;
-							string name = Path.GetFileName(_filename);
-							var destPath = "";
-							var fileExtension = Path.GetExtension(_filename);
-							if (!effectDesriptor.SupportsExtensions.Contains(fileExtension)) continue;
-							destPath = Path.Combine(effectDesriptor.MediaPath, name);
-							
-							//if (_filename != destPath)
-							//{
-							//	File.Copy(_filename, destPath, true);
-							//}
-
-							effectDescriptors.Add(effectDesriptor);
-						}
-					}
-
-					Point p = new Point(e.X, e.Y);
-					if (effectDescriptors.Count > 1)
-					{
-						Guid guid = HandleFileDropOnEffectList(effectDescriptors);
-						if (guid != Guid.Empty)
-						{
-							if (!_sequencialEffectPlacement) i = 0;
-							EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
-								TimelineControl.grid.RowAtPosition(p));
-						}
-					}
-					else if (effectDescriptors.Count == 1)
-					{
-						foreach (var effectDescriptor in effectDescriptors)
-						{
-							if (!_sequencialEffectPlacement) i = 0;
-							EffectDropped(effectDescriptor.TypeId, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
-								TimelineControl.grid.RowAtPosition(p));
-						}
-					}
-					i++;
-				}
-				_filename = string.Empty;
+				CreateWindowsExplorerEffects(e);
 			}
 			else
 			{
@@ -854,44 +791,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 		}
-
-		#region Dragging Windows Explorer Files to Timeline support Modules
-		private Guid HandleFileDropOnEffectList(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
-		{
-			var parameterPickerControls = CreateEffectListPickerControls(effectDescriptors);
-
-			var parameterPicker = CreateParameterPicker(parameterPickerControls);
-
-			UpdateToolStrip4("Choose the Effect to use, press Escape to cancel.", 8);
-			var dr = parameterPicker.ShowDialog();
-			if (dr == DialogResult.OK)
-			{
-				return parameterPicker.EffectPropertyInfo.TypeId;
-			}
-			return Guid.Empty;
-		}
-
-		private List<EffectParameterPickerControl> CreateEffectListPickerControls(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
-		{
-			var parameterPickerControls = new List<EffectParameterPickerControl>();
-
-			var effectModuleDescriptors = effectDescriptors as IList<IEffectModuleDescriptor> ?? effectDescriptors.ToList();
-
-			foreach (EffectParameterPickerControl control in effectModuleDescriptors.Select((t, i) =>
-			{
-				return new EffectParameterPickerControl
-				{
-					Index = i,
-					EffectPropertyInfo = t,
-					ParameterImage = (Bitmap)t.GetRepresentativeImage(48, 48),
-					DisplayName = t.EffectName
-				};
-			}))
-				parameterPickerControls.Add(control);
-
-			return parameterPickerControls;
-		}
-		#endregion
 
 		private void TimelineControlGrid_DragEnter(object sender, DragEventArgs e)
 		{
@@ -3428,14 +3327,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
 
-				//Enter here if a File is being dragged from Windows Explorer and modify Effect accordingly.
-				if (_filename != String.Empty)
+				//Do this if a File is being dragged from Windows Explorer and modify Effect accordingly.
+				if (_dragFileName != String.Empty)
 				{
 					foreach (var propertyData in MetadataRepository.GetProperties(effectNode.Effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
 					{
 						if (propertyData.PropertyType == typeof(PictureSource)) propertyData.Descriptor.SetValue(effectNode.Effect, PictureSource.File);
-						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, _filename);
-						if (_horizontalStringOrientation)
+						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, _dragFileName);
+						if (_dragFileHorizontalStringOrientation)
 						{
 							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effectNode.Effect, StringOrientation.Horizontal);
 						}
@@ -3726,7 +3625,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
 			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
 
-			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any() && _filename == string.Empty)
+			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any() && _dragFileName == string.Empty)
 			{
 
 				var message = string.Format("This action will replace {0} effects, are you sure ?",
@@ -4283,7 +4182,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Graphics gfx = Graphics.FromImage(colorBitmap);
 			using (SolidBrush brush = new SolidBrush(color))
 			{
-				gfx.FillRectangle(brush, 0, 0, 48, 48);
+				gfx.FillRectangle(brush, 0, 0, 64, 64);
 			}
 
 			return drawBitmapBorder(colorBitmap);
@@ -4291,13 +4190,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Bitmap GetCurveBitmap(Curve curve)
 		{
-			var curveBitmap = new Bitmap((curve.GenerateGenericCurveImage(new Size(48, 48))));
+			var curveBitmap = new Bitmap((curve.GenerateGenericCurveImage(new Size(64, 64))));
 			return drawBitmapBorder(curveBitmap);
 		}
 
 		private Bitmap GetColorGradientBitmap(ColorGradient colorGradient)
 		{
-			var gradientBitmap = new Bitmap((colorGradient.GenerateColorGradientImage(new Size(48, 48), false)));
+			var gradientBitmap = new Bitmap((colorGradient.GenerateColorGradientImage(new Size(64, 64), false)));
 			return drawBitmapBorder(gradientBitmap);
 		}
 
@@ -4313,6 +4212,116 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion Bitmap methods for PL item drops
 
+		#endregion
+
+		#region Dragging Windows Explorer Files to Timeline.
+
+		private void CreateWindowsExplorerEffects(DragEventArgs e)
+		{
+			//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
+			//Holding the Ctrl key down while dragging will add the effects sequentialy onto the timeline.
+			switch (ModifierKeys)
+			{
+				case (Keys.Alt | Keys.Control):
+					_dragFileHorizontalStringOrientation = true;
+					_dragFileSequencialEffectPlacement = true;
+					break;
+				default:
+					_dragFileHorizontalStringOrientation = ModifierKeys == Keys.Alt;
+					_dragFileSequencialEffectPlacement = ModifierKeys == Keys.Control;
+					break;
+			}
+
+			string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop)); //Stores path of all selected files.
+			List<Guid> tempeffectGuid = new List<Guid>();
+			int i = 0;
+			//Iterate through each selected file that was dragged.
+			foreach (string filePath in filePaths)
+			{
+				Guid guid = Guid.Empty;
+				//Check each Effect to see if it supports any File types
+				List<IEffectModuleDescriptor> effectDescriptors = new List<IEffectModuleDescriptor>();
+				foreach (IEffectModuleDescriptor effectDesriptor in
+					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+				{
+					if (effectDesriptor.SupportsExtensions != null)
+					{
+						var fileExtension = Path.GetExtension(filePath);
+						if (!effectDesriptor.SupportsExtensions.Contains(fileExtension)) continue;
+						_dragFileName = filePath;
+						effectDescriptors.Add(effectDesriptor); //Adds each effect that can use the file type
+					}
+				}
+
+				Point p = new Point(e.X, e.Y);
+				if (effectDescriptors.Count > 0)
+				{
+					if (effectDescriptors.Count <= 1)
+					{
+						//Do this if there is only one effect that the file can be used with.
+						guid = effectDescriptors[0].TypeId;
+					}
+					else
+					{
+						//Checks to see if an effect has already been used for the selected file type and if so then just use that effect agiain.
+						//Saves having the user select an effect for multiple files that are the same type.
+						foreach (var effectDescriptor in effectDescriptors.Where(effectDescriptor => tempeffectGuid.Contains(effectDescriptor.TypeId)))
+						{
+							guid = effectDescriptor.TypeId; //effect has already been selected so just use that same effect again.
+							break;
+						}
+
+						//If effect hasn't been auto selected then get the user to select one. Will bring up the Effect Selection Parameter Form
+						if (guid == Guid.Empty) guid = HandleFileDropOnEffectList(effectDescriptors);
+
+						//if guid is still empty then the file is not supported or user hit escape key and didn't select an effect to use in Vixen so go to the next file.
+						if (guid == Guid.Empty) continue;
+
+						tempeffectGuid.Add(guid); //Adds Effect Guid's so it can be checked against for the next file. This will save showing the Effect selection form everytime or the same file type.
+					}
+
+					//If effect Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
+					if (!_dragFileSequencialEffectPlacement) i = 0;
+					//Adds the effect
+					EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
+						TimelineControl.grid.RowAtPosition(p));
+				}
+				i++;
+			}
+			_dragFileName = string.Empty;
+		}
+
+		//Will add each effect to the Effect Selection Parameter form so the user can select which effect to use with the file type.
+		private Guid HandleFileDropOnEffectList(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var parameterPickerControls = CreateEffectListPickerControls(effectDescriptors);
+
+			var parameterPicker = CreateParameterPicker(parameterPickerControls);
+
+			UpdateToolStrip4("Choose the Effect to use, press Escape to cancel.", 12);
+			var dr = parameterPicker.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				return parameterPicker.EffectPropertyInfo.TypeId;
+			}
+			return Guid.Empty;
+		}
+
+		private List<EffectParameterPickerControl> CreateEffectListPickerControls(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var effectModuleDescriptors = effectDescriptors as IList<IEffectModuleDescriptor> ?? effectDescriptors.ToList();
+
+			return effectModuleDescriptors.Select((t, i) =>
+			{
+				return new EffectParameterPickerControl
+				{
+					Index = i,
+					EffectPropertyInfo = t,
+					ParameterImage = new Bitmap(t.GetRepresentativeImage(48, 48), 64, 64),
+					DisplayName = t.EffectName
+				};
+			}).ToList();
+		}
 		#endregion
 
 		#region Overridden form functions (On___)

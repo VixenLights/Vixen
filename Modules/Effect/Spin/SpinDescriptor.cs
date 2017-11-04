@@ -35,18 +35,6 @@ namespace VixenModules.Effect.Spin
 			get { return typeof (Spin); }
 		}
 
-		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
-		public override string MediaPath
-		{
-			get { return "Test"; }
-		}
-
-		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
-		public override string[] SupportsExtensions
-		{
-			get { return SupportedMediaExtensions.SupportedImageExtensions; }
-		}
-
 		public override Type ModuleDataClass
 		{
 			get { return typeof (SpinData); }
