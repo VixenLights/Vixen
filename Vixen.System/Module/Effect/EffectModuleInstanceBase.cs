@@ -235,12 +235,6 @@ namespace Vixen.Module.Effect
 		}
 
 		[Browsable(false)]
-		public string MediaPath
-		{
-			get { return ((IEffectModuleDescriptor)Descriptor).MediaPath; }
-		}
-
-		[Browsable(false)]
 		public string[] SupportsExtensions
 		{
 			get { return ((IEffectModuleDescriptor)Descriptor).SupportsExtensions; }

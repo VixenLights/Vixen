@@ -43,12 +43,6 @@ namespace VixenModules.Effect.Glediator
 			get { return typeof(Glediator); }
 		}
 
-		//Used when dragging files from Windows Explorer so it can copy the file to the correct Vixen Media Folder.
-		public override string MediaPath
-		{
-			get { return ModulePath; }
-		}
-
 		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
 		public override string[] SupportsExtensions
 		{
