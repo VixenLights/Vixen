@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
@@ -429,7 +430,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = string.Format("Preview_{0}", DisplayName.Replace(' ', '_'));
+			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
 
 			if (WindowState != FormWindowState.Minimized)
 			{
@@ -459,7 +460,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = string.Format("Preview_{0}", DisplayName.Replace(' ', '_'));
+			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
 
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_showBorders = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), true);
