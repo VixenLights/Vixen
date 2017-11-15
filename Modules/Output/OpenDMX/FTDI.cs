@@ -3,16 +3,17 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Vixen.Commands;
 
-
 namespace VixenModules.Controller.OpenDMX
 {
 	public class FTDI
 	{
-		public static byte[] buffer = new byte[513];
+		public static FTD2XX_NET.FTDI OpenDmxConnection= new FTD2XX_NET.FTDI();
+        public static byte[] buffer = new byte[513];
 		public static uint handle = 0;
 		public static bool done = false;
 		public static int bytesWritten = 0;
-		public static FT_STATUS status;
+		//public static FT_STATUS status;
+        public static FTD2XX_NET.FTDI.FT_STATUS status; 
 
 		private IntPtr transmitPtr = IntPtr.Zero;
 
@@ -23,7 +24,8 @@ namespace VixenModules.Controller.OpenDMX
 		public const byte PURGE_RX = 1;
 		public const byte PURGE_TX = 2;
 
-		[DllImport("FTD2XX.dll")]
+		/*
+        [DllImport("FTD2XX.dll")]
 		public static extern FT_STATUS FT_Open(UInt32 uiPort, ref uint ftHandle);
 
 		[DllImport("FTD2XX.dll")]
@@ -67,17 +69,22 @@ namespace VixenModules.Controller.OpenDMX
 
 		[DllImport("FTD2XX.dll")]
 		public static extern FT_STATUS FT_SetDivisor(uint ftHandle, char usDivisor);
-
-
+       
+         */
 		public void start()
 		{
-			handle = 0;
-			status = FT_Open(0, ref handle);
-			if (status != FT_STATUS.FT_OK) {
+			
+            handle = 0;
+			//status = FT_Open(0, ref handle);
+            status = OpenDmxConnection.OpenByIndex(0);
+
+			if (status != FTD2XX_NET.FTDI.FT_STATUS.FT_OK) 
+            {
 				string message = "Failed to open FTDI device" + status.ToString();
 				//failure
 				throw new Exception(message);
 			}
+
 			else {
 				//worked
 
@@ -98,7 +105,7 @@ namespace VixenModules.Controller.OpenDMX
 		public void stop()
 		{
 			done = true;
-			status = FT_Close(handle);
+            status = OpenDmxConnection.Close();// FT_Close(handle);
 		}
 
 		public void setDmxValue(int channel, byte value)
@@ -139,20 +146,24 @@ namespace VixenModules.Controller.OpenDMX
 			UInt32 txBuf = 0, rxBuf = 0, status = 0;
 			while (!done) {
 				//Check if all the data has been written yet.
-				FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
-				while (txBuf != 0) {
+				//FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
+                OpenDmxConnection.GetTxBytesWaiting(ref txBuf);
+                while (txBuf != 0) {
 					//Not ready yet, wait for a bit
 					Thread.Sleep(2);
 
 					//Check the transmit buffer again
-					FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
+					//FT_GetStatus(handle, ref rxBuf, ref txBuf, ref status);
+                    OpenDmxConnection.GetTxBytesWaiting(ref txBuf);
 				}
 
 				//Keep buffer from channging while being copied to the output.
 				lock (buffer) {
 					//Create a break signal in the output before the DMX data.
-					FT_SetBreakOn(handle);
-					FT_SetBreakOff(handle);
+					//FT_SetBreakOn(handle);
+				    OpenDmxConnection.SetBreak(true);
+					//FT_SetBreakOff(handle);
+				    OpenDmxConnection.SetBreak(false);
 
 					//Send the next frame to the driver
 					bytesWritten = write(handle, buffer, buffer.Length);
@@ -178,20 +189,27 @@ namespace VixenModules.Controller.OpenDMX
 			uint bytesWritten = 0;
 
 			//Write the data to the serial buffer
-			status = FT_Write(handle, transmitPtr, (uint) length, ref bytesWritten);
-
+			//status = FT_Write(handle, transmitPtr, (uint) length, ref bytesWritten);
+		    status = OpenDmxConnection.Write(data, length, ref bytesWritten);
 			return (int) bytesWritten;
 		}
 
 		public void initOpenDMX()
 		{
-			status = FT_ResetDevice(handle);
-			status = FT_SetDivisor(handle, (char) 12); // set baud rate
-			status = FT_SetDataCharacteristics(handle, BITS_8, STOP_BITS_2, PARITY_NONE);
-			status = FT_SetFlowControl(handle, (char) FLOW_NONE, 0, 0);
-			status = FT_ClrRts(handle);
-			status = FT_Purge(handle, PURGE_TX);
-			status = FT_Purge(handle, PURGE_RX);
+		    //status = FT_ResetDevice(handle);
+            status = OpenDmxConnection.ResetDevice();
+            //status = FT_SetDivisor(handle, (char) 12); // set baud rate
+		    status = OpenDmxConnection.SetBaudRate(250000);
+		    //status = FT_SetDataCharacteristics(handle, BITS_8, STOP_BITS_2, PARITY_NONE);
+		    status = OpenDmxConnection.SetDataCharacteristics(BITS_8, STOP_BITS_2, PARITY_NONE);
+			//status = FT_SetFlowControl(handle, (char) FLOW_NONE, 0, 0);
+		    status = OpenDmxConnection.SetFlowControl(FLOW_NONE, 0, 0);
+			//status = FT_ClrRts(handle);
+		    status = OpenDmxConnection.SetRTS(false);
+            //status = FT_Purge(handle, PURGE_TX);
+            status = OpenDmxConnection.Purge(PURGE_TX);
+            //status = FT_Purge(handle, PURGE_RX);
+		    status = OpenDmxConnection.Purge(PURGE_RX);
 		}
 	}
 
