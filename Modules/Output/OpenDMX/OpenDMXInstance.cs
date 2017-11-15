@@ -9,7 +9,7 @@ namespace VixenModules.Controller.OpenDMX
 {
 	public class VixenOpenDMXInstance : ControllerModuleInstanceBase
 	{
-		private FTDI _dmxPort = new FTDI();
+		private OpenDMX _dmxPort = new OpenDMX();
 		private int _outputCount;
 
 		public VixenOpenDMXInstance()
