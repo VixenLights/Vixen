@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using FTD2XX_NET;
 using Vixen.Commands;
@@ -13,8 +12,6 @@ namespace VixenModules.Controller.OpenDMX
 		public static bool done = false;
 		public static int bytesWritten = 0;
         public static FTDI.FT_STATUS status; 
-
-		private IntPtr transmitPtr = IntPtr.Zero;
 
 	    public const uint BAUDRATE = 250000;
         public const byte BITS_8 = 8;
@@ -30,11 +27,11 @@ namespace VixenModules.Controller.OpenDMX
 
             if (status != FTDI.FT_STATUS.FT_OK) //failure
             {
-				string message = "Failed to open FTDI device" + status.ToString();
+				string message = "Failed to open FTDI device.  Error from Driver: " + status;//.ToString();
 				throw new Exception(message);
 			}
 
-            else //worked
+            else //Success
             {
 				initOpenDMX();
 
@@ -66,8 +63,6 @@ namespace VixenModules.Controller.OpenDMX
 
 		public void updateData(ICommand[] outputStates)
 		{
-			var channelValues = new byte[outputStates.Length];
-
 			//Make sure that editing the output buffer is thread safe
 			lock (buffer) {
 				//copy the lighting commands to the DMX Buffer

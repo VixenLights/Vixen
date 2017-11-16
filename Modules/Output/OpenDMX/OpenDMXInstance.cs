@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using Common.Controls;
 using Vixen.Module.Controller;
 using Vixen.Commands;

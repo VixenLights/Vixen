@@ -7,7 +7,7 @@ namespace VixenModules.Controller.OpenDMX
 	{
 		public override string Author
 		{
-			get { return "Joshua Moyerman (Chilloutdocdoc on DIYC) & piense"; }
+            get { return "Jon Chuchla - based on the original work of Joshua Moyerman & piense."; }
 		}
 
 		public override string Description
@@ -32,7 +32,7 @@ namespace VixenModules.Controller.OpenDMX
 
 		public override string Version
 		{
-			get { return "1.5"; }
+			get { return "2.0"; }
 		}
 	}
 }
