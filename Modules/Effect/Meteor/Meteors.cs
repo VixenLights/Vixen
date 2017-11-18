@@ -616,12 +616,14 @@ namespace VixenModules.Effect.Meteors
 
 			if (EnableGroundLevel)
 			{
+				hsv = HSV.FromRGB(GroundColor.GetColorAt((intervalPosFactor) / 100));
+				hsv.V *= hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
 					{
 						if (_tempBuffer.GetColorAt(x, y) != Color.Empty)
-							frameBuffer.SetPixel(x, y, GroundColor.GetColorAt((intervalPosFactor)/100));
+							frameBuffer.SetPixel(x, y, hsv);
 					}
 				}
 			}
