@@ -5,103 +5,104 @@ using Vixen.Commands;
 
 namespace VixenModules.Controller.OpenDMX
 {
-	public class OpenDMX    
+	public class OpenDmx    
 	{
-		public static FTDI OpenDmxConnection= new FTDI();
-        public static byte[] buffer = new byte[513];
-		public static bool done = false;
-		public static int bytesWritten = 0;
-        public static FTDI.FT_STATUS status; 
+	    private static FTDI _openDmxConnection= new FTDI();   
+        private static byte[] _buffer = new byte[513];
+	    private static bool _done;
+	    //private static uint bytesWritten = 0;
+	    private static FTDI.FT_STATUS _status;
 
-	    public const uint BAUDRATE = 250000;
-        public const byte BITS_8 = 8;
-		public const byte STOP_BITS_2 = 2;
-		public const byte PARITY_NONE = 0;
-		public const UInt16 FLOW_NONE = 0;
-		public const byte PURGE_RX = 1;
-		public const byte PURGE_TX = 2;
+	    private const uint Baudrate = 250000;
+	    private const byte Bits8 = 8;
+	    private const byte StopBits2 = 2;
+	    private const byte ParityNone = 0;
+	    private const ushort FlowNone = 0;
+	    private const byte PurgeRx = 1;
+	    private const byte PurgeTx = 2;
 
-		public void start()
+		public void Start()
 		{
-            status = OpenDmxConnection.OpenByIndex(0);
+            _status = _openDmxConnection.OpenByIndex(0);
 
-            if (status != FTDI.FT_STATUS.FT_OK) //failure
+            if (_status != FTDI.FT_STATUS.FT_OK) //failure
             {
-				string message = "Failed to open FTDI device.  Error from Driver: " + status;//.ToString();
+				var message = "Failed to open FTDI device.  Error from Driver: " + _status;
 				throw new Exception(message);
 			}
+			//Initialize the universe and start code to all 0s
+		    InitOpenDmx();
+            for (var i = 0; i < 513; i++)
+				SetDmxValue(i, 0);
 
-            else //Success
-            {
-				initOpenDMX();
-
-				//Initialize the universe and start code to all 0s
-				for (int i = 0; i < 513; i++)
-					setDmxValue(i, 0);
-
-				//Create and start the thread that sends the output data to the driver
-				Thread thread = new Thread(new ThreadStart(writeData));
-				thread.Start();
-			}
+			//Create and start the thread that sends the output data to the driver
+			var thread = new Thread(WriteData);
+			thread.Start();
 		}
 
-		public void stop()
+		public void Stop()
 		{
-			done = true;
-            status = OpenDmxConnection.Close();
+			_done = true;
+		    if (_openDmxConnection.IsOpen)
+		    {
+		        _status = _openDmxConnection.Close();
+		    }
 		}
 
-		public void setDmxValue(int channel, byte value)
+	    public void UpdateData(ICommand[] outputStates)
+	    {
+	        //Make sure that editing the output buffer is thread safe
+	        lock (_buffer)
+	        {
+	            //copy the lighting commands to the DMX Buffer
+	            for (var i = 0; i < outputStates.Length; i++)
+	            {
+	                _8BitCommand command = outputStates[i] as _8BitCommand;
+
+	                //Reset the channel if the command is null
+	                if (command == null)
+	                {
+	                    // State reset
+	                    _buffer[i + 1] = 0;
+	                    continue;
+	                }
+
+	                //Copy the new intensity value to the output buffer
+	                _buffer[i + 1] = command.CommandValue;
+	            }
+	        }
+	    }
+        
+        private void SetDmxValue(int channel, byte value)
 		{
 			//Lock the buffer for thread safing
-			lock (buffer) {
-				if (buffer != null) {
-					buffer[channel] = value;
+			lock (_buffer) {
+				if (_buffer != null) {
+					_buffer[channel] = value;
 				}
 			}
 		}
 
-		public void updateData(ICommand[] outputStates)
-		{
-			//Make sure that editing the output buffer is thread safe
-			lock (buffer) {
-				//copy the lighting commands to the DMX Buffer
-				for (int i = 0; i < outputStates.Length; i++) {
-					_8BitCommand command = outputStates[i] as _8BitCommand;
-
-					//Reset the channel if the command is null
-					if (command == null) {
-						// State reset
-						buffer[i + 1] = 0;
-						continue;
-					}
-
-					//Copy the new intensity value to the output buffer
-					buffer[i + 1] = command.CommandValue;
-				}
-			}
-		}
-
-		public void writeData()
+	    private void WriteData()
 		{
 			uint txBuf = 0;
-			while (!done) {
+			while (!_done) {
 				//Check if all the data has been written yet.
-                OpenDmxConnection.GetTxBytesWaiting(ref txBuf);
+                _openDmxConnection.GetTxBytesWaiting(ref txBuf);
                 while (txBuf != 0) {
                     //Not ready yet, wait for a bit and check again
 					Thread.Sleep(2);
-                    OpenDmxConnection.GetTxBytesWaiting(ref txBuf);
+                    _openDmxConnection.GetTxBytesWaiting(ref txBuf);
 				}
 
 				//Keep buffer from channging while being copied to the output.
-				lock (buffer) {
+				lock (_buffer) {
 					//Create a break signal in the output before the DMX data.
-				    OpenDmxConnection.SetBreak(true);
-				    OpenDmxConnection.SetBreak(false);
+				    _openDmxConnection.SetBreak(true);
+				    _openDmxConnection.SetBreak(false);
 
 					//Send the next frame to the driver
-				    bytesWritten = write(buffer, buffer.Length);
+/**/				    /*bytesWritten =*/ Write(_buffer, _buffer.Length);
 				}
 
 				//Goto sleep while data is transmitting
@@ -109,24 +110,24 @@ namespace VixenModules.Controller.OpenDMX
 			}
 		}
 
-	    public int write(byte[] data, int length)
+	    private void Write(byte[] data, int length)
 		{
 			uint bytesWritten = 0;
 
 			//Write the data to the serial buffer
-		    status = OpenDmxConnection.Write(data, length, ref bytesWritten);
-			return (int) bytesWritten;
+		    _status = _openDmxConnection.Write(data, length, ref bytesWritten);
+/**/			//return (int) bytesWritten;
 		}
 
-		public void initOpenDMX()
+	    private void InitOpenDmx()
 		{
-            status = OpenDmxConnection.ResetDevice();
-		    status = OpenDmxConnection.SetBaudRate(BAUDRATE);
-		    status = OpenDmxConnection.SetDataCharacteristics(BITS_8, STOP_BITS_2, PARITY_NONE);
-		    status = OpenDmxConnection.SetFlowControl(FLOW_NONE, 0, 0);
-		    status = OpenDmxConnection.SetRTS(false);
-            status = OpenDmxConnection.Purge(PURGE_TX);
-		    status = OpenDmxConnection.Purge(PURGE_RX);
+            _status = _openDmxConnection.ResetDevice();
+		    _status = _openDmxConnection.SetBaudRate(Baudrate);
+		    _status = _openDmxConnection.SetDataCharacteristics(Bits8, StopBits2, ParityNone);
+		    _status = _openDmxConnection.SetFlowControl(FlowNone, 0, 0);
+		    _status = _openDmxConnection.SetRTS(false);
+            _status = _openDmxConnection.Purge(PurgeTx);
+		    _status = _openDmxConnection.Purge(PurgeRx);
 		}
 	}
 
