@@ -10,7 +10,6 @@ namespace VixenModules.Controller.OpenDMX
 	    private static FTDI _openDmxConnection= new FTDI();   
         private static byte[] _buffer = new byte[513];
 	    private static bool _done;
-	    //private static uint bytesWritten = 0;
 	    private static FTDI.FT_STATUS _status;
 
 	    private const uint Baudrate = 250000;
@@ -102,7 +101,7 @@ namespace VixenModules.Controller.OpenDMX
 				    _openDmxConnection.SetBreak(false);
 
 					//Send the next frame to the driver
-/**/				    /*bytesWritten =*/ Write(_buffer, _buffer.Length);
+				Write(_buffer, _buffer.Length);
 				}
 
 				//Goto sleep while data is transmitting
@@ -116,7 +115,6 @@ namespace VixenModules.Controller.OpenDMX
 
 			//Write the data to the serial buffer
 		    _status = _openDmxConnection.Write(data, length, ref bytesWritten);
-/**/			//return (int) bytesWritten;
 		}
 
 	    private void InitOpenDmx()
