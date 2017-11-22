@@ -7,10 +7,10 @@ namespace VixenModules.Controller.OpenDMX
 {
 	public class OpenDmx    
 	{
-	    private static FTDI _openDmxConnection= new FTDI();   
-        private static byte[] _buffer = new byte[513];
-	    private static bool _done;
-	    private static FTDI.FT_STATUS _status;
+	    private readonly FTDI _openDmxConnection= new FTDI();   
+        private readonly byte[] _buffer = new byte[513];
+	    private bool _done;
+	    private FTDI.FT_STATUS _status;
 
 	    private const uint Baudrate = 250000;
 	    private const byte Bits8 = 8;
