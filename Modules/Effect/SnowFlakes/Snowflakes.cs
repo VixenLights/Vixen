@@ -560,12 +560,14 @@ namespace VixenModules.Effect.Snowflakes
 			if (SnowBuildUp)
 			{
 				//Renders the Snow on the ground based off the cuurrent height.
+				HSV hsv = HSV.FromRGB(OutSideColor[0].GetColorAt((intervalPosFactor) / 100));
+				hsv.V *= hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < initialBuildUp; y++)
 					{
 						//The ground color will be use the first outside color of the snowflakes.
-						frameBuffer.SetPixel(x, y, HSV.FromRGB(OutSideColor[0].GetColorAt((intervalPosFactor) / 100)));
+						frameBuffer.SetPixel(x, y, hsv);
 					}
 				}
 			}
