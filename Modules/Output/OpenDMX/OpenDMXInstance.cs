@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using Common.Controls;
 using Vixen.Module.Controller;
 using Vixen.Commands;
@@ -9,7 +8,7 @@ namespace VixenModules.Controller.OpenDMX
 {
 	public class VixenOpenDMXInstance : ControllerModuleInstanceBase
 	{
-		private FTDI _dmxPort = new FTDI();
+		private OpenDmx _dmxPort = new OpenDmx();
 		private int _outputCount;
 
 		public VixenOpenDMXInstance()
@@ -35,7 +34,7 @@ namespace VixenModules.Controller.OpenDMX
 		public override void UpdateState(int chainInex, ICommand[] outputStates)
 		{
 			//Pass the lighting data onto the hardware controller class
-			_dmxPort.updateData(outputStates);
+			_dmxPort.UpdateData(outputStates);
 		}
 
 		public override bool HasSetup
@@ -56,7 +55,7 @@ namespace VixenModules.Controller.OpenDMX
 		{
 			base.Start();
 			//Open up FTDI interface
-			_dmxPort.start();
+			_dmxPort.Start();
 		}
 
 		public override void Stop()
@@ -64,7 +63,7 @@ namespace VixenModules.Controller.OpenDMX
 			base.Stop();
 
 			//Close FTDI interface
-			_dmxPort.stop();
+			_dmxPort.Stop();
 		}
 	}
 }
