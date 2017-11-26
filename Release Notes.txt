@@ -2,7 +2,18 @@ Release Notes - Vixen 3 - Version 3.4u3
 
 Maintenance release 3 for version 3.4
 
-See bugs assigned to the DevBuild release at bug.vixenlights.com.
+** Bug
+    * [VIX-1006] - Open dmx doesn't work on Windows 8 and 10 on 64 build
+    * [VIX-2238] - If the preview viewer window is minimized when it is closed, then it will restore to a very small toolbar in the upper left corner instead of it's last size.
+    * [VIX-2239] - If an effect fails to render, it can cause the rest of the effect not to play in the same sample interval because it throws an unhandled exception in the core engine.
+    * [VIX-2252] - Unhandled exception on startup
+    * [VIX-2262] - Snow build up is not linked to the snowflake intensity curve.
+    * [VIX-2263] - Meteor ground level is not linked to the Meteor intensity curve. 
+
+
+** Improvement
+    * [VIX-2190] - Alternating Default Colors/Icon
+    * [VIX-2232] - Add the ability to sort elements under a group in the Display setup.
 
 
 Release Notes - Vixen 3 - Version 3.4u2
