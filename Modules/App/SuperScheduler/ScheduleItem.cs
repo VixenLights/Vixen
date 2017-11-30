@@ -158,7 +158,8 @@ namespace VixenModules.App.SuperScheduler
 				var now = DateTime.Now;
 				if (_startDate < now && _endDate > now)
 				{
-					return new DateTime(now.Year, now.Month, _startTime > now?now.Day:now.Day+1,
+					var date = _startTime.TimeOfDay > now.TimeOfDay ? now : now.AddDays(1);
+					return new DateTime(date.Year, date.Month, date.Day,
 										 _startTime.Hour, _startTime.Minute, _startTime.Second);
 				}
 				
