@@ -1,3 +1,11 @@
+Release Notes - Vixen 3 - Version 3.4u4
+
+Maintenance release 3 for version 3.4
+
+See bugs.vixenlights.com for a complete list of issues in this release labled DevBuild
+
+
+
 Release Notes - Vixen 3 - Version 3.4u3
 
 Maintenance release 3 for version 3.4
