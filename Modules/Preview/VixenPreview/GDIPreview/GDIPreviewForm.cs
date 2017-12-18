@@ -101,11 +101,31 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		private static double DistanceFromPoint(Point origin, Size point)
+		{
+			return Math.Sqrt(Math.Pow((point.Width - origin.X), 2) + Math.Pow((point.Height - origin.Y), 2));
+		}
+
+		private Size BorderOffset()
+		{
+			var screenRectangle = RectangleToScreen(ClientRectangle);
+			return new Size(screenRectangle.Left - Left, screenRectangle.Top - Top);
+		}
+
 		private void GdiControl_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (_mouseGrabOffset.HasValue)
+			if (_mouseGrabOffset.HasValue && DistanceFromPoint(e.Location, _mouseGrabOffset.Value) > 2)
 			{
-				this.Location = Cursor.Position - _mouseGrabOffset.Value;
+				if (_showBorders)
+				{
+					
+					this.Location = Cursor.Position - _mouseGrabOffset.Value - BorderOffset();
+				}
+				else
+				{
+					this.Location = Cursor.Position - _mouseGrabOffset.Value;
+				}
+				
 			}
 		}
 
