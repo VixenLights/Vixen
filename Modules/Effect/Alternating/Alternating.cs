@@ -357,7 +357,7 @@ namespace VixenModules.Effect.Alternating
 					var glp = Colors[gradientLevelItem];
 					foreach (var element in elementGroup)
 					{
-						RenderElement(glp, startTime, intervalTime, element, effectIntents);
+						RenderElement(glp, startTime, intervalTime.Subtract(TimeSpan.FromMilliseconds(1)), element, effectIntents);
 					}
 					gradientLevelItem = ++gradientLevelItem % colorCount;
 
@@ -375,6 +375,7 @@ namespace VixenModules.Effect.Alternating
 		private void RenderElement(GradientLevelPair gradientLevelPair, TimeSpan startTime, TimeSpan interval,
 			ElementNode element, EffectIntents effectIntents)
 		{
+			if (interval <= TimeSpan.Zero) return;
 			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, HasDiscreteColors);
 			result.OffsetAllCommandsByTime(startTime);
 			effectIntents.Add(result);
