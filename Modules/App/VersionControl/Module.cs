@@ -157,14 +157,14 @@ namespace VersionControl
             watcher.IncludeSubdirectories = false;
             watcher.EnableRaisingEvents = true;
             watchers.Add(watcher);
-            Directory.GetDirectories(folder).ToList().ForEach(dir => CreateWatcher(dir, recursive));
+            Directory.GetDirectories(folder).Where(d => !d.EndsWith("logs") && !d.EndsWith("\\.git")).ToList().ForEach(dir => CreateWatcher(dir, recursive));
 
         }
 
         private void watcher_FileSystemChanges(object sender, FileSystemEventArgs e)
         {
 
-            if (e.FullPath.Contains("\\.git") || e.FullPath.Contains("\\Logs")) return;
+            if (e.FullPath.Contains("\\.git") || e.FullPath.Contains("\\logs")) return;
             Task.Factory.StartNew(() =>
             {
                 try
@@ -174,8 +174,11 @@ namespace VersionControl
                 lock (fileLockObject)
                 {
                     //Wait for the file to fully save...
-                    Thread.Sleep(2000);
-
+                    Thread.Sleep(1000);
+	                while (VixenSystem.IsSaving())
+	                {
+		                Thread.Sleep(1);
+	                }
 
                     switch (e.ChangeType)
                     {

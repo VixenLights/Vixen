@@ -13,10 +13,11 @@ namespace VersionControl
     public partial class Module
     {
         GitSharp.Repository repo;
+		private static HashSet<string> Ignore = new HashSet<string>(new [] {"/Export", "/Core Logs", "/logs", "/.git", "/.lock", "/.gitignore" });
 
         #region Properties
 
-        public string GitRepositoryFolder { get { return System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vixen 3"); } }
+        public string GitRepositoryFolder { get { return Vixen.Sys.Paths.DataRootPath; } }
        
         #endregion
 
@@ -30,13 +31,15 @@ namespace VersionControl
 
             if (enabled)
             {
-				
                 var repoCreated = CreateRepositoryIfNotExists();
 
-                repo = new GitSharp.Repository(GitRepositoryFolder);
+	            if (!repoCreated)
+	            {
+		            CreateUpdateGitIgnore();
+	            }
 
-                // repo.WorkingDirectory = GitRepositoryFolder;
-
+                repo = new Repository(GitRepositoryFolder);
+				
                 AddItemsToGit(repoCreated);
                 
                 CreateWatcher(GitRepositoryFolder, true);
@@ -47,69 +50,67 @@ namespace VersionControl
 
         private void AddItemsToGit(bool initialCheckin)
         {
-
-
-            var directories = Directory.GetDirectories(GitRepositoryFolder, "*.*", SearchOption.AllDirectories).ToList();
-
-            directories.RemoveAll(r => r.Contains(".git") || r.Contains("\\Logs"));
-            directories.Add(GitRepositoryFolder);
-
-            var files = new List<string>();
-
-            directories.ForEach(dir => files.AddRange(Directory.GetFiles(dir)));
-
             using (var frmStatus = new Status())
             {
 
                 frmStatus.Show();
 
                 frmStatus.SetStatusText("Gathering Items to Add to Source Control");
-                if (initialCheckin)
-                    frmStatus.SetMaximum(files.Count);
-                else
-                    frmStatus.SetMaximum(files.Count + repo.Status.Added.Count + repo.Status.Removed.Count +
-                                       repo.Status.Modified.Count);
-               
+                
                 frmStatus.SetStatusText("Adding Items");
-                string commitMessage = initialCheckin
-                    ? "Initial Load of Existing V3 Data Files"
-                    : "Updated/Added File to V3 Folders";
-                if (initialCheckin)
-                    files.ForEach(file =>
-                    {
-                        repo.Index.Add(file);
-                        repo.Commit(commitMessage);
-                        frmStatus.SetStatusText(commitMessage);
-                        frmStatus.SetValue(frmStatus.Value + 1);
-                    });
-                // repo.Index.AddAll();
+               
+	            if (initialCheckin)
+	            {
+		            var directories = Directory.GetDirectories(GitRepositoryFolder, "*.*", SearchOption.AllDirectories)
+			            .ToList();
 
-                repo.Status.Added.ToList().ForEach(a =>
-                {
-                    repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
-                    commitMessage = string.Format("Added {0}", new FileInfo(Path.Combine(GitRepositoryFolder, a)).Name);
-                    repo.Commit(commitMessage);
-                    frmStatus.SetStatusText(commitMessage);
-                    frmStatus.SetValue(frmStatus.Value + 1);
-                });
-                repo.Status.Removed.ToList().ForEach(a =>
-                {
-                    repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
-                    commitMessage = string.Format("Removed {0}", new FileInfo(Path.Combine(GitRepositoryFolder, a)).Name);
-                    repo.Commit(commitMessage);
-                    frmStatus.SetStatusText(commitMessage);
-                    frmStatus.SetValue(frmStatus.Value + 1);
-                });
-                repo.Status.Modified.ToList().ForEach(a =>
-                {
-                    repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
-                    commitMessage = string.Format("Changed {0}", new FileInfo(Path.Combine(GitRepositoryFolder, a)).Name);
-                    repo.Commit(commitMessage);
-                    frmStatus.SetStatusText(commitMessage);
-                    frmStatus.SetValue(frmStatus.Value + 1);
-                });
+		            directories.RemoveAll(r =>
+			            r.Contains(".git") || r.Contains("\\Logs") || r.Contains("\\logs") || r.Contains("\\Core Logs") || r.Contains("\\Export"));
+		            directories.Add(GitRepositoryFolder);
+
+		            var files = new List<string>();
+
+		            directories.ForEach(dir => files.AddRange(Directory.GetFiles(dir).Where(f => !f.EndsWith(".lock") && !f.EndsWith(".gitignore"))));
+
+		            frmStatus.SetMaximum(files.Count);
+
+		            files.ForEach(file =>
+		            {
+			            repo.Index.Add(file);
+						frmStatus.SetValue(frmStatus.Value + 1);
+		            });
+
+		            repo.Commit(@"Initial Load of Existing V3 Data Files");
+		            frmStatus.SetStatusText(@"Initial Load of Existing V3 Data Files");
+
+				}
+	            else
+	            {
+					frmStatus.SetMaximum(repo.Status.Added.Count + repo.Status.Removed.Count +
+					                     repo.Status.Modified.Count);
+		            repo.Status.Added.ToList().ForEach(a =>
+		            {
+			            repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
+			            frmStatus.SetValue(frmStatus.Value + 1);
+					});
+					
+		            repo.Status.Removed.ToList().ForEach(a =>
+		            {
+			            repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
+			            frmStatus.SetValue(frmStatus.Value + 1);
+					});
+		            repo.Status.Modified.ToList().ForEach(a =>
+		            {
+			            repo.Index.Add(Path.Combine(GitRepositoryFolder, a));
+			            frmStatus.SetValue(frmStatus.Value + 1);
+					});
+
+		            repo.Commit(@"Commited external profile changes.");
+		            frmStatus.SetStatusText(@"Commited external profile changes.");
+		            
+				}
+	            
                 frmStatus.Close();
-
             }
 
         }
@@ -149,16 +150,7 @@ namespace VersionControl
                     s.Write(Properties.Resources.README.ToArray(), 0, Properties.Resources.README.Length);
                 }
 
-                if (!System.IO.File.Exists(Path.Combine(GitRepositoryFolder, ".gitignore")))
-                {
-                    using (var sw = new StreamWriter(Path.Combine(GitRepositoryFolder, ".gitignore")))
-                    {
-                        sw.WriteLine("/Logs");
-                        sw.WriteLine("/.git");
-
-                        sw.Flush();
-                    }
-                }
+                CreateUpdateGitIgnore();
 
                 var di = new DirectoryInfo(Path.Combine(GitRepositoryFolder, ".git"));
                 di.Attributes = FileAttributes.Hidden;
@@ -167,5 +159,30 @@ namespace VersionControl
             return createRepository;
         }
 
-    }
+	    private void CreateUpdateGitIgnore()
+	    {
+		    var path = Path.Combine(GitRepositoryFolder, ".gitignore");
+		    var gitIgnore = new HashSet<string>(Ignore);
+
+			if (File.Exists(path))
+			{
+				string[] lines = File.ReadAllLines(path);
+			    foreach (var line in lines)
+			    {
+				    gitIgnore.Add(line);
+			    }
+		    }
+
+		    using (var sw = new StreamWriter(path, false))
+		    {
+			    foreach (var item in gitIgnore)
+			    {
+				    sw.WriteLine(item);
+			    }
+			    sw.Flush();
+		    }
+
+		}
+
+	}
 }
