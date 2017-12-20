@@ -23,9 +23,11 @@ namespace VixenApplication
 			set { _dataFolder = value; }
 		}
 
+		public bool IsLocked { get; set; }
+
 		public override string ToString()
 		{
-			return _name;
+			return IsLocked ? string.Format("{0} - Locked", _name) : _name;
 		}
 	}
 }
