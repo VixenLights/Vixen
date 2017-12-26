@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common.Controls;
 using Common.Controls.Timeline;
 
@@ -29,6 +30,27 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 
 		public override void Redo()
 		{
+
+			//Check to see if our element still exists, or has been replaced because of a delete and add manuver
+			Dictionary <Element, ElementTimeInfo> validatedElements = new Dictionary<Element, ElementTimeInfo>();
+			foreach (var elementTimeInfo in m_changedElements)
+			{
+				if (!elementTimeInfo.Key.Row.ContainsElement(elementTimeInfo.Key))
+				{
+					var el = elementTimeInfo.Key.Row.FirstOrDefault(e => e.EffectNode.Equals(elementTimeInfo.Key.EffectNode));
+					if (el != null)
+					{
+						validatedElements.Add(el, elementTimeInfo.Value);
+					}
+				}
+				else
+				{
+					validatedElements.Add(elementTimeInfo.Key, elementTimeInfo.Value);
+				}
+			}
+
+			m_changedElements = validatedElements;
+
 			m_form.SwapPlaces(m_changedElements);
 
 			base.Redo();
