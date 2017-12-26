@@ -3846,7 +3846,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_effectNodeToElement.ContainsKey(node))
 			{
 				TimedSequenceElement tse = (TimedSequenceElement) _effectNodeToElement[node];
-
+				TimelineControl.DeselectElement(tse);
 				foreach (Row row in TimelineControl) // Remove the element from all rows
 					row.RemoveElement(tse);
 
