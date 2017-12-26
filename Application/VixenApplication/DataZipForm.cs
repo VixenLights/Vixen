@@ -328,6 +328,12 @@ namespace VixenApplication
 
 		private static bool Excluded(string file, IList<string> exceptions)
 		{
+			//exclude the lock file
+			if (file.EndsWith(".lock"))
+			{
+				return true;
+			}
+
 			List<String> folderNames = (from folder in exceptions
 										where folder.StartsWith(@"\")
 											|| folder.StartsWith(@"/")
