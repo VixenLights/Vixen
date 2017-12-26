@@ -11,7 +11,12 @@ using System.IO;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
-using GitSharp;
+using NGit;
+using NGit.Api;
+using NGit.Revwalk;
+using NGit.Treewalk;
+using Sharpen;
+
 
 namespace VersionControl
 {
@@ -29,9 +34,9 @@ namespace VersionControl
         }
 
 
-        GitSharp.Repository _repo;
+        Repository _repo;
 
-        public Versioning(Data data, GitSharp.Repository repo)
+        public Versioning(Data data, Repository repo)
         {
             GitDetails = null;
             InitializeComponent();
@@ -50,7 +55,7 @@ namespace VersionControl
 
             treeViewFiles.Nodes.Clear();
             treeViewFiles.Nodes.Add("Vixen 3");
-            PopulateTreeView(_repo.Directory.Replace("\\.git", string.Empty), treeViewFiles.Nodes[0]);
+            PopulateTreeView(_repo.Directory.ToString().Replace("\\.git", string.Empty), treeViewFiles.Nodes[0]);
             treeViewFiles.Nodes[0].Expand();
 
             //_rootPaths.ToList().ForEach(dir => {
@@ -111,7 +116,7 @@ namespace VersionControl
                         directory.LastIndexOf('\\') + 1,
                         directory.Length - directory.LastIndexOf('\\') - 1);
 
-                        if (!substringDirectory.Equals(".git", StringComparison.CurrentCultureIgnoreCase) && !substringDirectory.Equals("Logs", StringComparison.CurrentCultureIgnoreCase))
+                        if (!substringDirectory.Equals(".git", StringComparison.CurrentCultureIgnoreCase) && !substringDirectory.Equals("logs", StringComparison.CurrentCultureIgnoreCase))
                         {
                             TreeNode myNode = new TreeNode(substringDirectory);
 
@@ -126,7 +131,7 @@ namespace VersionControl
                 foreach (var file in fileArray)
                 {
                     TreeNode fileNode = new TreeNode(new FileInfo(file).Name);
-                    fileNode.Tag = file.Replace(_repo.Directory.Replace("\\.git", string.Empty) + "\\", string.Empty).Replace("\\", "/");
+                    fileNode.Tag = file.Replace(_repo.Directory.ToString().Replace("\\.git", string.Empty) + "\\", string.Empty).Replace("\\", "/");
                     parentNode.Nodes.Add(fileNode);
                 }
 
@@ -152,29 +157,56 @@ namespace VersionControl
 
         private void GetGitDetails()
         {
-            this.Cursor = Cursors.WaitCursor;
-            var tree = _repo.Head;
-            if (_repo.Head.CurrentCommit != null)
-                GitDetails = new Dictionary<string, List<ChangeDetails>>();
+			this.Cursor = Cursors.WaitCursor;
+			Git git = new Git(_repo);
 
-                foreach (Commit commit in _repo.Head.CurrentCommit.Ancestors)
-                {
-                    foreach (Change change in commit.Changes)
-                    {
-                        ChangeDetails details = new ChangeDetails();
-                        details.FileName = change.Path;
-                        details.Hash = commit.Hash;
-                        details.ChangeDate = commit.AuthorDate;
-                        details.UserName = commit.Author.Name;
-                        details.Message = commit.Message;
+	        Iterable<RevCommit> logs = git.Log().Call();
 
-                        if (!GitDetails.ContainsKey(change.Path)) GitDetails.Add(change.Path, new List<ChangeDetails>());
-                        GitDetails[change.Path].Add(details);
+			//var tree = _repo.Head;
+	        if (logs.Any())
+	        {
+		        GitDetails = new Dictionary<string, List<ChangeDetails>>();
 
-                    }
-                }
-            this.Cursor = Cursors.Default;
-        }
+		        foreach (var commit in logs)
+		        {
+					TreeWalk treeWalk = new TreeWalk(_repo);
+					treeWalk.Reset(commit.Tree);
+			        while (treeWalk.Next())
+			        {
+						ChangeDetails details = new ChangeDetails();
+				        details.FileName = treeWalk.PathString;
+				        details.Hash = commit.Id.ToString();
+				        details.UserName = commit.GetAuthorIdent().GetName();
+				        details.Message = commit.GetFullMessage();
+				        details.ChangeDate = commit.GetAuthorIdent().GetWhen();
+						
+				        //  details.Hash = commit.Hash;
+				        //  details.ChangeDate = commit.AuthorDate;
+				        //  details.UserName = commit.Author.Name;
+				        //  details.Message = commit.Message;
+
+				        if (!GitDetails.ContainsKey(treeWalk.PathString)) GitDetails.Add(treeWalk.PathString, new List<ChangeDetails>());
+				        GitDetails[treeWalk.PathString].Add(details);
+			        }
+					//foreach (Change change in commit)
+					//{
+					//  ChangeDetails details = new ChangeDetails();
+					//  details.FileName = change.Path;
+					//  details.Hash = commit.Hash;
+					//  details.ChangeDate = commit.AuthorDate;
+					//  details.UserName = commit.Author.Name;
+					//  details.Message = commit.Message;
+
+					//  if (!GitDetails.ContainsKey(change.Path)) GitDetails.Add(change.Path, new List<ChangeDetails>());
+					//  GitDetails[change.Path].Add(details);
+
+					//}
+				}
+			}
+
+			
+			this.Cursor = Cursors.Default;
+		}
 
         private void GetVersionControlInfo(string fileName)
         {
@@ -233,37 +265,37 @@ namespace VersionControl
 			if (messageBox.DialogResult == DialogResult.OK)
             {
 
-                var commit = _repo.Get<Commit>(this.txtChangeHash.Text);
-                var tree = commit.Tree;
-                foreach (Tree subtree in tree.Trees)
-                {
-                    var leaf = subtree.Leaves.Where(l => l.Path.Equals(treeViewFiles.SelectedNode.Tag as string)).FirstOrDefault();
-                    if (leaf != null)
-                    {
+                //var commit = _repo.Get<Commit>(this.txtChangeHash.Text);
+                //var tree = commit.Tree;
+                //foreach (Tree subtree in tree.Trees)
+                //{
+                //    var leaf = subtree.Leaves.Where(l => l.Path.Equals(treeViewFiles.SelectedNode.Tag as string)).FirstOrDefault();
+                //    if (leaf != null)
+                //    {
 
-                        var rawData = leaf.RawData;
-                        var fileName = System.IO.Path.Combine(_repo.WorkingDirectory, treeViewFiles.SelectedNode.Tag as string).Replace('/', '\\');
-                        var b = fileName;
-                        var c = b;
-                        var fi = new FileInfo(fileName);
-                        SaveFileDialog dlg = new SaveFileDialog();
-                        dlg.FileName = fi.Name;
-                        dlg.AddExtension = true;
-                        dlg.DefaultExt = fi.Extension;
-                        dlg.InitialDirectory = fi.DirectoryName;
-                        dlg.Filter = "All files (*.*)|*.*";
+                //        var rawData = leaf.RawData;
+                //        var fileName = System.IO.Path.Combine(_repo.WorkingDirectory, treeViewFiles.SelectedNode.Tag as string).Replace('/', '\\');
+                //        var b = fileName;
+                //        var c = b;
+                //        var fi = new FileInfo(fileName);
+                //        SaveFileDialog dlg = new SaveFileDialog();
+                //        dlg.FileName = fi.Name;
+                //        dlg.AddExtension = true;
+                //        dlg.DefaultExt = fi.Extension;
+                //        dlg.InitialDirectory = fi.DirectoryName;
+                //        dlg.Filter = "All files (*.*)|*.*";
 
-                        var ddd = dlg.ShowDialog();
-                        if (ddd == System.Windows.Forms.DialogResult.OK)
-                        {
-                            lock (Module.fileLockObject)
-                            {
-                                Module.restoringFile = true;
-                                File.WriteAllBytes(fileName, rawData);
-                            }
-                        }
-                    }
-                }
+                //        var ddd = dlg.ShowDialog();
+                //        if (ddd == System.Windows.Forms.DialogResult.OK)
+                //        {
+                //            lock (Module.fileLockObject)
+                //            {
+                //                Module.restoringFile = true;
+                //                File.WriteAllBytes(fileName, rawData);
+                //            }
+                //        }
+                //    }
+                //}
             }
 
         }

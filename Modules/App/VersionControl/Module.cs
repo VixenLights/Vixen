@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using GitSharp;
+using NGit.Api;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Sys;
@@ -146,76 +146,175 @@ namespace VersionControl
         #endregion
 
         #region File System Watchers
-        private void CreateWatcher(string folder, bool recursive)
+        private void CreateWatcher(string folder)
         {
-            var watcher = new FileSystemWatcher(folder);
-            watcher.Changed += watcher_FileSystemChanges;
-
-            watcher.Created += watcher_FileSystemChanges;
-            watcher.Deleted += watcher_FileSystemChanges;
-            watcher.Renamed += watcher_FileSystemChanges;
-            watcher.IncludeSubdirectories = false;
-            watcher.EnableRaisingEvents = true;
-            watchers.Add(watcher);
-            Directory.GetDirectories(folder).Where(d => !d.EndsWith("logs") && !d.EndsWith("\\.git")).ToList().ForEach(dir => CreateWatcher(dir, recursive));
-
+			Directory.GetDirectories(folder).Where(d => !d.EndsWith("logs") && !d.EndsWith("\\.git") && !d.EndsWith("Core Logs") && !d.EndsWith("Export")).ToList().ForEach(CreateDirectoryWatcher);
         }
 
-        private void watcher_FileSystemChanges(object sender, FileSystemEventArgs e)
-        {
+	    private void CreateDirectoryWatcher(string folder)
+	    {
+		    var watcher = new FileSystemWatcher(folder);
+		    watcher.Changed += watcher_FileSystemChanges;
+		    watcher.Created += watcher_FileSystemChanges;
+		    watcher.Deleted += watcher_FileSystemChanges;
+		    watcher.Renamed += watcher_FileSystemChanges;
+		    watcher.IncludeSubdirectories = true;
+		    watcher.EnableRaisingEvents = true;
+		    watchers.Add(watcher);
+	    }
 
-            if (e.FullPath.Contains("\\.git") || e.FullPath.Contains("\\logs")) return;
-            Task.Factory.StartNew(() =>
+	    private void watcher_FileSystemChanges(object sender, FileSystemEventArgs e)
+        {
+			Task.Factory.StartNew(() =>
             {
                 try
                 {
+					lock (fileLockObject)
+					{
+						//Wait for the file to fully save...
+						Thread.Sleep(1000);
+						while (VixenSystem.IsSaving())
+						{
+							Thread.Sleep(1);
+						}
+						Git git = new Git(repo);
 
-             
-                lock (fileLockObject)
-                {
-                    //Wait for the file to fully save...
-                    Thread.Sleep(1000);
-	                while (VixenSystem.IsSaving())
-	                {
-		                Thread.Sleep(1);
-	                }
+						var status = git.Status().Call();
 
-                    switch (e.ChangeType)
-                    {
+						var changed = status.GetAdded().Count > 0 || status.GetChanged().Count > 0 || status.GetModified().Count > 0
+						              || status.GetRemoved().Count > 0 || status.GetUntracked().Count > 0 || status.GetMissing().Count > 0;
 
-                        case WatcherChangeTypes.Changed:
-                            repo.Index.Add(e.FullPath);
-                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
-                                 repo.Status.Removed.Count) > 0)
-                                repo.Commit(string.Format("Changed {0}{1}", e.Name,
-                                    restoringFile ? " [Restored]" : ""));
-                            break;
-                        case WatcherChangeTypes.Created:
-                            repo.Index.Add(e.FullPath);
-                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
-                                 repo.Status.Removed.Count) > 0)
-                                repo.Commit(string.Format("Added {0}{1}", e.Name,
-                                    restoringFile ? " [Restored]" : ""));
-                            break;
-                        case WatcherChangeTypes.Deleted:
-                            repo.Index.Delete(e.FullPath);
-                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
-                                 repo.Status.Removed.Count) > 0)
-                                repo.Commit(string.Format("Deleted {0}{1}", e.Name,
-                                    restoringFile ? " [Restored]" : ""));
-                            break;
-                        case WatcherChangeTypes.Renamed:
-                            repo.Index.Delete(((RenamedEventArgs)e).OldFullPath);
-                            repo.Index.Add(e.FullPath);
-                            if ((repo.Status.Modified.Count + repo.Status.Added.Count +
-                                 repo.Status.Removed.Count) > 0)
-                                repo.Commit(string.Format("Renamed file {0} to {1}{2}",
-                                    ((RenamedEventArgs)e).OldName, e.Name,
-                                    restoringFile ? " [Restored]" : ""));
-                            break;
-                    }
-                }
-                }
+						if (status.GetAdded().Count > 0 || status.GetUntracked().Count > 0 || status.GetModified().Count > 0
+							|| status.GetChanged().Count > 0)
+						{
+							var add = git.Add();
+							status.GetAdded().ToList().ForEach(a =>
+							{
+								add.AddFilepattern(a);
+							});
+
+							status.GetModified().ToList().ForEach(a =>
+							{
+								add.AddFilepattern(a);
+							});
+
+							status.GetChanged().ToList().ForEach(a =>
+							{
+								add.AddFilepattern(a);
+							});
+
+							status.GetUntracked().ToList().ForEach(a =>
+							{
+								add.AddFilepattern(a);
+							});
+
+							add.Call();
+						}
+
+
+						if (status.GetMissing().Count > 0 || status.GetRemoved().Count > 0)
+						{
+							var removed = git.Rm();
+
+							status.GetRemoved().ToList().ForEach(a =>
+							{
+								removed.AddFilepattern(a);
+							});
+
+							status.GetMissing().ToList().ForEach(a =>
+							{
+								removed.AddFilepattern(a);
+							});
+
+							removed.Call();
+						}
+
+						if(changed)
+						{
+							git.Commit().SetMessage(string.Format("Changes to the profile {0}",
+							restoringFile ? "restored." : "commited.")).Call();
+						}
+
+						//switch (e.ChangeType)
+						//{
+
+						//	case WatcherChangeTypes.Changed:
+						//		if (status.GetModified().Count + status.GetChanged().Count +
+						//				status.GetChanged().Count > 0)
+						//		{
+						//			var addChanged = git.Add();
+						//			foreach (var s in status.GetModified())
+						//			{
+						//				addChanged.AddFilepattern(s);
+						//			}
+						//			foreach (var s in status.GetChanged())
+						//			{
+						//				addChanged.AddFilepattern(s);
+						//			}
+						//			addChanged.Call();
+						//			git.Commit().SetMessage(string.Format("Changed {0}{1}", e.Name,
+						//				restoringFile ? " [Restored]" : "")).Call();
+						//		}
+						//		break;
+						//	case WatcherChangeTypes.Created:
+
+						//		if (status.GetUntracked().Count + status.GetAdded().Count > 0)
+						//		{
+						//			var addCreated = git.Add();
+						//			foreach(var s in status.GetAdded())
+						//			{
+						//				addCreated.AddFilepattern(s);
+						//			}
+						//			foreach (var s in status.GetUntracked())
+						//			{
+						//				addCreated.AddFilepattern(s);
+						//			}
+
+						//			addCreated.Call();
+						//			git.Commit().SetMessage(string.Format("Added {0}{1}", e.Name,
+						//				restoringFile ? " [Restored]" : "")).Call();
+						//		}
+						//		break;
+						//	case WatcherChangeTypes.Deleted:
+
+						//		if ((status.GetMissing().Count + status.GetRemoved().Count) > 0)
+						//		{
+						//			var removed = git.Rm();
+						//			foreach (var s in status.GetMissing())
+						//			{
+						//				removed.AddFilepattern(s);
+						//			}
+						//			foreach (var s in status.GetRemoved())
+						//			{
+						//				removed.AddFilepattern(s);
+						//			}
+						//			removed.Call();
+						//			git.Commit().SetMessage(string.Format("Deleted {0}{1}", e.Name,
+						//				restoringFile ? " [Restored]" : "")).Call();
+						//		}
+						//		break;
+						//	case WatcherChangeTypes.Renamed:
+
+						//		if (status.GetMissing().Count + status.GetUntracked().Count > 0)
+						//		{
+						//			var addRename = git.Add();
+						//			foreach (var s in status.GetMissing())
+						//			{
+						//				addRename.AddFilepattern(s);
+						//			}
+						//			foreach (var s in status.GetUntracked())
+						//			{
+						//				addRename.AddFilepattern(s);
+						//			}
+						//			addRename.Call();
+						//			git.Commit().SetMessage(string.Format("Renamed file {0} to {1}{2}",
+						//				((RenamedEventArgs)e).OldName, e.Name,
+						//				restoringFile ? " [Restored]" : "")).Call();
+						//		}
+						//		break;
+						//}
+					}
+				}
                 catch (Exception eee)
                 {
 
