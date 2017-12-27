@@ -264,7 +264,7 @@ namespace VixenModules.Effect.Video
 		[ProviderDisplayName(@"Start Time (sec)")]
 		[ProviderDescription(@"Start position of Video File")]
 		[PropertyEditor("DoubleSliderEditor")]
-		[NumberRange(0, 500, 1)]
+		[NumberRange(0, 10000, 1)]
 		[PropertyOrder(2)]
 		public double StartTimeSeconds
 		{
