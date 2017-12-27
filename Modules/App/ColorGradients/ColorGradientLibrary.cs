@@ -12,6 +12,7 @@ namespace VixenModules.App.ColorGradients
 	public class ColorGradientLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, ColorGradient>>
 	{
 		private ColorGradientLibraryStaticData _data;
+		private bool _bulkUpdating;
 		public event EventHandler GradientChanged;
 
 		public override void Loading()
@@ -65,7 +66,10 @@ namespace VixenModules.App.ColorGradients
 			cg.LibraryReferenceName = string.Empty;
 			Library[name] = cg;
 			_GradientChanged(name);
-			VixenSystem.SaveModuleConfigAsync();
+			if (!_bulkUpdating)
+			{
+				VixenSystem.SaveModuleConfigAsync();
+			}
 			return inLibrary;
 		}
 
@@ -75,7 +79,10 @@ namespace VixenModules.App.ColorGradients
 			if (removed)
 			{
 				_GradientChanged(name);
-				VixenSystem.SaveModuleConfigAsync();
+				if (!_bulkUpdating)
+				{
+					VixenSystem.SaveModuleConfigAsync();
+				}
 			}
 
 			return removed;
@@ -124,6 +131,23 @@ namespace VixenModules.App.ColorGradients
 		{
 			if (GradientChanged != null)
 				GradientChanged(this, new ColorGradientLibraryEventArgs(name));
+		}
+
+		/// <summary>
+		/// Called to begin a bulk update operation
+		/// </summary>
+		public void BeginBulkUpdate()
+		{
+			_bulkUpdating = true;
+		}
+
+		/// <summary>
+		/// Called to complete a bulk update operation
+		/// </summary>
+		public async void EndBulkUpdate()
+		{
+			await VixenSystem.SaveModuleConfigAsync();
+			_bulkUpdating = false;
 		}
 
 	}

@@ -520,10 +520,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
+				_curveLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewCurves.SelectedItems)
 				{
 					_curveLibrary.RemoveCurve(item.Name);
 				}
+				_curveLibrary.EndBulkUpdate();
 			}
 		}
 
@@ -622,10 +624,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
+				_colorGradientLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewGradients.SelectedItems)
 				{
 					_colorGradientLibrary.RemoveColorGradient(item.Name);
 				}
+				_colorGradientLibrary.EndBulkUpdate();
 			}
 		}
 

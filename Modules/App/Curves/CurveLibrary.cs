@@ -11,6 +11,7 @@ namespace VixenModules.App.Curves
 	public class CurveLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, Curve>>
 	{
 		private CurveLibraryStaticData _data;
+		private bool _bulkUpdating;
 		public event EventHandler CurveChanged;
 
 		public override void Loading()
@@ -63,7 +64,10 @@ namespace VixenModules.App.Curves
 			curve.LibraryReferenceName = string.Empty;
 			Library[name] = curve;
 			_CurveChanged(name);
-			VixenSystem.SaveModuleConfigAsync();
+			if (!_bulkUpdating)
+			{
+				VixenSystem.SaveModuleConfigAsync();
+			}
 			return inLibrary;
 		}
 
@@ -73,7 +77,10 @@ namespace VixenModules.App.Curves
 			if (removed)
 			{
 				_CurveChanged(name);
-				VixenSystem.SaveModuleConfigAsync();
+				if (!_bulkUpdating)
+				{
+					VixenSystem.SaveModuleConfigAsync();
+				}
 			}
 			return removed;
 		}
@@ -120,6 +127,23 @@ namespace VixenModules.App.Curves
 		{
 			if (CurveChanged != null)
 				CurveChanged(this, new CurveLibraryEventArgs(name));
+		}
+
+		/// <summary>
+		/// Called to begin a bulk update operation
+		/// </summary>
+		public void BeginBulkUpdate()
+		{
+			_bulkUpdating = true;
+		}
+
+		/// <summary>
+		/// Called to complete a bulk update operation
+		/// </summary>
+		public async void EndBulkUpdate()
+		{
+			_bulkUpdating = false;
+			await VixenSystem.SaveModuleConfigAsync();
 		}
 	}
 
