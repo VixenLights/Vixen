@@ -4979,7 +4979,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (Row row in TimelineControl.VisibleRows)
 			{
 				// Since removals may happen during enumeration, make a copy with ToArray().
-				
+
+				//If we already have the elements becasue the same row is duplicated then skip.
+				if (affectedElements.Intersect(row.SelectedElements).Any())
+				{
+					rownum++;
+					continue;
+				}
+
 				affectedElements.AddRange(row.SelectedElements);
 				foreach (Element elem in row.SelectedElements.ToArray())
 				{
