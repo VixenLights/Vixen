@@ -5075,7 +5075,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//Shorten to fit.
 					effectModelCandidate.Duration = TimelineControl.grid.TotalTime - targetTime;
 				}
-				if (targetRowIndex >= visibleRows.Count)
+				if (targetRowIndex<0 || targetRowIndex >= visibleRows.Count)
 					continue;
 
 				//Make a new effect and populate it with the detail data from the clipboard
