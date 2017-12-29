@@ -3229,15 +3229,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddMarkAtTime(TimeSpan Time, bool MarkEffects)
+		private void AddMarkAtTime(TimeSpan time, bool markEffects)
 		{
 			MarkCollection mc = null;
 			if (_sequence.MarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Create a Mark Collection", true, false);
+				var messageBox = new MessageBoxForm("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Create a Mark Collection", MessageBoxButtons.YesNo, SystemIcons.Information);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
@@ -3251,29 +3249,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (mc == null)
 				{
 					if (_context.IsRunning) PauseSequence();
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", @"New Mark", false, false);
+					var messageBox = new MessageBoxForm("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", @"New Mark", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
 				}
 			}
-			if (mc != null)
+			if (mc != null && !mc.Marks.Contains(time))
 			{
-				mc.Marks.Add(Time);
+				mc.Marks.Add(time);
 				PopulateMarkSnapTimes();
 				SequenceModified();
-				if (!MarkEffects)
+				if (!markEffects)
 				{
 					_mcs = new Dictionary<TimeSpan, MarkCollection>();
-					_mcs.Add(Time, mc);
+					_mcs.Add(time, mc);
 					var act = new MarksAddedUndoAction(this, _mcs);
 					_undoMgr.AddUndoAction(act);
 				}
 				else
 				{
-					_mcs.Add(Time, mc);
+					_mcs.Add(time, mc);
 				}
-				
 			}
 		}
 
@@ -6406,13 +6401,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddMarksToSelectedEffects()
 		{
-			IEnumerable elements;
+			IEnumerable elements = null;
 			if (!TimelineControl.grid.SelectedElements.Any())
 			{
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("No effects have been selected and action will be applied to your entire sequence. This can take a considerable length of time, are you sure ?",
-					@"Align effects to marks", true, false);
+					@"Align effects to marks", MessageBoxButtons.YesNo, SystemIcons.Information);
 				messageBox.ShowDialog();
 				if (messageBox.DialogResult == DialogResult.No) return;
 				elements = TimelineControl.Rows.SelectMany(row => row); //add all elements within the sequence to elements list
@@ -6426,8 +6419,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				AddMarkAtTime(element.StartTime, true);
 			}
-			var act = new MarksAddedUndoAction(this, _mcs);
-			_undoMgr.AddUndoAction(act);
+			if (_mcs.Count > 0)
+			{
+				var act = new MarksAddedUndoAction(this, _mcs);
+				_undoMgr.AddUndoAction(act);
+			}
 		}
 
 		private void ResetTimeLineSettings()
