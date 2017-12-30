@@ -118,7 +118,6 @@
     <ProjectReference Include="..\QMLibrary\QMLibrary.vcxproj">
       <Project>{4004a720-e4d2-4aaf-b5f6-2288ffdc156a}</Project>
       <Name>QMLibrary</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
