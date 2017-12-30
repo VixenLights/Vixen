@@ -562,7 +562,8 @@ namespace VixenModules.App.LipSyncApp
             nodeSelectDlg.MaxNodes = _newMapping.MatrixStringCount * _newMapping.MatrixPixelsPerString;
             nodeSelectDlg.MatrixOptionsOnly = true;
             nodeSelectDlg.StringsAreRows = _newMapping.StringsAreRows;
-            nodeSelectDlg.NodeNames = _rowNames;
+            nodeSelectDlg.SelectedNodeNames = _rowNames;
+            nodeSelectDlg.AllowRecursiveAdd = _newMapping.RecursionAllowed;
 
             DialogResult dr = nodeSelectDlg.ShowDialog();
             if ((dr == DialogResult.OK) && (nodeSelectDlg.Changed == true))
@@ -571,12 +572,13 @@ namespace VixenModules.App.LipSyncApp
                 LipSyncMapItem tempMapItem = null;
 
                 _newMapping.StringsAreRows = nodeSelectDlg.StringsAreRows;
+                _newMapping.RecursionAllowed = nodeSelectDlg.AllowRecursiveAdd;
                 stringsAreRows = _newMapping.StringsAreRows;
 
                 _rowNames.Clear();
-                _rowNames.AddRange(nodeSelectDlg.NodeNames);
+                _rowNames.AddRange(nodeSelectDlg.SelectedNodeNames);
 
-                foreach (string nodeName in nodeSelectDlg.NodeNames)
+                foreach (string nodeName in nodeSelectDlg.SelectedNodeNames)
                 {
                     tempMapItem = _newMapping.MapItems.Find(
                         delegate(LipSyncMapItem item)

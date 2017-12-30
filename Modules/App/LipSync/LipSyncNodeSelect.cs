@@ -17,6 +17,8 @@ namespace VixenModules.App.LipSyncApp
     {
         private bool _userAdd;
         private bool _stringAreRows;
+        private List<String> _selectedNodeNames;
+        private bool _matrixOptsOnly;
 
         public LipSyncNodeSelect()
         {
@@ -30,12 +32,36 @@ namespace VixenModules.App.LipSyncApp
             Changed = false;
             _userAdd = false;
             _matrixOptsOnly = false;
-            
+            allowGroupsCheckbox.Checked = false;
+            recurseCB.Checked = true;
         }
-        
-        private bool _matrixOptsOnly;
 
         public int MaxNodes { get; set; }
+        public bool AllowGroups
+        {
+            get
+            {
+                return allowGroupsCheckbox.Checked;
+            }
+
+            set
+            {
+                allowGroupsCheckbox.Checked = value;
+            }
+        }
+
+        public bool AllowRecursiveAdd
+        {
+            get
+            {
+                return recurseCB.Checked;
+            }
+
+            set
+            {
+                recurseCB.Checked = value;
+            }
+        }
 
         public bool StringsAreRows
         {
@@ -95,8 +121,7 @@ namespace VixenModules.App.LipSyncApp
 
         }
 
-        private List<String> _origNodeNames;
-        public List<string> NodeNames
+        public List<string> SelectedNodeNames
         {
             get
             {
@@ -111,7 +136,7 @@ namespace VixenModules.App.LipSyncApp
             set
             {
                 List<string> names = value;
-                _origNodeNames = value;
+                _selectedNodeNames = value;
                 if (names != null)
                 {
                     names.ForEach(x => findAndAddElements(x, false));
@@ -121,7 +146,7 @@ namespace VixenModules.App.LipSyncApp
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
-            _origNodeNames.Clear();
+            _selectedNodeNames.Clear();
             chosenTargets.Items.Clear();
             Changed = true;
         }
@@ -196,7 +221,7 @@ namespace VixenModules.App.LipSyncApp
             if (_userAdd == false)
             {
                 chosenTargets.Items.Clear();
-                _origNodeNames.ForEach(x => findAndAddElements(x, false));
+                _selectedNodeNames.ForEach(x => findAndAddElements(x, false));
                 Changed = true;
             }
 
