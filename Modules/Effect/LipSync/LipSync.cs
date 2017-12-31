@@ -78,16 +78,22 @@ namespace VixenModules.Effect.LipSync
                         LipSyncMapItem item = mapData.FindMapItem(element.Name);
                         if (item != null)
                         {
+                            var level = new SetLevel.SetLevel();
+                            level.TargetNodes = new ElementNode[] { element };
+
                             if (mapData.PhonemeState(element.Name, _data.StaticPhoneme.ToString(), item))
                             {
-                                var level = new SetLevel.SetLevel();
-                                level.TargetNodes = new ElementNode[] { element };
                                 level.Color = mapData.ConfiguredColor(element.Name, phoneme, item);
-	                            level.IntensityLevel = 1.0;// mapData.ConfiguredIntensity(element.Name, phoneme, item);
-                                level.TimeSpan = TimeSpan;
-                                result = level.Render();
-                                _elementData.Add(result);
                             }
+                            else
+                            {
+                                level.Color = Color.FromArgb(255, 0, 0, 0);
+                            }
+
+                            level.IntensityLevel = mapData.ConfiguredIntensity(element.Name, phoneme, item);
+                            level.TimeSpan = TimeSpan;
+                            result = level.Render();
+                            _elementData.Add(result);
 
                         }
                     });
