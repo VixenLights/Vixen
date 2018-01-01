@@ -1,8 +1,11 @@
-Release Notes - Vixen 3 - Version 3.4u4
+Release Notes - Vixen 3 - Version 3.5
 
-Maintenance release 3 for version 3.4
+Release for the 2018 season.
 
-See bugs.vixenlights.com for a complete list of issues in this release labled DevBuild
+
+See bugs.vixenlights.com for a complete list of issues in this release labeled DevBuild at the following url.
+http://bugs.vixenlights.com/issues/?jql=fixVersion%20%3D%20DevBuild
+
 
 
 
