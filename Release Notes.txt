@@ -1,13 +1,4 @@
-Release Notes - Vixen 3 - Version 3.5
-
-Release for the 2018 season.
-
-
-See bugs.vixenlights.com for a complete list of issues in this release labeled DevBuild at the following url.
-http://bugs.vixenlights.com/issues/?jql=fixVersion%20%3D%20DevBuild
-
-
-
+Release Notes - Vixen 3
 
 Release Notes - Vixen 3 - Version 3.4u3
 
