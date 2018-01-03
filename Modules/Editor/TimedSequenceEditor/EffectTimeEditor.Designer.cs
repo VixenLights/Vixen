@@ -170,7 +170,7 @@
 			this.MinimumSize = new System.Drawing.Size(298, 320);
 			this.Name = "EffectTimeEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "EffectTimeEditor";
+			this.Text = "Effect Time Editor";
 			this.Load += new System.EventHandler(this.EffectTimeEditor_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
