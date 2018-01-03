@@ -422,7 +422,9 @@ namespace VixenModules.App.LipSyncApp
             //nodeSelectDlg.MaxNodes = _mapping.MapItems.Count;
             nodeSelectDlg.MaxNodes = Int32.MaxValue;
             nodeSelectDlg.MatrixOptionsOnly = false;
-            nodeSelectDlg.NodeNames = _rowNames;
+            nodeSelectDlg.SelectedNodeNames = _rowNames;
+            nodeSelectDlg.AllowGroups = _mapping.GroupsAllowed;
+            nodeSelectDlg.AllowRecursiveAdd = _mapping.RecursionAllowed;
 
             DialogResult dr = nodeSelectDlg.ShowDialog();
             if ((dr == DialogResult.OK) && (nodeSelectDlg.Changed == true))
@@ -431,10 +433,13 @@ namespace VixenModules.App.LipSyncApp
                 LipSyncMapItem tempMapItem = null;
 
                 _mapping.LibraryReferenceName = nameTextBox.Text;
-                _rowNames.Clear();
-                _rowNames.AddRange(nodeSelectDlg.NodeNames);
+                _mapping.GroupsAllowed = nodeSelectDlg.AllowGroups;
+                _mapping.RecursionAllowed = nodeSelectDlg.AllowRecursiveAdd;
 
-                foreach (string nodeName in nodeSelectDlg.NodeNames)
+                _rowNames.Clear();
+                _rowNames.AddRange(nodeSelectDlg.SelectedNodeNames);
+
+                foreach (string nodeName in nodeSelectDlg.SelectedNodeNames)
                 {
                     tempMapItem = _mapping.MapItems.Find(
                         delegate(LipSyncMapItem item)

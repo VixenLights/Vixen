@@ -23,6 +23,8 @@ namespace VixenModules.App.LipSyncApp
             StartNode = "";
             ZoomLevel = 1;
             StringsAreRows = false;
+            GroupsAllowed = false;
+            RecursionAllowed = true;
         }
 
         public LipSyncMapData(List<string> stringNames)
@@ -39,21 +41,26 @@ namespace VixenModules.App.LipSyncApp
             StartNode = "";
             ZoomLevel = 1;
             StringsAreRows = false;
+            GroupsAllowed = false;
+            RecursionAllowed = true;
         }
 
-        public LipSyncMapData(LipSyncMapData data)
+        public LipSyncMapData(LipSyncMapData mapSetup)
         {
-            MapItems = new List<LipSyncMapItem>(data.MapItems);
-            IsCurrentLibraryMapping = data.IsCurrentLibraryMapping;
-            LibraryReferenceName = (string)data.LibraryReferenceName.Clone();
-            IsDefaultMapping = data.IsDefaultMapping;
-            StringCount = data.StringCount;
-            MatrixStringCount = data.MatrixStringCount;
-            MatrixPixelsPerString = data.MatrixPixelsPerString;
-            IsMatrix = data.IsMatrix;
-            StartNode = data.StartNode;
-            ZoomLevel = data.ZoomLevel;
-            StringsAreRows = data.StringsAreRows;
+            MapItems = new List<LipSyncMapItem>(mapSetup.MapItems);
+            IsCurrentLibraryMapping = mapSetup.IsCurrentLibraryMapping;
+            LibraryReferenceName = (string)mapSetup.LibraryReferenceName.Clone();
+            IsDefaultMapping = mapSetup.IsDefaultMapping;
+            StringCount = mapSetup.StringCount;
+            MatrixStringCount = mapSetup.MatrixStringCount;
+            MatrixPixelsPerString = mapSetup.MatrixPixelsPerString;
+            IsMatrix = mapSetup.IsMatrix;
+            StartNode = mapSetup.StartNode;
+            ZoomLevel = mapSetup.ZoomLevel;
+            StringsAreRows = mapSetup.StringsAreRows;
+            GroupsAllowed = mapSetup.GroupsAllowed;
+            RecursionAllowed = mapSetup.RecursionAllowed;
+
         }
 
         public override IModuleDataModel Clone()
@@ -74,6 +81,8 @@ namespace VixenModules.App.LipSyncApp
             newInstance.StartNode = StartNode;
             newInstance.ZoomLevel = ZoomLevel;
             newInstance.StringsAreRows = StringsAreRows;
+            newInstance.GroupsAllowed = GroupsAllowed;
+            newInstance.RecursionAllowed = RecursionAllowed;
 
             return newInstance;
         }
@@ -107,6 +116,12 @@ namespace VixenModules.App.LipSyncApp
 
         [DataMember]
         public bool IsDefaultMapping { get; set; }
+
+        [DataMember]
+        public bool GroupsAllowed { get; set; }
+
+        [DataMember]
+        public bool RecursionAllowed { get; set; }
 
         [DataMember]
         protected string _libraryReferenceName;
