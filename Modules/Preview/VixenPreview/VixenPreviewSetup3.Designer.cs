@@ -882,7 +882,7 @@
 			this.buttonEllipse.Size = new System.Drawing.Size(26, 26);
 			this.buttonEllipse.TabIndex = 3;
 			this.buttonEllipse.Tag = "";
-			this.toolTip.SetToolTip(this.buttonEllipse, "Oval");
+			this.toolTip.SetToolTip(this.buttonEllipse, "Ellipse");
 			this.buttonEllipse.UseVisualStyleBackColor = false;
 			this.buttonEllipse.Click += new System.EventHandler(this.toolbarButton_Click);
 			// 
