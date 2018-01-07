@@ -184,4 +184,37 @@
   <data name="standard_dictionary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\standard_dictionary;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="NoImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\noimage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AI_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\AI_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="etc_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\etc_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="E_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\E_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FV_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\FV_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="L_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\L_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MBP_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\MBP_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="O_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\O_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="rest_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\rest_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="U_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\U_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WQ_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\WQ_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
