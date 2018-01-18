@@ -1644,10 +1644,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (item.Shape.GetType().ToString().Contains("PreviewCustom"))
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
-						"Grouping Error", false, true);
+					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.", "Grouping Error", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
 					return null;
 				}
@@ -1908,9 +1905,7 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
                     {
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", false, true);
+						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", MessageBoxButtons.OK, SystemIcons.Error);
 						messageBox.ShowDialog();
                         return;
                     }
