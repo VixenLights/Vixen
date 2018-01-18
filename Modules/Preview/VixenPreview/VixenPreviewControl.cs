@@ -763,8 +763,8 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								contextMenuStrip1.Items.Add(new ToolStripMenuItem
 								{
-									Text = "Separate Template Items",
-									Tag = "Separate",
+									Text = "Ungroup",
+									Tag = "Ungroup",
 									Image = Common.Resources.Properties.Resources.Split
 								});
 							}
@@ -774,8 +774,8 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
-							Text = "Create Group...",
-							Tag = "CreateGroup",
+							Text = "Group",
+							Tag = "Group",
 							Image = Common.Resources.Properties.Resources.group
 						});
 						contextMenuStrip1.Items.Add(new ToolStripSeparator());
@@ -903,14 +903,14 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.Select(true);
 					}
 					break;
-				case "CreateGroup":
+				case "Group":
 					_selectedDisplayItem = CreateGroup();
 					if (_selectedDisplayItem != null)
 					{
 						_selectedDisplayItem.Shape.Select(true);
 					}
 					break;
-				case "Separate":
+				case "Ungroup":
 					if (_selectedDisplayItem != null)
 						SeparateTemplateItems(_selectedDisplayItem);
 					break;
