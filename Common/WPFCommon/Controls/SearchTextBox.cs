@@ -21,7 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace VixenModules.Editor.EffectEditor.Controls
+namespace Common.WPFCommon.Controls
 {
 	/// <summary>
 	/// Defines the search behavior of <see cref="SearchTextBox"/>.

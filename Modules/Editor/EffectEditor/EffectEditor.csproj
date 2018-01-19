@@ -201,7 +201,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Theme.xaml">
+    <Page Include="Themes\SliderPoint.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -222,12 +222,10 @@
     <Compile Include="Controls\InlineCurveEditor.cs" />
     <Compile Include="Controls\InlineGradientPairGradientEditor.cs" />
     <Compile Include="Controls\IntegerEditor.cs" />
-    <Compile Include="Controls\SliderPoint.cs" />
-    <Compile Include="Controls\NavigatableHyperLink.cs" />
     <Compile Include="Controls\RepeatEditor.cs" />
     <Compile Include="Controls\Reveal.cs" />
     <Compile Include="Controls\SliderEditorBase.cs" />
-    <Compile Include="Controls\ToggleSwitch.cs" />
+    <Compile Include="Controls\SliderPoint.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
     <Compile Include="Converters\CurveIsLibraryToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorGradientIsLibraryToVisibilityConverter.cs" />
@@ -258,7 +256,6 @@
     <Compile Include="Design\GridEntryContainer.cs" />
     <Compile Include="Design\GridEntryLayout.cs" />
     <Compile Include="Editors\EditorCollection.cs" />
-    <Compile Include="Controls\SearchTextBox.cs" />
     <Compile Include="Design\CategoryContainer.cs" />
     <Compile Include="Controls\EnumDropdown.cs" />
     <Compile Include="Design\CategoryEditorContentPresenter.cs" />
@@ -341,7 +338,6 @@
     <Compile Include="PropertyItemValue.cs" />
     <Compile Include="Utils\ClipBorder.cs" />
     <Compile Include="Utils\GeometryHelper.cs" />
-    <Compile Include="Utils\TextBoxExtender.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -361,6 +357,11 @@
     <Resource Include="License.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
       <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
       <Name>ColorGradients</Name>

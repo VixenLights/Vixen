@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:VixenModules.Editor.EffectEditor.Converters"
 	xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
-    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
+    xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
+    xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon">
 
 	<Style TargetType="{x:Type design:CategorizedLayout}">
 		<Setter Property="Background" Value="{Binding Background}" />
@@ -35,7 +36,7 @@
                                                 <TextBlock.Background>
                                                     <SolidColorBrush Color="Transparent" Opacity="0"></SolidColorBrush>
                                                 </TextBlock.Background>
-                                            <controls:NavigatableHyperLink NavigateUri="{Binding InformationLink, Mode=OneWay}">More Info</controls:NavigatableHyperLink>
+                                            <controls1:NavigatableHyperLink NavigateUri="{Binding InformationLink, Mode=OneWay}">More Info</controls1:NavigatableHyperLink>
                                             </TextBlock>
                                         </StackPanel>
                                     </Border>

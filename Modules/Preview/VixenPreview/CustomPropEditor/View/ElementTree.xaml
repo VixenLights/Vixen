@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="VixenModules.Preview.VixenPreview.CustomPropEditor.View.ElementTree"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VixenModules.Preview.VixenPreview.CustomPropEditor"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <TreeView Name="NodeTree" Background="#444444" Foreground="#EBEBEB">
+            <TreeViewItem Header="SnowFlake" Foreground="#EBEBEB">
+                <TreeViewItem Header="Branch 1" Foreground="#EBEBEB">
+                    <TreeViewItem Header="B1 Px-1" Foreground="#EBEBEB"/>
+                    <TreeViewItem Header="B1 Px-2" Foreground="#EBEBEB"/>
+                    <TreeViewItem Header="B1 Px-3" Foreground="#EBEBEB"/>
+                    <TreeViewItem Header="B1 Px-4" Foreground="#EBEBEB"/>
+                    <TreeViewItem Header="B1 Px-5" Foreground="#EBEBEB"/>
+                    </TreeViewItem>
+                <TreeViewItem Header="Branch 2" Foreground="#EBEBEB">
+                    <TreeViewItem Header="B2 Px-1"/>
+                    <TreeViewItem Header="B2 Px-2"/>
+                    <TreeViewItem Header="B2 Px-3"/>
+                    <TreeViewItem Header="B2 Px-4"/>
+                    <TreeViewItem Header="B2 Px-5"/>
+                </TreeViewItem>
+                <TreeViewItem Header="Branch 3" Foreground="#EBEBEB">
+                    <TreeViewItem Header="B3 Px-1"/>
+                    <TreeViewItem Header="B3 Px-2"/>
+                    <TreeViewItem Header="B3 Px-3"/>
+                    <TreeViewItem Header="B3 Px-4"/>
+                    <TreeViewItem Header="B3 Px-5"/>
+                </TreeViewItem>
+            </TreeViewItem>
+               
+            </TreeView>
+    </Grid>
+</UserControl>

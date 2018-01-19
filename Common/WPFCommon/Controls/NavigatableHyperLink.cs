@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Documents;
 
-namespace VixenModules.Editor.EffectEditor.Controls
+namespace Common.WPFCommon.Controls
 {
 	public class NavigatableHyperLink: Hyperlink
 	{

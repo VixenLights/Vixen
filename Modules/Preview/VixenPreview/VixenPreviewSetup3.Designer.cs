@@ -31,12 +31,11 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VixenPreviewSetup3));
 			this.panel11 = new System.Windows.Forms.Panel();
-			this.label14 = new System.Windows.Forms.Label();
 			this.toolStripUndo = new System.Windows.Forms.ToolStrip();
 			this.undoButton = new Common.Controls.UndoButton();
 			this.redoButton = new Common.Controls.UndoButton();
+			this.label14 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.label7 = new System.Windows.Forms.Label();
 			this.buttonDistributeVertical = new System.Windows.Forms.Button();
 			this.buttonMatchProperties = new System.Windows.Forms.Button();
 			this.buttonAlignBottom = new System.Windows.Forms.Button();
@@ -46,9 +45,10 @@
 			this.buttonAlignHorizMid = new System.Windows.Forms.Button();
 			this.buttonDistributeHorizontal = new System.Windows.Forms.Button();
 			this.buttonAlignTop = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
 			this.panel6 = new System.Windows.Forms.Panel();
-			this.label8 = new System.Windows.Forms.Label();
 			this.buttonSelect = new System.Windows.Forms.Button();
+			this.label8 = new System.Windows.Forms.Label();
 			this.buttonAddTemplate = new System.Windows.Forms.Button();
 			this.buttonTemplateHelp = new System.Windows.Forms.Button();
 			this.buttonDeleteTemplate = new System.Windows.Forms.Button();
@@ -66,17 +66,17 @@
 			this.buttonSemiCircle = new System.Windows.Forms.Button();
 			this.buttonMegaTree = new System.Windows.Forms.Button();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-			this.label2 = new System.Windows.Forms.Label();
 			this.buttonPolyLine = new System.Windows.Forms.Button();
 			this.buttonDrawPixel = new System.Windows.Forms.Button();
 			this.buttonTriangle = new System.Windows.Forms.Button();
 			this.buttonLine = new System.Windows.Forms.Button();
 			this.buttonRectangle = new System.Windows.Forms.Button();
 			this.buttonEllipse = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
 			this.trackBarBackgroundAlpha = new System.Windows.Forms.TrackBar();
 			this.buttonSetBackground = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.dialogSelectBackground = new System.Windows.Forms.OpenFileDialog();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,6 +120,7 @@
 			this.pnlSmartObjects = new System.Windows.Forms.Panel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.panel5 = new System.Windows.Forms.Panel();
+			this.propEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -150,19 +151,6 @@
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(125, 82);
 			this.panel11.TabIndex = 15;
-			// 
-			// label14
-			// 
-			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label14.Location = new System.Drawing.Point(951, 0);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(123, 22);
-			this.label14.TabIndex = 3;
-			this.label14.Text = "Undo/Redo";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.label14.Click += new System.EventHandler(this.label14_Click);
 			// 
 			// toolStripUndo
 			// 
@@ -199,6 +187,19 @@
 			this.redoButton.Text = "Redo";
 			this.redoButton.ButtonClick += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
+			// label14
+			// 
+			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label14.Location = new System.Drawing.Point(951, 0);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(123, 22);
+			this.label14.TabIndex = 3;
+			this.label14.Text = "Undo/Redo";
+			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label14.Click += new System.EventHandler(this.label14_Click);
+			// 
 			// tableLayoutPanel2
 			// 
 			this.tableLayoutPanel2.ColumnCount = 5;
@@ -223,18 +224,6 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(159, 74);
 			this.tableLayoutPanel2.TabIndex = 22;
-			// 
-			// label7
-			// 
-			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label7.Location = new System.Drawing.Point(527, 0);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(167, 22);
-			this.label7.TabIndex = 0;
-			this.label7.Text = "Align";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// buttonDistributeVertical
 			// 
@@ -389,6 +378,18 @@
 			this.buttonAlignTop.UseVisualStyleBackColor = true;
 			this.buttonAlignTop.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
+			// label7
+			// 
+			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label7.Location = new System.Drawing.Point(527, 0);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(167, 22);
+			this.label7.TabIndex = 0;
+			this.label7.Text = "Align";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// panel6
 			// 
 			this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -399,18 +400,6 @@
 			this.panel6.Name = "panel6";
 			this.panel6.Size = new System.Drawing.Size(63, 78);
 			this.panel6.TabIndex = 12;
-			// 
-			// label8
-			// 
-			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label8.Location = new System.Drawing.Point(172, 0);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(63, 22);
-			this.label8.TabIndex = 0;
-			this.label8.Text = "Select";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// buttonSelect
 			// 
@@ -431,6 +420,18 @@
 			this.buttonSelect.Tag = "";
 			this.buttonSelect.UseVisualStyleBackColor = false;
 			this.buttonSelect.Click += new System.EventHandler(this.toolbarButton_Click);
+			// 
+			// label8
+			// 
+			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label8.Location = new System.Drawing.Point(172, 0);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(63, 22);
+			this.label8.TabIndex = 0;
+			this.label8.Text = "Select";
+			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// buttonAddTemplate
 			// 
@@ -748,18 +749,6 @@
 			this.tableLayoutPanel3.Size = new System.Drawing.Size(96, 73);
 			this.tableLayoutPanel3.TabIndex = 22;
 			// 
-			// label2
-			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label2.Location = new System.Drawing.Point(241, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(109, 22);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "Basic Drawing";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// buttonPolyLine
 			// 
 			this.buttonPolyLine.BackColor = System.Drawing.Color.Transparent;
@@ -886,6 +875,18 @@
 			this.buttonEllipse.UseVisualStyleBackColor = false;
 			this.buttonEllipse.Click += new System.EventHandler(this.toolbarButton_Click);
 			// 
+			// label2
+			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label2.Location = new System.Drawing.Point(241, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(109, 22);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "Basic Drawing";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// panel2
 			// 
 			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -897,18 +898,6 @@
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(163, 78);
 			this.panel2.TabIndex = 7;
-			// 
-			// label1
-			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label1.Location = new System.Drawing.Point(3, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(163, 22);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Background";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// trackBarBackgroundAlpha
 			// 
@@ -935,6 +924,18 @@
 			this.buttonSetBackground.TabIndex = 32;
 			this.buttonSetBackground.UseVisualStyleBackColor = true;
 			this.buttonSetBackground.Click += new System.EventHandler(this.buttonSetBackground_Click);
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.label1.Location = new System.Drawing.Point(3, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(163, 22);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Background";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// dialogSelectBackground
 			// 
@@ -991,7 +992,8 @@
 			// viewToolStripMenuItem
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.propInformationToolStripMenuItem});
+            this.propInformationToolStripMenuItem,
+            this.propEditorToolStripMenuItem});
 			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
 			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.viewToolStripMenuItem.Text = "&View";
@@ -1404,6 +1406,13 @@
 			this.panel5.Size = new System.Drawing.Size(245, 80);
 			this.panel5.TabIndex = 26;
 			// 
+			// propEditorToolStripMenuItem
+			// 
+			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
+			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propEditorToolStripMenuItem.Text = "Prop Editor";
+			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.propEditorToolStripMenuItem_Click);
+			// 
 			// VixenPreviewSetup3
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1545,5 +1554,6 @@
 		private System.Windows.Forms.Panel pnlSmartObjects;
 		private System.Windows.Forms.Panel panel4;
 		private System.Windows.Forms.Panel panel5;
+		private System.Windows.Forms.ToolStripMenuItem propEditorToolStripMenuItem;
 	}
 }

@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("ValueTypes")]
+[assembly: AssemblyTitle("WPFCommon")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("K.C. Oaks")]
-[assembly: AssemblyProduct("ValueTypes")]
-[assembly: AssemblyCopyright("Copyright © K.C. Oaks 2012")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("WPFCommon")]
+[assembly: AssemblyCopyright("2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

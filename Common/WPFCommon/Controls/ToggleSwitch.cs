@@ -18,7 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
-namespace VixenModules.Editor.EffectEditor.Controls
+namespace Common.WPFCommon.Controls
 {
     [TemplatePart(Name = "PART_ContentBorder", Type = typeof(Border))]
     [TemplatePart(Name = "PART_RootGrid", Type = typeof(Grid))]

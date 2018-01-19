@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="VixenModules.Preview.VixenPreview.CustomPropEditor.View.PropEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:view="clr-namespace:VixenModules.Preview.VixenPreview.CustomPropEditor.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="600">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File" />
+            <MenuItem Header="Edit" />
+            <MenuItem Header="View" />
+            <MenuItem Header="Help" />
+        </Menu>
+        <Grid Background="#444444">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <view:ElementTree Grid.Column="0" Grid.Row="0" Foreground="#EBEBEB"></view:ElementTree>
+            <Grid Grid.Column="0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0">Light Size</Label>
+                <TextBox Name="PixelSize" Grid.Column="1" Grid.Row="0">3</TextBox>
+                <Label Grid.Column="0" Grid.Row="1">Node Type</Label>
+                <TextBox Name="NodeType" Grid.Column="1" Grid.Row="1">3</TextBox>
+            </Grid>
+
+            <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                <Canvas  Background="Black" Width="800" Height="600">
+                    <Path Stroke="Black" StrokeThickness="1" Fill="Blue" >
+                        <Path.Data>
+                            <GeometryGroup FillRule="Nonzero">
+                                <EllipseGeometry Center="110 60" RadiusX="3" RadiusY="3" />
+                                <EllipseGeometry Center="80 110" RadiusX="3" RadiusY="3" />
+                                <EllipseGeometry Center="140 110" RadiusX="3" RadiusY="3" />
+                            </GeometryGroup>
+                        </Path.Data>
+                    </Path>
+                </Canvas>
+            </ScrollViewer>
+
+
+
+            <GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"></GridSplitter>
+        </Grid>
+    </DockPanel>
+    
+</UserControl>

@@ -14,6 +14,7 @@ using System.Xml.Serialization;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Vixen.Module.Editor;
 using Vixen.Module.SequenceType;
 using Vixen.Services;
@@ -25,7 +26,9 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Application = System.Windows.Forms.Application;
 using Timer = System.Windows.Forms.Timer;
+using WPFApplication = System.Windows.Application;
 
 namespace VixenApplication
 {
@@ -55,7 +58,25 @@ namespace VixenApplication
 		public VixenApplication()
 		{
 			InitializeComponent();
-			labelVersion.Font = new Font("Segoe UI", 14);
+
+            //Begin WPF init
+		    if (WPFApplication.Current == null)
+		    {
+		        // create the Application object
+		        new WPFApplication();
+		    }
+
+            //Load up the common WPF them file for our WPF application parts.
+		    ResourceDictionary dict = new ResourceDictionary
+		    {
+		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
+		    };
+
+		    WPFApplication.Current.Resources.MergedDictionaries.Add(dict);
+
+            //End WPF init
+
+            labelVersion.Font = new Font("Segoe UI", 14);
 			//Get rid of the ugly grip that we dont want to show anyway. 
 			//Workaround for a MS bug
 			statusStrip.Padding = new Padding(statusStrip.Padding.Left,

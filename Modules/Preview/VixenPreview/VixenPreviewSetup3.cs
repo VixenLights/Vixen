@@ -758,6 +758,13 @@ namespace VixenModules.Preview.VixenPreview {
 		{
 
 		}
+
+		private void propEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var form = new CustomPropEditor.View.CustomPropEditor();
+			form.ShowDialog(this);
+
+		}
 	}
 
 

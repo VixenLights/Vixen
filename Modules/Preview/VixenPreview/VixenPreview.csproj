@@ -79,6 +79,11 @@
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068A83-B3B7-4A2C-923D-71C7886CD5E3}</Project>
       <Name>Color</Name>
@@ -130,6 +135,21 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomPropEditor\Model\ElementModel.cs" />
+    <Compile Include="CustomPropEditor\Model\ElementModelNode.cs" />
+    <Compile Include="CustomPropEditor\Model\PropModel.cs" />
+    <Compile Include="CustomPropEditor\View\CustomPropEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomPropEditor\View\CustomPropEditor.Designer.cs">
+      <DependentUpon>CustomPropEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomPropEditor\View\ElementTree.xaml.cs">
+      <DependentUpon>ElementTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomPropEditor\View\PropEditorView.xaml.cs">
+      <DependentUpon>PropEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Direct2D\Direct2DControl.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -381,6 +401,9 @@
     <Compile Include="VixenPreviewSetupPropertiesDocument.Designer.cs">
       <DependentUpon>VixenPreviewSetupPropertiesDocument.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CustomPropEditor\View\CustomPropEditor.resx">
+      <DependentUpon>CustomPropEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Direct2D\PreviewWinform.resx">
       <DependentUpon>PreviewWinform.cs</DependentUpon>
     </EmbeddedResource>
@@ -520,6 +543,14 @@
     <None Include="Resources\Flood.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomPropEditor\View\ElementTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomPropEditor\View\PropEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Direct2D\PreviewWPF.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
