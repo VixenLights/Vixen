@@ -1,45 +1,72 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
+using System.Windows;
 
 namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 {
     public class LightNode : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private Point _location;
-        private int _size;
+        private Point _center;
+        private double _size;
 
-        public LightNode(Point location, int size)
+        public LightNode(Point center, int size)
         {
-            _location = location;
+            _center = center;
             _size = size;
         }
 
-        public Point Location
+        public Point Center
         {
-            get { return _location; }
+            get { return _center; }
             set
             {
-                var changing = value.Equals(_location);
+                var changing = !value.Equals(_center);
                 if (changing)
-                    OnPropertyChanging(new PropertyChangingEventArgs("Location"));
-                _location = value;
+                {
+                    OnPropertyChanging(new PropertyChangingEventArgs("Center"));
+                    OnPropertyChanging(new PropertyChangingEventArgs("Top"));
+                    OnPropertyChanging(new PropertyChangingEventArgs("Left"));
+                }
+                _center = value;
                 if (changing)
-                    OnPropertyChanged(new PropertyChangedEventArgs("Location"));
-                
+                {
+                    OnPropertyChanged(new PropertyChangedEventArgs("Center"));
+                    OnPropertyChanged(new PropertyChangedEventArgs("Top"));
+                    OnPropertyChanged(new PropertyChangedEventArgs("Left"));
+                }
+
+
             }
         }
 
-        public int Size
+        public double Top
+        {
+            get { return Center.Y - Size/2; }
+        }
+
+        public double Left
+        {
+            get { return Center.X - Size/2; }
+        }
+
+        public double Size
         {
             get { return _size; }
             set
             {
-                var changing = value.Equals(_size);
+                var changing = !value.Equals(_size);
                 if (changing)
-                    OnPropertyChanging(new PropertyChangingEventArgs("Location"));
+                {
+                    OnPropertyChanging(new PropertyChangingEventArgs("Size")); 
+                    OnPropertyChanging(new PropertyChangingEventArgs("Top"));
+                    OnPropertyChanging(new PropertyChangingEventArgs("Left"));
+                }
                 _size = value;
                 if (changing)
-                    OnPropertyChanged(new PropertyChangedEventArgs("Location"));
+                {
+                    OnPropertyChanged(new PropertyChangedEventArgs("Size"));
+                    OnPropertyChanged(new PropertyChangedEventArgs("Top"));
+                    OnPropertyChanged(new PropertyChangedEventArgs("Left"));
+                }
             }
         }
 

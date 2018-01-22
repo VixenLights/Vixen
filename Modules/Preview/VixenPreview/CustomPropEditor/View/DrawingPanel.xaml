@@ -4,17 +4,39 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VixenModules.Preview.VixenPreview.CustomPropEditor.View"
+             xmlns:converter="clr-namespace:VixenModules.Preview.VixenPreview.CustomPropEditor.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
-        <Canvas Name="PropCanvas" Background="Black" Width="800" Height="600" >
-            <ItemsControl ItemsSource="{Binding LightPaths}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        </Canvas>
-    
+
+    <UserControl.Resources>
+        <converter:LightNodeToPathConverter x:Key="LightNodeToPathConverter" />
+    </UserControl.Resources>
+
+    <ItemsControl ItemsSource="{Binding LightNodes}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <Canvas IsItemsHost="True" Name="PropCanvas" Height="600" Width="800" Background="Black" Margin="0"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+                <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+            </Style>
+        </ItemsControl.ItemContainerStyle>
+        <ItemsControl.ItemTemplate>
+            <ItemContainerTemplate>
+                <Thumb DragDelta="Thumb_OnDragDelta" Margin="0">
+                    <Thumb.Template>
+                        <ControlTemplate>
+                            <!--<Path Data="{Binding Converter={StaticResource LightNodeToPathConverter}}" StrokeThickness="0" Fill="White"/>-->
+                            <Ellipse Fill="White" Width="{Binding Size}" Height="{Binding Size}"></Ellipse>
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </ItemContainerTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+
 </UserControl>

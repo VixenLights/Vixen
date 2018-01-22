@@ -135,6 +135,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomPropEditor\Converter\LightNodeToPathConverter.cs" />
     <Compile Include="CustomPropEditor\View\DrawingPanel.xaml.cs">
       <DependentUpon>DrawingPanel.xaml</DependentUpon>
     </Compile>
