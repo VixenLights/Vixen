@@ -52,6 +52,19 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    <!-- TreeView -->
+    <Style TargetType="{x:Type TreeView}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+    </Style>
+
+    <Style TargetType="{x:Type TreeViewItem}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+    </Style>
 
     <!-- Button -->
 

@@ -7,23 +7,23 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TreeView Name="NodeTree" Background="#444444" Foreground="#EBEBEB">
-            <TreeViewItem Header="SnowFlake" Foreground="#EBEBEB">
-                <TreeViewItem Header="Branch 1" Foreground="#EBEBEB">
-                    <TreeViewItem Header="B1 Px-1" Foreground="#EBEBEB"/>
-                    <TreeViewItem Header="B1 Px-2" Foreground="#EBEBEB"/>
-                    <TreeViewItem Header="B1 Px-3" Foreground="#EBEBEB"/>
-                    <TreeViewItem Header="B1 Px-4" Foreground="#EBEBEB"/>
-                    <TreeViewItem Header="B1 Px-5" Foreground="#EBEBEB"/>
-                    </TreeViewItem>
-                <TreeViewItem Header="Branch 2" Foreground="#EBEBEB">
+        <TreeView Name="NodeTree">
+            <TreeViewItem Header="SnowFlake" >
+                <TreeViewItem Header="Branch 1" >
+                    <TreeViewItem Header="B1 Px-1"/>
+                    <TreeViewItem Header="B1 Px-2"/>
+                    <TreeViewItem Header="B1 Px-3"/>
+                    <TreeViewItem Header="B1 Px-4"/>
+                    <TreeViewItem Header="B1 Px-5"/>
+                </TreeViewItem>
+                <TreeViewItem Header="Branch 2">
                     <TreeViewItem Header="B2 Px-1"/>
                     <TreeViewItem Header="B2 Px-2"/>
                     <TreeViewItem Header="B2 Px-3"/>
                     <TreeViewItem Header="B2 Px-4"/>
                     <TreeViewItem Header="B2 Px-5"/>
                 </TreeViewItem>
-                <TreeViewItem Header="Branch 3" Foreground="#EBEBEB">
+                <TreeViewItem Header="Branch 3">
                     <TreeViewItem Header="B3 Px-1"/>
                     <TreeViewItem Header="B3 Px-2"/>
                     <TreeViewItem Header="B3 Px-3"/>
@@ -31,7 +31,6 @@
                     <TreeViewItem Header="B3 Px-5"/>
                 </TreeViewItem>
             </TreeViewItem>
-               
-            </TreeView>
+        </TreeView>
     </Grid>
 </UserControl>

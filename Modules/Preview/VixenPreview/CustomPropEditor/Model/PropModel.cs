@@ -9,6 +9,6 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 {
 	public class PropModel
 	{
-		public List<Element> Elements;
+		public List<ElementModel> Elements;
 	}
 }

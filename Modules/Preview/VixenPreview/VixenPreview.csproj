@@ -135,8 +135,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomPropEditor\View\DrawingPanel.xaml.cs">
+      <DependentUpon>DrawingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomPropEditor\Controls\LightShape.cs" />
     <Compile Include="CustomPropEditor\Model\ElementModel.cs" />
     <Compile Include="CustomPropEditor\Model\ElementModelNode.cs" />
+    <Compile Include="CustomPropEditor\Model\LightNode.cs" />
     <Compile Include="CustomPropEditor\Model\PropModel.cs" />
     <Compile Include="CustomPropEditor\View\CustomPropEditor.cs">
       <SubType>Form</SubType>
@@ -543,6 +548,10 @@
     <None Include="Resources\Flood.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CustomPropEditor\View\DrawingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomPropEditor\View\ElementTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
