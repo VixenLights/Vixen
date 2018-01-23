@@ -75,6 +75,11 @@ namespace Vixen.Sys.LayerMixing
 			}
 		}
 
+		public bool RequiresMixingPartner
+		{
+			get { return Type == LayerType.Standard && _layerMixingFilter.RequiresMixingPartner; }
+		}
+
 		public ILayerMixingFilterInstance LayerMixingFilter
 		{
 			get { return _layerMixingFilter; }

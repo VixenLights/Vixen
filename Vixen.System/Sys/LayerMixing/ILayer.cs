@@ -17,6 +17,8 @@ namespace Vixen.Sys.LayerMixing
 
 		Guid FilterTypeId { get; set; }
 
+		bool RequiresMixingPartner { get; }
+	
 		ILayerMixingFilterInstance LayerMixingFilter { get; set; }
 	}
 
