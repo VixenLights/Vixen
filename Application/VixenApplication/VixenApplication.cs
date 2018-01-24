@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
@@ -21,6 +22,8 @@ using Common.Resources.Properties;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Timer = System.Windows.Forms.Timer;
 
 namespace VixenApplication
@@ -310,6 +313,74 @@ namespace VixenApplication
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
+			JiraBuild();
+		}
+
+		public void JiraBuild()
+		{
+			using (WebClient wc = new WebClient())
+			{
+				string developementBuildResult = wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=2&maxResults=1");
+
+				//First way of doing it
+				//Simple way of getting just a single thing for example latest Build number.
+				//Not good for creating change log
+				//int index = result.IndexOf("customfield_10112", StringComparison.Ordinal);
+				//if (index != -1)
+				//{
+				//	string build = result.Substring(index + 19, 3);
+				//	Text = "Latest Build is: " + build;
+				//}
+
+				//This will parse the latest development build number to show on development builds
+				dynamic releaseResults = JObject.Parse(developementBuildResult); 
+				//This does not return an array as the results are contained in a wrapper object for paging info
+				//There results are in an array called issues, withing that is a set of fields that contain our custom field 
+				Text = string.Format("Latest development build is: {0}", 
+					releaseResults.issues[0].fields.customfield_10112); //customfield_10112 is the Build Number
+
+				string latestReleaseResult = wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+
+				//query returns an array of release version objects
+				var releaseVersion = JArray.Parse(latestReleaseResult);
+
+				//get the last one that has released == true as they are in asending order
+				dynamic releaseRecord = releaseVersion.Last(m => (bool)m.SelectToken("released"));
+
+				// This is the description of the release
+				var description = releaseRecord.description;
+				//This is the name of the release
+				var latestReleaseName = releaseRecord.name;
+				//This is the release date
+				var latestReleaseDate = releaseRecord.releaseDate;
+
+				Text = string.Format("Latest release is: {0}", latestReleaseName); 
+
+
+
+				//Third way of doing it
+				//Need to use Newtonsoft JOSN bulk grab and generate Change Log.
+				//dynamic latestBuildReleases = JsonConvert.DeserializeObject(result);  //JArray.Parse(json: (test));
+				//latestRelease = latestBuildReleases[0];
+				//Text = latestRelease.customfield_10112; //custonfield_10112 is the Build Number
+
+				//Fourth way of doing it
+				//Need to use Newtonsoft JOSN bulk grab and generate Change Log.
+				//TicketFields[] t = JsonConvert.DeserializeObject<TicketFields[]>(result);
+				//Text = t[0].customfield_10112; //custonfield_10112 is the Build Number
+
+			}
+
+
+		}
+
+		public class TicketFields
+		{
+			public dynamic customfield_10112
+			{
+				get;
+				set;
+			}
 		}
 
 		private async void VixenApplication_Shown(object sender, EventArgs e)
