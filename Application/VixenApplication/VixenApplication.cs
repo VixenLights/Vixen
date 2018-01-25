@@ -98,7 +98,9 @@ namespace VixenApplication
 			}
 			
 			stopping = false;
+			toolStripStatusUpdates.Text = "";
 			PopulateVersionStrings();
+
 			AppCommands = new AppCommand(this);
 			Execution.ExecutionStateChanged += executionStateChangedHandler;
 			if(!VixenSystem.Start(this, _openExecution, _disableControllers, _applicationData.DataFileDirectory))
@@ -313,73 +315,93 @@ namespace VixenApplication
 			//	logsToolStripMenuItem.DropDownItems.ForeColor = Color.FromArgb(90, 90, 90);
 			}
 			PopulateRecentSequencesList();
-			JiraBuild();
 		}
-
-		public void JiraBuild()
+		
+		public void CheckLatestVersion()
 		{
-			using (WebClient wc = new WebClient())
+			toolStripStatusUpdates.Text = "";
+			try
 			{
-				string developementBuildResult = wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=2&maxResults=1");
+				using (WebClient wc = new WebClient())
+				{
+					//Get Latest Build
+					string getLatestDevelopementBuild =
+						wc.DownloadString(
+							"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
+					//This will parse the latest development build number to show on development builds
+					dynamic latestDevelopementBuilds = JObject.Parse(getLatestDevelopementBuild);
+					int latestDevelopementBuild = latestDevelopementBuilds.issues[0].fields.customfield_10112;
+					//This does not return an array as the results are contained in a wrapper object for paging info
+					//There results are in an array called issues, with in that is a set of fields that contain our custom field 
 
-				//First way of doing it
-				//Simple way of getting just a single thing for example latest Build number.
-				//Not good for creating change log
-				//int index = result.IndexOf("customfield_10112", StringComparison.Ordinal);
-				//if (index != -1)
-				//{
-				//	string build = result.Substring(index + 19, 3);
-				//	Text = "Latest Build is: " + build;
-				//}
+					if (labelVersion.Text == "DevBuild")
+					{
+						if (latestDevelopementBuild > Convert.ToInt16(labelVersion.Text))
+						{
+							toolStripStatusUpdates.Text =
+								string.Format("Build {0} available.", latestDevelopementBuild);
+						}
+						return;
+					}
 
-				//This will parse the latest development build number to show on development builds
-				dynamic releaseResults = JObject.Parse(developementBuildResult); 
-				//This does not return an array as the results are contained in a wrapper object for paging info
-				//There results are in an array called issues, withing that is a set of fields that contain our custom field 
-				Text = string.Format("Latest development build is: {0}", 
-					releaseResults.issues[0].fields.customfield_10112); //customfield_10112 is the Build Number
+					//Get the Latest Release
+					string getReleaseVersion =
+						wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+					//query returns an array of release version objects
+					var releaseVersions = JArray.Parse(getReleaseVersion);
+					//get the last one that has released == true as they are in asending order
+					dynamic lastReleaseVersion = releaseVersions.Last(m => (bool) m.SelectToken("released"));
+					//This is the name of the release
+					string releaseVersion = lastReleaseVersion.name;
 
-				string latestReleaseResult = wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
-
-				//query returns an array of release version objects
-				var releaseVersion = JArray.Parse(latestReleaseResult);
-
-				//get the last one that has released == true as they are in asending order
-				dynamic releaseRecord = releaseVersion.Last(m => (bool)m.SelectToken("released"));
-
-				// This is the description of the release
-				var description = releaseRecord.description;
-				//This is the name of the release
-				var latestReleaseName = releaseRecord.name;
-				//This is the release date
-				var latestReleaseDate = releaseRecord.releaseDate;
-
-				Text = string.Format("Latest release is: {0}", latestReleaseName); 
+					if (releaseVersion != labelVersion.Text && latestDevelopementBuild > 0)
+					{
+						toolStripStatusUpdates.Text =
+							string.Format("Version {0} and Build {1} available.", releaseVersion,
+								latestDevelopementBuild);
 
 
+						//// This is the description of the release
+						//var description = releaseRecord.description;
+						////This is the release date
+						//var latestReleaseDate = releaseRecord.releaseDate;
 
-				//Third way of doing it
-				//Need to use Newtonsoft JOSN bulk grab and generate Change Log.
-				//dynamic latestBuildReleases = JsonConvert.DeserializeObject(result);  //JArray.Parse(json: (test));
-				//latestRelease = latestBuildReleases[0];
-				//Text = latestRelease.customfield_10112; //custonfield_10112 is the Build Number
+					}
+					else
+					{
+						if (releaseVersion != labelVersion.Text)
+						{
+							toolStripStatusUpdates.Text = string.Format("Version {0} available.", releaseVersion);
+							return;
+						}
+					}
 
-				//Fourth way of doing it
-				//Need to use Newtonsoft JOSN bulk grab and generate Change Log.
-				//TicketFields[] t = JsonConvert.DeserializeObject<TicketFields[]>(result);
-				//Text = t[0].customfield_10112; //custonfield_10112 is the Build Number
+					if (latestDevelopementBuild > 0)
+					{
+						toolStripStatusUpdates.Text =
+							string.Format("Build {0} available.", latestDevelopementBuild);
+					}
 
+
+					//string allBuildResults = wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild ORDER BY Key&startAt=0&maxResults=1000");
+					//dynamic allBuildArray = JObject.Parse(allBuildResults);
+
+					//var test = allBuildArray.issues[1].fields.Summary;
+					//Text = test;
+					//test = allBuildArray.issues[1].fields.customfield_10112;
+					//Text = test;
+					//test = allBuildArray.issues[1].fields.issuetype.name;
+					//Text = test;
+					//test = allBuildArray.issues[1].fields.fixVersions[0].name;
+					//Text = test;
+					//test = allBuildArray.issues[1].fields.status.name;
+					//Text = test;
+
+				}
 			}
-
-
-		}
-
-		public class TicketFields
-		{
-			public dynamic customfield_10112
+			catch (Exception e)
 			{
-				get;
-				set;
+				Logging.Error("Checking for the latest Release/Development Build failed - " + e);
 			}
 		}
 
@@ -406,11 +428,14 @@ namespace VixenApplication
 
 			if (_devBuild) {
 				labelVersion.Text = "DevBuild";
+				CheckLatestBuildVersion(version.Build);
+
 			} else {
 				labelVersion.Text = string.Format("{0}.{1}", version.Major, version.Minor);
 				if (version.Revision > 0) {
 					labelVersion.Text += string.Format("u{0}", version.Revision);
 				}
+				CheckLatestReleaseVersion();
 			}
 
 			if (version.Build > 0)
@@ -421,6 +446,7 @@ namespace VixenApplication
 			{
 				labelDebugVersion.Text = @"Test Build";
 				labelDebugVersion.ForeColor = Color.Yellow;
+				toolStripStatusUpdates.Text = "";
 			}
 			
 			labelDebugVersion.Visible = true;
@@ -428,6 +454,64 @@ namespace VixenApplication
 			//Log the runtime versions 
 			var runtimeVersion = FileVersionInfo.GetVersionInfo(typeof (int).Assembly.Location).ProductVersion;
 			Logging.Info(".NET Runtime is: {0}", runtimeVersion);
+		}
+
+		private void CheckLatestBuildVersion(int currentBuild)
+		{
+			try
+			{
+				using (WebClient wc = new WebClient())
+				{
+					//Get Latest Build
+					string getLatestDevelopementBuild =
+						wc.DownloadString(
+							"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
+					//This will parse the latest development build number
+					dynamic developementBuild = JObject.Parse(getLatestDevelopementBuild);
+					int latestDevelopementBuild = developementBuild.issues[0].fields.customfield_10112;
+					//This does not return an array as the results are contained in a wrapper object for paging info
+					//There results are in an array called issues, with in that is a set of fields that contain our custom field 
+					if (latestDevelopementBuild > currentBuild)
+					{
+						toolStripStatusUpdates.Text =
+							string.Format(" Build {0} available.", latestDevelopementBuild);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				//Should only get here if there is no internet connection and e will stipulate that it can't get to the http://bugs.vixenlights.com website.
+				Logging.Error("Checking for the latest Development Build failed - " + e);
+			}
+		}
+
+		private void CheckLatestReleaseVersion()
+		{
+			try
+			{
+				using (WebClient wc = new WebClient())
+				{
+					//Get the Latest Release
+					string getReleaseVersion =
+						wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+					//Query returns an array of release version objects
+					var releaseVersions = JArray.Parse(getReleaseVersion);
+					//get the last one that has released == true as they are in asending order
+					dynamic lastReleaseVersion = releaseVersions.Last(m => (bool)m.SelectToken("released"));
+					//This is the name of the release
+					string releaseVersion = lastReleaseVersion.name;
+
+					if (releaseVersion != labelVersion.Text)
+					{
+						toolStripStatusUpdates.Text = string.Format(" Version {0} available.", releaseVersion);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				//Should only get here if there is no internet connection and e will stipulate that it can't get to the http://bugs.vixenlights.com website.
+				Logging.Error("Checking for the latest Release Version failed - " + e);
+			}
 		}
 
 		private void CheckForTestBuild()
