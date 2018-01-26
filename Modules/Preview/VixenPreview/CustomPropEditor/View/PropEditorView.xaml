@@ -16,7 +16,12 @@
     </i:Interaction.Triggers>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File" />
+            <MenuItem Header="File">
+                <MenuItem Header="Open"></MenuItem>
+                <MenuItem Header="Save"></MenuItem>
+                <MenuItem Header="Save As"></MenuItem>
+                <MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
+            </MenuItem>
             <MenuItem Header="Edit" />
             <MenuItem Header="View" />
             <MenuItem Header="Help" />

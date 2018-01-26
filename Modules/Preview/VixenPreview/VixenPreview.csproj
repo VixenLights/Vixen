@@ -143,6 +143,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomPropEditor\Converters\LightNodeToPathConverter.cs" />
+    <Compile Include="CustomPropEditor\Import\IModelImport.cs" />
+    <Compile Include="CustomPropEditor\Import\XLights\SubModel.cs" />
+    <Compile Include="CustomPropEditor\Import\XLights\XModelImport.cs" />
+    <Compile Include="CustomPropEditor\Services\FileService.cs" />
+    <Compile Include="CustomPropEditor\Services\IOService.cs" />
     <Compile Include="CustomPropEditor\ViewModel\PropEditorViewModel.cs" />
     <Compile Include="CustomPropEditor\View\DrawingPanel.xaml.cs">
       <DependentUpon>DrawingPanel.xaml</DependentUpon>
