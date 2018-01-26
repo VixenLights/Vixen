@@ -78,6 +78,7 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
       <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
@@ -101,19 +102,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
       <HintPath>..\..\..\Common\Libraries\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -125,25 +132,26 @@
     <Reference Include="System.Xml" />
     <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\DockPanelSuite.3.0.3\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\DockPanelSuite.ThemeVS2015.3.0.3\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomPropEditor\Converter\LightNodeToPathConverter.cs" />
+    <Compile Include="CustomPropEditor\Converters\LightNodeToPathConverter.cs" />
+    <Compile Include="CustomPropEditor\ViewModel\PropEditorViewModel.cs" />
     <Compile Include="CustomPropEditor\View\DrawingPanel.xaml.cs">
       <DependentUpon>DrawingPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomPropEditor\Controls\LightShape.cs" />
-    <Compile Include="CustomPropEditor\Model\ElementModel.cs" />
+    <Compile Include="CustomPropEditor\Model\ElementCandidate.cs" />
     <Compile Include="CustomPropEditor\Model\ElementModelNode.cs" />
     <Compile Include="CustomPropEditor\Model\LightNode.cs" />
-    <Compile Include="CustomPropEditor\Model\PropModel.cs" />
+    <Compile Include="CustomPropEditor\Model\Prop.cs" />
     <Compile Include="CustomPropEditor\View\CustomPropEditor.cs">
       <SubType>Form</SubType>
     </Compile>

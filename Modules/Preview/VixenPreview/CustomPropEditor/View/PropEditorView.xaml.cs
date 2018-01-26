@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using VixenModules.Preview.VixenPreview.CustomPropEditor.ViewModel;
 
 namespace VixenModules.Preview.VixenPreview.CustomPropEditor.View
 {
@@ -7,9 +8,12 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.View
 	/// </summary>
 	public partial class PropEditorView : UserControl
 	{
+		private readonly PropEditorViewModel _viewModel;
 		public PropEditorView()
 		{
 			InitializeComponent();
+			_viewModel = new PropEditorViewModel();
+			DataContext = _viewModel;
 		}
 	}
 }

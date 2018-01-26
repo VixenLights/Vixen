@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
+using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 {
-    public class LightNode : INotifyPropertyChanging, INotifyPropertyChanged
+    public class LightNode : BindableBase
     {
         private Point _center;
         private double _size;
@@ -19,22 +19,15 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
             get { return _center; }
             set
             {
-                var changing = !value.Equals(_center);
-                if (changing)
-                {
-                    OnPropertyChanging(new PropertyChangingEventArgs("Center"));
-                    OnPropertyChanging(new PropertyChangingEventArgs("Top"));
-                    OnPropertyChanging(new PropertyChangingEventArgs("Left"));
-                }
-                _center = value;
-                if (changing)
-                {
-                    OnPropertyChanged(new PropertyChangedEventArgs("Center"));
-                    OnPropertyChanged(new PropertyChangedEventArgs("Top"));
-                    OnPropertyChanged(new PropertyChangedEventArgs("Left"));
-                }
-
-
+	            if (!value.Equals(_center))
+	            {
+		            _center = value;
+		            
+			        OnPropertyChanged("Center");
+			        OnPropertyChanged("Top");
+			        OnPropertyChanged("Left");
+				}
+                
             }
         }
 
@@ -53,44 +46,18 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
             get { return _size; }
             set
             {
-                var changing = !value.Equals(_size);
-                if (changing)
-                {
-                    OnPropertyChanging(new PropertyChangingEventArgs("Size")); 
-                    OnPropertyChanging(new PropertyChangingEventArgs("Top"));
-                    OnPropertyChanging(new PropertyChangingEventArgs("Left"));
-                }
-                _size = value;
-                if (changing)
-                {
-                    OnPropertyChanged(new PropertyChangedEventArgs("Size"));
-                    OnPropertyChanged(new PropertyChangedEventArgs("Top"));
-                    OnPropertyChanged(new PropertyChangedEventArgs("Left"));
-                }
+	            if (!value.Equals(_size))
+	            {
+		            _size = value;
+		            
+			        OnPropertyChanged("Size");
+			        OnPropertyChanged("Top");
+			        OnPropertyChanged("Left");
+				}
+                
+                
             }
         }
 
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, e);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanging Members
-
-        public event PropertyChangingEventHandler PropertyChanging;
-        protected virtual void OnPropertyChanging(PropertyChangingEventArgs e)
-        {
-            if (PropertyChanging != null)
-                PropertyChanging(this, e);
-        }
-
-        #endregion  
-    }
+	}
 }
