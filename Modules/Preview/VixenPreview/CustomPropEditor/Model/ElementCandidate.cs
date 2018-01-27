@@ -10,8 +10,10 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 	    private List<LightNode> _lights;
 	    private List<ElementCandidate> _children;
 	    private int _order;
+	    private int _lightCount;
+	    private string _name;
 
-        public ElementCandidate()
+	    public ElementCandidate()
 		{
 			Lights = new List<LightNode>();
             Children = new List<ElementCandidate>();
@@ -24,7 +26,16 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 	    
 		public Guid Id { get; protected set; }
 
-	    public string Name { get; set; }
+	    public string Name
+	    {
+	        get { return _name; }
+	        set
+	        {
+	            if (value == _name) return;
+	            _name = value;
+	            OnPropertyChanged("Name");
+	        }
+	    }
 
 	    public List<ElementCandidate> Children
 	    {
@@ -46,13 +57,16 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 			    _lights = value;
 			    OnPropertyChanged("Lights");
 			    OnPropertyChanged("IsString");
+                OnPropertyChanged("LightCount");
 			}
 		}
 
 	    public void AddLight(LightNode lightNode)
 	    {
             Lights.Add(lightNode);
-	    }
+	        OnPropertyChanged("IsString");
+	        OnPropertyChanged("LightCount");
+        }
 
 	    public int Order
 	    {
@@ -69,6 +83,11 @@ namespace VixenModules.Preview.VixenPreview.CustomPropEditor.Model
 		{
 			get { return _lights.Count > 1; }
 		}
+
+	    public int LightCount
+	    {
+	        get { return _lights.Count; }
+	    }
 
 	    public bool IsLeaf
 	    {
