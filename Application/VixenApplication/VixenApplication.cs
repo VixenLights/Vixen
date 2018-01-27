@@ -130,6 +130,22 @@ namespace VixenApplication
 			onlineMenu.Click += new System.EventHandler(this.OnlineHelpMenu_Click);
 			helpMenu.DropDown.Items.Add(onlineMenu);
 
+
+			ToolStripMenuItem updatesMenu = new ToolStripMenuItem("Updates");
+			updatesMenu.Click += new System.EventHandler(this.UpdatesMenu_Click);
+			helpMenu.DropDown.Items.Add(updatesMenu);
+			menuStripMain.Items.Add(helpMenu);
+
+			ToolStripMenuItem releaseNotesMenu = new ToolStripMenuItem("Release Notes");
+			releaseNotesMenu.Click += new System.EventHandler(this.ReleaseNotesMenu_Click);
+			helpMenu.DropDown.Items.Add(releaseNotesMenu);
+			menuStripMain.Items.Add(helpMenu);
+
+			ToolStripMenuItem aboutMenu = new ToolStripMenuItem("About Vixen");
+			aboutMenu.Click += new System.EventHandler(this.AboutMenu_Click);
+			helpMenu.DropDown.Items.Add(aboutMenu);
+			menuStripMain.Items.Add(helpMenu);
+
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 		}
 
@@ -1140,6 +1156,24 @@ namespace VixenApplication
 		{
 			Process.Start("http://www.vixenlights.com/vixen-3-documentation/");
 		}
+
+		private void UpdatesMenu_Click(object sender, EventArgs e)
+		{
+			
+		}
+
+		private void ReleaseNotesMenu_Click(object sender, EventArgs e)
+		{
+			var releaseNotes = new ReleaseNotes();
+			releaseNotes.ShowDialog();
+			releaseNotes.Dispose(); 
+		}
+
+		private void AboutMenu_Click(object sender, EventArgs e)
+		{
+			
+		}
+
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);

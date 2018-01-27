@@ -140,6 +140,12 @@
     <Compile Include="DataZipForm.Designer.cs">
       <DependentUpon>DataZipForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReleaseNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReleaseNotes.Designer.cs">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup\DisplaySetup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -314,6 +320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataZipForm.resx">
       <DependentUpon>DataZipForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReleaseNotes.resx">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\DisplaySetup.resx">
       <DependentUpon>DisplaySetup.cs</DependentUpon>
