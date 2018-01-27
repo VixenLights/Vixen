@@ -35,7 +35,7 @@
 			// btnOK
 			// 
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(669, 707);
+			this.btnOK.Location = new System.Drawing.Point(770, 708);
 			this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(100, 35);
@@ -51,7 +51,7 @@
 			this.textBoxReleaseNotes.Multiline = true;
 			this.textBoxReleaseNotes.Name = "textBoxReleaseNotes";
 			this.textBoxReleaseNotes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBoxReleaseNotes.Size = new System.Drawing.Size(758, 684);
+			this.textBoxReleaseNotes.Size = new System.Drawing.Size(858, 684);
 			this.textBoxReleaseNotes.TabIndex = 4;
 			// 
 			// ReleaseNotes
@@ -59,15 +59,15 @@
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(782, 753);
+			this.ClientSize = new System.Drawing.Size(882, 753);
 			this.Controls.Add(this.textBoxReleaseNotes);
 			this.Controls.Add(this.btnOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(800, 800);
+			this.MaximumSize = new System.Drawing.Size(900, 800);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(800, 800);
+			this.MinimumSize = new System.Drawing.Size(900, 800);
 			this.Name = "ReleaseNotes";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

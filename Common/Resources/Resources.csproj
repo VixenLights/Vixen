@@ -293,6 +293,7 @@
     <None Include="Resources\dottedLine.png" />
     <None Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
+    <None Include="Resources\VixenImage.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />

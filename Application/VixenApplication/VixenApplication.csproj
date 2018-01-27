@@ -97,6 +97,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ColorGradients">
+      <HintPath>..\..\Modules\App\ColorGradients\obj\x86\Release\ColorGradients.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\Common\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
@@ -139,6 +142,12 @@
     </Compile>
     <Compile Include="DataZipForm.Designer.cs">
       <DependentUpon>DataZipForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CheckForUpdates.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckForUpdates.Designer.cs">
+      <DependentUpon>CheckForUpdates.cs</DependentUpon>
     </Compile>
     <Compile Include="ReleaseNotes.cs">
       <SubType>Form</SubType>
@@ -320,6 +329,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataZipForm.resx">
       <DependentUpon>DataZipForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckForUpdates.resx">
+      <DependentUpon>CheckForUpdates.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ReleaseNotes.resx">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>
