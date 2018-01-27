@@ -118,6 +118,13 @@ namespace VixenApplication
 			myMenu.Click += optionsToolStripMenuItem_Click;
 			toolsMenu.Add(myMenu);
 
+			ToolStripMenuItem helpMenu = new ToolStripMenuItem("Help");
+			menuStripMain.Items.Add(helpMenu);
+
+			ToolStripMenuItem onlineMenu = new ToolStripMenuItem("Online Help");
+			onlineMenu.Click += new System.EventHandler(this.OnlineHelpMenu_Click);
+			helpMenu.DropDown.Items.Add(onlineMenu);
+
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 		}
 
@@ -974,6 +981,10 @@ namespace VixenApplication
 			SetupDisplay();
 		}
 
+		private void OnlineHelpMenu_Click(object sender, EventArgs e)
+		{
+			Process.Start("http://www.vixenlights.com/vixen-3-documentation/");
+		}
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
