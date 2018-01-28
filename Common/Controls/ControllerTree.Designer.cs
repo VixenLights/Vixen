@@ -67,28 +67,28 @@
 			// 
 			this.configureToolStripMenuItem.Name = "configureToolStripMenuItem";
 			this.configureToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
-			this.configureToolStripMenuItem.Text = "Configure";
+			this.configureToolStripMenuItem.Text = "&Configure";
 			this.configureToolStripMenuItem.Click += new System.EventHandler(this.configureToolStripMenuItem_Click);
 			// 
 			// channelCountToolStripMenuItem
 			// 
 			this.channelCountToolStripMenuItem.Name = "channelCountToolStripMenuItem";
 			this.channelCountToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
-			this.channelCountToolStripMenuItem.Text = "Channel Count";
+			this.channelCountToolStripMenuItem.Text = "C&hannel Count";
 			this.channelCountToolStripMenuItem.Click += new System.EventHandler(this.channelCountToolStripMenuItem_Click);
 			// 
 			// renameToolStripMenuItem
 			// 
 			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
 			this.renameToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
-			this.renameToolStripMenuItem.Text = "Rename";
+			this.renameToolStripMenuItem.Text = "Re&name";
 			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
-			this.deleteToolStripMenuItem.Text = "Delete";
+			this.deleteToolStripMenuItem.Text = "&Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
 			// treeview
