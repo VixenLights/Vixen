@@ -20,12 +20,12 @@ namespace VixenApplication
 {
 	public partial class CheckForUpdates : BaseForm
 	{
-		private string _currentVersionType;
-		private string _currentVersion;
-		private string _latestVersion;
+		private readonly string _currentVersionType;
+		private readonly string _currentVersion;
+		private readonly string _latestVersion;
 		private bool _newVersionAvailable;
 
-		public CheckForUpdates(string currentVersion, string latestVersion, bool devBuild)
+		public CheckForUpdates(string currentVersion, string latestVersion, string currentVersionType)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
@@ -38,13 +38,13 @@ namespace VixenApplication
 			linkLabelVixenDownLoadPage.Font = new Font(linkLabelVixenDownLoadPage.Font.Name, 10F);
 			_currentVersion = currentVersion;
 			_latestVersion = latestVersion;
-			_currentVersionType = devBuild ? "Build" : "Release";
+			_currentVersionType = currentVersionType;
 			Text = " " + _currentVersionType + " " + currentVersion + " Installed"; //Add Installed version and type to the Form Title
 		}
 
 		private void CheckForUpdates_Load(object sender, EventArgs e)
 		{
-			PopulateChangeLog(); //Add Tickets and Descriptions to the TextBox.
+			PopulateChangeLog(); //Add relevant Tickets and Descriptions to the TextBox.
 
 			if (_newVersionAvailable)
 			{
@@ -83,27 +83,41 @@ namespace VixenApplication
 					}
 					else
 					{
+						List<string> releasenVersionNames = new List<string>();
 						//Get the release date of the installed Version
 						string getReleaseVersion =
 							wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
 						//Query returns an array of released versions
 						dynamic releaseVersions = JArray.Parse(getReleaseVersion);
-						string currentReleaseDate = "";
+						DateTime currentReleaseDate = new DateTime();
 						//Go through Versions and store the date when it finds the a match. 
 						foreach (var releaseVersion in releaseVersions)
 						{
 							if (releaseVersion.name == _currentVersion)
 							{
-								currentReleaseDate = releaseVersion.releaseDate.ToString();
+								string test3 = releaseVersion.releaseDate.ToString();
+							//	currentReleaseDate = Convert.ToDateTime(test3);
 								break;
 							}
 						}
+
+						//foreach (var releaseVersion in releaseVersions)
+						//{
+						//	if (releaseVersion.releaseDate != null)
+						//	{
+						//		DateTime test = new DateTime(DateTime.Parse(releaseVersion.releaseDate("yyyy-mm-dd")));DateTime.Parse(releaseVersion.releaseDate("yyyy-mm-dd"));
+						//		if (currentReleaseDate < test)
+						//		{
+						//			releasenVersionNames.Add(releaseVersion.name.ToString());
+						//		}
+						//	}
+						//}
 
 						//Grab all Closed Tickets that are not DevBuilds as we only care about tickets associated to Released versions.
 						//This takes a bit of time to grab.
 						string allBuildResults =
 							wc.DownloadString(
-								"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND status=Closed AND fixVersion>DevBuild ORDER BY key&startAt=0&maxResults=1000");
+								"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND status=Closed AND fixVersion>DevBuild ORDER BY key&startAt=0&maxResults=100");
 						dynamic allBuildArray = JObject.Parse(allBuildResults);
 
 						//Lists are used so they can be added to the textbox later in group order

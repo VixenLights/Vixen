@@ -45,7 +45,8 @@ namespace VixenApplication
 		private CpuUsage _cpuUsage;
 		private bool _perfCountersAvailable;
 		private string _currentBuildVersion;
-		
+
+
 		private VixenApplicationData _applicationData;
 
 		public VixenApplication()
@@ -142,6 +143,9 @@ namespace VixenApplication
 			ToolStripMenuItem aboutMenu = new ToolStripMenuItem("About Vixen");
 			aboutMenu.Click += new System.EventHandler(this.AboutMenu_Click);
 			helpMenu.DropDown.Items.Add(aboutMenu);
+
+			//Disables the Check for updates menu item as there is no need to have it enabled for Test Builds.
+		//	if (labelDebugVersion.Text == "Test Build") updatesMenu.Enabled = false;
 
 			toolStripItemClearSequences.Click += (mySender, myE) => ClearRecentSequencesList();
 		}
@@ -370,9 +374,9 @@ namespace VixenApplication
 			}
 			else
 			{
-
+				//following two lines are for testing
 		//		_currentBuildVersion = Convert.ToInt16("543");
-		//		labelVersion.Text = "3.1";
+				labelVersion.Text = "3.1";
 				labelDebugVersion.Text = @"Test Build";
 				labelDebugVersion.ForeColor = Color.Yellow;
 				toolStripStatusUpdates.Text = "";
@@ -1074,24 +1078,54 @@ namespace VixenApplication
 
 		private void UpdatesMenu_Click(object sender, EventArgs e)
 		{
-			Cursor = Cursors.WaitCursor;
 			string currentVersion;
 			string latestVersion;
+			string currentVersionType;
+			
+			if (!CheckForConnectionToWebsite())
+			{
+				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please connect to the internet and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog();
+				return;
+			}
+
+			Cursor = Cursors.WaitCursor;
+
 			if (_devBuild)
 			{
 				currentVersion = _currentBuildVersion;
 				latestVersion = CheckLatestBuildVersion();
+				currentVersionType = "DevBuild";
 			}
 			else
 			{
 				currentVersion = labelVersion.Text;
 				latestVersion = CheckLatestReleaseVersion();
+				currentVersionType = "Release";
 			}
 
-			var checkForUpdates = new CheckForUpdates(currentVersion, latestVersion, _devBuild);
+			var checkForUpdates = new CheckForUpdates(currentVersion, latestVersion, currentVersionType);
 			checkForUpdates.ShowDialog();
 			checkForUpdates.Dispose();
 			Cursor = Cursors.Default;
+		}
+
+		public static bool CheckForConnectionToWebsite()
+		{
+			try
+			{
+				using (var client = new WebClient())
+				{
+					using (client.OpenRead("http://bugs.vixenlights.com"))
+					{
+						return true;
+					}
+				}
+			}
+			catch
+			{
+				return false;
+			}
 		}
 
 		private void ReleaseNotesMenu_Click(object sender, EventArgs e)
@@ -1103,7 +1137,10 @@ namespace VixenApplication
 
 		private void AboutMenu_Click(object sender, EventArgs e)
 		{
-			
+			string currentVersion = _devBuild ? _currentBuildVersion : labelVersion.Text;
+			var aboutVixen = new AboutVixen(currentVersion, _devBuild);
+			aboutVixen.ShowDialog();
+			aboutVixen.Dispose();
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)

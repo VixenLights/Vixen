@@ -149,6 +149,12 @@
     <Compile Include="CheckForUpdates.Designer.cs">
       <DependentUpon>CheckForUpdates.cs</DependentUpon>
     </Compile>
+    <Compile Include="AboutVixen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutVixen.Designer.cs">
+      <DependentUpon>AboutVixen.cs</DependentUpon>
+    </Compile>
     <Compile Include="ReleaseNotes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -332,6 +338,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CheckForUpdates.resx">
       <DependentUpon>CheckForUpdates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AboutVixen.resx">
+      <DependentUpon>AboutVixen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ReleaseNotes.resx">
       <DependentUpon>ReleaseNotes.cs</DependentUpon>

@@ -14,20 +14,24 @@ using Vixen.Sys;
 
 namespace VixenApplication
 {
-	public partial class ReleaseNotes : BaseForm
+	public partial class AboutVixen : BaseForm
 	{
-		public ReleaseNotes()
+		public AboutVixen(string currentVersion, bool devBuild)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
+			pictureBoxIcon.Image = Resources.VixenImage;
+			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
+			string currentVersionType = devBuild ? " Build " : " Release ";
+			labelHeading.Text += currentVersionType + currentVersion;
 		}
 
-		private void ReleaseNotes_Load(object sender, EventArgs e)
+		private void AboutVixen_Load(object sender, EventArgs e)
 		{
-			textBoxReleaseNotes.Text = File.ReadAllText(Paths.BinaryRootPath + "//Release Notes.txt");
+			textBoxLicense.Text = File.ReadAllText(Paths.BinaryRootPath + "//License.txt");
 		}
 
 		private void btnOK_Click(object sender, EventArgs e)

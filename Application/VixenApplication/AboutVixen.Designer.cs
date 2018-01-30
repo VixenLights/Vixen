@@ -1,6 +1,6 @@
 ﻿namespace VixenApplication
 {
-	partial class ReleaseNotes
+	partial class AboutVixen
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -29,7 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.btnOK = new System.Windows.Forms.Button();
-			this.textBoxReleaseNotes = new System.Windows.Forms.TextBox();
+			this.textBoxLicense = new System.Windows.Forms.TextBox();
+			this.pictureBoxIcon = new System.Windows.Forms.PictureBox();
+			this.labelHeading = new System.Windows.Forms.Label();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxIcon)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnOK
@@ -45,22 +48,42 @@
 			this.btnOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnOK.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// textBoxReleaseNotes
+			// textBoxLicense
 			// 
-			this.textBoxReleaseNotes.Location = new System.Drawing.Point(12, 12);
-			this.textBoxReleaseNotes.Multiline = true;
-			this.textBoxReleaseNotes.Name = "textBoxReleaseNotes";
-			this.textBoxReleaseNotes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBoxReleaseNotes.Size = new System.Drawing.Size(858, 684);
-			this.textBoxReleaseNotes.TabIndex = 4;
+			this.textBoxLicense.Location = new System.Drawing.Point(12, 259);
+			this.textBoxLicense.Multiline = true;
+			this.textBoxLicense.Name = "textBoxLicense";
+			this.textBoxLicense.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.textBoxLicense.Size = new System.Drawing.Size(858, 437);
+			this.textBoxLicense.TabIndex = 4;
 			// 
-			// ReleaseNotes
+			// pictureBoxIcon
+			// 
+			this.pictureBoxIcon.Location = new System.Drawing.Point(12, 12);
+			this.pictureBoxIcon.Name = "pictureBoxIcon";
+			this.pictureBoxIcon.Size = new System.Drawing.Size(196, 197);
+			this.pictureBoxIcon.TabIndex = 9;
+			this.pictureBoxIcon.TabStop = false;
+			// 
+			// labelHeading
+			// 
+			this.labelHeading.AutoSize = true;
+			this.labelHeading.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelHeading.Location = new System.Drawing.Point(243, 35);
+			this.labelHeading.Name = "labelHeading";
+			this.labelHeading.Size = new System.Drawing.Size(79, 32);
+			this.labelHeading.TabIndex = 8;
+			this.labelHeading.Text = "Vixen";
+			// 
+			// AboutVixen
 			// 
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(882, 753);
-			this.Controls.Add(this.textBoxReleaseNotes);
+			this.Controls.Add(this.pictureBoxIcon);
+			this.Controls.Add(this.labelHeading);
+			this.Controls.Add(this.textBoxLicense);
 			this.Controls.Add(this.btnOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -68,11 +91,12 @@
 			this.MaximumSize = new System.Drawing.Size(900, 800);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(900, 800);
-			this.Name = "ReleaseNotes";
+			this.Name = "AboutVixen";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Vixen Release Notes";
-			this.Load += new System.EventHandler(this.ReleaseNotes_Load);
+			this.Text = "About Vixen";
+			this.Load += new System.EventHandler(this.AboutVixen_Load);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxIcon)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -81,6 +105,8 @@
 		#endregion
 
 		private System.Windows.Forms.Button btnOK;
-		private System.Windows.Forms.TextBox textBoxReleaseNotes;
+		private System.Windows.Forms.TextBox textBoxLicense;
+		private System.Windows.Forms.PictureBox pictureBoxIcon;
+		private System.Windows.Forms.Label labelHeading;
 	}
 }
