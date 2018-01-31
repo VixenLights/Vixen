@@ -63,11 +63,12 @@ namespace VixenApplication
 		    if (WPFApplication.Current == null)
 		    {
 		        // create the Application object
-		        new WPFApplication();
+		        var app = new WPFApplication();
 		    }
 
+		    WPFApplication.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             //Load up the common WPF them file for our WPF application parts.
-		    ResourceDictionary dict = new ResourceDictionary
+            ResourceDictionary dict = new ResourceDictionary
 		    {
 		        Source = new Uri("/WPFCommon;component/Theme/Theme.xaml", UriKind.Relative)
 		    };

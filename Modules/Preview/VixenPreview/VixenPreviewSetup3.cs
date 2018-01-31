@@ -8,6 +8,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
@@ -15,10 +16,12 @@ using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
 using Vixen.Sys;
+using VixenModules.App.CustomPropEditor;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
+using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
 
 namespace VixenModules.Preview.VixenPreview {
 	public partial class VixenPreviewSetup3 : BaseForm
@@ -761,9 +764,9 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private void propEditorToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var form = new CustomPropEditor.View.CustomPropEditor();
-			form.ShowDialog(this);
-
+			var form = new CustomPropEditorWindow();
+		    ElementHost.EnableModelessKeyboardInterop(form);
+            form.ShowDialog();
 		}
 	}
 

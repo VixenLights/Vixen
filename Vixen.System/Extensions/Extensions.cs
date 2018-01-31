@@ -1,5 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Vixen.Extensions
 {
@@ -29,5 +36,15 @@ namespace Vixen.Extensions
 
 			return relativePath.Replace('/', Path.DirectorySeparatorChar);
 		}
-	}
+
+	    public static ImageSource ToImageSource(this Icon icon)
+	    {
+	        ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
+	            icon.Handle,
+	            Int32Rect.Empty,
+	            BitmapSizeOptions.FromEmptyOptions());
+
+	        return imageSource;
+	    }
+    }
 }

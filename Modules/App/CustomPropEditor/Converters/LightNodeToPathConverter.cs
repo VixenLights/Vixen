@@ -1,0 +1,28 @@
+﻿using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
+using VixenModules.App.CustomPropEditor.Model;
+
+namespace VixenModules.App.CustomPropEditor.Converters
+{
+    public class LightNodeToPathConverter:IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            LightNode ln = value as LightNode;
+            Geometry g = null;
+            if (ln != null)
+            {
+                g = new EllipseGeometry(ln.Center, ln.Size, ln.Size);
+            }
+
+            return g;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
