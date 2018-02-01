@@ -167,7 +167,21 @@ namespace VixenModules.Effect.Candle
 				OnPropertyChanged();
 			}
 		}
-		
+
+		#region Information
+
+		public override string Information
+		{
+			get { return "Visit the Vixen Lights website for more information on this effect."; }
+		}
+
+		public override string InformationLink
+		{
+			get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/candle-flicker/"; }
+		}
+
+		#endregion
+
 		//Validate that the we are using valid colors and set appropriate defaults if not.
 		private void CheckForInvalidColorData()
 		{
