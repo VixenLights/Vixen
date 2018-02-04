@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -83,7 +84,7 @@ namespace VixenApplication
 					}
 					else
 					{
-						List<string> releasenVersionNames = new List<string>();
+						List<string> releaseVersionNames = new List<string>();
 						//Get the release date of the installed Version
 						string getReleaseVersion =
 							wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
@@ -95,92 +96,83 @@ namespace VixenApplication
 						{
 							if (releaseVersion.name == _currentVersion)
 							{
-								string test3 = releaseVersion.releaseDate.ToString();
-							//	currentReleaseDate = Convert.ToDateTime(test3);
+								currentReleaseDate = Convert.ToDateTime(releaseVersion.releaseDate.ToString());
 								break;
 							}
 						}
 
-						//foreach (var releaseVersion in releaseVersions)
-						//{
-						//	if (releaseVersion.releaseDate != null)
-						//	{
-						//		DateTime test = new DateTime(DateTime.Parse(releaseVersion.releaseDate("yyyy-mm-dd")));DateTime.Parse(releaseVersion.releaseDate("yyyy-mm-dd"));
-						//		if (currentReleaseDate < test)
-						//		{
-						//			releasenVersionNames.Add(releaseVersion.name.ToString());
-						//		}
-						//	}
-						//}
-
-						//Grab all Closed Tickets that are not DevBuilds as we only care about tickets associated to Released versions.
-						//This takes a bit of time to grab.
-						string allBuildResults =
-							wc.DownloadString(
-								"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND status=Closed AND fixVersion>DevBuild ORDER BY key&startAt=0&maxResults=100");
-						dynamic allBuildArray = JObject.Parse(allBuildResults);
-
-						//Lists are used so they can be added to the textbox later in group order
-						//Can't work out a better way to do this. I did have it go through the allBuildArray three times and each time grabbing the group type.
-						List<string> improvement = new List<string>();
-						List<string> newFeature = new List<string>();
-
-						textBoxReleaseNotes.Text = "** Bugs\r\n   ";
-						foreach (var build in allBuildArray.issues)
+						foreach (var releaseVersion in releaseVersions)
 						{
-							if (build.fields.fixVersions[0].releaseDate > currentReleaseDate)
+							if (releaseVersion.releaseDate != null)
 							{
-								string test1 = build.fields.issuetype.name.ToString();
-								switch (test1)
+								if (currentReleaseDate < Convert.ToDateTime(releaseVersion.releaseDate.ToString()))
 								{
-									case "Bug":
-										//Add Bugs to the textbox first.
-										textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n   ";
-									break;
-									case "Improvement":
-									improvement.Add("    * [" + build.key + "] -  " + build.fields.summary);
-									break;
-									case "New Feature":
-										newFeature.Add("    * [" + build.key + "] -  " + build.fields.summary);
-									break;
+									releaseVersionNames.Add(releaseVersion.name.ToString());
 								}
-								_newVersionAvailable = true;
 							}
 						}
+						int i = 0;
+						releaseVersionNames.Reverse();
 
-						//Add Improvemnets to the textbox
-						textBoxReleaseNotes.Text += "\r\n** Improvements\r\n   ";
-						foreach (var VARIABLE in improvement)
+
+						//This for loop needs to be multithreading. The way it is now works but takes time.
+						//I have tried parellal.foreach with no luck.
+						//I have tried to use lists and arrays to  store the data instead of going straight to the textbox
+						//then after the parellel add to textbox
+
+
+						foreach (var releaseVersionName in releaseVersionNames)
 						{
-							textBoxReleaseNotes.Text += VARIABLE + "\r\n   ";
+							textBoxReleaseNotes.Text += "\r\nVersion:" + releaseVersionName + "\r\n\r\n";
+							//Grab all Closed Tickets that are in the release.
+							string allBuildResults =
+								wc.DownloadString(
+									"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND status=Closed AND fixVersion=\"" +
+									releaseVersionName + "\"");
+							dynamic allBuildArray = JObject.Parse(allBuildResults);
+
+							//Lists are used so they can be added to the textbox later in group order
+							//Can't work out a better way to do this. I did have it go through the allBuildArray three times and each time grabbing the group type.
+							List<string> improvements = new List<string>();
+							List<string> newFeatures = new List<string>();
+
+							textBoxReleaseNotes.Text += "** Bugs\r\n   ";
+							foreach (var build in allBuildArray.issues)
+							{
+								if (build.fields.fixVersions[0].releaseDate > currentReleaseDate)
+								{
+									string issueNumber = build.fields.issuetype.name.ToString();
+									switch (issueNumber)
+									{
+										case "Bug":
+											//Add Bugs to the textbox first.
+											textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n   ";
+											break;
+										case "Improvement":
+											improvements.Add("    * [" + build.key + "] -  " + build.fields.summary);
+											break;
+										case "New Feature":
+											newFeatures.Add("    * [" + build.key + "] -  " + build.fields.summary);
+											break;
+									}
+									_newVersionAvailable = true;
+								}
+							}
+
+							//Add Improvemnets to the textbox
+							textBoxReleaseNotes.Text += "\r\n** Improvements\r\n   ";
+							foreach (var improvement in improvements)
+							{
+								textBoxReleaseNotes.Text += improvement + "\r\n   ";
+							}
+
+							//add New Features to the textbox
+							textBoxReleaseNotes.Text += "\r\n** New Features\r\n   ";
+							foreach (var newFeature in newFeatures)
+							{
+								textBoxReleaseNotes.Text += newFeature + "\r\n   ";
+							}
 						}
-
-						//add New Features to the textbox
-						textBoxReleaseNotes.Text += "\r\n** New Features\r\n   ";
-						foreach (var VARIABLE in newFeature)
-						{
-							textBoxReleaseNotes.Text += VARIABLE + "\r\n   ";
-						}
-
-						//Alternate way as described above.
-
-						//textBoxReleaseNotes.Text += "\r\n** Improvements\r\n   ";
-						//foreach (var build in allBuildArray.issues)
-						//{
-						//	if (build.fields.fixVersions[0].releaseDate > currentReleaseDate && build.fields.issuetype.name == "Improvement")
-						//	{
-						//		textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n   ";
-						//	}
-						//}
-
-						//textBoxReleaseNotes.Text += "\r\n** New Features\r\n   ";
-						//foreach (var build in allBuildArray.issues)
-						//{
-						//	if (build.fields.fixVersions[0].releaseDate > currentReleaseDate && build.fields.issuetype.name == "New Feature")
-						//	{
-						//		textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n   ";
-						//	}
-						//}
 					}
 				}
 			}
