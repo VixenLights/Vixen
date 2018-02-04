@@ -80,13 +80,13 @@ namespace VixenApplication.Setup.ElementTemplates
 			result.Add(head);
 
 			for (int i = 0; i < stringcount; i++) {
-				string stringname = head.Name + " S" + (i + 1);
+				string stringname = head.Name + " " + textBoxSpokePrefix.Text + (i + 1);
 				ElementNode stringnode = ElementNodeService.Instance.CreateSingle(head, TemplateUtilities.Uniquify(elementNames, stringname), true, false);
 				result.Add(stringnode);
 
 				if (pixeltree) {
 					for (int j = 0; j < pixelsperstring; j++) {
-						string pixelname = stringnode.Name + " Px" + (j + 1);
+						string pixelname = stringnode.Name + " " + textBoxPixelPrefix.Text + (j + 1);
 
 						ElementNode pixelnode = ElementNodeService.Instance.CreateSingle(stringnode, TemplateUtilities.Uniquify(elementNames, pixelname), true, false);
 						result.Add(pixelnode);
@@ -100,6 +100,7 @@ namespace VixenApplication.Setup.ElementTemplates
 		private void checkBoxPixelTree_CheckedChanged(object sender, EventArgs e)
 		{
 			numericUpDownPixelsPerString.Enabled = checkBoxPixelTree.Checked;
+			textBoxPixelPrefix.Enabled = checkBoxPixelTree.Checked;
 		}
 
 		private void Megatree_Load(object sender, EventArgs e)

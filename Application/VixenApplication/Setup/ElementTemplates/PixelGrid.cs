@@ -80,19 +80,17 @@ namespace VixenApplication.Setup.ElementTemplates
 			result.Add(head);
 
 			int firstlimit, secondlimit;
-			string firstprefix, secondprefix;
 
 			if (rowsfirst) {
 				firstlimit = rows;
 				secondlimit = columns;
-				firstprefix = " R";
-				secondprefix = " C";
 			} else {
 				firstlimit = columns;
 				secondlimit = rows;
-				firstprefix = " C";
-				secondprefix = " R";
 			}
+
+			string firstprefix = " " + textBoxFirstPrefix.Text;
+			string secondprefix = " " + textBoxSecondPrefix.Text;
 
 			for (int i = 0; i < firstlimit; i++) {
 				string firstname = head.Name + firstprefix + (i + 1);
@@ -139,6 +137,13 @@ namespace VixenApplication.Setup.ElementTemplates
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 
+		}
+
+		private void radioButtonOrientation_CheckedChanged(object sender, EventArgs e)
+		{
+			string temp = textBoxFirstPrefix.Text;
+			textBoxFirstPrefix.Text = textBoxSecondPrefix.Text;
+			textBoxSecondPrefix.Text = temp;
 		}
 	}
 }
