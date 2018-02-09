@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TreeView x:Name="ElementCandidateTreeView" ItemsSource="{Binding Prop.ElementCandidates}" commonUtils:TreeViewHelper.SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}">
+        <TreeView x:Name="ElementCandidateTreeView" ItemsSource="{Binding Prop.ElementCandidates}" commonUtils:TreeViewHelper.SelectedItem="{Binding Path=SelectedElementCandidate, Mode=TwoWay}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type model:ElementCandidate}">
                     <Label Content="{Binding Name}"/>

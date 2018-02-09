@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Common.WPFCommon.ViewModel;
@@ -10,8 +11,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	{
 		private Bitmap _image;
 	    private string _name;
-	    private List<ElementCandidate> _elementCandidates;
-	    private ElementCandidate _rootNode;
+	    private ElementCandidate _rootNode = new ElementCandidate();
 	    private int _height;
 	    private int _width;
 
@@ -22,10 +22,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 	    public Prop()
 	    {
-	        _rootNode = new ElementCandidate();
+	        _rootNode = new ElementCandidate(Name);
 	        Name = "Default";
-	        ElementCandidates = new List<ElementCandidate>();
-	        ElementCandidates.Add(_rootNode);
+	        //ElementCandidates.Add(_rootNode);
 	        Width = 800;
 	        Height = 600;
 	    }
@@ -108,15 +107,14 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        //OnPropertyChanged("ElementCandidates");
 	    }
 
-	    public List<ElementCandidate> ElementCandidates
+	    public ElementCandidate RootNode
 	    {
-	        get { return _elementCandidates; }
-	        protected set
-	        {
-	            if (Equals(value, _elementCandidates)) return;
-	            _elementCandidates = value;
-	            OnPropertyChanged("ElementCandidates");
-	        }
+	        get { return _rootNode; }
+	    }
+
+	    public ObservableCollection<ElementCandidate> ElementCandidates
+	    {
+	        get { return new ObservableCollection<ElementCandidate>(new []{_rootNode}); }
 	    }
 
 	    public void AddElementCandidate(ElementCandidate ec)
@@ -126,7 +124,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 	    public void AddElementCandidates(IEnumerable<ElementCandidate> elementCandidates)
 	    {
-            _rootNode.Children.AddRange(elementCandidates);
+	        foreach (var elementCandidate in elementCandidates)
+	        {
+	            _rootNode.Children.Add(elementCandidate);
+	        }
+	        //_rootNode.Children.AddRange(elementCandidates);
 	    }
 
 	    public string Name

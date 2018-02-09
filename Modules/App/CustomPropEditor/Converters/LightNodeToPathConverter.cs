@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using VixenModules.App.CustomPropEditor.Model;
@@ -14,7 +15,7 @@ namespace VixenModules.App.CustomPropEditor.Converters
             Geometry g = null;
             if (ln != null)
             {
-                g = new EllipseGeometry(ln.Center, ln.Size, ln.Size);
+                g = new EllipseGeometry(new Point(ln.X, ln.Y), ln.Size, ln.Size);
             }
 
             return g;

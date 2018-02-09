@@ -1,44 +1,55 @@
 ﻿using System.Windows;
+using System.Windows.Media.Media3D;
 using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
     public class LightNode : BindableBase
     {
-        private Point _center;
-        private double _size;
 
-        public LightNode(Point center, int size)
+        private double _size;
+        private double _y;
+        private double _x;
+        private double _z;
+
+        public LightNode(Point center, double size)
         {
-            _center = center;
+            X = center.X;
+            Y = center.Y;
             _size = size;
         }
 
-        public Point Center
+        public double Y
         {
-            get { return _center; }
+            get { return _y; }
             set
             {
-	            if (!value.Equals(_center))
-	            {
-		            _center = value;
-		            
-			        OnPropertyChanged("Center");
-			        OnPropertyChanged("Top");
-			        OnPropertyChanged("Left");
-				}
-                
+                if (value.Equals(_y)) return;
+                _y = value;
+                OnPropertyChanged("Y");
             }
         }
 
-        public double Top
+        public double X
         {
-            get { return Center.Y - Size/2; }
+            get { return _x; }
+            set
+            {
+                if (value.Equals(_x)) return;
+                _x = value;
+                OnPropertyChanged("X");
+            }
         }
 
-        public double Left
+        public double Z
         {
-            get { return Center.X - Size/2; }
+            get { return _z; }
+            set
+            {
+                if (value.Equals(_z)) return;
+                _z = value;
+                OnPropertyChanged("Z");
+            }
         }
 
         public double Size
@@ -49,13 +60,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 	            if (!value.Equals(_size))
 	            {
 		            _size = value;
-		            
 			        OnPropertyChanged("Size");
-			        OnPropertyChanged("Top");
-			        OnPropertyChanged("Left");
-				}
-                
-                
+				}             
             }
         }
 

@@ -65,6 +65,14 @@
         <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
     </Style>
+    
+    <!-- Statusbar -->
+
+    <Style TargetType="{x:Type StatusBar}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+    </Style>
 
     <!-- Button -->
 

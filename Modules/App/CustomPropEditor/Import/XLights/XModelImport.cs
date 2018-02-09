@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Media3D;
 using System.Xml;
 using VixenModules.App.CustomPropEditor.Model;
 
@@ -76,7 +77,13 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                     var ec = new ElementCandidate(sm.Name);
                     foreach (var smRange in sm.Ranges)
                     {
-                        ec.Children.AddRange(Rename(elementCandidates.Where(x => x.Order >= smRange.Start && x.Order <= smRange.End).OrderBy(x => x.Order), sm.Name));
+                        var nodes = Rename(
+                            elementCandidates.Where(x => x.Order >= smRange.Start && x.Order <= smRange.End)
+                                .OrderBy(x => x.Order), sm.Name);
+                        foreach (var elementCandidate in nodes)
+                        {
+                            ec.Children.Add(elementCandidate);
+                        }
                     }
                     p.AddElementCandidate(ec);
                 }
@@ -152,7 +159,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                                 Name = string.Format("{0}-{1}", name, order),
                                 Order = order
                             };
-                            ec.AddLight(new LightNode(new Point(x,y), nodeSize));
+                            ec.AddLight(new Point(x,y), nodeSize);
                             elementCandidates.Add(ec);
                         }
 

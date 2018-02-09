@@ -46,7 +46,7 @@ namespace Common.WPFCommon.Command
         // Prism commands solve this in their implementation
         public event EventHandler CanExecuteChanged = delegate { };
 
-        void ICommand.Execute(object parameter)
+        public void Execute(object parameter)
         {
             if (_TargetExecuteMethod != null)
             {
@@ -96,7 +96,7 @@ namespace Common.WPFCommon.Command
         // Prism commands solve this in their implementation
         public event EventHandler CanExecuteChanged = delegate { };
 
-        void ICommand.Execute(object parameter)
+        public void Execute(object parameter)
         {
             if (_TargetExecuteMethod != null)
             {

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:view="clr-namespace:VixenModules.App.CustomPropEditor.View"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
              x:Class="VixenModules.App.CustomPropEditor.View.PropEditorView"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="600">
@@ -17,6 +18,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
+                <MenuItem Header="New" Command="{Binding NewPropCommand}"></MenuItem>
                 <MenuItem Header="Open"></MenuItem>
                 <MenuItem Header="Save"></MenuItem>
                 <MenuItem Header="Save As"></MenuItem>
@@ -64,18 +66,19 @@
                 <Label Grid.Column="0" Grid.Row="3" Content="Order"/>
                 <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Order}"/>-->
 
-                <Label Grid.Column="0" Grid.Row="0" Content="FOV"/>
+                <!--<Label Grid.Column="0" Grid.Row="0" Content="FOV"/>
                 <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding Camera.FieldOfView}" />
                 <Label Grid.Column="0" Grid.Row="1" Content="Position"/>
                 <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="1" Text="{Binding Camera.Position, Mode=OneWay}" />
                 <Label Grid.Column="0" Grid.Row="2" Content="Look At"/>
                 <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="2" Text="{Binding Camera.LookDirection, Mode=OneWay}"/>
                 <Label Grid.Column="0" Grid.Row="3" Content="Up Direction"/>
-                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding Camera.UpDirection}"/>
+                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding Camera.UpDirection}"/>-->
             </Grid>
 
+            
             <!--<ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">-->
-                <view:DrawingPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
+                <!--<view:DrawingPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>-->
             <!--</ScrollViewer>-->
             <GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
         </Grid>

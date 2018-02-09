@@ -1,0 +1,155 @@
+﻿using System.Threading.Tasks;
+using System.Windows;
+using Catel.Data;
+using Catel.MVVM;
+using VixenModules.App.CustomPropEditor.Converters;
+using VixenModules.App.CustomPropEditor.Model;
+
+namespace VixenModules.App.CustomPropEditor.ViewModel
+{
+    public class LightViewModel : ViewModelBase, ISelectable
+    {
+        public LightViewModel(LightNode ln)
+        {
+            LightNode = ln;
+        }
+
+        public override string Title { get { return "Light"; } }
+
+        #region LightNode model property
+
+        /// <summary>
+        /// Gets or sets the LightNode value.
+        /// </summary>
+        [Model]
+        public LightNode LightNode
+        {
+            get { return GetValue<LightNode>(LightNodeProperty); }
+            private set { SetValue(LightNodeProperty, value); }
+        }
+
+        /// <summary>
+        /// LightNode property data.
+        /// </summary>
+        public static readonly PropertyData LightNodeProperty = RegisterProperty("LightNode", typeof(LightNode));
+
+        #endregion
+
+        #region X property
+
+        /// <summary>
+        /// Gets or sets the X value.
+        /// </summary>
+        [ViewModelToModel("LightNode")]
+        public double X
+        {
+            get { return GetValue<double>(XProperty); }
+            set { SetValue(XProperty, value); }
+        }
+        
+        /// <summary>
+        /// X property data.
+        /// </summary>
+        public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double), null);
+
+        #endregion
+
+        #region Y property
+
+        /// <summary>
+        /// Gets or sets the Y value.
+        /// </summary>
+        [ViewModelToModel("LightNode")]
+        public double Y
+        {
+            get { return GetValue<double>(YProperty); }
+            set { SetValue(YProperty, value); }
+        }
+
+        /// <summary>
+        /// Y property data.
+        /// </summary>
+        public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double), null);
+
+        #endregion
+
+        #region Size property
+
+        /// <summary>
+        /// Gets or sets the Size value.
+        /// </summary>
+        [ViewModelToModel("LightNode")]
+        public double Size
+        {
+            get { return GetValue<double>(SizeProperty); }
+            set { SetValue(SizeProperty, value); }
+        }
+
+        /// <summary>
+        /// Size property data.
+        /// </summary>
+        public static readonly PropertyData SizeProperty = RegisterProperty("Size", typeof(double), null);
+
+        #endregion
+
+        #region Center property
+
+        /// <summary>
+        /// Gets or sets the Center value.
+        /// </summary>
+        [ViewModelToModel("LightNode", "X", AdditionalPropertiesToWatch = new[]{"Y"}, ConverterType = typeof(PointMappingConverter))]
+        public Point Center
+        {
+            get { return GetValue<Point>(CenterProperty); }
+            set { SetValue(CenterProperty, value); }
+        }
+
+        /// <summary>
+        /// Center property data.
+        /// </summary>
+        public static readonly PropertyData CenterProperty = RegisterProperty("Center", typeof(Point), null);
+
+        #endregion
+
+        #region IsSelected property
+
+        /// <summary>
+        /// Gets or sets the IsSelected value.
+        /// </summary>
+        public bool IsSelected
+        {
+            get { return GetValue<bool>(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+        /// <summary>
+        /// IsSelected property data.
+        /// </summary>
+        public static readonly PropertyData IsSelectedProperty = RegisterProperty("IsSelected", typeof(bool));
+
+        #endregion
+
+
+        
+
+        // TODO: Register properties using 'vmprop'
+        // TODO: Register properties that represent models using 'vmpropmodel'
+        // TODO: Register properties that map to models using 'vmpropviewmodeltomodel'
+        // TODO: Register commands using 'vmcommand', 'vmcommandwithcanexecute', 'vmtaskcommand' or 'vmtaskcommandwithcanexecute'
+
+        protected override async Task InitializeAsync()
+        {
+            await base.InitializeAsync();
+            // TODO: Add initialization logic like subscribing to events
+        }
+
+        protected override async Task CloseAsync()
+        {
+            // TODO: Add uninitialization logic like unsubscribing from events
+
+            await base.CloseAsync();
+        }
+    }
+    
+    
+}

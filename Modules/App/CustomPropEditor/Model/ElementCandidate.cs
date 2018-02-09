@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
 	public class ElementCandidate : BindableBase, IEqualityComparer<ElementCandidate>, IEquatable<ElementCandidate>
 	{
-	    private List<LightNode> _lights;
-	    private List<ElementCandidate> _children;
+	    private ObservableCollection<LightNode> _lights;
+	    private ObservableCollection<ElementCandidate> _children;
 	    private int _order;
 	    private int _lightCount;
 	    private string _name;
 
 	    public ElementCandidate()
 		{
-			Lights = new List<LightNode>();
-            Children = new List<ElementCandidate>();
+			Lights = new ObservableCollection<LightNode>();
+            Children = new ObservableCollection<ElementCandidate>();
 		}
 
 	    public ElementCandidate(string name):this()
@@ -37,7 +39,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        }
 	    }
 
-	    public List<ElementCandidate> Children
+	    public ObservableCollection<ElementCandidate> Children
 	    {
 	        get { return _children; }
 	        set
@@ -48,7 +50,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        }
 	    }
 
-	    public List<LightNode> Lights
+	    public ObservableCollection<LightNode> Lights
 		{
 			get { return _lights; }
 			set
@@ -61,12 +63,14 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
-	    public void AddLight(LightNode lightNode)
+	    public LightNode AddLight(Point center, double size)
 	    {
-            Lights.Add(lightNode);
+            var ln = new LightNode(center, size);
+            Lights.Add(ln);
 	        OnPropertyChanged("IsString");
 	        OnPropertyChanged("LightCount");
-        }
+	        return ln;
+	    }
 
 	    public int Order
 	    {

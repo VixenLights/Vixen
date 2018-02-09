@@ -7,59 +7,81 @@
              xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
-             xmlns:h="http://helix-toolkit.org/wpf"
+             xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
+             xmlns:local="clr-namespace:VixenModules.App.CustomPropEditor"
+             xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" DataContext="{Binding DrawingPanelViewModel}">
 
-    <!--<UserControl.Resources>
-        <converters:LightNodeToPathConverter x:Key="LightNodeToPathConverter" />
-		<commonConverters:BitmapImageConverter x:Key="BitmapImageConverter"/>
-    </UserControl.Resources>-->
-    <!--<h:HelixViewport3D ItemsSource="{Binding Shapes}" Background="{h:LinearGradientBrush Black, Black}" ModelUpDirection="0,1,0"
-                       >
-        <h:HelixViewport3D.Camera>
-            <PerspectiveCamera 
-                Position="{Binding Camera.Position,Mode=TwoWay}"
-                LookDirection="{Binding Camera.LookDirection,Mode=TwoWay}"
-                UpDirection="{Binding Camera.UpDirection,Mode=TwoWay}"
-                FieldOfView="{Binding Camera.FieldOfView,Mode=TwoWay}"
-                NearPlaneDistance=".001"
-            />
-        </h:HelixViewport3D.Camera>
 
-        --><!--<h:EllipsoidVisual3D RadiusX=".75" RadiusY=".75" RadiusZ=".75" Material="{h:Material White, SpecularPower=0}"></h:EllipsoidVisual3D>--><!--
+
+
+    <UserControl.Resources>
         
-    </h:HelixViewport3D>-->
+        <converters:LightNodeToPathConverter x:Key="LightNodeToPathConverter" />
+        <commonConverters:BitmapImageConverter x:Key="BitmapImageConverter"/>
+
+        <!--<DataTemplate x:Key="LightNodeTemplate" DataType="{x:Type model:LightNode}">
+            <Path Fill="White" StrokeThickness="1">
+                <Path.Data>
+                    <EllipseGeometry Center="{Binding Center}" RadiusX="{Binding Size}" RadiusY="{Binding Size}"></EllipseGeometry>
+                </Path.Data>
+            </Path>
+        </DataTemplate>-->
+
+        <!--<DataTemplate x:Key="LightNodeTemplate" DataType="{x:Type model:LightNode}">
+            <Path Fill="White" StrokeThickness="1">
+                <Path.Data>
+                    <EllipseGeometry Center="{Binding Center}" RadiusX="{Binding Size}" RadiusY="{Binding Size}"></EllipseGeometry>
+                </Path.Data>
+            </Path>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ElementCandidateTemplate" DataType="{x:Type model:ElementCandidate}">
+            <Grid>
+                <ItemsControl ItemsSource="{Binding Lights}" ItemTemplate="{DynamicResource LightNodeTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                </ItemsControl>
+                <ContentControl>
+                    <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{DynamicResource ElementCandidateTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ContentControl>
+           
+            </Grid>
+        </DataTemplate>-->
+
+    </UserControl.Resources>
+   
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <Grid.Background>
+            <SolidColorBrush>Black</SolidColorBrush>
+        </Grid.Background>
+        <!--<controls:PropEditorControl x:Name="PropEditorControl"
+                                    LightNodesSource="{Binding LightNodes}"
+                                    AddLightCommand="{Binding AddLightCommand}"
+                                    IsDrawingEnabled="{Binding IsDrawing}">
+           
+        </controls:PropEditorControl>-->
+        
+        <CheckBox Content="In Drawing Mode"
+                  IsChecked="{Binding IsDrawing}"
+                  Grid.Row="1" VerticalAlignment="Center" Margin="8" />
+    </Grid>
     
     
-
-    <ItemsControl ItemsSource="{Binding LightNodes}">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <Canvas IsItemsHost="True" Name="PropCanvas" Height="{Binding Prop.Height}" Width="{Binding Prop.Width}" Background="Black" Margin="0"/>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemContainerStyle>
-            <Style TargetType="ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Left}"/>
-                <Setter Property="Canvas.Top" Value="{Binding Top}"/>
-            </Style>
-        </ItemsControl.ItemContainerStyle>
-        <ItemsControl.ItemTemplate>
-            <ItemContainerTemplate>
-                <Thumb DragDelta="Thumb_OnDragDelta" Margin="0">
-                    <Thumb.Template>
-                        <ControlTemplate>
-                            <Ellipse Fill="White" Width="{Binding Size}" Height="{Binding Size}"/>
-                        </ControlTemplate>
-                    </Thumb.Template>
-                    <Thumb.RenderTransform>
-                        <TranslateTransform X="{Binding Left}" Y="{Binding Top}"></TranslateTransform>
-                    </Thumb.RenderTransform>
-                </Thumb>
-            </ItemContainerTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
-
-
 </UserControl>

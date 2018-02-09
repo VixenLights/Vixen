@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Vixen.Extensions;
+using VixenModules.App.CustomPropEditor.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.View
 {
@@ -8,10 +9,13 @@ namespace VixenModules.App.CustomPropEditor.View
     /// </summary>
     public partial class CustomPropEditorWindow : Window
     {
+        private readonly PropEditorViewModel _viewModel;
         public CustomPropEditorWindow()
         {
             InitializeComponent();
             Icon = Common.Resources.Properties.Resources.Icon_Vixen3.ToImageSource();
+            _viewModel = new PropEditorViewModel();
+            DataContext = _viewModel;
         }
     }
 }
