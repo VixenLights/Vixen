@@ -404,6 +404,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Count Down Interval. Under 10 seconds will always display each second..
+        /// </summary>
+        internal static string CountDownInterval {
+            get {
+                return ResourceManager.GetString("CountDownInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
@@ -1372,6 +1381,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Thickness {
             get {
                 return ResourceManager.GetString("Thickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display format for countdown time greater then 60 seconds. Time will show as X:XX.
+        /// </summary>
+        internal static string TimeFormat {
+            get {
+                return ResourceManager.GetString("TimeFormat", resourceCulture);
             }
         }
         

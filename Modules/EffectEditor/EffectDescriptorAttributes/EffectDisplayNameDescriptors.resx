@@ -618,4 +618,9 @@
   <data name="TextDuration" xml:space="preserve">
     <value>Text Duration</value>
   </data>
-</root>
+  <data name="CountDownInterval" xml:space="preserve">
+    <value>Count Down Interval</value>
+  </data>
+  <data name="TimeFormat" xml:space="preserve">
+    <value>Time Format</value>
+  </data></root>
