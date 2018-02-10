@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,10 +38,35 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             Y = 20;
             AddLightCommand = new RelayCommand<Point>(AddLightAt);
             TransformCommand = new RelayCommand<Transform>(Transform);
+
+            AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
+            AlignBottomsCommand = new RelayCommand(AlignBottoms, CanExecuteAlignmentMethod);
+            AlignLeftCommand = new RelayCommand(AlignLeft, CanExecuteAlignmentMethod);
+            AlignRightCommand = new RelayCommand(AlignRight, CanExecuteAlignmentMethod);
+            DistributeHorizontallyCommand = new RelayCommand(DistributeHorizontally, CanExecuteAlignmentMethod);
+            DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
+            
             SelectedItems = new ObservableCollection<LightViewModel>();
+
+            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
         }
 
-        
+        private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AlignLeftCommand.RaiseCanExecuteChanged();
+            AlignRightCommand.RaiseCanExecuteChanged();
+            AlignBottomsCommand.RaiseCanExecuteChanged();
+            AlignTopsCommand.RaiseCanExecuteChanged();
+            DistributeVerticallyCommand.RaiseCanExecuteChanged();
+            DistributeHorizontallyCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool CanExecuteAlignmentMethod()
+        {
+            return SelectedItems.Any();
+        }
+
+
         #region Properties
 
         public Prop Prop
@@ -169,13 +195,111 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             }
         }
 
+        public void AlignTops()
+        {
+            var ln = SelectedItems.First();
+            foreach (var lightViewModel in SelectedItems)
+            {
+                lightViewModel.LightNode.Y = ln.Y;
+            }
+        }
 
+        public void AlignBottoms()
+        {
+            var ln = SelectedItems.First();
+            foreach (var lightViewModel in SelectedItems)
+            {
+                lightViewModel.LightNode.Y = ln.Y;
+            }
+        }
 
+        public void AlignLeft()
+        {
+            var ln = SelectedItems.First();
+            foreach (var lightViewModel in SelectedItems)
+            {
+                lightViewModel.LightNode.X = ln.X;
+            }
+        }
+
+        public void AlignRight()
+        {
+            var ln = SelectedItems.First();
+            foreach (var lightViewModel in SelectedItems)
+            {
+                lightViewModel.LightNode.X = ln.X;
+            }
+        }
+
+        public void DistributeHorizontally()
+        {
+            if (SelectedItems.Count > 2)
+            {
+                var minX = SelectedItems.Min(x => x.LightNode.X);
+                var maxX = SelectedItems.Max(x => x.LightNode.X);
+                var count = SelectedItems.Count - 1;
+
+                var dist = (maxX - minX) / count;
+
+                int y = 0;
+                double holdValue = minX;
+                foreach (var lightViewModel in SelectedItems.OrderBy(x => x.X))
+                {
+                    if (y != 0)
+                    {
+                        holdValue += dist;
+                        lightViewModel.X = holdValue;
+                    }
+
+                    y++;
+                }
+
+            }
+           
+        }
+
+        public void DistributeVertically()
+        {
+            if (SelectedItems.Count > 2)
+            {
+                var minY = SelectedItems.Min(x => x.LightNode.Y);
+                var maxY = SelectedItems.Max(x => x.LightNode.Y);
+                var count = SelectedItems.Count - 1;
+
+                var dist = (maxY - minY) / count;
+
+                int y = 0;
+                double holdValue = minY;
+                foreach (var lightViewModel in SelectedItems.OrderBy(x => x.Y))
+                {
+                    if (y != 0)
+                    {
+                        holdValue += dist;
+                        lightViewModel.Y = holdValue;
+                    }
+
+                    y++;
+                }
+
+            }
+        }
         #region Commands
 
         public RelayCommand<Point> AddLightCommand { get; private set; }
 
         public RelayCommand<Transform> TransformCommand { get; private set; }
+
+        #region Alignment Commands
+
+        public RelayCommand AlignLeftCommand { get; private set; }
+        public RelayCommand AlignRightCommand { get; private set; }
+        public RelayCommand AlignTopsCommand { get; private set; }
+        public RelayCommand AlignBottomsCommand { get; private set; }
+        public RelayCommand DistributeHorizontallyCommand { get; private set; }
+        public RelayCommand DistributeVerticallyCommand { get; private set; }
+
+
+        #endregion
 
         #endregion
 

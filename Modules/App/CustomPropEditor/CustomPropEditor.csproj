@@ -111,6 +111,7 @@
     <Compile Include="Adorners\RubberbandAdorner.cs" />
     <Compile Include="Controls\IGroupable.cs" />
     <Compile Include="Controls\PropDesignerCanvas.cs" />
+    <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Model\TransformArgs.cs" />
     <Compile Include="ViewModel\ISelectable.cs" />
     <Compile Include="Controls\PropDesigner.cs" />
@@ -178,7 +179,20 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\buttonAlignBottom.png" />
+    <Resource Include="Images\buttonAlignHorizMid.png" />
+    <Resource Include="Images\buttonAlignLeft.png" />
+    <Resource Include="Images\buttonAlignRight.png" />
+    <Resource Include="Images\buttonAlignTop.png" />
+    <Resource Include="Images\buttonAlignVertMid.png" />
+    <Resource Include="Images\buttonDistributeHorizontal.png" />
+    <Resource Include="Images\buttonDistributeVertical.png" />
+    <Resource Include="Images\buttonSelect.png" />
+    <Resource Include="Images\cut.png" />
+    <Resource Include="Images\copy.png" />
+    <Resource Include="Images\paste.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

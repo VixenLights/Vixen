@@ -142,28 +142,32 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 if (l != null)
                 {
                     _isSelecting = true;
-                    
-                    
-                    //if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-                    //{
-                    //    ClearSelections();
-                    //    SelectedItems.Add(l);
-                    //    l.IsSelected = true;
-                    //}
-                    //else
-                    //{
-                    //    if (l.IsSelected)
-                    //    {
-                    //        l.IsSelected = false;
-                    //        SelectedItems.Remove(l);
-                    //    }
-                    //    else
-                    //    {
-                    //        SelectedItems.Add(l);
-                    //        l.IsSelected = true;
-                    //    }
-                    //}
-                    
+
+
+                    if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    {
+                        if (!l.IsSelected)
+                        {
+                            ClearSelections();
+                            SelectedItems.Add(l);
+                            l.IsSelected = true;
+                        }
+                        
+                    }
+                    else
+                    {
+                        if (l.IsSelected)
+                        {
+                            l.IsSelected = false;
+                            SelectedItems.Remove(l);
+                        }
+                        else
+                        {
+                            SelectedItems.Add(l);
+                            l.IsSelected = true;
+                        }
+                    }
+
                 }
                 e.Handled = false;
             }
@@ -235,7 +239,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
            
         }
 
-        private void MoveSelectedItems(double xDelta, double yDelta)
+        internal void MoveSelectedItems(double xDelta, double yDelta)
         {
             TransformCommand.Execute(new TranslateTransform(xDelta, yDelta));
             UpdateResizeAdorner();
@@ -244,6 +248,12 @@ namespace VixenModules.App.CustomPropEditor.Controls
         internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
         {
             TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
+            UpdateResizeAdorner();
+        }
+
+        internal void RotateSelectedItems(double angle, Point center)
+        {
+            TransformCommand.Execute(new RotateTransform(angle, center.X, center.Y));
             UpdateResizeAdorner();
         }
 
@@ -265,41 +275,41 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
                 e.Handled = true;
             }
-            else
-            {
-                if (!_propEditorViewModel.DrawingPanelViewModel.IsDrawing && !_dragging && e.Source is Path)
-                {
-                    var p = e.Source as Path;
-                    var l = p.DataContext as ISelectable;
-                    if (l != null)
-                    {
-                        _isSelecting = true;
-                        //if (!l.IsSelected)
-                        //{
-                        if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-                        {
-                            ClearSelections();
-                            SelectedItems.Add(l);
-                            l.IsSelected = true;
-                        }
-                        else
-                        {
-                            if (l.IsSelected)
-                            {
-                                l.IsSelected = false;
-                                SelectedItems.Remove(l);
-                            }
-                            else
-                            {
-                                SelectedItems.Add(l);
-                                l.IsSelected = true;
-                            }
-                        }
-                        //}
-                    }
-                    e.Handled = false;
-                }
-            }
+            //else
+            //{
+            //    if (!_propEditorViewModel.DrawingPanelViewModel.IsDrawing && !_dragging && e.Source is Path)
+            //    {
+            //        var p = e.Source as Path;
+            //        var l = p.DataContext as ISelectable;
+            //        if (l != null)
+            //        {
+            //            _isSelecting = true;
+            //            //if (!l.IsSelected)
+            //            //{
+            //            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            //            {
+            //                ClearSelections();
+            //                SelectedItems.Add(l);
+            //                l.IsSelected = true;
+            //            }
+            //            else
+            //            {
+            //                if (l.IsSelected)
+            //                {
+            //                    l.IsSelected = false;
+            //                    SelectedItems.Remove(l);
+            //                }
+            //                else
+            //                {
+            //                    SelectedItems.Add(l);
+            //                    l.IsSelected = true;
+            //                }
+            //            }
+            //            //}
+            //        }
+            //        e.Handled = false;
+            //    }
+            //}
             _dragging = false;
             UpdateResizeAdorner();
         }

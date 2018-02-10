@@ -26,9 +26,12 @@
                 </MenuItem>
                 <MenuItem Header="Select All"/>
             </ContextMenu>
+
+            
+
         </ResourceDictionary>
 
-
+        
 
     </Window.Resources>
 
@@ -70,7 +73,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
             <views:ElementTree Grid.Column="0" Grid.Row="0"/>
             <Grid Grid.Column="0" Grid.Row="1">
@@ -79,7 +83,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
@@ -106,27 +110,41 @@
             </Grid>
 
             <!--<GroupBox Header="Prop Diagram" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" >-->
-                <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                <DockPanel Grid.Column="1" Grid.Row="0">
                 <ToolBarTray DockPanel.Dock="Top">
                     <ToolBar>
-                        <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Enable draw mode" 
-                                      Content="Draw">
-                            <!--<Image Source="/WpfTutorialSamples;component/Images/cut.png" />-->
+                        <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Enable draw mode">
+                            <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="16"/>
                         </ToggleButton>
                         
                         <Separator />
-                        <Button Command="Copy" ToolTip="Align Lefts">
-                            <!--<Image Source="/WpfTutorialSamples;component/Images/copy.png" />-->
+                        <Button Command="Copy" ToolTip="Cut">
+                                <Image Source="/CustomPropEditor;component/Images/cut.png" Height="16"/>
                         </Button>
-                        <Button Command="Paste" ToolTip="Align Middle">
-                            
-                            <!--<Image Source="/WpfTutorialSamples;component/Images/paste.png" />-->
-                           
+                        <Button Command="Paste" ToolTip="Copy">
+                                <Image Source="/CustomPropEditor;component/Images/copy.png" Height="16"/>
+                            </Button>
+                        <Button Command="Paste" ToolTip="Paste">
+                                <Image Source="/CustomPropEditor;component/Images/paste.png" Height="16"/>
+                            </Button>
+                        <Separator />
+                            <Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="16"/>
                         </Button>
-                        <Button Command="Paste" ToolTip="Align Rights">
-
-                            <!--<Image Source="/WpfTutorialSamples;component/Images/paste.png" />-->
-
+                            <Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="16"/>
+                        </Button>
+                            <Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top">
+                            <Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="16"/>
+                        </Button>
+                            <Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom">
+                            <Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="16"/>
+                        </Button>
+                            <Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal">
+                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="16"/>
+                        </Button>
+                            <Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical">
+                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="16"/>
                         </Button>
                         </ToolBar>
                 </ToolBarTray>

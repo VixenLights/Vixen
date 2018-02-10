@@ -4,12 +4,13 @@
     xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
     xmlns:vm="clr-namespace:VixenModules.App.CustomPropEditor.ViewModel"
     xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
-    xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.WPF.DragDrop"
     xmlns:a="clr-namespace:VixenModules.App.CustomPropEditor.Adorners">
 
 
-    
 
+    
+    
+   
 
 
     <!--<DataTemplate x:Key="DefaultGeometryTemplate" DataType="{x:Type Geometry}">
@@ -76,34 +77,7 @@
         
     </Style>-->
 
-    <a:NegativeConverter x:Key="NegativeConverter" />
-    <Style TargetType="{x:Type a:ResizingAdorner}" >
-        <Setter Property="Template" >
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type a:ResizingAdorner}" >
-                    <Canvas Background="{TemplateBinding Background}" IsEnabled="{TemplateBinding IsEnabled}">
-
-                        <Thumb Name="PART_THUMB_MOVE" Width="{Binding Width}" Height="{Binding Height}" >
-                            <Thumb.Template>
-                                <ControlTemplate TargetType="{x:Type Thumb}" >
-                                    <Border Background="Transparent" >
-                                        <ContentPresenter />
-                                    </Border>
-                                </ControlTemplate>
-                            </Thumb.Template>
-                        </Thumb>
-                        <Thumb Name="PART_THUMB_NW" Canvas.Left="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Canvas.Top="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Width="{TemplateBinding HandleSize}" Height="{TemplateBinding HandleSize}" Cursor="SizeNWSE"  />
-                        <Thumb Name="PART_THUMB_NE" Canvas.Left="{Binding Width}" Canvas.Top="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Width="{TemplateBinding HandleSize}" Height="{TemplateBinding HandleSize}" Cursor="SizeNESW"  />
-                        <Thumb Name="PART_THUMB_SW" Canvas.Left="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Canvas.Top="{Binding Height}" Width="{TemplateBinding HandleSize}" Height="{TemplateBinding HandleSize}" Cursor="SizeNESW" />
-                        <Thumb Name="PART_THUMB_SE" Canvas.Left="{Binding Width}" Canvas.Top="{Binding Height}" Width="{TemplateBinding HandleSize}" Height="{TemplateBinding HandleSize}" Cursor="SizeNWSE"  />
-
-                    </Canvas>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
+    
     <!--<ControlTemplate x:Key="ResizeControlAdornerTemplate" TargetType="{x:Type a:ResizingAdorner}">
         <Canvas Background="Transparent">
             <Thumb Name="PART_THUMB_NW" Canvas.Left="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Canvas.Top="{TemplateBinding HandleSize, Converter={StaticResource NegativeConverter}}" Width="{TemplateBinding HandleSize}" Height="{TemplateBinding HandleSize}" Cursor="SizeNWSE"  />
