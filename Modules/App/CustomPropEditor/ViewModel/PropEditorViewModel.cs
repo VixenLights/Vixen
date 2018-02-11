@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Common.WPFCommon.Command;
 using Common.WPFCommon.ViewModel;
@@ -13,9 +14,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	{
 	    private Prop _prop;
 	    private DrawingPanelViewModel _drawingPanelViewModel;
-	    
+	    private ObservableCollection<ElementCandidate> _selectedElementCandidates;
+
 	    public PropEditorViewModel()
 	    {
+            SelectedElementCandidates = new ObservableCollection<ElementCandidate>();
 	        DrawingPanelViewModel = new DrawingPanelViewModel();
             ImportCommand = new RelayCommand<string>(ImportModel);
 	        NewPropCommand = new RelayCommand(NewProp);
@@ -41,7 +44,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        }
 	    }
 
-	    public ElementCandidate SelectedElementCandidate { get; set; }
+	    public ObservableCollection<ElementCandidate> SelectedElementCandidates
+	    {
+	        get { return _selectedElementCandidates; }
+	        set
+	        {
+	            if (Equals(value, _selectedElementCandidates)) return;
+	            _selectedElementCandidates = value;
+	            OnPropertyChanged(nameof(SelectedElementCandidates));
+	        }
+	    }
 
 	    public DrawingPanelViewModel DrawingPanelViewModel
 	    {

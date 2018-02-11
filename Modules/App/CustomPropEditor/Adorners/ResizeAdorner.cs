@@ -90,10 +90,14 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             get { return _bounds; }
             set
             {
-                _bounds = value;
+                if (_rotate!= null && !_rotate.IsDragging)
+                {
+                    _bounds = value;
+                }
                 InvalidateArrange();
                 InvalidateMeasure();
                 InvalidateVisual();
+                
             }
         }
 
@@ -240,8 +244,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             _rotationAngle = _rotationAngle % 360;
 
             rt.Angle = _rotationAngle;
-
-
             vm.RotateSelectedItems(angle, center);
             
         }
@@ -285,6 +287,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             //_rotate.RenderTransform = new RotateTransform(_rotationAngle, center.X, center.Y);
             //_rotate.RenderTransformOrigin = center;
             // Return the final size.
+
+            
+
             return finalSize;
         }
 
@@ -332,9 +337,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
         public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
         {
-
+            Console.Out.WriteLine("Get Transform");
             GeneralTransformGroup result = new GeneralTransformGroup();
-            result.Children.Add(base.GetDesiredTransform(transform));
+            result.Children.Add(transform);
             result.Children.Add(rt);
             return result;
 

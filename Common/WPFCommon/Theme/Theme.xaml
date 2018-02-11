@@ -14,6 +14,8 @@
     <Color x:Key="BackColor">#444444</Color>
     <Color x:Key="BorderColor">#888888</Color>
 
+    <Color x:Key="GreenColor">#00FF00</Color>
+
     <SolidColorBrush x:Key="ForeColorBrush" Color="{StaticResource ForeColor}"/>
     <SolidColorBrush x:Key="ForeColorDisabledBrush" Color="{StaticResource ForeColorDisabled}"/>
     <SolidColorBrush x:Key="BackColorBrush" Color="{StaticResource BackColor}"/>
@@ -24,6 +26,8 @@
     <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
     <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
     <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+
+    <SolidColorBrush x:Key="GreenBrush" Color="#FF00FF00"/>
 
 
     <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
@@ -181,6 +185,7 @@
                             <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
                             <Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
                         </MultiTrigger>
+                        
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
                         </Trigger>

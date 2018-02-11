@@ -11,7 +11,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	{
 		private Bitmap _image;
 	    private string _name;
-	    private ElementCandidate _rootNode = new ElementCandidate();
+	    private ElementCandidate _rootNode;
 	    private int _height;
 	    private int _width;
 
@@ -117,7 +117,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        get { return new ObservableCollection<ElementCandidate>(new []{_rootNode}); }
 	    }
 
-	    public void AddElementCandidate(ElementCandidate ec)
+        public void AddElementCandidate(ElementCandidate ec)
 	    {
             _rootNode.Children.Add(ec);
 	    }

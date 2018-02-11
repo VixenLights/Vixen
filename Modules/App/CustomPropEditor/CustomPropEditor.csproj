@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Adorners\ResizeAdorner.cs" />
     <Compile Include="Adorners\RubberbandAdorner.cs" />
+    <Compile Include="Controls\FakeBehavior.cs" />
     <Compile Include="Controls\IGroupable.cs" />
     <Compile Include="Controls\PropDesignerCanvas.cs" />
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
