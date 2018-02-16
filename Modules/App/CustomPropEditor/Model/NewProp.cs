@@ -53,14 +53,14 @@ namespace VixenModules.App.CustomPropEditor.Model
             {
                 Name = "Px-1"
             };
-            model.Lights.Add(new LightNode(new Point(10, 20), 6));
+            model.Lights.Add(new Light(new Point(10, 20), 6));
             branch1.Children.Add(model);
 
             model = new ElementCandidate
             {
                 Name = "Px-2"
             };
-            model.Lights.Add(new LightNode(new Point(20, 20), 6));
+            model.Lights.Add(new Light(new Point(20, 20), 6));
             branch1.Children.Add(model);
 
             var branch2 = new ElementCandidate
@@ -74,14 +74,14 @@ namespace VixenModules.App.CustomPropEditor.Model
             {
                 Name = "Px-3"
             };
-            model.Lights.Add(new LightNode(new Point(30, 20), 6));
+            model.Lights.Add(new Light(new Point(30, 20), 6));
             branch2.Children.Add(model);
 
             model = new ElementCandidate
             {
                 Name = "Px-4"
             };
-            model.Lights.Add(new LightNode(new Point(40, 20), 6));
+            model.Lights.Add(new Light(new Point(40, 20), 6));
             branch2.Children.Add(model);
 
             var branch3 = new ElementCandidate
@@ -94,14 +94,14 @@ namespace VixenModules.App.CustomPropEditor.Model
             {
                 Name = "Px-5"
             };
-            model.Lights.Add(new LightNode(new Point(40, 10), 6));
+            model.Lights.Add(new Light(new Point(40, 10), 6));
             branch3.Children.Add(model);
 
             model = new ElementCandidate
             {
                 Name = "Px-6"
             };
-            model.Lights.Add(new LightNode(new Point(40, 40), 6));
+            model.Lights.Add(new Light(new Point(40, 40), 6));
             branch3.Children.Add(model);
 
             //OnPropertyChanged("ElementCandidates");
@@ -132,7 +132,7 @@ namespace VixenModules.App.CustomPropEditor.Model
             //_rootNode.Children.AddRange(elementCandidates);
         }
 
-        public LightNode LightNode { get; set; }
+        public Light Light { get; set; }
 
         public string Name
         {

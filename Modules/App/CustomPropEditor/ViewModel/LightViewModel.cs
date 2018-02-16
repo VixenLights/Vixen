@@ -9,9 +9,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
     public class LightViewModel : ViewModelBase, ISelectable
     {
-        public LightViewModel(LightNode ln)
+        public LightViewModel(Light ln)
         {
-            LightNode = ln;
+            Light = ln;
         }
 
         public override string Title { get { return "Light"; } }
@@ -22,16 +22,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// Gets or sets the LightNode value.
         /// </summary>
         [Model]
-        public LightNode LightNode
+        public Light Light
         {
-            get { return GetValue<LightNode>(LightNodeProperty); }
+            get { return GetValue<Light>(LightNodeProperty); }
             private set { SetValue(LightNodeProperty, value); }
         }
 
         /// <summary>
         /// LightNode property data.
         /// </summary>
-        public static readonly PropertyData LightNodeProperty = RegisterProperty("LightNode", typeof(LightNode));
+        public static readonly PropertyData LightNodeProperty = RegisterProperty("LightNode", typeof(Light));
 
         #endregion
 

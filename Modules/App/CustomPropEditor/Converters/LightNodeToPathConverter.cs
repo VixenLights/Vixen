@@ -11,7 +11,7 @@ namespace VixenModules.App.CustomPropEditor.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            LightNode ln = value as LightNode;
+            Light ln = value as Light;
             Geometry g = null;
             if (ln != null)
             {

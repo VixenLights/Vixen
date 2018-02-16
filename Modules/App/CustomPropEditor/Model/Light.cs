@@ -1,22 +1,34 @@
-﻿using System.Windows;
-using System.Windows.Media.Media3D;
+﻿using System;
+using System.Windows;
 using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
-    public class LightNode : BindableBase
+    public class Light : BindableBase
     {
 
         private double _size;
         private double _y;
         private double _x;
         private double _z;
+        private Guid _id;
 
-        public LightNode(Point center, double size)
+        public Light(Point center, double size)
         {
             X = center.X;
             Y = center.Y;
             _size = size;
+        }
+
+        public Guid Id
+        {
+            get { return _id; }
+            set
+            {
+                if (value.Equals(_id)) return;
+                _id = value;
+                OnPropertyChanged(nameof(Id));
+            }
         }
 
         public double Y

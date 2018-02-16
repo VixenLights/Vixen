@@ -182,6 +182,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             LightNodes.Add(new LightViewModel(ln));
         }
 
+        public void DeleteSelectedLights()
+        {
+            foreach (var lightViewModel in SelectedItems)
+            {
+                
+            }
+        }
+
+        private ElementCandidate FindElementCandidateForLightNode()
+        {
+
+        }
+
         public void Transform(Transform t)
         {
             foreach (LightViewModel lvm in SelectedItems)
@@ -200,7 +213,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             var ln = SelectedItems.First();
             foreach (var lightViewModel in SelectedItems)
             {
-                lightViewModel.LightNode.Y = ln.Y;
+                lightViewModel.Light.Y = ln.Y;
             }
         }
 
@@ -209,7 +222,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             var ln = SelectedItems.First();
             foreach (var lightViewModel in SelectedItems)
             {
-                lightViewModel.LightNode.Y = ln.Y;
+                lightViewModel.Light.Y = ln.Y;
             }
         }
 
@@ -218,7 +231,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             var ln = SelectedItems.First();
             foreach (var lightViewModel in SelectedItems)
             {
-                lightViewModel.LightNode.X = ln.X;
+                lightViewModel.Light.X = ln.X;
             }
         }
 
@@ -227,7 +240,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             var ln = SelectedItems.First();
             foreach (var lightViewModel in SelectedItems)
             {
-                lightViewModel.LightNode.X = ln.X;
+                lightViewModel.Light.X = ln.X;
             }
         }
 
@@ -235,8 +248,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         {
             if (SelectedItems.Count > 2)
             {
-                var minX = SelectedItems.Min(x => x.LightNode.X);
-                var maxX = SelectedItems.Max(x => x.LightNode.X);
+                var minX = SelectedItems.Min(x => x.Light.X);
+                var maxX = SelectedItems.Max(x => x.Light.X);
                 var count = SelectedItems.Count - 1;
 
                 var dist = (maxX - minX) / count;
@@ -262,8 +275,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         {
             if (SelectedItems.Count > 2)
             {
-                var minY = SelectedItems.Min(x => x.LightNode.Y);
-                var maxY = SelectedItems.Max(x => x.LightNode.Y);
+                var minY = SelectedItems.Min(x => x.Light.Y);
+                var maxY = SelectedItems.Max(x => x.Light.Y);
                 var count = SelectedItems.Count - 1;
 
                 var dist = (maxY - minY) / count;

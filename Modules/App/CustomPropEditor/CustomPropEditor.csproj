@@ -113,7 +113,12 @@
     <Compile Include="Controls\IGroupable.cs" />
     <Compile Include="Controls\PropDesignerCanvas.cs" />
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
+    <Compile Include="Model\BindableGroupNode.cs" />
+    <Compile Include="Model\ElementModel.cs" />
+    <Compile Include="Model\ElementModelManager.cs" />
+    <Compile Include="Model\ElementModelNodeManager.cs" />
     <Compile Include="Model\TransformArgs.cs" />
+    <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="ViewModel\ISelectable.cs" />
     <Compile Include="Controls\PropDesigner.cs" />
     <Compile Include="Converters\LightNodeToPathConverter.cs" />
@@ -135,7 +140,7 @@
     </Compile>
     <Compile Include="Model\ElementCandidate.cs" />
     <Compile Include="Model\ElementModelNode.cs" />
-    <Compile Include="Model\LightNode.cs" />
+    <Compile Include="Model\Light.cs" />
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FileService.cs" />

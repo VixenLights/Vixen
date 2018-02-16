@@ -9,7 +9,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 {
 	public class ElementCandidate : BindableBase, IEqualityComparer<ElementCandidate>, IEquatable<ElementCandidate>
 	{
-	    private ObservableCollection<LightNode> _lights;
+	    private ObservableCollection<Light> _lights;
 	    private ObservableCollection<ElementCandidate> _children;
 	    private int _order;
 	    private int _lightCount;
@@ -17,7 +17,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 	    public ElementCandidate()
 		{
-			Lights = new ObservableCollection<LightNode>();
+			Lights = new ObservableCollection<Light>();
             Children = new ObservableCollection<ElementCandidate>();
 		}
 
@@ -50,7 +50,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        }
 	    }
 
-	    public ObservableCollection<LightNode> Lights
+	    public ObservableCollection<Light> Lights
 		{
 			get { return _lights; }
 			set
@@ -63,9 +63,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
-	    public LightNode AddLight(Point center, double size)
+	    public Light AddLight(Point center, double size)
 	    {
-            var ln = new LightNode(center, size);
+            var ln = new Light(center, size);
             Lights.Add(ln);
 	        OnPropertyChanged("IsString");
 	        OnPropertyChanged("LightCount");

@@ -93,10 +93,11 @@ namespace VixenModules.App.CustomPropEditor.Adorners
                 if (_rotate!= null && !_rotate.IsDragging)
                 {
                     _bounds = value;
+                    InvalidateArrange();
+                    InvalidateMeasure();
+                    InvalidateVisual();
                 }
-                InvalidateArrange();
-                InvalidateMeasure();
-                InvalidateVisual();
+                
                 
             }
         }
