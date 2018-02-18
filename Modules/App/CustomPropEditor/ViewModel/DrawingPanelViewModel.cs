@@ -5,24 +5,26 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Catel.Collections;
+using Catel.Data;
+using Catel.MVVM;
 using Common.WPFCommon.Command;
 using Common.WPFCommon.ViewModel;
 using VixenModules.App.CustomPropEditor.Model;
 
 namespace VixenModules.App.CustomPropEditor.ViewModel
 {
-    public class DrawingPanelViewModel : BindableBase
+    public class DrawingPanelViewModel : ViewModelBase
     {
         private Prop _prop;
         private ObservableCollection<LightViewModel> _lightNodes;
-        private ObservableCollection<LightViewModel> _selectedItems;
         private bool _isDrawing;
         private bool _isSelected;
         private double _width;
         private double _height;
         private double _x;
         private double _y;
-        
+        private Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 
         public DrawingPanelViewModel():this(new Prop())
         {
@@ -31,11 +33,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         public DrawingPanelViewModel(Prop p)
         {
+            _elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
+            LightNodes = new ObservableCollection<LightViewModel>();
             Prop = p;
             Width = 30;
             Height = 30;
             X = 20;
             Y = 20;
+            
             AddLightCommand = new RelayCommand<Point>(AddLightAt);
             TransformCommand = new RelayCommand<Transform>(Transform);
 
@@ -69,123 +74,203 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #region Properties
 
+        #region Prop model property
+
+        /// <summary>
+        /// Gets or sets the Prop value.
+        /// </summary>
+        [Model]
         public Prop Prop
         {
-            get { return _prop; }
-            set
+            get { return GetValue<Prop>(PropProperty); }
+            private set
             {
-                if (Equals(value, _prop)) return;
-                _prop = value;
-                OnPropertyChanged("Prop");
-                InitializeModel();
+                SetValue(PropProperty, value);
+                InitializeLightViewModels();
             }
         }
 
-        public ObservableCollection<LightViewModel> SelectedItems { get; set; }
-
-        public ObservableCollection<LightViewModel> LightNodes
-        {
-            get { return _lightNodes; }
-            set
-            {
-                if (Equals(value, _lightNodes)) return;
-                _lightNodes = value;
-                OnPropertyChanged("LightNodes");
-            }
-        }
-
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                if (value == _isSelected) return;
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
-            }
-        }
-
-        public double Width
-        {
-            get { return _width; }
-            set
-            {
-                if (value.Equals(_width)) return;
-                _width = value;
-                OnPropertyChanged("Width");
-            }
-        }
-
-        public double Height
-        {
-            get { return _height; }
-            set
-            {
-                if (value.Equals(_height)) return;
-                _height = value;
-                OnPropertyChanged("Height");
-            }
-        }
-
-        public double X
-        {
-            get { return _x; }
-            set
-            {
-                if (value.Equals(_x)) return;
-                _x = value;
-                OnPropertyChanged("X");
-            }
-        }
-
-        public double Y
-        {
-            get { return _y; }
-            set
-            {
-                if (value.Equals(_y)) return;
-                _y = value;
-                OnPropertyChanged("Y");
-            }
-        }
-
-
-        public bool IsDrawing
-        {
-            get { return _isDrawing; }
-            set
-            {
-                if (value == _isDrawing) return;
-                _isDrawing = value;
-                IsSelected = !value;
-                OnPropertyChanged("IsDrawing");
-            }
-        }
+        /// <summary>
+        /// Prop property data.
+        /// </summary>
+        public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
 
         #endregion
 
+        public ObservableCollection<LightViewModel> SelectedItems { get; set; }
 
-        private void InitializeModel()
+        #region LightNodes property
+
+        /// <summary>
+        /// Gets or sets the LightNodes value.
+        /// </summary>
+        public ObservableCollection<LightViewModel> LightNodes
         {
-            LightNodes = new ObservableCollection<LightViewModel>(Prop.GetLeafNodes().SelectMany(x => x.Lights)
-                .Select(x => new LightViewModel(x)));
+            get { return GetValue<ObservableCollection<LightViewModel>>(LightNodesProperty); }
+            set { SetValue(LightNodesProperty, value); }
+        }
 
-            
-            //ElementCandidateViewModels = new ObservableCollection<ElementCandidateViewModel>(Prop.ElementCandidates.Select(x => new ElementCandidateViewModel(x)));
+        /// <summary>
+        /// LightNodes property data.
+        /// </summary>
+        public static readonly PropertyData LightNodesProperty = RegisterProperty("LightNodes", typeof(ObservableCollection<LightViewModel>));
+
+        #endregion
+
+        #region Width property
+
+        /// <summary>
+        /// Gets or sets the Width value.
+        /// </summary>
+        public double Width
+        {
+            get { return GetValue<double>(WidthProperty); }
+            set { SetValue(WidthProperty, value); }
+        }
+
+        /// <summary>
+        /// Width property data.
+        /// </summary>
+        public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double));
+
+        #endregion
+
+        #region Height property
+
+        /// <summary>
+        /// Gets or sets the Height value.
+        /// </summary>
+        public double Height
+        {
+            get { return GetValue<double>(HeightProperty); }
+            set { SetValue(HeightProperty, value); }
+        }
+
+        /// <summary>
+        /// Height property data.
+        /// </summary>
+        public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double));
+
+        #endregion
+
+        #region X property
+
+        /// <summary>
+        /// Gets or sets the X value.
+        /// </summary>
+        public double X
+        {
+            get { return GetValue<double>(XProperty); }
+            set { SetValue(XProperty, value); }
+        }
+
+        /// <summary>
+        /// X property data.
+        /// </summary>
+        public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double));
+
+        #endregion
+
+        #region Y property
+
+        /// <summary>
+        /// Gets or sets the Y value.
+        /// </summary>
+        public double Y
+        {
+            get { return GetValue<double>(YProperty); }
+            set { SetValue(YProperty, value); }
+        }
+
+        /// <summary>
+        /// Y property data.
+        /// </summary>
+        public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double));
+
+        #endregion
+
+        #region IsDrawing property
+
+        /// <summary>
+        /// Gets or sets the IsDrawing value.
+        /// </summary>
+        public bool IsDrawing
+        {
+            get { return GetValue<bool>(IsDrawingProperty); }
+            set { SetValue(IsDrawingProperty, value); }
+        }
+
+        /// <summary>
+        /// IsDrawing property data.
+        /// </summary>
+        public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
+
+        #endregion
+
+        #endregion Properties
+
+        private void InitializeLightViewModels()
+        {
+            _elementModelMap.Clear();
+            LightNodes.Clear();
+            foreach (var elementModel in Prop.GetLeafNodes())
+            {
+               LightNodes.AddRange(CreateLightViewModels(elementModel));
+            }
+        }
+
+        private List<LightViewModel> CreateLightViewModels(ElementModel em)
+        {
+            var lvmList = em.Lights.Select(x => new LightViewModel(x)).ToList();
+            _elementModelMap.Add(em.Id, lvmList);
+            return lvmList;
         }
 
         public void AddLightAt(Point p)
         {
-            var ec = new ElementModel("New One");
-            var ln = ec.AddLight(p);
-            Prop.AddElementModel(ec);
-            LightNodes.Add(new LightViewModel(ln));
+            var em = new ElementModel("New One");
+            em.AddLight(p);
+            Prop.AddElementModel(em);
+            LightNodes.AddRange(CreateLightViewModels(em));
         }
 
         public void DeleteSelectedLights()
         {
             foreach (var lightViewModel in SelectedItems)
             {
+                
+            }
+        }
+
+        public void DeselectAll()
+        {
+            LightNodes.ForEach(l => l.IsSelected = false);
+            SelectedItems.Clear();
+        }
+
+        public void SelectLights(IEnumerable<ElementModel> em)
+        {
+            DeselectAll();
+            SelectLightsForElementModels(em);
+        }
+
+        private void SelectLightsForElementModels(IEnumerable<ElementModel> em)
+        {
+            foreach (var elementModel in em)
+            {
+                if (!elementModel.IsLeaf)
+                {
+                    SelectLightsForElementModels(elementModel.Children);
+                }
+                else
+                {
+                    List<LightViewModel> lvmList;
+                    if (_elementModelMap.TryGetValue(elementModel.Id, out lvmList))
+                    {
+                        lvmList.ForEach(l => l.IsSelected = true);
+                        SelectedItems.AddRange(lvmList);
+                    }
+                }
                 
             }
         }
@@ -197,8 +282,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
                 if (lvm.IsSelected)
                 {
                     lvm.Center = t.Transform(lvm.Center);
-                    //lvm.X += delta.X;
-                    //lvm.Y += delta.Y;
                 }
             }
         }
@@ -314,3 +397,4 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
     }
 }
+

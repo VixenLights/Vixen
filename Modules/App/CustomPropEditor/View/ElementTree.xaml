@@ -137,12 +137,6 @@
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type model:ElementModel}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}">
-                            <!--<TextBlock.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Create Group"></MenuItem>
-                                    <MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
-                                </ContextMenu>
-                            </TextBlock.ContextMenu>-->
                         </TextBlock>
                         <TextBlock Margin="5,2,0,2" Text="{Binding Order, StringFormat=({0:G})}" 
                                    Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter }}">

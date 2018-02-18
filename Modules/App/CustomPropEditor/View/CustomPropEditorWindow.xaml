@@ -94,44 +94,7 @@
                         </ResourceDictionary>
                     </wpfPropertyGrid:PropertyGrid.Resources>
                 </wpfPropertyGrid:PropertyGrid>
-                <!--<xctk:PropertyGrid Grid.Column="0" Grid.Row="1" 
-                                   AutoGenerateProperties="False" 
-                                   SelectedObject="{Binding ElementTreeViewModel.SelectedItem}"
-                                   ShowSearchBox="False"
-                                   ShowSortOptions="False"
-                                   ShowSummary="False"
-                                   >
-                    <xctk:PropertyGrid.PropertyDefinitions>
-                        <xctk:PropertyDefinition TargetProperties="Name" />
-                        <xctk:PropertyDefinition TargetProperties="Order" />
-                        <xctk:PropertyDefinition TargetProperties="IsString" />
-                        <xctk:PropertyDefinition TargetProperties="LightCount" />
-                    </xctk:PropertyGrid.PropertyDefinitions>
-                </xctk:PropertyGrid>-->
-
-                <!--<Grid Grid.Column="0" Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Name" Foreground="{StaticResource ForeColorBrush}"/>
-                    <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding ElementTreeViewModel.SelectedItem.Name}" />
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Order"/>
-                    <TextBox x:Name="Order" Grid.Column="1" Grid.Row="1" Text="{Binding ElementTreeViewModel.SelectedItem.Order}" IsEnabled="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter }}"/>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Is String"/>
-                    <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="2" Text="{Binding ElementTreeViewModel.SelectedItem.IsString, Mode=OneWay}" />
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Light Count"/>
-                    <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="3" Text="{Binding ElementTreeViewModel.SelectedItem.LightCount, Mode=OneWay}"/>
-                </Grid>-->
-
-                <!--<GroupBox Header="Prop Diagram" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" >-->
+               
                 <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
                     <ToolBarTray DockPanel.Dock="Top">
                         <ToolBar>
@@ -171,15 +134,11 @@
                         </ToolBar>
                     </ToolBarTray>
                     <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                        <!--<controls:PropDesignerCanvas Height="{Binding Prop.Height}" Width="{Binding Prop.Width}"
-                                                     LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}">
-                            <i:Interaction.Behaviors>
-                                <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
-                            </i:Interaction.Behaviors>
-                        </controls:PropDesignerCanvas>-->
                         <controls:PropDesigner x:Name="PropDesigner"
-                        LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
-                        TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}">
+                            LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
+                            TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
+                            IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}">
+                            
                             <i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
                             </i:Interaction.Behaviors>

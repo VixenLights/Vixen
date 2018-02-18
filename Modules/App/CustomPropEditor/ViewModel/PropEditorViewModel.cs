@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows;
 using Catel.Data;
 using Catel.MVVM;
@@ -15,26 +15,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
 	public class PropEditorViewModel: ViewModelBase
 	{
-	    private Prop _prop;
-	    private DrawingPanelViewModel _drawingPanelViewModel;
-	    private ObservableCollection<ElementModel> _selectedElementCandidates;
-
 	    public PropEditorViewModel()
 	    {
-            
 	        DrawingPanelViewModel = new DrawingPanelViewModel();
             ImportCommand = new RelayCommand<string>(ImportModel);
 	        NewPropCommand = new RelayCommand(NewProp);
             Prop = new Prop();
         }
-
-	    
-
-	    public async void LoadProp()
-	    {
-           
-	    }
-
+        
 	    #region Prop model property
 
 	    /// <summary>
@@ -47,8 +35,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        private set
 	        {
 	            SetValue(PropProperty, value);
+                UnregisterModelEvents();
 	            DrawingPanelViewModel = new DrawingPanelViewModel(value);
 	            ElementTreeViewModel = new ElementTreeViewModel(value);
+                RegisterModelEvents();
 	        }
 	    }
 
@@ -95,8 +85,38 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
 	    #endregion
 
-	   
-	    private async void ImportModel(string type)
+	    private void RegisterModelEvents()
+	    {
+            
+            ElementTreeViewModel.SelectedItems.CollectionChanged += ElementViewModel_SelectedItemsChanged;
+            DrawingPanelViewModel.SelectedItems.CollectionChanged += DrawingViewModel_SelectedItemsChanged;
+	    }
+
+	    private void UnregisterModelEvents()
+	    {
+	        if (ElementTreeViewModel != null)
+	        {
+	            ElementTreeViewModel.SelectedItems.CollectionChanged -= ElementViewModel_SelectedItemsChanged;
+	        }
+
+	        if (DrawingPanelViewModel != null)
+	        {
+	            DrawingPanelViewModel.SelectedItems.CollectionChanged -= DrawingViewModel_SelectedItemsChanged;
+	        }
+
+        }
+
+        private void DrawingViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+	    {
+	        
+	    }
+
+	    private void ElementViewModel_SelectedItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            DrawingPanelViewModel.SelectLights(ElementTreeViewModel.SelectedItems);
+        }
+
+        private async void ImportModel(string type)
 	    {
             IOService service = new FileService();
 	        string path = service.OpenFileDialog(Environment.SpecialFolder.MyDocuments.ToString(), "xModel (*.xmodel)|*.xmodel");

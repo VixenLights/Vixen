@@ -124,7 +124,6 @@
     <Compile Include="Adorners\RubberbandAdorner.cs" />
     <Compile Include="Controls\FakeBehavior.cs" />
     <Compile Include="Controls\IGroupable.cs" />
-    <Compile Include="Controls\PropDesignerCanvas.cs" />
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
@@ -157,14 +156,8 @@
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\IOService.cs" />
     <Compile Include="ViewModel\PropEditorViewModel.cs" />
-    <Compile Include="View\DrawingPanel.xaml.cs">
-      <DependentUpon>DrawingPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PropEditorView.xaml.cs">
-      <DependentUpon>PropEditorView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -180,15 +173,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\DrawingPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\ElementTree.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\PropEditorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

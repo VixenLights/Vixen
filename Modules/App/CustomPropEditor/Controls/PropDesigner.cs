@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -11,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Adorners;
-using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Controls
@@ -39,6 +37,15 @@ namespace VixenModules.App.CustomPropEditor.Controls
         {
             get { return (Point)GetValue(CoordinatesProperty); }
             set { SetValue(CoordinatesProperty, value);}
+        }
+
+        public static readonly DependencyProperty IsDrawingProperty =
+            DependencyProperty.Register("IsDrawing", typeof(bool), typeof(PropDesigner));
+
+        public bool IsDrawing
+        {
+            get { return (bool)GetValue(IsDrawingProperty); }
+            set { SetValue(IsDrawingProperty, value); }
         }
 
         public static readonly DependencyProperty LightNodeViewModelsSourceProperty =
@@ -106,7 +113,10 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
         private void PropDesigner_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateResizeAdorner();
+            if (!IsDrawing)
+            {
+                UpdateResizeAdorner();
+            }
         }
 
         private void _drawingCanvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -114,7 +124,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
             
         }
 
-        private void _drawingCanvas_MouseLeftMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void _drawingCanvas_MouseLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
             OnMouseLeftButtonDown(e);
 
@@ -135,7 +145,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 _isSelecting = false;
                 e.Handled = true;
             }
-            else if (!_propEditorViewModel.DrawingPanelViewModel.IsDrawing && e.Source is Path)
+            else if (!IsDrawing && e.Source is Path)
             {
                 var p = e.Source as Path;
                 var l = p.DataContext as ISelectable;
@@ -179,7 +189,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         {
             OnMouseMove(e);
 
-            if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
+            if (IsDrawing)
             {
                 return;
             }

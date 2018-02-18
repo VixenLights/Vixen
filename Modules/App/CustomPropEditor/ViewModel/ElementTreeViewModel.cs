@@ -10,14 +10,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
     public class ElementTreeViewModel:ViewModelBase
     {
-        
-        
-
         public ElementTreeViewModel(Prop prop)
         {
             Prop = prop;
             SelectedItems = new ObservableCollection<ElementModel>();
-            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged            ;
+            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
         }
 
 
