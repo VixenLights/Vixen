@@ -10,6 +10,11 @@
         xmlns:vm="clr-namespace:VixenModules.App.CustomPropEditor.ViewModel"
         xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
         xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
+        xmlns:converters="clr-namespace:VixenModules.App.CustomPropEditor.Converters"
+        xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+
+
         Title="Custom Prop Editor" Height="600" Width="800">
     <!--<views:PropEditorView></views:PropEditorView>-->
 
@@ -18,6 +23,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
+               
                 <!--<ResourceDictionary Source="..\Themes\Generic.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
             <ContextMenu x:Key="DesignerCanvasContextMenu">
@@ -28,20 +34,16 @@
                 </MenuItem>
                 <MenuItem Header="Select All"/>
             </ContextMenu>
-
-            
-
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:BoolToGridRowHeightConverter x:Key="BoolToGridRowHeightConverter"/>
         </ResourceDictionary>
-
-        
-
     </Window.Resources>
 
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadProp"/>
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -66,92 +68,108 @@
         </StatusBar>
         <Border BorderThickness="0 0 0 1" >
 
-        
-        <Grid Background="#444444">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
 
-            <views:ElementTree Grid.Column="0" Grid.Row="0"/>
-
-            
-                <Grid Grid.Column="0" Grid.Row="1">
+            <Grid Background="#444444">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <!--<Label Grid.Column="0" Grid.Row="0" Content="Name"/>
-                <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding SelectedItem.Name}" />
-                <Label Grid.Column="0" Grid.Row="1" Content="Is String"/>
-                <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="1" Text="{Binding SelectedItem.IsString, Mode=OneWay}" />
-                <Label Grid.Column="0" Grid.Row="2" Content="Light Count"/>
-                <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="2" Text="{Binding SelectedItem.LightCount, Mode=OneWay}"/>
-                <Label Grid.Column="0" Grid.Row="3" Content="Order"/>
-                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Order}"/>-->
 
-                <!--<Label Grid.Column="0" Grid.Row="0" Content="FOV"/>
-                <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding Camera.FieldOfView}" />
-                <Label Grid.Column="0" Grid.Row="1" Content="Position"/>
-                <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="1" Text="{Binding Camera.Position, Mode=OneWay}" />
-                <Label Grid.Column="0" Grid.Row="2" Content="Look At"/>
-                <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="2" Text="{Binding Camera.LookDirection, Mode=OneWay}"/>
-                <Label Grid.Column="0" Grid.Row="3" Content="Up Direction"/>
-                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding Camera.UpDirection}"/>-->
-            </Grid>
+                <views:ElementTree Grid.Column="0" Grid.Row="0"/>
+                <wpfPropertyGrid:PropertyGrid Grid.Row="1" Grid.Column="0"
+                                              ItemsSource="{Binding ElementTreeViewModel.SelectedItems}"
+                                              ShowAttachedProperties="False"
+                                              ShowReadOnlyProperties="True"
+                                              PropertyFilterVisibility="Hidden">
+                    <wpfPropertyGrid:PropertyGrid.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <wpfPropertyGrid:KaxamlTheme/>
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </wpfPropertyGrid:PropertyGrid.Resources>
+                </wpfPropertyGrid:PropertyGrid>
+                <!--<xctk:PropertyGrid Grid.Column="0" Grid.Row="1" 
+                                   AutoGenerateProperties="False" 
+                                   SelectedObject="{Binding ElementTreeViewModel.SelectedItem}"
+                                   ShowSearchBox="False"
+                                   ShowSortOptions="False"
+                                   ShowSummary="False"
+                                   >
+                    <xctk:PropertyGrid.PropertyDefinitions>
+                        <xctk:PropertyDefinition TargetProperties="Name" />
+                        <xctk:PropertyDefinition TargetProperties="Order" />
+                        <xctk:PropertyDefinition TargetProperties="IsString" />
+                        <xctk:PropertyDefinition TargetProperties="LightCount" />
+                    </xctk:PropertyGrid.PropertyDefinitions>
+                </xctk:PropertyGrid>-->
 
-            <!--<GroupBox Header="Prop Diagram" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" >-->
-                <DockPanel Grid.Column="1" Grid.Row="0">
-                <ToolBarTray DockPanel.Dock="Top">
-                    <ToolBar>
-                        <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Enable draw mode">
-                            <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="16"/>
-                        </ToggleButton>
-                        
-                        <Separator />
-                        <Button Command="Copy" ToolTip="Cut">
+                <!--<Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Name" Foreground="{StaticResource ForeColorBrush}"/>
+                    <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding ElementTreeViewModel.SelectedItem.Name}" />
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Order"/>
+                    <TextBox x:Name="Order" Grid.Column="1" Grid.Row="1" Text="{Binding ElementTreeViewModel.SelectedItem.Order}" IsEnabled="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter }}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Is String"/>
+                    <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="2" Text="{Binding ElementTreeViewModel.SelectedItem.IsString, Mode=OneWay}" />
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Light Count"/>
+                    <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="3" Text="{Binding ElementTreeViewModel.SelectedItem.LightCount, Mode=OneWay}"/>
+                </Grid>-->
+
+                <!--<GroupBox Header="Prop Diagram" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" >-->
+                <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                    <ToolBarTray DockPanel.Dock="Top">
+                        <ToolBar>
+                            <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Enable draw mode">
+                                <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="16"/>
+                            </ToggleButton>
+
+                            <Separator />
+                            <Button Command="Copy" ToolTip="Cut">
                                 <Image Source="/CustomPropEditor;component/Images/cut.png" Height="16"/>
-                        </Button>
-                        <Button Command="Paste" ToolTip="Copy">
+                            </Button>
+                            <Button Command="Paste" ToolTip="Copy">
                                 <Image Source="/CustomPropEditor;component/Images/copy.png" Height="16"/>
                             </Button>
-                        <Button Command="Paste" ToolTip="Paste">
+                            <Button Command="Paste" ToolTip="Paste">
                                 <Image Source="/CustomPropEditor;component/Images/paste.png" Height="16"/>
                             </Button>
-                        <Separator />
+                            <Separator />
                             <Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
                                 <Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="16"/>
-                        </Button>
+                            </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
                                 <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="16"/>
-                        </Button>
+                            </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top">
-                            <Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="16"/>
-                        </Button>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="16"/>
+                            </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom">
-                            <Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="16"/>
-                        </Button>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="16"/>
+                            </Button>
                             <Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal">
                                 <Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="16"/>
-                        </Button>
+                            </Button>
                             <Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical">
                                 <Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="16"/>
-                        </Button>
+                            </Button>
                         </ToolBar>
-                </ToolBarTray>
+                    </ToolBarTray>
                     <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <!--<controls:PropDesignerCanvas Height="{Binding Prop.Height}" Width="{Binding Prop.Width}"
                                                      LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}">
@@ -159,12 +177,12 @@
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
                             </i:Interaction.Behaviors>
                         </controls:PropDesignerCanvas>-->
-                    <controls:PropDesigner x:Name="PropDesigner"
+                        <controls:PropDesigner x:Name="PropDesigner"
                         LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                         TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}">
-                        <i:Interaction.Behaviors>
+                            <i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
-                        </i:Interaction.Behaviors>
+                            </i:Interaction.Behaviors>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ContentControl>
@@ -183,7 +201,7 @@
                                                 </Style>
 
                                             </Path.Style>
-                                        </Path> 
+                                        </Path>
                                     </ContentControl>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -202,9 +220,11 @@
                 </DockPanel>
                 <!--</GroupBox>-->
 
-            <GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
-        </Grid>
+                <GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+            </Grid>
         </Border>
     </DockPanel>
 </Window>
+
+
 

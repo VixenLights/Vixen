@@ -31,7 +31,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         public DrawingPanelViewModel(Prop p)
         {
-            Prop = Prop;
+            Prop = p;
             Width = 30;
             Height = 30;
             X = 20;
@@ -176,9 +176,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         public void AddLightAt(Point p)
         {
-            var ec = new ElementCandidate("New One");
-            var ln = ec.AddLight(p, 3);
-            Prop.AddElementCandidate(ec);
+            var ec = new ElementModel("New One");
+            var ln = ec.AddLight(p);
+            Prop.AddElementModel(ec);
             LightNodes.Add(new LightViewModel(ln));
         }
 
@@ -188,11 +188,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             {
                 
             }
-        }
-
-        private ElementCandidate FindElementCandidateForLightNode()
-        {
-
         }
 
         public void Transform(Transform t)

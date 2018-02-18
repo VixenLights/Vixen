@@ -58,6 +58,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
@@ -66,6 +71,7 @@
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
       <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
       <Name>WPFCommon</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -92,10 +98,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Controls.WpfPropertyGrid">
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Controls.WpfPropertyGrid.Themes">
+      <HintPath>..\..\..\Common\Libraries\System.Windows.Controls.WpfPropertyGrid.Themes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Catel.MVVM.5.2.0\lib\net46\System.Windows.Interactivity.dll</HintPath>
-      <Private>True</Private>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xaml" />
@@ -113,11 +126,10 @@
     <Compile Include="Controls\IGroupable.cs" />
     <Compile Include="Controls\PropDesignerCanvas.cs" />
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
-    <Compile Include="Model\BindableGroupNode.cs" />
-    <Compile Include="Model\ElementModel.cs" />
-    <Compile Include="Model\ElementModelManager.cs" />
-    <Compile Include="Model\ElementModelNodeManager.cs" />
+    <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
+    <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
     <Compile Include="Model\TransformArgs.cs" />
+    <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="ViewModel\ISelectable.cs" />
     <Compile Include="Controls\PropDesigner.cs" />
@@ -132,14 +144,13 @@
     <Compile Include="Model\NewProp.cs" />
     <Compile Include="Services\SelectionService.cs" />
     <Compile Include="ViewModel\DrawingPanelViewModel.cs" />
-    <Compile Include="ViewModel\ElementCandidateViewModel.cs" />
+    <Compile Include="ViewModel\ElementTreeViewModel.cs" />
     <Compile Include="ViewModel\LightViewModel.cs" />
     <Compile Include="ViewModel\MultiSelectionBehavior.cs" />
     <Compile Include="View\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\ElementCandidate.cs" />
-    <Compile Include="Model\ElementModelNode.cs" />
+    <Compile Include="Model\ElementModel.cs" />
     <Compile Include="Model\Light.cs" />
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

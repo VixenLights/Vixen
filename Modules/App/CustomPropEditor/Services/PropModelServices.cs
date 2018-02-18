@@ -4,15 +4,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 {
     public static class PropModelServices
     {
-        static PropModelServices()
-        { 
-            ElementModels= new ElementModelManager();
-            ElementModelNodes = new ElementModelNodeManager();
-        }
+        //static PropModelServices()
+        //{ 
+        //    ElementModels= new ElementModelManager();
+        //    ElementModelNodes = new ElementModelNodeManager();
+        //}
 
-        public static ElementModelManager ElementModels { get; set; }
+        //public static ElementModelManager ElementModels { get; set; }
 
-        public static ElementModelNodeManager ElementModelNodes { get; set; }
+        //public static ElementModelNodeManager ElementModelNodes { get; set; }
 
     }
 }

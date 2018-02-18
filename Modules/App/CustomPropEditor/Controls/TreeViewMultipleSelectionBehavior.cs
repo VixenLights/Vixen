@@ -281,7 +281,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         public void ToggleSingleItem(TreeViewItem treeViewItem)
         {
             SetIsItemSelected(treeViewItem, !GetIsItemSelected(treeViewItem));
-            Console.Out.WriteLine("Toggle!");
+            
             if (AnchorItem == null)
             {
                 if (GetIsItemSelected(treeViewItem))

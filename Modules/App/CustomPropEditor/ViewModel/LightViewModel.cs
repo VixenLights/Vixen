@@ -14,7 +14,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             Light = ln;
         }
 
-        public override string Title { get { return "Light"; } }
+        public override string Title => "Light";
 
         #region LightNode model property
 
@@ -24,14 +24,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         [Model]
         public Light Light
         {
-            get { return GetValue<Light>(LightNodeProperty); }
-            private set { SetValue(LightNodeProperty, value); }
+            get { return GetValue<Light>(LightProperty); }
+            private set { SetValue(LightProperty, value); }
         }
 
         /// <summary>
         /// LightNode property data.
         /// </summary>
-        public static readonly PropertyData LightNodeProperty = RegisterProperty("LightNode", typeof(Light));
+        public static readonly PropertyData LightProperty = RegisterProperty("Light", typeof(Light));
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the X value.
         /// </summary>
-        [ViewModelToModel("LightNode")]
+        [ViewModelToModel("Light")]
         public double X
         {
             get { return GetValue<double>(XProperty); }
@@ -59,7 +59,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the Y value.
         /// </summary>
-        [ViewModelToModel("LightNode")]
+        [ViewModelToModel("Light")]
         public double Y
         {
             get { return GetValue<double>(YProperty); }
@@ -78,7 +78,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the Size value.
         /// </summary>
-        [ViewModelToModel("LightNode")]
+        [ViewModelToModel("Light")]
         public double Size
         {
             get { return GetValue<double>(SizeProperty); }
@@ -97,7 +97,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the Center value.
         /// </summary>
-        [ViewModelToModel("LightNode", "X", AdditionalPropertiesToWatch = new[]{"Y"}, ConverterType = typeof(PointMappingConverter))]
+        [ViewModelToModel("Light", "X", AdditionalPropertiesToWatch = new[]{"Y"}, ConverterType = typeof(PointMappingConverter))]
         public Point Center
         {
             get { return GetValue<Point>(CenterProperty); }

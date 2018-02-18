@@ -10,6 +10,10 @@
              x:Class="VixenModules.App.CustomPropEditor.View.PropEditorView"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="600">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
+    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadProp"/>
@@ -57,14 +61,15 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <!--<Label Grid.Column="0" Grid.Row="0" Content="Name"/>
+                <Label Grid.Column="0" Grid.Row="0" Content="Name"/>
                 <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding SelectedItem.Name}" />
+                <Label Grid.Column="0" Grid.Row="3" Content="Order"/>
+                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Order}"/>
                 <Label Grid.Column="0" Grid.Row="1" Content="Is String"/>
                 <TextBox x:Name="IsString" Grid.Column="1" Grid.Row="1" Text="{Binding SelectedItem.IsString, Mode=OneWay}" />
                 <Label Grid.Column="0" Grid.Row="2" Content="Light Count"/>
                 <TextBox x:Name="LightCount" Grid.Column="1" Grid.Row="2" Text="{Binding SelectedItem.LightCount, Mode=OneWay}"/>
-                <Label Grid.Column="0" Grid.Row="3" Content="Order"/>
-                <TextBox x:Name="Order" Grid.Column="1" Grid.Row="3" Text="{Binding SelectedItem.Order}"/>-->
+                
 
                 <!--<Label Grid.Column="0" Grid.Row="0" Content="FOV"/>
                 <TextBox x:Name="Name" Grid.Column="1" Grid.Row="0" Text="{Binding Camera.FieldOfView}" />

@@ -67,14 +67,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
             return p;
         }
 
-        private Prop AssembleProp(List<ElementCandidate> elementCandidates, List<SubModel> subModels)
+        private Prop AssembleProp(List<ElementModel> elementCandidates, List<SubModel> subModels)
         {
             Prop p = new Prop();
             if (subModels.Any())
             {
                 foreach (var sm in subModels)
                 {
-                    var ec = new ElementCandidate(sm.Name);
+                    var ec = new ElementModel(sm.Name);
                     foreach (var smRange in sm.Ranges)
                     {
                         var nodes = Rename(
@@ -85,18 +85,18 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                             ec.Children.Add(elementCandidate);
                         }
                     }
-                    p.AddElementCandidate(ec);
+                    p.AddElementModel(ec);
                 }
             }
             else
             {
-                p.AddElementCandidates(elementCandidates.OrderBy(ec => ec.Order));
+                p.AddElementModels(elementCandidates.OrderBy(ec => ec.Order));
             }
 
             return p;
         }
 
-        private IEnumerable<ElementCandidate> Rename(IEnumerable<ElementCandidate> elementCandidates, string newName)
+        private IEnumerable<ElementModel> Rename(IEnumerable<ElementModel> elementCandidates, string newName)
         {
             foreach (var elementCandidate in elementCandidates)
             {
@@ -135,10 +135,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
         }
 
-        private async Task<List<ElementCandidate>> CreatePropFromModelAsync(string model, int nodeSize, string name)
+        private async Task<List<ElementModel>> CreatePropFromModelAsync(string model, int nodeSize, string name)
         {
            
-            List<ElementCandidate> elementCandidates = new List<ElementCandidate>();
+            List<ElementModel> elementCandidates = new List<ElementModel>();
             await Task.Factory.StartNew(() =>
             {
                 
@@ -154,12 +154,13 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                         {
                             int order;
                             int.TryParse(node, out order);
-                            var ec = new ElementCandidate
+                            var ec = new ElementModel
                             {
                                 Name = string.Format("{0}-{1}", name, order),
-                                Order = order
+                                Order = order,
+                                LightSize = nodeSize
                             };
-                            ec.AddLight(new Point(x,y), nodeSize);
+                            ec.AddLight(new Point(x,y));
                             elementCandidates.Add(ec);
                         }
 

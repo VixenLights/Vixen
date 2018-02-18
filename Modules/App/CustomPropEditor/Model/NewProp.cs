@@ -11,7 +11,7 @@ namespace VixenModules.App.CustomPropEditor.Model
     {
         private Bitmap _image;
         private string _name;
-        private ElementCandidate _rootNode = new ElementCandidate();
+        private ElementModel _rootNode = new ElementModel();
         private int _height;
         private int _width;
 
@@ -22,7 +22,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public NewProp()
         {
-            _rootNode = new ElementCandidate(Name);
+            _rootNode = new ElementModel(Name);
             Name = "Default";
             //ElementCandidates.Add(_rootNode);
             Width = 800;
@@ -31,73 +31,73 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public void LoadTestData()
         {
-            _rootNode = new ElementCandidate();
+            _rootNode = new ElementModel();
             Name = "Snowflake";
             Image = new Bitmap(800, 600);
 
-            var branches = new ElementCandidate
+            var branches = new ElementModel
             {
                 Name = "Branches"
             };
 
             _rootNode.Children.Add(branches);
 
-            var branch1 = new ElementCandidate
+            var branch1 = new ElementModel
             {
                 Name = "Branch 1"
             };
             branches.Children.Add(branch1);
 
 
-            var model = new ElementCandidate
+            var model = new ElementModel
             {
                 Name = "Px-1"
             };
             model.Lights.Add(new Light(new Point(10, 20), 6));
             branch1.Children.Add(model);
 
-            model = new ElementCandidate
+            model = new ElementModel
             {
                 Name = "Px-2"
             };
             model.Lights.Add(new Light(new Point(20, 20), 6));
             branch1.Children.Add(model);
 
-            var branch2 = new ElementCandidate
+            var branch2 = new ElementModel
             {
                 Name = "Branch 2"
             };
             branches.Children.Add(branch2);
 
 
-            model = new ElementCandidate
+            model = new ElementModel
             {
                 Name = "Px-3"
             };
             model.Lights.Add(new Light(new Point(30, 20), 6));
             branch2.Children.Add(model);
 
-            model = new ElementCandidate
+            model = new ElementModel
             {
                 Name = "Px-4"
             };
             model.Lights.Add(new Light(new Point(40, 20), 6));
             branch2.Children.Add(model);
 
-            var branch3 = new ElementCandidate
+            var branch3 = new ElementModel
             {
                 Name = "Branch 3"
             };
             branches.Children.Add(branch3);
 
-            model = new ElementCandidate
+            model = new ElementModel
             {
                 Name = "Px-5"
             };
             model.Lights.Add(new Light(new Point(40, 10), 6));
             branch3.Children.Add(model);
 
-            model = new ElementCandidate
+            model = new ElementModel
             {
                 Name = "Px-6"
             };
@@ -107,22 +107,22 @@ namespace VixenModules.App.CustomPropEditor.Model
             //OnPropertyChanged("ElementCandidates");
         }
 
-        public ElementCandidate RootNode
+        public ElementModel RootNode
         {
             get { return _rootNode; }
         }
 
-        public ObservableCollection<ElementCandidate> ElementCandidates
+        public ObservableCollection<ElementModel> ElementCandidates
         {
             get { return _rootNode.Children; }
         }
 
-        public void AddElementCandidate(ElementCandidate ec)
+        public void AddElementCandidate(ElementModel ec)
         {
             _rootNode.Children.Add(ec);
         }
 
-        public void AddElementCandidates(IEnumerable<ElementCandidate> elementCandidates)
+        public void AddElementCandidates(IEnumerable<ElementModel> elementCandidates)
         {
             foreach (var elementCandidate in elementCandidates)
             {
@@ -182,7 +182,7 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-        public IEnumerable<ElementCandidate> GetLeafNodes()
+        public IEnumerable<ElementModel> GetLeafNodes()
         {
             // Don't want to return the root node.
             // note: this may very well return duplicate nodes, if they are part of different groups.
