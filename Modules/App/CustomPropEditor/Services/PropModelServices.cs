@@ -110,6 +110,11 @@ namespace VixenModules.App.CustomPropEditor.Services
             return new Light(p, size);
         }
 
+        public bool IsNameDuplicated(string name)
+        {
+            return _models.Values.Count(x => x.Name == name)>1;
+        }
+
         private string Uniquify(string name)
         {
             if (_models.Values.Any(x => x.Name == name))

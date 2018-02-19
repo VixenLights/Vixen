@@ -109,10 +109,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="System.Windows.Controls.WpfPropertyGrid.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="System.Windows.Controls.WpfPropertyGrid.Themes.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="System.Windows.Forms.Calendar35.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

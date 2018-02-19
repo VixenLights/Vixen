@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -14,7 +15,7 @@ namespace VixenModules.App.CustomPropEditor.Model
     /// Symbolic of an ElementNode in Vixen Core
     /// </summary>
     [Catel.ComponentModel.DisplayName("Element Model")]
-	public class ElementModel : BindableBase, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
+	public class ElementModel : BindableBase, IDataErrorInfo, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
         private const int DefaultLightSize = 3;
 	    private ObservableCollection<Light> _lights;
@@ -184,20 +185,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        return Children.Remove(child);
 	    }
 
-	    //public Light AddLight(Point center)
-	    //{
-	    //    if (IsLeaf && Parents.Any())
-	    //    {
-	    //        return AddLight(center, LightSize);
-     //       }
-	        
-     //       ElementModel em = new ElementModel("New Name", this);
-     //       AddChild(em);
-
-	    //    return em.AddLight(center);
-	        
-	    //}
-
 	    internal void AddLight(Light ln)
 	    {
 	        if (!IsLeaf)
@@ -208,17 +195,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        OnPropertyChanged(nameof(IsString));
 	        OnPropertyChanged(nameof(LightCount));
         }
-
-     //   internal Light AddLight(Point center, double size)
-	    //{
-	    //    if (Children.Any())
-	    //    {
-     //           throw new ArgumentException("Non leaf not cannot have lights!");
-	    //    }
-     //       var ln = new Light(center, size);
-	    //    AddLight(ln);
-	    //    return ln;
-	    //}
 
 	    public bool RemoveLight(Light light)
 	    {
@@ -269,5 +245,37 @@ namespace VixenModules.App.CustomPropEditor.Model
 			return Id.GetHashCode();
 		}
 
+	    public string this[string columnName]
+	    {
+	        get
+	        {
+	            string result = string.Empty;
+	            if (columnName == nameof(Name))
+	            {
+	                if (string.IsNullOrEmpty(Name))
+	                {
+	                    result = "Name can not be empty";
+                    }
+	                else if(PropModelServices.Instance().IsNameDuplicated(Name))
+	                {
+	                    result = "Duplicate name";
+	                }
+
+                }
+	            else if(columnName == nameof(LightSize))
+	            {
+	                if (LightSize <= 0)
+	                {
+	                    result = "Light size must be > 0";
+	                }
+	            }
+	            return result;
+	        }
+        }
+
+        [Browsable(false)]
+	    public string Error {
+            get { return string.Empty; }
+        }
 	}
 }
