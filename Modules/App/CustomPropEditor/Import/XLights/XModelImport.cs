@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Media3D;
 using System.Xml;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
@@ -29,11 +29,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                 if ("custommodel".Equals(reader.Name) && reader.HasAttributes)
                 {
                     string name = reader.GetAttribute("name");
-
+                    p = PropModelServices.Instance().CreateProp(name);
                     int nodeSize;
                     int.TryParse(reader.GetAttribute("PixelSize"), out nodeSize);
                     string model = reader.GetAttribute("CustomModel");
-                    var ecTask = CreatePropFromModelAsync(model, nodeSize, name);
 
                     List<SubModel> subModels = new List<SubModel>();
                     while (reader.Read())
@@ -56,55 +55,52 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                         }
                     }
 
-                    var elementCandidates = await ecTask;
-
-                    p = AssembleProp(elementCandidates, subModels);
-
-                    p.Name = name;
+                    var modelNodes = await CreateModelNodesAsync(model);
+                    Assemble(modelNodes, subModels, nodeSize);
+                   
                 }
             }
 
             return p;
         }
 
-        private Prop AssembleProp(List<ElementModel> elementCandidates, List<SubModel> subModels)
+        private void Assemble(Dictionary<int, ModelNode> modelNodes, List<SubModel> subModels, int nodeSize)
         {
-            Prop p = new Prop();
-            if (subModels.Any())
+            foreach (var subModel in subModels)
             {
-                foreach (var sm in subModels)
+                var group = PropModelServices.Instance().CreateNode(subModel.Name);
+                foreach (var smRange in subModel.Ranges)
                 {
-                    var ec = new ElementModel(sm.Name);
-                    foreach (var smRange in sm.Ranges)
+                    for (int i = smRange.Start; i <= smRange.End; i++)
                     {
-                        var nodes = Rename(
-                            elementCandidates.Where(x => x.Order >= smRange.Start && x.Order <= smRange.End)
-                                .OrderBy(x => x.Order), sm.Name);
-                        foreach (var elementCandidate in nodes)
+                        if (modelNodes.ContainsKey(i))
                         {
-                            ec.Children.Add(elementCandidate);
+                            var modelNode = modelNodes[i];
+                            modelNodes.Remove(i);
+                            PropModelServices.Instance().AddLightNode(group, new Point(modelNode.X, modelNode.Y), modelNode.Order, nodeSize);
                         }
                     }
-                    p.AddElementModel(ec);
                 }
             }
-            else
-            {
-                p.AddElementModels(elementCandidates.OrderBy(ec => ec.Order));
-            }
 
-            return p;
+            if (modelNodes.Any())
+            {
+                ElementModel em = null;
+                if (subModels.Any())
+                {
+                    //Create a group to hold the stuff that was not included in the submodels
+                    em = PropModelServices.Instance().CreateNode("Other");
+                }
+
+                foreach (var modelNode in modelNodes.OrderBy(x => x.Value.Order))
+                {
+                    PropModelServices.Instance().AddLightNode(em, new Point(modelNode.Value.X, modelNode.Value.Y),
+                        modelNode.Value.Order, nodeSize);
+                }
+            }
         }
 
-        private IEnumerable<ElementModel> Rename(IEnumerable<ElementModel> elementCandidates, string newName)
-        {
-            foreach (var elementCandidate in elementCandidates)
-            {
-                elementCandidate.Name = String.Format("{0}-{1}", newName, elementCandidate.Order);
-            }
-
-            return elementCandidates;
-        }
+        
 
         private List<Range> ParseRanges(string rangeLines)
         {
@@ -135,10 +131,10 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 
         }
 
-        private async Task<List<ElementModel>> CreatePropFromModelAsync(string model, int nodeSize, string name)
+        private async Task<Dictionary<int, ModelNode>> CreateModelNodesAsync(string model)
         {
            
-            List<ElementModel> elementCandidates = new List<ElementModel>();
+            var elementCandidates = new Dictionary<int, ModelNode>();
             await Task.Factory.StartNew(() =>
             {
                 
@@ -154,14 +150,14 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
                         {
                             int order;
                             int.TryParse(node, out order);
-                            var ec = new ElementModel
+                            var modelNode = new ModelNode()
                             {
-                                Name = string.Format("{0}-{1}", name, order),
                                 Order = order,
-                                LightSize = nodeSize
+                                X=x,
+                                Y=y
                             };
-                            ec.AddLight(new Point(x,y));
-                            elementCandidates.Add(ec);
+                            
+                            elementCandidates[order] = modelNode;
                         }
 
                         x+=Scale;

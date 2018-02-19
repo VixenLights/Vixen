@@ -49,7 +49,13 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    {
             Parents.Add(parent);
 	    }
-	    
+
+	    public ElementModel(string name, int order, ElementModel parent) : this(name)
+	    {
+	        Parents.Add(parent);
+	        Order = order;
+	    }
+
         [Browsable(false)]
 		public Guid Id { get; protected set; }
 
@@ -178,32 +184,41 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        return Children.Remove(child);
 	    }
 
-	    public Light AddLight(Point center)
-	    {
-	        if (IsLeaf && Parents.Any())
-	        {
-	            return AddLight(center, LightSize);
-            }
+	    //public Light AddLight(Point center)
+	    //{
+	    //    if (IsLeaf && Parents.Any())
+	    //    {
+	    //        return AddLight(center, LightSize);
+     //       }
 	        
-            ElementModel em = new ElementModel("New Name", this);
-            AddChild(em);
+     //       ElementModel em = new ElementModel("New Name", this);
+     //       AddChild(em);
 
-	        return em.AddLight(center);
+	    //    return em.AddLight(center);
 	        
-	    }
+	    //}
 
-        protected Light AddLight(Point center, double size)
+	    internal void AddLight(Light ln)
 	    {
-	        if (Children.Any())
+	        if (!IsLeaf)
 	        {
-                throw new ArgumentException("Non leaf not cannot have lights!");
+	            throw new ArgumentException("Non leaf model cannot have lights!");
 	        }
-            var ln = new Light(center, size);
             Lights.Add(ln);
 	        OnPropertyChanged(nameof(IsString));
 	        OnPropertyChanged(nameof(LightCount));
-	        return ln;
-	    }
+        }
+
+     //   internal Light AddLight(Point center, double size)
+	    //{
+	    //    if (Children.Any())
+	    //    {
+     //           throw new ArgumentException("Non leaf not cannot have lights!");
+	    //    }
+     //       var ln = new Light(center, size);
+	    //    AddLight(ln);
+	    //    return ln;
+	    //}
 
 	    public bool RemoveLight(Light light)
 	    {
@@ -222,14 +237,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    public IEnumerable<ElementModel> GetLeafEnumerator()
 	    {
 	        if (IsLeaf)
-	        {
-	            // Element is already an enumerable, so AsEnumerable<> won't work.
+            { 
 	            return (new[] { this });
 	        }
-	        else
-	        {
-	            return Children.SelectMany(x => x.GetLeafEnumerator());
-	        }
+
+	        return Children.SelectMany(x => x.GetLeafEnumerator());
+	    }
+
+	    public IEnumerable<ElementModel> GetChildEnumerator()
+	    {
+	        return Children.SelectMany(x => x.GetChildEnumerator());
 	    }
 
         public bool Equals(ElementModel x, ElementModel y)

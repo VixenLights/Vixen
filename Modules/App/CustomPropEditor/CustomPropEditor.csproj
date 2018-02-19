@@ -127,6 +127,7 @@
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
+    <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Model\TransformArgs.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />

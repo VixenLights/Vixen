@@ -18,11 +18,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	{
 	    public PropEditorViewModel()
 	    {
-	        DrawingPanelViewModel = new DrawingPanelViewModel();
             ImportCommand = new RelayCommand<string>(ImportModel);
 	        NewPropCommand = new RelayCommand(NewProp);
 	        AddLightCommand = new RelayCommand<Point>(AddLightAt);
-            Prop = new Prop();
+	        Prop = PropModelServices.Instance().CreateProp();
+	        //DrawingPanelViewModel = new DrawingPanelViewModel();
         }
         
 	    #region Prop model property
@@ -133,20 +133,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	    private void NewProp()
 	    {
 	        //Write code to prompt for name
-	        Prop = new Prop("Default 1");
+	        //Prop = new Prop("Default 1");
+	        Prop = PropModelServices.Instance().CreateProp();
 	    }
 
 	    public void AddLightAt(Point p)
 	    {
-	        if (ElementTreeViewModel.SelectedItems.Count == 1)
-	        {
-	            var em = ElementTreeViewModel.SelectedItems.First();
-	            if (em.IsLeaf && !em.Equals(Prop.RootNode))
-	            {
-	                em.AddLight(p);
-	            }
-	        }
-	        Prop.RootNode.AddLight(p);
+	        //if (ElementTreeViewModel.SelectedItems.Count == 1)
+	        //{
+	        //    //var em = ElementTreeViewModel.SelectedItems.First();
+	        //    //if (em.IsLeaf && !em.Equals(Prop.RootNode))
+	        //    //{
+	        //    //    em.AddLight(p);
+	        //    //}
+	        //}
+	        //Prop.RootNode.AddLight(p);
+
+            PropModelServices.Instance().AddLight(ElementTreeViewModel.SelectedItems.FirstOrDefault(), p);
+
 	        DrawingPanelViewModel.RefreshLightViewModels();
         }
 

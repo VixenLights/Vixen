@@ -11,6 +11,7 @@ using Catel.MVVM;
 using Common.WPFCommon.Command;
 using Common.WPFCommon.ViewModel;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModel
 {
@@ -213,7 +214,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         {
             _elementModelMap.Clear();
             LightNodes.Clear();
-            foreach (var elementModel in Prop.GetLeafNodes())
+            foreach (var elementModel in PropModelServices.Instance().GetLeafNodes())
             {
                LightNodes.AddRange(CreateLightViewModels(elementModel));
             }
@@ -226,12 +227,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             return lvmList;
         }
 
-        public void AddLightAt(Point p, ElementModel em)
-        {
-            em.AddLight(p);
-            //Prop.AddElementModel(em);
-            LightNodes.AddRange(CreateLightViewModels(em));
-        }
+        //public void AddLightAt(Point p, ElementModel em)
+        //{
+        //    em.AddLight(p);
+        //    //Prop.AddElementModel(em);
+        //    LightNodes.AddRange(CreateLightViewModels(em));
+        //}
 
         public void DeleteSelectedLights()
         {

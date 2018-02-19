@@ -194,12 +194,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
 	    }
 
+	    public IEnumerable<ElementModel> GetAll()
+	    {
+	        var list = _rootNode.GetChildEnumerator().ToList();
+            list.Add(RootNode);
+	        return list;
+	    }
+
 	    #region Utilities
 
-	    private int GetMaxOrder()
-	    {
-	        return _rootNode.GetLeafEnumerator().Max(x => x.Order);
-	    }
+	    
 
 	    #endregion
     }
