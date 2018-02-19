@@ -96,6 +96,24 @@ namespace VixenModules.App.CustomPropEditor.Controls
             }
         }
 
+        public static DependencyProperty AddLightCommandProperty = DependencyProperty.Register(
+            "AddLightCommand",
+            typeof(RelayCommand<Point>),
+            typeof(PropDesigner));
+
+        public RelayCommand<Point> AddLightCommand
+        {
+            get
+            {
+                return (RelayCommand<Point>)GetValue(AddLightCommandProperty);
+            }
+
+            set
+            {
+                SetValue(AddLightCommandProperty, value);
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             _drawingCanvas = FindVisualChild<Canvas>(this);
@@ -139,7 +157,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
                 if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
                 {
-                    _propEditorViewModel.DrawingPanelViewModel.AddLightAt(_originMouseStartPoint);
+                    AddLightCommand.Execute(_originMouseStartPoint);
+                    //_propEditorViewModel.DrawingPanelViewModel.AddLightAt(_originMouseStartPoint);
                 }
                 
                 _isSelecting = false;

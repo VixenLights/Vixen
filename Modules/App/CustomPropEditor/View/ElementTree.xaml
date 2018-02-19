@@ -70,15 +70,15 @@
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
                             </MultiTrigger>
-                            <Trigger Property="IsSelected" Value="true">
+                            <!--<Trigger Property="IsSelected" Value="true">
                                 <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
                                 <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
                                 <Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
                                 <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                            </Trigger>
+                            </Trigger>-->
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="controls:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
                                     <Condition Property="IsSelectionActive" Value="false"/>
                                 </MultiTrigger.Conditions>
                                 <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
@@ -86,7 +86,7 @@
                                 <Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
                             </MultiTrigger>
                             <Trigger Property="controls:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="True">
-                                <Setter Property="Background" Value="{StaticResource Item.SelectedActive.Background}" />
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
                                 <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
                                 <Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
                                 <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>

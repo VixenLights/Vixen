@@ -8,7 +8,7 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
         xmlns:adorners="clr-namespace:VixenModules.App.CustomPropEditor.Adorners"
         xmlns:vm="clr-namespace:VixenModules.App.CustomPropEditor.ViewModel"
-        xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
+        xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
         xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
         xmlns:converters="clr-namespace:VixenModules.App.CustomPropEditor.Converters"
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
@@ -35,7 +35,7 @@
                 <MenuItem Header="Select All"/>
             </ContextMenu>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <converters:BoolToGridRowHeightConverter x:Key="BoolToGridRowHeightConverter"/>
+            <commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -98,7 +98,7 @@
                 <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
                     <ToolBarTray DockPanel.Dock="Top">
                         <ToolBar>
-                            <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Enable draw mode">
+                            <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" ToolTip="Selection mode">
                                 <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="16"/>
                             </ToggleButton>
 
@@ -137,7 +137,8 @@
                         <controls:PropDesigner x:Name="PropDesigner"
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
-                            IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}">
+                            IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
+                            AddLightCommand="{Binding AddLightCommand}">
                             
                             <i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />

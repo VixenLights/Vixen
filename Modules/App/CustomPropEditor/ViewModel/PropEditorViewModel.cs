@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
 using Catel.Data;
 using Catel.MVVM;
@@ -20,6 +21,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        DrawingPanelViewModel = new DrawingPanelViewModel();
             ImportCommand = new RelayCommand<string>(ImportModel);
 	        NewPropCommand = new RelayCommand(NewProp);
+	        AddLightCommand = new RelayCommand<Point>(AddLightAt);
             Prop = new Prop();
         }
         
@@ -134,14 +136,30 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        Prop = new Prop("Default 1");
 	    }
 
-	    #region Menu Commands
+	    public void AddLightAt(Point p)
+	    {
+	        if (ElementTreeViewModel.SelectedItems.Count == 1)
+	        {
+	            var em = ElementTreeViewModel.SelectedItems.First();
+	            if (em.IsLeaf && !em.Equals(Prop.RootNode))
+	            {
+	                em.AddLight(p);
+	            }
+	        }
+	        Prop.RootNode.AddLight(p);
+	        DrawingPanelViewModel.RefreshLightViewModels();
+        }
+
+        #region Menu Commands
 
         public RelayCommand<string> ImportCommand { get; private set; }
 
         public RelayCommand NewPropCommand { get; private set; }
 
+	    public RelayCommand<Point> AddLightCommand { get; private set; }
+
         #endregion
-        
+
     }
 
 

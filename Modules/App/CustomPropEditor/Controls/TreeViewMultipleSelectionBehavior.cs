@@ -125,8 +125,10 @@ namespace VixenModules.App.CustomPropEditor.Controls
             Console.Out.WriteLine("Good behavior attached!");
             AssociatedObject.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnTreeViewItemKeyDown), true);
             AssociatedObject.AddHandler(UIElement.MouseLeftButtonUpEvent, new MouseButtonEventHandler(OnTreeViewItemMouseUp), true);
+            AssociatedObject.AddHandler(UIElement.MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnTreeViewMouseDown));
         }
 
+        
         /// <summary>
         /// Called when the behavior is being detached from its AssociatedObject, but before it has
         /// actually occurred.
@@ -194,6 +196,12 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 }
             }
         }
+
+        private void OnTreeViewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DeSelectAll();
+        }
+
 
         /// <summary>
         /// Called when a TreeViewItem receives a mouse up event.

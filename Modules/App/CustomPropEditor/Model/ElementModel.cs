@@ -19,9 +19,11 @@ namespace VixenModules.App.CustomPropEditor.Model
         private const int DefaultLightSize = 3;
 	    private ObservableCollection<Light> _lights;
 	    private ObservableCollection<ElementModel> _children;
-	    private int _order;
+	    private ObservableCollection<ElementModel> _parents;
+        private int _order;
 	    private string _name;
 	    private int _lightSize;
+	    
 
 	    public ElementModel()
 		{
@@ -133,11 +135,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    [Browsable(false)]
         public ObservableCollection<ElementModel> Parents
 	    {
-	        get { return _children; }
+	        get { return _parents; }
 	        set
 	        {
-	            if (Equals(value, _children)) return;
-	            _children = value;
+	            if (Equals(value, _parents)) return;
+	            _parents = value;
 	            OnPropertyChanged(nameof(Parents));
 	        }
 	    }
@@ -178,7 +180,16 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 	    public Light AddLight(Point center)
 	    {
-	        return AddLight(center, LightSize);
+	        if (IsLeaf && Parents.Any())
+	        {
+	            return AddLight(center, LightSize);
+            }
+	        
+            ElementModel em = new ElementModel("New Name", this);
+            AddChild(em);
+
+	        return em.AddLight(center);
+	        
 	    }
 
         protected Light AddLight(Point center, double size)

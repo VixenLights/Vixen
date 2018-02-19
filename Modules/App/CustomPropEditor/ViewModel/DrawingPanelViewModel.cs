@@ -41,7 +41,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             X = 20;
             Y = 20;
             
-            AddLightCommand = new RelayCommand<Point>(AddLightAt);
+            
             TransformCommand = new RelayCommand<Transform>(Transform);
 
             AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
@@ -86,7 +86,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             private set
             {
                 SetValue(PropProperty, value);
-                InitializeLightViewModels();
+                RefreshLightViewModels();
             }
         }
 
@@ -209,7 +209,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #endregion Properties
 
-        private void InitializeLightViewModels()
+        internal void RefreshLightViewModels()
         {
             _elementModelMap.Clear();
             LightNodes.Clear();
@@ -226,11 +226,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             return lvmList;
         }
 
-        public void AddLightAt(Point p)
+        public void AddLightAt(Point p, ElementModel em)
         {
-            var em = new ElementModel("New One");
             em.AddLight(p);
-            Prop.AddElementModel(em);
+            //Prop.AddElementModel(em);
             LightNodes.AddRange(CreateLightViewModels(em));
         }
 
@@ -376,7 +375,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         }
         #region Commands
 
-        public RelayCommand<Point> AddLightCommand { get; private set; }
+        
 
         public RelayCommand<Transform> TransformCommand { get; private set; }
 

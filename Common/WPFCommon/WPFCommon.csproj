@@ -77,6 +77,7 @@
     <Compile Include="Controls\ToggleSwitch.cs" />
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BitmapImageConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Input\DragDropManager.cs" />
     <Compile Include="Input\DragDropTargetType.cs" />
     <Compile Include="Input\DropPreviewAdorner.cs" />
