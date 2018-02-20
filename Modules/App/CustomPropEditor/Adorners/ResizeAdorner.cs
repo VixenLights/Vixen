@@ -5,9 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Controls;
-using VixenModules.App.CustomPropEditor.ViewModel;
 using Size = System.Windows.Size;
 
 namespace VixenModules.App.CustomPropEditor.Adorners
@@ -29,6 +27,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         readonly Thumb _rotate;
 
         private RotateTransform rt;
+
+        private Point _rotationCenter;
+
 
         // To store and manage the adorner’s visual children.
         readonly VisualCollection _visualChildren;
@@ -74,10 +75,14 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             _middleLeft.DragDelta += _middleLeft_DragDelta;
 
             _rotate.DragDelta += _rotate_DragDelta;
+            _rotate.DragStarted += _rotate_DragStarted            ;
 
+            _rotationCenter = Center(Bounds);
             rt = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
 
         }
+
+        
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -113,14 +118,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         {
             var scaleY = args.VerticalChange / Bounds.Height;
             var scaleX = args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
-
+            
             scaleY += 1;
             scaleX += 1;
 
             if (EnforceSize(scaleX, scaleY))
             {
-                vm.ScaleSelectedItems(scaleX, scaleY, center);
+                vm.ScaleSelectedItems(scaleX, scaleY, Bounds.TopLeft);
             }
             
         }
@@ -130,14 +134,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         {
             var scaleY = -args.VerticalChange / Bounds.Height;
             var scaleX = args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
-
+            
             scaleY += 1;
             scaleX += 1;
 
             if (EnforceSize(scaleX, scaleY))
             {
-                vm.ScaleSelectedItems(scaleX, scaleY, center);
+                vm.ScaleSelectedItems(scaleX, scaleY, Bounds.BottomLeft);
             }
             
         }
@@ -148,14 +151,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
             var scaleY = -args.VerticalChange / Bounds.Height;
             var scaleX = -args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
             
             scaleY += 1;
             scaleX += 1;
 
             if (EnforceSize(scaleX, scaleY))
             {
-                vm.ScaleSelectedItems(scaleX, scaleY, center);
+                vm.ScaleSelectedItems(scaleX, scaleY, Bounds.BottomRight);
             }
             
         }
@@ -165,119 +167,136 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         {
             var scaleY = args.VerticalChange / Bounds.Height;
             var scaleX = -args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
-
+            
             scaleY += 1;
             scaleX += 1;
 
             if (EnforceSize(scaleX, scaleY))
             {
-                vm.ScaleSelectedItems(scaleX, scaleY, center);
+                vm.ScaleSelectedItems(scaleX, scaleY, Bounds.TopRight);
             }
         }
 
         private void _middleLeft_DragDelta(object sender, DragDeltaEventArgs args)
         {
             var scaleX = -args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
-
+            
             scaleX += 1;
 
             if (EnforceSize(scaleX, 1))
             {
-                vm.ScaleSelectedItems(scaleX, 1, center);
+                vm.ScaleSelectedItems(scaleX, 1, new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2));
             }
         }
 
         private void _middleBottom_DragDelta(object sender, DragDeltaEventArgs args)
         {
             var scaleY = args.VerticalChange / Bounds.Height;
-            var center = Center(Bounds);
-
+            
             scaleY += 1;
 
             if (EnforceSize(1, scaleY))
             {
-                vm.ScaleSelectedItems(1, scaleY, center);
+                vm.ScaleSelectedItems(1, scaleY, new Point((Bounds.Right - Bounds.Left)/2 , Bounds.Top));
             }
         }
 
         private void _middleRight_DragDelta(object sender, DragDeltaEventArgs args)
         {
             var scaleX = args.HorizontalChange / Bounds.Width;
-            var center = Center(Bounds);
-
+            
             scaleX += 1;
 
             if (EnforceSize(scaleX, 1))
             {
-                vm.ScaleSelectedItems(scaleX, 1, center);
+                vm.ScaleSelectedItems(scaleX, 1, new Point(Bounds.Left, (Bounds.Bottom - Bounds.Top)/2));
             }
         }
 
         private void _middleTop_DragDelta(object sender, DragDeltaEventArgs args)
         {
             var scaleY = -args.VerticalChange / Bounds.Height;
-            var center = Center(Bounds);
-
+            
             scaleY += 1;
 
             if (EnforceSize(1, scaleY))
             {
-                vm.ScaleSelectedItems(1, scaleY, center);
+                vm.ScaleSelectedItems(1, scaleY, new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom));
             }
             
         }
+
+        private void _rotate_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            _rotationCenter = Center(Bounds);
+            rt.CenterX = _rotationCenter.X;
+            rt.CenterY = _rotationCenter.Y;
+        }
+
         private void _rotate_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Point pos = Mouse.GetPosition(this);
+            Point pos = Mouse.GetPosition(AdornedElement);
 
-            var center = Center(Bounds);
+            double angle = GetAngle(_rotationCenter, pos);
 
-            //double deltaX = pos.X - center.X;
-            //double deltaY = pos.Y - center.Y;
+            
+           // Console.Out.WriteLine($"Rotation angle {angle} Center {_rotationCenter}");
+            
+            var difference = angle - rt.Angle; 
 
-            double angle = GetAngleDegree(center, pos.X, pos.Y);
-
-            angle = -Vector.AngleBetween(new Vector(center.X, center.Y), new Vector(pos.X, pos.Y));
-            Console.Out.WriteLine(angle);
-            _rotationAngle += angle;
-            _rotationAngle = _rotationAngle % 360;
-
-            rt.Angle = _rotationAngle;
-            vm.RotateSelectedItems(angle, center);
+            rt.Angle = angle;
+            vm.RotateSelectedItems(difference, _rotationCenter);
             
         }
 
-        protected static double GetAngleDegree(Point origin, double x, double y)
+
+        /// <summary>
+        /// Fetches angle relative to screen center point
+        /// </summary>
+        /// <param name="screenPoint"></param>
+        /// <param name="center"></param>
+        /// <returns></returns>
+        public double GetAngle(Point screenPoint, Point center)
         {
-            var n = 270 - (Math.Atan2(origin.Y - y, origin.X - x)) * 180 / Math.PI;
-            return n % 360;
+            double dx = screenPoint.X - center.X;
+            // Minus to correct for coord re-mapping
+            double dy = -(screenPoint.Y - center.Y);
+
+            double inRads = Math.Atan2(dy, dx);
+
+            // We need to map to coord system when 0 degree is at 3 O'clock, 270 at 12 O'clock
+            if (inRads < 0)
+                inRads = Math.Abs(inRads);
+            else
+                inRads = 2 * Math.PI - inRads;
+
+            // Adjust the angle from the 0 at 3:00 positon.
+            return (inRads * (180 / Math.PI)) - 90;
         }
 
         protected override Size MeasureOverride(Size constraint)
         {
             AdornedElement.Measure(constraint);
             InvalidateVisual();
-            return new Size(Bounds.Width, Bounds.Height); ;
+            return new Size(Bounds.Width + _topLeft.Width + _topRight.Width, Bounds.Height + 2 * _bottomLeft.Height + 2 * (3 * _middleTop.Height)); ;
         }
 
         // Arrange the Adorners.
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var center = Center(Bounds);
-            Console.Out.WriteLine(_rotationAngle);
+            //var center = Center(Bounds);
+            Console.Out.WriteLine($"Arrange {_rotate.IsDragging}");
+            if (_rotate.IsDragging) return finalSize;
 
-            rt.Angle = _rotationAngle;
-            rt.CenterX = center.X;
-            rt.CenterY = center.Y;
+            
+            //rt.Angle = _rotationAngle;
+            //rt.CenterX = center.X;
+            //rt.CenterY = center.Y;
             _topLeft.Arrange(new Rect(Bounds.X-_topLeft.Width, Bounds.Y-_topLeft.Height, _topLeft.Width, _topLeft.Height));
-
-           
-            _topRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y-_topRight.Height , _bottomRight.Width, _topRight.Height));
+            _topRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y-_topRight.Height , _topRight.Width, _topRight.Height));
             
             _bottomLeft.Arrange(new Rect(Bounds.X-_bottomLeft.Width, Bounds.Y + Bounds.Height, _bottomLeft.Width, _bottomLeft.Height));
-            _bottomRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y+Bounds.Height, _bottomRight.Width,_bottomRight.Height));
+            _bottomRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height, _bottomRight.Width,_bottomRight.Height));
 
             _middleTop.Arrange(new Rect(Bounds.X +Bounds.Width /2 - _middleTop.Width/2, Bounds.Y - _middleTop.Height, _middleTop.Width, _middleTop.Height));
             _middleRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height/2 - _middleRight.Height/2, _bottomRight.Width, _topRight.Height));
@@ -285,11 +304,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             _middleLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y + Bounds.Height/2 - _middleLeft.Width/2, _middleBottom.Width, _middleBottom.Height));
 
             _rotate.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleTop.Width / 2, Bounds.Y - 3 * _middleTop.Height , _middleTop.Width, _middleTop.Height));
-            //_rotate.RenderTransform = new RotateTransform(_rotationAngle, center.X, center.Y);
-            //_rotate.RenderTransformOrigin = center;
-            // Return the final size.
-
-            
 
             return finalSize;
         }
@@ -338,10 +352,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
         public override GeneralTransform GetDesiredTransform(GeneralTransform transform)
         {
-            Console.Out.WriteLine("Get Transform");
+            
             GeneralTransformGroup result = new GeneralTransformGroup();
-            result.Children.Add(transform);
             result.Children.Add(rt);
+            result.Children.Add(transform);
+           
+
+            Console.Out.WriteLine($"Get Transform {result.Children.Count}");
             return result;
 
         }

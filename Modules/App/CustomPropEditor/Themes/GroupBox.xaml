@@ -48,7 +48,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
-                    <Ellipse Width="10" Height="10" Stroke="Blue" Fill="MediumBlue"
+                    <Ellipse Width="10" Height="10" Stroke="Blue" Fill="LightSkyBlue"
                              StrokeThickness="2"></Ellipse>
                 </ControlTemplate>
             </Setter.Value>
