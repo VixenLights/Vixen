@@ -1,210 +1,160 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Common.WPFCommon.ViewModel;
-using Point = System.Windows.Point;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
-	public class Prop: BindableBase
-	{
-		private Bitmap _image;
-	    private string _name;
-	    private ElementModel _rootNode;
-	    private int _height;
-	    private int _width;
-	    private Dictionary<Guid, ElementModel> _instances;
+    public class Prop : BindableBase
+    {
+        private BitmapSource _image;
+        private string _name;
+        private ElementModel _rootNode;
+        private double _height;
+        private double _width;
+        private double _opacity;
 
-        public Prop(string name):this()
-	    {
-	        Name = name;
+        public Prop(string name) : this()
+        {
+            Name = name;
         }
 
-	    public Prop()
-	    {
-	        _rootNode = new ElementModel();
-            _instances = new Dictionary<Guid, ElementModel>();
-	        Width = 800;
-	        Height = 600;
-	        Name = "Default";
+        public Prop()
+        {
+            _rootNode = new ElementModel();
+            Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
+            Opacity = 1;
+            Name = "Default";
         }
 
-	    public void LoadTestData()
-	    {
-	        _rootNode = new ElementModel();
-            Name = "Snowflake";
-	        Image = new Bitmap(800, 600);
-	        
-	        var branches = new ElementModel
-	        {
-	            Name = "Branches"
-	        };
-
-	        _rootNode.Children.Add(branches);
-
-	        var branch1 = new ElementModel
-	        {
-	            Name = "Branch 1"
-	        };
-	        branches.Children.Add(branch1);
+        public ElementModel RootNode
+        {
+            get { return _rootNode; }
+            private set
+            {
+                if (Equals(value, _rootNode)) return;
+                _rootNode = value;
+                OnPropertyChanged(nameof(RootNode));
+            }
+        }
 
 
-	        var model = new ElementModel
-	        {
-	            Name = "Px-1"
-	        };
-	        model.Lights.Add(new Light(new Point(10, 20), 6));
-	        branch1.Children.Add(model);
-
-	        model = new ElementModel
-	        {
-	            Name = "Px-2"
-	        };
-	        model.Lights.Add(new Light(new Point(20, 20), 6));
-	        branch1.Children.Add(model);
-
-	        var branch2 = new ElementModel
-	        {
-	            Name = "Branch 2"
-	        };
-	        branches.Children.Add(branch2);
-
-
-	        model = new ElementModel
-	        {
-	            Name = "Px-3"
-	        };
-	        model.Lights.Add(new Light(new Point(30, 20), 6));
-	        branch2.Children.Add(model);
-
-	        model = new ElementModel
-	        {
-	            Name = "Px-4"
-	        };
-	        model.Lights.Add(new Light(new Point(40, 20), 6));
-	        branch2.Children.Add(model);
-
-	        var branch3 = new ElementModel
-	        {
-	            Name = "Branch 3"
-	        };
-	        branches.Children.Add(branch3);
-
-	        model = new ElementModel
-	        {
-	            Name = "Px-5"
-	        };
-	        model.Lights.Add(new Light(new Point(40, 10), 6));
-	        branch3.Children.Add(model);
-
-	        model = new ElementModel
-	        {
-	            Name = "Px-6"
-	        };
-	        model.Lights.Add(new Light(new Point(40, 40), 6));
-	        branch3.Children.Add(model);
-
-	        //OnPropertyChanged("ElementCandidates");
-	    }
-
-	    public ElementModel RootNode
-	    {
-	        get { return _rootNode; }
-	        private set
-	        {
-	            if (Equals(value, _rootNode)) return;
-	            _rootNode = value;
-	            OnPropertyChanged(nameof(RootNode));
-	        }
-	    }
-
-
-	    public void AddElementModel(ElementModel ec)
-	    {
+        public void AddElementModel(ElementModel ec)
+        {
             _rootNode.Children.Add(ec);
-	    }
+        }
 
-	    public void AddElementModels(IEnumerable<ElementModel> elementCandidates)
-	    {
-	        foreach (var elementCandidate in elementCandidates)
-	        {
-	            _rootNode.Children.Add(elementCandidate);
-	        }
-	    }
+        public void AddElementModels(IEnumerable<ElementModel> elementCandidates)
+        {
+            foreach (var elementCandidate in elementCandidates)
+            {
+                _rootNode.Children.Add(elementCandidate);
+            }
+        }
 
-	    public bool RemoveFromParent(ElementModel em, ElementModel parent)
-	    {
-	        return em.RemoveFromParent(parent);
-	    }
+        public bool RemoveFromParent(ElementModel em, ElementModel parent)
+        {
+            return em.RemoveFromParent(parent);
+        }
 
-	    public string Name
-	    {
-	        get { return _name; }
-	        set
-	        {
-	            if (value == _name) return;
-	            _name = value;
-	            _rootNode.Name = value;
-	            OnPropertyChanged(nameof(Name));
-	        }
-	    }
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == _name) return;
+                _name = value;
+                _rootNode.Name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
 
-	    public Bitmap Image
-		{
-			get { return _image; }
-			set
-			{
-				if (value != null && !value.Equals(_image))
-				{
-					_image = value;
-					OnPropertyChanged(nameof(Image));
-				    Height = _image.Height;
-				    Width = _image.Width;
-				}
-			}
-		}
+        public BitmapSource Image
+        {
+            get { return _image; }
+            set
+            {
+                if (value != null && !value.Equals(_image))
+                {
+                    _image = value;
+                    OnPropertyChanged(nameof(Image));
+                    Height = _image.Height;
+                    Width = _image.Width;
+                }
+            }
+        }
 
-	    public int Height
-	    {
-	        get { return _height; }
-	        set
-	        {
-	            if (value == _height) return;
-	            _height = value;
-	            OnPropertyChanged(nameof(Height));
-	        }
-	    }
+        public double Opacity
+        {
+            get { return _opacity; }
+            set
+            {
+                if (value.Equals(_opacity)) return;
+                _opacity = value;
+                OnPropertyChanged(nameof(Opacity));
+            }
+        }
 
-	    public int Width
-	    {
-	        get { return _width; }
-	        set
-	        {
-	            _width = value;
-	            OnPropertyChanged(nameof(Width));
-	        }
-	    }
+        public double Height
+        {
+            get { return _height; }
+            set
+            {
+                if (value == _height) return;
+                _height = value;
+                OnPropertyChanged(nameof(Height));
+            }
+        }
 
-	    public IEnumerable<ElementModel> GetLeafNodes()
-	    {
-	        // Don't want to return the root node.
-	        // note: this may very well return duplicate nodes, if they are part of different groups.
-	        return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
-	    }
+        public double Width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                OnPropertyChanged(nameof(Width));
+            }
+        }
 
-	    public IEnumerable<ElementModel> GetAll()
-	    {
-	        var list = _rootNode.GetChildEnumerator().ToList();
+        public IEnumerable<ElementModel> GetLeafNodes()
+        {
+            // Don't want to return the root node.
+            // note: this may very well return duplicate nodes, if they are part of different groups.
+            return _rootNode.Children.SelectMany(x => x.GetLeafEnumerator());
+        }
+
+        public IEnumerable<ElementModel> GetAll()
+        {
+            var list = _rootNode.GetChildEnumerator().ToList();
             list.Add(RootNode);
-	        return list;
-	    }
+            return list;
+        }
 
-	    #region Utilities
+        #region Utilities
 
-	    
+        private BitmapSource CreateBitmapSource(int width, int height, Color color)
+        {
+            int stride = width / 8;
+            byte[] pixels = new byte[height * stride];
 
-	    #endregion
+            List<Color> colors = new List<Color>();
+            colors.Add(color);
+            BitmapPalette myPalette = new BitmapPalette(colors);
+
+            BitmapSource image = BitmapSource.Create(
+                width,
+                height,
+                96,
+                96,
+                PixelFormats.Indexed1,
+                myPalette,
+                pixels,
+                stride);
+
+            return image;
+        }
+
+        #endregion
     }
 }

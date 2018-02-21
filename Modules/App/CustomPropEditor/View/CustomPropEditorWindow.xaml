@@ -46,14 +46,35 @@
     </i:Interaction.Triggers>-->
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
+            <MenuItem Header="File" Name="FileMenu">
                 <MenuItem Header="New" Command="{Binding NewPropCommand}"></MenuItem>
                 <MenuItem Header="Open"></MenuItem>
                 <MenuItem Header="Save"></MenuItem>
                 <MenuItem Header="Save As"></MenuItem>
+                <MenuItem Header="Add Image" Command="{Binding LoadImageCommand}"></MenuItem>
                 <MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Edit" />
+            <MenuItem Header="Edit" Name="EditMenu">
+                <MenuItem Header="Cut"></MenuItem>
+                <MenuItem Header="Copy"></MenuItem>
+                <MenuItem Header="Paste"></MenuItem>
+                <Separator />
+                <MenuItem Header="Opacity">
+                    <controls:SliderMenuItem x:Name="OpacitySliderMenu"
+                                             Value="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
+                        <MenuItem Header="10%" controls:SliderMenuItem.Value=".1"></MenuItem>
+                        <MenuItem Header="20%" controls:SliderMenuItem.Value=".2"></MenuItem>
+                        <MenuItem Header="30%" controls:SliderMenuItem.Value=".3"></MenuItem>
+                        <MenuItem Header="40%" controls:SliderMenuItem.Value=".4"></MenuItem>
+                        <MenuItem Header="50%" controls:SliderMenuItem.Value=".5"></MenuItem>
+                        <MenuItem Header="60%" controls:SliderMenuItem.Value=".6"></MenuItem>
+                        <MenuItem Header="70%" controls:SliderMenuItem.Value=".7"></MenuItem>
+                        <MenuItem Header="80%" controls:SliderMenuItem.Value=".8"></MenuItem>
+                        <MenuItem Header="90%" controls:SliderMenuItem.Value=".9"></MenuItem>
+                        <MenuItem Header="100%" controls:SliderMenuItem.Value="1"></MenuItem>
+                    </controls:SliderMenuItem>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="View" />
             <MenuItem Header="Help" />
         </Menu>
@@ -112,6 +133,7 @@
                             <Button Command="Paste" ToolTip="Paste">
                                 <Image Source="/CustomPropEditor;component/Images/paste.png" Height="16"/>
                             </Button>
+                            
                             <Separator />
                             <Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
                                 <Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="16"/>
@@ -133,7 +155,7 @@
                             </Button>
                         </ToolBar>
                     </ToolBarTray>
-                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
                         <controls:PropDesigner x:Name="PropDesigner"
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
@@ -167,9 +189,11 @@
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas Background="Black" x:Name="DrawingCanvas" 
-                                            Height="{Binding Prop.Height}" Width="{Binding Prop.Width}" Margin="10">
-
+                                    <Canvas x:Name="DrawingCanvas" 
+                                            Height="{Binding DrawingPanelViewModel.Height, Mode=OneWay}" Width="{Binding DrawingPanelViewModel.Width, Mode=OneWay}" Margin="10">
+                                        <Canvas.Background>
+                                            <ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}"></ImageBrush>
+                                        </Canvas.Background>
                                     </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>

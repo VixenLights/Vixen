@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using Common.WPFCommon.Command;
-using Common.WPFCommon.ViewModel;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 
@@ -37,12 +35,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             _elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
             LightNodes = new ObservableCollection<LightViewModel>();
             Prop = p;
-            Width = 30;
-            Height = 30;
-            X = 20;
-            Y = 20;
-            
-            
+           
             TransformCommand = new RelayCommand<Transform>(Transform);
 
             AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
@@ -123,6 +116,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the Width value.
         /// </summary>
+        [ViewModelToModel("Prop")]
         public double Width
         {
             get { return GetValue<double>(WidthProperty); }
@@ -132,7 +126,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Width property data.
         /// </summary>
-        public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double));
+        public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double), null);
 
         #endregion
 
@@ -141,6 +135,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the Height value.
         /// </summary>
+        [ViewModelToModel("Prop")]
         public double Height
         {
             get { return GetValue<double>(HeightProperty); }
@@ -150,7 +145,45 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Height property data.
         /// </summary>
-        public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double));
+        public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double), null);
+
+        #endregion
+
+        #region Image property
+
+        /// <summary>
+        /// Gets or sets the Image value.
+        /// </summary>
+        [ViewModelToModel("Prop")]
+        public BitmapSource Image
+        {
+            get { return GetValue<BitmapSource>(ImageProperty); }
+            set { SetValue(ImageProperty, value); }
+        }
+
+        /// <summary>
+        /// Image property data.
+        /// </summary>
+        public static readonly PropertyData ImageProperty = RegisterProperty("Image", typeof(BitmapSource), null);
+
+        #endregion
+
+        #region Opacity property
+
+        /// <summary>
+        /// Gets or sets the Opacity value.
+        /// </summary>
+        [ViewModelToModel("Prop")]
+        public double Opacity
+        {
+            get { return GetValue<double>(OpacityProperty); }
+            set { SetValue(OpacityProperty, value); }
+        }
+
+        /// <summary>
+        /// Opacity property data.
+        /// </summary>
+        public static readonly PropertyData OpacityProperty = RegisterProperty("Opacity", typeof(double), null);
 
         #endregion
 

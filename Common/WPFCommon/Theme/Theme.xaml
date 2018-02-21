@@ -739,6 +739,43 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SliderVerticalThumbStyle" TargetType="{x:Type Thumb}">
+        <Setter Property="SnapsToDevicePixels" Value="false"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Grid>
+                        <Path Width="9" Height="16" Margin="2,2,0,0" Fill="#8000" Stretch="Fill" Stroke="#8000" Data="M160,400 L160,310 200,280 240,310 240,400 z">
+                            <Path.RenderTransform>
+                                <RotateTransform Angle="90"></RotateTransform>
+                            </Path.RenderTransform>
+                        </Path>
+                        <Path Width="9" Height="16" Stretch="Fill" Data="M160,400 L160,310 200,280 240,310 240,400 z">
+                            <Path.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Offset="0.05" Color="#666"/>
+                                    <GradientStop Offset="0.25" Color="#404040"/>
+                                    <GradientStop Offset="0.95" Color="#FF222222"/>
+                                </LinearGradientBrush>
+                            </Path.Fill>
+                            <Path.Stroke>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Offset="0.0" Color="#FFC5C5C5"/>
+                                    <GradientStop Offset="0.4" Color="#FF5F5F5F"/>
+                                    <GradientStop Offset="0.8" Color="#FF494949"/>
+                                </LinearGradientBrush>
+                            </Path.Stroke>
+                            <Path.RenderTransform>
+                                <RotateTransform Angle="90"></RotateTransform>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <ControlTemplate x:Key="HorizontalSliderTemplate" TargetType="{x:Type Slider}">
         <Grid>
             <TickBar x:Name="TopTick" Height="1" Fill="#7FFF" Placement="Top" SnapsToDevicePixels="True" Visibility="Collapsed"/>
@@ -777,10 +814,58 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="VerticalSliderTemplate" TargetType="{x:Type Slider}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto"
+                                  MinWidth="{TemplateBinding MinWidth}" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TickBar Grid.Column="0" x:Name="TopTick" Width="4" Fill="#7FFF" Placement="Left" SnapsToDevicePixels="True" Visibility="Collapsed"/>
+            <Path Grid.Column="1" Width="12" HorizontalAlignment="Left" Margin="0,4" Stretch="Fill" Stroke="#2FFF" StrokeThickness="1" Data="M223.045,39.858003 L224.87833,39.858003 234.045,138.858 223.045,138.858 z">
+                <Path.Fill>
+                    <LinearGradientBrush StartPoint="0.198,0.457" EndPoint="0.215,2.283">
+                        <GradientStop Offset="0" Color="#3000"/>
+                        <GradientStop Offset="0.3" Color="#407F7F7F"/>
+                    </LinearGradientBrush>
+                </Path.Fill>
+            </Path>
+            <Track x:Name="PART_Track" Grid.Column="1" Width="35">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="Slider.DecreaseLarge" Style="{DynamicResource SliderButtonStyle}"/>
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{DynamicResource SliderVerticalThumbStyle}"/>
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="Slider.IncreaseLarge" Style="{DynamicResource SliderButtonStyle}"/>
+                </Track.IncreaseRepeatButton>
+            </Track>
+            <TickBar x:Name="BottomTick" Grid.Column="2" Width="4" Fill="{TemplateBinding Foreground}" Placement="Right" SnapsToDevicePixels="True" Visibility="Collapsed"/>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="TickPlacement" Value="TopLeft">
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="TickPlacement" Value="BottomRight">
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="TickPlacement" Value="Both">
+                <Setter TargetName="TopTick" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="BottomTick" Property="Visibility" Value="Visible"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
     <Style TargetType="{x:Type Slider}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Style.Triggers>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="Template" Value="{DynamicResource VerticalSliderTemplate}"/>
+            </Trigger>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Template" Value="{DynamicResource HorizontalSliderTemplate}"/>
             </Trigger>

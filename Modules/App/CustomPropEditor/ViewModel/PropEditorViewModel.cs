@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
+using Catel.Services;
 using Common.WPFCommon.Command;
-using Common.WPFCommon.ViewModel;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
@@ -21,8 +21,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             ImportCommand = new RelayCommand<string>(ImportModel);
 	        NewPropCommand = new RelayCommand(NewProp);
 	        AddLightCommand = new RelayCommand<Point>(AddLightAt);
+            LoadImageCommand = new RelayCommand(LoadImage);
 	        Prop = PropModelServices.Instance().CreateProp();
-	        //DrawingPanelViewModel = new DrawingPanelViewModel();
         }
         
 	    #region Prop model property
@@ -139,19 +139,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
 	    public void AddLightAt(Point p)
 	    {
-	        //if (ElementTreeViewModel.SelectedItems.Count == 1)
-	        //{
-	        //    //var em = ElementTreeViewModel.SelectedItems.First();
-	        //    //if (em.IsLeaf && !em.Equals(Prop.RootNode))
-	        //    //{
-	        //    //    em.AddLight(p);
-	        //    //}
-	        //}
-	        //Prop.RootNode.AddLight(p);
-
-            PropModelServices.Instance().AddLight(ElementTreeViewModel.SelectedItems.FirstOrDefault(), p);
+	        PropModelServices.Instance().AddLight(ElementTreeViewModel.SelectedItems.FirstOrDefault(), p);
 
 	        DrawingPanelViewModel.RefreshLightViewModels();
+        }
+
+	    public async void LoadImage()
+	    {
+	        var dependencyResolver = this.GetDependencyResolver();
+	        var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+	        openFileService.IsMultiSelect = false;
+	        //openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+	        openFileService.Filter = "Image Files(*.JPG;*.GIF;*.PNG)|*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
+	        if (await openFileService.DetermineFileAsync())
+	        {
+	            string path = openFileService.FileNames.First();
+	            if (!string.IsNullOrEmpty(path))
+	            {
+                    PropModelServices.Instance().SetImage(path);
+	            }
+	        }
         }
 
         #region Menu Commands
@@ -161,6 +168,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         public RelayCommand NewPropCommand { get; private set; }
 
 	    public RelayCommand<Point> AddLightCommand { get; private set; }
+
+        public RelayCommand LoadImageCommand { get; private set; }
 
         #endregion
 

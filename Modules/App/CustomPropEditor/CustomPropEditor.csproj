@@ -124,6 +124,9 @@
     <Compile Include="Adorners\RubberbandAdorner.cs" />
     <Compile Include="Controls\FakeBehavior.cs" />
     <Compile Include="Controls\IGroupable.cs" />
+    <Compile Include="Controls\SliderMenuItem.xaml.cs">
+      <DependentUpon>SliderMenuItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
@@ -162,6 +165,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\SliderMenuItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\GroupBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

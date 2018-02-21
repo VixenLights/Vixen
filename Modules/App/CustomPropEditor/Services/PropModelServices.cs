@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Windows;
+using System.Windows.Media.Imaging;
+using NLog;
 using VixenModules.App.CustomPropEditor.Model;
+using Point = System.Windows.Point;
 
 namespace VixenModules.App.CustomPropEditor.Services
 {
     public class PropModelServices
     {
+        protected static Logger Logging = LogManager.GetCurrentClassLogger();
         private static PropModelServices _instance;
         private Prop _prop;
         private Dictionary<Guid, ElementModel> _models = new Dictionary<Guid, ElementModel>();
@@ -34,6 +38,19 @@ namespace VixenModules.App.CustomPropEditor.Services
             _models.Clear();
             _models.Add(_prop.RootNode.Id, _prop.RootNode);
             return _prop;
+        }
+
+        public void SetImage(string filePath)
+        {
+            try
+            {
+                var image = new BitmapImage(new Uri(filePath, UriKind.Absolute));
+                Prop.Image = image;
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(ex, "An error occured loading the image for a prop.");
+            }
         }
 
         public IEnumerable<ElementModel> GetLeafNodes()
