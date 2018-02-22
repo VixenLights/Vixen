@@ -13,6 +13,7 @@
         xmlns:converters="clr-namespace:VixenModules.App.CustomPropEditor.Converters"
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:catel="http://schemas.catelproject.com"
 
 
         Title="Custom Prop Editor" Height="600" Width="800">
@@ -160,10 +161,12 @@
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
-                            AddLightCommand="{Binding AddLightCommand}">
+                            AddLightCommand="{Binding AddLightCommand}"
+                            >
                             
                             <i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
+                                <catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
                             </i:Interaction.Behaviors>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -181,7 +184,6 @@
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-
                                             </Path.Style>
                                         </Path>
                                     </ContentControl>
@@ -190,10 +192,16 @@
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <Canvas x:Name="DrawingCanvas" 
-                                            Height="{Binding DrawingPanelViewModel.Height, Mode=OneWay}" Width="{Binding DrawingPanelViewModel.Width, Mode=OneWay}" Margin="10">
+                                            Height="{Binding DrawingPanelViewModel.Height, Mode=OneWay}" 
+                                            Width="{Binding DrawingPanelViewModel.Width, Mode=OneWay}" 
+                                            Margin="10"
+                                            Focusable="True">
                                         <Canvas.Background>
                                             <ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}"></ImageBrush>
                                         </Canvas.Background>
+                                        <i:Interaction.Behaviors>
+                                            <catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
+                                        </i:Interaction.Behaviors>
                                     </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>

@@ -44,7 +44,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             AlignRightCommand = new RelayCommand(AlignRight, CanExecuteAlignmentMethod);
             DistributeHorizontallyCommand = new RelayCommand(DistributeHorizontally, CanExecuteAlignmentMethod);
             DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
-            
+
+            DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
+
             SelectedItems = new ObservableCollection<LightViewModel>();
 
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
@@ -260,19 +262,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             return lvmList;
         }
 
-        //public void AddLightAt(Point p, ElementModel em)
-        //{
-        //    em.AddLight(p);
-        //    //Prop.AddElementModel(em);
-        //    LightNodes.AddRange(CreateLightViewModels(em));
-        //}
-
         public void DeleteSelectedLights()
         {
-            foreach (var lightViewModel in SelectedItems)
-            {
-                
-            }
+            PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
+            RefreshLightViewModels();
         }
 
         public void DeselectAll()
@@ -422,6 +415,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         public RelayCommand DistributeHorizontallyCommand { get; private set; }
         public RelayCommand DistributeVerticallyCommand { get; private set; }
 
+
+        #endregion
+
+        #region Delete Command
+
+        public RelayCommand DeleteSelectedLightsCommand { get; private set; }
 
         #endregion
 

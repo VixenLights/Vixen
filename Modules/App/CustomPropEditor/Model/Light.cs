@@ -31,6 +31,8 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
+        public Guid ParentModelId { get; set; }
+
         public double Y
         {
             get { return _y; }

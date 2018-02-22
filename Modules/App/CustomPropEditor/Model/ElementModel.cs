@@ -165,7 +165,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 		}
 
-	    public bool RemoveFromParent(ElementModel parent)
+	    public bool RemoveParent(ElementModel parent)
 	    {
 	        return Parents.Remove(parent);
 	    }
@@ -192,6 +192,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	            throw new ArgumentException("Non leaf model cannot have lights!");
 	        }
             Lights.Add(ln);
+	        ln.ParentModelId = Id;
 	        OnPropertyChanged(nameof(IsString));
 	        OnPropertyChanged(nameof(LightCount));
         }
@@ -199,6 +200,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    public bool RemoveLight(Light light)
 	    {
 	        var success = Lights.Remove(light);
+            light.ParentModelId = Guid.Empty;
 	        OnPropertyChanged(nameof(IsString));
 	        OnPropertyChanged(nameof(LightCount));
 	        return success;

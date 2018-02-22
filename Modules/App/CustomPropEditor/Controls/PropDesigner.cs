@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Catel.Windows.Input;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Adorners;
 using VixenModules.App.CustomPropEditor.ViewModel;
@@ -145,6 +146,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
         private void _drawingCanvas_MouseLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
             OnMouseLeftButtonDown(e);
+
+            Keyboard.Focus(_drawingCanvas);
 
             _originMouseStartPoint = _previousPosition = e.GetPosition(_drawingCanvas);
             //if we are source of event, we are rubberband selecting

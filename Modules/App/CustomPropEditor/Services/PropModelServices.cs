@@ -70,6 +70,11 @@ namespace VixenModules.App.CustomPropEditor.Services
             return em;
         }
 
+        public void RemoveChildFromParent(ElementModel parent, ElementModel child)
+        {
+            Prop.RemoveFromParent(child, parent);
+        }
+
         public void AddLightNode(ElementModel target, Point p, int? order = null, int? size=null)
         {
             if (target == null)
@@ -118,6 +123,58 @@ namespace VixenModules.App.CustomPropEditor.Services
 
             em.AddLight(CreateLight(p, em.LightSize));
             
+        }
+
+        public void RemoveLights(IEnumerable<Light> lights)
+        {
+            foreach (var light in lights)
+            {
+                RemoveLight(light);
+            }
+        }
+
+        public void RemoveLight(Light light)
+        {
+            if (light.ParentModelId != Guid.Empty)
+            {
+                ElementModel em;
+                if (_models.TryGetValue(light.ParentModelId, out em))
+                {
+                    RemoveLight(em, light);
+                }
+            }
+        }
+
+        public void RemoveLight(ElementModel target, Light light)
+        {
+            if (target == null)
+            {
+                throw  new ArgumentNullException(nameof(target));
+            }
+
+            if (light == null)
+            {
+                throw new ArgumentNullException(nameof(light));
+            }
+
+            if (target.IsLeaf)
+            {
+                var success = target.RemoveLight(light);
+                if(success)
+                {
+                    if (!target.Lights.Any())
+                    {
+                        //remove me from all my parents so I can be deleted
+                        foreach (var parent in target.Parents.ToList())
+                        {
+                            RemoveChildFromParent(parent, target);
+                        }
+
+                        //Remove me
+                        _models.Remove(target.Id);
+                    }
+                }
+            }
         }
 
         public Prop Prop => _prop;

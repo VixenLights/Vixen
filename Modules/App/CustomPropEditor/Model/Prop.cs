@@ -53,9 +53,10 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-        public bool RemoveFromParent(ElementModel em, ElementModel parent)
+        public bool RemoveFromParent(ElementModel child, ElementModel parent)
         {
-            return em.RemoveFromParent(parent);
+            parent.RemoveChild(child);
+            return child.RemoveParent(parent);
         }
 
         public string Name
