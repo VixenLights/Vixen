@@ -113,28 +113,36 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        
 	    }
 
-	    private void ElementViewModel_SelectedItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	    private void ElementViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             DrawingPanelViewModel.SelectLights(ElementTreeViewModel.SelectedItems);
         }
 
         private async void ImportModel(string type)
 	    {
-            IOService service = new FileService();
-	        string path = service.OpenFileDialog(Environment.SpecialFolder.MyDocuments.ToString(), "xModel (*.xmodel)|*.xmodel");
-	        if (path != null)
+	        var dependencyResolver = this.GetDependencyResolver();
+	        var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+	        openFileService.IsMultiSelect = false;
+	        openFileService.InitialDirectory = Environment.SpecialFolder.MyDocuments.ToString();
+	        openFileService.Filter = "xModel (*.xmodel)|*.xmodel";
+	        if (await openFileService.DetermineFileAsync())
 	        {
-	            IModelImport import = new XModelImport();
-	            Prop = await import.ImportAsync(path);
+	            string path = openFileService.FileNames.First();
+	            if (!string.IsNullOrEmpty(path))
+	            {
+	                IModelImport import = new XModelImport();
+	                Prop = await import.ImportAsync(path);
+                }
             }
-            
-	    }
+
+        }
 
 	    private void NewProp()
 	    {
-	        //Write code to prompt for name
-	        //Prop = new Prop("Default 1");
-	        Prop = PropModelServices.Instance().CreateProp();
+	        MessageBoxService mbs = new MessageBoxService();
+	        var name = mbs.GetUserInput("Please enter the model name.", "Create Model");
+
+            Prop = PropModelServices.Instance().CreateProp(name);
 	    }
 
 	    public void AddLightAt(Point p)
@@ -149,7 +157,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        var dependencyResolver = this.GetDependencyResolver();
 	        var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 	        openFileService.IsMultiSelect = false;
-	        //openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+	        openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
 	        openFileService.Filter = "Image Files(*.JPG;*.GIF;*.PNG)|*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
 	        if (await openFileService.DetermineFileAsync())
 	        {

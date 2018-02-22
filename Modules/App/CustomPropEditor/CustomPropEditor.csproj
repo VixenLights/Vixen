@@ -145,7 +145,6 @@
     <Compile Include="Import\XLights\SubModel.cs" />
     <Compile Include="Import\XLights\XModelImport.cs" />
     <Compile Include="Model\NewProp.cs" />
-    <Compile Include="Services\SelectionService.cs" />
     <Compile Include="ViewModel\DrawingPanelViewModel.cs" />
     <Compile Include="ViewModel\ElementTreeViewModel.cs" />
     <Compile Include="ViewModel\LightViewModel.cs" />
@@ -157,8 +156,6 @@
     <Compile Include="Model\Light.cs" />
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\IOService.cs" />
     <Compile Include="ViewModel\PropEditorViewModel.cs" />
     <Compile Include="View\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>

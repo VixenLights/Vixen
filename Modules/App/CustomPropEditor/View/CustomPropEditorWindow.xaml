@@ -161,12 +161,10 @@
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
-                            AddLightCommand="{Binding AddLightCommand}"
-                            >
+                            AddLightCommand="{Binding AddLightCommand}">
                             
                             <i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
-                                <catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
                             </i:Interaction.Behaviors>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>

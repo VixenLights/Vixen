@@ -56,10 +56,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #endregion
 
-        //public List<ElementModel> RootNodes => new List<ElementModel>(new[] { Prop.RootNode });
-
-       // public ObservableCollection<ElementModel> SelectedItems { get; set; }
-
         #region SelectedItems property
 
         /// <summary>
@@ -133,7 +129,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             if (SelectedItems.Count == 1)
             {
                 MessageBoxService mbs = new MessageBoxService();
-                var newName = mbs.GetUserInput("Please enter the new name.");
+                var newName = mbs.GetUserInput("Please enter the new name.", "Rename");
 
                 SelectedItems.First().Name = newName;
             }

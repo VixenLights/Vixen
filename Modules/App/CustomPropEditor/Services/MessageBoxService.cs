@@ -5,9 +5,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 {
     public class MessageBoxService
     {
-        public string GetUserInput(string question)
+        public string GetUserInput(string question, string title)
         {
-            TextDialog dialog = new TextDialog(question);
+            TextDialog dialog = new TextDialog(question, title);
             var input = string.Empty;
 
             var validInput = false;
