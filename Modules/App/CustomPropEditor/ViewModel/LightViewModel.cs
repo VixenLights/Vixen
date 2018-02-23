@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Catel.Data;
 using Catel.MVVM;
@@ -32,6 +33,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// LightNode property data.
         /// </summary>
         public static readonly PropertyData LightProperty = RegisterProperty("Light", typeof(Light));
+
+        #endregion
+
+        #region Id property
+
+        /// <summary>
+        /// Gets or sets the Id value.
+        /// </summary>
+        [ViewModelToModel("Light")]
+        public Guid Id
+        {
+            get { return GetValue<Guid>(IdProperty); }
+            set { SetValue(IdProperty, value); }
+        }
+
+        /// <summary>
+        /// Id property data.
+        /// </summary>
+        public static readonly PropertyData IdProperty = RegisterProperty("Id", typeof(Guid), null);
 
         #endregion
 

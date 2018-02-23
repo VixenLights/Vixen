@@ -13,7 +13,8 @@ namespace VixenModules.App.CustomPropEditor.Services
         protected static Logger Logging = LogManager.GetCurrentClassLogger();
         private static PropModelServices _instance;
         private Prop _prop;
-        private Dictionary<Guid, ElementModel> _models = new Dictionary<Guid, ElementModel>();
+        private readonly Dictionary<Guid, ElementModel> _models = new Dictionary<Guid, ElementModel>();
+        private readonly Dictionary<Guid, ElementModel> _lightToModel = new Dictionary<Guid, ElementModel>();
 
         private PropModelServices()
         {
@@ -25,7 +26,6 @@ namespace VixenModules.App.CustomPropEditor.Services
             if (_instance == null)
             {
                 _instance = new PropModelServices();
-               // _instance.CreateProp();
             }
 
             return _instance;
@@ -35,6 +35,7 @@ namespace VixenModules.App.CustomPropEditor.Services
         {
             _prop = new Prop(name);
             _models.Clear();
+            _lightToModel.Clear();
             _models.Add(_prop.RootNode.Id, _prop.RootNode);
             return _prop;
         }
@@ -104,6 +105,10 @@ namespace VixenModules.App.CustomPropEditor.Services
                 }
 
                 //Clean up any lights
+                foreach (var elementModelLight in elementModel.Lights)
+                {
+                    _lightToModel.Remove(elementModelLight.Id);
+                }
                 elementModel.Lights.Clear();
                 _models.Remove(elementModel.Id);
             }
@@ -137,7 +142,11 @@ namespace VixenModules.App.CustomPropEditor.Services
             {
                 size = em.LightSize;
             }
-            em.AddLight(CreateLight(p, size.Value));
+
+            var light = CreateLight(p, size.Value);
+            em.AddLight(light);
+            _lightToModel.Add(light.Id, em);
+
         }
 
         public void AddLight(ElementModel target, Point p, int? order=null)
@@ -160,7 +169,9 @@ namespace VixenModules.App.CustomPropEditor.Services
             target.AddChild(em);
             _models.Add(em.Id, em);
 
-            em.AddLight(CreateLight(p, em.LightSize));
+            var light = CreateLight(p, em.LightSize);
+            em.AddLight(light);
+            _lightToModel.Add(light.Id, em);
             
         }
 
@@ -199,6 +210,7 @@ namespace VixenModules.App.CustomPropEditor.Services
             if (target.IsLeaf)
             {
                 var success = target.RemoveLight(light);
+                _lightToModel.Remove(light.Id);
                 if(success)
                 {
                     if (!target.Lights.Any())
@@ -214,6 +226,16 @@ namespace VixenModules.App.CustomPropEditor.Services
                     }
                 }
             }
+        }
+
+        public IEnumerable<ElementModel> FindModelsForLights(IEnumerable<Light> lights)
+        {
+            return FindModelsForLightIds(lights.Select(l => l.Id));
+        }
+
+        public IEnumerable<ElementModel> FindModelsForLightIds(IEnumerable<Guid> lightIds)
+        {
+            return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]);
         }
 
         public Prop Prop => _prop;

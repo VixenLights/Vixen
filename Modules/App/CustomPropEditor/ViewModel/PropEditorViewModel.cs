@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -16,6 +17,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
 	public class PropEditorViewModel: ViewModelBase
 	{
+	    private bool _selectionChanging;
 	    public PropEditorViewModel()
 	    {
             ImportCommand = new RelayCommand<string>(ImportModel);
@@ -109,13 +111,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         }
 
         private void DrawingViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-	    {
-	        
-	    }
+        {
+            if (!_selectionChanging)
+            {
+                _selectionChanging = true;
+                var lightIds = DrawingPanelViewModel.SelectedItems.Select(l => l.Id);
+                var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
+                ElementTreeViewModel.SelectedItems.Clear();
+                ElementTreeViewModel.SelectedItems.AddRange(models);
+                _selectionChanging = false;
+            }
+            
+        }
 
 	    private void ElementViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            DrawingPanelViewModel.SelectLights(ElementTreeViewModel.SelectedItems);
+            if (!_selectionChanging)
+            {
+                _selectionChanging = true;
+                DrawingPanelViewModel.SelectLights(ElementTreeViewModel.SelectedItems);
+                _selectionChanging = false;
+            }
         }
 
         private async void ImportModel(string type)

@@ -15,6 +15,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public Light(Point center, double size)
         {
+            Id = Guid.NewGuid();
             X = center.X;
             Y = center.Y;
             _size = size;
