@@ -15,15 +15,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
     public class DrawingPanelViewModel : ViewModelBase
     {
-        private Prop _prop;
-        private ObservableCollection<LightViewModel> _lightNodes;
-        private bool _isDrawing;
-        private bool _isSelected;
-        private double _width;
-        private double _height;
-        private double _x;
-        private double _y;
-        private Dictionary<Guid, List<LightViewModel>> _elementModelMap;
+        
+        private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 
         public DrawingPanelViewModel():this(new Prop())
         {
@@ -50,6 +43,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             SelectedItems = new ObservableCollection<LightViewModel>();
 
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+            IsDrawing = true;
         }
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

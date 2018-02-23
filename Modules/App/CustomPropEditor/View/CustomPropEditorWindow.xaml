@@ -12,11 +12,10 @@
         xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
         xmlns:converters="clr-namespace:VixenModules.App.CustomPropEditor.Converters"
         xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:catel="http://schemas.catelproject.com"
 
 
-        Title="Custom Prop Editor" Height="600" Width="800">
+        Title="Custom Prop Editor" Height="700" Width="900">
     <!--<views:PropEditorView></views:PropEditorView>-->
 
 
@@ -30,7 +29,7 @@
             <ContextMenu x:Key="DesignerCanvasContextMenu">
                 <MenuItem Header="Paste" Command="{x:Static ApplicationCommands.Paste}">
                     <!--<MenuItem.Icon>
-                    <Image Source="Resources/Images/Paste.png" Width="16"/>
+                    <Image Source="Resources/Images/Paste.png" Width="20"/>
                 </MenuItem.Icon>-->
                 </MenuItem>
                 <MenuItem Header="Select All"/>
@@ -52,14 +51,14 @@
                 <MenuItem Header="Open"></MenuItem>
                 <MenuItem Header="Save"></MenuItem>
                 <MenuItem Header="Save As"></MenuItem>
-                <MenuItem Header="Add Image" Command="{Binding LoadImageCommand}"></MenuItem>
                 <MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
             </MenuItem>
             <MenuItem Header="Edit" Name="EditMenu">
                 <MenuItem Header="Cut"></MenuItem>
                 <MenuItem Header="Copy"></MenuItem>
                 <MenuItem Header="Paste"></MenuItem>
-                <Separator />
+            </MenuItem>
+            <MenuItem Header="View">
                 <MenuItem Header="Opacity">
                     <controls:SliderMenuItem x:Name="OpacitySliderMenu"
                                              Value="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
@@ -76,12 +75,20 @@
                     </controls:SliderMenuItem>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="View" />
             <MenuItem Header="Help" />
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=PropDesigner}" Value="False">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <TextBlock Text="{Binding Path=Coordinates.X, StringFormat='{}{0:0}', ElementName=PropDesigner}"/>
                     <TextBlock Text=", "></TextBlock>
                     <TextBlock Text="{Binding Path=Coordinates.Y, StringFormat='{}{0:0}', ElementName=PropDesigner}"/>
@@ -120,39 +127,45 @@
                 <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
                     <ToolBarTray DockPanel.Dock="Top">
                         <ToolBar>
+                            <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode">
+                                <Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20"/>
+                            </ToggleButton>
                             <ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" ToolTip="Selection mode">
-                                <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20"/>
                             </ToggleButton>
 
                             <Separator />
                             <Button Command="Copy" ToolTip="Cut">
-                                <Image Source="/CustomPropEditor;component/Images/cut.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/cut.png" Height="20"/>
                             </Button>
                             <Button Command="Paste" ToolTip="Copy">
-                                <Image Source="/CustomPropEditor;component/Images/copy.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/copy.png" Height="20"/>
                             </Button>
                             <Button Command="Paste" ToolTip="Paste">
-                                <Image Source="/CustomPropEditor;component/Images/paste.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/paste.png" Height="20"/>
                             </Button>
-                            
+                            <Separator />
+                            <Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background">
+                                <Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Height="20"/>
+                            </Button>
                             <Separator />
                             <Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom">
-                                <Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal">
-                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="20"/>
                             </Button>
                             <Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical">
-                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="16"/>
+                                <Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="20"/>
                             </Button>
                         </ToolBar>
                     </ToolBarTray>

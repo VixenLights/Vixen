@@ -211,16 +211,17 @@ namespace VixenModules.App.CustomPropEditor.Controls
         {
             OnMouseMove(e);
 
-            if (IsDrawing)
-            {
-                return;
-            }
             var position = e.GetPosition(_drawingCanvas);
             if (_propEditorViewModel != null)
             {
                 Coordinates = position;
             }
 
+            if (IsDrawing)
+            {
+                return;
+            }
+            
             // if mouse button is not pressed we have no drag operation, ...
             if (e.LeftButton == MouseButtonState.Pressed)
             {

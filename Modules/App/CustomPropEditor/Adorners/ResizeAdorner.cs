@@ -36,8 +36,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         private Rect _bounds;
         private double _rotationAngle = 0;
 
-        private bool _done;
-        
         private readonly PropDesigner vm;
         // Initialize the ResizingAdorner.
         public ResizeAdorner(Canvas adornedElement, PropDesigner vm)
@@ -285,7 +283,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         protected override Size ArrangeOverride(Size finalSize)
         {
             //var center = Center(Bounds);
-            Console.Out.WriteLine($"Arrange {_rotate.IsDragging}");
+            //Console.Out.WriteLine($"Arrange {_rotate.IsDragging}");
             if (_rotate.IsDragging) return finalSize;
 
             
@@ -358,7 +356,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             result.Children.Add(transform);
            
 
-            Console.Out.WriteLine($"Get Transform {result.Children.Count}");
+            //Console.Out.WriteLine($"Get Transform {result.Children.Count}");
             return result;
 
         }
