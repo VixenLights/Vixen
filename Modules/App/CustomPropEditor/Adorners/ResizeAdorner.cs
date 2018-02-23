@@ -24,6 +24,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         readonly Thumb _middleBottom;
         readonly Thumb _middleTop;
 
+        private readonly Thumb _centerDrag;
+
         readonly Thumb _rotate;
 
         private RotateTransform rt;
@@ -58,6 +60,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             BuildAdornerCorner(ref _middleBottom, Cursors.SizeNS);
             BuildAdornerCorner(ref _middleLeft, Cursors.SizeWE);
 
+            BuildAdornerCorner(ref _centerDrag, Cursors.SizeAll);
+
             Style s = (Style) vm.FindResource("RotateThumbStyle");
             BuildAdornerCorner(ref _rotate, Cursors.Hand, s);
 
@@ -72,6 +76,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             _middleBottom.DragDelta += _middleBottom_DragDelta;
             _middleLeft.DragDelta += _middleLeft_DragDelta;
 
+            _centerDrag.DragDelta += _centerDrag_DragDelta            ;
+
             _rotate.DragDelta += _rotate_DragDelta;
             _rotate.DragStarted += _rotate_DragStarted            ;
 
@@ -79,8 +85,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             rt = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
 
         }
-
-        
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -109,6 +113,18 @@ namespace VixenModules.App.CustomPropEditor.Adorners
         {
             return new Point(rect.Left + rect.Width / 2,
                 rect.Top + rect.Height / 2);
+        }
+
+        private void _centerDrag_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            FrameworkElement el = AdornedElement as FrameworkElement;
+
+            if (Bounds.Left + e.HorizontalChange > 0 && Bounds.Right + e.HorizontalChange < el.ActualWidth &&
+                Bounds.Top + e.VerticalChange > 0 && Bounds.Bottom + e.VerticalChange < el.ActualHeight)
+            {
+                vm.MoveSelectedItems(e.HorizontalChange, e.VerticalChange);
+            }
+            
         }
 
         // Handler for resizing from the bottom-right.
@@ -301,6 +317,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             _middleBottom.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleBottom.Width / 2, Bounds.Y + Bounds.Height, _bottomLeft.Width, _bottomLeft.Height));
             _middleLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y + Bounds.Height/2 - _middleLeft.Width/2, _middleBottom.Width, _middleBottom.Height));
 
+            _centerDrag.Arrange(new Rect(Bounds.Left + Bounds.Width/2 - _centerDrag.Width/2,Bounds.Top + Bounds.Height/2 - _centerDrag.Height/2,_centerDrag.Width, _centerDrag.Height));
+
             _rotate.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleTop.Width / 2, Bounds.Y - 3 * _middleTop.Height , _middleTop.Width, _middleTop.Height));
 
             return finalSize;
@@ -318,12 +336,16 @@ namespace VixenModules.App.CustomPropEditor.Adorners
             {
                 cornerThumb.Style = s;
             }
+            else
+            {
+                cornerThumb.Style = (Style) vm.FindResource("ResizeThumbStyle");
+            }
 
             // Set some arbitrary visual characteristics.
             cornerThumb.Cursor = customizedCursor;
             cornerThumb.Height = cornerThumb.Width = 10;
-            cornerThumb.Opacity = 0.40;
-            cornerThumb.Background = new SolidColorBrush(Colors.MediumBlue);
+            //cornerThumb.Opacity = 0.40;
+            //cornerThumb.Background = new SolidColorBrush(Colors.MediumBlue);
 
             _visualChildren.Add(cornerThumb);
         }

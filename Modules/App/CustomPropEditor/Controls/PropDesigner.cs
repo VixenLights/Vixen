@@ -201,7 +201,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                     }
 
                 }
-                e.Handled = false;
+                e.Handled = true;
             }
 
 
