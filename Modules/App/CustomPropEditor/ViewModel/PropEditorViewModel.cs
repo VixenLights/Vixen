@@ -137,7 +137,39 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         }
 
-	    private void NewProp()
+	    #region Delete command
+
+	    private Command _deleteCommand;
+
+	    /// <summary>
+	    /// Gets the Delete command.
+	    /// </summary>
+	    public Command DeleteCommand
+	    {
+	        get { return _deleteCommand ?? (_deleteCommand = new Command(Delete, CanDelete)); }
+	    }
+
+	    /// <summary>
+	    /// Method to invoke when the Delete command is executed.
+	    /// </summary>
+	    private void Delete()
+	    {
+	        PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems);
+            DrawingPanelViewModel.RefreshLightViewModels();
+	    }
+
+	    /// <summary>
+	    /// Method to check whether the Delete command can be executed.
+	    /// </summary>
+	    /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+	    private bool CanDelete()
+	    {
+	        return !ElementTreeViewModel.SelectedItems.Any(x => x.Equals(Prop.RootNode));
+	    }
+
+	    #endregion
+
+        private void NewProp()
 	    {
 	        MessageBoxService mbs = new MessageBoxService();
 	        var name = mbs.GetUserInput("Please enter the model name.", "Create Model");

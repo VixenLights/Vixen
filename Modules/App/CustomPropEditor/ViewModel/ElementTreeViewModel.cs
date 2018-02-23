@@ -108,6 +108,50 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #endregion
 
+        
+
+        #region CreateGroup command
+
+        private Command _createGroupCommand;
+
+        /// <summary>
+        /// Gets the CreateGroup command.
+        /// </summary>
+        public Command CreateGroupCommand
+        {
+            get { return _createGroupCommand ?? (_createGroupCommand = new Command(CreateGroup, CanCreateGroup)); }
+        }
+
+        /// <summary>
+        /// Method to invoke when the CreateGroup command is executed.
+        /// </summary>
+        private void CreateGroup()
+        {
+            MessageBoxService mbs = new MessageBoxService();
+
+            var name = string.Empty;
+
+            while (string.IsNullOrEmpty(name))
+            {
+                name = mbs.GetUserInput("Please enter the group name.", "Create Group");
+            }
+           
+            name = PropModelServices.Instance().Uniquify(name); 
+            PropModelServices.Instance().CreateGroupForElementModels(name, SelectedItems);
+        }
+
+        /// <summary>
+        /// Method to check whether the CreateGroup command can be executed.
+        /// </summary>
+        /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+        private bool CanCreateGroup()
+        {
+            return SelectedItems.Any();
+        }
+
+        
+        #endregion
+
 
         #region Rename command
 

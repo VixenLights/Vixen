@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using NLog;
@@ -68,6 +67,46 @@ namespace VixenModules.App.CustomPropEditor.Services
             parent.AddChild(em);
             _models.Add(em.Id, em);
             return em;
+        }
+
+        public void CreateGroupForElementModels(string name, IEnumerable<ElementModel> elementModels)
+        {
+            var em = CreateNode(name);
+            foreach (var elementModel in elementModels)
+            {
+                em.Children.Add(elementModel);
+                elementModel.Parents.Add(em);
+            }
+        }
+
+        /// <summary>
+        /// Removes element models and cleans up thier parent / child references
+        /// </summary>
+        /// <param name="elementModels"></param>
+        public void RemoveElementModels(IEnumerable<ElementModel> elementModels)
+        {
+            //Remove the leaf nodes first.
+            foreach (var elementModel in elementModels.OrderByDescending(x => x.IsLeaf).ToList())
+            {
+                if (!elementModel.IsLeaf)
+                {
+                    //clear any children references
+                    foreach (var child in elementModel.Children.ToList())
+                    {
+                        RemoveChildFromParent(elementModel, child);
+                    }
+                }
+
+                //Remove from the parents
+                foreach (var parent in elementModel.Parents.ToList())
+                {
+                    RemoveChildFromParent(parent, elementModel);
+                }
+
+                //Clean up any lights
+                elementModel.Lights.Clear();
+                _models.Remove(elementModel.Id);
+            }
         }
 
         public void RemoveChildFromParent(ElementModel parent, ElementModel child)
@@ -189,7 +228,7 @@ namespace VixenModules.App.CustomPropEditor.Services
             return _models.Values.Count(x => x.Name == name)>1;
         }
 
-        private string Uniquify(string name)
+        public string Uniquify(string name)
         {
             if (_models.Values.Any(x => x.Name == name))
             {

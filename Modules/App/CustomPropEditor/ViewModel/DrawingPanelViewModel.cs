@@ -82,6 +82,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             private set
             {
                 SetValue(PropProperty, value);
+                
                 RefreshLightViewModels();
             }
         }
@@ -400,6 +401,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
             }
         }
+
+
         #region Commands
 
         
