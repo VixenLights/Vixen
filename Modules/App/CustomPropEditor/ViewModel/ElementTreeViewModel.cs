@@ -146,7 +146,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
         private bool CanCreateGroup()
         {
-            return SelectedItems.Any();
+            return SelectedItems.Any() && SelectedItems.All(x => x != Prop.RootNode);
         }
 
         

@@ -115,9 +115,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             if (!_selectionChanging)
             {
                 _selectionChanging = true;
-                var lightIds = DrawingPanelViewModel.SelectedItems.Select(l => l.Id);
-                var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
-
+                
 	            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
 	            {
 					PropModelServices.Instance().DeselectAllModels();
@@ -125,17 +123,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
 	            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
 	            {
-					//Fix this to look up and remoe just the right ones.
-					PropModelServices.Instance().DeselectAllModels();
+		            var lightIds = notifyCollectionChangedEventArgs.OldItems.Cast<LightViewModel>().Select(l => l.Id);
+		            var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
+		            Prop.RootNode.IsSelected = false;
 					models.ForEach(x =>
 					{
-						x.IsSelected = true;
+						x.IsSelected = false;
 					});
 				}
 
 				if(notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
 				{
-					//Fix this to just add the new ones
+					var lightIds = notifyCollectionChangedEventArgs.NewItems.Cast<LightViewModel>().Select(l => l.Id);
+					var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
+					
 					models.ForEach(x =>
 					{
 						x.IsSelected = true;
