@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Imaging;
+using Catel.Collections;
 using NLog;
 using VixenModules.App.CustomPropEditor.Model;
 using Point = System.Windows.Point;
@@ -243,6 +244,11 @@ namespace VixenModules.App.CustomPropEditor.Services
         private Light CreateLight(Point p, double size)
         {
             return new Light(p, size);
+        }
+
+        public void DeselectAllModels()
+        {
+            _models.Values.ForEach(m => m.IsSelected = false);
         }
 
         public bool IsNameDuplicated(string name)

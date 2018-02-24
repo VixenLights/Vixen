@@ -108,7 +108,6 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Catel.MVVM.5.2.0\lib\net46\System.Windows.Interactivity.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xaml" />
@@ -134,6 +133,7 @@
     <Compile Include="Model\TransformArgs.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
+    <Compile Include="ViewModels\ElementModelViewModel.cs" />
     <Compile Include="ViewModel\ISelectable.cs" />
     <Compile Include="Controls\PropDesigner.cs" />
     <Compile Include="Converters\LightNodeToPathConverter.cs" />
@@ -149,6 +149,8 @@
     <Compile Include="ViewModel\ElementTreeViewModel.cs" />
     <Compile Include="ViewModel\LightViewModel.cs" />
     <Compile Include="ViewModel\MultiSelectionBehavior.cs" />
+    <Compile Include="ViewModels\PropEditorViewModel.cs" />
+    <Compile Include="ViewModels\PropTreeViewModel.cs" />
     <Compile Include="View\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>
@@ -157,8 +159,17 @@
     <Compile Include="Model\Prop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\PropEditorViewModel.cs" />
+    <Compile Include="Views\ElementModelView.xaml.cs">
+      <DependentUpon>ElementModelView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ElementTree.xaml.cs">
       <DependentUpon>ElementTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PropTreeView.xaml.cs">
+      <DependentUpon>PropTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PropEditorWindow.xaml.cs">
+      <DependentUpon>PropEditorWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +189,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ElementModelView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\ElementTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PropTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PropEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

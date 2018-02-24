@@ -1,24 +1,19 @@
-﻿<UserControl x:Class="VixenModules.App.CustomPropEditor.View.ElementTree"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:catel="clr-namespace:Catel;assembly=Catel.Core"
-             xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
-             xmlns:viewModel="clr-namespace:VixenModules.App.CustomPropEditor.ViewModel"
-             xmlns:interactivity="http://schemas.catelproject.com"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    
+﻿<catel:UserControl x:Class="VixenModules.App.CustomPropEditor.Views.PropTreeView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
+                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                   xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
+                   xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
+                   xmlns:views="clr-namespace:VixenModules.App.CustomPropEditor.Views">
+
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-		<Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
-			<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
-			<Setter Property="controls:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
+        <Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsSelected" Value="{Binding RelativeSource={RelativeSource Self}, Mode=TwoWay, Path=DataContext.IsSelected}" />
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
               RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
@@ -104,48 +99,34 @@
             <Setter Property="Padding" Value="0" />
         </Style>
 
-        <ContextMenu x:Key="ElementTreeContextMenu">
-            <MenuItem Header="Create Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-            <MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
-            <MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
-        </ContextMenu>
 
-        <!-- For the context menu to work, we must shift it into a style, which means that the context menu is now in a
-        visual tree that is more closely related to the current data context. All we have to do then is set the style, 
-        which hooks up the context menu. -->
-        <Style x:Key="ElementModelContextMenuStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="ContextMenu" Value="{DynamicResource ElementTreeContextMenu}"/>
-        </Style>
-        
+
 
     </UserControl.Resources>
-    
-    <Grid>
-        
-        <TreeView x:Name="ElementModelTreeView" 
-                  ItemsSource="{Binding ElementTreeViewModel.RootNodes}" 
+
+
+
+    <TreeView x:Name="ElementModelTreeView" 
+                  ItemsSource="{Binding RootNodes}" 
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ScrollViewer.CanContentScroll="True"
                   FocusManager.IsFocusScope="True">
-            
-            <i:Interaction.Behaviors>
-                <controls:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
-                <interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
-            </i:Interaction.Behaviors>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type model:ElementModel}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}">
-                        </TextBlock>
-                        <TextBlock Margin="5,2,0,2" Text="{Binding Order, StringFormat=({0:G})}" 
-                                   Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter }}">
 
-                        </TextBlock>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-            
-        </TreeView>
-    </Grid>
-</UserControl>
+        <i:Interaction.Behaviors>
+            <controls:TreeViewMultipleSelectionBehavior SelectedItems="{Binding SelectedItems}" />
+            <catel:KeyPressToCommand Command="{Binding DeleteSelectedLightsCommand}" Key="Delete" />
+        </i:Interaction.Behaviors>
+
+
+        <TreeView.ItemTemplate>
+            <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type viewModels:ElementModelViewModel}">
+               <views:ElementModelView DataContext="{Binding}"/>
+                   
+            </HierarchicalDataTemplate>
+        </TreeView.ItemTemplate>
+
+    </TreeView>
+
+
+</catel:UserControl>

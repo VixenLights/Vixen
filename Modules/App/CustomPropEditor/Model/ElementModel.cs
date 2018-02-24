@@ -24,7 +24,9 @@ namespace VixenModules.App.CustomPropEditor.Model
         private int _order;
 	    private string _name;
 	    private int _lightSize;
-	    
+	    private bool _isSelected;
+	    private bool _isExpanded;
+
 
 	    public ElementModel()
 		{
@@ -56,6 +58,39 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        Parents.Add(parent);
 	        Order = order;
 	    }
+
+
+	    ///For testing
+
+	    #region IsSelected property
+
+	    public bool IsSelected
+	    {
+	        get { return _isSelected; }
+	        set
+	        {
+	            if (value == _isSelected) return;
+	            _isSelected = value;
+	            OnPropertyChanged(nameof(IsSelected));
+	        }
+	    }
+
+        #endregion
+
+	    #region IsExpanded
+
+	    public bool IsExpanded
+	    {
+	        get { return _isExpanded; }
+	        set
+	        {
+	            if (value == _isExpanded) return;
+	            _isExpanded = value;
+	            OnPropertyChanged(nameof(IsExpanded));
+	        }
+	    }
+
+	    #endregion
 
         [Browsable(false)]
 		public Guid Id { get; protected set; }

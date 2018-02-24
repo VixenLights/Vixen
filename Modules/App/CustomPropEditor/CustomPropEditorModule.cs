@@ -1,6 +1,8 @@
 ﻿using System.Windows.Forms.Integration;
 using Vixen.Module.App;
 using Vixen.Sys;
+using VixenModules.App.CustomPropEditor.View;
+using PropEditorWindow = VixenModules.App.CustomPropEditor.Views.PropEditorWindow;
 
 namespace VixenModules.App.CustomPropEditor
 {
@@ -48,6 +50,7 @@ namespace VixenModules.App.CustomPropEditor
         private void RootCommand_Click(object sender, System.EventArgs e)
         {
             View.CustomPropEditorWindow mw = new View.CustomPropEditorWindow();
+            //PropEditorWindow mw = new PropEditorWindow();
             ElementHost.EnableModelessKeyboardInterop(mw);
             mw.Show();
         }

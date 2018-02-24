@@ -117,8 +117,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
                 _selectionChanging = true;
                 var lightIds = DrawingPanelViewModel.SelectedItems.Select(l => l.Id);
                 var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
-                ElementTreeViewModel.SelectedItems.Clear();
-                ElementTreeViewModel.SelectedItems.AddRange(models);
+                PropModelServices.Instance().DeselectAllModels();
+	            models.ForEach(x =>
+	            {
+		            x.IsSelected = true;
+		            x.Parents.ForEach(p => p.IsExpanded = true);
+	            });
                 _selectionChanging = false;
             }
             
