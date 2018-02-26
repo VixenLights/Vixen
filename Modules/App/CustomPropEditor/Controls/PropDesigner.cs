@@ -16,160 +16,160 @@ using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.Controls
 {
-    public class PropDesigner : MultiSelector
-    {
-        private Canvas _drawingCanvas;
-        private Point _originMouseStartPoint;
-        private Point _previousPosition;
-        private bool _isSelecting;
-        private RubberbandAdorner _rubberbandAdorner;
-        private ResizeAdorner _resizingAdorner;
-        private PropEditorViewModel _propEditorViewModel;
-        private bool _dragging;
+	public class PropDesigner : MultiSelector
+	{
+		private Canvas _drawingCanvas;
+		private Point _originMouseStartPoint;
+		private Point _previousPosition;
+		private bool _isSelecting;
+		private RubberbandAdorner _rubberbandAdorner;
+		private ResizeAdorner _resizingAdorner;
+		private PropEditorViewModel _propEditorViewModel;
+		private bool _dragging;
 
-        public PropDesigner()
-        {
-            Loaded += OnLoaded;      
-        }
+		public PropDesigner()
+		{
+			Loaded += OnLoaded;
+		}
 
-        public static readonly DependencyProperty CoordinatesProperty =
-            DependencyProperty.Register("Coordinates", typeof(Point), typeof(PropDesigner));
+		public static readonly DependencyProperty CoordinatesProperty =
+			DependencyProperty.Register("Coordinates", typeof(Point), typeof(PropDesigner));
 
-        public Point Coordinates
-        {
-            get { return (Point)GetValue(CoordinatesProperty); }
-            set { SetValue(CoordinatesProperty, value);}
-        }
+		public Point Coordinates
+		{
+			get { return (Point)GetValue(CoordinatesProperty); }
+			set { SetValue(CoordinatesProperty, value); }
+		}
 
-        public static readonly DependencyProperty IsDrawingProperty =
-            DependencyProperty.Register("IsDrawing", typeof(bool), typeof(PropDesigner));
+		public static readonly DependencyProperty IsDrawingProperty =
+			DependencyProperty.Register("IsDrawing", typeof(bool), typeof(PropDesigner));
 
-        public bool IsDrawing
-        {
-            get { return (bool)GetValue(IsDrawingProperty); }
-            set { SetValue(IsDrawingProperty, value); }
-        }
+		public bool IsDrawing
+		{
+			get { return (bool)GetValue(IsDrawingProperty); }
+			set { SetValue(IsDrawingProperty, value); }
+		}
 
-        public static readonly DependencyProperty LightNodeViewModelsSourceProperty =
-            DependencyProperty.Register("LightNodeViewModelsSource", typeof(IEnumerable), typeof(PropDesigner),
-                new FrameworkPropertyMetadata(LightNodeViewModelsSource_PropertyChanged));
-        
+		public static readonly DependencyProperty LightNodeViewModelsSourceProperty =
+			DependencyProperty.Register("LightNodeViewModelsSource", typeof(IEnumerable), typeof(PropDesigner),
+				new FrameworkPropertyMetadata(LightNodeViewModelsSource_PropertyChanged));
 
-        private static void LightNodeViewModelsSource_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var p = d as PropDesigner;
-            if (p != null)
-            {
-                p.ItemsSource = p.LightNodeViewModelsSource;
-            }
-        }
 
-        /// <summary>
-        /// A reference to the collection that is the source used to populate 'Connections'.
-        /// Used in the same way as 'ItemsSource' in 'ItemsControl'.
-        /// </summary>
-        public IEnumerable LightNodeViewModelsSource
-        {
-            get
-            {
-                return (IEnumerable)GetValue(LightNodeViewModelsSourceProperty);
-            }
-            set
-            {
-                SetValue(LightNodeViewModelsSourceProperty, value);
-            }
-        }
+		private static void LightNodeViewModelsSource_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var p = d as PropDesigner;
+			if (p != null)
+			{
+				p.ItemsSource = p.LightNodeViewModelsSource;
+			}
+		}
 
-        public static DependencyProperty TransformCommandProperty = DependencyProperty.Register(
-                "TransformCommand",
-                typeof(RelayCommand<Transform>),
-                typeof(PropDesigner));
+		/// <summary>
+		/// A reference to the collection that is the source used to populate 'Connections'.
+		/// Used in the same way as 'ItemsSource' in 'ItemsControl'.
+		/// </summary>
+		public IEnumerable LightNodeViewModelsSource
+		{
+			get
+			{
+				return (IEnumerable)GetValue(LightNodeViewModelsSourceProperty);
+			}
+			set
+			{
+				SetValue(LightNodeViewModelsSourceProperty, value);
+			}
+		}
+
+		public static DependencyProperty TransformCommandProperty = DependencyProperty.Register(
+				"TransformCommand",
+				typeof(RelayCommand<Transform>),
+				typeof(PropDesigner));
 
 
 		public static readonly DependencyProperty SelectedModelsProperty = DependencyProperty.Register(
-		    "SelectedModels", typeof(IList), typeof(PropDesigner), new FrameworkPropertyMetadata(OnSelectedModelsChanged));
+			"SelectedModels", typeof(IList), typeof(PropDesigner), new FrameworkPropertyMetadata(OnSelectedModelsChanged));
 
-	    private static void OnSelectedModelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-	    {
-		    var propDesigner = d as PropDesigner;
-		    if (propDesigner == null)
-			    return;
+		private static void OnSelectedModelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var propDesigner = d as PropDesigner;
+			if (propDesigner == null)
+				return;
 
-		    var oldValue = e.OldValue as INotifyCollectionChanged;
-		    var newValue = e.NewValue as INotifyCollectionChanged;
+			var oldValue = e.OldValue as INotifyCollectionChanged;
+			var newValue = e.NewValue as INotifyCollectionChanged;
 
-		    if (oldValue != null)
-		    {
-			    oldValue.CollectionChanged -= propDesigner.Selected_CollectionChanged;
-		    }
-		    if (newValue != null)
-		    {
-			    propDesigner.SelectedItems.Clear();
-			    foreach (var item in (IEnumerable)newValue)
-			    {
-				    propDesigner.SelectedItems.Add(item);
-			    }
-			    newValue.CollectionChanged += propDesigner.Selected_CollectionChanged;
-		    }
-	    }
+			if (oldValue != null)
+			{
+				oldValue.CollectionChanged -= propDesigner.Selected_CollectionChanged;
+			}
+			if (newValue != null)
+			{
+				propDesigner.SelectedItems.Clear();
+				foreach (var item in (IEnumerable)newValue)
+				{
+					propDesigner.SelectedItems.Add(item);
+				}
+				newValue.CollectionChanged += propDesigner.Selected_CollectionChanged;
+			}
+		}
 
 		public IList SelectedModels
-	    {
-		    get { return (IList) GetValue(SelectedModelsProperty); }
-		    set { SetValue(SelectedModelsProperty, value); }
-	    }
+		{
+			get { return (IList)GetValue(SelectedModelsProperty); }
+			set { SetValue(SelectedModelsProperty, value); }
+		}
 
 
-        public RelayCommand<Transform> TransformCommand
-        {
-            get
-            {
-                return (RelayCommand<Transform>)GetValue(TransformCommandProperty);
-            }
+		public RelayCommand<Transform> TransformCommand
+		{
+			get
+			{
+				return (RelayCommand<Transform>)GetValue(TransformCommandProperty);
+			}
 
-            set
-            {
-                SetValue(TransformCommandProperty, value);
-            }
-        }
+			set
+			{
+				SetValue(TransformCommandProperty, value);
+			}
+		}
 
-        public static DependencyProperty AddLightCommandProperty = DependencyProperty.Register(
-            "AddLightCommand",
-            typeof(RelayCommand<Point>),
-            typeof(PropDesigner));
+		public static DependencyProperty AddLightCommandProperty = DependencyProperty.Register(
+			"AddLightCommand",
+			typeof(RelayCommand<Point>),
+			typeof(PropDesigner));
 
-        public RelayCommand<Point> AddLightCommand
-        {
-            get
-            {
-                return (RelayCommand<Point>)GetValue(AddLightCommandProperty);
-            }
+		public RelayCommand<Point> AddLightCommand
+		{
+			get
+			{
+				return (RelayCommand<Point>)GetValue(AddLightCommandProperty);
+			}
 
-            set
-            {
-                SetValue(AddLightCommandProperty, value);
-            }
-        }
+			set
+			{
+				SetValue(AddLightCommandProperty, value);
+			}
+		}
 
-        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
-        {
-            _drawingCanvas = FindVisualChild<Canvas>(this);
-            _propEditorViewModel = DataContext as PropEditorViewModel;
-            if (_drawingCanvas != null)
-            {
-                _drawingCanvas.PreviewMouseDown += _drawingCanvas_PreviewMouseDown                ;
-                _drawingCanvas.MouseLeftButtonDown += _drawingCanvas_MouseLeftMouseDown;
-                _drawingCanvas.MouseMove += _drawingCanvas_MouseMove;
-                _drawingCanvas.MouseLeftButtonUp += _drawingCanvas_MouseLeftButtonUp;
-            }
+		private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+		{
+			_drawingCanvas = FindVisualChild<Canvas>(this);
+			_propEditorViewModel = DataContext as PropEditorViewModel;
+			if (_drawingCanvas != null)
+			{
+				_drawingCanvas.PreviewMouseDown += _drawingCanvas_PreviewMouseDown;
+				_drawingCanvas.MouseLeftButtonDown += _drawingCanvas_MouseLeftMouseDown;
+				_drawingCanvas.MouseMove += _drawingCanvas_MouseMove;
+				_drawingCanvas.MouseLeftButtonUp += _drawingCanvas_MouseLeftButtonUp;
+			}
 
-	        if (SelectedModels is INotifyCollectionChanged)
-	        {
+			if (SelectedModels is INotifyCollectionChanged)
+			{
 				var selected = SelectedModels as INotifyCollectionChanged;
-		        selected.CollectionChanged += Selected_CollectionChanged;
-	        }
-            //SelectionChanged += PropDesigner_SelectionChanged;
-        }
+				selected.CollectionChanged += Selected_CollectionChanged;
+			}
+			//SelectionChanged += PropDesigner_SelectionChanged;
+		}
 
 		private void Selected_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -180,337 +180,337 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		}
 
 		//private void PropDesigner_SelectionChanged(object sender, SelectionChangedEventArgs e)
-  //      {
-  //          if (!IsDrawing)
-  //          {
-  //              UpdateResizeAdorner();
-  //          }
-  //      }
+		//      {
+		//          if (!IsDrawing)
+		//          {
+		//              UpdateResizeAdorner();
+		//          }
+		//      }
 
-        private void _drawingCanvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
+		private void _drawingCanvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+		{
 
-        private void _drawingCanvas_MouseLeftMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            OnMouseLeftButtonDown(e);
+		}
 
-            Keyboard.Focus(_drawingCanvas);
+		private void _drawingCanvas_MouseLeftMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			OnMouseLeftButtonDown(e);
 
-            _originMouseStartPoint = _previousPosition = e.GetPosition(_drawingCanvas);
-            //if we are source of event, we are rubberband selecting
-            if (e.Source == _drawingCanvas)
-            {
-                if (!IsDrawing && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-                {
-                    ClearSelections();   
-                }
+			Keyboard.Focus(_drawingCanvas);
 
-                if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
-                {
-                    AddLightCommand.Execute(_originMouseStartPoint);
+			_originMouseStartPoint = _previousPosition = e.GetPosition(_drawingCanvas);
+			//if we are source of event, we are rubberband selecting
+			if (e.Source == _drawingCanvas)
+			{
+				if (!IsDrawing && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+				{
+					ClearSelections();
+				}
+
+				if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
+				{
+					AddLightCommand.Execute(_originMouseStartPoint);
 					//ClearSelections();
-                    
-                }
-                
-                _isSelecting = false;
-                e.Handled = true;
-            }
-            else if (!IsDrawing && e.Source is Path)
-            {
-                var p = e.Source as Path;
-                var l = p.DataContext as ISelectable;
-                if (l != null)
-                {
-                    _isSelecting = true;
 
+				}
 
-                    if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-                    {
-                        if (!l.IsSelected)
-                        {
-                            ClearSelections();
-                            SelectedModels.Add(l);
-                            l.IsSelected = true;
-                        }
-                        
-                    }
-                    else
-                    {
-                        if (l.IsSelected)
-                        {
-                            l.IsSelected = false;
-                            SelectedModels.Remove(l);
-                        }
-                        else
-                        {
-                            SelectedModels.Add(l);
-                            l.IsSelected = true;
-                        }
-                    }
-
-                }
-                e.Handled = true;
-            }
-
-
-        }
-
-        private void _drawingCanvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            OnMouseMove(e);
-
-            var position = e.GetPosition(_drawingCanvas);
-            if (_propEditorViewModel != null)
-            {
-                Coordinates = position;
-            }
-
-            if (IsDrawing)
-            {
-                return;
-            }
-            
-            // if mouse button is not pressed we have no drag operation, ...
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                
-                switch (_dragging)
-                {
-                    case true:
-                        if (_isSelecting)
-                        {
-                            double XDelta = position.X - _previousPosition.X;
-                            double YDelta = position.Y - _previousPosition.Y;
-                            //Console.Out.WriteLine("Start: {0},{1} - Current {2}, {3} - Delta {4}, {5}", _originMouseStartPoint.X, _originMouseStartPoint.Y,
-                            //    position.X, position.Y, XDelta, YDelta);
-                            MoveSelectedItems(XDelta, YDelta);
-                            _previousPosition = position;
-                            UpdateResizeAdorner();
-                        }
-                        else
-                        {
-                            _rubberbandAdorner.EndPoint = position;
-                            UpdateSelection(_originMouseStartPoint, position);
-                            e.Handled = true;
-                        }
-
-                        break;
-                    case false:
-                        if (!_isSelecting)
-                        {
-                            if (!_drawingCanvas.IsMouseCaptured)
-                            {
-                                _drawingCanvas.CaptureMouse();
-                            }
-
-                            // create rubberband adorner
-                            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
-                            if (adornerLayer != null)
-                            {
-                                _rubberbandAdorner = new RubberbandAdorner(_drawingCanvas, _originMouseStartPoint);
-                                adornerLayer.Add(_rubberbandAdorner);
-                            }
-                        }
-                        e.Handled = true;
-                        _dragging = true;
-                        break;
-                        
-                }
-            }
-           
-        }
-
-        internal void MoveSelectedItems(double xDelta, double yDelta)
-        {
-            TransformCommand.Execute(new TranslateTransform(xDelta, yDelta));
-            UpdateResizeAdorner();
-        }
-
-        internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
-        {
-            TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
-            UpdateResizeAdorner();
-        }
-
-        internal void RotateSelectedItems(double angle, Point center)
-        {
-            TransformCommand.Execute(new RotateTransform(angle, center.X, center.Y));
-            UpdateResizeAdorner();
-        }
-
-        private void _drawingCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (_drawingCanvas.IsMouseCaptured)
-            {
-                _drawingCanvas.ReleaseMouseCapture();
-            }
-            if (_dragging && !_isSelecting)
-            {
-                // remove rubberband adorner from adorner layer
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
-                if (adornerLayer != null && _rubberbandAdorner != null)
-                {
-                    adornerLayer.Remove(_rubberbandAdorner);
-                    _rubberbandAdorner = null;
-                }
-
-                e.Handled = true;
-            }
-            
-            _dragging = false;
-            UpdateResizeAdorner();
-        }
-
-        private void ClearSelections()
-        {
-	        if (SelectedModels.Count>0)
-	        {
-		        SelectedModels.Clear();
-		        if (ItemsSource != null)
-		        {
-			        foreach (ISelectable lvm in ItemsSource)
-			        {
-				        lvm.IsSelected = false;
-			        }
-		        }
+				_isSelecting = false;
+				e.Handled = true;
 			}
-            
-        }
+			else if (!IsDrawing && e.Source is Path)
+			{
+				var p = e.Source as Path;
+				var l = p.DataContext as ISelectable;
+				if (l != null)
+				{
+					_isSelecting = true;
 
-        private void UpdateSelection(Point startPoint, Point endPoint)
-        {
-            Rect rubberBand = new Rect(startPoint, endPoint);
-            
-            foreach (ISelectable item in ItemsSource)
-            {
-                DependencyObject container = ItemContainerGenerator.ContainerFromItem(item);
 
-                Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
-                Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
+					if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+					{
+						if (!l.IsSelected)
+						{
+							ClearSelections();
+							SelectedModels.Add(l);
+							l.IsSelected = true;
+						}
 
-                if (rubberBand.Contains(itemBounds))
-                {
-	                if (!item.IsSelected)
-	                {
-		                item.IsSelected = true;
-		                SelectedModels.Add(item);
 					}
-                   
-                }
-                else
-                {
-                    if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-                    {
-                        SelectedModels.Remove(item);
-                        item.IsSelected = false;
-                    }
-                }
-            }
-        }
+					else
+					{
+						if (l.IsSelected)
+						{
+							l.IsSelected = false;
+							SelectedModels.Remove(l);
+						}
+						else
+						{
+							SelectedModels.Add(l);
+							l.IsSelected = true;
+						}
+					}
 
-        private void UpdateResizeAdorner()
-        {
+				}
+				e.Handled = true;
+			}
+
+
+		}
+
+		private void _drawingCanvas_MouseMove(object sender, MouseEventArgs e)
+		{
+			OnMouseMove(e);
+
+			var position = e.GetPosition(_drawingCanvas);
+			if (_propEditorViewModel != null)
+			{
+				Coordinates = position;
+			}
+
+			if (IsDrawing)
+			{
+				return;
+			}
+
+			// if mouse button is not pressed we have no drag operation, ...
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+
+				switch (_dragging)
+				{
+					case true:
+						if (_isSelecting)
+						{
+							double XDelta = position.X - _previousPosition.X;
+							double YDelta = position.Y - _previousPosition.Y;
+							//Console.Out.WriteLine("Start: {0},{1} - Current {2}, {3} - Delta {4}, {5}", _originMouseStartPoint.X, _originMouseStartPoint.Y,
+							//    position.X, position.Y, XDelta, YDelta);
+							MoveSelectedItems(XDelta, YDelta);
+							_previousPosition = position;
+							UpdateResizeAdorner();
+						}
+						else
+						{
+							_rubberbandAdorner.EndPoint = position;
+							UpdateSelection(_originMouseStartPoint, position);
+							e.Handled = true;
+						}
+
+						break;
+					case false:
+						if (!_isSelecting)
+						{
+							if (!_drawingCanvas.IsMouseCaptured)
+							{
+								_drawingCanvas.CaptureMouse();
+							}
+
+							// create rubberband adorner
+							AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
+							if (adornerLayer != null)
+							{
+								_rubberbandAdorner = new RubberbandAdorner(_drawingCanvas, _originMouseStartPoint);
+								adornerLayer.Add(_rubberbandAdorner);
+							}
+						}
+						e.Handled = true;
+						_dragging = true;
+						break;
+
+				}
+			}
+
+		}
+
+		internal void MoveSelectedItems(double xDelta, double yDelta)
+		{
+			TransformCommand.Execute(new TranslateTransform(xDelta, yDelta));
+			UpdateResizeAdorner();
+		}
+
+		internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
+		{
+			TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
+			UpdateResizeAdorner();
+		}
+
+		internal void RotateSelectedItems(double angle, Point center)
+		{
+			TransformCommand.Execute(new RotateTransform(angle, center.X, center.Y));
+			UpdateResizeAdorner();
+		}
+
+		private void _drawingCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			if (_drawingCanvas.IsMouseCaptured)
+			{
+				_drawingCanvas.ReleaseMouseCapture();
+			}
+			if (_dragging && !_isSelecting)
+			{
+				// remove rubberband adorner from adorner layer
+				AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
+				if (adornerLayer != null && _rubberbandAdorner != null)
+				{
+					adornerLayer.Remove(_rubberbandAdorner);
+					_rubberbandAdorner = null;
+				}
+
+				e.Handled = true;
+			}
+
+			_dragging = false;
+			UpdateResizeAdorner();
+		}
+
+		private void ClearSelections()
+		{
+			if (SelectedModels.Count > 0)
+			{
+				SelectedModels.Clear();
+				if (ItemsSource != null)
+				{
+					foreach (ISelectable lvm in ItemsSource)
+					{
+						lvm.IsSelected = false;
+					}
+				}
+			}
+
+		}
+
+		private void UpdateSelection(Point startPoint, Point endPoint)
+		{
+			Rect rubberBand = new Rect(startPoint, endPoint);
+
+			foreach (ISelectable item in ItemsSource)
+			{
+				DependencyObject container = ItemContainerGenerator.ContainerFromItem(item);
+
+				Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
+				Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
+
+				if (rubberBand.Contains(itemBounds))
+				{
+					if (!item.IsSelected)
+					{
+						item.IsSelected = true;
+						SelectedModels.Add(item);
+					}
+
+				}
+				else
+				{
+					if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+					{
+						SelectedModels.Remove(item);
+						item.IsSelected = false;
+					}
+				}
+			}
+		}
+
+		private void UpdateResizeAdorner()
+		{
 			Console.Out.WriteLine($"dragging {_dragging} Selecting {_isSelecting}");
 
-	        if (IsDrawing) return;
+			if (IsDrawing) return;
 
-	        if (_dragging && !_isSelecting) return;
-			
-            if (SelectedModels.Count > 1)
-            {
-                Rect? bounds = GetSelectedContentBounds();
+			if (_dragging && !_isSelecting) return;
 
-                if (bounds.HasValue)
-                {
-                    AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
+			if (SelectedModels.Count > 1)
+			{
+				Rect? bounds = GetSelectedContentBounds();
 
-                    if (adornerLayer != null)
-                    {
-                        if (_resizingAdorner == null)
-                        {
-                            _resizingAdorner = new ResizeAdorner(_drawingCanvas, this);
-                            adornerLayer.Add(_resizingAdorner);
-                        }
-                        _resizingAdorner.Bounds = bounds.Value;
-                        adornerLayer.Update();
-                    }
-                }
-               
-            }
-            else if(_resizingAdorner != null)
-            {
-                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
+				if (bounds.HasValue)
+				{
+					AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
 
-                if (adornerLayer != null)
-                {
-                   adornerLayer.Remove(_resizingAdorner);
-                   _resizingAdorner = null;
-                }
-            }
-        }
+					if (adornerLayer != null)
+					{
+						if (_resizingAdorner == null)
+						{
+							_resizingAdorner = new ResizeAdorner(_drawingCanvas, this);
+							adornerLayer.Add(_resizingAdorner);
+						}
+						_resizingAdorner.Bounds = bounds.Value;
+						adornerLayer.Update();
+					}
+				}
 
-        private Rect? GetSelectedContentBounds()
-        {
-            List<Rect> bounds = new List<Rect>();
-            foreach (var selectedItem in SelectedModels)
-            {
-                DependencyObject container = ItemContainerGenerator.ContainerFromItem(selectedItem);
+			}
+			else if (_resizingAdorner != null)
+			{
+				AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
 
-                Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
-                Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
+				if (adornerLayer != null)
+				{
+					adornerLayer.Remove(_resizingAdorner);
+					_resizingAdorner = null;
+				}
+			}
+		}
 
-                if (itemBounds != Rect.Empty)
-                {
-                    bounds.Add(itemBounds);
-                }
-            }
+		private Rect? GetSelectedContentBounds()
+		{
+			List<Rect> bounds = new List<Rect>();
+			foreach (var selectedItem in SelectedModels)
+			{
+				DependencyObject container = ItemContainerGenerator.ContainerFromItem(selectedItem);
 
-            return GetCombinedBounds(bounds);
-        }
+				Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
+				Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
 
-        private static Rect GetCombinedBounds(List<Rect> recs)
-        {
-            double xMin = recs.Min(s => s.X);
-            double yMin = recs.Min(s => s.Y);
-            double xMax = recs.Max(s => s.X + s.Width);
-            double yMax = recs.Max(s => s.Y + s.Height);
-            var rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
-            return rect;
-        }
+				if (itemBounds != Rect.Empty)
+				{
+					bounds.Add(itemBounds);
+				}
+			}
 
-        private static T FindVisualChild<T>(DependencyObject element) where T : class
-        {
-            if (element == null) return default(T);
-            if (element is T) return element as T;
-            if (VisualTreeHelper.GetChildrenCount(element) > 0)
-            {
-                for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
-                {
-                    object child = VisualTreeHelper.GetChild(element, i);
-                    if (child is T)
-                        return child as T;
-                    
-                        var res = FindVisualChild<T>(child as DependencyObject);
-                        if (res == null) continue;
-                        return res;
-                }
-            }
-            return null;
-        }
+			return GetCombinedBounds(bounds);
+		}
 
-        private T GetParent<T>(DependencyObject dependencyObject) where T : DependencyObject
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(dependencyObject);
-            if (parent is T)
-                return parent as T;
+		private static Rect GetCombinedBounds(List<Rect> recs)
+		{
+			double xMin = recs.Min(s => s.X);
+			double yMin = recs.Min(s => s.Y);
+			double xMax = recs.Max(s => s.X + s.Width);
+			double yMax = recs.Max(s => s.Y + s.Height);
+			var rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
+			return rect;
+		}
 
-            if (parent is DependencyObject)
-                return GetParent<T>(parent);
-            return null;
-        }
-    }
+		private static T FindVisualChild<T>(DependencyObject element) where T : class
+		{
+			if (element == null) return default(T);
+			if (element is T) return element as T;
+			if (VisualTreeHelper.GetChildrenCount(element) > 0)
+			{
+				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+				{
+					object child = VisualTreeHelper.GetChild(element, i);
+					if (child is T)
+						return child as T;
+
+					var res = FindVisualChild<T>(child as DependencyObject);
+					if (res == null) continue;
+					return res;
+				}
+			}
+			return null;
+		}
+
+		private T GetParent<T>(DependencyObject dependencyObject) where T : DependencyObject
+		{
+			DependencyObject parent = VisualTreeHelper.GetParent(dependencyObject);
+			if (parent is T)
+				return parent as T;
+
+			if (parent is DependencyObject)
+				return GetParent<T>(parent);
+			return null;
+		}
+	}
 
 
 }

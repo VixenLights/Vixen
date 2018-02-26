@@ -35,12 +35,12 @@ namespace VixenModules.App.InputEffectRouter
 
 		public override Type ModuleClass
 		{
-			get { return typeof (CustomPropEditorModule); }
+			get { return typeof(CustomPropEditorModule); }
 		}
 
 		public override Type ModuleStaticDataClass
 		{
-			get { return typeof (CustomPropEditorData); }
+			get { return typeof(CustomPropEditorData); }
 		}
 	}
 }

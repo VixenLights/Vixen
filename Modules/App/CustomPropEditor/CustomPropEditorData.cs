@@ -7,7 +7,7 @@ namespace VixenModules.App.CustomPropEditor
 	public class CustomPropEditorData : ModuleDataModelBase
 	{
 		private ModuleLocalDataSet _moduleData;
-		
+
 		public override IModuleDataModel Clone()
 		{
 			CustomPropEditorData newInstance = new CustomPropEditorData();
@@ -15,7 +15,7 @@ namespace VixenModules.App.CustomPropEditor
 			return newInstance;
 		}
 
-		
+
 
 		[DataMember]
 		public ModuleLocalDataSet ModuleData
@@ -24,7 +24,7 @@ namespace VixenModules.App.CustomPropEditor
 			set { _moduleData = value; }
 		}
 
-		
-		
+
+
 	}
 }

@@ -3,27 +3,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls.WpfPropertyGrid;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
 using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
-    /// <summary>
-    /// Symbolic of an ElementNode in Vixen Core
-    /// </summary>
+	/// <summary>
+	/// Symbolic of an ElementNode in Vixen Core
+	/// </summary>
 	public class ElementModel : BindableBase, IDataErrorInfo, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
-        private const int DefaultLightSize = 3;
-	    private ObservableCollection<Light> _lights;
-	    private ObservableCollection<ElementModel> _children;
-	    private ObservableCollection<ElementModel> _parents;
-        private int _order;
-	    private string _name;
-	    private int _lightSize;
-	    
+		private const int DefaultLightSize = 3;
+		private ObservableCollection<Light> _lights;
+		private ObservableCollection<ElementModel> _children;
+		private ObservableCollection<ElementModel> _parents;
+		private int _order;
+		private string _name;
+		private int _lightSize;
+
 		#region Constructors
 
 		public ElementModel()
@@ -83,23 +81,23 @@ namespace VixenModules.App.CustomPropEditor.Model
 		#region Order
 
 		public int Order
-	    {
-	        get
-	        {
-	            if (IsLeaf)
-	            {
-	                return _order;
-	            }
+		{
+			get
+			{
+				if (IsLeaf)
+				{
+					return _order;
+				}
 
-	            return -1;
-	        }
-	        set
-	        {
-	            if (value == _order) return;
-	            _order = value;
-	            OnPropertyChanged(nameof(Order));
-	        }
-	    }
+				return -1;
+			}
+			set
+			{
+				if (value == _order) return;
+				_order = value;
+				OnPropertyChanged(nameof(Order));
+			}
+		}
 
 		#endregion Order
 
@@ -133,7 +131,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#region IsLeaf
 
-		[Browsable(false)]
 		public bool IsLeaf => !Children.Any();
 
 		#endregion
@@ -186,87 +183,87 @@ namespace VixenModules.App.CustomPropEditor.Model
 		#endregion
 
 		public bool RemoveParent(ElementModel parent)
-	    {
-	        bool success = Parents.Remove(parent);
-		    parent.RemoveChild(this);
-		    if (!Parents.Any())
-		    {
+		{
+			bool success = Parents.Remove(parent);
+			parent.RemoveChild(this);
+			if (!Parents.Any())
+			{
 				//We are now orphaned and need to clean up
-			    if (IsLeaf)
-			    {
+				if (IsLeaf)
+				{
 					//We are at the bottom and just need to remove our lights
 					Lights.Clear();
 				}
-			    else
-			    {
-				    foreach (var child in Children)
-				    {
-					    child.RemoveParent(this);
-				    }
-			    }
-		    }
+				else
+				{
+					foreach (var child in Children)
+					{
+						child.RemoveParent(this);
+					}
+				}
+			}
 
-		    return success;
-	    }
+			return success;
+		}
 
-	    public void AddParent(ElementModel parent)
-	    {
-	        Parents.Add(parent);
-	    }
+		public void AddParent(ElementModel parent)
+		{
+			Parents.Add(parent);
+		}
 
-	    public void AddChild(ElementModel em)
-	    {
-            Children.Add(em);
-	    }
+		public void AddChild(ElementModel em)
+		{
+			Children.Add(em);
+		}
 
-	    public bool RemoveChild(ElementModel child)
-	    {
-	        return Children.Remove(child);
-	    }
+		public bool RemoveChild(ElementModel child)
+		{
+			return Children.Remove(child);
+		}
 
-	    internal void AddLight(Light ln)
-	    {
-	        if (!IsLeaf)
-	        {
-	            throw new ArgumentException("Non leaf model cannot have lights!");
-	        }
-            Lights.Add(ln);
-	        ln.ParentModelId = Id;
-	        OnPropertyChanged(nameof(IsString));
-	        OnPropertyChanged(nameof(LightCount));
-        }
+		internal void AddLight(Light ln)
+		{
+			if (!IsLeaf)
+			{
+				throw new ArgumentException("Non leaf model cannot have lights!");
+			}
+			Lights.Add(ln);
+			ln.ParentModelId = Id;
+			OnPropertyChanged(nameof(IsString));
+			OnPropertyChanged(nameof(LightCount));
+		}
 
-	    public bool RemoveLight(Light light)
-	    {
-	        var success = Lights.Remove(light);
-            light.ParentModelId = Guid.Empty;
-	        OnPropertyChanged(nameof(IsString));
-	        OnPropertyChanged(nameof(LightCount));
-	        return success;
-	    }
+		public bool RemoveLight(Light light)
+		{
+			var success = Lights.Remove(light);
+			light.ParentModelId = Guid.Empty;
+			OnPropertyChanged(nameof(IsString));
+			OnPropertyChanged(nameof(LightCount));
+			return success;
+		}
 
-	    
-	    private void UpdateLightSize()
-	    {
-	        Lights.ForEach(x => x.Size = LightSize);
-	    }
 
-	    public IEnumerable<ElementModel> GetLeafEnumerator()
-	    {
-	        if (IsLeaf)
-            { 
-	            return (new[] { this });
-	        }
+		private void UpdateLightSize()
+		{
+			Lights.ForEach(x => x.Size = LightSize);
+		}
 
-	        return Children.SelectMany(x => x.GetLeafEnumerator());
-	    }
+		public IEnumerable<ElementModel> GetLeafEnumerator()
+		{
+			if (IsLeaf)
+			{
+				return (new[] { this });
+			}
 
-	    public IEnumerable<ElementModel> GetChildEnumerator()
-	    {
-	        return Children.SelectMany(x => x.GetChildEnumerator());
-	    }
+			return Children.SelectMany(x => x.GetLeafEnumerator());
+		}
 
-        public bool Equals(ElementModel x, ElementModel y)
+		public IEnumerable<ElementModel> GetChildEnumerator()
+		{
+			return Children.SelectMany(x => x.GetChildEnumerator());
+		}
+
+		public bool Equals(ElementModel x, ElementModel y)
 		{
 			return y != null && x != null && x.Id == y.Id;
 		}
@@ -286,37 +283,38 @@ namespace VixenModules.App.CustomPropEditor.Model
 			return Id.GetHashCode();
 		}
 
-	    public string this[string columnName]
-	    {
-	        get
-	        {
-	            string result = string.Empty;
-	            if (columnName == nameof(Name))
-	            {
-	                if (string.IsNullOrEmpty(Name))
-	                {
-	                    result = "Name can not be empty";
-                    }
-	                else if(PropModelServices.Instance().IsNameDuplicated(Name))
-	                {
-	                    result = "Duplicate name";
-	                }
+		public string this[string columnName]
+		{
+			get
+			{
+				string result = string.Empty;
+				if (columnName == nameof(Name))
+				{
+					if (string.IsNullOrEmpty(Name))
+					{
+						result = "Name can not be empty";
+					}
+					else if (PropModelServices.Instance().IsNameDuplicated(Name))
+					{
+						result = "Duplicate name";
+					}
 
-                }
-	            else if(columnName == nameof(LightSize))
-	            {
-	                if (LightSize <= 0)
-	                {
-	                    result = "Light size must be > 0";
-	                }
-	            }
-	            return result;
-	        }
-        }
+				}
+				else if (columnName == nameof(LightSize))
+				{
+					if (LightSize <= 0)
+					{
+						result = "Light size must be > 0";
+					}
+				}
+				return result;
+			}
+		}
 
-        [Browsable(false)]
-	    public string Error {
-            get { return string.Empty; }
-        }
+		[Browsable(false)]
+		public string Error
+		{
+			get { return string.Empty; }
+		}
 	}
 }

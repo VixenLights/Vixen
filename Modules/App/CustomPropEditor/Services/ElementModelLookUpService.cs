@@ -5,6 +5,9 @@ using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.Services
 {
+	/// <summary>
+	/// This class allows model to view modeal associations for ElementModels to facilite navigating the tree.
+	/// </summary>
 	public class ElementModelLookUpService
 	{
 		private static ElementModelLookUpService _instance;
@@ -16,6 +19,12 @@ namespace VixenModules.App.CustomPropEditor.Services
 		}
 		public static ElementModelLookUpService Instance => _instance ?? (_instance = new ElementModelLookUpService());
 
+
+		/// <summary>
+		/// Create an association between the ElementModel and the View Model 
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="model"></param>
 		public void AddModel(Guid id, ElementModelViewModel model)
 		{
 			var models = GetModels(id);
@@ -29,6 +38,11 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 		}
 
+		/// <summary>
+		/// Remove the model association from the the ElementModel
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="model"></param>
 		public void RemoveModel(Guid id, ElementModelViewModel model)
 		{
 			var models = GetModels(id);
@@ -56,36 +70,5 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return model;
 		}
 
-		//public IEnumerable<ElementModelViewModel> SelectModels(IEnumerable<Guid> modelIds, bool selected=true, bool expandParents=false)
-		//{
-		//	List<ElementModelViewModel> models = new List<ElementModelViewModel>();
-		//	foreach (var modelId in modelIds)
-		//	{
-		//		ElementModelViewModel model;
-		//		if (_instances.TryGetValue(modelId, out model))
-		//		{
-		//			models.Add(model);
-		//			model.IsSelected = selected;
-		//			if (expandParents)
-		//			{
-		//				ExpandModels(model.GetParentIds());
-		//			}
-		//		}
-		//	}
-
-		//	return models;
-		//}
-
-		//public void ExpandModels(IEnumerable<Guid> modelIds, bool expand=true)
-		//{
-		//	foreach (var modelId in modelIds)
-		//	{
-		//		ElementModelViewModel model;
-		//		if (_instances.TryGetValue(modelId, out model))
-		//		{
-		//			model.IsExpanded = expand;
-		//		}
-		//	}
-		//}
 	}
 }

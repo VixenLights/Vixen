@@ -12,16 +12,16 @@ using PropertyData = Catel.Data.PropertyData;
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	[DisplayName("Element Model")]
-    public sealed class ElementModelViewModel:ViewModelBase, ISelectableExpander, IDisposable
+	public sealed class ElementModelViewModel : ViewModelBase, ISelectableExpander, IDisposable
 	{
-        public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
-        {
+		public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
+		{
 			ModelId = Guid.NewGuid();
-            ElementModel = model;
-            ChildrenViewModels = new ElementViewModelCollection(model.Children, this);
-	        ElementModelLookUpService.Instance.AddModel(model.Id, this);
+			ElementModel = model;
+			ChildrenViewModels = new ElementViewModelCollection(model.Children, this);
+			ElementModelLookUpService.Instance.AddModel(model.Id, this);
 			((IRelationalViewModel)this).SetParentViewModel(parent);
-        }
+		}
 
 		public Guid ModelId { get; private set; }
 
@@ -32,16 +32,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[Browsable(false)]
 		[Model]
-        public ElementModel ElementModel
-        {
-            get { return GetValue<ElementModel>(ElementModelProperty); }
-            private set { SetValue(ElementModelProperty, value); }
-        }
+		public ElementModel ElementModel
+		{
+			get { return GetValue<ElementModel>(ElementModelProperty); }
+			private set { SetValue(ElementModelProperty, value); }
+		}
 
-        /// <summary>
-        /// ElementModel property data.
-        /// </summary>
-        public static readonly PropertyData ElementModelProperty = RegisterProperty("ElementModel", typeof(ElementModel));
+		/// <summary>
+		/// ElementModel property data.
+		/// </summary>
+		public static readonly PropertyData ElementModelProperty = RegisterProperty("ElementModel", typeof(ElementModel));
 
 		#endregion
 
@@ -52,16 +52,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[PropertyOrder(0)]
 		[ViewModelToModel("ElementModel")]
-        public string Name
-        {
-            get { return GetValue<string>(NameProperty); }
-            set { SetValue(NameProperty, value); }
-        }
+		public string Name
+		{
+			get { return GetValue<string>(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
 
-        /// <summary>
-        /// Name property data.
-        /// </summary>
-        public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
+		/// <summary>
+		/// Name property data.
+		/// </summary>
+		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
 
 		#endregion
 
@@ -72,16 +72,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[PropertyOrder(1)]
 		[ViewModelToModel("ElementModel")]
-        public int Order
-        {
-            get { return GetValue<int>(OrderProperty); }
-            set { SetValue(OrderProperty, value); }
-        }
+		public int Order
+		{
+			get { return GetValue<int>(OrderProperty); }
+			set { SetValue(OrderProperty, value); }
+		}
 
-        /// <summary>
-        /// Order property data.
-        /// </summary>
-        public static readonly PropertyData OrderProperty = RegisterProperty("Order", typeof(int), null);
+		/// <summary>
+		/// Order property data.
+		/// </summary>
+		public static readonly PropertyData OrderProperty = RegisterProperty("Order", typeof(int), null);
 
 		#endregion
 
@@ -146,16 +146,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[Browsable(false)]
 		[ViewModelToModel("ElementModel")]
-        public ObservableCollection<ElementModel> Parents
-        {
-            get { return GetValue<ObservableCollection<ElementModel>>(ParentsProperty); }
-            set { SetValue(ParentsProperty, value); }
-        }
+		public ObservableCollection<ElementModel> Parents
+		{
+			get { return GetValue<ObservableCollection<ElementModel>>(ParentsProperty); }
+			set { SetValue(ParentsProperty, value); }
+		}
 
-        /// <summary>
-        /// Parents property data.
-        /// </summary>
-        public static readonly PropertyData ParentsProperty = RegisterProperty("Parents", typeof(ObservableCollection<ElementModel>), null);
+		/// <summary>
+		/// Parents property data.
+		/// </summary>
+		public static readonly PropertyData ParentsProperty = RegisterProperty("Parents", typeof(ObservableCollection<ElementModel>), null);
 
 		#endregion
 
@@ -166,16 +166,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[Browsable(false)]
 		[ViewModelToModel("ElementModel")]
-        public ObservableCollection<ElementModel> Children
-        {
-            get { return GetValue<ObservableCollection<ElementModel>>(ChildrenProperty); }
-            set { SetValue(ChildrenProperty, value); }
-        }
+		public ObservableCollection<ElementModel> Children
+		{
+			get { return GetValue<ObservableCollection<ElementModel>>(ChildrenProperty); }
+			set { SetValue(ChildrenProperty, value); }
+		}
 
-        /// <summary>
-        /// Children property data.
-        /// </summary>
-        public static readonly PropertyData ChildrenProperty = RegisterProperty("Children", typeof(ObservableCollection<ElementModel>), null);
+		/// <summary>
+		/// Children property data.
+		/// </summary>
+		public static readonly PropertyData ChildrenProperty = RegisterProperty("Children", typeof(ObservableCollection<ElementModel>), null);
 
 		#endregion
 
@@ -205,7 +205,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[Browsable(false)]
 		public bool IsSelected
-        {
+		{
 			get
 			{
 				//if (IsLeaf)
@@ -221,15 +221,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				//{
 				//	LightViewModels.ForEach(l => l.IsSelected = value);
 				//}
-				
+
 				SetValue(IsSelectedProperty, value);
 			}
-        }
+		}
 
-        /// <summary>
-        /// IsSelected property data.
-        /// </summary>
-        public static readonly PropertyData IsSelectedProperty = RegisterProperty("IsSelected", typeof(bool));
+		/// <summary>
+		/// IsSelected property data.
+		/// </summary>
+		public static readonly PropertyData IsSelectedProperty = RegisterProperty("IsSelected", typeof(bool));
 
 		#endregion
 
@@ -261,12 +261,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the IsLeaf value.
 		/// </summary>
 		[Browsable(false)]
-        public bool IsLeaf => ElementModel.IsLeaf;
+		public bool IsLeaf => ElementModel.IsLeaf;
 
 		/// <summary>
-        /// IsLeaf property data.
-        /// </summary>
-        public static readonly PropertyData IsLeafProperty = RegisterProperty("IsLeaf", typeof(bool), null);
+		/// IsLeaf property data.
+		/// </summary>
+		public static readonly PropertyData IsLeafProperty = RegisterProperty("IsLeaf", typeof(bool), null);
 
 		#endregion
 

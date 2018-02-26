@@ -13,224 +13,224 @@ using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
-    public class DrawingPanelViewModel : ViewModelBase
-    {
-	    private readonly ElementTreeViewModel _elementTreeViewModel;
-        private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
+	public class DrawingPanelViewModel : ViewModelBase
+	{
+		private readonly ElementTreeViewModel _elementTreeViewModel;
+		private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 
-        
-        public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
-        {
-	        _elementTreeViewModel = elementTreeViewModel;
-            _elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
-            LightNodes = new ObservableCollection<LightViewModel>();
-            
-            TransformCommand = new RelayCommand<Transform>(Transform);
 
-            AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
-            AlignBottomsCommand = new RelayCommand(AlignBottoms, CanExecuteAlignmentMethod);
-            AlignLeftCommand = new RelayCommand(AlignLeft, CanExecuteAlignmentMethod);
-            AlignRightCommand = new RelayCommand(AlignRight, CanExecuteAlignmentMethod);
-            DistributeHorizontallyCommand = new RelayCommand(DistributeHorizontally, CanExecuteAlignmentMethod);
-            DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
+		public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
+		{
+			_elementTreeViewModel = elementTreeViewModel;
+			_elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
+			LightNodes = new ObservableCollection<LightViewModel>();
 
-            DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
+			TransformCommand = new RelayCommand<Transform>(Transform);
 
-            SelectedItems = new ObservableCollection<LightViewModel>();
+			AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
+			AlignBottomsCommand = new RelayCommand(AlignBottoms, CanExecuteAlignmentMethod);
+			AlignLeftCommand = new RelayCommand(AlignLeft, CanExecuteAlignmentMethod);
+			AlignRightCommand = new RelayCommand(AlignRight, CanExecuteAlignmentMethod);
+			DistributeHorizontallyCommand = new RelayCommand(DistributeHorizontally, CanExecuteAlignmentMethod);
+			DistributeVerticallyCommand = new RelayCommand(DistributeVertically, CanExecuteAlignmentMethod);
+
+			DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
+
+			SelectedItems = new ObservableCollection<LightViewModel>();
 			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
-            IsDrawing = true;
-	        Prop = elementTreeViewModel.Prop;
+			IsDrawing = true;
+			Prop = elementTreeViewModel.Prop;
 		}
 
-        private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            AlignLeftCommand.RaiseCanExecuteChanged();
-            AlignRightCommand.RaiseCanExecuteChanged();
-            AlignBottomsCommand.RaiseCanExecuteChanged();
-            AlignTopsCommand.RaiseCanExecuteChanged();
-            DistributeVerticallyCommand.RaiseCanExecuteChanged();
-            DistributeHorizontallyCommand.RaiseCanExecuteChanged();
-        }
+		private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			AlignLeftCommand.RaiseCanExecuteChanged();
+			AlignRightCommand.RaiseCanExecuteChanged();
+			AlignBottomsCommand.RaiseCanExecuteChanged();
+			AlignTopsCommand.RaiseCanExecuteChanged();
+			DistributeVerticallyCommand.RaiseCanExecuteChanged();
+			DistributeHorizontallyCommand.RaiseCanExecuteChanged();
+		}
 
-        private bool CanExecuteAlignmentMethod()
-        {
-            return SelectedItems.Any();
-        }
+		private bool CanExecuteAlignmentMethod()
+		{
+			return SelectedItems.Any();
+		}
 
 
-        #region Properties
+		#region Properties
 
-        #region Prop model property
+		#region Prop model property
 
-        /// <summary>
-        /// Gets or sets the Prop value.
-        /// </summary>
-        [Model]
-        public Prop Prop
-        {
-            get { return GetValue<Prop>(PropProperty); }
-            private set
-            {
-                SetValue(PropProperty, value);
-                
-                RefreshLightViewModels();
-            }
-        }
+		/// <summary>
+		/// Gets or sets the Prop value.
+		/// </summary>
+		[Model]
+		public Prop Prop
+		{
+			get { return GetValue<Prop>(PropProperty); }
+			private set
+			{
+				SetValue(PropProperty, value);
 
-        /// <summary>
-        /// Prop property data.
-        /// </summary>
-        public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
+				RefreshLightViewModels();
+			}
+		}
 
-        #endregion
+		/// <summary>
+		/// Prop property data.
+		/// </summary>
+		public static readonly PropertyData PropProperty = RegisterProperty("Prop", typeof(Prop));
 
-        public ObservableCollection<LightViewModel> SelectedItems { get; set; }
+		#endregion
 
-        #region LightNodes property
+		public ObservableCollection<LightViewModel> SelectedItems { get; set; }
 
-        /// <summary>
-        /// Gets or sets the LightNodes value.
-        /// </summary>
-        public ObservableCollection<LightViewModel> LightNodes
-        {
-            get { return GetValue<ObservableCollection<LightViewModel>>(LightNodesProperty); }
-            set { SetValue(LightNodesProperty, value); }
-        }
+		#region LightNodes property
 
-        /// <summary>
-        /// LightNodes property data.
-        /// </summary>
-        public static readonly PropertyData LightNodesProperty = RegisterProperty("LightNodes", typeof(ObservableCollection<LightViewModel>));
+		/// <summary>
+		/// Gets or sets the LightNodes value.
+		/// </summary>
+		public ObservableCollection<LightViewModel> LightNodes
+		{
+			get { return GetValue<ObservableCollection<LightViewModel>>(LightNodesProperty); }
+			set { SetValue(LightNodesProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// LightNodes property data.
+		/// </summary>
+		public static readonly PropertyData LightNodesProperty = RegisterProperty("LightNodes", typeof(ObservableCollection<LightViewModel>));
 
-        #region Width property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the Width value.
-        /// </summary>
-        [ViewModelToModel("Prop")]
-        public double Width
-        {
-            get { return GetValue<double>(WidthProperty); }
-            set { SetValue(WidthProperty, value); }
-        }
+		#region Width property
 
-        /// <summary>
-        /// Width property data.
-        /// </summary>
-        public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double), null);
+		/// <summary>
+		/// Gets or sets the Width value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public double Width
+		{
+			get { return GetValue<double>(WidthProperty); }
+			set { SetValue(WidthProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Width property data.
+		/// </summary>
+		public static readonly PropertyData WidthProperty = RegisterProperty("Width", typeof(double), null);
 
-        #region Height property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the Height value.
-        /// </summary>
-        [ViewModelToModel("Prop")]
-        public double Height
-        {
-            get { return GetValue<double>(HeightProperty); }
-            set { SetValue(HeightProperty, value); }
-        }
+		#region Height property
 
-        /// <summary>
-        /// Height property data.
-        /// </summary>
-        public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double), null);
+		/// <summary>
+		/// Gets or sets the Height value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public double Height
+		{
+			get { return GetValue<double>(HeightProperty); }
+			set { SetValue(HeightProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Height property data.
+		/// </summary>
+		public static readonly PropertyData HeightProperty = RegisterProperty("Height", typeof(double), null);
 
-        #region Image property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the Image value.
-        /// </summary>
-        [ViewModelToModel("Prop")]
-        public BitmapSource Image
-        {
-            get { return GetValue<BitmapSource>(ImageProperty); }
-            set { SetValue(ImageProperty, value); }
-        }
+		#region Image property
 
-        /// <summary>
-        /// Image property data.
-        /// </summary>
-        public static readonly PropertyData ImageProperty = RegisterProperty("Image", typeof(BitmapSource), null);
+		/// <summary>
+		/// Gets or sets the Image value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public BitmapSource Image
+		{
+			get { return GetValue<BitmapSource>(ImageProperty); }
+			set { SetValue(ImageProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Image property data.
+		/// </summary>
+		public static readonly PropertyData ImageProperty = RegisterProperty("Image", typeof(BitmapSource), null);
 
-        #region Opacity property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the Opacity value.
-        /// </summary>
-        [ViewModelToModel("Prop")]
-        public double Opacity
-        {
-            get { return GetValue<double>(OpacityProperty); }
-            set { SetValue(OpacityProperty, value); }
-        }
+		#region Opacity property
 
-        /// <summary>
-        /// Opacity property data.
-        /// </summary>
-        public static readonly PropertyData OpacityProperty = RegisterProperty("Opacity", typeof(double), null);
+		/// <summary>
+		/// Gets or sets the Opacity value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public double Opacity
+		{
+			get { return GetValue<double>(OpacityProperty); }
+			set { SetValue(OpacityProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Opacity property data.
+		/// </summary>
+		public static readonly PropertyData OpacityProperty = RegisterProperty("Opacity", typeof(double), null);
 
-        #region X property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the X value.
-        /// </summary>
-        public double X
-        {
-            get { return GetValue<double>(XProperty); }
-            set { SetValue(XProperty, value); }
-        }
+		#region X property
 
-        /// <summary>
-        /// X property data.
-        /// </summary>
-        public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double));
+		/// <summary>
+		/// Gets or sets the X value.
+		/// </summary>
+		public double X
+		{
+			get { return GetValue<double>(XProperty); }
+			set { SetValue(XProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// X property data.
+		/// </summary>
+		public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double));
 
-        #region Y property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the Y value.
-        /// </summary>
-        public double Y
-        {
-            get { return GetValue<double>(YProperty); }
-            set { SetValue(YProperty, value); }
-        }
+		#region Y property
 
-        /// <summary>
-        /// Y property data.
-        /// </summary>
-        public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double));
+		/// <summary>
+		/// Gets or sets the Y value.
+		/// </summary>
+		public double Y
+		{
+			get { return GetValue<double>(YProperty); }
+			set { SetValue(YProperty, value); }
+		}
 
-        #endregion
+		/// <summary>
+		/// Y property data.
+		/// </summary>
+		public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double));
 
-        #region IsDrawing property
+		#endregion
 
-        /// <summary>
-        /// Gets or sets the IsDrawing value.
-        /// </summary>
-        public bool IsDrawing
-        {
-            get { return GetValue<bool>(IsDrawingProperty); }
-            set { SetValue(IsDrawingProperty, value); }
-        }
+		#region IsDrawing property
 
-        /// <summary>
-        /// IsDrawing property data.
-        /// </summary>
-        public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
+		/// <summary>
+		/// Gets or sets the IsDrawing value.
+		/// </summary>
+		public bool IsDrawing
+		{
+			get { return GetValue<bool>(IsDrawingProperty); }
+			set { SetValue(IsDrawingProperty, value); }
+		}
+
+		/// <summary>
+		/// IsDrawing property data.
+		/// </summary>
+		public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
 
 		#endregion
 
@@ -261,204 +261,182 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		public void DeleteSelectedLights()
-        {
-            PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
+		{
+			PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
 			SelectedItems.Clear();
-            RefreshLightViewModels();
-        }
+			RefreshLightViewModels();
+		}
 
-        public void DeselectAll()
-        {
-            LightNodes.ForEach(l => l.IsSelected = false);
-            SelectedItems.Clear();
-        }
+		public void DeselectAll()
+		{
+			LightNodes.ForEach(l => l.IsSelected = false);
+			SelectedItems.Clear();
+		}
 
-	    public void Deselect(IEnumerable<ElementModelViewModel> elementModels)
-	    {
-		    foreach (var elementModel in elementModels)
-		    {
-			    List<LightViewModel> lvmList;
-			    if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
-			    {
-				    lvmList.ForEach(l =>
-				    {
-					    l.IsSelected = false;
-					    SelectedItems.Remove(l);
-				    });
-			    }
-		    }
-	    }
+		public void Deselect(IEnumerable<ElementModelViewModel> elementModels)
+		{
+			foreach (var elementModel in elementModels)
+			{
+				List<LightViewModel> lvmList;
+				if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
+				{
+					lvmList.ForEach(l =>
+					{
+						l.IsSelected = false;
+						SelectedItems.Remove(l);
+					});
+				}
+			}
+		}
 
-	    public void Select(IEnumerable<ElementModelViewModel> elementModels)
-	    {
-		    foreach (var elementModel in elementModels)
-		    {
-			    List<LightViewModel> lvmList;
-			    if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
-			    {
-				    foreach (var lightViewModel in lvmList)
-				    {
-					    if (!lightViewModel.IsSelected)
-					    {
-						    lightViewModel.IsSelected = true;
-						    SelectedItems.Add(lightViewModel);
-					    }
-				    }
-			    }
+		public void Select(IEnumerable<ElementModelViewModel> elementModels)
+		{
+			foreach (var elementModel in elementModels)
+			{
+				List<LightViewModel> lvmList;
+				if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
+				{
+					foreach (var lightViewModel in lvmList)
+					{
+						if (!lightViewModel.IsSelected)
+						{
+							lightViewModel.IsSelected = true;
+							SelectedItems.Add(lightViewModel);
+						}
+					}
+				}
 
-		    }
-	    }
-
-
-		//   public void Deselect(IEnumerable<LightViewModel> lightViewModels)
-		//   {
-		//    foreach (var lightViewModel in lightViewModels)
-		//    {
-		//	    lightViewModel.IsSelected = false;
-		//	    SelectedItems.Remove(lightViewModel);
-		//    }
-		//   }
-
-		//   public void Select(IEnumerable<LightViewModel> lightViewModels)
-		//   {
-		//    foreach (var lightViewModel in lightViewModels)
-		//    {
-		//	    if (!SelectedItems.Contains(lightViewModel))
-		//	    {
-		//		    lightViewModel.IsSelected = true;
-		//			SelectedItems.Add(lightViewModel);
-		//	    }
-		//    }
-		//}
+			}
+		}
 
 		public void Transform(Transform t)
-        {
-            foreach (LightViewModel lvm in SelectedItems)
-            {
-                if (lvm.IsSelected)
-                {
-                    lvm.Center = t.Transform(lvm.Center);
-                }
-            }
-        }
+		{
+			foreach (LightViewModel lvm in SelectedItems)
+			{
+				if (lvm.IsSelected)
+				{
+					lvm.Center = t.Transform(lvm.Center);
+				}
+			}
+		}
 
-        public void AlignTops()
-        {
-            var ln = SelectedItems.First();
-            foreach (var lightViewModel in SelectedItems)
-            {
-                lightViewModel.Light.Y = ln.Y;
-            }
-        }
+		public void AlignTops()
+		{
+			var ln = SelectedItems.First();
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.Y = ln.Y;
+			}
+		}
 
-        public void AlignBottoms()
-        {
-            var ln = SelectedItems.First();
-            foreach (var lightViewModel in SelectedItems)
-            {
-                lightViewModel.Light.Y = ln.Y;
-            }
-        }
+		public void AlignBottoms()
+		{
+			var ln = SelectedItems.First();
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.Y = ln.Y;
+			}
+		}
 
-        public void AlignLeft()
-        {
-            var ln = SelectedItems.First();
-            foreach (var lightViewModel in SelectedItems)
-            {
-                lightViewModel.Light.X = ln.X;
-            }
-        }
+		public void AlignLeft()
+		{
+			var ln = SelectedItems.First();
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.X = ln.X;
+			}
+		}
 
-        public void AlignRight()
-        {
-            var ln = SelectedItems.First();
-            foreach (var lightViewModel in SelectedItems)
-            {
-                lightViewModel.Light.X = ln.X;
-            }
-        }
+		public void AlignRight()
+		{
+			var ln = SelectedItems.First();
+			foreach (var lightViewModel in SelectedItems)
+			{
+				lightViewModel.Light.X = ln.X;
+			}
+		}
 
-        public void DistributeHorizontally()
-        {
-            if (SelectedItems.Count > 2)
-            {
-                var minX = SelectedItems.Min(x => x.Light.X);
-                var maxX = SelectedItems.Max(x => x.Light.X);
-                var count = SelectedItems.Count - 1;
+		public void DistributeHorizontally()
+		{
+			if (SelectedItems.Count > 2)
+			{
+				var minX = SelectedItems.Min(x => x.Light.X);
+				var maxX = SelectedItems.Max(x => x.Light.X);
+				var count = SelectedItems.Count - 1;
 
-                var dist = (maxX - minX) / count;
+				var dist = (maxX - minX) / count;
 
-                int y = 0;
-                double holdValue = minX;
-                foreach (var lightViewModel in SelectedItems.OrderBy(x => x.X))
-                {
-                    if (y != 0)
-                    {
-                        holdValue += dist;
-                        lightViewModel.X = holdValue;
-                    }
+				int y = 0;
+				double holdValue = minX;
+				foreach (var lightViewModel in SelectedItems.OrderBy(x => x.X))
+				{
+					if (y != 0)
+					{
+						holdValue += dist;
+						lightViewModel.X = holdValue;
+					}
 
-                    y++;
-                }
+					y++;
+				}
 
-            }
-           
-        }
+			}
 
-        public void DistributeVertically()
-        {
-            if (SelectedItems.Count > 2)
-            {
-                var minY = SelectedItems.Min(x => x.Light.Y);
-                var maxY = SelectedItems.Max(x => x.Light.Y);
-                var count = SelectedItems.Count - 1;
+		}
 
-                var dist = (maxY - minY) / count;
+		public void DistributeVertically()
+		{
+			if (SelectedItems.Count > 2)
+			{
+				var minY = SelectedItems.Min(x => x.Light.Y);
+				var maxY = SelectedItems.Max(x => x.Light.Y);
+				var count = SelectedItems.Count - 1;
 
-                int y = 0;
-                double holdValue = minY;
-                foreach (var lightViewModel in SelectedItems.OrderBy(x => x.Y))
-                {
-                    if (y != 0)
-                    {
-                        holdValue += dist;
-                        lightViewModel.Y = holdValue;
-                    }
+				var dist = (maxY - minY) / count;
 
-                    y++;
-                }
+				int y = 0;
+				double holdValue = minY;
+				foreach (var lightViewModel in SelectedItems.OrderBy(x => x.Y))
+				{
+					if (y != 0)
+					{
+						holdValue += dist;
+						lightViewModel.Y = holdValue;
+					}
 
-            }
-        }
+					y++;
+				}
 
-
-        #region Commands
-
-        
-
-        public RelayCommand<Transform> TransformCommand { get; private set; }
-
-        #region Alignment Commands
-
-        public RelayCommand AlignLeftCommand { get; private set; }
-        public RelayCommand AlignRightCommand { get; private set; }
-        public RelayCommand AlignTopsCommand { get; private set; }
-        public RelayCommand AlignBottomsCommand { get; private set; }
-        public RelayCommand DistributeHorizontallyCommand { get; private set; }
-        public RelayCommand DistributeVerticallyCommand { get; private set; }
+			}
+		}
 
 
-        #endregion
-
-        #region Delete Command
-
-        public RelayCommand DeleteSelectedLightsCommand { get; private set; }
-
-        #endregion
-
-        #endregion
+		#region Commands
 
 
-    }
+
+		public RelayCommand<Transform> TransformCommand { get; private set; }
+
+		#region Alignment Commands
+
+		public RelayCommand AlignLeftCommand { get; private set; }
+		public RelayCommand AlignRightCommand { get; private set; }
+		public RelayCommand AlignTopsCommand { get; private set; }
+		public RelayCommand AlignBottomsCommand { get; private set; }
+		public RelayCommand DistributeHorizontallyCommand { get; private set; }
+		public RelayCommand DistributeVerticallyCommand { get; private set; }
+
+
+		#endregion
+
+		#region Delete Command
+
+		public RelayCommand DeleteSelectedLightsCommand { get; private set; }
+
+		#endregion
+
+		#endregion
+
+
+	}
 }
 
