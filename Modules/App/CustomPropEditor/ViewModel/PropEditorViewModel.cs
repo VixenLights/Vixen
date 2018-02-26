@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
@@ -12,6 +13,7 @@ using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.ViewModel
 {
@@ -40,8 +42,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	        {
 	            SetValue(PropProperty, value);
                 UnregisterModelEvents();
-	            DrawingPanelViewModel = new DrawingPanelViewModel(value);
-	            ElementTreeViewModel = new ElementTreeViewModel(value);
+		        ElementTreeViewModel = new ElementTreeViewModel(value);
+		        DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
                 RegisterModelEvents();
 	        }
 	    }
@@ -110,38 +112,31 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         }
 
-        private void DrawingViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void DrawingViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!_selectionChanging)
             {
                 _selectionChanging = true;
-                
-	            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+
+	            Console.Out.WriteLine($"Drawing View Model changed {e.Action}");
+
+				if (e.Action == NotifyCollectionChangedAction.Reset)
 	            {
-					PropModelServices.Instance().DeselectAllModels();
+					ElementTreeViewModel.DeselectAll();
 	            }
 
-	            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Remove)
+	            if (e.Action == NotifyCollectionChangedAction.Remove)
 	            {
-		            var lightIds = notifyCollectionChangedEventArgs.OldItems.Cast<LightViewModel>().Select(l => l.Id);
-		            var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
-		            Prop.RootNode.IsSelected = false;
-					models.ForEach(x =>
-					{
-						x.IsSelected = false;
-					});
+		            var lightIds = e.OldItems.Cast<LightViewModel>().Select(l => l.Id);
+					var modelIds = PropModelServices.Instance().FindModelIdsForLightIds(lightIds);
+					ElementTreeViewModel.DeselectModels(modelIds);
 				}
 
-				if(notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Add)
+				if(e.Action == NotifyCollectionChangedAction.Add)
 				{
-					var lightIds = notifyCollectionChangedEventArgs.NewItems.Cast<LightViewModel>().Select(l => l.Id);
-					var models = PropModelServices.Instance().FindModelsForLightIds(lightIds);
-					
-					models.ForEach(x =>
-					{
-						x.IsSelected = true;
-						x.Parents.ForEach(p => p.IsExpanded = true);
-					});
+					var lightIds = e.NewItems.Cast<LightViewModel>().Select(l => l.Id);
+					var modelIds = PropModelServices.Instance().FindModelIdsForLightIds(lightIds);
+					ElementTreeViewModel.SelectModels(modelIds);
 				}
                 _selectionChanging = false;
             }
@@ -153,12 +148,32 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             if (!_selectionChanging)
             {
                 _selectionChanging = true;
-                DrawingPanelViewModel.SelectLights(ElementTreeViewModel.SelectedItems);
+				Console.Out.WriteLine($"Element View Model changed {e.Action}");
+
+	            if (e.Action == NotifyCollectionChangedAction.Reset)
+	            {
+		            DrawingPanelViewModel.DeselectAll();
+	            }
+
+	            if (e.Action == NotifyCollectionChangedAction.Remove)
+	            {
+		            var lvm = e.OldItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator()).SelectMany(m => m.LightViewModels);
+					DrawingPanelViewModel.Deselect(lvm);
+	            }
+
+	            if (e.Action == NotifyCollectionChangedAction.Add)
+	            {
+		            var models = e.NewItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator()).SelectMany(m => m.LightViewModels);
+		            DrawingPanelViewModel.Select(models);
+	            }
+
                 _selectionChanging = false;
             }
         }
 
-        private async void ImportModel(string type)
+		
+
+		private async void ImportModel(string type)
 	    {
 	        var dependencyResolver = this.GetDependencyResolver();
 	        var openFileService = dependencyResolver.Resolve<IOpenFileService>();
@@ -194,7 +209,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	    /// </summary>
 	    private void Delete()
 	    {
-	        PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems);
+	        PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel));
+			DrawingPanelViewModel.DeselectAll();
             DrawingPanelViewModel.RefreshLightViewModels();
 	    }
 
@@ -219,7 +235,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
 	    public void AddLightAt(Point p)
 	    {
-	        PropModelServices.Instance().AddLight(ElementTreeViewModel.SelectedItems.FirstOrDefault(), p);
+		    var target = ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel).FirstOrDefault();
+
+			var model = PropModelServices.Instance().AddLight(target, p);
+
+		    if (model!=null && model == target)
+		    {
+			    var vm = ElementModelSelectionService.Instance().GetModel(model.Id);
+				DrawingPanelViewModel.DeselectAll();
+				DrawingPanelViewModel.Select(vm.LightViewModels);
+		    }
 
 	        DrawingPanelViewModel.RefreshLightViewModels();
         }

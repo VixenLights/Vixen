@@ -109,7 +109,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             try
             {
                 _isUpdatingSource = true;
-
+				
                 foreach (var item in e.RemovedItems)
                 {
                     selectedItems.Remove(item);

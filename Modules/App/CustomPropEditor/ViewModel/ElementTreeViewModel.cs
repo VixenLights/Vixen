@@ -1,19 +1,26 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.ViewModel
 {
-    public class ElementTreeViewModel:ViewModelBase
+    public sealed class ElementTreeViewModel:ViewModelBase, IDisposable
     {
         public ElementTreeViewModel(Prop prop)
         {
             Prop = prop;
-            SelectedItems = new ObservableCollection<ElementModel>();
+			RootNodesViewModels = new ElementViewModelCollection(RootNodes);
+            SelectedItems = new ObservableCollection<ElementModelViewModel>();
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
         }
 
@@ -56,14 +63,33 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #endregion
 
+	    #region RootNodesViewModels property
+
+	    /// <summary>
+	    /// Gets or sets the RootNodesViewModels value.
+	    /// </summary>
+	    public ElementViewModelCollection RootNodesViewModels
+	    {
+		    get { return GetValue<ElementViewModelCollection>(RootNodesViewModelsProperty); }
+		    set { SetValue(RootNodesViewModelsProperty, value); }
+	    }
+
+	    /// <summary>
+	    /// RootNodesViewModels property data.
+	    /// </summary>
+	    public static readonly PropertyData RootNodesViewModelsProperty = RegisterProperty("RootNodesViewModels", typeof(ElementViewModelCollection));
+
+	    #endregion
+
+
         #region SelectedItems property
 
         /// <summary>
         /// Gets or sets the SelectedItems value.
         /// </summary>
-        public ObservableCollection<ElementModel> SelectedItems
+        public ObservableCollection<ElementModelViewModel> SelectedItems
         {
-            get { return GetValue<ObservableCollection<ElementModel>>(SelectedItemsProperty); }
+            get { return GetValue<ObservableCollection<ElementModelViewModel>>(SelectedItemsProperty); }
             set { SetValue(SelectedItemsProperty, value); }
         }
 
@@ -71,7 +97,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// SelectedItems property data.
         /// </summary>
         public static readonly PropertyData SelectedItemsProperty =
-            RegisterProperty("SelectedItems", typeof(ObservableCollection<ElementModel>), null);
+            RegisterProperty("SelectedItems", typeof(ObservableCollection<ElementModelViewModel>), null);
 
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -95,16 +121,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <summary>
         /// Gets or sets the SelectedItem value.
         /// </summary>
-        public ElementModel SelectedItem
+        public ElementModelViewModel SelectedItem
         {
-            get { return GetValue<ElementModel>(SelectedItemProperty); }
+            get { return GetValue<ElementModelViewModel>(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
         }
 
         /// <summary>
         /// SelectedItem property data.
         /// </summary>
-        public static readonly PropertyData SelectedItemProperty = RegisterProperty("SelectedItem", typeof(ElementModel));
+        public static readonly PropertyData SelectedItemProperty = RegisterProperty("SelectedItem", typeof(ElementModelViewModel));
 
         #endregion
 
@@ -137,7 +163,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             }
            
             name = PropModelServices.Instance().Uniquify(name); 
-            PropModelServices.Instance().CreateGroupForElementModels(name, SelectedItems);
+            PropModelServices.Instance().CreateGroupForElementModels(name, SelectedItems.Select(x => x.ElementModel));
         }
 
         /// <summary>
@@ -146,7 +172,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
         /// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
         private bool CanCreateGroup()
         {
-            return SelectedItems.Any() && SelectedItems.All(x => x != Prop.RootNode);
+            return SelectedItems.Any() && SelectedItems.Select(x => x.ElementModel).All(x => x != Prop.RootNode);
         }
 
         
@@ -181,6 +207,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         #endregion
 
+	    public void DeselectAll()
+	    {
+			SelectedItems.ToList().ForEach(x => x.IsSelected = false);
+			SelectedItems.Clear();
+	    }
 
+	    public void SelectModels(IEnumerable<Guid> elementModelIds)
+	    {
+			ElementModelSelectionService.Instance().SelectModels(elementModelIds,true, true);
+			//SelectedItems.AddRange(models);
+		}
+
+	    public void DeselectModels(IEnumerable<Guid> elementModelIds)
+	    {
+		    ElementModelSelectionService.Instance().SelectModels(elementModelIds, false);
+	    }
+
+		public void Dispose()
+	    {
+	    }
     }
 }

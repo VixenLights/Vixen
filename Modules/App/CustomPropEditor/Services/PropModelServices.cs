@@ -90,7 +90,10 @@ namespace VixenModules.App.CustomPropEditor.Services
             //Remove the leaf nodes first.
             foreach (var elementModel in elementModels.OrderByDescending(x => x.IsLeaf).ToList())
             {
-                if (!elementModel.IsLeaf)
+	            //Clean up any lights
+				elementModel.Lights.Clear();
+
+				if (!elementModel.IsLeaf)
                 {
                     //clear any children references
                     foreach (var child in elementModel.Children.ToList())
@@ -105,22 +108,22 @@ namespace VixenModules.App.CustomPropEditor.Services
                     RemoveChildFromParent(parent, elementModel);
                 }
 
-                //Clean up any lights
+               
                 foreach (var elementModelLight in elementModel.Lights)
                 {
                     _lightToModel.Remove(elementModelLight.Id);
                 }
-                elementModel.Lights.Clear();
+                
                 _models.Remove(elementModel.Id);
             }
         }
 
-        public void RemoveChildFromParent(ElementModel parent, ElementModel child)
+        private void RemoveChildFromParent(ElementModel parent, ElementModel child)
         {
             Prop.RemoveFromParent(child, parent);
         }
 
-        public void AddLightNode(ElementModel target, Point p, int? order = null, int? size=null)
+        public ElementModel AddLightNode(ElementModel target, Point p, int? order = null, int? size=null)
         {
             if (target == null)
             {
@@ -148,9 +151,11 @@ namespace VixenModules.App.CustomPropEditor.Services
             em.AddLight(light);
             _lightToModel.Add(light.Id, em);
 
+	        return em;
+
         }
 
-        public void AddLight(ElementModel target, Point p, int? order=null)
+        public ElementModel AddLight(ElementModel target, Point p, int? order=null)
         {
             if (target == null)
             {
@@ -158,25 +163,21 @@ namespace VixenModules.App.CustomPropEditor.Services
             }
             else if (target.IsLeaf && target.Parents.Any())
             {
-                AddLight(target, p);
+				AddLightToTarget(p, target);
+	            return target;
             }
 
-            if (order == null)
-            {
-                order = GetNextOrder();
-            }
-            
-            ElementModel em = new ElementModel(Uniquify($"{target.Name}-{order}"), order.Value, target);
-            target.AddChild(em);
-            _models.Add(em.Id, em);
-
-            var light = CreateLight(p, em.LightSize);
-            em.AddLight(light);
-            _lightToModel.Add(light.Id, em);
-            
+			return AddLightNode(target, p);
         }
 
-        public void RemoveLights(IEnumerable<Light> lights)
+	    private void AddLightToTarget(Point p, ElementModel em)
+	    {
+		    var light = CreateLight(p, em.LightSize);
+		    em.AddLight(light);
+		    _lightToModel.Add(light.Id, em);
+	    }
+
+	    public void RemoveLights(IEnumerable<Light> lights)
         {
             foreach (var light in lights)
             {
@@ -239,7 +240,12 @@ namespace VixenModules.App.CustomPropEditor.Services
             return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]);
         }
 
-        public Prop Prop => _prop;
+	    public IEnumerable<Guid> FindModelIdsForLightIds(IEnumerable<Guid> lightIds)
+	    {
+		    return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]).Select(m => m.Id);
+	    }
+
+		public Prop Prop => _prop;
 
         private Light CreateLight(Point p, double size)
         {
@@ -248,7 +254,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
         public void DeselectAllModels()
         {
-            _models.Values.ForEach(m => m.IsSelected = false);
+            //_models.Values.ForEach(m => m.IsSelected = false);
         }
 
         public bool IsNameDuplicated(string name)

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -84,6 +85,17 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 typeof(RelayCommand<Transform>),
                 typeof(PropDesigner));
 
+
+	    public static readonly DependencyProperty SelectedModelsProperty = DependencyProperty.Register(
+		    "SelectedModels", typeof(IList), typeof(PropDesigner), new PropertyMetadata(default(IList)));
+
+	    public IList SelectedModels
+	    {
+		    get { return (IList) GetValue(SelectedModelsProperty); }
+		    set { SetValue(SelectedModelsProperty, value); }
+	    }
+
+
         public RelayCommand<Transform> TransformCommand
         {
             get
@@ -127,16 +139,29 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 _drawingCanvas.MouseLeftButtonUp += _drawingCanvas_MouseLeftButtonUp;
             }
 
-            SelectionChanged += PropDesigner_SelectionChanged;
+	        if (SelectedModels is INotifyCollectionChanged)
+	        {
+				var selected = SelectedModels as INotifyCollectionChanged;
+		        selected.CollectionChanged += Selected_CollectionChanged;
+	        }
+            //SelectionChanged += PropDesigner_SelectionChanged;
         }
 
-        private void PropDesigner_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!IsDrawing)
-            {
-                UpdateResizeAdorner();
-            }
-        }
+		private void Selected_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (!IsDrawing)
+			{
+				UpdateResizeAdorner();
+			}
+		}
+
+		//private void PropDesigner_SelectionChanged(object sender, SelectionChangedEventArgs e)
+  //      {
+  //          if (!IsDrawing)
+  //          {
+  //              UpdateResizeAdorner();
+  //          }
+  //      }
 
         private void _drawingCanvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -153,7 +178,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
             //if we are source of event, we are rubberband selecting
             if (e.Source == _drawingCanvas)
             {
-                if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                if (!IsDrawing && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
                 {
                     ClearSelections();   
                 }
@@ -161,6 +186,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
                 {
                     AddLightCommand.Execute(_originMouseStartPoint);
+					ClearSelections();
                     //_propEditorViewModel.DrawingPanelViewModel.AddLightAt(_originMouseStartPoint);
                 }
                 
@@ -181,7 +207,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
                         if (!l.IsSelected)
                         {
                             ClearSelections();
-                            SelectedItems.Add(l);
+                            SelectedModels.Add(l);
                             l.IsSelected = true;
                         }
                         
@@ -191,11 +217,11 @@ namespace VixenModules.App.CustomPropEditor.Controls
                         if (l.IsSelected)
                         {
                             l.IsSelected = false;
-                            SelectedItems.Remove(l);
+                            SelectedModels.Remove(l);
                         }
                         else
                         {
-                            SelectedItems.Add(l);
+                            SelectedModels.Add(l);
                             l.IsSelected = true;
                         }
                     }
@@ -308,48 +334,14 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
                 e.Handled = true;
             }
-            //else
-            //{
-            //    if (!_propEditorViewModel.DrawingPanelViewModel.IsDrawing && !_dragging && e.Source is Path)
-            //    {
-            //        var p = e.Source as Path;
-            //        var l = p.DataContext as ISelectable;
-            //        if (l != null)
-            //        {
-            //            _isSelecting = true;
-            //            //if (!l.IsSelected)
-            //            //{
-            //            if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
-            //            {
-            //                ClearSelections();
-            //                SelectedItems.Add(l);
-            //                l.IsSelected = true;
-            //            }
-            //            else
-            //            {
-            //                if (l.IsSelected)
-            //                {
-            //                    l.IsSelected = false;
-            //                    SelectedItems.Remove(l);
-            //                }
-            //                else
-            //                {
-            //                    SelectedItems.Add(l);
-            //                    l.IsSelected = true;
-            //                }
-            //            }
-            //            //}
-            //        }
-            //        e.Handled = false;
-            //    }
-            //}
+            
             _dragging = false;
             UpdateResizeAdorner();
         }
 
         private void ClearSelections()
         {
-            SelectedItems.Clear();
+            SelectedModels.Clear();
             if (ItemsSource != null)
             {
                 foreach (ISelectable lvm in ItemsSource)
@@ -372,14 +364,18 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
                 if (rubberBand.Contains(itemBounds))
                 {
-                    item.IsSelected = true;
-                    SelectedItems.Add(item);
+	                if (!item.IsSelected)
+	                {
+		                item.IsSelected = true;
+		                SelectedModels.Add(item);
+					}
+                   
                 }
                 else
                 {
                     if (!(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
                     {
-                        SelectedItems.Remove(item);
+                        SelectedModels.Remove(item);
                         item.IsSelected = false;
                     }
                 }
@@ -389,7 +385,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         private void UpdateResizeAdorner()
         {
             if (_dragging && !_isSelecting) return;
-            if (SelectedItems.Count > 1)
+            if (SelectedModels.Count > 1)
             {
                 Rect? bounds = GetSelectedContentBounds();
 
@@ -425,7 +421,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         private Rect? GetSelectedContentBounds()
         {
             List<Rect> bounds = new List<Rect>();
-            foreach (var selectedItem in SelectedItems)
+            foreach (var selectedItem in SelectedModels)
             {
                 DependencyObject container = ItemContainerGenerator.ContainerFromItem(selectedItem);
 

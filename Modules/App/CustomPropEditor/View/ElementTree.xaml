@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
              xmlns:viewModel="clr-namespace:VixenModules.App.CustomPropEditor.ViewModel"
              xmlns:interactivity="http://schemas.catelproject.com"
+             xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
@@ -123,7 +124,7 @@
     <Grid>
         
         <TreeView x:Name="ElementModelTreeView" 
-                  ItemsSource="{Binding ElementTreeViewModel.RootNodes}" 
+                  ItemsSource="{Binding ElementTreeViewModel.RootNodesViewModels}" 
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ScrollViewer.CanContentScroll="True"
@@ -134,7 +135,7 @@
                 <interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
             </i:Interaction.Behaviors>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type model:ElementModel}">
+				<HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:ElementModelViewModel}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}">
                         </TextBlock>

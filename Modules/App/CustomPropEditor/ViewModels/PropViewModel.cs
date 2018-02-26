@@ -16,7 +16,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 
    
-    public class PropEditorViewModel:ViewModelBase
+    public class PropViewModel:ViewModelBase
     {
         #region Fields
         private readonly IMessageService _messageService;
@@ -25,7 +25,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
         #region Constructors
 
-        public PropEditorViewModel(IUIVisualizerService uiVisualizerService, IMessageService messageService)
+        public PropViewModel(IUIVisualizerService uiVisualizerService, IMessageService messageService)
         {
             Argument.IsNotNull(() => uiVisualizerService);
             Argument.IsNotNull(() => messageService);

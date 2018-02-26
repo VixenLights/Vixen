@@ -133,7 +133,11 @@
     <Compile Include="Model\TransformArgs.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
+    <Compile Include="Services\ElementModelSelectionService.cs" />
     <Compile Include="ViewModels\ElementModelViewModel.cs" />
+    <Compile Include="ViewModels\ElementViewModelCollection.cs" />
+    <Compile Include="ViewModels\LightViewModelCollection.cs" />
+    <Compile Include="ViewModel\IExpandable.cs" />
     <Compile Include="ViewModel\ISelectable.cs" />
     <Compile Include="Controls\PropDesigner.cs" />
     <Compile Include="Converters\LightNodeToPathConverter.cs" />
@@ -149,8 +153,8 @@
     <Compile Include="ViewModel\ElementTreeViewModel.cs" />
     <Compile Include="ViewModel\LightViewModel.cs" />
     <Compile Include="ViewModel\MultiSelectionBehavior.cs" />
-    <Compile Include="ViewModels\PropEditorViewModel.cs" />
-    <Compile Include="ViewModels\PropTreeViewModel.cs" />
+    <Compile Include="ViewModels\PropViewModel.cs" />
+    <Compile Include="ViewModel\ISelectableExpander.cs" />
     <Compile Include="View\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>
     </Compile>

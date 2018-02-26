@@ -14,7 +14,6 @@ namespace VixenModules.App.CustomPropEditor.Model
     /// <summary>
     /// Symbolic of an ElementNode in Vixen Core
     /// </summary>
-    [Catel.ComponentModel.DisplayName("Element Model")]
 	public class ElementModel : BindableBase, IDataErrorInfo, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
         private const int DefaultLightSize = 3;
@@ -24,91 +23,66 @@ namespace VixenModules.App.CustomPropEditor.Model
         private int _order;
 	    private string _name;
 	    private int _lightSize;
-	    private bool _isSelected;
-	    private bool _isExpanded;
+	    
+		#region Constructors
 
-
-	    public ElementModel()
+		public ElementModel()
 		{
 			Lights = new ObservableCollection<Light>();
-            Children = new ObservableCollection<ElementModel>();
-            Parents = new ObservableCollection<ElementModel>();
-            Id = Guid.NewGuid();
-		    LightSize = DefaultLightSize;
+			Children = new ObservableCollection<ElementModel>();
+			Parents = new ObservableCollection<ElementModel>();
+			Id = Guid.NewGuid();
+			LightSize = DefaultLightSize;
 		}
 
-	    public ElementModel(string name):this()
-	    {
-	        Name = name;
-	    }
+		public ElementModel(string name) : this()
+		{
+			Name = name;
+		}
 
-	    public ElementModel(string name, int order) : this(name)
-	    {
-	        Name = name;
-	        Order = order;
-	    }
+		public ElementModel(string name, int order) : this(name)
+		{
+			Name = name;
+			Order = order;
+		}
 
-        public ElementModel(string name, ElementModel parent):this(name)
-	    {
-            Parents.Add(parent);
-	    }
+		public ElementModel(string name, ElementModel parent) : this(name)
+		{
+			Parents.Add(parent);
+		}
 
-	    public ElementModel(string name, int order, ElementModel parent) : this(name)
-	    {
-	        Parents.Add(parent);
-	        Order = order;
-	    }
+		public ElementModel(string name, int order, ElementModel parent) : this(name)
+		{
+			Parents.Add(parent);
+			Order = order;
+		}
 
+		#endregion
 
-	    ///For testing
+		#region Id
 
-	    #region IsSelected property
-
-	    public bool IsSelected
-	    {
-	        get { return _isSelected; }
-	        set
-	        {
-	            if (value == _isSelected) return;
-	            _isSelected = value;
-	            OnPropertyChanged(nameof(IsSelected));
-	        }
-	    }
-
-        #endregion
-
-	    #region IsExpanded
-
-	    public bool IsExpanded
-	    {
-	        get { return _isExpanded; }
-	        set
-	        {
-	            if (value == _isExpanded) return;
-	            _isExpanded = value;
-	            OnPropertyChanged(nameof(IsExpanded));
-	        }
-	    }
-
-	    #endregion
-
-        [Browsable(false)]
 		public Guid Id { get; protected set; }
 
-	    [PropertyOrder(0)]
-        public string Name
-	    {
-	        get { return _name; }
-	        set
-	        {
-	            if (value == _name) return;
-	            _name = value;
-	            OnPropertyChanged(nameof(Name));
-	        }
-	    }
+		#endregion
 
-	    [PropertyOrder(1)]
-	    public int Order
+		#region Name
+
+		public string Name
+		{
+			get { return _name; }
+			set
+			{
+				if (value == _name) return;
+				_name = value;
+				OnPropertyChanged(nameof(Name));
+			}
+		}
+
+		#endregion
+
+		#region Order
+
+		public int Order
 	    {
 	        get
 	        {
@@ -127,80 +101,91 @@ namespace VixenModules.App.CustomPropEditor.Model
 	        }
 	    }
 
-	    [DisplayName("String Type")]
-	    [PropertyOrder(2)]
-	    public bool IsString
-	    {
-	        get { return _lights.Count > 1; }
-	    }
+		#endregion Order
 
-	    [DisplayName("Light Count")]
-	    [PropertyOrder(3)]
-	    public int LightCount
-	    {
-	        get { return _lights.Count; }
-	    }
+		#region IsString
 
-	    [DisplayName("Light Size")]
-	    [PropertyOrder(4)]
-        public int LightSize
-	    {
-	        get { return _lightSize; }
-	        set
-	        {
-	            if (value == _lightSize) return;
-	            _lightSize = value;
-	            UpdateLightSize();
-	            OnPropertyChanged(nameof(LightSize));
-	        }
-	    }
+		public bool IsString => _lights.Count > 1;
 
-	    [Browsable(false)]
-	    public bool IsLeaf
-	    {
-	        get { return !Children.Any(); }
-	    }
+		#endregion
 
+		#region Light Count
 
-        [Browsable(false)]
-        public ObservableCollection<ElementModel> Children
-	    {
-	        get { return _children; }
-	        set
-	        {
-	            if (Equals(value, _children)) return;
-	            _children = value;
-	            OnPropertyChanged(nameof(Children));
-	        }
-	    }
+		public int LightCount => _lights.Count;
 
-	    [Browsable(false)]
-        public ObservableCollection<ElementModel> Parents
-	    {
-	        get { return _parents; }
-	        set
-	        {
-	            if (Equals(value, _parents)) return;
-	            _parents = value;
-	            OnPropertyChanged(nameof(Parents));
-	        }
-	    }
+		#endregion
 
-	    [Browsable(false)]
-        public ObservableCollection<Light> Lights
+		#region Light Size
+
+		public int LightSize
+		{
+			get { return _lightSize; }
+			set
+			{
+				if (value == _lightSize) return;
+				_lightSize = value;
+				UpdateLightSize();
+				OnPropertyChanged(nameof(LightSize));
+			}
+		}
+
+		#endregion
+
+		#region IsLeaf
+
+		[Browsable(false)]
+		public bool IsLeaf => !Children.Any();
+
+		#endregion
+
+		#region Children
+
+		public ObservableCollection<ElementModel> Children
+		{
+			get { return _children; }
+			set
+			{
+				if (Equals(value, _children)) return;
+				_children = value;
+				OnPropertyChanged(nameof(Children));
+			}
+		}
+
+		#endregion
+
+		#region Parents
+
+		public ObservableCollection<ElementModel> Parents
+		{
+			get { return _parents; }
+			set
+			{
+				if (Equals(value, _parents)) return;
+				_parents = value;
+				OnPropertyChanged(nameof(Parents));
+			}
+		}
+
+		#endregion
+
+		#region Lights
+
+		public ObservableCollection<Light> Lights
 		{
 			get { return _lights; }
 			set
 			{
-			    if (Equals(value, _lights)) return;
-			    _lights = value;
-			    OnPropertyChanged(nameof(Lights));
-			    OnPropertyChanged(nameof(IsString));
-                OnPropertyChanged(nameof(LightCount));
+				if (Equals(value, _lights)) return;
+				_lights = value;
+				OnPropertyChanged(nameof(Lights));
+				OnPropertyChanged(nameof(IsString));
+				OnPropertyChanged(nameof(LightCount));
 			}
 		}
 
-	    public bool RemoveParent(ElementModel parent)
+		#endregion
+
+		public bool RemoveParent(ElementModel parent)
 	    {
 	        return Parents.Remove(parent);
 	    }

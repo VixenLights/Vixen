@@ -175,11 +175,12 @@
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
-                            AddLightCommand="{Binding AddLightCommand}">
+                            AddLightCommand="{Binding AddLightCommand}"
+                            SelectedModels="{Binding DrawingPanelViewModel.SelectedItems}">
                             
-                            <i:Interaction.Behaviors>
+                            <!--<i:Interaction.Behaviors>
                                 <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
-                            </i:Interaction.Behaviors>
+                            </i:Interaction.Behaviors>-->
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <ContentControl>

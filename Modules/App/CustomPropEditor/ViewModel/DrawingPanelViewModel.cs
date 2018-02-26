@@ -15,19 +15,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 {
     public class DrawingPanelViewModel : ViewModelBase
     {
-        
-        private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
+	    private readonly ElementTreeViewModel _elementTreeViewModel;
+        //private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 
-        public DrawingPanelViewModel():this(new Prop())
-        {
+        //public DrawingPanelViewModel():this(new Prop())
+        //{
             
-        }
+        //}
 
-        public DrawingPanelViewModel(Prop p)
+        public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
         {
-            _elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
+	        _elementTreeViewModel = elementTreeViewModel;
+            //_elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
             LightNodes = new ObservableCollection<LightViewModel>();
-            Prop = p;
+            Prop = elementTreeViewModel.Prop;
            
             TransformCommand = new RelayCommand<Transform>(Transform);
 
@@ -242,24 +243,23 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
         internal void RefreshLightViewModels()
         {
-            _elementModelMap.Clear();
-            LightNodes.Clear();
-            foreach (var elementModel in PropModelServices.Instance().GetLeafNodes())
-            {
-               LightNodes.AddRange(CreateLightViewModels(elementModel));
-            }
+            //_elementModelMap.Clear();
+            //LightNodes.Clear();
+            //foreach (var elementModel in PropModelServices.Instance().GetLeafNodes())
+            //{
+            //   LightNodes.AddRange(CreateLightViewModels(elementModel));
+            //}
+			LightNodes.Clear();
+	        foreach (var elementModelViewModel in _elementTreeViewModel.RootNodesViewModels.First().GetLeafEnumerator())
+	        {
+		        LightNodes.AddRange(elementModelViewModel.LightViewModels);
+	        }
         }
-
-        private List<LightViewModel> CreateLightViewModels(ElementModel em)
-        {
-            var lvmList = em.Lights.Select(x => new LightViewModel(x)).ToList();
-            _elementModelMap.Add(em.Id, lvmList);
-            return lvmList;
-        }
-
+		
         public void DeleteSelectedLights()
         {
             PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
+			SelectedItems.Clear();
             RefreshLightViewModels();
         }
 
@@ -269,34 +269,28 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             SelectedItems.Clear();
         }
 
-        public void SelectLights(IEnumerable<ElementModel> em)
-        {
-            DeselectAll();
-            SelectLightsForElementModels(em);
-        }
+	    public void Deselect(IEnumerable<LightViewModel> lightViewModels)
+	    {
+		    foreach (var lightViewModel in lightViewModels)
+		    {
+			    lightViewModel.IsSelected = false;
+			    SelectedItems.Remove(lightViewModel);
+		    }
+	    }
 
-        private void SelectLightsForElementModels(IEnumerable<ElementModel> em)
-        {
-            foreach (var elementModel in em)
-            {
-                if (!elementModel.IsLeaf)
-                {
-                    SelectLightsForElementModels(elementModel.Children);
-                }
-                else
-                {
-                    List<LightViewModel> lvmList;
-                    if (_elementModelMap.TryGetValue(elementModel.Id, out lvmList))
-                    {
-                        lvmList.ForEach(l => l.IsSelected = true);
-                        SelectedItems.AddRange(lvmList);
-                    }
-                }
-                
-            }
-        }
+	    public void Select(IEnumerable<LightViewModel> lightViewModels)
+	    {
+		    foreach (var lightViewModel in lightViewModels)
+		    {
+			    if (!SelectedItems.Contains(lightViewModel))
+			    {
+				    lightViewModel.IsSelected = true;
+					SelectedItems.Add(lightViewModel);
+			    }
+		    }
+		}
 
-        public void Transform(Transform t)
+		public void Transform(Transform t)
         {
             foreach (LightViewModel lvm in SelectedItems)
             {

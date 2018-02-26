@@ -5,10 +5,11 @@ using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.ViewModel;
 
-namespace VixenModules.App.CustomPropEditor.ViewModel
+namespace VixenModules.App.CustomPropEditor.ViewModels
 {
-    public class LightViewModel : ViewModelBase, ISelectable
+    public class LightViewModel : ViewModelBase, ISelectable, IDisposable
     {
         public LightViewModel(Light ln)
         {
@@ -169,6 +170,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 
             await base.CloseAsync();
         }
+
+	    public void Dispose()
+	    {
+	    }
     }
     
     
