@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
-using VixenModules.App.CustomPropEditor.ViewModels;
 
-namespace VixenModules.App.CustomPropEditor.ViewModel
+namespace VixenModules.App.CustomPropEditor.ViewModels
 {
     public sealed class ElementTreeViewModel:ViewModelBase, IDisposable
     {
         public ElementTreeViewModel(Prop prop)
         {
             Prop = prop;
-			RootNodesViewModels = new ElementViewModelCollection(RootNodes);
+			ElementModelViewModel vm = new ElementModelViewModel(Prop.RootNode, null);
+			RootNodesViewModels = new ObservableCollection<ElementModelViewModel>(new []{vm});
             SelectedItems = new ObservableCollection<ElementModelViewModel>();
             SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
         }
@@ -68,16 +65,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 	    /// <summary>
 	    /// Gets or sets the RootNodesViewModels value.
 	    /// </summary>
-	    public ElementViewModelCollection RootNodesViewModels
+	    public ObservableCollection<ElementModelViewModel> RootNodesViewModels
 	    {
-		    get { return GetValue<ElementViewModelCollection>(RootNodesViewModelsProperty); }
+		    get { return GetValue<ObservableCollection<ElementModelViewModel>>(RootNodesViewModelsProperty); }
 		    set { SetValue(RootNodesViewModelsProperty, value); }
 	    }
 
 	    /// <summary>
 	    /// RootNodesViewModels property data.
 	    /// </summary>
-	    public static readonly PropertyData RootNodesViewModelsProperty = RegisterProperty("RootNodesViewModels", typeof(ElementViewModelCollection));
+	    public static readonly PropertyData RootNodesViewModelsProperty = RegisterProperty("RootNodesViewModels", typeof(ObservableCollection<ElementModelViewModel>));
 
 	    #endregion
 
@@ -213,15 +210,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
 			SelectedItems.Clear();
 	    }
 
-	    public void SelectModels(IEnumerable<Guid> elementModelIds)
+	    public void SelectModels(IEnumerable<ElementModelViewModel> elementModels)
 	    {
-			ElementModelSelectionService.Instance().SelectModels(elementModelIds,true, true);
-			//SelectedItems.AddRange(models);
-		}
+		    foreach (var elementModelViewModel in elementModels)
+		    {
+			    elementModelViewModel.IsSelected = true;
+			    var parent = elementModelViewModel.ParentViewModel as ElementModelViewModel;
+			    if (parent != null)
+			    {
+				    parent.IsExpanded = true;
+			    }
+		    }
+	    }
 
-	    public void DeselectModels(IEnumerable<Guid> elementModelIds)
+	    public void DeselectModels(IEnumerable<ElementModelViewModel> elementModels)
 	    {
-		    ElementModelSelectionService.Instance().SelectModels(elementModelIds, false);
+		    foreach (var elementModelViewModel in elementModels)
+		    {
+			    elementModelViewModel.IsSelected = false;
+		    }
 	    }
 
 		public void Dispose()

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -11,7 +10,7 @@ using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 
-namespace VixenModules.App.CustomPropEditor.ViewModel
+namespace VixenModules.App.CustomPropEditor.ViewModels
 {
     public class DrawingPanelViewModel : ViewModelBase
     {
@@ -250,10 +249,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModel
             //   LightNodes.AddRange(CreateLightViewModels(elementModel));
             //}
 			LightNodes.Clear();
+			HashSet<LightViewModel> distinctLights = new HashSet<LightViewModel>();
 	        foreach (var elementModelViewModel in _elementTreeViewModel.RootNodesViewModels.First().GetLeafEnumerator())
 	        {
-		        LightNodes.AddRange(elementModelViewModel.LightViewModels);
+		        distinctLights.AddRange(elementModelViewModel.LightViewModels);
 	        }
+
+			LightNodes.AddRange(distinctLights);
         }
 		
         public void DeleteSelectedLights()

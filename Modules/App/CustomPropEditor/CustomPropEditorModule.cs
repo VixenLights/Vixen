@@ -1,8 +1,6 @@
 ﻿using System.Windows.Forms.Integration;
 using Vixen.Module.App;
 using Vixen.Sys;
-using VixenModules.App.CustomPropEditor.View;
-using PropEditorWindow = VixenModules.App.CustomPropEditor.Views.PropEditorWindow;
 
 namespace VixenModules.App.CustomPropEditor
 {

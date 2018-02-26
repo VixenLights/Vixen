@@ -6,9 +6,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public class ElementViewModelCollection: TransformedCollection<ElementModel, ElementModelViewModel>
 	{
-		public ElementViewModelCollection(IEnumerable<ElementModel> elementModels) : base(
+		public ElementViewModelCollection(IEnumerable<ElementModel> elementModels, ElementModelViewModel parent) : base(
 			elementModels,
-			elementModel => new ElementModelViewModel(elementModel), 
+			elementModel => new ElementModelViewModel(elementModel, parent), 
 			elementModelViewModel => elementModelViewModel.Dispose())
 		{
 		}

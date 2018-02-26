@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace VixenModules.App.CustomPropEditor.ViewModel
+namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	/// <summary>
 	/// Interface for items that can be expanded

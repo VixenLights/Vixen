@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Vixen.Extensions;
-using VixenModules.App.CustomPropEditor.ViewModel;
+using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.View
 {

@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 using Catel.Windows.Input;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Adorners;
-using VixenModules.App.CustomPropEditor.ViewModel;
+using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.Controls
 {

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interactivity;
 
-namespace VixenModules.App.CustomPropEditor.ViewModel
+namespace VixenModules.App.CustomPropEditor.Behaviors
 {
     public class MultiSelectionBehavior : Behavior<MultiSelector>
     {

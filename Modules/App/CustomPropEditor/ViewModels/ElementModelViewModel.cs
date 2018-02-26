@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid;
-using Catel.Collections;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
-using VixenModules.App.CustomPropEditor.ViewModel;
 using PropertyData = Catel.Data.PropertyData;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
@@ -16,13 +14,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	[DisplayName("Element Model")]
     public sealed class ElementModelViewModel:ViewModelBase, ISelectableExpander, IDisposable
 	{
-        public ElementModelViewModel(ElementModel model)
+        public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
         {
             ElementModel = model;
-            ChildrenViewModels = new ElementViewModelCollection(model.Children);
-			LightViewModels = new LightViewModelCollection(model.Lights);
-			ElementModelSelectionService.Instance().AddModel(model.Id, this);
+            ChildrenViewModels = new ElementViewModelCollection(model.Children, this);
+			LightViewModels = new LightViewModelCollection(model.Lights, this);
+			((IRelationalViewModel)this).SetParentViewModel(parent);
+			//ElementModelSelectionService.Instance().AddModel(model.Id, this);
         }
+
 
 		#region ElementModel model property
 
@@ -309,7 +309,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void Dispose()
 		{
-			ElementModelSelectionService.Instance().RemoveModel(ElementModel.Id);
+			((IRelationalViewModel)this).SetParentViewModel(null);
+			//ElementModelSelectionService.Instance().RemoveModel(ElementModel.Id);
 		}
 	}
 }

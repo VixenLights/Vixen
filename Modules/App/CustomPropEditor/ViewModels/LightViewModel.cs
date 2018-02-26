@@ -5,16 +5,16 @@ using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
-using VixenModules.App.CustomPropEditor.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
     public class LightViewModel : ViewModelBase, ISelectable, IDisposable
     {
-        public LightViewModel(Light ln)
+        public LightViewModel(Light ln, ViewModelBase parent)
         {
             Light = ln;
-        }
+	        ((IRelationalViewModel)this).SetParentViewModel(parent);
+		}
 
         public override string Title => "Light";
 
@@ -173,7 +173,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	    public void Dispose()
 	    {
-	    }
+		    ((IRelationalViewModel)this).SetParentViewModel(null);
+		}
     }
     
     

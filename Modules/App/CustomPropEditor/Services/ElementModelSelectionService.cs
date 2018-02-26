@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Catel.Collections;
-using VixenModules.App.CustomPropEditor.ViewModel;
 using VixenModules.App.CustomPropEditor.ViewModels;
 
 namespace VixenModules.App.CustomPropEditor.Services
@@ -38,30 +37,6 @@ namespace VixenModules.App.CustomPropEditor.Services
 			_instances.TryGetValue(id, out model);
 
 			return model;
-		}
-
-		public IEnumerable<LightViewModel> GetSelectedLights()
-		{
-			return _instances.Values.Where(x => x.IsLeaf).SelectMany(m => m.LightViewModels.Where(l => l.IsSelected));
-		}
-
-		public IEnumerable<LightViewModel> SelectModelLights(IEnumerable<Guid> modelIds, bool selected = true)
-		{
-			List<LightViewModel> lvm = new List<LightViewModel>();
-			foreach (var modelId in modelIds)
-			{
-				ElementModelViewModel model;
-				if (_instances.TryGetValue(modelId, out model))
-				{
-					foreach (var modelLightViewModel in model.LightViewModels)
-					{
-						modelLightViewModel.IsSelected = selected;
-						lvm.Add(modelLightViewModel);
-					}
-				}
-			}
-
-			return lvm;
 		}
 
 		public IEnumerable<ElementModelViewModel> SelectModels(IEnumerable<Guid> modelIds, bool selected=true, bool expandParents=false)

@@ -1,4 +1,4 @@
-﻿namespace VixenModules.App.CustomPropEditor.ViewModel
+﻿namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public interface ISelectableExpander: ISelectable, IExpandable
 	{
