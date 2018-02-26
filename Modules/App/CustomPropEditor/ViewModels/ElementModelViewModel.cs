@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls.WpfPropertyGrid;
+using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
@@ -16,14 +17,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
 		{
-			ModelId = Guid.NewGuid();
 			ElementModel = model;
 			ChildrenViewModels = new ElementViewModelCollection(model.Children, this);
 			ElementModelLookUpService.Instance.AddModel(model.Id, this);
 			((IRelationalViewModel)this).SetParentViewModel(parent);
+			DeferValidationUntilFirstSaveCall = false;
 		}
-
-		public Guid ModelId { get; private set; }
 
 		#region ElementModel model property
 
@@ -85,7 +84,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region IsString property
+		#region ElementType property
 
 		/// <summary>
 		/// Gets or sets the IsString value.
@@ -93,12 +92,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[DisplayName("String Type")]
 		[PropertyOrder(2)]
 		[ViewModelToModel("ElementModel")]
-		public bool IsString => GetValue<bool>(IsStringProperty);
+		public ElementType ElementType => GetValue<ElementType>(IsStringProperty);
 
 		/// <summary>
 		/// IsString property data.
 		/// </summary>
-		public static readonly PropertyData IsStringProperty = RegisterProperty("IsString", typeof(bool), null);
+		public static readonly PropertyData IsStringProperty = RegisterProperty("ElementType", typeof(ElementType), null);
 
 		#endregion
 
@@ -270,6 +269,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Overrides
+
+		//We are not using these properties in the view so hiding them so the property giris does not expose them.
+
+		[Browsable(false)]
+		public new DateTime ViewModelConstructionTime => base.ViewModelConstructionTime;
+
+		[Browsable(false)]
+		public new int UniqueIdentifier => base.UniqueIdentifier;
+
+		[Browsable(false)]
+		public new string Title => base.Title;
+
+		[Browsable(false)]
+		public new bool IsClosed => base.IsClosed;
+
+		[Browsable(false)]
+		public new IViewModel ParentViewModel => base.ParentViewModel;
+
+		#endregion
+
 		public void RemoveFromParent()
 		{
 			var parentVm = ParentViewModel as ElementModelViewModel;
@@ -299,10 +319,30 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			return ChildrenViewModels.SelectMany(x => x.GetLeafEnumerator());
 		}
 
+
+		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
+		{
+			if (string.IsNullOrEmpty(Name))
+			{
+				validationResults.Add(FieldValidationResult.CreateError(nameof(Name), "Name can not be empty"));
+			}
+			else if (PropModelServices.Instance().IsNameDuplicated(Name))
+			{
+				validationResults.Add(FieldValidationResult.CreateError(nameof(Name), "Duplicate name"));
+			}
+
+			if (LightSize <= 0)
+			{
+				validationResults.Add(FieldValidationResult.CreateError(nameof(LightSize), "Light size must be > 0"));
+			}
+		}
+
 		public void Dispose()
 		{
 			((IRelationalViewModel)this).SetParentViewModel(null);
 			ElementModelLookUpService.Instance.RemoveModel(ElementModel.Id, this);
 		}
+
+
 	}
 }

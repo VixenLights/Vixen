@@ -121,7 +121,6 @@
   <ItemGroup>
     <Compile Include="Adorners\ResizeAdorner.cs" />
     <Compile Include="Adorners\RubberbandAdorner.cs" />
-    <Compile Include="Controls\FakeBehavior.cs" />
     <Compile Include="Controls\IGroupable.cs" />
     <Compile Include="Controls\SliderMenuItem.xaml.cs">
       <DependentUpon>SliderMenuItem.xaml</DependentUpon>
@@ -130,6 +129,7 @@
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
     <Compile Include="Import\XLights\ModelNode.cs" />
+    <Compile Include="Model\ElementType.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="Services\ElementModelLookUpService.cs" />
@@ -151,7 +151,6 @@
     <Compile Include="ViewModels\ElementTreeViewModel.cs" />
     <Compile Include="ViewModels\LightViewModel.cs" />
     <Compile Include="Behaviors\MultiSelectionBehavior.cs" />
-    <Compile Include="ViewModels\PropViewModel.cs" />
     <Compile Include="ViewModels\ISelectableExpander.cs" />
     <Compile Include="View\CustomPropEditorWindow.xaml.cs">
       <DependentUpon>CustomPropEditorWindow.xaml</DependentUpon>

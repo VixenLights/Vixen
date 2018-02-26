@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
-using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
 	/// <summary>
 	/// Symbolic of an ElementNode in Vixen Core
 	/// </summary>
-	public class ElementModel : BindableBase, IDataErrorInfo, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
+	public class ElementModel : BindableBase, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
 		private const int DefaultLightSize = 3;
 		private ObservableCollection<Light> _lights;
@@ -101,9 +99,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#endregion Order
 
-		#region IsString
+		#region Element Type
 
-		public bool IsString => _lights.Count > 1;
+		public ElementType ElementType => LightCount > 1 ? ElementType.String : ElementType.Node;
 
 		#endregion
 
@@ -175,7 +173,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 				if (Equals(value, _lights)) return;
 				_lights = value;
 				OnPropertyChanged(nameof(Lights));
-				OnPropertyChanged(nameof(IsString));
+				OnPropertyChanged(nameof(ElementType));
 				OnPropertyChanged(nameof(LightCount));
 			}
 		}
@@ -229,7 +227,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			}
 			Lights.Add(ln);
 			ln.ParentModelId = Id;
-			OnPropertyChanged(nameof(IsString));
+			OnPropertyChanged(nameof(ElementType));
 			OnPropertyChanged(nameof(LightCount));
 		}
 
@@ -237,7 +235,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		{
 			var success = Lights.Remove(light);
 			light.ParentModelId = Guid.Empty;
-			OnPropertyChanged(nameof(IsString));
+			OnPropertyChanged(nameof(ElementType));
 			OnPropertyChanged(nameof(LightCount));
 			return success;
 		}
@@ -283,38 +281,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 			return Id.GetHashCode();
 		}
 
-		public string this[string columnName]
-		{
-			get
-			{
-				string result = string.Empty;
-				if (columnName == nameof(Name))
-				{
-					if (string.IsNullOrEmpty(Name))
-					{
-						result = "Name can not be empty";
-					}
-					else if (PropModelServices.Instance().IsNameDuplicated(Name))
-					{
-						result = "Duplicate name";
-					}
-
-				}
-				else if (columnName == nameof(LightSize))
-				{
-					if (LightSize <= 0)
-					{
-						result = "Light size must be > 0";
-					}
-				}
-				return result;
-			}
-		}
-
-		[Browsable(false)]
-		public string Error
-		{
-			get { return string.Empty; }
-		}
+		
 	}
 }
