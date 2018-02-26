@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using Catel.Collections;
 using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
@@ -127,14 +128,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	            {
 		            if (e.OldItems != null)
 		            {
-			            var parents = e.OldItems.Cast<LightViewModel>().Select(l => l.ParentViewModel).Cast<ElementModelViewModel>();
+			            var parents = e.OldItems.Cast<LightViewModel>().SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
 			            ElementTreeViewModel.DeselectModels(parents);
 					}
 				}
 
 				if(e.Action == NotifyCollectionChangedAction.Add)
 				{
-					var parents = e.NewItems.Cast<LightViewModel>().Select(l => l.ParentViewModel).Cast<ElementModelViewModel>();
+					var parents = e.NewItems.Cast<LightViewModel>().SelectMany(l => ElementModelLookUpService.Instance.GetModels(l.Light.ParentModelId));
 					ElementTreeViewModel.SelectModels(parents);
 				}
                 _selectionChanging = false;
@@ -156,13 +157,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	            if (e.Action == NotifyCollectionChangedAction.Remove)
 	            {
-		            var lvm = e.OldItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator()).SelectMany(m => m.LightViewModels);
+		            var lvm = e.OldItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator());//.SelectMany(m => m.LightViewModels);
 					DrawingPanelViewModel.Deselect(lvm);
 	            }
 
 	            if (e.Action == NotifyCollectionChangedAction.Add)
 	            {
-		            var models = e.NewItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator()).SelectMany(m => m.LightViewModels);
+		            var models = e.NewItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator());//.SelectMany(m => m.LightViewModels);
 		            DrawingPanelViewModel.Select(models);
 	            }
 
@@ -208,7 +209,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	    /// </summary>
 	    private void Delete()
 	    {
-	        PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel));
+	        //PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel));
+			ElementTreeViewModel.SelectedItems.ForEach(x => x.RemoveFromParent());
 			DrawingPanelViewModel.DeselectAll();
             DrawingPanelViewModel.RefreshLightViewModels();
 	    }
@@ -234,18 +236,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	    public void AddLightAt(Point p)
 	    {
-		    var target = ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel).FirstOrDefault();
+		    var target = ElementTreeViewModel.SelectedItem;
 
-			var model = PropModelServices.Instance().AddLight(target, p);
+			var model = PropModelServices.Instance().AddLight(target?.ElementModel, p);
 
-		    if (model!=null && model == target)
+		    DrawingPanelViewModel.RefreshLightViewModels();
+			
+			if (model!=null && model == target?.ElementModel)
 		    {
-			 //   var vm = ElementModelSelectionService.Instance().GetModel(model.Id);
-				//DrawingPanelViewModel.DeselectAll();
-				//DrawingPanelViewModel.Select(vm.LightViewModels);
-		    }
-
-	        DrawingPanelViewModel.RefreshLightViewModels();
+			    var vms = ElementModelLookUpService.Instance.GetModels(model.Id);
+				ElementTreeViewModel.SelectModels(vms);
+			}
+			else if(target != null)
+			{
+				ElementTreeViewModel.SelectModels(new[] { target });
+			}
         }
 
 	    public async void LoadImage()

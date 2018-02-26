@@ -132,7 +132,7 @@
     <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
-    <Compile Include="Services\ElementModelSelectionService.cs" />
+    <Compile Include="Services\ElementModelLookUpService.cs" />
     <Compile Include="ViewModels\ElementModelViewModel.cs" />
     <Compile Include="ViewModels\ElementViewModelCollection.cs" />
     <Compile Include="ViewModels\LightViewModelCollection.cs" />

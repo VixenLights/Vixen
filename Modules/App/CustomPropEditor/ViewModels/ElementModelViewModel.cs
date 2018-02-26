@@ -16,13 +16,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
         public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
         {
+			ModelId = Guid.NewGuid();
             ElementModel = model;
             ChildrenViewModels = new ElementViewModelCollection(model.Children, this);
-			LightViewModels = new LightViewModelCollection(model.Lights, this);
+	        ElementModelLookUpService.Instance.AddModel(model.Id, this);
 			((IRelationalViewModel)this).SetParentViewModel(parent);
-			//ElementModelSelectionService.Instance().AddModel(model.Id, this);
         }
 
+		public Guid ModelId { get; private set; }
 
 		#region ElementModel model property
 
@@ -197,24 +198,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region LightViewModels property
-
-		/// <summary>
-		/// Gets or sets the LightViewModels value.
-		/// </summary>
-		public LightViewModelCollection LightViewModels
-		{
-			get { return GetValue<LightViewModelCollection>(LightViewModelsProperty); }
-			set { SetValue(LightViewModelsProperty, value); }
-		}
-
-		/// <summary>
-		/// LightViewModels property data.
-		/// </summary>
-		public static readonly PropertyData LightViewModelsProperty = RegisterProperty("LightViewModels", typeof(LightViewModelCollection));
-
-		#endregion
-
 		#region IsSelected property
 
 		/// <summary>
@@ -265,16 +248,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			set { SetValue(IsExpandedProperty, value); }
 		}
 
-		public IEnumerable<Guid> GetParentIds()
-		{
-			return ElementModel.Parents.Select(x => x.Id);
-		}
-
-		public IEnumerable<Guid> GetChildrenIds()
-		{
-			return ElementModel.Children.Select(x => x.Id);
-		}
-
 		/// <summary>
 		/// IsExpanded property data.
 		/// </summary>
@@ -297,6 +270,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		public void RemoveFromParent()
+		{
+			var parentVm = ParentViewModel as ElementModelViewModel;
+			if (parentVm != null)
+			{
+				PropModelServices.Instance().RemoveFromParent(ElementModel, parentVm.ElementModel);
+			}
+		}
+
+		public IEnumerable<Guid> GetParentIds()
+		{
+			return ElementModel.Parents.Select(x => x.Id);
+		}
+
+		public IEnumerable<Guid> GetChildrenIds()
+		{
+			return ElementModel.Children.Select(x => x.Id);
+		}
+
 		public IEnumerable<ElementModelViewModel> GetLeafEnumerator()
 		{
 			if (IsLeaf)
@@ -310,7 +302,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public void Dispose()
 		{
 			((IRelationalViewModel)this).SetParentViewModel(null);
-			//ElementModelSelectionService.Instance().RemoveModel(ElementModel.Id);
+			ElementModelLookUpService.Instance.RemoveModel(ElementModel.Id, this);
 		}
 	}
 }

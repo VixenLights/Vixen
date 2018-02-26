@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,7 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Catel.Windows.Input;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Adorners;
 using VixenModules.App.CustomPropEditor.ViewModels;
@@ -86,10 +86,34 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 typeof(PropDesigner));
 
 
-	    public static readonly DependencyProperty SelectedModelsProperty = DependencyProperty.Register(
-		    "SelectedModels", typeof(IList), typeof(PropDesigner), new PropertyMetadata(default(IList)));
+		public static readonly DependencyProperty SelectedModelsProperty = DependencyProperty.Register(
+		    "SelectedModels", typeof(IList), typeof(PropDesigner), new FrameworkPropertyMetadata(OnSelectedModelsChanged));
 
-	    public IList SelectedModels
+	    private static void OnSelectedModelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	    {
+		    var propDesigner = d as PropDesigner;
+		    if (propDesigner == null)
+			    return;
+
+		    var oldValue = e.OldValue as INotifyCollectionChanged;
+		    var newValue = e.NewValue as INotifyCollectionChanged;
+
+		    if (oldValue != null)
+		    {
+			    oldValue.CollectionChanged -= propDesigner.Selected_CollectionChanged;
+		    }
+		    if (newValue != null)
+		    {
+			    propDesigner.SelectedItems.Clear();
+			    foreach (var item in (IEnumerable)newValue)
+			    {
+				    propDesigner.SelectedItems.Add(item);
+			    }
+			    newValue.CollectionChanged += propDesigner.Selected_CollectionChanged;
+		    }
+	    }
+
+		public IList SelectedModels
 	    {
 		    get { return (IList) GetValue(SelectedModelsProperty); }
 		    set { SetValue(SelectedModelsProperty, value); }
@@ -186,8 +210,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 if (_propEditorViewModel.DrawingPanelViewModel.IsDrawing)
                 {
                     AddLightCommand.Execute(_originMouseStartPoint);
-					ClearSelections();
-                    //_propEditorViewModel.DrawingPanelViewModel.AddLightAt(_originMouseStartPoint);
+					//ClearSelections();
+                    
                 }
                 
                 _isSelecting = false;
@@ -341,14 +365,18 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
         private void ClearSelections()
         {
-            SelectedModels.Clear();
-            if (ItemsSource != null)
-            {
-                foreach (ISelectable lvm in ItemsSource)
-                {
-                    lvm.IsSelected = false;
-                }
-            }
+	        if (SelectedModels.Count>0)
+	        {
+		        SelectedModels.Clear();
+		        if (ItemsSource != null)
+		        {
+			        foreach (ISelectable lvm in ItemsSource)
+			        {
+				        lvm.IsSelected = false;
+			        }
+		        }
+			}
+            
         }
 
         private void UpdateSelection(Point startPoint, Point endPoint)
@@ -384,7 +412,12 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
         private void UpdateResizeAdorner()
         {
-            if (_dragging && !_isSelecting) return;
+			Console.Out.WriteLine($"dragging {_dragging} Selecting {_isSelecting}");
+
+	        if (IsDrawing) return;
+
+	        if (_dragging && !_isSelecting) return;
+			
             if (SelectedModels.Count > 1)
             {
                 Rect? bounds = GetSelectedContentBounds();

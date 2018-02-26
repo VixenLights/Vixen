@@ -187,7 +187,26 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public bool RemoveParent(ElementModel parent)
 	    {
-	        return Parents.Remove(parent);
+	        bool success = Parents.Remove(parent);
+		    parent.RemoveChild(this);
+		    if (!Parents.Any())
+		    {
+				//We are now orphaned and need to clean up
+			    if (IsLeaf)
+			    {
+					//We are at the bottom and just need to remove our lights
+					Lights.Clear();
+				}
+			    else
+			    {
+				    foreach (var child in Children)
+				    {
+					    child.RemoveParent(this);
+				    }
+			    }
+		    }
+
+		    return success;
 	    }
 
 	    public void AddParent(ElementModel parent)

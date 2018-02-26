@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -15,20 +16,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
     public class DrawingPanelViewModel : ViewModelBase
     {
 	    private readonly ElementTreeViewModel _elementTreeViewModel;
-        //private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
+        private readonly Dictionary<Guid, List<LightViewModel>> _elementModelMap;
 
-        //public DrawingPanelViewModel():this(new Prop())
-        //{
-            
-        //}
-
+        
         public DrawingPanelViewModel(ElementTreeViewModel elementTreeViewModel)
         {
 	        _elementTreeViewModel = elementTreeViewModel;
-            //_elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
+            _elementModelMap = new Dictionary<Guid, List<LightViewModel>>();
             LightNodes = new ObservableCollection<LightViewModel>();
-            Prop = elementTreeViewModel.Prop;
-           
+            
             TransformCommand = new RelayCommand<Transform>(Transform);
 
             AlignTopsCommand = new RelayCommand(AlignTops, CanExecuteAlignmentMethod);
@@ -41,10 +37,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
             DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
 
             SelectedItems = new ObservableCollection<LightViewModel>();
-
-            SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
+			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
             IsDrawing = true;
-        }
+	        Prop = elementTreeViewModel.Prop;
+		}
 
         private void SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -236,29 +232,35 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
         /// </summary>
         public static readonly PropertyData IsDrawingProperty = RegisterProperty("IsDrawing", typeof(bool));
 
-        #endregion
+		#endregion
 
-        #endregion Properties
+		#endregion Properties
 
-        internal void RefreshLightViewModels()
-        {
-            //_elementModelMap.Clear();
-            //LightNodes.Clear();
-            //foreach (var elementModel in PropModelServices.Instance().GetLeafNodes())
-            //{
-            //   LightNodes.AddRange(CreateLightViewModels(elementModel));
-            //}
+		internal void RefreshLightViewModels()
+		{
+			_elementModelMap.Clear();
 			LightNodes.Clear();
-			HashSet<LightViewModel> distinctLights = new HashSet<LightViewModel>();
-	        foreach (var elementModelViewModel in _elementTreeViewModel.RootNodesViewModels.First().GetLeafEnumerator())
-	        {
-		        distinctLights.AddRange(elementModelViewModel.LightViewModels);
-	        }
+			SelectedItems.Clear();
+			foreach (var elementModel in PropModelServices.Instance().GetLeafNodes())
+			{
+				//See if we already have a lvm list for this element.
+				if (!_elementModelMap.ContainsKey(elementModel.Id))
+				{
+					List<LightViewModel> lightViewModels = new List<LightViewModel>();
+					//Build the lvm for these lights
+					foreach (var elementModelLight in elementModel.Lights)
+					{
+						var lvm = new LightViewModel(elementModelLight);
+						lightViewModels.Add(lvm);
+					}
+					_elementModelMap.Add(elementModel.Id, lightViewModels);
+				}
+			}
 
-			LightNodes.AddRange(distinctLights);
-        }
-		
-        public void DeleteSelectedLights()
+			LightNodes.AddRange(_elementModelMap.Values.SelectMany(x => x.ToArray()));
+		}
+
+		public void DeleteSelectedLights()
         {
             PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
 			SelectedItems.Clear();
@@ -271,26 +273,63 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
             SelectedItems.Clear();
         }
 
-	    public void Deselect(IEnumerable<LightViewModel> lightViewModels)
+	    public void Deselect(IEnumerable<ElementModelViewModel> elementModels)
 	    {
-		    foreach (var lightViewModel in lightViewModels)
+		    foreach (var elementModel in elementModels)
 		    {
-			    lightViewModel.IsSelected = false;
-			    SelectedItems.Remove(lightViewModel);
+			    List<LightViewModel> lvmList;
+			    if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
+			    {
+				    lvmList.ForEach(l =>
+				    {
+					    l.IsSelected = false;
+					    SelectedItems.Remove(l);
+				    });
+			    }
 		    }
 	    }
 
-	    public void Select(IEnumerable<LightViewModel> lightViewModels)
+	    public void Select(IEnumerable<ElementModelViewModel> elementModels)
 	    {
-		    foreach (var lightViewModel in lightViewModels)
+		    foreach (var elementModel in elementModels)
 		    {
-			    if (!SelectedItems.Contains(lightViewModel))
+			    List<LightViewModel> lvmList;
+			    if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
 			    {
-				    lightViewModel.IsSelected = true;
-					SelectedItems.Add(lightViewModel);
+				    foreach (var lightViewModel in lvmList)
+				    {
+					    if (!lightViewModel.IsSelected)
+					    {
+						    lightViewModel.IsSelected = true;
+						    SelectedItems.Add(lightViewModel);
+					    }
+				    }
 			    }
+
 		    }
-		}
+	    }
+
+
+		//   public void Deselect(IEnumerable<LightViewModel> lightViewModels)
+		//   {
+		//    foreach (var lightViewModel in lightViewModels)
+		//    {
+		//	    lightViewModel.IsSelected = false;
+		//	    SelectedItems.Remove(lightViewModel);
+		//    }
+		//   }
+
+		//   public void Select(IEnumerable<LightViewModel> lightViewModels)
+		//   {
+		//    foreach (var lightViewModel in lightViewModels)
+		//    {
+		//	    if (!SelectedItems.Contains(lightViewModel))
+		//	    {
+		//		    lightViewModel.IsSelected = true;
+		//			SelectedItems.Add(lightViewModel);
+		//	    }
+		//    }
+		//}
 
 		public void Transform(Transform t)
         {

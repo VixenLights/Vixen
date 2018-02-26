@@ -81,43 +81,15 @@ namespace VixenModules.App.CustomPropEditor.Services
             }
         }
 
-        /// <summary>
-        /// Removes element models and cleans up thier parent / child references
-        /// </summary>
-        /// <param name="elementModels"></param>
-        public void RemoveElementModels(IEnumerable<ElementModel> elementModels)
-        {
-            //Remove the leaf nodes first.
-            foreach (var elementModel in elementModels.OrderByDescending(x => x.IsLeaf).ToList())
-            {
-	            //Clean up any lights
-				elementModel.Lights.Clear();
-
-				if (!elementModel.IsLeaf)
-                {
-                    //clear any children references
-                    foreach (var child in elementModel.Children.ToList())
-                    {
-                        RemoveChildFromParent(elementModel, child);
-                    }
-                }
-
-                //Remove from the parents
-                foreach (var parent in elementModel.Parents.ToList())
-                {
-                    RemoveChildFromParent(parent, elementModel);
-                }
-
-               
-                foreach (var elementModelLight in elementModel.Lights)
-                {
-                    _lightToModel.Remove(elementModelLight.Id);
-                }
-                
-                _models.Remove(elementModel.Id);
-            }
-        }
-
+	    public void RemoveFromParent(ElementModel model, ElementModel parent)
+	    {
+		    model.RemoveParent(parent);
+		    if (!model.Parents.Any())
+		    {
+			    _models.Remove(model.Id);
+		    }
+	    }
+    
         private void RemoveChildFromParent(ElementModel parent, ElementModel child)
         {
             Prop.RemoveFromParent(child, parent);
@@ -147,7 +119,7 @@ namespace VixenModules.App.CustomPropEditor.Services
                 size = em.LightSize;
             }
 
-            var light = CreateLight(p, size.Value);
+            var light = CreateLight(p, size.Value, em.Id);
             em.AddLight(light);
             _lightToModel.Add(light.Id, em);
 
@@ -172,7 +144,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 	    private void AddLightToTarget(Point p, ElementModel em)
 	    {
-		    var light = CreateLight(p, em.LightSize);
+		    var light = CreateLight(p, em.LightSize, em.Id);
 		    em.AddLight(light);
 		    _lightToModel.Add(light.Id, em);
 	    }
@@ -247,12 +219,12 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		public Prop Prop => _prop;
 
-        private Light CreateLight(Point p, double size)
-        {
-            return new Light(p, size);
-        }
+		private Light CreateLight(Point p, double size, Guid parentModelId)
+		{
+			return new Light(p, size, parentModelId);
+		}
 
-        public void DeselectAllModels()
+		public void DeselectAllModels()
         {
             //_models.Values.ForEach(m => m.IsSelected = false);
         }

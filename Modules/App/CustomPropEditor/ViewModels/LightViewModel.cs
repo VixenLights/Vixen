@@ -16,7 +16,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	        ((IRelationalViewModel)this).SetParentViewModel(parent);
 		}
 
-        public override string Title => "Light";
+	    public LightViewModel(Light ln)
+	    {
+		    Light = ln;
+
+	    }
+
+		public override string Title => "Light";
 
         #region LightNode model property
 
