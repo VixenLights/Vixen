@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -399,6 +399,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balls", "Modules\Effect\Balls\Balls.csproj", "{D6DFE715-3D3C-4178-B698-798DB0FD36DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Circles", "Modules\Effect\Circles\Circles.csproj", "{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LumaKey", "Modules\LayerCombiningFilter\LumaKey\LumaKey.csproj", "{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1887,6 +1889,20 @@ Global
 		{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}.Release|x64.Build.0 = Release|x64
 		{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}.Release|x86.ActiveCfg = Release|x86
 		{970A371C-B910-46AE-B9FC-4BF94F3C0EE8}.Release|x86.Build.0 = Release|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|x64.ActiveCfg = Debug|x64
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|x64.Build.0 = Debug|x64
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|x86.ActiveCfg = Debug|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Debug|x86.Build.0 = Debug|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|Any CPU.ActiveCfg = Release|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|Mixed Platforms.Build.0 = Release|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|x64.ActiveCfg = Release|x64
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|x64.Build.0 = Release|x64
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|x86.ActiveCfg = Release|x86
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2021,6 +2037,10 @@ Global
 		{36351875-49EF-43A3-A175-032673FDC9A4} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{D6DFE715-3D3C-4178-B698-798DB0FD36DB} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
 		{970A371C-B910-46AE-B9FC-4BF94F3C0EE8} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84BCA803-F054-475C-AC8E-7F492AEF3C69}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Everything.vsmdi
