@@ -45,36 +45,59 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 	    private void trkLowerLimit_Scroll(object sender, EventArgs e)
 	    {
-	        if (trkLowerLimit.Value < UpperLimit)  //why isn't this working?
+	        if (trkLowerLimit.Value < UpperLimit)
 	        {
 	            LowerLimit = trkLowerLimit.Value;
-	            numLowerLimit.Text = Convert.ToString(LowerLimit);
             }
 	        else
 	        {
 	            LowerLimit = UpperLimit - 1;
-	            numLowerLimit.Text = Convert.ToString(LowerLimit);
-            }	        
+	            trkLowerLimit.Value = LowerLimit;
+	        }
+	        numLowerLimit.Text = Convert.ToString(LowerLimit);
         }
 
         private void trkUpperLimit_Scroll(object sender, EventArgs e)
         {
-            //add validation 
-            UpperLimit = trkUpperLimit.Value;
+            if (trkUpperLimit.Value > LowerLimit)
+            {
+                UpperLimit = trkUpperLimit.Value;
+            }
+            else
+            {
+                UpperLimit = LowerLimit + 1;
+                trkUpperLimit.Value = UpperLimit;
+            }
             numUpperLimit.Text = Convert.ToString(UpperLimit);          
         }
 
 	    private void numLowerLimit_TextChanged(object sender, EventArgs e)
 	    {
-            //add validation 
-            LowerLimit = numLowerLimit.IntValue;
+            //TEST validation 
+	        if (Convert.ToInt32(numLowerLimit.Text) < UpperLimit)
+	        {
+	            LowerLimit = numLowerLimit.IntValue;
+	        }
+	        else
+	        {
+	            LowerLimit = UpperLimit - 1;
+	            numLowerLimit.Text = Convert.ToString(LowerLimit);
+	        }
 	        trkLowerLimit.Value = LowerLimit;
 	    }
 
         private void numUpperLimit_TextChanged(object sender, EventArgs e)
         {
-            //add validation 
-            UpperLimit = numUpperLimit.IntValue;
+            //TEST validation 
+            if(Convert.ToInt32(numUpperLimit.Text) > LowerLimit)
+            {
+                UpperLimit = numUpperLimit.IntValue;
+            }
+            else
+            {
+                UpperLimit = LowerLimit + 1;
+                numUpperLimit.Text = Convert.ToString(UpperLimit);
+            }
             trkUpperLimit.Value = UpperLimit;
         }
     }
