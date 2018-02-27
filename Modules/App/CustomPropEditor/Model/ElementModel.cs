@@ -101,7 +101,22 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#region Element Type
 
-		public ElementType ElementType => LightCount > 1 ? ElementType.String : ElementType.Node;
+		public ElementType ElementType
+		{
+			get
+			{
+				if (LightCount > 1)
+				{
+					return ElementType.String;
+				}else if (LightCount == 1)
+				{
+					return ElementType.Node;
+				}
+
+				return ElementType.Group;
+
+			}
+		} 
 
 		#endregion
 
@@ -133,6 +148,12 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#endregion
 
+		#region IsGroupNode
+
+		public bool IsGroupNode => !Lights.Any();
+
+		#endregion
+
 		#region Children
 
 		public ObservableCollection<ElementModel> Children
@@ -143,6 +164,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 				if (Equals(value, _children)) return;
 				_children = value;
 				OnPropertyChanged(nameof(Children));
+				OnPropertyChanged(nameof(IsLeaf));
+				OnPropertyChanged(nameof(IsGroupNode));
 			}
 		}
 
@@ -175,6 +198,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(Lights));
 				OnPropertyChanged(nameof(ElementType));
 				OnPropertyChanged(nameof(LightCount));
+				OnPropertyChanged(nameof(IsGroupNode));
 			}
 		}
 
@@ -246,6 +270,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 			Lights.ForEach(x => x.Size = LightSize);
 		}
 
+		public IEnumerable<ElementModel> GetNodeEnumerator()
+		{
+			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNodeEnumerator()));
+		}
+
 		public IEnumerable<ElementModel> GetLeafEnumerator()
 		{
 			if (IsLeaf)
@@ -256,9 +285,14 @@ namespace VixenModules.App.CustomPropEditor.Model
 			return Children.SelectMany(x => x.GetLeafEnumerator());
 		}
 
-		public IEnumerable<ElementModel> GetChildEnumerator()
+		public IEnumerable<ElementModel> GetNonLeafEnumerator()
 		{
-			return Children.SelectMany(x => x.GetChildEnumerator());
+			if (IsLeaf)
+			{
+				return Enumerable.Empty<ElementModel>();
+			}
+			
+			return (new[] { this }).Concat(Children.SelectMany(x => x.GetNonLeafEnumerator()));
 		}
 
 		public bool Equals(ElementModel x, ElementModel y)

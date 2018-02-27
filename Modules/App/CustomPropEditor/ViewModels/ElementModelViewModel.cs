@@ -108,7 +108,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[DisplayName("Light Count")]
 		[PropertyOrder(3)]
-		public int LightCount => ElementModel.Lights.Count();
+		[ViewModelToModel("ElementModel")]
+		public int LightCount
+		{
+			get { return GetValue<int>(LightCountProperty); }
+			set { SetValue(LightCountProperty, value); }
+		}
 
 		/// <summary>
 		/// LightCount property data.
@@ -262,12 +267,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[Browsable(false)]
 		public bool IsLeaf => ElementModel.IsLeaf;
 
-		/// <summary>
-		/// IsLeaf property data.
-		/// </summary>
-		public static readonly PropertyData IsLeafProperty = RegisterProperty("IsLeaf", typeof(bool), null);
-
 		#endregion
+
+
 
 		#region Overrides
 

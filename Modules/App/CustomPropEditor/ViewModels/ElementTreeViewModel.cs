@@ -131,7 +131,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-
+		#region Commands
 
 		#region CreateGroup command
 
@@ -175,6 +175,36 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region MoveToGroup command
+
+		private Command _moveToGroupCommand;
+
+		/// <summary>
+		/// Gets the MoveToGroup command.
+		/// </summary>
+		public Command MoveToGroupCommand
+		{
+			get { return _moveToGroupCommand ?? (_moveToGroupCommand = new Command(MoveToGroup, CanMoveToGroup)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the MoveToGroup command is executed.
+		/// </summary>
+		private void MoveToGroup()
+		{
+			// TODO: Handle command logic here
+		}
+
+		/// <summary>
+		/// Method to check whether the MoveToGroup command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanMoveToGroup()
+		{
+			return false;
+		}
+
+		#endregion
 
 		#region Rename command
 
@@ -203,6 +233,45 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		#endregion
+
+		#region CreateNode command
+
+		private Command _createNodeCommand;
+
+		/// <summary>
+		/// Gets the CreateNode command.
+		/// </summary>
+		public Command CreateNodeCommand
+		{
+			get { return _createNodeCommand ?? (_createNodeCommand = new Command(CreateNode, CanCreateNode)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the CreateNode command is executed.
+		/// </summary>
+		private void CreateNode()
+		{
+			MessageBoxService mbs = new MessageBoxService();
+			var name = mbs.GetUserInput("Please enter the name for the new node.", "New Node");
+			PropModelServices.Instance().CreateNode(name, SelectedItem.ElementModel);
+			//Ensure parent is expanded
+			SelectedItem.IsExpanded = true;
+		}
+
+		/// <summary>
+		/// Method to check whether the CreateNode command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanCreateNode()
+		{
+			return SelectedItems.Count == 1 && SelectedItem.ElementModel.IsGroupNode && SelectedItem.Children.All(c => c.IsGroupNode);
+		}
+
+		#endregion
+
+		#endregion
+
+
 
 		public void DeselectAll()
 		{

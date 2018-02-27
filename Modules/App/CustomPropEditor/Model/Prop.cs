@@ -127,7 +127,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public IEnumerable<ElementModel> GetAll()
         {
-            var list = _rootNode.GetChildEnumerator().ToList();
+            var list = _rootNode.GetNodeEnumerator().ToList();
             list.Add(RootNode);
             return list;
         }

@@ -111,7 +111,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 				order = GetNextOrder();
 			}
 
-			ElementModel em = new ElementModel(Uniquify($"{target.Name}-{order}"), order.Value, target);
+			ElementModel em = new ElementModel(Uniquify($"{target.Name} - {order}"), order.Value, target);
 			target.AddChild(em);
 			_models.Add(em.Id, em);
 			if (size == null)
@@ -133,13 +133,28 @@ namespace VixenModules.App.CustomPropEditor.Services
 			{
 				target = _prop.RootNode;
 			}
-			else if (target.IsLeaf && target.Parents.Any())
+			else if (!target.IsGroupNode && target.Parents.Any())
 			{
 				AddLightToTarget(p, target);
 				return target;
 			}
 
+			if (target.IsGroupNode && target.Children.Any(x => x.IsGroupNode))
+			{
+				target = FindNearestLeafGroupNode(target);
+			}
+
+			if (target == null)
+			{
+				return null;
+			}
+
 			return AddLightNode(target, p);
+		}
+
+		private ElementModel FindNearestLeafGroupNode(ElementModel element)
+		{
+			return element.GetNodeEnumerator().First(x => x.IsGroupNode && x.Children.All(c => !c.IsGroupNode));
 		}
 
 		private void AddLightToTarget(Point p, ElementModel em)

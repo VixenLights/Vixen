@@ -7,6 +7,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    [Description("Single Node")]
 		Node,
 	    [Description("Multiple Nodes")]
-		String
-    }
+		String,
+	    [Description("Group")]
+	    Group
+
+	}
 }

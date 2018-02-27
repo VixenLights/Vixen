@@ -240,16 +240,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			var model = PropModelServices.Instance().AddLight(target?.ElementModel, p);
 
+			if (model == null) return;
+
 			DrawingPanelViewModel.RefreshLightViewModels();
 
-			if (model != null && model == target?.ElementModel)
+			if (model == target?.ElementModel)
+			{
+				ElementTreeViewModel.SelectModels(new []{target});
+			}
+			else 
 			{
 				var vms = ElementModelLookUpService.Instance.GetModels(model.Id);
-				ElementTreeViewModel.SelectModels(vms);
-			}
-			else if (target != null)
-			{
-				ElementTreeViewModel.SelectModels(new[] { target });
+				var viewModel = vms.First();
+				var parent = viewModel.ParentViewModel as ElementModelViewModel;
+				if (parent != null)
+				{
+					ElementTreeViewModel.SelectModels(new[] { parent });
+					parent.IsExpanded = true;
+				}
+
+				
 			}
 		}
 
