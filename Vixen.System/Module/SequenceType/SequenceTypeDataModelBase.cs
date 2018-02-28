@@ -139,7 +139,7 @@ namespace Vixen.Module.SequenceType
 
 			if (SequenceLayers != null)
 			{
-				var layerMixingFilterModels = new ModuleLocalDataSet { DataModels = _dataModels };
+				var layerMixingFilterModels = new ModuleLocalDataSet { DataModels = _layerMixingFilterDataModels };
 				//Bring in the layers
 				foreach (var layer in SequenceLayers.Layers)
 				{

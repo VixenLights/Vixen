@@ -8,7 +8,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 {
 	public partial class LumaKeySetup : BaseForm
 	{
-		public LumaKeySetup(bool excludeZeroValues) //can i pass the whole data object here instead of the individual members?
+		public LumaKeySetup(bool excludeZeroValues,int lowerLimit, int upperLimit) //can i pass the whole data object here instead of the individual members?
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
@@ -16,8 +16,9 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			ThemeUpdateControls.UpdateControls(this);
 			ExcludeZeroValuesValues = excludeZeroValues;
 			chkExcludeZero.Checked = excludeZeroValues;
-		    LowerLimit = 0;
-		    UpperLimit = 100;
+		    LowerLimit = lowerLimit;
+		    UpperLimit = upperLimit;
+		    UpdateLimitControls();
 		}
 
 		public bool ExcludeZeroValuesValues { get; private set; }
@@ -59,7 +60,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
         private void trkUpperLimit_Scroll(object sender, EventArgs e)
         {
-            if (trkUpperLimit.Value > LowerLimit)
+            if (trkUpperLimit.Value > LowerLimit )
             {
                 UpperLimit = trkUpperLimit.Value;
             }
@@ -71,10 +72,9 @@ namespace VixenModules.LayerMixingFilter.LumaKey
             numUpperLimit.Text = Convert.ToString(UpperLimit);          
         }
 
-	    private void numLowerLimit_TextChanged(object sender, EventArgs e)
+	    private void numLowerLimit_LostFocus(object sender, EventArgs e)
 	    {
-            //TEST validation 
-	        if (Convert.ToInt32(numLowerLimit.Text) < UpperLimit)
+	        if ( (numLowerLimit.IntValue < UpperLimit) && numLowerLimit.IntValue >= 0)
 	        {
 	            LowerLimit = numLowerLimit.IntValue;
 	        }
@@ -86,19 +86,26 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 	        trkLowerLimit.Value = LowerLimit;
 	    }
 
-        private void numUpperLimit_TextChanged(object sender, EventArgs e)
-        {
-            //TEST validation 
-            if(Convert.ToInt32(numUpperLimit.Text) > LowerLimit)
-            {
-                UpperLimit = numUpperLimit.IntValue;
-            }
-            else
-            {
-                UpperLimit = LowerLimit + 1;
-                numUpperLimit.Text = Convert.ToString(UpperLimit);
-            }
-            trkUpperLimit.Value = UpperLimit;
+	    private void numUpperLimit_LostFocus(object sender, EventArgs e)
+	    {
+	        if (numUpperLimit.IntValue > LowerLimit && numUpperLimit.IntValue <= 100 )
+	        {
+	            UpperLimit = numUpperLimit.IntValue;
+	        }
+	        else
+	        {
+	            UpperLimit = LowerLimit + 1;
+	            numUpperLimit.Text = Convert.ToString(UpperLimit);
+	        }
+	        trkUpperLimit.Value = UpperLimit;
+	    }
+
+	    private void UpdateLimitControls()
+	    {
+	        trkLowerLimit.Value = LowerLimit;
+	        trkUpperLimit.Value = UpperLimit;
+	        numLowerLimit.Text = Convert.ToString(LowerLimit);
+	        numUpperLimit.Text = Convert.ToString(UpperLimit);
         }
     }
 }

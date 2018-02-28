@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
@@ -13,21 +14,23 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-			if (highLayerValue.Intensity > 0 || !_data.ExcludeZeroValues)
+		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
+		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
+            if (lowLayerValue.Intensity >= lowerLimit && lowLayerValue.Intensity <= upperLimit /*|| !_data.ExcludeZeroValues*/)
 			{
 				return highLayerValue;
-			}
-			
+			}	
 			return lowLayerValue;
 		}
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-			if (HSV.VFromRgb(highLayerColor) > 0 || !_data.ExcludeZeroValues)
+		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
+		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
+            if (HSV.VFromRgb(lowLayerColor) >= lowerLimit && HSV.VFromRgb(lowLayerColor) <= upperLimit /*|| !_data.ExcludeZeroValues*/)
 			{
 				return highLayerColor;
-			}
-			
+			}			
 			return lowLayerColor;
 		}
 
@@ -47,17 +50,14 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override bool Setup()
 		{
-			using (LumaKeySetup setup = new LumaKeySetup(_data.ExcludeZeroValues))
+			using (var setup = new LumaKeySetup(_data.ExcludeZeroValues,_data.LowerLimit,_data.UpperLimit))
 			{
-				if (setup.ShowDialog() == DialogResult.OK)
-				{
-					_data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
-					return true;
-				}
-			}
-			return false;
+			    if (setup.ShowDialog() != DialogResult.OK) return false;
+			    _data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
+			    _data.LowerLimit = setup.LowerLimit;
+			    _data.UpperLimit = setup.UpperLimit;
+			    return true;
+			}			
 		}
-	}
-
-	
+	}	
 }

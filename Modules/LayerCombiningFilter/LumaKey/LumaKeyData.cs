@@ -8,15 +8,19 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		public LumaKeyData()
 		{
 			ExcludeZeroValues = true;
-		    LowerLimit = 0;  //is this where I initialize the default values for a new instance?
+		    LowerLimit = 0;
 		    UpperLimit = 100;
 		}
 
 		public override IModuleDataModel Clone()
 		{
-            //**** What does thos do?  how to include other vars? {ExcludeZeroValues = ExcludeZeroValues}
-            LumaKeyData newInstance = new LumaKeyData {ExcludeZeroValues = ExcludeZeroValues};
-			return newInstance;
+		    var newInstance = new LumaKeyData
+		    {
+		        ExcludeZeroValues = ExcludeZeroValues,
+		        LowerLimit = LowerLimit,
+		        UpperLimit = UpperLimit
+		    };
+		    return newInstance;
 		}
 
 		[DataMember]
