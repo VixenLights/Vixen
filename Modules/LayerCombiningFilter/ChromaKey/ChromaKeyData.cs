@@ -8,22 +8,27 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	{
 		public ChromaKeyData()
 		{
+			ExcludeZeroValues = true;
 		    LowerLimit = 0;
 		    UpperLimit = 100;
             KeyColor = Color.FromArgb(0,255,0);
-		    HueTolerance = 5; 
-		    SaturationTolerance = HueTolerance/100; 
 		}
 
 		public override IModuleDataModel Clone()
 		{
 		    var newInstance = new ChromaKeyData
 		    {
-		        KeyColor = KeyColor, LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
-		        HueTolerance = HueTolerance, SaturationTolerance = SaturationTolerance
+		        ExcludeZeroValues = ExcludeZeroValues,
+		        LowerLimit = LowerLimit,
+		        UpperLimit = UpperLimit                
 		    };
+		    newInstance.KeyColor = new Color();  //this doesn't work like Jeff's Example shows
+		    newInstance.KeyColor = KeyColor;
             return newInstance;
 		}
+
+		[DataMember]
+		public bool ExcludeZeroValues { get; set; }
 
         [DataMember]
 		public int LowerLimit { get; set; }
@@ -33,11 +38,5 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
         [DataMember]
         public Color KeyColor { get; set; }
-
-	    [DataMember]
-	    public float HueTolerance { get; set; }
-
-	    [DataMember]
-	    public float SaturationTolerance { get; set; }
     }
 }

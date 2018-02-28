@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Security.AccessControl;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
@@ -10,27 +9,30 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 {
 	public partial class ChromaKeySetup : BaseForm
 	{
-	    public ChromaKeySetup(ChromaKeyData data)
-	    {
-	        InitializeComponent();
-	        ForeColor = ThemeColorTable.ForeColor;
-	        BackColor = ThemeColorTable.BackgroundColor;
-	        ThemeUpdateControls.UpdateControls(this);
-	        LowerLimit = data.LowerLimit;
-	        UpperLimit = data.UpperLimit;
-	        UpdateLimitControls();
-	        colorPanel1.Color = data.KeyColor;
-	        HueTolerance = data.HueTolerance;
-	        trkHueTolerance.Value = Convert.ToInt32(data.HueTolerance);
-	        SaturationTolerance = data.SaturationTolerance;
-	        trkSaturationTolerance.Value = Convert.ToInt32(data.SaturationTolerance*100);
-	    }
+		public ChromaKeySetup(bool excludeZeroValues,int lowerLimit, int upperLimit, Color keyColor)
+		{
+			InitializeComponent();
+			ForeColor = ThemeColorTable.ForeColor;
+			BackColor = ThemeColorTable.BackgroundColor;
+			ThemeUpdateControls.UpdateControls(this);
+			ExcludeZeroValuesValues = excludeZeroValues;
+			chkExcludeZero.Checked = excludeZeroValues;
+		    LowerLimit = lowerLimit;
+		    UpperLimit = upperLimit;
+		    UpdateLimitControls();
+		    colorPanel1.Color = keyColor;
+		}
+
+		public bool ExcludeZeroValuesValues { get; private set; }
 
         public int LowerLimit { get; private set; }
 	    public int UpperLimit { get; private set; }
         public Color KeyColor { get; private set; }
-        public float HueTolerance { get; private set; }
-        public float SaturationTolerance { get; private set; }
+
+        private void chkExcludeZero_CheckedChanged(object sender, EventArgs e)
+		{
+			ExcludeZeroValuesValues = chkExcludeZero.Checked;
+		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
@@ -56,12 +58,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	            LowerLimit = UpperLimit - 1;
 	            trkLowerLimit.Value = LowerLimit;
 	        }
-	        toolTip.SetToolTip(trkLowerLimit, trkLowerLimit.Value.ToString());
 	        numLowerLimit.Text = Convert.ToString(LowerLimit);
         }
 
         private void trkUpperLimit_Scroll(object sender, EventArgs e)
-        {            
+        {
             if (trkUpperLimit.Value > LowerLimit )
             {
                 UpperLimit = trkUpperLimit.Value;
@@ -71,7 +72,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
                 UpperLimit = LowerLimit + 1;
                 trkUpperLimit.Value = UpperLimit;
             }
-            toolTip.SetToolTip(trkUpperLimit, trkUpperLimit.Value.ToString());
             numUpperLimit.Text = Convert.ToString(UpperLimit);          
         }
 
@@ -111,22 +111,14 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        numUpperLimit.Text = Convert.ToString(UpperLimit);
         }
 
+        private void colorPanel1_Load(object sender, EventArgs e)
+        {
+
+        }
+
 	    private void colorPanel1_ColorChanged(object sender, EventArgs e)
 	    {
 	        KeyColor = colorPanel1.Color;
-	        toolTip.SetToolTip(colorPanel1, "Click to Select the Key Color");
-	    }
-
-	    private void trkHueTolerance_Scroll(object sender, EventArgs e)
-	    {
-	        HueTolerance = trkHueTolerance.Value; //add in scaling to 180
-	        toolTip.SetToolTip(trkHueTolerance, trkHueTolerance.Value.ToString());
-	    }
-	    
-	    private void trkSaturationTolerance_Scroll(object sender, EventArgs e)
-	    {
-	        SaturationTolerance = trkHueTolerance.Value / 100;
-	        toolTip.SetToolTip(trkSaturationTolerance, trkSaturationTolerance.Value.ToString());
 	    }
     }
 }
