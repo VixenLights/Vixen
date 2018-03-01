@@ -27,7 +27,10 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		{
 		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
 		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
-            if (HSV.VFromRgb(lowLayerColor) >= lowerLimit && HSV.VFromRgb(lowLayerColor) <= upperLimit /*|| !_data.ExcludeZeroValues*/)
+            if (HSV.VFromRgb(lowLayerColor) >= lowerLimit 
+                && HSV.VFromRgb(lowLayerColor) <= upperLimit
+                && lowLayerColor.GetHue() == _data.KeyColor.GetHue()/360
+                && lowLayerColor.GetSaturation() == _data.KeyColor.GetSaturation() )
 			{
 				return highLayerColor;
 			}			
