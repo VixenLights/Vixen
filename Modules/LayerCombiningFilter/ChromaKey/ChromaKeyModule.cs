@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Net.Configuration;
 using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
@@ -27,10 +28,16 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		{
 		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
 		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
+            //for debugging
+            int keyColor = Convert.ToInt32(_data.KeyColor.GetHue() * 360);
+		    int lowColor = Convert.ToInt32(lowLayerColor.GetHue() * 360);
+		    string msg = Convert.ToString(keyColor) + " " + Convert.ToString(lowLayerColor.GetHue());
+            //var result = MessageBox.Show(msg, "ChromaKeyDebug");
+
             if (HSV.VFromRgb(lowLayerColor) >= lowerLimit 
                 && HSV.VFromRgb(lowLayerColor) <= upperLimit
-                && lowLayerColor.GetHue() == _data.KeyColor.GetHue()/360
-                && lowLayerColor.GetSaturation() == _data.KeyColor.GetSaturation() )
+                && lowLayerColor.GetHue() == _data.KeyColor.GetHue()
+                /*&& lowLayerColor.GetSaturation() == _data.KeyColor.GetSaturation() */)
 			{
 				return highLayerColor;
 			}			
@@ -40,10 +47,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
-			set
-			{
-				_data = (ChromaKeyData)value;
-			}
+			set { _data = (ChromaKeyData)value; }
 		}
 
 		public override bool HasSetup
