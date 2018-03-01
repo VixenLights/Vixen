@@ -20,10 +20,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		    {
 		        ExcludeZeroValues = ExcludeZeroValues,
 		        LowerLimit = LowerLimit,
-		        UpperLimit = UpperLimit                
+		        UpperLimit = UpperLimit, 
+		        KeyColor = KeyColor                
 		    };
-		    newInstance.KeyColor = new Color();  //this doesn't work like Jeff's Example shows
-		    newInstance.KeyColor = KeyColor;
+		    //newInstance.KeyColor = new Color();  //this doesn't work like Jeff's Example shows
+		    //newInstance.KeyColor = KeyColor;
             return newInstance;
 		}
 
