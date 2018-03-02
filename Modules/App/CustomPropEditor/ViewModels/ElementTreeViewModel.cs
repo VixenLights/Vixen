@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Forms;
 using Catel.Data;
 using Catel.MVVM;
+using Catel.Services;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
@@ -150,17 +152,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void CreateGroup()
 		{
-			MessageBoxService mbs = new MessageBoxService();
-
-			var name = string.Empty;
-
-			while (string.IsNullOrEmpty(name))
+			var result = RequestNewGroupName(String.Empty);
+			if (result.Result == MessageResult.OK)
 			{
-				name = mbs.GetUserInput("Please enter the group name.", "Create Group");
+				PropModelServices.Instance().CreateGroupForElementModels(result.Response, SelectedItems.Select(x => x.ElementModel));
 			}
-
-			name = PropModelServices.Instance().Uniquify(name);
-			PropModelServices.Instance().CreateGroupForElementModels(name, SelectedItems.Select(x => x.ElementModel));
 		}
 
 		/// <summary>
@@ -169,9 +165,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCreateGroup()
 		{
-			return SelectedItems.Any() && SelectedItems.Select(x => x.ElementModel).All(x => x != Prop.RootNode);
+			return CanGroup();
 		}
-
 
 		#endregion
 
@@ -192,7 +187,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void MoveToGroup()
 		{
-			// TODO: Handle command logic here
+			var result = RequestNewGroupName(String.Empty);
+			if (result.Result == MessageResult.OK)
+			{
+				PropModelServices.Instance().CreateGroupForElementModels(result.Response, SelectedItems.Select(x => x.ElementModel), true);
+			}
 		}
 
 		/// <summary>
@@ -201,7 +200,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanMoveToGroup()
 		{
-			return false;
+			return CanGroup();
 		}
 
 		#endregion
@@ -226,9 +225,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (SelectedItems.Count == 1)
 			{
 				MessageBoxService mbs = new MessageBoxService();
-				var newName = mbs.GetUserInput("Please enter the new name.", "Rename");
-
-				SelectedItems.First().Name = newName;
+				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.Name);
+				if (result.Result == MessageResult.OK)
+				{
+					SelectedItems.First().Name = result.Response;
+				}
 			}
 		}
 
@@ -251,11 +252,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void CreateNode()
 		{
-			MessageBoxService mbs = new MessageBoxService();
-			var name = mbs.GetUserInput("Please enter the name for the new node.", "New Node");
-			PropModelServices.Instance().CreateNode(name, SelectedItem.ElementModel);
-			//Ensure parent is expanded
-			SelectedItem.IsExpanded = true;
+			var result = RequestNewGroupName(PropModelServices.Instance().Uniquify(SelectedItem.Name));
+
+			if (result.Result == MessageResult.OK)
+			{
+				PropModelServices.Instance().CreateNode(result.Response, SelectedItem.ElementModel);
+				//Ensure parent is expanded
+				SelectedItem.IsExpanded = true;
+			}
+			
 		}
 
 		/// <summary>
@@ -298,6 +303,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				elementModelViewModel.IsSelected = false;
 			}
+		}
+
+		private bool CanGroup()
+		{
+			var type = SelectedItems.FirstOrDefault()?.ElementType;
+			return SelectedItems.Any() &&
+			       SelectedItems.Select(x => x.ElementModel).All(x => x != Prop.RootNode && x.ElementType == type);
+		}
+
+		private static MessageBoxResponse RequestNewGroupName(string suggestedName)
+		{
+			MessageBoxService mbs = new MessageBoxService();
+			return mbs.GetUserInput("Please enter the group name.", "Create Group", suggestedName);
 		}
 
 		public void Dispose()

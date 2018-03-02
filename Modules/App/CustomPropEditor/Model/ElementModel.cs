@@ -218,7 +218,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 				}
 				else
 				{
-					foreach (var child in Children)
+					foreach (var child in Children.ToList())
 					{
 						child.RemoveParent(this);
 					}

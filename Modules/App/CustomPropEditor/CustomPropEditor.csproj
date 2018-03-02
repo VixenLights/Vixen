@@ -130,6 +130,7 @@
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
     <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Model\ElementType.cs" />
+    <Compile Include="Services\MessageBoxResponse.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="Services\ElementModelLookUpService.cs" />

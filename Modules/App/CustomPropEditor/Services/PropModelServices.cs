@@ -71,13 +71,25 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return em;
 		}
 
-		public void CreateGroupForElementModels(string name, IEnumerable<ElementModel> elementModels)
+		public void CreateGroupForElementModels(string name, IEnumerable<ElementModel> elementModels, bool moveElements=false)
 		{
 			var em = CreateNode(name);
 			foreach (var elementModel in elementModels)
 			{
 				em.Children.Add(elementModel);
 				elementModel.Parents.Add(em);
+
+				if (moveElements)
+				{
+					var parents = elementModel.Parents.Except(new[] {em}).ToList();
+					foreach (var parent in parents)
+					{
+						parent.RemoveChild(elementModel);
+						elementModel.RemoveParent(parent);
+					}
+				}
+				
+				
 			}
 		}
 

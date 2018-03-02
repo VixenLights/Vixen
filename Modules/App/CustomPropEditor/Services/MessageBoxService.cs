@@ -1,19 +1,22 @@
 ﻿using System.Windows.Forms;
+using Catel;
+using Catel.Services;
 using Common.Controls;
 
 namespace VixenModules.App.CustomPropEditor.Services
 {
 	public class MessageBoxService
 	{
-		public string GetUserInput(string question, string title)
+		public MessageBoxResponse GetUserInput(string question, string title, string defaultText)
 		{
-			TextDialog dialog = new TextDialog(question, title);
+			TextDialog dialog = new TextDialog(question, title, defaultText, true);
 			var input = string.Empty;
 
 			var validInput = false;
-			while (!validInput)
+			DialogResult result;
+			do
 			{
-				var result = dialog.ShowDialog();
+				result = dialog.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					if (dialog.Response == string.Empty)
@@ -26,8 +29,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 				validInput = true;
 			}
+			while (!validInput && result != DialogResult.OK) ;
 
-			return input;
+			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(result), input);
 		}
+
 	}
 }

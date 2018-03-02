@@ -229,9 +229,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void NewProp()
 		{
 			MessageBoxService mbs = new MessageBoxService();
-			var name = mbs.GetUserInput("Please enter the model name.", "Create Model");
-
-			Prop = PropModelServices.Instance().CreateProp(name);
+			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "Prop 1");
+			if (result.Result == MessageResult.OK)
+			{
+				Prop = PropModelServices.Instance().CreateProp(result.Response);
+			}
 		}
 
 		public void AddLightAt(Point p)
