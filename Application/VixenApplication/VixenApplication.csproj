@@ -97,9 +97,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ColorGradients">
-      <HintPath>..\..\Modules\App\ColorGradients\obj\x86\Release\ColorGradients.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\Common\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
