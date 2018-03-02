@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -43,42 +44,61 @@ namespace VixenApplication
 			Text = " " + _currentVersionType + " " + currentVersion + " Installed"; //Add Installed version and type to the Form Title
 		}
 
-		private void CheckForUpdates_Load(object sender, EventArgs e)
+		private async void CheckForUpdates_Load(object sender, EventArgs e)
 		{
-			PopulateChangeLog(); //Add relevant Tickets and Descriptions to the TextBox.
+			//display a message to the user that we are doing stuff
+			labelCurrentVersion.Text = @"Checking for updates, please wait.";
+			linkLabelVixenDownLoadPage.Text = @"www.vixenlights.com/downloads/vixen-3-downloads/";
+			
+			//Turn on the wait cursor while we do stuff
+			Cursor = Cursors.WaitCursor;
 
+			await PopulateChangeLog(); //Add relevant Tickets and Descriptions to the TextBox.
+			
 			if (_newVersionAvailable)
 			{
-				labelCurrentVersion.Text = "Vixen " + _currentVersionType + " " + _latestVersion + " is now available for Download at";
+				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _latestVersion + " is now available for download.";
+				textBoxReleaseNotes.Visible = true;
+				labelHeading.Visible = true;
+				lblChangeLog.Visible = true;
 			}
 			else
 			{
-				labelCurrentVersion.Text = "Vixen " + _currentVersionType + " " + _currentVersion + " is the latest " + _currentVersionType;
-				labelHeading.Text = "You have the latest " + _currentVersionType + " installed!";
+				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _currentVersion + " is the latest " + _currentVersionType;
+				labelHeading.Text = @"You have the latest " + _currentVersionType + " installed!";
 				textBoxReleaseNotes.Text = "";
 			}
-			linkLabelVixenDownLoadPage.Text = "www.vixenlights.com/downloads/vixen-3-downloads/";
+
+			//Set the cursor back
+			Cursor = Cursors.Arrow;
+
 		}
 
-		private void PopulateChangeLog()
+		private async Task PopulateChangeLog()
 		{
 			try
 			{
-				using (WebClient wc = new WebClient())
-				{
+				
 					if (_currentVersionType == "Build")
 					{
-						string allBuildResults =
-							wc.DownloadString(
-								"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild ORDER BY Key&startAt=0&maxResults=1000");
-						dynamic allBuildArray = JObject.Parse(allBuildResults);
-
-						foreach (var build in allBuildArray.issues)
+						using (WebClient wc = new WebClient())
 						{
-							if (build.fields.customfield_10112 > _currentVersion)
+						    //Run the web call as an asyc call to prevent locking the UI
+							//While this occurs, the control will be returned to the caller as this runs in a background thread
+							string allBuildResults =
+								await wc.DownloadStringTaskAsync(
+									"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild ORDER BY Key&startAt=0&maxResults=1000");
+
+							//Execution will resume here after the call is complete
+							dynamic allBuildArray = JObject.Parse(allBuildResults);
+
+							foreach (var build in allBuildArray.issues)
 							{
-								textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n";
-								_newVersionAvailable = true;
+								if (build.fields.customfield_10112 > _currentVersion)
+								{
+									textBoxReleaseNotes.Text += "    * [" + build.key + "] -  " + build.fields.summary + "\r\n";
+									_newVersionAvailable = true;
+								}
 							}
 						}
 					}
@@ -86,8 +106,12 @@ namespace VixenApplication
 					{
 						List<string> releaseVersionNames = new List<string>();
 						//Get the release date of the installed Version
+						HttpClient wc = new HttpClient();
+						//More async stuff here as above. However we are going to use an HttpClient here instead as it 
+						//will allow us to make more than one call at a time whereas the WebClient will not
 						string getReleaseVersion =
-							wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+							await wc.GetStringAsync(
+								"http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
 						//Query returns an array of released versions
 						dynamic releaseVersions = JArray.Parse(getReleaseVersion);
 						DateTime currentReleaseDate = new DateTime();
@@ -111,30 +135,44 @@ namespace VixenApplication
 								}
 							}
 						}
+
 						int i = 0;
 						releaseVersionNames.Reverse();
+					
+					    //We are going to create a list to hold all of our parallel tasks that we spin up
+						Dictionary<string, Task<string>> releaseNotesResponses = new Dictionary<string, Task<string>>();
 
-
-						//This for loop needs to be multithreading. The way it is now works but takes time.
-						//I have tried parellal.foreach with no luck.
-						//I have tried to use lists and arrays to  store the data instead of going straight to the textbox
-						//then after the parellel add to textbox
-
-
+						//loop over our versions and fire off some async tasks to do them in the background
 						foreach (var releaseVersionName in releaseVersionNames)
 						{
-							textBoxReleaseNotes.Text += "\r\nVersion:" + releaseVersionName + "\r\n\r\n";
-							//Grab all Closed Tickets that are in the release.
-							string allBuildResults =
-								wc.DownloadString(
+							//Grab all Closed Tickets that are in the release asyncronously and queue up a list of them
+							//This call will not block and the loop will go on and get all of them going
+							var response = wc.GetStringAsync(
 									"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND status=Closed AND fixVersion=\"" +
-									releaseVersionName + "\"");
-							dynamic allBuildArray = JObject.Parse(allBuildResults);
+									releaseVersionName + "\"&maxResults=150");
+
+							//Add the background task into a list tied to its version and loop back
+							releaseNotesResponses.Add(releaseVersionName, response);
+						}
+						
+						//Wait for all the parallel requests to finish
+						//Control will be returned to the caller and the UI will be free
+						await Task.WhenAll(releaseNotesResponses.Values);
+
+						//Get rid of our client once we are done and control resumes here
+						wc.Dispose();
+
+						//Now loop over the results and build the notes like before
+						foreach (var allBuildResults in releaseNotesResponses)
+						{
+							dynamic allBuildArray = JObject.Parse(allBuildResults.Value.Result);
 
 							//Lists are used so they can be added to the textbox later in group order
 							//Can't work out a better way to do this. I did have it go through the allBuildArray three times and each time grabbing the group type.
 							List<string> improvements = new List<string>();
 							List<string> newFeatures = new List<string>();
+
+							textBoxReleaseNotes.Text += "\r\nVersion:" + allBuildResults.Key + "\r\n\r\n";
 
 							textBoxReleaseNotes.Text += "** Bugs\r\n   ";
 							foreach (var build in allBuildArray.issues)
@@ -173,8 +211,14 @@ namespace VixenApplication
 								textBoxReleaseNotes.Text += newFeature + "\r\n   ";
 							}
 						}
+
+						
+
+
+
+
 					}
-				}
+				
 			}
 			catch (Exception e)
 			{
