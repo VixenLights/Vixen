@@ -13,7 +13,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		    UpperLimit = 100;
             KeyColor = Color.FromArgb(0,255,0);
 		    HueTolerance = 5; //need to add setup form controls for this.
-		    SaturationTolerance = 5; //change to something else if I split the H/S tolerances.
+		    SaturationTolerance = HueTolerance/100; //change to something else if I split the H/S tolerances.
 		}
 
 		public override IModuleDataModel Clone()
