@@ -27,45 +27,38 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
-		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
-            //for debugging
-            var keyHue = _data.KeyColor.GetHue();
-		    var lowLayerHue = lowLayerColor.GetHue();
-            var hueMatch = false; //can i refactor this out by properly placing returns
-		    var saturationMatch = true;  //change to false later when matching code is ready.
-
             //brightness matching conditions.  Checks first because it's easy math.
-		    if (!(HSV.VFromRgb(lowLayerColor) >= lowerLimit
-		          && HSV.VFromRgb(lowLayerColor) <= upperLimit))
-		    { return lowLayerColor; }
+		    if ( !(HSV.VFromRgb(lowLayerColor) >= Convert.ToDouble(_data.LowerLimit) / 100
+                  && HSV.VFromRgb(lowLayerColor) <= Convert.ToDouble(_data.UpperLimit) / 100) )
+		    { return lowLayerColor; }  //brightness check failed - abort
 
-            //hue matching conditions
-		    if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
+		    //Saturation Matching
+		    var keySaturation = _data.KeyColor.GetSaturation(); //this sat shit aint workin
+		    if (!(lowLayerColor.GetSaturation() < keySaturation + _data.SaturationTolerance
+		          && lowLayerColor.GetSaturation() > keySaturation - _data.SaturationTolerance))
+		    { return lowLayerColor; } //saturation check failed - abort
+
+            //Hue matching
+		    var keyHue = _data.KeyColor.GetHue();
+		    var lowLayerHue = lowLayerColor.GetHue();
+
+            if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
 		        && lowLayerHue + _data.HueTolerance < 360 //no high overflow
 		        && lowLayerHue >= keyHue - _data.HueTolerance
 		        && lowLayerHue <= keyHue + _data.HueTolerance)
-		    { hueMatch = true; }
+		    { return highLayerColor; }
 
             else if (   keyHue - _data.HueTolerance <= 0 //low end key overflow
                      && (lowLayerHue >= keyHue - _data.HueTolerance + 360
                         || lowLayerHue <= keyHue + _data.HueTolerance) )
-		    { hueMatch = true; }
+		    { return highLayerColor; }
 
             else if (   keyHue + _data.HueTolerance >= 360 //high end key overflow
                      && lowLayerHue >= keyHue - _data.HueTolerance
                      && lowLayerHue <= keyHue + _data.HueTolerance - 360) 
-		    { hueMatch = true; }
+		    { return highLayerColor; }
 		    // need to add validation so that hueTolerance is always between 0 and 180
-		    else return lowLayerColor;
-
-            //add saturation matching here...
-
-
-            //If there's a match in hue, saturation and brightness ranges.
-            if (hueMatch && saturationMatch)
-			{ return highLayerColor; }			
-			return lowLayerColor;
+		    else return lowLayerColor;  //hue check failed - return low layer color
 		}
 
 		public override IModuleDataModel ModuleData
