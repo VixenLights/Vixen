@@ -12,19 +12,18 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		    LowerLimit = 0;
 		    UpperLimit = 100;
             KeyColor = Color.FromArgb(0,255,0);
+		    HueTolerance = 5; //need to add setup form controls for this.
+		    SaturationTolerance = 5; //change to something else if I split the H/S tolerances.
 		}
 
 		public override IModuleDataModel Clone()
 		{
 		    var newInstance = new ChromaKeyData
 		    {
-		        ExcludeZeroValues = ExcludeZeroValues,
-		        LowerLimit = LowerLimit,
-		        UpperLimit = UpperLimit, 
-		        KeyColor = KeyColor                
+		        ExcludeZeroValues = ExcludeZeroValues, KeyColor = KeyColor,
+                LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
+		        HueTolerance = HueTolerance, SaturationTolerance = SaturationTolerance
 		    };
-		    //newInstance.KeyColor = new Color();  //this doesn't work like Jeff's Example shows
-		    //newInstance.KeyColor = KeyColor;
             return newInstance;
 		}
 
@@ -39,5 +38,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
         [DataMember]
         public Color KeyColor { get; set; }
+
+	    [DataMember]
+	    public float HueTolerance { get; set; }
+
+	    [DataMember]
+	    public float SaturationTolerance { get; set; }
     }
 }
