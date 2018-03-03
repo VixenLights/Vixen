@@ -16,7 +16,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		{
 		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
 		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
-            if (lowLayerValue.Intensity >= lowerLimit && lowLayerValue.Intensity <= upperLimit /*|| !_data.ExcludeZeroValues*/)
+            if (lowLayerValue.Intensity >= lowerLimit && lowLayerValue.Intensity <= upperLimit )
 			{
 				return highLayerValue;
 			}	
@@ -27,7 +27,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		{
 		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
 		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
-            if (HSV.VFromRgb(lowLayerColor) >= lowerLimit && HSV.VFromRgb(lowLayerColor) <= upperLimit /*|| !_data.ExcludeZeroValues*/)
+            if (HSV.VFromRgb(lowLayerColor) >= lowerLimit && HSV.VFromRgb(lowLayerColor) <= upperLimit )
 			{
 				return highLayerColor;
 			}			
@@ -50,10 +50,9 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override bool Setup()
 		{
-			using (var setup = new LumaKeySetup(_data.ExcludeZeroValues,_data.LowerLimit,_data.UpperLimit))
+			using (var setup = new LumaKeySetup(_data.LowerLimit,_data.UpperLimit))
 			{
-			    if (setup.ShowDialog() != DialogResult.OK) return false;
-			    _data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
+			    if (setup.ShowDialog() != DialogResult.OK) return false;			  
 			    _data.LowerLimit = setup.LowerLimit;
 			    _data.UpperLimit = setup.UpperLimit;
 			    return true;

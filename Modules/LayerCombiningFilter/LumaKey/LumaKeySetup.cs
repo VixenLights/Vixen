@@ -8,28 +8,19 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 {
 	public partial class LumaKeySetup : BaseForm
 	{
-		public LumaKeySetup(bool excludeZeroValues,int lowerLimit, int upperLimit) //can i pass the whole data object here instead of the individual members?
+		public LumaKeySetup(int lowerLimit, int upperLimit)
 		{
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			ExcludeZeroValuesValues = excludeZeroValues;
-			chkExcludeZero.Checked = excludeZeroValues;
 		    LowerLimit = lowerLimit;
 		    UpperLimit = upperLimit;
 		    UpdateLimitControls();
 		}
 
-		public bool ExcludeZeroValuesValues { get; private set; }
-
         public int LowerLimit { get; private set; }
 	    public int UpperLimit { get; private set; }
-
-        private void chkExcludeZero_CheckedChanged(object sender, EventArgs e)
-		{
-			ExcludeZeroValuesValues = chkExcludeZero.Checked;
-		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{

@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.chkExcludeZero = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.numLowerLimit = new Common.Controls.NumericTextBox();
@@ -41,19 +40,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.trkLowerLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkUpperLimit)).BeginInit();
             this.SuspendLayout();
-            // 
-            // chkExcludeZero
-            // 
-            this.chkExcludeZero.AutoSize = true;
-            this.chkExcludeZero.Location = new System.Drawing.Point(16, 144);
-            this.chkExcludeZero.Name = "chkExcludeZero";
-            this.chkExcludeZero.Size = new System.Drawing.Size(127, 19);
-            this.chkExcludeZero.TabIndex = 0;
-            this.chkExcludeZero.TabStop = false;
-            this.chkExcludeZero.Text = "Exclude zero values";
-            this.chkExcludeZero.UseVisualStyleBackColor = true;
-            this.chkExcludeZero.Visible = false;
-            this.chkExcludeZero.CheckedChanged += new System.EventHandler(this.chkExcludeZero_CheckedChanged);
             // 
             // btnOk
             // 
@@ -167,7 +153,6 @@
             this.Controls.Add(this.numLowerLimit);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.chkExcludeZero);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.HelpButton = true;
             this.Name = "LumaKeySetup";
@@ -182,7 +167,6 @@
 
 		#endregion
 
-		private System.Windows.Forms.CheckBox chkExcludeZero;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
         private Common.Controls.NumericTextBox numLowerLimit;

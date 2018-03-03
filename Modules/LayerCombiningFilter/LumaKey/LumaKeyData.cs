@@ -6,8 +6,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 	public class LumaKeyData: ModuleDataModelBase
 	{
 		public LumaKeyData()
-		{
-			ExcludeZeroValues = true;
+		{			
 		    LowerLimit = 0;
 		    UpperLimit = 100;
 		}
@@ -16,15 +15,11 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		{
 		    var newInstance = new LumaKeyData
 		    {
-		        ExcludeZeroValues = ExcludeZeroValues,
 		        LowerLimit = LowerLimit,
 		        UpperLimit = UpperLimit
 		    };
 		    return newInstance;
 		}
-
-		[DataMember]
-		public bool ExcludeZeroValues { get; set; }
 
         [DataMember]
 		public int LowerLimit { get; set; }
