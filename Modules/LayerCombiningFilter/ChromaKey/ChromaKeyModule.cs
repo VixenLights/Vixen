@@ -31,14 +31,15 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		    if ( !(HSV.VFromRgb(lowLayerColor) >= Convert.ToDouble(_data.LowerLimit) / 100
                   && HSV.VFromRgb(lowLayerColor) <= Convert.ToDouble(_data.UpperLimit) / 100) )
 		    { return lowLayerColor; }  //brightness check failed - abort
-
+            
 		    //Saturation Matching
-		    var keySaturation = _data.KeyColor.GetSaturation(); //this sat shit aint workin
-		    if (!(lowLayerColor.GetSaturation() < keySaturation + _data.SaturationTolerance
-		          && lowLayerColor.GetSaturation() > keySaturation - _data.SaturationTolerance))
+		    var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerColor).S , 2);
+		    var keySaturation = Math.Round(HSV.FromRGB(_data.KeyColor).S , 2);
+		    if (!(lowLayerSaturation <= keySaturation + _data.SaturationTolerance
+		          && lowLayerSaturation >= keySaturation - _data.SaturationTolerance))
 		    { return lowLayerColor; } //saturation check failed - abort
 
-            //Hue matching
+            //Hue Matching
 		    var keyHue = _data.KeyColor.GetHue();
 		    var lowLayerHue = lowLayerColor.GetHue();
 
@@ -47,12 +48,10 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		        && lowLayerHue >= keyHue - _data.HueTolerance
 		        && lowLayerHue <= keyHue + _data.HueTolerance)
 		    { return highLayerColor; }
-
             else if (   keyHue - _data.HueTolerance <= 0 //low end key overflow
                      && (lowLayerHue >= keyHue - _data.HueTolerance + 360
                         || lowLayerHue <= keyHue + _data.HueTolerance) )
 		    { return highLayerColor; }
-
             else if (   keyHue + _data.HueTolerance >= 360 //high end key overflow
                      && lowLayerHue >= keyHue - _data.HueTolerance
                      && lowLayerHue <= keyHue + _data.HueTolerance - 360) 
@@ -74,13 +73,17 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override bool Setup()
 		{
-            using (var setup = new ChromaKeySetup(_data.ExcludeZeroValues, _data.LowerLimit, _data.UpperLimit, _data.KeyColor))
-            {
+            
+		    //using (var setup = new ChromaKeySetup(_data.ExcludeZeroValues, _data.LowerLimit, _data.UpperLimit, _data.KeyColor, _data.HueTolerance, _data.SaturationTolerance))
+		    using (var setup = new ChromaKeySetup(_data))
+		    {
                 if (setup.ShowDialog() != DialogResult.OK) return false;
                 _data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
                 _data.LowerLimit = setup.LowerLimit;
                 _data.UpperLimit = setup.UpperLimit;
                 _data.KeyColor = setup.KeyColor;
+                _data.HueTolerance = setup.HueTolerance;
+                _data.SaturationTolerance = setup.SaturationTolerance;
                 return true;
             }			
 		}
