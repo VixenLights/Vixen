@@ -8,7 +8,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	{
 		public ChromaKeyData()
 		{
-			ExcludeZeroValues = true;
 		    LowerLimit = 0;
 		    UpperLimit = 100;
             KeyColor = Color.FromArgb(0,255,0);
@@ -20,15 +19,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		{
 		    var newInstance = new ChromaKeyData
 		    {
-		        ExcludeZeroValues = ExcludeZeroValues, KeyColor = KeyColor,
-                LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
+		        KeyColor = KeyColor, LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
 		        HueTolerance = HueTolerance, SaturationTolerance = SaturationTolerance
 		    };
             return newInstance;
 		}
-
-		[DataMember]
-		public bool ExcludeZeroValues { get; set; }
 
         [DataMember]
 		public int LowerLimit { get; set; }

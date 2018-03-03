@@ -31,7 +31,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.chkExcludeZero = new System.Windows.Forms.CheckBox();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.numLowerLimit = new Common.Controls.NumericTextBox();
@@ -54,24 +53,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
             ((System.ComponentModel.ISupportInitialize)(this.trkHueTolerance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkSaturationTolerance)).BeginInit();
             this.SuspendLayout();
-            //
-            //ToolTip
-            //
-		    toolTip.AutomaticDelay = 250;		    
-		    // 
-            // chkExcludeZero
-            // 
-            this.chkExcludeZero.AutoSize = true;
-            this.chkExcludeZero.Location = new System.Drawing.Point(19, 308);
-            this.chkExcludeZero.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkExcludeZero.Name = "chkExcludeZero";
-            this.chkExcludeZero.Size = new System.Drawing.Size(160, 24);
-            this.chkExcludeZero.TabIndex = 0;
-            this.chkExcludeZero.TabStop = false;
-            this.chkExcludeZero.Text = "Exclude zero values";
-            this.chkExcludeZero.UseVisualStyleBackColor = true;
-            this.chkExcludeZero.Visible = false;
-            this.chkExcludeZero.CheckedChanged += new System.EventHandler(this.chkExcludeZero_CheckedChanged);
             // 
             // btnOk
             // 
@@ -245,6 +226,10 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
             this.label7.TabIndex = 16;
             this.label7.Text = "Saturation";
             // 
+            // toolTip
+            // 
+            this.toolTip.AutomaticDelay = 250;
+            // 
             // ChromaKeySetup
             // 
             this.AcceptButton = this.btnOk;
@@ -269,7 +254,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
             this.Controls.Add(this.numLowerLimit);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.chkExcludeZero);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.HelpButton = true;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -286,8 +270,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		}
 
 		#endregion
-
-		private System.Windows.Forms.CheckBox chkExcludeZero;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
         private Common.Controls.NumericTextBox numLowerLimit;
@@ -298,7 +280,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ColorDialog colorDialog1;
         private Property.Color.ColorPanel colorPanel1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TrackBar trkHueTolerance;

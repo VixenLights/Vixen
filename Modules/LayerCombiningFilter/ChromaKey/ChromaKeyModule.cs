@@ -56,7 +56,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
                      && lowLayerHue >= keyHue - _data.HueTolerance
                      && lowLayerHue <= keyHue + _data.HueTolerance - 360) 
 		    { return highLayerColor; }
-		    // need to add validation so that hueTolerance is always between 0 and 180
 		    else return lowLayerColor;  //hue check failed - return low layer color
 		}
 
@@ -73,12 +72,9 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override bool Setup()
 		{
-            
-		    //using (var setup = new ChromaKeySetup(_data.ExcludeZeroValues, _data.LowerLimit, _data.UpperLimit, _data.KeyColor, _data.HueTolerance, _data.SaturationTolerance))
 		    using (var setup = new ChromaKeySetup(_data))
 		    {
                 if (setup.ShowDialog() != DialogResult.OK) return false;
-                _data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
                 _data.LowerLimit = setup.LowerLimit;
                 _data.UpperLimit = setup.UpperLimit;
                 _data.KeyColor = setup.KeyColor;
