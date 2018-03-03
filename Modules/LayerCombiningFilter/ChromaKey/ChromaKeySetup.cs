@@ -10,30 +10,12 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 {
 	public partial class ChromaKeySetup : BaseForm
 	{
-		/*public ChromaKeySetup(bool excludeZeroValues,int lowerLimit, int upperLimit, Color keyColor, float hueTolerance, float saturationTolerance )
-		{
-			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
-			ThemeUpdateControls.UpdateControls(this);
-			ExcludeZeroValuesValues = excludeZeroValues;
-			chkExcludeZero.Checked = excludeZeroValues;
-		    LowerLimit = lowerLimit;
-		    UpperLimit = upperLimit;
-		    UpdateLimitControls();
-		    colorPanel1.Color = keyColor;
-		    HueTolerance = hueTolerance;
-		    SaturationTolerance = saturationTolerance;
-		}*/
-
 	    public ChromaKeySetup(ChromaKeyData data)
 	    {
 	        InitializeComponent();
 	        ForeColor = ThemeColorTable.ForeColor;
 	        BackColor = ThemeColorTable.BackgroundColor;
 	        ThemeUpdateControls.UpdateControls(this);
-	        ExcludeZeroValuesValues = data.ExcludeZeroValues;
-	        chkExcludeZero.Checked = data.ExcludeZeroValues;
 	        LowerLimit = data.LowerLimit;
 	        UpperLimit = data.UpperLimit;
 	        UpdateLimitControls();
@@ -44,18 +26,11 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        trkSaturationTolerance.Value = Convert.ToInt32(data.SaturationTolerance*100);
 	    }
 
-		public bool ExcludeZeroValuesValues { get; private set; }
-
         public int LowerLimit { get; private set; }
 	    public int UpperLimit { get; private set; }
         public Color KeyColor { get; private set; }
         public float HueTolerance { get; private set; }
         public float SaturationTolerance { get; private set; }
-
-        private void chkExcludeZero_CheckedChanged(object sender, EventArgs e)
-		{
-			ExcludeZeroValuesValues = chkExcludeZero.Checked;
-		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
