@@ -160,7 +160,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = RequestNewGroupName(String.Empty);
 			if (result.Result == MessageResult.OK)
 			{
-				PropModelServices.Instance().CreateGroupForElementModels(result.Response, SelectedItems.Select(x => x.ElementModel));
+				var elementsToGroup = SelectedItems.Select(x => x.ElementModel).ToList();
+				DeselectAll();
+				PropModelServices.Instance().CreateGroupForElementModels(result.Response, elementsToGroup);
 			}
 		}
 
@@ -197,8 +199,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				var parentToJoin = PropModelServices.Instance().CreateNode(result.Response);
 				var pms = PropModelServices.Instance();
-				foreach (var elementModelViewModel in SelectedItems)
+				foreach (var elementModelViewModel in SelectedItems.ToList())
 				{
+					elementModelViewModel.IsSelected = false;
 					ElementModel parentToLeave = (elementModelViewModel.ParentViewModel as ElementModelViewModel)?.ElementModel;
 					if (parentToLeave != null)
 					{
@@ -487,8 +490,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
                                         //We are moving to a new parent
 						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
                                         pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-						                //ensure parent is expanded
-						                sourceModelParent.IsExpanded = true;
+										//ensure parent is expanded
+							            targetModelParent.IsExpanded = true;
                                         SelectModelWithParent(elementModelViewModel, targetModelParent);
 						            }
                                 }
@@ -510,8 +513,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						                //We are moving to a new parent
 						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
 						                pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-                                        //ensure parent is expanded
-						                sourceModelParent.IsExpanded = true;
+										//ensure parent is expanded
+							            targetModelParent.IsExpanded = true;
 						                SelectModelWithParent(elementModelViewModel, targetModelParent);
                                     }
                                 }
@@ -540,14 +543,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		}
 
-	    private static void SelectModelWithParent(ElementModelViewModel elementModelViewModel,
-	        ElementModelViewModel targetModelParent)
+	    private static void SelectModelWithParent(ElementModelViewModel elementModelViewModel, ElementModelViewModel targetModelParent)
 	    {
 	        var newModel = ElementModelLookUpService.Instance.GetModels(elementModelViewModel.ElementModel.Id)
 	            .FirstOrDefault(e => e.ParentViewModel == targetModelParent);
 	        if (newModel != null)
 	        {
 	            newModel.IsSelected = true;
+		        //ensure parent is expanded
+				targetModelParent.IsExpanded = true;
 	        }
 	    }
 
