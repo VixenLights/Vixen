@@ -140,6 +140,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 			{
 				size = em.LightSize;
 			}
+			else
+			{
+				em.LightSize = size.Value;
+			}
 
 			var light = CreateLight(p, size.Value, em.Id);
 			em.AddLight(light);

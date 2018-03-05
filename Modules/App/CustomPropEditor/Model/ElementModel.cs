@@ -131,12 +131,20 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public int LightSize
 		{
-			get { return _lightSize; }
+			get
+			{
+				if (IsLeaf)
+				{
+					return _lightSize;
+				}
+
+				return GetLeafEnumerator().FirstOrDefault()?.LightSize??_lightSize;
+			}
 			set
 			{
 				if (value == _lightSize) return;
 				_lightSize = value;
-				UpdateLightSize();
+				UpdateLightSize(value);
 				OnPropertyChanged(nameof(LightSize));
 			}
 		}
@@ -226,6 +234,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 				{
 					//We are at the bottom and just need to remove our lights
 					Lights.Clear();
+					OnPropertyChanged(nameof(LightCount));
 				}
 				else
 				{
@@ -247,11 +256,14 @@ namespace VixenModules.App.CustomPropEditor.Model
 		public void AddChild(ElementModel em)
 		{
 			Children.Add(em);
+			OnPropertyChanged(nameof(LightSize));
 		}
 
 		public bool RemoveChild(ElementModel child)
 		{
-			return Children.Remove(child);
+			var status =  Children.Remove(child);
+			OnPropertyChanged(nameof(LightSize));
+			return status;
 		}
 
 		internal void AddLight(Light ln)
@@ -276,9 +288,19 @@ namespace VixenModules.App.CustomPropEditor.Model
 		}
 
 
-		private void UpdateLightSize()
+		private void UpdateLightSize(int size)
 		{
-			Lights.ForEach(x => x.Size = LightSize);
+			if (IsLeaf)
+			{
+				Lights.ForEach(x => x.Size = size);
+			}
+			else
+			{
+				foreach (var elementModel in Children)
+				{
+					elementModel.LightSize = size;
+				}
+			}
 		}
 
 		public IEnumerable<ElementModel> GetNodeEnumerator()
