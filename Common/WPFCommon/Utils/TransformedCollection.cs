@@ -90,6 +90,24 @@ namespace Common.WPFCommon.Utils
                 this.Items.AddRange(this._sourceCollection.Select(this._setup));
                 this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
+            else if (e.Action == NotifyCollectionChangedAction.Move)
+            {
+                //When we move, we don't need to recreate the VM, just move it
+                List<object> newItems = null;
+                if (e.OldItems != null)
+                {
+                    newItems = new List<object>();
+                    for (int i = 0; i < e.OldItems.Count; i++)
+                    {
+                        TTarget target = this.Items[e.OldStartingIndex];
+                        newItems.Add(target);
+                        this.Items.RemoveAt(e.OldStartingIndex);
+                        this.Items.Insert(i + e.NewStartingIndex, target);
+                    }
+                }
+
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, newItems, e.NewStartingIndex, e.OldStartingIndex));
+            }
             else
             {
                 List<object> oldItems = null;
@@ -127,10 +145,6 @@ namespace Common.WPFCommon.Utils
                 else if (e.Action == NotifyCollectionChangedAction.Add)
                 {
                     this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, e.NewStartingIndex));
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Move)
-                {
-                    this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, newItems, e.NewStartingIndex, e.OldStartingIndex));
                 }
                 else if (e.Action == NotifyCollectionChangedAction.Replace)
                 {

@@ -147,7 +147,7 @@
 						<TextBlock Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}">
 						</TextBlock>
 						<TextBlock Margin="5,2,0,2" Text="{Binding Order, StringFormat=({0:G})}" 
-                                   Visibility="{Binding IsLeaf, Converter={StaticResource BooleanToVisibilityConverter }}">
+                                   Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 
 						</TextBlock>
 					</StackPanel>

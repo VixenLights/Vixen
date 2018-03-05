@@ -19,6 +19,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 		}
 		public static ElementModelLookUpService Instance => _instance ?? (_instance = new ElementModelLookUpService());
 
+	    public void Reset()
+	    {
+            _instances.Clear();
+	    }
 
 		/// <summary>
 		/// Create an association between the ElementModel and the View Model 

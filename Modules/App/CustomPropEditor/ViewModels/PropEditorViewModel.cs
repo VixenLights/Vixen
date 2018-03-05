@@ -39,8 +39,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			get { return GetValue<Prop>(PropProperty); }
 			private set
 			{
-				SetValue(PropProperty, value);
-				UnregisterModelEvents();
+			    ElementModelLookUpService.Instance.Reset();
+			    UnregisterModelEvents();
+                SetValue(PropProperty, value);
 				ElementTreeViewModel = new ElementTreeViewModel(value);
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
 				RegisterModelEvents();
@@ -185,7 +186,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				string path = openFileService.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
-					IModelImport import = new XModelImport();
+				    IModelImport import = new XModelImport();
 					Prop = await import.ImportAsync(path);
 				}
 			}
@@ -234,7 +235,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "Prop 1");
 			if (result.Result == MessageResult.OK)
 			{
-				Prop = PropModelServices.Instance().CreateProp(result.Response);
+                Prop = PropModelServices.Instance().CreateProp(result.Response);
 			}
 		}
 

@@ -87,6 +87,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 			model.Parents.Add(parentToJoin);
 		}
 
+	    public void MoveWithinParent(ElementModel parent, ElementModel model, int newIndex)
+	    {
+	        int oldIndex = parent.Children.IndexOf(model);
+	        if (oldIndex >= 0)
+	        {
+	            parent.Children.Move(oldIndex, newIndex);
+	        }
+	    }
+
 		public void InsertToParent(ElementModel model, ElementModel parentToJoin, int index)
 		{
 			parentToJoin.Children.Insert(index, model);

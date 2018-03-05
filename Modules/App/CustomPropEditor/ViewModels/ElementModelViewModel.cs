@@ -269,7 +269,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region IsLightNode property
 
+		/// <summary>
+		/// Gets or sets the IsLightNode value.
+		/// </summary>
+		[Browsable(false)]
+		[ViewModelToModel("ElementModel")]
+		public bool IsLightNode
+		{
+			get { return GetValue<bool>(IsLightNodeProperty); }
+			set { SetValue(IsLightNodeProperty, value); }
+		}
+
+		/// <summary>
+		/// IsLightNode property data.
+		/// </summary>
+		public static readonly PropertyData IsLightNodeProperty = RegisterProperty("IsLightNode", typeof(bool), null);
+
+		#endregion
 
 		#region Overrides
 

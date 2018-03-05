@@ -149,11 +149,19 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#endregion
 
+		#region IsLightNode
+
+		public bool IsLightNode => IsLeaf && Lights.Any();
+
+		#endregion
+
 		#region IsGroupNode
 
 		public bool IsGroupNode => !Lights.Any();
 
-	    public bool CanAddGroupNodes => IsGroupNode && Children.All(c => c.IsGroupNode);
+	    public bool CanAddGroupNodes => IsGroupNode &&  (!Children.Any() || Children.Any(c => c.IsGroupNode));
+
+		public bool CanAddLeafNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsLeaf));
 
 		#endregion
 

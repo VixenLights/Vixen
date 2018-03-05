@@ -360,39 +360,41 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	            return false;
 	        }
 
-	        if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
+	        IList<ElementModelViewModel> elementModelViewModels = dropInfo.Data as IList<ElementModelViewModel>;
+	        var evmTarget = dropInfo.TargetItem as ElementModelViewModel;
+            if (elementModelViewModels != null)
 	        {
-	            var evmTarget = dropInfo.TargetItem as ElementModelViewModel;
-	            if (evmTarget != null)
+	            var isGroups = elementModelViewModels.Any(x => x.ElementModel.IsGroupNode);
+	            var isLeafs = elementModelViewModels.Any(x => x.IsLeaf);
+
+	            if (isGroups && isLeafs)
 	            {
-	                if (!evmTarget.ElementModel.IsGroupNode)
+	                return false;
+	            }
+
+	            if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
+	            {
+	                if (evmTarget != null)
+	                {
+	                    if (!evmTarget.ElementModel.IsGroupNode)
+	                    {
+	                        return false;
+	                    }
+	                }
+
+	                if (isGroups && evmTarget != null && !evmTarget.ElementModel.CanAddGroupNodes)
 	                {
 	                    return false;
 	                }
 
-	                IList<ElementModelViewModel> elementModelViewModels = dropInfo.Data as IList<ElementModelViewModel>;
-	                if (elementModelViewModels != null)
+	                if (isLeafs && evmTarget != null && !evmTarget.ElementModel.CanAddLeafNodes)
 	                {
-	                    var isGroups = elementModelViewModels.Any(x => x.ElementModel.IsGroupNode);
-	                    var isLeafs = elementModelViewModels.Any(x => x.IsLeaf);
-
-                        if ( isGroups && isLeafs )
-	                    {
-	                        return false;
-                        }
-
-	                    if (isGroups && !evmTarget.ElementModel.CanAddGroupNodes)
-	                    {
-	                        return false;
-	                    }
-
-	                    if (isLeafs && evmTarget.ElementModel.CanAddGroupNodes)
-	                    {
-	                        return false;
-	                    }
+	                    return false;
 	                }
-	            }
-	        }
+                }
+            }
+
+	        
 
 	        if (dropInfo.DragInfo.SourceCollection == dropInfo.TargetCollection)
 	        {
@@ -458,38 +460,73 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 				SelectedItems.Clear();
 
-				if (targetModel != null && targetModelParent != null)
+				if (targetModel != null)
 				{
 					foreach (var elementModelViewModel in models.Reverse())
 					{
-						if (dropInfo.Effects == DragDropEffects.Move)
+					    elementModelViewModel.IsSelected = false;
+                        if (dropInfo.Effects == DragDropEffects.Move)
 						{
 						   //Get our parent 
-						    var parentVm = elementModelViewModel.ParentViewModel as ElementModelViewModel;
+						    var sourceModelParent = elementModelViewModel.ParentViewModel as ElementModelViewModel;
 
                             if (dropInfo.InsertPosition == RelativeInsertPosition.BeforeTargetItem)
 						    {
 						        //We are inserting into a range.
                                 //Ensure the parent is a group node.
-                                if (parentVm != null &&  parentVm.ElementModel.IsGroupNode)
+                                if (sourceModelParent != null && sourceModelParent.ElementModel.IsGroupNode && targetModelParent != null)
 						        {
-						            pms.RemoveFromParent(elementModelViewModel.ElementModel, parentVm.ElementModel);
-						            pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+						            if (sourceModelParent == targetModelParent)
+						            {
+                                        //Our parent is the same so we can just move it within the parent
+                                        pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex);
+						                elementModelViewModel.IsSelected = true;
+						            }
+						            else
+						            {
+                                        //We are moving to a new parent
+						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+                                        pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
+						                //ensure parent is expanded
+						                sourceModelParent.IsExpanded = true;
+                                        SelectModelWithParent(elementModelViewModel, targetModelParent);
+						            }
                                 }
-
                             }
 						    else if(dropInfo.InsertPosition == RelativeInsertPosition.AfterTargetItem)
 						    {
-                                Console.Out.WriteLine("Insert After");
+                                //We are inserting into a range.
+						        //Ensure the parent is a group node.
+						        if (sourceModelParent != null && sourceModelParent.ElementModel.IsGroupNode && targetModelParent != null)
+						        {
+                                    if (sourceModelParent == targetModelParent)
+						            {
+						                //We can just move it
+						                pms.MoveWithinParent(sourceModelParent.ElementModel, elementModelViewModel.ElementModel, dropInfo.InsertIndex-1);
+						                elementModelViewModel.IsSelected = true;
+						            }
+						            else
+						            {
+						                //We are moving to a new parent
+						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+						                pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
+                                        //ensure parent is expanded
+						                sourceModelParent.IsExpanded = true;
+						                SelectModelWithParent(elementModelViewModel, targetModelParent);
+                                    }
+                                }
                             }
 						    else
 						    {
                                 //We are on the center and adding to a group hopefully
 						        //Ensure the target is a group node.
-						        if (targetModel.ElementModel.IsGroupNode && parentVm != null)
+						        if (targetModel.ElementModel.IsGroupNode && sourceModelParent != null)
 						        {
 						            pms.AddToParent(elementModelViewModel.ElementModel, targetModel.ElementModel);
-                                    pms.RemoveFromParent(elementModelViewModel.ElementModel, parentVm.ElementModel);
+                                    pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
+						            //ensure parent is expanded
+						            targetModel.IsExpanded = true;
+                                    SelectModelWithParent(elementModelViewModel, targetModel);
                                 }
 						        else
 						        {
@@ -502,6 +539,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 
 		}
+
+	    private static void SelectModelWithParent(ElementModelViewModel elementModelViewModel,
+	        ElementModelViewModel targetModelParent)
+	    {
+	        var newModel = ElementModelLookUpService.Instance.GetModels(elementModelViewModel.ElementModel.Id)
+	            .FirstOrDefault(e => e.ParentViewModel == targetModelParent);
+	        if (newModel != null)
+	        {
+	            newModel.IsSelected = true;
+	        }
+	    }
 
 	    private static bool IsChildOf(UIElement targetItem, UIElement sourceItem)
 	    {
