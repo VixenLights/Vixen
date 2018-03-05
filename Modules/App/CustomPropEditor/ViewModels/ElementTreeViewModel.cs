@@ -19,6 +19,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public sealed class ElementTreeViewModel : ViewModelBase,  IDropTarget, IDragSource, IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+
 		public ElementTreeViewModel(Prop prop)
 		{
 			Prop = prop;
@@ -490,9 +492,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
                                         //We are moving to a new parent
 						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
                                         pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-										//ensure parent is expanded
-							            targetModelParent.IsExpanded = true;
-                                        SelectModelWithParent(elementModelViewModel, targetModelParent);
+										SelectModelWithParent(elementModelViewModel, targetModelParent);
 						            }
                                 }
                             }
@@ -513,9 +513,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						                //We are moving to a new parent
 						                pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
 						                pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-										//ensure parent is expanded
-							            targetModelParent.IsExpanded = true;
-						                SelectModelWithParent(elementModelViewModel, targetModelParent);
+										SelectModelWithParent(elementModelViewModel, targetModelParent);
                                     }
                                 }
                             }
@@ -527,13 +525,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						        {
 						            pms.AddToParent(elementModelViewModel.ElementModel, targetModel.ElementModel);
                                     pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
-						            //ensure parent is expanded
-						            targetModel.IsExpanded = true;
-                                    SelectModelWithParent(elementModelViewModel, targetModel);
+						            SelectModelWithParent(elementModelViewModel, targetModel);
                                 }
 						        else
 						        {
-                                    Console.Out.WriteLine("Adding to center of non group node");
+							        Logging.Warn($"Attempt to add item {elementModelViewModel.ElementModel.Name} to a non group node.");
 						        }
                             }
 						}
