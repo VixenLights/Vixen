@@ -71,31 +71,32 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return em;
 		}
 
-		public void CreateGroupForElementModels(string name, IEnumerable<ElementModel> elementModels, bool moveElements=false)
+		public void CreateGroupForElementModels(string name, IEnumerable<ElementModel> elementModels)
 		{
 			var em = CreateNode(name);
 			foreach (var elementModel in elementModels)
 			{
 				em.Children.Add(elementModel);
 				elementModel.Parents.Add(em);
-
-				if (moveElements)
-				{
-					var parents = elementModel.Parents.Except(new[] {em}).ToList();
-					foreach (var parent in parents)
-					{
-						parent.RemoveChild(elementModel);
-						elementModel.RemoveParent(parent);
-					}
-				}
-				
-				
 			}
 		}
 
-		public void RemoveFromParent(ElementModel model, ElementModel parent)
+		public void AddToParent(ElementModel model, ElementModel parentToJoin)
 		{
-			model.RemoveParent(parent);
+			parentToJoin.Children.Add(model);
+			model.Parents.Add(parentToJoin);
+		}
+
+		public void InsertToParent(ElementModel model, ElementModel parentToJoin, int index)
+		{
+			parentToJoin.Children.Insert(index, model);
+			model.Parents.Add(parentToJoin);
+		}
+
+		public void RemoveFromParent(ElementModel model, ElementModel parentToLeave)
+		{
+			model.RemoveParent(parentToLeave);
+			parentToLeave.RemoveChild(model);
 			if (!model.Parents.Any())
 			{
 				_models.Remove(model.Id);

@@ -210,7 +210,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void Delete()
 		{
 			//PropModelServices.Instance().RemoveElementModels(ElementTreeViewModel.SelectedItems.Select(x => x.ElementModel));
-			ElementTreeViewModel.SelectedItems.ForEach(x => x.RemoveFromParent());
+		    var itemsToDelete = ElementTreeViewModel.SelectedItems.ToList();
+            ElementTreeViewModel.SelectedItems.Clear();
+			itemsToDelete.ForEach(x => x.RemoveFromParent());
 			DrawingPanelViewModel.DeselectAll();
 			DrawingPanelViewModel.RefreshLightViewModels();
 		}

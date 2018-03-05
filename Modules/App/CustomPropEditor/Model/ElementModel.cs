@@ -108,7 +108,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 				if (LightCount > 1)
 				{
 					return ElementType.String;
-				}else if (LightCount == 1)
+				}
+			    if (LightCount == 1)
 				{
 					return ElementType.Node;
 				}
@@ -151,6 +152,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 		#region IsGroupNode
 
 		public bool IsGroupNode => !Lights.Any();
+
+	    public bool CanAddGroupNodes => IsGroupNode && Children.All(c => c.IsGroupNode);
 
 		#endregion
 
@@ -196,10 +199,10 @@ namespace VixenModules.App.CustomPropEditor.Model
 				if (Equals(value, _lights)) return;
 				_lights = value;
 				OnPropertyChanged(nameof(Lights));
-				OnPropertyChanged(nameof(ElementType));
 				OnPropertyChanged(nameof(LightCount));
 				OnPropertyChanged(nameof(IsGroupNode));
-			}
+			    OnPropertyChanged(nameof(ElementType));
+            }
 		}
 
 		#endregion

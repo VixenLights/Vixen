@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
 using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
+using GongSolutions.Wpf.DragDrop;
+using GongSolutions.Wpf.DragDrop.Utilities;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
-	public sealed class ElementTreeViewModel : ViewModelBase, IDisposable
+	public sealed class ElementTreeViewModel : ViewModelBase,  IDropTarget, IDragSource, IDisposable
 	{
 		public ElementTreeViewModel(Prop prop)
 		{
@@ -190,7 +195,18 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = RequestNewGroupName(String.Empty);
 			if (result.Result == MessageResult.OK)
 			{
-				PropModelServices.Instance().CreateGroupForElementModels(result.Response, SelectedItems.Select(x => x.ElementModel), true);
+				var parentToJoin = PropModelServices.Instance().CreateNode(result.Response);
+				var pms = PropModelServices.Instance();
+				foreach (var elementModelViewModel in SelectedItems)
+				{
+					ElementModel parentToLeave = (elementModelViewModel.ParentViewModel as ElementModelViewModel)?.ElementModel;
+					if (parentToLeave != null)
+					{
+						pms.AddToParent(elementModelViewModel.ElementModel, parentToJoin);
+						pms.RemoveFromParent(elementModelViewModel.ElementModel, parentToLeave);
+					}
+				}
+				
 			}
 		}
 
@@ -321,5 +337,279 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public void Dispose()
 		{
 		}
+
+		
+		#region Implementation of IDropTarget
+
+	    public static bool CanAcceptData(IDropInfo dropInfo)
+	    {
+	        if (dropInfo?.DragInfo == null)
+	        {
+	            return false;
+	        }
+
+	        if (!dropInfo.IsSameDragDropContextAsSource)
+	        {
+	            return false;
+	        }
+
+	        var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter)
+	                             && dropInfo.VisualTargetItem is TreeViewItem;
+	        if (isTreeViewItem && dropInfo.VisualTargetItem == dropInfo.DragInfo.VisualSourceItem)
+	        {
+	            return false;
+	        }
+
+	        if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
+	        {
+	            var evmTarget = dropInfo.TargetItem as ElementModelViewModel;
+	            if (evmTarget != null)
+	            {
+	                if (!evmTarget.ElementModel.IsGroupNode)
+	                {
+	                    return false;
+	                }
+
+	                IList<ElementModelViewModel> elementModelViewModels = dropInfo.Data as IList<ElementModelViewModel>;
+	                if (elementModelViewModels != null)
+	                {
+	                    var isGroups = elementModelViewModels.Any(x => x.ElementModel.IsGroupNode);
+	                    var isLeafs = elementModelViewModels.Any(x => x.IsLeaf);
+
+                        if ( isGroups && isLeafs )
+	                    {
+	                        return false;
+                        }
+
+	                    if (isGroups && !evmTarget.ElementModel.CanAddGroupNodes)
+	                    {
+	                        return false;
+	                    }
+
+	                    if (isLeafs && evmTarget.ElementModel.CanAddGroupNodes)
+	                    {
+	                        return false;
+	                    }
+	                }
+	            }
+	        }
+
+	        if (dropInfo.DragInfo.SourceCollection == dropInfo.TargetCollection)
+	        {
+	            var targetList = dropInfo.TargetCollection.TryGetList();
+	            return targetList != null;
+	        }
+
+	        if (dropInfo.TargetCollection == null)
+	        {
+	            return false;
+	        }
+	       
+	        if (TestCompatibleTypes(dropInfo.TargetCollection, dropInfo.Data))
+	        {
+	            var isChildOf = IsChildOf(dropInfo.VisualTargetItem, dropInfo.DragInfo.VisualSourceItem);
+	            return !isChildOf;
+	        }
+	        
+	        return false;
+	    }
+
+
+	    /// <summary>
+	    /// Determines whether the data of the drag drop action should be copied otherwise moved.
+	    /// </summary>
+	    /// <param name="dropInfo">The DropInfo with a valid DragInfo.</param>
+	    public static bool ShouldCopyData(IDropInfo dropInfo)
+	    {
+	        // default should always the move action/effect
+	        if (dropInfo?.DragInfo == null)
+	        {
+	            return false;
+	        }
+	        var copyData = ((dropInfo.DragInfo.DragDropCopyKeyState != default(DragDropKeyStates)) && dropInfo.KeyStates.HasFlag(dropInfo.DragInfo.DragDropCopyKeyState))
+	                       || dropInfo.DragInfo.DragDropCopyKeyState.HasFlag(DragDropKeyStates.LeftMouseButton);
+	        copyData = copyData
+	                   && !(dropInfo.DragInfo.SourceItem is HeaderedContentControl)
+	                   && !(dropInfo.DragInfo.SourceItem is HeaderedItemsControl)
+	                   && !(dropInfo.DragInfo.SourceItem is ListBoxItem);
+	        return copyData;
+	    }
+
+        /// <inheritdoc />
+        public void DragOver(IDropInfo dropInfo)
+		{
+		    if (CanAcceptData(dropInfo))
+		    {
+		        dropInfo.Effects = ShouldCopyData(dropInfo) ? DragDropEffects.Copy : DragDropEffects.Move;
+		        var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter) && dropInfo.VisualTargetItem is TreeViewItem;
+		        dropInfo.DropTargetAdorner = isTreeViewItem ? DropTargetAdorners.Highlight : DropTargetAdorners.Insert;
+		    }
+        }
+
+		/// <inheritdoc />
+		public void Drop(IDropInfo dropInfo)
+		{
+			var models = dropInfo.Data as IList<ElementModelViewModel>;
+			if (models != null)
+			{
+				var pms = PropModelServices.Instance();
+				var targetModel = dropInfo.TargetItem as ElementModelViewModel;
+				var targetModelParent = targetModel?.ParentViewModel as ElementModelViewModel;
+
+				SelectedItems.Clear();
+
+				if (targetModel != null && targetModelParent != null)
+				{
+					foreach (var elementModelViewModel in models.Reverse())
+					{
+						if (dropInfo.Effects == DragDropEffects.Move)
+						{
+						   //Get our parent 
+						    var parentVm = elementModelViewModel.ParentViewModel as ElementModelViewModel;
+
+                            if (dropInfo.InsertPosition == RelativeInsertPosition.BeforeTargetItem)
+						    {
+						        //We are inserting into a range.
+                                //Ensure the parent is a group node.
+                                if (parentVm != null &&  parentVm.ElementModel.IsGroupNode)
+						        {
+						            pms.RemoveFromParent(elementModelViewModel.ElementModel, parentVm.ElementModel);
+						            pms.InsertToParent(elementModelViewModel.ElementModel, targetModelParent.ElementModel, dropInfo.InsertIndex);
+                                }
+
+                            }
+						    else if(dropInfo.InsertPosition == RelativeInsertPosition.AfterTargetItem)
+						    {
+                                Console.Out.WriteLine("Insert After");
+                            }
+						    else
+						    {
+                                //We are on the center and adding to a group hopefully
+						        //Ensure the target is a group node.
+						        if (targetModel.ElementModel.IsGroupNode && parentVm != null)
+						        {
+						            pms.AddToParent(elementModelViewModel.ElementModel, targetModel.ElementModel);
+                                    pms.RemoveFromParent(elementModelViewModel.ElementModel, parentVm.ElementModel);
+                                }
+						        else
+						        {
+                                    Console.Out.WriteLine("Adding to center of non group node");
+						        }
+                            }
+						}
+					}
+				}
+			}
+
+		}
+
+	    private static bool IsChildOf(UIElement targetItem, UIElement sourceItem)
+	    {
+	        var parent = ItemsControl.ItemsControlFromItemContainer(targetItem);
+
+	        while (parent != null)
+	        {
+	            if (parent == sourceItem)
+	            {
+	                return true;
+	            }
+
+	            parent = ItemsControl.ItemsControlFromItemContainer(parent);
+	        }
+
+	        return false;
+	    }
+
+	    private static bool TestCompatibleTypes(IEnumerable target, object data)
+	    {
+	        TypeFilter filter = (t, o) => { return (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)); };
+
+	        var enumerableInterfaces = target.GetType().FindInterfaces(filter, null);
+	        var enumerableTypes = from i in enumerableInterfaces
+	            select i.GetGenericArguments().Single();
+
+	        if (enumerableTypes.Any())
+	        {
+	            var dataType = TypeUtilities.GetCommonBaseClass(ExtractData(data));
+	            return enumerableTypes.Any(t => t.IsAssignableFrom(dataType));
+	        }
+	        else
+	        {
+	            return target is IList;
+	        }
+	    }
+
+	    public static IEnumerable ExtractData(object data)
+	    {
+	        if (data is IEnumerable && !(data is string))
+	        {
+	            return (IEnumerable)data;
+	        }
+	        else
+	        {
+	            return Enumerable.Repeat(data, 1);
+	        }
+	    }
+
+        #endregion
+
+        #region Implementation of IDragSource
+
+        /// <inheritdoc />
+        public void StartDrag(IDragInfo dragInfo)
+		{
+
+            //In our case, the Treeview does not support multiple items, so the drag behavior can't figure it out
+            //So we will take care of it ourselves.
+		    var itemCount = dragInfo.SourceItems.Cast<object>().Count();
+
+		    if (itemCount == 1 && SelectedItems.Count == 1)
+		    {
+		        dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(new[] { dragInfo.SourceItems.Cast<object>().First() });
+			}
+		    else if (itemCount > 1)
+		    {
+		        dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(dragInfo.SourceItems);
+            }
+            else if (SelectedItems.Count > 1 && itemCount == 1)
+		    {
+		        if (SelectedItems.Contains(dragInfo.SourceItems.Cast<object>().First()))
+		        {
+		            dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(SelectedItems);
+				}
+		        else
+		        {
+                    dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(new[] { dragInfo.SourceItems.Cast<object>().First() });
+				}
+		    }
+
+		    dragInfo.Effects = (dragInfo.Data != null) ? DragDropEffects.Copy | DragDropEffects.Move : DragDropEffects.None;
+        }
+
+		/// <inheritdoc />
+		public bool CanStartDrag(IDragInfo dragInfo)
+		{
+		    return true;
+		}
+
+		/// <inheritdoc />
+		public void Dropped(IDropInfo dropInfo)
+		{
+			
+		}
+
+		/// <inheritdoc />
+		public void DragCancelled()
+		{
+			
+		}
+
+		/// <inheritdoc />
+		public bool TryCatchOccurredException(Exception exception)
+		{
+		    return false;
+        }
+
+		#endregion
 	}
 }

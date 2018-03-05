@@ -11,7 +11,8 @@
              xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
              xmlns:behaviors="clr-namespace:VixenModules.App.CustomPropEditor.Behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:dd="urn:gong-wpf-dragdrop">
 
 	<UserControl.Resources>
 
@@ -130,7 +131,11 @@
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ScrollViewer.CanContentScroll="True"
-                  FocusManager.IsFocusScope="True">
+                  FocusManager.IsFocusScope="True"
+		          dd:DragDrop.IsDragSource="True"
+		          dd:DragDrop.IsDropTarget="True"
+		          dd:DragDrop.DropHandler="{Binding ElementTreeViewModel}"
+		          dd:DragDrop.DragHandler="{Binding ElementTreeViewModel}">
 
 			<i:Interaction.Behaviors>
 				<behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />

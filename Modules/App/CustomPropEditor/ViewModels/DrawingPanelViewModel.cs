@@ -262,8 +262,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void DeleteSelectedLights()
 		{
-			PropModelServices.Instance().RemoveLights(SelectedItems.Select(l => l.Light));
-			SelectedItems.Clear();
+		    var lightstoDelete = SelectedItems.Select(l => l.Light).ToList();
+		    DeselectAll();
+            PropModelServices.Instance().RemoveLights(lightstoDelete);
 			RefreshLightViewModels();
 		}
 
