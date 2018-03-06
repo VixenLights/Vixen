@@ -143,26 +143,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region Parents property
-
-		/// <summary>
-		/// Gets or sets the Parents value.
-		/// </summary>
-		[Browsable(false)]
-		[ViewModelToModel("ElementModel")]
-		public ObservableCollection<ElementModel> Parents
-		{
-			get { return GetValue<ObservableCollection<ElementModel>>(ParentsProperty); }
-			set { SetValue(ParentsProperty, value); }
-		}
-
-		/// <summary>
-		/// Parents property data.
-		/// </summary>
-		public static readonly PropertyData ParentsProperty = RegisterProperty("Parents", typeof(ObservableCollection<ElementModel>), null);
-
-		#endregion
-
 		#region Children property
 
 		/// <summary>
@@ -317,16 +297,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				PropModelServices.Instance().RemoveFromParent(ElementModel, parentVm.ElementModel);
 			}
-		}
-
-		public IEnumerable<Guid> GetParentIds()
-		{
-			return ElementModel.Parents.Select(x => x.Id);
-		}
-
-		public IEnumerable<Guid> GetChildrenIds()
-		{
-			return ElementModel.Children.Select(x => x.Id);
 		}
 
 		public IEnumerable<ElementModelViewModel> GetLeafEnumerator()

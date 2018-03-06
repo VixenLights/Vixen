@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using Catel.Collections;
@@ -9,6 +10,7 @@ using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
 using Common.WPFCommon.Command;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
@@ -25,6 +27,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			NewPropCommand = new RelayCommand(NewProp);
 			AddLightCommand = new RelayCommand<Point>(AddLightAt);
 			LoadImageCommand = new RelayCommand(LoadImage);
+			FilePath = String.Empty;
 			Prop = PropModelServices.Instance().CreateProp();
 		}
 
@@ -88,6 +91,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// ElementTreeViewModel property data.
 		/// </summary>
 		public static readonly PropertyData ElementTreeViewModelProperty = RegisterProperty("ElementTreeViewModel", typeof(ElementTreeViewModel));
+
+		#endregion
+
+		#region FilePath property
+
+		/// <summary>
+		/// Gets or sets the FilePath value.
+		/// </summary>
+		public string FilePath
+		{
+			get { return GetValue<string>(FilePathProperty); }
+			set { SetValue(FilePathProperty, value); }
+		}
+
+		/// <summary>
+		/// FilePath property data.
+		/// </summary>
+		public static readonly PropertyData FilePathProperty = RegisterProperty("FilePath", typeof(string));
 
 		#endregion
 
@@ -188,6 +209,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				{
 				    IModelImport import = new XModelImport();
 					Prop = await import.ImportAsync(path);
+					FilePath = String.Empty;
 				}
 			}
 
@@ -229,6 +251,116 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region OpenProp command
+
+		private Command _openPropCommand;
+
+		/// <summary>
+		/// Gets the OpenProp command.
+		/// </summary>
+		public Command OpenPropCommand
+		{
+			get { return _openPropCommand ?? (_openPropCommand = new Command(OpenProp)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the OpenProp command is executed.
+		/// </summary>
+		private async void OpenProp()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+			openFileService.IsMultiSelect = false;
+			openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+			openFileService.Filter = "Prop Files(*.prp)|*.prp";
+			if (await openFileService.DetermineFileAsync())
+			{
+				string path = openFileService.FileNames.First();
+				if (!string.IsNullOrEmpty(path))
+				{
+					Prop p = PropModelServices.Instance().LoadProp(path);
+					if (p != null)
+					{
+						Prop = p;
+						FilePath = path;
+					}
+					else
+					{
+						//Alert user
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region SaveModel command
+
+		private Command _saveModelCommand;
+
+		/// <summary>
+		/// Gets the SaveModel command.
+		/// </summary>
+		public Command SaveModelCommand
+		{
+			get { return _saveModelCommand ?? (_saveModelCommand = new Command(SaveModel)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the SaveModel command is executed.
+		/// </summary>
+		private async void SaveModel()
+		{
+			PropModelServices.Instance().EnsureModelDirectory();
+			if (string.IsNullOrEmpty(FilePath))
+			{
+				SaveModelAs();
+			}
+			else
+			{
+				PropModelPersistenceService.UpdateModel(Prop, FilePath);
+			}
+		}
+
+		#endregion
+
+		#region SaveModelAs command
+
+		private Command _saveModelAsCommand;
+
+		/// <summary>
+		/// Gets the SaveModelAs command.
+		/// </summary>
+		public Command SaveModelAsCommand
+		{
+			get { return _saveModelAsCommand ?? (_saveModelAsCommand = new Command(SaveModelAs)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the SaveModelAs command is executed.
+		/// </summary>
+		private async void SaveModelAs()
+		{
+			PropModelServices.Instance().EnsureModelDirectory();
+			var dependencyResolver = this.GetDependencyResolver();
+			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
+			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
+			saveFileService.CheckPathExists = true;
+			saveFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			if (await saveFileService.DetermineFileAsync())
+			{
+				// User selected a file
+				if (PropModelPersistenceService.SaveModel(Prop, saveFileService.FileName))
+				{
+					FilePath = saveFileService.FileName;
+				}
+			}
+		}
+
+		#endregion
+
+
+
 		private void NewProp()
 		{
 			MessageBoxService mbs = new MessageBoxService();
@@ -236,6 +368,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (result.Result == MessageResult.OK)
 			{
                 Prop = PropModelServices.Instance().CreateProp(result.Response);
+				FilePath = string.Empty;
 			}
 		}
 

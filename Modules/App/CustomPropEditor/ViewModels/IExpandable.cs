@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VixenModules.App.CustomPropEditor.ViewModels
+﻿namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	/// <summary>
 	/// Interface for items that can be expanded
@@ -9,10 +6,5 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	public interface IExpandable
 	{
 		bool IsExpanded { get; set; }
-
-		IEnumerable<Guid> GetParentIds();
-
-		IEnumerable<Guid> GetChildrenIds();
-
 	}
 }

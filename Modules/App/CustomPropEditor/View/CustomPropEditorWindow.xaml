@@ -44,8 +44,8 @@
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="File" Name="FileMenu">
 				<MenuItem Header="New" Command="{Binding NewPropCommand}"></MenuItem>
-				<MenuItem Header="Open"></MenuItem>
-				<MenuItem Header="Save"></MenuItem>
+				<MenuItem Header="Open" Command="{Binding OpenPropCommand}"></MenuItem>
+				<MenuItem Header="Save" Command="{Binding SaveModelCommand}"></MenuItem>
 				<MenuItem Header="Save As"></MenuItem>
 				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
 			</MenuItem>

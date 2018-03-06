@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
 using NLog;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using Point = System.Windows.Point;
 
@@ -15,11 +17,11 @@ namespace VixenModules.App.CustomPropEditor.Services
 		private static PropModelServices _instance;
 		private Prop _prop;
 		private readonly Dictionary<Guid, ElementModel> _models = new Dictionary<Guid, ElementModel>();
-		private readonly Dictionary<Guid, ElementModel> _lightToModel = new Dictionary<Guid, ElementModel>();
-
+		//private readonly Dictionary<Guid, ElementModel> _lightToModel = new Dictionary<Guid, ElementModel>();
+		
 		private PropModelServices()
 		{
-
+			ModelsFolder = Path.Combine(Paths.DataRootPath, "Models");
 		}
 
 		public static PropModelServices Instance()
@@ -32,13 +34,53 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return _instance;
 		}
 
+		public string ModelsFolder { get; set; }
+
+		public bool EnsureModelDirectory()
+		{
+			if (!Directory.Exists(ModelsFolder))
+			{
+				try
+				{
+					Directory.CreateDirectory(ModelsFolder);
+					return true;
+				}
+				catch
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
 		public Prop CreateProp(string name = "Default")
 		{
 			_prop = new Prop(name);
 			_models.Clear();
-			_lightToModel.Clear();
+			//_lightToModel.Clear();
 			_models.Add(_prop.RootNode.Id, _prop.RootNode);
 			return _prop;
+		}
+
+		public Prop LoadProp(string path)
+		{
+			var p = PropModelPersistenceService.GetModel(path);
+			if (p != null)
+			{
+				_prop = p;
+				ExtractModels();
+			}
+
+			return _prop;
+		}
+
+		private void ExtractModels()
+		{
+			_models.Clear();
+			var allModels = _prop.GetAll();
+			Console.Out.WriteLine($"Models count = {allModels.Count()}");
+
+			allModels.Distinct().ForEach(x => _models.Add(x.Id, x));
 		}
 
 		public void SetImage(string filePath)
@@ -77,14 +119,14 @@ namespace VixenModules.App.CustomPropEditor.Services
 			foreach (var elementModel in elementModels)
 			{
 				em.Children.Add(elementModel);
-				elementModel.Parents.Add(em);
+				elementModel.Parents.Add(em.Id);
 			}
 		}
 
 		public void AddToParent(ElementModel model, ElementModel parentToJoin)
 		{
 			parentToJoin.Children.Add(model);
-			model.Parents.Add(parentToJoin);
+			model.Parents.Add(parentToJoin.Id);
 		}
 
 	    public void MoveWithinParent(ElementModel parent, ElementModel model, int newIndex)
@@ -99,7 +141,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 		public void InsertToParent(ElementModel model, ElementModel parentToJoin, int index)
 		{
 			parentToJoin.Children.Insert(index, model);
-			model.Parents.Add(parentToJoin);
+			model.Parents.Add(parentToJoin.Id);
 		}
 
 		public void RemoveFromParent(ElementModel model, ElementModel parentToLeave)
@@ -111,12 +153,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 				_models.Remove(model.Id);
 			}
 		}
-
-		private void RemoveChildFromParent(ElementModel parent, ElementModel child)
-		{
-			Prop.RemoveFromParent(child, parent);
-		}
-
+		
 		public ElementModel AddLightNode(ElementModel target, Point p, int? order = null, int? size = null)
 		{
 			if (target == null)
@@ -147,7 +184,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 			var light = CreateLight(p, size.Value, em.Id);
 			em.AddLight(light);
-			_lightToModel.Add(light.Id, em);
+			//_lightToModel.Add(light.Id, em);
 
 			return em;
 
@@ -187,7 +224,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			var light = CreateLight(p, em.LightSize, em.Id);
 			em.AddLight(light);
-			_lightToModel.Add(light.Id, em);
+			//_lightToModel.Add(light.Id, em);
 		}
 
 		public void RemoveLights(IEnumerable<Light> lights)
@@ -225,15 +262,21 @@ namespace VixenModules.App.CustomPropEditor.Services
 			if (target.IsLeaf)
 			{
 				var success = target.RemoveLight(light);
-				_lightToModel.Remove(light.Id);
+				//_lightToModel.Remove(light.Id);
 				if (success)
 				{
 					if (!target.Lights.Any())
 					{
 						//remove me from all my parents so I can be deleted
-						foreach (var parent in target.Parents.ToList())
+						foreach (var parentId in target.Parents.ToList())
 						{
-							RemoveChildFromParent(parent, target);
+							ElementModel parentElementModel;
+							if (_models.TryGetValue(parentId, out parentElementModel))
+							{
+								parentElementModel.RemoveChild(target);
+								target.RemoveParent(parentElementModel);
+							}
+							
 						}
 
 						//Remove me
@@ -243,31 +286,26 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 		}
 
-		public IEnumerable<ElementModel> FindModelsForLights(IEnumerable<Light> lights)
-		{
-			return FindModelsForLightIds(lights.Select(l => l.Id));
-		}
+		//public IEnumerable<ElementModel> FindModelsForLights(IEnumerable<Light> lights)
+		//{
+		//	return FindModelsForLightIds(lights.Select(l => l.Id));
+		//}
 
-		public IEnumerable<ElementModel> FindModelsForLightIds(IEnumerable<Guid> lightIds)
-		{
-			return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]);
-		}
+		//public IEnumerable<ElementModel> FindModelsForLightIds(IEnumerable<Guid> lightIds)
+		//{
+		//	return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]);
+		//}
 
-		public IEnumerable<Guid> FindModelIdsForLightIds(IEnumerable<Guid> lightIds)
-		{
-			return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]).Select(m => m.Id);
-		}
+		//public IEnumerable<Guid> FindModelIdsForLightIds(IEnumerable<Guid> lightIds)
+		//{
+		//	return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]).Select(m => m.Id);
+		//}
 
 		public Prop Prop => _prop;
 
 		private Light CreateLight(Point p, double size, Guid parentModelId)
 		{
 			return new Light(p, size, parentModelId);
-		}
-
-		public void DeselectAllModels()
-		{
-			//_models.Values.ForEach(m => m.IsSelected = false);
 		}
 
 		public bool IsNameDuplicated(string name)

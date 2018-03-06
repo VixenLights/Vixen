@@ -87,6 +87,10 @@
       <HintPath>..\..\..\packages\gong-wpf-dragdrop.1.1.0\lib\net46\GongSolutions.Wpf.DragDrop.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LiteDB, Version=4.1.1.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\LiteDB.4.1.1\lib\net40\LiteDB.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
@@ -136,6 +140,7 @@
     <Compile Include="Model\ElementType.cs" />
     <Compile Include="Services\MessageBoxResponse.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
+    <Compile Include="Services\PropModelPersistenceService.cs" />
     <Compile Include="Services\PropModelServices.cs" />
     <Compile Include="Services\ElementModelLookUpService.cs" />
     <Compile Include="ViewModels\ElementModelViewModel.cs" />

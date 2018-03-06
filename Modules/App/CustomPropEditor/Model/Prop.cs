@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Common.WPFCommon.ViewModel;
+using LiteDB;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -22,11 +24,14 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public Prop()
         {
+			Id = Guid.NewGuid();
             _rootNode = new ElementModel();
             Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
             Opacity = 1;
             Name = "Default";
         }
+
+	    public Guid Id { get; private set; }
 
         public ElementModel RootNode
         {
@@ -38,27 +43,7 @@ namespace VixenModules.App.CustomPropEditor.Model
                 OnPropertyChanged(nameof(RootNode));
             }
         }
-
-
-        public void AddElementModel(ElementModel ec)
-        {
-            _rootNode.Children.Add(ec);
-        }
-
-        public void AddElementModels(IEnumerable<ElementModel> elementCandidates)
-        {
-            foreach (var elementCandidate in elementCandidates)
-            {
-                _rootNode.Children.Add(elementCandidate);
-            }
-        }
-
-        public bool RemoveFromParent(ElementModel child, ElementModel parent)
-        {
-            parent.RemoveChild(child);
-            return child.RemoveParent(parent);
-        }
-
+		
         public string Name
         {
             get { return _name; }
@@ -71,6 +56,7 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
+		[BsonIgnore]
         public BitmapSource Image
         {
             get { return _image; }
@@ -113,7 +99,8 @@ namespace VixenModules.App.CustomPropEditor.Model
             get { return _width; }
             set
             {
-                _width = value;
+	            if (value == _width) return;
+				_width = value;
                 OnPropertyChanged(nameof(Width));
             }
         }
@@ -127,9 +114,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
         public IEnumerable<ElementModel> GetAll()
         {
-            var list = _rootNode.GetNodeEnumerator().ToList();
-            list.Add(RootNode);
-            return list;
+            return _rootNode.GetNodeEnumerator().ToList();
         }
 
         #region Utilities

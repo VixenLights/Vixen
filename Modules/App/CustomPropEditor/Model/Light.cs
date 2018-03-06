@@ -13,6 +13,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private double _z;
 		private Guid _id;
 
+		internal Light()
+		{
+
+		}
+
 		public Light(Point center, double size, Guid parentId)
 		{
 			Id = Guid.NewGuid();

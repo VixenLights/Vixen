@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
+using LiteDB;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -15,7 +16,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		private const int DefaultLightSize = 3;
 		private ObservableCollection<Light> _lights;
 		private ObservableCollection<ElementModel> _children;
-		private ObservableCollection<ElementModel> _parents;
+		private ObservableCollection<Guid> _parents;
 		private int _order;
 		private string _name;
 		private int _lightSize;
@@ -26,7 +27,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 		{
 			Lights = new ObservableCollection<Light>();
 			Children = new ObservableCollection<ElementModel>();
-			Parents = new ObservableCollection<ElementModel>();
+			Parents = new ObservableCollection<Guid>();
 			Id = Guid.NewGuid();
 			LightSize = DefaultLightSize;
 		}
@@ -44,12 +45,12 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public ElementModel(string name, ElementModel parent) : this(name)
 		{
-			Parents.Add(parent);
+			Parents.Add(parent.Id);
 		}
 
 		public ElementModel(string name, int order, ElementModel parent) : this(name)
 		{
-			Parents.Add(parent);
+			Parents.Add(parent.Id);
 			Order = order;
 		}
 
@@ -192,7 +193,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#region Parents
 
-		public ObservableCollection<ElementModel> Parents
+		public ObservableCollection<Guid> Parents
 		{
 			get { return _parents; }
 			set
@@ -225,7 +226,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public bool RemoveParent(ElementModel parent)
 		{
-			bool success = Parents.Remove(parent);
+			bool success = Parents.Remove(parent.Id);
 			parent.RemoveChild(this);
 			if (!Parents.Any())
 			{
@@ -250,7 +251,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public void AddParent(ElementModel parent)
 		{
-			Parents.Add(parent);
+			Parents.Add(parent.Id);
 		}
 
 		public void AddChild(ElementModel em)
