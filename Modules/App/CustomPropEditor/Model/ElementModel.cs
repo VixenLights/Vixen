@@ -186,6 +186,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(Children));
 				OnPropertyChanged(nameof(IsLeaf));
 				OnPropertyChanged(nameof(IsGroupNode));
+				OnPropertyChanged(nameof(Order));
+				OnPropertyChanged(nameof(IsLightNode));
 			}
 		}
 
@@ -219,7 +221,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 				OnPropertyChanged(nameof(LightCount));
 				OnPropertyChanged(nameof(IsGroupNode));
 			    OnPropertyChanged(nameof(ElementType));
-            }
+				OnPropertyChanged(nameof(IsLightNode));
+			}
 		}
 
 		#endregion
@@ -277,6 +280,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			ln.ParentModelId = Id;
 			OnPropertyChanged(nameof(ElementType));
 			OnPropertyChanged(nameof(LightCount));
+			OnPropertyChanged(nameof(IsLightNode));
 		}
 
 		public bool RemoveLight(Light light)
@@ -285,6 +289,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			light.ParentModelId = Guid.Empty;
 			OnPropertyChanged(nameof(ElementType));
 			OnPropertyChanged(nameof(LightCount));
+			OnPropertyChanged(nameof(IsLightNode));
 			return success;
 		}
 
