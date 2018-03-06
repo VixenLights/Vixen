@@ -6,46 +6,14 @@
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:controls="clr-namespace:Common.WPFCommon.Controls">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="Menu.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-    <!-- This is a start on extracting the colors to variables. This needs a lot more work. -->
-    <Color x:Key="ForeColor">#EBEBEB</Color>
-    <Color x:Key="ForeColorDisabled">#777777</Color>
-    <Color x:Key="BackColor">#444444</Color>
-    <Color x:Key="BorderColor">#888888</Color>
-
-	<Color x:Key="MouseOverBackground">#1F26A0DA</Color>
-	<Color x:Key="MouseOverBorder">#a826A0Da</Color>
-
-    <Color x:Key="GreenColor">#00FF00</Color>
-
-    <SolidColorBrush x:Key="ForeColorBrush" Color="{StaticResource ForeColor}"/>
-    <SolidColorBrush x:Key="ForeColorDisabledBrush" Color="{StaticResource ForeColorDisabled}"/>
-	<SolidColorBrush x:Key="DisabledForeground" Color="#777" />
-    <SolidColorBrush x:Key="BackColorBrush" Color="{StaticResource BackColor}"/>
-    <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}"/>
-
-	<SolidColorBrush x:Key="RaisedHighlight" Color="{StaticResource BorderColor}"/>
-	<SolidColorBrush x:Key="Shadow" Color="#101010"/>
-	<SolidColorBrush x:Key="RaisedShadow" Color="#000000"/>
-
-	<SolidColorBrush x:Key="DisabledSunkenBackground" Color="#404040" />
-	<SolidColorBrush x:Key="DisabledHighlight" Color="#505050" />
-	<SolidColorBrush x:Key="DisabledShadow" Color="#303030" />
-
-	<LinearGradientBrush x:Key="Checked" StartPoint="0,0" EndPoint="0,1">
-		<GradientStop Offset="0.0" Color="#404040" />
-		<GradientStop Offset="1.2" Color="#181818" />
-	</LinearGradientBrush>
-
-	<SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
-    <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
-    <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
-    <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
-    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
-    <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
-
-    <SolidColorBrush x:Key="GreenBrush" Color="#FF00FF00"/>
+	
 
 
     <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
