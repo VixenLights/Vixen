@@ -188,7 +188,7 @@
 													<Setter Property="Fill" Value="White"/>
 													<Style.Triggers>
 														<DataTrigger Binding="{Binding IsSelected}" Value="True">
-															<Setter Property="Fill" Value="Yellow"></Setter>
+															<Setter Property="Fill" Value="HotPink"></Setter>
 														</DataTrigger>
 													</Style.Triggers>
 												</Style>
