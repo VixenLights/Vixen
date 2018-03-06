@@ -448,8 +448,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		    if (CanAcceptData(dropInfo))
 		    {
 		        dropInfo.Effects = ShouldCopyData(dropInfo) ? DragDropEffects.Copy : DragDropEffects.Move;
+
+			    if (dropInfo.InsertPosition == RelativeInsertPosition.None)
+			    {
+				    dropInfo.DropTargetAdorner = null;
+				    return;
+			    }
+
 		        var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter) && dropInfo.VisualTargetItem is TreeViewItem;
 		        dropInfo.DropTargetAdorner = isTreeViewItem ? DropTargetAdorners.Highlight : DropTargetAdorners.Insert;
+
+				Console.Out.WriteLine($"Postiion={dropInfo.InsertPosition} : Adorner={dropInfo.DropTargetAdorner}"  );
 		    }
         }
 
