@@ -93,7 +93,7 @@
 		<Border BorderThickness="0 0 0 1" >
 
 
-			<Grid Background="#444444">
+			<Grid Background="{StaticResource BackColorBrush}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="1*"/>
 					<ColumnDefinition Width="2*"/>
@@ -120,46 +120,48 @@
 				</wpfPropertyGrid:PropertyGrid>
 
 				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-					<ToolBarTray DockPanel.Dock="Top">
-						<ToolBar>
-							<ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode">
-								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20"/>
-							</ToggleButton>
-							<ToggleButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" ToolTip="Selection mode">
-								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20"/>
-							</ToggleButton>
-
+					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
+						<ToolBar Background="{StaticResource BackColorBrush}">
+							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
+							             Style="{StaticResource {x:Type ToggleButton}}" Width="30">
+								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
+							</RadioButton>
+							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" 
+							             ToolTip="Selection mode" GroupName="SelectDraw"
+							             Style="{StaticResource {x:Type ToggleButton}}" Width="30">
+								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
+							</RadioButton>
 							<Separator />
-							<Button Command="Copy" ToolTip="Cut">
+							<Button Command="Copy" ToolTip="Cut" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/cut.png" Height="20"/>
 							</Button>
-							<Button Command="Paste" ToolTip="Copy">
+							<Button Command="Paste" ToolTip="Copy" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/copy.png" Height="20"/>
 							</Button>
-							<Button Command="Paste" ToolTip="Paste">
+							<Button Command="Paste" ToolTip="Paste" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/paste.png" Height="20"/>
 							</Button>
 							<Separator />
-							<Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background">
+							<Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Height="20"/>
 							</Button>
 							<Separator />
-							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
+							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
+							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top">
+							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom">
+							<Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal">
+							<Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical">
+							<Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical" Style="{StaticResource {x:Type Button}}">
 								<Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="20"/>
 							</Button>
 						</ToolBar>
