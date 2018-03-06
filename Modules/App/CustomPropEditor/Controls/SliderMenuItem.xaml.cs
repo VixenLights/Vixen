@@ -70,10 +70,10 @@ namespace VixenModules.App.CustomPropEditor.Controls
         /// <summary>
         /// Gets or Sets the value for this slider.
         /// </summary>
-        public double Value
+        public double ItemValue
         {
-            get { return (double)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get { return (double)GetValue(ItemValueProperty); }
+            set { SetValue(ItemValueProperty, value); }
         }
 
         
@@ -82,9 +82,9 @@ namespace VixenModules.App.CustomPropEditor.Controls
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static double GetValue(DependencyObject obj)
+        public static double GetItemValue(DependencyObject obj)
         {
-            return (double)obj.GetValue(ValueProperty);
+            return (double)obj.GetValue(ItemValueProperty);
         }
 
         
@@ -93,18 +93,18 @@ namespace VixenModules.App.CustomPropEditor.Controls
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="value"></param>
-        public static void SetValue(DependencyObject obj, double value)
+        public static void SetItemValue(DependencyObject obj, double value)
         {
-            obj.SetValue(ValueProperty, value);
+            obj.SetValue(ItemValueProperty, value);
         }
 
         
         /// <summary>
         /// The real value for the slider.  
         /// </summary>
-        public static readonly DependencyProperty ValueProperty =
+        public static readonly DependencyProperty ItemValueProperty =
             DependencyProperty.RegisterAttached(
-            "Value",
+            "ItemValue",
             typeof(double),
             typeof(SliderMenuItem),
             new UIPropertyMetadata(1.0d, Value_ValueChanged));
@@ -241,7 +241,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         {
             if (item._tickValueMap.ContainsKey(tickValue))
             {
-                item.Value = item._tickValueMap[tickValue];
+                item.ItemValue = item._tickValueMap[tickValue];
                 return;
             }
 
@@ -267,7 +267,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
             double sourceScale = highTick - lowTick;
 
             double newValue = (tickValue - lowTick) * valueScale / sourceScale + lowValue;
-            item.Value = newValue;
+            item.ItemValue = newValue;
         }
 
         
@@ -310,8 +310,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 // top element
                 if (topElement != null)
                 {
-                    if ((double)elem.GetValue(SliderMenuItem.ValueProperty) >=
-                        (double)topElement.GetValue(SliderMenuItem.ValueProperty))
+                    if ((double)elem.GetValue(SliderMenuItem.ItemValueProperty) >=
+                        (double)topElement.GetValue(SliderMenuItem.ItemValueProperty))
                     {
                         bottomElement = elem;
                     }
@@ -394,13 +394,13 @@ namespace VixenModules.App.CustomPropEditor.Controls
                 }
 
                 _slider.Ticks.Add(thisTickSpot);
-                double sliderValue = (double)elem.GetValue(SliderMenuItem.ValueProperty);
+                double sliderValue = (double)elem.GetValue(SliderMenuItem.ItemValueProperty);
                 _tickValueMap[thisTickSpot] = sliderValue;
 
             }
 
             // At end of arrange pass, set the tick to the inital value
-            SetTickToValue(this, Value);
+            SetTickToValue(this, ItemValue);
 
             return returnSize;
         }
@@ -413,7 +413,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
         /// <param name="e"></param>
         private void SliderMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            this.Value = (double)((DependencyObject)sender).GetValue(SliderMenuItem.ValueProperty);
+            this.ItemValue = (double)((DependencyObject)sender).GetValue(SliderMenuItem.ItemValueProperty);
         }
     }
 }

@@ -107,9 +107,9 @@
 		</Style>
 
 		<ContextMenu x:Key="ElementTreeContextMenu">
-			<MenuItem Header="Create Node" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-			<MenuItem Header="Create Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-			<MenuItem Header="Move to Group" Command="{Binding Path=DataContext.ElementTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+			<MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+			<MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+			<MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
 			<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 			<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 		</ContextMenu>

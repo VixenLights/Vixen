@@ -56,18 +56,17 @@
 			</MenuItem>
 			<MenuItem Header="View">
 				<MenuItem Header="Opacity">
-					<controls:SliderMenuItem x:Name="OpacitySliderMenu"
-                                             Value="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
-						<MenuItem Header="10%" controls:SliderMenuItem.Value=".1"></MenuItem>
-						<MenuItem Header="20%" controls:SliderMenuItem.Value=".2"></MenuItem>
-						<MenuItem Header="30%" controls:SliderMenuItem.Value=".3"></MenuItem>
-						<MenuItem Header="40%" controls:SliderMenuItem.Value=".4"></MenuItem>
-						<MenuItem Header="50%" controls:SliderMenuItem.Value=".5"></MenuItem>
-						<MenuItem Header="60%" controls:SliderMenuItem.Value=".6"></MenuItem>
-						<MenuItem Header="70%" controls:SliderMenuItem.Value=".7"></MenuItem>
-						<MenuItem Header="80%" controls:SliderMenuItem.Value=".8"></MenuItem>
-						<MenuItem Header="90%" controls:SliderMenuItem.Value=".9"></MenuItem>
-						<MenuItem Header="100%" controls:SliderMenuItem.Value="1"></MenuItem>
+					<controls:SliderMenuItem x:Name="OpacitySliderMenu" ItemValue="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
+						<MenuItem Header="10%" controls:SliderMenuItem.ItemValue=".1"></MenuItem>
+						<MenuItem Header="20%" controls:SliderMenuItem.ItemValue=".2"></MenuItem>
+						<MenuItem Header="30%" controls:SliderMenuItem.ItemValue=".3"></MenuItem>
+						<MenuItem Header="40%" controls:SliderMenuItem.ItemValue=".4"></MenuItem>
+						<MenuItem Header="50%" controls:SliderMenuItem.ItemValue=".5"></MenuItem>
+						<MenuItem Header="60%" controls:SliderMenuItem.ItemValue=".6"></MenuItem>
+						<MenuItem Header="70%" controls:SliderMenuItem.ItemValue=".7"></MenuItem>
+						<MenuItem Header="80%" controls:SliderMenuItem.ItemValue=".8"></MenuItem>
+						<MenuItem Header="90%" controls:SliderMenuItem.ItemValue=".9"></MenuItem>
+						<MenuItem Header="100%" controls:SliderMenuItem.ItemValue="1"></MenuItem>
 					</controls:SliderMenuItem>
 				</MenuItem>
 			</MenuItem>
@@ -172,10 +171,9 @@
                             IsDrawing="{Binding DrawingPanelViewModel.IsDrawing}"
                             AddLightCommand="{Binding AddLightCommand}"
                             SelectedModels="{Binding DrawingPanelViewModel.SelectedItems}">
-
-							<!--<i:Interaction.Behaviors>
-                                <vm:MultiSelectionBehavior SelectedItems="{Binding DrawingPanelViewModel.SelectedItems}" />
-                            </i:Interaction.Behaviors>-->
+							<i:Interaction.Behaviors>
+								<catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
+							</i:Interaction.Behaviors>
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<ContentControl>
@@ -207,9 +205,7 @@
 										<Canvas.Background>
 											<ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}"></ImageBrush>
 										</Canvas.Background>
-										<i:Interaction.Behaviors>
-											<catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
-										</i:Interaction.Behaviors>
+										
 									</Canvas>
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
@@ -218,8 +214,6 @@
 					</ScrollViewer>
 
 				</DockPanel>
-				<!--</GroupBox>-->
-
 				<GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
 			</Grid>
 		</Border>
