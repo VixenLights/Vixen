@@ -636,7 +636,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				}
 		        else
 		        {
-                    dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(new[] { dragInfo.SourceItems.Cast<object>().First() });
+			        var dragItem = dragInfo.SourceItems.Cast<object>().First() as ElementModelViewModel;
+			        if (dragItem != null)
+			        {
+				        dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(new[] { dragItem });
+				        foreach (var elementModelViewModel in SelectedItems.ToList())
+				        {
+					        elementModelViewModel.IsSelected = false;
+				        }
+
+				        dragItem.IsSelected = true;
+			        }
+					
+					
 				}
 		    }
 
