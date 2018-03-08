@@ -29,6 +29,20 @@ namespace VixenModules.Effect.VerticalMeter
             }
         }
 
+	    #region Information
+
+	    public override string Information
+	    {
+		    get { return "Visit the Vixen Lights website for more information on this effect."; }
+	    }
+
+	    public override string InformationLink
+	    {
+		    get { return "http://www.vixenlights.com/vixen-3-documentation/sequencer/effects/vertical-meter/"; }
+	    }
+
+	    #endregion
+
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
 		protected override void RenderNode(ElementNode node)
