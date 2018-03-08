@@ -14,7 +14,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-		    if (lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit )
+            if (lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit )
 			{
 				return highLayerValue;
 			}	
@@ -23,11 +23,8 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-            if (HSV.VFromRgb(lowLayerColor) >= _data.LowerLimit && HSV.VFromRgb(lowLayerColor) <= _data.UpperLimit )
-			{
-				return highLayerColor;
-			}			
-			return lowLayerColor;
+		    var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor),2);
+		    return (lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) ? highLayerColor : lowLayerColor;
 		}
 
 		public override IModuleDataModel ModuleData

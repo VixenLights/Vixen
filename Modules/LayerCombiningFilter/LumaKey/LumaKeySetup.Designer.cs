@@ -74,7 +74,7 @@
             this.numLowerLimit.Name = "numLowerLimit";
             this.numLowerLimit.Size = new System.Drawing.Size(26, 23);
             this.numLowerLimit.TabIndex = 2;
-            this.numLowerLimit.Text = "0";
+            this.numLowerLimit.Text = "0"; 
             this.numLowerLimit.LostFocus += new System.EventHandler(this.numLowerLimit_LostFocus);
             // 
             // numUpperLimit

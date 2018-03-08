@@ -14,13 +14,16 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-		    LowerLimit = lowerLimit;
-		    UpperLimit = upperLimit;
+		    _lowerLimit = (int)(lowerLimit * 100);
+		    _upperLimit = (int)(upperLimit * 100);
 		    UpdateLimitControls();
 		}
 
-        public double LowerLimit { get; private set; }
-	    public double UpperLimit { get; private set; }
+        public double LowerLimit { get { return _lowerLimit / 100d; } }
+	    public double UpperLimit { get { return _upperLimit / 100d; } }
+
+        private int _lowerLimit { get; set; }
+        private int _upperLimit { get; set; }
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
@@ -36,69 +39,42 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 	    private void trkLowerLimit_Scroll(object sender, EventArgs e)
 	    {
-	        if (trkLowerLimit.Value < UpperLimit * 100)
-	        {
-	            LowerLimit = trkLowerLimit.Value / 100d;
-            }
-	        else
-	        {
-	            LowerLimit = UpperLimit - .01;
-	            trkLowerLimit.Value = (int)(LowerLimit*100);
-	        }
-	        numLowerLimit.Text = (100 * LowerLimit).ToString();
-        }
+            ValidateLower(trkLowerLimit.Value);
+	    }
 
         private void trkUpperLimit_Scroll(object sender, EventArgs e)
         {
-            if (trkUpperLimit.Value > LowerLimit * 100)
-            {
-                UpperLimit = trkUpperLimit.Value / 100d;
-            }
-            else
-            {
-                UpperLimit = LowerLimit + .01;
-                trkUpperLimit.Value = (int)(UpperLimit*100);
-            }
-            numUpperLimit.Text = (100 * UpperLimit).ToString();          
+            ValidateUpper(trkUpperLimit.Value);
         }
 
 	    private void numLowerLimit_LostFocus(object sender, EventArgs e)
 	    {
-	        if ( (numLowerLimit.IntValue < UpperLimit*100) && numLowerLimit.IntValue >= 0)
-	        {
-	            LowerLimit = numLowerLimit.IntValue / 100d;
-	        }
-	        else
-	        {
-	            LowerLimit = UpperLimit - .01;
-	            numLowerLimit.Text = (LowerLimit * 100).ToString();
-	        }
-	        trkLowerLimit.Value = (int)(LowerLimit * 100);
+	        ValidateLower(numLowerLimit.IntValue);
 	    }
 
 	    private void numUpperLimit_LostFocus(object sender, EventArgs e)
 	    {
-	        if (numUpperLimit.IntValue > LowerLimit*100 && numUpperLimit.IntValue <= 100 )
-	        {
-	            UpperLimit = numUpperLimit.IntValue / 100d;
-	        }
-	        else
-	        {
-	            UpperLimit = LowerLimit + .01;
-	            numUpperLimit.Text = (UpperLimit * 100).ToString();
-	        }
-	        trkUpperLimit.Value = (int)(UpperLimit * 100);
+	        ValidateUpper(numUpperLimit.IntValue);
 	    }
 
-	    private void UpdateLimitControls()
+	    private void ValidateLower(int v)
 	    {
-	        var lowerLimit = LowerLimit * 100;
-	        var upperLimit = UpperLimit * 100;
-	        
-	        trkLowerLimit.Value = (int)lowerLimit;
-	        trkUpperLimit.Value = (int)upperLimit;
-	        numLowerLimit.Text = lowerLimit.ToString();
-	        numUpperLimit.Text = upperLimit.ToString();
+	        _lowerLimit = (v <= _upperLimit && v >= 0 && v <= 100) ? v : _upperLimit;
+	        UpdateLimitControls();
         }
+
+	    private void ValidateUpper(int v)
+	    {
+	        _upperLimit = (v >= _lowerLimit && v >= 0 && v <= 100) ? v : _lowerLimit;
+            UpdateLimitControls();
+	    }
+
+        private void UpdateLimitControls()
+	    {
+            trkLowerLimit.Value = _lowerLimit;
+	        trkUpperLimit.Value = _upperLimit;
+	        numLowerLimit.Text = _lowerLimit.ToString();
+	        numUpperLimit.Text = _upperLimit.ToString();
+	    }
     }
 }
