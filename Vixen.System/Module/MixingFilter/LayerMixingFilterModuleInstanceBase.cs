@@ -35,6 +35,11 @@ namespace Vixen.Module.MixingFilter
 			return highLayerValue;
 		}
 
+		public virtual bool RequiresMixingPartner
+		{
+			get { return false; }
+		}
+
 		#region Equality
 
 		public bool Equals(ILayerMixingFilterInstance x, ILayerMixingFilterInstance y)

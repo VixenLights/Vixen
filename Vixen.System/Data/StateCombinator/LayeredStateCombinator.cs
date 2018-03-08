@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module.MixingFilter;
@@ -15,13 +16,18 @@ namespace Vixen.Data.StateCombinator
 		private readonly Dictionary<int, DiscreteValue> _tempDiscreteColors = new Dictionary<int, DiscreteValue>(4);
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
-	    
+		private static readonly List<IIntentState>  EmptyState = Enumerable.Empty<IIntentState>().ToList();
+
 		public override List<IIntentState> Combine(List<IIntentState> states)
 		{
 			//Reset our return type and check to see if we really have anything to combine. 
 			//If we have one or none we can skip all the complex stuff			
 			if (states.Count <= 1)
 			{
+				if (states.Count == 1 && states[0].Layer.RequiresMixingPartner)
+				{
+					return EmptyState;
+				}
 				return states;
 			}
 

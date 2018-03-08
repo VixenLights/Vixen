@@ -10,5 +10,7 @@ namespace Vixen.Module.MixingFilter
 		Color CombineFullColor(Color highLayerColor, Color lowLayerColor);
 
 		DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue);
+
+		bool RequiresMixingPartner { get; }
 	}
 }

@@ -21,6 +21,11 @@ namespace VixenModules.LayerMixingFilter.IntensityOverlay
 			color.V = color.V * newV;
 			return color.ToRGB();
 		}
+
+		public override bool RequiresMixingPartner
+		{
+			get { return true; }
+		}
 	}
 
 	
