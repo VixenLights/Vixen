@@ -14,17 +14,17 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-            if (lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit )
+			if (lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit)
 			{
 				return highLayerValue;
-			}	
+			}
 			return lowLayerValue;
 		}
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-		    var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor),2);
-		    return (lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) ? highLayerColor : lowLayerColor;
+			var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor), 2);
+			return (lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) ? highLayerColor : lowLayerColor;
 		}
 
 		public override IModuleDataModel ModuleData
@@ -40,13 +40,13 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override bool Setup()
 		{
-			using (var setup = new LumaKeySetup(_data.LowerLimit,_data.UpperLimit))
+			using (var setup = new LumaKeySetup(_data.LowerLimit, _data.UpperLimit))
 			{
-			    if (setup.ShowDialog() != DialogResult.OK) return false;			  
-			    _data.LowerLimit = setup.LowerLimit;
-			    _data.UpperLimit = setup.UpperLimit;
-			    return true;
-			}			
+				if (setup.ShowDialog() != DialogResult.OK) return false;
+				_data.LowerLimit = setup.LowerLimit;
+				_data.UpperLimit = setup.UpperLimit;
+				return true;
+			}
 		}
-	}	
+	}
 }

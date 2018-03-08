@@ -3,7 +3,7 @@ using Vixen.Module.MixingFilter;
 
 namespace VixenModules.LayerMixingFilter.LumaKey
 {
-	public class LumaKeyModuleDescriptor: LayerMixingFilterModuleDescriptorBase
+	public class LumaKeyModuleDescriptor : LayerMixingFilterModuleDescriptorBase
 	{
 		private static readonly Guid _typeId = new Guid("{7583F7D4-DF99-4492-8D10-257C2677FF7B}");
 
@@ -19,7 +19,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public override Type ModuleClass
 		{
-			get { return typeof (LumaKeyModule); }
+			get { return typeof(LumaKeyModule); }
 		}
 
 		public override Type ModuleDataClass
