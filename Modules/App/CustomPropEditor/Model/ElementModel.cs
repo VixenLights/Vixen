@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Navigation;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
 using LiteDB;
@@ -171,6 +172,10 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    public bool CanAddGroupNodes => IsGroupNode &&  (!Children.Any() || Children.Any(c => c.IsGroupNode));
 
 		public bool CanAddLeafNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsLeaf));
+
+		public bool CanAddLightNodes => (!Children.Any() || IsLightNode || Children.All(c => !c.IsGroupNode));
+
+		public bool IsRootNode => !Parents.Any();
 
 		#endregion
 

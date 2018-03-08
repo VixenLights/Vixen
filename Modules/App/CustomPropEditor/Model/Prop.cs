@@ -26,7 +26,7 @@ namespace VixenModules.App.CustomPropEditor.Model
         {
 			Id = Guid.NewGuid();
             _rootNode = new ElementModel();
-            Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
+			Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
             Opacity = 1;
             Name = "Default";
         }

@@ -57,7 +57,6 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			_prop = new Prop(name);
 			_models.Clear();
-			//_lightToModel.Clear();
 			_models.Add(_prop.RootNode.Id, _prop.RootNode);
 			return _prop;
 		}
@@ -156,9 +155,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 		
 		public ElementModel AddLightNode(ElementModel target, Point p, int? order = null, int? size = null)
 		{
-			if (target == null)
+			if (target == null || target.IsRootNode)
 			{
-				target = _prop.RootNode;
+				target = FindOrCreateTargetGroupForLight();
 			}
 			else if (target.Lights.Any())
 			{
@@ -184,40 +183,43 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 			var light = CreateLight(p, size.Value, em.Id);
 			em.AddLight(light);
-			//_lightToModel.Add(light.Id, em);
-
+			
 			return em;
 
 		}
 
 		public ElementModel AddLight(ElementModel target, Point p, int? order = null)
 		{
-			if (target == null)
-			{
-				target = _prop.RootNode;
-			}
-			else if (!target.IsGroupNode && target.Parents.Any())
+			if (target != null && !target.IsGroupNode && target.Parents.Any())
 			{
 				AddLightToTarget(p, target);
 				return target;
 			}
 
-			if (target.IsGroupNode && target.Children.Any(x => x.IsGroupNode))
-			{
-				target = FindNearestLeafGroupNode(target);
-			}
-
-			if (target == null)
-			{
-				return null;
-			}
-
 			return AddLightNode(target, p);
 		}
 
-		private ElementModel FindNearestLeafGroupNode(ElementModel element)
+		private ElementModel FindOrCreateTargetGroupForLight()
 		{
-			return element.GetNodeEnumerator().First(x => x.IsGroupNode && x.Children.All(c => !c.IsGroupNode));
+			ElementModel target;
+			if (_prop.RootNode.IsLeaf)
+			{
+				//Create a child group in the root to hold our light
+				target = CreateNode(_prop.RootNode.Name + " Group", _prop.RootNode);
+			}
+			else
+			{
+				target = FindNearestLightGroupNode(_prop.RootNode) ?? CreateNode(_prop.RootNode.Name + " Group", _prop.RootNode);
+			}
+
+			return target;
+		}
+
+		
+
+		private ElementModel FindNearestLightGroupNode(ElementModel element)
+		{
+			return element.GetNodeEnumerator().First(x => x.CanAddLightNodes);
 		}
 
 		private void AddLightToTarget(Point p, ElementModel em)
