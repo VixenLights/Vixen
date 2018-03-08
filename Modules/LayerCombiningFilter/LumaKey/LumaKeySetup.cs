@@ -8,6 +8,9 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 {
 	public partial class LumaKeySetup : BaseForm
 	{
+		private int _lowerLimit { get; set; }
+		private int _upperLimit { get; set; }
+
 		public LumaKeySetup(double lowerLimit, double upperLimit)
 		{
 			InitializeComponent();
@@ -21,9 +24,6 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		public double LowerLimit { get { return _lowerLimit / 100d; } }
 		public double UpperLimit { get { return _upperLimit / 100d; } }
-
-		private int _lowerLimit { get; set; }
-		private int _upperLimit { get; set; }
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
