@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using Catel.Collections;
 using NLog;
-using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using Point = System.Windows.Point;
 
@@ -17,11 +16,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 		private static PropModelServices _instance;
 		private Prop _prop;
 		private readonly Dictionary<Guid, ElementModel> _models = new Dictionary<Guid, ElementModel>();
-		//private readonly Dictionary<Guid, ElementModel> _lightToModel = new Dictionary<Guid, ElementModel>();
 		
 		private PropModelServices()
 		{
-			ModelsFolder = Path.Combine(Paths.DataRootPath, "Models");
+			ModelsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		}
 
 		public static PropModelServices Instance()
@@ -87,7 +85,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			try
 			{
 				var image = new BitmapImage(new Uri(filePath, UriKind.Absolute));
-				Prop.Image = image;
+				_prop.Image = image;
 			}
 			catch (Exception ex)
 			{
@@ -226,7 +224,6 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			var light = CreateLight(p, em.LightSize, em.Id);
 			em.AddLight(light);
-			//_lightToModel.Add(light.Id, em);
 		}
 
 		public void RemoveLights(IEnumerable<Light> lights)
@@ -287,22 +284,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 				}
 			}
 		}
-
-		//public IEnumerable<ElementModel> FindModelsForLights(IEnumerable<Light> lights)
-		//{
-		//	return FindModelsForLightIds(lights.Select(l => l.Id));
-		//}
-
-		//public IEnumerable<ElementModel> FindModelsForLightIds(IEnumerable<Guid> lightIds)
-		//{
-		//	return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]);
-		//}
-
-		//public IEnumerable<Guid> FindModelIdsForLightIds(IEnumerable<Guid> lightIds)
-		//{
-		//	return lightIds.Where(_lightToModel.ContainsKey).Select(x => _lightToModel[x]).Select(m => m.Id);
-		//}
-
+		
 		public Prop Prop => _prop;
 
 		private Light CreateLight(Point p, double size, Guid parentModelId)
