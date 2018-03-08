@@ -8,7 +8,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		public LumaKeyData()
 		{			
 		    LowerLimit = 0;
-		    UpperLimit = 100;
+		    UpperLimit = 1;
 		}
 
 		public override IModuleDataModel Clone()
@@ -22,9 +22,9 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 		}
 
         [DataMember]
-		public int LowerLimit { get; set; }
+		public double LowerLimit { get; set; }
 
         [DataMember]
-        public int UpperLimit { get; set; }
+        public double UpperLimit { get; set; }
     }
 }
