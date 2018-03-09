@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Vixen.Sys;
@@ -286,15 +287,28 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					p.PointType = PreviewPoint.PointTypes.Size;
 		}
 
-		// Add a pxiel at a specific location
-		public PreviewPixel AddPixel(int x, int y)
+		public PreviewPixel AddHighPrecisionPixel(System.Windows.Point location, int size)
 		{
-			PreviewPixel pixel = new PreviewPixel(x, y, 0, PixelSize);
+			PreviewPixel pixel = new PreviewPixel(location, size);
 			pixel.PixelColor = PixelColor;
 			Pixels.Add(pixel);
 			return pixel;
 		}
 
+		// Add a pixel at a specific location
+		public PreviewPixel AddPixel(int x, int y)
+		{
+			return AddPixel(x, y, 0, PixelSize);
+		}
+
+		public PreviewPixel AddPixel(int x, int y, int z, int size)
+		{
+			PreviewPixel pixel = new PreviewPixel(x, y, z, size);
+			pixel.PixelColor = PixelColor;
+			Pixels.Add(pixel);
+			return pixel;
+		}
+		
 		public virtual void ResizePixels()
 		{
 			if (Pixels != null) {
@@ -316,6 +330,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					}
 				}
 			}
+		}
+
+		protected static Rectangle GetCombinedBounds(IEnumerable<Rectangle> recs)
+		{
+			int xMin = recs.Min(s => s.X);
+			int yMin = recs.Min(s => s.Y);
+			int xMax = recs.Max(s => s.X + s.Width);
+			int yMax = recs.Max(s => s.Y + s.Height);
+			var rect = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+			return rect;
 		}
 
 		public virtual void Draw(Bitmap b, bool editMode, HashSet<Guid> highlightedElements)

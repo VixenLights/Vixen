@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
-using Vixen.Execution.Context;
-using Vixen.Intent;
-using Vixen.Module.Preview;
-using Vixen.Data.Value;
 using Vixen.Sys;
-using VixenModules.Preview.VixenPreview.Shapes;
 using System.Xml.Serialization;
+using Point = System.Windows.Point;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -25,13 +19,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private int _y = 0;
 		private int _z = 0;
 		private int size = 3;
-		private Rectangle drawArea;
 		private ElementNode _node = null;
 		private Guid _nodeId;
 		private int _maxAlpha = 255;
 		private bool _isDiscreteColored = false;
 		private DiscreteIntentHandler _discreteHandler;
 		private FullColorIntentHandler _fullColorHandler;
+		private int savedX;
+		private int savedY;
+		private int savedZ;
+		private Point _location;
 
 		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
 
@@ -51,6 +48,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Resize();
 		}
 
+		public PreviewPixel(Point location, int pixelSize) : this()
+		{
+			Location = location;
+			IsHighPrecision = true;
+			size = pixelSize;
+			brush = new SolidBrush(Color.White);
+			Resize();
+		}
+
+		[DataMember(EmitDefaultValue = false)]
+		public bool SerializeCoordinates { get; set; }
+
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
@@ -62,12 +71,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			PreviewPixel p = new PreviewPixel(X, Y, Z, size);
 			p.color = color;
-			p.drawArea = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
+			p.Bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 			p.Node = Node;
 			p.MaxAlpha = _maxAlpha;
 
 			return p;
 		}
+
+		public Rectangle Bounds { get; private set; }
 
 		public int MaxAlpha
 		{
@@ -116,8 +127,34 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Resize()
 		{
-			drawArea = new Rectangle(X, Y, size, size);
+			if (IsHighPrecision)
+			{
+				Bounds = new Rectangle((int)Math.Round(Location.X), (int)Math.Round(Location.Y), size, size);
+			}
+			else
+			{
+				Bounds = new Rectangle(X, Y, size, size);
+			}
 		}
+
+		[DataMember(EmitDefaultValue = false)]
+		public bool IsHighPrecision { get; set; }
+
+		/// <summary>
+		/// This location property is for shapes that need to maintain a higher precision location.
+		/// you must set IsHighPrecision for this to be utilized.
+		/// </summary>
+		[DataMember(EmitDefaultValue = false)]
+		public Point Location
+		{
+			get { return _location; }
+			set
+			{
+				_location = value;
+				Resize();
+			}
+		}
+
 
 		public int X
 		{
@@ -167,7 +204,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Draw(Graphics graphics, Color c)
 		{
-			graphics.FillEllipse(new SolidBrush(c), drawArea);
+			graphics.FillEllipse(new SolidBrush(c), Bounds);
 		}
 
 		public void Draw(FastPixel.FastPixel fp, bool forceDraw)
@@ -184,7 +221,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public void Draw(FastPixel.FastPixel fp, Color newColor)
 		{
-			fp.DrawCircle(drawArea, newColor);
+			fp.DrawCircle(Bounds, newColor);
 		}
 
         public void Draw(FastPixel.FastPixel fp, IIntentStates states)
@@ -193,7 +230,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if(_isDiscreteColored)
 			{
 				int col = 1;
-				Rectangle drawRect = new Rectangle(drawArea.X, drawArea.Y, drawArea.Width, drawArea.Height);
+				Rectangle drawRect = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 				// Get states for each color
 				List<Color> colors = _discreteHandler.GetAlphaAffectedColor(states);
 				foreach (Color c in colors)
@@ -205,10 +242,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						if (col % 2 == 0)
 						{
 							drawRect.Y += PixelSize;
-							drawRect.X = drawArea.X;
+							drawRect.X = Bounds.X;
 						} else
 						{
-							drawRect.X = drawArea.X + PixelSize;
+							drawRect.X = Bounds.X + PixelSize;
 						}
 
 						col++;
@@ -223,14 +260,41 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Color intentColor = _fullColorHandler.GetFullColor(state);
 					if (intentColor.A > 0)
 					{
-						fp.DrawCircle(drawArea, intentColor);
+						fp.DrawCircle(Bounds, intentColor);
 					}
 			
 				}
 				
 			}
         }
-        
+
+		[OnSerializing]
+		void OnSerializing(StreamingContext context)
+		{
+			if (!SerializeCoordinates)
+			{
+				savedX = X;
+				savedY = Y;
+				savedZ = Z;
+				X = default(int); // will not be serialized
+				Y = default(int); // will not be serialized
+				Z = default(int); // will not be serialized
+			}
+			
+		}
+
+		[OnSerialized]
+		void OnSerialized(StreamingContext context)
+		{
+			if (!SerializeCoordinates)
+			{
+				X = savedX;
+				Y = savedY;
+				Z = savedZ;
+			}
+			
+		}
+
 		protected void Dispose(bool disposing)
 		{
 			if (disposing) {

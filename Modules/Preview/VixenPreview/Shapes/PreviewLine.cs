@@ -5,9 +5,11 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using System.Windows;
 using Common.Controls;
 using Vixen.Sys;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -285,7 +287,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override bool PointInShape(PreviewPoint point)
 		{
 			foreach (PreviewPixel pixel in Pixels) {
-				Rectangle r = new Rectangle(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2),
+				Rect r = new Rect(pixel.X - (SelectPointSize/2), pixel.Y - (SelectPointSize/2),
 				                            SelectPointSize + PixelSize, SelectPointSize + PixelSize);
 				if (point.X >= r.X && point.X <= r.X + r.Width && point.Y >= r.Y && point.Y <= r.Y + r.Height) {
 					return true;

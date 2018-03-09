@@ -20,7 +20,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using Vixen.Services;
+using Vixen.Utility;
+using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.Property.Location;
+using VixenModules.Property.Order;
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Element = Vixen.Sys.Element;
 
@@ -1754,6 +1758,19 @@ namespace VixenModules.Preview.VixenPreview
 				}
 			}
 		}
+
+		internal async Task AddPropToPreviewAsync(Prop p)
+		{
+			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p);
+			await builder.CreateAsync();
+			OnElementsChanged?.Invoke(this, EventArgs.Empty);
+
+			var newDisplayItem = new DisplayItem();
+			newDisplayItem.Shape = builder.PreviewCustomProp;
+			DisplayItems.Add(newDisplayItem);
+		}
+
+		
 
 		public void SeparateTemplateItems(DisplayItem displayItem)
 		{

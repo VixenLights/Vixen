@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace VixenApplication.Setup.ElementTemplates
+namespace Vixen.Utility
 {
-	public class TemplateUtilities
+	public class NamingUtilities
 	{
 		public static string Uniquify(HashSet<string> names, string name)
 		{

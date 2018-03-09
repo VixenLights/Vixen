@@ -271,7 +271,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
 			openFileService.Filter = "Prop Files(*.prp)|*.prp";
 			if (await openFileService.DetermineFileAsync())
 			{

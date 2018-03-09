@@ -85,6 +85,7 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.propInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.propEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +121,8 @@
 			this.pnlSmartObjects = new System.Windows.Forms.Panel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.panel5 = new System.Windows.Forms.Panel();
-			this.propEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.importPropToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -962,6 +964,8 @@
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.importPropToolStripMenuItem,
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -972,20 +976,20 @@
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -1004,6 +1008,13 @@
 			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.propInformationToolStripMenuItem.Text = "Prop &Information";
 			this.propInformationToolStripMenuItem.Click += new System.EventHandler(this.propInformationToolStripMenuItem_Click);
+			// 
+			// propEditorToolStripMenuItem
+			// 
+			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
+			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propEditorToolStripMenuItem.Text = "Prop Editor";
+			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.propEditorToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -1406,12 +1417,17 @@
 			this.panel5.Size = new System.Drawing.Size(245, 80);
 			this.panel5.TabIndex = 26;
 			// 
-			// propEditorToolStripMenuItem
+			// importPropToolStripMenuItem
 			// 
-			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
-			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.propEditorToolStripMenuItem.Text = "Prop Editor";
-			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.propEditorToolStripMenuItem_Click);
+			this.importPropToolStripMenuItem.Name = "importPropToolStripMenuItem";
+			this.importPropToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.importPropToolStripMenuItem.Text = "Import Prop";
+			this.importPropToolStripMenuItem.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// VixenPreviewSetup3
 			// 
@@ -1555,5 +1571,7 @@
 		private System.Windows.Forms.Panel panel4;
 		private System.Windows.Forms.Panel panel5;
 		private System.Windows.Forms.ToolStripMenuItem propEditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem importPropToolStripMenuItem;
 	}
 }

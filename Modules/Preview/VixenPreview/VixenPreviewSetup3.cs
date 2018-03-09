@@ -10,6 +10,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using Catel.IoC;
+using Catel.Services;
 using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
@@ -17,11 +19,14 @@ using VixenModules.Property.Location;
 using Common.Resources.Properties;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor;
+using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
 using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
+using Size = System.Drawing.Size;
 
 namespace VixenModules.Preview.VixenPreview {
 	public partial class VixenPreviewSetup3 : BaseForm
@@ -767,6 +772,34 @@ namespace VixenModules.Preview.VixenPreview {
 			var form = new CustomPropEditorWindow();
 		    ElementHost.EnableModelessKeyboardInterop(form);
             form.ShowDialog();
+		}
+
+		private async void importPropToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+			openFileService.IsMultiSelect = false;
+			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			openFileService.Filter = "Prop Files(*.prp)|*.prp";
+			if (await openFileService.DetermineFileAsync())
+			{
+				string path = openFileService.FileNames.First();
+				if (!string.IsNullOrEmpty(path))
+				{
+					Prop p = PropModelServices.Instance().LoadProp(path);
+					if (p != null)
+					{
+						Cursor = Cursors.WaitCursor;
+						await previewForm.Preview.AddPropToPreviewAsync(p);
+						Cursor = Cursors.Arrow;
+					}
+					else
+					{
+						//Alert user
+					}
+				}
+			}
+			
 		}
 	}
 

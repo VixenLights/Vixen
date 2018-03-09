@@ -13,6 +13,7 @@ using NLog;
 using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
+using Vixen.Utility;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
@@ -84,12 +85,12 @@ namespace VixenApplication.Setup.ElementTemplates
 			//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
 			HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
-			ElementNode grouphead = ElementNodeService.Instance.CreateSingle(null, TemplateUtilities.Uniquify(elementNames, groupname), true, false);
+			ElementNode grouphead = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, groupname), true, false);
 			result.Add(grouphead);
 
 			for (int i = 0; i < count; i++) {
 				string newname = prefix + "-" + (i + 1);
-				ElementNode newnode = ElementNodeService.Instance.CreateSingle(grouphead, TemplateUtilities.Uniquify(elementNames, newname), true, false);
+				ElementNode newnode = ElementNodeService.Instance.CreateSingle(grouphead, NamingUtilities.Uniquify(elementNames, newname), true, false);
 				result.Add(newnode);
 			}
 

@@ -80,6 +80,11 @@
       <Name>Resources</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44C23ECF-EA1C-4806-956A-07EC1203F8B4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\App\CustomPropEditor\CustomPropEditor.csproj">
       <Project>{37fe2e42-50da-4973-88f7-072ba570f997}</Project>
       <Name>CustomPropEditor</Name>
@@ -98,6 +103,11 @@
     <ProjectReference Include="..\..\Property\Location\Location.csproj">
       <Project>{7d5d4be4-576a-4092-a3e2-1a6f27cdc213}</Project>
       <Name>Location</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Order\Order.csproj">
+      <Project>{a4254642-2965-469a-8fbd-b45f6edd651c}</Project>
+      <Name>Order</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -184,6 +194,7 @@
     <Compile Include="LocationOffsetForm.Designer.cs">
       <DependentUpon>LocationOffsetForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PreviewCustomPropBuilder.cs" />
     <Compile Include="PreviewPixelSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -212,6 +223,7 @@
     <Compile Include="Shapes\PreviewCustomDefineDisplayItems.Designer.cs">
       <DependentUpon>PreviewCustomDefineDisplayItems.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shapes\PreviewCustomProp.cs" />
     <Compile Include="Shapes\PreviewCustomSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

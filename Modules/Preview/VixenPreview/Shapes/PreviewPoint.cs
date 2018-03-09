@@ -32,6 +32,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { _pointType = value; }
 		}
 
+		public PreviewPoint(int x, int y, PointTypes type):this(x, y)
+		{
+			PointType = type;
+		}
+
 		public PreviewPoint(int x, int y)
 		{
 			_x = x;
