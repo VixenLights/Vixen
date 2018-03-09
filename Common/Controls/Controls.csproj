@@ -115,7 +115,7 @@
     <Compile Include="NameGeneration\SubstitutionRenamer.Designer.cs">
       <DependentUpon>SubstitutionRenamer.cs</DependentUpon>
     </Compile>
-    <Compile Include="NumericalTextBox.cs">
+    <Compile Include="NumericTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -195,9 +195,6 @@
     </Compile>
     <Compile Include="ElementTree.Designer.cs">
       <DependentUpon>ElementTree.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NumericTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PictureComboBox.cs">
       <SubType>Component</SubType>
