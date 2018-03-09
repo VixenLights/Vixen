@@ -5,7 +5,8 @@
     xmlns:design="clr-namespace:VixenModules.Editor.EffectEditor.Design"
 	xmlns:input="clr-namespace:VixenModules.Editor.EffectEditor.Input"
 	xmlns:local="clr-namespace:VixenModules.Editor.EffectEditor"
-	xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon">
+	xmlns:controls1="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon"
+	xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
 
 	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 	<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
@@ -30,7 +31,7 @@
 						
 						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
 							<Label Content="Effect Preview" VerticalAlignment="Center"/>
-							<controls1:ToggleSwitch 
+							<controls:ToggleSwitch 
 								Command="input:PropertyGridCommands.TogglePreview"
 								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
 								CheckedText="On"
@@ -42,7 +43,7 @@
 								UncheckedText="Off"
 								VerticalAlignment="Top"
 								Width="50">
-							</controls1:ToggleSwitch>
+							</controls:ToggleSwitch>
 						</StackPanel>
 						
 						<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>

@@ -123,12 +123,12 @@
 					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
 						<ToolBar Background="{StaticResource BackColorBrush}">
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
-							             Style="{StaticResource {x:Type ToggleButton}}" Width="30">
+							             Style="{DynamicResource PushButtonButtonStyle}" Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
 							</RadioButton>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" 
 							             ToolTip="Selection mode" GroupName="SelectDraw"
-							             Style="{StaticResource {x:Type ToggleButton}}" Width="30">
+							             Style="{DynamicResource PushButtonButtonStyle}" Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 							</RadioButton>
 							<Separator />

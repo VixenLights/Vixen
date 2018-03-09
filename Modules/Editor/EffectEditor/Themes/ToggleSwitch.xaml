@@ -2,11 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls"
                     xmlns:utils="clr-namespace:VixenModules.Editor.EffectEditor.Utils"
-                    xmlns:commonControls="clr-namespace:Common.WPFCommon.Controls;assembly=WPFCommon">
+                    >
 
     <!-- ToggleSwitch Template -->
-    <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly=commonControls:ToggleSwitch, ResourceId=ToggleSwitchTemplate}"
-                     TargetType="{x:Type commonControls:ToggleSwitch}">
+    <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly=controls:ToggleSwitch, ResourceId=ToggleSwitchTemplate}"
+                     TargetType="{x:Type controls:ToggleSwitch}">
         <ControlTemplate.Resources>
             <Storyboard x:Key="BeginGlow">
                 <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
@@ -31,7 +31,7 @@
                              Height="{TemplateBinding Height}"
                              BorderBrush="{TemplateBinding BorderBrush}"
                              Background="{TemplateBinding Background}"
-                             CornerRadius="{Binding Path=CornerRadius, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
+                             CornerRadius="{Binding Path=CornerRadius, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
                              BorderThickness="{TemplateBinding BorderThickness}">
             <Grid Name="PART_RootGrid">
                 <Grid.ColumnDefinitions>
@@ -69,18 +69,18 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 CornerRadius="0"
-                                Background="{Binding Path=CheckedBackground, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                Background="{Binding Path=CheckedBackground, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                         </Border>
                         <!-- Text which is displayed when the ToggleSwitch is in the Checked State -->
                         <TextBlock x:Name="PART_CheckedContent"
                                    Grid.Column="0"
-                                   Text="{Binding Path=CheckedText, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
+                                   Text="{Binding Path=CheckedText, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    FontFamily="{TemplateBinding FontFamily}"
                                    FontWeight="{TemplateBinding FontWeight}"
                                    FontSize="{TemplateBinding FontSize}"
-                                   Foreground="{Binding Path=CheckedForeground, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                   Foreground="{Binding Path=CheckedForeground, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                             <TextBlock.Effect>
                                 <DropShadowEffect BlurRadius="4"
                                                   ShadowDepth="1"
@@ -98,18 +98,18 @@
                                 BorderThickness="0"
                                 Margin="0"
                                 CornerRadius="0"
-                                Background="{Binding Path=UncheckedBackground, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                Background="{Binding Path=UncheckedBackground, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                         </Border>
                         <!-- Text which is displayed when the ToggleSwitch is in the Unchecked State -->
                         <TextBlock x:Name="PART_UncheckedContent"
                                    Grid.Column="4"
-                                   Text="{Binding Path=UncheckedText, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
+                                   Text="{Binding Path=UncheckedText, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    FontFamily="{TemplateBinding FontFamily}"
                                    FontWeight="{TemplateBinding FontWeight}"
                                    FontSize="{TemplateBinding FontSize}"
-                                   Foreground="{Binding Path=UncheckedForeground, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                   Foreground="{Binding Path=UncheckedForeground, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                             <TextBlock.Effect>
                                 <DropShadowEffect BlurRadius="4"
                                                   ShadowDepth="1"
@@ -124,10 +124,10 @@
                                              Grid.Column="1"
                                              Grid.ColumnSpan="3"
                                              Margin="0"
-                                             BorderBrush="{Binding Path=ThumbBorderBrush, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
-                                             BorderThickness="{Binding Path=ThumbBorderThickness, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
-                                             CornerRadius="{Binding Path=ThumbCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
-                                             Background="{Binding Path=ThumbBackground, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                             BorderBrush="{Binding Path=ThumbBorderBrush, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
+                                             BorderThickness="{Binding Path=ThumbBorderThickness, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
+                                             CornerRadius="{Binding Path=ThumbCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
+                                             Background="{Binding Path=ThumbBackground, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="0.507*" />
@@ -138,7 +138,7 @@
                                         HorizontalAlignment="Stretch"
                                         Width="Auto"
                                         Grid.RowSpan="2"
-                                        CornerRadius="{Binding Path=ThumbCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                        CornerRadius="{Binding Path=ThumbCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                                     <Border.Background>
                                         <RadialGradientBrush>
                                             <RadialGradientBrush.RelativeTransform>
@@ -152,7 +152,7 @@
                                                                         Y="-0.152" />
                                                 </TransformGroup>
                                             </RadialGradientBrush.RelativeTransform>
-                                            <GradientStop Color="{Binding Path=ThumbGlowColor, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}"
+                                            <GradientStop Color="{Binding Path=ThumbGlowColor, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}"
                                                           Offset="0.8" />
                                             <GradientStop Color="#44222222"
                                                           Offset="0.1" />
@@ -163,7 +163,7 @@
                                         HorizontalAlignment="Stretch"
                                         Margin="0,0,0,0"
                                         Width="Auto"
-                                        CornerRadius="{Binding Path=ThumbShineCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}">
+                                        CornerRadius="{Binding Path=ThumbShineCornerRadius, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}">
                                     <Border.Background>
                                         <LinearGradientBrush EndPoint="0.494,0.889"
                                                              StartPoint="0.494,0.028">
@@ -202,7 +202,7 @@
                 <MultiTrigger.Setters>
                     <Setter Property="Grid.Column"
                             TargetName="PART_ContentBorder"
-                            Value="{Binding Path=TargetColumnInternal, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}" />
+                            Value="{Binding Path=TargetColumnInternal, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}" />
                 </MultiTrigger.Setters>
             </MultiTrigger>
             <MultiTrigger>
@@ -215,7 +215,7 @@
                 <MultiTrigger.Setters>
                     <Setter Property="Grid.Column"
                             TargetName="PART_ContentBorder"
-                            Value="{Binding Path=TargetColumnInternal, RelativeSource={RelativeSource AncestorType={x:Type commonControls:ToggleSwitch}}}" />
+                            Value="{Binding Path=TargetColumnInternal, RelativeSource={RelativeSource AncestorType={x:Type controls:ToggleSwitch}}}" />
                 </MultiTrigger.Setters>
             </MultiTrigger>
 
@@ -251,11 +251,75 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type commonControls:ToggleSwitch}">
-        <Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />
-        <Setter Property="Template"
-                Value="{StaticResource {ComponentResourceKey TypeInTargetAssembly=commonControls:ToggleSwitch, ResourceId=ToggleSwitchTemplate}}" />
+	<Style TargetType="{x:Type controls:ToggleSwitch}">
+		<Setter Property="FocusVisualStyle"
+		        Value="{x:Null}" />
+		<Setter Property="Template"
+		        Value="{StaticResource {ComponentResourceKey TypeInTargetAssembly=controls:ToggleSwitch, ResourceId=ToggleSwitchTemplate}}" />
+		<Setter Property="Background" Value="Black"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="CheckedForeground" Value="{StaticResource ForeColorBrush}"/>
+		<Setter Property="CornerRadius" Value="3"/>
+		<Setter Property="ThumbBorderThickness" Value="1"/>
+        <Setter Property="ThumbCornerRadius" Value="3"/>
+        <Setter Property="ThumbGlowColor" Value="#FCFCF6"/>
+        <Setter Property="ThumbShineCornerRadius" Value="6,6,5,5"/>
+        <Setter Property="UncheckedForeground" Value="{StaticResource ForeColorBrush}"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0,0"
+                                     StartPoint="0,1">
+                    <GradientStop Color="#959595"
+                                  Offset="0" />
+                    <GradientStop Color="#A1A1A1"
+                                  Offset="0.5" />
+                    <GradientStop Color="#555555"
+                                  Offset="1" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="CheckedBackground">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0,1"
+                                     StartPoint="0,0">
+                    <GradientStop Color="#959595"
+                                  Offset="0" />
+                    <GradientStop Color="#A1A1A1"
+                                  Offset="0.5" />
+                    <GradientStop Color="#555555"
+                                  Offset="1" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ThumbBackground">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0.0" Color="#505050" />
+                    <GradientStop Offset="1.2" Color="#383838" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="UncheckedBackground">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0.0" Color="#505050" />
+                    <GradientStop Offset="1.2" Color="#383838" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ThumbBorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0,1"
+                                     StartPoint="0,0">
+                    <GradientStop Color="#F6F6F6"
+                                  Offset="0" />
+                    <GradientStop Color="#959595"
+                                  Offset="0.5" />
+                    <GradientStop Color="#565656"
+                                  Offset="1" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>
