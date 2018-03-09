@@ -180,7 +180,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void Scale(double scaleX, double scaleY, int centerX, int centerY)
 		{
-			Console.Out.WriteLine($"Scale: {scaleX},{scaleY} : {centerX}, {centerY}");
 			var t = new ScaleTransform(scaleX, scaleY, centerX, centerY);
 			foreach (var previewPixel in Pixels)
 			{
