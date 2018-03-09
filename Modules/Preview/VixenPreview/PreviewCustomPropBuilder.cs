@@ -14,7 +14,10 @@ namespace VixenModules.Preview.VixenPreview
 	public class PreviewCustomPropBuilder
 	{
 		private readonly Prop _prop;
-		
+
+		private Dictionary<Guid, ElementNode> _elementModelMap;
+		private HashSet<string> _elementNames;
+
 		public PreviewCustomPropBuilder(Prop prop)
 		{
 			if (prop == null)
@@ -29,26 +32,26 @@ namespace VixenModules.Preview.VixenPreview
 
 		public async Task CreateAsync()
 		{
-
 			Task t = Task.Factory.StartNew(() =>
 			{
-				List<ElementNode> result = new List<ElementNode>();
-
+				_elementModelMap = new Dictionary<Guid, ElementNode>();
 				//Optimize the name check for performance. We know we are going to create a bunch of them and we can handle it ourselves more efficiently
-				HashSet<string> elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
+				_elementNames = new HashSet<string>(VixenSystem.Nodes.Select(x => x.Name));
 
 				var rootNode = _prop.RootNode;
 
-				ElementNode grouphead = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames, rootNode.Name), true, false);
-				var order = grouphead.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
+				ElementNode rootElementNode = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(_elementNames, rootNode.Name), true, false);
+				var order = rootElementNode.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
 				if (order != null)
 				{
 					order.Order = rootNode.Order;
 				}
 
-				result.Add(grouphead);
-				elementNames.Add(grouphead.Name);
-				CreateElementsForChildren(grouphead, rootNode, result, elementNames);
+				_elementNames.Add(rootElementNode.Name);
+
+				_elementModelMap.Add(rootNode.Id, rootElementNode);
+
+				CreateElementsForChildren(rootElementNode, rootNode);
 
 				PreviewCustomProp.UpdateBounds();
 				PreviewCustomProp.MoveTo(20,20);
@@ -59,26 +62,42 @@ namespace VixenModules.Preview.VixenPreview
 
 		}
 
-		private void CreateElementsForChildren(ElementNode parentNode, ElementModel model, List<ElementNode> results, HashSet<string> elementNames)
+		private void CreateElementsForChildren(ElementNode parentNode, ElementModel model)
 		{
 			foreach (var elementModel in model.Children)
 			{
-				ElementNode newnode = ElementNodeService.Instance.CreateSingle(parentNode, NamingUtilities.Uniquify(elementNames, elementModel.Name), true, false);
-				results.Add(newnode);
-				elementNames.Add(newnode.Name);
-				var order = newnode.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
-				if (order != null)
-				{
-					order.Order = elementModel.Order;
-				}
+				var newnode = FindOrCreateElementNode(elementModel, parentNode);
+				CreateElementsForChildren(newnode, elementModel);
+			}
+		}
 
+		private ElementNode FindOrCreateElementNode(ElementModel elementModel, ElementNode parentNode)
+		{
+			ElementNode node;
+			if (!_elementModelMap.TryGetValue(elementModel.Id, out node))
+			{
+				//We have not created our element yet
+				node = ElementNodeService.Instance.CreateSingle(parentNode,
+					NamingUtilities.Uniquify(_elementNames, elementModel.Name));
+				_elementModelMap.Add(elementModel.Id, node);
+				_elementNames.Add(node.Name);
 				if (elementModel.IsLightNode)
 				{
-					PreviewCustomProp.AddLightNodes(elementModel, newnode);
+					var order = node.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
+					if (order != null)
+					{
+						order.Order = elementModel.Order;
+					}
+					PreviewCustomProp.AddLightNodes(elementModel, node);
 				}
-
-				CreateElementsForChildren(newnode, elementModel, results, elementNames);
 			}
+			else
+			{
+				//Our element exists, so add this one as a child.
+				parentNode.AddChild(node);
+			}
+
+			return node;
 		}
 	}
 }
