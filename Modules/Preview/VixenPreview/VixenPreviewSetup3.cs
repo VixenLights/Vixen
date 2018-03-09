@@ -557,8 +557,8 @@ namespace VixenModules.Preview.VixenPreview {
 							p.Node.Properties.Add(LocationDescriptor._typeId);
 
 						var prop = p.Node.Properties.Get(LocationDescriptor._typeId);
-					    ((LocationData) prop.ModuleData).X = p.X + Convert.ToInt32(Data.LocationOffset.X);
-						((LocationData) prop.ModuleData).Y = p.Y + Convert.ToInt32(Data.LocationOffset.Y);
+					    ((LocationData) prop.ModuleData).X = p.IsHighPrecision ? (int)p.Location.X : p.X + Convert.ToInt32(Data.LocationOffset.X);
+						((LocationData) prop.ModuleData).Y = p.IsHighPrecision ? (int)p.Location.Y : p.Y + Convert.ToInt32(Data.LocationOffset.Y);
 					}
 				}
 				Cursor = Cursors.Default;
