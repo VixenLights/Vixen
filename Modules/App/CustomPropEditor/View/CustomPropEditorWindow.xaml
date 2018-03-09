@@ -1,4 +1,4 @@
-﻿<Window
+﻿<Window x:Name="EditorWindow"
 	x:Class="VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -46,8 +46,9 @@
 				<MenuItem Header="New" Command="{Binding NewPropCommand}"></MenuItem>
 				<MenuItem Header="Open" Command="{Binding OpenPropCommand}"></MenuItem>
 				<MenuItem Header="Save" Command="{Binding SaveModelCommand}"></MenuItem>
-				<MenuItem Header="Save As"></MenuItem>
+				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"></MenuItem>
 				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
+				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}"></MenuItem>
 			</MenuItem>
 			<MenuItem Header="Edit" Name="EditMenu">
 				<MenuItem Header="Cut"></MenuItem>
@@ -120,48 +121,48 @@
 				</wpfPropertyGrid:PropertyGrid>
 
 				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
+					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}" >
 						<ToolBar Background="{StaticResource BackColorBrush}">
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
-							             Style="{DynamicResource PushButtonButtonStyle}" Width="30">
+							             Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
 							</RadioButton>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" 
 							             ToolTip="Selection mode" GroupName="SelectDraw"
-							             Style="{DynamicResource PushButtonButtonStyle}" Width="30">
+							             Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 							</RadioButton>
 							<Separator />
-							<Button Command="Copy" ToolTip="Cut" Style="{StaticResource {x:Type Button}}">
+							<Button Command="Copy" ToolTip="Cut">
 								<Image Source="/CustomPropEditor;component/Images/cut.png" Height="20"/>
 							</Button>
-							<Button Command="Paste" ToolTip="Copy" Style="{StaticResource {x:Type Button}}">
+							<Button Command="Paste" ToolTip="Copy">
 								<Image Source="/CustomPropEditor;component/Images/copy.png" Height="20"/>
 							</Button>
-							<Button Command="Paste" ToolTip="Paste" Style="{StaticResource {x:Type Button}}">
+							<Button Command="Paste" ToolTip="Paste">
 								<Image Source="/CustomPropEditor;component/Images/paste.png" Height="20"/>
 							</Button>
 							<Separator />
-							<Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background">
 								<Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Height="20"/>
 							</Button>
 							<Separator />
-							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left" >
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right" >
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top" >
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignTop.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.AlignBottomsCommand}" ToolTip="Align Bottom" >
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignBottom.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.DistributeHorizontallyCommand}" ToolTip="Distribute Horizontal" >
 								<Image Source="/CustomPropEditor;component/Images/buttonDistributeHorizontal.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical" Style="{StaticResource {x:Type Button}}">
+							<Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical" >
 								<Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="20"/>
 							</Button>
 						</ToolBar>

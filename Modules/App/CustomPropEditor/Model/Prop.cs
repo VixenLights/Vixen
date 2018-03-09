@@ -11,7 +11,6 @@ namespace VixenModules.App.CustomPropEditor.Model
     public class Prop : BindableBase
     {
         private BitmapSource _image;
-        private string _name;
         private ElementModel _rootNode;
         private double _height;
         private double _width;
@@ -28,7 +27,7 @@ namespace VixenModules.App.CustomPropEditor.Model
             _rootNode = new ElementModel();
 			Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
             Opacity = 1;
-            Name = "Default";
+            Name = "New Prop";
         }
 
 	    public Guid Id { get; private set; }
@@ -46,12 +45,11 @@ namespace VixenModules.App.CustomPropEditor.Model
 		
         public string Name
         {
-            get { return _name; }
+            get { return _rootNode.Name; }
             set
             {
-                if (value == _name) return;
-                _name = value;
-                _rootNode.Name = value;
+                if (value == _rootNode.Name) return;
+				_rootNode.Name = value;
                 OnPropertyChanged(nameof(Name));
             }
         }

@@ -347,6 +347,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
 			saveFileService.CheckPathExists = true;
 			saveFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			saveFileService.FileName = Prop.Name;
 			if (await saveFileService.DetermineFileAsync())
 			{
 				// User selected a file
@@ -364,7 +365,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void NewProp()
 		{
 			MessageBoxService mbs = new MessageBoxService();
-			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "Prop 1");
+			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "New Prop");
 			if (result.Result == MessageResult.OK)
 			{
                 Prop = PropModelServices.Instance().CreateProp(result.Response);
@@ -419,6 +420,29 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		#region Menu Commands
+
+		#region Exit command
+
+		private RelayCommand<Window> _exitCommand;
+
+		/// <summary>
+		/// Gets the Exit command.
+		/// </summary>
+		public RelayCommand<Window> ExitCommand
+		{
+			get { return _exitCommand ?? (_exitCommand = new RelayCommand<Window>(Exit)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Exit command is executed.
+		/// </summary>
+		private void Exit(Window window)
+		{
+			window?.Close();
+		}
+
+		#endregion
+
 
 		public RelayCommand<string> ImportCommand { get; private set; }
 

@@ -51,7 +51,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return true;
 		}
 
-		public Prop CreateProp(string name = "Default")
+		public Prop CreateProp(string name = "New Prop")
 		{
 			_prop = new Prop(name);
 			_models.Clear();
