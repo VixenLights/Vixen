@@ -11,12 +11,12 @@ public enum NumberFormat
     FloatValue = 3,
 }
 
-namespace NumericalTextBox
+namespace Common.Controls 
 {
-    public class NumberTextBox : TextBox
+    public class NumericTextBox : TextBox
     {
         public NumberFormat numberFormat = NumberFormat.UnsignedInteger;
-        private int _input_mode = 3;
+        private int _inputMode = 3;
         private int _decimalNumber;
         private int _cursorPositionPlus;
         private char _groupSeparator;
@@ -26,41 +26,43 @@ namespace NumericalTextBox
         private bool _maxCheck;
         private bool _minCheck;
         private string _oldText;
-        private bool usegroupseparator = false;
+        private bool _usegroupseparator = false;
 
-        System.Globalization.NumberFormatInfo numberFormatInfo = System.Globalization.CultureInfo.CurrentCulture.NumberFormat;
-        public static string decimalSeparator;
+        System.Globalization.NumberFormatInfo _numberFormatInfo = System.Globalization.CultureInfo.CurrentCulture.NumberFormat;
+        public static string DecimalSeparator;
         private string groupSeparator;
-        public static string negativeSign;
-        private string positiveSign;
+        public static string NegativeSign;
 
-        public NumberTextBox()
+	    public NumericTextBox()
         {
             initializebase();
         }
-        public NumberTextBox(int DecimalNumber)
+
+        public NumericTextBox(int decimalNumber)
         {
             initializebase();
-            _decimalNumber = (DecimalNumber >=0 && DecimalNumber <= 15) ? DecimalNumber : 15;
+            _decimalNumber = (decimalNumber >=0 && decimalNumber <= 15) ? decimalNumber : 15;
         }
-        public NumberTextBox(char GroupSep)
+
+        public NumericTextBox(char groupSep)
         {
             initializebase();
-            _groupSeparator = (GroupSep == negativeSign[0] || GroupSep == decimalSeparator[0] || GroupSep == 'e' || GroupSep == 'E') ? groupSeparator[0] : GroupSep;
+            _groupSeparator = (groupSep == NegativeSign[0] || groupSep == DecimalSeparator[0] || groupSep == 'e' || groupSep == 'E') ? groupSeparator[0] : groupSep;
         }
-        public NumberTextBox(int DecimalNumber, char GroupSep)
+
+        public NumericTextBox(int decimalNumber, char groupSep)
         {
             initializebase();
-            _decimalNumber = (DecimalNumber >= 0 && DecimalNumber <= 15) ? DecimalNumber : 15;
-            _groupSeparator = (GroupSep == negativeSign[0] || GroupSep == decimalSeparator[0] || GroupSep == 'e' || GroupSep == 'E') ? groupSeparator[0] : GroupSep;
+            _decimalNumber = (decimalNumber >= 0 && decimalNumber <= 15) ? decimalNumber : 15;
+            _groupSeparator = (groupSep == NegativeSign[0] || groupSep == DecimalSeparator[0] || groupSep == 'e' || groupSep == 'E') ? groupSeparator[0] : groupSep;
         }
+
         private void initializebase()
         {
-            decimalSeparator = numberFormatInfo.NumberDecimalSeparator;
-            groupSeparator = numberFormatInfo.NumberGroupSeparator;
-            negativeSign = numberFormatInfo.NegativeSign;
-            positiveSign = numberFormatInfo.PositiveSign;
-            _decimalNumber = 15;
+            DecimalSeparator = _numberFormatInfo.NumberDecimalSeparator;
+            groupSeparator = _numberFormatInfo.NumberGroupSeparator;
+            NegativeSign = _numberFormatInfo.NegativeSign;
+	        _decimalNumber = 15;
             _groupSeparator = groupSeparator[0];
             _maxValue = 0;
             _minValue = 0;
@@ -68,24 +70,27 @@ namespace NumericalTextBox
             _minCheck = false;
             _oldText = "";
         }
+
         [Description("Select input type for textbox"), Category("NumericText")]
         public NumberFormat NumberFormat
         {
             get { return numberFormat; }
             set
             {
-                _input_mode = (int)value;
+                _inputMode = (int)value;
                 numberFormat = value;
                 _oldText = "";
                 OnTextChanged(new EventArgs());
             }
         }
+
         [Description("enable or disable thousands separator"), Category("NumericText")]
         public bool Usegroupseparator
         {
-            get { return usegroupseparator; }
-            set { usegroupseparator = value; _oldText = ""; OnTextChanged(new EventArgs()); }
+            get { return _usegroupseparator; }
+            set { _usegroupseparator = value; _oldText = ""; OnTextChanged(new EventArgs()); }
         }
+
         [Description("digit count after decimal separator"), Category("NumericText")]
         public int DecimalNumber
         {
@@ -96,17 +101,19 @@ namespace NumericalTextBox
                     OnTextChanged(new EventArgs());
                 }
         }
+
         [Description("Select thousands separator char except < e E > and local decimal separator, negativeSign"), Category("NumericText")]
         public char Groupsep
         {
             get { return _groupSeparator; }
             set
             {
-                _groupSeparator = (value == negativeSign[0] || value == decimalSeparator[0] || value == 'e' || value == 'E') ? groupSeparator[0] : value;
+                _groupSeparator = (value == NegativeSign[0] || value == DecimalSeparator[0] || value == 'e' || value == 'E') ? groupSeparator[0] : value;
                 _oldText = "";
                 OnTextChanged(new EventArgs());
             }
         }
+
         [Description("Maximum value in textbox"), Category("NumericText")]
         public double MaxValue
         {
@@ -119,9 +126,9 @@ namespace NumericalTextBox
                     if (_maxCheck && _textValue > _maxValue)
                         Text = _maxValue.ToString(); 
                 }
-
             }
         }
+
         [Description("Minimum value in textbox"), Category("NumericText")]
         public double MinValue
         {
@@ -136,6 +143,7 @@ namespace NumericalTextBox
                 }
             }
         }
+
         [Description("Enable or disable Maximum value control"), Category("NumericText")]
         public bool MaxCheck
         {
@@ -147,6 +155,7 @@ namespace NumericalTextBox
                     Text = _maxValue.ToString();
             }
         }
+
         [Description("Enable or disable Minimum value control"), Category("NumericText")]
         public bool MinCheck
         {
@@ -158,17 +167,24 @@ namespace NumericalTextBox
                     Text = _minValue.ToString();
             }
         }
+
         [Description("Shows Numerictextbox value"), Category("NumericText")]
         public double NumericValue
         {
-            get { return _textValue; }
-            
+            get { return _textValue; }            
         }
-        public override bool Multiline //single line only
+
+	    [Description("Shows Numerictextbox integer value"), Category("NumericText")]
+	    public int IntValue
+	    {
+		    get { return (int)_textValue; }
+	    }
+
+		public override bool Multiline //single line only
         {
             get { return false; }
-           
         }
+
         protected override void OnTextChanged(EventArgs e)
         {
             if (!string.Equals(this.Text, _oldText)) //change only, if this method not changed this Text
@@ -191,6 +207,7 @@ namespace NumericalTextBox
             }
             base.OnTextChanged(e);
         }
+
         protected string NormalTextToNumericString()
         {
             string Text = this.Text;
@@ -200,16 +217,16 @@ namespace NumericalTextBox
             #endregion
             #region Remove Unknown Characters
             int FloatNumber = 0;
-            char ds = decimalSeparator[0];
-            char ns = negativeSign[0];
+            char ds = DecimalSeparator[0];
+            char ns = NegativeSign[0];
             for (int i = 0; i < TextTemp1.Length; i++)
-                if (_input_mode > 0 && i == 0 && TextTemp1.IndexOf(negativeSign) == 0)
+                if (_inputMode > 0 && i == 0 && TextTemp1.IndexOf(NegativeSign) == 0)
                     TextTemp2 += TextTemp1[i];
                 else if (TextTemp1[i] == '0' && (TextTemp2 == "0" || TextTemp2 == ns + "0"))
                 { // dont allow extra zeroes at begining
                     if (i < this.SelectionStart) _cursorPositionPlus--;
                 }
-                else if (_input_mode > 2 && TextTemp1[i] == ns && TextTemp2.IndexOf('e') >= 0 && TextTemp2.Length == TextTemp2.IndexOf('e') + 1)
+                else if (_inputMode > 2 && TextTemp1[i] == ns && TextTemp2.IndexOf('e') >= 0 && TextTemp2.Length == TextTemp2.IndexOf('e') + 1)
                     TextTemp2 += TextTemp1[i];
                 else if (char.IsDigit(TextTemp1[i]))
                 {
@@ -226,9 +243,9 @@ namespace NumericalTextBox
                             _cursorPositionPlus--;
                     }
                 }
-                else if (_input_mode > 1 && TextTemp1[i] == ds && TextTemp2.IndexOf(ds) < 0 && (TextTemp2.IndexOf('e') < 0 || TextTemp2.Length < TextTemp2.IndexOf('e')))
+                else if (_inputMode > 1 && TextTemp1[i] == ds && TextTemp2.IndexOf(ds) < 0 && (TextTemp2.IndexOf('e') < 0 || TextTemp2.Length < TextTemp2.IndexOf('e')))
                     TextTemp2 += TextTemp1[i];
-                else if (_input_mode > 2 && TextTemp1[i] == 'e' && TextTemp2.IndexOf('e') < 0 && TextTemp2.Length >= TextTemp2.IndexOf(decimalSeparator) + 1)
+                else if (_inputMode > 2 && TextTemp1[i] == 'e' && TextTemp2.IndexOf('e') < 0 && TextTemp2.Length >= TextTemp2.IndexOf(DecimalSeparator) + 1)
                     TextTemp2 += TextTemp1[i];
                 else if (i < this.SelectionStart)
                     _cursorPositionPlus--;
@@ -238,7 +255,7 @@ namespace NumericalTextBox
             string INTEGER = "";
             int IntegerIndex = (TextTemp2.IndexOf(ds) >= 0) ? TextTemp2.IndexOf(ds) : (TextTemp2.IndexOf('e') >= 0) ? TextTemp2.IndexOf('e') : TextTemp2.Length;
             for (int i = 0; i < IntegerIndex; i++)
-                if (char.IsDigit(TextTemp2[i]) || TextTemp2[i] == negativeSign[0] && INTEGER.IndexOf(negativeSign) < 0)
+                if (char.IsDigit(TextTemp2[i]) || TextTemp2[i] == NegativeSign[0] && INTEGER.IndexOf(NegativeSign) < 0)
                     INTEGER += TextTemp2[i];
             #endregion
             #region Get Float Number
@@ -250,7 +267,7 @@ namespace NumericalTextBox
             #endregion
             #region Put group separator in Integer Number
             string T = "";
-            if (!usegroupseparator)
+            if (!_usegroupseparator)
             {
                 T = INTEGER;
             }
@@ -261,7 +278,7 @@ namespace NumericalTextBox
                 {
                     T = INTEGER[i] + T;
                     n++;
-                    if (n == 3 && i > 0 && INTEGER[i - 1] != negativeSign[0])
+                    if (n == 3 && i > 0 && INTEGER[i - 1] != NegativeSign[0])
                     {
                         if (i - _cursorPositionPlus < this.SelectionStart)
                             _cursorPositionPlus++;
@@ -274,7 +291,7 @@ namespace NumericalTextBox
             #region Put decimal Character and decimals
             if (TextTemp2.IndexOf(ds) >= 0)
             {
-                T += decimalSeparator;
+                T += DecimalSeparator;
                 for (int i = 0; i < DecimalNumber && i < FLOAT.Length; i++)
                     T += FLOAT[i];
             }
@@ -289,19 +306,20 @@ namespace NumericalTextBox
             #endregion
             return T;
         }
+
         protected double txttoDouble(string txt)
         {
             if (txt == "")
                 return 0;
-            if (txt == negativeSign)
+            if (txt == NegativeSign)
                 return 0;
-            if (txt == negativeSign + decimalSeparator)
+            if (txt == NegativeSign + DecimalSeparator)
                 return 0;
-            if (txt.StartsWith(negativeSign + "e"))
+            if (txt.StartsWith(NegativeSign + "e"))
                 return 0;
             if (txt.StartsWith("e"))
                 return 0;
-            if (txt.EndsWith("e") || txt.EndsWith("e" + negativeSign))
+            if (txt.EndsWith("e") || txt.EndsWith("e" + NegativeSign))
                 return System.Convert.ToDouble(txt.Substring(0, txt.IndexOf('e')));
             return System.Convert.ToDouble(txt);
         }

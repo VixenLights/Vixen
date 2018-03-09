@@ -328,7 +328,6 @@ namespace VixenModules.App.Curves
 			// 
 			// txtYValue
 			// 
-			this.txtYValue.AllowSpace = false;
 			this.txtYValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtYValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtYValue.Enabled = false;
@@ -340,7 +339,6 @@ namespace VixenModules.App.Curves
 			// 
 			// txtXValue
 			// 
-			this.txtXValue.AllowSpace = false;
 			this.txtXValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.txtXValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.txtXValue.Enabled = false;

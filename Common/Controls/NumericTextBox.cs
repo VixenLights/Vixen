@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+// Removed everything in here in favor of new version
+/*
 namespace Common.Controls
 {
 	[ToolboxItem(true)]
-	public class NumericTextBox: TextBox
+	public class NumericTextBoxOld: TextBox
 	{
 
 		bool _allowSpace = false;
@@ -90,3 +92,4 @@ namespace Common.Controls
 		}
 	}
 }
+*/
