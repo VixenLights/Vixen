@@ -786,7 +786,7 @@ namespace VixenModules.Preview.VixenPreview {
 				string path = openFileService.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
-					Prop p = PropModelServices.Instance().LoadProp(path);
+					Prop p = await PropModelPersistenceService.GetModelAsync(path);
 					if (p != null)
 					{
 						Cursor = Cursors.WaitCursor;

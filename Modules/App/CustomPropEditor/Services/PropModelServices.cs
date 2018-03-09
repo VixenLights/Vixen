@@ -75,8 +75,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			_models.Clear();
 			var allModels = _prop.GetAll();
-			Console.Out.WriteLine($"Models count = {allModels.Count()}");
-
+			
 			allModels.Distinct().ForEach(x => _models.Add(x.Id, x));
 		}
 

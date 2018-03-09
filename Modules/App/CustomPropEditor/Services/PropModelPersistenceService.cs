@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using LiteDB;
 using VixenModules.App.CustomPropEditor.Model;
 
@@ -41,6 +42,24 @@ namespace VixenModules.App.CustomPropEditor.Services
 			}
 
 			return p;
+		}
+
+		public static async Task<Prop> GetModelAsync(string path)
+		{
+			Task<Prop> t = Task<Prop>.Factory.StartNew(() =>
+			{
+				Prop p;
+				using (var db = new LiteDatabase(path))
+				{
+					var col = db.GetCollection<Prop>("props");
+
+					p = col.FindAll().FirstOrDefault();
+				}
+				return p;
+			});
+
+			return await t;
+
 		}
 	}
 }
