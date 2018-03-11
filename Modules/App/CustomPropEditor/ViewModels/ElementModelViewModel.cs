@@ -239,6 +239,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region IsEditing property
+
+		/// <summary>
+		/// Gets or sets the IsEditing value.
+		/// </summary>
+		[Browsable(false)]
+		public bool IsEditing
+		{
+			get { return GetValue<bool>(IsEditingProperty); }
+			set { SetValue(IsEditingProperty, value); }
+		}
+
+		/// <summary>
+		/// IsEditing property data.
+		/// </summary>
+		public static readonly PropertyData IsEditingProperty = RegisterProperty("IsEditing", typeof(bool));
+
+		#endregion
+
 		#region IsLeaf property
 
 		/// <summary>
@@ -266,6 +285,55 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// IsLightNode property data.
 		/// </summary>
 		public static readonly PropertyData IsLightNodeProperty = RegisterProperty("IsLightNode", typeof(bool), null);
+
+		#endregion
+
+		#region BeginEdit command
+
+		private Command _beginEditCommand;
+
+		/// <summary>
+		/// Gets the LeftMouseUp command.
+		/// </summary>
+		[Browsable(false)]
+		public Command BeginEditCommand
+		{
+			get { return _beginEditCommand ?? (_beginEditCommand = new Command(BeginEdit)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the LeftMouseUp command is executed.
+		/// </summary>
+		private void BeginEdit()
+		{
+			if (IsSelected)
+			{
+				IsEditing = true;
+			}
+		}
+
+		#endregion
+
+		#region DoneEditing command
+
+		private Command _doneEditingCommand;
+
+		/// <summary>
+		/// Gets the EditFocusLost command.
+		/// </summary>
+		[Browsable(false)]
+		public Command DoneEditingCommand
+		{
+			get { return _doneEditingCommand ?? (_doneEditingCommand = new Command(DoneEditing)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the EditFocusLost command is executed.
+		/// </summary>
+		private void DoneEditing()
+		{
+			IsEditing = false;
+		}
 
 		#endregion
 
