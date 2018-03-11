@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:model="clr-namespace:VixenModules.App.CustomPropEditor.Model"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:catel="clr-namespace:Catel;assembly=Catel.Core"
-             xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
              xmlns:interactivity="http://schemas.catelproject.com"
              xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
              xmlns:behaviors="clr-namespace:VixenModules.App.CustomPropEditor.Behaviors"
@@ -16,111 +13,116 @@
 
 	<UserControl.Resources>
 
-		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
 
-		<Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
-			<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
-			<Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
-              RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-			<Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
-              RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-			<Setter Property="Padding" Value="1,0,0,0"/>
-			<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-			<Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type TreeViewItem}">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition MinWidth="19" Width="Auto"/>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition/>
-							</Grid.RowDefinitions>
-							<ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded,
-                              RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
-							<Border Name="Bd" Grid.Column="1" BorderThickness="1" >
-								<ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-							</Border>
-							<ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsExpanded" Value="false">
-								<Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
-							</Trigger>
-							<Trigger Property="HasItems" Value="false">
-								<Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
-							</Trigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="HasHeader" Value="false"/>
-									<Condition Property="Width" Value="Auto"/>
-								</MultiTrigger.Conditions>
-								<Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
-							</MultiTrigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="HasHeader" Value="false"/>
-									<Condition Property="Height" Value="Auto"/>
-								</MultiTrigger.Conditions>
-								<Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
-							</MultiTrigger>
-							<!--<Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-                                <Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
-                                <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                            </Trigger>-->
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
-									<Condition Property="IsSelectionActive" Value="false"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-								<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-								<Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
-							</MultiTrigger>
-							<Trigger Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="True">
-								<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
-								<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-								<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
-								<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-							</Trigger>
-							<Trigger Property="IsEnabled" Value="false">
-								<Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-		<Style TargetType="{x:Type TreeView}">
-			<Setter Property="Background" Value="{StaticResource BackColorBrush}" />
-			<Setter Property="ItemContainerStyle" Value="{StaticResource ElementTreeViewItemContainerStyle}" />
-			<Setter Property="Padding" Value="0" />
-		</Style>
+			<Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
+				<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
+				<Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment,
+				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+				<Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment,
+				  RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+				<Setter Property="Padding" Value="1,0,0,0"/>
+				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+				<Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type TreeViewItem}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition MinWidth="19" Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded,
+								  RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+								<Border Name="Bd" Grid.Column="1" BorderThickness="1" >
+									<ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+								</Border>
+								<ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+							</Grid>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsExpanded" Value="false">
+									<Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+								</Trigger>
+								<Trigger Property="HasItems" Value="false">
+									<Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+								</Trigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="HasHeader" Value="false"/>
+										<Condition Property="Width" Value="Auto"/>
+									</MultiTrigger.Conditions>
+									<Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
+								</MultiTrigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="HasHeader" Value="false"/>
+										<Condition Property="Height" Value="Auto"/>
+									</MultiTrigger.Conditions>
+									<Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
+								</MultiTrigger>
+								<!--<Trigger Property="IsSelected" Value="true">
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
+									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+								</Trigger>-->
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="IsSelectionActive" Value="false"/>
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+									<Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
+								</MultiTrigger>
+								<Trigger Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="True">
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
+									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+								</Trigger>
+								<Trigger Property="IsEnabled" Value="false">
+									<Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 
-		<ContextMenu x:Key="ElementTreeContextMenu">
-			<MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-			<MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-			<MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-			<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
-			<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
-		</ContextMenu>
+			<Style TargetType="{x:Type TreeView}">
+				<Setter Property="Background" Value="{StaticResource BackColorBrush}" />
+				<Setter Property="ItemContainerStyle" Value="{StaticResource ElementTreeViewItemContainerStyle}" />
+				<Setter Property="Padding" Value="0" />
+			</Style>
 
-		<!-- For the context menu to work, we must shift it into a style, which means that the context menu is now in a
-        visual tree that is more closely related to the current data context. All we have to do then is set the style, 
-        which hooks up the context menu. -->
-		<Style x:Key="ElementModelContextMenuStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="ContextMenu" Value="{DynamicResource ElementTreeContextMenu}"/>
-		</Style>
+			<ContextMenu x:Key="ElementTreeContextMenu">
+				<MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+				<MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+				<MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
+				<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
+				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
+			</ContextMenu>
 
+			<!-- For the context menu to work, we must shift it into a style, which means that the context menu is now in a
+			visual tree that is more closely related to the current data context. All we have to do then is set the style, 
+			which hooks up the context menu. -->
+			<Style x:Key="ElementModelContextMenuStyle" TargetType="{x:Type TextBlock}">
+				<Setter Property="ContextMenu" Value="{DynamicResource ElementTreeContextMenu}"/>
+			</Style>
+		</ResourceDictionary>
 
 	</UserControl.Resources>
 

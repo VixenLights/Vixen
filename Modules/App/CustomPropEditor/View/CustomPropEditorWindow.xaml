@@ -8,29 +8,26 @@
 	xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
 	xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
-       
+        xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
 
-
+        Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
-	<!--<views:PropEditorView></views:PropEditorView>-->
-
-
+	
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
-
-				<!--<ResourceDictionary Source="..\Themes\Generic.xaml"/>-->
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
-			<ContextMenu x:Key="DesignerCanvasContextMenu">
+			<!--<ContextMenu x:Key="DesignerCanvasContextMenu">
 				<MenuItem Header="Paste" Command="{x:Static ApplicationCommands.Paste}">
-					<!--<MenuItem.Icon>
+					--><!--<MenuItem.Icon>
                     <Image Source="Resources/Images/Paste.png" Width="20"/>
-                </MenuItem.Icon>-->
+                </MenuItem.Icon>--><!--
 				</MenuItem>
 				<MenuItem Header="Select All"/>
 			</ContextMenu>
-			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>-->
 			<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -92,8 +89,6 @@
 			</StatusBarItem>
 		</StatusBar>
 		<Border BorderThickness="0 0 0 1" >
-
-
 			<Grid Background="{StaticResource BackColorBrush}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="1*"/>
@@ -121,8 +116,8 @@
 				</wpfPropertyGrid:PropertyGrid>
 
 				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}" >
-						<ToolBar Background="{StaticResource BackColorBrush}">
+					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
+						<ToolBar>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
 							             Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
@@ -178,7 +173,7 @@
 								<catel:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
 							</i:Interaction.Behaviors>
 							<ItemsControl.ItemTemplate>
-								<DataTemplate>
+								<DataTemplate DataType="{x:Type viewModels:LightViewModel}">
 									<ContentControl>
 										<Path StrokeThickness="1" Name="GeometryPath">
 											<Path.Data >
