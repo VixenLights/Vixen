@@ -75,7 +75,6 @@
 			// 
 			// txtY
 			// 
-			this.txtY.AllowSpace = false;
 			this.txtY.Location = new System.Drawing.Point(121, 52);
 			this.txtY.Name = "txtY";
 			this.txtY.Size = new System.Drawing.Size(63, 23);
@@ -105,7 +104,6 @@
 			// 
 			// txtX
 			// 
-			this.txtX.AllowSpace = false;
 			this.txtX.Location = new System.Drawing.Point(121, 23);
 			this.txtX.Name = "txtX";
 			this.txtX.Size = new System.Drawing.Size(63, 23);
