@@ -197,7 +197,7 @@
     <None Include="control_stop_blue.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="delete.png" />
+    <Resource Include="delete.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="filter.png" />
@@ -291,7 +291,7 @@
     <None Include="Resources\openMarkManager.png" />
     <None Include="Resources\add_Collection.png" />
     <None Include="Resources\dottedLine.png" />
-    <None Include="Resources\delete_32.png" />
+    <Resource Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
     <None Include="Resources\VixenImage.png" />
     <Content Include="table_chart_left.png" />
@@ -389,10 +389,10 @@
     <None Include="sound.png" />
     <None Include="page_copy.png" />
     <None Include="paste_plain.png" />
-    <None Include="page_white_paste.png" />
-    <None Include="page_white_copy.png" />
+    <Resource Include="page_white_paste.png" />
+    <Resource Include="page_white_copy.png" />
     <None Include="document_move.png" />
-    <None Include="cut.png" />
+    <Resource Include="cut.png" />
     <None Include="document_comment_above.png" />
     <None Include="document_comment_behind.png" />
     <None Include="document_comment_below.png" />

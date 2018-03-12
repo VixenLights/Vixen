@@ -57,17 +57,17 @@
     <Setter Property="SnapsToDevicePixels" Value="True"/>
     <Setter Property="Height" Value="2"/>
     <Setter Property="Margin" Value="0,4,0,4"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Separator}">
-          <StackPanel SnapsToDevicePixels="True" Height="2" >
-            <Rectangle Height="1" Fill="#222" />
-            <Rectangle Height="2" Fill="#666" />
-          </StackPanel>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Separator}">
+					<StackPanel SnapsToDevicePixels="True" Height="2" >
+						<Rectangle Height="1" Fill="#222" />
+						<Rectangle Height="2" Fill="#666" />
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
   <!-- TopLevelHeader -->
 
@@ -262,11 +262,14 @@
       <Trigger Property="controls:IndexingStackPanel.StackLocation" Value="FirstAndLast" >
         <Setter TargetName="Border" Property="CornerRadius" Value="0,4,4,4" />
       </Trigger>
-      <Trigger Property="IsEnabled" Value="false">
+      <!--<Trigger Property="IsEnabled" Value="false">
         <Setter TargetName="HeaderHost" Property="TextElement.Foreground" Value="#777"/>
         <Setter TargetName="InputGestureText" Property="TextElement.Foreground" Value="#777"/>
-      </Trigger>
-    </ControlTemplate.Triggers>
+      </Trigger>-->
+	    <Trigger Property="IsEnabled" Value="False">
+		    <Setter Property="Opacity" Value="0.5"/>
+	    </Trigger>
+		</ControlTemplate.Triggers>
   </ControlTemplate>
 
   <!-- SubmenuHeader -->
@@ -347,11 +350,14 @@
       <Trigger Property="controls:IndexingStackPanel.StackLocation" Value="FirstAndLast" >
         <Setter TargetName="Border" Property="CornerRadius" Value="0,4,4,4" />
       </Trigger>
-      <Trigger Property="IsEnabled" Value="false">
+      <!--<Trigger Property="IsEnabled" Value="false">
         <Setter TargetName="HeaderHost" Property="TextElement.Foreground" Value="#777"/>
         <Setter TargetName="InputGestureText" Property="TextElement.Foreground" Value="#777"/>
-      </Trigger>
-    </ControlTemplate.Triggers>
+      </Trigger>-->
+	    <Trigger Property="IsEnabled" Value="False">
+		    <Setter Property="Opacity" Value="0.5"/>
+	    </Trigger>
+		</ControlTemplate.Triggers>
   </ControlTemplate>
 
   <!-- MenuItem Style -->
@@ -369,10 +375,10 @@
       <Trigger Property="Role" Value="SubmenuHeader">
         <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.SubmenuHeaderTemplateKey}}"/>
       </Trigger>
-      <Trigger Property="Role" Value="SubmenuItem">
-        <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.SubmenuItemTemplateKey}}"/>
-      </Trigger>
-    </Style.Triggers>
+			<Trigger Property="Role" Value="SubmenuItem">
+				<Setter Property="Template" Value="{StaticResource {x:Static MenuItem.SubmenuItemTemplateKey}}"/>
+			</Trigger>
+		</Style.Triggers>
   </Style>
 
 

@@ -295,6 +295,101 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Cut command
+
+		private Command _cutCommand;
+
+		/// <summary>
+		/// Gets the Cut command.
+		/// </summary>
+		public Command CutCommand
+		{
+			get { return _cutCommand ?? (_cutCommand = new Command(Cut, CanCut)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Cut command is executed.
+		/// </summary>
+		private void Cut()
+		{
+			// TODO: Handle command logic here
+		}
+
+		/// <summary>
+		/// Method to check whether the Cut command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanCut()
+		{
+			return SelectedItems.Any();
+		}
+
+		#endregion
+
+		#region Copy command
+
+		private Command _copyCommand;
+
+		/// <summary>
+		/// Gets the Copy command.
+		/// </summary>
+		public Command CopyCommand
+		{
+			get { return _copyCommand ?? (_copyCommand = new Command(Copy, CanCopy)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Copy command is executed.
+		/// </summary>
+		private void Copy()
+		{
+			// TODO: Handle command logic here
+		}
+
+		/// <summary>
+		/// Method to check whether the Copy command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanCopy()
+		{
+			return SelectedItems.Any();
+		}
+
+		#endregion
+
+		#region Paste command
+
+		private Command _pasteCommand;
+
+		/// <summary>
+		/// Gets the Paste command.
+		/// </summary>
+		public Command PasteCommand
+		{
+			get { return _pasteCommand ?? (_pasteCommand = new Command(Paste, CanPaste)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Paste command is executed.
+		/// </summary>
+		private void Paste()
+		{
+			// TODO: Handle command logic here
+		}
+
+		/// <summary>
+		/// Method to check whether the Paste command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanPaste()
+		{
+			//TODO implement the clipboard detection logic
+			return false;
+		}
+
+		#endregion
+
+
 		#endregion
 
 

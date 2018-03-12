@@ -113,7 +113,28 @@
 				<MenuItem Header="Create Empty Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
 				<MenuItem Header="Copy to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.CreateGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
 				<MenuItem Header="Move to New Group" Command="{Binding Path=DataContext.ElementTreeViewModel.MoveToGroupCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"></MenuItem>
-				<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
+				<Separator/>
+				<MenuItem Header="Cut" Command="{Binding Path=DataContext.ElementTreeViewModel.CutCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/cut.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Copy" Command="{Binding Path=DataContext.ElementTreeViewModel.CopyCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_copy.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Paste" Command="{Binding Path=DataContext.ElementTreeViewModel.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 			</ContextMenu>
 
