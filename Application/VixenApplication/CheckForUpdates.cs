@@ -79,7 +79,7 @@ namespace VixenApplication
 			try
 			{
 				
-					if (_currentVersionType == "Build")
+					if (_currentVersionType == "DevBuild")
 					{
 						using (WebClient wc = new WebClient())
 						{

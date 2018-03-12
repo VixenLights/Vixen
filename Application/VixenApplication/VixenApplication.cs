@@ -374,14 +374,11 @@ namespace VixenApplication
 			}
 			else
 			{
-				//following two lines are for testing
-		//		_currentBuildVersion = Convert.ToInt16("543");
-				labelVersion.Text = "3.1";
 				labelDebugVersion.Text = @"Test Build";
-				labelDebugVersion.ForeColor = Color.Yellow;
 				toolStripStatusUpdates.Text = "";
+				labelDebugVersion.ForeColor = Color.Yellow;
 			}
-			
+
 			labelDebugVersion.Visible = true;
 
 			//Log the runtime versions 
