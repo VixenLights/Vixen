@@ -148,14 +148,17 @@
 			<TreeView.ItemTemplate>
 				<HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:ElementModelViewModel}">
 					<StackPanel Orientation="Horizontal">
-						<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}">
+						<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}" Focusable="True">
 							<i:Interaction.Triggers>
 								<i:EventTrigger EventName="MouseLeftButtonUp">
 									<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
 								</i:EventTrigger>
 							</i:Interaction.Triggers>
+							<i:Interaction.Behaviors>
+								<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
+							</i:Interaction.Behaviors>
 						</TextBlock>
-						<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed"
+						<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 						         commonUtils:TextBoxExtender.CommitOnEnter="true"
 						         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 						         commonUtils:TextBoxExtender.SelectAllOnFocus="True"
@@ -165,9 +168,6 @@
 									<interactivity:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
 								</i:EventTrigger>
 							</i:Interaction.Triggers>
-							<!--<i:Interaction.Behaviors>
-								<interactivity:Focus FocusMoment="Event" Source="{Binding ElementName=EditableText}" EventName="MouseEnter" />
-							</i:Interaction.Behaviors>-->
 						</TextBox>
 						<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=({0:G})}" 
                                    Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
@@ -175,6 +175,9 @@
 						</TextBlock>
 					</StackPanel>
 					<HierarchicalDataTemplate.Triggers>
+						<DataTrigger Binding="{Binding IsSelected}" Value="True">
+							<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=ReadOnlyText}" TargetName="ReadOnlyText" />
+						</DataTrigger>
 						<DataTrigger Binding="{Binding IsEditing}" Value="True">
 							<Setter TargetName="EditableText" Property="Visibility" Value="Visible" />
 							<Setter TargetName="ReadOnlyText" Property="Visibility" Value="Collapsed"/>
