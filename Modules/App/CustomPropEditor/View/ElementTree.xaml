@@ -190,7 +190,7 @@
 								</i:EventTrigger>
 							</i:Interaction.Triggers>
 						</TextBox>
-						<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=({0:G})}" 
+						<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
                                    Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 
 						</TextBlock>

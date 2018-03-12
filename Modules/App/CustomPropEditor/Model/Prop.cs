@@ -15,8 +15,12 @@ namespace VixenModules.App.CustomPropEditor.Model
         private double _height;
         private double _width;
         private double _opacity;
+	    private string _vendor;
+	    private string _vendorUrl;
+	    private DateTime _creationDate;
+	    private DateTime _modifiedDate;
 
-        public Prop(string name) : this()
+	    public Prop(string name) : this()
         {
             Name = name;
         }
@@ -28,6 +32,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
             Opacity = 1;
             Name = "New Prop";
+			CreationDate = DateTime.Now;
         }
 
 	    public Guid Id { get; private set; }
@@ -54,7 +59,51 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-		[BsonIgnore]
+	    public string Vendor
+	    {
+		    get { return _vendor; }
+		    set
+		    {
+			    if (value == _vendor) return;
+			    _vendor = value;
+			    OnPropertyChanged(nameof(Vendor));
+		    }
+	    }
+
+	    public string VendorUrl
+	    {
+		    get { return _vendorUrl; }
+		    set
+		    {
+			    if (value == _vendorUrl) return;
+			    _vendorUrl = value;
+			    OnPropertyChanged(nameof(VendorUrl));
+		    }
+	    }
+
+		public DateTime CreationDate
+		{
+		    get { return _creationDate; }
+		    private set
+		    {
+			    if (value.Equals(_creationDate)) return;
+			    _creationDate = value;
+			    OnPropertyChanged(nameof(CreationDate));
+		    }
+	    }
+
+	    public DateTime ModifiedDate
+	    {
+		    get { return _modifiedDate; }
+		    set
+		    {
+			    if (value.Equals(_modifiedDate)) return;
+			    _modifiedDate = value;
+			    OnPropertyChanged(nameof(ModifiedDate));
+		    }
+	    }
+
+	    [BsonIgnore]
         public BitmapSource Image
         {
             get { return _image; }

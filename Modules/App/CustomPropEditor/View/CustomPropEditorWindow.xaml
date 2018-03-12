@@ -102,7 +102,7 @@
 
 				<views:ElementTree Grid.Column="0" Grid.Row="0"/>
 				<wpfPropertyGrid:PropertyGrid Grid.Row="1" Grid.Column="0"
-                                              ItemsSource="{Binding ElementTreeViewModel.SelectedItems}"
+                                              ItemSource="{Binding}"
                                               ShowAttachedProperties="False"
                                               ShowReadOnlyProperties="True"
                                               PropertyFilterVisibility="Hidden">

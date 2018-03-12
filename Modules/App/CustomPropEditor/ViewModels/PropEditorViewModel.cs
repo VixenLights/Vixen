@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.WpfPropertyGrid;
 using Catel.Collections;
-using Catel.Data;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
@@ -15,6 +16,7 @@ using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using PropertyData = Catel.Data.PropertyData;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -36,6 +38,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the Prop value.
 		/// </summary>
+		[Browsable(false)]
 		[Model]
 		public Prop Prop
 		{
@@ -58,11 +61,134 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Name property
+
+		/// <summary>
+		/// Gets or sets the Name value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public string Name
+		{
+			get { return GetValue<string>(NameProperty); }
+			set { SetValue(NameProperty, value); }
+		}
+
+		/// <summary>
+		/// Name property data.
+		/// </summary>
+		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
+
+		#endregion
+
+		#region Vendor property
+
+		/// <summary>
+		/// Gets or sets the Vendor value.
+		/// </summary>
+		[ViewModelToModel("Prop")]
+		public string Vendor
+		{
+			get { return GetValue<string>(VendorProperty); }
+			set { SetValue(VendorProperty, value); }
+		}
+
+		/// <summary>
+		/// Vendor property data.
+		/// </summary>
+		public static readonly PropertyData VendorProperty = RegisterProperty("Vendor", typeof(string), null);
+
+		#endregion
+
+		#region VendorUrl property
+
+		/// <summary>
+		/// Gets or sets the VendorUrl value.
+		/// </summary>
+		[DisplayName("Vendor URL")]
+		[ViewModelToModel("Prop")]
+		public string VendorUrl
+		{
+			get { return GetValue<string>(VendorUrlProperty); }
+			set { SetValue(VendorUrlProperty, value); }
+		}
+
+		/// <summary>
+		/// VendorUrl property data.
+		/// </summary>
+		public static readonly PropertyData VendorUrlProperty = RegisterProperty("VendorUrl", typeof(string), null);
+
+		#endregion
+
+		#region CreationDate property
+
+		/// <summary>
+		/// Gets or sets the CreationDate value.
+		/// </summary>
+		[DisplayName("Creation Date")]
+		[PropertyOrder(20)]
+		[ViewModelToModel("Prop")]
+		public DateTime CreationDate
+		{
+			get { return GetValue<DateTime>(CreationDateProperty); }
+			internal set { SetValue(CreationDateProperty, value); }
+		}
+
+		/// <summary>
+		/// CreationDate property data.
+		/// </summary>
+		public static readonly PropertyData CreationDateProperty = RegisterProperty("CreationDate", typeof(DateTime), null);
+
+		#endregion
+
+		#region ModifiedDate property
+
+		/// <summary>
+		/// Gets or sets the ModifiedDate value.
+		/// </summary>
+		
+		[DisplayName("Modified Date")]
+		[PropertyOrder(21)]
+		[ViewModelToModel("Prop")]
+		public DateTime ModifiedDate
+		{
+			get { return GetValue<DateTime>(ModifiedDateProperty); }
+			set { SetValue(ModifiedDateProperty, value); }
+		}
+
+		/// <summary>
+		/// ModifiedDate property data.
+		/// </summary>
+		public static readonly PropertyData ModifiedDateProperty = RegisterProperty("ModifiedDate", typeof(DateTime), null);
+
+		#endregion
+
+		#region Overrides
+
+		//We are not using these properties in the view so hiding them so the property grid does not expose them.
+
+		[Browsable(false)]
+		public new DateTime ViewModelConstructionTime => base.ViewModelConstructionTime;
+
+		[Browsable(false)]
+		public new int UniqueIdentifier => base.UniqueIdentifier;
+
+		[Browsable(false)]
+		public new string Title => base.Title;
+
+		[Browsable(false)]
+		public new bool IsClosed => base.IsClosed;
+
+		[Browsable(false)]
+		public new IViewModel ParentViewModel => base.ParentViewModel;
+
+		#endregion
+
 		#region DrawingPanelViewModel property
 
 		/// <summary>
 		/// Gets or sets the DrawingPanelViewModel value.
 		/// </summary>
+		[Browsable(false)]
 		public DrawingPanelViewModel DrawingPanelViewModel
 		{
 			get { return GetValue<DrawingPanelViewModel>(DrawingPanelViewModelProperty); }
@@ -81,6 +207,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the ElementTreeViewModel value.
 		/// </summary>
+		[Browsable(false)]
 		public ElementTreeViewModel ElementTreeViewModel
 		{
 			get { return GetValue<ElementTreeViewModel>(ElementTreeViewModelProperty); }
@@ -99,6 +226,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the FilePath value.
 		/// </summary>
+		[Browsable(false)]
 		public string FilePath
 		{
 			get { return GetValue<string>(FilePathProperty); }
@@ -221,7 +349,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the Delete command.
-		/// </summary>
+		/// </summary
+		[Browsable(false)]
 		public Command DeleteCommand
 		{
 			get { return _deleteCommand ?? (_deleteCommand = new Command(Delete, CanDelete)); }
@@ -258,6 +387,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the OpenProp command.
 		/// </summary>
+		[Browsable(false)]
 		public Command OpenPropCommand
 		{
 			get { return _openPropCommand ?? (_openPropCommand = new Command(OpenProp)); }
@@ -301,6 +431,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the SaveModel command.
 		/// </summary>
+		[Browsable(false)]
 		public Command SaveModelCommand
 		{
 			get { return _saveModelCommand ?? (_saveModelCommand = new Command(SaveModel)); }
@@ -311,7 +442,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private async void SaveModel()
 		{
-			PropModelServices.Instance().EnsureModelDirectory();
+			ModifiedDate = DateTime.Now;
 			if (string.IsNullOrEmpty(FilePath))
 			{
 				SaveModelAs();
@@ -330,7 +461,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		/// <summary>
 		/// Gets the SaveModelAs command.
-		/// </summary>
+		/// </summary
+		[Browsable(false)]
 		public Command SaveModelAsCommand
 		{
 			get { return _saveModelAsCommand ?? (_saveModelAsCommand = new Command(SaveModelAs)); }
@@ -341,7 +473,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private async void SaveModelAs()
 		{
-			PropModelServices.Instance().EnsureModelDirectory();
+			ModifiedDate = DateTime.Now;
 			var dependencyResolver = this.GetDependencyResolver();
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
@@ -359,7 +491,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		}
 
 		#endregion
-
 
 
 		private void NewProp()
@@ -428,6 +559,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the Exit command.
 		/// </summary>
+		[Browsable(false)]
 		public RelayCommand<Window> ExitCommand
 		{
 			get { return _exitCommand ?? (_exitCommand = new RelayCommand<Window>(Exit)); }
@@ -443,13 +575,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-
+		[Browsable(false)]
 		public RelayCommand<string> ImportCommand { get; private set; }
 
+		[Browsable(false)]
 		public RelayCommand NewPropCommand { get; private set; }
 
+		[Browsable(false)]
 		public RelayCommand<Point> AddLightCommand { get; private set; }
 
+		[Browsable(false)]
 		public RelayCommand LoadImageCommand { get; private set; }
 
 		#endregion
