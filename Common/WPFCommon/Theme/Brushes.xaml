@@ -52,6 +52,7 @@
 	<Color x:Key="ForeColor">#EBEBEB</Color>
 	<Color x:Key="ForeColorDisabled">#777777</Color>
 	<Color x:Key="BackColor">#444444</Color>
+	<Color x:Key="DeSelectedBackColor">#909090</Color>
 	<Color x:Key="BorderColor">#888888</Color>
 
 	<Color x:Key="MouseOverBackground">#1F26A0DA</Color>
@@ -63,6 +64,7 @@
 	<SolidColorBrush x:Key="ForeColorDisabledBrush" Color="{StaticResource ForeColorDisabled}"/>
 	<SolidColorBrush x:Key="DisabledForeground" Color="#777" />
 	<SolidColorBrush x:Key="BackColorBrush" Color="{StaticResource BackColor}"/>
+	<SolidColorBrush x:Key="DeSelectedBackColorBrush" Color="{StaticResource DeSelectedBackColor}"/>
 	<SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}"/>
 
 	<SolidColorBrush x:Key="RaisedHighlight" Color="{StaticResource BorderColor}"/>

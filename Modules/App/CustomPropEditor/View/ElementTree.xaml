@@ -21,6 +21,59 @@
 
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
+
+			<Style x:Key="ElementListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
+				<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+				<Setter Property="Background" Value="#FF333333"/>
+				<Setter Property="IsTabStop" Value="False"/>
+				<Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+				<Setter Property="SnapsToDevicePixels" Value="True"/>
+				<Setter Property="Padding" Value="4,1"/>
+				<!--<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>-->
+
+				<Setter Property="BorderBrush" Value="Transparent"/>
+				<Setter Property="BorderThickness" Value="1"/>
+
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type ListBoxItem}">
+							<Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+								<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+							</Border>
+							<ControlTemplate.Triggers>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="Selector.IsSelectionActive" Value="False"/>
+										<Condition Property="IsSelected" Value="True"/>
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+								</MultiTrigger>
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="Selector.IsSelectionActive" Value="True"/>
+										<Condition Property="IsSelected" Value="True"/>
+									</MultiTrigger.Conditions>
+									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+								</MultiTrigger>
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+
+			<Style x:Key="ElementListStyle" TargetType="{x:Type ListView}">
+				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+				<Setter Property="Background" Value="#FF333333"/>
+				<Setter Property="BorderThickness" Value="0"/>
+				<Setter Property="ItemContainerStyle" Value="{StaticResource ElementListViewItemContainerStyle}"></Setter>
+			</Style>
+
 			<Style x:Key="ElementTreeViewItemContainerStyle" TargetType="{x:Type TreeViewItem}">
 				<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"></Setter>
 				<Setter Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="{Binding IsSelected, Mode=TwoWay}"></Setter>
@@ -149,8 +202,9 @@
 	</UserControl.Resources>
 
 	<Grid>
-
-		<TreeView x:Name="ElementModelTreeView" 
+		<TabControl Background="{StaticResource BackColorBrush}">
+			<TabItem Header="Layout">
+				<TreeView x:Name="ElementModelTreeView" 
                   ItemsSource="{Binding ElementTreeViewModel.RootNodesViewModels}" 
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
@@ -161,15 +215,16 @@
 		          dd:DragDrop.DropHandler="{Binding ElementTreeViewModel}"
 		          dd:DragDrop.DragHandler="{Binding ElementTreeViewModel}">
 
-			<i:Interaction.Behaviors>
-				<behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
-				<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
-			</i:Interaction.Behaviors>
-			
-			<TreeView.ItemTemplate>
-				<HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:ElementModelViewModel}">
-					<StackPanel Orientation="Horizontal">
-						<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}" Focusable="True">
+
+					<i:Interaction.Behaviors>
+						<behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
+						<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
+					</i:Interaction.Behaviors>
+
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:ElementModelViewModel}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}" Focusable="True">
 							<i:Interaction.Triggers>
 								<i:EventTrigger EventName="MouseLeftButtonUp">
 									<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
@@ -178,40 +233,67 @@
 							<i:Interaction.Behaviors>
 								<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
 							</i:Interaction.Behaviors>
-						</TextBlock>
-						<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
+								</TextBlock>
+								<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 						         commonUtils:TextBoxExtender.CommitOnEnter="true"
 						         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 						         commonUtils:TextBoxExtender.SelectAllOnFocus="True"
 						         commonUtils:TextBoxExtender.CommitOnTyping="false">
-							<i:Interaction.Triggers>
-								<i:EventTrigger EventName="LostKeyboardFocus">
-									<interactivity:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
-								</i:EventTrigger>
-							</i:Interaction.Triggers>
-						</TextBox>
-						<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
+									<i:Interaction.Triggers>
+										<i:EventTrigger EventName="LostKeyboardFocus">
+											<interactivity:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
+										</i:EventTrigger>
+									</i:Interaction.Triggers>
+								</TextBox>
+								<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
                                    Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 
-						</TextBlock>
-					</StackPanel>
-					<HierarchicalDataTemplate.Triggers>
-						<DataTrigger Binding="{Binding IsSelected}" Value="True">
-							<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=ReadOnlyText}" TargetName="ReadOnlyText" />
-						</DataTrigger>
-						<DataTrigger Binding="{Binding IsEditing}" Value="True">
-							<Setter TargetName="EditableText" Property="Visibility" Value="Visible" />
-							<Setter TargetName="ReadOnlyText" Property="Visibility" Value="Collapsed"/>
-							<Setter TargetName="OrderText" Property="Visibility" Value="Collapsed"/>
-							<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=EditableText}" TargetName="EditableText" />
-						</DataTrigger>
+								</TextBlock>
+							</StackPanel>
+							<HierarchicalDataTemplate.Triggers>
+								<DataTrigger Binding="{Binding IsSelected}" Value="True">
+									<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=ReadOnlyText}" TargetName="ReadOnlyText" />
+								</DataTrigger>
+								<DataTrigger Binding="{Binding IsEditing}" Value="True">
+									<Setter TargetName="EditableText" Property="Visibility" Value="Visible" />
+									<Setter TargetName="ReadOnlyText" Property="Visibility" Value="Collapsed"/>
+									<Setter TargetName="OrderText" Property="Visibility" Value="Collapsed"/>
+									<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=EditableText}" TargetName="EditableText" />
+								</DataTrigger>
 
-					</HierarchicalDataTemplate.Triggers>
+							</HierarchicalDataTemplate.Triggers>
 
-				</HierarchicalDataTemplate>
-				
-			</TreeView.ItemTemplate>
+						</HierarchicalDataTemplate>
 
-		</TreeView>
+					</TreeView.ItemTemplate>
+
+				</TreeView>
+			</TabItem>
+			<TabItem Header="Order">
+				<ListView x:Name="ElementOrderView" Style="{StaticResource ElementListStyle}"
+				          ItemsSource="{Binding ElementOrderViewModel.LeafNodes}"
+				          ScrollViewer.CanContentScroll="True"
+				          FocusManager.IsFocusScope="True"
+				          dd:DragDrop.IsDragSource="True"
+				          dd:DragDrop.IsDropTarget="True"
+				          dd:DragDrop.DropHandler="{Binding ElementOrderViewModel}">
+					<i:Interaction.Behaviors>
+						<behaviors:MultiSelectionBehavior SelectedItems="{Binding ElementOrderViewModel.SelectedItems}" />
+					</i:Interaction.Behaviors>
+					<ListView.ItemTemplate >
+						<DataTemplate DataType="{x:Type viewModels:ElementModelViewModel}">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+								</TextBlock>
+								<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
+								           Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
+								</TextBlock>
+							</StackPanel>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+			</TabItem>
+		</TabControl>
+		
 	</Grid>
 </UserControl>

@@ -50,6 +50,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
                 SetValue(PropProperty, value);
 				ElementTreeViewModel = new ElementTreeViewModel(value);
 				DrawingPanelViewModel = new DrawingPanelViewModel(ElementTreeViewModel);
+				ElementOrderViewModel = new ElementOrderViewModel(value);
 				RegisterModelEvents();
 			}
 		}
@@ -221,6 +222,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region ElementOrderViewModel property
+
+		/// <summary>
+		/// Gets or sets the ElementOrderViewModel value.
+		/// </summary>
+		[Browsable(false)]
+		public ElementOrderViewModel ElementOrderViewModel
+		{
+			get { return GetValue<ElementOrderViewModel>(ElementOrderViewModelProperty); }
+			set { SetValue(ElementOrderViewModelProperty, value); }
+		}
+
+		/// <summary>
+		/// ElementOrderViewModel property data.
+		/// </summary>
+		public static readonly PropertyData ElementOrderViewModelProperty = RegisterProperty("ElementOrderViewModel", typeof(ElementOrderViewModel));
+
+		#endregion
+
 		#region FilePath property
 
 		/// <summary>
@@ -367,6 +387,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			itemsToDelete.ForEach(x => x.RemoveFromParent());
 			DrawingPanelViewModel.DeselectAll();
 			DrawingPanelViewModel.RefreshLightViewModels();
+			ElementOrderViewModel.RefreshElementLeafViewModels();
 		}
 
 		/// <summary>
@@ -513,6 +534,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (model == null) return;
 
 			DrawingPanelViewModel.RefreshLightViewModels();
+			ElementOrderViewModel.RefreshElementLeafViewModels();
 
 			if (model == target?.ElementModel)
 			{

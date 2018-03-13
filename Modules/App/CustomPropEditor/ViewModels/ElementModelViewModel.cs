@@ -192,20 +192,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			get
 			{
-				//if (IsLeaf)
-				//{
-				//	return LightViewModels.Any(l => l.IsSelected);
-				//}
-
 				return GetValue<bool>(IsSelectedProperty);
 			}
 			set
 			{
-				//if (IsLeaf)
-				//{
-				//	LightViewModels.ForEach(l => l.IsSelected = value);
-				//}
-
 				SetValue(IsSelectedProperty, value);
 			}
 		}

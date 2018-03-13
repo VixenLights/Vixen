@@ -87,7 +87,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-
 		#region SelectedItems property
 
 		/// <summary>
@@ -120,7 +119,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 
 		#endregion
-
 
 		#region SelectedItem property
 

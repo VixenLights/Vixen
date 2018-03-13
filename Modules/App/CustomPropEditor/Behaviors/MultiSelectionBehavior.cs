@@ -7,7 +7,7 @@ using System.Windows.Interactivity;
 
 namespace VixenModules.App.CustomPropEditor.Behaviors
 {
-	public class MultiSelectionBehavior : Behavior<MultiSelector>
+	public class MultiSelectionBehavior : Behavior<ListView>
 	{
 		protected override void OnAttached()
 		{
