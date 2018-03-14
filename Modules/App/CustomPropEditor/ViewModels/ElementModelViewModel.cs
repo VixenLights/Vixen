@@ -15,6 +15,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	[DisplayName("Element Model")]
 	public sealed class ElementModelViewModel : ViewModelBase, ISelectableExpander, IDisposable
 	{
+		private DateTime _selectedTime = DateTime.MaxValue;
+
 		public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
 		{
 			ElementModel = model;
@@ -197,6 +199,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			set
 			{
 				SetValue(IsSelectedProperty, value);
+				_selectedTime = DateTime.Now;
 			}
 		}
 
@@ -296,7 +299,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void BeginEdit()
 		{
-			if (IsSelected)
+			if (IsSelected && _selectedTime.AddMilliseconds(500) < DateTime.Now)
 			{
 				IsEditing = true;
 			}

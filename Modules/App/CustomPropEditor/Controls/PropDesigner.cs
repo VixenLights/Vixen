@@ -412,8 +412,6 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 		private void UpdateResizeAdorner()
 		{
-			Console.Out.WriteLine($"dragging {_dragging} Selecting {_isSelecting}");
-
 			if (IsDrawing) return;
 
 			if (_dragging && !_isSelecting) return;
