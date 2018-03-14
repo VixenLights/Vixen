@@ -84,6 +84,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			this.numLowerLimit.TabIndex = 2;
 			this.numLowerLimit.Text = "0";
 			this.numLowerLimit.Usegroupseparator = false;
+			this.numLowerLimit.TextChanged += new System.EventHandler(this.numLowerLimit_TextChanged);
 			this.numLowerLimit.LostFocus += new System.EventHandler(this.numLowerLimit_LostFocus);
 			// 
 			// numUpperLimit
@@ -101,7 +102,7 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			this.numUpperLimit.TabIndex = 4;
 			this.numUpperLimit.Text = "0";
 			this.numUpperLimit.Usegroupseparator = false;
-			this.numLowerLimit.TextChanged += new EventHandler(this.numUpperLimit_TextChanged);
+			this.numUpperLimit.TextChanged += new System.EventHandler(this.numUpperLimit_TextChanged);
 			this.numUpperLimit.LostFocus += new System.EventHandler(this.numUpperLimit_LostFocus);
 			// 
 			// trkLowerLimit

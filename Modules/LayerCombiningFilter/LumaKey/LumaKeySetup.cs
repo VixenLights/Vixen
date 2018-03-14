@@ -49,18 +49,12 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		private void numLowerLimit_LostFocus(object sender, EventArgs e)
 		{
-			ValidateLower(numLowerLimit.IntValue);
+			//ValidateLower(numLowerLimit.IntValue);
 		}
 
 		private void numUpperLimit_LostFocus(object sender, EventArgs e)
 		{
 			//ValidateUpper(numUpperLimit.IntValue);
-		}
-
-		private void numUpperLimit_TextChanged(object sender, EventArgs e)
-		{
-			ValidateUpper(numUpperLimit.IntValue);
-			Console.Out.WriteLine("numUpperLimit.Value =" + numUpperLimit.IntValue);
 		}
 
 		private void ValidateLower(int v)
@@ -82,6 +76,18 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 			trkUpperLimit.Value = _upperLimit;
 			numLowerLimit.Text = _lowerLimit.ToString();
 			numUpperLimit.Text = _upperLimit.ToString();
+		}
+
+		private void numUpperLimit_TextChanged(object sender, EventArgs e)
+		{
+			ValidateUpper(numUpperLimit.IntValue);
+			Console.Out.WriteLine("numUpperLimit.Value =" + numUpperLimit.IntValue);
+		}
+
+		private void numLowerLimit_TextChanged(object sender, EventArgs e)
+		{
+			ValidateLower(numLowerLimit.IntValue);
+			Console.Out.WriteLine("numLowerLimit.Value =" + numLowerLimit.IntValue);
 		}
 	}
 }
