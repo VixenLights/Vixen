@@ -80,14 +80,16 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		private void numUpperLimit_TextChanged(object sender, EventArgs e)
 		{
-			ValidateUpper(numUpperLimit.IntValue);
-			Console.Out.WriteLine("numUpperLimit.Value =" + numUpperLimit.IntValue);
+			//ValidateUpper(numUpperLimit.IntValue);
+			trkUpperLimit.Value = numUpperLimit.IntValue;
+			//Console.Out.WriteLine("numUpperLimit.Value =" + numUpperLimit.IntValue);
 		}
 
 		private void numLowerLimit_TextChanged(object sender, EventArgs e)
 		{
-			ValidateLower(numLowerLimit.IntValue);
-			Console.Out.WriteLine("numLowerLimit.Value =" + numLowerLimit.IntValue);
+			//ValidateLower(numLowerLimit.IntValue);
+			trkLowerLimit.Value = numLowerLimit.IntValue;
+			//Console.Out.WriteLine("numLowerLimit.Value =" + numLowerLimit.IntValue);
 		}
 	}
 }

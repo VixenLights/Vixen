@@ -192,8 +192,8 @@ namespace Common.Controls
 			{                                        // avoid twice execution
 				_cursorPositionPlus = 0;
 				int SelectionStart = this.SelectionStart;
-				int TextLength = this.Text.Length;
 				int CursorPositionPlus;
+				var origValue = _textValue;
 				string Text = NormalTextToNumericString();
 				CursorPositionPlus = _cursorPositionPlus;
 				if ((!_maxCheck || _textValue <= _maxValue) && (!_minCheck || _textValue >= _minValue))
@@ -203,6 +203,7 @@ namespace Common.Controls
 				}
 				else
 				{
+					_textValue = origValue;
 					this.Text = _oldText;
 				}
 			}
