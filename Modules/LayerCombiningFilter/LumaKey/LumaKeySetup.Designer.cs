@@ -187,12 +187,12 @@ namespace VixenModules.LayerMixingFilter.LumaKey
 
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
-        private Common.Controls.NumericTextBox numLowerLimit;
-        private Common.Controls.NumericTextBox numUpperLimit;
-        private System.Windows.Forms.TrackBar trkLowerLimit;
-        private System.Windows.Forms.TrackBar trkUpperLimit;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-    }
+		private Common.Controls.NumericTextBox numLowerLimit;
+		private Common.Controls.NumericTextBox numUpperLimit;
+		private System.Windows.Forms.TrackBar trkLowerLimit;
+		private System.Windows.Forms.TrackBar trkUpperLimit;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
+	}
 }
