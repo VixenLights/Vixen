@@ -100,20 +100,25 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
-				<views:ElementTree Grid.Column="0" Grid.Row="0"/>
-				<wpfPropertyGrid:PropertyGrid Grid.Row="1" Grid.Column="0"
-                                              ItemSource="{Binding}"
-                                              ShowAttachedProperties="False"
-                                              ShowReadOnlyProperties="True"
-                                              PropertyFilterVisibility="Hidden">
-					<wpfPropertyGrid:PropertyGrid.Resources>
-						<ResourceDictionary>
-							<ResourceDictionary.MergedDictionaries>
-								<wpfPropertyGrid:KaxamlTheme/>
-							</ResourceDictionary.MergedDictionaries>
-						</ResourceDictionary>
-					</wpfPropertyGrid:PropertyGrid.Resources>
-				</wpfPropertyGrid:PropertyGrid>
+				<views:ElementTree Grid.Column="0" Grid.Row="0" />
+				<Border Grid.Row="1" Grid.Column="0" BorderThickness="1" 
+				        BorderBrush="{StaticResource BorderColorBrush}"
+				        Margin="5,5,10,5">
+					<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
+												  ItemSource="{Binding}"
+												  ShowAttachedProperties="False"
+												  ShowReadOnlyProperties="True"
+												  PropertyFilterVisibility="Collapsed"
+												  Margin="5">
+						<wpfPropertyGrid:PropertyGrid.Resources>
+							<ResourceDictionary>
+								<ResourceDictionary.MergedDictionaries>
+									<wpfPropertyGrid:KaxamlTheme/>
+								</ResourceDictionary.MergedDictionaries>
+							</ResourceDictionary>
+						</wpfPropertyGrid:PropertyGrid.Resources>
+					</wpfPropertyGrid:PropertyGrid>
+				</Border>
 
 				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
 					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">

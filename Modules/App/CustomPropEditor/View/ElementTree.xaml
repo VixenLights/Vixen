@@ -24,7 +24,7 @@
 
 			<Style x:Key="ElementListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
 				<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-				<Setter Property="Background" Value="#FF333333"/>
+				<Setter Property="Background" Value="Transparent"/>
 				<Setter Property="IsTabStop" Value="False"/>
 				<Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
 				<Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -44,22 +44,24 @@
 							<ControlTemplate.Triggers>
 								<MultiTrigger>
 									<MultiTrigger.Conditions>
-										<Condition Property="Selector.IsSelectionActive" Value="False"/>
 										<Condition Property="IsSelected" Value="True"/>
+										<Condition Property="Selector.IsSelectionActive" Value="False"/>
 									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
 									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
 								</MultiTrigger>
 								<MultiTrigger>
 									<MultiTrigger.Conditions>
-										<Condition Property="Selector.IsSelectionActive" Value="True"/>
 										<Condition Property="IsSelected" Value="True"/>
+										<Condition Property="Selector.IsSelectionActive" Value="True"/>
 									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
 									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
+									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 								</MultiTrigger>
 								<Trigger Property="IsEnabled" Value="False">
-									<Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+									<Setter Property="TextElement.Foreground" TargetName="Bd" Value="{StaticResource ForeColorDisabled}"/>
 								</Trigger>
 							</ControlTemplate.Triggers>
 						</ControlTemplate>
@@ -69,8 +71,7 @@
 
 			<Style x:Key="ElementListStyle" TargetType="{x:Type ListView}">
 				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-				<Setter Property="Background" Value="#FF333333"/>
-				<Setter Property="BorderThickness" Value="0"/>
+				<Setter Property="Background" Value="{StaticResource BackColorBrush}" />
 				<Setter Property="ItemContainerStyle" Value="{StaticResource ElementListViewItemContainerStyle}"></Setter>
 			</Style>
 
@@ -126,27 +127,24 @@
 									</MultiTrigger.Conditions>
 									<Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
 								</MultiTrigger>
-								<!--<Trigger Property="IsSelected" Value="true">
-									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
-									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-								</Trigger>-->
 								<MultiTrigger>
 									<MultiTrigger.Conditions>
 										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
-										<Condition Property="IsSelectionActive" Value="false"/>
+										<Condition Property="Selector.IsSelectionActive" Value="false"/>
 									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
 									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-									<Setter Property="Foreground" Value="{StaticResource ForeColorDisabledBrush}"/>
 								</MultiTrigger>
-								<Trigger Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="True">
+								<MultiTrigger>
+									<MultiTrigger.Conditions>
+										<Condition Property="behaviors:TreeViewMultipleSelectionBehavior.IsItemSelected" Value="true"/>
+										<Condition Property="Selector.IsSelectionActive" Value="True"/>
+									</MultiTrigger.Conditions>
 									<Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}" />
 									<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
 									<Setter Property="BorderThickness" TargetName="Bd" Value="1"></Setter>
 									<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-								</Trigger>
+								</MultiTrigger>
 								<Trigger Property="IsEnabled" Value="false">
 									<Setter Property="Foreground" Value="{StaticResource ForeColorDisabled}"/>
 								</Trigger>
@@ -157,6 +155,7 @@
 			</Style>
 
 			<Style TargetType="{x:Type TreeView}">
+				<Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
 				<Setter Property="Background" Value="{StaticResource BackColorBrush}" />
 				<Setter Property="ItemContainerStyle" Value="{StaticResource ElementTreeViewItemContainerStyle}" />
 				<Setter Property="Padding" Value="0" />
@@ -202,7 +201,9 @@
 	</UserControl.Resources>
 
 	<Grid>
-		<TabControl Background="{StaticResource BackColorBrush}">
+		<TabControl Background="{StaticResource BackColorBrush}"
+		            SelectedIndex="{Binding SelectedTabIndex}"
+		            Width="Auto" Margin="5,5,10,5">
 			<TabItem Header="Layout">
 				<TreeView x:Name="ElementModelTreeView" 
                   ItemsSource="{Binding ElementTreeViewModel.RootNodesViewModels}" 
@@ -289,6 +290,11 @@
 								           Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 								</TextBlock>
 							</StackPanel>
+							<DataTemplate.Triggers>
+								<DataTrigger Binding="{Binding IsSelected}" Value="True">
+									<Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=ReadOnlyText}" TargetName="ReadOnlyText" />
+								</DataTrigger>
+							</DataTemplate.Triggers>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>

@@ -6,11 +6,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
 using Vixen.Annotations;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 
@@ -22,6 +24,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public ElementOrderViewModel(Prop p)
 		{
 			LeafNodes = new ObservableCollection<ElementModelViewModel>();
+			SelectedItems = new ObservableCollection<ElementModelViewModel>();
 			Prop = p;
 		}
 
@@ -84,14 +87,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		public void Select(IEnumerable<Guid> modelIds)
+		{
+			var modelsToSelect = LeafNodes.Where(x => modelIds.Contains(x.ElementModel.Id));
+			modelsToSelect.ForEach(x => x.IsSelected = true);
+		}
+
+		public void DeselectAll()
+		{
+			SelectedItems.Clear();
+		}
+
 
 		internal void RefreshElementLeafViewModels()
 		{
 			LeafNodes.Clear();
-			foreach (var elementModel in PropModelServices.Instance().GetLeafNodes().Where(x => x.IsLightNode).OrderBy(x => x.Order))
-			{
-				LeafNodes.Add(new ElementModelViewModel(elementModel, null));	
-			}
+			//foreach (var elementModel in PropModelServices.Instance().GetLeafNodes().Where(x => x.IsLightNode).OrderBy(x => x.Order))
+			//{
+			//	LeafNodes.Add(new ElementModelViewModel(elementModel, null));	
+			//}
+			LeafNodes.AddRange(ElementModelLookUpService.Instance.GetAllModels().Where(x => x.IsLightNode).DistinctBy(x => x.ElementModel.Id).OrderBy(x => x.Order));
 		}
 
 		private void ReOrder()

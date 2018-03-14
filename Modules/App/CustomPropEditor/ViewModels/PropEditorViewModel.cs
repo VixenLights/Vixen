@@ -260,11 +260,51 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region SelectedTabIndex property
+
+		/// <summary>
+		/// Gets or sets the SelectedTabIndex value.
+		/// </summary>
+		[Browsable(false)]
+		public int SelectedTabIndex
+		{
+			get { return GetValue<int>(SelectedTabIndexProperty); }
+			set { SetValue(SelectedTabIndexProperty, value); }
+		}
+
+		/// <summary>
+		/// SelectedTabIndex property data.
+		/// </summary>
+		public static readonly PropertyData SelectedTabIndexProperty =
+			RegisterProperty("SelectedTabIndex", typeof(int), null, (sender, e) => ((PropEditorViewModel) sender).OnSelectedTabIndexChanged());
+
+		/// <summary>
+		/// Called when the SelectedTabIndex property has changed.
+		/// </summary>
+		private void OnSelectedTabIndexChanged()
+		{
+			if (SelectedTabIndex == 0)
+			{
+				//var selectedModelIds = ElementTreeViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
+				ElementTreeViewModel.DeselectAll();
+				//ElementOrderViewModel.Select(selectedModelIds);
+			}
+			else if(SelectedTabIndex == 1)
+			{
+				//var selectedModelIds = ElementOrderViewModel.SelectedItems.Select(e => e.ElementModel.Id).Distinct();
+				ElementOrderViewModel.DeselectAll();
+				//ElementTreeViewModel.Select(selectedModelIds);
+			}
+		}
+
+		#endregion
+
 		private void RegisterModelEvents()
 		{
 
 			ElementTreeViewModel.SelectedItems.CollectionChanged += ElementViewModel_SelectedItemsChanged;
 			DrawingPanelViewModel.SelectedItems.CollectionChanged += DrawingViewModel_SelectedItemsChanged;
+			ElementOrderViewModel.SelectedItems.CollectionChanged += ElementOrderViewModel_SelectedItemsChanged;
 		}
 
 		private void UnregisterModelEvents()
@@ -277,6 +317,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (DrawingPanelViewModel != null)
 			{
 				DrawingPanelViewModel.SelectedItems.CollectionChanged -= DrawingViewModel_SelectedItemsChanged;
+			}
+			if (ElementOrderViewModel != null)
+			{
+				ElementOrderViewModel.SelectedItems.CollectionChanged -= ElementOrderViewModel_SelectedItemsChanged;
 			}
 
 		}
@@ -341,6 +385,33 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		private void ElementOrderViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (!_selectionChanging)
+			{
+				_selectionChanging = true;
+				//Console.Out.WriteLine($"Element View Model changed {e.Action}");
+
+				if (e.Action == NotifyCollectionChangedAction.Reset)
+				{
+					DrawingPanelViewModel.DeselectAll();
+				}
+
+				if (e.Action == NotifyCollectionChangedAction.Remove)
+				{
+					var lvm = e.OldItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator());
+					DrawingPanelViewModel.Deselect(lvm);
+				}
+
+				if (e.Action == NotifyCollectionChangedAction.Add)
+				{
+					var models = e.NewItems.Cast<ElementModelViewModel>().SelectMany(x => x.GetLeafEnumerator());
+					DrawingPanelViewModel.Select(models);
+				}
+
+				_selectionChanging = false;
+			}
+		}
 
 
 		private async void ImportModel(string type)

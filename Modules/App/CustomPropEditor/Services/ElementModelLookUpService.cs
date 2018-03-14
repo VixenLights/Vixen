@@ -74,5 +74,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return model;
 		}
 
+		public IEnumerable<ElementModelViewModel> GetAllModels()
+		{
+			return _instances.Values.SelectMany(x => x);
+		}
 	}
 }
