@@ -111,9 +111,6 @@
     <Content Include="System.Windows.Controls.WpfPropertyGrid.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="System.Windows.Controls.WpfPropertyGrid.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="System.Windows.Controls.WpfPropertyGrid.Themes.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
