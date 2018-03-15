@@ -314,7 +314,16 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		private int GetNextOrder()
 		{
-			return _prop.RootNode.GetLeafEnumerator().Max(x => x.Order) + 1;
+			var max = _prop.RootNode.GetLeafEnumerator().Max(x => x.Order);
+			if (max <= 0)
+			{
+				max = 1;
+			}
+			else
+			{
+				max++;
+			}
+			return max;
 		}
 
 	}

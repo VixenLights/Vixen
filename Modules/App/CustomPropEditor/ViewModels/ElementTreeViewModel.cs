@@ -20,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	public sealed class ElementTreeViewModel : ViewModelBase,  IDropTarget, IDragSource, IDisposable
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		public event EventHandler ModelsChanged;
 
 		public ElementTreeViewModel(Prop prop)
 		{
@@ -163,6 +164,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				var elementsToGroup = SelectedItems.Select(x => x.ElementModel).ToList();
 				DeselectAll();
 				PropModelServices.Instance().CreateGroupForElementModels(result.Response, elementsToGroup);
+				OnModelsChanged();
 			}
 		}
 
@@ -209,7 +211,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						pms.RemoveFromParent(elementModelViewModel.ElementModel, parentToLeave);
 					}
 				}
-				
+				OnModelsChanged();
 			}
 		}
 
@@ -430,6 +432,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		{
 			MessageBoxService mbs = new MessageBoxService();
 			return mbs.GetUserInput("Please enter the group name.", "Create Group", suggestedName);
+		}
+
+		private void OnModelsChanged()
+		{
+			ModelsChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		public void Dispose()

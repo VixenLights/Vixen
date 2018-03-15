@@ -305,6 +305,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ElementTreeViewModel.SelectedItems.CollectionChanged += ElementViewModel_SelectedItemsChanged;
 			DrawingPanelViewModel.SelectedItems.CollectionChanged += DrawingViewModel_SelectedItemsChanged;
 			ElementOrderViewModel.SelectedItems.CollectionChanged += ElementOrderViewModel_SelectedItemsChanged;
+			ElementTreeViewModel.ModelsChanged += ElementTreeViewModel_ModelsChanged;
 		}
 
 		private void UnregisterModelEvents()
@@ -312,6 +313,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (ElementTreeViewModel != null)
 			{
 				ElementTreeViewModel.SelectedItems.CollectionChanged -= ElementViewModel_SelectedItemsChanged;
+				ElementTreeViewModel.ModelsChanged -= ElementTreeViewModel_ModelsChanged;
 			}
 
 			if (DrawingPanelViewModel != null)
@@ -325,6 +327,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		}
 
+		private void ElementTreeViewModel_ModelsChanged(object sender, EventArgs e)
+		{
+			ElementOrderViewModel.RefreshElementLeafViewModels();
+		}
+
+
 		private void DrawingViewModel_SelectedItemsChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (!_selectionChanging)
@@ -336,6 +344,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (e.Action == NotifyCollectionChangedAction.Reset)
 				{
 					ElementTreeViewModel.DeselectAll();
+					ElementOrderViewModel.DeselectAll();
 				}
 
 				if (e.Action == NotifyCollectionChangedAction.Remove)
