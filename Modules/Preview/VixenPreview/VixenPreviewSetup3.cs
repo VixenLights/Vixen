@@ -135,11 +135,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 			// Choose the select tool to start
 			toolbarButton_Click(buttonSelect, new EventArgs());
-
-            if (IntPtr.Size != 8)
-            {
-                trackerZoom.Maximum = 200;
-            }
+			
 			InitUndo();
 		}
 

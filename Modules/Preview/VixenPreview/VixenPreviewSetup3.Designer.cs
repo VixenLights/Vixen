@@ -81,6 +81,8 @@
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.importPropToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,8 +123,6 @@
 			this.pnlSmartObjects = new System.Windows.Forms.Panel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.panel5 = new System.Windows.Forms.Panel();
-			this.importPropToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -976,20 +976,32 @@
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
 			this.saveToolStripMenuItem.Text = "&Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(135, 6);
+			// 
+			// importPropToolStripMenuItem
+			// 
+			this.importPropToolStripMenuItem.Name = "importPropToolStripMenuItem";
+			this.importPropToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+			this.importPropToolStripMenuItem.Text = "Import Prop";
+			this.importPropToolStripMenuItem.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(135, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -1257,12 +1269,12 @@
 			// trackerZoom
 			// 
 			this.trackerZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.trackerZoom.Location = new System.Drawing.Point(962, 2);
+			this.trackerZoom.Location = new System.Drawing.Point(917, 2);
 			this.trackerZoom.Margin = new System.Windows.Forms.Padding(2);
-			this.trackerZoom.Maximum = 400;
+			this.trackerZoom.Maximum = 200;
 			this.trackerZoom.Minimum = 25;
 			this.trackerZoom.Name = "trackerZoom";
-			this.trackerZoom.Size = new System.Drawing.Size(139, 22);
+			this.trackerZoom.Size = new System.Drawing.Size(184, 22);
 			this.trackerZoom.TabIndex = 0;
 			this.trackerZoom.Text = "hMiniTracker1";
 			this.trackerZoom.Value = 100;
@@ -1416,18 +1428,6 @@
 			this.panel5.Name = "panel5";
 			this.panel5.Size = new System.Drawing.Size(245, 80);
 			this.panel5.TabIndex = 26;
-			// 
-			// importPropToolStripMenuItem
-			// 
-			this.importPropToolStripMenuItem.Name = "importPropToolStripMenuItem";
-			this.importPropToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.importPropToolStripMenuItem.Text = "Import Prop";
-			this.importPropToolStripMenuItem.Click += new System.EventHandler(this.importPropToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// VixenPreviewSetup3
 			// 
