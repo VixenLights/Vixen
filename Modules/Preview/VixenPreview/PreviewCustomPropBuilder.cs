@@ -18,14 +18,14 @@ namespace VixenModules.Preview.VixenPreview
 		private Dictionary<Guid, ElementNode> _elementModelMap;
 		private HashSet<string> _elementNames;
 
-		public PreviewCustomPropBuilder(Prop prop)
+		public PreviewCustomPropBuilder(Prop prop, double zoomLevel)
 		{
 			if (prop == null)
 			{
 				throw new ArgumentNullException(nameof(prop));
 			}
 			_prop = prop;
-			PreviewCustomProp = new PreviewCustomProp();
+			PreviewCustomProp = new PreviewCustomProp(zoomLevel);
 		}
 
 		public PreviewCustomProp PreviewCustomProp { get; private set; }
@@ -53,7 +53,7 @@ namespace VixenModules.Preview.VixenPreview
 
 				CreateElementsForChildren(rootElementNode, rootNode);
 
-				PreviewCustomProp.UpdateBounds();
+				PreviewCustomProp.Layout();
 				PreviewCustomProp.MoveTo(20,20);
 				
 			});

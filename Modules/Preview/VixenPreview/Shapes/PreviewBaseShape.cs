@@ -201,7 +201,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private double _zoomLevel = 1;
 		[Browsable(false)]
-		public double ZoomLevel
+		public virtual double ZoomLevel
 		{
 			get
 			{
@@ -219,7 +219,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						shape.ZoomLevel = value;
 					}
 				}
-				Layout();
 			}
 		}
 
@@ -287,14 +286,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					p.PointType = PreviewPoint.PointTypes.Size;
 		}
 
-		public PreviewPixel AddHighPrecisionPixel(System.Windows.Point location, int size)
-		{
-			PreviewPixel pixel = new PreviewPixel(location, size);
-			pixel.PixelColor = PixelColor;
-			Pixels.Add(pixel);
-			return pixel;
-		}
-
 		// Add a pixel at a specific location
 		public PreviewPixel AddPixel(int x, int y)
 		{
@@ -334,6 +325,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		protected static Rectangle GetCombinedBounds(IEnumerable<Rectangle> recs)
 		{
+			if(!recs.Any()) return new Rectangle(0,0,0,0);
 			int xMin = recs.Min(s => s.X);
 			int yMin = recs.Min(s => s.Y);
 			int xMax = recs.Max(s => s.X + s.Width);
@@ -414,7 +406,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			DrawSelectPoints(fp);
 		}
 
-		public void DrawSelectPoints(FastPixel.FastPixel fp)
+		public virtual void DrawSelectPoints(FastPixel.FastPixel fp)
 		{
 			if (_selectPoints != null) {
 				foreach (PreviewPoint point in _selectPoints) {
@@ -477,7 +469,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return (Top >= Y1 && Bottom <= Y2 && Left >= X1 && Right <= X2);
         }
 
-		public PreviewPoint PointInSelectPoint(PreviewPoint point)
+		public virtual PreviewPoint PointInSelectPoint(PreviewPoint point)
 		{
 			if (_selectPoints != null) {
 				foreach (PreviewPoint selectPoint in _selectPoints) {

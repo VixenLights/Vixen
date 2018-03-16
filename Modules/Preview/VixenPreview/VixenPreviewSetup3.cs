@@ -591,7 +591,7 @@ namespace VixenModules.Preview.VixenPreview {
 
         private void trackerZoom_ValueChanged(Common.Controls.ControlsEx.ValueControls.ValueControl sender, Common.Controls.ControlsEx.ValueControls.ValueChangedEventArgs e)
         {
-            double zoomLevel = Convert.ToDouble(Convert.ToDouble(trackerZoom.Value) / 100d);
+            double zoomLevel = trackerZoom.Value / 100d;
             previewForm.Preview.ZoomLevel = zoomLevel;
         }
 

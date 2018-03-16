@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -18,6 +19,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public Rectangle Bounds { get; private set; }
 		private List<PreviewPoint> _dragPoints = new List<PreviewPoint>();
 		private PreviewPoint p1Start, p2Start;
+		private double _zoomLevel;
+
+		public PreviewCustomProp(double zoomLevel)
+		{
+			PropPixels = new List<PreviewPixel>();
+			ZoomLevel = zoomLevel;
+		}
 
 		public void AddLightNodes(ElementModel model, ElementNode node)
 		{
@@ -31,6 +39,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				p.SerializeCoordinates = true;
 			}
 		}
+
+		private PreviewPixel AddHighPrecisionPixel(Point location, int size)
+		{
+			PreviewPixel pixel = new PreviewPixel(location, size);
+			pixel.PixelColor = PixelColor;
+			PropPixels.Add(pixel);
+			return pixel;
+		}
+
+		[DataMember]
+		public List<PreviewPixel> PropPixels { get; set; }
+
+		#region Overrides of PreviewBaseShape
+
+		/// <inheritdoc />
+		public override List<PreviewPixel> Pixels { get; set; }
+
+		#endregion
 
 		internal void UpdateBounds()
 		{
@@ -71,14 +97,31 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void Match(PreviewBaseShape matchShape)
 		{
-			throw new NotImplementedException();
+			
+		}
+
+		[Browsable(false)]
+		public override double ZoomLevel
+		{
+			get
+			{
+				return _zoomLevel;
+			}
+			set
+			{
+				if (value == _zoomLevel) return;
+				_zoomLevel = value <= 0 ? 1 : value;
+				if (PropPixels.Any())
+				{
+					Zoom();
+				}
+			}
 		}
 
 		/// <inheritdoc />
 		public override void Layout()
 		{
 			UpdateBounds();
-			//SetPixelZoom();
 		}
 
 		/// <inheritdoc />
@@ -93,10 +136,49 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			SetSelectPoints(_dragPoints, null);
 		}
 
+		public override void DrawSelectPoints(FastPixel.FastPixel fp)
+		{
+			if (_selectPoints != null)
+			{
+				foreach (PreviewPoint point in _selectPoints)
+				{
+					if (point?.PointType == PreviewPoint.PointTypes.Size)
+					{
+						int x = Convert.ToInt32(point.X - SelectPointSize / 2);
+						int y = Convert.ToInt32(point.Y - SelectPointSize / 2);
+						fp.DrawRectangle(
+							new Rectangle(x, y, SelectPointSize, SelectPointSize),
+							Color.White);
+					}
+				}
+			}
+		}
+
+		public override PreviewPoint PointInSelectPoint(PreviewPoint point)
+		{
+			if (_selectPoints != null)
+			{
+				foreach (PreviewPoint selectPoint in _selectPoints)
+				{
+					if (selectPoint != null)
+					{
+						if (point.X >= selectPoint.X - (SelectPointSize / 2) &&
+						    point.Y >= selectPoint.Y - (SelectPointSize / 2) &&
+						    point.X <= selectPoint.X + (SelectPointSize / 2) &&
+						    point.Y <= selectPoint.Y + (SelectPointSize / 2))
+						{
+							return selectPoint;
+						}
+					}
+				}
+			}
+			return null;
+		}
+
 		/// <inheritdoc />
 		public override void MouseMove(int x, int y, int changeX, int changeY)
 		{
-			PreviewPoint point = PointToZoomPoint(new PreviewPoint(x, y));
+			PreviewPoint point = new PreviewPoint(x, y);
 			//See if we're resizing
 			if (_selectedPoint != null && _selectedPoint.PointType == PreviewPoint.PointTypes.Size)
 			{
@@ -111,8 +193,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleX += 1;
 
 					Scale(scaleX, scaleY, Bounds.Right, Bounds.Bottom);
-					Layout();
-
+					
 					_selectedPoint = _dragPoints[0];
 
 				}else if (_selectedPoint == _dragPoints[1])
@@ -125,8 +206,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleX += 1;
 
 					Scale(scaleX, scaleY, Bounds.Left, Bounds.Bottom);
-					Layout();
-
+					
 					_selectedPoint = _dragPoints[1];
 
 				}
@@ -140,8 +220,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleX += 1;
 
 					Scale(scaleX, scaleY, Bounds.Left, Bounds.Top);
-					Layout();
-
+					
 					_selectedPoint = _dragPoints[2];
 				}
 				else if (_selectedPoint == _dragPoints[3])
@@ -154,8 +233,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleX += 1;
 
 					Scale(scaleX, scaleY, Bounds.Right, Bounds.Top);
-					Layout();
-
+					
 					_selectedPoint = _dragPoints[3];
 				}
 				
@@ -170,22 +248,43 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				
 				PointToZoomPointRef(new PreviewPoint(Bounds.Location));
 				PointToZoomPointRef(new PreviewPoint(Bounds.Right, Bounds.Bottom));
-				
-				Layout();
-
 			}
 
 			
 		}
 
+		private void Zoom()
+		{
+			Pixels = PropPixels.Select(x => x.Clone()).ToList();
+
+			if (ZoomLevel == 1) return;
+
+			foreach (PreviewPixel pixel in Pixels)
+			{
+				var x = pixel.Location.X * ZoomLevel;
+				var y = pixel.Location.Y * ZoomLevel;
+				pixel.Location = new Point(x, y);
+			}
+
+			Layout();
+		}
+
 		private void Scale(double scaleX, double scaleY, int centerX, int centerY)
 		{
 			var t = new ScaleTransform(scaleX, scaleY, centerX, centerY);
+			foreach (var previewPixel in PropPixels)
+			{
+				var point = t.Transform(new Point(previewPixel.Location.X, previewPixel.Location.Y));
+				previewPixel.Location = point;
+			}
+
 			foreach (var previewPixel in Pixels)
 			{
 				var point = t.Transform(new Point(previewPixel.Location.X, previewPixel.Location.Y));
 				previewPixel.Location = point;
 			}
+
+			Layout();
 		}
 
 		/// <inheritdoc />
@@ -217,24 +316,36 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			int xOffset = x - Bounds.X;
 			int yOffset = y - Bounds.Y;
+			foreach (var previewPixel in PropPixels)
+			{
+				var p = new Point(previewPixel.Location.X + xOffset, previewPixel.Location.Y + yOffset);
+				previewPixel.Location = p;
+			}
+
 			foreach (var previewPixel in Pixels)
 			{
 				var p = new Point(previewPixel.Location.X + xOffset, previewPixel.Location.Y + yOffset);
 				previewPixel.Location = p;
 			}
 
-			UpdateBounds();
+			Layout();
 		}
 
 		/// <inheritdoc />
 		public override void Resize(double aspect)
 		{
+			foreach (var previewPixel in PropPixels)
+			{
+				var p = new Point(previewPixel.Location.X * aspect, previewPixel.Location.Y * aspect);
+				previewPixel.Location = p;
+			}
+
 			foreach (var previewPixel in Pixels)
 			{
 				var p = new Point(previewPixel.Location.X * aspect, previewPixel.Location.Y * aspect);
 				previewPixel.Location = p;
 			}
-			UpdateBounds();
+			Layout();
 		}
 
 		/// <inheritdoc />
@@ -252,6 +363,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_dragPoints = new List<PreviewPoint>();
 			}
+
+			ZoomLevel = 1;
+
 			Layout();
 		}
 	}

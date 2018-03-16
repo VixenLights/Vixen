@@ -50,8 +50,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public PreviewPixel(Point location, int pixelSize) : this()
 		{
-			Location = location;
 			IsHighPrecision = true;
+			Location = location;
 			size = pixelSize;
 			brush = new SolidBrush(Color.White);
 			Resize();
@@ -74,6 +74,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			p.Bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 			p.Node = Node;
 			p.MaxAlpha = _maxAlpha;
+			if (IsHighPrecision)
+			{
+				p.IsHighPrecision = true;
+				p.Location = new Point(Location.X, Location.Y);
+			}
 
 			return p;
 		}

@@ -1761,7 +1761,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal async Task AddPropToPreviewAsync(Prop p)
 		{
-			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p);
+			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel);
 			await builder.CreateAsync();
 			OnElementsChanged?.Invoke(this, EventArgs.Empty);
 
