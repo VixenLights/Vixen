@@ -132,7 +132,7 @@
 							             Width="30">
 								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 							</RadioButton>
-							<Separator />
+							<!--<Separator />
 							<Button Command="Copy" ToolTip="Cut">
 								<Image Source="/CustomPropEditor;component/Images/cut.png" Height="20"/>
 							</Button>
@@ -141,7 +141,7 @@
 							</Button>
 							<Button Command="Paste" ToolTip="Paste">
 								<Image Source="/CustomPropEditor;component/Images/paste.png" Height="20"/>
-							</Button>
+							</Button>-->
 							<Separator />
 							<Button Command="{Binding LoadImageCommand}" ToolTip="Assign Background">
 								<Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Height="20"/>
@@ -164,6 +164,16 @@
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.DistributeVerticallyCommand}" ToolTip="Distribute Vertical" >
 								<Image Source="/CustomPropEditor;component/Images/buttonDistributeVertical.png" Height="20"/>
+							</Button>
+							<Separator />
+							<Button Command="{Binding DrawingPanelViewModel.IncreaseLightSizeCommand}" ToolTip="Increase Light Size">
+								<Image Source="/Resources;component/lightbulb_add.png" Height="20"/>
+							</Button>
+							<Button Command="{Binding DrawingPanelViewModel.DecreaseLightSizeCommand}" ToolTip="Decrease Light Size">
+								<Image Source="/Resources;component/lightbulb_delete.png" Height="20"/>
+							</Button>
+							<Button Command="{Binding DrawingPanelViewModel.MatchLightSizeCommand}" ToolTip="Match Light Size">
+								<Image Source="/Resources;component/lightbulb.png" Height="20"/>
 							</Button>
 						</ToolBar>
 					</ToolBarTray>

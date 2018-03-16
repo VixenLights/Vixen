@@ -305,10 +305,10 @@
     <None Include="lightning_delete.png" />
     <None Include="lightning_add.png" />
     <None Include="lightning.png" />
-    <None Include="lightbulb_off.png" />
-    <None Include="lightbulb_delete.png" />
-    <None Include="lightbulb_add.png" />
-    <None Include="lightbulb.png" />
+    <Resource Include="lightbulb_off.png" />
+    <Resource Include="lightbulb_delete.png" />
+    <Resource Include="lightbulb_add.png" />
+    <Resource Include="lightbulb.png" />
     <None Include="pencil_ruler.png" />
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />

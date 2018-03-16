@@ -435,6 +435,126 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region IncreaseLightSize command
+
+		private Command _increaseLightSizeCommand;
+
+		/// <summary>
+		/// Gets the IncreaseLightSize command.
+		/// </summary>
+		public Command IncreaseLightSizeCommand
+		{
+			get { return _increaseLightSizeCommand ?? (_increaseLightSizeCommand = new Command(IncreaseLightSize, CanIncreaseLightSize)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the IncreaseLightSize command is executed.
+		/// </summary>
+		private void IncreaseLightSize()
+		{
+			foreach (var lightViewModel in SelectedItems)
+			{
+				var em = PropModelServices.Instance().GetElementModel(lightViewModel.Light.ParentModelId);
+				if (em != null)
+				{
+					em.LightSize++;
+				}
+
+			}
+		}
+
+		/// <summary>
+		/// Method to check whether the IncreaseLightSize command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanIncreaseLightSize()
+		{
+			return SelectedItems.Any();
+		}
+
+		#endregion
+
+		#region DecreaseLightSize command
+
+		private Command _decreaseLightSizeCommand;
+
+		/// <summary>
+		/// Gets the DecreaseLightSize command.
+		/// </summary>
+		public Command DecreaseLightSizeCommand
+		{
+			get { return _decreaseLightSizeCommand ?? (_decreaseLightSizeCommand = new Command(DecreaseLightSize, CanDecreaseLightSize)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the DecreaseLightSize command is executed.
+		/// </summary>
+		private void DecreaseLightSize()
+		{
+			foreach (var lightViewModel in SelectedItems)
+			{
+				var em = PropModelServices.Instance().GetElementModel(lightViewModel.Light.ParentModelId);
+				if (em != null)
+				{
+					em.LightSize--;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Method to check whether the DecreaseLightSize command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanDecreaseLightSize()
+		{
+			return SelectedItems.Any();
+		}
+
+		#endregion
+
+		#region MatchLightSize command
+
+		private Command _matchLightSizeCommand;
+
+		/// <summary>
+		/// Gets the MatchLightSize command.
+		/// </summary>
+		public Command MatchLightSizeCommand
+		{
+			get { return _matchLightSizeCommand ?? (_matchLightSizeCommand = new Command(MatchLightSize, CanMatchLightSize)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the MatchLightSize command is executed.
+		/// </summary>
+		private void MatchLightSize()
+		{
+			if (SelectedItems.Count < 2) return;
+			var lvmReference = SelectedItems.First();
+			var emReference = PropModelServices.Instance().GetElementModel(lvmReference.Light.ParentModelId);
+
+			foreach (var lightViewModel in SelectedItems.Skip(1))
+			{
+				var em = PropModelServices.Instance().GetElementModel(lightViewModel.Light.ParentModelId);
+				if (em != null)
+				{
+					em.LightSize = emReference.LightSize;
+				}
+
+			}
+		}
+
+		/// <summary>
+		/// Method to check whether the MatchLightSize command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanMatchLightSize()
+		{
+			return SelectedItems.Count>1;
+		}
+
+		#endregion
+
 		#endregion
 
 

@@ -212,7 +212,12 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return target;
 		}
 
-		
+		public ElementModel GetElementModel(Guid id)
+		{
+			ElementModel em;
+			_models.TryGetValue(id, out em);
+			return em;
+		}
 
 		private ElementModel FindNearestLightGroupNode(ElementModel element)
 		{
