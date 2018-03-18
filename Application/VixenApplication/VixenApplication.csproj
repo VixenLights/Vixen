@@ -242,6 +242,12 @@
     <Compile Include="Setup\ElementTemplates\LipSync.Designer.cs">
       <DependentUpon>LipSync.cs</DependentUpon>
     </Compile>
+    <Compile Include="Setup\ElementTemplates\Icicles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setup\ElementTemplates\Icicles.Designer.cs">
+      <DependentUpon>Icicles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup\ElementTemplates\StarBurst.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -378,6 +384,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\ElementTemplates\LipSync.resx">
       <DependentUpon>LipSync.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Setup\ElementTemplates\Icicles.resx">
+      <DependentUpon>Icicles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\ElementTemplates\StarBurst.resx">
       <DependentUpon>StarBurst.cs</DependentUpon>
