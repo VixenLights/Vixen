@@ -41,6 +41,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.radioButtonVerticalFirst = new System.Windows.Forms.RadioButton();
 			this.groupBoxStringOrientation = new System.Windows.Forms.GroupBox();
 			this.groupBoxDimensions = new System.Windows.Forms.GroupBox();
+			this.textBoxSecondPrefix = new System.Windows.Forms.TextBox();
+			this.textBoxFirstPrefix = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownHeight)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDownWidth)).BeginInit();
 			this.groupBoxStringOrientation.SuspendLayout();
@@ -50,7 +54,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			// numericUpDownHeight
 			// 
 			this.numericUpDownHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownHeight.Location = new System.Drawing.Point(55, 22);
+			this.numericUpDownHeight.Location = new System.Drawing.Point(63, 29);
+			this.numericUpDownHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.numericUpDownHeight.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -62,7 +67,7 @@ namespace VixenApplication.Setup.ElementTemplates
             0,
             0});
 			this.numericUpDownHeight.Name = "numericUpDownHeight";
-			this.numericUpDownHeight.Size = new System.Drawing.Size(66, 23);
+			this.numericUpDownHeight.Size = new System.Drawing.Size(75, 27);
 			this.numericUpDownHeight.TabIndex = 1;
 			this.numericUpDownHeight.Value = new decimal(new int[] {
             20,
@@ -74,9 +79,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(187, 200);
+			this.buttonCancel.Location = new System.Drawing.Point(501, 199);
+			this.buttonCancel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
+			this.buttonCancel.Size = new System.Drawing.Size(120, 39);
 			this.buttonCancel.TabIndex = 6;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -87,9 +93,10 @@ namespace VixenApplication.Setup.ElementTemplates
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOk.Location = new System.Drawing.Point(74, 200);
+			this.buttonOk.Location = new System.Drawing.Point(372, 199);
+			this.buttonOk.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(105, 29);
+			this.buttonOk.Size = new System.Drawing.Size(120, 39);
 			this.buttonOk.TabIndex = 5;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -99,7 +106,8 @@ namespace VixenApplication.Setup.ElementTemplates
 			// numericUpDownWidth
 			// 
 			this.numericUpDownWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numericUpDownWidth.Location = new System.Drawing.Point(184, 22);
+			this.numericUpDownWidth.Location = new System.Drawing.Point(210, 29);
+			this.numericUpDownWidth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.numericUpDownWidth.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -111,7 +119,7 @@ namespace VixenApplication.Setup.ElementTemplates
             0,
             0});
 			this.numericUpDownWidth.Name = "numericUpDownWidth";
-			this.numericUpDownWidth.Size = new System.Drawing.Size(66, 23);
+			this.numericUpDownWidth.Size = new System.Drawing.Size(75, 27);
 			this.numericUpDownWidth.TabIndex = 2;
 			this.numericUpDownWidth.Value = new decimal(new int[] {
             32,
@@ -122,18 +130,18 @@ namespace VixenApplication.Setup.ElementTemplates
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(139, 24);
+			this.label4.Location = new System.Drawing.Point(159, 32);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(39, 15);
+			this.label4.Size = new System.Drawing.Size(49, 20);
 			this.label4.TabIndex = 27;
 			this.label4.Text = "Width";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(6, 24);
+			this.label5.Location = new System.Drawing.Point(7, 32);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(43, 15);
+			this.label5.Size = new System.Drawing.Size(54, 20);
 			this.label5.TabIndex = 26;
 			this.label5.Text = "Height";
 			// 
@@ -142,27 +150,29 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBoxName.Location = new System.Drawing.Point(87, 20);
+			this.textBoxName.Location = new System.Drawing.Point(99, 27);
+			this.textBoxName.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.textBoxName.Name = "textBoxName";
-			this.textBoxName.Size = new System.Drawing.Size(200, 23);
+			this.textBoxName.Size = new System.Drawing.Size(503, 27);
 			this.textBoxName.TabIndex = 0;
 			this.textBoxName.Text = "Grid";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(14, 23);
+			this.label6.Location = new System.Drawing.Point(16, 31);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(67, 15);
+			this.label6.Size = new System.Drawing.Size(84, 20);
 			this.label6.TabIndex = 24;
 			this.label6.Text = "Grid Name:";
 			// 
 			// radioButtonHorizontalFirst
 			// 
 			this.radioButtonHorizontalFirst.AutoSize = true;
-			this.radioButtonHorizontalFirst.Location = new System.Drawing.Point(29, 22);
+			this.radioButtonHorizontalFirst.Location = new System.Drawing.Point(33, 29);
+			this.radioButtonHorizontalFirst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.radioButtonHorizontalFirst.Name = "radioButtonHorizontalFirst";
-			this.radioButtonHorizontalFirst.Size = new System.Drawing.Size(80, 19);
+			this.radioButtonHorizontalFirst.Size = new System.Drawing.Size(100, 24);
 			this.radioButtonHorizontalFirst.TabIndex = 3;
 			this.radioButtonHorizontalFirst.TabStop = true;
 			this.radioButtonHorizontalFirst.Text = "Horizontal";
@@ -171,22 +181,26 @@ namespace VixenApplication.Setup.ElementTemplates
 			// radioButtonVerticalFirst
 			// 
 			this.radioButtonVerticalFirst.AutoSize = true;
-			this.radioButtonVerticalFirst.Location = new System.Drawing.Point(142, 22);
+			this.radioButtonVerticalFirst.Location = new System.Drawing.Point(162, 29);
+			this.radioButtonVerticalFirst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.radioButtonVerticalFirst.Name = "radioButtonVerticalFirst";
-			this.radioButtonVerticalFirst.Size = new System.Drawing.Size(64, 19);
+			this.radioButtonVerticalFirst.Size = new System.Drawing.Size(79, 24);
 			this.radioButtonVerticalFirst.TabIndex = 4;
 			this.radioButtonVerticalFirst.TabStop = true;
 			this.radioButtonVerticalFirst.Text = "Vertical";
 			this.radioButtonVerticalFirst.UseVisualStyleBackColor = true;
+			this.radioButtonVerticalFirst.CheckedChanged += new System.EventHandler(this.radioButtonOrientation_CheckedChanged);
 			// 
 			// groupBoxStringOrientation
 			// 
 			this.groupBoxStringOrientation.AutoSize = true;
 			this.groupBoxStringOrientation.Controls.Add(this.radioButtonHorizontalFirst);
 			this.groupBoxStringOrientation.Controls.Add(this.radioButtonVerticalFirst);
-			this.groupBoxStringOrientation.Location = new System.Drawing.Point(17, 51);
+			this.groupBoxStringOrientation.Location = new System.Drawing.Point(19, 68);
+			this.groupBoxStringOrientation.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.groupBoxStringOrientation.Name = "groupBoxStringOrientation";
-			this.groupBoxStringOrientation.Size = new System.Drawing.Size(270, 63);
+			this.groupBoxStringOrientation.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBoxStringOrientation.Size = new System.Drawing.Size(309, 84);
 			this.groupBoxStringOrientation.TabIndex = 28;
 			this.groupBoxStringOrientation.TabStop = false;
 			this.groupBoxStringOrientation.Text = "String Orientation";
@@ -199,20 +213,60 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.groupBoxDimensions.Controls.Add(this.label5);
 			this.groupBoxDimensions.Controls.Add(this.numericUpDownWidth);
 			this.groupBoxDimensions.Controls.Add(this.label4);
-			this.groupBoxDimensions.Location = new System.Drawing.Point(17, 114);
+			this.groupBoxDimensions.Location = new System.Drawing.Point(19, 152);
+			this.groupBoxDimensions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.groupBoxDimensions.Name = "groupBoxDimensions";
-			this.groupBoxDimensions.Size = new System.Drawing.Size(270, 67);
+			this.groupBoxDimensions.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.groupBoxDimensions.Size = new System.Drawing.Size(309, 89);
 			this.groupBoxDimensions.TabIndex = 29;
 			this.groupBoxDimensions.TabStop = false;
 			this.groupBoxDimensions.Text = "Dimensions";
 			this.groupBoxDimensions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
+			// textBoxSecondPrefix
+			// 
+			this.textBoxSecondPrefix.Location = new System.Drawing.Point(465, 136);
+			this.textBoxSecondPrefix.Name = "textBoxSecondPrefix";
+			this.textBoxSecondPrefix.Size = new System.Drawing.Size(137, 27);
+			this.textBoxSecondPrefix.TabIndex = 33;
+			this.textBoxSecondPrefix.Text = "C";
+			// 
+			// textBoxFirstPrefix
+			// 
+			this.textBoxFirstPrefix.Location = new System.Drawing.Point(465, 78);
+			this.textBoxFirstPrefix.Name = "textBoxFirstPrefix";
+			this.textBoxFirstPrefix.Size = new System.Drawing.Size(137, 27);
+			this.textBoxFirstPrefix.TabIndex = 32;
+			this.textBoxFirstPrefix.Text = "R";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(365, 139);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(84, 20);
+			this.label3.TabIndex = 31;
+			this.label3.Text = "Pixel Prefix:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(365, 81);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(92, 20);
+			this.label2.TabIndex = 30;
+			this.label2.Text = "String Prefix:";
+			// 
 			// PixelGrid
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(304, 241);
+			this.ClientSize = new System.Drawing.Size(634, 251);
+			this.Controls.Add(this.textBoxSecondPrefix);
+			this.Controls.Add(this.textBoxFirstPrefix);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.groupBoxDimensions);
 			this.Controls.Add(this.groupBoxStringOrientation);
 			this.Controls.Add(this.buttonCancel);
@@ -220,6 +274,7 @@ namespace VixenApplication.Setup.ElementTemplates
 			this.Controls.Add(this.textBoxName);
 			this.Controls.Add(this.label6);
 			this.DoubleBuffered = true;
+			this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PixelGrid";
@@ -259,5 +314,9 @@ namespace VixenApplication.Setup.ElementTemplates
 		private System.Windows.Forms.RadioButton radioButtonVerticalFirst;
 		private System.Windows.Forms.GroupBox groupBoxStringOrientation;
 		private System.Windows.Forms.GroupBox groupBoxDimensions;
+		private TextBox textBoxSecondPrefix;
+		private TextBox textBoxFirstPrefix;
+		private Label label3;
+		private Label label2;
 	}
 }
