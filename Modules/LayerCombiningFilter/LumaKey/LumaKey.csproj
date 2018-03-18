@@ -1,20 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{5A72F7C4-09F3-4D17-8996-F0ABD21C97A8}</ProjectGuid>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2E8DE19A-E0DB-4220-BCB7-EFAFA05CAA35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Launcher</RootNamespace>
-    <AssemblyName>Launcher</AssemblyName>
+    <RootNamespace>VixenModules.LayerMixingFilter.LumaKey</RootNamespace>
+    <AssemblyName>LumaKey</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>$(SolutionDir)\Release\Modules\Effect\</OutputPath>
+    <OutputPath>..\..\..\Release\Modules\LayerMixingFilter\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -24,7 +25,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>$(SolutionDir)\Release64\Modules\Effect\</OutputPath>
+    <OutputPath>..\..\..\Release64\Modules\LayerMixingFilter\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -34,7 +35,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <OutputPath>..\..\..\Debug\Modules\Effect\</OutputPath>
+    <OutputPath>..\..\..\Debug\Modules\LayerMixingFilter\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>false</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -43,7 +44,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutputPath>..\..\..\Debug64\Modules\Effect\</OutputPath>
+    <OutputPath>..\..\..\Debug64\Modules\LayerMixingFilter\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>false</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -52,38 +53,47 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
-    <Compile Include="Descriptor.cs" />
-    <Compile Include="Module.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
-      <Project>{1C84DA63-A5DB-4086-88AE-B2B43FCCAD7B}</Project>
-      <Name>EffectDescriptorAttributes</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
-      <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
+    <ProjectReference Include="$(SolutionDir)\Vixen.System\Vixen.csproj">
+      <Project>{50B78623-FCF4-48AF-93FF-FA87C937028F}</Project>
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
+      <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
+      <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
+      <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Effect48.png" />
+    <Compile Include="LumaKeyData.cs" />
+    <Compile Include="LumaKeyModule.cs" />
+    <Compile Include="LumaKeyModuleDescriptor.cs" />
+    <Compile Include="LumaKeySetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LumaKeySetup.Designer.cs">
+      <DependentUpon>LumaKeySetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="LumaKeySetup.resx">
+      <DependentUpon>LumaKeySetup.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

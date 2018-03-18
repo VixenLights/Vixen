@@ -56,7 +56,7 @@
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,11 +68,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Application\VixenApplication\VixenApplication.csproj">
-      <Project>{2572f3df-7cf2-4b6c-9fc2-8e11d0bc08d6}</Project>
-      <Name>VixenApplication</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
@@ -101,11 +96,6 @@
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
       <Name>Color</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
-      <Project>{45e1228a-f714-41d5-bb9b-a776f2b23143}</Project>
-      <Name>Timed</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Effect\Effect.csproj">
