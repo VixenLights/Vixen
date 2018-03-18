@@ -20,6 +20,26 @@ namespace Common.Controls.Theme
 			e.TextColor = ThemeColorTable.ForeColor;
 			base.OnRenderItemText(e);
 		}
+
+		protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
+		{
+			Point startPoint;
+			Point endPoint;
+			if (e.Item.Height > e.Item.Width)
+			{
+				startPoint = new Point(3, 0);
+				endPoint = new Point(3, e.Item.Height);
+			}
+			else
+			{
+				startPoint = new Point(3, 3);
+				endPoint = new Point(e.Item.Width - 3, 3);
+			}
+			Graphics g = e.Graphics;
+			Pen pen = new Pen(ThemeColorTable.BorderColor, 1);
+			g.DrawLine(pen, startPoint, endPoint);
+		}
+
 		protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
 		{
 			ToolStripItem toolStripItem = e.Item;

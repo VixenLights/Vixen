@@ -115,7 +115,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_RIColor_White = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_RIColor_Red = new System.Windows.Forms.ToolStripMenuItem();
 			this.cADStyleSelectionBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeIn = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_zoomTimeOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -867,8 +866,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripSeparator10,
             this.toolStripMenuItem_SnapTo,
             this.toolStripMenuItem_ResizeIndicator,
-            this.cADStyleSelectionBoxToolStripMenuItem,
-            this.toolStripSeparator17});
+            this.cADStyleSelectionBoxToolStripMenuItem});
 			this.editToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(47, 24);
@@ -1042,11 +1040,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.cADStyleSelectionBoxToolStripMenuItem.Size = new System.Drawing.Size(262, 26);
 			this.cADStyleSelectionBoxToolStripMenuItem.Text = "CAD Style Selection Box";
 			this.cADStyleSelectionBoxToolStripMenuItem.Click += new System.EventHandler(this.cADStyleSelectionBoxToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator17
-			// 
-			this.toolStripSeparator17.Name = "toolStripSeparator17";
-			this.toolStripSeparator17.Size = new System.Drawing.Size(259, 6);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1720,7 +1713,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo1000;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_AlignTo2000;
 		private System.Windows.Forms.ToolStripMenuItem mixingFilterEditorWindowToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFindEffects;
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton_CloseGaps;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCloseGap100;
