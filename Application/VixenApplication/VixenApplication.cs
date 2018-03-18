@@ -27,6 +27,8 @@ using Common.Controls.Theme;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Application = System.Windows.Forms.Application;
+using Point = System.Drawing.Point;
+using SystemFonts = System.Drawing.SystemFonts;
 using Timer = System.Windows.Forms.Timer;
 using WPFApplication = System.Windows.Application;
 
