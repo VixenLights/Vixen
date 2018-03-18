@@ -81,7 +81,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
@@ -186,6 +186,11 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
       <Name>Controls</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Libraries\Libraries.csproj">
+      <Project>{9e516488-f4af-49dc-8257-a4ebf68a3b66}</Project>
+      <Name>Libraries</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">

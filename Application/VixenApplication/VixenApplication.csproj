@@ -101,6 +101,11 @@
       <HintPath>..\..\Common\Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -109,6 +114,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -134,6 +140,24 @@
     </Compile>
     <Compile Include="DataZipForm.Designer.cs">
       <DependentUpon>DataZipForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CheckForUpdates.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckForUpdates.Designer.cs">
+      <DependentUpon>CheckForUpdates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AboutVixen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutVixen.Designer.cs">
+      <DependentUpon>AboutVixen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReleaseNotes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReleaseNotes.Designer.cs">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </Compile>
     <Compile Include="Setup\DisplaySetup.cs">
       <SubType>Form</SubType>
@@ -309,6 +333,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataZipForm.resx">
       <DependentUpon>DataZipForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CheckForUpdates.resx">
+      <DependentUpon>CheckForUpdates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AboutVixen.resx">
+      <DependentUpon>AboutVixen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReleaseNotes.resx">
+      <DependentUpon>ReleaseNotes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Setup\DisplaySetup.resx">
       <DependentUpon>DisplaySetup.cs</DependentUpon>
