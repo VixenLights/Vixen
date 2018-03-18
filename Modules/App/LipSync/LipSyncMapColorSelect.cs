@@ -18,78 +18,78 @@ using Vixen.Sys;
 namespace VixenModules.App.LipSyncApp
 {
 	public partial class LipSyncMapColorSelect : BaseForm
-    {
+	{
 
-        public LipSyncMapColorSelect()
-        {
+		public LipSyncMapColorSelect()
+		{
 			Location = ActiveForm != null ? new Point(ActiveForm.Location.X + 250, ActiveForm.Location.Y + 100) : new Point(500, 200);
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
-        }
+		}
 
 
-        public List<ElementNode> ChosenNodes
+		public List<ElementNode> ChosenNodes
 		{
 			set
 			{
-                lipSyncMapColorCtrl1.ChosenNodes = value;
+				lipSyncMapColorCtrl1.ChosenNodes = value;
 			}
 		}
 
-        public RGB RGBColor
-        {
-            get
-            {
-                return lipSyncMapColorCtrl1.RGBColor;
-            }
+		public RGB RGBColor
+		{
+			get
+			{
+				return lipSyncMapColorCtrl1.RGBColor;
+			}
 
-            set
-            {
-                lipSyncMapColorCtrl1.RGBColor = value;
-            }
-        }
+			set
+			{
+				lipSyncMapColorCtrl1.RGBColor = value;
+			}
+		}
 
-        public HSV HSVColor
-        {
-            get
-            {
-                return lipSyncMapColorCtrl1.HSVColor;
-            }
+		public HSV HSVColor
+		{
+			get
+			{
+				return lipSyncMapColorCtrl1.HSVColor;
+			}
 
-            set
-            {
-                lipSyncMapColorCtrl1.HSVColor = value;
-            }
-        }
+			set
+			{
+				lipSyncMapColorCtrl1.HSVColor = value;
+			}
+		}
 
-        public Color Color
-        {
-            get 
-            { 
-                return lipSyncMapColorCtrl1.Color; 
-            }
+		public Color Color
+		{
+			get 
+			{ 
+				return lipSyncMapColorCtrl1.Color; 
+			}
 
-            set
-            {
-                lipSyncMapColorCtrl1.Color = value;
-            }
-        }   
+			set
+			{
+				lipSyncMapColorCtrl1.Color = value;
+			}
+		}   
 
-        public double Intensity
-        {
-            get
-            {
-                return lipSyncMapColorCtrl1.Intensity;
-            }
+		public double Intensity
+		{
+			get
+			{
+				return lipSyncMapColorCtrl1.Intensity;
+			}
 
-            set
-            {
-                lipSyncMapColorCtrl1.Intensity = value;
-            }
-        }
+			set
+			{
+				lipSyncMapColorCtrl1.Intensity = value;
+			}
+		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{

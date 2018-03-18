@@ -12,14 +12,18 @@ using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.IO;
 using Vixen.Module;
+using Vixen.Module.App;
 using Vixen.Services;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
+using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Alternating;
 using VixenModules.Effect.Chase;
+using VixenModules.Effect.Effect;
 using VixenModules.Effect.Fireworks;
 using VixenModules.Effect.Snowflakes;
 using VixenModules.Effect.Spin;
+using VixenModules.Effect.LipSync;
 using ZedGraph;
 
 namespace VixenModules.Sequence.Timed
@@ -38,8 +42,8 @@ namespace VixenModules.Sequence.Timed
 									new MigrationSegment<XElement>(0, 1, _Version_0_to_1),
 									new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
 									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
-									new MigrationSegment<XElement>(3, 4, _Version_3_to_4)
-
+									new MigrationSegment<XElement>(3, 4, _Version_3_to_4),
+									new MigrationSegment<XElement>(4, 5, _Version_4_to_5)
 				};
 		}
 
@@ -446,6 +450,19 @@ namespace VixenModules.Sequence.Timed
 			return content;
 		}
 
+		private XElement _Version_4_to_5(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+					"Migrating sequence from version 4 to version 5. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+					"Minor change to allow LipSync Matrix elements to work with Bitmap pictures .{0}" +
+					"Changes to allow compatibility with new Vixen3 ModuleStore.{0}" +
+					"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+
+			MigrateLipSyncFrom4To5(content);
+			return content;
+		}
+
 		private void MigrateChaseFrom3To4(XElement content)
 		{
 			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
@@ -524,6 +541,69 @@ namespace VixenModules.Sequence.Timed
 
 				//Serialize the object into a xelement
 				XElement glp = Serializer(dc, new[] { typeof(SpinData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+				//Extract the new data model that we want and insert it in the tree
+				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+			}
+		}
+
+		private void MigrateLipSyncFrom4To5(XElement content)
+		{	
+		   //This migration deals with changing the LipSync matrix elements from version 4 to 5
+		   //Get the standard namespaces that are needed in the sequence
+		   var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.LipSync";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Chase effects.
+			IEnumerable<XElement> lipSyncElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:LipSyncData']", namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			LipSyncMapLibrary _library = 
+				ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
+
+			foreach (var lipSyncElement in lipSyncElements.ToList())
+			{
+				LipSyncMapData mapData = null;
+
+				var lipSyncData = DeSerializer<LipSyncData>(lipSyncElement);
+
+				if (_library.Library.TryGetValue(lipSyncData.PhonemeMapping, out mapData))
+				{
+					if ((null != mapData) && (mapData.IsMatrix))
+					{
+						if (lipSyncData.Level == 0)
+						{
+							lipSyncData.Level = 100;
+						}
+
+						if (lipSyncData.ScalePercent == 0)
+						{
+							lipSyncData.ScalePercent = 100;
+						}
+
+						lipSyncData.Orientation = (mapData.StringsAreRows) ? StringOrientation.Horizontal : StringOrientation.Vertical;
+
+						lipSyncData.ScaleToGrid = true;
+						mapData.UsingDefaults = false;
+						
+					}
+				}
+
+				//Remove the old version
+				lipSyncElement.Remove();
+
+				//Build up a temporary container similar to the way sequences are stored to
+				//make all the namespace prefixes line up.
+				IModuleDataModel[] dm = { lipSyncData };
+				DataContainer dc = new DataContainer { _dataModels = dm };
+
+				//Serialize the object into a xelement
+				XElement glp = Serializer(dc, new[] { typeof(LipSyncData), typeof(IModuleDataModel[]), typeof(DataContainer) });
 
 				//Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));

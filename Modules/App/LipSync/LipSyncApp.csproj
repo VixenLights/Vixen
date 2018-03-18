@@ -107,11 +107,11 @@
       <DependentUpon>LipSyncMapSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="LipSyncMapStaticData.cs" />
-    <Compile Include="LipSyncNewMapType.cs">
+    <Compile Include="LipSyncMultiPicSelect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LipSyncNewMapType.Designer.cs">
-      <DependentUpon>LipSyncNewMapType.cs</DependentUpon>
+    <Compile Include="LipSyncMultiPicSelect.Designer.cs">
+      <DependentUpon>LipSyncMultiPicSelect.cs</DependentUpon>
     </Compile>
     <Compile Include="LipSyncNodeSelect.cs">
       <SubType>Form</SubType>
@@ -165,11 +165,6 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
-      <Project>{45e1228a-f714-41d5-bb9b-a776f2b23143}</Project>
-      <Name>Timed</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LipSyncMapColorCtrl.resx">
@@ -187,8 +182,8 @@
     <EmbeddedResource Include="LipSyncMapSelector.resx">
       <DependentUpon>LipSyncMapSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncNewMapType.resx">
-      <DependentUpon>LipSyncNewMapType.cs</DependentUpon>
+    <EmbeddedResource Include="LipSyncMultiPicSelect.resx">
+      <DependentUpon>LipSyncMultiPicSelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LipSyncNodeSelect.resx">
       <DependentUpon>LipSyncNodeSelect.cs</DependentUpon>
@@ -240,6 +235,7 @@
     <EmbeddedResource Include="Resources\WQ.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\WQ_Transparent.png" />
     <EmbeddedResource Include="Resources\AI_LightGray.jpg" />
     <EmbeddedResource Include="Resources\etc_LightGray.jpg" />
     <EmbeddedResource Include="Resources\E_LightGray.jpg" />
@@ -249,6 +245,16 @@
     <EmbeddedResource Include="Resources\O_LightGray.jpg" />
     <EmbeddedResource Include="Resources\rest_LightGray.jpg" />
     <EmbeddedResource Include="Resources\U_LightGray.jpg" />
+    <Content Include="Resources\AI_Transparent.png" />
+    <Content Include="Resources\etc_Transparent.png" />
+    <Content Include="Resources\E_Transparent.png" />
+    <Content Include="Resources\FV_Transparent.png" />
+    <Content Include="Resources\L_Transparent.png" />
+    <Content Include="Resources\MBP_Transparent.png" />
+    <Content Include="Resources\NoImage.png" />
+    <Content Include="Resources\O_Transparent.png" />
+    <Content Include="Resources\rest_Transparent.png" />
+    <Content Include="Resources\U_Transparent.png" />
     <Content Include="Resources\WQ_LightGray.jpg" />
   </ItemGroup>
   <ItemGroup>

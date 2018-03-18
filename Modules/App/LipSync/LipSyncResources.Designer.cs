@@ -83,6 +83,16 @@ namespace VixenModules.App.LipSyncApp {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap AI_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("AI_Transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap E {
             get {
                 object obj = ResourceManager.GetObject("E", resourceCulture);
@@ -96,6 +106,16 @@ namespace VixenModules.App.LipSyncApp {
         public static System.Drawing.Bitmap E_LightGray {
             get {
                 object obj = ResourceManager.GetObject("E_LightGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap E_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("E_Transparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +143,16 @@ namespace VixenModules.App.LipSyncApp {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap etc_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("etc_Transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap FV {
             get {
                 object obj = ResourceManager.GetObject("FV", resourceCulture);
@@ -136,6 +166,16 @@ namespace VixenModules.App.LipSyncApp {
         public static System.Drawing.Bitmap FV_LightGray {
             get {
                 object obj = ResourceManager.GetObject("FV_LightGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap FV_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("FV_Transparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,6 +203,16 @@ namespace VixenModules.App.LipSyncApp {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap L_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("L_Transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap MBP {
             get {
                 object obj = ResourceManager.GetObject("MBP", resourceCulture);
@@ -183,6 +233,26 @@ namespace VixenModules.App.LipSyncApp {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap MBP_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("MBP_Transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap NoImage {
+            get {
+                object obj = ResourceManager.GetObject("NoImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap O {
             get {
                 object obj = ResourceManager.GetObject("O", resourceCulture);
@@ -196,6 +266,16 @@ namespace VixenModules.App.LipSyncApp {
         public static System.Drawing.Bitmap O_LightGray {
             get {
                 object obj = ResourceManager.GetObject("O_LightGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap O_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("O_Transparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -226,6 +306,16 @@ namespace VixenModules.App.LipSyncApp {
         public static System.Drawing.Bitmap rest_LightGray {
             get {
                 object obj = ResourceManager.GetObject("rest_LightGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap rest_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("rest_Transparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -263,6 +353,16 @@ namespace VixenModules.App.LipSyncApp {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap U_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("U_Transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap WQ {
             get {
                 object obj = ResourceManager.GetObject("WQ", resourceCulture);
@@ -276,6 +376,16 @@ namespace VixenModules.App.LipSyncApp {
         public static System.Drawing.Bitmap WQ_LightGray {
             get {
                 object obj = ResourceManager.GetObject("WQ_LightGray", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap WQ_Transparent {
+            get {
+                object obj = ResourceManager.GetObject("WQ_Transparent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -91,6 +91,11 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
+      <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
+      <Name>LipSyncApp</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Alternating\Alternating.csproj">
       <Project>{86572287-5AD9-4941-AEB1-939C3F787978}</Project>
       <Name>Alternating</Name>
@@ -109,6 +114,11 @@
     <ProjectReference Include="..\..\Effect\Fireworks\Fireworks.csproj">
       <Project>{bdf7f625-5041-428d-9c68-cb5462671c6b}</Project>
       <Name>Fireworks</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Effect\LipSync\LipSync.csproj">
+      <Project>{6de9a846-ac25-40b6-b8b2-b306ec9f2569}</Project>
+      <Name>LipSync</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\SnowFlakes\Snowflakes.csproj">
