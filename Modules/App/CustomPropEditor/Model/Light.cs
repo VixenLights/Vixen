@@ -4,6 +4,7 @@ using Common.WPFCommon.ViewModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
+	[Serializable]
 	public class Light : BindableBase
 	{
 

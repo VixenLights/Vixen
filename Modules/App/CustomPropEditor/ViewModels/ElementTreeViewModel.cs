@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using Catel.Data;
@@ -14,6 +17,7 @@ using GongSolutions.Wpf.DragDrop.Utilities;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using DataFormats = System.Windows.Forms.DataFormats;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -21,6 +25,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		public event EventHandler ModelsChanged;
+		
+		private static readonly DataFormats.Format ClipboardFormatName = DataFormats.GetFormat(typeof(List<ElementModel>).FullName);
 
 		public ElementTreeViewModel(Prop prop)
 		{
@@ -116,6 +122,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				SelectedItem = null;
 			}
+
+			CopyCommand.RaiseCanExecuteChanged();
+			CutCommand.RaiseCanExecuteChanged();
+			PasteCommand.RaiseCanExecuteChanged();
+			CreateGroupCommand.RaiseCanExecuteChanged();
+			MoveToGroupCommand.RaiseCanExecuteChanged();
+			CreateNodeCommand.RaiseCanExecuteChanged();
 		}
 
 
@@ -312,7 +325,24 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void Cut()
 		{
-			// TODO: Handle command logic here
+			List<ElementModel> clipData = new List<ElementModel>();
+			clipData.AddRange(SelectedItems.Select(x => x.ElementModel).ToList());
+
+			IDataObject dataObject = new DataObject(ClipboardFormatName);
+			dataObject.SetData(clipData);
+			Clipboard.SetDataObject(dataObject, true);
+			var itemsToCut = SelectedItems.ToList();
+			DeselectAll();
+			foreach (var elementModelViewModel in itemsToCut)
+			{
+				var parentToLeave = elementModelViewModel.ParentViewModel as ElementModelViewModel;
+				if (parentToLeave != null)
+				{
+					PropModelServices.Instance().RemoveFromParent(elementModelViewModel.ElementModel, parentToLeave.ElementModel);
+				}
+			}
+
+			OnModelsChanged();
 		}
 
 		/// <summary>
@@ -321,7 +351,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCut()
 		{
-			return SelectedItems.Any();
+			return SelectedItems.Any() && CanGroup();
 		}
 
 		#endregion
@@ -343,7 +373,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void Copy()
 		{
-			// TODO: Handle command logic here
+			List<ElementModel> clipData = new List<ElementModel>();
+			clipData.AddRange(SelectedItems.Select(x => x.ElementModel).ToList());
+
+			IDataObject dataObject = new DataObject(ClipboardFormatName);
+			dataObject.SetData(clipData);
+			Clipboard.SetDataObject(dataObject, true);
 		}
 
 		/// <summary>
@@ -352,7 +387,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanCopy()
 		{
-			return SelectedItems.Any();
+			return SelectedItems.Any() && CanGroup();
 		}
 
 		#endregion
@@ -374,7 +409,30 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void Paste()
 		{
-			// TODO: Handle command logic here
+			System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+
+			if (dataObject != null && SelectedItems.Count == 1)
+			{
+				if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+				{
+					var parent = SelectedItem;
+					DeselectAll();
+					var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+
+					if (data != null)
+					{
+						foreach (var elementModel in data)
+						{
+							if(parent.Children.Contains(elementModel)) continue;
+							//if(elementModel.Parents.Contains(parent.ElementModel.Id)) continue; //Don't add another copy 
+							PropModelServices.Instance().FindOrCreateElementModelTree(elementModel, parent.ElementModel);
+						}
+					}
+
+					OnModelsChanged();
+					SelectModels(new[] { parent });
+				}
+			}
 		}
 
 		/// <summary>
@@ -383,16 +441,36 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanPaste()
 		{
-			//TODO implement the clipboard detection logic
+			System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+
+			if (dataObject!=null && SelectedItems.Count == 1)
+			{
+				if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+				{
+					var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+
+					if (data != null)
+					{
+						if (data.All(x => x.IsLightNode && !SelectedItem.ElementModel.Children.Contains(x)) && SelectedItem.ElementModel.CanAddLightNodes)
+						{
+							//We can paste our contents
+							return true;
+						}
+						if (data.All(x => x.IsGroupNode && !SelectedItem.ElementModel.Children.Contains(x)) && SelectedItem.ElementModel.CanAddGroupNodes)
+						{
+							//We can paste our contents
+							return true;
+						}
+					}
+				}
+			}
+
 			return false;
 		}
 
 		#endregion
 
-
 		#endregion
-
-
 
 		public void DeselectAll()
 		{

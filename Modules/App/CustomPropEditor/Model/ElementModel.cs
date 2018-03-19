@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Navigation;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
-using LiteDB;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
 	/// <summary>
 	/// Symbolic of an ElementNode in Vixen Core
 	/// </summary>
+	[Serializable]
 	public class ElementModel : BindableBase, IEqualityComparer<ElementModel>, IEquatable<ElementModel>
 	{
 		private const int DefaultLightSize = 3;
@@ -59,7 +58,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		#region Id
 
-		public Guid Id { get; protected set; }
+		public Guid Id { get; internal set; }
 
 		#endregion
 

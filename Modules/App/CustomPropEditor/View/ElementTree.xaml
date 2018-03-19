@@ -220,6 +220,9 @@
 					<i:Interaction.Behaviors>
 						<behaviors:TreeViewMultipleSelectionBehavior SelectedItems="{Binding ElementTreeViewModel.SelectedItems}" />
 						<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
+						<interactivity:KeyPressToCommand Command="{Binding ElementTreeViewModel.CutCommand}" Key="X" Modifiers="Control" />
+						<interactivity:KeyPressToCommand Command="{Binding ElementTreeViewModel.CopyCommand}" Key="C" Modifiers="Control"/>
+						<interactivity:KeyPressToCommand Command="{Binding ElementTreeViewModel.PasteCommand}" Key="V" Modifiers="Control"/>
 					</i:Interaction.Behaviors>
 
 					<TreeView.ItemTemplate>

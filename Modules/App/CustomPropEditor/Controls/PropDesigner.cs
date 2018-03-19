@@ -420,7 +420,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			{
 				Rect? bounds = GetSelectedContentBounds();
 
-				if (bounds.HasValue)
+				if (bounds.HasValue && bounds != Rect.Empty)
 				{
 					AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
 
@@ -470,6 +470,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 		private static Rect GetCombinedBounds(List<Rect> recs)
 		{
+			if(!recs.Any()) return Rect.Empty;
 			double xMin = recs.Min(s => s.X);
 			double yMin = recs.Min(s => s.Y);
 			double xMax = recs.Max(s => s.X + s.Width);

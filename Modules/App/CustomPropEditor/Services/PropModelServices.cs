@@ -103,9 +103,53 @@ namespace VixenModules.App.CustomPropEditor.Services
 			{
 				parent = _prop.RootNode;
 			}
+
 			ElementModel em = new ElementModel(Uniquify(name), parent);
 			parent.AddChild(em);
 			_models.Add(em.Id, em);
+			return em;
+		}
+
+		private ElementModel CreateNode(string name, Guid id, ElementModel parent)
+		{
+			if (parent == null)
+			{
+				parent = _prop.RootNode;
+			}
+			ElementModel em = new ElementModel(Uniquify(name), parent)
+			{
+				Id = id
+			}; 
+			parent.AddChild(em);
+			_models.Add(em.Id, em);
+			return em;
+		}
+
+		public ElementModel FindOrCreateElementModelTree(ElementModel elementModel, ElementModel parent)
+		{
+			var em = GetModel(elementModel.Id);
+			if (em == null)
+			{
+				em = CreateNode(elementModel.Name, elementModel.Id, parent);
+				em.LightSize = elementModel.LightSize;
+				em.Lights = elementModel.Lights;
+				em.Order = OrderExists(elementModel.Order)?GetNextOrder():elementModel.Order;
+				foreach (var child in elementModel.Children)
+				{
+					FindOrCreateElementModelTree(child, em);
+				}
+			}
+			else
+			{
+				AddToParent(em, parent);
+			}
+			return em;
+		}
+
+		public ElementModel GetModel(Guid id)
+		{
+			ElementModel em;
+			_models.TryGetValue(id, out em);
 			return em;
 		}
 
@@ -329,6 +373,11 @@ namespace VixenModules.App.CustomPropEditor.Services
 				max++;
 			}
 			return max;
+		}
+
+		private bool OrderExists(int order)
+		{
+			return _prop.RootNode.GetLeafEnumerator().Any(x => x.Order==order);
 		}
 
 	}

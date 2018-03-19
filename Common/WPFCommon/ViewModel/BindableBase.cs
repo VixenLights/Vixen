@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Vixen.Annotations;
 
 namespace Common.WPFCommon.ViewModel
 {
+	[Serializable]
     public class BindableBase : INotifyPropertyChanged
     {
         protected virtual void SetProperty<T>(ref T member, T val,
@@ -21,6 +23,8 @@ namespace Common.WPFCommon.ViewModel
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+	    [field: NonSerialized]
+		public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

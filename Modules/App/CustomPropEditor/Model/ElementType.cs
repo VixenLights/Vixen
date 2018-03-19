@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
-    public enum ElementType
+	[Serializable]
+	public enum ElementType
     {
 	    [Description("Single Node")]
 		Node,

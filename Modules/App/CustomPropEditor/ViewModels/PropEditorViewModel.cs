@@ -330,6 +330,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void ElementTreeViewModel_ModelsChanged(object sender, EventArgs e)
 		{
 			ElementOrderViewModel.RefreshElementLeafViewModels();
+			DrawingPanelViewModel.RefreshLightViewModels();
 		}
 
 
