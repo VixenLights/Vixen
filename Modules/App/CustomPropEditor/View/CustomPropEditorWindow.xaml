@@ -9,6 +9,7 @@
 	xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
+        xmlns:behaviors="clr-namespace:VixenModules.App.CustomPropEditor.Behaviors"
 
         Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
@@ -19,38 +20,30 @@
 				<ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
-			<!--<ContextMenu x:Key="DesignerCanvasContextMenu">
-				<MenuItem Header="Paste" Command="{x:Static ApplicationCommands.Paste}">
-					--><!--<MenuItem.Icon>
-                    <Image Source="Resources/Images/Paste.png" Width="20"/>
-                </MenuItem.Icon>--><!--
-				</MenuItem>
-				<MenuItem Header="Select All"/>
-			</ContextMenu>
-			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>-->
 			<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<!--<i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadProp"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>-->
+	<i:Interaction.Behaviors>
+		<catel:KeyPressToCommand Command="{Binding NewPropCommand}" Key="N" Modifiers="Control"/>
+		<catel:KeyPressToCommand Command="{Binding SaveModelCommand}" Key="S" Modifiers="Control" />
+		<catel:KeyPressToCommand Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}" Key="F4" Modifiers="Alt"/>
+	</i:Interaction.Behaviors>
+
 	<DockPanel Background="{StaticResource BackColorBrush}">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="File" Name="FileMenu">
-				<MenuItem Header="New" Command="{Binding NewPropCommand}"></MenuItem>
-				<MenuItem Header="Open" Command="{Binding OpenPropCommand}"></MenuItem>
-				<MenuItem Header="Save" Command="{Binding SaveModelCommand}"></MenuItem>
-				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"></MenuItem>
-				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"></MenuItem>
-				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}"></MenuItem>
+				<MenuItem Header="New" Command="{Binding NewPropCommand}"/>
+				<MenuItem Header="Open" Command="{Binding OpenPropCommand}"/>
+				<MenuItem Header="Save" Command="{Binding SaveModelCommand}"/>
+				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"/>
+				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"/>
+				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}"/>
 			</MenuItem>
 			<MenuItem Header="Edit" Name="EditMenu">
-				<MenuItem Header="Cut"></MenuItem>
-				<MenuItem Header="Copy"></MenuItem>
-				<MenuItem Header="Paste"></MenuItem>
+				<MenuItem Header="Cut" Command="{Binding ElementTreeViewModel.CutCommand}"/>
+				<MenuItem Header="Copy" Command="{Binding ElementTreeViewModel.CopyCommand}"/>
+				<MenuItem Header="Paste" Command="{Binding ElementTreeViewModel.PasteCommand}"/>
 			</MenuItem>
 			<MenuItem Header="View">
 				<MenuItem Header="Opacity">
@@ -98,10 +91,11 @@
 					<RowDefinition Height="*"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
 				<views:ElementTree Grid.Column="0" Grid.Row="0" />
-				<Border Grid.Row="1" Grid.Column="0" BorderThickness="1" 
+				<Border Grid.Row="2" Grid.Column="0" BorderThickness="1" 
 				        BorderBrush="{StaticResource BorderColorBrush}"
 				        Margin="5,5,10,5">
 					<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
@@ -120,7 +114,7 @@
 					</wpfPropertyGrid:PropertyGrid>
 				</Border>
 
-				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="3">
 					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
 						<ToolBar>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
@@ -227,7 +221,8 @@
 					</ScrollViewer>
 
 				</DockPanel>
-				<GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+				<GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="3" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
+				<GridSplitter Grid.Row="1" Grid.Column="0" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" ResizeDirection="Rows"/>
 			</Grid>
 		</Border>
 	</DockPanel>
