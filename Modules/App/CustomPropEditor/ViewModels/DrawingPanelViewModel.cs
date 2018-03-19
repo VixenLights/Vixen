@@ -50,6 +50,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			AlignTopsCommand.RaiseCanExecuteChanged();
 			DistributeVerticallyCommand.RaiseCanExecuteChanged();
 			DistributeHorizontallyCommand.RaiseCanExecuteChanged();
+
+			DecreaseLightSizeCommand.RaiseCanExecuteChanged();
+			IncreaseLightSizeCommand.RaiseCanExecuteChanged();
+			MatchLightSizeCommand.RaiseCanExecuteChanged();
+
+			DeleteSelectedLightsCommand.RaiseCanExecuteChanged();
 		}
 
 		private bool CanExecuteAlignmentMethod()
