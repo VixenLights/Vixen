@@ -46,7 +46,8 @@
 				<MenuItem Header="Paste" Command="{Binding ElementTreeViewModel.PasteCommand}"/>
 			</MenuItem>
 			<MenuItem Header="View">
-				<MenuItem Header="Opacity">
+				<MenuItem Header="Assign Background" Command="{Binding LoadImageCommand}"/>
+				<MenuItem Header="Background Opacity">
 					<controls:SliderMenuItem x:Name="OpacitySliderMenu" ItemValue="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
 						<MenuItem Header="10%" controls:SliderMenuItem.ItemValue=".1"></MenuItem>
 						<MenuItem Header="20%" controls:SliderMenuItem.ItemValue=".2"></MenuItem>
@@ -221,8 +222,8 @@
 					</ScrollViewer>
 
 				</DockPanel>
-				<GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="3" HorizontalAlignment="Right" VerticalAlignment="Stretch"/>
-				<GridSplitter Grid.Row="1" Grid.Column="0" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" ResizeDirection="Rows"/>
+				<GridSplitter Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Width="3" HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="{StaticResource BorderColorBrush}"/>
+				<GridSplitter Grid.Row="1" Grid.Column="0" Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" ResizeDirection="Rows" Background="{StaticResource BorderColorBrush}"/>
 			</Grid>
 		</Border>
 	</DockPanel>
