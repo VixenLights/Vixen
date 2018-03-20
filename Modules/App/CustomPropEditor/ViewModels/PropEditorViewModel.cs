@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
-using Catel.Collections;
 using Catel.IoC;
 using Catel.MVVM;
 using Catel.Services;
-using Common.WPFCommon.Command;
-using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Import;
 using VixenModules.App.CustomPropEditor.Import.XLights;
 using VixenModules.App.CustomPropEditor.Model;
@@ -25,10 +20,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private bool _selectionChanging;
 		public PropEditorViewModel()
 		{
-			ImportCommand = new RelayCommand<string>(ImportModel);
-			NewPropCommand = new RelayCommand(NewProp);
-			AddLightCommand = new RelayCommand<Point>(AddLightAt);
-			LoadImageCommand = new RelayCommand(LoadImage);
 			FilePath = String.Empty;
 			Prop = PropModelServices.Instance().CreateProp();
 		}
@@ -299,6 +290,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Events
+		
 		private void RegisterModelEvents()
 		{
 
@@ -423,27 +416,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-
-		private async void ImportModel(string type)
-		{
-			var dependencyResolver = this.GetDependencyResolver();
-			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = Environment.SpecialFolder.MyDocuments.ToString();
-			openFileService.Filter = "xModel (*.xmodel)|*.xmodel";
-			if (await openFileService.DetermineFileAsync())
-			{
-				string path = openFileService.FileNames.First();
-				if (!string.IsNullOrEmpty(path))
-				{
-				    IModelImport import = new XModelImport();
-					Prop = await import.ImportAsync(path);
-					FilePath = String.Empty;
-				}
-			}
-
-		}
-
+		#endregion
+		
 		#region Delete command
 
 		private Command _deleteCommand;
@@ -594,19 +568,146 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Menu Commands
 
+		#region Exit command
+
+		private Command<Window> _exitCommand;
+
+		/// <summary>
+		/// Gets the Exit command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<Window> ExitCommand
+		{
+			get { return _exitCommand ?? (_exitCommand = new Command<Window>(Exit)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Exit command is executed.
+		/// </summary>
+		private void Exit(Window window)
+		{
+			window?.Close();
+		}
+
+		#endregion
+
+		#region Closing command
+
+		private Command<CancelEventArgs> _closingCommand;
+
+		/// <summary>
+		/// Gets the Closing command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<CancelEventArgs> ClosingCommand
+		{
+			get { return _closingCommand ?? (_closingCommand = new Command<CancelEventArgs>(Closing)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Closing command is executed.
+		/// </summary>
+		private void Closing(CancelEventArgs e)
+		{
+			MessageBoxService mbs = new MessageBoxService();
+			var response = mbs.GetUserConfirmation($"Save Prop \"{Prop.Name}\" ", "Save");
+			if (response.Result == MessageResult.OK)
+			{
+				SaveModel();
+			}
+			else if (response.Result == MessageResult.Cancel)
+			{
+				e.Cancel = true;
+			}
+		}
+
+		#endregion
+
+		#region Import command
+
+		private Command<string> _importCommand;
+
+		/// <summary>
+		/// Gets the Import command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<string> ImportCommand
+		{
+			get { return _importCommand ?? (_importCommand = new Command<string>(Import)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Import command is executed.
+		/// </summary>
+		private async void Import(string type)
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+			openFileService.IsMultiSelect = false;
+			openFileService.InitialDirectory = Environment.SpecialFolder.MyDocuments.ToString();
+			openFileService.Filter = "xModel (*.xmodel)|*.xmodel";
+			if (await openFileService.DetermineFileAsync())
+			{
+				string path = openFileService.FileNames.First();
+				if (!string.IsNullOrEmpty(path))
+				{
+					IModelImport import = new XModelImport();
+					Prop = await import.ImportAsync(path);
+					FilePath = String.Empty;
+				}
+			}
+		}
+
+		#endregion
+
+		#region NewProp command
+
+		private Command _newPropCommand;
+
+		/// <summary>
+		/// Gets the NewProp command.
+		/// </summary>
+		[Browsable(false)]
+		public Command NewPropCommand
+		{
+			get { return _newPropCommand ?? (_newPropCommand = new Command(NewProp)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the NewProp command is executed.
+		/// </summary>
 		private void NewProp()
 		{
 			MessageBoxService mbs = new MessageBoxService();
 			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "New Prop");
 			if (result.Result == MessageResult.OK)
 			{
-                Prop = PropModelServices.Instance().CreateProp(result.Response);
+				Prop = PropModelServices.Instance().CreateProp(result.Response);
 				FilePath = string.Empty;
 			}
 		}
 
-		public void AddLightAt(Point p)
+		#endregion
+
+		#region AddLight command
+
+		private Command<Point> _addLightCommand;
+
+		/// <summary>
+		/// Gets the AddLight command.
+		/// </summary>
+		[Browsable(false)]
+		public Command<Point> AddLightCommand
+		{
+			get { return _addLightCommand ?? (_addLightCommand = new Command<Point>(AddLight)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the AddLight command is executed.
+		/// </summary>
+		private void AddLight(Point p)
 		{
 			var target = ElementTreeViewModel.SelectedItem;
 
@@ -619,9 +720,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			if (model == target?.ElementModel)
 			{
-				ElementTreeViewModel.SelectModels(new []{target});
+				ElementTreeViewModel.SelectModels(new[] { target });
 			}
-			else 
+			else
 			{
 				var vms = ElementModelLookUpService.Instance.GetModels(model.Id);
 				var viewModel = vms.First();
@@ -632,11 +733,29 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					parent.IsExpanded = true;
 				}
 
-				
+
 			}
 		}
 
-		public async void LoadImage()
+		#endregion
+
+		#region LoadImage command
+
+		private Command _loadImageCommand;
+
+		/// <summary>
+		/// Gets the LoadImage command.
+		/// </summary>
+		[Browsable(false)]
+		public Command LoadImageCommand
+		{
+			get { return _loadImageCommand ?? (_loadImageCommand = new Command(LoadImage)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the LoadImage command is executed.
+		/// </summary>
+		private async void LoadImage()
 		{
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
@@ -653,42 +772,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
-		#region Menu Commands
-
-		#region Exit command
-
-		private RelayCommand<Window> _exitCommand;
-
-		/// <summary>
-		/// Gets the Exit command.
-		/// </summary>
-		[Browsable(false)]
-		public RelayCommand<Window> ExitCommand
-		{
-			get { return _exitCommand ?? (_exitCommand = new RelayCommand<Window>(Exit)); }
-		}
-
-		/// <summary>
-		/// Method to invoke when the Exit command is executed.
-		/// </summary>
-		private void Exit(Window window)
-		{
-			window?.Close();
-		}
-
 		#endregion
-
-		[Browsable(false)]
-		public RelayCommand<string> ImportCommand { get; private set; }
-
-		[Browsable(false)]
-		public RelayCommand NewPropCommand { get; private set; }
-
-		[Browsable(false)]
-		public RelayCommand<Point> AddLightCommand { get; private set; }
-
-		[Browsable(false)]
-		public RelayCommand LoadImageCommand { get; private set; }
 
 		#endregion
 

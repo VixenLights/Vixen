@@ -14,21 +14,26 @@
         Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
 	
-	<Window.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
-				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-			<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-		</ResourceDictionary>
-	</Window.Resources>
+		<Window.Resources>
+			<ResourceDictionary>
+				<ResourceDictionary.MergedDictionaries>
+					<ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
+					<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+				</ResourceDictionary.MergedDictionaries>
+				<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+			</ResourceDictionary>
+		</Window.Resources>
 
-	<i:Interaction.Behaviors>
-		<catel:KeyPressToCommand Command="{Binding NewPropCommand}" Key="N" Modifiers="Control"/>
-		<catel:KeyPressToCommand Command="{Binding SaveModelCommand}" Key="S" Modifiers="Control" />
-		<catel:KeyPressToCommand Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}" Key="F4" Modifiers="Alt"/>
-	</i:Interaction.Behaviors>
+		<i:Interaction.Behaviors>
+			<catel:KeyPressToCommand Command="{Binding NewPropCommand}" Key="N" Modifiers="Control"/>
+			<catel:KeyPressToCommand Command="{Binding SaveModelCommand}" Key="S" Modifiers="Control" />
+			<catel:KeyPressToCommand Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}" Key="F4" Modifiers="Alt"/>
+		</i:Interaction.Behaviors>
+		<i:Interaction.Triggers>
+			<i:EventTrigger EventName="Closing">
+				<catel:EventToCommand Command="{Binding ClosingCommand, Mode=OneWay}" PassEventArgsToCommand="True" DisableAssociatedObjectOnCannotExecute="False" />
+			</i:EventTrigger>
+		</i:Interaction.Triggers>
 
 	<DockPanel Background="{StaticResource BackColorBrush}">
 		<Menu DockPanel.Dock="Top">

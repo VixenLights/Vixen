@@ -1,6 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using Catel;
 using Catel.Services;
+using Catel.Windows;
 using Common.Controls;
 
 namespace VixenModules.App.CustomPropEditor.Services
@@ -32,6 +34,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 			while (!validInput && result != DialogResult.OK) ;
 
 			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(result), input);
+		}
+
+		public MessageBoxResponse GetUserConfirmation(string question, string title)
+		{
+			MessageBoxForm mbf = new MessageBoxForm(question, title, MessageBoxButtons.YesNoCancel, SystemIcons.Question);
+			mbf.ShowDialog();
+
+			return new MessageBoxResponse(Enum<MessageResult>.ConvertFromOtherEnumValue(mbf.DialogResult), null);
+
 		}
 
 	}

@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Catel.MVVM;
 using Common.WPFCommon.Command;
 using VixenModules.App.CustomPropEditor.Adorners;
 using VixenModules.App.CustomPropEditor.ViewModels;
@@ -135,14 +136,14 @@ namespace VixenModules.App.CustomPropEditor.Controls
 
 		public static DependencyProperty AddLightCommandProperty = DependencyProperty.Register(
 			"AddLightCommand",
-			typeof(RelayCommand<Point>),
+			typeof(Command<Point>),
 			typeof(PropDesigner));
 
-		public RelayCommand<Point> AddLightCommand
+		public Command<Point> AddLightCommand
 		{
 			get
 			{
-				return (RelayCommand<Point>)GetValue(AddLightCommandProperty);
+				return (Command<Point>)GetValue(AddLightCommandProperty);
 			}
 
 			set
