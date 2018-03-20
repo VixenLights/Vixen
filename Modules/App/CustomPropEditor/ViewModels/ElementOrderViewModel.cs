@@ -106,7 +106,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			//{
 			//	LeafNodes.Add(new ElementModelViewModel(elementModel, null));	
 			//}
-			LeafNodes.AddRange(ElementModelLookUpService.Instance.GetAllModels().Where(x => x.IsLightNode).DistinctBy(x => x.ElementModel.Id).OrderBy(x => x.Order));
+			LeafNodes.AddRange(ElementModelLookUpService.Instance.GetAllModels().Where(x => x.IsLightNode).DistinctBy(x => x.ElementModel.Id).OrderBy(x => x.ElementModel.Order));
 		}
 
 		private void ReOrder()
@@ -114,7 +114,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			int index = 0;
 			foreach (var elementModelViewModel in LeafNodes)
 			{
-				elementModelViewModel.Order = index++;
+				elementModelViewModel.ElementModel.Order = index++;
 			}
 		}
 

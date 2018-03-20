@@ -259,10 +259,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (SelectedItems.Count == 1)
 			{
 				MessageBoxService mbs = new MessageBoxService();
-				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.Name);
+				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.ElementModel.Name);
 				if (result.Result == MessageResult.OK)
 				{
-					SelectedItems.First().Name = result.Response;
+					SelectedItems.First().ElementModel.Name = result.Response;
 				}
 			}
 		}
@@ -286,7 +286,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void CreateNode()
 		{
-			var result = RequestNewGroupName(PropModelServices.Instance().Uniquify(SelectedItem.Name));
+			var result = RequestNewGroupName(PropModelServices.Instance().Uniquify(SelectedItem.ElementModel.Name));
 
 			if (result.Result == MessageResult.OK)
 			{
@@ -501,7 +501,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private bool CanGroup()
 		{
-			var type = SelectedItems.FirstOrDefault()?.ElementType;
+			var type = SelectedItems.FirstOrDefault()?.ElementModel.ElementType;
 			return SelectedItems.Any() &&
 			       SelectedItems.Select(x => x.ElementModel).All(x => x != Prop.RootNode && x.ElementType == type);
 		}

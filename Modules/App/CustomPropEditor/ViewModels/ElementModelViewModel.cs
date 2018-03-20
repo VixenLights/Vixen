@@ -24,6 +24,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			ElementModelLookUpService.Instance.AddModel(model.Id, this);
 			((IRelationalViewModel)this).SetParentViewModel(parent);
 			DeferValidationUntilFirstSaveCall = false;
+			AlwaysInvokeNotifyChanged = true;
+			
 		}
 
 		#region ElementModel model property
@@ -43,105 +45,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// ElementModel property data.
 		/// </summary>
 		public static readonly PropertyData ElementModelProperty = RegisterProperty("ElementModel", typeof(ElementModel));
-
-		#endregion
-
-		#region Name property
-
-		/// <summary>
-		/// Gets or sets the Name value.
-		/// </summary>
-		[PropertyOrder(0)]
-		[ViewModelToModel("ElementModel")]
-		public string Name
-		{
-			get { return GetValue<string>(NameProperty); }
-			set { SetValue(NameProperty, value); }
-		}
-
-		/// <summary>
-		/// Name property data.
-		/// </summary>
-		public static readonly PropertyData NameProperty = RegisterProperty("Name", typeof(string), null);
-
-		#endregion
-
-		#region Order property
-
-		/// <summary>
-		/// Gets or sets the Order value.
-		/// </summary>
-		[PropertyOrder(1)]
-		[ViewModelToModel("ElementModel")]
-		public int Order
-		{
-			get { return GetValue<int>(OrderProperty); }
-			set { SetValue(OrderProperty, value); }
-		}
-
-		/// <summary>
-		/// Order property data.
-		/// </summary>
-		public static readonly PropertyData OrderProperty = RegisterProperty("Order", typeof(int), null);
-
-		#endregion
-
-		#region ElementType property
-
-		/// <summary>
-		/// Gets or sets the IsString value.
-		/// </summary>
-		[DisplayName("String Type")]
-		[PropertyOrder(2)]
-		[ViewModelToModel("ElementModel")]
-		public ElementType ElementType => GetValue<ElementType>(IsStringProperty);
-
-		/// <summary>
-		/// IsString property data.
-		/// </summary>
-		public static readonly PropertyData IsStringProperty = RegisterProperty("ElementType", typeof(ElementType), null);
-
-		#endregion
-
-		#region LightCount property
-
-		/// <summary>
-		/// Gets or sets the LightCount value.
-		/// </summary>
-		[DisplayName("Light Count")]
-		[PropertyOrder(3)]
-		[ViewModelToModel("ElementModel")]
-		public int LightCount
-		{
-			get { return GetValue<int>(LightCountProperty); }
-			set { SetValue(LightCountProperty, value); }
-		}
-
-		/// <summary>
-		/// LightCount property data.
-		/// </summary>
-		public static readonly PropertyData LightCountProperty = RegisterProperty("LightCount", typeof(int), null);
-
-		#endregion
-
-		#region LightSize property
-
-		/// <summary>
-		/// Gets or sets the LightSize value.
-		/// </summary>
-		[DisplayName("Light Size")]
-		[PropertyOrder(4)]
-		[ViewModelToModel("ElementModel")]
-		public int LightSize
-		{
-			get { return GetValue<int>(LightSizeProperty); }
-			set { SetValue(LightSizeProperty, value); }
-		}
-
-		/// <summary>
-		/// LightSize property data.
-		/// </summary>
-		public static readonly PropertyData LightSizeProperty = RegisterProperty("LightSize", typeof(int), null);
 
 		#endregion
 
@@ -266,19 +169,9 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the IsLightNode value.
 		/// </summary>
-		[Browsable(false)]
-		[ViewModelToModel("ElementModel")]
-		public bool IsLightNode
-		{
-			get { return GetValue<bool>(IsLightNodeProperty); }
-			set { SetValue(IsLightNodeProperty, value); }
-		}
-
-		/// <summary>
-		/// IsLightNode property data.
-		/// </summary>
-		public static readonly PropertyData IsLightNodeProperty = RegisterProperty("IsLightNode", typeof(bool), null);
-
+		
+		public bool IsLightNode => ElementModel.IsLightNode;
+		
 		#endregion
 
 		#region BeginEdit command
@@ -299,7 +192,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void BeginEdit()
 		{
-			if (IsSelected && _selectedTime.AddMilliseconds(500) < DateTime.Now)
+			if (IsSelected && _selectedTime.AddMilliseconds(750) < DateTime.Now)
 			{
 				IsEditing = true;
 			}
@@ -373,18 +266,18 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		protected override void ValidateFields(List<IFieldValidationResult> validationResults)
 		{
-			if (string.IsNullOrEmpty(Name))
+			if (string.IsNullOrEmpty(ElementModel.Name))
 			{
-				validationResults.Add(FieldValidationResult.CreateError(nameof(Name), "Name can not be empty"));
+				validationResults.Add(FieldValidationResult.CreateError(nameof(ElementModel.Name), "Name can not be empty"));
 			}
-			else if (PropModelServices.Instance().IsNameDuplicated(Name))
+			else if (PropModelServices.Instance().IsNameDuplicated(ElementModel.Name))
 			{
-				validationResults.Add(FieldValidationResult.CreateError(nameof(Name), "Duplicate name"));
+				validationResults.Add(FieldValidationResult.CreateError(nameof(ElementModel.Name), "Duplicate name"));
 			}
 
-			if (LightSize <= 0)
+			if (ElementModel.LightSize <= 0)
 			{
-				validationResults.Add(FieldValidationResult.CreateError(nameof(LightSize), "Light size must be > 0"));
+				validationResults.Add(FieldValidationResult.CreateError(nameof(ElementModel.LightSize), "Light size must be > 0"));
 			}
 		}
 

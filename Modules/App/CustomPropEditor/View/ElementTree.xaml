@@ -228,7 +228,7 @@
 					<TreeView.ItemTemplate>
 						<HierarchicalDataTemplate ItemsSource="{Binding ChildrenViewModels}" DataType="{x:Type viewModels:ElementModelViewModel}">
 							<StackPanel Orientation="Horizontal">
-								<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}" Focusable="True">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name}" Margin="0,2,0,2" Style="{StaticResource ElementModelContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="MouseLeftButtonUp">
 											<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
@@ -238,7 +238,7 @@
 										<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
 									</i:Interaction.Behaviors>
 								</TextBlock>
-								<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
+								<TextBox x:Name="EditableText" Text="{Binding ElementModel.Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 						         commonUtils:TextBoxExtender.CommitOnEnter="true"
 						         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 						         commonUtils:TextBoxExtender.SelectAllOnFocus="True"
@@ -290,7 +290,7 @@
 								<TextBlock x:Name="OrderText" Margin="2,2,8,2" Text="{Binding Order}" 
 								           Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 								</TextBlock>
-								<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Margin="0,2,0,2" Focusable="True">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="PreviewMouseUp">
 											<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
@@ -300,7 +300,7 @@
 										<interactivity:KeyPressToCommand Command="{Binding BeginEditCommand}" Key="F2"/>
 									</i:Interaction.Behaviors>
 								</TextBlock>
-								<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
+								<TextBox x:Name="EditableText" Text="{Binding ElementModel.Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,2,0,2"
 								         commonUtils:TextBoxExtender.CommitOnEnter="true"
 								         commonUtils:TextBoxExtender.RollbackOnEscape="true"
 								         commonUtils:TextBoxExtender.SelectAllOnFocus="True"

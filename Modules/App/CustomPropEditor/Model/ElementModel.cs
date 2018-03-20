@@ -144,8 +144,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 			set
 			{
 				if (value == _lightSize) return;
-				_lightSize = value;
-				UpdateLightSize(value);
+			    _lightSize = value>0?value:1;
+				UpdateLightSize(_lightSize);
 				OnPropertyChanged(nameof(LightSize));
 			}
 		}
