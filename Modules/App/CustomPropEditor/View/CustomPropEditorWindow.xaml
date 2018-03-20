@@ -124,12 +124,12 @@
 					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">
 						<ToolBar>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing}" ToolTip="Draw mode" GroupName="SelectDraw"
-							             Width="30">
+							             Width="30" Style="{StaticResource RadioButtonStyle}">
 								<Image Source="/CustomPropEditor;component/Images/buttonDrawPixel.png" Height="20" Width="20"/>
 							</RadioButton>
 							<RadioButton IsChecked="{Binding DrawingPanelViewModel.IsDrawing, Converter={StaticResource InverseBooleanConverter}}" 
 							             ToolTip="Selection mode" GroupName="SelectDraw"
-							             Width="30">
+							             Width="30" Style="{StaticResource RadioButtonStyle}">
 								<Image Source="/CustomPropEditor;component/Images/buttonSelect.png" Height="20" Width="20"/>
 							</RadioButton>
 							<!--<Separator />
@@ -147,10 +147,10 @@
 								<Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Height="20"/>
 							</Button>
 							<Separator />
-							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left" >
+							<Button Command="{Binding DrawingPanelViewModel.AlignLeftCommand}" ToolTip="Align Left">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignLeft.png" Height="20"/>
 							</Button>
-							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right" >
+							<Button Command="{Binding DrawingPanelViewModel.AlignRightCommand}" ToolTip="Align Right">
 								<Image Source="/CustomPropEditor;component/Images/buttonAlignRight.png" Height="20"/>
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.AlignTopsCommand}" ToolTip="Align Top" >
@@ -177,7 +177,7 @@
 							</Button>
 						</ToolBar>
 					</ToolBarTray>
-					<ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
+					<ScrollViewer  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black" Margin="10">
 						<controls:PropDesigner x:Name="PropDesigner"
                             LightNodeViewModelsSource="{Binding DrawingPanelViewModel.LightNodes}"
                             TransformCommand="{Binding DrawingPanelViewModel.TransformCommand}"
@@ -213,7 +213,7 @@
 									<Canvas x:Name="DrawingCanvas" 
                                             Height="{Binding DrawingPanelViewModel.Height, Mode=OneWay}" 
                                             Width="{Binding DrawingPanelViewModel.Width, Mode=OneWay}" 
-                                            Margin="10"
+                           
                                             Focusable="True">
 										<Canvas.Background>
 											<ImageBrush ImageSource="{Binding DrawingPanelViewModel.Image}" Opacity="{Binding DrawingPanelViewModel.Opacity}"></ImageBrush>
