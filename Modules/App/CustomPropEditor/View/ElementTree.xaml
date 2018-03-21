@@ -207,6 +207,7 @@
 			<TabItem Header="Layout">
 				<TreeView x:Name="ElementModelTreeView" Style="{StaticResource ElementTreeViewStyle}"
                   ItemsSource="{Binding ElementTreeViewModel.RootNodesViewModels}" 
+				  BorderThickness="0"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ScrollViewer.CanContentScroll="True"
@@ -276,6 +277,7 @@
 			<TabItem Header="Order">
 				<ListView x:Name="ElementOrderView" Style="{StaticResource ElementListStyle}"
 				          ItemsSource="{Binding ElementOrderViewModel.LeafNodes}"
+						  BorderThickness="0"
 				          ScrollViewer.CanContentScroll="True"
 				          FocusManager.IsFocusScope="True"
 				          dd:DragDrop.IsDragSource="True"
