@@ -43,7 +43,20 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		}
 
 		public static readonly DependencyProperty IsDrawingProperty =
-			DependencyProperty.Register("IsDrawing", typeof(bool), typeof(PropDesigner));
+			DependencyProperty.Register("IsDrawing", typeof(bool), typeof(PropDesigner),
+				new FrameworkPropertyMetadata(IsDrawing_PropertyChanged));
+
+		private static void IsDrawing_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var p = d as PropDesigner;
+			if (p != null)
+			{
+				if (p.IsDrawing)
+				{
+					p.RemoveResizeAdorner();
+				}
+			}
+		}
 
 		public bool IsDrawing
 		{
@@ -438,7 +451,15 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				}
 
 			}
-			else if (_resizingAdorner != null)
+			else 
+			{
+				RemoveResizeAdorner();
+			}
+		}
+
+		public void RemoveResizeAdorner()
+		{
+			if (_resizingAdorner != null)
 			{
 				AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
 
