@@ -167,13 +167,13 @@
 							</Button>
 							<Separator />
 							<Button Command="{Binding DrawingPanelViewModel.IncreaseLightSizeCommand}" ToolTip="Increase Light Size">
-								<Image Source="/Resources;component/lightbulb_add.png" Height="20"/>
+								<Image Source="/CustomPropEditor;component/Images/buttonBulbBigger.png" Height="20"/>
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.DecreaseLightSizeCommand}" ToolTip="Decrease Light Size">
-								<Image Source="/Resources;component/lightbulb_delete.png" Height="20"/>
+								<Image Source="/CustomPropEditor;component/Images/buttonBulbSmaller.png" Height="20"/>
 							</Button>
 							<Button Command="{Binding DrawingPanelViewModel.MatchLightSizeCommand}" ToolTip="Match Light Size">
-								<Image Source="/Resources;component/lightbulb.png" Height="20"/>
+								<Image Source="/CustomPropEditor;component/Images/buttonBulbEqual.png" Height="20"/>
 							</Button>
 						</ToolBar>
 					</ToolBarTray>
