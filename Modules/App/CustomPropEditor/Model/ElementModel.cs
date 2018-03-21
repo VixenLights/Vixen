@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Catel.Collections;
 using Common.WPFCommon.ViewModel;
+using VixenModules.App.CustomPropEditor.Services;
 
 namespace VixenModules.App.CustomPropEditor.Model
 {
@@ -70,7 +71,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			set
 			{
 				if (value == _name) return;
-				_name = value;
+				_name = PropModelServices.Instance().Uniquify(value); ;
 				OnPropertyChanged(nameof(Name));
 			}
 		}

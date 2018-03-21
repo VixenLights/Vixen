@@ -77,6 +77,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the Vendor value.
 		/// </summary>
+		[Category("Vendor")]
 		[ViewModelToModel("Prop")]
 		public string Vendor
 		{
@@ -97,6 +98,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// Gets or sets the VendorUrl value.
 		/// </summary>
 		[DisplayName("Vendor URL")]
+		[Category("Vendor")]
 		[ViewModelToModel("Prop")]
 		public string VendorUrl
 		{
@@ -111,12 +113,56 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region VendorEmail property
+
+		/// <summary>
+		/// Gets or sets the VendorEmail value.
+		/// </summary>
+		[Category("Vendor")]
+		[DisplayName("Vendor Email")]
+		[ViewModelToModel("Prop")]
+		public string VendorEmail
+		{
+			get { return GetValue<string>(VendorEmailProperty); }
+			set { SetValue(VendorEmailProperty, value); }
+		}
+
+		/// <summary>
+		/// VendorEmail property data.
+		/// </summary>
+		public static readonly PropertyData VendorEmailProperty = RegisterProperty("VendorEmail", typeof(string), null);
+
+		#endregion
+
+		#region CreatedBy property
+
+		/// <summary>
+		/// Gets or sets the CreatedBy value.
+		/// </summary>
+		[DisplayName("Created By")]
+		[PropertyOrder(20)]
+		[Category("Details")]
+		[ViewModelToModel("Prop")]
+		public string CreatedBy
+		{
+			get { return GetValue<string>(CreatedByProperty); }
+			set { SetValue(CreatedByProperty, value); }
+		}
+
+		/// <summary>
+		/// CreatedBy property data.
+		/// </summary>
+		public static readonly PropertyData CreatedByProperty = RegisterProperty("CreatedBy", typeof(string), null);
+
+		#endregion
+
 		#region CreationDate property
 
 		/// <summary>
 		/// Gets or sets the CreationDate value.
 		/// </summary>
 		[DisplayName("Creation Date")]
+		[Category("Details")]
 		[PropertyOrder(20)]
 		[ViewModelToModel("Prop")]
 		public DateTime CreationDate
@@ -139,6 +185,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		
 		[DisplayName("Modified Date")]
+		[Category("Details")]
 		[PropertyOrder(21)]
 		[ViewModelToModel("Prop")]
 		public DateTime ModifiedDate

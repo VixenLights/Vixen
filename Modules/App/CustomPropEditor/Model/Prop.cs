@@ -19,6 +19,9 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private string _vendorUrl;
 	    private DateTime _creationDate;
 	    private DateTime _modifiedDate;
+	    private string _vendorEmail;
+	    private string _vendorPhone;
+	    private string _createdBy;
 
 	    public Prop(string name) : this()
         {
@@ -59,7 +62,9 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-	    public string Vendor
+		#region Vendor Info
+
+		public string Vendor
 	    {
 		    get { return _vendor; }
 		    set
@@ -81,7 +86,42 @@ namespace VixenModules.App.CustomPropEditor.Model
 		    }
 	    }
 
-		public DateTime CreationDate
+	    public string VendorEmail
+	    {
+		    get { return _vendorEmail; }
+		    set
+		    {
+			    if (value == _vendorEmail) return;
+			    _vendorEmail = value;
+			    OnPropertyChanged(nameof(VendorEmail));
+		    }
+	    }
+
+	    public string VendorPhone
+	    {
+		    get { return _vendorPhone; }
+		    set
+		    {
+			    if (value == _vendorPhone) return;
+			    _vendorPhone = value;
+			    OnPropertyChanged(nameof(VendorPhone));
+		    }
+	    }
+
+	    #endregion
+
+	    public string CreatedBy
+	    {
+		    get { return _createdBy; }
+		    set
+		    {
+			    if (value == _createdBy) return;
+			    _createdBy = value;
+			    OnPropertyChanged(nameof(CreatedBy));
+		    }
+	    }
+
+	    public DateTime CreationDate
 		{
 		    get { return _creationDate; }
 		    private set
