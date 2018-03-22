@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Security.AccessControl;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
@@ -10,15 +9,18 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 {
 	public partial class ChromaKeySetup : BaseForm
 	{
-	    public ChromaKeySetup(ChromaKeyData data)
+		private int _lowerLimit { get; set; }
+		private int _upperLimit { get; set; }
+
+		public ChromaKeySetup(ChromaKeyData data)
 	    {
 	        InitializeComponent();
 	        ForeColor = ThemeColorTable.ForeColor;
 	        BackColor = ThemeColorTable.BackgroundColor;
 	        ThemeUpdateControls.UpdateControls(this);
-	        LowerLimit = data.LowerLimit;
-	        UpperLimit = data.UpperLimit;
-	        UpdateLimitControls();
+		    _lowerLimit = (int)(data.LowerLimit * 100);
+		    _upperLimit = (int)(data.UpperLimit * 100);
+			UpdateLimitControls();
 	        colorPanel1.Color = data.KeyColor;
 	        HueTolerance = data.HueTolerance;
 	        trkHueTolerance.Value = Convert.ToInt32(data.HueTolerance);
@@ -26,8 +28,8 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	        trkSaturationTolerance.Value = Convert.ToInt32(data.SaturationTolerance*100);
 	    }
 
-        public int LowerLimit { get; private set; }
-	    public int UpperLimit { get; private set; }
+        public double LowerLimit { get { return _lowerLimit / 100d; } }
+	    public double UpperLimit { get { return _upperLimit / 100d; } }
         public Color KeyColor { get; private set; }
         public float HueTolerance { get; private set; }
         public float SaturationTolerance { get; private set; }
@@ -42,76 +44,61 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		{
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-
 		}
 
 	    private void trkLowerLimit_Scroll(object sender, EventArgs e)
 	    {
-	        if (trkLowerLimit.Value < UpperLimit)
-	        {
-	            LowerLimit = trkLowerLimit.Value;
-            }
-	        else
-	        {
-	            LowerLimit = UpperLimit - 1;
-	            trkLowerLimit.Value = LowerLimit;
-	        }
-	        toolTip.SetToolTip(trkLowerLimit, trkLowerLimit.Value.ToString());
-	        numLowerLimit.Text = Convert.ToString(LowerLimit);
+		    ValidateLower(trkLowerLimit.Value);
         }
 
         private void trkUpperLimit_Scroll(object sender, EventArgs e)
-        {            
-            if (trkUpperLimit.Value > LowerLimit )
-            {
-                UpperLimit = trkUpperLimit.Value;
-            }
-            else
-            {
-                UpperLimit = LowerLimit + 1;
-                trkUpperLimit.Value = UpperLimit;
-            }
-            toolTip.SetToolTip(trkUpperLimit, trkUpperLimit.Value.ToString());
-            numUpperLimit.Text = Convert.ToString(UpperLimit);          
+        {
+	        ValidateUpper(trkUpperLimit.Value);       
         }
 
-	    private void numLowerLimit_LostFocus(object sender, EventArgs e)
-	    {
-	        if ( (numLowerLimit.IntValue < UpperLimit) && numLowerLimit.IntValue >= 0)
-	        {
-	            LowerLimit = numLowerLimit.IntValue;
-	        }
-	        else
-	        {
-	            LowerLimit = UpperLimit - 1;
-	            numLowerLimit.Text = Convert.ToString(LowerLimit);
-	        }
-	        trkLowerLimit.Value = LowerLimit;
-	    }
+		private void numLowerLimit_LostFocus(object sender, EventArgs e)
+		{
+			ValidateLower(numLowerLimit.IntValue);
+		}
 
-	    private void numUpperLimit_LostFocus(object sender, EventArgs e)
-	    {
-	        if (numUpperLimit.IntValue > LowerLimit && numUpperLimit.IntValue <= 100 )
-	        {
-	            UpperLimit = numUpperLimit.IntValue;
-	        }
-	        else
-	        {
-	            UpperLimit = LowerLimit + 1;
-	            numUpperLimit.Text = Convert.ToString(UpperLimit);
-	        }
-	        trkUpperLimit.Value = UpperLimit;
-	    }
+		private void numUpperLimit_LostFocus(object sender, EventArgs e)
+		{
+			ValidateUpper(numUpperLimit.IntValue);
+		}
 
-	    private void UpdateLimitControls()
-	    {
-	        trkLowerLimit.Value = LowerLimit;
-	        trkUpperLimit.Value = UpperLimit;
-	        numLowerLimit.Text = Convert.ToString(LowerLimit);
-	        numUpperLimit.Text = Convert.ToString(UpperLimit);
-        }
+		private void numUpperLimit_TextChanged(object sender, EventArgs e)
+		{
+			trkUpperLimit.Value = numUpperLimit.IntValue;
+		}
 
-	    private void colorPanel1_ColorChanged(object sender, EventArgs e)
+		private void numLowerLimit_TextChanged(object sender, EventArgs e)
+		{
+			trkLowerLimit.Value = numLowerLimit.IntValue;
+		}
+
+		private void ValidateLower(int v)
+		{
+			_lowerLimit = v <= _upperLimit ? v : _upperLimit;
+			UpdateLimitControls();
+		}
+
+		private void ValidateUpper(int v)
+		{
+			_upperLimit = v >= _lowerLimit ? v : _lowerLimit;
+			UpdateLimitControls();
+		}
+
+		private void UpdateLimitControls()
+		{
+			toolTip.SetToolTip(trkLowerLimit, trkLowerLimit.Value.ToString());
+			toolTip.SetToolTip(trkUpperLimit, trkUpperLimit.Value.ToString());
+			trkLowerLimit.Value = _lowerLimit;
+			trkUpperLimit.Value = _upperLimit;
+			numLowerLimit.Text = _lowerLimit.ToString();
+			numUpperLimit.Text = _upperLimit.ToString();
+		}
+
+		private void colorPanel1_ColorChanged(object sender, EventArgs e)
 	    {
 	        KeyColor = colorPanel1.Color;
 	        toolTip.SetToolTip(colorPanel1, "Click to Select the Key Color");

@@ -16,19 +16,18 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-		    var lowerLimit = Convert.ToDouble(_data.LowerLimit) / 100;
-		    var upperLimit = Convert.ToDouble(_data.UpperLimit) / 100;
-            if (lowLayerValue.Intensity >= lowerLimit && lowLayerValue.Intensity <= upperLimit /*|| !_data.ExcludeZeroValues*/)
-			{
-				return highLayerValue;
-			}	
+			//do nothing on discrete intents.	
 			return lowLayerValue;
 		}
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-            //brightness matching conditions.  Checks first because it's easy math.
-		    if ( !(HSV.VFromRgb(lowLayerColor) >= Convert.ToDouble(_data.LowerLimit) / 100
+			//brightness matching conditions.  Checks first because it's easy math.
+			var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor), 2);
+			if ( !(lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) )
+			{ return lowLayerColor; }			
+
+			if ( !(HSV.VFromRgb(lowLayerColor) >= Convert.ToDouble(_data.LowerLimit) / 100
                   && HSV.VFromRgb(lowLayerColor) <= Convert.ToDouble(_data.UpperLimit) / 100) )
 		    { return lowLayerColor; }  //brightness check failed - abort
             
@@ -48,15 +47,15 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		        && lowLayerHue >= keyHue - _data.HueTolerance
 		        && lowLayerHue <= keyHue + _data.HueTolerance)
 		    { return highLayerColor; }
-            else if (   keyHue - _data.HueTolerance <= 0 //low end key overflow
+            if (keyHue - _data.HueTolerance <= 0 //low end key overflow
                      && (lowLayerHue >= keyHue - _data.HueTolerance + 360
                         || lowLayerHue <= keyHue + _data.HueTolerance) )
 		    { return highLayerColor; }
-            else if (   keyHue + _data.HueTolerance >= 360 //high end key overflow
+            if (keyHue + _data.HueTolerance >= 360 //high end key overflow
                      && lowLayerHue >= keyHue - _data.HueTolerance
                      && lowLayerHue <= keyHue + _data.HueTolerance - 360) 
 		    { return highLayerColor; }
-		    else return lowLayerColor;  //hue check failed - return low layer color
+		    return lowLayerColor;  //hue check failed - return low layer color
 		}
 
 		public override IModuleDataModel ModuleData
