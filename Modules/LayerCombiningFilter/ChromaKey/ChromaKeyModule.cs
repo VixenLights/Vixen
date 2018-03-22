@@ -26,10 +26,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 			var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor), 2);
 			if ( !(lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) )
 			{ return lowLayerColor; }			
-
-			if ( !(HSV.VFromRgb(lowLayerColor) >= Convert.ToDouble(_data.LowerLimit) / 100
-                  && HSV.VFromRgb(lowLayerColor) <= Convert.ToDouble(_data.UpperLimit) / 100) )
-		    { return lowLayerColor; }  //brightness check failed - abort
             
 		    //Saturation Matching
 		    var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerColor).S , 2);
