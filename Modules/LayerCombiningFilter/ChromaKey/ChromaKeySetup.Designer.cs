@@ -1,6 +1,4 @@
-﻿using VixenModules.Property.Color;
-
-namespace VixenModules.LayerMixingFilter.ChromaKey
+﻿namespace VixenModules.LayerMixingFilter.ChromaKey
 {
 	partial class ChromaKeySetup
 	{

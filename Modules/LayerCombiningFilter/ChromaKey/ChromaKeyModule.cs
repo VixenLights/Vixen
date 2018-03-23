@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using System.Net.Configuration;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Data.Value;
 using Vixen.Module;
