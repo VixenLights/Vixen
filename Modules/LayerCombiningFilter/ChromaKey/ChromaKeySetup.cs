@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 using Common.Controls;
+using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 
@@ -31,7 +32,9 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
         public double LowerLimit { get { return _lowerLimit / 100d; } }
 	    public double UpperLimit { get { return _upperLimit / 100d; } }
         public Color KeyColor { get; private set; }
-        public float HueTolerance { get; private set; }
+        public double KeySaturation {get { return Math.Round(HSV.FromRGB(KeyColor).S, 2); } }
+		public float KeyHue { get { return KeyColor.GetHue(); } }
+		public float HueTolerance { get; private set; }
         public float SaturationTolerance { get; private set; }
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
@@ -106,7 +109,7 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 	    private void trkHueTolerance_Scroll(object sender, EventArgs e)
 	    {
-	        HueTolerance = trkHueTolerance.Value; //add in scaling to 180
+	        HueTolerance = trkHueTolerance.Value; //add in scaling to 180?
 	        toolTip.SetToolTip(trkHueTolerance, trkHueTolerance.Value.ToString());
 	    }
 	    

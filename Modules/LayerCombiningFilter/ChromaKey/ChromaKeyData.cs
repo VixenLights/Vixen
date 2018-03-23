@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Runtime.Serialization;
+using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module;
 
 namespace VixenModules.LayerMixingFilter.ChromaKey
@@ -11,6 +12,8 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		    LowerLimit = 0;
 		    UpperLimit = 1;
             KeyColor = Color.FromArgb(0,255,0);
+			KeySaturation = HSV.FromRGB(KeyColor).S;
+			KeyHue = KeyColor.GetHue();
 		    HueTolerance = 5; 
 		    SaturationTolerance = HueTolerance/100; 
 		}
@@ -19,7 +22,8 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 		{
 		    var newInstance = new ChromaKeyData
 		    {
-		        KeyColor = KeyColor, LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
+		        KeyColor = KeyColor, KeySaturation = KeySaturation, KeyHue = KeyHue,
+			    LowerLimit = LowerLimit, UpperLimit = UpperLimit, 
 		        HueTolerance = HueTolerance, SaturationTolerance = SaturationTolerance
 		    };
             return newInstance;
@@ -33,6 +37,12 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
         [DataMember]
         public Color KeyColor { get; set; }
+
+		[DataMember]
+		public double KeySaturation { get; set; }
+
+		[DataMember]
+		public float KeyHue { get; set; }
 
 	    [DataMember]
 	    public float HueTolerance { get; set; }

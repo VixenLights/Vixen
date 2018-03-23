@@ -28,28 +28,26 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 			{ return lowLayerColor; }			
             
 		    //Saturation Matching
-		    var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerColor).S , 2);
-		    var keySaturation = Math.Round(HSV.FromRGB(_data.KeyColor).S , 2);
-		    if (!(lowLayerSaturation <= keySaturation + _data.SaturationTolerance
-		          && lowLayerSaturation >= keySaturation - _data.SaturationTolerance))
+			var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerColor).S, 2);
+		    if (!(lowLayerSaturation <= _data.KeySaturation + _data.SaturationTolerance
+		          && lowLayerSaturation >= _data.KeySaturation - _data.SaturationTolerance))
 		    { return lowLayerColor; } //saturation check failed - abort
 
             //Hue Matching
-		    var keyHue = _data.KeyColor.GetHue();
 		    var lowLayerHue = lowLayerColor.GetHue();
 
             if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
 		        && lowLayerHue + _data.HueTolerance < 360 //no high overflow
-		        && lowLayerHue >= keyHue - _data.HueTolerance
-		        && lowLayerHue <= keyHue + _data.HueTolerance)
+		        && lowLayerHue >= _data.KeyHue - _data.HueTolerance
+		        && lowLayerHue <= _data.KeyHue + _data.HueTolerance)
 		    { return highLayerColor; }
-            if (keyHue - _data.HueTolerance <= 0 //low end key overflow
-                     && (lowLayerHue >= keyHue - _data.HueTolerance + 360
-                        || lowLayerHue <= keyHue + _data.HueTolerance) )
+            if (_data.KeyHue - _data.HueTolerance <= 0 //low end key overflow
+                     && (lowLayerHue >= _data.KeyHue - _data.HueTolerance + 360
+                        || lowLayerHue <= _data.KeyHue + _data.HueTolerance) )
 		    { return highLayerColor; }
-            if (keyHue + _data.HueTolerance >= 360 //high end key overflow
-                     && lowLayerHue >= keyHue - _data.HueTolerance
-                     && lowLayerHue <= keyHue + _data.HueTolerance - 360) 
+            if (_data.KeyHue + _data.HueTolerance >= 360 //high end key overflow
+                     && lowLayerHue >= _data.KeyHue - _data.HueTolerance
+                     && lowLayerHue <= _data.KeyHue + _data.HueTolerance - 360) 
 		    { return highLayerColor; }
 		    return lowLayerColor;  //hue check failed - return low layer color
 		}
@@ -73,6 +71,8 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
                 _data.LowerLimit = setup.LowerLimit;
                 _data.UpperLimit = setup.UpperLimit;
                 _data.KeyColor = setup.KeyColor;
+			    _data.KeySaturation = setup.KeySaturation;
+			    _data.KeyHue = setup.KeyHue;
                 _data.HueTolerance = setup.HueTolerance;
                 _data.SaturationTolerance = setup.SaturationTolerance;
                 return true;
