@@ -14,8 +14,33 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-			//do nothing on discrete intents.	
-			return lowLayerValue;
+			//should we actually do anything on discrete intents anyway??
+			if ( !(lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit) )
+			{
+				return lowLayerValue;
+			}
+			var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerValue.Color).S, 2);
+			if (!(lowLayerSaturation <= _data.KeySaturation + _data.SaturationTolerance
+			      && lowLayerSaturation >= _data.KeySaturation - _data.SaturationTolerance))
+			{ return lowLayerValue; } //saturation check failed - abort
+			
+			//Hue Matching
+			var lowLayerHue = lowLayerValue.Color.GetHue();
+
+			if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
+			    && lowLayerHue + _data.HueTolerance < 360 //no high overflow
+			    && lowLayerHue >= _data.KeyHue - _data.HueTolerance
+			    && lowLayerHue <= _data.KeyHue + _data.HueTolerance)
+			{ return highLayerValue; }
+			if (_data.KeyHue - _data.HueTolerance <= 0 //low end key overflow
+			    && (lowLayerHue >= _data.KeyHue - _data.HueTolerance + 360
+			        || lowLayerHue <= _data.KeyHue + _data.HueTolerance) )
+			{ return highLayerValue; }
+			if (_data.KeyHue + _data.HueTolerance >= 360 //high end key overflow
+			    && lowLayerHue >= _data.KeyHue - _data.HueTolerance
+			    && lowLayerHue <= _data.KeyHue + _data.HueTolerance - 360) 
+			{ return highLayerValue; }
+			return lowLayerValue;  //hue check failed - return low layer color
 		}
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
