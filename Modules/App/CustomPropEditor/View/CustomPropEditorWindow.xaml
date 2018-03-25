@@ -5,19 +5,17 @@
         xmlns:views="clr-namespace:VixenModules.App.CustomPropEditor.View"
         xmlns:controls="clr-namespace:VixenModules.App.CustomPropEditor.Controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-	xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-	xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
+	    xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
+	    xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-        xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
-
         Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
 	
 		<Window.Resources>
 			<ResourceDictionary>
 				<ResourceDictionary.MergedDictionaries>
-					<ResourceDictionary Source="..\Themes\GroupBox.xaml"/>
+					<ResourceDictionary Source="..\Themes\Theme.xaml"/>
 					<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 				</ResourceDictionary.MergedDictionaries>
 				<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
