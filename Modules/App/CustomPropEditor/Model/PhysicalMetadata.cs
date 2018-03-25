@@ -9,6 +9,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private string _material;
 	    private string _bulbType;
 	    private ColorMode _colorMode;
+	    private string _depth;
 
 	    public string Height
 	    {
@@ -29,6 +30,17 @@ namespace VixenModules.App.CustomPropEditor.Model
 			    if (value == _width) return;
 			    _width = value;
 			    OnPropertyChanged(nameof(Width));
+		    }
+	    }
+
+	    public string Depth
+	    {
+		    get { return _depth; }
+		    set
+		    {
+			    if (value == _depth) return;
+			    _depth = value;
+			    OnPropertyChanged(nameof(Depth));
 		    }
 	    }
 

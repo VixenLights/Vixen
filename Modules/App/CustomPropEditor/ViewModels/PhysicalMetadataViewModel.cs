@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Controls.WpfPropertyGrid;
 using Catel.MVVM;
 using VixenModules.App.CustomPropEditor.Model;
 using PropertyData = Catel.Data.PropertyData;
@@ -38,6 +39,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the Height value.
 		/// </summary>
+		[PropertyOrder(1)]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Height
 		{
@@ -57,6 +59,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the Width value.
 		/// </summary>
+		[PropertyOrder(1)]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Width
 		{
@@ -76,6 +79,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the Material value.
 		/// </summary>
+		[PropertyOrder(0)]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string Material
 		{
@@ -90,12 +94,33 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Depth property
+
+		/// <summary>
+		/// Gets or sets the Depth value.
+		/// </summary>
+		[PropertyOrder(3)]
+		[ViewModelToModel("PhysicalMetadata")]
+		public string Depth
+		{
+			get { return GetValue<string>(DepthProperty); }
+			set { SetValue(DepthProperty, value); }
+		}
+
+		/// <summary>
+		/// Depth property data.
+		/// </summary>
+		public static readonly PropertyData DepthProperty = RegisterProperty("Depth", typeof(string), null);
+
+		#endregion
+
 		#region BulbType property
 
 		/// <summary>
 		/// Gets or sets the BulbType value.
 		/// </summary>
-		[Catel.ComponentModel.DisplayName("Bulb Type")]
+		[PropertyOrder(4)]
+		[DisplayName("Bulb Type")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public string BulbType
 		{
@@ -115,7 +140,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets or sets the ColorMode value.
 		/// </summary>
-		[Catel.ComponentModel.DisplayName("Color Mode")]
+		[PropertyOrder(5)]
+		[DisplayName("Color Mode")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public ColorMode ColorMode
 		{

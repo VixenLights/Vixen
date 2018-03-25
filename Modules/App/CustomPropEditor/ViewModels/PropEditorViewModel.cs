@@ -869,6 +869,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Gets the Help command.
 		/// </summary>
+		[Browsable(false)]
 		public Command HelpCommand
 		{
 			get { return _helpCommand ?? (_helpCommand = new Command(Help)); }
