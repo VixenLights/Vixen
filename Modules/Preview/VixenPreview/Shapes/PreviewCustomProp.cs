@@ -368,7 +368,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_dragPoints = new List<PreviewPoint>();
 			}
 
-			ZoomLevel = 1;
+			Pixels = PropPixels.Select(x => x.Clone()).ToList();
+			_zoomLevel = 1;
 
 			Layout();
 		}

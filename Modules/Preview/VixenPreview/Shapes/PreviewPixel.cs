@@ -73,6 +73,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			p.color = color;
 			p.Bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 			p.Node = Node;
+			p.NodeId = NodeId;
 			p.MaxAlpha = _maxAlpha;
 			if (IsHighPrecision)
 			{
