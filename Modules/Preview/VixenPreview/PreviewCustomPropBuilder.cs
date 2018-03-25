@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Vixen.Services;
@@ -7,6 +8,7 @@ using Vixen.Sys;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.Preview.VixenPreview.Shapes;
+using VixenModules.Property.Color;
 using VixenModules.Property.Order;
 
 namespace VixenModules.Preview.VixenPreview
@@ -17,6 +19,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Dictionary<Guid, ElementNode> _elementModelMap;
 		private HashSet<string> _elementNames;
+		private List<ElementNode> _leafNodes = new List<ElementNode>();
 
 		public PreviewCustomPropBuilder(Prop prop, double zoomLevel)
 		{
@@ -53,8 +56,25 @@ namespace VixenModules.Preview.VixenPreview
 
 				CreateElementsForChildren(rootElementNode, rootNode);
 
+				//Now lets setup the color handling.
+				ColorSetupHelper helper = new ColorSetupHelper();
+				switch (_prop.PhysicalMetadata.ColorMode)
+				{
+					case ColorMode.FullColor:
+						helper.SetColorType(ElementColorType.FullColor);
+						helper.SilentMode = false;
+						break;
+					case ColorMode.Multiple:
+						helper.SetColorType(ElementColorType.MultipleDiscreteColors);
+						break;
+					default:
+						helper.SetColorType(ElementColorType.SingleColor);
+						break;
+				}
+				
+				helper.Perform(_leafNodes);
+
 				PreviewCustomProp.Layout();
-				//PreviewCustomProp.MoveTo(20,20);
 				
 			});
 
@@ -88,6 +108,20 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						order.Order = elementModel.Order;
 					}
+
+					_leafNodes.Add(node);
+
+					////Check to see if we are a full color prop and if so add the color property for it
+					//if (_prop.PhysicalMetadata.ColorMode == ColorMode.FullColor)
+					//{
+					//	var colorProperty = node.Properties.Add(ColorDescriptor.ModuleId) as ColorModule;
+					//	if (colorProperty != null)
+					//	{
+					//		colorProperty.ColorType = ElementColorType.FullColor;
+					//		colorProperty.SingleColor = Color.Empty;
+					//		colorProperty.ColorSetName = null;
+					//	}
+					//}
 					PreviewCustomProp.AddLightNodes(elementModel, node);
 				}
 			}

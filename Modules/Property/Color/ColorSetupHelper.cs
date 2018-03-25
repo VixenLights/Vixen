@@ -13,6 +13,7 @@ using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using System.Linq;
+using Vixen;
 using VixenModules.OutputFilter.ColorBreakdown;
 
 namespace VixenModules.Property.Color
@@ -42,10 +43,13 @@ namespace VixenModules.Property.Color
 
 		public bool Perform(IEnumerable<ElementNode> selectedNodes)
 		{
-			DialogResult dr = ShowDialog();
-			if (dr != DialogResult.OK)
-				return false;
-
+			if (!SilentMode)
+			{
+				DialogResult dr = ShowDialog();
+				if (dr != DialogResult.OK)
+					return false;
+			}
+			
 			// note: the color property can only be applied to leaf nodes.
 
 			// pull out the new data settings from the form elements
@@ -254,15 +258,18 @@ namespace VixenModules.Property.Color
 				}
 			}
 
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			messageBox = new MessageBoxForm("Color Properties:  " + colorPropertiesAdded + " added, " +
-							colorPropertiesConfigured + " configured, " + colorPropertiesSkipped + " skipped. " +
-							"Color Filters:  " + colorFiltersAdded + " added, " + colorFiltersConfigured + " configured, " +
-							colorFiltersSkipped + " skipped.",
-								"Color Setup", false, false);
-			messageBox.ShowDialog();
-
+			if (!SilentMode)
+			{
+				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+				messageBox = new MessageBoxForm("Color Properties:  " + colorPropertiesAdded + " added, " +
+				                                colorPropertiesConfigured + " configured, " + colorPropertiesSkipped + " skipped. " +
+				                                "Color Filters:  " + colorFiltersAdded + " added, " + colorFiltersConfigured + " configured, " +
+				                                colorFiltersSkipped + " skipped.",
+					"Color Setup", false, false);
+				messageBox.ShowDialog();
+			}
+			
 			return true;
 		}
 
@@ -297,7 +304,23 @@ namespace VixenModules.Property.Color
 			}
 		}
 
+		public void SetColorType(ElementColorType colorType)
+		{
+			switch (colorType)
+			{
+				case ElementColorType.FullColor:
+					radioButtonOptionFullColor.Checked = true;
+					break;
+				case ElementColorType.MultipleDiscreteColors:
+					radioButtonOptionMultiple.Checked = true;
+					break;
+				default:
+					radioButtonOptionSingle.Checked = true;
+					break;
+			}
+		}
 
+		public bool SilentMode { get; set; }
 
 		private void ColorSetupHelper_Load(object sender, EventArgs e)
 		{

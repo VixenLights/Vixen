@@ -7,7 +7,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    [Description("Full Color")]
 		FullColor,
 	    [Description("Multiple Color")]
-		RGB,
+		Multiple,
 	    [Description("Single Color")]
 		Single
     }
