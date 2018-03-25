@@ -136,6 +136,11 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				scaleX = scaleY = Math.Max(scaleX, scaleY);
+			}
+
 			if (EnforceSize(scaleX, scaleY))
 			{
 				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.TopLeft);
@@ -151,6 +156,11 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			scaleY += 1;
 			scaleX += 1;
+
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				scaleX = scaleY = Math.Max(scaleX, scaleY);
+			}
 
 			if (EnforceSize(scaleX, scaleY))
 			{
@@ -169,6 +179,11 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				scaleX = scaleY = Math.Max(scaleX, scaleY);
+			}
+
 			if (EnforceSize(scaleX, scaleY))
 			{
 				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.BottomRight);
@@ -184,6 +199,11 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			scaleY += 1;
 			scaleX += 1;
+
+			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			{
+				scaleX = scaleY = Math.Max(scaleX, scaleY);
+			}
 
 			if (EnforceSize(scaleX, scaleY))
 			{
