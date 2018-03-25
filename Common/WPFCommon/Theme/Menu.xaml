@@ -204,6 +204,8 @@
         </Grid.ColumnDefinitions>
         <ContentPresenter
           Name="Icon"
+	        MinWidth="16"
+			Width="Auto"
           Margin="6,4,6,4"
           VerticalAlignment="Center"
           HorizontalAlignment="Center"
@@ -240,9 +242,9 @@
       </Grid>
     </Border>
     <ControlTemplate.Triggers>
-      <Trigger Property="Icon" Value="{x:Null}">
+      <!--<Trigger Property="Icon" Value="{x:Null}">
         <Setter TargetName="Icon" Property="Visibility" Value="Hidden"/>
-      </Trigger>
+      </Trigger>-->
       <Trigger Property="IsChecked" Value="true">
         <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
       </Trigger>

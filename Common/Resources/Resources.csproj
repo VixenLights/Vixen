@@ -265,6 +265,7 @@
     <None Include="alignment.png" />
     <None Include="effects.png" />
     <None Include="check-mark.png" />
+    <Resource Include="Close_6519.png" />
     <Content Include="fill_gaps.png" />
     <None Include="Resources\HeadingBackgroundImage.jpg" />
     <None Include="Resources\HeadingBackgroundImageHover.jpg" />
@@ -294,6 +295,10 @@
     <Resource Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
     <None Include="Resources\VixenImage.png" />
+    <Resource Include="Saveall_6518.png" />
+    <Resource Include="Save_6530.png" />
+    <Resource Include="Open_6529.png" />
+    <Resource Include="NewFile_6276.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
@@ -374,7 +379,7 @@
     <None Include="menu_item.png" />
     <None Include="menu.png" />
     <None Include="magnet.png" />
-    <None Include="help.png" />
+    <Resource Include="help.png" />
     <None Include="bullet_toggle_plus_16px.png" />
     <None Include="bullet_toggle_minus_16px.png" />
     <None Include="bullet_toggle_plus.png" />

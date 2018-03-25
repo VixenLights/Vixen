@@ -862,6 +862,30 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region Help command
+
+		private Command _helpCommand;
+
+		/// <summary>
+		/// Gets the Help command.
+		/// </summary>
+		public Command HelpCommand
+		{
+			get { return _helpCommand ?? (_helpCommand = new Command(Help)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Help command is executed.
+		/// </summary>
+		private void Help()
+		{
+			var url = "http://www.vixenlights.com/vixen-3-documentation/preview/custom-prop-editor/";
+			System.Diagnostics.Process.Start(url);
+		}
+
+		#endregion
+
+
 		#endregion
 
 	}

@@ -9,7 +9,6 @@
 	    xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-        Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
 	
 		<Window.Resources>
@@ -37,20 +36,52 @@
 	<DockPanel Background="{StaticResource BackColorBrush}">
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="File" Name="FileMenu">
-				<MenuItem Header="New" Command="{Binding NewPropCommand}"/>
-				<MenuItem Header="Open" Command="{Binding OpenPropCommand}"/>
-				<MenuItem Header="Save" Command="{Binding SaveModelCommand}"/>
+				<MenuItem Header="New" Command="{Binding NewPropCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/NewFile_6276.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Open" Command="{Binding OpenPropCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Open_6529.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save" Command="{Binding SaveModelCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Save_6530.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 				<MenuItem Header="Save As" Command="{Binding SaveModelAsCommand}"/>
 				<MenuItem Header="Import xModel" Command="{Binding ImportCommand}" CommandParameter="xModel"/>
-				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}"/>
+				<MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=EditorWindow}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/Close_6519.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="Edit" Name="EditMenu">
-				<MenuItem Header="Cut" Command="{Binding ElementTreeViewModel.CutCommand}"/>
-				<MenuItem Header="Copy" Command="{Binding ElementTreeViewModel.CopyCommand}"/>
-				<MenuItem Header="Paste" Command="{Binding ElementTreeViewModel.PasteCommand}"/>
+				<MenuItem Header="Cut" Command="{Binding ElementTreeViewModel.CutCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/cut.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Copy" Command="{Binding ElementTreeViewModel.CopyCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_copy.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Paste" Command="{Binding ElementTreeViewModel.PasteCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="View">
-				<MenuItem Header="Assign Background" Command="{Binding LoadImageCommand}"/>
+				<MenuItem Header="Assign Background" Command="{Binding LoadImageCommand}">
+					<MenuItem.Icon>
+						<Image Source="/CustomPropEditor;component/Images/BackgroundImage.png" Width="16" Height="16"/>
+					</MenuItem.Icon>
+				</MenuItem>
 				<MenuItem Header="Background Opacity">
 					<controls:SliderMenuItem x:Name="OpacitySliderMenu" ItemValue="{Binding DrawingPanelViewModel.Opacity, Mode=TwoWay}">
 						<MenuItem Header="10%" controls:SliderMenuItem.ItemValue=".1"></MenuItem>
@@ -66,7 +97,13 @@
 					</controls:SliderMenuItem>
 				</MenuItem>
 			</MenuItem>
-			<MenuItem Header="Help" />
+			<MenuItem Header="Help">
+				<MenuItem Header="View Help" Command="{Binding HelpCommand}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/help.png" Width="16" Height="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
 		</Menu>
 		<StatusBar DockPanel.Dock="Bottom">
 			<StatusBarItem>

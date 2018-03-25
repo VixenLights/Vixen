@@ -239,9 +239,9 @@
     <Resource Include="Images\buttonDrawPixel.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\buttonBulbBigger.png" />
-    <Content Include="Images\buttonBulbEqual.png" />
-    <Content Include="Images\buttonBulbSmaller.png" />
+    <Resource Include="Images\buttonBulbBigger.png" />
+    <Resource Include="Images\buttonBulbEqual.png" />
+    <Resource Include="Images\buttonBulbSmaller.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
