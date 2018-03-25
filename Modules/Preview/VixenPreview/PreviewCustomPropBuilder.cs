@@ -54,7 +54,7 @@ namespace VixenModules.Preview.VixenPreview
 				CreateElementsForChildren(rootElementNode, rootNode);
 
 				PreviewCustomProp.Layout();
-				PreviewCustomProp.MoveTo(20,20);
+				//PreviewCustomProp.MoveTo(20,20);
 				
 			});
 

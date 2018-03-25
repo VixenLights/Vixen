@@ -121,6 +121,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void Layout()
 		{
+			if (Pixels == null)
+			{
+				Pixels = PropPixels.Select(x => x.Clone()).ToList();
+			}
 			UpdateBounds();
 		}
 
@@ -266,7 +270,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				pixel.Location = new Point(x, y);
 			}
 
-			Layout();
+			UpdateBounds();
 		}
 
 		private void Scale(double scaleX, double scaleY, int centerX, int centerY)

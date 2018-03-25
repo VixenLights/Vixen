@@ -20,13 +20,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using Catel.IoC;
+using Catel.Services;
 using Vixen.Services;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Property.Location;
 using VixenModules.Property.Order;
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Element = Vixen.Sys.Element;
+using Size = System.Drawing.Size;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -317,6 +321,9 @@ namespace VixenModules.Preview.VixenPreview
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
 			PreviewItemsResizingNew += vixenpreviewControl_PreviewItemsResizingNew;
 			PreviewItemsMovedNew += vixenpreviewControl_PreviewItemsMovedNew;
+			AllowDrop = true;
+			DragEnter += VixenPreviewSetup3_DragEnter;
+			DragDrop += VixenPreviewSetup3_DragDrop;
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			_selectedDisplayItem = null;
@@ -1756,7 +1763,73 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		internal async Task AddPropToPreviewAsync(Prop p)
+		internal async Task ImportCustomProp()
+		{
+			var dependencyResolver = this.GetDependencyResolver();
+			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
+			openFileService.IsMultiSelect = false;
+			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			openFileService.Filter = "Prop Files(*.prp)|*.prp";
+			if (await openFileService.DetermineFileAsync())
+			{
+				string path = openFileService.FileNames.First();
+				await ImportCustomPropFromFile(path);
+			}
+		}
+
+		private async Task ImportCustomPropFromFile(string path)
+		{
+			await ImportCustomPropFromFile(path, new Point(20, 20));
+		}
+
+
+		private async Task ImportCustomPropFromFile(string path, Point location)
+		{
+			if (!string.IsNullOrEmpty(path))
+			{
+				Cursor = Cursors.WaitCursor;
+				Prop p = await PropModelPersistenceService.GetModelAsync(path);
+				if (p != null)
+				{
+					await AddPropToPreviewAsync(p, location);
+				}
+				else
+				{
+					//Alert user
+				}
+				Cursor = Cursors.Arrow;
+			}
+		}
+
+		private async void VixenPreviewSetup3_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+			var p = PointToClient(new Point(e.X, e.Y));
+			Point translatedPoint = new Point(p.X + hScroll.Value, p.Y + vScroll.Value);
+
+			foreach (string file in files)
+			{
+				if (file.EndsWith(".prp"))
+				{
+					await ImportCustomPropFromFile(file, translatedPoint);
+				}
+			}
+		}
+
+		private void VixenPreviewSetup3_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if (files != null && files.Any(x => x.EndsWith(".prp")))
+				{
+					e.Effect = DragDropEffects.Copy;
+				}
+			}
+		}
+
+		internal async Task AddPropToPreviewAsync(Prop p, Point location)
 		{
 			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel);
 			await builder.CreateAsync();
@@ -1764,10 +1837,18 @@ namespace VixenModules.Preview.VixenPreview
 
 			var newDisplayItem = new DisplayItem();
 			newDisplayItem.Shape = builder.PreviewCustomProp;
+			//Ensure a reasonable size.
+			if (builder.PreviewCustomProp.Bounds.Height > 100)
+			{
+				builder.PreviewCustomProp.Resize(100d / builder.PreviewCustomProp.Bounds.Height);
+			}
+			else if (builder.PreviewCustomProp.Bounds.Width > 100)
+			{
+				builder.PreviewCustomProp.Resize(100d / builder.PreviewCustomProp.Bounds.Width);
+			}
+			newDisplayItem.Shape.MoveTo(location.X, location.Y);
 			DisplayItems.Add(newDisplayItem);
 		}
-
-		
 
 		public void SeparateTemplateItems(DisplayItem displayItem)
 		{

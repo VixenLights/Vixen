@@ -92,10 +92,9 @@ namespace VixenModules.Preview.VixenPreview {
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
+		}
 
-	    }
-
-	    private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
+		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
 			previewForm = new VixenPreviewSetupDocument();
 			if (!DesignMode && previewForm != null)
 				previewForm.Preview.Data = _data;
@@ -772,31 +771,10 @@ namespace VixenModules.Preview.VixenPreview {
 
 		private async void importPropToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var dependencyResolver = this.GetDependencyResolver();
-			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
-			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
-			openFileService.Filter = "Prop Files(*.prp)|*.prp";
-			if (await openFileService.DetermineFileAsync())
-			{
-				string path = openFileService.FileNames.First();
-				if (!string.IsNullOrEmpty(path))
-				{
-					Prop p = await PropModelPersistenceService.GetModelAsync(path);
-					if (p != null)
-					{
-						Cursor = Cursors.WaitCursor;
-						await previewForm.Preview.AddPropToPreviewAsync(p);
-						Cursor = Cursors.Arrow;
-					}
-					else
-					{
-						//Alert user
-					}
-				}
-			}
-			
+			await previewForm.Preview.ImportCustomProp();
 		}
+
+	    
 	}
 
 
