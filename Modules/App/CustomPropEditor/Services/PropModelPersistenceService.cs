@@ -50,11 +50,15 @@ namespace VixenModules.App.CustomPropEditor.Services
 				p = col.FindAll().FirstOrDefault();
 
 				var fileName = "background.jpg";
-				Stream bmp = new MemoryStream();
+				
 				var file = db.FileStorage.FindById($"$/image/{fileName}");
-				file.CopyTo(bmp);
-				p.Image = BitmapSourceFromStream(bmp);
-				bmp.Close();
+				if (file != null)
+				{
+					Stream bmp = new MemoryStream();
+					file.CopyTo(bmp);
+					p.Image = BitmapSourceFromStream(bmp);
+					bmp.Close();
+				}
 			}
 
 			return p;
@@ -72,10 +76,14 @@ namespace VixenModules.App.CustomPropEditor.Services
 					p = col.FindAll().FirstOrDefault();
 
 					var fileName = "background.jpg";
-					Stream bmp = new MemoryStream();
-					db.FileStorage.Download($"$/image/{fileName}", bmp);
-					p.Image = BitmapSourceFromStream(bmp);
-					bmp.Close();
+					var file = db.FileStorage.FindById($"$/image/{fileName}");
+					if (file != null)
+					{
+						Stream bmp = new MemoryStream();
+						file.CopyTo(bmp);
+						p.Image = BitmapSourceFromStream(bmp);
+						bmp.Close();
+					}
 				}
 				return p;
 			});
