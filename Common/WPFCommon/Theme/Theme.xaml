@@ -17,16 +17,16 @@
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
         <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ToolTip}" >
-                    <StackPanel Margin="7,1" >
-                        <Border Background="{StaticResource BackColorBrush}" CornerRadius="3" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}">
-                            <ContentPresenter Margin="7" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                        </Border>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToolTip}" >
+					<StackPanel Margin="7,1" >
+						<Border Background="{StaticResource BackColorBrush}" CornerRadius="3" BorderThickness="1" BorderBrush="{StaticResource BorderColorBrush}">
+							<ContentPresenter Margin="7" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+						</Border>
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
@@ -430,11 +430,13 @@
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+		<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="MinWidth" Value="200"/>
         <Setter Property="MinHeight" Value="18"/>
         <Setter Property="AllowDrop" Value="true"/>
+	    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
         <Setter Property="utils:TextBoxExtender.SelectAllOnFocus" Value="True"/>
+		<Setter Property="CaretBrush" Value="{StaticResource ForeColorBrush}"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBoxBase}">
@@ -446,8 +448,8 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
-                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="Foreground" Value="{StaticResource DisabledForeground}"/>
+                            <Setter Property="Opacity" Value=".75"/>
                             <Setter Property="IsTabStop" Value="False"/>
                         </Trigger>
                         <Trigger Property="IsReadOnly" Value="True">
@@ -511,8 +513,9 @@
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Margin="0,0,0,0" CanHorizontallyScroll="False" CanVerticallyScroll="False"/>
-                        <ScrollBar x:Name="PART_VerticalScrollBar"
+						<ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
+						<ScrollBar x:Name="PART_VerticalScrollBar"
+                           Cursor="Arrow"
                            Grid.Column="1"
                            Grid.Row="0"
                            Margin="0,4,4,4"
@@ -523,6 +526,7 @@
                            ViewportSize="{TemplateBinding ViewportHeight}"
                            Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
                         <ScrollBar x:Name="PART_HorizontalScrollBar"
+                            Cursor="Arrow"
                             Orientation="Horizontal"
                             Grid.Column="0"
                             Grid.Row="1"

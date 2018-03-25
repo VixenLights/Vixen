@@ -72,65 +72,46 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region Vendor property
+		#region Category property
 
 		/// <summary>
-		/// Gets or sets the Vendor value.
+		/// Gets or sets the Category value.
 		/// </summary>
-		[Category("Vendor")]
+		[PropertyOrder(18)]
+		[Category("Details")]
 		[ViewModelToModel("Prop")]
-		public string Vendor
+		public string Category
 		{
-			get { return GetValue<string>(VendorProperty); }
-			set { SetValue(VendorProperty, value); }
+			get { return GetValue<string>(CategoryProperty); }
+			set { SetValue(CategoryProperty, value); }
 		}
 
 		/// <summary>
-		/// Vendor property data.
+		/// Category property data.
 		/// </summary>
-		public static readonly PropertyData VendorProperty = RegisterProperty("Vendor", typeof(string), null);
+		public static readonly PropertyData CategoryProperty = RegisterProperty("Category", typeof(string), null);
 
 		#endregion
 
-		#region VendorUrl property
+		#region SubCategory property
 
 		/// <summary>
-		/// Gets or sets the VendorUrl value.
+		/// Gets or sets the SubCategory value.
 		/// </summary>
-		[DisplayName("Vendor URL")]
-		[Category("Vendor")]
+		[DisplayName("Sub Category")]
+		[PropertyOrder(19)]
+		[Category("Details")]
 		[ViewModelToModel("Prop")]
-		public string VendorUrl
+		public string SubCategory
 		{
-			get { return GetValue<string>(VendorUrlProperty); }
-			set { SetValue(VendorUrlProperty, value); }
+			get { return GetValue<string>(SubCategoryProperty); }
+			set { SetValue(SubCategoryProperty, value); }
 		}
 
 		/// <summary>
-		/// VendorUrl property data.
+		/// SubCategory property data.
 		/// </summary>
-		public static readonly PropertyData VendorUrlProperty = RegisterProperty("VendorUrl", typeof(string), null);
-
-		#endregion
-
-		#region VendorEmail property
-
-		/// <summary>
-		/// Gets or sets the VendorEmail value.
-		/// </summary>
-		[Category("Vendor")]
-		[DisplayName("Vendor Email")]
-		[ViewModelToModel("Prop")]
-		public string VendorEmail
-		{
-			get { return GetValue<string>(VendorEmailProperty); }
-			set { SetValue(VendorEmailProperty, value); }
-		}
-
-		/// <summary>
-		/// VendorEmail property data.
-		/// </summary>
-		public static readonly PropertyData VendorEmailProperty = RegisterProperty("VendorEmail", typeof(string), null);
+		public static readonly PropertyData SubCategoryProperty = RegisterProperty("SubCategory", typeof(string), null);
 
 		#endregion
 
@@ -198,6 +179,66 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// ModifiedDate property data.
 		/// </summary>
 		public static readonly PropertyData ModifiedDateProperty = RegisterProperty("ModifiedDate", typeof(DateTime), null);
+
+		#endregion
+
+		#region VendorMetadata property
+
+		/// <summary>
+		/// Gets or sets the VendorMetadata value.
+		/// </summary>
+		[Browsable(false)]
+		[ViewModelToModel("Prop")]
+		public VendorMetadata VendorMetadata
+		{
+			get { return GetValue<VendorMetadata>(VendorMetadataProperty); }
+			set { SetValue(VendorMetadataProperty, value); }
+		}
+
+		/// <summary>
+		/// VendorMetadata property data.
+		/// </summary>
+		public static readonly PropertyData VendorMetadataProperty = RegisterProperty("VendorMetadata", typeof(VendorMetadata), null);
+
+		#endregion
+
+		#region PhysicalMetadata property
+
+		/// <summary>
+		/// Gets or sets the PhysicalMetadata value.
+		/// </summary>
+		[Browsable(false)]
+		[ViewModelToModel("Prop")]
+		public PhysicalMetadata PhysicalMetadata
+		{
+			get { return GetValue<PhysicalMetadata>(PhysicalMetadataProperty); }
+			set { SetValue(PhysicalMetadataProperty, value); }
+		}
+
+		/// <summary>
+		/// PhysicalMetadata property data.
+		/// </summary>
+		public static readonly PropertyData PhysicalMetadataProperty = RegisterProperty("PhysicalMetadata", typeof(PhysicalMetadata), null);
+
+		#endregion
+
+		#region InformationMetadata property
+
+		/// <summary>
+		/// Gets or sets the InformationMetadata value.
+		/// </summary>
+		[Browsable(false)]
+		[ViewModelToModel("Prop")]
+		public InformationMetadata InformationMetadata
+		{
+			get { return GetValue<InformationMetadata>(InformationMetadataProperty); }
+			set { SetValue(InformationMetadataProperty, value); }
+		}
+
+		/// <summary>
+		/// InformationMetadata property data.
+		/// </summary>
+		public static readonly PropertyData InformationMetadataProperty = RegisterProperty("InformationMetadata", typeof(InformationMetadata), null);
 
 		#endregion
 

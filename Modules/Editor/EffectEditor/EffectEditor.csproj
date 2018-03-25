@@ -245,7 +245,6 @@
     <Compile Include="Converters\IntToDoubleConverter.cs" />
     <Compile Include="Converters\LevelToIntConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
-    <Compile Include="Converters\AdditionConverter.cs" />
     <Compile Include="Converters\PercentageToIntConverter.cs" />
     <Compile Include="Converters\PercentageValueConverter.cs" />
     <Compile Include="Converters\LevelValueConverter.cs" />

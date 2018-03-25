@@ -9,7 +9,7 @@
 	xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-        xmlns:behaviors="clr-namespace:VixenModules.App.CustomPropEditor.Behaviors"
+        xmlns:commonUtils="clr-namespace:Common.WPFCommon.Utils;assembly=WPFCommon"
 
         Background="{StaticResource BackColorBrush}"
         Title="Custom Prop Editor" Height="700" Width="900">
@@ -21,7 +21,8 @@
 					<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 				</ResourceDictionary.MergedDictionaries>
 				<commonConverters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-			</ResourceDictionary>
+				<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
+		</ResourceDictionary>
 		</Window.Resources>
 
 		<i:Interaction.Behaviors>
@@ -94,31 +95,57 @@
 					<ColumnDefinition Width="2*"/>
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
+					<RowDefinition Height="3*"/>
 					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="1.75*"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
 				<views:ElementTree Grid.Column="0" Grid.Row="0" />
-				<Border Grid.Row="2" Grid.Column="0" BorderThickness="1" 
-				        BorderBrush="{StaticResource BorderColorBrush}"
-				        Margin="5,5,10,5">
-					<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
-												  ItemSource="{Binding}"
-												  ShowAttachedProperties="False"
-												  ShowReadOnlyProperties="True"
-												  PropertyFilterVisibility="Collapsed"
-												  Margin="5">
-						<wpfPropertyGrid:PropertyGrid.Resources>
-							<ResourceDictionary>
-								<ResourceDictionary.MergedDictionaries>
-									<wpfPropertyGrid:KaxamlTheme/>
-								</ResourceDictionary.MergedDictionaries>
-							</ResourceDictionary>
-						</wpfPropertyGrid:PropertyGrid.Resources>
-					</wpfPropertyGrid:PropertyGrid>
-				</Border>
+				
+				<TabControl Background="{StaticResource BackColorBrush}"
+				            Grid.Row="2" Grid.Column="0"
+				            Width="Auto" Margin="5,5,10,5">
+					<TabItem Header="General">
+						<wpfPropertyGrid:PropertyGrid Background="{StaticResource DisabledShadow}"
+						                              ItemSource="{Binding}"
+						                              ShowAttachedProperties="False"
+						                              ShowReadOnlyProperties="True"
+						                              PropertyFilterVisibility="Collapsed"
+						                              Margin="5">
+							<wpfPropertyGrid:PropertyGrid.Resources>
+								<ResourceDictionary>
+									<ResourceDictionary.MergedDictionaries>
+										<wpfPropertyGrid:KaxamlTheme/>
+									</ResourceDictionary.MergedDictionaries>
+								</ResourceDictionary>
+							</wpfPropertyGrid:PropertyGrid.Resources>
+						</wpfPropertyGrid:PropertyGrid>
+					</TabItem>
+					<TabItem Header="Physical">
+						<views:PhysicalMetadataView DataContext="{Binding PhysicalMetadata}"/>
+					</TabItem>
+					<TabItem Header="Vendor">
+						<views:VendorMetadataView DataContext="{Binding VendorMetadata}"/>
+					</TabItem>
+					<TabItem Header="Notes">
+						<TabPanel Name="Panel" Background="{StaticResource DisabledShadow}">
+							<TextBox Text="{Binding InformationMetadata.Notes}"
+									        Margin="5,5,0,0"
+									        TextWrapping="Wrap" 
+									        AcceptsReturn="True" 
+									        AcceptsTab="True" 
+									        SpellCheck.IsEnabled="True" 
+									        Height="{Binding Path=ActualHeight, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
+									        Width="{Binding Path=ActualWidth, ElementName=Panel, Converter={StaticResource AdditionConverter}, ConverterParameter=-10}"
+											VerticalScrollBarVisibility="Auto"
+											HorizontalScrollBarVisibility="Disabled"/>
+
+						</TabPanel>
+					</TabItem>
+				</TabControl>
+					
+				<!--</Border>-->
 
 				<DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="3">
 					<ToolBarTray DockPanel.Dock="Top" Background="{StaticResource BackColorBrush}">

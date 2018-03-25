@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace VixenModules.Editor.EffectEditor.Converters
+namespace Common.WPFCommon.Converters
 {
 	public class AdditionConverter : MarkupExtension, IValueConverter
 	{

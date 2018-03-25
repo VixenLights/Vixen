@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:VixenModules.Editor.EffectEditor.Converters">
+                    xmlns:converters="clr-namespace:VixenModules.Editor.EffectEditor.Converters"
+                    xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
 	<converters:NullValueConverter x:Key="NullValueConverter" />
 	<converters:EnumValueConverter x:Key="EnumValueConverter" />
 	<converters:MultiBooleanToVisibilityConverter x:Key="MultiBooleanToVisibilityConverter" />
@@ -20,7 +21,7 @@
 	<converters:ColorGradientToImageConverter x:Key="ColorGradientToImageConverter" />
 	<converters:DebugConverter x:Key="DebugConverter" />
     <converters:WidthToVisibilityConverter x:Key="WidthToVisibilityConverter"/>
-    <converters:AdditionConverter x:Key="AdditionConverter"/>
+	<commonConverters:AdditionConverter x:Key="AdditionConverter"/>
     <converters:ToolTipVisibilityConverter x:Key="ToolTipVisibilityConverter"/>
     <converters:ColorGradientIsLibraryToVisibilityConverter x:Key="ColorGradientIsLibraryToVisibilityConverter"/>
     <converters:CurveIsLibraryToVisibilityConverter x:Key="CurveIsLibraryToVisibilityConverter"/>

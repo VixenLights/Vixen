@@ -15,13 +15,11 @@ namespace VixenModules.App.CustomPropEditor.Model
         private double _height;
         private double _width;
         private double _opacity;
-	    private string _vendor;
-	    private string _vendorUrl;
 	    private DateTime _creationDate;
 	    private DateTime _modifiedDate;
-	    private string _vendorEmail;
-	    private string _vendorPhone;
 	    private string _createdBy;
+	    private string _category;
+	    private string _subCategory;
 
 	    public Prop(string name) : this()
         {
@@ -36,6 +34,10 @@ namespace VixenModules.App.CustomPropEditor.Model
             Opacity = 1;
             Name = "New Prop";
 			CreationDate = DateTime.Now;
+	        ModifiedDate = CreationDate;
+			VendorMetadata = new VendorMetadata();
+			PhysicalMetadata = new PhysicalMetadata();
+			InformationMetadata = new InformationMetadata();
         }
 
 	    public Guid Id { get; private set; }
@@ -62,53 +64,27 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-		#region Vendor Info
-
-		public string Vendor
+		public string Category
 	    {
-		    get { return _vendor; }
+		    get { return _category; }
 		    set
 		    {
-			    if (value == _vendor) return;
-			    _vendor = value;
-			    OnPropertyChanged(nameof(Vendor));
+			    if (value == _category) return;
+			    _category = value;
+			    OnPropertyChanged(nameof(Category));
 		    }
 	    }
 
-	    public string VendorUrl
+	    public string SubCategory
 	    {
-		    get { return _vendorUrl; }
+		    get { return _subCategory; }
 		    set
 		    {
-			    if (value == _vendorUrl) return;
-			    _vendorUrl = value;
-			    OnPropertyChanged(nameof(VendorUrl));
+			    if (value == _subCategory) return;
+			    _subCategory = value;
+			    OnPropertyChanged(nameof(SubCategory));
 		    }
 	    }
-
-	    public string VendorEmail
-	    {
-		    get { return _vendorEmail; }
-		    set
-		    {
-			    if (value == _vendorEmail) return;
-			    _vendorEmail = value;
-			    OnPropertyChanged(nameof(VendorEmail));
-		    }
-	    }
-
-	    public string VendorPhone
-	    {
-		    get { return _vendorPhone; }
-		    set
-		    {
-			    if (value == _vendorPhone) return;
-			    _vendorPhone = value;
-			    OnPropertyChanged(nameof(VendorPhone));
-		    }
-	    }
-
-	    #endregion
 
 	    public string CreatedBy
 	    {
@@ -142,6 +118,12 @@ namespace VixenModules.App.CustomPropEditor.Model
 			    OnPropertyChanged(nameof(ModifiedDate));
 		    }
 	    }
+
+	    public VendorMetadata VendorMetadata { get; set; }
+
+	    public PhysicalMetadata PhysicalMetadata { get; set; }
+
+	    public InformationMetadata InformationMetadata { get; set; }
 
 	    [BsonIgnore]
         public BitmapSource Image
