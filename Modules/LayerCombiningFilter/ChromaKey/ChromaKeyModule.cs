@@ -12,40 +12,20 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 	{
 		private ChromaKeyData _data;
 
+		public override bool RequiresMixingPartner
+		{
+			get { return true; }
+		}
+
 		public override DiscreteValue CombineDiscreteIntensity(DiscreteValue highLayerValue, DiscreteValue lowLayerValue)
 		{
-			//should we actually do anything on discrete intents anyway??
-			if ( !(lowLayerValue.Intensity >= _data.LowerLimit && lowLayerValue.Intensity <= _data.UpperLimit) )
-			{
-				return lowLayerValue;
-			}
-			var lowLayerSaturation = Math.Round(HSV.FromRGB(lowLayerValue.Color).S, 2);
-			if (!(lowLayerSaturation <= _data.KeySaturation + _data.SaturationTolerance
-			      && lowLayerSaturation >= _data.KeySaturation - _data.SaturationTolerance))
-			{ return lowLayerValue; } //saturation check failed - abort
-			
-			//Hue Matching
-			var lowLayerHue = lowLayerValue.Color.GetHue();
-
-			if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
-			    && lowLayerHue + _data.HueTolerance < 360 //no high overflow
-			    && lowLayerHue >= _data.KeyHue - _data.HueTolerance
-			    && lowLayerHue <= _data.KeyHue + _data.HueTolerance)
-			{ return highLayerValue; }
-			if (_data.KeyHue - _data.HueTolerance <= 0 //low end key overflow
-			    && (lowLayerHue >= _data.KeyHue - _data.HueTolerance + 360
-			        || lowLayerHue <= _data.KeyHue + _data.HueTolerance) )
-			{ return highLayerValue; }
-			if (_data.KeyHue + _data.HueTolerance >= 360 //high end key overflow
-			    && lowLayerHue >= _data.KeyHue - _data.HueTolerance
-			    && lowLayerHue <= _data.KeyHue + _data.HueTolerance - 360) 
-			{ return highLayerValue; }
-			return lowLayerValue;  //hue check failed - return low layer color
+			//This kind of mixing filter doesn't make sense for Discrete Intents
+			return lowLayerValue;
 		}
 
 		public override Color CombineFullColor(Color highLayerColor, Color lowLayerColor)
 		{
-			//brightness matching conditions.  Checks first because it's easy math.
+			//Brightness Matching.  Checks first because it's easy math.
 			var lowLayerV = Math.Round(HSV.VFromRgb(lowLayerColor), 2);
 			if ( !(lowLayerV >= _data.LowerLimit && lowLayerV <= _data.UpperLimit) )
 			{ return lowLayerColor; }			
@@ -58,7 +38,6 @@ namespace VixenModules.LayerMixingFilter.ChromaKey
 
             //Hue Matching
 		    var lowLayerHue = lowLayerColor.GetHue();
-
             if (lowLayerHue - _data.HueTolerance > 0 //no low overflow
 		        && lowLayerHue + _data.HueTolerance < 360 //no high overflow
 		        && lowLayerHue >= _data.KeyHue - _data.HueTolerance
