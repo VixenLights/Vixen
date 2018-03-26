@@ -14,7 +14,6 @@ namespace VixenModules.App.CustomPropEditor.Services
 			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
-				col.EnsureIndex(x => x.Name);
 				col.Insert(prop);
 				var fileName = "background.png";
 				db.FileStorage.Upload($"$/image/{fileName}", fileName, StreamFromBitmapSource(prop.Image));
@@ -28,9 +27,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
-				col.EnsureIndex(x => x.Name);
 				col.Update(prop);
-
 				var fileName = "background.jpg";
 				db.FileStorage.Upload($"$/image/{fileName}", fileName, StreamFromBitmapSource(prop.Image));
 

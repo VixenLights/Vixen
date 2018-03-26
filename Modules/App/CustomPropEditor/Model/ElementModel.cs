@@ -71,7 +71,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 			set
 			{
 				if (value == _name) return;
-				_name = PropModelServices.Instance().Uniquify(value); ;
+				_name = value;
 				OnPropertyChanged(nameof(Name));
 			}
 		}

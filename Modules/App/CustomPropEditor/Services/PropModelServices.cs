@@ -61,6 +61,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		public Prop LoadProp(string path)
 		{
+			_models.Clear();
 			var p = PropModelPersistenceService.GetModel(path);
 			if (p != null)
 			{

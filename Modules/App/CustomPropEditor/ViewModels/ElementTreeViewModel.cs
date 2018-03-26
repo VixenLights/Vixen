@@ -270,7 +270,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.ElementModel.Name);
 				if (result.Result == MessageResult.OK)
 				{
-					SelectedItems.First().ElementModel.Name = result.Response;
+					SelectedItems.First().ElementModel.Name = PropModelServices.Instance().Uniquify(result.Response);
 				}
 			}
 			else

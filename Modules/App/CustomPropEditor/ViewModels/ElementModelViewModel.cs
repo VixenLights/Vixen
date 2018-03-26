@@ -218,6 +218,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void DoneEditing()
 		{
+			if (PropModelServices.Instance().IsNameDuplicated(ElementModel.Name))
+			{
+				ElementModel.Name = PropModelServices.Instance().Uniquify(ElementModel.Name);
+			}
 			IsEditing = false;
 		}
 
