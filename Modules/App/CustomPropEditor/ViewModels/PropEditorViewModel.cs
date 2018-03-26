@@ -182,6 +182,27 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region ReplacementToken property
+
+		/// <summary>
+		/// Gets or sets the ReplacementToken value.
+		/// </summary>
+		[DisplayName("Replacement Token")]
+		[PropertyOrder(17)]
+		[ViewModelToModel("Prop")]
+		public string ReplacementToken
+		{
+			get { return GetValue<string>(ReplacementTokenProperty); }
+			set { SetValue(ReplacementTokenProperty, value); }
+		}
+
+		/// <summary>
+		/// ReplacementToken property data.
+		/// </summary>
+		public static readonly PropertyData ReplacementTokenProperty = RegisterProperty("ReplacementToken", typeof(string), null);
+
+		#endregion
+
 		#region VendorMetadata property
 
 		/// <summary>

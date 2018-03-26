@@ -1788,6 +1788,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (!string.IsNullOrEmpty(path))
 			{
 				Cursor = Cursors.WaitCursor;
+				
 				Prop p = await PropModelPersistenceService.GetModelAsync(path);
 				if (p != null)
 				{

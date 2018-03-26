@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Catel.Services;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
+using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Order;
@@ -20,6 +21,7 @@ namespace VixenModules.Preview.VixenPreview
 		private Dictionary<Guid, ElementNode> _elementModelMap;
 		private HashSet<string> _elementNames;
 		private List<ElementNode> _leafNodes = new List<ElementNode>();
+		private string _nameTokenValue = String.Empty;
 
 		public PreviewCustomPropBuilder(Prop prop, double zoomLevel)
 		{
@@ -35,6 +37,17 @@ namespace VixenModules.Preview.VixenPreview
 
 		public async Task CreateAsync()
 		{
+
+			if (_prop.SupportsToken)
+			{
+				MessageBoxService mbs = new MessageBoxService();
+				var response = mbs.GetUserInput("Enter name token replacement value.", "Prop naming", "1");
+				if (response.Result == MessageResult.OK)
+				{
+					_nameTokenValue = response.Response;
+				}
+			}
+
 			Task t = Task.Factory.StartNew(() =>
 			{
 				_elementModelMap = new Dictionary<Guid, ElementNode>();
@@ -43,13 +56,8 @@ namespace VixenModules.Preview.VixenPreview
 
 				var rootNode = _prop.RootNode;
 
-				ElementNode rootElementNode = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(_elementNames, rootNode.Name), true, false);
-				var order = rootElementNode.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
-				if (order != null)
-				{
-					order.Order = rootNode.Order;
-				}
-
+				ElementNode rootElementNode = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(_elementNames, TokenizeName(rootNode.Name)), true, false);
+				
 				_elementNames.Add(rootElementNode.Name);
 
 				_elementModelMap.Add(rootNode.Id, rootElementNode);
@@ -62,7 +70,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					case ColorMode.FullColor:
 						helper.SetColorType(ElementColorType.FullColor);
-						helper.SilentMode = false;
+						helper.SilentMode = true;
 						break;
 					case ColorMode.Multiple:
 						helper.SetColorType(ElementColorType.MultipleDiscreteColors);
@@ -82,6 +90,16 @@ namespace VixenModules.Preview.VixenPreview
 
 		}
 
+		private string TokenizeName(string name)
+		{
+			if (_prop.SupportsToken)
+			{
+				return name.Replace(_prop.ReplacementToken, _nameTokenValue);
+			}
+
+			return name;
+		}
+
 		private void CreateElementsForChildren(ElementNode parentNode, ElementModel model)
 		{
 			foreach (var elementModel in model.Children)
@@ -98,7 +116,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				//We have not created our element yet
 				node = ElementNodeService.Instance.CreateSingle(parentNode,
-					NamingUtilities.Uniquify(_elementNames, elementModel.Name));
+					NamingUtilities.Uniquify(_elementNames, TokenizeName(elementModel.Name)));
 				_elementModelMap.Add(elementModel.Id, node);
 				_elementNames.Add(node.Name);
 				if (elementModel.IsLightNode)
@@ -111,17 +129,6 @@ namespace VixenModules.Preview.VixenPreview
 
 					_leafNodes.Add(node);
 
-					////Check to see if we are a full color prop and if so add the color property for it
-					//if (_prop.PhysicalMetadata.ColorMode == ColorMode.FullColor)
-					//{
-					//	var colorProperty = node.Properties.Add(ColorDescriptor.ModuleId) as ColorModule;
-					//	if (colorProperty != null)
-					//	{
-					//		colorProperty.ColorType = ElementColorType.FullColor;
-					//		colorProperty.SingleColor = Color.Empty;
-					//		colorProperty.ColorSetName = null;
-					//	}
-					//}
 					PreviewCustomProp.AddLightNodes(elementModel, node);
 				}
 			}

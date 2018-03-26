@@ -20,6 +20,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private string _createdBy;
 	    private string _category;
 	    private string _subCategory;
+	    private string _replacementToken;
 
 	    public Prop(string name) : this()
         {
@@ -116,6 +117,20 @@ namespace VixenModules.App.CustomPropEditor.Model
 			    if (value.Equals(_modifiedDate)) return;
 			    _modifiedDate = value;
 			    OnPropertyChanged(nameof(ModifiedDate));
+		    }
+	    }
+
+	    public bool SupportsToken => !string.IsNullOrEmpty(ReplacementToken);
+
+	    public string ReplacementToken
+	    {
+		    get { return _replacementToken; }
+		    set
+		    {
+			    if (value == _replacementToken) return;
+			    _replacementToken = value;
+			    OnPropertyChanged(nameof(ReplacementToken));
+			    OnPropertyChanged(nameof(SupportsToken));
 		    }
 	    }
 
