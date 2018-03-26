@@ -9,15 +9,23 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
+using Common.Controls.NameGeneration;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
+using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using Clipboard = System.Windows.Clipboard;
 using DataFormats = System.Windows.Forms.DataFormats;
+using DataObject = System.Windows.DataObject;
+using DragDropEffects = System.Windows.DragDropEffects;
+using IDataObject = System.Windows.IDataObject;
+using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
@@ -265,6 +273,37 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					SelectedItems.First().ElementModel.Name = result.Response;
 				}
 			}
+			else
+			{
+				PatternRenameSelectedItems();
+			}
+		}
+
+		public bool PatternRenameSelectedItems()
+		{
+			if (SelectedItems.Count <=1)
+				return false;
+
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
+			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
+			if (renamer.ShowDialog() == DialogResult.OK)
+			{
+				for (int i = 0; i < SelectedItems.Count; i++)
+				{
+					if (i >= renamer.Names.Count)
+					{
+						Logging.Warn("Bulk renaming elements, and ran out of new names!");
+						break;
+					}
+
+
+					SelectedItems[i].ElementModel.Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+				}
+				
+				return true;
+			}
+
+			return false;
 		}
 
 		#endregion
