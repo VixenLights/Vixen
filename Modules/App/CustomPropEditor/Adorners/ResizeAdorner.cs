@@ -136,7 +136,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
-			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
@@ -157,7 +157,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
-			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
@@ -179,7 +179,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
-			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
@@ -200,7 +200,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			scaleY += 1;
 			scaleX += 1;
 
-			if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 			{
 				scaleX = scaleY = Math.Max(scaleX, scaleY);
 			}
