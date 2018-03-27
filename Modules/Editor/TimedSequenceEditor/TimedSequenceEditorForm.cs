@@ -12,10 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
-using Common.Controls.ControlsEx.ValueControls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
@@ -40,7 +38,6 @@ using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 using Vixen.Sys.State;
-using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
 using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
@@ -52,7 +49,6 @@ using VixenModules.Property.Color;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
-
 	public partial class TimedSequenceEditorForm : BaseForm, IEditorUserInterface, ITiming
 	{
 
@@ -2243,6 +2239,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Element element = e.ElementsUnderCursor.FirstOrDefault();
 			TimedSequenceElement tse = element as TimedSequenceElement;
 
+//move to ContextMenu file?
 			//Effect Alignment Menu
 			ToolStripMenuItem contextMenuItemAlignment = new ToolStripMenuItem("Alignment")
 			{
@@ -2683,124 +2680,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddContextCollectionsMenu()
-		{
-			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections") { Image = Resources.collection };
-
-			if ((TimelineControl.SelectedElements.Count() > 1 
-				|| TimelineControl.SelectedElements.Count() == 1 && SupportsColorLists(TimelineControl.SelectedElements.FirstOrDefault())) 
-				&& _colorCollections.Any())
-			{
-				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors") { Image = Resources.colors };
-				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random") {Image = Resources.randomColors };
-				ToolStripMenuItem contextMenuItemSequentialColors = new ToolStripMenuItem("Sequential") { Image = Resources.sequentialColors };
-
-				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorCollections);
-				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemRandomColors);
-				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemSequentialColors);
-
-				foreach (ColorCollection collection in _colorCollections)
-				{
-					if (collection.Color.Any())
-					{
-						ToolStripMenuItem contextMenuItemRandomColorItem = new ToolStripMenuItem(collection.Name);
-						contextMenuItemRandomColorItem.ToolTipText = collection.Description;
-						contextMenuItemRandomColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, true);
-						contextMenuItemRandomColors.DropDown.Items.Add(contextMenuItemRandomColorItem);
-
-						ToolStripMenuItem contextMenuItemSequentialColorItem = new ToolStripMenuItem(collection.Name);
-						contextMenuItemSequentialColorItem.ToolTipText = collection.Description;
-						contextMenuItemSequentialColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, false);
-						contextMenuItemSequentialColors.DropDown.Items.Add(contextMenuItemSequentialColorItem);	
-					}
-				}
-
-				if (contextMenuItemCollections.DropDownItems.Count > 0)
-				{
-					_contextMenuStrip.Items.Add("-");
-					_contextMenuStrip.Items.Add(contextMenuItemCollections);
-				}
-			}
-		}
-
-		private void toolStripButton_DrawMode_Click(object sender, EventArgs e)
-		{
-			TimelineControl.grid.EnableDrawMode = true;
-			toolStripButton_DrawMode.Checked = true;
-			toolStripButton_SelectionMode.Checked = false;
-		}
-
-		private void toolStripButton_SelectionMode_Click(object sender, EventArgs e)
-		{
-			TimelineControl.grid.EnableDrawMode = false;
-			toolStripButton_SelectionMode.Checked = true;
-			toolStripButton_DrawMode.Checked = false;
-		}
-
-		private void toolStripMenuItem_ResizeIndicator_CheckStateChanged(object sender, EventArgs e)
-		{
-			TimelineControl.grid.ResizeIndicator_Enabled = toolStripMenuItem_ResizeIndicator.Checked;
-		}
-
-
-		private void CheckRiColorMenuItem(string color)
-		{
-			TimelineControl.grid.ResizeIndicator_Color = color;
-			toolStripMenuItem_RIColor_Blue.Checked = color == "Blue";
-			toolStripMenuItem_RIColor_Yellow.Checked = color == "Yellow";
-			toolStripMenuItem_RIColor_Green.Checked = color == "Green";
-			toolStripMenuItem_RIColor_White.Checked = color == "White";
-			toolStripMenuItem_RIColor_Red.Checked = color == "Red";
-		}
-		private void toolStripMenuItem_RIColor_Blue_Click(object sender, EventArgs e)
-		{
-			CheckRiColorMenuItem("Blue");
-			toolStripMenuItem_ResizeIndicator.Checked = true;
-		}
-
-		private void toolStripMenuItem_RIColor_Yellow_Click(object sender, EventArgs e)
-		{
-			CheckRiColorMenuItem("Yellow");
-			toolStripMenuItem_ResizeIndicator.Checked = true;
-		}
-
-		private void toolStripMenuItem_RIColor_Green_Click(object sender, EventArgs e)
-		{
-			CheckRiColorMenuItem("Green");
-			toolStripMenuItem_ResizeIndicator.Checked = true;
-		}
-
-		private void toolStripMenuItem_RIColor_White_Click(object sender, EventArgs e)
-		{
-			CheckRiColorMenuItem("White");
-			toolStripMenuItem_ResizeIndicator.Checked = true;
-		}
-
-		private void toolStripMenuItem_RIColor_Red_Click(object sender, EventArgs e)
-		{
-			CheckRiColorMenuItem("Red");
-			toolStripMenuItem_ResizeIndicator.Checked = true;
-		}
-
-		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
-		{
-			TimelineControl.grid.DragBoxFilterEnabled = toolStripButton_DragBoxFilter.Checked;
-		}
-
-		private void ColorCollectionsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ColorCollectionLibrary_Form rccf = new ColorCollectionLibrary_Form(new List<ColorCollection>(_colorCollections));
-			if (rccf.ShowDialog() == DialogResult.OK)
-			{
-				_colorCollections = rccf.ColorCollections;
-				SaveColorCollections();
-			}
-			else
-			{
-				LoadColorCollections();
-			}
-		}
-
 		private void AddMultipleEffects(TimeSpan startTime, String effectName, Guid effectId, Row row)
 		{
 			var eDialog = new Form_AddMultipleEffects();
@@ -2867,6 +2746,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
+		
 		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
 		{
 			bool skipThisBeat = false;
@@ -3544,11 +3424,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//This is for the delayed play options
 			if (delayOffToolStripMenuItem.Checked == false)
 			{
-				//MessageBox.Show("SHOWING STATUS BAR");
 				toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
 				toolStripStatusLabel_delayPlay.Text = string.Format("{0} Seconds", timerPostponePlay.Interval / 1000);
 			}
-
 			timerPlaying.Stop();
 			TimingSource = null;
 		}
@@ -3556,7 +3434,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		protected void context_ContextEnded(object sender, EventArgs e)
 		{
 			UpdateButtonStates();
-
 			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart;
 			TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
@@ -4720,190 +4597,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public bool IgnoreKeyDownEvents { get; set; }
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			switch (keyData)
-			{
-				case Keys.Left:
-					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.StandardNudgeTime);
-					break;
-				case (Keys.Left | Keys.Shift):
-					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.SuperNudgeTime);
-					break;
-				case Keys.Right:
-					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.StandardNudgeTime);
-					break;
-				case (Keys.Right | Keys.Shift):
-					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.SuperNudgeTime);
-					break;
-				//case Keys.Escape:
-					//EffectsForm.DeselectAllNodes();
-					//toolStripButton_DrawMode.Checked = false;
-					//toolStripButton_SelectionMode.Checked = true;
-					//break;
-			}
-			return base.ProcessCmdKey(ref msg, keyData);
-		}
-
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			if (IgnoreKeyDownEvents) return;
-
-			Element element;
-			// do anything special we want to here: keyboard shortcuts that are in
-			// the menu will be handled by them instead.
-			switch (e.KeyCode)
-			{
-				//case Keys.Delete:
-				//	TimelineControl.ruler.DeleteSelectedMarks();
-				//	break;
-				case Keys.Home:
-					if (e.Control)
-						TimelineControl.VisibleTimeStart = TimeSpan.Zero;
-					else
-						TimelineControl.VerticalOffset = 0;
-					break;
-
-				case Keys.End:
-					if (e.Control)
-						TimelineControl.VisibleTimeStart = TimelineControl.TotalTime - TimelineControl.VisibleTimeSpan;
-					else
-						TimelineControl.VerticalOffset = int.MaxValue; // a bit iffy, but we know that the grid caps it to what's visible
-					break;
-
-				case Keys.PageUp:
-					if (e.Control)
-						TimelineControl.VisibleTimeStart -= TimelineControl.VisibleTimeSpan.Scale(0.5);
-					else
-						TimelineControl.VerticalOffset -= (TimelineControl.VisibleHeight / 2);
-					break;
-
-				case Keys.PageDown:
-					if (e.Control)
-						TimelineControl.VisibleTimeStart += TimelineControl.VisibleTimeSpan.Scale(0.5);
-					else
-						TimelineControl.VerticalOffset += (TimelineControl.VisibleHeight / 2);
-					break;
-
-				case Keys.Space:
-					if (e.Shift)
-					{
-						if (TimingSource != null) AddMarkAtTime(TimingSource.Position, false);
-					}
-					else
-					{
-						HandleSpacebarAction(e.Control);
-					}
-					break;
-
-				case Keys.Left:
-					if (e.Control)
-					{
-						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(-2));
-					}
-					
-					break;
-
-				case Keys.Right:
-					if (e.Control)
-					{
-						TimelineControl.MoveSelectedElementsByTime(TimelineControl.TimePerPixel.Scale(2));
-					}
-					
-					break;
-				
-				case Keys.S:
-					if (e.Shift & e.Control)
-					{
-						AlignEffectsToNearestMarks("Start");
-						break;
-					}
-					element = TimelineControl.grid.ElementAtPosition(MousePosition);
-					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
-					{
-						TimelineControl.grid.AlignElementStartTimes(TimelineControl.SelectedElements, element, e.Shift);
-					}
-					break;
-				case Keys.E:
-
-					if (e.Shift & e.Control)
-					{
-						AlignEffectsToNearestMarks("End");
-						break;
-					}
-					element = TimelineControl.grid.ElementAtPosition(MousePosition);
-					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
-					{
-						TimelineControl.grid.AlignElementEndTimes(TimelineControl.SelectedElements, element, e.Shift);
-					}
-					break;
-					
-				case Keys.B:
-					if (e.Shift & e.Control)
-					{
-						AlignEffectsToNearestMarks("Both");
-						break;
-					}
-					element = TimelineControl.grid.ElementAtPosition(MousePosition);
-					if (element != null && TimelineControl.SelectedElements.Count() > 1 && TimelineControl.SelectedElements.Contains(element))
-					{
-						TimelineControl.grid.AlignElementStartEndTimes(TimelineControl.SelectedElements, element);
-					}
-					
-					break;
-
-				case Keys.Escape:
-					if (TimelineControl.grid._beginEffectDraw) //If we are drawing, prevent escape
-						return;
-					EffectsForm.DeselectAllNodes();
-					TimelineControl.grid.EnableDrawMode = false;
-					toolStripButton_DrawMode.Checked = false;
-					toolStripButton_SelectionMode.Checked = true;
-					break;
-
-				case Keys.OemMinus:
-					if (e.Control && e.Shift)
-						TimelineControl.ZoomRows(.8);
-					else if (e.Control)
-						TimelineControl.Zoom(1.25);
-					break;
-
-				case Keys.Oemplus:
-					if (e.Control && e.Shift)
-						TimelineControl.ZoomRows(1.25);
-					else if (e.Control)
-						TimelineControl.Zoom(.8);
-					break;
-				case Keys.T:
-					TimelineControl.grid.ToggleSelectedRows(e.Control);
-					break;
-			}
-			// Prevents sending keystrokes to child controls. 
-			// This was causing serious slowdowns if random keys were pressed.
-			//e.SuppressKeyPress = true;
-			base.OnKeyDown(e);
-		}
-
-		internal void HandleSpacebarAction(bool pause)
-		{
-			if (!_context.IsRunning)
-				PlaySequence();
-			else
-			{
-				if (_context.IsPaused)
-					PlaySequence();
-				else
-					if (pause)
-					{
-						PauseSequence();
-					}
-					else
-					{
-						StopSequence();
-					}
-			}
-		}
-
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
 			DeleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
@@ -5069,415 +4762,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(act);
 
 			return result;
-		}
-
-		#endregion
-
-		#region Menu Bar
-
-		#region Sequence Menu
-
-		private void toolStripMenuItem_Save_Click(object sender, EventArgs e)
-		{
-			SaveSequence();
-		}
-
-		private void toolStripMenuItem_AutoSave_Click(object sender, EventArgs e)
-		{
-			SetAutoSave();
-		}
-
-		private void toolStripMenuItem_SaveAs_Click(object sender, EventArgs e)
-		{
-			SaveSequence(null, true);
-		}
-
-		private void toolStripMenuItem_Close_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void playToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PlaySequence();
-		}
-
-		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			PauseSequence();
-		}
-
-		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			StopSequence();
-		}
-
-		private void toolStripMenuItem_Loop_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripButton_Loop.Checked = toolStripMenuItem_Loop.Checked;
-			if (toolStripButton_Loop.Checked && delayOffToolStripMenuItem.Checked != true)
-			{
-				//No way, we're not doing both! Turn off the delay.
-				foreach (ToolStripMenuItem item in playOptionsToolStripMenuItem.DropDownItems)
-				{
-					item.Checked = false;
-				}
-				delayOffToolStripMenuItem.Checked = true;
-				toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = false;
-			}
-		}
-
-		private void delayOffToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 100;
-			ClearDelayPlayItemChecks();
-			delayOffToolStripMenuItem.Checked = true;
-			toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = false;
-			toolStripButton_Play.ToolTipText = @"Play F5";
-		}
-
-		private void delay5SecondsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 5000;
-			ClearDelayPlayItemChecks();
-			delay5SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = @"5 Seconds";
-		}
-
-		private void delay10SecondsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 10000;
-			ClearDelayPlayItemChecks();
-			delay10SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = @"10 Seconds";
-		}
-
-		private void delay20SecondsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 20000;
-			ClearDelayPlayItemChecks();
-			delay20SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = @"20 Seconds";
-		}
-
-		private void delay30SecondsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 30000;
-			ClearDelayPlayItemChecks();
-			delay30SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = @"30 Seconds";
-		}
-
-		private void delay60SecondsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			timerPostponePlay.Interval = 60000;
-			ClearDelayPlayItemChecks();
-			delay60SecondsToolStripMenuItem.Checked = toolStripStatusLabel3.Visible = toolStripStatusLabel_delayPlay.Visible = true;
-			toolStripStatusLabel_delayPlay.Text = @"60 Seconds";
-		}
-
-		#endregion
-
-		#region Edit Menu
-
-		private void toolStripMenuItem_Cut_Click(object sender, EventArgs e)
-		{
-			ClipboardCut();
-		}
-
-		private void toolStripMenuItem_Copy_Click(object sender, EventArgs e)
-		{
-			ClipboardCopy();
-		}
-
-		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
-		{
-			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : TimelineControl.CursorPosition);
-		}
-
-		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (_undoMgr.NumUndoable > 0)
-			{
-				_undoMgr.Undo();	
-			}
-		}
-
-		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (_undoMgr.NumRedoable > 0)
-			{
-				_undoMgr.Redo();
-			}
-		}
-
-		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
-		{
-			TimelineControl.ruler.DeleteSelectedMarks();
-			RemoveSelectedElements();
-		}
-
-		private void selectAllElementsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TimelineControl.SelectAllElements();
-		}
-
-		private void toolStripMenuItem_EditEffect_Click(object sender, EventArgs e)
-		{
-			if (TimelineControl.SelectedElements.Any())
-			{
-				EditElements(TimelineControl.SelectedElements.Cast<TimedSequenceElement>());
-			}
-		}
-
-		private void toolStripMenuItem_SnapTo_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripButton_SnapTo.Checked = toolStripMenuItem_SnapTo.Checked;
-			TimelineControl.grid.EnableSnapTo = toolStripMenuItem_SnapTo.Checked;
-		}
-
-		// this seems to break the keyboard shortcuts; the key shortcuts don't get enabled again
-		// until the menu is dropped down, which is annoying. These really should be enabled/disabled
-		// on select of elements, but that's too annoying for now...
-		//private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		//{
-		//    toolStripMenuItem_EditEffect.Enabled = TimelineControl.SelectedElements.Any() ;
-		//    toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any() ;
-		//    toolStripMenuItem_Copy.Enabled = TimelineControl.SelectedElements.Any() ;
-		//    toolStripMenuItem_Paste.Enabled = _clipboard != null;		//TODO: fix this when clipboard fixed
-		//}
-
-		#endregion
-
-		#region View Menu
-
-		private void toolStripMenuItem_zoomTimeIn_Click(object sender, EventArgs e)
-		{
-			TimelineControl.Zoom(0.8);
-		}
-
-		private void toolStripMenuItem_zoomTimeOut_Click(object sender, EventArgs e)
-		{
-			TimelineControl.Zoom(1.25);
-		}
-
-		private void toolStripMenuItem_zoomRowsIn_Click(object sender, EventArgs e)
-		{
-			TimelineControl.ZoomRows(1.25);
-		}
-
-		private void toolStripMenuItem_zoomRowsOut_Click(object sender, EventArgs e)
-		{
-			TimelineControl.ZoomRows(0.8);
-		}
-
-		#endregion
-
-		#region Tools Menu
-
-		private void toolStripMenuItem_removeAudio_Click(object sender, EventArgs e)
-		{
-			RemoveAudioAssociation();
-		}
-
-		private void toolStripMenuItem_associateAudio_Click(object sender, EventArgs e)
-		{
-			AddAudioAssociation();
-		}
-
-		private void toolStripMenuItem_MarkManager_Click(object sender, EventArgs e)
-		{
-			ShowMarkManager();
-		}
-
-		private void modifySequenceLengthToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			string oldLength = _sequence.Length.ToString("m\\:ss\\.fff");
-			TextDialog prompt = new TextDialog("Enter new sequence length:", "Sequence Length",
-																			   oldLength, true);
-
-			do
-			{
-				if (prompt.ShowDialog() != DialogResult.OK)
-					break;
-
-				TimeSpan time;
-				bool success = TimeSpan.TryParseExact(prompt.Response, TimeFormats.PositiveFormats, null, out time);
-				if (success)
-				{
-					SequenceLength = time;
-					SequenceModified();
-					break;
-				}
-
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm("Error parsing time: please use the format '<minutes>:<seconds>.<milliseconds>'",
-					@"Error parsing time", false, false);
-				messageBox.ShowDialog();
-			} while (true);
-		}
-
-		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(GridForm, DockState.Document);
-			}
-			
-		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(EffectEditorForm, DockState.DockRight);
-			}
-
-		private void effectWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(EffectsForm, DockState.DockLeft);
-			}
-
-		private void markWindowToolStripMenuItem_Click(object sender, EventArgs e)
-			{
-			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockRight);
-			}
-
-		private void toolWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockRight);
-			}
-
-		private void mixingFilterEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
-			{
-			HandleDockContentToolStripMenuClick(LayerEditor, DockState.DockLeft);
-			}
-
-		private void toolStripMenuItemFindEffects_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(FindEffects, DockState.DockLeft);
-		}
-
-		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)
-		{
-			if (dockWindow.IsHidden || dockWindow.DockState == DockState.Unknown)
-			{
-				dockWindow.Show(dockPanel, state);
-			}
-			else
-			{
-				dockWindow.Close();
-			}
-		}
-
-		#endregion
-
-		#endregion
-
-		#region Toolbar buttons
-
-		private void toolStripButton_Start_Click(object sender, EventArgs e)
-		{
-			//TODO: JEMA - Check to see if this is functioning properly.
-			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart = TimeSpan.Zero;
-			TimelineControl.VisibleTimeStart = TimeSpan.Zero;
-		}
-
-		private void toolStripButton_Play_Click(object sender, EventArgs e)
-		{
-			PlaySequence();
-		}
-
-		private void toolStripButton_Stop_Click(object sender, EventArgs e)
-		{
-			StopSequence();
-		}
-
-		private void toolStripButton_Pause_Click(object sender, EventArgs e)
-		{
-			PauseSequence();
-		}
-
-		private void toolStripButton_End_Click(object sender, EventArgs e)
-		{
-			//TODO: JEMA - Check to see if this is functioning properly.
-			TimelineControl.PlaybackStartTime = _mPrevPlaybackEnd = _sequence.Length;
-
-			TimelineControl.VisibleTimeStart = TimelineControl.TotalTime - TimelineControl.VisibleTimeSpan;
-		}
-
-		private void toolStripButton_Loop_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripMenuItem_Loop.Checked = toolStripButton_Loop.Checked;
-		}
-
-		private void toolStripButton_SnapTo_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripMenuItem_SnapTo.Checked = toolStripButton_SnapTo.Checked;
-			TimelineControl.grid.EnableSnapTo = toolStripButton_SnapTo.Checked;
-		}
-
-		private void toolStripButton_IncreaseTimingSpeed_Click(object sender, EventArgs e)
-		{
-			_SetTimingSpeed(_timingSpeed + _timingChangeDelta);
-		}
-
-		private void toolStripButton_DecreaseTimingSpeed_Click(object sender, EventArgs e)
-		{
-			_SetTimingSpeed(_timingSpeed - _timingChangeDelta);
-		}
-
-		private void toolStripButtonSnapToStrength_MenuItem_Click(object sender, EventArgs e)
-		{
-
-			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (item != null && !item.Checked)
-			{
-				foreach (ToolStripMenuItem subItem in item.Owner.Items)
-				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
-				}
-				item.Checked = true;
-				TimelineControl.ruler.SnapStrength = TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
-				PopulateMarkSnapTimes();
-				
-			} 
-			
-			// clicking the currently checked one--do not uncheck it
-			
-		}
-
-		private void toolStripButtonCloseGapStrength_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (item != null && !item.Checked)
-			{
-				foreach (ToolStripMenuItem subItem in item.Owner.Items)
-				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
-				}
-				item.Checked = true;
-				TimelineControl.grid.CloseGap_Threshold = item.Tag.ToString();
-			}
-		}
-
-		private void toolStripDropDownButtonAlignToStrength_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (item != null && !item.Checked)
-			{
-				foreach (ToolStripMenuItem subItem in item.Owner.Items)
-				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
-				}
-				item.Checked = true;
-				AlignTo_Threshold = item.ToString();
-			}
 		}
 
 		#endregion
@@ -5962,42 +5246,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripStatusLabel_delayPlay.Text = string.Format("{0} Seconds", _delayCountDown);
 		}
 
-		private void curveEditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var selector = new CurveLibrarySelector{DoubleClickMode = CurveLibrarySelector.Mode.Edit};
-			selector.ShowDialog();
-		}
-
-		private void colorGradientToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var selector = new ColorGradientLibrarySelector{DoubleClickMode = ColorGradientLibrarySelector.Mode.Edit};
-			selector.ShowDialog();
-		}
-
-        private async void editMapsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LipSyncMapSelector mapSelector = new LipSyncMapSelector();
-            DialogResult dr = mapSelector.ShowDialog();
-            if (mapSelector.Changed)
-            {
-                mapSelector.Changed = false;
-                SequenceModified();
-                ResetLipSyncNodes();
-                await VixenSystem.SaveSystemAndModuleConfigAsync();
-	        }
-        }
-
-        private void setDefaultMap_Click(object sender,EventArgs e)
-        {
-            ToolStripMenuItem menu = (ToolStripMenuItem)sender;
-            if (!_library.DefaultMappingName.Equals(menu.Text))
-            {
-                _library.DefaultMappingName = menu.Text; 
-                SequenceModified();
-            }
-            
-        }
-
         private void ResetLipSyncNodes()
         {
             foreach (Row row in TimelineControl.Rows)
@@ -6010,109 +5258,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						((LipSync)effect).MakeDirty();
 					}
-
                 }
             }
-
             TimelineControl.grid.RenderAllRows();
-        }
-
-        private void defaultMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            string defaultText = _library.DefaultMappingName;
-            defaultMapToolStripMenuItem.DropDownItems.Clear();
-            
-            foreach (LipSyncMapData mapping in _library.Library.Values)
-            {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
-                menuItem.Click += setDefaultMap_Click;
-                menuItem.Checked = _library.IsDefaultMapping(mapping.LibraryReferenceName);
-                defaultMapToolStripMenuItem.DropDownItems.Add(menuItem);
-            }            
-        }
-
-        private void papagayoImportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-	        PapagayoDoc papagayoFile = new PapagayoDoc();
-            FileDialog openDialog = new OpenFileDialog();
-
-            openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
-            openDialog.FilterIndex = 1;
-            if (openDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-            string fileName = openDialog.FileName;
-            papagayoFile.Load(fileName);
-
-            TimelineElementsClipboardData result = new TimelineElementsClipboardData
-            {
-                FirstVisibleRow = -1,
-                EarliestStartTime = TimeSpan.MaxValue,
-            };
-
-            result.FirstVisibleRow = 0;
-
-            int rownum = 0;
-            foreach (string voice in papagayoFile.VoiceList)
-            {
-                List<PapagayoPhoneme> phonemes = papagayoFile.PhonemeList(voice);
-
-                if (phonemes.Count > 0)
-                {
-
-                    foreach (PapagayoPhoneme phoneme in phonemes)
-                    {
-                        if (phoneme.DurationMS == 0.0)
-                        {
-                            continue;
-                        }
-
-                        IEffectModuleInstance effect =
-                            ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
-
-						((LipSync)effect).StaticPhoneme = (App.LipSyncApp.PhonemeType)Enum.Parse(typeof(App.LipSyncApp.PhonemeType), phoneme.TypeName.ToUpper());
-                        ((LipSync)effect).LyricData = phoneme.LyricData;
-
-                        TimeSpan startTime = TimeSpan.FromMilliseconds(phoneme.StartMS);
-                        EffectModelCandidate modelCandidate =
-                              new EffectModelCandidate(effect)
-                              {
-                                  Duration = TimeSpan.FromMilliseconds(phoneme.DurationMS - 1),
-                                  StartTime = startTime
-                              };
-
-                        result.EffectModelCandidates.Add(modelCandidate, rownum);
-                        if (startTime < result.EarliestStartTime)
-                            result.EarliestStartTime = startTime;
-
-                        effect.Render();
-
-                    }
-                    
-                    IDataObject dataObject = new DataObject(ClipboardFormatName);
-                    dataObject.SetData(result);
-                    Clipboard.SetDataObject(dataObject, true);
-                    _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
-                    SequenceModified();
-
-                }
-                rownum++;
-            }
-            
-            string displayStr = rownum + " Voices imported to clipboard as seperate rows\n\n";
-            
-            int j = 1;
-            foreach (string voiceStr in papagayoFile.VoiceList)
-            {
-                displayStr += "Row #" + j +" - " + voiceStr + "\n";
-                j++;
-            }
-
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm(displayStr, @"Papagayo Import", false, false);
-			messageBox.ShowDialog();
         }
 
         private void textConverterHandler(object sender, NewTranslationEventArgs args)
@@ -6125,52 +5273,40 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             if (args.PhonemeData.Count > 0)
             {
-
                 foreach (LipSyncConvertData data in args.PhonemeData)
                 {
                     if (data.Duration.Ticks == 0)
                     {
                         continue;
                     }
-
                     IEffectModuleInstance effect =
                         ApplicationServices.Get<IEffectModuleInstance>(new LipSyncDescriptor().TypeId);
-
 					((LipSync)effect).StaticPhoneme = (App.LipSyncApp.PhonemeType)Enum.Parse(typeof(App.LipSyncApp.PhonemeType), data.Phoneme.ToString().ToUpper());
                     ((LipSync)effect).LyricData = data.LyricData;
-
                     EffectModelCandidate modelCandidate =
                           new EffectModelCandidate(effect)
                           {
                               Duration = data.Duration,
                               StartTime = data.StartOffset
                           };
-
                     result.EffectModelCandidates.Add(modelCandidate, 0);
                     if (data.StartOffset < result.EarliestStartTime)
                         result.EarliestStartTime = data.StartOffset;
-
                     effect.Render();
-
                 }
-
                 IDataObject dataObject = new DataObject(ClipboardFormatName);
                 dataObject.SetData(result);
                 Clipboard.SetDataObject(dataObject, true);
                 _TimeLineSequenceClipboardContentsChanged(EventArgs.Empty);
-
                 int pasted = 0;
-
                 if (args.Placement == TranslatePlacement.Cursor)
                 {
                     args.FirstMark += TimelineControl.grid.CursorPosition;
                 }
-
                 if (args.Placement != TranslatePlacement.Clipboard)
                 {
                     pasted = ClipboardPaste(args.FirstMark);
                 }
-
                 if (pasted == 0)
                 {
 					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
@@ -6178,9 +5314,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var messageBox = new MessageBoxForm("Conversion Complete and copied to Clipboard \n Paste at first Mark offset", @"Convert Text", false, false);
 					messageBox.ShowDialog();
                 }
-
                 SequenceModified();
-
             }
         }
 
@@ -6201,46 +5335,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             }
         }
 
-        private void textConverterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (LipSyncTextConvertForm.Active == false)
-            {
-                LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
-                textConverter.NewTranslation += textConverterHandler;
-                textConverter.TranslateFailure += translateFailureHandler;
-                List<Dictionary<string, List<TimeSpan>>> tcMarks = new List<Dictionary<string, List<TimeSpan>>>();
-                foreach (MarkCollection mc in _sequence.MarkCollections)
-                {
-                    Dictionary<string, List<TimeSpan>> tcDict = new Dictionary<string, List<TimeSpan>>();
-                    tcDict[mc.Name] = mc.Marks;
-                    tcMarks.Add(tcDict);
-                }
-                textConverter.MarkCollections = tcMarks;
-                textConverter.Show(this);
-            }
-        }
-
-        private void lipSyncMappingsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            changeMapToolStripMenuItem.Enabled =
-             (_library.Library.Count > 1) &&
-             (TimelineControl.SelectedElements.Any(effect => effect.EffectNode.Effect.GetType() == typeof(LipSync)));
-        }
-
-
-        private void changeMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            string defaultText = _library.DefaultMappingName;
-            changeMapToolStripMenuItem.DropDownItems.Clear();
-
-            foreach (LipSyncMapData mapping in _library.Library.Values)
-            {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
-                menuItem.Click += changeMappings_Click;
-                changeMapToolStripMenuItem.DropDownItems.Add(menuItem);
-            }
-        }
-
         private void changeMappings_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem toolStripSender = (ToolStripMenuItem)sender;
@@ -6255,42 +5349,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
             });
 
         }
-
-		private void helpDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
-		}
-		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			EffectEditorForm.PreviewStop();
-            ExportDialog ed = new ExportDialog(Sequence);
-            ed.ShowDialog();
-			EffectEditorForm.ResumePreview();
-		}
-
-		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-
-			var dialog = new BulkEffectMoveForm(TimelineControl.grid.CursorPosition);
-			using (dialog)
-			{
-				if (dialog.ShowDialog() == DialogResult.OK)
-				{
-					TimelineControl.grid.MoveElementsInRangeByTime(dialog.Start, dialog.End, dialog.IsForward ? dialog.Offset : -dialog.Offset, dialog.ProcessVisibleRows);
-				}
-			}
-		}
-
-		private void cADStyleSelectionBoxToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TimelineControl.grid.aCadStyleSelectionBox = cADStyleSelectionBoxToolStripMenuItem.Checked;
-		}
-
-		private void toolStripSplitButton_CloseGaps_ButtonClick(object sender, EventArgs e)
-		{
-			TimelineControl.grid.CloseGapsBetweenElements();
-		}
-
 
 		/// <summary>
 		/// Aligns selected elements, or if none, all elements to the closest mark.
@@ -6417,40 +5475,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		private void toolStripMenuItem_BeatBarDetection_Click(object sender, EventArgs e)
-		{
-			foreach (IMediaModuleInstance module in _sequence.GetAllMedia())
-			{
-				if (module is Audio)
-				{
-					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
-					_sequence.MarkCollections = 
-						audioFeatures.DoBeatBarDetection(_sequence.MarkCollections);
-					
-					MarksForm.PopulateMarkCollectionsList(null);
-					SequenceModified();
-					break;
-
-				}
-			}
-		}
-
-		private void zoomUnderMousePositionToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-		{
-			TimelineControl.ZoomToMousePosition = zoomUnderMousePositionToolStripMenuItem.Checked;
-		}
-
-		private void resetRowHeightToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TimelineControl.ResetRowHeight();
-		}
-
-		private void collapeAllElementGroupsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			TimelineControl.RowListMenuCollapse();
-		}
-
-
 		public Bitmap checkMark { get; set; }
 		}
 
@@ -6469,40 +5493,5 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public int FirstVisibleRow { get; set; }
 
 		public TimeSpan EarliestStartTime { get; set; }
-
-		
 	}
-
-	public class TimeFormats
-	{
-		private static readonly string[] _positiveFormats =
-		{
-			@"m\:ss", @"m\:ss\.f", @"m\:ss\.ff", @"m\:ss\.fff",
-			@"\:ss", @"\:ss\.f", @"\:ss\.ff", @"\:ss\.fff",
-			@"%s", @"s\.f", @"s\.ff", @"s\.fff"
-		};
-
-		private static readonly string[] _negativeFormats =
-		{
-			@"\-m\:ss", @"\-m\:ss\.f", @"\-m\:ss\.ff", @"\-m\:ss\.fff",
-			@"\-\:ss", @"\-\:ss\.f", @"\-\:ss\.ff", @"\-\:ss\.fff",
-			@"\-%s", @"\-s\.f", @"\-s\.ff", @"\-s\.fff"
-		};
-
-		public static string[] AllFormats
-		{
-			get { return _negativeFormats.Concat(_positiveFormats).ToArray(); }
-		}
-
-		public static string[] PositiveFormats
-		{
-			get { return _positiveFormats; }
-		}
-
-		public static string[] NegativeFormats
-		{
-			get { return _negativeFormats; }
-		}
-	}
-
 }

@@ -54,8 +54,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class TimedSequenceEditorForm
 	{
-		#region Event Handlers
-		#endregion
+
+		private void AddContextCollectionsMenu()
+		{
+			ToolStripMenuItem contextMenuItemCollections = new ToolStripMenuItem("Collections") { Image = Resources.collection };
+
+			if ((TimelineControl.SelectedElements.Count() > 1 
+				|| TimelineControl.SelectedElements.Count() == 1 && SupportsColorLists(TimelineControl.SelectedElements.FirstOrDefault())) 
+				&& _colorCollections.Any())
+			{
+				ToolStripMenuItem contextMenuItemColorCollections = new ToolStripMenuItem("Colors") { Image = Resources.colors };
+				ToolStripMenuItem contextMenuItemRandomColors = new ToolStripMenuItem("Random") {Image = Resources.randomColors };
+				ToolStripMenuItem contextMenuItemSequentialColors = new ToolStripMenuItem("Sequential") { Image = Resources.sequentialColors };
+
+				contextMenuItemCollections.DropDown.Items.Add(contextMenuItemColorCollections);
+				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemRandomColors);
+				contextMenuItemColorCollections.DropDown.Items.Add(contextMenuItemSequentialColors);
+
+				foreach (ColorCollection collection in _colorCollections)
+				{
+					if (collection.Color.Any())
+					{
+						ToolStripMenuItem contextMenuItemRandomColorItem = new ToolStripMenuItem(collection.Name);
+						contextMenuItemRandomColorItem.ToolTipText = collection.Description;
+						contextMenuItemRandomColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, true);
+						contextMenuItemRandomColors.DropDown.Items.Add(contextMenuItemRandomColorItem);
+
+						ToolStripMenuItem contextMenuItemSequentialColorItem = new ToolStripMenuItem(collection.Name);
+						contextMenuItemSequentialColorItem.ToolTipText = collection.Description;
+						contextMenuItemSequentialColorItem.Click += (mySender, myE) => ApplyColorCollection(collection, false);
+						contextMenuItemSequentialColors.DropDown.Items.Add(contextMenuItemSequentialColorItem);	
+					}
+				}
+
+				if (contextMenuItemCollections.DropDownItems.Count > 0)
+				{
+					_contextMenuStrip.Items.Add("-");
+					_contextMenuStrip.Items.Add(contextMenuItemCollections);
+				}
+			}
+		}
 
 	}
 }
