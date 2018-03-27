@@ -249,6 +249,9 @@
 											<interactivity:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
 										</i:EventTrigger>
 									</i:Interaction.Triggers>
+									<i:Interaction.Behaviors>
+										<interactivity:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+									</i:Interaction.Behaviors>
 								</TextBox>
 								<!--<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
                                    Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
@@ -312,6 +315,9 @@
 											<interactivity:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
 										</i:EventTrigger>
 									</i:Interaction.Triggers>
+									<i:Interaction.Behaviors>
+										<interactivity:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+									</i:Interaction.Behaviors>
 								</TextBox>
 								
 							</StackPanel>
