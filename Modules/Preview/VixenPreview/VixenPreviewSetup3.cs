@@ -70,6 +70,11 @@ namespace VixenModules.Preview.VixenPreview {
 			redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.ButtonType = UndoButtonType.RedoButton;
+
+			btnAddCustomProp.Image = Tools.GetIcon(Resources.folder_open, iconSize);
+			btnCustomPropEditor.Image = Tools.GetIcon(Resources.cog, iconSize);
+			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
+
 			tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			ThemeUpdateControls.UpdateControls(this);
 			panel10.BackColor = Color.Black;
@@ -92,6 +97,7 @@ namespace VixenModules.Preview.VixenPreview {
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
+			
 		}
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
@@ -118,8 +124,6 @@ namespace VixenModules.Preview.VixenPreview {
 			
 			trackBarBackgroundAlpha.Value = Data.BackgroundAlpha;
 			previewForm.Preview.Reload();
-
-			PopulateTemplateList();
 
 			Setup();
 
@@ -472,70 +476,31 @@ namespace VixenModules.Preview.VixenPreview {
 
 		#region Templates
 
-		private void PopulateTemplateList() {
-			TemplateComboBoxItem selectedTemplateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
-			comboBoxTemplates.Items.Clear();
-
-			IEnumerable<string> files = System.IO.Directory.EnumerateFiles(PreviewTools.TemplateFolder, "*.xml");
-			foreach (string file in files) {
-				string fileName = PreviewTools.TemplateWithFolder(file);
-				try {
-					// Read the entire template file (stoopid waste of resources, but how else?)
-					string xml = System.IO.File.ReadAllText(fileName);
-					DisplayItem newDisplayItem = (DisplayItem)PreviewTools.DeSerializeToDisplayItem(xml, typeof(DisplayItem));
-					TemplateComboBoxItem newTemplateItem = new TemplateComboBoxItem(newDisplayItem.Shape.Name, fileName);
-					comboBoxTemplates.Items.Add(newTemplateItem);
-				}
-				catch (Exception ex) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("There was an error loading the template file (" + file + "): " + ex.Message,
-									"Error Loading Template", false, true);
-					messageBox.ShowDialog();
-				}
-				finally {
-					if (selectedTemplateItem != null && comboBoxTemplates.Items.IndexOf(selectedTemplateItem) >= 0) {
-						comboBoxTemplates.SelectedItem = selectedTemplateItem;
-					}
-					if (comboBoxTemplates.SelectedItem == null && comboBoxTemplates.Items.Count > 0) {
-						comboBoxTemplates.SelectedIndex = 0;
-					}
-				}
-			}
-		}
-
+		
 		private void buttonAddTemplate_Click(object sender, EventArgs e) {
 			previewForm.Preview.CreateTemplate();
-			PopulateTemplateList();
+			
 		}
 
 		private void buttonAddToPreview_Click(object sender, EventArgs e) {
-			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
-			if (templateItem != null) {
-				previewForm.Preview.AddTtemplateToPreview(templateItem.FileName);
-			}
-		}
 
-		private void buttonDeleteTemplate_Click(object sender, EventArgs e) {
-			TemplateComboBoxItem templateItem = comboBoxTemplates.SelectedItem as TemplateComboBoxItem;
-			if (templateItem != null) {
-				if (System.IO.File.Exists(templateItem.FileName)) {
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("Are you sure you want to delete the template '" + templateItem.Caption + "'?", "Delete Template", true, false);
-					messageBox.ShowDialog();
-					if (messageBox.DialogResult == DialogResult.OK)
-					{
-						System.IO.File.Delete(templateItem.FileName);
-						PopulateTemplateList();
-					}
+			TemplateDialog td = new TemplateDialog();
+			var result = td.ShowDialog(this);
+			if (result == DialogResult.OK)
+			{
+				if (!string.IsNullOrEmpty(td.FileName))
+				{
+					previewForm.Preview.AddTtemplateToPreview(td.FileName);
 				}
 			}
+
+			
 		}
 
-		private void buttonTemplateHelp_Click(object sender, EventArgs e) {
-			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
-		}
+		private void templateHelpToolStripMenuItem_Click(object sender, EventArgs e)
+	    {
+		    Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_CustomShape);
+	    }
 
 		#endregion // Templates
 
@@ -762,19 +727,22 @@ namespace VixenModules.Preview.VixenPreview {
 
 		}
 
-		private void propEditorToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			var form = new CustomPropEditorWindow();
-		    ElementHost.EnableModelessKeyboardInterop(form);
-            form.ShowDialog();
-		}
-
 		private async void importPropToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			await previewForm.Preview.ImportCustomProp();
 		}
 
-	    
+		private void btnCustomPropEditor_Click(object sender, EventArgs e)
+		{
+			var form = new CustomPropEditorWindow();
+			ElementHost.EnableModelessKeyboardInterop(form);
+			form.ShowDialog();
+		}
+
+		private void buttonCustomPropLibrary_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+		}
 	}
 
 

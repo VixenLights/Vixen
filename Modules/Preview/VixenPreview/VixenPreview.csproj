@@ -364,6 +364,12 @@
     <Compile Include="Shapes\PreviewBaseShape.cs" />
     <Compile Include="Shapes\PreviewTools.cs" />
     <Compile Include="TemplateComboBoxItem.cs" />
+    <Compile Include="TemplateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TemplateDialog.Designer.cs">
+      <DependentUpon>TemplateDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Undo\PreviewItemsGroupAddedSeparateUndoAction.cs" />
     <Compile Include="Undo\PreviewItemsGroupAddedUndoAction.cs" />
     <Compile Include="Undo\PreviewItemsGroupSeparateAction.cs" />
@@ -506,6 +512,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSingleSetupControl.resx">
       <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplateDialog.resx">
+      <DependentUpon>TemplateDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VixenPreviewControl.resx">
       <DependentUpon>VixenPreviewControl.cs</DependentUpon>
