@@ -64,24 +64,27 @@ namespace VixenModules.Preview.VixenPreview
 
 				CreateElementsForChildren(rootElementNode, rootNode);
 
-				//Now lets setup the color handling.
-				ColorSetupHelper helper = new ColorSetupHelper();
-				switch (_prop.PhysicalMetadata.ColorMode)
+				if (_prop.PhysicalMetadata.ColorMode != ColorMode.Other)
 				{
-					case ColorMode.FullColor:
-						helper.SetColorType(ElementColorType.FullColor);
-						helper.SilentMode = true;
-						break;
-					case ColorMode.Multiple:
-						helper.SetColorType(ElementColorType.MultipleDiscreteColors);
-						break;
-					default:
-						helper.SetColorType(ElementColorType.SingleColor);
-						break;
+					//Now lets setup the color handling.
+					ColorSetupHelper helper = new ColorSetupHelper();
+					switch (_prop.PhysicalMetadata.ColorMode)
+					{
+						case ColorMode.FullColor:
+							helper.SetColorType(ElementColorType.FullColor);
+							helper.SilentMode = true;
+							break;
+						case ColorMode.Multiple:
+							helper.SetColorType(ElementColorType.MultipleDiscreteColors);
+							break;
+						default:
+							helper.SetColorType(ElementColorType.SingleColor);
+							break;
+					}
+
+					helper.Perform(_leafNodes);
 				}
 				
-				helper.Perform(_leafNodes);
-
 				PreviewCustomProp.Layout();
 				
 			});

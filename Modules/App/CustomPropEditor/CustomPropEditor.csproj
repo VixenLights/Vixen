@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Behaviors\TreeViewMultipleSelectionBehavior.cs" />
     <Compile Include="Converters\BoolToGridRowHeightConverter.cs" />
+    <Compile Include="Converters\BulbTypeConverter.cs" />
     <Compile Include="Converters\RootNodeToCollectionMapping.cs" />
     <Compile Include="Import\XLights\ModelNode.cs" />
     <Compile Include="Model\ColorMode.cs" />

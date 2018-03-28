@@ -9,6 +9,8 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    [Description("Multiple Color")]
 		Multiple,
 	    [Description("Single Color")]
-		Single
-    }
+		Single,
+	    [Description("Other")]
+	    Other
+	}
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Controls.WpfPropertyGrid;
 using Catel.MVVM;
+using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using PropertyData = Catel.Data.PropertyData;
 
@@ -122,6 +123,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[PropertyOrder(4)]
 		[DisplayName("Bulb Type")]
 		[ViewModelToModel("PhysicalMetadata")]
+		[TypeConverter(typeof(BulbTypeConverter))]
 		public string BulbType
 		{
 			get { return GetValue<string>(BulbTypeProperty); }
@@ -142,6 +144,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		[PropertyOrder(5)]
 		[DisplayName("Color Mode")]
+		[Description("Declares color handling for the entire prop. \nIf the prop contains multiple color modes, choose other.")]
 		[ViewModelToModel("PhysicalMetadata")]
 		public ColorMode ColorMode
 		{
