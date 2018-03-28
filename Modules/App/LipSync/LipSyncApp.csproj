@@ -57,17 +57,12 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -143,11 +138,6 @@
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
       <Name>Controls</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
-      <Project>{4ea5025b-5ffc-4ff8-9001-d0f64655bfb6}</Project>
-      <Name>FastPixel</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
