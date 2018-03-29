@@ -62,7 +62,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			var rects = Pixels.Select(p => p.Bounds);
 			Bounds = GetCombinedBounds(rects);
-			ConfigureDragPoints();
+			if (Selected)
+			{
+				ConfigureDragPoints();
+			}
 		}
 
 		#region Overrides of PreviewBaseShape
@@ -97,7 +100,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		/// <inheritdoc />
 		public override void Match(PreviewBaseShape matchShape)
 		{
-			
+			//Match size for now
+			var yAspect =  (matchShape.Bottom - matchShape.Top) / (double)(Bottom - Top);
+			var xAspect = (matchShape.Right - matchShape.Left) / (double)(Right - Left);
+			Scale(xAspect, yAspect, Left, Top);
+		}
+
+		public override void ResizePixels()
+		{
+			//foreach (var previewPixel in PropPixels)
+			//{
+			//	previewPixel.PixelSize = PixelSize;
+			//}
+
+			//foreach (var previewPixel in Pixels)
+			//{
+			//	previewPixel.PixelSize = PixelSize;
+			//}
 		}
 
 		[Browsable(false)]
@@ -130,7 +149,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		/// <inheritdoc />
 		public override void SelectDragPoints()
-		{          
+		{   
+			ConfigureDragPoints();
 			SetSelectPoints(_dragPoints, null);
 		}
 
