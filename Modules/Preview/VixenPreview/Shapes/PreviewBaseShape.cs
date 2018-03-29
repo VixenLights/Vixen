@@ -24,6 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Standard,
 			Pixel,
+			Custom
 			//            Flood
 		}
 
@@ -199,6 +200,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		public virtual void MatchPixelSize(PreviewBaseShape shape)
+		{
+			PixelSize = shape.PixelSize;
+		}
+
+		public virtual void ResizePixelsBy(int value)
+		{
+			var newSize = PixelSize + value;
+			PixelSize = newSize > 0 ? newSize : 1;
+		}
+
 		private double _zoomLevel = 1;
 		[Browsable(false)]
 		public virtual double ZoomLevel
@@ -342,7 +354,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
-			int origPixelSize = PixelSize;
+			int origPixelSize = pixel.PixelSize;
             if (forceDraw)
             {
                 pixel.Draw(fp, forceDraw);
@@ -594,6 +606,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 setupControl = new Shapes.PreviewMultiStringSetupControl(this);
             }
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustomProp")
+			{
+				setupControl = new PreviewCustomPropSetupControl(this);
+			}
 
 			return setupControl;
 		}

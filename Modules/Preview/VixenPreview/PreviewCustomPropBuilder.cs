@@ -48,7 +48,7 @@ namespace VixenModules.Preview.VixenPreview
 				var rootNode = _prop.RootNode;
 
 				ElementNode rootElementNode = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(_elementNames, TokenizeName(rootNode.Name)), true, false);
-				
+				PreviewCustomProp.Name = rootElementNode.Name;
 				_elementNames.Add(rootElementNode.Name);
 
 				_elementModelMap.Add(rootNode.Id, rootElementNode);

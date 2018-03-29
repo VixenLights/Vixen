@@ -34,7 +34,7 @@
 			this.toolStripUndo = new System.Windows.Forms.ToolStrip();
 			this.undoButton = new Common.Controls.UndoButton();
 			this.redoButton = new Common.Controls.UndoButton();
-			this.label14 = new System.Windows.Forms.Label();
+			this.lblUndoRedo = new System.Windows.Forms.Label();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.buttonDistributeVertical = new System.Windows.Forms.Button();
 			this.buttonMatchProperties = new System.Windows.Forms.Button();
@@ -125,6 +125,11 @@
 			this.pnlSmartObjects = new System.Windows.Forms.Panel();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.customPropPanel = new System.Windows.Forms.Panel();
+			this.lblBulbSize = new System.Windows.Forms.Label();
+			this.pnlBulbSize = new System.Windows.Forms.Panel();
+			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
+			this.btnBulbDecrease = new System.Windows.Forms.Button();
+			this.btnBulbIncrease = new System.Windows.Forms.Button();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -143,6 +148,8 @@
 			this.pnlSmartObjects.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.customPropPanel.SuspendLayout();
+			this.pnlBulbSize.SuspendLayout();
+			this.tableLayoutPanel5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel11
@@ -150,7 +157,7 @@
 			this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel11.Controls.Add(this.toolStripUndo);
 			this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel11.Location = new System.Drawing.Point(816, 24);
+			this.panel11.Location = new System.Drawing.Point(887, 24);
 			this.panel11.Margin = new System.Windows.Forms.Padding(2);
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(125, 82);
@@ -191,18 +198,17 @@
 			this.redoButton.Text = "Redo";
 			this.redoButton.ButtonClick += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
-			// label14
+			// lblUndoRedo
 			// 
-			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lblUndoRedo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.label14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.label14.Location = new System.Drawing.Point(817, 0);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(123, 22);
-			this.label14.TabIndex = 3;
-			this.label14.Text = "Undo/Redo";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.label14.Click += new System.EventHandler(this.label14_Click);
+			this.lblUndoRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.lblUndoRedo.Location = new System.Drawing.Point(888, 0);
+			this.lblUndoRedo.Name = "lblUndoRedo";
+			this.lblUndoRedo.Size = new System.Drawing.Size(123, 22);
+			this.lblUndoRedo.TabIndex = 3;
+			this.lblUndoRedo.Text = "Undo/Redo";
+			this.lblUndoRedo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// tableLayoutPanel2
 			// 
@@ -231,8 +237,8 @@
 			// 
 			// buttonDistributeVertical
 			// 
-			this.buttonDistributeVertical.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDistributeVertical.BackgroundImage")));
 			this.buttonDistributeVertical.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDistributeVertical.Enabled = false;
 			this.buttonDistributeVertical.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonDistributeVertical.FlatAppearance.BorderSize = 0;
 			this.buttonDistributeVertical.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -242,14 +248,15 @@
 			this.buttonDistributeVertical.Name = "buttonDistributeVertical";
 			this.buttonDistributeVertical.Size = new System.Drawing.Size(26, 26);
 			this.buttonDistributeVertical.TabIndex = 24;
+			this.buttonDistributeVertical.Text = "A";
 			this.toolTip.SetToolTip(this.buttonDistributeVertical, "Distribute Vertically");
 			this.buttonDistributeVertical.UseVisualStyleBackColor = true;
 			this.buttonDistributeVertical.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonMatchProperties
 			// 
-			this.buttonMatchProperties.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonMatchProperties.BackgroundImage")));
 			this.buttonMatchProperties.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonMatchProperties.Enabled = false;
 			this.buttonMatchProperties.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonMatchProperties.FlatAppearance.BorderSize = 0;
 			this.buttonMatchProperties.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -259,14 +266,15 @@
 			this.buttonMatchProperties.Name = "buttonMatchProperties";
 			this.buttonMatchProperties.Size = new System.Drawing.Size(25, 26);
 			this.buttonMatchProperties.TabIndex = 20;
+			this.buttonMatchProperties.Text = "A";
 			this.toolTip.SetToolTip(this.buttonMatchProperties, "Match Properties");
 			this.buttonMatchProperties.UseVisualStyleBackColor = true;
 			this.buttonMatchProperties.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignBottom
 			// 
-			this.buttonAlignBottom.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignBottom.BackgroundImage")));
 			this.buttonAlignBottom.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignBottom.Enabled = false;
 			this.buttonAlignBottom.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignBottom.FlatAppearance.BorderSize = 0;
 			this.buttonAlignBottom.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -276,14 +284,15 @@
 			this.buttonAlignBottom.Name = "buttonAlignBottom";
 			this.buttonAlignBottom.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignBottom.TabIndex = 23;
+			this.buttonAlignBottom.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignBottom, "Align Bottom");
 			this.buttonAlignBottom.UseVisualStyleBackColor = true;
 			this.buttonAlignBottom.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignLeft
 			// 
-			this.buttonAlignLeft.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignLeft.BackgroundImage")));
 			this.buttonAlignLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.buttonAlignLeft.Enabled = false;
 			this.buttonAlignLeft.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignLeft.FlatAppearance.BorderSize = 0;
 			this.buttonAlignLeft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -293,14 +302,15 @@
 			this.buttonAlignLeft.Name = "buttonAlignLeft";
 			this.buttonAlignLeft.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignLeft.TabIndex = 16;
+			this.buttonAlignLeft.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignLeft, "Align Left");
 			this.buttonAlignLeft.UseVisualStyleBackColor = true;
 			this.buttonAlignLeft.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignVertMid
 			// 
-			this.buttonAlignVertMid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignVertMid.BackgroundImage")));
 			this.buttonAlignVertMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignVertMid.Enabled = false;
 			this.buttonAlignVertMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignVertMid.FlatAppearance.BorderSize = 0;
 			this.buttonAlignVertMid.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -310,14 +320,15 @@
 			this.buttonAlignVertMid.Name = "buttonAlignVertMid";
 			this.buttonAlignVertMid.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignVertMid.TabIndex = 22;
+			this.buttonAlignVertMid.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignVertMid, "Align Vertically");
 			this.buttonAlignVertMid.UseVisualStyleBackColor = true;
 			this.buttonAlignVertMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignRight
 			// 
-			this.buttonAlignRight.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignRight.BackgroundImage")));
 			this.buttonAlignRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignRight.Enabled = false;
 			this.buttonAlignRight.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignRight.FlatAppearance.BorderSize = 0;
 			this.buttonAlignRight.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -327,14 +338,15 @@
 			this.buttonAlignRight.Name = "buttonAlignRight";
 			this.buttonAlignRight.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignRight.TabIndex = 17;
+			this.buttonAlignRight.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignRight, "Align Right");
 			this.buttonAlignRight.UseVisualStyleBackColor = true;
 			this.buttonAlignRight.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignHorizMid
 			// 
-			this.buttonAlignHorizMid.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignHorizMid.BackgroundImage")));
 			this.buttonAlignHorizMid.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignHorizMid.Enabled = false;
 			this.buttonAlignHorizMid.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignHorizMid.FlatAppearance.BorderSize = 0;
 			this.buttonAlignHorizMid.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -344,14 +356,15 @@
 			this.buttonAlignHorizMid.Name = "buttonAlignHorizMid";
 			this.buttonAlignHorizMid.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignHorizMid.TabIndex = 21;
+			this.buttonAlignHorizMid.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignHorizMid, "Align Horizontally");
 			this.buttonAlignHorizMid.UseVisualStyleBackColor = true;
 			this.buttonAlignHorizMid.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonDistributeHorizontal
 			// 
-			this.buttonDistributeHorizontal.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonDistributeHorizontal.BackgroundImage")));
 			this.buttonDistributeHorizontal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonDistributeHorizontal.Enabled = false;
 			this.buttonDistributeHorizontal.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonDistributeHorizontal.FlatAppearance.BorderSize = 0;
 			this.buttonDistributeHorizontal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -361,14 +374,15 @@
 			this.buttonDistributeHorizontal.Name = "buttonDistributeHorizontal";
 			this.buttonDistributeHorizontal.Size = new System.Drawing.Size(26, 26);
 			this.buttonDistributeHorizontal.TabIndex = 19;
+			this.buttonDistributeHorizontal.Text = "A";
 			this.toolTip.SetToolTip(this.buttonDistributeHorizontal, "Distribute Horizontally");
 			this.buttonDistributeHorizontal.UseVisualStyleBackColor = true;
 			this.buttonDistributeHorizontal.Click += new System.EventHandler(this.toolbarAlignButton_Click);
 			// 
 			// buttonAlignTop
 			// 
-			this.buttonAlignTop.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonAlignTop.BackgroundImage")));
 			this.buttonAlignTop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.buttonAlignTop.Enabled = false;
 			this.buttonAlignTop.FlatAppearance.BorderColor = System.Drawing.Color.White;
 			this.buttonAlignTop.FlatAppearance.BorderSize = 0;
 			this.buttonAlignTop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
@@ -378,6 +392,7 @@
 			this.buttonAlignTop.Name = "buttonAlignTop";
 			this.buttonAlignTop.Size = new System.Drawing.Size(26, 26);
 			this.buttonAlignTop.TabIndex = 18;
+			this.buttonAlignTop.Text = "A";
 			this.toolTip.SetToolTip(this.buttonAlignTop, "Align Top");
 			this.buttonAlignTop.UseVisualStyleBackColor = true;
 			this.buttonAlignTop.Click += new System.EventHandler(this.toolbarAlignButton_Click);
@@ -442,13 +457,12 @@
 			this.lblCustomProp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblCustomProp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-			this.lblCustomProp.Location = new System.Drawing.Point(700, 0);
+			this.lblCustomProp.Location = new System.Drawing.Point(778, 0);
 			this.lblCustomProp.Name = "lblCustomProp";
-			this.lblCustomProp.Size = new System.Drawing.Size(111, 22);
+			this.lblCustomProp.Size = new System.Drawing.Size(104, 22);
 			this.lblCustomProp.TabIndex = 0;
 			this.lblCustomProp.Text = "Custom Prop";
 			this.lblCustomProp.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblCustomProp.Click += new System.EventHandler(this.label4_Click);
 			// 
 			// label3
 			// 
@@ -461,7 +475,6 @@
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Smart Objects";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.label3.Click += new System.EventHandler(this.label3_Click);
 			// 
 			// tableLayoutPanel3
 			// 
@@ -782,7 +795,7 @@
 			this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.copyToolStripMenuItem.Text = "Cu&t";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
@@ -791,7 +804,7 @@
 			this.copyToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem1.Image")));
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(211, 30);
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
 			this.copyToolStripMenuItem1.Text = "&Copy";
 			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
 			// 
@@ -800,7 +813,7 @@
 			this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.pasteToolStripMenuItem.Text = "&Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
@@ -809,7 +822,7 @@
 			this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.deleteToolStripMenuItem.Text = "&Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
@@ -818,7 +831,7 @@
 			this.undoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("undoToolStripMenuItem.Image")));
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_ButtonClick);
 			// 
@@ -827,31 +840,31 @@
 			this.redoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("redoToolStripMenuItem.Image")));
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Y";
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(208, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(200, 6);
 			// 
 			// backgroundPropertiesToolStripMenuItem
 			// 
 			this.backgroundPropertiesToolStripMenuItem.Name = "backgroundPropertiesToolStripMenuItem";
-			this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
+			this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
 			this.backgroundPropertiesToolStripMenuItem.Click += new System.EventHandler(this.backgroundPropertiesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(208, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
 			// 
 			// addTemplateMenu
 			// 
 			this.addTemplateMenu.Name = "addTemplateMenu";
-			this.addTemplateMenu.Size = new System.Drawing.Size(211, 30);
+			this.addTemplateMenu.Size = new System.Drawing.Size(203, 22);
 			this.addTemplateMenu.Text = "Templates (Legacy)";
 			this.addTemplateMenu.Click += new System.EventHandler(this.buttonAddToPreview_Click);
 			// 
@@ -1335,7 +1348,7 @@
 			this.tableLayoutPanel4.Name = "tableLayoutPanel4";
 			this.tableLayoutPanel4.RowCount = 1;
 			this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel4.Size = new System.Drawing.Size(103, 74);
+			this.tableLayoutPanel4.Size = new System.Drawing.Size(96, 34);
 			this.tableLayoutPanel4.TabIndex = 22;
 			// 
 			// tableLayoutMain
@@ -1359,7 +1372,8 @@
 			// tlpToolBar
 			// 
 			this.tlpToolBar.AutoSize = true;
-			this.tlpToolBar.ColumnCount = 8;
+			this.tlpToolBar.ColumnCount = 9;
+			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -1368,26 +1382,28 @@
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tlpToolBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tlpToolBar.Controls.Add(this.panel11, 6, 1);
+			this.tlpToolBar.Controls.Add(this.panel11, 7, 1);
 			this.tlpToolBar.Controls.Add(this.panel2, 0, 1);
 			this.tlpToolBar.Controls.Add(this.panel6, 1, 1);
 			this.tlpToolBar.Controls.Add(this.pnlBasicDrawing, 2, 1);
 			this.tlpToolBar.Controls.Add(this.pnlSmartObjects, 3, 1);
 			this.tlpToolBar.Controls.Add(this.panel4, 4, 1);
-			this.tlpToolBar.Controls.Add(this.customPropPanel, 5, 1);
+			this.tlpToolBar.Controls.Add(this.customPropPanel, 6, 1);
 			this.tlpToolBar.Controls.Add(this.label1, 0, 0);
 			this.tlpToolBar.Controls.Add(this.label8, 1, 0);
 			this.tlpToolBar.Controls.Add(this.label2, 2, 0);
 			this.tlpToolBar.Controls.Add(this.label3, 3, 0);
 			this.tlpToolBar.Controls.Add(this.label7, 4, 0);
-			this.tlpToolBar.Controls.Add(this.lblCustomProp, 5, 0);
-			this.tlpToolBar.Controls.Add(this.label14, 6, 0);
+			this.tlpToolBar.Controls.Add(this.lblCustomProp, 6, 0);
+			this.tlpToolBar.Controls.Add(this.lblUndoRedo, 7, 0);
+			this.tlpToolBar.Controls.Add(this.lblBulbSize, 5, 0);
+			this.tlpToolBar.Controls.Add(this.pnlBulbSize, 5, 1);
 			this.tlpToolBar.Location = new System.Drawing.Point(3, 3);
 			this.tlpToolBar.Name = "tlpToolBar";
 			this.tlpToolBar.RowCount = 2;
 			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tlpToolBar.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tlpToolBar.Size = new System.Drawing.Size(943, 108);
+			this.tlpToolBar.Size = new System.Drawing.Size(1014, 108);
 			this.tlpToolBar.TabIndex = 21;
 			// 
 			// pnlBasicDrawing
@@ -1426,10 +1442,85 @@
 			this.customPropPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.customPropPanel.Controls.Add(this.tableLayoutPanel4);
 			this.customPropPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.customPropPanel.Location = new System.Drawing.Point(700, 25);
+			this.customPropPanel.Location = new System.Drawing.Point(778, 25);
 			this.customPropPanel.Name = "customPropPanel";
-			this.customPropPanel.Size = new System.Drawing.Size(111, 80);
+			this.customPropPanel.Size = new System.Drawing.Size(104, 80);
 			this.customPropPanel.TabIndex = 26;
+			// 
+			// lblBulbSize
+			// 
+			this.lblBulbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblBulbSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+			this.lblBulbSize.Location = new System.Drawing.Point(700, 0);
+			this.lblBulbSize.Name = "lblBulbSize";
+			this.lblBulbSize.Size = new System.Drawing.Size(72, 22);
+			this.lblBulbSize.TabIndex = 0;
+			this.lblBulbSize.Text = "Bulb Size";
+			this.lblBulbSize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// pnlBulbSize
+			// 
+			this.pnlBulbSize.AutoSize = true;
+			this.pnlBulbSize.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.pnlBulbSize.Controls.Add(this.tableLayoutPanel5);
+			this.pnlBulbSize.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlBulbSize.Location = new System.Drawing.Point(700, 25);
+			this.pnlBulbSize.Name = "pnlBulbSize";
+			this.pnlBulbSize.Size = new System.Drawing.Size(72, 80);
+			this.pnlBulbSize.TabIndex = 27;
+			// 
+			// tableLayoutPanel5
+			// 
+			this.tableLayoutPanel5.AutoSize = true;
+			this.tableLayoutPanel5.ColumnCount = 2;
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel5.Controls.Add(this.btnBulbDecrease, 0, 0);
+			this.tableLayoutPanel5.Controls.Add(this.btnBulbIncrease, 1, 0);
+			this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 1);
+			this.tableLayoutPanel5.Name = "tableLayoutPanel5";
+			this.tableLayoutPanel5.RowCount = 1;
+			this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel5.Size = new System.Drawing.Size(64, 34);
+			this.tableLayoutPanel5.TabIndex = 22;
+			// 
+			// btnBulbDecrease
+			// 
+			this.btnBulbDecrease.BackColor = System.Drawing.Color.Transparent;
+			this.btnBulbDecrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnBulbDecrease.Enabled = false;
+			this.btnBulbDecrease.FlatAppearance.BorderSize = 0;
+			this.btnBulbDecrease.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.btnBulbDecrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnBulbDecrease.Location = new System.Drawing.Point(3, 4);
+			this.btnBulbDecrease.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.btnBulbDecrease.Name = "btnBulbDecrease";
+			this.btnBulbDecrease.Size = new System.Drawing.Size(26, 26);
+			this.btnBulbDecrease.TabIndex = 32;
+			this.btnBulbDecrease.Tag = "";
+			this.btnBulbDecrease.Text = "-";
+			this.btnBulbDecrease.UseVisualStyleBackColor = false;
+			this.btnBulbDecrease.Click += new System.EventHandler(this.btnBulbDecrease_Click);
+			// 
+			// btnBulbIncrease
+			// 
+			this.btnBulbIncrease.BackColor = System.Drawing.Color.Transparent;
+			this.btnBulbIncrease.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.btnBulbIncrease.Enabled = false;
+			this.btnBulbIncrease.FlatAppearance.BorderSize = 0;
+			this.btnBulbIncrease.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+			this.btnBulbIncrease.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnBulbIncrease.Location = new System.Drawing.Point(35, 4);
+			this.btnBulbIncrease.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+			this.btnBulbIncrease.Name = "btnBulbIncrease";
+			this.btnBulbIncrease.Size = new System.Drawing.Size(26, 26);
+			this.btnBulbIncrease.TabIndex = 31;
+			this.btnBulbIncrease.Tag = "";
+			this.btnBulbIncrease.Text = "+";
+			this.btnBulbIncrease.UseVisualStyleBackColor = false;
+			this.btnBulbIncrease.Click += new System.EventHandler(this.btnBulbIncrease_Click);
 			// 
 			// VixenPreviewSetup3
 			// 
@@ -1477,6 +1568,9 @@
 			this.panel4.ResumeLayout(false);
 			this.customPropPanel.ResumeLayout(false);
 			this.customPropPanel.PerformLayout();
+			this.pnlBulbSize.ResumeLayout(false);
+			this.pnlBulbSize.PerformLayout();
+			this.tableLayoutPanel5.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1552,7 +1646,7 @@
 		private System.Windows.Forms.ToolStrip toolStripUndo;
 		private Common.Controls.UndoButton redoButton;
 		public Common.Controls.UndoButton undoButton;
-		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.Label lblUndoRedo;
 		private System.Windows.Forms.Button btnAddCustomProp;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
@@ -1578,5 +1672,10 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem addTemplateMenu;
 		private System.Windows.Forms.Button btnCustomPropEditor;
+		private System.Windows.Forms.Label lblBulbSize;
+		private System.Windows.Forms.Panel pnlBulbSize;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
+		private System.Windows.Forms.Button btnBulbDecrease;
+		private System.Windows.Forms.Button btnBulbIncrease;
 	}
 }

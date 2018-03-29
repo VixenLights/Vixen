@@ -7,20 +7,14 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using Catel.IoC;
-using Catel.Services;
 using Common.Controls.Scaling;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
 using Vixen.Sys;
-using VixenModules.App.CustomPropEditor;
-using VixenModules.App.CustomPropEditor.Model;
-using VixenModules.App.CustomPropEditor.Services;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
@@ -28,7 +22,8 @@ using Cursors = System.Windows.Forms.Cursors;
 using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
 using Size = System.Drawing.Size;
 
-namespace VixenModules.Preview.VixenPreview {
+namespace VixenModules.Preview.VixenPreview
+{
 	public partial class VixenPreviewSetup3 : BaseForm
     {
         private VixenPreviewData _data;
@@ -71,9 +66,33 @@ namespace VixenModules.Preview.VixenPreview {
 			redoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.ButtonType = UndoButtonType.RedoButton;
 
+			btnBulbIncrease.Image = Tools.GetIcon(Resources.buttonBulbBigger, iconSize);
+			btnBulbDecrease.Image = Tools.GetIcon(Resources.buttonBulbSmaller, iconSize);
+			//btnBulbMatch.Image = Tools.GetIcon(Resources.buttonBulbEqual, iconSize);
+
 			btnAddCustomProp.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 			btnCustomPropEditor.Image = Tools.GetIcon(Resources.cog, iconSize);
 			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
+
+			buttonAlignLeft.Image = Tools.GetIcon(Resources.buttonAlignLeft_BackgroundImage, iconSize);
+			buttonAlignBottom.Image = Tools.GetIcon(Resources.buttonAlignBottom_BackgroundImage, iconSize);
+			buttonAlignHorizMid.Image = Tools.GetIcon(Resources.buttonAlignHorizMid_BackgroundImage, iconSize);
+			buttonAlignRight.Image = Tools.GetIcon(Resources.buttonAlignRight_BackgroundImage, iconSize);
+			buttonAlignTop.Image = Tools.GetIcon(Resources.buttonAlignTop_BackgroundImage, iconSize);
+			buttonAlignVertMid.Image = Tools.GetIcon(Resources.buttonAlignVertMid_BackgroundImage, iconSize);
+			buttonDistributeHorizontal.Image = Tools.GetIcon(Resources.buttonDistributeHorizontal_BackgroundImage, iconSize);
+			buttonDistributeVertical.Image = Tools.GetIcon(Resources.buttonDistributeVertical_BackgroundImage, iconSize);
+			buttonMatchProperties.Image = Tools.GetIcon(Resources.buttonMatchProperties_BackgroundImage, iconSize);
+
+			buttonAlignLeft.Text = string.Empty;
+			buttonAlignBottom.Text = string.Empty;
+			buttonAlignHorizMid.Text = string.Empty;
+			buttonAlignRight.Text = string.Empty;
+			buttonAlignTop.Text = string.Empty;
+			buttonAlignVertMid.Text = string.Empty;
+			buttonDistributeHorizontal.Text = string.Empty;
+			buttonDistributeVertical.Text = string.Empty;
+			buttonMatchProperties.Text = string.Empty;
 
 			tlpToolBar.BorderStyle = BorderStyle.FixedSingle;
 			ThemeUpdateControls.UpdateControls(this);
@@ -106,6 +125,8 @@ namespace VixenModules.Preview.VixenPreview {
 				previewForm.Preview.Data = _data;
 			previewForm.Preview.OnSelectDisplayItem += OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem += OnDeSelectDisplayItem;
+
+			previewForm.Preview.OnSelectionChanged += Preview_OnSelectionChanged;
 
 			previewForm.Preview.OnChangeZoomLevel += VixenPreviewSetup3_ChangeZoomLevel;
 			PreviewItemsAlignNew += vixenpreviewControl_PreviewItemsAlignNew;
@@ -142,7 +163,7 @@ namespace VixenModules.Preview.VixenPreview {
 			InitUndo();
 		}
 
-	    private bool IsVisibleOnAnyScreen(Rectangle rect)
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
 	    {
 		    return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 	    }
@@ -152,6 +173,7 @@ namespace VixenModules.Preview.VixenPreview {
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
+			previewForm.Preview.OnSelectionChanged -= Preview_OnSelectionChanged;
 			VixenPreviewControl.PreviewItemsResizingNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsResizingNew;
 			VixenPreviewControl.PreviewItemsMovedNew -= previewForm.Preview.vixenpreviewControl_PreviewItemsMovedNew;
 			_undoMgr.UndoItemsChanged -= _undoMgr_UndoItemsChanged;
@@ -192,7 +214,28 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 
-        private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
+	    private void Preview_OnSelectionChanged(object sender, EventArgs args)
+	    {
+			SetButtonEnabledState();
+		}
+
+		private void SetButtonEnabledState()
+	    {
+		    btnBulbIncrease.Enabled = btnBulbDecrease.Enabled = previewForm.Preview.IsSingleItemSelected || previewForm.Preview.SelectedDisplayItems.Any();
+
+		    var multiSelect = previewForm.Preview.SelectedDisplayItems.Count > 1;
+			//btnBulbMatch.Enabled = multiSelect;
+		    buttonAlignBottom.Enabled = multiSelect;
+		    buttonAlignHorizMid.Enabled = multiSelect;
+		    buttonAlignLeft.Enabled = multiSelect;
+		    buttonAlignRight.Enabled = multiSelect;
+		    buttonAlignTop.Enabled = multiSelect;
+		    buttonAlignVertMid.Enabled = multiSelect;
+		    buttonDistributeHorizontal.Enabled = buttonDistributeVertical.Enabled = multiSelect;
+		    buttonMatchProperties.Enabled = multiSelect;
+	    }
+
+	    private void VixenPreviewSetup3_ChangeZoomLevel(object sender, double zoomLevel) 
         {
             SetZoomTextAndTracker(zoomLevel);
         }
@@ -476,12 +519,6 @@ namespace VixenModules.Preview.VixenPreview {
 
 		#region Templates
 
-		
-		private void buttonAddTemplate_Click(object sender, EventArgs e) {
-			previewForm.Preview.CreateTemplate();
-			
-		}
-
 		private void buttonAddToPreview_Click(object sender, EventArgs e) {
 
 			TemplateDialog td = new TemplateDialog();
@@ -636,20 +673,7 @@ namespace VixenModules.Preview.VixenPreview {
 			}
 		}
 		#endregion
-
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
-		}
-
+		
 		private void buttonShapeSelected(Control selectedButton)
 	    {
 			//foreach (Control c in pnlBasicDrawing.Controls)
@@ -686,11 +710,6 @@ namespace VixenModules.Preview.VixenPreview {
 		    }
 		}
 
-		private void comboBox_DrawItem(object sender, DrawItemEventArgs e)
-		{
-			ThemeComboBoxRenderer.DrawItem(sender, e);
-		}
-
 		private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveLocationDataForElements();
@@ -712,21 +731,6 @@ namespace VixenModules.Preview.VixenPreview {
 	        }
         }
 
-		private void label14_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void label3_Click(object sender, EventArgs e)
-		{
-
-		}
-
-		private void label4_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		private async void importPropToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			await previewForm.Preview.ImportCustomProp();
@@ -742,6 +746,21 @@ namespace VixenModules.Preview.VixenPreview {
 		private void buttonCustomPropLibrary_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+		}
+
+		private void btnBulbDecrease_Click(object sender, EventArgs e)
+		{
+			previewForm.Preview.DecreaseBulbSize();
+		}
+
+		private void btnBulbIncrease_Click(object sender, EventArgs e)
+		{
+			previewForm.Preview.IncreaseBulbSize();
+		}
+
+		private void btnBulbMatch_Click(object sender, EventArgs e)
+		{
+			previewForm.Preview.MatchBulbSize();
 		}
 	}
 

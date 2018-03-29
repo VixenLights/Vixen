@@ -55,6 +55,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     {
                         newString.Pixels.Add(pixel.Clone());
                     }
+                }else if (shape.StringType == PreviewBaseShape.StringTypes.Custom)
+                {
+	                foreach (var pixel in shape.Pixels)
+	                {
+						newString.Pixels.Add(pixel.Clone());
+					}
                 }
 
                 newString.StringName = "String " + i.ToString();
@@ -198,7 +204,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     Console.WriteLine("elementString==null");
                 }
-                numericUpDownLightCount.Value = elementString.Pixels.Count();
+
+	            var count = elementString.Pixels.Count();
+
+				numericUpDownLightCount.Value = count>0?count:1;
             }
         }
 

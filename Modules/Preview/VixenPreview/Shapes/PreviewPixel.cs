@@ -28,6 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private int savedX;
 		private int savedY;
 		private int savedZ;
+		private int savedPixelSize;
 		private Point _location;
 
 		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
@@ -56,9 +57,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			brush = new SolidBrush(Color.White);
 			Resize();
 		}
-
-		[DataMember(EmitDefaultValue = false)]
-		public bool SerializeCoordinates { get; set; }
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
@@ -191,7 +189,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				Resize();
 			}
 		}
-		
+
+		[DataMember(EmitDefaultValue = false)]
 		public int PixelSize
 		{
 			get { return size; }
@@ -277,14 +276,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnSerializing]
 		void OnSerializing(StreamingContext context)
 		{
-			if (!SerializeCoordinates)
+			if (!IsHighPrecision)
 			{
 				savedX = X;
 				savedY = Y;
 				savedZ = Z;
+				savedPixelSize = PixelSize;
 				X = default(int); // will not be serialized
 				Y = default(int); // will not be serialized
 				Z = default(int); // will not be serialized
+				PixelSize = default(int); // will not be serialized
 			}
 			
 		}
@@ -292,11 +293,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnSerialized]
 		void OnSerialized(StreamingContext context)
 		{
-			if (!SerializeCoordinates)
+			if (!IsHighPrecision)
 			{
 				X = savedX;
 				Y = savedY;
 				Z = savedZ;
+				PixelSize = savedPixelSize;
 			}
 			
 		}

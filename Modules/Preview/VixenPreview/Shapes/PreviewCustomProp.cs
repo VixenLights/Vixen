@@ -15,8 +15,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	[DataContract]
 	public class PreviewCustomProp : PreviewBaseShape
 	{
-
-		public Rectangle Bounds { get; private set; }
 		private List<PreviewPoint> _dragPoints = new List<PreviewPoint>();
 		private PreviewPoint p1Start, p2Start;
 		private double _zoomLevel;
@@ -24,6 +22,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewCustomProp(double zoomLevel)
 		{
 			PropPixels = new List<PreviewPixel>();
+			StringType = StringTypes.Custom;
 			ZoomLevel = zoomLevel;
 		}
 
@@ -36,7 +35,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PreviewPixel p = AddHighPrecisionPixel(new Point(light.X, light.Y), model.LightSize);
 				p.PixelColor = Color.White;
 				p.Node = node;
-				p.SerializeCoordinates = true;
 			}
 		}
 
@@ -49,6 +47,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		[DataMember]
+		[Browsable(false)]
 		public List<PreviewPixel> PropPixels { get; set; }
 
 		#region Overrides of PreviewBaseShape
@@ -57,6 +56,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override List<PreviewPixel> Pixels { get; set; }
 
 		#endregion
+		[Browsable(false)]
+		public Rectangle Bounds { get; private set; }
 
 		internal void UpdateBounds()
 		{
@@ -71,6 +72,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		#region Overrides of PreviewBaseShape
 
 		/// <inheritdoc />
+		[Browsable(true)]
+		[Category("Location")]
+		[DisplayName("Y")]
 		public override int Top
 		{
 			get { return Bounds.Top; }
@@ -85,6 +89,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public override int Bottom => Bounds.Bottom;
 
 		/// <inheritdoc />
+		[Browsable(true)]
+		[Category("Location")]
+		[DisplayName("X")]
 		public override int Left
 		{
 			get { return Bounds.Left; }
@@ -106,17 +113,45 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Scale(xAspect, yAspect, Left, Top);
 		}
 
-		public override void ResizePixels()
+		/// <inheritdoc />
+		[Browsable(false)]
+		public override int PixelSize
 		{
-			//foreach (var previewPixel in PropPixels)
-			//{
-			//	previewPixel.PixelSize = PixelSize;
-			//}
+			set;
+			get;
+		}
 
-			//foreach (var previewPixel in Pixels)
-			//{
-			//	previewPixel.PixelSize = PixelSize;
-			//}
+		/// <inheritdoc />
+		public override void MatchPixelSize(PreviewBaseShape shape)
+		{
+			if (!shape.Pixels.Any()) return;
+
+			var newsize = shape.Pixels[0].PixelSize;
+
+			foreach (var previewPixel in PropPixels)
+			{
+				previewPixel.PixelSize = newsize;
+			}
+
+			foreach (var previewPixel in Pixels)
+			{
+				previewPixel.PixelSize = newsize;
+			}
+		}
+
+		public override void ResizePixelsBy(int value)
+		{
+			foreach (var previewPixel in PropPixels)
+			{
+				var newSize = previewPixel.PixelSize + value;
+				previewPixel.PixelSize = newSize > 0 ? newSize : 1;
+			}
+
+			foreach (var previewPixel in Pixels)
+			{
+				var newSize = previewPixel.PixelSize + value;
+				previewPixel.PixelSize = newSize > 0 ? newSize : 1;
+			}
 		}
 
 		[Browsable(false)]
@@ -268,16 +303,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			// If we get here, we're moving
 			else
 			{
-				var newX = Convert.ToInt32(p1Start.X * ZoomLevel) + changeX;
-				var newY = Convert.ToInt32(p1Start.Y * ZoomLevel) + changeY;
+				var newX = p1Start.X + changeX;
+				var newY = p1Start.Y + changeY;
 
 				MoveTo(newX, newY);
-				
-				PointToZoomPointRef(new PreviewPoint(Bounds.Location));
-				PointToZoomPointRef(new PreviewPoint(Bounds.Right, Bounds.Bottom));
 			}
-
-			
 		}
 
 		private void Zoom()

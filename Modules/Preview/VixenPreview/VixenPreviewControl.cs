@@ -8,10 +8,6 @@ using System.IO;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Controls;
-using Common.Controls.ControlsEx.ListControls;
-using Common.Controls.Timeline;
-using Vixen.Data.Value;
 using Vixen.Execution.Context;
 using Vixen.Sys;
 using VixenModules.Editor.VixenPreviewSetup3.Undo;
@@ -23,12 +19,9 @@ using System.Collections.Concurrent;
 using Catel.IoC;
 using Catel.Services;
 using Vixen;
-using Vixen.Services;
-using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Property.Location;
-using VixenModules.Property.Order;
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Element = Vixen.Sys.Element;
 using Size = System.Drawing.Size;
@@ -128,6 +121,10 @@ namespace VixenModules.Preview.VixenPreview
 
 		public event SelectDisplayItemEventHandler OnSelectDisplayItem;
 
+		public delegate void SelectionChangedEventHandler(object sender, EventArgs args);
+
+		public event SelectionChangedEventHandler OnSelectionChanged;
+
 		public delegate void DeSelectDisplayItemEventHandler(object sender, DisplayItem displayItem);
 
 		public event DeSelectDisplayItemEventHandler OnDeSelectDisplayItem;
@@ -218,6 +215,8 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			get { return _highlightedElements; }
 		}
+
+		public bool IsSingleItemSelected => _selectedDisplayItem != null;
 
 		public List<DisplayItem> SelectedDisplayItems
 		{
@@ -511,6 +510,7 @@ namespace VixenModules.Preview.VixenPreview
 					DisplayItem item = DisplayItemAtPoint(point);
 					if (item != null)
 						SelectedDisplayItems.Add(item);
+					OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else
 				{
@@ -523,19 +523,21 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.Select(true);
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 					}
+
+					OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				}
 			}
 		}
 
-		public void selectItem(PreviewPoint point)
-		{
-			_selectedDisplayItem = DisplayItemAtPoint(point);
-			if (_selectedDisplayItem != null)
-			{
-				_selectedDisplayItem.Shape.Select(true);
-				OnSelectDisplayItem(this, _selectedDisplayItem);
-			}
-		}
+		//public void selectItem(PreviewPoint point)
+		//{
+		//	_selectedDisplayItem = DisplayItemAtPoint(point);
+		//	if (_selectedDisplayItem != null)
+		//	{
+		//		_selectedDisplayItem.Shape.Select(true);
+		//		OnSelectDisplayItem(this, _selectedDisplayItem);
+		//	}
+		//}
 
 		private bool _mouseCaptured = false;
 		private bool _banding = false;
@@ -556,6 +558,7 @@ namespace VixenModules.Preview.VixenPreview
 							if (item != null && SelectedDisplayItems.Contains(item))
 							{
 								SelectedDisplayItems.Remove(item);
+								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 							}
 							else
 							{
@@ -611,6 +614,7 @@ namespace VixenModules.Preview.VixenPreview
 							else
 							{
 								SelectedDisplayItems.Clear();
+								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 							}
 						}
 
@@ -624,6 +628,7 @@ namespace VixenModules.Preview.VixenPreview
 							Capture = true;
 							_mouseCaptured = true;
 							SelectedDisplayItems.Clear();
+							OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 							_bandRect.Width = 0;
 							_bandRect.Height = 0;
 							_banding = true;
@@ -1047,11 +1052,13 @@ namespace VixenModules.Preview.VixenPreview
 								if (!SelectedDisplayItems.Contains(item))
 								{
 									SelectedDisplayItems.Add(item);
+									OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 								}
 							}
 							else if (SelectedDisplayItems.Contains(item))
 							{
 								SelectedDisplayItems.Remove(item);
+								OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 							}
 						}
 					}
@@ -1306,6 +1313,7 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.Select(true);
 						OnSelectDisplayItem(this, _selectedDisplayItem);
 						SelectedDisplayItems.Clear();
+						OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 					}
 					else
 					{
@@ -1412,6 +1420,7 @@ namespace VixenModules.Preview.VixenPreview
 				OnDeSelectDisplayItem(this, _selectedDisplayItem);
 				_selectedDisplayItem.Shape.Deselect();
 				_selectedDisplayItem = null;
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -1549,6 +1558,7 @@ namespace VixenModules.Preview.VixenPreview
 					DeSelectSelectedDisplayItem();
 				}
 				SelectedDisplayItems.Clear();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -1572,6 +1582,7 @@ namespace VixenModules.Preview.VixenPreview
 			else if (_selectedDisplayItem != null)
 			{
 				SelectedDisplayItems.Add(_selectedDisplayItem);
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 				string xml = PreviewTools.SerializeToString(SelectedDisplayItems);
 				Clipboard.SetData(DataFormats.Text, xml);
 			}
@@ -1665,6 +1676,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			AddNewGroup(out newDisplayItem, null);
 			SelectedDisplayItems.Clear();
+			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			var action = new PreviewItemsGroupAddedUndoAction(this, newDisplayItem);//Start Undo Action.
 			UndoManager.AddUndoAction(action);
 			return newDisplayItem;
@@ -1852,6 +1864,7 @@ namespace VixenModules.Preview.VixenPreview
 			newDisplayItem.Shape.MoveTo(location.X, location.Y);
 			DisplayItems.Add(newDisplayItem);
 			SelectedDisplayItems.Clear();
+			OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		internal string GetSubstitutionString(string token)
@@ -1894,10 +1907,57 @@ namespace VixenModules.Preview.VixenPreview
 					DeSelectSelectedDisplayItem();
 				}
 				SelectedDisplayItems.Clear();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
 		#endregion
+
+		#region Bulb Size
+
+		public void IncreaseBulbSize()
+		{
+			if (_selectedDisplayItem != null && !SelectedShapes().Any())
+			{
+				_selectedDisplayItem.Shape.ResizePixelsBy(1);
+			}
+			else
+			{
+				foreach (PreviewBaseShape shape in SelectedShapes())
+				{
+					shape.ResizePixelsBy(1);
+				}
+			}
+		}
+
+		public void DecreaseBulbSize()
+		{
+			if (_selectedDisplayItem != null && !SelectedShapes().Any())
+			{
+				_selectedDisplayItem.Shape.ResizePixelsBy(-1);
+			}
+			else
+			{
+				foreach (PreviewBaseShape shape in SelectedShapes())
+				{
+					shape.ResizePixelsBy(-1);
+				}
+			}
+		}
+
+		public void MatchBulbSize()
+		{
+			foreach (PreviewBaseShape shape in SelectedShapes())
+			{
+				if (shape != SelectedShapes()[0])
+				{
+					shape.MatchPixelSize(SelectedShapes()[0]);
+				}
+			}
+		}
+
+		#endregion
+
 
 		#region Alignment Tools
 
@@ -2326,10 +2386,16 @@ namespace VixenModules.Preview.VixenPreview
 		public void beginResize_Move(bool multi)
 		{
 			if (!multi)
+			{
 				SelectedDisplayItems.Add(_selectedDisplayItem);
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+			}
 			m_previewItemResizeMoveInfo = new PreviewItemResizeMoveInfo(SelectedDisplayItems);
 			if (!multi)
+			{
 				SelectedDisplayItems.Clear();
+				OnSelectionChanged?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		public class PreviewItemResizeMoveInfo
