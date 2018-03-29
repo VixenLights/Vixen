@@ -749,14 +749,14 @@
 			// propInformationToolStripMenuItem
 			// 
 			this.propInformationToolStripMenuItem.Name = "propInformationToolStripMenuItem";
-			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.propInformationToolStripMenuItem.Text = "Prop &Information";
 			this.propInformationToolStripMenuItem.Click += new System.EventHandler(this.propInformationToolStripMenuItem_Click);
 			// 
 			// propEditorToolStripMenuItem
 			// 
 			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
-			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.propEditorToolStripMenuItem.Text = "Prop Editor";
 			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.btnCustomPropEditor_Click);
 			// 
@@ -852,7 +852,7 @@
 			// 
 			this.addTemplateMenu.Name = "addTemplateMenu";
 			this.addTemplateMenu.Size = new System.Drawing.Size(211, 30);
-			this.addTemplateMenu.Text = "Templates";
+			this.addTemplateMenu.Text = "Templates (Legacy)";
 			this.addTemplateMenu.Click += new System.EventHandler(this.buttonAddToPreview_Click);
 			// 
 			// settingsToolStripMenuItem
