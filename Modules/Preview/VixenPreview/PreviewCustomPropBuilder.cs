@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Catel.Services;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
-using VixenModules.App.CustomPropEditor.Services;
 using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Color;
 using VixenModules.Property.Order;
@@ -20,16 +19,19 @@ namespace VixenModules.Preview.VixenPreview
 
 		private Dictionary<Guid, ElementNode> _elementModelMap;
 		private HashSet<string> _elementNames;
-		private List<ElementNode> _leafNodes = new List<ElementNode>();
-		private string _nameTokenValue = String.Empty;
+		private readonly List<ElementNode> _leafNodes = new List<ElementNode>();
+		private readonly Dictionary<string, string> _tokenLookup = new Dictionary<string, string>();
+		private static Regex _regex = new Regex(@"<\d+>");
+		private readonly VixenPreviewControl _parent;
 
-		public PreviewCustomPropBuilder(Prop prop, double zoomLevel)
+		public PreviewCustomPropBuilder(Prop prop, double zoomLevel, VixenPreviewControl parent)
 		{
 			if (prop == null)
 			{
 				throw new ArgumentNullException(nameof(prop));
 			}
 			_prop = prop;
+			_parent = parent;
 			PreviewCustomProp = new PreviewCustomProp(zoomLevel);
 		}
 
@@ -37,17 +39,6 @@ namespace VixenModules.Preview.VixenPreview
 
 		public async Task CreateAsync()
 		{
-
-			if (_prop.SupportsToken)
-			{
-				MessageBoxService mbs = new MessageBoxService();
-				var response = mbs.GetUserInput("Enter name token replacement value.", "Prop naming", "1");
-				if (response.Result == MessageResult.OK)
-				{
-					_nameTokenValue = response.Response;
-				}
-			}
-
 			Task t = Task.Factory.StartNew(() =>
 			{
 				_elementModelMap = new Dictionary<Guid, ElementNode>();
@@ -95,12 +86,22 @@ namespace VixenModules.Preview.VixenPreview
 
 		private string TokenizeName(string name)
 		{
-			if (_prop.SupportsToken)
+			var returnValue = name;
+			var match = _regex.Match(name);
+			while (match.Success)
 			{
-				return name.Replace(_prop.ReplacementToken, _nameTokenValue);
+				string value;
+				if (!_tokenLookup.TryGetValue(match.Value, out value))
+				{
+					value = _parent.GetSubstitutionString(match.Value);
+					_tokenLookup.Add(match.Value, value);
+				}
+				
+				returnValue = returnValue.Replace(match.Value, value);
+				match = match.NextMatch();
 			}
 
-			return name;
+			return returnValue;
 		}
 
 		private void CreateElementsForChildren(ElementNode parentNode, ElementModel model)

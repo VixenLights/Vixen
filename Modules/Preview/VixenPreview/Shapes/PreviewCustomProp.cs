@@ -62,7 +62,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			var rects = Pixels.Select(p => p.Bounds);
 			Bounds = GetCombinedBounds(rects);
-			SelectDragPoints();
+			ConfigureDragPoints();
 		}
 
 		#region Overrides of PreviewBaseShape
@@ -130,14 +130,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		/// <inheritdoc />
 		public override void SelectDragPoints()
+		{          
+			SetSelectPoints(_dragPoints, null);
+		}
+
+		private void ConfigureDragPoints()
 		{
 			_dragPoints.Clear();
 			_dragPoints.Add(new PreviewPoint(Bounds.Left, Bounds.Top, PreviewPoint.PointTypes.Size));
 			_dragPoints.Add(new PreviewPoint(Bounds.Right, Bounds.Top, PreviewPoint.PointTypes.Size));
 			_dragPoints.Add(new PreviewPoint(Bounds.Right, Bounds.Bottom, PreviewPoint.PointTypes.Size));
 			_dragPoints.Add(new PreviewPoint(Bounds.Left, Bounds.Bottom, PreviewPoint.PointTypes.Size));
-			// Tell the base shape about the newely created points            
-			SetSelectPoints(_dragPoints, null);
 		}
 
 		public override void DrawSelectPoints(FastPixel.FastPixel fp)

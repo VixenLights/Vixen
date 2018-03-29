@@ -120,20 +120,6 @@ namespace VixenModules.App.CustomPropEditor.Model
 		    }
 	    }
 
-	    public bool SupportsToken => !string.IsNullOrEmpty(ReplacementToken);
-
-	    public string ReplacementToken
-	    {
-		    get { return _replacementToken; }
-		    set
-		    {
-			    if (value == _replacementToken) return;
-			    _replacementToken = value;
-			    OnPropertyChanged(nameof(ReplacementToken));
-			    OnPropertyChanged(nameof(SupportsToken));
-		    }
-	    }
-
 	    public VendorMetadata VendorMetadata { get; set; }
 
 	    public PhysicalMetadata PhysicalMetadata { get; set; }

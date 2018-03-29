@@ -2,23 +2,27 @@
 using System.Windows.Forms;
 using Catel;
 using Catel.Services;
-using Catel.Windows;
 using Common.Controls;
 
 namespace VixenModules.App.CustomPropEditor.Services
 {
 	public class MessageBoxService
 	{
-		public MessageBoxResponse GetUserInput(string question, string title, string defaultText)
+		public MessageBoxResponse GetUserInput(string question, string title, string defaultText, Form parent=null)
 		{
 			TextDialog dialog = new TextDialog(question, title, defaultText, true);
+
+			if (parent == null)
+			{
+				dialog.StartPosition = FormStartPosition.CenterScreen;
+			}
 			var input = string.Empty;
 
 			var validInput = false;
 			DialogResult result;
 			do
 			{
-				result = dialog.ShowDialog();
+				result = dialog.ShowDialog(parent);
 				if (result == DialogResult.OK)
 				{
 					if (dialog.Response == string.Empty)

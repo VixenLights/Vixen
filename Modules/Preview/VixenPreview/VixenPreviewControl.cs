@@ -22,6 +22,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using Catel.IoC;
 using Catel.Services;
+using Vixen;
 using Vixen.Services;
 using Vixen.Utility;
 using VixenModules.App.CustomPropEditor.Model;
@@ -1796,7 +1797,8 @@ namespace VixenModules.Preview.VixenPreview
 				}
 				else
 				{
-					//Alert user
+					MessageBoxForm mbf = new MessageBoxForm("An error occured loading the prop.", "Prop Load Error!",MessageBoxButtons.OK,SystemIcons.Error);
+					mbf.ShowDialog(this);
 				}
 				Cursor = Cursors.Arrow;
 			}
@@ -1832,7 +1834,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		internal async Task AddPropToPreviewAsync(Prop p, Point location)
 		{
-			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel);
+			PreviewCustomPropBuilder builder = new PreviewCustomPropBuilder(p, ZoomLevel, this);
 			await builder.CreateAsync();
 			OnElementsChanged?.Invoke(this, EventArgs.Empty);
 
@@ -1849,6 +1851,25 @@ namespace VixenModules.Preview.VixenPreview
 			}
 			newDisplayItem.Shape.MoveTo(location.X, location.Y);
 			DisplayItems.Add(newDisplayItem);
+			SelectedDisplayItems.Clear();
+		}
+
+		internal string GetSubstitutionString(string token)
+		{
+			if (InvokeRequired)
+			{
+				return (string)Invoke(new Delegates.GenericString(GetSubstitutionString), token);
+			}
+
+			var returnValue = string.Empty;
+			MessageBoxService mbs = new MessageBoxService();
+			var response = mbs.GetUserInput($"Enter token replacement value for {token}.", "Prop naming", "1");
+			if (response.Result == MessageResult.OK)
+			{
+				returnValue = response.Response;
+			}
+
+			return returnValue;
 		}
 
 		public void SeparateTemplateItems(DisplayItem displayItem)
