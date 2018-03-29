@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using BaseSequence;
 using Common.Controls;
 using Vixen.Services;
 using Vixen.Sys;
