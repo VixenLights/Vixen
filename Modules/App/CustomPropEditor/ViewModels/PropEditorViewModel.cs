@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.WpfPropertyGrid;
 using Catel.IoC;
@@ -643,7 +644,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
 			saveFileService.CheckPathExists = true;
 			saveFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
-			saveFileService.FileName = Prop.Name;
+			saveFileService.FileName = CleanseTokens(Prop.Name);
 			if (await saveFileService.DetermineFileAsync())
 			{
 				// User selected a file
@@ -888,6 +889,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 
 		#endregion
+
+		private string CleanseTokens(string name)
+		{
+			Regex regex = new Regex(@"<\d+>");
+			var returnValue = name;
+			var match = regex.Match(name);
+			while (match.Success)
+			{
+				returnValue = returnValue.Replace(match.Value, string.Empty);
+				match = match.NextMatch();
+			}
+
+			return returnValue;
+		}
 
 	}
 
