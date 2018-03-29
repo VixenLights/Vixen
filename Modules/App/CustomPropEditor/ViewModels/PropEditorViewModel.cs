@@ -644,7 +644,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
 			saveFileService.CheckPathExists = true;
 			saveFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
-			saveFileService.FileName = CleanseTokens(Prop.Name);
+			saveFileService.FileName = CleanseNameString(Prop.Name);
 			if (await saveFileService.DetermineFileAsync())
 			{
 				// User selected a file
@@ -701,7 +701,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		private void Closing(CancelEventArgs e)
 		{
 			MessageBoxService mbs = new MessageBoxService();
-			var response = mbs.GetUserConfirmation($"Save Prop \"{Prop.Name}\" ", "Save");
+			var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
 			if (response.Result == MessageResult.OK)
 			{
 				SaveModel();
@@ -890,14 +890,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		private string CleanseTokens(string name)
+		private string CleanseNameString(string name)
 		{
-			Regex regex = new Regex(@"<\d+>");
+			Regex tokenRegex = new Regex(@"<\d+>");
+			Regex spaceRegex = new Regex(@"[ ]{2,}");
 			var returnValue = name;
-			var match = regex.Match(name);
+			var match = tokenRegex.Match(name);
 			while (match.Success)
 			{
 				returnValue = returnValue.Replace(match.Value, string.Empty);
+				match = match.NextMatch();
+			}
+
+			//Trim trailing spaces.
+			returnValue = returnValue.Trim();
+
+			//Remove consecutive spaces.
+			match = spaceRegex.Match(returnValue);
+			while (match.Success)
+			{
+				returnValue = returnValue.Replace(match.Value, " ");
 				match = match.NextMatch();
 			}
 
