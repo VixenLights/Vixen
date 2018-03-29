@@ -91,7 +91,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -167,6 +167,7 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
       <Project>{1B189B36-02AF-4A57-9E1B-6DC833212725}</Project>
