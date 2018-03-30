@@ -376,6 +376,10 @@
     <Compile Include="TemplateDialog.Designer.cs">
       <DependentUpon>TemplateDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Undo\PreviewItemPixelSizeChangeUndoAction.cs" />
+    <Compile Include="Undo\PreviewItemPixelSizeInfo.cs" />
+    <Compile Include="Undo\PreviewItemPositionInfo.cs" />
+    <Compile Include="Undo\PreviewItemResizeMoveInfo.cs" />
     <Compile Include="Undo\PreviewItemsGroupAddedSeparateUndoAction.cs" />
     <Compile Include="Undo\PreviewItemsGroupAddedUndoAction.cs" />
     <Compile Include="Undo\PreviewItemsGroupSeparateAction.cs" />

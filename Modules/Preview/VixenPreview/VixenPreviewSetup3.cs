@@ -15,6 +15,7 @@ using VixenModules.Preview.VixenPreview.Shapes;
 using VixenModules.Property.Location;
 using Common.Resources.Properties;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.Undo;
 using WeifenLuo.WinFormsUI.Docking;
 using Button = System.Windows.Forms.Button;
 using Control = System.Windows.Forms.Control;
@@ -767,24 +768,24 @@ namespace VixenModules.Preview.VixenPreview
 
 	public class PreviewItemMoveEventArgs : EventArgs
 	{
-		public PreviewItemMoveEventArgs(VixenPreviewControl.PreviewItemResizeMoveInfo info)
+		public PreviewItemMoveEventArgs(PreviewItemResizeMoveInfo info)
 		{
 			if (info != null)
 				PreviousMove = info.OriginalPreviewItem;
 		}
 
-		public Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> PreviousMove { get; private set; }
+		public Dictionary<DisplayItem, PreviewItemPositionInfo> PreviousMove { get; private set; }
 	}
 
 	public class PreviewItemResizingEventArgs : EventArgs
 	{
-		public PreviewItemResizingEventArgs(VixenPreviewControl.PreviewItemResizeMoveInfo info)
+		public PreviewItemResizingEventArgs(PreviewItemResizeMoveInfo info)
 		{
 			if (info != null)
 				PreviousSize = info.OriginalPreviewItem;
 		}
 
-		public Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> PreviousSize { get; private set; }
+		public Dictionary<DisplayItem, PreviewItemPositionInfo> PreviousSize { get; private set; }
 	}
 
 }

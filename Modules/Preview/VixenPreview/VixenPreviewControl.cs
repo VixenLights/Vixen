@@ -21,6 +21,7 @@ using Catel.Services;
 using Vixen;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using VixenModules.Preview.VixenPreview.Undo;
 using VixenModules.Property.Location;
 using DisplayItem = VixenModules.Preview.VixenPreview.Shapes.DisplayItem;
 using Element = Vixen.Sys.Element;
@@ -1615,8 +1616,7 @@ namespace VixenModules.Preview.VixenPreview
 			var displayItemTemp = PreviewTools.DeSerializeToDisplayItemList(rhs.OriginalPreviewItem[0]);
 			foreach (var temp1 in displayItemTemp)
 			{
-				var temp = lhs;
-				var newObject = temp;
+				var newObject = lhs;
 				rhs.OriginalPreviewItem.Clear();
 				List<DisplayItem> newObjectList = new List<DisplayItem>();
 				newObjectList.Add(newObject);
@@ -1624,6 +1624,21 @@ namespace VixenModules.Preview.VixenPreview
 				lhs.Shape = temp1.Shape;
 			}
 		}
+
+		#endregion
+
+		#region Preview Item Pixel Size change.
+
+		public void PixelResizeSwapPlaces(List<DisplayItem> changedPreviewItems, PreviewItemPixelSizeInfo info)
+		{
+			var reverseChange = -info.ChangeAmount;
+			foreach (DisplayItem e in changedPreviewItems)
+			{
+				e.Shape.ResizePixelsBy(reverseChange);
+				info.ChangeAmount = reverseChange;
+			}
+		}
+
 		#endregion
 
 		public void ResizeBackground(int width, int height)
@@ -1920,6 +1935,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (_selectedDisplayItem != null && !SelectedShapes().Any())
 			{
 				_selectedDisplayItem.Shape.ResizePixelsBy(1);
+				PixelResize(1, new List<DisplayItem>( new [] {_selectedDisplayItem}));
 			}
 			else
 			{
@@ -1927,6 +1943,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					shape.ResizePixelsBy(1);
 				}
+				PixelResize(1, SelectedDisplayItems);
 			}
 		}
 
@@ -1935,6 +1952,7 @@ namespace VixenModules.Preview.VixenPreview
 			if (_selectedDisplayItem != null && !SelectedShapes().Any())
 			{
 				_selectedDisplayItem.Shape.ResizePixelsBy(-1);
+				PixelResize(1, new List<DisplayItem>(new[] { _selectedDisplayItem }));
 			}
 			else
 			{
@@ -1942,6 +1960,7 @@ namespace VixenModules.Preview.VixenPreview
 				{
 					shape.ResizePixelsBy(-1);
 				}
+				PixelResize(-1, SelectedDisplayItems);
 			}
 		}
 
@@ -2398,49 +2417,13 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public class PreviewItemResizeMoveInfo
+		public void PixelResize(int changeAmount, List<DisplayItem> displayItems)
 		{
-			public PreviewItemResizeMoveInfo(List<DisplayItem> modifyingElements)
-			{
-				OriginalPreviewItem = new Dictionary<DisplayItem, PreviewItemPositionInfo>();
-
-				foreach (var previewItem in modifyingElements)
-				{
-					if (OriginalPreviewItem.ContainsKey(previewItem))
-					{
-						OriginalPreviewItem[previewItem] = new PreviewItemPositionInfo(previewItem);
-					}
-					else
-					{
-						OriginalPreviewItem.Add(previewItem, new PreviewItemPositionInfo(previewItem));
-					}
-				}
-			}
-
-			///<summary>The point on the grid where the mouse first went down.</summary>
-			//		public PreviewPoint InitialGridLocation { get; private set; }
-
-			///<summary>All elements being modified and their original parameters.</summary>
-			public Dictionary<DisplayItem, PreviewItemPositionInfo> OriginalPreviewItem { get; private set; }
+			var info = new PreviewItemPixelSizeInfo(changeAmount);
+			PreviewItemPixelSizeChangeUndoAction action = new PreviewItemPixelSizeChangeUndoAction(this, displayItems, info);
+			UndoManager.AddUndoAction(action);
 		}
-
-		public class PreviewItemPositionInfo
-		{
-			public PreviewItemPositionInfo(DisplayItem previewItem)
-			{
-				TopPosition = previewItem.Shape.Top;
-				LeftPosition = previewItem.Shape.Left;
-				List<DisplayItem> temp = new List<DisplayItem>();
-				temp.Add(previewItem);
-				OriginalPreviewItem = new List<string>();
-				OriginalPreviewItem.Add(PreviewTools.SerializeToString(temp));
-			}
-
-			public List<string> OriginalPreviewItem { get; set; }
-
-			public int TopPosition { get; set; }
-			public int LeftPosition { get; set; }
-		}
+		
 	}
 
 	#endregion

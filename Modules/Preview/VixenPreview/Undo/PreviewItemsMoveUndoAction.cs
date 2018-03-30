@@ -4,15 +4,16 @@ using Common.Controls;
 using Vixen.Sys;
 using VixenModules.Preview.VixenPreview;
 using VixenModules.Preview.VixenPreview.Shapes;
+using VixenModules.Preview.VixenPreview.Undo;
 
 namespace VixenModules.Editor.VixenPreviewSetup3.Undo
 {
 	public class PreviewItemsMoveUndoAction : UndoAction
 	{
-		private Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> m_changedPreviewItems;
+		private Dictionary<DisplayItem, PreviewItemPositionInfo> m_changedPreviewItems;
 		private VixenPreviewControl m_form;
 
-		public PreviewItemsMoveUndoAction(VixenPreviewControl form, Dictionary<DisplayItem, VixenPreviewControl.PreviewItemPositionInfo> ChangedPreviewItems)
+		public PreviewItemsMoveUndoAction(VixenPreviewControl form, Dictionary<DisplayItem, PreviewItemPositionInfo> ChangedPreviewItems)
 		{
 			m_changedPreviewItems = ChangedPreviewItems;
 			m_form = form;
