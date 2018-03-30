@@ -231,6 +231,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						shape.ZoomLevel = value;
 					}
 				}
+
+				Layout();
 			}
 		}
 

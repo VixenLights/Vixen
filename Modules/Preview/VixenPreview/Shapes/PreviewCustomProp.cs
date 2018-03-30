@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Media;
+using Microsoft.Win32.SafeHandles;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using Color = System.Drawing.Color;
@@ -177,9 +178,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			if (Pixels == null)
 			{
-				Pixels = PropPixels.Select(x => x.Clone()).ToList();
+				Zoom();
 			}
-			UpdateBounds();
+			else
+			{
+				UpdateBounds();
+			}
 		}
 
 		/// <inheritdoc />
@@ -312,15 +316,19 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void Zoom()
 		{
-			Pixels = PropPixels.Select(x => x.Clone()).ToList();
-
-			if (ZoomLevel == 1) return;
-
-			foreach (PreviewPixel pixel in Pixels)
+			if (ZoomLevel == 1)
 			{
-				var x = pixel.Location.X * ZoomLevel;
-				var y = pixel.Location.Y * ZoomLevel;
-				pixel.Location = new Point(x, y);
+				Pixels = PropPixels;
+			}
+			else
+			{
+				Pixels = PropPixels.Select(x => x.Clone()).ToList();
+				foreach (PreviewPixel pixel in Pixels)
+				{
+					var x = pixel.Location.X * ZoomLevel;
+					var y = pixel.Location.Y * ZoomLevel;
+					pixel.Location = new Point(x, y);
+				}
 			}
 
 			UpdateBounds();
@@ -335,13 +343,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				previewPixel.Location = point;
 			}
 
-			foreach (var previewPixel in Pixels)
+			if (ZoomLevel != 1)
 			{
-				var point = t.Transform(new Point(previewPixel.Location.X, previewPixel.Location.Y));
-				previewPixel.Location = point;
+				foreach (var previewPixel in Pixels)
+				{
+					var point = t.Transform(new Point(previewPixel.Location.X, previewPixel.Location.Y));
+					previewPixel.Location = point;
+				}
 			}
-
-			Layout();
+			
+			UpdateBounds();
 		}
 
 		/// <inheritdoc />
@@ -379,10 +390,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				previewPixel.Location = p;
 			}
 
-			foreach (var previewPixel in Pixels)
+			if (ZoomLevel != 1)
 			{
-				var p = new Point(previewPixel.Location.X + xOffset, previewPixel.Location.Y + yOffset);
-				previewPixel.Location = p;
+				foreach (var previewPixel in Pixels)
+				{
+					var p = new Point(previewPixel.Location.X + xOffset, previewPixel.Location.Y + yOffset);
+					previewPixel.Location = p;
+				}
 			}
 
 			Layout();
@@ -397,11 +411,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				previewPixel.Location = p;
 			}
 
-			foreach (var previewPixel in Pixels)
+			if (ZoomLevel != 1)
 			{
-				var p = new Point(previewPixel.Location.X * aspect, previewPixel.Location.Y * aspect);
-				previewPixel.Location = p;
+				foreach (var previewPixel in Pixels)
+				{
+					var p = new Point(previewPixel.Location.X * aspect, previewPixel.Location.Y * aspect);
+					previewPixel.Location = p;
+				}
 			}
+
 			Layout();
 		}
 
@@ -421,8 +439,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				_dragPoints = new List<PreviewPoint>();
 			}
 
-			Pixels = PropPixels.Select(x => x.Clone()).ToList();
 			_zoomLevel = 1;
+			Pixels = PropPixels;
 
 			Layout();
 		}
