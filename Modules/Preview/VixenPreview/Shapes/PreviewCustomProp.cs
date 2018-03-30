@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Microsoft.Win32.SafeHandles;
 using Vixen.Sys;
@@ -258,6 +259,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleY += 1;
 					scaleX += 1;
 
+					if (Control.ModifierKeys == Keys.Shift)
+					{
+						scaleX = scaleY = Math.Max(scaleX, scaleY);
+					}
+
 					Scale(scaleX, scaleY, Bounds.Right, Bounds.Bottom);
 					
 					_selectedPoint = _dragPoints[0];
@@ -270,6 +276,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 					scaleY += 1;
 					scaleX += 1;
+
+					if (Control.ModifierKeys == Keys.Shift)
+					{
+						scaleX = scaleY = Math.Max(scaleX, scaleY);
+					}
 
 					Scale(scaleX, scaleY, Bounds.Left, Bounds.Bottom);
 					
@@ -285,6 +296,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					scaleY += 1;
 					scaleX += 1;
 
+					if(Control.ModifierKeys == Keys.Shift)
+					{
+						scaleX = scaleY = Math.Max(scaleX, scaleY);
+					}
+
 					Scale(scaleX, scaleY, Bounds.Left, Bounds.Top);
 					
 					_selectedPoint = _dragPoints[2];
@@ -297,6 +313,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 					scaleY += 1;
 					scaleX += 1;
+
+					if (Control.ModifierKeys == Keys.Shift)
+					{
+						scaleX = scaleY = Math.Max(scaleX, scaleY);
+					}
 
 					Scale(scaleX, scaleY, Bounds.Right, Bounds.Top);
 					
