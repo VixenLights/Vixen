@@ -337,14 +337,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
-		protected static Rectangle GetCombinedBounds(IEnumerable<Rectangle> recs)
+
+		protected static Rect GetCombinedBounds(IEnumerable<Rect> recs)
 		{
-			if(!recs.Any()) return new Rectangle(0,0,0,0);
-			int xMin = recs.Min(s => s.X);
-			int yMin = recs.Min(s => s.Y);
-			int xMax = recs.Max(s => s.X + s.Width);
-			int yMax = recs.Max(s => s.Y + s.Height);
-			var rect = new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
+			if(!recs.Any()) return new Rect(0,0,0,0);
+			double xMin = recs.Min(s => s.X);
+			double yMin = recs.Min(s => s.Y);
+			double xMax = recs.Max(s => s.X + s.Width);
+			double yMax = recs.Max(s => s.Y + s.Height);
+			var rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
 			return rect;
 		}
 

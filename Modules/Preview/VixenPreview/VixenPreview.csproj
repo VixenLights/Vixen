@@ -163,6 +163,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converter\PropertySorter.cs" />
     <Compile Include="Direct2D\Direct2DControl.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -197,6 +198,7 @@
       <DependentUpon>LocationOffsetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PreviewCustomPropBuilder.cs" />
+    <Compile Include="Shapes\PreviewDoublePoint.cs" />
     <Compile Include="PreviewPixelSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>

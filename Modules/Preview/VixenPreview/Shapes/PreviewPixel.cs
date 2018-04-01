@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Runtime.Serialization;
+using System.Windows;
 using Vixen.Sys;
 using System.Xml.Serialization;
 using Point = System.Windows.Point;

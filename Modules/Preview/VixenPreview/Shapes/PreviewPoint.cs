@@ -19,7 +19,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			None,
 			Size,
 			SkewNS,
-			SkewWE
+			SkewWE,
+			Rotate
 		}
 
 		public PreviewPoint()
