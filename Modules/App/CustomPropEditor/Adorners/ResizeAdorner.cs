@@ -28,7 +28,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		readonly Thumb _rotate;
 
-		private RotateTransform rt;
+		private readonly RotateTransform _rotateTransform;
+		private readonly RotateTransform _reverseRotateTransform;
 
 		private Point _rotationCenter;
 
@@ -82,7 +83,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_rotate.DragStarted += _rotate_DragStarted;
 
 			_rotationCenter = Center(Bounds);
-			rt = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
+			_rotateTransform = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
+			_reverseRotateTransform = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
 
 		}
 
@@ -104,8 +106,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 					InvalidateMeasure();
 					InvalidateVisual();
 				}
-
-
 			}
 		}
 
@@ -123,8 +123,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 				Bounds.Top + e.VerticalChange > 0 && Bounds.Bottom + e.VerticalChange < el.ActualHeight)
 			{
 				vm.MoveSelectedItems(e.HorizontalChange, e.VerticalChange);
+				Bounds = Rect.Offset(Bounds, e.HorizontalChange, e.VerticalChange);
 			}
-
 		}
 
 		// Handler for resizing from the bottom-right.
@@ -143,7 +143,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, scaleY))
 			{
-				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.TopLeft);
+				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopLeft.X, Bounds.TopLeft.Y);
+				TransformItems(t);
 			}
 
 		}
@@ -164,7 +165,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, scaleY))
 			{
-				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.BottomLeft);
+				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomLeft.X, Bounds.BottomLeft.Y);
+				TransformItems(t);
 			}
 
 		}
@@ -172,7 +174,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		// Handler for resizing from the top-left.
 		void HandleTopLeft(object sender, DragDeltaEventArgs args)
 		{
-
 			var scaleY = -args.VerticalChange / Bounds.Height;
 			var scaleX = -args.HorizontalChange / Bounds.Width;
 
@@ -186,7 +187,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, scaleY))
 			{
-				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.BottomRight);
+				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.BottomRight.X, Bounds.BottomRight.Y);
+				TransformItems(t);
 			}
 
 		}
@@ -207,7 +209,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, scaleY))
 			{
-				vm.ScaleSelectedItems(scaleX, scaleY, Bounds.TopRight);
+				ScaleTransform t = new ScaleTransform(scaleX, scaleY, Bounds.TopRight.X, Bounds.TopRight.Y);
+				TransformItems(t);
 			}
 		}
 
@@ -219,7 +222,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, 1))
 			{
-				vm.ScaleSelectedItems(scaleX, 1, new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2));
+				var centerPoint = new Point(Bounds.Right, (Bounds.Bottom - Bounds.Top) / 2);
+				ScaleTransform t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
+				TransformItems(t);
 			}
 		}
 
@@ -231,7 +236,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(1, scaleY))
 			{
-				vm.ScaleSelectedItems(1, scaleY, new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Top));
+				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Top);
+				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
+				TransformItems(t);
 			}
 		}
 
@@ -243,9 +250,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(scaleX, 1))
 			{
-				vm.ScaleSelectedItems(scaleX, 1, new Point(Bounds.Left, (Bounds.Bottom - Bounds.Top) / 2));
+				var centerPoint = new Point(Bounds.Left, (Bounds.Bottom - Bounds.Top) / 2);
+				var t = new ScaleTransform(scaleX, 1, centerPoint.X, centerPoint.Y);
+				TransformItems(t);
 			}
 		}
+
+		
 
 		private void _middleTop_DragDelta(object sender, DragDeltaEventArgs args)
 		{
@@ -255,7 +266,9 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 			if (EnforceSize(1, scaleY))
 			{
-				vm.ScaleSelectedItems(1, scaleY, new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom));
+				var centerPoint = new Point((Bounds.Right - Bounds.Left) / 2, Bounds.Bottom);
+				ScaleTransform t = new ScaleTransform(1, scaleY, centerPoint.X, centerPoint.Y);
+				TransformItems(t);
 			}
 
 		}
@@ -263,26 +276,32 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		private void _rotate_DragStarted(object sender, DragStartedEventArgs e)
 		{
 			_rotationCenter = Center(Bounds);
-			rt.CenterX = _rotationCenter.X;
-			rt.CenterY = _rotationCenter.Y;
+			_rotateTransform.CenterX = _reverseRotateTransform.CenterX = _rotationCenter.X;
+			_rotateTransform.CenterY = _reverseRotateTransform.CenterY = _rotationCenter.Y;
 		}
 
 		private void _rotate_DragDelta(object sender, DragDeltaEventArgs e)
 		{
 			Point pos = Mouse.GetPosition(AdornedElement);
 
-			double angle = GetAngle(_rotationCenter, pos);
+			_rotationAngle = GetAngle(_rotationCenter, pos);
+			
+			var difference = _rotationAngle - _rotateTransform.Angle;
 
-
-			// Console.Out.WriteLine($"Rotation angle {angle} Center {_rotationCenter}");
-
-			var difference = angle - rt.Angle;
-
-			rt.Angle = angle;
+			_rotateTransform.Angle = _rotationAngle;
+			_reverseRotateTransform.Angle = -_rotationAngle;
 			vm.RotateSelectedItems(difference, _rotationCenter);
-
 		}
 
+		private void TransformItems(ScaleTransform scaleTransform)
+		{
+			TransformGroup tg = new TransformGroup();
+			tg.Children.Add(_reverseRotateTransform);
+			tg.Children.Add(scaleTransform);
+			tg.Children.Add(_rotateTransform);
+			vm.TransformSelectedItems(tg);
+			Bounds = scaleTransform.TransformBounds(Bounds);
+		}
 
 		/// <summary>
 		/// Fetches angle relative to screen center point
@@ -290,22 +309,15 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		/// <param name="screenPoint"></param>
 		/// <param name="center"></param>
 		/// <returns></returns>
-		public double GetAngle(Point screenPoint, Point center)
+		private static double GetAngle(Point screenPoint, Point center)
 		{
 			double dx = screenPoint.X - center.X;
-			// Minus to correct for coord re-mapping
-			double dy = -(screenPoint.Y - center.Y);
+			double dy = screenPoint.Y - center.Y;
 
 			double inRads = Math.Atan2(dy, dx);
 
-			// We need to map to coord system when 0 degree is at 3 O'clock, 270 at 12 O'clock
-			if (inRads < 0)
-				inRads = Math.Abs(inRads);
-			else
-				inRads = 2 * Math.PI - inRads;
-
-			// Adjust the angle from the 0 at 3:00 positon.
-			return (inRads * (180 / Math.PI)) - 90;
+			// Convert from radians and adjust the angle from the 0 at 9:00 positon.
+			return (inRads * (180 / Math.PI) + 270) % 360;
 		}
 
 		protected override Size MeasureOverride(Size constraint)
@@ -318,14 +330,8 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		// Arrange the Adorners.
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			//var center = Center(Bounds);
-			//Console.Out.WriteLine($"Arrange {_rotate.IsDragging}");
 			if (_rotate.IsDragging) return finalSize;
 
-
-			//rt.Angle = _rotationAngle;
-			//rt.CenterX = center.X;
-			//rt.CenterY = center.Y;
 			_topLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y - _topLeft.Height, _topLeft.Width, _topLeft.Height));
 			_topRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y - _topRight.Height, _topRight.Width, _topRight.Height));
 
@@ -364,9 +370,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			// Set some arbitrary visual characteristics.
 			cornerThumb.Cursor = customizedCursor;
 			cornerThumb.Height = cornerThumb.Width = 10;
-			//cornerThumb.Opacity = 0.40;
-			//cornerThumb.Background = new SolidColorBrush(Colors.MediumBlue);
-
+			
 			_visualChildren.Add(cornerThumb);
 		}
 
@@ -394,13 +398,10 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		{
 
 			GeneralTransformGroup result = new GeneralTransformGroup();
-			result.Children.Add(rt);
+			result.Children.Add(_rotateTransform);
 			result.Children.Add(transform);
 
-
-			//Console.Out.WriteLine($"Get Transform {result.Children.Count}");
 			return result;
-
 		}
 
 		// Override the VisualChildrenCount and GetVisualChild properties to interface with 

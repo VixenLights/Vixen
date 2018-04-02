@@ -36,7 +36,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 			DeleteSelectedLightsCommand = new RelayCommand(DeleteSelectedLights);
 
-			SelectedItems = new ObservableCollection<LightViewModel>();
+			SelectedItems = new FastObservableCollection<LightViewModel>();
 			SelectedItems.CollectionChanged += SelectedItems_CollectionChanged;
 			IsDrawing = true;
 			Prop = elementTreeViewModel.Prop;
@@ -90,7 +90,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		public ObservableCollection<LightViewModel> SelectedItems { get; set; }
+		public FastObservableCollection<LightViewModel> SelectedItems { get; set; }
 
 		#region LightNodes property
 
@@ -282,22 +282,25 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void Deselect(IEnumerable<ElementModelViewModel> elementModels)
 		{
+			List<LightViewModel> selectedModels = new List<LightViewModel>();
 			foreach (var elementModel in elementModels)
 			{
 				List<LightViewModel> lvmList;
 				if (_elementModelMap.TryGetValue(elementModel.ElementModel.Id, out lvmList))
 				{
-					lvmList.ForEach(l =>
+					foreach (var l in lvmList)
 					{
 						l.IsSelected = false;
-						SelectedItems.Remove(l);
-					});
+						selectedModels.Add(l);
+					}
 				}
 			}
+			SelectedItems.RemoveItems(selectedModels);
 		}
 
 		public void Select(IEnumerable<ElementModelViewModel> elementModels)
 		{
+			List<LightViewModel> selectedModels = new List<LightViewModel>();
 			foreach (var elementModel in elementModels)
 			{
 				List<LightViewModel> lvmList;
@@ -308,12 +311,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						if (!lightViewModel.IsSelected)
 						{
 							lightViewModel.IsSelected = true;
-							SelectedItems.Add(lightViewModel);
+							selectedModels.Add(lightViewModel);
 						}
 					}
 				}
 
 			}
+			SelectedItems.AddItems(selectedModels);
 		}
 
 		public void Transform(Transform t)

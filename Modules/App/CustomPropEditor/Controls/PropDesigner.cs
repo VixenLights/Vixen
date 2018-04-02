@@ -189,6 +189,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		{
 			if (!IsDrawing)
 			{
+				RemoveResizeAdorner();
 				UpdateResizeAdorner();
 			}
 		}
@@ -301,6 +302,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 							//    position.X, position.Y, XDelta, YDelta);
 							MoveSelectedItems(XDelta, YDelta);
 							_previousPosition = position;
+							RemoveResizeAdorner();
 							UpdateResizeAdorner();
 						}
 						else
@@ -339,13 +341,16 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		internal void MoveSelectedItems(double xDelta, double yDelta)
 		{
 			TransformCommand.Execute(new TranslateTransform(xDelta, yDelta));
-			UpdateResizeAdorner();
 		}
 
 		internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
 		{
 			TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
-			UpdateResizeAdorner();
+		}
+
+		internal void TransformSelectedItems(TransformGroup t)
+		{
+			TransformCommand.Execute(t);
 		}
 
 		internal void RotateSelectedItems(double angle, Point center)
@@ -374,6 +379,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			}
 
 			_dragging = false;
+			RemoveResizeAdorner();
 			UpdateResizeAdorner();
 		}
 
@@ -444,8 +450,8 @@ namespace VixenModules.App.CustomPropEditor.Controls
 						{
 							_resizingAdorner = new ResizeAdorner(_drawingCanvas, this);
 							adornerLayer.Add(_resizingAdorner);
+							_resizingAdorner.Bounds = bounds.Value;
 						}
-						_resizingAdorner.Bounds = bounds.Value;
 						adornerLayer.Update();
 					}
 				}
