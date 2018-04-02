@@ -21,7 +21,7 @@ namespace VixenModules.Preview.VixenPreview
 		private HashSet<string> _elementNames;
 		private readonly List<ElementNode> _leafNodes = new List<ElementNode>();
 		private readonly Dictionary<string, string> _tokenLookup = new Dictionary<string, string>();
-		private static Regex _regex = new Regex(@"<\d+>");
+		private static readonly Regex Regex = new Regex(@"{\d+}");
 		private readonly VixenPreviewControl _parent;
 
 		public PreviewCustomPropBuilder(Prop prop, double zoomLevel, VixenPreviewControl parent)
@@ -87,7 +87,7 @@ namespace VixenModules.Preview.VixenPreview
 		private string TokenizeName(string name)
 		{
 			var returnValue = name;
-			var match = _regex.Match(name);
+			var match = Regex.Match(name);
 			while (match.Success)
 			{
 				string value;

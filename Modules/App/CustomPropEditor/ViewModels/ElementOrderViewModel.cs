@@ -4,22 +4,27 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
+using Catel.Services;
+using Common.Controls;
+using Common.Controls.NameGeneration;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
-using Vixen.Annotations;
 using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
+using DragDropEffects = System.Windows.DragDropEffects;
+using IDropTarget = GongSolutions.Wpf.DragDrop.IDropTarget;
 
 namespace VixenModules.App.CustomPropEditor.ViewModels
 {
 	public class ElementOrderViewModel : ViewModelBase, IDropTarget
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
 		public ElementOrderViewModel(Prop p)
 		{
@@ -117,6 +122,68 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				elementModelViewModel.ElementModel.Order = index++;
 			}
 		}
+
+		#region TemplateRename command
+
+		private Command _templateRenameCommand;
+
+		/// <summary>
+		/// Gets the TemplateRename command.
+		/// </summary>
+		public Command TemplateRenameCommand
+		{
+			get { return _templateRenameCommand ?? (_templateRenameCommand = new Command(TemplateRename)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the TemplateRename command is executed.
+		/// </summary>
+		private void TemplateRename()
+		{
+			if (SelectedItems.Count == 1)
+			{
+				MessageBoxService mbs = new MessageBoxService();
+				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItems[0].ElementModel.Name);
+				if (result.Result == MessageResult.OK)
+				{
+					SelectedItems.First().ElementModel.Name = PropModelServices.Instance().Uniquify(result.Response);
+				}
+			}
+			else
+			{
+				PatternRenameSelectedItems();
+			}
+		}
+
+		public bool PatternRenameSelectedItems()
+		{
+			if (SelectedItems.Count <= 1)
+				return false;
+
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
+			NameGenerator renamer = new NameGenerator(oldNames);
+			if (renamer.ShowDialog() == DialogResult.OK)
+			{
+				for (int i = 0; i < SelectedItems.Count; i++)
+				{
+					if (i >= renamer.Names.Count)
+					{
+						Logging.Warn("Bulk renaming elements, and ran out of new names!");
+						break;
+					}
+
+
+					SelectedItems[i].ElementModel.Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+
 
 		#region Implementation of IDropTarget
 

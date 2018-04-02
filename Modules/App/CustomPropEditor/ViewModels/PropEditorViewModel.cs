@@ -892,7 +892,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		private string CleanseNameString(string name)
 		{
-			Regex tokenRegex = new Regex(@"<\d+>");
+			Regex tokenRegex = new Regex(@"{\d+}");
 			Regex spaceRegex = new Regex(@"[ ]{2,}");
 			var returnValue = name;
 			var match = tokenRegex.Match(name);

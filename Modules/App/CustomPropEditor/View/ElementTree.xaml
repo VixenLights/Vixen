@@ -190,11 +190,19 @@
 				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 			</ContextMenu>
 
+			<ContextMenu x:Key="ElementOrderTreeContextMenu">
+				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementOrderViewModel.TemplateRenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
+			</ContextMenu>
+
 			<!-- For the context menu to work, we must shift it into a style, which means that the context menu is now in a
 			visual tree that is more closely related to the current data context. All we have to do then is set the style, 
 			which hooks up the context menu. -->
 			<Style x:Key="ElementModelContextMenuStyle" TargetType="{x:Type TextBlock}">
 				<Setter Property="ContextMenu" Value="{DynamicResource ElementTreeContextMenu}"/>
+			</Style>
+
+			<Style x:Key="ElementTreeOrderContextMenuStyle" TargetType="{x:Type TextBlock}">
+				<Setter Property="ContextMenu" Value="{DynamicResource ElementOrderTreeContextMenu}"/>
 			</Style>
 		</ResourceDictionary>
 
@@ -295,7 +303,7 @@
 								<TextBlock x:Name="OrderText" Margin="2,2,8,2" Text="{Binding Order}" 
 								           Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
 								</TextBlock>
-								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2" Focusable="True">
+								<TextBlock x:Name="ReadOnlyText" Text="{Binding ElementModel.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,2,0,2" Style="{StaticResource ElementTreeOrderContextMenuStyle}" Focusable="True">
 									<i:Interaction.Triggers>
 										<i:EventTrigger EventName="PreviewMouseUp">
 											<interactivity:EventToCommand Command="{Binding BeginEditCommand}" DisableAssociatedObjectOnCannotExecute="False" />
