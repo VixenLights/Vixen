@@ -72,15 +72,15 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_topLeft.DragDelta += HandleTopLeft;
 			_topRight.DragDelta += HandleTopRight;
 
-			_middleTop.DragDelta += _middleTop_DragDelta;
-			_middleRight.DragDelta += _middleRight_DragDelta;
-			_middleBottom.DragDelta += _middleBottom_DragDelta;
-			_middleLeft.DragDelta += _middleLeft_DragDelta;
+			_middleTop.DragDelta += HandleMiddleTop;
+			_middleRight.DragDelta += HandleMiddleRight;
+			_middleBottom.DragDelta += HandleMiddleBottom;
+			_middleLeft.DragDelta += HandleMiddleLeft;
 
-			_centerDrag.DragDelta += _centerDrag_DragDelta;
+			_centerDrag.DragDelta += HandleCenterDrag;
 
-			_rotate.DragDelta += _rotate_DragDelta;
-			_rotate.DragStarted += _rotate_DragStarted;
+			_rotate.DragDelta += HandleRotate;
+			_rotate.DragStarted += HandleRotateStarted;
 
 			_rotationCenter = Center(Bounds);
 			_rotateTransform = new RotateTransform(_rotationAngle, Center(Bounds).Y, Center(Bounds).Y);
@@ -115,7 +115,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 				rect.Top + rect.Height / 2);
 		}
 
-		private void _centerDrag_DragDelta(object sender, DragDeltaEventArgs e)
+		private void HandleCenterDrag(object sender, DragDeltaEventArgs e)
 		{
 			FrameworkElement el = AdornedElement as FrameworkElement;
 
@@ -128,7 +128,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		}
 
 		// Handler for resizing from the bottom-right.
-		void HandleBottomRight(object sender, DragDeltaEventArgs args)
+		private void HandleBottomRight(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = args.VerticalChange / Bounds.Height;
 			var scaleX = args.HorizontalChange / Bounds.Width;
@@ -150,7 +150,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		}
 
 		// Handler for resizing from the top-right.
-		void HandleTopRight(object sender, DragDeltaEventArgs args)
+		private void HandleTopRight(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = -args.VerticalChange / Bounds.Height;
 			var scaleX = args.HorizontalChange / Bounds.Width;
@@ -172,7 +172,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		}
 
 		// Handler for resizing from the top-left.
-		void HandleTopLeft(object sender, DragDeltaEventArgs args)
+		private void HandleTopLeft(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = -args.VerticalChange / Bounds.Height;
 			var scaleX = -args.HorizontalChange / Bounds.Width;
@@ -194,7 +194,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		}
 
 		// Handler for resizing from the bottom-left.
-		void HandleBottomLeft(object sender, DragDeltaEventArgs args)
+		private void HandleBottomLeft(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = args.VerticalChange / Bounds.Height;
 			var scaleX = -args.HorizontalChange / Bounds.Width;
@@ -214,7 +214,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			}
 		}
 
-		private void _middleLeft_DragDelta(object sender, DragDeltaEventArgs args)
+		private void HandleMiddleLeft(object sender, DragDeltaEventArgs args)
 		{
 			var scaleX = -args.HorizontalChange / Bounds.Width;
 
@@ -228,7 +228,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			}
 		}
 
-		private void _middleBottom_DragDelta(object sender, DragDeltaEventArgs args)
+		private void HandleMiddleBottom(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = args.VerticalChange / Bounds.Height;
 
@@ -242,7 +242,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			}
 		}
 
-		private void _middleRight_DragDelta(object sender, DragDeltaEventArgs args)
+		private void HandleMiddleRight(object sender, DragDeltaEventArgs args)
 		{
 			var scaleX = args.HorizontalChange / Bounds.Width;
 
@@ -258,7 +258,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		
 
-		private void _middleTop_DragDelta(object sender, DragDeltaEventArgs args)
+		private void HandleMiddleTop(object sender, DragDeltaEventArgs args)
 		{
 			var scaleY = -args.VerticalChange / Bounds.Height;
 
@@ -273,14 +273,14 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		}
 
-		private void _rotate_DragStarted(object sender, DragStartedEventArgs e)
+		private void HandleRotateStarted(object sender, DragStartedEventArgs e)
 		{
 			_rotationCenter = Center(Bounds);
 			_rotateTransform.CenterX = _reverseRotateTransform.CenterX = _rotationCenter.X;
 			_rotateTransform.CenterY = _reverseRotateTransform.CenterY = _rotationCenter.Y;
 		}
 
-		private void _rotate_DragDelta(object sender, DragDeltaEventArgs e)
+		private void HandleRotate(object sender, DragDeltaEventArgs e)
 		{
 			Point pos = Mouse.GetPosition(AdornedElement);
 
@@ -295,6 +295,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		private void TransformItems(ScaleTransform scaleTransform)
 		{
+			scaleTransform.Value.RotateAt(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
 			TransformGroup tg = new TransformGroup();
 			tg.Children.Add(_reverseRotateTransform);
 			tg.Children.Add(scaleTransform);
@@ -352,7 +353,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		// Helper method to instantiate the corner Thumbs, set the Cursor property, 
 		// set some appearance properties, and add the elements to the visual tree.
-		void BuildAdornerCorner(ref Thumb cornerThumb, Cursor customizedCursor, Style s = null)
+		private void BuildAdornerCorner(ref Thumb cornerThumb, Cursor customizedCursor, Style s = null)
 		{
 			if (cornerThumb != null) return;
 
