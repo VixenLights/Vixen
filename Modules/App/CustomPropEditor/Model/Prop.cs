@@ -30,7 +30,7 @@ namespace VixenModules.App.CustomPropEditor.Model
         public Prop()
         {
 			Id = Guid.NewGuid();
-            _rootNode = new ElementModel();
+            RootNode = new ElementModel();
 			Image = CreateBitmapSource(800, 600, Color.FromRgb(0,0,0));
             Opacity = 1;
             Name = "New Prop";
@@ -49,12 +49,25 @@ namespace VixenModules.App.CustomPropEditor.Model
             private set
             {
                 if (Equals(value, _rootNode)) return;
+	            if (_rootNode != null)
+	            {
+		            _rootNode.PropertyChanged -= RootNode_PropertyChanged;
+	            }
                 _rootNode = value;
+				_rootNode.PropertyChanged += RootNode_PropertyChanged;
                 OnPropertyChanged(nameof(RootNode));
             }
         }
-		
-        public string Name
+
+		private void RootNode_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName.Equals("Name"))
+			{
+				OnPropertyChanged(nameof(Name));
+			}
+		}
+
+		public string Name
         {
             get { return _rootNode.Name; }
             set
