@@ -144,6 +144,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Match size for now
 			var yAspect =  (matchShape.Bottom - matchShape.Top) / (double)(Bottom - Top);
 			var xAspect = (matchShape.Right - matchShape.Left) / (double)(Right - Left);
+
+			var customProp = matchShape as PreviewCustomProp;
+			if (customProp != null)
+			{
+				//match up the rotation angle and set it directly
+				//the scale below will call layout, so no need to do it twice.
+				_rotationAngle = customProp.RotationAngle;
+			}
+
 			Scale(xAspect, yAspect, Left, Top);
 		}
 
