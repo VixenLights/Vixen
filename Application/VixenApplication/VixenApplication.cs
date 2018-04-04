@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime;
@@ -363,14 +364,19 @@ namespace VixenApplication
 				if (version.Revision > 0) {
 					labelVersion.Text += string.Format("u{0}", version.Revision);
 				}
-				toolStripStatusUpdates.Text = " Version " + CheckLatestReleaseVersion() + " available.";
+
+				var t = CheckLatestReleaseVersion();
+				t.Wait();
+				toolStripStatusUpdates.Text = " Version " + t.Result + " available.";
 			}
 
 			if (version.Build > 0)
 			{
 				labelDebugVersion.Text = string.Format("Build #{0}", version.Build);
 				_currentBuildVersion = labelDebugVersion.Text;
-				toolStripStatusUpdates.Text = " Build " + CheckLatestBuildVersion() + " available.";
+				var t = CheckLatestBuildVersion();
+				t.Wait();
+				toolStripStatusUpdates.Text = " Build " + t.Result + " available.";
 			}
 			else
 			{
@@ -387,15 +393,16 @@ namespace VixenApplication
 		}
 
 
-		public string CheckLatestBuildVersion()
+		public async Task<string> CheckLatestBuildVersion()
 		{
 			try
 			{
-				using (WebClient wc = new WebClient())
+				using (HttpClient wc = new HttpClient())
 				{
+					wc.Timeout = TimeSpan.FromMilliseconds(5000);
 					//Get Latest Build
 					string getLatestDevelopementBuild =
-						wc.DownloadString(
+						await wc.GetStringAsync(
 							"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
 					//This will parse the latest development build number
 					dynamic developementBuild = JObject.Parse(getLatestDevelopementBuild);
@@ -416,15 +423,16 @@ namespace VixenApplication
 			return "";
 		}
 
-		public string CheckLatestReleaseVersion()
+		public async Task<string> CheckLatestReleaseVersion()
 		{
 			try
 			{
-				using (WebClient wc = new WebClient())
+				using (HttpClient wc = new HttpClient())
 				{
+					wc.Timeout = TimeSpan.FromMilliseconds(5000);
 					//Get the Latest Release
 					string getReleaseVersion =
-						wc.DownloadString("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
+						await wc.GetStringAsync("http://bugs.vixenlights.com/rest/api/latest/project/VIX/versions?orderBy=releaseDate");
 					//Query returns an array of release version objects
 					var releaseVersions = JArray.Parse(getReleaseVersion);
 					//get the last one that has released == true as they are in asending order
@@ -1073,31 +1081,32 @@ namespace VixenApplication
 			Process.Start("http://www.vixenlights.com/vixen-3-documentation/");
 		}
 
-		private void UpdatesMenu_Click(object sender, EventArgs e)
+		private async void UpdatesMenu_Click(object sender, EventArgs e)
 		{
 			string currentVersion;
 			string latestVersion;
 			string currentVersionType;
-			
-			if (!CheckForConnectionToWebsite())
-			{
-				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please connect to the internet and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
-				return;
-			}
 
 			Cursor = Cursors.WaitCursor;
+
+			if (! await CheckForConnectionToWebsite())
+			{
+				var messageBox = new MessageBoxForm("Unable to reach http://bugs.vixenlights.com. Please check your internet connection and verify you can reach the site and try again.", "Error", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog();
+				Cursor = Cursors.Arrow;
+				return;
+			}
 
 			if (_devBuild)
 			{
 				currentVersion = _currentBuildVersion;
-				latestVersion = CheckLatestBuildVersion();
+				latestVersion = await CheckLatestBuildVersion();
 				currentVersionType = "DevBuild";
 			}
 			else
 			{
 				currentVersion = labelVersion.Text;
-				latestVersion = CheckLatestReleaseVersion();
+				latestVersion = await CheckLatestReleaseVersion();
 				currentVersionType = "Release";
 			}
 
@@ -1107,13 +1116,14 @@ namespace VixenApplication
 			Cursor = Cursors.Default;
 		}
 
-		public static bool CheckForConnectionToWebsite()
+		public static async Task<bool> CheckForConnectionToWebsite()
 		{
 			try
 			{
-				using (var client = new WebClient())
+				using (var client = new HttpClient())
 				{
-					using (client.OpenRead("http://bugs.vixenlights.com"))
+					client.Timeout = TimeSpan.FromMilliseconds(5000);
+					using (await client.GetAsync("http://bugs.vixenlights.com"))
 					{
 						return true;
 					}

@@ -16,6 +16,7 @@ using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Newtonsoft.Json.Linq;
+using NLog;
 using Vixen.Sys;
 
 namespace VixenApplication
@@ -26,6 +27,7 @@ namespace VixenApplication
 		private readonly string _currentVersion;
 		private readonly string _latestVersion;
 		private bool _newVersionAvailable;
+		private static NLog.Logger Logging = LogManager.GetCurrentClassLogger();
 
 		public CheckForUpdates(string currentVersion, string latestVersion, string currentVersionType)
 		{
@@ -50,11 +52,16 @@ namespace VixenApplication
 			labelCurrentVersion.Text = @"Checking for updates, please wait.";
 			linkLabelVixenDownLoadPage.Text = @"www.vixenlights.com/downloads/vixen-3-downloads/";
 			
+			await CheckUpdates();
+		}
+
+		private async Task CheckUpdates()
+		{
 			//Turn on the wait cursor while we do stuff
 			Cursor = Cursors.WaitCursor;
 
 			await PopulateChangeLog(); //Add relevant Tickets and Descriptions to the TextBox.
-			
+
 			if (_newVersionAvailable)
 			{
 				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _latestVersion + " is now available for download.";
@@ -64,14 +71,14 @@ namespace VixenApplication
 			}
 			else
 			{
-				labelCurrentVersion.Text = @"Vixen " + _currentVersionType + " " + _currentVersion + " is the latest " + _currentVersionType;
+				labelCurrentVersion.Text =
+					@"Vixen " + _currentVersionType + " " + _currentVersion + " is the latest " + _currentVersionType;
 				labelHeading.Text = @"You have the latest " + _currentVersionType + " installed!";
 				textBoxReleaseNotes.Text = "";
 			}
 
 			//Set the cursor back
 			Cursor = Cursors.Arrow;
-
 		}
 
 		private async Task PopulateChangeLog()
@@ -81,12 +88,13 @@ namespace VixenApplication
 				
 					if (_currentVersionType == "DevBuild")
 					{
-						using (WebClient wc = new WebClient())
+						using (HttpClient wc = new HttpClient())
 						{
+							wc.Timeout = TimeSpan.FromMilliseconds(5000);
 						    //Run the web call as an asyc call to prevent locking the UI
 							//While this occurs, the control will be returned to the caller as this runs in a background thread
 							string allBuildResults =
-								await wc.DownloadStringTaskAsync(
+								await wc.GetStringAsync(
 									"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild ORDER BY Key&startAt=0&maxResults=1000");
 
 							//Execution will resume here after the call is complete
@@ -107,6 +115,7 @@ namespace VixenApplication
 						List<string> releaseVersionNames = new List<string>();
 						//Get the release date of the installed Version
 						HttpClient wc = new HttpClient();
+						wc.Timeout = TimeSpan.FromMilliseconds(5000);
 						//More async stuff here as above. However we are going to use an HttpClient here instead as it 
 						//will allow us to make more than one call at a time whereas the WebClient will not
 						string getReleaseVersion =
@@ -212,16 +221,12 @@ namespace VixenApplication
 							}
 						}
 
-						
-
-
-
-
 					}
 				
 			}
 			catch (Exception e)
 			{
+				Logging.Error(e, "Error trying to get the change log.");
 				//If we get here then more then likely there is no internet connection.
 			}
 		}
