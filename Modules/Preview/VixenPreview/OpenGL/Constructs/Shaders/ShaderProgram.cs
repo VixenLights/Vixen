@@ -166,9 +166,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 		{
 			if (ProgramId != 0)
 			{
-				// Make sure this program isn't being used
-				//if (GL.CurrentProgram == ProgramID) GL.UseProgram(0);
-
 				GL.DetachShader(ProgramId, VertexShader.ShaderID);
 				GL.DetachShader(ProgramId, FragmentShader.ShaderID);
 				GL.DeleteProgram(ProgramId);

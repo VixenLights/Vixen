@@ -63,6 +63,7 @@ namespace VixenModules.Preview.VixenPreview
 					try
 					{
 						_displayForm = new OpenGlPreviewForm(GetDataModel());
+						_displayForm.DisplayName = Name;
 					}
 					catch (Exception ex)
 					{

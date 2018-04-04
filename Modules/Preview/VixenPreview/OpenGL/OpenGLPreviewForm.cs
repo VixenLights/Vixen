@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Common.Controls;
 using Common.Resources.Properties;
 using OpenTK;
@@ -24,18 +25,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 
-		private static MillisecondsValue _backgroundDraw;
-		private static MillisecondsValue _pointsUpdate;
-		private static MillisecondsValue _pointsDraw;
-		private static MillisecondsValue _previewUpdate;
+		private readonly MillisecondsValue _backgroundDraw;
+		private readonly MillisecondsValue _pointsUpdate;
+		private readonly MillisecondsValue _pointsDraw;
+		private readonly MillisecondsValue _previewUpdate;
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 
-		private static int _width = 1280, _height = 720;
-		private static float _focalDepth = 0;
-		private static float _aspectRatio;
+		private int _width = 1280, _height = 720;
+		private float _focalDepth = 0;
+		private float _aspectRatio;
 
-		private static ShaderProgram _program;
+		private ShaderProgram _program;
 		
 		private Background _background;
 		private const double Fov = 45.0;
@@ -48,6 +49,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _isRendering;
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
+
+		private static Object _contextLock = new Object();
 
 		public OpenGlPreviewForm(VixenPreviewData data)
 		{
@@ -83,13 +86,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-
 			glControl.MouseWheel -= GlControl_MouseWheel;
-			_program.DisposeChildren = true;
-			_program.Dispose();
-
-			_background.Dispose();
+			lock (_contextLock)
+			{
+				glControl.MakeCurrent();
+				_program.DisposeChildren = true;
+				_program.Dispose();
+				_background.Dispose();
+				glControl.Context.MakeCurrent(null);
+			}
 			
+			glControl.Dispose();
+
 			if (disposing && (components != null))
 			{
 				components.Dispose();
@@ -364,33 +372,39 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				UpdateShapePoints();
 				_pointsUpdate.Set(_sw2.ElapsedMilliseconds);
 				var mvp = Matrix4.Identity * _camera.ViewMatrix * perspective;
-				glControl.MakeCurrent();
-				ClearScreen();
-				_sw2.Restart();
-				_background.Draw(perspective, _camera.ViewMatrix);
-				_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
-				_sw2.Restart();
-				DrawPoints(mvp);
-				_pointsDraw.Set(_sw2.ElapsedMilliseconds);
-				glControl.SwapBuffers();
-				glControl.Context.MakeCurrent(null);
+				lock (_contextLock)
+				{
+					glControl.MakeCurrent();
+					ClearScreen();
+					_sw2.Restart();
+					_background.Draw(perspective, _camera.ViewMatrix);
+					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+					_sw2.Restart();
+					DrawPoints(mvp);
+					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
+					glControl.SwapBuffers();
+					glControl.Context.MakeCurrent(null);
+				}
 			}
 			else
 			{
-				glControl.MakeCurrent();
-				ClearScreen();
-				_sw2.Restart();
-				_background.Draw(perspective, _camera.ViewMatrix);
-				_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
-				glControl.SwapBuffers();
-				glControl.Context.MakeCurrent(null);
+				lock (_contextLock)
+				{
+					glControl.MakeCurrent();
+					ClearScreen();
+					_sw2.Restart();
+					_background.Draw(perspective, _camera.ViewMatrix);
+					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
+					glControl.SwapBuffers();
+					glControl.Context.MakeCurrent(null);
+				}
 			}
 			_isRendering = false;
 			_previewUpdate.Set(_sw.ElapsedMilliseconds);
 			//Logging.Debug("Exiting RenderFrame");
 		}
 
-		private static void ClearScreen()
+		private void ClearScreen()
 		{
 			// set up the OpenGL viewport and clear both the color and depth bits
 			GL.Viewport(0, 0, _width, _height);
@@ -445,13 +459,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", Name), ClientSize.Height);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", Name), ClientSize.Width);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", Name), _camera.Position.X);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", Name), _camera.Position.Y);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name), _camera.Position.Z);
+			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name), ClientSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name), ClientSize.Width);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", name), _camera.Position.X);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z);
 			//xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
 		}
 
@@ -460,12 +475,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
-
+			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
 			var desktopBounds =
 				new Rectangle(
 					new Point(
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", Name), Location.X),
-						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", Name), Location.Y)),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X),
+						xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationY", name), Location.Y)),
 					new Size(100, 100));
 
 			if (IsVisibleOnAnyScreen(desktopBounds))
@@ -486,9 +501,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				StartPosition = FormStartPosition.WindowsDefaultLocation;
 			}
 
-			var cHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", Name),
+			var cHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name),
 				_background.HasBackground ? _background.Height : _height);
-			var cWidth = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", Name),
+			var cWidth = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name),
 				_background.HasBackground ? _background.Width : _width);
 			ClientSize = new Size(cWidth, cHeight);
 			_width = _background.HasBackground ? _background.Width : _width;
@@ -498,15 +513,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void CreateCamera()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-
+			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
 			// create our camera
 			_camera = new Camera(new Vector3((_background.HasBackground ? _background.Width:ClientSize.Width) / 2f, (_background.HasBackground ? _background.Height:ClientSize.Height) / 2f, _focalDepth), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
 			//_camera.Position = new Vector3(_camera.Position.X, _camera.Position.Y, xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name),_camera.Position.Z));
 			_camera.Position = new Vector3(
-				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", Name), _camera.Position.X),
-				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", Name), _camera.Position.Y),
-				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", Name), _camera.Position.Z));
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", name), _camera.Position.X),
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y),
+				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z));
 
 		}
 
@@ -588,7 +603,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		void main(void)
 		{
-			if(pSize > 1) //We only need to round points that are bigger than 1
+			if(pSize > 2) //We only need to round points that are bigger than 1
 			{
 				vec2 circCoord = 2.0 * gl_PointCoord - 1.0;
 				if (dot(circCoord, circCoord) > 1)

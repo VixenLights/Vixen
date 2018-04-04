@@ -16,7 +16,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private VixenPreviewData _data;
 		private Texture _backgroundTexture;
 		
-		private static ShaderProgram _backgroundProgram;
+		private ShaderProgram _backgroundProgram;
 
 		private VBO<float> _points;
 		//private VBO<Vector2> _backgroundUv;
@@ -127,7 +127,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			HasBackground = true;
 		}
 
-		private static void SetBackgroundBrightness(float value)
+		private void SetBackgroundBrightness(float value)
 		{
 			_backgroundProgram["ambientStrength"].SetValue(value);
 		}
