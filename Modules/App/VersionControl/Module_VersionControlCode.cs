@@ -171,51 +171,6 @@ namespace VersionControl
 				CreateUpdateGitIgnore();
 
 	            Git.Init().SetDirectory(GitRepositoryFolder).Call();
-
-
-	            //var add = git.Add();
-	            //add.AddFilepattern("*");
-	            //add.Call();
-
-	            //var commit = git.Commit();
-	            //commit.SetMessage("Initial Commit.");
-	            //commit.SetAll(true);
-	            //commit.Call();
-
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\refs\\remotes"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\hooks"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\refs\\heads"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\refs\\tags"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\objects\\info"));
-	            //Directory.CreateDirectory(Path.Combine(GitRepositoryFolder, ".git\\objects\\pack"));
-
-	            //using (var s = new FileStream(System.IO.Path.Combine(GitRepositoryFolder, ".git\\objects\\info\\exclude"), FileMode.Create))
-	            //{
-	            //    s.Write(Properties.Resources.exclude.ToArray(), 0, Properties.Resources.exclude.Length);
-	            //}
-	            //using (var s = new FileStream(System.IO.Path.Combine(GitRepositoryFolder, ".git\\HEAD"), FileMode.Create))
-	            //{
-	            //    s.Write(Properties.Resources.HEAD.ToArray(), 0, Properties.Resources.HEAD.Length);
-	            //}
-	            //using (var s = new FileStream(System.IO.Path.Combine(GitRepositoryFolder, ".git\\config"), FileMode.Create))
-	            //{
-	            //    s.Write(Properties.Resources.config.ToArray(), 0, Properties.Resources.config.Length);
-	            //}
-	            //using (var s = new FileStream(System.IO.Path.Combine(GitRepositoryFolder, ".git\\description"), FileMode.Create))
-	            //{
-	            //    s.Write(Properties.Resources.description.ToArray(), 0, Properties.Resources.description.Length);
-	            //}
-	            //using (var s = new FileStream(System.IO.Path.Combine(GitRepositoryFolder, ".git\\hooks\\README.sample"), FileMode.Create))
-	            //{
-	            //    s.Write(Properties.Resources.README.ToArray(), 0, Properties.Resources.README.Length);
-	            //}
-
-	            //CreateUpdateGitIgnore();
-
-	            //var di = new DirectoryInfo(Path.Combine(GitRepositoryFolder, ".git"));
-	            //di.Attributes = FileAttributes.Hidden;
-
             }
             return createRepository;
         }
