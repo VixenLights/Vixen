@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NGit.Api;
@@ -231,101 +229,17 @@ namespace VersionControl
 
 						if(changed)
 						{
-							git.Commit().SetMessage(string.Format("Changes to the profile {0}",
-							restoringFile ? "restored." : "commited.")).Call();
+							git.Commit().SetMessage($"Profile changes {(restoringFile ? "restored." : "commited.")}").Call();
 						}
-
-						//switch (e.ChangeType)
-						//{
-
-						//	case WatcherChangeTypes.Changed:
-						//		if (status.GetModified().Count + status.GetChanged().Count +
-						//				status.GetChanged().Count > 0)
-						//		{
-						//			var addChanged = git.Add();
-						//			foreach (var s in status.GetModified())
-						//			{
-						//				addChanged.AddFilepattern(s);
-						//			}
-						//			foreach (var s in status.GetChanged())
-						//			{
-						//				addChanged.AddFilepattern(s);
-						//			}
-						//			addChanged.Call();
-						//			git.Commit().SetMessage(string.Format("Changed {0}{1}", e.Name,
-						//				restoringFile ? " [Restored]" : "")).Call();
-						//		}
-						//		break;
-						//	case WatcherChangeTypes.Created:
-
-						//		if (status.GetUntracked().Count + status.GetAdded().Count > 0)
-						//		{
-						//			var addCreated = git.Add();
-						//			foreach(var s in status.GetAdded())
-						//			{
-						//				addCreated.AddFilepattern(s);
-						//			}
-						//			foreach (var s in status.GetUntracked())
-						//			{
-						//				addCreated.AddFilepattern(s);
-						//			}
-
-						//			addCreated.Call();
-						//			git.Commit().SetMessage(string.Format("Added {0}{1}", e.Name,
-						//				restoringFile ? " [Restored]" : "")).Call();
-						//		}
-						//		break;
-						//	case WatcherChangeTypes.Deleted:
-
-						//		if ((status.GetMissing().Count + status.GetRemoved().Count) > 0)
-						//		{
-						//			var removed = git.Rm();
-						//			foreach (var s in status.GetMissing())
-						//			{
-						//				removed.AddFilepattern(s);
-						//			}
-						//			foreach (var s in status.GetRemoved())
-						//			{
-						//				removed.AddFilepattern(s);
-						//			}
-						//			removed.Call();
-						//			git.Commit().SetMessage(string.Format("Deleted {0}{1}", e.Name,
-						//				restoringFile ? " [Restored]" : "")).Call();
-						//		}
-						//		break;
-						//	case WatcherChangeTypes.Renamed:
-
-						//		if (status.GetMissing().Count + status.GetUntracked().Count > 0)
-						//		{
-						//			var addRename = git.Add();
-						//			foreach (var s in status.GetMissing())
-						//			{
-						//				addRename.AddFilepattern(s);
-						//			}
-						//			foreach (var s in status.GetUntracked())
-						//			{
-						//				addRename.AddFilepattern(s);
-						//			}
-						//			addRename.Call();
-						//			git.Commit().SetMessage(string.Format("Renamed file {0} to {1}{2}",
-						//				((RenamedEventArgs)e).OldName, e.Name,
-						//				restoringFile ? " [Restored]" : "")).Call();
-						//		}
-						//		break;
-						//}
 					}
 				}
-                catch (Exception eee)
+                catch (Exception ex)
                 {
 
-                    Logging.Error(eee.Message,eee);
+                    Logging.Error(ex, ex.Message);
                 }
 
                 restoringFile = false;
-                //Reset the cache when GIT changes
-                Versioning.GitDetails = null;
-
-
             });
         }
 
