@@ -182,6 +182,18 @@ namespace Vixen.Data.StateCombinator
 			//higher than our existing colors intensity
 			foreach (var color in lowLayer)
 			{
+				if (filter.RequiresMixingPartner)
+				{
+					foreach (var key in highLayer.Keys.ToList())
+					{
+						if (!lowLayer.ContainsKey(key))
+						{
+							//We have nothing to mix with, so drop the value.
+							highLayer.Remove(key);
+						}
+					}
+				}
+
 				DiscreteValue highDiscreteValue;
 				if (highLayer.TryGetValue(color.Key, out highDiscreteValue))
 				{
