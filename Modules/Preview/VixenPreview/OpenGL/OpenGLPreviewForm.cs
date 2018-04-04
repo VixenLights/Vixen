@@ -416,9 +416,16 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//Logging.Debug("Entering DrawPoints");
 			// calculate our point scaling
 			float scale = _focalDepth / _camera.Position.Z;
-
-			var sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
-
+			float sizeScale = 0;
+			if (_background.HasBackground)
+			{
+				sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
+			}
+			else
+			{
+				sizeScale = 1;
+			}
+			
 			scale *= sizeScale;
 
 			scale = scale >= .1f ? scale : .1f;

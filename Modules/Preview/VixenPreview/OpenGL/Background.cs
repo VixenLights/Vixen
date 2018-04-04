@@ -80,8 +80,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void InitializeBackground()
 		{
-			_backgroundProgram = new ShaderProgram(VertexTextureShader, FragmentTextureShader);
-
 			if (string.IsNullOrEmpty(_data.BackgroundFileName))
 			{
 				HasBackground = false;
@@ -98,6 +96,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			Height = i.Height;
 			Width = i.Width;
+
+			_backgroundProgram = new ShaderProgram(VertexTextureShader, FragmentTextureShader);
 
 			_backgroundProgram.Use();
 
