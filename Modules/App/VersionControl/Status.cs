@@ -35,7 +35,7 @@ namespace VersionControl
             else StatusText = text;
         }
 
-        public void SetMinimum(int value)
+	    public void SetMinimum(int value)
         {
             if (this.InvokeRequired)
                 this.Invoke(new SetIntValueDelegate(SetMinimum), value);
@@ -73,7 +73,7 @@ namespace VersionControl
             get { return this.progressBar1.Minimum; }
             set
             {
-                this.progressBar1.Maximum = value;
+                this.progressBar1.Minimum = value;
                 Application.DoEvents();
 
             }

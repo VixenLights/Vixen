@@ -89,7 +89,7 @@ namespace VersionControl
             AppCommand showCommand = new AppCommand("VersionControl", "Browse");
             showCommand.Click += (sender, e) =>
             {
-                using (Versioning cs = new Versioning((Data)StaticModuleData, repo))
+                using (Versioning cs = new Versioning((Data)StaticModuleData, _repo))
                 {
 
                     if (cs.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -175,7 +175,7 @@ namespace VersionControl
 						{
 							Thread.Sleep(1);
 						}
-						Git git = new Git(repo);
+						Git git = new Git(_repo);
 
 						var status = git.Status().Call();
 
