@@ -555,4 +555,10 @@
   <data name="EnableGroundLevel" xml:space="preserve">
     <value>Adds a Ground level for the Meteors to hit.</value>
   </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Controls the rotation angle of the text.</value>
+  </data>
+  <data name="FontScale" xml:space="preserve">
+    <value>Adjusts the Font size.</value>
+  </data>
 </root>

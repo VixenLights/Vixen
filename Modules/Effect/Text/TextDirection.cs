@@ -12,6 +12,8 @@ namespace VixenModules.Effect.Text
 		Up,
 		[Description("Down")]
 		Down,
+		[Description("Rotate")]
+		Rotate,
 		[Description("None")]
 		None
 		
