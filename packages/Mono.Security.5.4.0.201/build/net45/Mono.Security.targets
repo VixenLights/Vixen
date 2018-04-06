@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="Mono.Security">
+      <HintPath Condition="'$(OS)' == 'Windows_NT'">$(MSBuildThisFileDirectory)win\Mono.Security.dll</HintPath>
+      <HintPath Condition="'$(OS)' != 'Windows_NT'">$(MSBuildThisFileDirectory)mac\Mono.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
