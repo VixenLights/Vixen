@@ -81,7 +81,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[PropertyOrder(18)]
 		[Category("Details")]
 		[ViewModelToModel("Prop")]
-		public string Category
+		public string Type
 		{
 			get { return GetValue<string>(CategoryProperty); }
 			set { SetValue(CategoryProperty, value); }
@@ -90,29 +90,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Category property data.
 		/// </summary>
-		public static readonly PropertyData CategoryProperty = RegisterProperty("Category", typeof(string), null);
-
-		#endregion
-
-		#region SubCategory property
-
-		/// <summary>
-		/// Gets or sets the SubCategory value.
-		/// </summary>
-		[DisplayName("Sub Category")]
-		[PropertyOrder(19)]
-		[Category("Details")]
-		[ViewModelToModel("Prop")]
-		public string SubCategory
-		{
-			get { return GetValue<string>(SubCategoryProperty); }
-			set { SetValue(SubCategoryProperty, value); }
-		}
-
-		/// <summary>
-		/// SubCategory property data.
-		/// </summary>
-		public static readonly PropertyData SubCategoryProperty = RegisterProperty("SubCategory", typeof(string), null);
+		public static readonly PropertyData CategoryProperty = RegisterProperty("Type", typeof(string), null);
 
 		#endregion
 

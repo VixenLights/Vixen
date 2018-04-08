@@ -18,9 +18,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 	    private DateTime _creationDate;
 	    private DateTime _modifiedDate;
 	    private string _createdBy;
-	    private string _category;
-	    private string _subCategory;
-	    private string _replacementToken;
+	    private string _type;
 
 	    public Prop(string name) : this()
         {
@@ -78,28 +76,17 @@ namespace VixenModules.App.CustomPropEditor.Model
             }
         }
 
-		public string Category
+		public string Type
 	    {
-		    get { return _category; }
+		    get { return _type; }
 		    set
 		    {
-			    if (value == _category) return;
-			    _category = value;
-			    OnPropertyChanged(nameof(Category));
+			    if (value == _type) return;
+			    _type = value;
+			    OnPropertyChanged(nameof(Type));
 		    }
 	    }
-
-	    public string SubCategory
-	    {
-		    get { return _subCategory; }
-		    set
-		    {
-			    if (value == _subCategory) return;
-			    _subCategory = value;
-			    OnPropertyChanged(nameof(SubCategory));
-		    }
-	    }
-
+		
 	    public string CreatedBy
 	    {
 		    get { return _createdBy; }

@@ -4,78 +4,66 @@ namespace VixenModules.App.CustomPropEditor.Model
 {
     public class VendorMetadata: BindableBase
     {
-	    private string _vendor;
-	    private string _vendorUrl;
-	    private string _vendorEmail;
-	    private string _vendorPhone;
-	    private string _category;
-	    private string _subCategory;
+	    private string _name;
+	    private string _website;
+	    private string _email;
+	    private string _phone;
+	    private string _contact;
 
-		#region Vendor Info
+	    #region Vendor Info
 
-		public string Vendor
+		public string Name
 	    {
-		    get { return _vendor; }
+		    get { return _name; }
 		    set
 		    {
-			    if (value == _vendor) return;
-			    _vendor = value;
-			    OnPropertyChanged(nameof(Vendor));
+			    if (value == _name) return;
+			    _name = value;
+			    OnPropertyChanged(nameof(Name));
 		    }
 	    }
 
-	    public string VendorUrl
+	    public string Website
 	    {
-		    get { return _vendorUrl; }
+		    get { return _website; }
 		    set
 		    {
-			    if (value == _vendorUrl) return;
-			    _vendorUrl = value;
-			    OnPropertyChanged(nameof(VendorUrl));
+			    if (value == _website) return;
+			    _website = value;
+			    OnPropertyChanged(nameof(Website));
 		    }
 	    }
 
-	    public string VendorEmail
+	    public string Contact
 	    {
-		    get { return _vendorEmail; }
+		    get { return _contact; }
 		    set
 		    {
-			    if (value == _vendorEmail) return;
-			    _vendorEmail = value;
-			    OnPropertyChanged(nameof(VendorEmail));
+			    if (value == _contact) return;
+			    _contact = value;
+			    OnPropertyChanged(nameof(Contact));
 		    }
 	    }
 
-	    public string VendorPhone
+	    public string Email
 	    {
-		    get { return _vendorPhone; }
+		    get { return _email; }
 		    set
 		    {
-			    if (value == _vendorPhone) return;
-			    _vendorPhone = value;
-			    OnPropertyChanged(nameof(VendorPhone));
+			    if (value == _email) return;
+			    _email = value;
+			    OnPropertyChanged(nameof(Email));
 		    }
 	    }
 
-	    public string Category
+	    public string Phone
 	    {
-		    get { return _category; }
+		    get { return _phone; }
 		    set
 		    {
-			    if (value == _category) return;
-			    _category = value;
-			    OnPropertyChanged(nameof(Category));
-		    }
-	    }
-
-	    public string SubCategory
-	    {
-		    get { return _subCategory; }
-		    set
-		    {
-			    if (value == _subCategory) return;
-			    _subCategory = value;
-			    OnPropertyChanged(nameof(SubCategory));
+			    if (value == _phone) return;
+			    _phone = value;
+			    OnPropertyChanged(nameof(Phone));
 		    }
 	    }
 

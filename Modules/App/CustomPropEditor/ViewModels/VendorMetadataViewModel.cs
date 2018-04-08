@@ -34,7 +34,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region Vendor property
+		#region Name property
 
 		/// <summary>
 		/// Gets or sets the Vendor value.
@@ -42,7 +42,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		[PropertyOrder(1)]
 		[Category("Vendor")]
 		[ViewModelToModel("VendorMetadata")]
-		public string Vendor
+		public string Name
 		{
 			get { return GetValue<string>(VendorProperty); }
 			set { SetValue(VendorProperty, value); }
@@ -51,20 +51,41 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// Vendor property data.
 		/// </summary>
-		public static readonly PropertyData VendorProperty = RegisterProperty("Vendor", typeof(string), null);
+		public static readonly PropertyData VendorProperty = RegisterProperty("Name", typeof(string), null);
 
 		#endregion
 
-		#region VendorUrl property
+	    #region Contact property
+
+	    /// <summary>
+	    /// Gets or sets the Contact value.
+	    /// </summary>
+	    [PropertyOrder(2)]
+	    [Category("Vendor")]
+	    [ViewModelToModel("VendorMetadata")]
+	    public string Contact
+	    {
+		    get { return GetValue<string>(ContactProperty); }
+		    set { SetValue(ContactProperty, value); }
+	    }
+
+	    /// <summary>
+	    /// Contact property data.
+	    /// </summary>
+	    public static readonly PropertyData ContactProperty = RegisterProperty("Contact", typeof(string), null);
+
+	    #endregion
+
+		#region Website property
 
 		/// <summary>
 		/// Gets or sets the VendorUrl value.
 		/// </summary>
-		[PropertyOrder(2)]
-		[DisplayName("Vendor URL")]
+		[PropertyOrder(3)]
+		[DisplayName("Website")]
 		[Category("Vendor")]
 		[ViewModelToModel("VendorMetadata")]
-		public string VendorUrl
+		public string Website
 		{
 			get { return GetValue<string>(VendorUrlProperty); }
 			set { SetValue(VendorUrlProperty, value); }
@@ -73,20 +94,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// VendorUrl property data.
 		/// </summary>
-		public static readonly PropertyData VendorUrlProperty = RegisterProperty("VendorUrl", typeof(string), null);
+		public static readonly PropertyData VendorUrlProperty = RegisterProperty("Website", typeof(string), null);
 
 		#endregion
 
-		#region VendorEmail property
+		#region Email property
 
 		/// <summary>
 		/// Gets or sets the VendorEmail value.
 		/// </summary>
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		[Category("Vendor")]
-		[DisplayName("Vendor Email")]
+		[DisplayName("Email")]
 		[ViewModelToModel("VendorMetadata")]
-		public string VendorEmail
+		public string Email
 		{
 			get { return GetValue<string>(VendorEmailProperty); }
 			set { SetValue(VendorEmailProperty, value); }
@@ -95,50 +116,28 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// <summary>
 		/// VendorEmail property data.
 		/// </summary>
-		public static readonly PropertyData VendorEmailProperty = RegisterProperty("VendorEmail", typeof(string), null);
+		public static readonly PropertyData VendorEmailProperty = RegisterProperty("Email", typeof(string), null);
 
 		#endregion
 
-		#region Category property
+		#region Phone property
 
 		/// <summary>
-		/// Gets or sets the Category value.
+		/// Gets or sets the Phone value.
 		/// </summary>
-		[PropertyOrder(4)]
-		[Category("Vendor")]
-		[ViewModelToModel("VendorMetadata")]
-		public string Category
-		{
-			get { return GetValue<string>(CategoryProperty); }
-			set { SetValue(CategoryProperty, value); }
-		}
-
-		/// <summary>
-		/// Category property data.
-		/// </summary>
-		public static readonly PropertyData CategoryProperty = RegisterProperty("Category", typeof(string), null);
-
-		#endregion
-
-		#region SubCategory property
-
-		/// <summary>
-		/// Gets or sets the SubCategory value.
-		/// </summary>
-		[DisplayName("Sub Category")]
 		[PropertyOrder(5)]
 		[Category("Vendor")]
 		[ViewModelToModel("VendorMetadata")]
-		public string SubCategory
-		{
-			get { return GetValue<string>(SubCategoryProperty); }
-			set { SetValue(SubCategoryProperty, value); }
-		}
+	    public string Phone
+	    {
+		    get { return GetValue<string>(PhoneProperty); }
+		    set { SetValue(PhoneProperty, value); }
+	    }
 
-		/// <summary>
-		/// SubCategory property data.
-		/// </summary>
-		public static readonly PropertyData SubCategoryProperty = RegisterProperty("SubCategory", typeof(string), null);
+	    /// <summary>
+	    /// Phone property data.
+	    /// </summary>
+	    public static readonly PropertyData PhoneProperty = RegisterProperty("Phone", typeof(string), null);
 
 		#endregion
 
