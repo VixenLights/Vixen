@@ -22,6 +22,8 @@ namespace VixenModules.Effect.Wipe {
 			PassCount = 1;
 			PulsePercent = 33;
 		}
+		[DataMember]
+		public ColorHandling ColorHandling { get; set; }
 
 		[DataMember]
 		public ColorGradient ColorGradient { get; set; }
