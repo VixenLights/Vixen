@@ -311,6 +311,8 @@
     <Resource Include="Save_6530.png" />
     <Resource Include="Open_6529.png" />
     <Resource Include="NewFile_6276.png" />
+    <Resource Include="Prop_Add.png" />
+    <Resource Include="Prop_Edit.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />

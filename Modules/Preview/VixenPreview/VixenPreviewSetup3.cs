@@ -69,12 +69,15 @@ namespace VixenModules.Preview.VixenPreview
 
 			btnBulbIncrease.Image = Tools.GetIcon(Resources.buttonBulbBigger, iconSize);
 			btnBulbDecrease.Image = Tools.GetIcon(Resources.buttonBulbSmaller, iconSize);
-			//btnBulbMatch.Image = Tools.GetIcon(Resources.buttonBulbEqual, iconSize);
-
-			btnAddCustomProp.Image = Tools.GetIcon(Resources.folder_open, iconSize);
-			btnCustomPropEditor.Image = Tools.GetIcon(Resources.cog, iconSize);
+			
+			btnAddCustomProp.Image = Tools.GetIcon(Resources.Prop_Add, iconSize);
+			btnCustomPropEditor.Image = Tools.GetIcon(Resources.Prop_Edit, iconSize);
 			btnCustomPropLibrary.Image = Tools.GetIcon(Resources.folder_explore, iconSize);
 
+			btnAddCustomProp.Text = string.Empty;
+			btnCustomPropEditor.Text = string.Empty;
+			btnCustomPropLibrary.Text = string.Empty;
+			
 			buttonAlignLeft.Image = Tools.GetIcon(Resources.buttonAlignLeft_BackgroundImage, iconSize);
 			buttonAlignBottom.Image = Tools.GetIcon(Resources.buttonAlignBottom_BackgroundImage, iconSize);
 			buttonAlignHorizMid.Image = Tools.GetIcon(Resources.buttonAlignHorizMid_BackgroundImage, iconSize);

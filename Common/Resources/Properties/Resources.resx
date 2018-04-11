@@ -967,4 +967,10 @@
   <data name="buttonMatchProperties_BackgroundImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\buttonmatchproperties.backgroundimage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Prop_Add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\prop_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Prop_Edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\prop_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
