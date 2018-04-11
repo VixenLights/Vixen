@@ -173,7 +173,7 @@ namespace VixenModules.App.CustomPropEditor.Model
 
 		public bool CanAddLeafNodes => IsGroupNode && (!Children.Any() || Children.Any(c => c.IsLeaf));
 
-		public bool CanAddLightNodes => (!Children.Any() || IsLightNode || Children.All(c => !c.IsGroupNode));
+		public bool CanAddLightNodes => !IsRootNode && (!Children.Any() || IsLightNode || Children.All(c => !c.IsGroupNode));
 
 		public bool IsRootNode => !Parents.Any();
 

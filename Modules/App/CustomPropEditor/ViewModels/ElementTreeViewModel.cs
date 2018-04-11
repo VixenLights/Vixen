@@ -575,7 +575,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	            return false;
 	        }
 
-	        var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter)
+			var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter)
 	                             && dropInfo.VisualTargetItem is TreeViewItem;
 	        if (isTreeViewItem && dropInfo.VisualTargetItem == dropInfo.DragInfo.VisualSourceItem)
 	        {
@@ -584,44 +584,83 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	        IList<ElementModelViewModel> elementModelViewModels = dropInfo.Data as IList<ElementModelViewModel>;
 	        var evmTarget = dropInfo.TargetItem as ElementModelViewModel;
-            if (elementModelViewModels != null)
+		    if (evmTarget == null)
+		    {
+			    return false;
+		    }
+
+		    Console.Out.WriteLine($"Target {evmTarget.ElementModel.Name},IsGroupNode {evmTarget.ElementModel.IsGroupNode} Position {dropInfo.InsertPosition}");
+
+			if (elementModelViewModels != null)
 	        {
 	            var isGroups = elementModelViewModels.Any(x => x.ElementModel.IsGroupNode);
 	            var isLeafs = elementModelViewModels.Any(x => x.IsLeaf);
+		        var isLightNodes = elementModelViewModels.Any(x => x.ElementModel.IsLightNode);
 
-	            if (isGroups && isLeafs)
+				if (isGroups && isLightNodes)
 	            {
 	                return false;
 	            }
 
-	            if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
+		        if (dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.BeforeTargetItem))
+		        {
+			        if (evmTarget.ElementModel.IsRootNode)
+			        {
+				        //Can't insert above the root node.
+						return false;
+			        }
+			        if (evmTarget.ElementModel.IsGroupNode && elementModelViewModels.Any(x => x.IsLightNode))
+			        {
+				        //Can't add lights to group of groups
+				        return false;
+			        }
+				}
+
+		        if (dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.AfterTargetItem))
+		        {
+			        if (elementModelViewModels.Any(x => x.IsLightNode) && evmTarget.ElementModel.IsGroupNode && !evmTarget.ElementModel.CanAddLightNodes)
+			        {
+				        //Can't add lights to group of groups
+				        return false;
+			        }
+		        }
+
+				if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
 	            {
-	                if (evmTarget != null)
-	                {
-	                    if (!evmTarget.ElementModel.IsGroupNode)
-	                    {
-	                        return false;
-	                    }
-	                }
-
-	                if (isGroups && evmTarget != null && !evmTarget.ElementModel.CanAddGroupNodes)
+	                
+	                if (!evmTarget.ElementModel.IsGroupNode)
 	                {
 	                    return false;
 	                }
 
-	                if (isLeafs && evmTarget != null && !evmTarget.ElementModel.CanAddLeafNodes)
+		            if (evmTarget.ElementModel.IsRootNode && elementModelViewModels.Any(x => x.IsLightNode))
+		            {
+						//Can't add lights to the root node
+			            return false;
+		            }
+
+	                if (isGroups && !evmTarget.ElementModel.CanAddGroupNodes)
 	                {
 	                    return false;
 	                }
+
+	                if (isLeafs && !evmTarget.ElementModel.CanAddLeafNodes)
+	                {
+	                    return false;
+	                }
+
+		            if (elementModelViewModels.Any(x => x.ElementModel.Parents.Contains(evmTarget.ElementModel.Id)))
+		            {
+						//Can't add to the same parent.
+			            return false;
+		            }
                 }
             }
-
-	        
 
 	        if (dropInfo.DragInfo.SourceCollection == dropInfo.TargetCollection)
 	        {
 	            var targetList = dropInfo.TargetCollection.TryGetList();
-	            return targetList != null;
+		        return targetList != null;
 	        }
 
 	        if (dropInfo.TargetCollection == null)
@@ -632,7 +671,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	        if (TestCompatibleTypes(dropInfo.TargetCollection, dropInfo.Data))
 	        {
 	            var isChildOf = IsChildOf(dropInfo.VisualTargetItem, dropInfo.DragInfo.VisualSourceItem);
-	            return !isChildOf;
+		        return !isChildOf;
 	        }
 	        
 	        return false;
@@ -674,8 +713,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		        var isTreeViewItem = dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter) && dropInfo.VisualTargetItem is TreeViewItem;
 		        dropInfo.DropTargetAdorner = isTreeViewItem ? DropTargetAdorners.Highlight : DropTargetAdorners.Insert;
-
-				Console.Out.WriteLine($"Postiion={dropInfo.InsertPosition} : Adorner={dropInfo.DropTargetAdorner}"  );
+			}
+		    else
+		    {
+			    dropInfo.DropTargetAdorner = null;
 		    }
         }
 
@@ -747,7 +788,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 						    {
                                 //We are on the center and adding to a group hopefully
 						        //Ensure the target is a group node.
-						        if (targetModel.ElementModel.IsGroupNode && sourceModelParent != null)
+						        if (targetModel.ElementModel.IsGroupNode && sourceModelParent != null &&
+						            targetModel.ElementModel != sourceModelParent.ElementModel) //We are not adding to our own parent.
 						        {
 						            pms.AddToParent(elementModelViewModel.ElementModel, targetModel.ElementModel);
                                     pms.RemoveFromParent(elementModelViewModel.ElementModel, sourceModelParent.ElementModel);
@@ -767,7 +809,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 	    private static void SelectModelWithParent(ElementModelViewModel elementModelViewModel, ElementModelViewModel targetModelParent)
 	    {
-	        var newModel = ElementModelLookUpService.Instance.GetModels(elementModelViewModel.ElementModel.Id)
+	        var newModel = ElementModelLookUpService.Instance.GetModels(elementModelViewModel.ElementModel.Id)?
 	            .FirstOrDefault(e => e.ParentViewModel == targetModelParent);
 	        if (newModel != null)
 	        {
