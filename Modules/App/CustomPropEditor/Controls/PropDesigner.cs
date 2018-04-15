@@ -343,6 +343,12 @@ namespace VixenModules.App.CustomPropEditor.Controls
 			TransformCommand.Execute(new TranslateTransform(xDelta, yDelta));
 		}
 
+		internal void MoveSelectedItems(Transform transform)
+		{
+			TransformCommand.Execute(transform);
+			UpdateResizeAdorner();
+		}
+
 		internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
 		{
 			TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
@@ -351,6 +357,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		internal void TransformSelectedItems(TransformGroup t)
 		{
 			TransformCommand.Execute(t);
+			UpdateResizeAdorner();
 		}
 
 		internal void RotateSelectedItems(double angle, Point center)
@@ -448,9 +455,9 @@ namespace VixenModules.App.CustomPropEditor.Controls
 					{
 						if (_resizingAdorner == null)
 						{
-							_resizingAdorner = new ResizeAdorner(_drawingCanvas, this);
+							_resizingAdorner = new ResizeAdorner(_drawingCanvas, this, bounds.Value);
 							adornerLayer.Add(_resizingAdorner);
-							_resizingAdorner.Bounds = bounds.Value;
+							//_resizingAdorner.Bounds = bounds.Value;
 						}
 						adornerLayer.Update();
 					}
