@@ -40,6 +40,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		private readonly VisualCollection _visualChildren;
 		private Rect _bounds;
 		private double _rotationAngle;
+		private Point _dragStart;
 		
 		private readonly PropDesigner vm;
 		// Initialize the ResizingAdorner.
@@ -81,6 +82,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_middleLeft.DragDelta += HandleMiddleLeft;
 		
 			_centerDrag.DragDelta += HandleCenterDrag;
+			_centerDrag.DragStarted += _centerDrag_DragStarted;
 			
 			_rotate.DragDelta += HandleRotate;
 
@@ -89,6 +91,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_reverseRotateTransform = new RotateTransform(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
 
 		}
+
 		
 		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
 		{
@@ -117,16 +120,26 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 				rect.Top + rect.Height / 2);
 		}
 
+		private void _centerDrag_DragStarted(object sender, DragStartedEventArgs e)
+		{
+			Point pos = Mouse.GetPosition(AdornedElement);
+			Console.Out.WriteLine($"Start Location {pos}");
+			_dragStart = pos;
+		}
+
+
 		private void HandleCenterDrag(object sender, DragDeltaEventArgs e)
 		{
 			FrameworkElement el = AdornedElement as FrameworkElement;
 			Point pos = Mouse.GetPosition(AdornedElement);
-			Console.Out.WriteLine($"Location {pos}");
+			
+			var offset = new Point(pos.X - _dragStart.X, pos.Y - _dragStart.Y);
+			_dragStart = pos;
 
-			if (Bounds.Left + e.HorizontalChange > 0 && Bounds.Right + e.HorizontalChange < el.ActualWidth &&
-				Bounds.Top + e.VerticalChange > 0 && Bounds.Bottom + e.VerticalChange < el.ActualHeight)
+			if (Bounds.Left + offset.X > 0 && Bounds.Right + offset.X < el.ActualWidth &&
+				Bounds.Top + offset.Y > 0 && Bounds.Bottom + offset.Y < el.ActualHeight)
 			{
-				var transform = new TranslateTransform(e.HorizontalChange, e.VerticalChange);
+				var transform = new TranslateTransform(offset.X, offset.Y);
 				MoveTransformItems(transform);
 			}
 		}
@@ -287,6 +300,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_reverseRotateTransform.Angle = -_rotationAngle;
 
 			vm.RotateSelectedItems(difference, _rotationCenter);
+			
 		}
 
 		private void TransformItems(ScaleTransform scaleTransform)
@@ -302,11 +316,10 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 
 		private void MoveTransformItems(Transform transform)
 		{
-			Bounds = transform.TransformBounds(Bounds);
 			_rotationCenter = transform.Transform(_rotationCenter);
-			transform.Value.RotateAt(_rotationAngle, _rotateTransform.CenterX, _rotateTransform.CenterY);
-			vm.MoveSelectedItems(transform);
 			UpdateRotationTransform();
+			Bounds = transform.TransformBounds(Bounds);
+			vm.MoveSelectedItems(transform);
 		}
 
 		private void UpdateRotationTransform()
@@ -342,8 +355,7 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		// Arrange the Adorners.
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (_rotate.IsDragging) return finalSize;
-			
+			//if (_rotate.IsDragging) return finalSize;
 			_topLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y - _topLeft.Height, _topLeft.Width, _topLeft.Height));
 			_topRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y - _topRight.Height, _topRight.Width, _topRight.Height));
 

@@ -350,7 +350,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		internal void MoveSelectedItems(Transform transform)
 		{
 			TransformCommand.Execute(transform);
-			UpdateResizeAdorner();
+			RefreshResizeAdorner();
 		}
 
 		internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
@@ -361,13 +361,23 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		internal void TransformSelectedItems(TransformGroup t)
 		{
 			TransformCommand.Execute(t);
-			UpdateResizeAdorner();
+			RefreshResizeAdorner();
 		}
 
 		internal void RotateSelectedItems(double angle, Point center)
 		{
 			TransformCommand.Execute(new RotateTransform(angle, center.X, center.Y));
-			UpdateResizeAdorner();
+			RefreshResizeAdorner();
+		}
+
+		private void RefreshResizeAdorner()
+		{
+			AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(_drawingCanvas);
+
+			if (adornerLayer != null)
+			{
+				adornerLayer.Update();
+			}
 		}
 
 		private void _drawingCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
