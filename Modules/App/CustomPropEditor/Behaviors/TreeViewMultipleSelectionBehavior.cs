@@ -122,10 +122,12 @@ namespace VixenModules.App.CustomPropEditor.Behaviors
 		protected override void OnAttached()
 		{
 			base.OnAttached();
-			Console.Out.WriteLine("Good behavior attached!");
 			AssociatedObject.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnTreeViewItemKeyDown), true);
 			AssociatedObject.AddHandler(UIElement.MouseLeftButtonUpEvent, new MouseButtonEventHandler(OnTreeViewItemMouseUp), true);
 			AssociatedObject.AddHandler(UIElement.MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnTreeViewMouseDown));
+
+			AssociatedObject.AddHandler(UIElement.MouseRightButtonUpEvent, new MouseButtonEventHandler(OnTreeViewItemRightMouseUp), true);
+			AssociatedObject.AddHandler(UIElement.MouseRightButtonDownEvent, new MouseButtonEventHandler(OnTreeViewRightMouseDown));
 		}
 
 
@@ -197,11 +199,51 @@ namespace VixenModules.App.CustomPropEditor.Behaviors
 			}
 		}
 
+		private void OnTreeViewRightMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			var treeViewItem = FindParentTreeViewItem(e.OriginalSource);
+			if (treeViewItem != null)
+			{
+				if (GetIsItemSelected(treeViewItem))
+				{
+					return;
+				}
+			}
+
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+			{
+				return;
+			} 
+			
+			DeSelectAll();
+		}
+
+		/// <summary>
+		/// Called when a TreeViewItem receives a right mouse up event.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="e">
+		/// The <see cref="System.Windows.Input.MouseButtonEventArgs"/> instance containing the
+		/// event data.
+		/// </param>
+		private void OnTreeViewItemRightMouseUp(object sender, MouseButtonEventArgs e)
+		{
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+			{
+				return;
+			}
+
+			var treeViewItem = FindParentTreeViewItem(e.OriginalSource);
+			if (treeViewItem != null && !GetIsItemSelected(treeViewItem))
+			{
+				SelectSingleItem(treeViewItem);
+			}
+		}
+
 		private void OnTreeViewMouseDown(object sender, MouseButtonEventArgs e)
 		{
 			DeSelectAll();
 		}
-
 
 		/// <summary>
 		/// Called when a TreeViewItem receives a mouse up event.
