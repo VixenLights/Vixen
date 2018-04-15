@@ -55,6 +55,10 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				{
 					p.RemoveResizeAdorner();
 				}
+				else
+				{
+					p.UpdateResizeAdorner();
+				}
 			}
 		}
 
