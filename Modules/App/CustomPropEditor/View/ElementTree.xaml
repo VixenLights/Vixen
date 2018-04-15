@@ -181,6 +181,11 @@
 						<Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
 					</MenuItem.Icon>
 				</MenuItem>
+				<MenuItem Header="Paste as New" Command="{Binding Path=DataContext.ElementTreeViewModel.PasteAsNewCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+					<MenuItem.Icon>
+						<Image Source="/Resources;component/page_white_paste.png" Width="16" Height="16"></Image>
+					</MenuItem.Icon>
+				</MenuItem>
 				<Separator/>
 				<MenuItem Header="Delete" Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}">
 					<MenuItem.Icon>

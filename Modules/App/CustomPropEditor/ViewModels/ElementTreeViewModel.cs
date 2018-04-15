@@ -509,6 +509,89 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region PasteAsNew command
+
+		private Command _pasteAsNewCommand;
+
+		/// <summary>
+		/// Gets the PasteAsNew command.
+		/// </summary>
+		public Command PasteAsNewCommand
+		{
+			get { return _pasteAsNewCommand ?? (_pasteAsNewCommand = new Command(PasteAsNew, CanPasteAsNew)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the PasteAsNew command is executed.
+		/// </summary>
+		private void PasteAsNew()
+		{
+			System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+
+			if (dataObject != null && SelectedItems.Count == 1)
+			{
+				if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+				{
+					var parent = SelectedItem;
+					DeselectAll();
+					var newElementModels = new List<ElementModelViewModel>();
+					var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+
+					if (data != null)
+					{
+						foreach (var elementModel in data)
+						{
+							var em = PropModelServices.Instance().CreateElementModelTree(elementModel, parent.ElementModel);
+							var evm = ElementModelLookUpService.Instance.GetModels(em.Id);
+							if (evm != null)
+							{
+								newElementModels.AddRange(evm);
+							}
+						}
+					}
+
+					OnModelsChanged();
+					SelectModels(newElementModels);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Method to check whether the PasteAsNew command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanPasteAsNew()
+		{
+			System.Windows.Forms.IDataObject dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+
+			if (dataObject != null && SelectedItems.Count == 1)
+			{
+				if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+				{
+					var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+
+					if (data != null)
+					{
+						if (data.All(x => x.IsLightNode && SelectedItem.ElementModel.CanAddLightNodes))
+						{
+							//We can paste our contents
+							return true;
+						}
+						if (data.All(x => x.IsGroupNode && SelectedItem.ElementModel.CanAddGroupNodes))
+						{
+							//We can paste our contents
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+		#endregion
+
+
 		#endregion
 
 		public void DeselectAll()

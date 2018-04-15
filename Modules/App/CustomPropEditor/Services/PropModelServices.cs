@@ -136,9 +136,13 @@ namespace VixenModules.App.CustomPropEditor.Services
 			if (em == null)
 			{
 				em = CreateNode(elementModel.Name, elementModel.Id, parent);
-				em.LightSize = elementModel.LightSize;
-				em.Lights = elementModel.Lights;
-				em.Order = OrderExists(elementModel.Order)?GetNextOrder():elementModel.Order;
+				if (elementModel.IsLightNode)
+				{
+					em.LightSize = elementModel.LightSize;
+					em.Lights = elementModel.Lights;
+					em.Order = OrderExists(elementModel.Order) ? GetNextOrder() : elementModel.Order;
+				}
+				
 				foreach (var child in elementModel.Children)
 				{
 					FindOrCreateElementModelTree(child, em);
@@ -148,6 +152,28 @@ namespace VixenModules.App.CustomPropEditor.Services
 			{
 				AddToParent(em, parent);
 			}
+			return em;
+		}
+
+		public ElementModel CreateElementModelTree(ElementModel elementModel, ElementModel parent)
+		{
+			var em = CreateNode(parent.Name, parent);
+
+			if (elementModel.IsLightNode)
+			{
+				em.LightSize = elementModel.LightSize;
+				foreach (var elementModelLight in elementModel.Lights)
+				{
+					AddLightToTarget(new Point(elementModelLight.X, elementModelLight.Y), em);
+				}
+				em.Order = GetNextOrder();
+			}
+			
+			foreach (var child in elementModel.Children)
+			{
+				CreateElementModelTree(child, em);
+			}
+			
 			return em;
 		}
 
@@ -234,7 +260,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 
 		}
 
-		public ElementModel AddLight(ElementModel target, Point p, int? order = null)
+		public ElementModel AddLight(ElementModel target, Point p)
 		{
 			if (target != null && !target.IsGroupNode && target.Parents.Any())
 			{
