@@ -84,8 +84,12 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			try
 			{
-				var image = new BitmapImage(new Uri(filePath, UriKind.Absolute));
-				_prop.Image = image;
+				BitmapImage bmi = new BitmapImage();
+				bmi.BeginInit();
+				bmi.CacheOption = BitmapCacheOption.OnLoad;
+				bmi.UriSource = new Uri(filePath, UriKind.Absolute);
+				bmi.EndInit();
+				_prop.Image = bmi;
 			}
 			catch (Exception ex)
 			{
