@@ -220,8 +220,17 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = RequestNewGroupName(String.Empty);
 			if (result.Result == MessageResult.OK)
 			{
-				var parentToJoin = PropModelServices.Instance().CreateNode(result.Response);
 				var pms = PropModelServices.Instance();
+
+				//See if we are moving all items and can place the new group them under our parent group.
+				ElementModel parentForGroup = null;
+				var firstParentViewModel = SelectedItems.First().ParentViewModel as ElementModelViewModel;
+				if(firstParentViewModel!= null && !firstParentViewModel.Children.Except(SelectedItems.Select(x => x.ElementModel)).Any())
+				{
+					parentForGroup = firstParentViewModel?.ElementModel;
+				}
+
+				var parentToJoin = pms.CreateNode(result.Response, parentForGroup);
 				foreach (var elementModelViewModel in SelectedItems.ToList())
 				{
 					elementModelViewModel.IsSelected = false;
@@ -233,6 +242,16 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					}
 				}
 				OnModelsChanged();
+
+				DeselectAll();
+				var newModel = ElementModelLookUpService.Instance.GetModels(parentToJoin.Id);
+				if (newModel != null && newModel.Any())
+				{
+					newModel.First().IsExpanded = true;
+					SelectModels(newModel);
+				}
+				
+				
 			}
 		}
 
