@@ -311,7 +311,10 @@ namespace VixenModules.App.CustomPropEditor.Controls
 						}
 						else
 						{
-							_rubberbandAdorner.EndPoint = position;
+							if (_rubberbandAdorner != null)
+							{
+								_rubberbandAdorner.EndPoint = position;
+							}
 							UpdateSelection(_originMouseStartPoint, position);
 							e.Handled = true;
 						}
