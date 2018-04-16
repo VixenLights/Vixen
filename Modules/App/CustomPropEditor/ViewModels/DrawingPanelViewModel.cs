@@ -322,13 +322,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		public void Transform(Transform t)
 		{
-			foreach (LightViewModel lvm in SelectedItems)
-			{
-				if (lvm.IsSelected)
-				{
-					lvm.Center = t.Transform(lvm.Center);
-				}
-			}
+			SelectedItems.AsParallel().ForEach(x => x.Center = t.Transform(x.Center));
 		}
 
 		public void AlignTops()

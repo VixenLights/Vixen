@@ -359,6 +359,7 @@ namespace VixenModules.App.CustomPropEditor.Controls
 		internal void ScaleSelectedItems(double xDelta, double yDelta, Point center)
 		{
 			TransformCommand.Execute(new ScaleTransform(xDelta, yDelta, center.X, center.Y));
+			RefreshResizeAdorner();
 		}
 
 		internal void TransformSelectedItems(TransformGroup t)

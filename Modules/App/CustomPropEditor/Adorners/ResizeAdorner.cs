@@ -123,7 +123,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		private void _centerDrag_DragStarted(object sender, DragStartedEventArgs e)
 		{
 			Point pos = Mouse.GetPosition(AdornedElement);
-			Console.Out.WriteLine($"Start Location {pos}");
 			_dragStart = pos;
 		}
 
