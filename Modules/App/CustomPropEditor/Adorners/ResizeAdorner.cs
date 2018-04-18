@@ -85,14 +85,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_centerDrag.DragStarted += _centerDrag_DragStarted;
 			
 			_rotate.DragDelta += HandleRotate;
-
+			
 			_rotationCenter = Center(Bounds);
 			_rotateTransform = new RotateTransform(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
 			_reverseRotateTransform = new RotateTransform(_rotationAngle, _rotationCenter.X, _rotationCenter.Y);
 
 		}
 
-		
 		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
 		{
 			base.OnMouseLeftButtonDown(e);
@@ -305,7 +304,6 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		private void TransformItems(ScaleTransform scaleTransform)
 		{
 			Bounds = scaleTransform.TransformBounds(Bounds);
-			scaleTransform.Value.RotateAt(_rotationAngle, _rotateTransform.CenterX, _rotateTransform.CenterY);
 			TransformGroup tg = new TransformGroup();
 			tg.Children.Add(_reverseRotateTransform);
 			tg.Children.Add(scaleTransform);
@@ -348,13 +346,13 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 		{
 			AdornedElement.Measure(constraint);
 			InvalidateVisual();
-			return new Size(Bounds.Width + _topLeft.Width + _topRight.Width, Bounds.Height + 2 * _bottomLeft.Height + 2 * (3 * _middleTop.Height)); ;
+			return new Size(Bounds.Width + _topLeft.Width + _topRight.Width, Bounds.Height + _bottomLeft.Height + (3 * _rotate.Height)); ;
 		}
 
 		// Arrange the Adorners.
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			//if (_rotate.IsDragging) return finalSize;
+			if (_rotate.IsDragging) return finalSize;
 			_topLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y - _topLeft.Height, _topLeft.Width, _topLeft.Height));
 			_topRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y - _topRight.Height, _topRight.Width, _topRight.Height));
 
@@ -362,12 +360,12 @@ namespace VixenModules.App.CustomPropEditor.Adorners
 			_bottomRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height, _bottomRight.Width, _bottomRight.Height));
 
 			_middleTop.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleTop.Width / 2, Bounds.Y - _middleTop.Height, _middleTop.Width, _middleTop.Height));
-			_middleRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height / 2 - _middleRight.Height / 2, _bottomRight.Width, _topRight.Height));
-			_middleBottom.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleBottom.Width / 2, Bounds.Y + Bounds.Height, _bottomLeft.Width, _bottomLeft.Height));
-			_middleLeft.Arrange(new Rect(Bounds.X - _topLeft.Width, Bounds.Y + Bounds.Height / 2 - _middleLeft.Width / 2, _middleBottom.Width, _middleBottom.Height));
+			_middleRight.Arrange(new Rect(Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height / 2 - _middleRight.Height / 2, _middleRight.Width, _middleRight.Height));
+			_middleBottom.Arrange(new Rect(Bounds.X + Bounds.Width / 2 - _middleBottom.Width / 2, Bounds.Y + Bounds.Height, _middleBottom.Width, _middleBottom.Height));
+			_middleLeft.Arrange(new Rect(Bounds.X - _middleLeft.Width, Bounds.Y + Bounds.Height / 2 - _middleLeft.Width / 2, _middleLeft.Width, _middleLeft.Height));
 
 			_centerDrag.Arrange(new Rect(_rotationCenter.X - _centerDrag.Width / 2, _rotationCenter.Y - _centerDrag.Height / 2, _centerDrag.Width, _centerDrag.Height));
-
+			
 			_rotate.Arrange(new Rect(_rotationCenter.X - _rotate.Width / 2, Bounds.Y - 3 * _rotate.Height, _rotate.Width, _rotate.Height));
 
 			return finalSize;
