@@ -241,7 +241,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 				order = GetNextOrder();
 			}
 
-			ElementModel em = new ElementModel(Uniquify($"{target.Name} - {order}"), order.Value, target);
+			ElementModel em = new ElementModel(Uniquify($"{target.Name}", 1), order.Value, target);
 			target.AddChild(em);
 			_models.Add(em.Id, em);
 			if (size == null)
@@ -376,13 +376,13 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return _models.Values.Count(x => x.Name == name) > 1;
 		}
 
-		public string Uniquify(string name)
+		public string Uniquify(string name, int orderIndex = 2)
 		{
 			if (_models.Values.Any(x => x.Name == name))
 			{
 				string originalName = name;
 				bool unique;
-				int counter = 2;
+				int counter = orderIndex;
 				do
 				{
 					name = $"{originalName} - {counter++}";
