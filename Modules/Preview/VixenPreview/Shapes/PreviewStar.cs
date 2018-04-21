@@ -48,19 +48,13 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
             if (_pixels.Count >= 5 && _pointCount == 0)
             {
-                if (_pixels.Count % 5 == 0)
-                {
-                    _pointCount = 5;
-                }
-                else if (_pixels.Count % 3 == 0)
-                {
-                    _pointCount = 3;
-                }
-                else if (_pixels.Count % 2 == 0)
-                {
-                    _pointCount = 4;
-                }
+	            ConfigurePointCount(_pixels.Count);
             }
+
+			if (PointCount == 0)
+			{
+				ConfigurePointCount(_pixels.Count + 1);
+			}
 
             if (_pixels.Count < 5)
             {
@@ -82,7 +76,23 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
-        private bool IsPixelStar(ElementNode selectedNode)
+		private void ConfigurePointCount(int lightCount)
+		{
+			if (lightCount % 5 == 0)
+			{
+				_pointCount = 5;
+			}
+			else if (lightCount % 3 == 0)
+			{
+				_pointCount = 3;
+			}
+			else if (lightCount % 2 == 0)
+			{
+				_pointCount = 4;
+			}
+		}
+
+		private bool IsPixelStar(ElementNode selectedNode)
         {
             int childCount = 0;
             // Iterate through each child
