@@ -398,7 +398,7 @@
 	<SolidColorBrush x:Key="ToolBarButtonHover" Color="#C2E0FF"/>
 	<SolidColorBrush x:Key="ToolBarGripper" Color="#C6C3C6"/>
 	<Style x:Key="ToolBarVerticalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Background" Value="{StaticResource ToolBarToggleButtonVerticalBackground}"/>
+		<Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
 		<Setter Property="MinHeight" Value="0"/>
 		<Setter Property="MinWidth" Value="0"/>
 		<Setter Property="Template">
@@ -443,7 +443,7 @@
 		<GradientStop Color="#A0A0A0" Offset="1"/>
 	</LinearGradientBrush>
 	<Style x:Key="ToolBarHorizontalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Background" Value="{StaticResource BorderColorBrush}"/>
+		<Setter Property="Background" Value="{StaticResource BackColorBrush}"/>
 		<Setter Property="MinHeight" Value="0"/>
 		<Setter Property="MinWidth" Value="0"/>
 		<Setter Property="Template">
