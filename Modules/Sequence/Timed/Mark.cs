@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VixenModules.Sequence.Timed
 {
-	[DataContract]
-	public class LabeledMark
+	public class Mark
 	{
-		public LabeledMark():this(TimeSpan.Zero)
+		public Mark() : this(TimeSpan.Zero)
 		{
-			
+
 		}
 
-		public LabeledMark(TimeSpan startTime)
+		public Mark(TimeSpan startTime)
 		{
 			StartTime = startTime;
 			Duration = TimeSpan.FromMilliseconds(250);
@@ -30,9 +25,5 @@ namespace VixenModules.Sequence.Timed
 		public TimeSpan Duration { get; set; }
 
 		public TimeSpan EndTime => StartTime + Duration;
-
-		public int StackIndex { get; set; }
-		public int StackCount { get; set; }
-
 	}
 }

@@ -13,6 +13,7 @@ using Common.Controls.Theme;
 using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using Common.Controls.Scaling;
+using Common.Controls.TimelineControl;
 
 namespace Common.Controls.Timeline
 {
@@ -34,6 +35,7 @@ namespace Common.Controls.Timeline
 		public Ruler ruler;
 		public Grid grid;
 		public Waveform waveform;
+		private MarksBar _marksBar;
 
 		#endregion
 

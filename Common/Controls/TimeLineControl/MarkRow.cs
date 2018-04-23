@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VixenModules.Sequence.Timed;
 
-namespace VixenModules.Editor.TimedSequenceEditor.Controls
+namespace Common.Controls.TimelineControl
 {
 	internal class MarkRow: IEnumerable<LabeledMark>
 	{

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
+using Common.Controls.TimelineControl;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -13,7 +14,7 @@ namespace VixenModules.Sequence.Timed
 		public MarkCollection()
 		{
 			Marks = new List<TimeSpan>();
-			LabeledMarks = new List<LabeledMark>();
+			LabeledMarks = new List<Mark>();
 			Id = Guid.NewGuid();
 			MarkColor = Color.Black;
 			Level = 1;
@@ -50,7 +51,8 @@ namespace VixenModules.Sequence.Timed
 		[DataMember]
 		public List<TimeSpan> Marks { get; set; }
 
-		public List<LabeledMark> LabeledMarks { get; set; }
+		[DataMember]
+		public List<Mark> LabeledMarks { get; set; }
 
 		[DataMember]
 		public Color MarkColor { get; set; }
@@ -76,7 +78,7 @@ namespace VixenModules.Sequence.Timed
 		{
 			if (LabeledMarks == null)
 			{
-				LabeledMarks = Marks.Select(x => new LabeledMark(x)).ToList();
+				LabeledMarks = Marks.Select(x => new Mark(x)).ToList();
 			}
 		}
 	}
