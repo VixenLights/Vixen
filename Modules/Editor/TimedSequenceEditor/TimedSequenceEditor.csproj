@@ -136,6 +136,8 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MarkRow.cs" />
+    <Compile Include="Controls\MarksBar.cs" />
     <Compile Include="TimeFormats.cs" />
     <Compile Include="TimedSequenceEditorForm_Menu.cs">
       <SubType>Form</SubType>

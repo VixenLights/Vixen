@@ -13,6 +13,7 @@ namespace VixenModules.Sequence.Timed
 		public MarkCollection()
 		{
 			Marks = new List<TimeSpan>();
+			LabeledMarks = new List<LabeledMark>();
 			Id = Guid.NewGuid();
 			MarkColor = Color.Black;
 			Level = 1;
@@ -24,6 +25,7 @@ namespace VixenModules.Sequence.Timed
 		public MarkCollection(MarkCollection original)
 		{
 			Marks = new List<TimeSpan>(original.Marks);
+			LabeledMarks = original.LabeledMarks.ToList();
 			Id = Guid.NewGuid();
 			MarkColor = original.MarkColor;
 			Level = original.Level;
@@ -48,6 +50,8 @@ namespace VixenModules.Sequence.Timed
 		[DataMember]
 		public List<TimeSpan> Marks { get; set; }
 
+		public List<LabeledMark> LabeledMarks { get; set; }
+
 		[DataMember]
 		public Color MarkColor { get; set; }
 
@@ -65,6 +69,15 @@ namespace VixenModules.Sequence.Timed
 		public int IndexOf(TimeSpan time)
 		{
 			return Marks.IndexOf(time);
+		}
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext context)
+		{
+			if (LabeledMarks == null)
+			{
+				LabeledMarks = Marks.Select(x => new LabeledMark(x)).ToList();
+			}
 		}
 	}
 }
