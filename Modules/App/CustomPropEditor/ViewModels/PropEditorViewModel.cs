@@ -483,8 +483,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+		private bool TestIsDirty()
+		{
+			return IsDirty || ElementTreeViewModel.IsElementsDirty || DrawingPanelViewModel.IsLightsDirty;
+		}
+
+		internal void ClearDirtyFlag()
+		{
+			IsDirty = false;
+			ElementTreeViewModel.ClearIsDirty();
+			DrawingPanelViewModel.ClearIsDirty();
+		}
+
 		#endregion
-		
+
 		#region Delete command
 
 		private Command _deleteCommand;
@@ -556,6 +568,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					{
 						Prop = p;
 						FilePath = path;
+						ClearDirtyFlag();
 					}
 					else
 					{
@@ -593,6 +606,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			else
 			{
 				PropModelPersistenceService.UpdateModel(Prop, FilePath);
+				ClearDirtyFlag();
 			}
 		}
 
@@ -629,6 +643,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (PropModelPersistenceService.SaveModel(Prop, saveFileService.FileName))
 				{
 					FilePath = saveFileService.FileName;
+					ClearDirtyFlag();
 				}
 			}
 		}
@@ -678,18 +693,22 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		private void Closing(CancelEventArgs e)
 		{
-			MessageBoxService mbs = new MessageBoxService();
-			var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
-			if (response.Result == MessageResult.OK)
+			if (TestIsDirty())
 			{
-				SaveModel();
-			}
-			else if (response.Result == MessageResult.Cancel)
-			{
-				e.Cancel = true;
+				MessageBoxService mbs = new MessageBoxService();
+				var response = mbs.GetUserConfirmation($"Save Prop \"{CleanseNameString(Prop.Name)}\" ", "Save");
+				if (response.Result == MessageResult.OK)
+				{
+					SaveModel();
+				}
+				else if (response.Result == MessageResult.Cancel)
+				{
+					e.Cancel = true;
+				}
 			}
 		}
 
+		
 		#endregion
 
 		#region Import command

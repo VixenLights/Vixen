@@ -146,7 +146,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItems[0].ElementModel.Name);
 				if (result.Result == MessageResult.OK)
 				{
-					SelectedItems.First().ElementModel.Name = PropModelServices.Instance().Uniquify(result.Response);
+					SelectedItems.First().Name = PropModelServices.Instance().Uniquify(result.Response);
 				}
 			}
 			else
@@ -173,7 +173,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					}
 
 
-					SelectedItems[i].ElementModel.Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
 				}
 
 				return true;

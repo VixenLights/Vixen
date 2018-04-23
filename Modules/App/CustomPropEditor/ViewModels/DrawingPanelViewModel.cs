@@ -186,42 +186,6 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
-		#region X property
-
-		/// <summary>
-		/// Gets or sets the X value.
-		/// </summary>
-		public double X
-		{
-			get { return GetValue<double>(XProperty); }
-			set { SetValue(XProperty, value); }
-		}
-
-		/// <summary>
-		/// X property data.
-		/// </summary>
-		public static readonly PropertyData XProperty = RegisterProperty("X", typeof(double));
-
-		#endregion
-
-		#region Y property
-
-		/// <summary>
-		/// Gets or sets the Y value.
-		/// </summary>
-		public double Y
-		{
-			get { return GetValue<double>(YProperty); }
-			set { SetValue(YProperty, value); }
-		}
-
-		/// <summary>
-		/// Y property data.
-		/// </summary>
-		public static readonly PropertyData YProperty = RegisterProperty("Y", typeof(double));
-
-		#endregion
-
 		#region IsDrawing property
 
 		/// <summary>
@@ -242,6 +206,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion Properties
 
+		public bool IsLightsDirty
+		{
+			get
+			{
+				return LightNodes.Any(x => x.IsDirty);
+			}
+		}
+
+		public void ClearIsDirty()
+		{
+			this.ClearIsDirtyOnAllChilds();
+			//RootNodesViewModels.ForEach(x => x.ClearIsDirtyOnAllChilds());
+		}
+		
 		internal void RefreshLightViewModels()
 		{
 			_elementModelMap.Clear();

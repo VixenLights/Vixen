@@ -146,7 +146,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		public bool IsSelected
 		{
 			get { return GetValue<bool>(IsSelectedProperty); }
-			set { SetValue(IsSelectedProperty, value); }
+			set
+			{
+				bool tempDirty = IsDirty;
+				SetValue(IsSelectedProperty, value);
+				IsDirty = tempDirty;
+			}
 		}
 
 		/// <summary>

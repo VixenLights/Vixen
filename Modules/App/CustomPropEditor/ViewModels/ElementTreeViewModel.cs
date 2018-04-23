@@ -10,6 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
@@ -286,10 +287,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (SelectedItems.Count == 1)
 			{
 				MessageBoxService mbs = new MessageBoxService();
-				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.ElementModel.Name);
+				var result = mbs.GetUserInput("Please enter the new name.", "Rename", SelectedItem.Name);
 				if (result.Result == MessageResult.OK)
 				{
-					SelectedItems.First().ElementModel.Name = PropModelServices.Instance().Uniquify(result.Response);
+					SelectedItems.First().Name = PropModelServices.Instance().Uniquify(result.Response);
 				}
 			}
 			else
@@ -303,7 +304,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (SelectedItems.Count <=1)
 				return false;
 
-			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.Name).ToArray());
 			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
 			if (renamer.ShowDialog() == DialogResult.OK)
 			{
@@ -316,13 +317,26 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					}
 
 
-					SelectedItems[i].ElementModel.Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
 				}
 				
 				return true;
 			}
 
 			return false;
+		}
+
+		public bool IsElementsDirty
+		{
+			get
+			{
+				return ElementModelLookUpService.Instance.GetAllModels().Any(x => x.IsDirty);
+			}
+		}
+
+		public void ClearIsDirty()
+		{
+			this.ClearIsDirtyOnAllChilds();
 		}
 
 		#endregion

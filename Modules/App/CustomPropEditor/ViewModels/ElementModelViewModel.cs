@@ -101,8 +101,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			set
 			{
+				bool tempDirty = IsDirty;
 				SetValue(IsSelectedProperty, value);
 				_selectedTime = DateTime.Now;
+				IsDirty = tempDirty;
 			}
 		}
 
@@ -125,7 +127,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			{
 				return GetValue<bool>(IsExpandedProperty);
 			}
-			set { SetValue(IsExpandedProperty, value); }
+			set
+			{
+				bool tempDirty = IsDirty;
+				SetValue(IsExpandedProperty, value);
+				IsDirty = tempDirty;
+			}
 		}
 
 		/// <summary>
@@ -171,7 +178,21 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		/// </summary>
 		
 		public bool IsLightNode => ElementModel.IsLightNode;
-		
+
+		#endregion
+
+		#region Name Property
+
+		public string Name
+		{
+			get { return ElementModel.Name; }
+			set
+			{
+				ElementModel.Name = value;
+				IsDirty = true;
+			}
+		}
+
 		#endregion
 
 		#region BeginEdit command
@@ -223,6 +244,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				ElementModel.Name = PropModelServices.Instance().Uniquify(ElementModel.Name);
 			}
 			IsEditing = false;
+			IsDirty = true;
 		}
 
 		#endregion
@@ -254,6 +276,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (parentVm != null)
 			{
 				PropModelServices.Instance().RemoveFromParent(ElementModel, parentVm.ElementModel);
+				IsDirty = true;
 			}
 		}
 
