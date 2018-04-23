@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Catel.Collections;
 using LiteDB;
 using VixenModules.App.CustomPropEditor.Model;
 
@@ -14,6 +15,12 @@ namespace VixenModules.App.CustomPropEditor.Services
 			using (var db = new LiteDatabase(path))
 			{
 				var col = db.GetCollection<Prop>("props");
+				if (col.Count() > 0)
+				{
+					var props = col.FindAll().Select(x => x.Id);
+					props.ForEach(x => col.Delete(x));
+
+				}
 				col.Insert(prop);
 				var fileName = "background.png";
 				db.FileStorage.Upload($"$/image/{fileName}", fileName, StreamFromBitmapSource(prop.Image));
