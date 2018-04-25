@@ -5,26 +5,31 @@ using System.Linq;
 using System.Windows.Forms;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
+using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Sys.Marks;
 
 namespace Common.Controls.TimelineControl
 {
 	public sealed class MarksBar:TimelineControlBase
 	{
 
-		private List<MarkRow> Rows;
+		private readonly List<MarkRow> _rows;
 		private bool _suppressInvalidate;
+
+		public event EventHandler<MarksMovedEventArgs> MarksMoved;
+		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
 		{
 			BackColor = Color.Gray;
-			Rows = new List<MarkRow>();
+			_rows = new List<MarkRow>();
 		}
 
-		public void AddMarks(LabeledMarkCollection labeledMarkCollection)
+		public void AddMarks(MarkCollection labeledMarkCollection)
 		{
 			MarkRow row = new MarkRow(labeledMarkCollection);
-			Rows.Add(row);
+			_rows.Add(row);
 			if (!_suppressInvalidate)
 			{
 				CalculateHeight();
@@ -34,7 +39,7 @@ namespace Common.Controls.TimelineControl
 
 		public void ClearMarks()
 		{
-			Rows.Clear();
+			_rows.Clear();
 			if (!_suppressInvalidate) Invalidate();
 		}
 
@@ -45,7 +50,7 @@ namespace Common.Controls.TimelineControl
 
 		private void CalculateHeight()
 		{
-			Height = Rows.Sum(x => x.Height);
+			Height = _rows.Sum(x => x.Height);
 		}
 
 		public void BeginDraw()
@@ -60,7 +65,18 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
-		
+		private void OnMarkMoved(MarksMovedEventArgs e)
+		{
+			if (MarksMoved != null)
+				MarksMoved(this, e);
+		}
+
+		private void OnMarksMoving(MarksMovingEventArgs e)
+		{
+			MarksMoving?.Invoke(this, e);
+		}
+
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			try
@@ -93,7 +109,7 @@ namespace Common.Controls.TimelineControl
 			// Draw row separators
 			using (Pen p = new Pen(ThemeColorTable.TimeLineGridColor))
 			{
-				foreach (var row in Rows)
+				foreach (var row in _rows)
 				{
 					//Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
@@ -107,12 +123,12 @@ namespace Common.Controls.TimelineControl
 		private void DrawMarks(Graphics g)
 		{
 			int displaytop = 0;
-			foreach (var row in Rows)
+			foreach (var row in _rows)
 			{
 				row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 				for (int i = 0; i < row.MarksCount; i++)
 				{
-					LabeledMark currentElement = row.GetMarkAtIndex(i);
+					Mark currentElement = row.GetMarkAtIndex(i);
 					if (currentElement.EndTime < VisibleTimeStart)
 						continue;
 
@@ -129,39 +145,39 @@ namespace Common.Controls.TimelineControl
 
 		}
 
-		private void DrawElement(Graphics g, MarkRow row, LabeledMark currentElement, int top)
+		private void DrawElement(Graphics g, MarkRow row, Mark mark, int top)
 		{
 			int width;
 			
-			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many effects stacked.
-			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.		
-			currentElement.DisplayHeight =
-				(currentElement.StackCount != 0) ? ((row.Height - 1) / currentElement.StackCount) : row.Height - 1;
+			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many marks stacked.
+			//We set the DisplayHeight to the row height for the mark, and change the border to red.	
+			var markStack = row.GetStackForMark(mark);
+			var displayHeight =
+				(markStack.StackCount != 0) ? ((row.Height - 1) / markStack.StackCount) : row.Height - 1;
 
-			currentElement.DisplayTop = top + (currentElement.DisplayHeight * currentElement.StackIndex);
-			currentElement.RowTopOffset = currentElement.DisplayHeight * currentElement.StackIndex;
-
-			if (currentElement.DisplayHeight == 0)
+			var displayTop = top + displayHeight * markStack.StackIndex;
+			
+			if (displayHeight == 0)
 			{
-				currentElement.DisplayHeight = row.Height;
+				displayHeight = row.Height;
 			}
 
-			if (currentElement.StartTime >= VisibleTimeStart)
+			if (mark.StartTime >= VisibleTimeStart)
 			{
-				if (currentElement.EndTime < VisibleTimeEnd)
+				if (mark.EndTime < VisibleTimeEnd)
 				{
-					width = (int)timeToPixels(currentElement.Duration);
+					width = (int)timeToPixels(mark.Duration);
 				}
 				else
 				{
-					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(currentElement.StartTime));
+					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(mark.StartTime));
 				}
 			}
 			else
 			{
-				if (currentElement.EndTime <= VisibleTimeEnd)
+				if (mark.EndTime <= VisibleTimeEnd)
 				{
-					width = (int)(timeToPixels(currentElement.EndTime) - timeToPixels(VisibleTimeStart));
+					width = (int)(timeToPixels(mark.EndTime) - timeToPixels(VisibleTimeStart));
 				}
 				else
 				{
@@ -169,21 +185,20 @@ namespace Common.Controls.TimelineControl
 				}
 			}
 			if (width <= 0) return;
-			Size size = new Size(width, currentElement.DisplayHeight);
+			Size size = new Size(width, displayHeight);
 
-			Bitmap elementImage = DrawPlaceholder(size, row.MarkColor);
+			Bitmap elementImage = DrawPlaceholder(size, row.MarkDecorator.Color);
 			if (elementImage == null) return;
-			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime > VisibleTimeStart ? currentElement.StartTime : VisibleTimeStart)), currentElement.DisplayTop);
+			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime > VisibleTimeStart ? mark.StartTime : VisibleTimeStart)), displayTop);
 
-			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
-			currentElement.DisplayRect = destRect;
+			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
 			g.DrawImage(elementImage, destRect);
 
 			//Draw the text
 
 			SolidBrush drawBrush = new SolidBrush(Color.Black);
 			StringFormat drawFormat = new StringFormat();
-			g.DrawString(currentElement.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
+			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
 		}
 
 		public Bitmap DrawPlaceholder(Size imageSize, Color c)

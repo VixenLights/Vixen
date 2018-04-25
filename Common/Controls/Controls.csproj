@@ -210,8 +210,11 @@
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TimelineControl\LabeledMark.cs" />
-    <Compile Include="TimelineControl\LabeledMarkCollection.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarkNudgeEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\SelectedMarkMoveEventArgs.cs" />
     <Compile Include="TimelineControl\MarkRow.cs" />
     <Compile Include="TimelineControl\MarksBar.cs" />
     <Compile Include="Undo\AddToListUndoAction.cs" />

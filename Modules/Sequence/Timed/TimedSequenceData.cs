@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using Vixen.Sys.LayerMixing;
+using Vixen.Sys.Marks;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -12,6 +12,9 @@ namespace VixenModules.Sequence.Timed
 	{
 		[DataMember]
 		public List<MarkCollection> MarkCollections { get; set; }
+
+		[DataMember]
+		public List<Vixen.Sys.Marks.MarkCollection> LabeledMarkCollections { get; set; }
 
 		[DataMember]
 		public TimeSpan TimePerPixel { get; set; }
@@ -47,6 +50,28 @@ namespace VixenModules.Sequence.Timed
 			DefaultPlaybackEndTime = TimeSpan.Zero;
 		}
 
+		public void ConvertMarksToLabeledMarks()
+		{
+			//Temp method to convert until existing code is refactored and migration can occur
+			LabeledMarkCollections = new List<Vixen.Sys.Marks.MarkCollection>();
+			foreach (var markCollection in MarkCollections)
+			{
+				var lmc = new Vixen.Sys.Marks.MarkCollection();
+				lmc.Name = markCollection.Name;
+				lmc.Level = markCollection.Level;
+				lmc.IsEnabled = markCollection.Enabled;
+				lmc.Decorator = new MarkDecorator
+				{
+					Color = markCollection.MarkColor,
+					IsBold = markCollection.Bold,
+					IsSolidLine = markCollection.SolidLine
+				};
+				lmc.Marks = markCollection.Marks.Select(x => new Mark(x) { Text = @"Mark" }).ToList();
+				LabeledMarkCollections.Add(lmc);
+			}
+			
+		}
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{
@@ -54,6 +79,8 @@ namespace VixenModules.Sequence.Timed
 			{
 				RowSettings = new RowSettings();
 			}
+
+			ConvertMarksToLabeledMarks();
 		}
 
 		public override IModuleDataModel Clone()

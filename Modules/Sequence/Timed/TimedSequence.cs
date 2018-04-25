@@ -14,6 +14,12 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
 		}
 
+		public List<Vixen.Sys.Marks.MarkCollection> LabeledMarkCollections
+		{
+			get { return ((TimedSequenceData)SequenceData).LabeledMarkCollections; }
+			set { ((TimedSequenceData)SequenceData).LabeledMarkCollections = value; }
+		}
+
 		public RowSettings RowSettings
 		{
 			get { return ((TimedSequenceData)SequenceData).RowSettings; }

@@ -14,6 +14,8 @@ using VixenModules.Media.Audio;
 using System.Threading.Tasks;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Sys.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -475,22 +477,22 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddSnapTime(LabeledMark labeledMark, int level, Color color, bool lineBold, bool solidLine)
+		public void AddSnapTime(Mark labeledMark, int level, Color color, bool lineBold, bool solidLine)
 		{
 			grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
-			ruler.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
+			//ruler.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)
 		{
-			ruler.RemoveSnapPoint(time);
+			//ruler.RemoveSnapPoint(time);
 			return grid.RemoveSnapPoint(time);
 		}
 
 		public void ClearAllSnapTimes()
 		{
 			grid.ClearSnapPoints();
-			ruler.ClearSnapPoints();
+			//ruler.ClearSnapPoints();
 		}
 
 
@@ -630,10 +632,32 @@ namespace Common.Controls.Timeline
 			remove { ruler.ClickedAtTime -= value; }
 		}
 
-		public event EventHandler<MarkMovedEventArgs> MarkMoved
+		public event EventHandler<MarksMovedEventArgs> MarksMoved
 		{
-			add { ruler.MarkMoved += value; }
-			remove { ruler.MarkMoved -= value; }
+			add
+			{
+				ruler.MarksMoved += value;
+				MarksBar.MarksMoved += value;
+			}
+			remove
+			{
+				ruler.MarksMoved -= value;
+				MarksBar.MarksMoved -= value;
+			}
+		}
+
+		public event EventHandler<MarksMovingEventArgs> MarksMoving
+		{
+			add
+			{
+				ruler.MarksMoving += value;
+				MarksBar.MarksMoving += value;
+			}
+			remove
+			{
+				ruler.MarksMoving -= value;
+				MarksBar.MarksMoving -= value;
+			}
 		}
 
 		public event EventHandler<MarkNudgeEventArgs> MarkNudge
@@ -642,7 +666,7 @@ namespace Common.Controls.Timeline
 			remove { ruler.MarkNudge -= value; }
 		}
 
-		public event EventHandler<DeleteMarkEventArgs> DeleteMark
+		public event EventHandler<MarksDeletedEventArgs> DeleteMark
 		{
 			add { ruler.DeleteMark += value; }
 			remove { ruler.DeleteMark -= value; }

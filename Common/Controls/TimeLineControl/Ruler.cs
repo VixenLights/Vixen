@@ -11,6 +11,9 @@ using System.Drawing.Drawing2D;
 using System.Diagnostics;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Sys.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -22,7 +25,10 @@ namespace Common.Controls.Timeline
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
 		private bool _mouseUp;
-		private TimeSpan _originalMarkTime; 
+		private TimeSpan _dragStartTime;
+		private TimeSpan _dragLastTime;
+
+		private readonly List<MarkCollection> _labledMarks;
 
 
 		public Ruler(TimeInfo timeinfo)
@@ -31,7 +37,8 @@ namespace Common.Controls.Timeline
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
 			recalculate();
-			StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
+			_labledMarks = new List<MarkCollection>();
+			//StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
 			SnapStrength = 2;
 			double factor = ScalingTools.GetScaleFactor();
 			_arrowBase = (int) (16 * factor);
@@ -431,8 +438,9 @@ namespace Common.Controls.Timeline
 		private int m_mouseDownX;
 		private MouseButtons m_button;
 		private TimeSpan m_mark;
-		private SnapDetails m_markDetails = null;
-		public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
+		private Mark _selectedMark = null;
+		//public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
+		public List<Mark> SelectedMarks = new List<Mark>();
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			//Console.WriteLine("Clicks: " + e.Clicks);
@@ -442,17 +450,21 @@ namespace Common.Controls.Timeline
 			if (e.Button != MouseButtons.Left) return;
 
 			// If we're hovering over a mark when left button is clicked, then select/move the mark 
-			m_mark = PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart);
-			if (m_mark != TimeSpan.Zero)
+			var marksAtTime = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+			if (marksAtTime.Any())
 			{
-				foreach (SnapDetails d in StaticSnapPoints[m_mark])
-				{
-					if (m_markDetails == null || (d.SnapLevel > m_markDetails.SnapLevel && d.SnapColor != Color.Empty))
-						m_markDetails = d;
-				}
+				//foreach (SnapDetails d in StaticSnapPoints[m_mark])
+				//{
+				//	if (m_markDetails == null || (d.SnapLevel > m_markDetails.SnapLevel && d.SnapColor != Color.Empty))
+				//		m_markDetails = d;
+				//}
+				//var marksAtTime = MarksAt(m_mark);
+				ClearSelectedMarks();
+				SelectedMarks.Add(marksAtTime.First());
+				_dragStartTime = _dragLastTime = marksAtTime.First().StartTime;
 				m_mouseState = MouseState.DraggingMark;
 				_mouseUp = false; //Lets the undo manager know not to check that the Mark is being used and we don't need to store every mark movement, just the start and end time.
-				_originalMarkTime = m_mark; //Will store the selected Mark time before the move, to use in the under manager.
+				//_originalMarkTime = m_mark; //Will store the selected Mark time before the move, to use in the under manager.
 			}
 			else if (Cursor == Cursors.HSplit)
 				m_mouseState = MouseState.ResizeRuler;
@@ -504,26 +516,30 @@ namespace Common.Controls.Timeline
 						return;
 					case MouseState.DraggingMark:
 
+						var newTime = pixelsToTime(e.X) + VisibleTimeStart;
+						OnMarksMoving(new MarksMovingEventArgs(SelectedMarks));
+						var diff = newTime - _dragLastTime;
+						SelectedMarks.ForEach(x => x.StartTime += diff);
+						_dragLastTime = newTime;
 						if (Convert.ToInt16(m_mark.Minutes) >= 10)
 						{
-							markTime = string.Format("{0:mm\\:ss\\.fff}", m_mark);
+							markTime = string.Format("{0:mm\\:ss\\.fff}", newTime);
 						}
 						else if (Convert.ToInt16(m_mark.Minutes) >= 1)
 						{
-							markTime = string.Format("{0:m\\:ss\\.fff}", m_mark);
+							markTime = string.Format("{0:m\\:ss\\.fff}", newTime);
 						}
 						else if (Convert.ToInt16(m_mark.Seconds) >= 10)
 						{
-							markTime = string.Format("{0:ss\\.fff}", m_mark);
+							markTime = string.Format("{0:ss\\.fff}", newTime);
 						}
 						else if (Convert.ToInt16(m_mark.Seconds) <= 9)
 						{
-							markTime = string.Format("{0:s\\.fff}", m_mark);
+							markTime = string.Format("{0:s\\.fff}", newTime);
 						}
 
-						OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails, _originalMarkTime, _mouseUp));
 						Refresh();
-						m_mark = pixelsToTime(e.X) + VisibleTimeStart;
+						
 						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, m_mark));
 						
 						break;
@@ -539,10 +555,11 @@ namespace Common.Controls.Timeline
 			else
 			{
 				// We'll get to this point if there is no mouse button selected
-				if (PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart) != TimeSpan.Zero)
+				var marks = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+				if (marks.Any())
 				{
 					Cursor = Cursors.VSplit;
-					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart)));
+					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First().StartTime));
 				}
 				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
 				{
@@ -576,7 +593,7 @@ namespace Common.Controls.Timeline
 			}
 			else
 			{
-				if (m_button == System.Windows.Forms.MouseButtons.Left)
+				if (m_button == MouseButtons.Left)
 				{
 					switch (m_mouseState)
 					{
@@ -594,7 +611,7 @@ namespace Common.Controls.Timeline
 							OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
 							break;
 						case MouseState.DraggingMark:
-							if (m_mark != TimeSpan.Zero)
+							if (SelectedMarks.Any())
 							{
 								// Did we SELECT the mark?
 								if (e.X == m_mouseDownX)
@@ -603,16 +620,16 @@ namespace Common.Controls.Timeline
 									{
 										ClearSelectedMarks();
 									}
- 									selectedMarks.Add(m_mark, m_markDetails);
+ 									SelectedMarks.Add(_selectedMark);
 								}
 								// Did we MOVE the mark?
 								else
 								{
 									ClearSelectedMarks();
 									_mouseUp = true; //End of Mark move so undo manager can use the last Mark time.
-									m_mark = pixelsToTime(e.X) + VisibleTimeStart;
-									OnMarkMoved(new MarkMovedEventArgs(m_mark, pixelsToTime(e.X) + VisibleTimeStart, m_markDetails, _originalMarkTime, _mouseUp));
-									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, m_mark));
+									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
+									OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, SelectedMarks));
+									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
 								}
 							}
 							break;
@@ -622,10 +639,10 @@ namespace Common.Controls.Timeline
 							throw new Exception("Invalid MouseState. WTF?!");
 					}
 				}
-				else if (m_button == System.Windows.Forms.MouseButtons.Right)
+				else if (m_button == MouseButtons.Right)
 				{
-					m_mark = PointTimeToMark(pixelsToTime(e.X) + VisibleTimeStart);
-					if (m_mark != TimeSpan.Zero)
+					var marks = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
+					if (marks.Any())
 					{
 						// See if we got a right-click on top of a mark.
 						if (e.X == m_mouseDownX)
@@ -645,29 +662,29 @@ namespace Common.Controls.Timeline
 				}
 			}
 			m_mouseState = MouseState.Normal;
-			m_button = System.Windows.Forms.MouseButtons.None;
+			m_button = MouseButtons.None;
 			Invalidate();
 		}
 
 		public void ClearSelectedMarks()
 		{
-			selectedMarks.Clear();
+			SelectedMarks.Clear();
 		}
 
 		public void NudgeMark(int offset)
 		{
-			TimeSpan timeOffset = TimeSpan.FromMilliseconds(offset);
+			//TimeSpan timeOffset = TimeSpan.FromMilliseconds(offset);
 
-			OnMarkNudge(new MarkNudgeEventArgs(selectedMarks, timeOffset));
+			//OnMarkNudge(new MarkNudgeEventArgs(selectedMarks, timeOffset));
 
-			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
+			//SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
 
-			foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in selectedMarks)
-			{
-				newSelectedMarks.Add(kvp.Key + timeOffset, kvp.Value);
-			}
+			//foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in selectedMarks)
+			//{
+			//	newSelectedMarks.Add(kvp.Key + timeOffset, kvp.Value);
+			//}
 
-			selectedMarks = newSelectedMarks;
+			//selectedMarks = newSelectedMarks;
 		}
 
 		void DeleteMark_Click(object sender, EventArgs e)
@@ -678,21 +695,21 @@ namespace Common.Controls.Timeline
 		public void DeleteSelectedMarks()
 		{
 
-			if (selectedMarks.Any())
-			{
-				bool markFound = false;
-				foreach (TimeSpan mark in selectedMarks.Keys)
-				{
-					if (mark == m_mark)
-					{
-						markFound = true;
-						break;
-					}
-				}
-				if (!markFound)
-					selectedMarks.Add(m_mark, m_markDetails);
-				OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
-			}
+			//if (_selectedMarks.Any())
+			//{
+			//	bool markFound = false;
+			//	foreach (TimeSpan mark in selectedMarks.Keys)
+			//	{
+			//		if (mark == m_mark)
+			//		{
+			//			markFound = true;
+			//			break;
+			//		}
+			//	}
+			//	if (!markFound)
+			//		selectedMarks.Add(m_mark, _selectedMark);
+			//	OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
+			//}
 			
 		}
 
@@ -709,9 +726,10 @@ namespace Common.Controls.Timeline
 			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 		}
 
-		public event EventHandler<MarkMovedEventArgs> MarkMoved;
+		public event EventHandler<MarksMovedEventArgs> MarksMoved;
+		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarkNudgeEventArgs> MarkNudge;
-		public event EventHandler<DeleteMarkEventArgs> DeleteMark;
+		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
@@ -723,10 +741,15 @@ namespace Common.Controls.Timeline
 				SelectedMarkMove(this, e);
 		}
 
-		protected virtual void OnMarkMoved(MarkMovedEventArgs e)
+		protected virtual void OnMarkMoved(MarksMovedEventArgs e)
 		{
-			if (MarkMoved != null)
-				MarkMoved(this, e);
+			if (MarksMoved != null)
+				MarksMoved(this, e);
+		}
+
+		protected virtual void OnMarksMoving(MarksMovingEventArgs e)
+		{
+			MarksMoving?.Invoke(this, e);
 		}
 
 		protected virtual void OnMarkNudge(MarkNudgeEventArgs e)
@@ -735,7 +758,7 @@ namespace Common.Controls.Timeline
 				MarkNudge(this, e);
 		}
 
-		protected virtual void OnDeleteMark(DeleteMarkEventArgs e)
+		protected virtual void OnDeleteMark(MarksDeletedEventArgs e)
 		{
 			if (DeleteMark != null)
 				DeleteMark(this, e);
@@ -776,84 +799,91 @@ namespace Common.Controls.Timeline
 
 		#region "Snap Points (Marks)"
 
-		private SortedDictionary<TimeSpan, List<SnapDetails>> StaticSnapPoints { get; set; }
-
-		private SnapDetails CalculateSnapDetailsForPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
+		public void AddMarks(MarkCollection labeledMarkCollection)
 		{
-			SnapDetails result = new SnapDetails();
-			result.SnapLevel = level;
-			result.SnapTime = snapTime;
-			result.SnapColor = color;
-			result.SnapBold = lineBold;
-			result.SnapSolidLine = solidLine;
-
-			// the start time and end times for specified points are 2 pixels
-			// per snap level away from the snap time.
-			result.SnapStart = snapTime - TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
-			result.SnapEnd = snapTime + TimeSpan.FromTicks(TimePerPixel.Ticks * level * SnapStrength);
-			return result;
+			_labledMarks.Add(labeledMarkCollection);
+			labeledMarkCollection.EnsureOrder();
+			if (!SuppressInvalidate)
+			{
+				Invalidate();
+			}
 		}
 
-		public void AddSnapPoint(TimeSpan snapTime, int level, Color color, bool lineBold, bool solidLine)
+		public void ClearMarks()
 		{
-			if (!StaticSnapPoints.ContainsKey(snapTime))
-				StaticSnapPoints.Add(snapTime, new List<SnapDetails> { CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine) });
-			else
-				StaticSnapPoints[snapTime].Add(CalculateSnapDetailsForPoint(snapTime, level, color, lineBold, solidLine));
-
+			_labledMarks.Clear();
 			if (!SuppressInvalidate) Invalidate();
 		}
 
-		public bool RemoveSnapPoint(TimeSpan snapTime)
+		/// <summary>
+		/// Returns a list of marks at a time ordered by level from highest to lowest.
+		/// </summary>
+		/// <param name="ts"></param>
+		/// <returns></returns>
+		private List<Mark> MarksAt(TimeSpan ts)
 		{
-			bool rv = StaticSnapPoints.Remove(snapTime);
-			if (!SuppressInvalidate) Invalidate();
-			return rv;
-		}
+			const int markDifferential = 20;
+			var marksAtTime = new List<Mark>();
+			foreach (var labeledMarkCollection in _labledMarks.Where(x => x.IsEnabled).OrderByDescending(x => x.Level))
+			{
+				labeledMarkCollection.EnsureOrder();
+				foreach (var labeledMark in labeledMarkCollection.Marks)
+				{
+					TimeSpan markStart = TimeSpan.FromMilliseconds(labeledMark.StartTime.TotalMilliseconds - (markDifferential));
+					TimeSpan markEnd = TimeSpan.FromMilliseconds(labeledMark.StartTime.TotalMilliseconds + (markDifferential));
+					if (ts >= markStart && ts <= markEnd)
+					{
+						marksAtTime.Add(labeledMark);
+					}
+					else if (labeledMark.StartTime > ts)
+					{
+						break;
+					}
+				}
+			}
 
-		public void ClearSnapPoints()
-		{
-			StaticSnapPoints.Clear();
-			if (!SuppressInvalidate) Invalidate();
+			return marksAtTime;
 		}
 
 		private void _drawMarks(Graphics g)
 		{
 			Pen p;
 
-			// iterate through all snap points, and if it's visible, draw it
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints.ToArray())
+			// iterate through all marks, and if it's visible, draw it
+			foreach (var labeledMarkCollection in _labledMarks.Where(x => x.IsEnabled))
 			{
-				if (kvp.Key >= VisibleTimeEnd) break;
-				
-				if (kvp.Key >= VisibleTimeStart)
+				int lineBold = 1;
+				if (labeledMarkCollection.Decorator.IsBold)
 				{
-					SnapDetails details = null;
-					foreach (SnapDetails d in kvp.Value)
-					{
-						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
-							details = d;
-					}
-					int lineBold = 1;
-					if (details.SnapBold)
-						lineBold = 3;
-					p = new Pen(details.SnapColor, lineBold);
-					Single x = timeToPixels(kvp.Key);
-					if (!details.SnapSolidLine)
-						p.DashPattern = new float[] { details.SnapLevel, details.SnapLevel };
-					if (selectedMarks.ContainsKey(kvp.Key))
-					{
-						p.Width = 3;
-					}
-					g.DrawLine(p, x, 0, x, Height);
-					p.Dispose();
-
-				
-
+					lineBold = 3;
 				}
+
+				p = new Pen(labeledMarkCollection.Decorator.Color, lineBold);
+				if (!labeledMarkCollection.Decorator.IsSolidLine)
+				{
+					p.DashPattern = new float[] {labeledMarkCollection.Level, labeledMarkCollection.Level};
+				}
+
+				foreach (var labeledMark in labeledMarkCollection.Marks)
+				{
+					//Only draw visible marks
+					if (labeledMark.StartTime < VisibleTimeStart)
+					{
+						continue;
+					}
+					if (labeledMark.StartTime > VisibleTimeEnd)
+					{
+						break;
+					}
+					Single x = timeToPixels(labeledMark.StartTime);
+					p.Width = SelectedMarks.Contains(labeledMark) ? 3 : 1;
+					g.DrawLine(p, x, 0, x, Height);
+				}
+
+				p.Dispose();
 			}
 
-			if (m_button == MouseButtons.Left && m_mark != TimeSpan.Zero)
+			if (m_button == MouseButtons.Left && m_mouseState == MouseState.DraggingMark)
 			{
 				p = new Pen(Brushes.Yellow) {DashPattern = new float[] {2, 2}};
 				TimeSpan newMarkPosition = pixelsToTime(PointToClient(new Point(MousePosition.X, MousePosition.Y)).X) + VisibleTimeStart;
@@ -873,23 +903,6 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		// Looks at a TimeSpan on the timeline and returns a TimeSpan from the mark collection
-		// taking into account a differential for pixels. Zero if nothing is close.
-		private TimeSpan PointTimeToMark(TimeSpan pointTime)
-		{
-			int markDifferential = 40;
-			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
-			{
-				TimeSpan markStart = TimeSpan.FromMilliseconds(kvp.Key.TotalMilliseconds - (markDifferential/2));
-				TimeSpan markEnd = TimeSpan.FromMilliseconds(kvp.Key.TotalMilliseconds + (markDifferential/2));
-				if (pointTime >= markStart && pointTime <= markEnd)
-				{
-					return kvp.Key;
-				}
-			}
-			return TimeSpan.Zero;
-		}
-
 		#endregion
 
 		public void BeginDraw()
@@ -904,19 +917,6 @@ namespace Common.Controls.Timeline
 		}
 
 		public bool SuppressInvalidate { get; set; }
-	}
-
-	public class SelectedMarkMoveEventArgs
-	{
-		public SelectedMarkMoveEventArgs(bool waveFormMark, TimeSpan selectedMark)
-		{
-			WaveFormMark = waveFormMark;
-			SelectedMark = selectedMark;
-		}
-
-		public bool WaveFormMark { get; set; }
-
-		public TimeSpan SelectedMark { get; set; }
 	}
 
 	public class TimeRangeDraggedEventArgs : EventArgs
@@ -946,46 +946,4 @@ namespace Common.Controls.Timeline
 		public Keys ModifierKeys { get; private set; }
 		public MouseButtons Button { get; private set; }
 	}
-
-	public class MarkMovedEventArgs : EventArgs
-	{
-		public MarkMovedEventArgs(TimeSpan previousMark, TimeSpan newMark, SnapDetails details, TimeSpan originalMarkTime, bool _mouseUp)
-		{
-			PreviousMark = previousMark; //This is effectivlly the previous Mark time as moving the generate many adds and removes so the MArk can be displayed during the move.
-			NewMark = newMark;
-			SnapDetails = details;
-			OriginalMarkTime = originalMarkTime; //Mark time before the MArk was moved. 
-			MouseUp = _mouseUp;
-		}
-
-		public TimeSpan PreviousMark { get; private set; }
-		public TimeSpan NewMark { get; private set; }
-		public SnapDetails SnapDetails { get; private set; }
-		public TimeSpan OriginalMarkTime { get; private set; }
-		public bool MouseUp { get; private set; }
-	}
-
-	public class MarkNudgeEventArgs : EventArgs
-	{
-		public MarkNudgeEventArgs(SortedDictionary<TimeSpan, SnapDetails> selectedMarks, TimeSpan offset)
-		{
-			SelectedMarks = selectedMarks; //This is effectivlly the previous Mark time as moving the generate many adds and removes so the MArk can be displayed during the move.
-			Offset = offset;
-		}
-
-		public SortedDictionary<TimeSpan, SnapDetails> SelectedMarks { get; set; }
-		public TimeSpan Offset { get; private set; }
-	}
-
-	public class DeleteMarkEventArgs : EventArgs
-	{
-		public DeleteMarkEventArgs(SortedDictionary<TimeSpan, SnapDetails>.KeyCollection marks)
-		{
-			Marks = marks;
-		}
-
-		public SortedDictionary<TimeSpan, SnapDetails>.KeyCollection Marks { get; private set; }
-	}
-
-	
 }

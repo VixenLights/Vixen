@@ -18,6 +18,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -129,6 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//for external clipboard events.
 		IntPtr _clipboardViewerNext;
 
+		//TODO Figure out what this is all about.
 		private Dictionary<TimeSpan, MarkCollection> _mcs;
 
 		#endregion
@@ -446,7 +448,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			TimelineControl.MarkMoved += timelineControl_MarkMoved;
+			TimelineControl.MarksMoving += TimelineControlMarksMoving;
+			TimelineControl.MarksMoved += TimelineControlMarksMoved;
 			TimelineControl.MarkNudge += timelineControl_MarkNudge;
 			TimelineControl.DeleteMark += timelineControl_DeleteMark;
 
@@ -623,7 +626,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
+			TimelineControl.MarksMoved -= TimelineControlMarksMoved;
 			TimelineControl.MarkNudge -= timelineControl_MarkNudge;
 			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
 
@@ -1450,6 +1453,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		
+
 		/// <summary>
 		/// Populates the mark snaptimes in the grid.
 		/// </summary>
@@ -1457,28 +1462,38 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			TimelineControl.ClearAllSnapTimes();
 			TimelineControl.MarksBar.BeginDraw();
+			TimelineControl.ruler.BeginDraw();
+			TimelineControl.ruler.ClearMarks();
 			TimelineControl.MarksBar.ClearMarks();
-			
-			foreach (MarkCollection mc in _sequence.MarkCollections)
+			//TODO refactor this stuff out into the TimelineControl
+			foreach (Vixen.Sys.Marks.MarkCollection mc in _sequence.LabeledMarkCollections)
 			{
-				if (!mc.Enabled) continue;
-				mc.ConvertMarksToLabeledMarks();
-				LabeledMarkCollection lmc = new LabeledMarkCollection(mc.Name, mc.Enabled, mc.Bold, mc.SolidLine, mc.MarkColor, mc.Level);
-				lmc.Marks = mc.LabeledMarks.Select(x => new LabeledMark()
-				{
-					StartTime = x.StartTime,
-					Duration = x.Duration,
-					Text = x.Text
-				}).ToList();
+				if (!mc.IsEnabled) continue;
+				
 
-				TimelineControl.MarksBar.AddMarks(lmc);
-				foreach (var mark in lmc.Marks)
+				TimelineControl.MarksBar.AddMarks(mc);
+				TimelineControl.ruler.AddMarks(mc);
+				foreach (var mark in mc.Marks)
 				{
-					TimelineControl.AddSnapTime(mark, mc.Level, mc.MarkColor, mc.Bold, mc.SolidLine);
+					TimelineControl.AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
 				}
 			}
 
 			TimelineControl.MarksBar.EndDraw();
+			TimelineControl.ruler.EndDraw();
+		}
+
+		private void UpdateGridSnapTimes()
+		{
+			TimelineControl.ClearAllSnapTimes();
+			foreach (Vixen.Sys.Marks.MarkCollection mc in _sequence.LabeledMarkCollections)
+			{
+				if (!mc.IsEnabled) continue;
+				foreach (var mark in mc.Marks)
+				{
+					TimelineControl.AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+				}
+			}
 		}
 
 		private void PopulateSnapStrength(int strength)
@@ -2015,7 +2030,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
-			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.selectedMarks.Any() ||
+			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.SelectedMarks.Any() ||
 			                                           TimelineControl.SelectedElements.Any();
 		}
 
@@ -2748,32 +2763,37 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return mc;
 		}
 
-		private void timelineControl_MarkMoved(object sender, MarkMovedEventArgs e)
+		private void TimelineControlMarksMoving(object sender, MarksMovingEventArgs e)
+		{
+			TimelineControl.MarksBar.Invalidate(); //Temp refresh
+			UpdateGridSnapTimes();
+		}
+
+		private void TimelineControlMarksMoved(object sender, MarksMovedEventArgs e)
 		{
 			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
 		//	MarkCollection markCollection = new MarkCollection();
-			foreach (MarkCollection mc in _sequence.MarkCollections)
-			{
-				if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
-				{
-					if (mc.Marks.Contains(e.PreviousMark))
-					{
-						mc.Marks.Remove(e.PreviousMark);
-						mc.Marks.Add(e.NewMark);
-						if (e.MouseUp)
-						{
-							markCollection.Add(new MarkNdugeCollection(mc, e.NewMark, e.OriginalMarkTime));
-						}
-					}
-				}
-			}
-			PopulateMarkSnapTimes();
+			//foreach (MarkCollection mc in _sequence.MarkCollections)
+			//{
+			//	if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
+			//	{
+			//		if (mc.Marks.Contains(e.PreviousMark))
+			//		{
+			//			mc.Marks.Remove(e.PreviousMark);
+			//			mc.Marks.Add(e.NewMark);
+			//			if (e.MouseUp)
+			//			{
+			//				markCollection.Add(new MarkNdugeCollection(mc, e.NewMark, e.OriginalMarkTime));
+			//			}
+			//		}
+			//	}
+			//}
+			//PopulateMarkSnapTimes();
+			TimelineControl.MarksBar.Invalidate(); //Temp refresh
+			UpdateGridSnapTimes();
 			SequenceModified();
-			//Will only add the undo action after the move is complete and mouse button is released.
-			if (e.MouseUp)
-			{
-				_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
-			}
+			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
+
 		}
 
 		private void timelineControl_MarkNudge(object sender, MarkNudgeEventArgs e)
@@ -2801,7 +2821,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
 		}
 
-		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
+		private void timelineControl_DeleteMark(object sender, MarksDeletedEventArgs e)
 		{
 			Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
 			foreach (TimeSpan mark in e.Marks)

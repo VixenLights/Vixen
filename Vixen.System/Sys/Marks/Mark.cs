@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace VixenModules.Sequence.Timed
+namespace Vixen.Sys.Marks
 {
-	public class Mark
+	public class Mark:IComparable<Mark>
 	{
 		public Mark() : this(TimeSpan.Zero)
 		{
@@ -25,5 +25,16 @@ namespace VixenModules.Sequence.Timed
 		public TimeSpan Duration { get; set; }
 
 		public TimeSpan EndTime => StartTime + Duration;
+
+		public int CompareTo(Mark other)
+		{
+			int rv = StartTime.CompareTo(other.StartTime);
+			if (rv != 0)
+			{
+				return rv;
+			}
+
+			return EndTime.CompareTo(other.EndTime);
+		}
 	}
 }

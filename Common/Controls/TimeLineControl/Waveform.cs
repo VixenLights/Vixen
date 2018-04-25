@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using VixenModules.Media.Audio;
 using System.ComponentModel;
+using Common.Controls.TimelineControl.LabeledMarks;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
 

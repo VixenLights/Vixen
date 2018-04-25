@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
-using Common.Controls.TimelineControl;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -14,7 +11,6 @@ namespace VixenModules.Sequence.Timed
 		public MarkCollection()
 		{
 			Marks = new List<TimeSpan>();
-			LabeledMarks = new List<Mark>();
 			Id = Guid.NewGuid();
 			MarkColor = Color.Black;
 			Level = 1;
@@ -26,7 +22,6 @@ namespace VixenModules.Sequence.Timed
 		public MarkCollection(MarkCollection original)
 		{
 			Marks = new List<TimeSpan>(original.Marks);
-			LabeledMarks = original.LabeledMarks.ToList();
 			Id = Guid.NewGuid();
 			MarkColor = original.MarkColor;
 			Level = original.Level;
@@ -52,9 +47,6 @@ namespace VixenModules.Sequence.Timed
 		public List<TimeSpan> Marks { get; set; }
 
 		[DataMember]
-		public List<Mark> LabeledMarks { get; set; }
-
-		[DataMember]
 		public Color MarkColor { get; set; }
 
 		[DataMember]
@@ -73,19 +65,6 @@ namespace VixenModules.Sequence.Timed
 			return Marks.IndexOf(time);
 		}
 
-		public void ConvertMarksToLabeledMarks()
-		{
-			//Temp method to convert until existing code is refactored
-			LabeledMarks = Marks.Select(x => new Mark(x){Text = @"Mark"}).ToList();
-		}
-
-		[OnDeserialized]
-		public void OnDeserialized(StreamingContext context)
-		{
-			//if (LabeledMarks == null)
-			//{
-				ConvertMarksToLabeledMarks();
-			//}
-		}
+		
 	}
 }

@@ -373,6 +373,9 @@
     <Compile Include="Sys\Managers\OutputDeviceExecution.cs" />
     <Compile Include="Sys\Managers\OutputDeviceFacade.cs" />
     <Compile Include="Sys\Managers\SmartOutputControllerManager.cs" />
+    <Compile Include="Sys\Marks\Mark.cs" />
+    <Compile Include="Sys\Marks\MarkCollection.cs" />
+    <Compile Include="Sys\Marks\MarkDecorator.cs" />
     <Compile Include="Sys\OutputStateList.cs" />
     <Compile Include="Sys\OutputStateListAggregator.cs" />
     <Compile Include="Sys\Output\BasicOutputModuleExecutionControl.cs" />
