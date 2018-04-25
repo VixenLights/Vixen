@@ -35,7 +35,6 @@ namespace Common.Controls.Timeline
 		public Ruler ruler;
 		public Grid grid;
 		public Waveform waveform;
-		private MarksBar _marksBar;
 
 		#endregion
 
@@ -193,6 +192,16 @@ namespace Common.Controls.Timeline
 			grid.Scroll += GridScrolledHandler;
 			grid.VerticalOffsetChanged += GridScrollVerticalHandler;
 
+
+			//Marks
+			MarksBar = new MarksBar(TimeInfo)
+			{
+				Dock = DockStyle.Top,
+				Height = 50
+			};
+
+			splitContainer.Panel2.Controls.Add(MarksBar);
+
 			// Ruler
 			ruler = new Ruler(TimeInfo)
 			        	{
@@ -314,6 +323,10 @@ namespace Common.Controls.Timeline
 		{
 			get { return grid.TopVisibleRow; }
 		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public MarksBar MarksBar { get; set; }
+
 
 		#endregion
 
@@ -462,10 +475,10 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddSnapTime(TimeSpan time, int level, Color color, bool lineBold, bool solidLine)
+		public void AddSnapTime(LabeledMark labeledMark, int level, Color color, bool lineBold, bool solidLine)
 		{
-			grid.AddSnapPoint(time, level, color, lineBold, solidLine);
-			ruler.AddSnapPoint(time, level, color, lineBold, solidLine);
+			grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
+			ruler.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)

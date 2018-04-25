@@ -17,6 +17,7 @@ using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
+using Common.Controls.TimelineControl;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -1455,15 +1456,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void PopulateMarkSnapTimes()
 		{
 			TimelineControl.ClearAllSnapTimes();
-
+			TimelineControl.MarksBar.BeginDraw();
+			TimelineControl.MarksBar.ClearMarks();
+			
 			foreach (MarkCollection mc in _sequence.MarkCollections)
 			{
 				if (!mc.Enabled) continue;
-				foreach (TimeSpan time in mc.Marks)
+				mc.ConvertMarksToLabeledMarks();
+				LabeledMarkCollection lmc = new LabeledMarkCollection(mc.Name, mc.Enabled, mc.Bold, mc.SolidLine, mc.MarkColor, mc.Level);
+				lmc.Marks = mc.LabeledMarks.Select(x => new LabeledMark()
 				{
-					TimelineControl.AddSnapTime(time, mc.Level, mc.MarkColor, mc.Bold, mc.SolidLine);
+					StartTime = x.StartTime,
+					Duration = x.Duration,
+					Text = x.Text
+				}).ToList();
+
+				TimelineControl.MarksBar.AddMarks(lmc);
+				foreach (var mark in lmc.Marks)
+				{
+					TimelineControl.AddSnapTime(mark, mc.Level, mc.MarkColor, mc.Bold, mc.SolidLine);
 				}
 			}
+
+			TimelineControl.MarksBar.EndDraw();
 		}
 
 		private void PopulateSnapStrength(int strength)

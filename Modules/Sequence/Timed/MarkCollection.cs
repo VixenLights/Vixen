@@ -73,13 +73,19 @@ namespace VixenModules.Sequence.Timed
 			return Marks.IndexOf(time);
 		}
 
+		public void ConvertMarksToLabeledMarks()
+		{
+			//Temp method to convert until existing code is refactored
+			LabeledMarks = Marks.Select(x => new Mark(x)).ToList();
+		}
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{
-			if (LabeledMarks == null)
-			{
+			//if (LabeledMarks == null)
+			//{
 				LabeledMarks = Marks.Select(x => new Mark(x)).ToList();
-			}
+			//}
 		}
 	}
 }

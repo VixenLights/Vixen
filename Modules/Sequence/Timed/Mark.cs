@@ -13,7 +13,7 @@ namespace VixenModules.Sequence.Timed
 		public Mark(TimeSpan startTime)
 		{
 			StartTime = startTime;
-			Duration = TimeSpan.FromMilliseconds(250);
+			Duration = TimeSpan.FromMilliseconds(500);
 		}
 
 		public string Text { get; set; }

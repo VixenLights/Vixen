@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace Common.Controls.TimelineControl
 {
 	internal class MarkRow: IEnumerable<LabeledMark>
 	{
-
 		// The marks contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
 		// puts their order out.
-		protected List<LabeledMark> LabeledMarks;
+		private LabeledMarkCollection _labeledMarkCollection;
 
-		public MarkRow(MarkCollection markCollection)
+		public MarkRow(LabeledMarkCollection markCollectionCollection)
 		{
-			LabeledMarks = markCollection.LabeledMarks;
-			Height = 12;
+			_labeledMarkCollection = markCollectionCollection;
+			_labeledMarkCollection.Marks.Sort();
+			Height = 20;
 		}
 
 		public int Height { get; set; }
+
+		internal Color MarkColor => _labeledMarkCollection.Color;
 
 		/// <summary>
 		/// Set the stacking indexes for overlapping elements in the specific time range.
@@ -26,11 +31,11 @@ namespace Common.Controls.TimelineControl
 		/// <param name="endTime"></param>
 		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
 		{
-			for (int i = 0; i < LabeledMarks.Count; i++)
+			for (int i = 0; i < _labeledMarkCollection.Marks.Count; i++)
 			{
-				if (LabeledMarks[i].EndTime < startTime) continue;
-				if (LabeledMarks[i].StartTime > endTime) break;
-				List<LabeledMark> overlappingElements = GetOverlappingMarks(LabeledMarks[i]);
+				if (_labeledMarkCollection.Marks[i].EndTime < startTime) continue;
+				if (_labeledMarkCollection.Marks[i].StartTime > endTime) break;
+				List<LabeledMark> overlappingElements = GetOverlappingMarks(_labeledMarkCollection.Marks[i]);
 				if (overlappingElements.Any())
 				{
 					List<List<LabeledMark>> stack = DetermineMarkStack(overlappingElements);
@@ -47,10 +52,10 @@ namespace Common.Controls.TimelineControl
 				}
 				else
 				{
-					LabeledMarks[i].StackCount = 1;
-					LabeledMarks[i].StackIndex = 0;
+					_labeledMarkCollection.Marks[i].StackCount = 1;
+					_labeledMarkCollection.Marks[i].StackIndex = 0;
 				}
-				i += overlappingElements.Count - overlappingElements.IndexOf(LabeledMarks[i]) - 1;
+				i += overlappingElements.Count - overlappingElements.IndexOf(_labeledMarkCollection.Marks[i]) - 1;
 
 			}
 
@@ -91,7 +96,7 @@ namespace Common.Controls.TimelineControl
 
 			//we start here and look backward and forward until no more overlap
 			//Look forward.
-			for (int i = startingIndex + 1; i < LabeledMarks.Count; i++)
+			for (int i = startingIndex + 1; i < _labeledMarkCollection.Marks.Count; i++)
 			{
 				LabeledMark element = GetMarkAtIndex(i);
 				if (element.StartTime < endTime)
@@ -123,15 +128,20 @@ namespace Common.Controls.TimelineControl
 
 		public int IndexOfMark(LabeledMark element)
 		{
-			return LabeledMarks.IndexOf(element);
+			return _labeledMarkCollection.Marks.IndexOf(element);
 		}
 
 		public LabeledMark GetMarkAtIndex(int index)
 		{
-			if (index < 0 || index >= LabeledMarks.Count)
+			if (index < 0 || index >= _labeledMarkCollection.Marks.Count)
 				return null;
 
-			return LabeledMarks[index];
+			return _labeledMarkCollection.Marks[index];
+		}
+
+		public int MarksCount
+		{
+			get { return _labeledMarkCollection.Marks.Count; }
 		}
 
 
@@ -140,7 +150,7 @@ namespace Common.Controls.TimelineControl
 		/// <inheritdoc />
 		public IEnumerator<LabeledMark> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return _labeledMarkCollection.Marks.GetEnumerator();
 		}
 
 		/// <inheritdoc />

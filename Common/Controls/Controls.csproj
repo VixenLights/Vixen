@@ -211,6 +211,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimelineControl\LabeledMark.cs" />
+    <Compile Include="TimelineControl\LabeledMarkCollection.cs" />
     <Compile Include="TimelineControl\MarkRow.cs" />
     <Compile Include="TimelineControl\MarksBar.cs" />
     <Compile Include="Undo\AddToListUndoAction.cs" />
