@@ -76,7 +76,7 @@ namespace VixenModules.Sequence.Timed
 		public void ConvertMarksToLabeledMarks()
 		{
 			//Temp method to convert until existing code is refactored
-			LabeledMarks = Marks.Select(x => new Mark(x)).ToList();
+			LabeledMarks = Marks.Select(x => new Mark(x){Text = @"Mark"}).ToList();
 		}
 
 		[OnDeserialized]
@@ -84,7 +84,7 @@ namespace VixenModules.Sequence.Timed
 		{
 			//if (LabeledMarks == null)
 			//{
-				LabeledMarks = Marks.Select(x => new Mark(x)).ToList();
+				ConvertMarksToLabeledMarks();
 			//}
 		}
 	}

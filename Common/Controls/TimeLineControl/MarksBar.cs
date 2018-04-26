@@ -127,48 +127,12 @@ namespace Common.Controls.TimelineControl
 				displaytop += row.Height;
 			}
 
-			//Pen p;
-
-			//// iterate through all snap points, and if it's visible, draw it
-			//foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints.ToArray())
-			//{
-			//	if (kvp.Key >= VisibleTimeEnd) break;
-
-			//	if (kvp.Key >= VisibleTimeStart)
-			//	{
-			//		SnapDetails details = null;
-			//		foreach (SnapDetails d in kvp.Value)
-			//		{
-			//			if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
-			//				details = d;
-			//		}
-
-			//		int lineBold = 1;
-			//		if (details.SnapBold)
-			//			lineBold = 3;
-			//		p = new Pen(details.SnapColor, lineBold);
-			//		Single x = timeToPixels(kvp.Key);
-			//		if (!details.SnapSolidLine)
-			//			p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
-			//		if (selectedMarks.ContainsKey(kvp.Key))
-			//		{
-			//			p.Width = 3;
-			//		}
-
-			//		g.DrawLine(p, x, 0, x, Height);
-			//		p.Dispose();
-
-
-
-			//	}
-			//}
 		}
 
 		private void DrawElement(Graphics g, MarkRow row, LabeledMark currentElement, int top)
 		{
 			int width;
-			bool redBorder = false;
-
+			
 			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many effects stacked.
 			//We set the DisplayHeight to the row height for the currentElement, and change the border to red.		
 			currentElement.DisplayHeight =
@@ -179,10 +143,8 @@ namespace Common.Controls.TimelineControl
 
 			if (currentElement.DisplayHeight == 0)
 			{
-				redBorder = true;
 				currentElement.DisplayHeight = row.Height;
 			}
-
 
 			if (currentElement.StartTime >= VisibleTimeStart)
 			{
@@ -217,6 +179,11 @@ namespace Common.Controls.TimelineControl
 			currentElement.DisplayRect = destRect;
 			g.DrawImage(elementImage, destRect);
 
+			//Draw the text
+
+			SolidBrush drawBrush = new SolidBrush(Color.Black);
+			StringFormat drawFormat = new StringFormat();
+			g.DrawString(currentElement.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
 		}
 
 		public Bitmap DrawPlaceholder(Size imageSize, Color c)
