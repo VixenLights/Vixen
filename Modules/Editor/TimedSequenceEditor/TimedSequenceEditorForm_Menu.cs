@@ -171,7 +171,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
 		{
-			TimelineControl.ruler.DeleteSelectedMarks();
+			//TimelineControl.ruler.DeleteSelectedMarks(); //Why would we delete marks in element delete operations???
 			RemoveSelectedElements();
 		}
 

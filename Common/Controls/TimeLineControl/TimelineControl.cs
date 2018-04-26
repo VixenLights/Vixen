@@ -477,10 +477,32 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
+		public void AddMarks(List<MarkCollection> marks)
+		{
+			ClearAllSnapTimes();
+			MarksBar.BeginDraw();
+			ruler.BeginDraw();
+			ruler.ClearMarks();
+			MarksBar.ClearMarks();
+			
+			foreach (MarkCollection mc in marks)
+			{
+				if (!mc.IsEnabled) continue;
+				MarksBar.AddMarks(mc);
+				ruler.AddMarks(mc);
+				foreach (var mark in mc.Marks)
+				{
+					AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+				}
+			}
+
+			MarksBar.EndDraw();
+			ruler.EndDraw();
+		}
+
 		public void AddSnapTime(Mark labeledMark, int level, Color color, bool lineBold, bool solidLine)
 		{
 			grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
-			//ruler.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
 		}
 
 		public bool RemoveSnapTime(TimeSpan time)
@@ -493,6 +515,12 @@ namespace Common.Controls.Timeline
 		{
 			grid.ClearSnapPoints();
 			//ruler.ClearSnapPoints();
+		}
+
+		public void InvalidateMarkViews()
+		{
+			MarksBar.Invalidate(); //Temp refresh
+			ruler.Invalidate();
 		}
 
 

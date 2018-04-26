@@ -24,7 +24,6 @@ namespace Common.Controls.Timeline
 		private const int maxDxForClick = 2;
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
-		private bool _mouseUp;
 		private TimeSpan _dragStartTime;
 		private TimeSpan _dragLastTime;
 
@@ -38,12 +37,9 @@ namespace Common.Controls.Timeline
 			BackColor = Color.Gray;
 			recalculate();
 			_labledMarks = new List<MarkCollection>();
-			//StaticSnapPoints = new SortedDictionary<TimeSpan, List<SnapDetails>>();
-			SnapStrength = 2;
 			double factor = ScalingTools.GetScaleFactor();
 			_arrowBase = (int) (16 * factor);
 			_arrowLength = (int)(10 * factor);
-			//SnapPriorityForElements = 5;
 		}
 
 		private Font m_font = null;
@@ -453,18 +449,21 @@ namespace Common.Controls.Timeline
 			var marksAtTime = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
 			if (marksAtTime.Any())
 			{
-				//foreach (SnapDetails d in StaticSnapPoints[m_mark])
-				//{
-				//	if (m_markDetails == null || (d.SnapLevel > m_markDetails.SnapLevel && d.SnapColor != Color.Empty))
-				//		m_markDetails = d;
-				//}
-				//var marksAtTime = MarksAt(m_mark);
-				ClearSelectedMarks();
-				SelectedMarks.Add(marksAtTime.First());
+				if (ModifierKeys != Keys.Control)
+				{
+					ClearSelectedMarks();
+				}
+
+				if (SelectedMarks.Contains(marksAtTime.First()))
+				{
+					SelectedMarks.Remove(marksAtTime.First());
+				}
+				else
+				{
+					SelectedMarks.Add(marksAtTime.First());
+				}
 				_dragStartTime = _dragLastTime = marksAtTime.First().StartTime;
 				m_mouseState = MouseState.DraggingMark;
-				_mouseUp = false; //Lets the undo manager know not to check that the Mark is being used and we don't need to store every mark movement, just the start and end time.
-				//_originalMarkTime = m_mark; //Will store the selected Mark time before the move, to use in the under manager.
 			}
 			else if (Cursor == Cursors.HSplit)
 				m_mouseState = MouseState.ResizeRuler;
@@ -611,22 +610,12 @@ namespace Common.Controls.Timeline
 							OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
 							break;
 						case MouseState.DraggingMark:
-							if (SelectedMarks.Any())
+							if (_selectedMark != null)
 							{
-								// Did we SELECT the mark?
-								if (e.X == m_mouseDownX)
+								// Did we move the mark?
+								if (e.X != m_mouseDownX)
 								{
-									if (ModifierKeys != Keys.Control)
-									{
-										ClearSelectedMarks();
-									}
- 									SelectedMarks.Add(_selectedMark);
-								}
-								// Did we MOVE the mark?
-								else
-								{
-									ClearSelectedMarks();
-									_mouseUp = true; //End of Mark move so undo manager can use the last Mark time.
+									//ClearSelectedMarks();
 									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
 									OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, SelectedMarks));
 									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
@@ -689,28 +678,16 @@ namespace Common.Controls.Timeline
 
 		void DeleteMark_Click(object sender, EventArgs e)
 		{
-			DeleteSelectedMarks();
+			//DeleteSelectedMarks();
+
+			OnDeleteMark(new MarksDeletedEventArgs(SelectedMarks));
 		}
 
 		public void DeleteSelectedMarks()
 		{
 
-			//if (_selectedMarks.Any())
-			//{
-			//	bool markFound = false;
-			//	foreach (TimeSpan mark in selectedMarks.Keys)
-			//	{
-			//		if (mark == m_mark)
-			//		{
-			//			markFound = true;
-			//			break;
-			//		}
-			//	}
-			//	if (!markFound)
-			//		selectedMarks.Add(m_mark, _selectedMark);
-			//	OnDeleteMark(new DeleteMarkEventArgs(selectedMarks.Keys));
-			//}
 			
+
 		}
 
 		protected override void OnMouseEnter(EventArgs e)

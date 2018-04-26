@@ -39,6 +39,7 @@ using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
+using Vixen.Sys.Marks;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.Editor.EffectEditor;
@@ -48,6 +49,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
+using MarkCollection = VixenModules.Sequence.Timed.MarkCollection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -1460,27 +1462,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// </summary>
 		private void PopulateMarkSnapTimes()
 		{
-			TimelineControl.ClearAllSnapTimes();
-			TimelineControl.MarksBar.BeginDraw();
-			TimelineControl.ruler.BeginDraw();
-			TimelineControl.ruler.ClearMarks();
-			TimelineControl.MarksBar.ClearMarks();
-			//TODO refactor this stuff out into the TimelineControl
-			foreach (Vixen.Sys.Marks.MarkCollection mc in _sequence.LabeledMarkCollections)
-			{
-				if (!mc.IsEnabled) continue;
-				
-
-				TimelineControl.MarksBar.AddMarks(mc);
-				TimelineControl.ruler.AddMarks(mc);
-				foreach (var mark in mc.Marks)
-				{
-					TimelineControl.AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
-				}
-			}
-
-			TimelineControl.MarksBar.EndDraw();
-			TimelineControl.ruler.EndDraw();
+			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
 		}
 
 		private void UpdateGridSnapTimes()
@@ -2823,22 +2805,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void timelineControl_DeleteMark(object sender, MarksDeletedEventArgs e)
 		{
-			Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
-			foreach (TimeSpan mark in e.Marks)
+			foreach (Mark mark in e.Marks)
 			{
-				foreach (MarkCollection mc in _sequence.MarkCollections)
+				foreach (var markCollection in _sequence.LabeledMarkCollections.Where(x => x.IsEnabled))
 				{
-					if (mc.Marks.Contains(mark))
-					{
-						mc.Marks.Remove(mark);
-						mcs.Add(mark, mc);
-					}
+					markCollection.Marks.Remove(mark);
 				}
 			}
-			PopulateMarkSnapTimes();
+
+			TimelineControl.InvalidateMarkViews();
+			UpdateGridSnapTimes();
 			SequenceModified();
-			var act = new MarksRemovedUndoAction(this, mcs);
-			_undoMgr.AddUndoAction(act);
+
+			//TODO fix the undo stuff
+			//var act = new MarksRemovedUndoAction(this, mcs);
+			//_undoMgr.AddUndoAction(act);
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
