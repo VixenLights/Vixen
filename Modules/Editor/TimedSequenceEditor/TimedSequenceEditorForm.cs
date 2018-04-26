@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
@@ -49,6 +50,9 @@ using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
+using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
+using ListView = System.Windows.Forms.ListView;
+using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.Sequence.Timed.MarkCollection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -2690,7 +2694,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AddMarkAtTime(TimeSpan time, bool markEffects)
 		{
-			MarkCollection mc = null;
+			Vixen.Sys.Marks.MarkCollection mc = null;
 			if (_sequence.MarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
@@ -2712,32 +2716,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					messageBox.ShowDialog();
 				}
 			}
-			if (mc != null && !mc.Marks.Contains(time))
+			if (mc != null && mc.Marks.All(x => x.StartTime != time))
 			{
-				mc.Marks.Add(time);
+				mc.Marks.Add(new Mark(time));
 				PopulateMarkSnapTimes();
 				SequenceModified();
-				if (!markEffects)
-				{
-					_mcs = new Dictionary<TimeSpan, MarkCollection>();
-					_mcs.Add(time, mc);
-					var act = new MarksAddedUndoAction(this, _mcs);
-					_undoMgr.AddUndoAction(act);
-				}
-				else
-				{
-					_mcs.Add(time, mc);
-				}
+
+				//TODO FIX Mark Add Undo
+				//if (!markEffects)
+				//{
+				//	_mcs = new Dictionary<TimeSpan, MarkCollection>();
+				//	_mcs.Add(time, mc);
+				//	var act = new MarksAddedUndoAction(this, _mcs);
+				//	_undoMgr.AddUndoAction(act);
+				//}
+				//else
+				//{
+				//	_mcs.Add(time, mc);
+				//}
 			}
 		}
 
-		private MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
+		private Vixen.Sys.Marks.MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			MarkCollection mc = _sequence.MarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			Vixen.Sys.Marks.MarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
 			if (mc == null)
 			{
-				MarkCollection newCollection = new MarkCollection {Name = name, MarkColor = color};
-				_sequence.MarkCollections.Add(newCollection);
+				Vixen.Sys.Marks.MarkCollection newCollection = new Vixen.Sys.Marks.MarkCollection {Name = name};
+				newCollection.Decorator.Color = color;
+				_sequence.LabeledMarkCollections.Add(newCollection);
 				mc = newCollection;
 				SequenceModified();
 			}

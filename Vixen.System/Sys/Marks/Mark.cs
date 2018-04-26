@@ -14,6 +14,7 @@ namespace Vixen.Sys.Marks
 		{
 			StartTime = startTime;
 			Duration = TimeSpan.FromMilliseconds(500);
+			Text = @"Mark"; //What is the reasonable deafault?
 		}
 
 		public string Text { get; set; }

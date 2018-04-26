@@ -52,17 +52,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public TimelineControl TimelineControl { get; set; }
 
-		public void PopulateMarkCollectionsList(MarkCollection selectedCollection)
+		public void PopulateMarkCollectionsList(Vixen.Sys.Marks.MarkCollection selectedCollection)
 		{
 			
 			listViewMarkCollections.Items.Clear();
-			foreach (MarkCollection mc in Sequence.MarkCollections)
+			foreach (Vixen.Sys.Marks.MarkCollection mc in Sequence.LabeledMarkCollections)
 			{
 				ListViewItem item = new ListViewItem();
 				item.Text = mc.Name;
-				item.ForeColor = mc.MarkColor;
+				item.ForeColor = mc.Decorator.Color;
 				item.Tag = mc;
-				item.Checked = mc.Enabled;
+				item.Checked = mc.IsEnabled;
 				listViewMarkCollections.Items.Add(item);
 				item.Selected = (mc == selectedCollection);
 			}
@@ -79,13 +79,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		public MarkCollection SelectedMarkCollection
+		public Vixen.Sys.Marks.MarkCollection SelectedMarkCollection
 		{
 			get
 			{
 				if (listViewMarkCollections.SelectedItems.Count > 0)
 				{
-					MarkCollection item = listViewMarkCollections.SelectedItems[0].Tag as MarkCollection;
+					Vixen.Sys.Marks.MarkCollection item = listViewMarkCollections.SelectedItems[0].Tag as Vixen.Sys.Marks.MarkCollection;
 					return item;
 				}
 				return null;
@@ -118,8 +118,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void listViewMarkCollections_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			ListViewItem item = listViewMarkCollections.Items[e.Index];
-			MarkCollection mc = item.Tag as MarkCollection;
-			mc.Enabled = (e.NewValue == CheckState.Checked);
+			Vixen.Sys.Marks.MarkCollection mc = item.Tag as Vixen.Sys.Marks.MarkCollection;
+			mc.IsEnabled = (e.NewValue == CheckState.Checked);
 			OnMarkCollectionChecked(new MarkCollectionArgs(mc));			
 		}
 
@@ -130,7 +130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewMarkCollections_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
-			MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as MarkCollection);
+			Vixen.Sys.Marks.MarkCollection mc = (listViewMarkCollections.Items[e.Item].Tag as Vixen.Sys.Marks.MarkCollection);
 			mc.Name = e.Label ?? mc.Name;
 			OnChangedMarkCollection(new MarkCollectionArgs(mc));
 			PopulateMarkCollectionsList(mc);
@@ -138,10 +138,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripButtonAddMarkCollection_Click(object sender, EventArgs e)
 		{
-			MarkCollection mc = new MarkCollection();
+			Vixen.Sys.Marks.MarkCollection mc = new Vixen.Sys.Marks.MarkCollection();
 			mc.Name = "New Mark Collection";
-			mc.MarkColor = Color.White;
-			Sequence.MarkCollections.Add(mc);
+			mc.Decorator.Color = Color.White;
+			Sequence.LabeledMarkCollections.Add(mc);
 			OnChangedMarkCollection(new MarkCollectionArgs(mc));
 			PopulateMarkCollectionsList(mc);
 		}
@@ -226,19 +226,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			foreach (ListViewItem item in listViewMarkCollections.SelectedItems)
 			{
-				MarkCollection mc = item.Tag as MarkCollection;
+				Vixen.Sys.Marks.MarkCollection mc = item.Tag as Vixen.Sys.Marks.MarkCollection;
 				switch (menuAction.ToString())
 				{
 					case "Normal/Bold Line":
-						mc.Bold = !mc.Bold;
+						mc.Decorator.IsBold = !mc.Decorator.IsBold;
 						break;
 					case "Dotted/Solid Line":
-						mc.SolidLine = !mc.SolidLine;
+						mc.Decorator.IsSolidLine = !mc.Decorator.IsSolidLine;
 						break;
 					case "Change Color":
 						if (result == DialogResult.OK)
 						{
-							mc.MarkColor = picker.Color.ToRGB().ToArgb();
+							mc.Decorator.Color = picker.Color.ToRGB().ToArgb();
 							item.ForeColor = picker.Color.ToRGB().ToArgb();
 						}
 						break;
@@ -278,12 +278,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	public class MarkCollectionArgs: EventArgs
 	{
-		public MarkCollectionArgs(MarkCollection mc)
+		public MarkCollectionArgs(Vixen.Sys.Marks.MarkCollection mc)
 		{
 			MarkCollection = mc;
 		}
 
-		public MarkCollection MarkCollection { get; private set; }
+		public Vixen.Sys.Marks.MarkCollection MarkCollection { get; private set; }
 	}
 
 }

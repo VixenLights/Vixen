@@ -6,6 +6,12 @@ namespace Vixen.Sys.Marks
 	[DataContract]
 	public class MarkCollection
 	{
+		public MarkCollection()
+		{
+			Decorator = new MarkDecorator();
+			Marks = new List<Mark>();
+		}
+
 		[DataMember]
 		public string Name { get; set; }
 
