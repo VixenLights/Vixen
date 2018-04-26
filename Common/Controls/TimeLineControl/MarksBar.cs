@@ -105,16 +105,16 @@ namespace Common.Controls.TimelineControl
 		private void DrawRows(Graphics g)
 		{
 			int curY = 0;
-
+			var start = (int)timeToPixels(VisibleTimeStart);
+			var end = (int)timeToPixels(VisibleTimeEnd);
 			// Draw row separators
 			using (Pen p = new Pen(ThemeColorTable.TimeLineGridColor))
 			{
 				foreach (var row in _rows)
 				{
-					//Point selectedTopLeft = new Point((-AutoScrollPosition.X), curY);
 					curY += row.Height;
-					Point lineLeft = new Point((-AutoScrollPosition.X), curY);
-					Point lineRight = new Point((-AutoScrollPosition.X) + Width, curY);
+					Point lineLeft = new Point(start, curY);
+					Point lineRight = new Point(end, curY);
 					g.DrawLine(p, lineLeft.X, lineLeft.Y - 1, lineRight.X, lineRight.Y - 1);
 				}
 			}
@@ -177,7 +177,7 @@ namespace Common.Controls.TimelineControl
 			{
 				if (mark.EndTime <= VisibleTimeEnd)
 				{
-					width = (int)(timeToPixels(mark.EndTime) - timeToPixels(VisibleTimeStart));
+					width = (int)timeToPixels(mark.Duration);// (int)(timeToPixels(mark.EndTime) - timeToPixels(VisibleTimeStart));
 				}
 				else
 				{
@@ -187,12 +187,12 @@ namespace Common.Controls.TimelineControl
 			if (width <= 0) return;
 			Size size = new Size(width, displayHeight);
 
-			Bitmap elementImage = DrawPlaceholder(size, row.MarkDecorator.Color);
-			if (elementImage == null) return;
-			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime > VisibleTimeStart ? mark.StartTime : VisibleTimeStart)), displayTop);
+			Bitmap labelImage = DrawMarkLabel(size, row.MarkDecorator.Color);
+			if (labelImage == null) return;
+			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime)), displayTop);
 
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
-			g.DrawImage(elementImage, destRect);
+			g.DrawImage(labelImage, destRect);
 
 			//Draw the text
 
@@ -201,7 +201,7 @@ namespace Common.Controls.TimelineControl
 			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
 		}
 
-		public Bitmap DrawPlaceholder(Size imageSize, Color c)
+		public Bitmap DrawMarkLabel(Size imageSize, Color c)
 		{
 			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
 			using (Graphics g = Graphics.FromImage(result))
