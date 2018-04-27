@@ -110,11 +110,6 @@
       <Name>Audio</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
-      <Project>{45e1228a-f714-41d5-bb9b-a776f2b23143}</Project>
-      <Name>Timed</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\QMLibrary\QMLibrary.vcxproj">
       <Project>{4004a720-e4d2-4aaf-b5f6-2288ffdc156a}</Project>
       <Name>QMLibrary</Name>

@@ -61,9 +61,16 @@ namespace Common.Controls.TimelineControl
 					{
 						foreach (var element in elementGroup)
 						{
-							_stackIndexes.Add(element, new MarkStack(x,stack.Count));
-							//element.StackIndex = x;
-							//element.StackCount = stack.Count;
+							if (_stackIndexes.ContainsKey(element))
+							{
+								var ms = _stackIndexes[element];
+								ms.StackCount = stack.Count;
+								ms.StackIndex = x;
+							}
+							else
+							{
+								_stackIndexes.Add(element, new MarkStack(x, stack.Count));
+							}
 						}
 						x++;
 					}
