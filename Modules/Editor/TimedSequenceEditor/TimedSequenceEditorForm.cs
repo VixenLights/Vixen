@@ -2695,7 +2695,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AddMarkAtTime(TimeSpan time, bool markEffects)
 		{
 			Vixen.Sys.Marks.MarkCollection mc = null;
-			if (_sequence.MarkCollections.Count == 0)
+			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
 				var messageBox = new MessageBoxForm("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Create a Mark Collection", MessageBoxButtons.YesNo, SystemIcons.Information);
