@@ -696,8 +696,16 @@ namespace Common.Controls.Timeline
 
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark
 		{
-			add { ruler.DeleteMark += value; }
-			remove { ruler.DeleteMark -= value; }
+			add
+			{
+				ruler.DeleteMark += value;
+				MarksBar.DeleteMark += value;
+			}
+			remove
+			{
+				ruler.DeleteMark -= value;
+				MarksBar.DeleteMark -= value;
+			}
 		}
 
 		public event EventHandler RulerBeginDragTimeRange

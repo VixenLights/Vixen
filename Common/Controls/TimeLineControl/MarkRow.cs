@@ -18,11 +18,15 @@ namespace Common.Controls.TimelineControl
 		{
 			_labeledMarkCollection = markCollection;
 			_labeledMarkCollection.EnsureOrder();
-
+			Visible = true;
 			Height = 20;
 		}
 
 		public int Height { get; set; }
+
+		public int DisplayTop { get; set; }
+
+		public bool Visible { get; set; }
 
 		internal MarkDecorator MarkDecorator => _labeledMarkCollection.Decorator;
 
@@ -44,6 +48,7 @@ namespace Common.Controls.TimelineControl
 		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
 		{
 			_stackIndexes.Clear();
+			_labeledMarkCollection.EnsureOrder();
 			for (int i = 0; i < _labeledMarkCollection.Marks.Count; i++)
 			{
 				if (_labeledMarkCollection.Marks[i].EndTime < startTime) continue;

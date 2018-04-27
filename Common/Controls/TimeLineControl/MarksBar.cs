@@ -15,9 +15,12 @@ namespace Common.Controls.TimelineControl
 
 		private readonly List<MarkRow> _rows;
 		private bool _suppressInvalidate;
+		private Point _mouseDownLocation, _mouseUpLocation;
+		private Mark _mouseDownMark;
 
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
+		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
@@ -41,6 +44,148 @@ namespace Common.Controls.TimelineControl
 		{
 			_rows.Clear();
 			if (!_suppressInvalidate) Invalidate();
+		}
+
+		#region Overrides of Control
+
+		#region Overrides of UserControl
+
+		/// <inheritdoc />
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			_mouseDownMark = null;
+			Point location = _mouseDownLocation = TranslateLocation(e.Location);
+			
+			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+			{
+				_mouseDownMark = MarkAt(location);
+			}
+
+		}
+
+		#endregion
+
+		/// <inheritdoc />
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+
+			Point gridLocation = _mouseUpLocation = TranslateLocation(e.Location);
+
+			if (e.Button == MouseButtons.Right)
+			{
+				if (_mouseDownLocation == _mouseUpLocation && _mouseDownMark != null)
+				{
+					ContextMenuStrip c = new ContextMenuStrip();
+					c.Renderer = new ThemeToolStripRenderer();
+					var delete = c.Items.Add("&Delete");
+					delete.Click += DeleteMark_Click;
+					var rename = c.Items.Add("&Rename");
+					rename.Click += Rename_Click;
+					c.Show(this, new Point(e.X, e.Y));
+				}
+
+			}
+
+			
+		}
+
+		private void Rename_Click(object sender, EventArgs e)
+		{
+			TextDialog td = new TextDialog("Enter the new name.", "Rename Mark");
+			var result = td.ShowDialog(this);
+			if (result == DialogResult.OK)
+			{
+				_mouseDownMark.Text = td.Response;
+				Invalidate();
+			}
+		}
+
+		private void DeleteMark_Click(object sender, EventArgs e)
+		{
+			OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Returns all elements located at the given point in client coordinates
+		/// </summary>
+		/// <param name="p">Client coordinates.</param>
+		/// <returns>Elements at given point, or null if none exists.</returns>
+		private Mark MarkAt(Point p)
+		{
+			
+			// First figure out which row we are in
+			MarkRow containingRow = RowAt(p);
+
+			if (containingRow == null)
+				return null;
+
+			// Now figure out which element we are on
+			foreach (Mark mark in containingRow)
+			{
+				Single x = timeToPixels(mark.StartTime);
+				if (x > p.X) break; //The rest of them are beyond our point.
+				Single width = timeToPixels(mark.Duration);
+				MarkRow.MarkStack ms = containingRow.GetStackForMark(mark);
+				var displayHeight = containingRow.Height / ms.StackCount;
+				var rowTopOffset = displayHeight * ms.StackIndex;
+				if (p.X >= x &&
+				    p.X <= x + width &&
+				    p.Y >= containingRow.DisplayTop + rowTopOffset &&
+				    p.Y < containingRow.DisplayTop + rowTopOffset + displayHeight)
+				{
+					return mark;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Returns the row located at the current point in client coordinates
+		/// </summary>
+		/// <param name="p">Client coordinates.</param>
+		/// <returns>Row at given point, or null if none exists.</returns>
+		private MarkRow RowAt(Point p)
+		{
+			MarkRow containingRow = null;
+			int curheight = 0;
+			foreach (MarkRow row in _rows)
+			{
+				if (p.Y < curheight + row.Height)
+				{
+					containingRow = row;
+					break;
+				}
+				curheight += row.Height;
+			}
+
+			return containingRow;
+		}
+
+		private void CalculateRowDisplayTops(bool visibleRowsOnly = true)
+		{
+			int top = 0;
+			var processRows = visibleRowsOnly ? _rows.Where(x => x.Visible = true) : _rows;
+			foreach (var row in processRows)
+			{
+				row.DisplayTop = top;
+				top += row.Height;
+			}
+		}
+
+		/// <summary>
+		/// Translates a location (Point) so that its coordinates represent the coordinates on the underlying timeline, taking into account scroll position.
+		/// </summary>
+		/// <param name="originalLocation"></param>
+		public Point TranslateLocation(Point originalLocation)
+		{
+			// Translate this location based on the auto scroll position.
+			Point p = originalLocation;
+			var xOffset = (int) timeToPixels(VisibleTimeStart);
+			p.Offset(xOffset, 0);
+			return p;
 		}
 
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
@@ -67,13 +212,17 @@ namespace Common.Controls.TimelineControl
 
 		private void OnMarkMoved(MarksMovedEventArgs e)
 		{
-			if (MarksMoved != null)
-				MarksMoved(this, e);
+			MarksMoved?.Invoke(this, e);
 		}
 
 		private void OnMarksMoving(MarksMovingEventArgs e)
 		{
 			MarksMoving?.Invoke(this, e);
+		}
+
+		private void OnDeleteMark(MarksDeletedEventArgs e)
+		{
+			DeleteMark?.Invoke(this, e);
 		}
 
 
@@ -107,10 +256,11 @@ namespace Common.Controls.TimelineControl
 			int curY = 0;
 			var start = (int)timeToPixels(VisibleTimeStart);
 			var end = (int)timeToPixels(VisibleTimeEnd);
+			CalculateRowDisplayTops();
 			// Draw row separators
 			using (Pen p = new Pen(ThemeColorTable.TimeLineGridColor))
 			{
-				foreach (var row in _rows)
+				foreach (var row in _rows.Where(x => x.Visible))
 				{
 					curY += row.Height;
 					Point lineLeft = new Point(start, curY);
@@ -123,7 +273,7 @@ namespace Common.Controls.TimelineControl
 		private void DrawMarks(Graphics g)
 		{
 			int displaytop = 0;
-			foreach (var row in _rows)
+			foreach (var row in _rows.Where(x => x.Visible))
 			{
 				row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 				for (int i = 0; i < row.MarksCount; i++)
