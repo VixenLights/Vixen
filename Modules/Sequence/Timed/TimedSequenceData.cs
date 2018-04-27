@@ -41,6 +41,7 @@ namespace VixenModules.Sequence.Timed
 		public TimedSequenceData()
 		{
 			MarkCollections = new List<MarkCollection>();
+			LabeledMarkCollections = new List<Vixen.Sys.Marks.MarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
 			DefaultRowHeight = 0;
 			RowSettings = new RowSettings();

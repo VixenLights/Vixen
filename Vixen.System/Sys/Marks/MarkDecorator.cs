@@ -6,6 +6,12 @@ namespace Vixen.Sys.Marks
 	[DataContract]
 	public class MarkDecorator
 	{
+		public MarkDecorator()
+		{
+			Color = Color.Black;
+			IsBold = false;
+			IsSolidLine = false;
+		}
 		[DataMember]
 		public bool IsBold { get; set; }
 

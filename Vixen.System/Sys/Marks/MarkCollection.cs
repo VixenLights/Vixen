@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Vixen.Sys.Marks
@@ -10,7 +11,12 @@ namespace Vixen.Sys.Marks
 		{
 			Decorator = new MarkDecorator();
 			Marks = new List<Mark>();
+			Id = Guid.NewGuid();
+			Level = 1;
+			IsEnabled = true;
 		}
+		[DataMember]
+		public Guid Id { get; set; }
 
 		[DataMember]
 		public string Name { get; set; }
