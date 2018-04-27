@@ -18,7 +18,6 @@ namespace Common.Controls.TimelineControl
 		{
 			_labeledMarkCollection = markCollection;
 			_labeledMarkCollection.EnsureOrder();
-			Visible = true;
 			Height = 20;
 		}
 
@@ -26,7 +25,7 @@ namespace Common.Controls.TimelineControl
 
 		public int DisplayTop { get; set; }
 
-		public bool Visible { get; set; }
+		public bool Visible => _labeledMarkCollection.Decorator.Mode == Mode.Full;
 
 		internal MarkDecorator MarkDecorator => _labeledMarkCollection.Decorator;
 

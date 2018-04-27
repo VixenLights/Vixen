@@ -167,7 +167,7 @@ namespace Common.Controls.TimelineControl
 		private void CalculateRowDisplayTops(bool visibleRowsOnly = true)
 		{
 			int top = 0;
-			var processRows = visibleRowsOnly ? _rows.Where(x => x.Visible = true) : _rows;
+			var processRows = visibleRowsOnly ? _rows.Where(x => x.Visible) : _rows;
 			foreach (var row in processRows)
 			{
 				row.DisplayTop = top;
