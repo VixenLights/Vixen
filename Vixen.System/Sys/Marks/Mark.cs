@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Vixen.Sys.Marks
 {
-	public class Mark:IComparable<Mark>
+	public class Mark:IComparable<Mark>, ICloneable
 	{
 		public Mark() : this(TimeSpan.Zero)
 		{
@@ -37,5 +37,19 @@ namespace Vixen.Sys.Marks
 
 			return EndTime.CompareTo(other.EndTime);
 		}
+
+		#region Implementation of ICloneable
+
+		/// <inheritdoc />
+		public object Clone()
+		{
+			return new Mark(StartTime)
+			{
+				Duration = Duration,
+				Text = Text
+			};
+		}
+
+		#endregion
 	}
 }

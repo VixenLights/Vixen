@@ -10,7 +10,7 @@ namespace VixenModules.Sequence.Timed
 	[DataContract]
 	public class TimedSequenceData : BaseSequence.SequenceData
 	{
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public List<MarkCollection> MarkCollections { get; set; }
 
 		[DataMember]
@@ -81,7 +81,11 @@ namespace VixenModules.Sequence.Timed
 				RowSettings = new RowSettings();
 			}
 
-			ConvertMarksToLabeledMarks();
+			if (LabeledMarkCollections == null)
+			{
+				ConvertMarksToLabeledMarks();
+				MarkCollections =  default(List<MarkCollection>);
+			}
 		}
 
 		public override IModuleDataModel Clone()
@@ -89,7 +93,7 @@ namespace VixenModules.Sequence.Timed
 			TimedSequenceData result = new TimedSequenceData();
 			// Cloning each MarkCollection so that the cloned data objects don't share references
 			// and step on each other.
-			result.MarkCollections = new List<MarkCollection>(MarkCollections.Select(x => new MarkCollection(x)));
+			result.LabeledMarkCollections = LabeledMarkCollections.Select(x => (Vixen.Sys.Marks.MarkCollection)x.Clone()).ToList();
 			return result;
 		}
 	}
