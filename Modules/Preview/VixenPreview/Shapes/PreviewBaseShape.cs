@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Vixen.Sys;
@@ -23,6 +24,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			Standard,
 			Pixel,
+			Custom
 			//            Flood
 		}
 
@@ -198,9 +200,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+		public virtual void MatchPixelSize(PreviewBaseShape shape)
+		{
+			PixelSize = shape.PixelSize;
+		}
+
+		public virtual void ResizePixelsBy(int value)
+		{
+			var newSize = PixelSize + value;
+			PixelSize = newSize > 0 ? newSize : 1;
+		}
+
 		private double _zoomLevel = 1;
 		[Browsable(false)]
-		public double ZoomLevel
+		public virtual double ZoomLevel
 		{
 			get
 			{
@@ -218,6 +231,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						shape.ZoomLevel = value;
 					}
 				}
+
 				Layout();
 			}
 		}
@@ -286,15 +300,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					p.PointType = PreviewPoint.PointTypes.Size;
 		}
 
-		// Add a pxiel at a specific location
+		// Add a pixel at a specific location
 		public PreviewPixel AddPixel(int x, int y)
 		{
-			PreviewPixel pixel = new PreviewPixel(x, y, 0, PixelSize);
+			return AddPixel(x, y, 0, PixelSize);
+		}
+
+		public PreviewPixel AddPixel(int x, int y, int z, int size)
+		{
+			PreviewPixel pixel = new PreviewPixel(x, y, z, size);
 			pixel.PixelColor = PixelColor;
 			Pixels.Add(pixel);
 			return pixel;
 		}
-
+		
 		public virtual void ResizePixels()
 		{
 			if (Pixels != null) {
@@ -318,6 +337,18 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 		}
 
+
+		protected static Rect GetCombinedBounds(IEnumerable<Rect> recs)
+		{
+			if(!recs.Any()) return new Rect(0,0,0,0);
+			double xMin = recs.Min(s => s.X);
+			double yMin = recs.Min(s => s.Y);
+			double xMax = recs.Max(s => s.X + s.Width);
+			double yMax = recs.Max(s => s.Y + s.Height);
+			var rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
+			return rect;
+		}
+
 		public virtual void Draw(Bitmap b, bool editMode, HashSet<Guid> highlightedElements)
 		{
 			throw new NotImplementedException();
@@ -326,7 +357,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public virtual void DrawPixel(PreviewPixel pixel, FastPixel.FastPixel fp, bool editMode, HashSet<Guid> highlightedElements,
 		                              bool selected, bool forceDraw)
 		{
-			int origPixelSize = PixelSize;
+			int origPixelSize = pixel.PixelSize;
             if (forceDraw)
             {
                 pixel.Draw(fp, forceDraw);
@@ -390,7 +421,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			DrawSelectPoints(fp);
 		}
 
-		public void DrawSelectPoints(FastPixel.FastPixel fp)
+		public virtual void DrawSelectPoints(FastPixel.FastPixel fp)
 		{
 			if (_selectPoints != null) {
 				foreach (PreviewPoint point in _selectPoints) {
@@ -453,7 +484,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             return (Top >= Y1 && Bottom <= Y2 && Left >= X1 && Right <= X2);
         }
 
-		public PreviewPoint PointInSelectPoint(PreviewPoint point)
+		public virtual PreviewPoint PointInSelectPoint(PreviewPoint point)
 		{
 			if (_selectPoints != null) {
 				foreach (PreviewPoint selectPoint in _selectPoints) {
@@ -578,6 +609,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             {
                 setupControl = new Shapes.PreviewMultiStringSetupControl(this);
             }
+			else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewCustomProp")
+			{
+				setupControl = new PreviewCustomPropSetupControl(this);
+			}
 
 			return setupControl;
 		}

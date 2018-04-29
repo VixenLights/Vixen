@@ -881,6 +881,7 @@
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />
+    <Compile Include="Utility\NamingUtilities.cs" />
     <Compile Include="Utility\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>

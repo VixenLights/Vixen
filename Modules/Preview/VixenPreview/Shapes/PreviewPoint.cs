@@ -19,7 +19,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			None,
 			Size,
 			SkewNS,
-			SkewWE
+			SkewWE,
+			Rotate
 		}
 
 		public PreviewPoint()
@@ -30,6 +31,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			get { return _pointType; }
 			set { _pointType = value; }
+		}
+
+		public PreviewPoint(int x, int y, PointTypes type):this(x, y)
+		{
+			PointType = type;
 		}
 
 		public PreviewPoint(int x, int y)

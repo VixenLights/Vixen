@@ -5,7 +5,7 @@
                     xmlns:controls="clr-namespace:VixenModules.Editor.EffectEditor.Controls">
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="Converters.xaml" />
-        <ResourceDictionary Source="Theme.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="SliderPoint.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--<DataTemplate x:Key="{x:Static editors:EditorKeys.GradientEditorKey}">

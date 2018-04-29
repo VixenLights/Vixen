@@ -12,7 +12,6 @@ using Vixen.Sys;
 using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using WeifenLuo.WinFormsUI.Docking;
-using Application = System.Windows.Application;
 using Element = Common.Controls.Timeline.Element;
 using PropertyValueChangedEventArgs = VixenModules.Editor.EffectEditor.PropertyValueChangedEventArgs;
 using Timer = System.Timers.Timer;
@@ -32,19 +31,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public FormEffectEditor(TimedSequenceEditorForm sequenceEditorForm)
 		{
-			
-			if (Application.Current == null)
-			{
-				// create the Application object
-				new Application();
-			}
-			ResourceDictionary dict = new ResourceDictionary
-			{
-				Source = new Uri("/EffectEditor;component/Themes/Theme.xaml", UriKind.Relative)
-			};
-
-
-			Application.Current.Resources.MergedDictionaries.Add(dict);
 			InitializeComponent();
 			
 			_sequenceEditorForm = sequenceEditorForm;

@@ -1,0 +1,30 @@
+﻿<MenuItem 
+    x:Class="VixenModules.App.CustomPropEditor.Controls.SliderMenuItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<MenuItem.Template>
+		<ControlTemplate>
+			<Grid x:Name="m_Grid">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Slider 
+                    x:Name="PART_Slider" 
+                    Orientation="Vertical" 
+                    VerticalAlignment="Stretch"
+                    IsSnapToTickEnabled="True" 
+                    TickPlacement="None" 
+                    IsDirectionReversed="True"
+                    Minimum="0"
+                    Maximum="1"
+                />
+
+				<ItemsPresenter 
+                    x:Name="Items_PART"
+                    Grid.Column="1" 
+                    Margin="6,0,0,0" />
+			</Grid>
+		</ControlTemplate>
+	</MenuItem.Template>
+</MenuItem>

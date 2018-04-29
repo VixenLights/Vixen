@@ -24,6 +24,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Common.WPFCommon.Controls;
 using Vixen.Attributes;
 using Vixen.Module.Effect;
 using VixenModules.Editor.EffectEditor.Controls;

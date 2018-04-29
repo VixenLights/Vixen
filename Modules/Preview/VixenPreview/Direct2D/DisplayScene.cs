@@ -307,10 +307,10 @@ namespace VixenModules.Preview.VixenPreview.Direct2D {
 		}
 
 		private void RenderPixel( D2D.RenderTarget rt, PreviewPixel p, D2D.SolidColorBrush brush) {
-			if (p.PixelSize <= 4)
-				rt.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
-			else
-				rt.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
+			//if (p.PixelSize <= 4)
+				//rt.DrawLine(new D2D.Point2F(p.X, p.Y), new D2D.Point2F(p.X + 1, p.Y + 1), brush, p.PixelSize);
+			//else
+				//rt.FillEllipse(new D2D.Ellipse() { Point = new D2D.Point2F(p.X, p.Y), RadiusX = p.PixelSize / 2, RadiusY = p.PixelSize / 2 }, brush);
 
 		}
 

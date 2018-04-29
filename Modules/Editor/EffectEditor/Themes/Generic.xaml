@@ -8,9 +8,8 @@
 		<ResourceDictionary Source="/EffectEditor;component/Themes/DoubleEditor.xaml" />
 		<ResourceDictionary Source="/EffectEditor;component/Themes/IntegerEditor.xaml" />
 		<ResourceDictionary Source="/EffectEditor;component/Themes/PropertyGrid.xaml" />
-		<ResourceDictionary Source="/EffectEditor;component/Themes/ToggleSwitch.xaml" />
-
-		<ResourceDictionary Source="/EffectEditor;component/Design/CategorizedLayout.xaml" />
+        <ResourceDictionary Source="/EffectEditor;component/Themes/ToggleSwitch.xaml" />
+        <ResourceDictionary Source="/EffectEditor;component/Design/CategorizedLayout.xaml" />
 
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

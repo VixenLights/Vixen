@@ -268,6 +268,7 @@
 			this.listViewNames.OwnerDraw = true;
 			this.listViewNames.Size = new System.Drawing.Size(348, 460);
 			this.listViewNames.TabIndex = 5;
+			this.listViewNames.TabStop = false;
 			this.listViewNames.UseCompatibleStateImageBehavior = false;
 			this.listViewNames.View = System.Windows.Forms.View.Details;
 			// 

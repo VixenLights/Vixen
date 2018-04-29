@@ -288,9 +288,7 @@ namespace Vixen.Sys
 
 		protected static void OnChanged(ElementNode value)
 		{
-			if (Changed != null) {
-				Changed(value, EventArgs.Empty);
-			}
+		    Changed?.Invoke(value, EventArgs.Empty);
 		}
 
 		#endregion

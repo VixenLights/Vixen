@@ -28,6 +28,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
     [KnownType(typeof (PreviewIcicle))]
     [KnownType(typeof(PreviewPolyLine))]
     [KnownType(typeof(PreviewMultiString))]
+	[KnownType(typeof(PreviewCustomProp))]
 	public class DisplayItem : IHandler<IIntentState<LightingValue>>, IHandler<IIntentState<CommandValue>>, IDisposable, IEnumerable<DisplayItem>, ICloneable
 	{
 		private PreviewBaseShape _shape;

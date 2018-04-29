@@ -197,7 +197,7 @@
     <None Include="control_stop_blue.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="delete.png" />
+    <Resource Include="delete.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="filter.png" />
@@ -265,6 +265,19 @@
     <None Include="alignment.png" />
     <None Include="effects.png" />
     <None Include="check-mark.png" />
+    <Resource Include="Close_6519.png" />
+    <Resource Include="buttonBulbSmaller.png" />
+    <Resource Include="buttonBulbEqual.png" />
+    <Resource Include="buttonBulbBigger.png" />
+    <Content Include="buttonAlignBottom.BackgroundImage.png" />
+    <Content Include="buttonAlignHorizMid.BackgroundImage.png" />
+    <Content Include="buttonAlignLeft.BackgroundImage.png" />
+    <Content Include="buttonAlignRight.BackgroundImage.png" />
+    <Content Include="buttonAlignTop.BackgroundImage.png" />
+    <Content Include="buttonAlignVertMid.BackgroundImage.png" />
+    <Content Include="buttonDistributeHorizontal.BackgroundImage.png" />
+    <Content Include="buttonDistributeVertical.BackgroundImage.png" />
+    <Content Include="buttonMatchProperties.BackgroundImage.png" />
     <Content Include="fill_gaps.png" />
     <None Include="Resources\HeadingBackgroundImage.jpg" />
     <None Include="Resources\HeadingBackgroundImageHover.jpg" />
@@ -291,9 +304,15 @@
     <None Include="Resources\openMarkManager.png" />
     <None Include="Resources\add_Collection.png" />
     <None Include="Resources\dottedLine.png" />
-    <None Include="Resources\delete_32.png" />
+    <Resource Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
     <None Include="Resources\VixenImage.png" />
+    <Resource Include="Saveall_6518.png" />
+    <Resource Include="Save_6530.png" />
+    <Resource Include="Open_6529.png" />
+    <Resource Include="NewFile_6276.png" />
+    <Resource Include="Prop_Add.png" />
+    <Resource Include="Prop_Edit.png" />
     <Content Include="table_chart_left.png" />
     <Content Include="folder_open.png" />
     <None Include="hourglass_link.png" />
@@ -305,10 +324,10 @@
     <None Include="lightning_delete.png" />
     <None Include="lightning_add.png" />
     <None Include="lightning.png" />
-    <None Include="lightbulb_off.png" />
-    <None Include="lightbulb_delete.png" />
-    <None Include="lightbulb_add.png" />
-    <None Include="lightbulb.png" />
+    <Resource Include="lightbulb_off.png" />
+    <Resource Include="lightbulb_delete.png" />
+    <Resource Include="lightbulb_add.png" />
+    <Resource Include="lightbulb.png" />
     <None Include="pencil_ruler.png" />
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />
@@ -374,7 +393,7 @@
     <None Include="menu_item.png" />
     <None Include="menu.png" />
     <None Include="magnet.png" />
-    <None Include="help.png" />
+    <Resource Include="help.png" />
     <None Include="bullet_toggle_plus_16px.png" />
     <None Include="bullet_toggle_minus_16px.png" />
     <None Include="bullet_toggle_plus.png" />
@@ -389,10 +408,10 @@
     <None Include="sound.png" />
     <None Include="page_copy.png" />
     <None Include="paste_plain.png" />
-    <None Include="page_white_paste.png" />
-    <None Include="page_white_copy.png" />
+    <Resource Include="page_white_paste.png" />
+    <Resource Include="page_white_copy.png" />
     <None Include="document_move.png" />
-    <None Include="cut.png" />
+    <Resource Include="cut.png" />
     <None Include="document_comment_above.png" />
     <None Include="document_comment_behind.png" />
     <None Include="document_comment_below.png" />
