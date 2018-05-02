@@ -2016,13 +2016,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
-			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.SelectedMarks.Any() ||
+			toolStripMenuItem_deleteElements.Enabled = MarksSelectionManager.Manager().SelectedMarks.Any() ||
 			                                           TimelineControl.SelectedElements.Any();
 		}
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)
 		{
-			TimelineControl.ruler.ClearSelectedMarks();
+			//TimelineControl.ruler.ClearSelectedMarks();
+			MarksSelectionManager.Manager().ClearSelected();
 			Invalidate(true);
 		}
 
@@ -2754,7 +2755,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlMarksMoving(object sender, MarksMovingEventArgs e)
 		{
-			TimelineControl.MarksBar.Invalidate(); //Temp refresh
 			UpdateGridSnapTimes();
 		}
 

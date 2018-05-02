@@ -28,6 +28,7 @@ namespace Common.Controls.Timeline
 		private TimeSpan _dragLastTime;
 
 		private readonly List<MarkCollection> _labledMarks;
+		private readonly MarksSelectionManager _marksSelectionManager;
 
 
 		public Ruler(TimeInfo timeinfo)
@@ -35,6 +36,8 @@ namespace Common.Controls.Timeline
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
+			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			recalculate();
 			_labledMarks = new List<MarkCollection>();
 			double factor = ScalingTools.GetScaleFactor();
@@ -436,7 +439,7 @@ namespace Common.Controls.Timeline
 		private TimeSpan m_mark;
 		private Mark _selectedMark = null;
 		//public SortedDictionary<TimeSpan, SnapDetails> selectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
-		public List<Mark> SelectedMarks = new List<Mark>();
+		
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			//Console.WriteLine("Clicks: " + e.Clicks);
@@ -451,16 +454,16 @@ namespace Common.Controls.Timeline
 			{
 				if (ModifierKeys != Keys.Control)
 				{
-					ClearSelectedMarks();
+					_marksSelectionManager.ClearSelected();
 				}
 
-				if (SelectedMarks.Contains(marksAtTime.First()))
+				if (_marksSelectionManager.SelectedMarks.Contains(marksAtTime.First()))
 				{
-					SelectedMarks.Remove(marksAtTime.First());
+					_marksSelectionManager.DeSelect(marksAtTime.First());
 				}
 				else
 				{
-					SelectedMarks.Add(marksAtTime.First());
+					_marksSelectionManager.Select(marksAtTime.First());
 				}
 				_dragStartTime = _dragLastTime = marksAtTime.First().StartTime;
 				m_mouseState = MouseState.DraggingMark;
@@ -469,7 +472,7 @@ namespace Common.Controls.Timeline
 				m_mouseState = MouseState.ResizeRuler;
 			else
 			{
-				ClearSelectedMarks();
+				_marksSelectionManager.ClearSelected();
 				m_mouseState = MouseState.DragWait;
 			}
 		}
@@ -516,30 +519,30 @@ namespace Common.Controls.Timeline
 					case MouseState.DraggingMark:
 
 						var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-						OnMarksMoving(new MarksMovingEventArgs(SelectedMarks));
+						OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 						var diff = newTime - _dragLastTime;
-						SelectedMarks.ForEach(x => x.StartTime += diff);
+						_marksSelectionManager.SelectedMarks.ToList().ForEach(x => x.StartTime += diff);
 						_dragLastTime = newTime;
-						if (Convert.ToInt16(m_mark.Minutes) >= 10)
+						if (Convert.ToInt16(newTime.Minutes) >= 10)
 						{
 							markTime = string.Format("{0:mm\\:ss\\.fff}", newTime);
 						}
-						else if (Convert.ToInt16(m_mark.Minutes) >= 1)
+						else if (Convert.ToInt16(newTime.Minutes) >= 1)
 						{
 							markTime = string.Format("{0:m\\:ss\\.fff}", newTime);
 						}
-						else if (Convert.ToInt16(m_mark.Seconds) >= 10)
+						else if (Convert.ToInt16(newTime.Seconds) >= 10)
 						{
 							markTime = string.Format("{0:ss\\.fff}", newTime);
 						}
-						else if (Convert.ToInt16(m_mark.Seconds) <= 9)
+						else if (Convert.ToInt16(newTime.Seconds) <= 9)
 						{
 							markTime = string.Format("{0:s\\.fff}", newTime);
 						}
 
 						Refresh();
 						
-						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, m_mark));
+						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, newTime));
 						
 						break;
 					case MouseState.ResizeRuler:
@@ -617,7 +620,7 @@ namespace Common.Controls.Timeline
 								{
 									//ClearSelectedMarks();
 									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-									OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, SelectedMarks));
+									OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, _marksSelectionManager.SelectedMarks.ToList()));
 									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
 								}
 							}
@@ -655,11 +658,6 @@ namespace Common.Controls.Timeline
 			Invalidate();
 		}
 
-		public void ClearSelectedMarks()
-		{
-			SelectedMarks.Clear();
-		}
-
 		public void NudgeMark(int offset)
 		{
 			//TimeSpan timeOffset = TimeSpan.FromMilliseconds(offset);
@@ -680,7 +678,7 @@ namespace Common.Controls.Timeline
 		{
 			//DeleteSelectedMarks();
 
-			OnDeleteMark(new MarksDeletedEventArgs(SelectedMarks));
+			OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 		}
 
 		public void DeleteSelectedMarks()
@@ -740,6 +738,12 @@ namespace Common.Controls.Timeline
 			if (DeleteMark != null)
 				DeleteMark(this, e);
 		}
+
+		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
+		{
+			Invalidate();
+		}
+
 
 		protected virtual void OnClickedAtTime(RulerClickedEventArgs e)
 		{
@@ -853,7 +857,7 @@ namespace Common.Controls.Timeline
 						break;
 					}
 					Single x = timeToPixels(labeledMark.StartTime);
-					p.Width = SelectedMarks.Contains(labeledMark) ? 3 : 1;
+					p.Width = _marksSelectionManager.SelectedMarks.Contains(labeledMark) ? 3 : 1;
 					g.DrawLine(p, x, 0, x, Height);
 				}
 

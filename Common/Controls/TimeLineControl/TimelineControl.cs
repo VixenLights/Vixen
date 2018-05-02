@@ -212,6 +212,10 @@ namespace Common.Controls.Timeline
 			        	};
 			splitContainer.Panel2.Controls.Add(ruler);
 
+			//Wire up events
+			ruler.MarksMoving += Ruler_MarksMoving;
+			MarksBar.MarksMoving += MarksBar_MarksMoving;
+
 			//WaveForm
 			//TODO deal with positioning, can we dock two controls to the top
 			//Looks like the last one wins.
@@ -225,6 +229,16 @@ namespace Common.Controls.Timeline
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
+		}
+
+		private void MarksBar_MarksMoving(object sender, MarksMovingEventArgs e)
+		{
+			ruler.Invalidate();
+		}
+
+		private void Ruler_MarksMoving(object sender, MarksMovingEventArgs e)
+		{
+			MarksBar.Invalidate();
 		}
 
 		#endregion

@@ -2519,44 +2519,6 @@ namespace Common.Controls.Timeline
 		public bool SnapSolidLine; // snap point is a solidline or dotted
 	}
 
-
-	// Enumerations
-	internal enum DragState
-	{
-		///<summary>Not dragging, mouse is up.</summary>
-		Normal = 0,
-
-		///<summary>Mouse down, but hasn't moved past threshold yet to be considered dragging.</summary>
-		Waiting,
-
-		///<summary>Actively dragging objects.</summary>
-		Moving,
-
-		///<summary>Like "Dragging", but dragging on the background, not an object.</summary>
-		Selecting,
-
-		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
-		HResizing,
-
-		///<summary>Drawing, like "Dragging", but anywhere on timeline.</summary>
-		Drawing,
-	}
-
-
-	///<summary>Describes where the mouse is at in an element's resize zone.</summary>
-	public enum ResizeZone
-	{
-		/// <summary>Mouse is not in an element's resize zone.</summary>
-		None,
-
-		///<summary>Mouse is in the element's front (left) resize zone.</summary>
-		Front,
-
-		///<summary>Moouse is in the element's back (right) resize zone.</summary>
-		Back
-	};
-
-
 	///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
 	public class ElementMoveInfo
 	{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls.Theme;
@@ -17,16 +18,33 @@ namespace Common.Controls.TimelineControl
 		private bool _suppressInvalidate;
 		private Point _mouseDownLocation, _mouseUpLocation;
 		private Mark _mouseDownMark;
+		private TimeSpan _dragStartTime;
+		private TimeSpan _dragLastTime;
+
+		private DragState _dragState = DragState.Normal; // the current dragging state
+		private ResizeZone _markResizeZone = ResizeZone.None;
+		private readonly MarksSelectionManager _marksSelectionManager;
+		private Rectangle _ignoreDragArea;
+		private Point _waitingBeginGridLocation;
+		private const int DragThreshold = 8;
 
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
+		public static event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
 		{
 			BackColor = Color.Gray;
+			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			_rows = new List<MarkRow>();
+		}
+
+		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
+		{
+			Invalidate();
 		}
 
 		public void AddMarks(MarkCollection labeledMarkCollection)
@@ -55,10 +73,35 @@ namespace Common.Controls.TimelineControl
 		{
 			_mouseDownMark = null;
 			Point location = _mouseDownLocation = TranslateLocation(e.Location);
+
 			
 			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
 			{
 				_mouseDownMark = MarkAt(location);
+				_dragStartTime = _dragLastTime = pixelsToTime(location.X) + VisibleTimeStart;
+
+				if (!CtrlPressed)
+				{
+					_marksSelectionManager.ClearSelected();
+					_marksSelectionManager.Select(_mouseDownMark);
+				}
+				else
+				{
+					_marksSelectionManager.Select(_mouseDownMark);
+				}
+			}
+
+			if (e.Button == MouseButtons.Left)
+			{
+				if (_markResizeZone == ResizeZone.None)
+				{
+					// begin waiting for a normal drag
+					WaitForDragMove(location);
+				}
+				else if (!CtrlPressed)
+				{
+					//beginHResize(gridLocation); // begin a resize.
+				}
 			}
 
 		}
@@ -69,7 +112,7 @@ namespace Common.Controls.TimelineControl
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 
-			Point gridLocation = _mouseUpLocation = TranslateLocation(e.Location);
+			Point location = _mouseUpLocation = TranslateLocation(e.Location);
 
 			if (e.Button == MouseButtons.Right)
 			{
@@ -86,7 +129,167 @@ namespace Common.Controls.TimelineControl
 
 			}
 
-			
+			switch (_dragState)
+			{
+				case DragState.Moving:
+					var newTime = pixelsToTime(e.X) + VisibleTimeStart;
+					OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, _marksSelectionManager.SelectedMarks.ToList()));
+					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark.StartTime));
+					EndAllDrag();
+					break;
+				default:
+					EndAllDrag();
+					break;
+			}
+
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			// Determine if we need to start auto-drag
+			switch (_dragState)
+			{
+				case DragState.Moving:
+				case DragState.HResizing:
+
+					//m_mouseOutside.X = (e.X <= AutoScrollMargin.Width)
+					//	? -(AutoScrollMargin.Width - e.X)
+					//	: (e.X > ClientSize.Width - AutoScrollMargin.Width)
+					//		? e.X - ClientSize.Width + AutoScrollMargin.Width
+					//		: 0;
+
+					//m_mouseOutside.Y = (e.Y <= AutoScrollMargin.Height)
+					//	? -(AutoScrollMargin.Height - e.Y)
+					//	: (e.Y > ClientSize.Height - AutoScrollMargin.Height)
+					//		? e.Y - ClientSize.Height + AutoScrollMargin.Height
+					//		: 0;
+
+					//if (m_mouseOutside.X != 0 || m_mouseOutside.Y != 0)
+					//{
+					//	if (!m_autoScrollTimer.Enabled)
+					//		m_autoScrollTimer.Start(); // Mouse is outside viewport - start auto scroll timer.
+					//}
+					//else
+					//{
+					//	if (m_autoScrollTimer.Enabled)
+					//		m_autoScrollTimer.Stop(); // Mouse is inside viewport - stop auto scroll timer.
+					//}
+
+					break;
+			}
+
+			//m_lastMouseMove = e;
+			HandleMouseMove(e);
+		}
+
+		private void HandleMouseMove(MouseEventArgs e)
+		{
+			Point location = TranslateLocation(e.Location);
+		
+			switch (_dragState)
+			{
+				case DragState.Normal: // Normal -> Not dragging; mouse is up
+					MouseMove_Normal(location);
+					break;
+
+				case DragState.Waiting: // Waiting to start moving an object
+					if (!_ignoreDragArea.Contains(location))
+					{
+						BeginDragMove();
+					}
+					break;
+
+				case DragState.Moving: // Moving objects
+									   //Gets the element we are working with 
+					//if (ResizeIndicator_Enabled && elementsAt(gridLocation).Any())
+					//	foreach (Element elem in elementsAt(gridLocation))
+					//	{
+					//		if (elem.Selected) _workingElement = elem;
+					//	}
+					MouseMove_DragMoving(location);
+					break;
+
+				case DragState.HResizing: // Resizing an element
+					//MouseMove_HResizing(gridLocation, delta);
+					break;
+
+				default:
+					throw new Exception("Unknown DragState.");
+			}
+
+			base.OnMouseMove(e);
+		}
+
+		private void MouseMove_Normal(Point gridLocation)
+		{
+			//Point gridLocation = TranslateLocation(e.Location);
+
+			// Are we in a 'resize zone' at the front or back of an element?
+			Mark mark = MarkAt(gridLocation);
+			if (mark == null)
+			{
+				_markResizeZone = ResizeZone.None;
+			}
+			else
+			{
+				// smaller of constant, or half of element width
+				int grabThreshold = Math.Min(12, (int)(timeToPixels(mark.Duration) / 2));
+				float elemStart = timeToPixels(mark.StartTime);
+				float elemEnd = timeToPixels(mark.EndTime);
+				int x = gridLocation.X;
+
+				if ((x >= elemStart) && (x < (elemStart + grabThreshold)))
+					_markResizeZone = ResizeZone.Front;
+				else if ((x <= elemEnd) && (x > (elemEnd - grabThreshold)))
+					_markResizeZone = ResizeZone.Back;
+				else
+					_markResizeZone = ResizeZone.None;
+			}
+
+			Cursor = _markResizeZone == ResizeZone.None ? Cursors.Default : Cursors.SizeWE;
+		}
+
+
+		/// <summary>
+		/// Handles mouse move events while in the "Moving" state.
+		/// </summary>
+		/// <param name="location">Mouse location on the grid.</param>
+		private void MouseMove_DragMoving(Point location)
+		{
+			// if we don't have anything selected, there's no point dragging anything...
+			if (!_marksSelectionManager.SelectedMarks.Any())
+				return;
+
+			var newTime = pixelsToTime(location.X) + VisibleTimeStart;
+			OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			var diff = newTime - _dragLastTime;
+			_marksSelectionManager.SelectedMarks.ToList().ForEach(x => x.StartTime += diff);
+			_dragLastTime = newTime;
+			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+			Invalidate();
+		}
+
+		private void WaitForDragMove(Point gridLocation)
+		{
+			// begin the dragging process -- calculate a area outside which a drag (move) starts
+			_dragState = DragState.Waiting;
+			_waitingBeginGridLocation = gridLocation;
+			_ignoreDragArea = new Rectangle(gridLocation.X - DragThreshold, gridLocation.Y - DragThreshold, DragThreshold * 2,
+				DragThreshold * 2);
+		}
+
+		private void BeginDragMove()
+		{
+			_dragState = DragState.Moving;
+			_ignoreDragArea = Rectangle.Empty;
+			Cursor = Cursors.Hand;
+		}
+
+		private void EndAllDrag()
+		{
+			_dragState = DragState.Normal;
+			Cursor = Cursors.Default;
+			Invalidate();
 		}
 
 		private void Rename_Click(object sender, EventArgs e)
@@ -106,6 +309,8 @@ namespace Common.Controls.TimelineControl
 		}
 
 		#endregion
+
+		private bool CtrlPressed => ModifierKeys.HasFlag(Keys.Control);
 
 		/// <summary>
 		/// Returns all elements located at the given point in client coordinates
@@ -210,6 +415,12 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
+		public void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
+		{
+			if (SelectedMarkMove != null)
+				SelectedMarkMove(this, e);
+		}
+
 		private void OnMarkMoved(MarksMovedEventArgs e)
 		{
 			MarksMoved?.Invoke(this, e);
@@ -248,9 +459,6 @@ namespace Common.Controls.TimelineControl
 			}
 		}
 
-		private static readonly Color SelectionColor = Color.FromArgb(100, 40, 100, 160);
-		
-
 		private void DrawRows(Graphics g)
 		{
 			int curY = 0;
@@ -287,7 +495,7 @@ namespace Common.Controls.TimelineControl
 						break;
 					}
 
-					DrawElement(g, row, currentElement, displaytop);
+					DrawMark(g, row, currentElement, displaytop);
 				}
 
 				displaytop += row.Height;
@@ -295,7 +503,7 @@ namespace Common.Controls.TimelineControl
 
 		}
 
-		private void DrawElement(Graphics g, MarkRow row, Mark mark, int top)
+		private void DrawMark(Graphics g, MarkRow row, Mark mark, int top)
 		{
 			int width;
 			
@@ -343,6 +551,16 @@ namespace Common.Controls.TimelineControl
 
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
 			g.DrawImage(labelImage, destRect);
+
+			if (_marksSelectionManager.SelectedMarks.Contains(mark))
+			{
+				using (Pen bp = new Pen(Color.Blue,2))
+				{
+					bp.Alignment = PenAlignment.Inset;
+					g.DrawRectangle(bp, destRect);
+				}
+			}
+			
 
 			//Draw the text
 
