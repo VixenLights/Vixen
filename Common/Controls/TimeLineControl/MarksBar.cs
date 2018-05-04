@@ -27,6 +27,8 @@ namespace Common.Controls.TimelineControl
 		private Rectangle _ignoreDragArea;
 		private Point _waitingBeginGridLocation;
 		private const int DragThreshold = 8;
+		private const int MinMarkWidthPx = 10;
+		private MarksResizeInfo _marksResizeInfo;
 
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
@@ -100,7 +102,7 @@ namespace Common.Controls.TimelineControl
 				}
 				else if (!CtrlPressed)
 				{
-					//beginHResize(gridLocation); // begin a resize.
+					BeginHResize(location); // begin a resize.
 				}
 			}
 
@@ -111,9 +113,6 @@ namespace Common.Controls.TimelineControl
 		/// <inheritdoc />
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-
-			Point location = _mouseUpLocation = TranslateLocation(e.Location);
-
 			if (e.Button == MouseButtons.Right)
 			{
 				if (_mouseDownLocation == _mouseUpLocation && _mouseDownMark != null)
@@ -137,6 +136,9 @@ namespace Common.Controls.TimelineControl
 					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark.StartTime));
 					EndAllDrag();
 					break;
+				case DragState.HResizing:
+					MouseUp_HResizing();
+					break;
 				default:
 					EndAllDrag();
 					break;
@@ -146,39 +148,6 @@ namespace Common.Controls.TimelineControl
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			// Determine if we need to start auto-drag
-			switch (_dragState)
-			{
-				case DragState.Moving:
-				case DragState.HResizing:
-
-					//m_mouseOutside.X = (e.X <= AutoScrollMargin.Width)
-					//	? -(AutoScrollMargin.Width - e.X)
-					//	: (e.X > ClientSize.Width - AutoScrollMargin.Width)
-					//		? e.X - ClientSize.Width + AutoScrollMargin.Width
-					//		: 0;
-
-					//m_mouseOutside.Y = (e.Y <= AutoScrollMargin.Height)
-					//	? -(AutoScrollMargin.Height - e.Y)
-					//	: (e.Y > ClientSize.Height - AutoScrollMargin.Height)
-					//		? e.Y - ClientSize.Height + AutoScrollMargin.Height
-					//		: 0;
-
-					//if (m_mouseOutside.X != 0 || m_mouseOutside.Y != 0)
-					//{
-					//	if (!m_autoScrollTimer.Enabled)
-					//		m_autoScrollTimer.Start(); // Mouse is outside viewport - start auto scroll timer.
-					//}
-					//else
-					//{
-					//	if (m_autoScrollTimer.Enabled)
-					//		m_autoScrollTimer.Stop(); // Mouse is inside viewport - stop auto scroll timer.
-					//}
-
-					break;
-			}
-
-			//m_lastMouseMove = e;
 			HandleMouseMove(e);
 		}
 
@@ -192,25 +161,19 @@ namespace Common.Controls.TimelineControl
 					MouseMove_Normal(location);
 					break;
 
-				case DragState.Waiting: // Waiting to start moving an object
+				case DragState.Waiting: // Waiting to start moving a Mark
 					if (!_ignoreDragArea.Contains(location))
 					{
 						BeginDragMove();
 					}
 					break;
 
-				case DragState.Moving: // Moving objects
-									   //Gets the element we are working with 
-					//if (ResizeIndicator_Enabled && elementsAt(gridLocation).Any())
-					//	foreach (Element elem in elementsAt(gridLocation))
-					//	{
-					//		if (elem.Selected) _workingElement = elem;
-					//	}
+				case DragState.Moving: // Moving Marks along the row
 					MouseMove_DragMoving(location);
 					break;
 
-				case DragState.HResizing: // Resizing an element
-					//MouseMove_HResizing(gridLocation, delta);
+				case DragState.HResizing: // Resizing Mark(s) duration
+					MouseMove_HResizing(location);
 					break;
 
 				default:
@@ -290,6 +253,91 @@ namespace Common.Controls.TimelineControl
 			_dragState = DragState.Normal;
 			Cursor = Cursors.Default;
 			Invalidate();
+		}
+
+		private void MouseMove_HResizing(Point gridLocation)
+		{
+			TimeSpan dt = pixelsToTime(gridLocation.X - _marksResizeInfo.InitialGridLocation.X);
+
+			if (dt == TimeSpan.Zero)
+				return;
+
+			// Ensure minimum size
+			TimeSpan shortest = _marksResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
+			Console.Out.WriteLine(pixelsToTime(MinMarkWidthPx).TotalMilliseconds);
+			// Check boundary conditions
+			switch (_markResizeZone)
+			{
+				case ResizeZone.Front:
+					// Clip earliest element StartTime at zero
+					TimeSpan earliest = _marksResizeInfo.OriginalMarks.Values.Min(x => x.StartTime);
+					if (earliest + dt < TimeSpan.Zero)
+					{
+						dt = -earliest;
+					}
+
+					// Ensure the shortest meets minimum width (in px)
+					if (timeToPixels(shortest - dt) < MinMarkWidthPx)
+					{
+						dt = shortest - pixelsToTime(MinMarkWidthPx);
+					}
+					break;
+
+				case ResizeZone.Back:
+					// Clip latest mark EndTime at TotalTime
+					TimeSpan latest = _marksResizeInfo.OriginalMarks.Values.Max(x => x.EndTime);
+					if (latest + dt > TimeInfo.TotalTime)
+					{
+						dt = TimeInfo.TotalTime - latest;
+					}
+
+					// Ensure the shortest meets minimum width (in px)
+					if (timeToPixels(shortest + dt) < MinMarkWidthPx)
+					{
+						dt = pixelsToTime(MinMarkWidthPx) - shortest;
+					}
+					break;
+			}
+
+
+			// Apply dt to all selected elements.
+			foreach (var originalMarkInfo in _marksResizeInfo.OriginalMarks)
+			{
+				switch (_markResizeZone)
+				{
+					case ResizeZone.Front:
+						originalMarkInfo.Key.StartTime = originalMarkInfo.Value.StartTime + dt;
+						originalMarkInfo.Key.Duration = originalMarkInfo.Value.Duration - dt;
+						break;
+
+					case ResizeZone.Back:
+						originalMarkInfo.Key.Duration = originalMarkInfo.Value.Duration + dt;
+						break;
+				}
+			}
+
+			OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+
+			Invalidate();
+		}
+
+		private void BeginHResize(Point gridLocation)
+		{
+			_dragState = DragState.HResizing;
+			//CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
+			MarksBeginResize(gridLocation);
+		}
+
+		private void MouseUp_HResizing()
+		{
+			//elementsFinishedMoving(ElementMoveType.Resize);
+			EndAllDrag();
+		}
+
+		private void MarksBeginResize(Point gridLocation)
+		{
+			_marksResizeInfo = new MarksResizeInfo(gridLocation, _marksSelectionManager.SelectedMarks, VisibleTimeStart);
 		}
 
 		private void Rename_Click(object sender, EventArgs e)
@@ -587,6 +635,43 @@ namespace Common.Controls.TimelineControl
 			return result;
 		}
 
+		internal class MarksResizeInfo
+		{
+			public MarksResizeInfo(Point initGridLocation, IEnumerable<Mark> modifyingMarks, TimeSpan visibleTimeStart)
+			{
+				InitialGridLocation = initGridLocation;
+				VisibleTimeStart = visibleTimeStart;
 
+				OriginalMarks = new Dictionary<Mark, MarkTimeInfo>();
+				foreach (var mark in modifyingMarks)
+				{
+					OriginalMarks.Add(mark, new MarkTimeInfo(mark));
+				}
+			}
+			
+			///<summary>The point on the grid where the mouse first went down.</summary>
+			public Point InitialGridLocation { get; private set; }
+
+			///<summary>All elements being modified and their original parameters.</summary>
+			public Dictionary<Mark, MarkTimeInfo> OriginalMarks { get; private set; }
+
+			public TimeSpan VisibleTimeStart { get; private set; }
+		}
+
+		internal class MarkTimeInfo
+		{
+			public MarkTimeInfo(Mark mark)
+			{
+				StartTime = mark.StartTime;
+				EndTime = mark.EndTime;
+				Duration = mark.Duration;
+			}
+
+			public TimeSpan StartTime { get; set; }
+			public TimeSpan EndTime { get; set; }
+
+			public TimeSpan Duration { get; set; }
+
+		}
 	}
 }
