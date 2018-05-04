@@ -80,7 +80,10 @@ namespace Common.Controls.TimelineControl
 
 				if (!CtrlPressed)
 				{
-					_marksSelectionManager.ClearSelected();
+					if (_markResizeZone == ResizeZone.None || !_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
+					{
+						_marksSelectionManager.ClearSelected();
+					}
 					_marksSelectionManager.Select(_mouseDownMark);
 				}
 				else
@@ -270,7 +273,7 @@ namespace Common.Controls.TimelineControl
 
 			// Ensure minimum size
 			TimeSpan shortest = _marksResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
-			Console.Out.WriteLine(pixelsToTime(MinMarkWidthPx).TotalMilliseconds);
+			
 			// Check boundary conditions
 			switch (_markResizeZone)
 			{
