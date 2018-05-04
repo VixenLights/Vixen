@@ -67,12 +67,6 @@ namespace Common.Controls.Timeline
 			get { return new Size(400, 40); }
 		}
 
-		public int StandardNudgeTime { get; set; }
-
-		public int SuperNudgeTime { get; set; }
-
-		public int SnapStrength { get; set; }
-
 		#region Drawing
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -656,22 +650,6 @@ namespace Common.Controls.Timeline
 			m_mouseState = MouseState.Normal;
 			m_button = MouseButtons.None;
 			Invalidate();
-		}
-
-		public void NudgeMark(int offset)
-		{
-			//TimeSpan timeOffset = TimeSpan.FromMilliseconds(offset);
-
-			//OnMarkNudge(new MarkNudgeEventArgs(selectedMarks, timeOffset));
-
-			//SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
-
-			//foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in selectedMarks)
-			//{
-			//	newSelectedMarks.Add(kvp.Key + timeOffset, kvp.Value);
-			//}
-
-			//selectedMarks = newSelectedMarks;
 		}
 
 		void DeleteMark_Click(object sender, EventArgs e)

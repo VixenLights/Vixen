@@ -1485,7 +1485,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void PopulateSnapStrength(int strength)
 		{
 			TimelineControl.grid.SnapStrength = strength;
-			TimelineControl.ruler.SnapStrength = strength;
 		}
 
 		private void PopulateAudioDropdown()

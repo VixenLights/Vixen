@@ -40,13 +40,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_Marks_Load(object sender, EventArgs e)
 		{
-			var xml = new XMLProfileSettings();
-			numericUpDownStandardNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), 10);
-			numericUpDownSuperNudge.Value = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), 20);
-			toolStripMenuItemNudgeSettings.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), false);
-			//xml = null;
-
-			panel1.Visible = toolStripMenuItemNudgeSettings.Checked;
 			ResizeColumnHeaders();
 		}
 
@@ -151,22 +144,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			DeleteSelectedMarkCollections();
 		}
 
-		private void numericUpDownStandardNudge_ValueChanged(object sender, EventArgs e)
-		{
-			TimelineControl.ruler.StandardNudgeTime = Convert.ToInt32(numericUpDownStandardNudge.Value);
-		}
-
-		private void numericUpDownSuperNudge_ValueChanged(object sender, EventArgs e)
-		{
-			TimelineControl.ruler.SuperNudgeTime = Convert.ToInt32(numericUpDownSuperNudge.Value);
-		}
-
 		private void Form_Marks_Closing(object sender, FormClosingEventArgs e)
 		{
-			var xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/StandardNudge", Name), Convert.ToInt32(numericUpDownStandardNudge.Value));
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SuperNudge", Name), Convert.ToInt32(numericUpDownSuperNudge.Value));
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/NudgeSettings", Name), toolStripMenuItemNudgeSettings.Checked);
+			
 		}
 
 		private void listViewMarkCollections_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -267,13 +247,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenuItemChangeColor.Enabled = false;
 			}
 		}
-
-		private void toolStripMenuItemNudgeSettings_Click(object sender, EventArgs e)
-		{
-			toolStripMenuItemNudgeSettings.Checked = !toolStripMenuItemNudgeSettings.Checked;
-			panel1.Visible = !panel1.Visible;
-		}
-
 	}
 
 	public class MarkCollectionArgs: EventArgs
