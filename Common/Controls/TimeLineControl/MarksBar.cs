@@ -13,10 +13,9 @@ namespace Common.Controls.TimelineControl
 {
 	public sealed class MarksBar:TimelineControlBase
 	{
-
 		private readonly List<MarkRow> _rows;
 		private bool _suppressInvalidate;
-		private Point _mouseDownLocation, _mouseUpLocation;
+		private Point _mouseDownLocation;
 		private Mark _mouseDownMark;
 		private TimeSpan _dragStartTime;
 		private TimeSpan _dragLastTime;
@@ -25,7 +24,6 @@ namespace Common.Controls.TimelineControl
 		private ResizeZone _markResizeZone = ResizeZone.None;
 		private readonly MarksSelectionManager _marksSelectionManager;
 		private Rectangle _ignoreDragArea;
-		private Point _waitingBeginGridLocation;
 		private const int DragThreshold = 8;
 		private const int MinMarkWidthPx = 10;
 		private MarksResizeInfo _marksResizeInfo;
@@ -66,9 +64,7 @@ namespace Common.Controls.TimelineControl
 			if (!_suppressInvalidate) Invalidate();
 		}
 
-		#region Overrides of Control
-
-		#region Overrides of UserControl
+		#region Mouse Down
 
 		/// <inheritdoc />
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -110,12 +106,14 @@ namespace Common.Controls.TimelineControl
 
 		#endregion
 
+		#region Mouse Up
+
 		/// <inheritdoc />
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
 			{
-				if (_mouseDownLocation == _mouseUpLocation && _mouseDownMark != null)
+				if (_mouseDownLocation == TranslateLocation(e.Location) && _mouseDownMark != null)
 				{
 					ContextMenuStrip c = new ContextMenuStrip();
 					c.Renderer = new ThemeToolStripRenderer();
@@ -146,6 +144,10 @@ namespace Common.Controls.TimelineControl
 
 		}
 
+		#endregion
+
+		#region Mouse Move
+
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			HandleMouseMove(e);
@@ -154,7 +156,7 @@ namespace Common.Controls.TimelineControl
 		private void HandleMouseMove(MouseEventArgs e)
 		{
 			Point location = TranslateLocation(e.Location);
-		
+
 			switch (_dragState)
 			{
 				case DragState.Normal: // Normal -> Not dragging; mouse is up
@@ -185,8 +187,6 @@ namespace Common.Controls.TimelineControl
 
 		private void MouseMove_Normal(Point gridLocation)
 		{
-			//Point gridLocation = TranslateLocation(e.Location);
-
 			// Are we in a 'resize zone' at the front or back of an element?
 			Mark mark = MarkAt(gridLocation);
 			if (mark == null)
@@ -212,6 +212,9 @@ namespace Common.Controls.TimelineControl
 			Cursor = _markResizeZone == ResizeZone.None ? Cursors.Default : Cursors.SizeWE;
 		}
 
+		#endregion
+
+		#region Move Marks
 
 		/// <summary>
 		/// Handles mouse move events while in the "Moving" state.
@@ -236,7 +239,6 @@ namespace Common.Controls.TimelineControl
 		{
 			// begin the dragging process -- calculate a area outside which a drag (move) starts
 			_dragState = DragState.Waiting;
-			_waitingBeginGridLocation = gridLocation;
 			_ignoreDragArea = new Rectangle(gridLocation.X - DragThreshold, gridLocation.Y - DragThreshold, DragThreshold * 2,
 				DragThreshold * 2);
 		}
@@ -254,6 +256,10 @@ namespace Common.Controls.TimelineControl
 			Cursor = Cursors.Default;
 			Invalidate();
 		}
+
+		#endregion
+
+		#region Resize
 
 		private void MouseMove_HResizing(Point gridLocation)
 		{
@@ -325,20 +331,15 @@ namespace Common.Controls.TimelineControl
 		private void BeginHResize(Point gridLocation)
 		{
 			_dragState = DragState.HResizing;
-			//CurrentRowIndexUnderMouse = Rows.IndexOf(rowAt(gridLocation));
-			MarksBeginResize(gridLocation);
+			_marksResizeInfo = new MarksResizeInfo(gridLocation, _marksSelectionManager.SelectedMarks, VisibleTimeStart);
 		}
 
 		private void MouseUp_HResizing()
 		{
-			//elementsFinishedMoving(ElementMoveType.Resize);
 			EndAllDrag();
 		}
 
-		private void MarksBeginResize(Point gridLocation)
-		{
-			_marksResizeInfo = new MarksResizeInfo(gridLocation, _marksSelectionManager.SelectedMarks, VisibleTimeStart);
-		}
+		#endregion
 
 		private void Rename_Click(object sender, EventArgs e)
 		{
@@ -356,8 +357,7 @@ namespace Common.Controls.TimelineControl
 			OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
 		}
 
-		#endregion
-
+		
 		private bool CtrlPressed => ModifierKeys.HasFlag(Keys.Control);
 
 		/// <summary>
