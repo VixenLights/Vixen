@@ -985,19 +985,4 @@ namespace Common.Controls.Timeline
 
 		public event EventHandler<TimelineEventArgs> BackgroundClicked;
 	}
-
-
-	public enum ElementMoveType
-	{
-		Move,
-		Resize,
-		AlignStart,
-		AlignEnd,
-		AlignBoth,
-		AlignDurations,
-		AlignStartToEnd,
-		AlignEndToStart,
-		AlignCenters,
-		Distribute
-	}
 }

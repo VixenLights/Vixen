@@ -208,6 +208,7 @@
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\DragState.cs" />
+    <Compile Include="TimelineControl\ElementMoveType.cs" />
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
