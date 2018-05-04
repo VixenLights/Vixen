@@ -139,6 +139,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//TODO Figure out what this is all about.
 		private Dictionary<TimeSpan, MarkCollection> _mcs;
 
+		private readonly MarksEventManager _marksEventManager;
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -246,7 +248,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
-
+			//So we can be aware of mark changes.
+			_marksEventManager = MarksEventManager.Manager;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -454,10 +457,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			TimelineControl.MarksMoving += TimelineControlMarksMoving;
-			TimelineControl.MarksMoved += TimelineControlMarksMoved;
-			TimelineControl.MarkNudge += timelineControl_MarkNudge;
-			TimelineControl.DeleteMark += timelineControl_DeleteMark;
+			_marksEventManager.MarksMoving += TimelineControlMarksMoving;
+			_marksEventManager.MarksMoved += TimelineControlMarksMoved;
+			_marksEventManager.DeleteMark += timelineControl_DeleteMark;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -632,9 +634,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-			TimelineControl.MarksMoved -= TimelineControlMarksMoved;
-			TimelineControl.MarkNudge -= timelineControl_MarkNudge;
-			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
+			_marksEventManager.MarksMoved -= TimelineControlMarksMoved;
+			_marksEventManager.DeleteMark -= timelineControl_DeleteMark;
 
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
@@ -2782,31 +2783,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			SequenceModified();
 			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
 
-		}
-
-		private void timelineControl_MarkNudge(object sender, MarkNudgeEventArgs e)
-		{
-			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
-			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
-			foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in e.SelectedMarks)
-			{
-				newSelectedMarks.Add(kvp.Key + e.Offset, kvp.Value);
-				foreach (MarkCollection mc in _sequence.MarkCollections)
-				{
-					if (kvp.Value.SnapLevel == mc.Level)
-					{
-						if (mc.Marks.Contains(kvp.Key))
-						{
-							markCollection.Add(new MarkNdugeCollection(mc, kvp.Key + e.Offset, kvp.Key));
-							mc.Marks.Remove(kvp.Key);
-							mc.Marks.Add(kvp.Key + e.Offset);
-						}
-					}
-				}
-			}
-			PopulateMarkSnapTimes();
-			SequenceModified();
-			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
 		}
 
 		private void timelineControl_DeleteMark(object sender, MarksDeletedEventArgs e)

@@ -29,14 +29,17 @@ namespace Common.Controls.Timeline
 
 		private readonly List<MarkCollection> _labledMarks;
 		private readonly MarksSelectionManager _marksSelectionManager;
-
-
+		private readonly MarksEventManager _marksEventManager;
+		
 		public Ruler(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
 			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksEventManager = MarksEventManager.Manager;
+			_marksEventManager.MarksMoving += _marksEventManager_MarksMoving;
+			_marksEventManager.DeleteMark += _marksEventManager_DeleteMark;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			recalculate();
 			_labledMarks = new List<MarkCollection>();
@@ -513,7 +516,7 @@ namespace Common.Controls.Timeline
 					case MouseState.DraggingMark:
 
 						var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-						OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+						_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 						var diff = newTime - _dragLastTime;
 						_marksSelectionManager.SelectedMarks.ToList().ForEach(x => x.StartTime += diff);
 						_dragLastTime = newTime;
@@ -534,9 +537,9 @@ namespace Common.Controls.Timeline
 							markTime = string.Format("{0:s\\.fff}", newTime);
 						}
 
-						Refresh();
-						
-						OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, newTime));
+						//Refresh();
+
+						_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, newTime));
 						
 						break;
 					case MouseState.ResizeRuler:
@@ -555,7 +558,7 @@ namespace Common.Controls.Timeline
 				if (marks.Any())
 				{
 					Cursor = Cursors.VSplit;
-					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First().StartTime));
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First().StartTime));
 				}
 				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
 				{
@@ -564,7 +567,7 @@ namespace Common.Controls.Timeline
 				else
 				{
 					Cursor = Cursors.Hand;
-					OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 				}
 			}
 		}
@@ -614,8 +617,8 @@ namespace Common.Controls.Timeline
 								{
 									//ClearSelectedMarks();
 									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-									OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, _marksSelectionManager.SelectedMarks.ToList()));
-									OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
+									_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, _marksSelectionManager.SelectedMarks.ToList()));
+									_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
 								}
 							}
 							break;
@@ -656,7 +659,7 @@ namespace Common.Controls.Timeline
 		{
 			//DeleteSelectedMarks();
 
-			OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 		}
 
 		public void DeleteSelectedMarks()
@@ -676,45 +679,21 @@ namespace Common.Controls.Timeline
 		{
 			Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
-			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
 		}
 
-		public event EventHandler<MarksMovedEventArgs> MarksMoved;
-		public event EventHandler<MarksMovingEventArgs> MarksMoving;
-		public event EventHandler<MarkNudgeEventArgs> MarkNudge;
-		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
-		public static event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove;
 
-		public virtual void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
+		private void _marksEventManager_DeleteMark(object sender, MarksDeletedEventArgs e)
 		{
-			if (SelectedMarkMove != null)
-				SelectedMarkMove(this, e);
+			Invalidate();
 		}
 
-		protected virtual void OnMarkMoved(MarksMovedEventArgs e)
+		private void _marksEventManager_MarksMoving(object sender, MarksMovingEventArgs e)
 		{
-			if (MarksMoved != null)
-				MarksMoved(this, e);
-		}
-
-		protected virtual void OnMarksMoving(MarksMovingEventArgs e)
-		{
-			MarksMoving?.Invoke(this, e);
-		}
-
-		protected virtual void OnMarkNudge(MarkNudgeEventArgs e)
-		{
-			if (MarkNudge != null)
-				MarkNudge(this, e);
-		}
-
-		protected virtual void OnDeleteMark(MarksDeletedEventArgs e)
-		{
-			if (DeleteMark != null)
-				DeleteMark(this, e);
+			Invalidate();
 		}
 
 		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
@@ -752,6 +731,10 @@ namespace Common.Controls.Timeline
 					m_textBrush.Dispose();
 				m_font = null;
 				m_textBrush = null;
+				_marksEventManager.MarksMoving -= _marksEventManager_MarksMoving;
+				_marksEventManager.DeleteMark -= _marksEventManager_DeleteMark;
+				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
+				
 			}
 			base.Dispose(disposing);
 		}

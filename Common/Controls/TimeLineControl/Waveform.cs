@@ -28,6 +28,7 @@ namespace Common.Controls.Timeline
 		private bool _creatingSamples = false;
 		private bool waveFormMark;
 		private TimeSpan selectedTime;
+		private readonly MarksEventManager _marksEventManager;
 
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
@@ -39,7 +40,8 @@ namespace Common.Controls.Timeline
 			samples = new SampleAggregator();
 			BackColor = Color.Gray;
 			Visible = false;
-			Ruler.SelectedMarkMove += waveForm_SelectedMarkMove;
+			_marksEventManager = MarksEventManager.Manager;
+			_marksEventManager.SelectedMarkMove += waveForm_SelectedMarkMove;
 		}
 
 		private void waveForm_SelectedMarkMove(object sender, SelectedMarkMoveEventArgs e)

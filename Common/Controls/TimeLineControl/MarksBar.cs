@@ -21,28 +21,22 @@ namespace Common.Controls.TimelineControl
 		private DragState _dragState = DragState.Normal; // the current dragging state
 		private ResizeZone _markResizeZone = ResizeZone.None;
 		private readonly MarksSelectionManager _marksSelectionManager;
+		private readonly MarksEventManager _marksEventManager;
 		private Rectangle _ignoreDragArea;
 		private const int DragThreshold = 8;
 		private const int MinMarkWidthPx = 12;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
-
-		public event EventHandler<MarksMovedEventArgs> MarksMoved;
-		public event EventHandler<MarksMovingEventArgs> MarksMoving;
-		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
-		public static event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
 		{
 			BackColor = Color.Gray;
 			_marksSelectionManager = MarksSelectionManager.Manager();
+			_marksEventManager = MarksEventManager.Manager;
+			_marksEventManager.MarksMoving += _marksEventManager_MarksMoving;
+			_marksEventManager.DeleteMark += _marksEventManager_DeleteMark;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			_rows = new List<MarkRow>();
-		}
-
-		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
-		{
-			Invalidate();
 		}
 
 		public void AddMarks(MarkCollection labeledMarkCollection)
@@ -245,10 +239,10 @@ namespace Common.Controls.TimelineControl
 				markTimeInfo.Key.StartTime = markTimeInfo.Value.StartTime + dt;
 			}
 
-			OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
 
-			Invalidate();
+			//Invalidate();
 		}
 
 		private void WaitForDragMove(Point gridLocation)
@@ -277,7 +271,7 @@ namespace Common.Controls.TimelineControl
 		{
 			_dragState = DragState.Normal;
 			Cursor = Cursors.Default;
-			Invalidate();
+			//Invalidate();
 		}
 
 		#endregion
@@ -345,10 +339,10 @@ namespace Common.Controls.TimelineControl
 				}
 			}
 
-			OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-			OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
 
-			Invalidate();
+			//Invalidate();
 		}
 
 		private void BeginHResize(Point location)
@@ -375,7 +369,27 @@ namespace Common.Controls.TimelineControl
 		private void FinishedResizeMoveMarks(ElementMoveType type)
 		{
 			//TODO This is a good place to manage the undo stuff
+
+			//TODO This selected mark move thing needs help
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark.StartTime));
 			_marksMoveResizeInfo = null;
+		}
+
+		#region Events
+
+		private void _marksEventManager_DeleteMark(object sender, MarksDeletedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private void _marksEventManager_MarksMoving(object sender, MarksMovingEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
+		{
+			Invalidate();
 		}
 
 		private void Rename_Click(object sender, EventArgs e)
@@ -391,10 +405,11 @@ namespace Common.Controls.TimelineControl
 
 		private void DeleteMark_Click(object sender, EventArgs e)
 		{
-			OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
+			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
 		}
 
-		
+		#endregion
+
 		private bool CtrlPressed => ModifierKeys.HasFlag(Keys.Control);
 
 		/// <summary>
@@ -500,26 +515,26 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
-		public void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
-		{
-			if (SelectedMarkMove != null)
-				SelectedMarkMove(this, e);
-		}
+		//public void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
+		//{
+		//	if (SelectedMarkMove != null)
+		//		SelectedMarkMove(this, e);
+		//}
 
-		private void OnMarkMoved(MarksMovedEventArgs e)
-		{
-			MarksMoved?.Invoke(this, e);
-		}
+		//private void OnMarkMoved(MarksMovedEventArgs e)
+		//{
+		//	MarksMoved?.Invoke(this, e);
+		//}
 
-		private void OnMarksMoving(MarksMovingEventArgs e)
-		{
-			MarksMoving?.Invoke(this, e);
-		}
+		//private void OnMarksMoving(MarksMovingEventArgs e)
+		//{
+		//	MarksMoving?.Invoke(this, e);
+		//}
 
-		private void OnDeleteMark(MarksDeletedEventArgs e)
-		{
-			DeleteMark?.Invoke(this, e);
-		}
+		//private void OnDeleteMark(MarksDeletedEventArgs e)
+		//{
+		//	DeleteMark?.Invoke(this, e);
+		//}
 
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -665,11 +680,21 @@ namespace Common.Controls.TimelineControl
 						new Rectangle((int)g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top,
 							(int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
 				}
-
-				
 			}
 
 			return result;
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_marksEventManager.MarksMoving -= _marksEventManager_MarksMoving;
+				_marksEventManager.DeleteMark -= _marksEventManager_DeleteMark;
+				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
+
+			}
+			base.Dispose(disposing);
 		}
 
 		internal class MarksMoveResizeInfo

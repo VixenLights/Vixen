@@ -212,10 +212,6 @@ namespace Common.Controls.Timeline
 			        	};
 			splitContainer.Panel2.Controls.Add(ruler);
 
-			//Wire up events
-			ruler.MarksMoving += Ruler_MarksMoving;
-			MarksBar.MarksMoving += MarksBar_MarksMoving;
-
 			//WaveForm
 			//TODO deal with positioning, can we dock two controls to the top
 			//Looks like the last one wins.
@@ -229,16 +225,6 @@ namespace Common.Controls.Timeline
 
 			splitContainer.Panel2.ResumeLayout(false);
 			splitContainer.Panel2.PerformLayout();
-		}
-
-		private void MarksBar_MarksMoving(object sender, MarksMovingEventArgs e)
-		{
-			ruler.Invalidate();
-		}
-
-		private void Ruler_MarksMoving(object sender, MarksMovingEventArgs e)
-		{
-			MarksBar.Invalidate();
 		}
 
 		#endregion
@@ -674,53 +660,53 @@ namespace Common.Controls.Timeline
 			remove { ruler.ClickedAtTime -= value; }
 		}
 
-		public event EventHandler<MarksMovedEventArgs> MarksMoved
-		{
-			add
-			{
-				ruler.MarksMoved += value;
-				MarksBar.MarksMoved += value;
-			}
-			remove
-			{
-				ruler.MarksMoved -= value;
-				MarksBar.MarksMoved -= value;
-			}
-		}
+		//public event EventHandler<MarksMovedEventArgs> MarksMoved
+		//{
+		//	add
+		//	{
+		//		ruler.MarksMoved += value;
+		//		MarksBar.MarksMoved += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.MarksMoved -= value;
+		//		MarksBar.MarksMoved -= value;
+		//	}
+		//}
 
-		public event EventHandler<MarksMovingEventArgs> MarksMoving
-		{
-			add
-			{
-				ruler.MarksMoving += value;
-				MarksBar.MarksMoving += value;
-			}
-			remove
-			{
-				ruler.MarksMoving -= value;
-				MarksBar.MarksMoving -= value;
-			}
-		}
+		//public event EventHandler<MarksMovingEventArgs> MarksMoving
+		//{
+		//	add
+		//	{
+		//		ruler.MarksMoving += value;
+		//		MarksBar.MarksMoving += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.MarksMoving -= value;
+		//		MarksBar.MarksMoving -= value;
+		//	}
+		//}
 
-		public event EventHandler<MarkNudgeEventArgs> MarkNudge
-		{
-			add { ruler.MarkNudge += value; }
-			remove { ruler.MarkNudge -= value; }
-		}
+		//public event EventHandler<MarkNudgeEventArgs> MarkNudge
+		//{
+		//	add { ruler.MarkNudge += value; }
+		//	remove { ruler.MarkNudge -= value; }
+		//}
 
-		public event EventHandler<MarksDeletedEventArgs> DeleteMark
-		{
-			add
-			{
-				ruler.DeleteMark += value;
-				MarksBar.DeleteMark += value;
-			}
-			remove
-			{
-				ruler.DeleteMark -= value;
-				MarksBar.DeleteMark -= value;
-			}
-		}
+		//public event EventHandler<MarksDeletedEventArgs> DeleteMark
+		//{
+		//	add
+		//	{
+		//		ruler.DeleteMark += value;
+		//		MarksBar.DeleteMark += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.DeleteMark -= value;
+		//		MarksBar.DeleteMark -= value;
+		//	}
+		//}
 
 		public event EventHandler RulerBeginDragTimeRange
 		{
@@ -734,11 +720,11 @@ namespace Common.Controls.Timeline
 			remove { ruler.TimeRangeDragged -= value; }
 		}
 
-		public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove
-		{
-			add { Ruler.SelectedMarkMove += value; }
-			remove { Ruler.SelectedMarkMove -= value; }
-		}
+		//public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove
+		//{
+		//	add { Ruler.SelectedMarkMove += value; }
+		//	remove { Ruler.SelectedMarkMove -= value; }
+		//}
 
 		#endregion
 		
