@@ -696,44 +696,5 @@ namespace Common.Controls.TimelineControl
 			}
 			base.Dispose(disposing);
 		}
-
-		internal class MarksMoveResizeInfo
-		{
-			public MarksMoveResizeInfo(Point initGridLocation, IEnumerable<Mark> modifyingMarks, TimeSpan visibleTimeStart)
-			{
-				InitialGridLocation = initGridLocation;
-				VisibleTimeStart = visibleTimeStart;
-
-				OriginalMarks = new Dictionary<Mark, MarkTimeInfo>();
-				foreach (var mark in modifyingMarks)
-				{
-					OriginalMarks.Add(mark, new MarkTimeInfo(mark));
-				}
-			}
-			
-			///<summary>The point on the grid where the mouse first went down.</summary>
-			public Point InitialGridLocation { get; private set; }
-
-			///<summary>All elements being modified and their original parameters.</summary>
-			public Dictionary<Mark, MarkTimeInfo> OriginalMarks { get; private set; }
-
-			public TimeSpan VisibleTimeStart { get; private set; }
-		}
-
-		internal class MarkTimeInfo
-		{
-			public MarkTimeInfo(Mark mark)
-			{
-				StartTime = mark.StartTime;
-				EndTime = mark.EndTime;
-				Duration = mark.Duration;
-			}
-
-			public TimeSpan StartTime { get; set; }
-			public TimeSpan EndTime { get; set; }
-
-			public TimeSpan Duration { get; set; }
-
-		}
 	}
 }

@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Drawing.Text;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
-using System.Diagnostics;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
-using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using Vixen.Sys.Marks;
 

@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
 using Common.Controls.Theme;
 using VixenModules.Media.Audio;
-using System.Threading.Tasks;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
-using Common.Controls.TimelineControl.LabeledMarks;
 using Vixen.Sys.Marks;
 
 namespace Common.Controls.Timeline
