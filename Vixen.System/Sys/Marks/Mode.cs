@@ -2,7 +2,6 @@
 
 namespace Vixen.Sys.Marks
 {
-	[DataContract]
 	public enum Mode
 	{
 		Full,
