@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace Vixen.Sys.Marks
 {
@@ -34,6 +35,7 @@ namespace Vixen.Sys.Marks
 		[DataMember]
 		public int Level { get; set; }
 
+		[IgnoreDataMember]
 		public ReadOnlyCollection<Mark> Marks { get; private set; }
 
 		[DataMember]

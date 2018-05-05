@@ -633,7 +633,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
 			_marksEventManager.MarksMoved -= MarksMoved;
 			_marksEventManager.DeleteMark -= MarksDeleted;
-
+			_marksEventManager.MarksMoving -= MarksMoving;
+			
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
 				EffectsForm.Dispose();
@@ -2338,7 +2339,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			eDialog.EffectName = effectName;
 			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
-			eDialog.MarkCollections = _sequence.MarkCollections;
+			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
 			eDialog.ShowDialog();
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
@@ -2389,12 +2390,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
 		{
 			bool skipThisBeat = false;
-			List<TimeSpan> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.MarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark >= startTime select mark).ToList();
+			List<Mark> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.LabeledMarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark.StartTime >= startTime select mark).ToList();
 			times.Sort();
 			var newEffects = new List<EffectNode>();
 			if (times.Count > 0)
 			{
-				foreach (TimeSpan mark in times)
+				foreach (Mark mark in times)
 				{
 					if (newEffects.Count < effectCount)
 					{
@@ -2407,10 +2408,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								{
 									if (times.IndexOf(mark) == times.Count - 1) //The dialog hanles this, but just to make sure
 										break; //We're done -- There are no more marks to fill, don't create it
-									duration = times[times.IndexOf(mark) + 1] - mark;
+									duration = times[times.IndexOf(mark) + 1].StartTime - mark.StartTime;
 									if (duration < TimeSpan.FromSeconds(.01)) duration = TimeSpan.FromSeconds(.01);
 								}
-								newEffects.Add(CreateEffectNode(newEffect, row, mark, duration));
+								newEffects.Add(CreateEffectNode(newEffect, row, mark.StartTime, duration));
 							}
 							catch (Exception ex)
 							{
@@ -5030,24 +5031,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
-			foreach (var markTime in _sequence.MarkCollections.Where(markCollection => markCollection.Enabled).SelectMany(markCollection => markCollection.Marks))
+			foreach (var markTime in _sequence.LabeledMarkCollections.Where(markCollection => markCollection.IsEnabled).SelectMany(markCollection => markCollection.Marks))
 			{
-				if (markTime == referenceTimeSpan)
+				if (markTime.StartTime == referenceTimeSpan)
 				{
-					return markTime;
+					return markTime.StartTime;
 				}
 
-				if (markTime > referenceTimeSpan - threshold && markTime < referenceTimeSpan + threshold && (alignMethod == "Start" && markTime < referenceTimeSpan1 || alignMethod == "End" && markTime > referenceTimeSpan1))
+				if (markTime.StartTime > referenceTimeSpan - threshold && markTime.StartTime < referenceTimeSpan + threshold && (alignMethod == "Start" && markTime.StartTime < referenceTimeSpan1 || alignMethod == "End" && markTime.StartTime > referenceTimeSpan1))
 				{
-					if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
+					if (markTime.StartTime > referenceTimeSpan && markTime.StartTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
 					{
-						compareResult = markTime - referenceTimeSpan;
-						result = markTime;
+						compareResult = markTime.StartTime - referenceTimeSpan;
+						result = markTime.StartTime;
 					}
-					else if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult.Duration() || result == TimeSpan.Zero)
+					else if (markTime.StartTime < referenceTimeSpan && referenceTimeSpan - markTime.StartTime < compareResult.Duration() || result == TimeSpan.Zero)
 					{
-						compareResult = referenceTimeSpan - markTime;
-						result = markTime;
+						compareResult = referenceTimeSpan - markTime.StartTime;
+						result = markTime.StartTime;
 					}
 				}
 			}

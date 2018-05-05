@@ -10,8 +10,8 @@ namespace VixenModules.Sequence.Timed
 
 		public List<MarkCollection> MarkCollections
 		{
-			get { return ((TimedSequenceData) SequenceData).MarkCollections; }
-			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
+			get { return ((TimedSequenceData)SequenceData).MarkCollections; }
+			set { ((TimedSequenceData)SequenceData).MarkCollections = value; }
 		}
 
 		public List<Vixen.Sys.Marks.MarkCollection> LabeledMarkCollections

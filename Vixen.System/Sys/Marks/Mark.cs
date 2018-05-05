@@ -27,6 +27,7 @@ namespace Vixen.Sys.Marks
 
 		public TimeSpan EndTime => StartTime + Duration;
 
+		[IgnoreDataMember]
 		public MarkCollection Parent { get; set; }
 
 		public int CompareTo(Mark other)
