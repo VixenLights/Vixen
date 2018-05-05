@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using Vixen.Sys.Attribute;
 
 namespace VixenModules.Effect.Shapes
 {
@@ -12,6 +13,14 @@ namespace VixenModules.Effect.Shapes
 		{
 			get { return new ParameterSignature(); }
 		}
+
+		public ShapesDescriptor()
+		{
+			ModulePath = EffectName;
+		}
+
+		[ModuleDataPath]
+		public static string ModulePath { get; set; }
 
 		public override EffectGroups EffectGroup
 		{

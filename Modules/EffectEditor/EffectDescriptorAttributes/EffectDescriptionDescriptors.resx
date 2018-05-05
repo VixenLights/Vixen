@@ -427,7 +427,7 @@
     <value>Controls the amount of TailLength.</value>
   </data>
   <data name="SpeedVariation" xml:space="preserve">
-    <value>Randomly adjust the Speed around the Speed level by the amount of variation..</value>
+    <value>Randomly adjust the Speed around the Speed level by the amount of variation.</value>
   </data>
   <data name="FlakeType" xml:space="preserve">
     <value>Controls the type of snowflake.</value>
@@ -556,7 +556,7 @@
     <value>Adds a Ground level for the Meteors to hit.</value>
   </data>
   <data name="Angle" xml:space="preserve">
-    <value>Controls the rotation angle of the text.</value>
+    <value>Controls the rotation angle.</value>
   </data>
   <data name="FontScale" xml:space="preserve">
     <value>Adjusts the Font size.</value>
@@ -626,5 +626,95 @@
   </data>
   <data name="CountDownTime" xml:space="preserve">
     <value>Sets the starting time in seconds for the count to begin.</value>
+  </data>
+  <data name="AngleSpeed" xml:space="preserve">
+    <value>Adjusts the angle speed of the shape.</value>
+  </data>
+  <data name="AngleSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the angle speed around the angle speed level by the amount of variation.</value>
+  </data>
+  <data name="BorderShapes" xml:space="preserve">
+    <value>Select from a list of Border shapes.</value>
+  </data>
+  <data name="ChristmasShapes" xml:space="preserve">
+    <value>Select from a list of Christmas shapes.</value>
+  </data>
+  <data name="ColorFill" xml:space="preserve">
+    <value>Fills the shape with the fill color.</value>
+  </data>
+  <data name="CrossSizeRatio" xml:space="preserve">
+    <value>Adjuts the cross Height to Width ratio.</value>
+  </data>
+  <data name="FirstFillColors" xml:space="preserve">
+    <value>Fills the shape.</value>
+  </data>
+  <data name="GeometricShapes" xml:space="preserve">
+    <value>Select from a list of Geometric shapes.</value>
+  </data>
+  <data name="HalloweenShapes" xml:space="preserve">
+    <value>Select from a list of Halloween shapes.</value>
+  </data>
+  <data name="MaxShapeSize" xml:space="preserve">
+    <value>Maximum Shape Size.</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Controls shape movement.</value>
+  </data>
+  <data name="OutlineColors" xml:space="preserve">
+    <value>Adjusts the outline color.</value>
+  </data>
+  <data name="PolygonSides" xml:space="preserve">
+    <value>Adjusts number of Polygon sides.</value>
+  </data>
+  <data name="RandomAngle" xml:space="preserve">
+    <value>Randomly sets initial shape angle.</value>
+  </data>
+  <data name="RandomShapeSize" xml:space="preserve">
+    <value>Randomly sets initial shape size.</value>
+  </data>
+  <data name="RoundedCorners" xml:space="preserve">
+    <value>Add rounded corners to the Geometric shapes.</value>
+  </data>
+  <data name="SecondFillColors" xml:space="preserve">
+    <value>Fills the shape.</value>
+  </data>
+  <data name="ShapeCount" xml:space="preserve">
+    <value>Adjusts the number of shapes to be created.</value>
+  </data>
+  <data name="ShapeOutLine" xml:space="preserve">
+    <value>Adjusts the outline dash length of the shape, used with the line spacing.</value>
+  </data>
+  <data name="ShapeOutLineSpace" xml:space="preserve">
+    <value>Adjusts the outline space length between dashes of the shape, used with the dash length.</value>
+  </data>
+  <data name="ShapeSize" xml:space="preserve">
+    <value>Size of the shape.</value>
+  </data>
+  <data name="ShapeSizeRatio" xml:space="preserve">
+    <value>Adjust the Height to Width ratio.</value>
+  </data>
+  <data name="ShapeType" xml:space="preserve">
+    <value>Selects Shape catagory.</value>
+  </data>
+  <data name="SizeSpeed" xml:space="preserve">
+    <value>Adjusts the size speed of the shape.</value>
+  </data>
+  <data name="SizeSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the size speed around the size speed level by the amount of variation.</value>
+  </data>
+  <data name="SkipPoints" xml:space="preserve">
+    <value>Adjusts the skip point for star.</value>
+  </data>
+  <data name="StarInsideSize" xml:space="preserve">
+    <value>Adjusts inside radius of Star.</value>
+  </data>
+  <data name="StarPoints" xml:space="preserve">
+    <value>Adjusts the number of points on the star.</value>
+  </data>
+  <data name="StrokeFill" xml:space="preserve">
+    <value>Shows the shape outline.</value>
+  </data>
+  <data name="StrokeWidth" xml:space="preserve">
+    <value>Adjusts the thickness of the shape outline.</value>
   </data>
 </root>

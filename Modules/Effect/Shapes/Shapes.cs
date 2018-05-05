@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Xml;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
 using Vixen.Module;
@@ -14,24 +15,18 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
+using Svg;
+using Svg.Transforms;
 
 namespace VixenModules.Effect.Shapes
 {
 	public class Shapes : PixelEffectBase
 	{
 		private ShapesData _data;
-		private static Color _emptyColor = Color.FromArgb(0, 0, 0, 0);
-		private Font _font;
-		private Font _newfont;
-		private float _newFontSize;
-		private int _maxTextSize;
-
-		private SizeF _textsize = new SizeF(0, 0);
 		private readonly Random _random = new Random();
 		private readonly List<ShapesClass> _shapes = new List<ShapesClass>();
 		private readonly List<ShapesClass> _removeShapes = new List<ShapesClass>();
 		private int _shapesCount;
-		private int _radius;
 		private double _intervalPosFactor;
 		private double _centerAngleSpeed;
 		private double _angleSpeedVariation;
@@ -39,11 +34,15 @@ namespace VixenModules.Effect.Shapes
 		private double _sizeSpeedVariation;
 		private int _minBuffer;
 		private int _maxBuffer;
-		private int _currentShapeColor;
 		private double _centerSpeed;
 		private double _speedVariation;
 		private double _minSpeed;
 		private double _maxSpeed;
+		private int _angle;
+		private string _fileName;
+		private readonly int _svgViewBoxSize = 200;
+		private float _scaleShapeWidth;
+		private float _scaleShapeHeight;
 
 		public Shapes()
 		{
@@ -56,7 +55,7 @@ namespace VixenModules.Effect.Shapes
 		{
 			get
 			{
-				if (Colors.Any(x => !x.CheckLibraryReference()))
+				if (FirstFillColors.Any(x => !x.CheckLibraryReference()))
 				{
 					base.IsDirty = true;
 				}
@@ -86,8 +85,8 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"ShapeTypes")]
-		[ProviderDescription(@"ShapeTypes")]
+		[ProviderDisplayName(@"ShapeType")]
+		[ProviderDescription(@"ShapeType")]
 		[PropertyOrder(1)]
 		public ShapeList ShapeList
 		{
@@ -95,6 +94,7 @@ namespace VixenModules.Effect.Shapes
 			set
 			{
 				_data.ShapeList = value;
+				if (ShapeList != ShapeList.BorderShapes) StrokeFill = true;
 				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
@@ -106,12 +106,13 @@ namespace VixenModules.Effect.Shapes
 		[ProviderDisplayName(@"GeometricShapes")]
 		[ProviderDescription(@"GeometricShapes")]
 		[PropertyOrder(2)]
-		public GeometricShapes GeometricShapes
+		public GeometricShapesList GeometricShapesList
 		{
-			get { return _data.GeometricShapes; }
+			get { return _data.GeometricShapesList; }
 			set
 			{
-				_data.GeometricShapes = value;
+				_data.GeometricShapesList = value;
+				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -122,12 +123,13 @@ namespace VixenModules.Effect.Shapes
 		[ProviderDisplayName(@"ChristmasShapes")]
 		[ProviderDescription(@"ChristmasShapes")]
 		[PropertyOrder(3)]
-		public ChristmasShapes ChristmasShapes
+		public ChristmasShapesList ChristmasShapesList
 		{
-			get { return _data.ChristmasShapes; }
+			get { return _data.ChristmasShapesList; }
 			set
 			{
-				_data.ChristmasShapes = value;
+				_data.ChristmasShapesList = value;
+				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -135,31 +137,16 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"FontShapes")]
-		[ProviderDescription(@"FontShapes")]
-		[PropertyOrder(3)]
-		public FontShapes FontShapes
-		{
-			get { return _data.FontShapes; }
-			set
-			{
-				_data.FontShapes = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Font")]
-		[ProviderDescription(@"Font")]
+		[ProviderDisplayName(@"HalloweenShapes")]
+		[ProviderDescription(@"HalloweenShapes")]
 		[PropertyOrder(4)]
-		public Font Font
+		public HalloweenShapesList HalloweenShapesList
 		{
-			get { return _data.Font.FontValue; }
+			get { return _data.HalloweenShapesList; }
 			set
 			{
-				_data.Font.FontValue = value;
+				_data.HalloweenShapesList = value;
+				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -167,15 +154,81 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"ShapeType")]
-		[ProviderDescription(@"ShapeType")]
+		[ProviderDisplayName(@"BorderShapes")]
+		[ProviderDescription(@"BorderShapes")]
 		[PropertyOrder(5)]
+		public BorderShapesList BorderShapesList
+		{
+			get { return _data.BorderShapesList; }
+			set
+			{
+				_data.BorderShapesList = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Filename")]
+		[ProviderDescription(@"Filename")]
+		[PropertyEditor("SvgPathEditor")]
+		[PropertyOrder(6)]
+		public string FileName
+		{
+			get { return _data.FileName; }
+			set
+			{
+				_data.FileName = ConvertPath(value);
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mode")]
+		[ProviderDescription(@"Mode")]
+		[PropertyOrder(7)]
 		public ShapeType ShapeType
 		{
 			get { return _data.ShapeType; }
 			set
 			{
 				_data.ShapeType = value;
+				UpdatePositionAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"VerticalOffset")]
+		[ProviderDescription(@"VerticalOffset")]
+		[PropertyOrder(8)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"HorizontalOffset")]
+		[ProviderDescription(@"HorizontalOffset")]
+		[PropertyOrder(9)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -185,7 +238,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeSize")]
 		[ProviderDescription(@"ShapeSize")]
-		[PropertyOrder(6)]
+		[PropertyOrder(10)]
 		public Curve SizeCurve
 		{
 			get { return _data.SizeCurve; }
@@ -201,7 +254,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MaxShapeSize")]
 		[ProviderDescription(@"MaxShapeSize")]
-		[PropertyOrder(7)]
+		[PropertyOrder(11)]
 		public Curve MaxSizeCurve
 		{
 			get { return _data.MaxSizeCurve; }
@@ -217,7 +270,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeCount")]
 		[ProviderDescription(@"ShapeCount")]
-		[PropertyOrder(8)]
+		[PropertyOrder(12)]
 		public Curve ShapeCountCurve
 		{
 			get { return _data.ShapeCountCurve; }
@@ -233,7 +286,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomShapeSize")]
 		[ProviderDescription(@"RandomShapeSize")]
-		[PropertyOrder(9)]
+		[PropertyOrder(13)]
 		public bool RandomShapeSize
 		{
 			get { return _data.RandomShapeSize; }
@@ -246,63 +299,240 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"ScaleToGrid")]
+		[ProviderDescription(@"ScaleToGrid")]
+		[PropertyOrder(14)]
+		public bool ScaleToGrid
+		{
+			get { return _data.ScaleToGrid; }
+			set
+			{
+				_data.ScaleToGrid = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RandomAngle")]
+		[ProviderDescription(@"RandomAngle")]
+		[PropertyOrder(15)]
+		public bool RandomAngle
+		{
+			get { return _data.RandomAngle; }
+			set
+			{
+				_data.RandomAngle = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"ColorFill")]
+		[ProviderDescription(@"ColorFill")]
+		[PropertyOrder(16)]
+		public bool Fill
+		{
+			get { return _data.Fill; }
+			set
+			{
+				_data.Fill = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"ShapeOutLine")]
+		[ProviderDescription(@"ShapeOutLine")]
+		[PropertyOrder(1)]
+		public Curve ShapeOutLineCurve
+		{
+			get { return _data.ShapeOutLineCurve; }
+			set
+			{
+				_data.ShapeOutLineCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"ShapeOutLineSpace")]
+		[ProviderDescription(@"ShapeOutLineSpace")]
+		[PropertyOrder(2)]
+		public Curve ShapeOutLineSpaceCurve
+		{
+			get { return _data.ShapeOutLineSpaceCurve; }
+			set
+			{
+				_data.ShapeOutLineSpaceCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"StarInsideSize")]
+		[ProviderDescription(@"StarInsideSize")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(5, 200, 1)]
+		[PropertyOrder(3)]
+		public int StarInsideSize
+		{
+			get { return _data.StarInsideSize; }
+			set
+			{
+				_data.StarInsideSize = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"StarPoints")]
+		[ProviderDescription(@"StarPoints")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(3, 20, 1)]
+		[PropertyOrder(4)]
+		public int StarPoints
+		{
+			get { return _data.StarPoints; }
+			set
+			{
+				_data.StarPoints = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"PolygonSides")]
+		[ProviderDescription(@"PolygonSides")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(3, 15, 1)]
+		[PropertyOrder(5)]
+		public int PolygonSides
+		{
+			get { return _data.PolygonSides; }
+			set
+			{
+				_data.PolygonSides = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"SkipPoints")]
+		[ProviderDescription(@"SkipPoints")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(2, 5, 1)]
+		[PropertyOrder(6)]
+		public int SkipPoints
+		{
+			get { return _data.SkipPoints; }
+			set
+			{
+				_data.SkipPoints = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"ShapeSizeRatio")]
+		[ProviderDescription(@"ShapeSizeRatio")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[PropertyOrder(7)]
+		public int ShapeSizeRatio
+		{
+			get { return _data.ShapeSizeRatio; }
+			set
+			{
+				_data.ShapeSizeRatio = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"CrossSizeRatio")]
+		[ProviderDescription(@"CrossSizeRatio")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(50, 100, 1)]
+		[PropertyOrder(8)]
+		public int CrossSizeRatio
+		{
+			get { return _data.CrossSizeRatio; }
+			set
+			{
+				_data.CrossSizeRatio = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"StrokeWidth")]
+		[ProviderDescription(@"StrokeWidth")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(0, 20, 1)]
+		[PropertyOrder(9)]
+		public int StrokeWidth
+		{
+			get { return _data.StrokeWidth; }
+			set
+			{
+				_data.StrokeWidth = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"RoundedCorners")]
+		[ProviderDescription(@"RoundedCorners")]
+		[PropertyOrder(10)]
+		public bool RoundedCorner
+		{
+			get { return _data.RoundedCorner; }
+			set
+			{
+				_data.RoundedCorner = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
+		#region Speed Settings properties
 
 		[Value]
-		[ProviderCategory(@"Position", 2)]
-		[ProviderDisplayName(@"ManualPosition")]
-		[ProviderDescription(@"ManualPosition")]
-		[PropertyOrder(0)]
-		public bool ManualPosition
-		{
-			get { return _data.ManualPosition; }
-			set
-			{
-				_data.ManualPosition = value;
-				UpdatePositionAttribute();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Position", 2)]
-		[ProviderDisplayName(@"Vertical Offset")]
-		[ProviderDescription(@"Vertical Offset")]
-		[PropertyOrder(1)]
-		public Curve YOffsetCurve
-		{
-			get { return _data.YOffsetCurve; }
-			set
-			{
-				_data.YOffsetCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Position", 2)]
-		[ProviderDisplayName(@"Horizontal Offset")]
-		[ProviderDescription(@"Horizontal Offset")]
-		[PropertyOrder(2)]
-		public Curve XOffsetCurve
-		{
-			get { return _data.XOffsetCurve; }
-			set
-			{
-				_data.XOffsetCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Position", 2)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		[PropertyOrder(3)]
+		[PropertyOrder(0)]
 		public Curve CenterSpeedCurve
 		{
 			get { return _data.CenterSpeedCurve; }
@@ -315,10 +545,10 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		[Value]
-		[ProviderCategory(@"Position", 2)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
-		[PropertyOrder(4)]
+		[PropertyOrder(1)]
 		public Curve SpeedVariationCurve
 		{
 			get { return _data.SpeedVariationCurve; }
@@ -330,14 +560,11 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-
-		#region Speed Settings properties
-
 		[Value]
-		[ProviderCategory(@"SpeedSettings", 3)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"SizeSpeed")]
 		[ProviderDescription(@"SizeSpeed")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public Curve CenterSizeSpeedCurve
 		{
 			get { return _data.CenterSizeSpeedCurve; }
@@ -349,11 +576,11 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"SpeedSettings", 3)]
+	   [Value]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"SizeSpeedVariation")]
 		[ProviderDescription(@"SizeSpeedVariation")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public Curve SizeSpeedVariationCurve
 		{
 			get { return _data.SizeSpeedVariationCurve; }
@@ -366,10 +593,10 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		[Value]
-		[ProviderCategory(@"SpeedSettings", 3)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"AngleSpeed")]
 		[ProviderDescription(@"AngleSpeed")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public Curve CenterAngleSpeedCurve
 		{
 			get { return _data.CenterAngleSpeedCurve; }
@@ -382,10 +609,10 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		[Value]
-		[ProviderCategory(@"SpeedSettings", 3)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"AngleSpeedVariation")]
 		[ProviderDescription(@"AngleSpeedVariation")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Curve AngleSpeedVariationCurve
 		{
 			get { return _data.AngleSpeedVariationCurve; }
@@ -398,10 +625,10 @@ namespace VixenModules.Effect.Shapes
 		}
 
 		[Value]
-		[ProviderCategory(@"SpeedSettings", 3)]
+		[ProviderCategory(@"SpeedSettings", 4)]
 		[ProviderDisplayName(@"Angle")]
 		[ProviderDescription(@"Angle")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve AngleCurve
 		{
 			get { return _data.AngleCurve; }
@@ -418,41 +645,74 @@ namespace VixenModules.Effect.Shapes
 		#region Color properties
 
 		[Value]
-		[ProviderCategory(@"Color", 4)]
-		[ProviderDisplayName(@"TextColors")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(0)]
-		public List<ColorGradient> Colors
-		{
-			get { return _data.Colors; }
-			set
-			{
-				_data.Colors = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Color", 4)]
-		[ProviderDisplayName(@"GradientMode")]
-		[ProviderDescription(@"GradientMode")]
+		[ProviderCategory(@"Color", 5)]
+		[ProviderDisplayName(@"StrokeFill")]
+		[ProviderDescription(@"StrokeFill")]
 		[PropertyOrder(1)]
-		public GradientMode GradientMode
+		public bool StrokeFill
 		{
-			get { return _data.GradientMode; }
+			get { return _data.StrokeFill; }
 			set
 			{
-				_data.GradientMode = value;
+				_data.StrokeFill = value;
+				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 5)]
+		[ProviderCategory(@"Color", 5)]
+		[ProviderDisplayName(@"FirstFillColors")]
+		[ProviderDescription(@"FirstFillColors")]
+		[PropertyOrder(2)]
+		public List<ColorGradient> FirstFillColors
+		{
+			get { return _data.FirstFillColors; }
+			set
+			{
+				_data.FirstFillColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 5)]
+		[ProviderDisplayName(@"SecondFillColors")]
+		[ProviderDescription(@"SecondFillColors")]
+		[PropertyOrder(3)]
+		public List<ColorGradient> SecondFillColors
+		{
+			get { return _data.SecondFillColors; }
+			set
+			{
+				_data.SecondFillColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 5)]
+		[ProviderDisplayName(@"OutlineColors")]
+		[ProviderDescription(@"OutlineColors")]
+		[PropertyOrder(4)]
+		public List<ColorGradient> OutlineColors
+		{
+			get { return _data.OutlineColors; }
+			set
+			{
+				_data.OutlineColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 6)]
 		[ProviderDisplayName(@"Brightness")]
-		[ProviderDescription(@"TextBrightness")]
+		[ProviderDescription(@"Brightness")]
 		[PropertyOrder(0)]
 		public Curve LevelCurve
 		{
@@ -508,15 +768,15 @@ namespace VixenModules.Effect.Shapes
 
 		private void UpdatePositionAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
 			{
-				{"CenterSpeedCurve", !ManualPosition},
+				{"CenterSpeedCurve", ShapeType != ShapeType.None},
 
-				{"SpeedVariationCurve", !ManualPosition},
+				{"SpeedVariationCurve", ShapeType != ShapeType.None},
 
-				{"YOffsetCurve", ManualPosition},
+				{"YOffsetCurve", ShapeType == ShapeType.None},
 
-				{"XOffsetCurve", ManualPosition}
+				{"XOffsetCurve", ShapeType == ShapeType.None}
 			};
 			SetBrowsable(propertyStates);
 
@@ -541,18 +801,80 @@ namespace VixenModules.Effect.Shapes
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
+		
 		private void UpdateShapeTypeAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(34)
 			{
-				{"GeometricShapes", ShapeList == ShapeList.GeometricShapes},
+				{"GeometricShapesList", ShapeList == ShapeList.GeometricShapes},
 
-				{"ChristmasShapes", ShapeList == ShapeList.ChristmasShapes},
+				{"ChristmasShapesList", ShapeList == ShapeList.ChristmasShapes},
 
-				{"FontShapes", ShapeList == ShapeList.FontShapes},
+				{"HalloweenShapesList", ShapeList == ShapeList.HalloweenShapes},
 
-				{"Font", ShapeList == ShapeList.FontShapes}
+				{"BorderShapesList", ShapeList == ShapeList.BorderShapes},
+
+				{"FileName", ShapeList == ShapeList.File},
+
+				{"PolygonSides", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.Polygon},
+
+				{"SkipPoints", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.Star},
+
+				{"StarInsideSize", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.NonIntersectingStar},
+
+				{"StarPoints", ShapeList == ShapeList.GeometricShapes && (GeometricShapesList == GeometricShapesList.Star || GeometricShapesList == GeometricShapesList.NonIntersectingStar)},
+
+				{"ShapeSizeRatio", !ScaleToGrid && ShapeList == ShapeList.GeometricShapes && (GeometricShapesList == GeometricShapesList.Rectangle || GeometricShapesList == GeometricShapesList.Ellipse)},
+
+				{"CrossSizeRatio", !ScaleToGrid && ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.Cross},
+
+				{"FirstFillColors", ShapeList != ShapeList.File && Fill && ShapeList != ShapeList.BorderShapes},
+
+				{"SecondFillColors", ShapeList != ShapeList.File && Fill && ShapeList != ShapeList.BorderShapes && ShapeList != ShapeList.GeometricShapes && (ShapeList == ShapeList.ChristmasShapes && ChristmasShapesList != ChristmasShapesList.SnowFlake&& ChristmasShapesList != ChristmasShapesList.SnowFlake2) || (ShapeList == ShapeList.HalloweenShapes && HalloweenShapesList != HalloweenShapesList.Web)},
+
+				{"RoundedCorner", ShapeList == ShapeList.GeometricShapes},
+
+				{"OutlineColors", StrokeFill},
+
+				{"Fill", ShapeList != ShapeList.File && ShapeList != ShapeList.BorderShapes},
+
+				{"StrokeFill", ShapeList == ShapeList.BorderShapes || ShapeList == ShapeList.File},
+
+				{"SizeCurve", !ScaleToGrid && !RandomShapeSize},
+
+				{"MaxSizeCurve", !ScaleToGrid && RandomShapeSize},
+
+				{"CenterSpeedCurve", !ScaleToGrid && ShapeType != ShapeType.None},
+
+				{"SpeedVariationCurve", !ScaleToGrid && ShapeType != ShapeType.None},
+
+				{"YOffsetCurve", !ScaleToGrid && ShapeType == ShapeType.None},
+
+				{"XOffsetCurve", !ScaleToGrid && ShapeType == ShapeType.None},
+
+				{"ShapeCountCurve", !ScaleToGrid},
+
+				{"RandomShapeSize", !ScaleToGrid},
+
+				{"CenterSizeSpeedCurve", !ScaleToGrid},
+
+				{"SizeSpeedVariationCurve", !ScaleToGrid},
+
+				{"CenterAngleSpeedCurve", !ScaleToGrid && RandomAngle},
+
+				{"AngleSpeedVariationCurve", !ScaleToGrid && RandomAngle},
+
+				{"AngleCurve", !ScaleToGrid && !RandomAngle},
+
+				{"ShapeType", !ScaleToGrid},
+
+				{"ShapeOutLineCurve", StrokeFill},
+
+				{"ShapeOutLineSpaceCurve", StrokeFill},
+
+				{"StrokeWidth", StrokeFill},
+
+				{"RandomAngle", !ScaleToGrid}
 
 			};
 			SetBrowsable(propertyStates);
@@ -563,42 +885,56 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
+		private string ConvertPath(string path)
+		{
+			if(string.IsNullOrEmpty(path))
+			{
+				return path;
+			}
+			if (Path.IsPathRooted(path))
+			{
+				return CopyLocal(path);
+			}
+
+			return path;
+		}
+
+		private string CopyLocal(string path)
+		{
+			string name = Path.GetFileName(path);
+			var destPath = Path.Combine(ShapesDescriptor.ModulePath, name);
+			if (path != destPath)
+			{
+				File.Copy(path, destPath, true);
+			}
+			return name;
+		}
+
 		protected override void SetupRender()
 		{
 			_minBuffer = Math.Min(BufferHt, BufferWi);
 			_maxBuffer = Math.Max(BufferHt, BufferWi);
-			//if (TargetPositioning == TargetPositioningType.Locations)
-			//{
-			//	// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
-			//	// Font is further adjusted using the scale text slider.
-			//	double newFontSize = ((StringCount - ((StringCount - Font.Size) / 100) * 100)) * ((double)BufferHt / StringCount);
-			//	_font = new Font(Font.FontFamily.Name, (int)newFontSize, Font.Style);
-			//	_newFontSize = _font.Size;
-			//	return;
-			//}
-			switch (ShapeList)
-			{
-				case ShapeList.GeometricShapes:
-					_newfont = new SerializableFont(new Font("Untitled2", 10, Font.Style));
-					break;
-				case ShapeList.ChristmasShapes:
-					_newfont = new SerializableFont(new Font("Xmas tree", 10, Font.Style));
-					break;
-				case ShapeList.FontShapes:
-					_newfont = new SerializableFont(new Font(Font.FontFamily.Name, 10, Font.Style));
-					break;
-			}
-			//_font = Font;
-			//_newFontSize = Font.Size;
 			_shapes.Clear();
 			_shapesCount = 0;
 
+			if (FileName != null && ShapeList == ShapeList.File)
+			{
+				var filePath = Path.Combine(ShapesDescriptor.ModulePath, FileName);
+				if (File.Exists(filePath))
+				{
+					_fileName = filePath;
+				}
+				else
+				{
+					//Logging.Error("File is missing or invalid path. {0}", filePath);
+					FileName = "";
+				}
+
+			}
 		}
 
 		protected override void CleanUpRender()
 		{
-			_font = null;
-			_newfont = null;
 			_shapes.Clear();
 			_removeShapes.Clear();
 		}
@@ -647,9 +983,7 @@ namespace VixenModules.Effect.Shapes
 		{
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			_intervalPosFactor = intervalPos * 100;
-			var textAngle = CalculateAngle(_intervalPosFactor);
 			//_radius = CalculateSize(_intervalPosFactor);
-			_shapesCount = CalculateShapeCount(_intervalPosFactor);
 
 			_centerAngleSpeed = CalculateCenterAngleSpeed(_intervalPosFactor);
 			_angleSpeedVariation = CalculateAngleSpeedVariation(_intervalPosFactor);
@@ -657,6 +991,7 @@ namespace VixenModules.Effect.Shapes
 			_sizeSpeedVariation = CalculateSizeSpeedVariation(_intervalPosFactor);
 			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
+			_angle = CalculateAngle(_intervalPosFactor);
 
 			double minAngleSpeed = _centerAngleSpeed - (_angleSpeedVariation / 2);
 			double maxAngleSpeed = _centerAngleSpeed + (_angleSpeedVariation / 2);
@@ -665,24 +1000,27 @@ namespace VixenModules.Effect.Shapes
 			_minSpeed = _centerSpeed - (_speedVariation / 2);
 			_maxSpeed = _centerSpeed + (_speedVariation / 2);
 
-			// create new meteors and maintain maximum number as per users selection.
-			int adjustedPixelCount = frame >= _shapesCount ? _shapesCount : 2;
-			
+			// create new shapes and maintain maximum number as per users selection.
+			int adjustedPixelCount;
+			if (ScaleToGrid)
+			{
+				adjustedPixelCount = _shapesCount = 1;
+			}
+			else
+			{
+				_shapesCount = CalculateShapeCount(_intervalPosFactor);
+				adjustedPixelCount = frame >= _shapesCount ? _shapesCount : 2;
+			}
+				
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
-				if (_shapes.Count < _shapesCount)
-				{
 				//Create new Shapes and add shapes due to increase in shape count curve.
-				   CreateShapes();
-				}
+				if (_shapes.Count < _shapesCount) CreateShapes();
 				else
-				{
 					break;
-				}
-
 			}
 
-			// Update Ball location, radius and speed.
+			//Update Shape location, radius and speed.
 			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
 
 			//Remove Excess Shapes due to ShapeCount Curve.
@@ -690,68 +1028,123 @@ namespace VixenModules.Effect.Shapes
 			
 			foreach (var shape in _shapes)
 			{
-				//text = shape.Shape; //ShapeType.ToString();
-				_currentShapeColor = shape.ColorIndex;
-				//Adjust Font Size based on the Font scaling factor
-				//_newFontSize =
-				//_font.SizeInPoints * ((float) shape.Size / 500 * _radius); //(CalculateFontScale(_intervalPosFactor) / 100);
-
-				_newfont = new SerializableFont(new Font(_newfont.Name, (float)shape.Size, Font.Style));
-
-				using (Graphics graphics1 = Graphics.FromImage(bitmap))
+				_scaleShapeWidth = (float)(((_maxBuffer * 2) / shape.SvgImage.ViewBox.Width) * (shape.Size / (_maxBuffer * 2)));
+				_scaleShapeHeight = (float)(((_minBuffer * 2) / shape.SvgImage.ViewBox.Height) * (shape.Size / (_minBuffer * 2)));
+				if (ShapeList != ShapeList.File)
 				{
-					_textsize = graphics1.MeasureString(shape.Shape, _newfont);
+					bool borderFill = false;
+					foreach (var child in shape.SvgImage.Children)
+					{
+						//Adjusts Shape properties based on effect settings
+						if (Fill && ShapeList != ShapeList.BorderShapes)
+						{
+							foreach (var descendant in shape.SvgImage.Descendants())
+							{
+								if (descendant.ID != null)
+								{
+									if (descendant.ID.Contains("firstFill"))
+									{
+										descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex]
+											.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									}
+									if (descendant.ID.Contains("secondFill"))
+									{
+										descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex]
+											.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									}
+									//if (shape.SvgImage.ID == "borderFillColor" || borderFill)
+									//{
+									//	descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex]
+									//		.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									//	borderFill = true;
+									//}
+								}
+							}
+						}
+						else
+						{
+							shape.SvgImage.Children[0].FillOpacity = 0;
+						}
+
+						if (StrokeFill)
+						{
+							child.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
+								.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+							child.StrokeWidth = TargetPositioning == TargetPositioningType.Locations
+								? (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+								             shape.LocationRatio1)
+								: (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth));
+							if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
+							{
+								child.StrokeDashArray = new SvgUnitCollection
+								{
+									CalculateShapeOutLine(_intervalPosFactor),
+									CalculateShapeOutLineSpace(_intervalPosFactor)
+								};
+							}
+						}
+					}
 				}
-				int testSizeWi = (int)(_textsize.Width * 1.5);
-				int testSizeHt = (int)(_textsize.Height * 1.5);
-
-				Image img = new Bitmap(testSizeWi, testSizeHt);
-
-				using (Graphics graphics = Graphics.FromImage(img))
+				else
 				{
-					_maxTextSize = Math.Max(testSizeWi, testSizeHt);
+					if (StrokeFill)
+					{
+						shape.SvgImage.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
+							.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						shape.SvgImage.StrokeWidth = (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+						                               shape.LocationRatio1);
 
-					//int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
-					//Rotate the text based off the angle setting
-					//if (Direction == ShapesDirection.Rotate)
-					//{
-					//move rotation point to center of image
-					graphics.TranslateTransform(img.Width / 2, img.Height / 2);
-					//rotate
-					graphics.SmoothingMode = SmoothingMode.HighSpeed;
-					graphics.RotateTransform(shape.RotateAngle); //textAngle);
-					//move image back
-					graphics.TranslateTransform(-(img.Width / 2), -(img.Height / 2 ));
-					//}
-
-					//int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
-					int offsetTop = (int) (((_textsize.Height * 1.5 - _textsize.Height)) / 2);
-					//int offsetTop = ((BufferHt - maxht) + (int)shape.LocationY) / 2;
-					//int offsetTop = (int) shape.LocationY - (maxht / 2);
-					//double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-					//Point point;
-					Point point = new Point(((testSizeWi - _maxTextSize) / 2), offsetTop);
-					//Point point = new Point((int) ((img.Width/2) - (_textsize.Width) / 2), (int)((img.Height / 2) - (_textsize.Height) / 2));
-					DrawText(shape.Shape, graphics, point);
-					//break;
-					//}
+						if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
+						{
+							shape.SvgImage.StrokeDashArray = new SvgUnitCollection
+							{
+								CalculateShapeOutLine(_intervalPosFactor),
+								CalculateShapeOutLineSpace(_intervalPosFactor)
+							};
+						}
+					}
 				}
+
+				if (!ScaleToGrid)
+				{
+					shape.SvgImage.Transforms[0] = new SvgRotate(shape.RotateAngle, shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2, shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2);
+					shape.SvgImage.Transforms[1] = new SvgScale(_scaleShapeWidth, _scaleShapeHeight);
+				}
+
+				shape.SvgImage.ShapeRendering = SvgShapeRendering.Auto;
+				double locationX;
+				double locationY;
+				if (_shapes.Count == 1 && ShapeType == ShapeType.None && !ScaleToGrid)
+				{
+					locationX = (double)BufferWi / 2;
+					locationY = (double)BufferHt / 2; 
+				}
+				else
+				{
+					locationX = shape.LocationX;
+					locationY = shape.LocationY;
+				}
+
 				using (Graphics g = Graphics.FromImage(bitmap))
 				{
-					int xOffset;
-					int yOffset;
-					if (ManualPosition)
+					//Adjust position based on x and y offset.
+					int xOffset = 0;
+					int yOffset = 0;
+					if (ShapeType == ShapeType.None && !ScaleToGrid)
 					{
 						xOffset = CalculateXOffset(_intervalPosFactor, bitmap.Width);
 						yOffset = CalculateYOffset(_intervalPosFactor, bitmap.Height);
 					}
-					else
-					{
-						xOffset = 0;
-						yOffset = 0;
-					}
-					
-					g.DrawImage(img, new Point((int) (shape.LocationX + xOffset - testSizeWi / 2),  (int) (shape.LocationY + yOffset - testSizeHt / 2)));
+
+					//Draw svg onto bitmap
+					g.DrawImage(shape.SvgImage.Draw(),
+						ScaleToGrid
+							? new Point(0, 0)
+							: new Point(
+								(int) (locationX + xOffset -
+								       Math.Ceiling(shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2)),
+								(int) (locationY + yOffset -
+								       Math.Ceiling(shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2))));
 				}
 			}
 		}
@@ -762,7 +1155,7 @@ namespace VixenModules.Effect.Shapes
 			int xCoord = x;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
-				//Flip me over so and offset my coordinates I can act like the string version
+				//Flip me over and offset my coordinates so I can act like the string version
 				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
@@ -781,137 +1174,238 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-		private void DrawText(String text, Graphics g, Point p)
-		{
-			switch (GradientMode)
-			{
-				case GradientMode.AcrossElement:
-					DrawTextAcrossGradient(text, g, p, LinearGradientMode.Horizontal);
-					break;
-				case GradientMode.AcrossText:
-					DrawTextWithGradient(text, g, p, LinearGradientMode.Horizontal);
-					break;
-				case GradientMode.VerticalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, LinearGradientMode.Vertical);
-					break;
-				case GradientMode.VerticalAcrossText:
-					DrawTextWithGradient(text, g, p, LinearGradientMode.Vertical);
-					break;
-				case GradientMode.DiagonalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, LinearGradientMode.ForwardDiagonal);
-					break;
-				case GradientMode.DiagonalAcrossText:
-					DrawTextWithGradient(text, g, p, LinearGradientMode.ForwardDiagonal);
-					break;
-				case GradientMode.BackwardDiagonalAcrossElement:
-					DrawTextAcrossGradient(text, g, p, LinearGradientMode.BackwardDiagonal);
-					break;
-				case GradientMode.BackwardDiagonalAcrossText:
-					DrawTextWithGradient(text, g, p, LinearGradientMode.BackwardDiagonal);
-					break;
-			}
-		}
-
-		private void DrawTextWithGradient(String text, Graphics g, Point p, LinearGradientMode mode)
-		{
-			var offsetPoint = new Point(p.X + (_maxTextSize - (int)_textsize.Width) / 2, p.Y);
-			ColorGradient cg = Colors[_currentShapeColor];
-			var brush = new LinearGradientBrush(new Rectangle(offsetPoint.X, p.Y, _maxTextSize, (int)_textsize.Height), Color.Black,
-					Color.Black, mode)
-			{ InterpolationColors = cg.GetColorBlend() };
-			DrawTextWithBrush(text, brush, g, offsetPoint);
-			brush.Dispose();
-		}
-
-		private void DrawTextAcrossGradient(String text, Graphics g, Point p, LinearGradientMode mode)
-		{
-			var offsetPoint = new Point(p.X + (_maxTextSize - (int)_textsize.Width) / 2, p.Y);
-			ColorGradient cg = Colors[_currentShapeColor];
-			var brush = new LinearGradientBrush(new Rectangle(0, 0, _maxTextSize, (int)_textsize.Height),
-					Color.Black,
-					Color.Black, mode)
-			{ InterpolationColors = cg.GetColorBlend() };
-			DrawTextWithBrush(text, brush, g, offsetPoint);
-			brush.Dispose();
-		}
-
-		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
-		{
-			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-			g.DrawString(text, _newfont, brush, p);
-		}
-
 		private void CreateShapes()
 		{
 			while (_shapesCount > _shapes.Count)
 			{
 				ShapesClass m = new ShapesClass();
-
-				//Sets Radius size and Shape location
-				if (RandomShapeSize)
-				{
-					m.Size = _random.Next(2, 4);
-				}
-				else
-				{
-					m.Size = _random.Next(5, CalculateSize(_intervalPosFactor));
-				}
+				
+				//Sets starting location of svg image
 				m.LocationX = _random.Next(0, BufferWi - 1);
 				m.LocationY = _random.Next(0, BufferHt - 1);
-
+				
+				//Sets initial speed of svg image
 				double speed = _random.NextDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
 				double vx = _random.NextDouble() * speed;
 				double vy = _random.NextDouble() * speed;
 				if (_random.Next(0, 2) == 0) vx = -vx;
 				if (_random.Next(0, 2) == 0) vy = -vy;
-				m.VelocityX = vx;
-				m.VelocityY = vy;
-				//m.Size = _random.Next(5, 8);//radius;
-				m.ShapesGuid = Guid.NewGuid();
-				m.ColorIndex = _random.Next(0, Colors.Count);
-				//int num = _random.Next(0, 26); // Zero to 25
+				if (ShapeType != ShapeType.None)
+				{
+					m.VelocityX = vx;
+					m.VelocityY = vy;
+				}
 
+				//Starting angle based on position of angle curve
+				_angle = CalculateAngle(_intervalPosFactor);
+				m.Scale = 1;
+
+				if (ShapeList == ShapeList.GeometricShapes)
+				{
+					//Creates svg Viewbox used geometric Shapes as they are designed around this size.
+					m.SvgImage = new SvgDocument
+					{
+						ViewBox = new SvgViewBox(0, 0, _svgViewBoxSize, _svgViewBoxSize)
+					};
+				}
+				
+				//Get the shape from users selected source.
+				Array enumValues;
 				switch (ShapeList)
 				{
 					case ShapeList.GeometricShapes:
-						if (GeometricShapes == GeometricShapes.Random)
+						enumValues = Enum.GetValues(typeof(GeometricShapesList));
+						m.Shape = GeometricShapesList == GeometricShapesList.Random
+							? ((GeometricShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+							: GeometricShapesList.ToString();
+						int radius = _svgViewBoxSize / 2 - (StrokeWidth + 1);
+						switch (m.Shape)
 						{
-							m.Shape = new string((char) ('A' + _random.Next(0, 26)), 1);
+							case "Square":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, 1));
+								break;
+							case "Arrow":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgArrow());
+								break;
+							case "Triangle":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgTriangle(radius));
+								break;
+							case "Circle":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCircle(radius));
+								break;
+							case "Rectangle":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, (float)ShapeSizeRatio / 100));
+								break;
+							case "Ellipse":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgEllipse(radius, (float)ShapeSizeRatio / 100));
+								break;
+							case "Cross":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCross((float)CrossSizeRatio / 100));
+								break;
+							case "Star":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgMultiStar(radius, StarPoints, SkipPoints));
+								break;
+							case "ConcaveStar":
+								m.SvgImage = getXMLShape("Geometric." + m.Shape);
+								break;
+							case "NonIntersectingStar":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, StarPoints, StarInsideSize, false));
+								break;
+							case "NorthStar":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, 8, 42, true));
+								break;
+							case "Polygon":
+								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgPolygon(radius, PolygonSides));
+								break;
+							case "Heart":
+								m.SvgImage = getXMLShape("Geometric." + m.Shape);
+								break;
 						}
-						else
-						{
-							m.Shape = GeometricShapes.ToString();
-						}
-						
+						m.SvgImage.Children[0].ID = "firstFillColor";
 						break;
+
 					case ShapeList.ChristmasShapes:
-						if (ChristmasShapes == ChristmasShapes.Random)
-						{
-							m.Shape = new string((char)('A' + _random.Next(0, 26)), 1);
-						}
-						else
-						{
-							m.Shape = ChristmasShapes.ToString();
-						}
+						enumValues = Enum.GetValues(typeof(ChristmasShapesList));
+						m.Shape = ChristmasShapesList == ChristmasShapesList.Random
+							? ((ChristmasShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+							: ChristmasShapesList.ToString();
+
+						m.SvgImage = getXMLShape("Christmas." + m.Shape);
 						break;
-					case ShapeList.FontShapes:
-						if (FontShapes == FontShapes.Random)
-						{
-							m.Shape = new string((char)('A' + _random.Next(0, 26)), 1);
-						}
-						else
-						{
-							m.Shape = FontShapes.ToString();
-						}
+
+					case ShapeList.HalloweenShapes:
+						enumValues = Enum.GetValues(typeof(HalloweenShapesList));
+						m.Shape = HalloweenShapesList == HalloweenShapesList.Random
+							? ((HalloweenShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+							: HalloweenShapesList.ToString();
+
+						m.SvgImage = getXMLShape("Halloween." + m.Shape);
+						break;
+
+					case ShapeList.BorderShapes:
+						enumValues = Enum.GetValues(typeof(BorderShapesList));
+						m.Shape = BorderShapesList == BorderShapesList.Random
+							? ((BorderShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+							: BorderShapesList.ToString();
+
+						m.SvgImage = getXMLShape("Borders." + m.Shape);
+						break;
+
+					case ShapeList.File:
+						m.SvgImage = SvgDocument.Open(_fileName);
 						break;
 				}
+
+				if ((int)m.SvgImage.ViewBox.Width == 0)
+				{
+					m.SvgImage.ViewBox = new SvgViewBox(0, 0, m.SvgImage.Width, m.SvgImage.Height);
+				}
+
+				if (!ScaleToGrid)
+				{
+					m.SvgImage.ViewBox = new SvgViewBox(-((m.SvgImage.ViewBox.Width * 1.42f - m.SvgImage.ViewBox.Width) / 2),
+						-((m.SvgImage.ViewBox.Height * 1.42f - m.SvgImage.ViewBox.Height) / 2), m.SvgImage.ViewBox.Width * 1.42f,
+						m.SvgImage.ViewBox.Height * 1.42f);
+					m.Scale = _svgViewBoxSize / m.SvgImage.ViewBox.Height;
+					m.SvgImage.Transforms.Add(new SvgRotate(0, (int)(m.SvgImage.Width / 2), (int)(m.SvgImage.Height / 2)));
+					m.LocationRatio = StringCount / m.SvgImage.ViewBox.Height * 2 * ((float)_minBuffer / StringCount);
+					m.LocationRatio1 = m.LocationRatio * m.LocationRatio;
+					m.SvgImage.Height = new SvgUnit(m.LocationRatio).ToPercentage();
+					m.SvgImage.Width = new SvgUnit(m.LocationRatio).ToPercentage();
+					m.SvgImage.Transforms.Add(new SvgScale(m.Scale));
+				}
+				else
+				{
+					// StringOrientation == StringOrientation.Vertical && TargetPositioning != TargetPositioningType.Locations && MaxPixelsPerString > StringCount)
+					// 
+					//if (StringOrientation != StringOrientation.Horizontal)
+					//{
+					//	var temp = _maxBuffer;
+					//	_maxBuffer = _minBuffer;
+					//	_minBuffer = temp;
+					//}
+					m.SvgImage.Height = new SvgUnit(BufferHt);
+					m.SvgImage.Width = new SvgUnit(BufferWi);
+					m.SvgImage.AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.none);
+					m.LocationRatio = m.LocationRatio1 = 1;
+					m.LocationX = m.LocationY = 0;
+				}
 				
+				//Adds rounded corners to Geometric Shapes only, no point doing it to the others.
+				if (RoundedCorner && ShapeList == ShapeList.GeometricShapes)
+				{
+					foreach (var child in m.SvgImage.Children)
+					{
+						child.StrokeLineJoin = SvgStrokeLineJoin.Round;
+					}
+				}
+
+				//Sets starting size of svg image
+				if (!ScaleToGrid)
+				{
+					m.Size = RandomShapeSize
+						? _random.Next(5, 60)
+						: CalculateSize(_intervalPosFactor,
+							m.LocationRatio1);
+				}
+
+				//_random.Next(3, CalculateSize(_intervalPosFactor));
+				switch (ShapeType)
+				{
+					case ShapeType.Bounce:
+
+						var locationOffset = (m.SvgImage.ViewBox.Width / 1.42 * m.LocationRatio1 * _scaleShapeWidth / 2);
+						bool notCreated;
+						int i = 0;
+						do
+						{
+							notCreated = false;
+							m.LocationX = _random.Next(0, BufferWi - 1);
+							m.LocationY = _random.Next(0, BufferHt - 1);
+							if (m.LocationX - locationOffset < 0 || m.LocationY - locationOffset < 0 || m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= BufferHt) notCreated = true;
+							i++;
+						} while (notCreated && i < 10000);
+
+						break;
+				}
+
+				//Sets Random Colors
+				m.FirstFillColorIndex = _random.Next(0, FirstFillColors.Count);
+				m.SecondFillColorIndex = _random.Next(0, SecondFillColors.Count);
+				m.StrokeColorIndex = _random.Next(0, OutlineColors.Count);
+
+				//Sets random starting angle and rotation direction
 				m.RotateAngle = _random.Next(0, 360);
 				m.RotateCW = _random.Next(0, 2);
+
+				//Adds new Shape to _shapes
 				_shapes.Add(m);
+				
+				//int num = _random.Next(0, 26); // Zero to 25
 			}
 		}
 
+		private SvgDocument getXMLShape(string svgImage)
+		{
+			Stream s = Assembly.GetExecutingAssembly()
+				.GetManifestResourceStream("VixenModules.Effect.Shapes.SVGShapes." + svgImage + ".xml");
+			XmlDocument xdoc = new XmlDocument();
+			StreamReader reader = new StreamReader(s);
+			xdoc.LoadXml(reader.ReadToEnd());
+			reader.Close();
+
+			//Used to get points
+			//var tempImage = SvgDocument.Open(xdoc);
+			//var svgPoints = tempImage.Path.PathPoints.ToArray();
+			////m.svgImage.Children.Add(GetGeometricShape.CreateSvgImage(svgPoints));
+			//string test = null;
+			//foreach (var point in svgPoints)
+			//{
+			//	test = test + point.X + ", " + point.Y + ", ";
+			//}
+			return SvgDocument.Open(xdoc);
+		}
+		
 		private void UpdateShapes(double minAngleSpeed, double maxAngleSpeed, double minSizeSpeed, double maxSizeSpeed)
 		{
 			foreach (var shape in _shapes)
@@ -926,7 +1420,7 @@ namespace VixenModules.Effect.Shapes
 				//	}
 				//}
 
-				if (!ManualPosition)
+				if (ShapeType != ShapeType.None)
 				{
 					//Adjust shape speeds when user adjust Speed curve
 					if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
@@ -944,59 +1438,62 @@ namespace VixenModules.Effect.Shapes
 						shape.VelocityX *= ratio;
 						shape.VelocityY *= ratio;
 					}
-				}
-
-				//int previousBallSize = CalculateSize(_intervalPosFactor - 1);
-				//if (_radius > previousBallSize || _radius < previousBallSize)
-				//{
-				//	double ratio = (double) CalculateSize(_intervalPosFactor) / previousBallSize;
+				}    
 
 				double angleSpeed = _random.NextDouble() * (maxAngleSpeed - minAngleSpeed) + minAngleSpeed;
 				double sizeSpeed = (_random.NextDouble() * (maxSizeSpeed - minSizeSpeed) + minSizeSpeed) / 10;
 
-				if (RandomShapeSize)
+				if (RandomShapeSize && !ScaleToGrid)
 				{
 					if (sizeSpeed > 1) shape.Size *= sizeSpeed; //ratio;
 
-					if (shape.Size > CalculateMaxSize(_intervalPosFactor)) //(int)(Math.Min(BufferWi, BufferHt) * 0.75))
+					if (shape.Size > CalculateMaxSize(_intervalPosFactor, shape.LocationRatio1)) //(int)(Math.Min(BufferWi, BufferHt) * 0.75))
 					{
 						_removeShapes.Add(shape);
 					}
 				}
 				else
 				{
-					shape.Size = CalculateSize(_intervalPosFactor);
+					shape.Size = CalculateSize(_intervalPosFactor, shape.LocationRatio1);
 				}
 
-				//shape.RotateAngle = CalculateAngle(_intervalPosFactor);
-				if (shape.RotateCW == 1)
+				if (RandomAngle)
 				{
-					if (shape.RotateAngle > 358)
+					//shape.RotateAngle = CalculateAngle(_intervalPosFactor);
+					if (shape.RotateCW == 1)
 					{
-						shape.RotateAngle = 0;
+						if (shape.RotateAngle > 358)
+						{
+							shape.RotateAngle = 0;
+						}
+						else
+						{
+							shape.RotateAngle += (int) angleSpeed;
+						}
 					}
 					else
 					{
-						shape.RotateAngle += (int)angleSpeed;
+						if (shape.RotateAngle < 2)
+						{
+							shape.RotateAngle = 360;
+						}
+						else
+						{
+							shape.RotateAngle -= (int) angleSpeed;
+						}
 					}
 				}
 				else
 				{
-					if (shape.RotateAngle < 2)
-					{
-						shape.RotateAngle = 360;
-					}
-					else
-					{
-						shape.RotateAngle -= (int)angleSpeed;
-					}
+					shape.RotateAngle = _angle;
 				}
 
 				// Move the shape.
-				if (!ManualPosition)
+				if (ShapeType != ShapeType.None)
 				{
 					shape.LocationX = shape.LocationX + shape.VelocityX;
 					shape.LocationY = shape.LocationY + shape.VelocityY;
+					var locationOffset = (shape.SvgImage.ViewBox.Width / 1.42 * shape.LocationRatio1 * _scaleShapeWidth / 2);
 
 					switch (ShapeType)
 					{
@@ -1009,45 +1506,41 @@ namespace VixenModules.Effect.Shapes
 							break;
 
 						case ShapeType.Bounce:
-							if (shape.LocationX - shape.Size < 0)
+							if (shape.LocationX - locationOffset < 0)
 							{
-								shape.LocationX = shape.Size;
 								shape.VelocityX = -shape.VelocityX;
 							}
-							else if (shape.LocationX + shape.Size >= BufferWi)
+							else if (shape.LocationX + locationOffset >= BufferWi)
 							{
-								shape.LocationX = BufferWi - shape.Size - 1;
 								shape.VelocityX = -shape.VelocityX;
 							}
-							if (shape.LocationY - shape.Size < 0)
+							if (shape.LocationY - locationOffset < 0)
 							{
-								shape.LocationY = shape.Size;
 								shape.VelocityY = -shape.VelocityY;
 							}
-							else if (shape.LocationY + shape.Size >= BufferHt)
+							else if (shape.LocationY + locationOffset >= BufferHt)
 							{
-								shape.LocationY = BufferHt - shape.Size - 1;
 								shape.VelocityY = -shape.VelocityY;
 							}
 							break;
 
 						case ShapeType.Wrap:
 
-							if (shape.LocationX + shape.Size < 0)
+							if (shape.LocationX + locationOffset < 0)
 							{
-								shape.LocationX += BufferWi + (shape.Size * 2);
+								shape.LocationX = BufferWi + locationOffset;
 							}
-							if (shape.LocationY + shape.Size < 0)
+							if (shape.LocationY + locationOffset < 0)
 							{
-								shape.LocationY += BufferHt + (shape.Size * 2);
+								shape.LocationY = BufferHt + locationOffset;
 							}
-							if (shape.LocationX - shape.Size > BufferWi)
+							if (shape.LocationX - locationOffset > BufferWi)
 							{
-								shape.LocationX -= BufferWi + (shape.Size * 2);
+								shape.LocationX = 0 - locationOffset;
 							}
-							if (shape.LocationY - shape.Size > BufferHt)
+							if (shape.LocationY - locationOffset > BufferHt)
 							{
-								shape.LocationY -= BufferHt + (shape.Size * 2);
+								shape.LocationY = 0 - locationOffset;
 							}
 							break;
 					}
@@ -1068,18 +1561,23 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-		public class ShapesClass
+		private class ShapesClass
 		{
-			public double LocationX;
-			public double LocationY;
-			public double VelocityX;
-			public double VelocityY;
-			public int ColorIndex;
-			public double Size;
-			public Guid ShapesGuid;
-			public String Shape;
-			public int RotateAngle;
-			public int RotateCW;
+			internal double LocationX;
+			internal double LocationY;
+			internal double VelocityX;
+			internal double VelocityY;
+			internal int FirstFillColorIndex;
+			internal int SecondFillColorIndex;
+			internal int StrokeColorIndex;
+			internal double Size;
+			internal float Scale;
+			internal String Shape;
+			internal int RotateAngle;
+			internal int RotateCW;
+			internal SvgDocument SvgImage;
+			internal float LocationRatio;
+			internal float LocationRatio1;
 		}
 		
 		private int CalculateShapeCount(double intervalPosFactor)
@@ -1091,12 +1589,12 @@ namespace VixenModules.Effect.Shapes
 
 		private double CalculateCenterAngleSpeed(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(CenterAngleSpeedCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 5, 0);
+			return ScaleCurveToValue(CenterAngleSpeedCurve.GetValue(intervalPosFactor), 45, 0);
 		}
 
 		private double CalculateAngleSpeedVariation(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(AngleSpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 5, 0);
+			return ScaleCurveToValue(AngleSpeedVariationCurve.GetValue(intervalPosFactor), 45, 0);
 		}
 
 		private double CalculateCenterSizeSpeed(double intervalPosFactor)
@@ -1119,16 +1617,16 @@ namespace VixenModules.Effect.Shapes
 			return ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPosFactor), (double)_maxBuffer / 10, 0);
 		}
 
-		private int CalculateSize(double intervalPosFactor)
+		private int CalculateSize(double intervalPosFactor, float locationRatio1)
 		{
-			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_maxBuffer), 4);
+			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
 			if (value < 1) value = 1;
 			return value;
 		}
-
-		private int CalculateMaxSize(double intervalPosFactor)
+		
+		private int CalculateMaxSize(double intervalPosFactor, float locationRatio1)
 		{
-			int value = (int)ScaleCurveToValue(MaxSizeCurve.GetValue(intervalPosFactor), (int)(_maxBuffer), 1);
+			int value = (int)ScaleCurveToValue(MaxSizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
 			if (value < 1) value = 1;
 			return value;
 		}
@@ -1146,6 +1644,16 @@ namespace VixenModules.Effect.Shapes
 		private int CalculateAngle(double intervalPos)
 		{
 			return (int)ScaleCurveToValue(AngleCurve.GetValue(intervalPos), 360, 0);
+		}
+
+		private int CalculateShapeOutLine(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(ShapeOutLineCurve.GetValue(intervalPos), 100, 0);
+		}
+
+		private int CalculateShapeOutLineSpace(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(ShapeOutLineSpaceCurve.GetValue(intervalPos), 100, 0);
 		}
 
 	}

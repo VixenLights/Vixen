@@ -633,4 +633,94 @@
   <data name="CountDownTime" xml:space="preserve">
     <value>Start Time</value>
   </data>
+  <data name="AngleSpeed" xml:space="preserve">
+    <value>Angle Speed</value>
+  </data>
+  <data name="AngleSpeedVariation" xml:space="preserve">
+    <value>Angle Speed Variation</value>
+  </data>
+  <data name="BorderShapes" xml:space="preserve">
+    <value>Border Shapes</value>
+  </data>
+  <data name="ChristmasShapes" xml:space="preserve">
+    <value>Christmas Shapes</value>
+  </data>
+  <data name="ColorFill" xml:space="preserve">
+    <value>Fill Color</value>
+  </data>
+  <data name="CrossSizeRatio" xml:space="preserve">
+    <value>Cross Size Ratio</value>
+  </data>
+  <data name="FirstFillColors" xml:space="preserve">
+    <value>Fill Colors 1</value>
+  </data>
+  <data name="GeometricShapes" xml:space="preserve">
+    <value>Geometric Shapes</value>
+  </data>
+  <data name="HalloweenShapes" xml:space="preserve">
+    <value>Halloween Shapes</value>
+  </data>
+  <data name="MaxShapeSize" xml:space="preserve">
+    <value>Max Size</value>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="OutlineColors" xml:space="preserve">
+    <value>Outline Colors</value>
+  </data>
+  <data name="PolygonSides" xml:space="preserve">
+    <value>Polygon Sides</value>
+  </data>
+  <data name="RandomAngle" xml:space="preserve">
+    <value>Random Angle</value>
+  </data>
+  <data name="RandomShapeSize" xml:space="preserve">
+    <value>Random Size</value>
+  </data>
+  <data name="RoundedCorners" xml:space="preserve">
+    <value>Rounded Corners</value>
+  </data>
+  <data name="SecondFillColors" xml:space="preserve">
+    <value>Fill Colors 2</value>
+  </data>
+  <data name="ShapeCount" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="ShapeOutLine" xml:space="preserve">
+    <value>OutLine Dash Length</value>
+  </data>
+  <data name="ShapeOutLineSpace" xml:space="preserve">
+    <value>OutLine Space Length</value>
+  </data>
+  <data name="ShapeSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ShapeSizeRatio" xml:space="preserve">
+    <value>Size Ratio</value>
+  </data>
+  <data name="ShapeType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SizeSpeed" xml:space="preserve">
+    <value>Size Speed</value>
+  </data>
+  <data name="SizeSpeedVariation" xml:space="preserve">
+    <value>Size Speed Variation</value>
+  </data>
+  <data name="SkipPoints" xml:space="preserve">
+    <value>Star Skip Points</value>
+  </data>
+  <data name="StarInsideSize" xml:space="preserve">
+    <value>Star Center Radius</value>
+  </data>
+  <data name="StarPoints" xml:space="preserve">
+    <value>Star Points</value>
+  </data>
+  <data name="StrokeFill" xml:space="preserve">
+    <value>Outline Fill</value>
+  </data>
+  <data name="StrokeWidth" xml:space="preserve">
+    <value>Outline Width</value>
+  </data>
 </root>

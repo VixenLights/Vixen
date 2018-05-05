@@ -11,40 +11,92 @@ using ZedGraph;
 
 namespace VixenModules.Effect.Shapes
 {
-	[DataContract]
-	[KnownType(typeof(SerializableFont))]
 	public class ShapesData : EffectTypeModuleData
 	{
 		public ShapesData()
 		{
-			Colors = new List<ColorGradient> { new ColorGradient(Color.Red) };
+			OutlineColors = new List<ColorGradient> { new ColorGradient(Color.Red) };
+			FirstFillColors = new List<ColorGradient> { new ColorGradient(Color.Blue) };
+			SecondFillColors = new List<ColorGradient> { new ColorGradient(Color.Green) };
 			AngleSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			CenterAngleSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			SizeSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			CenterSizeSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
-			ManualPosition = true;
-			ShapeType = ShapeType.Bounce;
+			ShapeType = ShapeType.Wrap;
+			FileName = String.Empty;
+			StrokeFill = true;
 			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			MaxSizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
-			ShapeList = ShapeList.ChristmasShapes;
-			GeometricShapes = GeometricShapes.A;
-			ChristmasShapes = ChristmasShapes.A;
-			FontShapes = FontShapes.A;
+			ShapeList = ShapeList.GeometricShapes;
+			GeometricShapesList = GeometricShapesList.Square;
+			ChristmasShapesList = ChristmasShapesList.SnowMan;
+			HalloweenShapesList = HalloweenShapesList.Skull;
+			BorderShapesList = BorderShapesList.Border;
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			AngleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 }));
-			GradientMode = GradientMode.AcrossElement;
 			Orientation = StringOrientation.Vertical;
-			Font = new SerializableFont(new Font("Times new roman", 10));
-			LevelCurve = new Curve(CurveType.Flat100);
+			LevelCurve = new Curve(CurveType.Flat100); 
+			ShapeOutLineCurve = new Curve(CurveType.Flat100);
+			ShapeOutLineSpaceCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			StrokeWidth = 1;
+			StarInsideSize = 50;
+			ShapeSizeRatio = 50;
+			CrossSizeRatio = 100;
+			PolygonSides = 6;
+			RoundedCorner = false;
 			RandomShapeSize = false;
+			ScaleToGrid = false;
+			RandomAngle = true;
+			StarPoints = 7;
+			SkipPoints = 3;
+			Fill = false;
 			ShapeCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 		}
 
 		[DataMember]
-		public List<ColorGradient> Colors { get; set; }
+		public List<ColorGradient> OutlineColors { get; set; }
+
+		[DataMember]
+		public List<ColorGradient> FirstFillColors { get; set; }
+
+		[DataMember]
+		public List<ColorGradient> SecondFillColors { get; set; }
+
+		[DataMember]
+		public string FileName { get; set; }
+
+		[DataMember]
+		public bool RoundedCorner { get; set; }
+
+		[DataMember]
+		public int StarPoints { get; set; }
+
+		[DataMember]
+		public int SkipPoints { get; set; }
+
+		[DataMember]
+		public int PolygonSides { get; set; }
+
+		[DataMember]
+		public int ShapeSizeRatio { get; set; }
+
+		[DataMember]
+		public int CrossSizeRatio { get; set; }
+
+		[DataMember]
+		public int StarInsideSize { get; set; }
+
+		[DataMember]
+		public Curve ShapeOutLineCurve { get; set; }
+
+		[DataMember]
+		public int StrokeWidth { get; set; }
+
+		[DataMember]
+		public Curve ShapeOutLineSpaceCurve { get; set; }
 
 		[DataMember]
 		public Curve AngleSpeedVariationCurve { get; set; }
@@ -80,22 +132,31 @@ namespace VixenModules.Effect.Shapes
 		public ShapeType ShapeType { get; set; }
 
 		[DataMember]
-		public GeometricShapes GeometricShapes { get; set; }
+		public GeometricShapesList GeometricShapesList { get; set; }
 
 		[DataMember]
-		public ChristmasShapes ChristmasShapes { get; set; }
+		public ChristmasShapesList ChristmasShapesList { get; set; }
 
 		[DataMember]
-		public FontShapes FontShapes { get; set; }
+		public HalloweenShapesList HalloweenShapesList { get; set; }
 
 		[DataMember]
-		public bool ManualPosition { get; set; }
+		public BorderShapesList BorderShapesList { get; set; }
+
+		[DataMember]
+		public bool Fill { get; set; }
+
+		[DataMember]
+		public bool StrokeFill { get; set; }
+
+		[DataMember]
+		public bool ScaleToGrid { get; set; }
+
+		[DataMember]
+		public bool RandomAngle { get; set; }
 
 		[DataMember]
 		public bool RandomShapeSize { get; set; }
-
-		[DataMember]
-		public GradientMode GradientMode { get; set; }
 
 		[DataMember]
 		public Curve YOffsetCurve { get; set; }
@@ -107,9 +168,6 @@ namespace VixenModules.Effect.Shapes
 		public Curve AngleCurve { get; set; }
 
 		[DataMember]
-		public SerializableFont Font { get; set; }
-
-		[DataMember]
 		public Curve ShapeCountCurve { get; set; }
 
 		[DataMember]
@@ -119,22 +177,32 @@ namespace VixenModules.Effect.Shapes
 		{
 			ShapesData result = new ShapesData
 			{
-				Colors = Colors.ToList(),
+				OutlineColors = OutlineColors.ToList(),
+				FirstFillColors = FirstFillColors.ToList(),
+				SecondFillColors = SecondFillColors.ToList(),
+				FileName = FileName,
 				ShapeList = ShapeList,
 				ShapeType = ShapeType,
-				GeometricShapes = GeometricShapes,
-				ChristmasShapes = ChristmasShapes,
-				FontShapes = FontShapes,
+				ScaleToGrid = ScaleToGrid,
+				RandomAngle = RandomAngle,
+				ShapeSizeRatio = ShapeSizeRatio,
+				CrossSizeRatio = CrossSizeRatio,
+				GeometricShapesList = GeometricShapesList,
+				ChristmasShapesList = ChristmasShapesList,
+				HalloweenShapesList = HalloweenShapesList,
+				BorderShapesList = BorderShapesList,
 				Orientation = Orientation,
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
 				AngleCurve = new Curve(AngleCurve),
-				GradientMode = GradientMode,
-				Font = new SerializableFont(Font.FontValue),
-				LevelCurve = LevelCurve,
+				LevelCurve = new Curve(LevelCurve),
+				StrokeWidth = StrokeWidth,
 				ShapeCountCurve = new Curve(ShapeCountCurve),
 				RandomShapeSize = RandomShapeSize,
 				SizeCurve = new Curve(SizeCurve),
+				ShapeOutLineCurve = new Curve(ShapeOutLineCurve),
+				ShapeOutLineSpaceCurve = new Curve(ShapeOutLineSpaceCurve),
+				StarInsideSize = StarInsideSize,
 				MaxSizeCurve = new Curve(MaxSizeCurve),
 				AngleSpeedVariationCurve = new Curve(AngleSpeedVariationCurve),
 				CenterAngleSpeedCurve = new Curve(CenterAngleSpeedCurve),
@@ -142,7 +210,12 @@ namespace VixenModules.Effect.Shapes
 				CenterSizeSpeedCurve = new Curve(CenterSizeSpeedCurve),
 				SpeedVariationCurve = new Curve(SpeedVariationCurve),
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
-				ManualPosition = ManualPosition
+				StarPoints = StarPoints,
+				SkipPoints = SkipPoints,
+				PolygonSides = PolygonSides,
+				Fill = Fill,
+				StrokeFill = StrokeFill,
+				RoundedCorner = RoundedCorner
 			};
 			return result;
 		}
