@@ -19,13 +19,14 @@ namespace Common.Controls.Timeline
 		private const int maxDxForClick = 2;
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
-		private TimeSpan _dragStartTime;
 		private TimeSpan _dragLastTime;
 
 		private readonly List<MarkCollection> _labledMarks;
 		private readonly MarksSelectionManager _marksSelectionManager;
 		private readonly MarksEventManager _marksEventManager;
-		
+
+		private MarksMoveResizeInfo _marksMoveResizeInfo;
+
 		public Ruler(TimeInfo timeinfo)
 			: base(timeinfo)
 		{
@@ -457,8 +458,9 @@ namespace Common.Controls.Timeline
 				{
 					_marksSelectionManager.Select(marksAtTime.First());
 				}
-				_dragStartTime = _dragLastTime = marksAtTime.First().StartTime;
+				_dragLastTime = marksAtTime.First().StartTime;
 				m_mouseState = MouseState.DraggingMark;
+				_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks);
 			}
 			else if (Cursor == Cursors.HSplit)
 				m_mouseState = MouseState.ResizeRuler;
@@ -511,7 +513,6 @@ namespace Common.Controls.Timeline
 					case MouseState.DraggingMark:
 
 						var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-						_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 						var diff = newTime - _dragLastTime;
 						_marksSelectionManager.SelectedMarks.ToList().ForEach(x => x.StartTime += diff);
 						_dragLastTime = newTime;
@@ -532,8 +533,7 @@ namespace Common.Controls.Timeline
 							markTime = string.Format("{0:s\\.fff}", newTime);
 						}
 
-						//Refresh();
-
+						_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 						_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, newTime));
 						
 						break;
@@ -605,14 +605,13 @@ namespace Common.Controls.Timeline
 							OnTimeRangeDragged(new ModifierKeysEventArgs(Form.ModifierKeys));
 							break;
 						case MouseState.DraggingMark:
-							if (_selectedMark != null)
+							if (_marksSelectionManager.SelectedMarks.Any())
 							{
 								// Did we move the mark?
 								if (e.X != m_mouseDownX)
 								{
-									//ClearSelectedMarks();
 									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
-									_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_dragStartTime - newTime, _marksSelectionManager.SelectedMarks.ToList()));
+									_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, ElementMoveType.Move));
 									_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
 								}
 							}

@@ -27,6 +27,8 @@ namespace Vixen.Sys.Marks
 
 		public TimeSpan EndTime => StartTime + Duration;
 
+		public MarkCollection Parent { get; set; }
+
 		public int CompareTo(Mark other)
 		{
 			int rv = StartTime.CompareTo(other.StartTime);

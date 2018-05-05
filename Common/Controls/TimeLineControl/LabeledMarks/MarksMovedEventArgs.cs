@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Controls.Timeline;
 using Vixen.Sys.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class MarksMovedEventArgs : EventArgs
 	{
-		public MarksMovedEventArgs(TimeSpan offsetTime, List<Mark> marks)
+		public MarksMovedEventArgs(MarksMoveResizeInfo marksMoveResizeInfo, ElementMoveType type)
 		{
-			OffsetTime = offsetTime; 
-			Marks = marks;
+			MoveType = type;
+			MoveResizeInfo = new Dictionary<Mark, MarkTimeInfo>();
+			foreach (var originalMark in marksMoveResizeInfo.OriginalMarks)
+			{
+				MoveResizeInfo.Add(originalMark.Key, originalMark.Value);	
+			}
 		}
 
-		public TimeSpan OffsetTime { get; private set; }
-		public List<Mark> Marks { get; private set; }
+		public Dictionary<Mark, MarkTimeInfo> MoveResizeInfo { get; }
+
+		public ElementMoveType MoveType { get; }
 		
 	}
 }

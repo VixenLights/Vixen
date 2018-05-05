@@ -136,9 +136,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//for external clipboard events.
 		IntPtr _clipboardViewerNext;
 
-		//TODO Figure out what this is all about.
-		private Dictionary<TimeSpan, MarkCollection> _mcs;
-
 		private readonly MarksEventManager _marksEventManager;
 
 		#endregion
@@ -2693,8 +2690,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddMarkAtTime(TimeSpan time, bool markEffects)
+		private Mark AddMarkAtTime(TimeSpan time, bool suppressUndo)
 		{
+			Mark newMark = null;
 			Vixen.Sys.Marks.MarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
@@ -2719,23 +2717,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			if (mc != null && mc.Marks.All(x => x.StartTime != time))
 			{
-				mc.Marks.Add(new Mark(time));
+				newMark = new Mark(time);
+				mc.AddMark(newMark);
 				PopulateMarkSnapTimes();
 				SequenceModified();
-
-				//TODO FIX Mark Add Undo
-				//if (!markEffects)
-				//{
-				//	_mcs = new Dictionary<TimeSpan, MarkCollection>();
-				//	_mcs.Add(time, mc);
-				//	var act = new MarksAddedUndoAction(this, _mcs);
-				//	_undoMgr.AddUndoAction(act);
-				//}
-				//else
-				//{
-				//	_mcs.Add(time, mc);
-				//}
+				if (!suppressUndo)
+				{
+					var act = new MarksAddedUndoAction(this, newMark, mc);
+					_undoMgr.AddUndoAction(act);
+				}
 			}
+
+			return newMark;
 		}
 
 		private Vixen.Sys.Marks.MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
@@ -2760,29 +2753,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlMarksMoved(object sender, MarksMovedEventArgs e)
 		{
-			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
-		//	MarkCollection markCollection = new MarkCollection();
-			//foreach (MarkCollection mc in _sequence.MarkCollections)
-			//{
-			//	if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
-			//	{
-			//		if (mc.Marks.Contains(e.PreviousMark))
-			//		{
-			//			mc.Marks.Remove(e.PreviousMark);
-			//			mc.Marks.Add(e.NewMark);
-			//			if (e.MouseUp)
-			//			{
-			//				markCollection.Add(new MarkNdugeCollection(mc, e.NewMark, e.OriginalMarkTime));
-			//			}
-			//		}
-			//	}
-			//}
-			//PopulateMarkSnapTimes();
-			TimelineControl.MarksBar.Invalidate(); //Temp refresh
+			_undoMgr.AddUndoAction(new MarksTimeChangedUndoAction(this, e.MoveResizeInfo, e.MoveType));
 			UpdateGridSnapTimes();
 			SequenceModified();
-			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
-
 		}
 
 		private void timelineControl_DeleteMark(object sender, MarksDeletedEventArgs e)
@@ -2791,7 +2764,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (var markCollection in _sequence.LabeledMarkCollections.Where(x => x.IsEnabled))
 				{
-					markCollection.Marks.Remove(mark);
+					markCollection.RemoveMark(mark);
 				}
 			}
 
@@ -3199,11 +3172,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Adds a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void AddMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		public void AddMark(Dictionary<Mark, Vixen.Sys.Marks.MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
-				mark.Value.Marks.Add(mark.Key);
+				mark.Value.AddMark(mark.Key);
 			}
 			
 			PopulateMarkSnapTimes();
@@ -3214,43 +3187,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Remove a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void RemoveMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		public void RemoveMark(Dictionary<Mark, Vixen.Sys.Marks.MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
-				mark.Value.Marks.Remove(mark.Key);
+				mark.Value.RemoveMark(mark.Key);
 			}
 			PopulateMarkSnapTimes();
 			SequenceModified();
-		}
-
-
-		/// <summary>
-		/// Moves a Mark on the timeline/ruler in a Mark Collection.
-		/// </summary>
-		/// <param name="markCollections"></param>
-		/// <param name="mark1"></param>
-		/// <param name="mark2"></param>
-		public void MovedMark(MarkCollection markCollections, TimeSpan mark1, TimeSpan mark2)
-		{
-			markCollections.Marks.Remove(mark1);
-			markCollections.Marks.Add(mark2);
-			PopulateMarkSnapTimes();
-			SequenceModified();
-		}
-
-		public class MarkNdugeCollection
-		{
-			public MarkNdugeCollection(MarkCollection markcollection, TimeSpan newMark, TimeSpan oldMark)
-			{
-				OldMark = oldMark;
-				NewMark = newMark;
-				MarkCollection = markcollection;
-			}
-
-			public TimeSpan OldMark { get; private set; }
-			public TimeSpan NewMark { get; private set; }
-			public MarkCollection MarkCollection { get; private set; }
 		}
 
 		/// <summary>
@@ -4476,6 +4420,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.SwapElementPlacement(changedElements);
 		}
 
+		/// <summary>
+		/// Used by the Undo/Redo engine
+		/// </summary>
+		/// <param name="changedMarks"></param>
+		public void SwapPlaces(Dictionary<Mark, MarkTimeInfo> changedMarks)
+		{
+			foreach (KeyValuePair<Mark, MarkTimeInfo> e in changedMarks)
+			{
+				// Key is reference to actual mark. Value is class with its times before move.
+				// Swap the mark's times with the saved times from before the move, so we can restore them later in redo.
+				MarkTimeInfo.SwapPlaces(e.Key, e.Value);
+			}
+
+			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(changedMarks.Keys.ToList()));
+		}
+
 		public void SwapLayers(Dictionary<IEffectNode, ILayer> effectNodes)
 		{
 			foreach (var node in effectNodes.Keys.ToList())
@@ -5042,14 +5002,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				elements = TimelineControl.SelectedElements;
 			}
-			_mcs = new Dictionary<TimeSpan, MarkCollection>();
+			var addedMarks = new Dictionary<Mark, Vixen.Sys.Marks.MarkCollection>();
 			foreach (Element element in elements)
 			{
-				AddMarkAtTime(element.StartTime, true);
+				var mark = AddMarkAtTime(element.StartTime, true);
+				addedMarks.Add(mark, MarksForm.SelectedMarkCollection);
 			}
-			if (_mcs.Count > 0)
+			if (addedMarks.Count > 0)
 			{
-				var act = new MarksAddedUndoAction(this, _mcs);
+				var act = new MarksAddedUndoAction(this, addedMarks);
 				_undoMgr.AddUndoAction(act);
 			}
 		}

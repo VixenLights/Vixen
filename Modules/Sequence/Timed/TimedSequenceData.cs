@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using Vixen.Sys.Marks;
+using VixenModules.App.LipSyncApp;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -67,7 +68,7 @@ namespace VixenModules.Sequence.Timed
 					IsBold = markCollection.Bold,
 					IsSolidLine = markCollection.SolidLine
 				};
-				lmc.Marks = markCollection.Marks.Select(x => new Mark(x) { Text = @"Mark" }).ToList();
+				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x) { Text = @"Mark" }));  
 				LabeledMarkCollections.Add(lmc);
 			}
 			

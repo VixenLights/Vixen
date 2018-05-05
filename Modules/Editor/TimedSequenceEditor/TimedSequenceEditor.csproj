@@ -288,7 +288,6 @@
     <Compile Include="Forms\Form_ToolPalette.Designer.cs">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo\MarksMovedUndoAction.cs" />
     <Compile Include="Undo\MarksRemovedUndoAction.cs" />
     <Compile Include="Undo\MarksAddedUndoAction .cs" />
     <Compile Include="Undo\MarksAddedRemovedUndoAction.cs" />
@@ -307,6 +306,7 @@
     <Compile Include="LayerEditor.Designer.cs">
       <DependentUpon>LayerEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Undo\MarksTimeChangedUndoAction.cs" />
     <Compile Include="User32.cs" />
     <Compile Include="Shell32.cs" />
   </ItemGroup>

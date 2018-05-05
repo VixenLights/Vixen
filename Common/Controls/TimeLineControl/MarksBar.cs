@@ -16,6 +16,7 @@ namespace Common.Controls.TimelineControl
 		private readonly List<MarkRow> _rows;
 		private bool _suppressInvalidate;
 		private Point _mouseDownLocation;
+		private Point _moveResizeStartLocation;
 		private Mark _mouseDownMark;
 		
 		private DragState _dragState = DragState.Normal; // the current dragging state
@@ -218,7 +219,7 @@ namespace Common.Controls.TimelineControl
 			if (!_marksSelectionManager.SelectedMarks.Any())
 				return;
 
-			TimeSpan dt = pixelsToTime(location.X - _marksMoveResizeInfo.InitialGridLocation.X);
+			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
 			
 			// If we didn't move, get outta here.
 			if (dt == TimeSpan.Zero)
@@ -280,7 +281,7 @@ namespace Common.Controls.TimelineControl
 
 		private void MouseMove_HResizing(Point location)
 		{
-			TimeSpan dt = pixelsToTime(location.X - _marksMoveResizeInfo.InitialGridLocation.X);
+			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
 
 			if (dt == TimeSpan.Zero)
 				return;
@@ -363,16 +364,19 @@ namespace Common.Controls.TimelineControl
 		///Saves the pre-move information and begins update on all selected marks.</summary>
 		private void BeginMoveResizeMarks(Point location)
 		{
-			_marksMoveResizeInfo = new MarksMoveResizeInfo(location, _marksSelectionManager.SelectedMarks, VisibleTimeStart);
+			_moveResizeStartLocation = location;
+			_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks);
 		}
 
 		private void FinishedResizeMoveMarks(ElementMoveType type)
 		{
-			//TODO This is a good place to manage the undo stuff
-
 			//TODO This selected mark move thing needs help
 			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark.StartTime));
+
+			_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, type));
+
 			_marksMoveResizeInfo = null;
+			_moveResizeStartLocation = Point.Empty;
 		}
 
 		#region Events

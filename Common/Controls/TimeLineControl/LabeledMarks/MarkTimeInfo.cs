@@ -10,13 +10,28 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			StartTime = mark.StartTime;
 			EndTime = mark.EndTime;
 			Duration = mark.Duration;
+			MarkCollection = mark.Parent;
 		}
 
-		public TimeSpan StartTime { get; set; }
-		public TimeSpan EndTime { get; set; }
+		public TimeSpan StartTime { get; private set; }
 
-		public TimeSpan Duration { get; set; }
+		public TimeSpan EndTime { get; }
 
+		public TimeSpan Duration { get; private set; }
+
+		public MarkCollection MarkCollection { get; }
+
+		public static void SwapPlaces(Mark lhs, MarkTimeInfo rhs)
+		{
+			TimeSpan temp = lhs.StartTime;
+			lhs.StartTime = rhs.StartTime;
+			rhs.StartTime = temp;
+
+			temp = lhs.Duration;
+			lhs.Duration = rhs.Duration;
+			rhs.Duration = temp;
+
+		}
 	}
 	
 }

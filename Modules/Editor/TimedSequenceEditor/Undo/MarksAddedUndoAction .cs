@@ -1,32 +1,32 @@
-using System;
 using System.Collections.Generic;
-using Vixen.Sys;
-using VixenModules.Sequence.Timed;
+using Vixen.Sys.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
 	public class MarksAddedUndoAction : MarksAddedRemovedUndoAction
 	{
-		public MarksAddedUndoAction(TimedSequenceEditorForm form, Dictionary<TimeSpan, MarkCollection> markCollections)
+		public MarksAddedUndoAction(TimedSequenceEditorForm form, Dictionary<Mark, MarkCollection> markCollections)
 			: base(form, markCollections)
+		{
+		}
+
+		public MarksAddedUndoAction(TimedSequenceEditorForm form, Mark mark, MarkCollection mc)
+			: base(form, new Dictionary<Mark, MarkCollection>(){{mark, mc}})
 		{
 		}
 
 		public override void Undo()
 		{
-			removeMark();
+			RemoveMark();
 			base.Undo();
 		}
 
 		public override void Redo()
 		{
-			addMark();
+			AddMark();
 			base.Redo();
 		}
 
-		public override string Description
-		{
-			get { return string.Format("Added {0} Mark{1}", Count, (Count == 1 ? string.Empty : "s")); }
-		}
+		public override string Description => $"Added {Count} Mark{(Count == 1 ? string.Empty : "s")}";
 	}
 }

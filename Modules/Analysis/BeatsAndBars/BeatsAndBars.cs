@@ -83,7 +83,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				foreach (var otherCollection in otherCollections)
 				{
-					mcOrig.Marks.RemoveAll(x => otherCollection.Marks.Contains(x));
+					mcOrig.RemoveAll(x => otherCollection.Marks.Contains(x));
 				}
 			}
 		}
@@ -109,12 +109,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 						double interval = (featureMS - lastFeatureMS) / settings.Divisions;
 						for (int j = 0; j < settings.Divisions; j++)
 						{
-							mc.Marks.Add(new Mark(TimeSpan.FromMilliseconds(lastFeatureMS + (interval * j))));
+							mc.AddMark(new Mark(TimeSpan.FromMilliseconds(lastFeatureMS + (interval * j))));
 						}
 					}
 					else
 					{
-						mc.Marks.Add(new Mark(TimeSpan.FromMilliseconds(featureMS)));
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 					}
 					lastFeatureMS = featureMS;
 				}
@@ -137,7 +137,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				if (feature.hasTimestamp)
 				{
 					featureMS = feature.timestamp.totalMilliseconds();
-					mc.Marks.Add(new Mark(TimeSpan.FromMilliseconds(featureMS)));
+					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 				}
 			}
 			return mc;
@@ -164,7 +164,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 					if ((feature.hasTimestamp) && (feature.label == j.ToString()))
 					{
 						featureMS = feature.timestamp.totalMilliseconds();
-						mc.Marks.Add(new Mark(TimeSpan.FromMilliseconds(featureMS)));
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
@@ -223,7 +223,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				{
 					if (tsValue.Key == j)
 					{
-						mc.Marks.Add(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)));
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)));
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
@@ -286,8 +286,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			List<MarkCollection> collections = ExtractBeatCollectionsFromFeatureSet(featureSet[2], settings);
 			MarkCollection allCollection = new MarkCollection();
 			allCollection.Name = "Beat Marks";
-			collections.ForEach(x => allCollection.Marks.AddRange(x.Marks));
-			allCollection.Marks.Sort();
+			collections.ForEach(x => allCollection.AddMarks(x.Marks));
+			allCollection.EnsureOrder();
 			previewData.PreviewCollection = allCollection;
 
 			settings.BeatSplitsEnabled = true;
@@ -295,8 +295,8 @@ namespace VixenModules.Analysis.BeatsAndBars
 			collections = ExtractSplitCollectionsFromFeatureSet(featureSet[2], settings);
 			allCollection = new MarkCollection();
 			allCollection.Name = "Beat Split Marks";
-			collections.ForEach(x => allCollection.Marks.AddRange(x.Marks));
-			allCollection.Marks.Sort();
+			collections.ForEach(x => allCollection.AddMarks(x.Marks));
+			allCollection.EnsureOrder();
 			previewData.PreviewSplitCollection = allCollection;
 
 			return previewData;

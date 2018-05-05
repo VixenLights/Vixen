@@ -481,6 +481,7 @@ namespace Common.Controls.Timeline
 			foreach (MarkCollection mc in marks)
 			{
 				if (!mc.IsEnabled) continue;
+				mc.EnsureOrder();
 				MarksBar.AddMarks(mc);
 				ruler.AddMarks(mc);
 				foreach (var mark in mc.Marks)

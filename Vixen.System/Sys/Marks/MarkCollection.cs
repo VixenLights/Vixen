@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -8,10 +9,14 @@ namespace Vixen.Sys.Marks
 	[DataContract]
 	public class MarkCollection: ICloneable
 	{
+		[DataMember(Name = "Marks")]
+		private List<Mark> _marks;
+
 		public MarkCollection()
 		{
 			Decorator = new MarkDecorator();
-			Marks = new List<Mark>();
+			_marks = new List<Mark>();
+			Marks = _marks.AsReadOnly();
 			Id = Guid.NewGuid();
 			Level = 1;
 			IsEnabled = true;
@@ -29,15 +34,54 @@ namespace Vixen.Sys.Marks
 		[DataMember]
 		public int Level { get; set; }
 
-		[DataMember]
-		public List<Mark> Marks { get; set; }
+		public ReadOnlyCollection<Mark> Marks { get; private set; }
 
 		[DataMember]
 		public MarkDecorator Decorator { get; set; }
 
+		public void AddMark(Mark mark)
+		{
+			_marks.Add(mark);
+			mark.Parent = this;
+		}
+
+		public void AddMarks(IEnumerable<Mark> marks)
+		{
+			foreach (var mark in marks)
+			{
+				mark.Parent = this;
+			}
+			_marks.AddRange(marks);
+		}
+
+		public void RemoveMark(Mark mark)
+		{
+			_marks.Remove(mark);
+			mark.Parent = null;
+		}
+
+		public void RemoveAll(Predicate<Mark> match)
+		{
+			_marks.RemoveAll(match);
+		}
+
 		public void EnsureOrder()
 		{
-			Marks.Sort();
+			_marks.Sort();
+		}
+
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			if (Marks == null)
+			{
+				Marks = _marks.AsReadOnly();
+			}
+
+			foreach (var mark in _marks)
+			{
+				mark.Parent = this;
+			}
 		}
 
 		#region Implementation of ICloneable
@@ -50,7 +94,7 @@ namespace Vixen.Sys.Marks
 				IsEnabled = IsEnabled,
 				Level = Level,
 				Name = Name,
-				Marks = Marks.Select(x => (Mark)x.Clone()).ToList(),
+				_marks = Marks.Select(x => (Mark)x.Clone()).ToList(),
 				Decorator = (MarkDecorator)Decorator.Clone()
 			};
 		}
