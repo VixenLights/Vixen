@@ -284,9 +284,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemAlignEndToMark.Enabled = false;
 			contextMenuItemAlignBothToMark.Enabled = false;
 
-			foreach (MarkCollection mc in _sequence.MarkCollections)
+			foreach (Vixen.Sys.Marks.MarkCollection mc in _sequence.LabeledMarkCollections)
 			{
-				if (mc.MarkCount > 0)
+				if (mc.Marks.Any())
 				{
 					contextMenuItemAlignStartToMark.Enabled = true;
 					contextMenuItemAlignEndToMark.Enabled = true;

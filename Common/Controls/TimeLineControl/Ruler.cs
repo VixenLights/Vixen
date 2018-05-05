@@ -439,7 +439,7 @@ namespace Common.Controls.Timeline
 
 			m_button = e.Button;
 			m_mouseDownX = e.X;
-			if (e.Button != MouseButtons.Left) return;
+			//if (e.Button != MouseButtons.Left) return;
 
 			// If we're hovering over a mark when left button is clicked, then select/move the mark 
 			var marksAtTime = MarksAt(pixelsToTime(e.X) + VisibleTimeStart);
@@ -640,6 +640,7 @@ namespace Common.Controls.Timeline
 					// Otherwise, we've added a mark
 					else
 					{
+						//TODO this is jenky and should be fixed to be more specific.
 						OnClickedAtTime(new RulerClickedEventArgs(pixelsToTime(e.X) + VisibleTimeStart, Form.ModifierKeys, m_button));
 					}
 				}
@@ -651,16 +652,18 @@ namespace Common.Controls.Timeline
 
 		void DeleteMark_Click(object sender, EventArgs e)
 		{
-			//DeleteSelectedMarks();
-
-			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			DeleteSelectedMarks();
 		}
 
 		public void DeleteSelectedMarks()
 		{
+			foreach (var mark in _marksSelectionManager.SelectedMarks.ToList())
+			{
+				mark.Parent?.RemoveMark(mark);
+			}
 
-			
-
+			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			_marksSelectionManager.ClearSelected();
 		}
 
 		protected override void OnMouseEnter(EventArgs e)

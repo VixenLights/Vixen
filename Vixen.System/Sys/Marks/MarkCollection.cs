@@ -57,7 +57,6 @@ namespace Vixen.Sys.Marks
 		public void RemoveMark(Mark mark)
 		{
 			_marks.Remove(mark);
-			mark.Parent = null;
 		}
 
 		public void RemoveAll(Predicate<Mark> match)

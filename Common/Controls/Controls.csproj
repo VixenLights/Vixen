@@ -215,7 +215,6 @@
     <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksEventManager.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarkNudgeEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksSelectionManager.cs" />
     <Compile Include="TimelineControl\LabeledMarks\SelectedMarkMoveEventArgs.cs" />

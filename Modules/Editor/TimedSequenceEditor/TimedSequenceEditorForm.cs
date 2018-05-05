@@ -454,9 +454,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			_marksEventManager.MarksMoving += TimelineControlMarksMoving;
-			_marksEventManager.MarksMoved += TimelineControlMarksMoved;
-			_marksEventManager.DeleteMark += timelineControl_DeleteMark;
+			_marksEventManager.MarksMoving += MarksMoving;
+			_marksEventManager.MarksMoved += MarksMoved;
+			_marksEventManager.DeleteMark += MarksDeleted;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -631,8 +631,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-			_marksEventManager.MarksMoved -= TimelineControlMarksMoved;
-			_marksEventManager.DeleteMark -= timelineControl_DeleteMark;
+			_marksEventManager.MarksMoved -= MarksMoved;
+			_marksEventManager.DeleteMark -= MarksDeleted;
 
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
@@ -2746,35 +2746,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return mc;
 		}
 
-		private void TimelineControlMarksMoving(object sender, MarksMovingEventArgs e)
+		private void MarksMoving(object sender, MarksMovingEventArgs e)
 		{
 			UpdateGridSnapTimes();
 		}
 
-		private void TimelineControlMarksMoved(object sender, MarksMovedEventArgs e)
+		private void MarksMoved(object sender, MarksMovedEventArgs e)
 		{
 			_undoMgr.AddUndoAction(new MarksTimeChangedUndoAction(this, e.MoveResizeInfo, e.MoveType));
 			UpdateGridSnapTimes();
 			SequenceModified();
 		}
 
-		private void timelineControl_DeleteMark(object sender, MarksDeletedEventArgs e)
+		private void MarksDeleted(object sender, MarksDeletedEventArgs e)
 		{
-			foreach (Mark mark in e.Marks)
+			var marksDeleted = new Dictionary<Mark, Vixen.Sys.Marks.MarkCollection>();
+			foreach (var mark in e.Marks)
 			{
-				foreach (var markCollection in _sequence.LabeledMarkCollections.Where(x => x.IsEnabled))
-				{
-					markCollection.RemoveMark(mark);
-				}
+				marksDeleted.Add(mark, mark.Parent);
 			}
+			var act = new MarksRemovedUndoAction(this, marksDeleted);
+			_undoMgr.AddUndoAction(act);
 
-			TimelineControl.InvalidateMarkViews();
 			UpdateGridSnapTimes();
 			SequenceModified();
-
-			//TODO fix the undo stuff
-			//var act = new MarksRemovedUndoAction(this, mcs);
-			//_undoMgr.AddUndoAction(act);
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
