@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{45E1228A-F714-41D5-BB9B-A776F2B23143}</ProjectGuid>
+    <ProjectGuid>{8B9B63E6-1569-4F20-870E-C31D7C5FB6D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VixenModules.Sequence.Timed</RootNamespace>
-    <AssemblyName>Timed</AssemblyName>
+    <RootNamespace>VixenModules.Sequence.Marks</RootNamespace>
+    <AssemblyName>Marks</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -57,15 +57,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Executor.cs" />
-    <Compile Include="MarkCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ColorCollection.cs" />
-    <Compile Include="RowSetting.cs" />
-    <Compile Include="RowSettings.cs" />
-    <Compile Include="TimedSequenceMigrator.cs" />
-    <Compile Include="TimedSequence.cs" />
-    <Compile Include="TimedSequenceCache.cs" />
     <Compile Include="TimedSequenceData.cs" />
     <Compile Include="TimedSequenceDescriptor.cs" />
     <Compile Include="TimedSequenceTypeModule.cs" />
@@ -94,11 +86,6 @@
     <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
       <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
       <Name>LipSyncApp</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Effect\Alternating\Alternating.csproj">

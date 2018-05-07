@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {

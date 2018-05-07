@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.Serialization;
 
-namespace Vixen.Sys.Marks
+namespace VixenModules.App.Marks
 {
 	[DataContract]
 	public class MarkDecorator:ICloneable

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {

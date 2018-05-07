@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using QMLibrary;
 using Vixen.Module.Analysis;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars

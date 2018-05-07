@@ -8,7 +8,7 @@ using Common.Controls.Theme;
 using VixenModules.Media.Audio;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {

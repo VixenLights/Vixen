@@ -105,6 +105,10 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
       <Project>{4243ba4c-6371-4dd1-8a1d-675bed5322af}</Project>
       <Name>Audio</Name>

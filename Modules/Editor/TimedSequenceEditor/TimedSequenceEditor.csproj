@@ -77,6 +77,11 @@
       <Name>WPFCommon</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Video\Video.csproj">
       <Project>{c5606015-2166-4866-a856-8eab67a5de26}</Project>
       <Name>Video</Name>

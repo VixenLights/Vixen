@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using VixenModules.App.Marks;
+using Vixen.Sys.Marks;
+using VixenModules.App.LipSyncApp;
 
 namespace VixenModules.Sequence.Timed
 {
@@ -14,7 +15,7 @@ namespace VixenModules.Sequence.Timed
 		public List<MarkCollection> MarkCollections { get; set; }
 
 		[DataMember]
-		public List<App.Marks.MarkCollection> LabeledMarkCollections { get; set; }
+		public List<Vixen.Sys.Marks.MarkCollection> LabeledMarkCollections { get; set; }
 
 		[DataMember]
 		public TimeSpan TimePerPixel { get; set; }
@@ -41,7 +42,7 @@ namespace VixenModules.Sequence.Timed
 		public TimedSequenceData()
 		{
 			MarkCollections = new List<MarkCollection>();
-			LabeledMarkCollections = new List<App.Marks.MarkCollection>();
+			LabeledMarkCollections = new List<Vixen.Sys.Marks.MarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
 			DefaultRowHeight = 0;
 			RowSettings = new RowSettings();
@@ -54,10 +55,10 @@ namespace VixenModules.Sequence.Timed
 		public void ConvertMarksToLabeledMarks()
 		{
 			//Temp method to convert until existing code is refactored and migration can occur
-			LabeledMarkCollections = new List<App.Marks.MarkCollection>();
+			LabeledMarkCollections = new List<Vixen.Sys.Marks.MarkCollection>();
 			foreach (var markCollection in MarkCollections)
 			{
-				var lmc = new App.Marks.MarkCollection();
+				var lmc = new Vixen.Sys.Marks.MarkCollection();
 				lmc.Name = markCollection.Name;
 				lmc.Level = markCollection.Level;
 				lmc.IsEnabled = markCollection.Enabled;
@@ -93,7 +94,7 @@ namespace VixenModules.Sequence.Timed
 			TimedSequenceData result = new TimedSequenceData();
 			// Cloning each MarkCollection so that the cloned data objects don't share references
 			// and step on each other.
-			result.LabeledMarkCollections = LabeledMarkCollections.Select(x => (App.Marks.MarkCollection)x.Clone()).ToList();
+			result.LabeledMarkCollections = LabeledMarkCollections.Select(x => (Vixen.Sys.Marks.MarkCollection)x.Clone()).ToList();
 			return result;
 		}
 	}

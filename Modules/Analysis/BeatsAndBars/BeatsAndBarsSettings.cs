@@ -7,6 +7,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using QMLibrary;
 using VixenModules.Analysis.BeatsAndBars.Properties;
+using VixenModules.App.Marks;
 using VixenModules.Media.Audio;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -97,7 +98,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 		}
 		public void Parameters(ICollection<ManagedParameterDescriptor> parameterDescriptors) { }
 
-		public List<Vixen.Sys.Marks.MarkCollection> MarkCollectionList { set; private get; } 
+		public List<MarkCollection> MarkCollectionList { set; private get; } 
 
 		private void SetBeatBarOutputSettings()
 		{

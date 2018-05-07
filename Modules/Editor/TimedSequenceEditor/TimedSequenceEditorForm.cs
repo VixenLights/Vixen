@@ -40,9 +40,9 @@ using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
-using Vixen.Sys.Marks;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Marks;
 using VixenModules.Editor.EffectEditor;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
@@ -53,7 +53,7 @@ using VixenModules.Property.Color;
 using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
 using ListView = System.Windows.Forms.ListView;
 using ListViewItem = System.Windows.Forms.ListViewItem;
-using MarkCollection = VixenModules.Sequence.Timed.MarkCollection;
+using MarkCollection = VixenModules.App.Marks.MarkCollection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -1471,7 +1471,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void UpdateGridSnapTimes()
 		{
 			TimelineControl.ClearAllSnapTimes();
-			foreach (Vixen.Sys.Marks.MarkCollection mc in _sequence.LabeledMarkCollections)
+			foreach (MarkCollection mc in _sequence.LabeledMarkCollections)
 			{
 				if (!mc.IsEnabled) continue;
 				foreach (var mark in mc.Marks)
@@ -2694,7 +2694,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Mark AddMarkAtTime(TimeSpan time, bool suppressUndo)
 		{
 			Mark newMark = null;
-			Vixen.Sys.Marks.MarkCollection mc = null;
+			MarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
@@ -2732,12 +2732,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return newMark;
 		}
 
-		private Vixen.Sys.Marks.MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
+		private MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			Vixen.Sys.Marks.MarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			MarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
 			if (mc == null)
 			{
-				Vixen.Sys.Marks.MarkCollection newCollection = new Vixen.Sys.Marks.MarkCollection {Name = name};
+				MarkCollection newCollection = new MarkCollection {Name = name};
 				newCollection.Decorator.Color = color;
 				_sequence.LabeledMarkCollections.Add(newCollection);
 				mc = newCollection;
@@ -2761,7 +2761,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void MarksDeleted(object sender, MarksDeletedEventArgs e)
 		{
-			var marksDeleted = new Dictionary<Mark, Vixen.Sys.Marks.MarkCollection>();
+			var marksDeleted = new Dictionary<Mark, MarkCollection>();
 			foreach (var mark in e.Marks)
 			{
 				marksDeleted.Add(mark, mark.Parent);
@@ -3168,7 +3168,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Adds a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void AddMark(Dictionary<Mark, Vixen.Sys.Marks.MarkCollection> markCollections)
+		public void AddMark(Dictionary<Mark, MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
@@ -3183,7 +3183,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Remove a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void RemoveMark(Dictionary<Mark, Vixen.Sys.Marks.MarkCollection> markCollections)
+		public void RemoveMark(Dictionary<Mark, MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
@@ -4670,14 +4670,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ShowMarkManager()
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
-			if (manager.ShowDialog() == DialogResult.OK)
-			{
-				_sequence.MarkCollections = manager.MarkCollections;
-				PopulateMarkSnapTimes();
-				SequenceModified();
-				MarksForm.PopulateMarkCollectionsList(null);
-			}
+			//TODO finish the clean up of removing the mark manager
+			//MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
+			//if (manager.ShowDialog() == DialogResult.OK)
+			//{
+			//	_sequence.MarkCollections = manager.MarkCollections;
+			//	PopulateMarkSnapTimes();
+			//	SequenceModified();
+			//	MarksForm.PopulateMarkCollectionsList(null);
+			//}
 		}
 	
 		private void _SetTimingSpeed(float speed)
@@ -4998,7 +4999,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				elements = TimelineControl.SelectedElements;
 			}
-			var addedMarks = new Dictionary<Mark, Vixen.Sys.Marks.MarkCollection>();
+			var addedMarks = new Dictionary<Mark, MarkCollection>();
 			foreach (Element element in elements)
 			{
 				var mark = AddMarkAtTime(element.StartTime, true);

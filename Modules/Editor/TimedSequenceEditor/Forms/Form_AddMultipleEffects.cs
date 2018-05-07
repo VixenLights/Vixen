@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using Common.Controls;
 using Common.Controls.Theme;
-using VixenModules.Sequence.Timed;
 using Common.Resources.Properties;
+using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -19,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private const string timeFormat = @"m\:ss\.fff";
-		public List<Vixen.Sys.Marks.MarkCollection> MarkCollections { get; set; }
+		public List<MarkCollection> MarkCollections { get; set; }
 
 		public ListView.CheckedListViewItemCollection CheckedMarks
 		{

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
-namespace Vixen.Sys.Marks
+namespace VixenModules.App.Marks
 {
 	[DataContract]
 	public class MarkCollection: ICloneable

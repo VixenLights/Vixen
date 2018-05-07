@@ -8,7 +8,7 @@ using System.Drawing.Drawing2D;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.TimelineControl.LabeledMarks;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {

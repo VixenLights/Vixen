@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Vixen.Sys.Marks
+namespace VixenModules.App.Marks
 {
 	public class Mark:IComparable<Mark>, IEquatable<Mark>, ICloneable
 	{

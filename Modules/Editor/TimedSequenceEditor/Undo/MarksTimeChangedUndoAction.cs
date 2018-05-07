@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl.LabeledMarks;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {

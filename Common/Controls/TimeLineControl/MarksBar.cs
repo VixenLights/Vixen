@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl.LabeledMarks;
-using Vixen.Sys.Marks;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl
 {
