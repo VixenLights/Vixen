@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace VixenModules.Sequence.Timed
 {
+	[Obsolete("Use VixenModules.App.Marks.MarkCollection", false)]
 	[DataContract]
 	public class MarkCollection
 	{
