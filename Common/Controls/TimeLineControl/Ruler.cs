@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.App.Marks;
 
@@ -26,7 +27,7 @@ namespace Common.Controls.Timeline
 
 		private ObservableCollection<MarkCollection> _markCollections;
 		private readonly MarksSelectionManager _marksSelectionManager;
-		private readonly MarksEventManager _marksEventManager;
+		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 
@@ -36,9 +37,9 @@ namespace Common.Controls.Timeline
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = Color.Gray;
 			_marksSelectionManager = MarksSelectionManager.Manager();
-			_marksEventManager = MarksEventManager.Manager;
-			_marksEventManager.MarksMoving += _marksEventManager_MarksMoving;
-			_marksEventManager.DeleteMark += _marksEventManager_DeleteMark;
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
+			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalEventManagerDeleteTimeLineGlobal;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			recalculate();
 			double factor = ScalingTools.GetScaleFactor();
@@ -537,9 +538,9 @@ namespace Common.Controls.Timeline
 							markTime = string.Format("{0:s\\.fff}", newTime);
 						}
 
-						_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-						_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark, ResizeZone.None));
-						
+						_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+						_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _mouseDownMark.StartTime, _mouseDownMark.EndTime }));
+
 						break;
 					case MouseState.ResizeRuler:
 						//Adjusts Ruler Height
@@ -557,7 +558,7 @@ namespace Common.Controls.Timeline
 				if (marks.Any())
 				{
 					Cursor = Cursors.VSplit;
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First(), ResizeZone.Front));
+					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { marks.First().StartTime}));
 				}
 				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
 				{
@@ -566,7 +567,7 @@ namespace Common.Controls.Timeline
 				else
 				{
 					Cursor = Cursors.Hand;
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
+					_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 				}
 			}
 		}
@@ -614,8 +615,8 @@ namespace Common.Controls.Timeline
 								// Did we move the mark?
 								if (e.X != m_mouseDownX)
 								{
-									_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, ElementMoveType.Move));
-									_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
+									_timeLineGlobalEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, ElementMoveType.Move));
+									_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 								}
 							}
 							break;
@@ -665,7 +666,7 @@ namespace Common.Controls.Timeline
 				mark.Parent?.RemoveMark(mark);
 			}
 
-			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			_timeLineGlobalEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 			_marksSelectionManager.ClearSelected();
 		}
 
@@ -679,19 +680,19 @@ namespace Common.Controls.Timeline
 		{
 			Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
-			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
+			_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, new[] { _mouseDownMark.StartTime, _mouseDownMark.EndTime }));
 		}
 
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
 		public event EventHandler<ModifierKeysEventArgs> TimeRangeDragged;
 		public event EventHandler BeginDragTimeRange;
 
-		private void _marksEventManager_DeleteMark(object sender, MarksDeletedEventArgs e)
+		private void TimeLineGlobalEventManagerDeleteTimeLineGlobal(object sender, MarksDeletedEventArgs e)
 		{
 			Invalidate();
 		}
 
-		private void _marksEventManager_MarksMoving(object sender, MarksMovingEventArgs e)
+		private void TimeLineGlobalEventManagerTimeLineGlobalMoving(object sender, MarksMovingEventArgs e)
 		{
 			Invalidate();
 		}
@@ -731,8 +732,8 @@ namespace Common.Controls.Timeline
 					m_textBrush.Dispose();
 				m_font = null;
 				m_textBrush = null;
-				_marksEventManager.MarksMoving -= _marksEventManager_MarksMoving;
-				_marksEventManager.DeleteMark -= _marksEventManager_DeleteMark;
+				_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalEventManagerTimeLineGlobalMoving;
+				_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalEventManagerDeleteTimeLineGlobal;
 				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
 				UnConfigureMarks();
 				

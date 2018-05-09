@@ -210,6 +210,7 @@
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
     <Compile Include="Theme\ThemeGroupBoxRenderer.cs" />
+    <Compile Include="TimelineControl\AlignmentEventArgs.cs" />
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
     <Compile Include="TimelineControl\DragState.cs" />
@@ -218,7 +219,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
-    <Compile Include="TimelineControl\LabeledMarks\MarksEventManager.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\TimeLineGlobalEventManager.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksSelectionManager.cs" />

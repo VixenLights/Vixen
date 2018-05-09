@@ -137,7 +137,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//for external clipboard events.
 		IntPtr _clipboardViewerNext;
 
-		private readonly MarksEventManager _marksEventManager;
+		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		#endregion
 
@@ -247,7 +247,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
 			//So we can be aware of mark changes.
-			_marksEventManager = MarksEventManager.Manager;
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -455,9 +455,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			_marksEventManager.MarksMoving += MarksMoving;
-			_marksEventManager.MarksMoved += MarksMoved;
-			_marksEventManager.DeleteMark += MarksDeleted;
+			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalMoving;
+			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
+			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -632,9 +632,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-			_marksEventManager.MarksMoved -= MarksMoved;
-			_marksEventManager.DeleteMark -= MarksDeleted;
-			_marksEventManager.MarksMoving -= MarksMoving;
+			_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalMoved;
+			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
+			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
@@ -2724,19 +2724,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return mc;
 		}
 
-		private void MarksMoving(object sender, MarksMovingEventArgs e)
+		private void TimeLineGlobalMoving(object sender, MarksMovingEventArgs e)
 		{
 			UpdateGridSnapTimes();
 		}
 
-		private void MarksMoved(object sender, MarksMovedEventArgs e)
+		private void TimeLineGlobalMoved(object sender, MarksMovedEventArgs e)
 		{
 			_undoMgr.AddUndoAction(new MarksTimeChangedUndoAction(this, e.MoveResizeInfo, e.MoveType));
 			UpdateGridSnapTimes();
 			SequenceModified();
 		}
 
-		private void MarksDeleted(object sender, MarksDeletedEventArgs e)
+		private void TimeLineGlobalDeleted(object sender, MarksDeletedEventArgs e)
 		{
 			var marksDeleted = new Dictionary<Mark, MarkCollection>();
 			foreach (var mark in e.Marks)
@@ -4406,7 +4406,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				MarkTimeInfo.SwapPlaces(e.Key, e.Value);
 			}
 
-			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(changedMarks.Keys.ToList()));
+			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(changedMarks.Keys.ToList()));
 		}
 
 		public void SwapLayers(Dictionary<IEffectNode, ILayer> effectNodes)

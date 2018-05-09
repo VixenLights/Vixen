@@ -7,25 +7,25 @@ using System.Windows.Navigation;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
-	public class MarksEventManager
+	public class TimeLineGlobalEventManager
 	{
-		private static MarksEventManager _manager;
+		private static TimeLineGlobalEventManager _manager;
 
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
-		public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove;
+		public event EventHandler<AlignmentEventArgs> AlignmentActivity;
 
-		private MarksEventManager()
+		private TimeLineGlobalEventManager()
 		{
 			
 		}
 
-		public static MarksEventManager Manager => _manager ?? (_manager = new MarksEventManager());
+		public static TimeLineGlobalEventManager Manager => _manager ?? (_manager = new TimeLineGlobalEventManager());
 
-		public void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
+		public void OnAlignmentActivity(AlignmentEventArgs e)
 		{
-			SelectedMarkMove?.Invoke(this, e);
+			AlignmentActivity?.Invoke(this, e);
 		}
 
 		public void OnMarkMoved(MarksMovedEventArgs e)

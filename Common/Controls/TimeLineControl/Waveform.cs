@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using NLog;
 using VixenModules.Media.Audio;
 using System.ComponentModel;
+using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.App.Marks;
 using Font = System.Drawing.Font;
@@ -28,9 +29,9 @@ namespace Common.Controls.Timeline
 		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
 		private bool _showMarkAlignment;
-		private Mark _activeMark;
-		private ResizeZone _resizeZone;
-		private readonly MarksEventManager _marksEventManager;
+		private IEnumerable<TimeSpan> _activeTimes;
+		
+		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		/// <summary>
 		/// Creates a waveform view of the <code>Audio</code> that is associated scaled to the timeinfo.
@@ -42,15 +43,14 @@ namespace Common.Controls.Timeline
 			samples = new SampleAggregator();
 			BackColor = Color.Gray;
 			Visible = false;
-			_marksEventManager = MarksEventManager.Manager;
-			_marksEventManager.SelectedMarkMove += waveForm_SelectedMarkMove;
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
 		}
 
-		private void waveForm_SelectedMarkMove(object sender, SelectedMarkMoveEventArgs e)
+		private void WaveFormSelectedTimeLineGlobalMove(object sender, AlignmentEventArgs e)
 		{
 			_showMarkAlignment = e.Active;
-			_activeMark = e.Mark;
-			_resizeZone = e.ResizeZone;
+			_activeTimes = e.Times;
 			Refresh();
 		}
 
@@ -229,18 +229,12 @@ namespace Common.Controls.Timeline
 						Pen p;
 						p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
 
-						if (_resizeZone == ResizeZone.Front || _resizeZone == ResizeZone.None)
+						foreach (var activeTime in _activeTimes)
 						{
-							var x1 = timeToPixels(_activeMark.StartTime - VisibleTimeStart);
+							var x1 = timeToPixels(activeTime - VisibleTimeStart);
 							e.Graphics.DrawLine(p, x1, 0, x1, Height);
 						}
-
-						if (_resizeZone == ResizeZone.Back || _resizeZone == ResizeZone.None)
-						{
-							var x1 = timeToPixels(_activeMark.EndTime - VisibleTimeStart);
-							e.Graphics.DrawLine(p, x1, 0, x1, Height);
-						}	
-								
+							
 						p.Dispose();
 					}
 
