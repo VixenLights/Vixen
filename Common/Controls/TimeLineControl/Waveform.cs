@@ -10,6 +10,7 @@ using NLog;
 using VixenModules.Media.Audio;
 using System.ComponentModel;
 using Common.Controls.TimelineControl.LabeledMarks;
+using VixenModules.App.Marks;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
 
@@ -26,8 +27,9 @@ namespace Common.Controls.Timeline
 		private Audio audio;
 		private BackgroundWorker bw;
 		private bool _creatingSamples = false;
-		private bool waveFormMark;
-		private TimeSpan selectedTime;
+		private bool _showMarkAlignment;
+		private Mark _activeMark;
+		private ResizeZone _resizeZone;
 		private readonly MarksEventManager _marksEventManager;
 
 		/// <summary>
@@ -46,8 +48,9 @@ namespace Common.Controls.Timeline
 
 		private void waveForm_SelectedMarkMove(object sender, SelectedMarkMoveEventArgs e)
 		{
-			waveFormMark = e.WaveFormMark;
-			selectedTime = e.SelectedMark;
+			_showMarkAlignment = e.Active;
+			_activeMark = e.Mark;
+			_resizeZone = e.ResizeZone;
 			Refresh();
 		}
 
@@ -220,13 +223,24 @@ namespace Common.Controls.Timeline
 			{
 				if (samples.Count > 0 && !_creatingSamples)
 				{
-					//Draws the Mark throught the waveform if Mark is being moved.
-					if (waveFormMark)
+					//Draws the Mark alignment through the waveform if active mark is being moved.
+					if (_showMarkAlignment)
 					{
 						Pen p;
 						p = new Pen(Brushes.Yellow) { DashPattern = new float[] { 2, 2 } };
-						Single x1 = timeToPixels(selectedTime - VisibleTimeStart);
-						e.Graphics.DrawLine(p, x1, 0, x1, Height);
+
+						if (_resizeZone == ResizeZone.Front || _resizeZone == ResizeZone.None)
+						{
+							var x1 = timeToPixels(_activeMark.StartTime - VisibleTimeStart);
+							e.Graphics.DrawLine(p, x1, 0, x1, Height);
+						}
+
+						if (_resizeZone == ResizeZone.Back || _resizeZone == ResizeZone.None)
+						{
+							var x1 = timeToPixels(_activeMark.EndTime - VisibleTimeStart);
+							e.Graphics.DrawLine(p, x1, 0, x1, Height);
+						}	
+								
 						p.Dispose();
 					}
 

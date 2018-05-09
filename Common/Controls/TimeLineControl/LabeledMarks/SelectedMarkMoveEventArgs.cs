@@ -1,17 +1,21 @@
-﻿using System;
+﻿using Common.Controls.Timeline;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class SelectedMarkMoveEventArgs
 	{
-		public SelectedMarkMoveEventArgs(bool waveFormMark, TimeSpan selectedMark)
+		public SelectedMarkMoveEventArgs(bool active, Mark mark, ResizeZone resizeZone)
 		{
-			WaveFormMark = waveFormMark;
-			SelectedMark = selectedMark;
+			Active = active;
+			Mark = mark;
+			ResizeZone = resizeZone;
 		}
 
-		public bool WaveFormMark { get; set; }
+		public bool Active { get; }
 
-		public TimeSpan SelectedMark { get; set; }
+		public Mark Mark { get; }
+
+		public ResizeZone ResizeZone { get; }
 	}
 }

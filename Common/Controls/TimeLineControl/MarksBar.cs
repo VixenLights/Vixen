@@ -330,7 +330,7 @@ namespace Common.Controls.TimelineControl
 			}
 
 			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark, ResizeZone.None));
 
 			//Invalidate();
 		}
@@ -394,7 +394,6 @@ namespace Common.Controls.TimelineControl
 					{
 						dt = shortest - pixelsToTime(MinMarkWidthPx);
 					}
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
 					break;
 
 				case ResizeZone.Back:
@@ -411,7 +410,6 @@ namespace Common.Controls.TimelineControl
 						dt = pixelsToTime(MinMarkWidthPx) - shortest;
 					}
 
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.EndTime));
 					break;
 			}
 
@@ -433,7 +431,7 @@ namespace Common.Controls.TimelineControl
 			}
 
 			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-			
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark, _markResizeZone));
 
 			//Invalidate();
 		}
@@ -463,7 +461,7 @@ namespace Common.Controls.TimelineControl
 		private void FinishedResizeMoveMarks(ElementMoveType type)
 		{
 			//TODO This selected mark move thing needs help
-			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark.StartTime));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
 
 			_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, type));
 

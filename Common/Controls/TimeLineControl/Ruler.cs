@@ -22,6 +22,7 @@ namespace Common.Controls.Timeline
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
 		private TimeSpan _dragLastTime;
+		private Mark _mouseDownMark;
 
 		private ObservableCollection<MarkCollection> _markCollections;
 		private readonly MarksSelectionManager _marksSelectionManager;
@@ -459,7 +460,9 @@ namespace Common.Controls.Timeline
 				{
 					_marksSelectionManager.Select(marksAtTime.First());
 				}
-				_dragLastTime = marksAtTime.First().StartTime;
+
+				_mouseDownMark = marksAtTime.First();
+				_dragLastTime = _mouseDownMark.StartTime;
 				m_mouseState = MouseState.DraggingMark;
 				_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks);
 			}
@@ -535,7 +538,7 @@ namespace Common.Controls.Timeline
 						}
 
 						_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-						_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, newTime));
+						_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark, ResizeZone.None));
 						
 						break;
 					case MouseState.ResizeRuler:
@@ -554,7 +557,7 @@ namespace Common.Controls.Timeline
 				if (marks.Any())
 				{
 					Cursor = Cursors.VSplit;
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First().StartTime));
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, marks.First(), ResizeZone.Front));
 				}
 				else if (e.Location.Y <= Height - 1 && e.Location.Y >= Height - 6)
 				{
@@ -563,7 +566,7 @@ namespace Common.Controls.Timeline
 				else
 				{
 					Cursor = Cursors.Hand;
-					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
 				}
 			}
 		}
@@ -611,9 +614,8 @@ namespace Common.Controls.Timeline
 								// Did we move the mark?
 								if (e.X != m_mouseDownX)
 								{
-									var newTime = pixelsToTime(e.X) + VisibleTimeStart;
 									_marksEventManager.OnMarkMoved(new MarksMovedEventArgs(_marksMoveResizeInfo, ElementMoveType.Move));
-									_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, newTime));
+									_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
 								}
 							}
 							break;
@@ -677,7 +679,7 @@ namespace Common.Controls.Timeline
 		{
 			Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
-			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, TimeSpan.Zero));
+			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(false, _mouseDownMark, ResizeZone.None));
 		}
 
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;
