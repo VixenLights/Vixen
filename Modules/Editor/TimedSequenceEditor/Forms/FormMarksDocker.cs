@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views;
@@ -29,7 +30,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms
 			PopulateMarkCollectionsList(_sequence.LabeledMarkCollections);
 		}
 
-		public void PopulateMarkCollectionsList(List<MarkCollection> markCollections)
+		public void PopulateMarkCollectionsList(ObservableCollection<MarkCollection> markCollections)
 		{
 			_markDockerView.MarkCollection = markCollections;
 		}

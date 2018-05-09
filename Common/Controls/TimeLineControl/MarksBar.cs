@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -14,7 +16,6 @@ namespace Common.Controls.TimelineControl
 	public sealed class MarksBar:TimelineControlBase
 	{
 		private readonly List<MarkRow> _rows;
-		private bool _suppressInvalidate;
 		private Point _mouseDownLocation;
 		private Point _moveResizeStartLocation;
 		private Mark _mouseDownMark;
@@ -27,6 +28,7 @@ namespace Common.Controls.TimelineControl
 		private const int DragThreshold = 8;
 		private const int MinMarkWidthPx = 12;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
+		private ObservableCollection<MarkCollection> _markCollections;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
@@ -38,30 +40,110 @@ namespace Common.Controls.TimelineControl
 			_marksEventManager.DeleteMark += _marksEventManager_DeleteMark;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			_rows = new List<MarkRow>();
+			MarkRow.MarkRowChanged += MarkRow_MarkRowChanged;
 		}
 
-		public void AddMarks(MarkCollection labeledMarkCollection)
+		public ObservableCollection<MarkCollection> MarkCollections
 		{
-			MarkRow row = new MarkRow(labeledMarkCollection);
-			_rows.Add(row);
-			labeledMarkCollection.PropertyChanged += LabeledMarkCollection_PropertyChanged;
-			if (!_suppressInvalidate)
+			get { return _markCollections; }
+			set
 			{
-				CalculateHeight();
-				Invalidate();
+				UnConfigureMarks();
+				_markCollections = value;
+				ConfigureMarks();
 			}
 		}
 
-		private void LabeledMarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		private void ConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+			_markCollections.CollectionChanged += _markCollections_CollectionChanged;
+			CreateRows();
+			RefreshView();
+		}
+
+		private void RefreshView()
 		{
 			CalculateHeight();
 			Invalidate();
 		}
 
-		public void ClearMarks()
+		private void CreateRows()
 		{
-			_rows.Clear();
-			if (!_suppressInvalidate) Invalidate();
+			foreach (var markCollection in _markCollections)
+			{
+				CreateMarkRow(markCollection);
+			}
+		}
+
+		private void UnConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+
+			_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+			ClearRows();
+		}
+
+		private void ClearRows()
+		{
+			foreach (var row in _rows.ToList())
+			{
+				_rows.Remove(row);
+				row.Dispose();
+			}
+		}
+
+		private void CreateMarkRow(MarkCollection markCollection)
+		{
+			MarkRow row = new MarkRow(markCollection);
+			_rows.Add(row);
+		}
+
+		private void _markCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				foreach (var item in e.NewItems)
+				{
+					var markCollection = item as MarkCollection;
+					if (markCollection != null)
+					{
+						CreateMarkRow(markCollection);
+					}
+				}
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				foreach (var item in e.OldItems)
+				{
+					var markCollection = item as MarkCollection;
+					if (markCollection != null)
+					{
+						var row = _rows.Find(x => x == item);
+						_rows.Remove(row);
+						row.Dispose();
+					}
+				}
+			}
+			else
+			{
+				//Rebuild the rows
+				ClearRows();
+				CreateRows();
+			}
+
+			RefreshView();
+		}
+
+		private void MarkRow_MarkRowChanged(object sender, EventArgs e)
+		{
+			RefreshView();
 		}
 
 		#region Mouse Down
@@ -416,6 +498,7 @@ namespace Common.Controls.TimelineControl
 
 		private void DeleteMark_Click(object sender, EventArgs e)
 		{
+			_mouseDownMark.Parent.RemoveMark(_mouseDownMark);
 			_marksEventManager.OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
 		}
 
@@ -513,40 +596,6 @@ namespace Common.Controls.TimelineControl
 		{
 			Height = _rows.Where(x => x.Visible).Sum(x => x.Height);
 		}
-
-		public void BeginDraw()
-		{
-			_suppressInvalidate = true;
-		}
-
-		public void EndDraw()
-		{
-			_suppressInvalidate = false;
-			CalculateHeight();
-			Invalidate();
-		}
-
-		//public void OnSelectedMarkMove(SelectedMarkMoveEventArgs e)
-		//{
-		//	if (SelectedMarkMove != null)
-		//		SelectedMarkMove(this, e);
-		//}
-
-		//private void OnMarkMoved(MarksMovedEventArgs e)
-		//{
-		//	MarksMoved?.Invoke(this, e);
-		//}
-
-		//private void OnMarksMoving(MarksMovingEventArgs e)
-		//{
-		//	MarksMoving?.Invoke(this, e);
-		//}
-
-		//private void OnDeleteMark(MarksDeletedEventArgs e)
-		//{
-		//	DeleteMark?.Invoke(this, e);
-		//}
-
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
@@ -704,7 +753,7 @@ namespace Common.Controls.TimelineControl
 				_marksEventManager.MarksMoving -= _marksEventManager_MarksMoving;
 				_marksEventManager.DeleteMark -= _marksEventManager_DeleteMark;
 				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
-
+				UnConfigureMarks();
 			}
 			base.Dispose(disposing);
 		}

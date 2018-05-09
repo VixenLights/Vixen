@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace Common.Controls.Timeline
 		private readonly int _arrowLength;
 		private TimeSpan _dragLastTime;
 
-		private readonly List<MarkCollection> _labledMarks;
+		private ObservableCollection<MarkCollection> _markCollections;
 		private readonly MarksSelectionManager _marksSelectionManager;
 		private readonly MarksEventManager _marksEventManager;
 
@@ -38,7 +40,6 @@ namespace Common.Controls.Timeline
 			_marksEventManager.DeleteMark += _marksEventManager_DeleteMark;
 			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
 			recalculate();
-			_labledMarks = new List<MarkCollection>();
 			double factor = ScalingTools.GetScaleFactor();
 			_arrowBase = (int) (16 * factor);
 			_arrowLength = (int)(10 * factor);
@@ -731,27 +732,72 @@ namespace Common.Controls.Timeline
 				_marksEventManager.MarksMoving -= _marksEventManager_MarksMoving;
 				_marksEventManager.DeleteMark -= _marksEventManager_DeleteMark;
 				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
+				UnConfigureMarks();
 				
 			}
 			base.Dispose(disposing);
 		}
 
-		#region "Snap Points (Marks)"
+		#region Marks
 
-		public void AddMarks(MarkCollection labeledMarkCollection)
+		public ObservableCollection<MarkCollection> MarkCollections
 		{
-			_labledMarks.Add(labeledMarkCollection);
-			labeledMarkCollection.EnsureOrder();
-			if (!SuppressInvalidate)
+			get { return _markCollections; }
+			set
 			{
-				Invalidate();
+				UnConfigureMarks();
+				_markCollections = value;
+				ConfigureMarks();
 			}
 		}
 
-		public void ClearMarks()
+		private void ConfigureMarks()
 		{
-			_labledMarks.Clear();
-			if (!SuppressInvalidate) Invalidate();
+			if (_markCollections == null)
+			{
+				return;
+			}
+			_markCollections.CollectionChanged += _markCollections_CollectionChanged;
+			AddMarkCollectionEvents();
+			Invalidate();
+		}
+
+		private void UnConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+			_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+			RemoveMarkCollectionEvents();
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private void AddMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged += MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged += MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void RemoveMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged -= MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
 		}
 
 		/// <summary>
@@ -763,7 +809,7 @@ namespace Common.Controls.Timeline
 		{
 			const int markDifferential = 20;
 			var marksAtTime = new List<Mark>();
-			foreach (var labeledMarkCollection in _labledMarks.Where(x => x.IsEnabled).OrderByDescending(x => x.Level))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsEnabled).OrderByDescending(x => x.Level))
 			{
 				labeledMarkCollection.EnsureOrder();
 				foreach (var labeledMark in labeledMarkCollection.Marks)
@@ -789,7 +835,7 @@ namespace Common.Controls.Timeline
 			Pen p;
 
 			// iterate through all marks, and if it's visible, draw it
-			foreach (var labeledMarkCollection in _labledMarks.Where(x => x.IsEnabled))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsEnabled))
 			{
 				int lineBold = 1;
 				if (labeledMarkCollection.Decorator.IsBold)

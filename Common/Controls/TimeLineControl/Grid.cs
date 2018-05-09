@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -15,6 +17,7 @@ using NLog;
 using Vixen;
 using Vixen.Execution.Context;
 using Vixen.Sys.LayerMixing;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -57,6 +60,9 @@ namespace Common.Controls.Timeline
 
 		private List<Row> _visibleRows = new List<Row>();
 		private bool _visibleRowsDirty = false;
+
+		//We turn these into snap points for effects.
+		private ObservableCollection<MarkCollection> _markCollections;
 
 		#region Initialization
 
@@ -145,6 +151,9 @@ namespace Common.Controls.Timeline
 			_blockingElementQueue.Dispose();
 			_blockingElementQueue= null;
 			Context=null;
+
+			UnConfigureMarks();
+			
 			base.Dispose(disposing);
 		}
 
@@ -189,6 +198,17 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public ObservableCollection<MarkCollection> MarkCollections
+		{
+			get { return _markCollections; }
+			set
+			{
+				UnConfigureMarks();
+				_markCollections = value;
+				ConfigureMarks();
+			}
+		}
 
 		public bool EnableSnapTo { get; set; }
 
@@ -1927,6 +1947,79 @@ namespace Common.Controls.Timeline
 			StaticSnapPoints.Clear();
 			if (!SuppressInvalidate) Invalidate();
 		}
+
+		#region Marks
+
+		private void ConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+			_markCollections.CollectionChanged += _markCollections_CollectionChanged;
+			AddMarkCollectionEvents();
+			CreateSnapPointsFromMarks();
+		}
+
+		private void AddMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged += MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged += MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void RemoveMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged -= MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
+		}
+
+		public void CreateSnapPointsFromMarks()
+		{
+			ClearSnapPoints();
+			foreach (var mc in _markCollections)
+			{
+				if (!mc.IsEnabled) continue;
+				mc.EnsureOrder();
+				foreach (var mark in mc.Marks)
+				{
+					AddSnapPoint(mark.StartTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+				}
+			}
+		}
+
+		private void UnConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+
+			_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+			RemoveMarkCollectionEvents();
+			ClearSnapPoints();
+		}
+
+		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//TODO It would be nice to just update the appropriate piece instead of rebuilding the entire thing.
+			RemoveMarkCollectionEvents();
+			AddMarkCollectionEvents();
+			CreateSnapPointsFromMarks();
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			//TODO It would be nice to just update the appropriate piece instead of rebuilding the entire thing.
+			CreateSnapPointsFromMarks();
+		}
+
+		#endregion
 
 		private void CalculateVisibleRowDisplayTops(bool visibleRowsOnly = true)
 		{

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.Marks;
@@ -8,9 +7,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 {
 	public class MarkDockerViewModel:ViewModelBase
 	{
-		public MarkDockerViewModel(List<MarkCollection> markCollections)
+		public MarkDockerViewModel(ObservableCollection<MarkCollection> markCollections)
 		{
-			MarkCollections = new ObservableCollection<MarkCollection>(markCollections);
+			MarkCollections = markCollections;
 		}
 
 		#region MarkCollections model property

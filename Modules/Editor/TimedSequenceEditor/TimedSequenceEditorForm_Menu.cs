@@ -560,8 +560,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (module is Audio)
 				{
 					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
-					_sequence.LabeledMarkCollections = 
-						audioFeatures.DoBeatBarDetection(_sequence.LabeledMarkCollections);
+					 
+					audioFeatures.DoBeatBarDetection(_sequence.LabeledMarkCollections);
 					
 					MarksForm.PopulateMarkCollectionsList(null);
 					SequenceModified();

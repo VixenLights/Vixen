@@ -16,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private const string timeFormat = @"m\:ss\.fff";
-		public List<MarkCollection> MarkCollections { get; set; }
+		public IEnumerable<MarkCollection> MarkCollections { get; set; }
 
 		public ListView.CheckedListViewItemCollection CheckedMarks
 		{

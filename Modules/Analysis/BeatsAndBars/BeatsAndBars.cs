@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.WPFCommon.Utils;
 using QMLibrary;
 using Vixen.Module.Analysis;
 using VixenModules.App.Marks;
@@ -354,9 +356,9 @@ namespace VixenModules.Analysis.BeatsAndBars
 			return retVal.OrderBy(x => x.Name).ToList();
 		}
 
-		public List<MarkCollection> DoBeatBarDetection(List<MarkCollection> markCollection)
+		public void DoBeatBarDetection(ObservableCollection<MarkCollection> markCollection)
 		{
-			List<MarkCollection> retVal = markCollection;
+			List<MarkCollection> retVal = markCollection.ToList();
 
 			if (m_audioModule.Channels != 0)
 			{
@@ -380,7 +382,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 				BeatsAndBarsDialog bbSettings = new BeatsAndBarsDialog(m_audioModule);
 				bbSettings.PreviewData = GeneratePreviewData();
-				bbSettings.MarkCollectionList = markCollection;
+				bbSettings.MarkCollectionList = markCollection.ToList();
 
 				DialogResult result = bbSettings.ShowDialog();
 				if (result == DialogResult.OK)
@@ -391,11 +393,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 						(uint)m_plugin.GetPreferredStepSize(),
 						(uint)m_plugin.GetPreferredBlockSize());
 
-					retVal = BuildMarkCollections(markCollection, bbSettings.Settings);
+					retVal = BuildMarkCollections(markCollection.ToList(), bbSettings.Settings);
 				}				
 			}
 
-			return retVal;
+			markCollection.Clear();
+			markCollection.AddRange(retVal);
 		}
 
 	}

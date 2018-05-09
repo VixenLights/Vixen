@@ -6,7 +6,7 @@ using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl
 {
-	internal class MarkRow: IEnumerable<Mark>
+	internal class MarkRow: IEnumerable<Mark>, IDisposable
 	{
 		// The marks contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
@@ -18,7 +18,34 @@ namespace Common.Controls.TimelineControl
 		{
 			_labeledMarkCollection = markCollection;
 			_labeledMarkCollection.EnsureOrder();
+			_labeledMarkCollection.PropertyChanged += _labeledMarkCollection_PropertyChanged;
+			_labeledMarkCollection.Decorator.PropertyChanged += Decorator_PropertyChanged;
 			Height = 20;
+		}
+
+		#region Events
+
+		public static event EventHandler MarkRowChanged;
+
+		#endregion
+
+		#region Event Handlers
+
+		private void OnMarkRowChanged()
+		{
+			MarkRowChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		#endregion
+
+		private void Decorator_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			OnMarkRowChanged();
+		}
+
+		private void _labeledMarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			OnMarkRowChanged();
 		}
 
 		public int Height { get; set; }
@@ -187,6 +214,17 @@ namespace Common.Controls.TimelineControl
 
 		#endregion
 
+		#region IDisposable
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			_labeledMarkCollection.PropertyChanged -= _labeledMarkCollection_PropertyChanged;
+			_labeledMarkCollection.Decorator.PropertyChanged -= Decorator_PropertyChanged;
+		}
+
+		#endregion
+
 		public struct MarkStack
 		{
 			public MarkStack(int stackIndex, int stackCount)
@@ -199,5 +237,7 @@ namespace Common.Controls.TimelineControl
 
 			public int StackIndex { get; set; }
 		}
+
+		
 	}
 }

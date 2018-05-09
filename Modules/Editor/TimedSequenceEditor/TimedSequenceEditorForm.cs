@@ -1471,15 +1471,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdateGridSnapTimes()
 		{
-			TimelineControl.ClearAllSnapTimes();
-			foreach (MarkCollection mc in _sequence.LabeledMarkCollections)
-			{
-				if (!mc.IsEnabled) continue;
-				foreach (var mark in mc.Marks)
-				{
-					TimelineControl.AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
-				}
-			}
+			TimelineControl.grid.CreateSnapPointsFromMarks();
 		}
 
 		private void PopulateSnapStrength(int strength)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -470,53 +471,33 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddMarks(List<MarkCollection> marks)
+		public void AddMarks(ObservableCollection<MarkCollection> marks)
 		{
-			ClearAllSnapTimes();
-			MarksBar.BeginDraw();
-			ruler.BeginDraw();
-			ruler.ClearMarks();
-			MarksBar.ClearMarks();
 			
-			foreach (MarkCollection mc in marks)
-			{
-				if (!mc.IsEnabled) continue;
-				mc.EnsureOrder();
-				MarksBar.AddMarks(mc);
-				ruler.AddMarks(mc);
-				foreach (var mark in mc.Marks)
-				{
-					AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
-				}
-			}
-
-			MarksBar.EndDraw();
-			ruler.EndDraw();
+			MarksBar.MarkCollections = marks;
+			ruler.MarkCollections = marks;
+			grid.MarkCollections = marks;
+			//ClearAllSnapTimes();
+			//foreach (MarkCollection mc in marks)
+			//{
+			//	if (!mc.IsEnabled) continue;
+			//	mc.EnsureOrder();
+			//	foreach (var mark in mc.Marks)
+			//	{
+			//		AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+			//	}
+			//}
 		}
 
-		public void AddSnapTime(Mark labeledMark, int level, Color color, bool lineBold, bool solidLine)
-		{
-			grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
-		}
+		//public void AddSnapTime(Mark labeledMark, int level, Color color, bool lineBold, bool solidLine)
+		//{
+		//	grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
+		//}
 
-		public bool RemoveSnapTime(TimeSpan time)
-		{
-			//ruler.RemoveSnapPoint(time);
-			return grid.RemoveSnapPoint(time);
-		}
-
-		public void ClearAllSnapTimes()
-		{
-			grid.ClearSnapPoints();
-			//ruler.ClearSnapPoints();
-		}
-
-		public void InvalidateMarkViews()
-		{
-			MarksBar.Invalidate(); //Temp refresh
-			ruler.Invalidate();
-		}
-
+		//public void ClearAllSnapTimes()
+		//{
+		//	grid.ClearSnapPoints();
+		//}
 
 		public void AlignSelectedElementsLeft()
 		{
