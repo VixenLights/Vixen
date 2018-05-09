@@ -31,6 +31,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		public void DeleteCollection(MarkCollection markCollection)
+		{
+			MarkCollections.Remove(markCollection);
+		}
+
 		#region AddCollection command
 
 		private Command _addCollectionCommand;
@@ -48,38 +53,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void AddCollection()
 		{
-			// TODO: Handle command logic here
-		}
-
-		#endregion
-
-		#region DeleteCollection command
-
-		private Command _deleteCollectionCommand;
-
-		/// <summary>
-		/// Gets the DeleteCollection command.
-		/// </summary>
-		public Command DeleteCollectionCommand
-		{
-			get { return _deleteCollectionCommand ?? (_deleteCollectionCommand = new Command(DeleteCollection, CanDeleteCollection)); }
-		}
-
-		/// <summary>
-		/// Method to invoke when the DeleteCollection command is executed.
-		/// </summary>
-		private void DeleteCollection()
-		{
-			// TODO: Handle command logic here
-		}
-
-		/// <summary>
-		/// Method to check whether the DeleteCollection command can be executed.
-		/// </summary>
-		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
-		private bool CanDeleteCollection()
-		{
-			return true;
+			MarkCollections.Add(new MarkCollection());
 		}
 
 		#endregion

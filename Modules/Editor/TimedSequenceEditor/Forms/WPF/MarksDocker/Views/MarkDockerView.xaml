@@ -24,9 +24,6 @@
 				<Button Command="{Binding AddCollectionCommand}" ToolTip="New">
 					<Image Source="/Resources;component/Resources/add_Collection.png" Height="16"/>
 				</Button>
-				<Button Command="{Binding DeleteCollectionCommand}" ToolTip="Delete">
-					<Image Source="/Resources;component/Resources/delete_32.png" Height="16"/>
-				</Button>
 				<Button Command="{Binding ImportCollectionCommand}" ToolTip="Import">
 					<Image Source="/Resources;component/folder_go.png" Height="16"/>
 				</Button>
@@ -41,34 +38,6 @@
 					<Grid.Resources>
 						<DataTemplate x:Key="MarkCollectionRow" DataType="{x:Type viewModels:MarkCollectionViewModel}">
 							<views:MarkCollectionView></views:MarkCollectionView>
-							<!--<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition SharedSizeGroup="A" />
-									<ColumnDefinition SharedSizeGroup="B"/>
-									<ColumnDefinition SharedSizeGroup="C"/>
-									<ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Path=ColumnDefinitions[3].Width}"/>
-								</Grid.ColumnDefinitions>
-								<Border Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
-									<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource CheckRadioButton}"/>
-								</Border>
-								<Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
-									<CheckBox IsChecked="{Binding IsEnabled}"/>
-								</Border>
-								<Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
-									<CheckBox IsChecked="{Binding Decorator.CompactMode, Converter={StaticResource InverseBooleanConverter}}"/>
-								</Border>
-								<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
-									<TextBlock Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}">
-										<TextBlock.ContextMenu>
-											<ContextMenu>
-												<MenuItem Header="Solid Line" IsChecked="{Binding Decorator.IsSolidLine}" Command="{Binding BoldCheckedCommand}"/>
-												<MenuItem Header="Bold" IsChecked="{Binding Decorator.IsBold}"/>
-												<MenuItem Header="Color"/>
-											</ContextMenu>
-										</TextBlock.ContextMenu>
-									</TextBlock>
-								</Border>
-							</Grid>-->
 						</DataTemplate>
 					</Grid.Resources>
 					<Grid.ColumnDefinitions>

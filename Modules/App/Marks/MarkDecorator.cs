@@ -14,7 +14,7 @@ namespace VixenModules.App.Marks
 
 		public MarkDecorator()
 		{
-			Color = Color.Black;
+			Color = Color.White;
 			IsBold = false;
 			IsSolidLine = false;
 		}

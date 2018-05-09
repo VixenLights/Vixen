@@ -11,18 +11,19 @@ namespace Common.Controls.TimelineControl
 		// The marks contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
 		// puts their order out.
-		private readonly MarkCollection _labeledMarkCollection;
+		
 		private Dictionary<Mark, MarkStack> _stackIndexes = new Dictionary<Mark, MarkStack>();
 
 		public MarkRow(MarkCollection markCollection)
 		{
-			_labeledMarkCollection = markCollection;
-			_labeledMarkCollection.EnsureOrder();
-			_labeledMarkCollection.PropertyChanged += _labeledMarkCollection_PropertyChanged;
-			_labeledMarkCollection.Decorator.PropertyChanged += Decorator_PropertyChanged;
+			MarkCollection = markCollection;
+			MarkCollection.EnsureOrder();
+			MarkCollection.PropertyChanged += MarkCollection_PropertyChanged;
+			MarkCollection.Decorator.PropertyChanged += Decorator_PropertyChanged;
 			Height = 20;
 		}
 
+		public MarkCollection MarkCollection { get; private set; }
 		#region Events
 
 		public static event EventHandler MarkRowChanged;
@@ -43,7 +44,7 @@ namespace Common.Controls.TimelineControl
 			OnMarkRowChanged();
 		}
 
-		private void _labeledMarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		private void MarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
 			OnMarkRowChanged();
 		}
@@ -52,9 +53,9 @@ namespace Common.Controls.TimelineControl
 
 		public int DisplayTop { get; set; }
 
-		public bool Visible => _labeledMarkCollection.Decorator.CompactMode == false && _labeledMarkCollection.IsEnabled;
+		public bool Visible => MarkCollection.Decorator.CompactMode == false && MarkCollection.IsEnabled;
 
-		internal MarkDecorator MarkDecorator => _labeledMarkCollection.Decorator;
+		internal MarkDecorator MarkDecorator => MarkCollection.Decorator;
 
 		internal MarkStack GetStackForMark(Mark mark)
 		{
@@ -74,12 +75,12 @@ namespace Common.Controls.TimelineControl
 		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
 		{
 			_stackIndexes.Clear();
-			_labeledMarkCollection.EnsureOrder();
-			for (int i = 0; i < _labeledMarkCollection.Marks.Count; i++)
+			MarkCollection.EnsureOrder();
+			for (int i = 0; i < MarkCollection.Marks.Count; i++)
 			{
-				if (_labeledMarkCollection.Marks[i].EndTime < startTime) continue;
-				if (_labeledMarkCollection.Marks[i].StartTime > endTime) break;
-				List<Mark> overlappingElements = GetOverlappingMarks(_labeledMarkCollection.Marks[i]);
+				if (MarkCollection.Marks[i].EndTime < startTime) continue;
+				if (MarkCollection.Marks[i].StartTime > endTime) break;
+				List<Mark> overlappingElements = GetOverlappingMarks(MarkCollection.Marks[i]);
 				if (overlappingElements.Any())
 				{
 					List<List<Mark>> stack = DetermineMarkStack(overlappingElements);
@@ -104,11 +105,11 @@ namespace Common.Controls.TimelineControl
 				}
 				else
 				{
-					_stackIndexes.Add(_labeledMarkCollection.Marks[i], new MarkStack(0, 1));
+					_stackIndexes.Add(MarkCollection.Marks[i], new MarkStack(0, 1));
 					//_labeledMarkCollection.Marks[i].StackCount = 1;
 					//_labeledMarkCollection.Marks[i].StackIndex = 0;
 				}
-				i += overlappingElements.Count - overlappingElements.IndexOf(_labeledMarkCollection.Marks[i]) - 1;
+				i += overlappingElements.Count - overlappingElements.IndexOf(MarkCollection.Marks[i]) - 1;
 
 			}
 
@@ -149,7 +150,7 @@ namespace Common.Controls.TimelineControl
 
 			//we start here and look backward and forward until no more overlap
 			//Look forward.
-			for (int i = startingIndex + 1; i < _labeledMarkCollection.Marks.Count; i++)
+			for (int i = startingIndex + 1; i < MarkCollection.Marks.Count; i++)
 			{
 				Mark element = GetMarkAtIndex(i);
 				if (element.StartTime < endTime)
@@ -181,20 +182,20 @@ namespace Common.Controls.TimelineControl
 
 		public int IndexOfMark(Mark element)
 		{
-			return _labeledMarkCollection.Marks.IndexOf(element);
+			return MarkCollection.Marks.IndexOf(element);
 		}
 
 		public Mark GetMarkAtIndex(int index)
 		{
-			if (index < 0 || index >= _labeledMarkCollection.Marks.Count)
+			if (index < 0 || index >= MarkCollection.Marks.Count)
 				return null;
 
-			return _labeledMarkCollection.Marks[index];
+			return MarkCollection.Marks[index];
 		}
 
 		public int MarksCount
 		{
-			get { return _labeledMarkCollection.Marks.Count; }
+			get { return MarkCollection.Marks.Count; }
 		}
 
 
@@ -203,7 +204,7 @@ namespace Common.Controls.TimelineControl
 		/// <inheritdoc />
 		public IEnumerator<Mark> GetEnumerator()
 		{
-			return _labeledMarkCollection.Marks.GetEnumerator();
+			return MarkCollection.Marks.GetEnumerator();
 		}
 
 		/// <inheritdoc />
@@ -219,8 +220,8 @@ namespace Common.Controls.TimelineControl
 		/// <inheritdoc />
 		public void Dispose()
 		{
-			_labeledMarkCollection.PropertyChanged -= _labeledMarkCollection_PropertyChanged;
-			_labeledMarkCollection.Decorator.PropertyChanged -= Decorator_PropertyChanged;
+			MarkCollection.PropertyChanged -= MarkCollection_PropertyChanged;
+			MarkCollection.Decorator.PropertyChanged -= Decorator_PropertyChanged;
 		}
 
 		#endregion

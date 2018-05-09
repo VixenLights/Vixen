@@ -855,9 +855,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		
-		private FormMarksDocker _marksForm;
+		private Form_Marks _marksForm;
 
-		private FormMarksDocker MarksForm
+		private Form_Marks MarksForm
 		{
 			get
 			{
@@ -866,7 +866,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _marksForm;
 				}
 
-				_marksForm = new FormMarksDocker(_sequence);
+				_marksForm = new Form_Marks(_sequence);
 				//_marksForm.PopulateMarkCollectionsList(null);
 				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
 				//_marksForm.EditMarkCollection += MarkCollection_Edit;
@@ -966,24 +966,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LayerEditorLayersChanged(object sender, EventArgs e)
 		{
-			SequenceModified();
-		}
-
-
-		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
-		{
-			PopulateMarkSnapTimes();
-			SequenceModified();
-		}
-
-		private void MarkCollection_Edit(Object sender, EventArgs e)
-		{
-			ShowMarkManager();
-		}
-
-		private void MarkCollection_Changed(Object sender, MarkCollectionArgs e)
-		{
-			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
 

@@ -134,5 +134,28 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region Delete command
+
+		private Command _deleteCommand;
+
+		/// <summary>
+		/// Gets the Delete command.
+		/// </summary>
+		public Command DeleteCommand
+		{
+			get { return _deleteCommand ?? (_deleteCommand = new Command(Delete)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the Delete command is executed.
+		/// </summary>
+		private void Delete()
+		{
+			var model = ParentViewModel as MarkDockerViewModel;
+			model?.DeleteCollection(MarkCollection);
+		}
+
+		#endregion
+
 	}
 }

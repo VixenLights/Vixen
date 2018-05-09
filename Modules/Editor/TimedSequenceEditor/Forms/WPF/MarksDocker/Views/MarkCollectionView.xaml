@@ -35,6 +35,7 @@
 			<TextBlock Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}">
 				<TextBlock.ContextMenu>
 					<ContextMenu>
+						<MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
 						<MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
 						<MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
 						<MenuItem Header="Color" Command="{Binding PickColorCommand}"/>

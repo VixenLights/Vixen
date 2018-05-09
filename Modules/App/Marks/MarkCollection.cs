@@ -20,6 +20,7 @@ namespace VixenModules.App.Marks
 
 		public MarkCollection()
 		{
+			Name = @"Mark Collection";
 			Decorator = new MarkDecorator();
 			_marks = new List<Mark>();
 			Marks = _marks.AsReadOnly();

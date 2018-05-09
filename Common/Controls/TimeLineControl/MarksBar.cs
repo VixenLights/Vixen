@@ -125,9 +125,9 @@ namespace Common.Controls.TimelineControl
 					var markCollection = item as MarkCollection;
 					if (markCollection != null)
 					{
-						var row = _rows.Find(x => x == item);
-						_rows.Remove(row);
-						row.Dispose();
+						var row = _rows.Find(x => x.MarkCollection == markCollection);
+						_rows?.Remove(row);
+						row?.Dispose();
 					}
 				}
 			}
