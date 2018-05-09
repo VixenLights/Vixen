@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
+using System.Windows.Input;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.Marks;
@@ -7,6 +9,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 {
 	public class MarkCollectionViewModel: ViewModelBase
 	{
+		private System.Timers.Timer _nameclickTimer = null;
+
 		public MarkCollectionViewModel(MarkCollection markCollection)
 		{
 			MarkCollection = markCollection;
@@ -85,6 +89,93 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// IsDefault property data.
 		/// </summary>
 		public static readonly PropertyData IsDefaultProperty = RegisterProperty("IsDefault", typeof(bool), null);
+
+		#endregion
+
+		#region BeginEdit command
+
+		private Command<MouseButtonEventArgs> _beginEditCommand;
+
+		/// <summary>
+		/// Gets the LeftMouseUp command.
+		/// </summary>
+		
+		public Command<MouseButtonEventArgs> BeginEditCommand
+		{
+			get { return _beginEditCommand ?? (_beginEditCommand = new Command<MouseButtonEventArgs>(BeginEdit)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the LeftMouseUp command is executed.
+		/// </summary>
+		private void BeginEdit(MouseButtonEventArgs e)
+		{
+			if (_nameclickTimer == null)
+			{
+				_nameclickTimer = new System.Timers.Timer { Interval = 300};
+				_nameclickTimer.Elapsed += nameClickTimer_Elapsed;
+			}
+
+			if (!_nameclickTimer.Enabled)
+			{ // Equal: (e.ClickCount == 1)
+				_nameclickTimer.Start();
+			}
+			else
+			{ // Equal: (e.ClickCount == 2)
+				_nameclickTimer.Stop();
+
+				IsEditing = true;
+			}
+
+		}
+
+		private void nameClickTimer_Elapsed(object sender, EventArgs e)
+		{ // single-clicked
+			_nameclickTimer.Stop();
+
+		}
+
+		#endregion
+
+		#region IsEditing property
+
+		/// <summary>
+		/// Gets or sets the IsEditing value.
+		/// </summary>
+		public bool IsEditing
+		{
+			get { return GetValue<bool>(IsEditingProperty); }
+			set { SetValue(IsEditingProperty, value); }
+		}
+
+		/// <summary>
+		/// IsEditing property data.
+		/// </summary>
+		public static readonly PropertyData IsEditingProperty = RegisterProperty("IsEditing", typeof(bool));
+
+		#endregion
+
+		#region DoneEditing command
+
+		private Command _doneEditingCommand;
+
+		/// <summary>
+		/// Gets the EditFocusLost command.
+		/// </summary>
+		
+		public Command DoneEditingCommand
+		{
+			get { return _doneEditingCommand ?? (_doneEditingCommand = new Command(DoneEditing)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the EditFocusLost command is executed.
+		/// </summary>
+		private void DoneEditing()
+		{
+			IsEditing = false;
+			IsDirty = true;
+		}
 
 		#endregion
 

@@ -67,40 +67,6 @@
 				</Grid>
 			</Border>
 
-			<!--<Grid MinHeight="50" IsSharedSizeScope="True">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"></RowDefinition>
-					<RowDefinition Height="*"></RowDefinition>
-				</Grid.RowDefinitions>
-				<Grid Grid.Row="0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="A"></ColumnDefinition>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="B"></ColumnDefinition>
-						<ColumnDefinition Width="Auto" SharedSizeGroup="C"></ColumnDefinition>
-						<ColumnDefinition Width="*" SharedSizeGroup="D"></ColumnDefinition>
-					</Grid.ColumnDefinitions>
-					<Label Grid.Column="0">Active</Label>
-					<Label Grid.Column="1">Enabled</Label>
-					<Label Grid.Column="2">Bar</Label>
-					<Label Grid.Column="3">Name</Label>
-				</Grid>
-				<ItemsControl Grid.Row="1" ItemsSource="{Binding MarkCollections}">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition SharedSizeGroup="A"></ColumnDefinition>
-							<ColumnDefinition SharedSizeGroup="B"></ColumnDefinition>
-							<ColumnDefinition SharedSizeGroup="C"></ColumnDefinition>
-							<ColumnDefinition SharedSizeGroup="D"></ColumnDefinition>
-						</Grid.ColumnDefinitions>
-						<RadioButton Grid.Column="0" IsChecked="{Binding IsDefault}" GroupName="DefaultGroup"></RadioButton>
-						<CheckBox Grid.Column="1" IsChecked="{Binding IsEnabled}"></CheckBox>
-						<CheckBox Grid.Column="2" IsChecked="{Binding Decorator.CompactMode}"></CheckBox>
-						<TextBlock Grid.Column="3" Text="{Binding Name}" Foreground="{Binding Decorator.Color, Converter={StaticResource ColorToSolidBrushConverter}}"></TextBlock>
-					</Grid>
-				</ItemsControl>
-			</Grid>-->
-
-
 			<!--<ListView ItemsSource="{Binding MarkCollections}" MinHeight="50">
 				<ListView.View>
 					<GridView>
