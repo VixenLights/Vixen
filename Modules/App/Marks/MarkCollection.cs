@@ -7,10 +7,16 @@ using System.Runtime.Serialization;
 namespace VixenModules.App.Marks
 {
 	[DataContract]
-	public class MarkCollection: ICloneable
+	public class MarkCollection: BindableBase, ICloneable
 	{
 		[DataMember(Name = "Marks")]
 		private List<Mark> _marks;
+
+		private string _name;
+		private bool _isEnabled;
+		private int _level;
+		private MarkDecorator _decorator;
+		private bool _isDefault;
 
 		public MarkCollection()
 		{
@@ -26,19 +32,68 @@ namespace VixenModules.App.Marks
 		public Guid Id { get; set; }
 
 		[DataMember]
-		public string Name { get; set; }
+		public string Name
+		{
+			get { return _name; }
+			set
+			{
+				if (value == _name) return;
+				_name = value;
+				OnPropertyChanged(nameof(Name));
+			}
+		}
 
 		[DataMember]
-		public bool IsEnabled { get; set; }
+		public bool IsEnabled
+		{
+			get { return _isEnabled; }
+			set
+			{
+				if (value == _isEnabled) return;
+				_isEnabled = value;
+				OnPropertyChanged(nameof(IsEnabled));
+			}
+		}
 
 		[DataMember]
-		public int Level { get; set; }
+		public int Level
+		{
+			get { return _level; }
+			set
+			{
+				if (value == _level) return;
+				_level = value;
+				OnPropertyChanged(nameof(Level));
+			}
+		}
+
+		[DataMember]
+		public bool IsDefault
+		{
+			get { return _isDefault; }
+			set
+			{
+				if (value == _isDefault) return;
+				_isDefault = value;
+				OnPropertyChanged(nameof(IsDefault));
+			}
+		}
+
 
 		[IgnoreDataMember]
 		public ReadOnlyCollection<Mark> Marks { get; private set; }
 
 		[DataMember]
-		public MarkDecorator Decorator { get; set; }
+		public MarkDecorator Decorator
+		{
+			get { return _decorator; }
+			set
+			{
+				if (Equals(value, _decorator)) return;
+				_decorator = value;
+				OnPropertyChanged(nameof(Decorator));
+			}
+		}
 
 		public void AddMark(Mark mark)
 		{

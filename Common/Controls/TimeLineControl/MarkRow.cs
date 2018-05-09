@@ -25,7 +25,7 @@ namespace Common.Controls.TimelineControl
 
 		public int DisplayTop { get; set; }
 
-		public bool Visible => _labeledMarkCollection.Decorator.Mode == Mode.Full;
+		public bool Visible => _labeledMarkCollection.Decorator.CompactMode == false && _labeledMarkCollection.IsEnabled;
 
 		internal MarkDecorator MarkDecorator => _labeledMarkCollection.Decorator;
 

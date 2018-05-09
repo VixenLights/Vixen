@@ -44,6 +44,7 @@ using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Marks;
 using VixenModules.Editor.EffectEditor;
+using VixenModules.Editor.TimedSequenceEditor.Forms;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
@@ -854,9 +855,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		
-		private Form_Marks _marksForm;
+		private FormMarksDocker _marksForm;
 
-		private Form_Marks MarksForm
+		private FormMarksDocker MarksForm
 		{
 			get
 			{
@@ -865,11 +866,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _marksForm;
 				}
 
-				_marksForm = new Form_Marks(TimelineControl) {Sequence = _sequence};
-				_marksForm.PopulateMarkCollectionsList(null);
-				_marksForm.MarkCollectionChecked += MarkCollection_Checked;
-				_marksForm.EditMarkCollection += MarkCollection_Edit;
-				_marksForm.ChangedMarkCollection += MarkCollection_Changed;
+				_marksForm = new FormMarksDocker(_sequence);
+				//_marksForm.PopulateMarkCollectionsList(null);
+				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
+				//_marksForm.EditMarkCollection += MarkCollection_Edit;
+				//_marksForm.ChangedMarkCollection += MarkCollection_Changed;
 				_marksForm.Closing += _marksForm_Closing;
 
 				return _marksForm;
@@ -946,9 +947,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _marksForm_Closing(object sender, CancelEventArgs e)
 		{
-			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
-			MarksForm.EditMarkCollection -= MarkCollection_Edit;
-			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
+			//MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
+			//MarksForm.EditMarkCollection -= MarkCollection_Edit;
+			//MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
 			MarksForm.Closing -= _marksForm_Closing;
 		}
 
@@ -2703,12 +2704,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
-					MarksForm.PopulateMarkCollectionsList(mc);
+					mc.IsDefault = true;
+					//MarksForm.PopulateMarkCollectionsList(mc);
+					_sequence.LabeledMarkCollections.Add(mc);
 				}
 			}
 			else
 			{
-				mc = MarksForm.SelectedMarkCollection;
+				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault) ?? _sequence.LabeledMarkCollections.First();
 				if (mc == null)
 				{
 					if (_context.IsRunning) PauseSequence();
@@ -5003,7 +5006,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (Element element in elements)
 			{
 				var mark = AddMarkAtTime(element.StartTime, true);
-				addedMarks.Add(mark, MarksForm.SelectedMarkCollection);
+				addedMarks.Add(mark, _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault));
 			}
 			if (addedMarks.Count > 0)
 			{

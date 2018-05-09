@@ -44,11 +44,18 @@ namespace Common.Controls.TimelineControl
 		{
 			MarkRow row = new MarkRow(labeledMarkCollection);
 			_rows.Add(row);
+			labeledMarkCollection.PropertyChanged += LabeledMarkCollection_PropertyChanged;
 			if (!_suppressInvalidate)
 			{
 				CalculateHeight();
 				Invalidate();
 			}
+		}
+
+		private void LabeledMarkCollection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			CalculateHeight();
+			Invalidate();
 		}
 
 		public void ClearMarks()
@@ -504,7 +511,7 @@ namespace Common.Controls.TimelineControl
 
 		private void CalculateHeight()
 		{
-			Height = _rows.Sum(x => x.Height);
+			Height = _rows.Where(x => x.Visible).Sum(x => x.Height);
 		}
 
 		public void BeginDraw()
@@ -545,6 +552,7 @@ namespace Common.Controls.TimelineControl
 		{
 			try
 			{
+				CalculateHeight();
 				// Translate the graphics to work the same way the timeline grid does
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);

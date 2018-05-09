@@ -1,0 +1,47 @@
+﻿<catel:UserControl x:Class="VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views.MarkCollectionView"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:catel="http://schemas.catelproject.com"
+                   xmlns:converters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon">
+
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
+			<converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+		</ResourceDictionary>
+
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition SharedSizeGroup="A" />
+			<ColumnDefinition SharedSizeGroup="B"/>
+			<ColumnDefinition SharedSizeGroup="C"/>
+			<ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=3}, Path=ColumnDefinitions[3].Width}"/>
+		</Grid.ColumnDefinitions>
+		<Border Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
+			<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource CheckRadioButton}"/>
+		</Border>
+		<Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
+			<CheckBox IsChecked="{Binding IsEnabled}"/>
+		</Border>
+		<Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
+			<CheckBox IsChecked="{Binding Decorator.CompactMode, Converter={StaticResource InverseBooleanConverter}}"/>
+		</Border>
+		<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" Padding="5">
+			<TextBlock Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}">
+				<TextBlock.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
+						<MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
+						<MenuItem Header="Color" Command="{Binding PickColorCommand}"/>
+					</ContextMenu>
+				</TextBlock.ContextMenu>
+			</TextBlock>
+		</Border>
+	</Grid>
+
+</catel:UserControl>
