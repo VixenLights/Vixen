@@ -680,7 +680,7 @@ namespace Common.Controls.Timeline
 		{
 			Cursor = Cursors.Default;
 			base.OnMouseLeave(e);
-			_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, new[] { _mouseDownMark.StartTime, _mouseDownMark.EndTime }));
+			_timeLineGlobalEventManager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 		}
 
 		public event EventHandler<RulerClickedEventArgs> ClickedAtTime;

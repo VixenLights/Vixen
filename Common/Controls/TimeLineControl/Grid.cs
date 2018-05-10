@@ -13,6 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
@@ -2530,6 +2532,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
 			{
+				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new []{ _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
@@ -2539,6 +2542,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.Waiting || m_dragState == DragState.Moving) //Draw line at both ends, the user is dragging the entire effect
 			{
+				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _workingElement. StartTime, _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					g.DrawLine(p, timeToPixels(_workingElement.StartTime), 0, timeToPixels(_workingElement.StartTime), AutoScrollMinSize.Height);

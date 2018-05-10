@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 
 namespace Common.Controls.Timeline
 {
@@ -182,6 +184,8 @@ namespace Common.Controls.Timeline
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
+
+			TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(false, null));
 
 			Point gridLocation = mouseUpGridLocation = TranslateLocation(e.Location);
 
