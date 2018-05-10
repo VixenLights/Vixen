@@ -3,7 +3,6 @@
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
-                   xmlns:marks="clr-namespace:VixenModules.App.Marks;assembly=Marks"
                    xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
                    xmlns:views="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views">
 
