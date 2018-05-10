@@ -394,6 +394,7 @@ namespace Common.Controls.TimelineControl
 					{
 						dt = shortest - pixelsToTime(MinMarkWidthPx);
 					}
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
 					break;
 
 				case ResizeZone.Back:
@@ -409,6 +410,8 @@ namespace Common.Controls.TimelineControl
 					{
 						dt = pixelsToTime(MinMarkWidthPx) - shortest;
 					}
+
+					_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.EndTime));
 					break;
 			}
 
@@ -430,7 +433,7 @@ namespace Common.Controls.TimelineControl
 			}
 
 			_marksEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
-			_marksEventManager.OnSelectedMarkMove(new SelectedMarkMoveEventArgs(true, _mouseDownMark.StartTime));
+			
 
 			//Invalidate();
 		}
