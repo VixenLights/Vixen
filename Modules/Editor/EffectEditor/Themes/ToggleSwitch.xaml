@@ -4,7 +4,11 @@
                     xmlns:utils="clr-namespace:VixenModules.Editor.EffectEditor.Utils"
                     >
 
-    <!-- ToggleSwitch Template -->
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
+	<!-- ToggleSwitch Template -->
     <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly=controls:ToggleSwitch, ResourceId=ToggleSwitchTemplate}"
                      TargetType="{x:Type controls:ToggleSwitch}">
         <ControlTemplate.Resources>
