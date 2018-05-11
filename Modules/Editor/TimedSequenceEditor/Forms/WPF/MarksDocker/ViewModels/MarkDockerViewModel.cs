@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.Marks;
@@ -8,9 +9,19 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 {
 	public class MarkDockerViewModel:ViewModelBase
 	{
+		private bool _lineToggleState = true;
+		private bool _markBarToggleState = true;
 		public MarkDockerViewModel(ObservableCollection<MarkCollection> markCollections)
 		{
 			MarkCollections = markCollections;
+			if (MarkCollections.All(x => x.IsEnabled))
+			{
+				_lineToggleState = false;
+			}
+			if (MarkCollections.All(x => x.Decorator.CompactMode))
+			{
+				_markBarToggleState = false;
+			}
 		}
 
 		#region MarkCollections model property
@@ -127,6 +138,61 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		private bool CanExportCollection()
 		{
 			return true;
+		}
+
+		#endregion
+
+		#region EnableAllLines command
+
+		private Command _enableAllLinesCommand;
+
+		/// <summary>
+		/// Gets the EnableAllLines command.
+		/// </summary>
+		public Command ToggleLineStateCommand
+		{
+			get { return _enableAllLinesCommand ?? (_enableAllLinesCommand = new Command(ToggleLineState)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the EnableAllLines command is executed.
+		/// </summary>
+		private void ToggleLineState()
+		{
+			MarkCollections.ForEach(x => x.IsEnabled = _lineToggleState);
+			_lineToggleState = !_lineToggleState;
+		}
+
+		#endregion
+
+		#region ToggleMarkBarState command
+
+		private Command _toggleMarkBarStateCommand;
+
+		/// <summary>
+		/// Gets the ToggleMarkBarState command.
+		/// </summary>
+		public Command ToggleMarkBarStateCommand
+		{
+			get { return _toggleMarkBarStateCommand ?? (_toggleMarkBarStateCommand = new Command(ToggleMarkBarState, CanToggleMarkBarState)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ToggleMarkBarState command is executed.
+		/// </summary>
+		private void ToggleMarkBarState()
+		{
+			MarkCollections.ForEach(x => x.Decorator.CompactMode = _markBarToggleState);
+			_markBarToggleState = !_markBarToggleState;
+		}
+
+		/// <summary>
+		/// Method to check whether the ToggleMarkBarState command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanToggleMarkBarState()
+		{
+			return MarkCollections.Any();
 		}
 
 		#endregion

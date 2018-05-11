@@ -4,7 +4,8 @@
                    xmlns:catel="http://schemas.catelproject.com"
                    xmlns:commonConverters="clr-namespace:Common.WPFCommon.Converters;assembly=WPFCommon"
                    xmlns:viewModels="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels"
-                   xmlns:views="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views">
+                   xmlns:views="clr-namespace:VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views"
+                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
 
 	<UserControl.Resources>
 		<ResourceDictionary>
@@ -56,10 +57,20 @@
 					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
 						<!-- <TextBlock Text="Line"/> -->
 						<Image Source="/Resources;component/MarkLineVisible.png" Height="16"/>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="MouseLeftButtonUp">
+								<catel:EventToCommand Command="{Binding ToggleLineStateCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
 					</Border>
 					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
 						<!-- <TextBlock Text="Label"/> -->
 						<Image Source="/Resources;component/MarkBarVisible.png" Height="16"/>
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="MouseLeftButtonUp">
+								<catel:EventToCommand Command="{Binding ToggleMarkBarStateCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="True"/>
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
 					</Border>
 					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
 						<!-- <TextBlock Text="Name"/> -->
