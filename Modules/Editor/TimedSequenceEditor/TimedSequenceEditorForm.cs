@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -723,6 +724,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_sequence != null)
 			{
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
 				_sequence.Dispose();
 				_sequence = null;
 			}
@@ -2678,9 +2680,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
-					mc.IsDefault = true;
-					//MarksForm.PopulateMarkCollectionsList(mc);
-					_sequence.LabeledMarkCollections.Add(mc);
 				}
 			}
 			else
@@ -2724,6 +2723,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				MarkCollection newCollection = new MarkCollection {Name = name};
 				newCollection.Decorator.Color = color;
+				if (!_sequence.LabeledMarkCollections.Any())
+				{
+					newCollection.IsDefault = true;
+				}
 				_sequence.LabeledMarkCollections.Add(newCollection);
 				mc = newCollection;
 				SequenceModified();
@@ -4502,13 +4505,71 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (value is TimedSequence)
 				{
+					SequenceRemoved();
 					_sequence = (TimedSequence)value;
+					SequenceAdded();
 				}
 				else
 				{
 					throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 				}
 				//loadSequence(value); 
+			}
+		}
+
+		private void SequenceAdded()
+		{
+			_sequence.LabeledMarkCollections.CollectionChanged += LabeledMarkCollections_CollectionChanged;
+			AddMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			SequenceModified();
+		}
+
+		private void LabeledMarkCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
+			}
+			else
+			{
+				RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
+				AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
+			}
+			SequenceModified();
+		}
+
+		private void SequenceRemoved()
+		{
+			if (_sequence != null)
+			{
+				_sequence.LabeledMarkCollections.CollectionChanged -= LabeledMarkCollections_CollectionChanged;
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+			}
+		}
+
+		private void RemoveMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		{
+			foreach (var mc in markCollections)
+			{
+				mc.PropertyChanged -= MarkCollection_PropertyChanged;
+				mc.Decorator.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void AddMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		{
+			foreach (var mc in markCollections)
+			{
+				mc.PropertyChanged += MarkCollection_PropertyChanged;
+				mc.Decorator.PropertyChanged += MarkCollection_PropertyChanged;
 			}
 		}
 
