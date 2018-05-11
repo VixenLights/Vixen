@@ -24,18 +24,19 @@
 						<ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=3}, Path=ColumnDefinitions[3].Width}"/>
 					</Grid.ColumnDefinitions>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource ContentLessCheckRadioButton}" HorizontalAlignment="Center"/>
+						<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource ContentLessCheckRadioButton}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource ContentlessCheckBox}"  HorizontalAlignment="Center"/>
+						<CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource ContentlessCheckBox}"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding Decorator.CompactMode, Converter={StaticResource InverseBooleanConverter}}" Style="{StaticResource ContentlessCheckBox}" HorizontalAlignment="Center"/>
+						<CheckBox IsChecked="{Binding Decorator.CompactMode, Converter={StaticResource InverseBooleanConverter}}" Style="{StaticResource ContentlessCheckBox}" 
+						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
 						<StackPanel Orientation="Horizontal">
 							<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}" 
-							           Focusable="True" Margin="0,3,0,3">
+							           Focusable="True" Margin="2,3,2,3">
 								<TextBlock.ContextMenu>
 									<ContextMenu>
 										<MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
@@ -50,7 +51,7 @@
 									</i:EventTrigger>
 								</i:Interaction.Triggers>
 							</TextBlock>
-							<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="0,0,0,0" 
+							<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="2,0,2,0"
 				         utils:TextBoxExtender.CommitOnEnter="true"
 				         utils:TextBoxExtender.RollbackOnEscape="true"
 				         utils:TextBoxExtender.SelectAllOnFocus="True"
