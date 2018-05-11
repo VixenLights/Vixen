@@ -634,6 +634,7 @@ namespace Common.Controls.TimelineControl
 			{
 				foreach (var row in _rows.Where(x => x.Visible))
 				{
+					row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 					curY += row.Height;
 					Point lineLeft = new Point(start, curY);
 					Point lineRight = new Point(end, curY);
@@ -647,7 +648,7 @@ namespace Common.Controls.TimelineControl
 			int displaytop = 0;
 			foreach (var row in _rows.Where(x => x.Visible))
 			{
-				row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
+				//row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 				for (int i = 0; i < row.MarksCount; i++)
 				{
 					Mark currentElement = row.GetMarkAtIndex(i);
@@ -675,7 +676,7 @@ namespace Common.Controls.TimelineControl
 			//We set the DisplayHeight to the row height for the mark, and change the border to red.	
 			var markStack = row.GetStackForMark(mark);
 			var displayHeight =
-				(markStack.StackCount != 0) ? ((row.Height - 1) / markStack.StackCount) : row.Height - 1;
+				(markStack.StackCount != 0) ? ((row.Height - 1) / row.StackCount) : row.Height - 1;
 
 			var displayTop = top + displayHeight * markStack.StackIndex;
 			
@@ -731,6 +732,7 @@ namespace Common.Controls.TimelineControl
 			SolidBrush drawBrush = new SolidBrush(IdealTextColor(row.MarkDecorator.Color));
 			StringFormat drawFormat = new StringFormat();
 			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
+
 		}
 
 		public Bitmap DrawMarkLabel(Size imageSize, Color c)

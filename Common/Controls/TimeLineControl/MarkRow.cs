@@ -21,9 +21,13 @@ namespace Common.Controls.TimelineControl
 			MarkCollection.PropertyChanged += MarkCollection_PropertyChanged;
 			MarkCollection.Decorator.PropertyChanged += Decorator_PropertyChanged;
 			Height = 20;
+			StackCount = 1;
 		}
 
 		public MarkCollection MarkCollection { get; private set; }
+
+		public int StackCount { get; private set; }
+
 		#region Events
 
 		public static event EventHandler MarkRowChanged;
@@ -74,6 +78,7 @@ namespace Common.Controls.TimelineControl
 		/// <param name="endTime"></param>
 		public void SetStackIndexes(TimeSpan startTime, TimeSpan endTime)
 		{
+			int maxStack = 1;
 			_stackIndexes.Clear();
 			MarkCollection.EnsureOrder();
 			for (int i = 0; i < MarkCollection.Marks.Count; i++)
@@ -102,17 +107,19 @@ namespace Common.Controls.TimelineControl
 						}
 						x++;
 					}
+
+					maxStack = Math.Max(maxStack, stack.Count);
 				}
 				else
 				{
 					_stackIndexes.Add(MarkCollection.Marks[i], new MarkStack(0, 1));
-					//_labeledMarkCollection.Marks[i].StackCount = 1;
-					//_labeledMarkCollection.Marks[i].StackIndex = 0;
 				}
 				i += overlappingElements.Count - overlappingElements.IndexOf(MarkCollection.Marks[i]) - 1;
 
 			}
 
+			StackCount = maxStack;
+			Height = 20 * maxStack;
 
 		}
 
