@@ -35,7 +35,7 @@
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
 						<StackPanel Orientation="Horizontal">
 							<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}" 
-							           Focusable="True" Margin="0,2,0,2">
+							           Focusable="True" Margin="0,3,0,3">
 								<TextBlock.ContextMenu>
 									<ContextMenu>
 										<MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
