@@ -355,7 +355,51 @@
         </Setter>
     </Style>
 
+	<!-- Contentless Checkbox -->
 
+    <Style x:Key="ContentlessCheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForeColorBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <BulletDecorator Background="Transparent">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="11" Height="11" Margin="0,1,0,0">
+                                <Border x:Name="Background" Background="#575757" CornerRadius="0" />
+                                <Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="0" />
+                                <Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="0" />
+                                <Path x:Name="Arrow" 
+                      Margin="0,-2,0,0" 
+                      Opacity="0" 
+                      Fill="{x:Null}" 
+                      Stretch="Fill" 
+                      Stroke="{TemplateBinding Foreground}" 
+                      StrokeEndLineCap="Round" 
+                      StrokeLineJoin="Round" 
+                      StrokeStartLineCap="Round" 
+                      StrokeThickness="2" 
+                      Width="9" 
+                      Height="10" 
+                      Data="M203.44033,309.51348 L206.49521,313.93147 212.24245,303.99957" />
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="0" />
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Arrow" Property="Opacity" Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Arrow" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!-- Label -->
 
     <Style TargetType="{x:Type Label}">
@@ -1651,5 +1695,46 @@
 			</Setter.Value>
 		</Setter>
 	</Style>-->
+
+	<!-- Checkbox style RadioButton with no content and centered checkbox-->
+	<Style x:Key="ContentLessCheckRadioButton" TargetType="{x:Type RadioButton}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type RadioButton}">
+					<BulletDecorator Background="Transparent">
+						<BulletDecorator.Bullet>
+							<Grid Width="11" Height="11" Margin="0,1,0,0">
+								<Border x:Name="Background" Background="#575757" CornerRadius="0" />
+								<Border x:Name="BackgroundHighlighted" BorderBrush="#808080" BorderThickness="0,0,0,1" CornerRadius="0" />
+								<Border x:Name="BackgroundSunken" BorderBrush="#101010" BorderThickness="0,1,0,0" CornerRadius="0" />
+								<Path x:Name="Arrow" 
+								      Margin="0,-2,0,0" 
+								      Opacity="0" 
+								      Fill="{x:Null}" 
+								      Stretch="Fill" 
+								      Stroke="{StaticResource ForeColorBrush}" 
+								      StrokeEndLineCap="Round" 
+								      StrokeLineJoin="Round" 
+								      StrokeStartLineCap="Round" 
+								      StrokeThickness="2" 
+								      Width="9" 
+								      Height="10" 
+								      Data="M203.44033,309.51348 L206.49521,313.93147 212.24245,303.99957" />
+							</Grid>
+						</BulletDecorator.Bullet>
+						<ContentPresenter Margin="0" />
+					</BulletDecorator>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter TargetName="Arrow" Property="Opacity" Value="1" />
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="Arrow" Property="Opacity" Value="0.5" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 </ResourceDictionary>

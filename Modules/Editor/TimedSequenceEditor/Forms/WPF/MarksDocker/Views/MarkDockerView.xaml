@@ -32,7 +32,7 @@
 			</ToolBar>
 		</ToolBarTray>
 		<ScrollViewer DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="Black">
-			<Border Margin="1" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="1">
+			<Border Margin="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="1">
 				<Grid Grid.IsSharedSizeScope="True">
 					<Grid.Resources>
 						<DataTemplate x:Key="MarkCollectionRow" DataType="{x:Type viewModels:MarkCollectionViewModel}">
@@ -49,17 +49,21 @@
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
-					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,0,1,1" Padding="5">
-						<TextBlock Text="Active"/>
+					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="0" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+						<!-- <TextBlock Text="Active"/> -->
+						<Image Source="/Resources;component/Pencil.png" Height="16"/>
 					</Border>
-					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,0,1,1" Padding="5">
-						<TextBlock Text="Line"/>
+					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+						<!-- <TextBlock Text="Line"/> -->
+						<Image Source="/Resources;component/MarkLineVisible.png" Height="16"/>
 					</Border>
-					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,0,1,1" Padding="5">
-						<TextBlock Text="Label"/>
+					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+						<!-- <TextBlock Text="Label"/> -->
+						<Image Source="/Resources;component/MarkBarVisible.png" Height="16"/>
 					</Border>
-					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0,0,1,1" Padding="5">
-						<TextBlock Text="Name"/>
+					<Border Grid.Row="0" Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="{StaticResource BackColorBrush}" BorderThickness="0,0,1,1" Padding="2">
+						<!-- <TextBlock Text="Name"/> -->
+						<TextBlock Text="Collection"/>
 					</Border>
 
 					<ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" ItemsSource="{Binding MarkCollections}" ItemTemplate="{StaticResource MarkCollectionRow}"/>

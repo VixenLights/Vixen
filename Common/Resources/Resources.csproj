@@ -313,6 +313,9 @@
     <Resource Include="NewFile_6276.png" />
     <Resource Include="Prop_Add.png" />
     <Resource Include="Prop_Edit.png" />
+    <Content Include="LineVisible.png" />
+    <Resource Include="MarkBarVisible.png" />
+    <Resource Include="MarkLineVisible.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />
@@ -332,7 +335,7 @@
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />
     <None Include="pencil_add.png" />
-    <None Include="pencil.png" />
+    <Resource Include="pencil.png" />
     <None Include="toolbar_go.png" />
     <None Include="toolbar_error.png" />
     <None Include="toolbar_edit.png" />
