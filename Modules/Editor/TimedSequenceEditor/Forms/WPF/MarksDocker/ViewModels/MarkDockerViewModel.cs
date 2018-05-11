@@ -35,6 +35,19 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		public void DeleteCollection(MarkCollection markCollection)
 		{
 			MarkCollections.Remove(markCollection);
+			if (markCollection.IsDefault && MarkCollections.Any())
+			{
+				//we need to find a new default
+				var mc = MarkCollections.FirstOrDefault(x => x.IsEnabled);
+				if (mc != null)
+				{
+					mc.IsDefault = true;
+				}
+				else
+				{
+					MarkCollections.First().IsDefault = true;
+				}
+			}
 		}
 
 		#region AddCollection command
