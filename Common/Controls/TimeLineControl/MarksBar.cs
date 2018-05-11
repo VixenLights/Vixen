@@ -232,6 +232,7 @@ namespace Common.Controls.TimelineControl
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			if (e.Button == MouseButtons.Right) return;
 			HandleMouseMove(e);
 		}
 
