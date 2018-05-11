@@ -728,7 +728,7 @@ namespace Common.Controls.TimelineControl
 
 			//Draw the text
 
-			SolidBrush drawBrush = new SolidBrush(Color.Black);
+			SolidBrush drawBrush = new SolidBrush(IdealTextColor(row.MarkDecorator.Color));
 			StringFormat drawFormat = new StringFormat();
 			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
 		}
@@ -747,6 +747,16 @@ namespace Common.Controls.TimelineControl
 			}
 
 			return result;
+		}
+
+		public Color IdealTextColor(Color bg)
+		{
+			int threshold = 105;
+			int bgDelta = Convert.ToInt32((bg.R * 0.299) + (bg.G * 0.587) +
+			                              (bg.B * 0.114));
+
+			Color foreColor = (255 - bgDelta <= threshold) ? Color.Black : Color.White;
+			return foreColor;
 		}
 
 		protected override void Dispose(bool disposing)
