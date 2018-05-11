@@ -700,7 +700,7 @@ namespace Common.Controls.TimelineControl
 			{
 				if (mark.EndTime <= VisibleTimeEnd)
 				{
-					width = (int)timeToPixels(mark.Duration);// (int)(timeToPixels(mark.EndTime) - timeToPixels(VisibleTimeStart));
+					width = (int)timeToPixels(mark.Duration);
 				}
 				else
 				{
@@ -717,11 +717,19 @@ namespace Common.Controls.TimelineControl
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
 			g.DrawImage(labelImage, destRect);
 
-			if (_marksSelectionManager.SelectedMarks.Contains(mark))
+			var isSelected = _marksSelectionManager.SelectedMarks.Contains(mark);
+
+			using (Pen bp = new Pen(Color.Black, isSelected?3:1))
 			{
-				using (Pen bp = new Pen(Color.Blue,2))
+				g.DrawRectangle(bp, destRect);
+			}
+
+			if (isSelected)
+			{
+				using (Pen bp = new Pen(ThemeColorTable.ForeColor,1))
 				{
 					bp.Alignment = PenAlignment.Inset;
+					bp.DashPattern = new [] { 1.0F, 2.0F };
 					g.DrawRectangle(bp, destRect);
 				}
 			}
