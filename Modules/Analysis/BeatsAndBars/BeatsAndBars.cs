@@ -399,6 +399,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 			markCollection.Clear();
 			markCollection.AddRange(retVal);
+			if (markCollection.Any() && !markCollection.Any(x => x.IsDefault))
+			{
+				markCollection.First().IsDefault = true;
+			}
 		}
 
 	}

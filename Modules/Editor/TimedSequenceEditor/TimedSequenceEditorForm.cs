@@ -2685,12 +2685,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault) ?? _sequence.LabeledMarkCollections.First();
+				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault && x.IsEnabled);
 				if (mc == null)
 				{
 					if (_context.IsRunning) PauseSequence();
-					var messageBox = new MessageBoxForm("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", @"New Mark", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.ShowDialog();
+					var messageBox = new MessageBoxForm("The active mark collection is not visible on the timeline. Would you like to enable it to add the mark?", @"New Mark", MessageBoxButtons.OKCancel, SystemIcons.Error);
+					var result = messageBox.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault);
+						if (mc != null)
+						{
+							mc.IsEnabled = true;
+						}
+					}
 				}
 			}
 			if (mc != null && mc.Marks.All(x => x.StartTime != time))

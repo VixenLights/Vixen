@@ -71,6 +71,20 @@ namespace VixenModules.Sequence.Timed
 				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x) { Text = @"Mark" }));  
 				LabeledMarkCollections.Add(lmc);
 			}
+
+			if (LabeledMarkCollections.Any())
+			{
+				//Set one of them active
+				var mc = LabeledMarkCollections.FirstOrDefault(x => x.IsEnabled);
+				if (mc != null)
+				{
+					mc.IsDefault = true;
+				}
+				else
+				{
+					LabeledMarkCollections.First().IsDefault = true;
+				}
+			}
 			
 		}
 

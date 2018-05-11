@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using Catel.Data;
 using Catel.MVVM;
 using VixenModules.App.Marks;
@@ -53,7 +54,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void AddCollection()
 		{
-			MarkCollections.Add(new MarkCollection());
+			var mc = new MarkCollection();
+			if (!MarkCollections.Any())
+			{
+				mc.IsDefault = true;
+			}
+			MarkCollections.Add(mc);
+			
 		}
 
 		#endregion
