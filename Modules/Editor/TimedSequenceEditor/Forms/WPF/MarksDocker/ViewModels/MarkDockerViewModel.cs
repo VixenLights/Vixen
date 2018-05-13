@@ -1,8 +1,15 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Windows.Forms;
+using System.Xml;
 using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
+using Common.Controls;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
@@ -128,7 +135,20 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void ExportCollection()
 		{
-			// TODO: Handle command logic here
+			var bDialog = new BeatMarkExportDialog();
+
+			if (bDialog.ShowDialog() == DialogResult.OK)
+			{
+				if (bDialog.IsVixen3Selection)
+					ExportMarkCollections("vixen3");
+				if (bDialog.IsAudacitySelection)
+					ExportMarkCollections("audacity");
+				if (!bDialog.IsVixen3Selection && !bDialog.IsAudacitySelection)
+				{
+					var messageBox = new MessageBoxForm("No export type selected", "Warning", MessageBoxButtons.OK, SystemIcons.Warning);
+					messageBox.ShowDialog();
+				}
+			}
 		}
 
 		/// <summary>
@@ -137,7 +157,65 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
 		private bool CanExportCollection()
 		{
-			return true;
+			return MarkCollections.Any();
+		}
+
+		//Beat Mark Collection Export routine 2-7-2014 JMB
+		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
+		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
+		private void ExportMarkCollections(string exportType)
+		{
+			var saveFileDialog = new SaveFileDialog();
+			if (exportType == "vixen3")
+			{
+				saveFileDialog.DefaultExt = ".v3m";
+				saveFileDialog.Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
+				saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					var xmlsettings = new XmlWriterSettings()
+					{
+						Indent = true,
+						IndentChars = "\t",
+					};
+
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
+					ser.WriteObject(writer, MarkCollections);
+					writer.Close();
+				}
+			}
+
+			if (exportType == "audacity")
+			{
+				int iMarkCollection = 0;
+				List<string> beatMarks = new List<string>();
+				foreach (MarkCollection mc in MarkCollections)
+				{
+					iMarkCollection++;
+					foreach (Mark mark in mc.Marks)
+					{
+						beatMarks.Add(mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + iMarkCollection);
+						if (MarkCollections.Count == 1)
+							iMarkCollection++;
+					}
+				}
+
+				saveFileDialog.DefaultExt = ".txt";
+				saveFileDialog.Filter = @"Audacity Marks (*.txt)|*.txt|All Files (*.*)|*.*";
+				if (saveFileDialog.ShowDialog() == DialogResult.OK)
+				{
+					string name = saveFileDialog.FileName;
+
+					using (System.IO.StreamWriter file = new System.IO.StreamWriter(name))
+					{
+						foreach (string bm in beatMarks.OrderBy(x => x))
+						{
+							file.WriteLine(bm);
+						}
+					}
+				}
+			}
 		}
 
 		#endregion
