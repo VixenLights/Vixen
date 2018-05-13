@@ -161,11 +161,11 @@ namespace Common.Controls.TimelineControl
 				
 				if (!CtrlPressed)
 				{
-					if (_markResizeZone == ResizeZone.None || !_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
+					if (_markResizeZone == ResizeZone.None && !_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
 					{
 						_marksSelectionManager.ClearSelected();
+						_marksSelectionManager.Select(_mouseDownMark);
 					}
-					_marksSelectionManager.Select(_mouseDownMark);
 				}
 				else
 				{
