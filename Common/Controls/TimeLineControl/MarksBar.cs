@@ -232,7 +232,7 @@ namespace Common.Controls.TimelineControl
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right) return;
+			if (e.Button == MouseButtons.Right || _mouseDownMark == null) return;
 			HandleMouseMove(e);
 		}
 
@@ -362,6 +362,7 @@ namespace Common.Controls.TimelineControl
 		{
 			_dragState = DragState.Normal;
 			Cursor = Cursors.Default;
+			_mouseDownMark = null;
 			//Invalidate();
 		}
 
@@ -501,8 +502,11 @@ namespace Common.Controls.TimelineControl
 
 		private void DeleteMark_Click(object sender, EventArgs e)
 		{
-			_mouseDownMark.Parent.RemoveMark(_mouseDownMark);
-			_timeLineGlobalEventManager.OnDeleteMark(new MarksDeletedEventArgs(new List<Mark>(new []{_mouseDownMark})));
+			foreach (var mark in _marksSelectionManager.SelectedMarks)
+			{
+				mark.Parent.RemoveMark(mark);
+			}
+			_timeLineGlobalEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 		}
 
 		#endregion
