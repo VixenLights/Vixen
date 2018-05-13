@@ -491,11 +491,14 @@ namespace Common.Controls.TimelineControl
 
 		private void Rename_Click(object sender, EventArgs e)
 		{
-			TextDialog td = new TextDialog("Enter the new name.", "Rename Mark");
+			TextDialog td = new TextDialog("Enter the new name.", _marksSelectionManager.SelectedMarks.Count==1?"Rename Mark":"Rename Multiple Marks");
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
-				_mouseDownMark.Text = td.Response;
+				foreach (var mark in _marksSelectionManager.SelectedMarks)
+				{
+					mark.Text = td.Response;
+				}
 				Invalidate();
 			}
 		}
