@@ -538,7 +538,7 @@ namespace Common.Controls.TimelineControl
 				if (x > p.X) break; //The rest of them are beyond our point.
 				Single width = timeToPixels(mark.Duration);
 				MarkRow.MarkStack ms = containingRow.GetStackForMark(mark);
-				var displayHeight = containingRow.Height / ms.StackCount;
+				var displayHeight = containingRow.Height / containingRow.StackCount;
 				var rowTopOffset = displayHeight * ms.StackIndex;
 				if (p.X >= x &&
 				    p.X <= x + width &&
@@ -636,13 +636,17 @@ namespace Common.Controls.TimelineControl
 			int curY = 0;
 			var start = (int)timeToPixels(VisibleTimeStart);
 			var end = (int)timeToPixels(VisibleTimeEnd);
+			foreach (var markRow in _rows.Where(x => x.Visible))
+			{
+				markRow.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
+			}
+			CalculateHeight();
 			CalculateRowDisplayTops();
 			// Draw row separators
 			using (Pen p = new Pen(ThemeColorTable.TimeLineGridColor))
 			{
 				foreach (var row in _rows.Where(x => x.Visible))
 				{
-					row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
 					curY += row.Height;
 					Point lineLeft = new Point(start, curY);
 					Point lineRight = new Point(end, curY);

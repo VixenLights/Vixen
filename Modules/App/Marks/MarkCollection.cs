@@ -100,6 +100,7 @@ namespace VixenModules.App.Marks
 		{
 			_marks.Add(mark);
 			mark.Parent = this;
+			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void AddMarks(IEnumerable<Mark> marks)
@@ -109,16 +110,19 @@ namespace VixenModules.App.Marks
 				mark.Parent = this;
 			}
 			_marks.AddRange(marks);
+			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void RemoveMark(Mark mark)
 		{
 			_marks.Remove(mark);
+			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void RemoveAll(Predicate<Mark> match)
 		{
 			_marks.RemoveAll(match);
+			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void EnsureOrder()
