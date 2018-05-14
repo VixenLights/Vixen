@@ -128,7 +128,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 											BeatBarSettingsData settings)
 		{
 			MarkCollection mc = new MarkCollection();
-			mc.ShowMarkBar = true;
 			mc.Name = settings.BarsCollectionName;
 
 			double featureMS = -1;
@@ -138,7 +137,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				if (feature.hasTimestamp)
 				{
 					featureMS = feature.timestamp.totalMilliseconds();
-					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)) { Text = "Bar" });
+					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 				}
 			}
 			return mc;
@@ -155,7 +154,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 			for (int j = 1; j <= collectionNames.Length; j++)
 			{
 				MarkCollection mc = new MarkCollection();
-				mc.ShowMarkBar = true;
 				mc.Name = collectionNames[j-1];
 
 				foreach (ManagedFeature feature in featureSet)
@@ -163,7 +161,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 					if ((feature.hasTimestamp) && (feature.label == j.ToString()))
 					{
 						var featureMS = feature.timestamp.totalMilliseconds();
-						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)){Text = $"{j} Beat"});
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
@@ -216,12 +214,11 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				MarkCollection mc = new MarkCollection();
 				mc.Name = collectionNames[j - 1];
-				var markName = mc.Name.Split('#')[1];
 				foreach (KeyValuePair<int,double> tsValue in tsValuePairs)
 				{
 					if (tsValue.Key == j)
 					{
-						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)){Text = $"Beat {markName}"});
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)));
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
