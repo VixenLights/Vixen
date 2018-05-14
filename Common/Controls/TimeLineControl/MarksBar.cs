@@ -67,6 +67,13 @@ namespace Common.Controls.TimelineControl
 
 		private void RefreshView()
 		{
+			if (Height == 0)
+			{
+				if (_rows.Any(x => x.Visible))
+				{
+					CalculateHeight();
+				}
+			}
 			Invalidate();
 		}
 
