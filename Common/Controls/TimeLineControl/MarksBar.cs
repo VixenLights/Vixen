@@ -665,19 +665,21 @@ namespace Common.Controls.TimelineControl
 			int displaytop = 0;
 			foreach (var row in _rows.Where(x => x.Visible))
 			{
-				//row.SetStackIndexes(VisibleTimeStart, VisibleTimeEnd);
-				for (int i = 0; i < row.MarksCount; i++)
+				using (Brush b = new SolidBrush(row.MarkDecorator.Color))
 				{
-					Mark currentElement = row.GetMarkAtIndex(i);
-					if (currentElement.EndTime < VisibleTimeStart)
-						continue;
-
-					if (currentElement.StartTime > VisibleTimeEnd)
+					for (int i = 0; i < row.MarksCount; i++)
 					{
-						break;
-					}
+						Mark currentElement = row.GetMarkAtIndex(i);
+						if (currentElement.EndTime < VisibleTimeStart)
+							continue;
 
-					DrawMark(g, row, currentElement, displaytop);
+						if (currentElement.StartTime > VisibleTimeEnd)
+						{
+							break;
+						}
+
+						DrawMark(g, row, currentElement, displaytop, b);
+					}
 				}
 
 				displaytop += row.Height;
@@ -685,7 +687,7 @@ namespace Common.Controls.TimelineControl
 
 		}
 
-		private void DrawMark(Graphics g, MarkRow row, Mark mark, int top)
+		private void DrawMark(Graphics g, MarkRow row, Mark mark, int top, Brush b)
 		{
 			int width;
 			
@@ -727,13 +729,11 @@ namespace Common.Controls.TimelineControl
 			if (width <= 0) return;
 			Size size = new Size(width, displayHeight);
 
-			Bitmap labelImage = DrawMarkLabel(size, row.MarkDecorator.Color);
-			if (labelImage == null) return;
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(mark.StartTime)), displayTop);
 
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, displayHeight);
-			g.DrawImage(labelImage, destRect);
-
+			g.FillRectangle(b,destRect);
+			
 			var isSelected = _marksSelectionManager.SelectedMarks.Contains(mark);
 
 			using (Pen bp = new Pen(Color.Black, isSelected?3:1))
@@ -751,29 +751,11 @@ namespace Common.Controls.TimelineControl
 				}
 			}
 			
-
 			//Draw the text
-
 			SolidBrush drawBrush = new SolidBrush(IdealTextColor(row.MarkDecorator.Color));
 			StringFormat drawFormat = new StringFormat();
 			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
 
-		}
-
-		public Bitmap DrawMarkLabel(Size imageSize, Color c)
-		{
-			Bitmap result = new Bitmap(imageSize.Width, imageSize.Height);
-			using (Graphics g = Graphics.FromImage(result))
-			{
-				using (Brush b = new SolidBrush(c))
-				{
-					g.FillRectangle(b,
-						new Rectangle((int)g.VisibleClipBounds.Left, (int)g.VisibleClipBounds.Top,
-							(int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
-				}
-			}
-
-			return result;
 		}
 
 		public Color IdealTextColor(Color bg)
