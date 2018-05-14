@@ -262,6 +262,71 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return newCollection;
 		}
 
+		public static void LoadXTiming(ObservableCollection<MarkCollection> collections)
+		{
+			var openFileDialog = new OpenFileDialog();
+			openFileDialog.DefaultExt = ".txt";
+			openFileDialog.Filter = @"xTiming|*.xTiming.xml|All Files|*.*";
+			openFileDialog.FilterIndex = 0;
+			openFileDialog.InitialDirectory = _lastFolder;
+			if (openFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
+				try
+				{
+					var xmlDoc = new XmlDocument();
+					xmlDoc.Load(openFileDialog.FileName);
+					XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
+					var name = timingNode?.Attributes.GetNamedItem("name").Value;
+					var effectLayers = timingNode?.SelectNodes("EffectLayer");
+					if (effectLayers != null)
+					{
+						int counter = 1;
+						foreach (XmlNode effectLayer in effectLayers)
+						{
+							var collectionName = $"{name ?? "xTiming"} - {counter}";
+							var mc = CreateNewCollection(Color.Brown, collectionName);
+							var effects = effectLayer?.SelectNodes("Effect");
+							if (effects != null)
+							{
+								//iterate the marks
+								foreach (XmlNode effect in effects)
+								{
+									var label = effect.Attributes?.GetNamedItem("label").Value;
+									var startTime = effect.Attributes?.GetNamedItem("starttime").Value;
+									var endTime = effect.Attributes?.GetNamedItem("endtime").Value;
+
+									var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)));
+									mark.Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
+									mark.Text = label;
+									mc.AddMark(mark);
+								}
+							}
+							
+							if (mc.Marks.Any())
+							{
+								counter++;
+								collections.Add(mc);
+							}
+						}
+					}
+					
+					if (!collections.Any(x => x.IsDefault))
+					{
+						SetDefaultCollection(collections);
+					}
+
+				}
+				catch (Exception ex)
+				{
+					string msg = "There was an error importing the Audacity bar marks.";
+					Logging.Error(ex, msg);
+					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog();
+				}
+			}
+		}
+
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++

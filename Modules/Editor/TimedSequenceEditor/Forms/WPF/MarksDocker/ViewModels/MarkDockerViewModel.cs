@@ -124,6 +124,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 					MarkImportExportService.LoadBarLabels(MarkCollections);
 				if (aDialog.IsVampBeatSelection)
 					MarkImportExportService.LoadBeatLabels(MarkCollections);
+				if (aDialog.IsXTimingSelection)
+					MarkImportExportService.LoadXTiming(MarkCollections);
 			}
 		}
 
