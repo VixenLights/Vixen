@@ -68,7 +68,7 @@ namespace VixenModules.Sequence.Timed
 					IsBold = markCollection.Bold,
 					IsSolidLine = markCollection.SolidLine
 				};
-				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x) { Text = @"Mark" }));  
+				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x)));  
 				LabeledMarkCollections.Add(lmc);
 			}
 

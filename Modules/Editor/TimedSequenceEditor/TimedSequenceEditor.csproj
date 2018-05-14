@@ -131,6 +131,7 @@
     </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TabControlEX">
       <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
       <Private>False</Private>
@@ -159,6 +160,7 @@
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">
