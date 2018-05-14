@@ -4540,8 +4540,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
-				AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
+				if (e.OldItems != null)
+				{
+					RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
+				}
+
+				if (e.NewItems != null)
+				{
+					AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
+				}
 			}
 			SequenceModified();
 		}

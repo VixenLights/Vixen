@@ -304,7 +304,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			return previewData;
 		}
 
-		private List<MarkCollection> BuildMarkCollections(List<MarkCollection> markCollection, 
+		private void BuildMarkCollections(ICollection<MarkCollection> markCollection, 
 															BeatBarSettingsData settings)
 		{
 			List<MarkCollection> retVal = new List<MarkCollection>();
@@ -352,14 +352,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 			}
 
 			retVal.RemoveAll(x => x.Marks.Count == 0);
-			retVal.AddRange(markCollection);
-			return retVal.OrderBy(x => x.Name).ToList();
+			
+			markCollection.AddRange(retVal.OrderBy(x => x.Name));
 		}
 
-		public void DoBeatBarDetection(ObservableCollection<MarkCollection> markCollection)
+		public void DoBeatBarDetection(ICollection<MarkCollection> markCollection)
 		{
-			List<MarkCollection> retVal = markCollection.ToList();
-
 			if (m_audioModule.Channels != 0)
 			{
 				m_plugin = new QMBarBeatTrack(m_audioModule.Frequency);
@@ -393,12 +391,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 						(uint)m_plugin.GetPreferredStepSize(),
 						(uint)m_plugin.GetPreferredBlockSize());
 
-					retVal = BuildMarkCollections(markCollection.ToList(), bbSettings.Settings);
+					BuildMarkCollections(markCollection, bbSettings.Settings);
 				}				
 			}
 
-			markCollection.Clear();
-			markCollection.AddRange(retVal);
 			if (markCollection.Any() && !markCollection.Any(x => x.IsDefault))
 			{
 				markCollection.First().IsDefault = true;
