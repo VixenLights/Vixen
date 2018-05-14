@@ -105,7 +105,7 @@ namespace Common.Controls.TimelineControl
 			_rows.Add(row);
 		}
 
-		private void _markCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Add)
 			{
@@ -161,7 +161,7 @@ namespace Common.Controls.TimelineControl
 				
 				if (!CtrlPressed)
 				{
-					if (_markResizeZone == ResizeZone.None && !_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
+					if (!_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
 					{
 						_marksSelectionManager.ClearSelected();
 						_marksSelectionManager.Select(_mouseDownMark);
@@ -232,7 +232,7 @@ namespace Common.Controls.TimelineControl
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right || _mouseDownMark == null) return;
+			if (e.Button == MouseButtons.Right) return;
 			HandleMouseMove(e);
 		}
 
@@ -247,7 +247,7 @@ namespace Common.Controls.TimelineControl
 					break;
 
 				case DragState.Waiting: // Waiting to start moving a Mark
-					if (!_ignoreDragArea.Contains(location))
+					if (!_ignoreDragArea.Contains(location) && _mouseDownMark != null)
 					{
 						BeginDragMove(location);
 					}
@@ -306,7 +306,7 @@ namespace Common.Controls.TimelineControl
 		private void MouseMove_DragMoving(Point location)
 		{
 			// if we don't have anything selected, there's no point dragging anything...
-			if (!_marksSelectionManager.SelectedMarks.Any())
+			if (!_marksSelectionManager.SelectedMarks.Any() || _mouseDownMark == null)
 				return;
 
 			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
@@ -372,6 +372,7 @@ namespace Common.Controls.TimelineControl
 
 		private void MouseMove_HResizing(Point location)
 		{
+			if (_mouseDownMark == null) return;
 			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
 
 			if (dt == TimeSpan.Zero)
