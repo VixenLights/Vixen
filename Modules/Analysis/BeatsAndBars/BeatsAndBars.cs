@@ -95,7 +95,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 											BeatBarSettingsData settings)
 		{
 			MarkCollection mc = new MarkCollection();
-			mc.IsEnabled = true;
 			mc.Name = settings.AllCollectionName;
 
 			double lastFeatureMS = -1;
@@ -129,7 +128,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 											BeatBarSettingsData settings)
 		{
 			MarkCollection mc = new MarkCollection();
-			mc.IsEnabled = true;
 			mc.Name = settings.BarsCollectionName;
 
 			double featureMS = -1;
@@ -156,7 +154,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 			for (int j = 1; j <= collectionNames.Length; j++)
 			{
 				MarkCollection mc = new MarkCollection();
-				mc.IsEnabled = true;
 				mc.Name = collectionNames[j-1];
 
 				double featureMS = -1;
@@ -218,7 +215,6 @@ namespace VixenModules.Analysis.BeatsAndBars
 			for (int j = 1; j <= collectionNames.Length; j++)
 			{
 				MarkCollection mc = new MarkCollection();
-				mc.IsEnabled = true;
 				mc.Name = collectionNames[j - 1];
 				var markName = mc.Name.Split('#')[1];
 				foreach (KeyValuePair<int,double> tsValue in tsValuePairs)

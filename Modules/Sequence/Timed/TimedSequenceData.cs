@@ -61,7 +61,7 @@ namespace VixenModules.Sequence.Timed
 				var lmc = new App.Marks.MarkCollection();
 				lmc.Name = markCollection.Name;
 				lmc.Level = markCollection.Level;
-				lmc.IsEnabled = markCollection.Enabled;
+				lmc.ShowGridLines = markCollection.Enabled;
 				lmc.Decorator = new MarkDecorator
 				{
 					Color = markCollection.MarkColor,
@@ -75,7 +75,7 @@ namespace VixenModules.Sequence.Timed
 			if (LabeledMarkCollections.Any())
 			{
 				//Set one of them active
-				var mc = LabeledMarkCollections.FirstOrDefault(x => x.IsEnabled);
+				var mc = LabeledMarkCollections.FirstOrDefault(x => x.IsVisible);
 				if (mc != null)
 				{
 					mc.IsDefault = true;

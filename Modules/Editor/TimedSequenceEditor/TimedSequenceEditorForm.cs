@@ -2684,7 +2684,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault && x.IsEnabled);
+				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault && x.IsVisible);
 				if (mc == null)
 				{
 					if (_context.IsRunning) PauseSequence();
@@ -2695,7 +2695,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault);
 						if (mc != null)
 						{
-							mc.IsEnabled = true;
+							mc.ShowGridLines = mc.ShowMarkBar = true;
 						}
 					}
 				}
@@ -5079,7 +5079,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
-			foreach (var markTime in _sequence.LabeledMarkCollections.Where(markCollection => markCollection.IsEnabled).SelectMany(markCollection => markCollection.Marks))
+			foreach (var markTime in _sequence.LabeledMarkCollections.Where(markCollection => markCollection.ShowGridLines).SelectMany(markCollection => markCollection.Marks))
 			{
 				if (markTime.StartTime == referenceTimeSpan)
 				{

@@ -13,10 +13,11 @@ namespace VixenModules.App.Marks
 		private List<Mark> _marks;
 
 		private string _name;
-		private bool _isEnabled;
 		private int _level;
 		private MarkDecorator _decorator;
 		private bool _isDefault;
+		private bool _showMarkBar;
+		private bool _showGridLines;
 
 		public MarkCollection()
 		{
@@ -26,7 +27,8 @@ namespace VixenModules.App.Marks
 			Marks = _marks.AsReadOnly();
 			Id = Guid.NewGuid();
 			Level = 1;
-			IsEnabled = true;
+			ShowGridLines = true;
+			ShowMarkBar = false;
 		}
 
 		[DataMember]
@@ -45,14 +47,26 @@ namespace VixenModules.App.Marks
 		}
 
 		[DataMember]
-		public bool IsEnabled
+		public bool ShowMarkBar
 		{
-			get { return _isEnabled; }
+			get { return _showMarkBar; }
 			set
 			{
-				if (value == _isEnabled) return;
-				_isEnabled = value;
-				OnPropertyChanged(nameof(IsEnabled));
+				if (value == _showMarkBar) return;
+				_showMarkBar = value;
+				OnPropertyChanged(nameof(ShowMarkBar));
+			}
+		}
+
+		[DataMember]
+		public bool ShowGridLines
+		{
+			get { return _showGridLines; }
+			set
+			{
+				if (value == _showGridLines) return;
+				_showGridLines = value;
+				OnPropertyChanged(nameof(ShowGridLines));
 			}
 		}
 
@@ -95,6 +109,8 @@ namespace VixenModules.App.Marks
 				OnPropertyChanged(nameof(Decorator));
 			}
 		}
+
+		public bool IsVisible => ShowGridLines || ShowMarkBar;
 
 		public void AddMark(Mark mark)
 		{
@@ -151,7 +167,8 @@ namespace VixenModules.App.Marks
 		{
 			return new MarkCollection()
 			{
-				IsEnabled = IsEnabled,
+				ShowMarkBar = ShowMarkBar,
+				ShowGridLines = ShowGridLines,
 				Level = Level,
 				Name = Name,
 				_marks = Marks.Select(x => (Mark)x.Clone()).ToList(),

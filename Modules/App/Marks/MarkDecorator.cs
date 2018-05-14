@@ -10,7 +10,8 @@ namespace VixenModules.App.Marks
 		private bool _isBold;
 		private bool _isSolidLine;
 		private Color _color;
-		private bool _compactMode;
+		private bool _showLabels;
+		private bool _showLines;
 
 		public MarkDecorator()
 		{
@@ -55,18 +56,6 @@ namespace VixenModules.App.Marks
 			}
 		}
 
-		[DataMember]
-		public bool CompactMode
-		{
-			get { return _compactMode; }
-			set
-			{
-				if (value == _compactMode) return;
-				_compactMode = value;
-				OnPropertyChanged(nameof(CompactMode));
-			}
-		}
-
 		#region Implementation of ICloneable
 
 		/// <inheritdoc />
@@ -76,8 +65,7 @@ namespace VixenModules.App.Marks
 			{
 				Color = Color,
 				IsBold = IsBold,
-				IsSolidLine = IsSolidLine,
-				CompactMode = CompactMode
+				IsSolidLine = IsSolidLine
 			};
 		}
 

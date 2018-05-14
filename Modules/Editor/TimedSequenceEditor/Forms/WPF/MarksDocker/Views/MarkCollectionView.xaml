@@ -27,10 +27,10 @@
 						<RadioButton IsChecked="{Binding IsDefault}" GroupName="Active" Style="{StaticResource ContentLessCheckRadioButton}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="1" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource ContentlessCheckBox}"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
+						<CheckBox IsChecked="{Binding ShowGridLines}" Style="{StaticResource ContentlessCheckBox}"  VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="2" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
-						<CheckBox IsChecked="{Binding Decorator.CompactMode, Converter={StaticResource InverseBooleanConverter}}" Style="{StaticResource ContentlessCheckBox}" 
+						<CheckBox IsChecked="{Binding ShowMarkBar}" Style="{StaticResource ContentlessCheckBox}" 
 						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
 					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" >

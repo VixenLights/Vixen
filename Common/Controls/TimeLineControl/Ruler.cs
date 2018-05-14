@@ -812,7 +812,7 @@ namespace Common.Controls.Timeline
 		{
 			const int markDifferential = 20;
 			var marksAtTime = new List<Mark>();
-			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsEnabled).OrderByDescending(x => x.Level))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible).OrderByDescending(x => x.Level))
 			{
 				labeledMarkCollection.EnsureOrder();
 				foreach (var labeledMark in labeledMarkCollection.Marks)
@@ -838,7 +838,7 @@ namespace Common.Controls.Timeline
 			Pen p;
 
 			// iterate through all marks, and if it's visible, draw it
-			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsEnabled))
+			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible))
 			{
 				int lineBold = 1;
 				if (labeledMarkCollection.Decorator.IsBold)

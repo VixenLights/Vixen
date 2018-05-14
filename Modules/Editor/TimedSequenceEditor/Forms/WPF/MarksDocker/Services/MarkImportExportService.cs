@@ -106,7 +106,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				var lmc = new MarkCollection();
 				lmc.Name = markCollection.Name;
 				lmc.Level = markCollection.Level;
-				lmc.IsEnabled = markCollection.Enabled;
+				lmc.ShowGridLines = markCollection.Enabled;
 				lmc.Decorator = new MarkDecorator
 				{
 					Color = markCollection.MarkColor,
@@ -127,7 +127,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		{
 			//Set one of them active
 			if (!collections.Any()) return;
-			var mc = collections.FirstOrDefault(x => x.IsEnabled);
+			var mc = collections.FirstOrDefault(x => x.IsVisible);
 			if (mc != null)
 			{
 				mc.IsDefault = true;
@@ -286,6 +286,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						{
 							var collectionName = $"{name ?? "xTiming"} - {counter}";
 							var mc = CreateNewCollection(Color.Brown, collectionName);
+							mc.ShowMarkBar = true; //We have labels, so make sure they are seen.
 							var effects = effectLayer?.SelectNodes("Effect");
 							if (effects != null)
 							{

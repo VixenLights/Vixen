@@ -54,22 +54,41 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region IsEnabled property
+		#region ShowGridLines property
 
 		/// <summary>
 		/// Gets or sets the IsEnabled value.
 		/// </summary>
 		[ViewModelToModel("MarkCollection")]
-		public bool IsEnabled
+		public bool ShowGridLines
 		{
-			get { return GetValue<bool>(IsEnabledProperty); }
-			set { SetValue(IsEnabledProperty, value); }
+			get { return GetValue<bool>(ShowGridLinesProperty); }
+			set { SetValue(ShowGridLinesProperty, value); }
 		}
 
 		/// <summary>
 		/// IsEnabled property data.
 		/// </summary>
-		public static readonly PropertyData IsEnabledProperty = RegisterProperty("IsEnabled", typeof(bool), null);
+		public static readonly PropertyData ShowGridLinesProperty = RegisterProperty("ShowGridLines", typeof(bool), null);
+
+		#endregion
+
+		#region ShowMarkBar property
+
+		/// <summary>
+		/// Gets or sets the ShowMarkBar value.
+		/// </summary>
+		[ViewModelToModel("MarkCollection")]
+		public bool ShowMarkBar
+		{
+			get { return GetValue<bool>(ShowMarkBarProperty); }
+			set { SetValue(ShowMarkBarProperty, value); }
+		}
+
+		/// <summary>
+		/// ShowMarkBar property data.
+		/// </summary>
+		public static readonly PropertyData ShowMarkBarProperty = RegisterProperty("ShowMarkBar", typeof(bool), null);
 
 		#endregion
 

@@ -22,11 +22,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		public MarkDockerViewModel(ObservableCollection<MarkCollection> markCollections)
 		{
 			MarkCollections = markCollections;
-			if (MarkCollections.All(x => x.IsEnabled))
+			if (MarkCollections.All(x => x.ShowGridLines))
 			{
 				_lineToggleState = false;
 			}
-			if (MarkCollections.All(x => x.Decorator.CompactMode))
+			if (MarkCollections.All(x => x.ShowMarkBar))
 			{
 				_markBarToggleState = false;
 			}
@@ -57,7 +57,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			if (markCollection.IsDefault && MarkCollections.Any())
 			{
 				//we need to find a new default
-				var mc = MarkCollections.FirstOrDefault(x => x.IsEnabled);
+				var mc = MarkCollections.FirstOrDefault(x => x.IsVisible);
 				if (mc != null)
 				{
 					mc.IsDefault = true;
@@ -194,7 +194,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void ToggleLineState()
 		{
-			MarkCollections.ForEach(x => x.IsEnabled = _lineToggleState);
+			MarkCollections.ForEach(x => x.ShowGridLines = _lineToggleState);
 			_lineToggleState = !_lineToggleState;
 		}
 
@@ -217,7 +217,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void ToggleMarkBarState()
 		{
-			MarkCollections.ForEach(x => x.Decorator.CompactMode = _markBarToggleState);
+			MarkCollections.ForEach(x => x.ShowMarkBar = _markBarToggleState);
 			_markBarToggleState = !_markBarToggleState;
 		}
 

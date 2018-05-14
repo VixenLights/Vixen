@@ -1986,7 +1986,7 @@ namespace Common.Controls.Timeline
 			ClearSnapPoints();
 			foreach (var mc in _markCollections)
 			{
-				if (!mc.IsEnabled) continue;
+				if (!mc.ShowGridLines) continue;
 				mc.EnsureOrder();
 				foreach (var mark in mc.Marks)
 				{
