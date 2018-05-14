@@ -85,7 +85,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				foreach (var otherCollection in otherCollections)
 				{
-					mcOrig.RemoveAll(x => otherCollection.Marks.Contains(x));
+					mcOrig.RemoveAll(x => otherCollection.Marks.Any(m => m.StartTime == x.StartTime && m.Duration == x.Duration));
 				}
 			}
 		}
@@ -139,7 +139,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 				if (feature.hasTimestamp)
 				{
 					featureMS = feature.timestamp.totalMilliseconds();
-					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
+					mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)) { Text = "Bar" });
 				}
 			}
 			return mc;
@@ -166,7 +166,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 					if ((feature.hasTimestamp) && (feature.label == j.ToString()))
 					{
 						featureMS = feature.timestamp.totalMilliseconds();
-						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)));
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)){Text = $"Beat {j}"});
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
@@ -220,12 +220,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 				MarkCollection mc = new MarkCollection();
 				mc.IsEnabled = true;
 				mc.Name = collectionNames[j - 1];
-
+				var markName = mc.Name.Split('#')[1];
 				foreach (KeyValuePair<int,double> tsValue in tsValuePairs)
 				{
 					if (tsValue.Key == j)
 					{
-						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)));
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(tsValue.Value)){Text = $"Beat {markName}"});
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
