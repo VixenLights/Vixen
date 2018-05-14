@@ -4528,7 +4528,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			SequenceModified();
 		}
 
-		private void LabeledMarkCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void LabeledMarkCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Remove)
 			{
@@ -4538,17 +4538,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
 			}
-			else
+			else if (e.Action == NotifyCollectionChangedAction.Reset)
 			{
-				if (e.OldItems != null)
-				{
-					RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
-				}
-
-				if (e.NewItems != null)
-				{
-					AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
-				}
+				//We don't know what happened, so remove all that may exist and add them back to be sure.
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+				AddMarkCollectionHandlers(_sequence.LabeledMarkCollections);
 			}
 			SequenceModified();
 		}
