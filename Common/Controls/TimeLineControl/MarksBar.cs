@@ -67,7 +67,6 @@ namespace Common.Controls.TimelineControl
 
 		private void RefreshView()
 		{
-			CalculateHeight();
 			Invalidate();
 		}
 
@@ -612,7 +611,6 @@ namespace Common.Controls.TimelineControl
 		{
 			try
 			{
-				CalculateHeight();
 				// Translate the graphics to work the same way the timeline grid does
 				// (ie. Drawing coordinates take into account where we start at in time)
 				e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
