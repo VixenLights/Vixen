@@ -128,6 +128,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 											BeatBarSettingsData settings)
 		{
 			MarkCollection mc = new MarkCollection();
+			mc.ShowMarkBar = true;
 			mc.Name = settings.BarsCollectionName;
 
 			double featureMS = -1;
@@ -154,16 +155,15 @@ namespace VixenModules.Analysis.BeatsAndBars
 			for (int j = 1; j <= collectionNames.Length; j++)
 			{
 				MarkCollection mc = new MarkCollection();
+				mc.ShowMarkBar = true;
 				mc.Name = collectionNames[j-1];
-
-				double featureMS = -1;
 
 				foreach (ManagedFeature feature in featureSet)
 				{
 					if ((feature.hasTimestamp) && (feature.label == j.ToString()))
 					{
-						featureMS = feature.timestamp.totalMilliseconds();
-						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)){Text = $"Beat {j}"});
+						var featureMS = feature.timestamp.totalMilliseconds();
+						mc.AddMark(new Mark(TimeSpan.FromMilliseconds(featureMS)){Text = $"{j} Beat"});
 					}
 				}
 				RemoveDuplicateMarks(ref mc, otherMarks);
