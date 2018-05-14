@@ -14,7 +14,7 @@ namespace VixenModules.App.Marks
 		{
 			StartTime = startTime;
 			Duration = TimeSpan.FromMilliseconds(450);
-			Text = @"Mark"; //What is the reasonable deafault?
+			Text = String.Empty;
 		}
 
 		public string Text { get; set; }
