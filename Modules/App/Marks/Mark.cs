@@ -13,7 +13,7 @@ namespace VixenModules.App.Marks
 		public Mark(TimeSpan startTime)
 		{
 			StartTime = startTime;
-			Duration = TimeSpan.FromMilliseconds(500);
+			Duration = TimeSpan.FromMilliseconds(400);
 			Text = @"Mark"; //What is the reasonable deafault?
 		}
 
