@@ -12,7 +12,7 @@ namespace Common.Controls.TimelineControl
 		// or similar, as the elements within the list may have their times updated by the grid, which
 		// puts their order out.
 		
-		private Dictionary<Mark, MarkStack> _stackIndexes = new Dictionary<Mark, MarkStack>();
+		private readonly Dictionary<Mark, MarkStack> _stackIndexes = new Dictionary<Mark, MarkStack>();
 
 		public MarkRow(MarkCollection markCollection)
 		{
@@ -80,7 +80,7 @@ namespace Common.Controls.TimelineControl
 		{
 			int maxStack = 1;
 			_stackIndexes.Clear();
-			MarkCollection.EnsureOrder();
+			
 			for (int i = 0; i < MarkCollection.Marks.Count; i++)
 			{
 				if (MarkCollection.Marks[i].EndTime < startTime) continue;

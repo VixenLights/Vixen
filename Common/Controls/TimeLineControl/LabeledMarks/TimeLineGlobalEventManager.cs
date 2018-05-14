@@ -35,6 +35,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 
 		public void OnMarksMoving(MarksMovingEventArgs e)
 		{
+			var t = e.Marks.Select(x => x.Parent).Distinct();
+			foreach (var markCollection in t)
+			{
+				markCollection.EnsureOrder();
+			}
 			MarksMoving?.Invoke(this, e);
 		}
 

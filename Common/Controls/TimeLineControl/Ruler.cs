@@ -814,7 +814,7 @@ namespace Common.Controls.Timeline
 			var marksAtTime = new List<Mark>();
 			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible).OrderByDescending(x => x.Level))
 			{
-				labeledMarkCollection.EnsureOrder();
+				//labeledMarkCollection.EnsureOrder();
 				foreach (var labeledMark in labeledMarkCollection.Marks)
 				{
 					TimeSpan markStart = TimeSpan.FromMilliseconds(labeledMark.StartTime.TotalMilliseconds - (markDifferential));

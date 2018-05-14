@@ -29,6 +29,7 @@ namespace Common.Controls.TimelineControl
 		private const int MinMarkWidthPx = 12;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 		private ObservableCollection<MarkCollection> _markCollections;
+		private readonly Font _textFont = SystemFonts.MessageBoxFont;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
@@ -75,6 +76,7 @@ namespace Common.Controls.TimelineControl
 				}
 			}
 			Invalidate();
+			Refresh();
 		}
 
 		private void CreateRows()
@@ -606,7 +608,8 @@ namespace Common.Controls.TimelineControl
 
 		protected override void OnVisibleTimeStartChanged(object sender, EventArgs e)
 		{
-			Invalidate();
+			//As in the ruler, looks a lot better
+			Refresh();
 		}
 
 		private void CalculateHeight()
@@ -754,7 +757,7 @@ namespace Common.Controls.TimelineControl
 			//Draw the text
 			SolidBrush drawBrush = new SolidBrush(IdealTextColor(row.MarkDecorator.Color));
 			StringFormat drawFormat = new StringFormat();
-			g.DrawString(mark.Text, SystemFonts.MessageBoxFont, drawBrush, destRect, drawFormat);
+			g.DrawString(mark.Text, _textFont, drawBrush, destRect, drawFormat);
 
 		}
 
