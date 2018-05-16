@@ -298,7 +298,9 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 									var endTime = effect.Attributes?.GetNamedItem("endtime").Value;
 
 									var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)));
-									mark.Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
+									var duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
+									if(duration == TimeSpan.Zero) continue;
+									mark.Duration = duration;
 									mark.Text = label;
 									mc.AddMark(mark);
 								}

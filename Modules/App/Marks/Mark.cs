@@ -41,6 +41,10 @@ namespace VixenModules.App.Marks
 			{
 				if (value.Equals(_startTime)) return;
 				_startTime = value;
+				if (Duration < TimeSpan.FromMilliseconds(25))
+				{
+					Duration = TimeSpan.FromMilliseconds(25);
+				}
 				OnPropertyChanged(nameof(StartTime));
 				OnPropertyChanged(nameof(EndTime));
 			}
