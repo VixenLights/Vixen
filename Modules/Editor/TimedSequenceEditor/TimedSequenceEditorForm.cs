@@ -192,8 +192,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_Paste.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_AssociateAudio.Image = Resources.music;
 			toolStripButton_AssociateAudio.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_MarkManager.Image = Resources.timeline_marker;
-			toolStripButton_MarkManager.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_ZoomTimeIn.Image = Resources.zoom_in;
 			toolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_ZoomTimeOut.Image = Resources.zoom_out;

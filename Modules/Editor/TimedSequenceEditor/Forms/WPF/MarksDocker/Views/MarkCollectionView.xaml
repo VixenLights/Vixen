@@ -13,7 +13,6 @@
 				<ResourceDictionary Source="pack://application:,,,/WPFCommon;component/Theme/Theme.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<converters:ColorToSolidBrushConverter x:Key="ColorToSolidBrushConverter"/>
-			<converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
 			
 			<DataTemplate x:Key="MarkCollectionRowTemplate" DataType="{x:Type viewModels:MarkCollectionViewModel}">
 				<Grid>
@@ -39,10 +38,18 @@
 							           Focusable="True" Margin="2,3,2,3">
 								<TextBlock.ContextMenu>
 									<ContextMenu>
-										<MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
+										<MenuItem Header="Delete" Command="{Binding DeleteCommand}">
+											<MenuItem.Icon>
+												<Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
 										<MenuItem Header="Solid Line" IsCheckable="True" IsChecked="{Binding Decorator.IsSolidLine}"/>
 										<MenuItem Header="Bold" IsCheckable="True" IsChecked="{Binding Decorator.IsBold}"/>
-										<MenuItem Header="Color" Command="{Binding PickColorCommand}"/>
+										<MenuItem Header="Color" Command="{Binding PickColorCommand}">
+											<MenuItem.Icon>
+												<Image Source="/Resources;component/colors.png" Width="16" Height="16"/>
+											</MenuItem.Icon>
+										</MenuItem>
 									</ContextMenu>
 								</TextBlock.ContextMenu>
 								<i:Interaction.Triggers>

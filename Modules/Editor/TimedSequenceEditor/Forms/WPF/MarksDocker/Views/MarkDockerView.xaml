@@ -37,7 +37,7 @@
 				<Grid Grid.IsSharedSizeScope="True">
 					<Grid.Resources>
 						<DataTemplate x:Key="MarkCollectionRow" DataType="{x:Type viewModels:MarkCollectionViewModel}">
-							<views:MarkCollectionView></views:MarkCollectionView>
+							<views:MarkCollectionView/>
 						</DataTemplate>
 					</Grid.Resources>
 					<Grid.ColumnDefinitions>
@@ -80,41 +80,6 @@
 					<ItemsControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" ItemsSource="{Binding MarkCollections}" ItemTemplate="{StaticResource MarkCollectionRow}"/>
 				</Grid>
 			</Border>
-
-			<!--<ListView ItemsSource="{Binding MarkCollections}" MinHeight="50">
-				<ListView.View>
-					<GridView>
-						<GridViewColumn Header="Enabled" Width="Auto">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate DataType="{x:Type marks:MarkCollection}">
-									<CheckBox IsChecked="{Binding IsEnabled}"></CheckBox>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-						<GridViewColumn Header="Default" Width="Auto">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate DataType="{x:Type marks:MarkCollection}">
-									<RadioButton IsChecked="{Binding IsDefault}" GroupName="DefaultGroup"></RadioButton>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-						<GridViewColumn Header="Mode" Width="Auto">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate DataType="{x:Type marks:MarkCollection}">
-									<CheckBox IsChecked="{Binding Decorator.CompactMode}"></CheckBox>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-						<GridViewColumn Header="Name">
-							<GridViewColumn.CellTemplate>
-								<DataTemplate DataType="{x:Type marks:MarkCollection}">
-									<TextBlock Text="{Binding Name}" Foreground="{Binding Decorator.Color, Converter={StaticResource ColorToSolidBrushConverter}}"></TextBlock>
-								</DataTemplate>
-							</GridViewColumn.CellTemplate>
-						</GridViewColumn>
-					</GridView>
-				</ListView.View>
-			</ListView>-->
 		</ScrollViewer>
 	</DockPanel>
 </catel:UserControl>
