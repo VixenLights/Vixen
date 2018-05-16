@@ -213,6 +213,9 @@ namespace Common.Controls.TimelineControl
 					delete.Click += DeleteMark_Click;
 					var rename = c.Items.Add("&Rename");
 					rename.Click += Rename_Click;
+					var copy = c.Items.Add("&Copt Text");
+					copy.Click += Copy_Click;
+					copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -500,7 +503,8 @@ namespace Common.Controls.TimelineControl
 
 		private void Rename_Click(object sender, EventArgs e)
 		{
-			TextDialog td = new TextDialog("Enter the new name.", _marksSelectionManager.SelectedMarks.Count==1?"Rename Mark":"Rename Multiple Marks");
+			var single = _marksSelectionManager.SelectedMarks.Count == 1;
+			TextDialog td = new TextDialog("Enter the new name.", _marksSelectionManager.SelectedMarks.Count==1?"Rename Mark":"Rename Multiple Marks", single?_marksSelectionManager.SelectedMarks.First().Text:string.Empty, single);
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
@@ -520,6 +524,23 @@ namespace Common.Controls.TimelineControl
 			}
 			_timeLineGlobalEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 		}
+
+		private void Copy_Click(object sender, EventArgs e)
+		{
+			if (_marksSelectionManager.SelectedMarks.Any())
+			{
+				var text = _marksSelectionManager.SelectedMarks.First().Text;
+				if(!string.IsNullOrEmpty(text))
+				{
+					Clipboard.SetText(_marksSelectionManager.SelectedMarks.First().Text);
+				}
+				else
+				{
+					Clipboard.Clear();
+				}
+			}
+		}
+
 
 		#endregion
 
@@ -569,7 +590,7 @@ namespace Common.Controls.TimelineControl
 		{
 			MarkRow containingRow = null;
 			int curheight = 0;
-			foreach (MarkRow row in _rows)
+			foreach (MarkRow row in _rows.Where(x => x.Visible))
 			{
 				if (p.Y < curheight + row.Height)
 				{
@@ -707,28 +728,7 @@ namespace Common.Controls.TimelineControl
 				displayHeight = row.Height;
 			}
 
-			if (mark.StartTime >= VisibleTimeStart)
-			{
-				if (mark.EndTime < VisibleTimeEnd)
-				{
-					width = (int)timeToPixels(mark.Duration);
-				}
-				else
-				{
-					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(mark.StartTime));
-				}
-			}
-			else
-			{
-				if (mark.EndTime <= VisibleTimeEnd)
-				{
-					width = (int)timeToPixels(mark.Duration);
-				}
-				else
-				{
-					width = (int)(timeToPixels(VisibleTimeEnd) - timeToPixels(VisibleTimeStart));
-				}
-			}
+			width = (int)timeToPixels(mark.Duration);
 			if (width <= 0) return;
 			Size size = new Size(width, displayHeight);
 
