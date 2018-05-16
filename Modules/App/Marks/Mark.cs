@@ -3,8 +3,12 @@ using System.Runtime.Serialization;
 
 namespace VixenModules.App.Marks
 {
-	public class Mark:IComparable<Mark>, ICloneable
+	public class Mark:BindableBase, IComparable<Mark>, ICloneable
 	{
+		private TimeSpan _startTime;
+		private string _text;
+		private TimeSpan _duration;
+
 		public Mark() : this(TimeSpan.Zero)
 		{
 
@@ -12,18 +16,48 @@ namespace VixenModules.App.Marks
 
 		public Mark(TimeSpan startTime)
 		{
-			StartTime = startTime;
-			Duration = TimeSpan.FromMilliseconds(450);
-			Text = String.Empty;
+			_startTime = startTime;
+			_duration = TimeSpan.FromMilliseconds(450);
+			_text = String.Empty;
 		}
 
-		public string Text { get; set; }
+		[DataMember]
+		public string Text
+		{
+			get { return _text; }
+			set
+			{
+				if (value == _text) return;
+				_text = value;
+				OnPropertyChanged(nameof(Text));
+			}
+		}
 
 		[DataMember]
-		public TimeSpan StartTime { get; set; }
+		public TimeSpan StartTime
+		{
+			get { return _startTime; }
+			set
+			{
+				if (value.Equals(_startTime)) return;
+				_startTime = value;
+				OnPropertyChanged(nameof(StartTime));
+				OnPropertyChanged(nameof(EndTime));
+			}
+		}
 
 		[DataMember]
-		public TimeSpan Duration { get; set; }
+		public TimeSpan Duration
+		{
+			get { return _duration; }
+			set
+			{
+				if (value.Equals(_duration)) return;
+				_duration = value;
+				OnPropertyChanged(nameof(Duration));
+				OnPropertyChanged(nameof(EndTime));
+			}
+		}
 
 		public TimeSpan EndTime => StartTime + Duration;
 
