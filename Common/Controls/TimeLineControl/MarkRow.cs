@@ -86,7 +86,7 @@ namespace Common.Controls.TimelineControl
 				if (MarkCollection.Marks[i].EndTime < startTime) continue;
 				if (MarkCollection.Marks[i].StartTime > endTime) break;
 				List<Mark> overlappingElements = GetOverlappingMarks(MarkCollection.Marks[i]);
-				if (overlappingElements.Any())
+				if (overlappingElements.Count > 1)
 				{
 					List<List<Mark>> stack = DetermineMarkStack(overlappingElements);
 					int x = 0;
