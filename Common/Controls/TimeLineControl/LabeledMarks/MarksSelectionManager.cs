@@ -39,6 +39,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			}
 		}
 
+		public bool IsSelected(Mark mark)
+		{
+			return _selectedMarks.Contains(mark);
+		}
+
 		public void DeSelect(Mark mark)
 		{
 			_selectedMarks.Remove(mark);

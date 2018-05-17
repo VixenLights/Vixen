@@ -18,6 +18,7 @@ namespace Common.Controls.TimelineControl
 		private readonly List<MarkRow> _rows;
 		private Point _mouseDownLocation;
 		private Point _moveResizeStartLocation;
+		private Point _lastSingleSelectedMarkLocation;
 		private Mark _mouseDownMark;
 		
 		private DragState _dragState = DragState.Normal; // the current dragging state
@@ -167,17 +168,31 @@ namespace Common.Controls.TimelineControl
 			{
 				_mouseDownMark = MarkAt(location);
 				
-				if (!CtrlPressed)
+				if (!CtrlPressed && !ShiftPressed)
 				{
-					if (!_marksSelectionManager.SelectedMarks.Contains(_mouseDownMark))
+					_lastSingleSelectedMarkLocation = location;
+					_marksSelectionManager.ClearSelected();
+					_marksSelectionManager.Select(_mouseDownMark);	
+				}
+				else if(ShiftPressed)
+				{
+
+					if (_lastSingleSelectedMarkLocation != Point.Empty)
 					{
-						_marksSelectionManager.ClearSelected();
-						_marksSelectionManager.Select(_mouseDownMark);
+						SelectMarksBetween(_lastSingleSelectedMarkLocation, location);
 					}
 				}
 				else
 				{
-					_marksSelectionManager.Select(_mouseDownMark);
+					if (_marksSelectionManager.IsSelected(_mouseDownMark))
+					{
+						_marksSelectionManager.DeSelect(_mouseDownMark);
+					}
+					else
+					{
+						_lastSingleSelectedMarkLocation = location;
+						_marksSelectionManager.Select(_mouseDownMark);
+					}
 				}
 			}
 
@@ -203,9 +218,10 @@ namespace Common.Controls.TimelineControl
 		/// <inheritdoc />
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			Point location = TranslateLocation(e.Location);
 			if (e.Button == MouseButtons.Right)
 			{
-				if (_mouseDownLocation == TranslateLocation(e.Location) && _mouseDownMark != null)
+				if (_mouseDownLocation == location && _mouseDownMark != null)
 				{
 					ContextMenuStrip c = new ContextMenuStrip();
 					c.Renderer = new ThemeToolStripRenderer();
@@ -225,7 +241,7 @@ namespace Common.Controls.TimelineControl
 			{
 				case DragState.Moving:
 					
-					MouseUp_DragMoving();
+					MouseUp_DragMoving(location);
 					break;
 				case DragState.HResizing:
 					MouseUp_HResizing();
@@ -363,8 +379,9 @@ namespace Common.Controls.TimelineControl
 			BeginMoveResizeMarks(location);
 		}
 
-		private void MouseUp_DragMoving()
+		private void MouseUp_DragMoving(Point location)
 		{
+			_lastSingleSelectedMarkLocation = location;
 			FinishedResizeMoveMarks(ElementMoveType.Move);
 			EndAllDrag();
 		}
@@ -484,6 +501,121 @@ namespace Common.Controls.TimelineControl
 			_moveResizeStartLocation = Point.Empty;
 		}
 
+		/// <summary>
+		/// Select all elements that are in the Virtual box created by the two diagonal points
+		/// </summary>
+		/// <param name="startingPoint"></param>
+		/// <param name="endingPoint"></param>
+		private void SelectMarksBetween(Point startingPoint, Point endingPoint)
+		{
+			_marksSelectionManager.ClearSelected();
+			//find all the elements between us and the last selected
+			if (endingPoint.X > startingPoint.X)
+			{
+				//Right
+				if (endingPoint.Y > startingPoint.Y)
+				{
+					//Below
+					SelectElementsWithin(new Rectangle(startingPoint,
+						new Size(endingPoint.X - startingPoint.X,
+							endingPoint.Y - startingPoint.Y)));
+				}
+				else
+				{
+					//Above
+					SelectElementsWithin(new Rectangle(startingPoint.X, endingPoint.Y, endingPoint.X - startingPoint.X,
+						startingPoint.Y - endingPoint.Y));
+				}
+			}
+			else
+			{
+				//Left
+				if (endingPoint.Y > startingPoint.Y)
+				{
+					//Below
+					SelectElementsWithin(new Rectangle(endingPoint.X, startingPoint.Y, startingPoint.X - endingPoint.X,
+						endingPoint.Y - startingPoint.Y));
+				}
+				else
+				{
+					//Above
+					SelectElementsWithin(new Rectangle(endingPoint,
+						new Size(startingPoint.X - endingPoint.X,
+							startingPoint.Y - endingPoint.Y)));
+				}
+			}
+		}
+
+		private void SelectElementsWithin(Rectangle selectedArea)
+		{
+			var startRow = RowAt(selectedArea.Location);
+			var endRow = RowAt(selectedArea.BottomRight());
+
+			TimeSpan selStart = pixelsToTime(selectedArea.Left);
+			TimeSpan selEnd = pixelsToTime(selectedArea.Right);
+			int selTop = selectedArea.Top;
+			int selBottom = selTop + selectedArea.Height;
+			string moveDirection = (selectedArea.Left < _lastSingleSelectedMarkLocation.X) ? "Left" : "Right";
+
+			// Iterate all elements of only the rows within our selection.
+			bool startFound = false, endFound = false;
+			int top = 0;
+			foreach (var row in _rows.Where(x => x.Visible))
+			{
+				if (endFound || // we already passed the end row
+					(!startFound && (row != startRow)) //we haven't found the first row, and this isn't it
+					)
+				{
+					top += row.Height;
+					continue;
+				}
+
+				// If we already found the first row, or we haven't, but this is it
+				if (startFound || row == startRow)
+				{
+					startFound = true;
+
+					// This row is in our selection
+					foreach (var elem in row)
+					{
+						var markStack = row.GetStackForMark(elem);
+						var displayHeight =
+							(markStack.StackCount != 0) ? ((row.Height - 1) / row.StackCount) : row.Height - 1;
+
+						var elemTop = top + displayHeight * markStack.StackIndex;
+						int elemBottom = elemTop + displayHeight;
+						
+						
+						//if (moveDirection == "Left")
+						//{
+							var selected = ((elem.StartTime < selEnd && elem.EndTime > selStart) );
+							if (selected)
+							{
+								_marksSelectionManager.Select(elem);
+							}
+						//}
+						//else
+						//{
+						//	var selected = ((elem.StartTime > selStart && elem.EndTime < selEnd) );
+						//	if (selected)
+						//	{
+						//		_marksSelectionManager.Select(elem);
+						//	}
+						//}
+						
+					}
+
+					top += row.Height;
+
+					if (row == endRow)
+					{
+						endFound = true;
+					}
+				}
+			} // end foreach
+
+		}
+
 		#region Events
 
 		private void TimeLineGlobalEventManagerDeleteTimeLineGlobal(object sender, MarksDeletedEventArgs e)
@@ -545,6 +677,8 @@ namespace Common.Controls.TimelineControl
 		#endregion
 
 		private bool CtrlPressed => ModifierKeys.HasFlag(Keys.Control);
+
+		private bool ShiftPressed => ModifierKeys.HasFlag(Keys.Shift);
 
 		/// <summary>
 		/// Returns all elements located at the given point in client coordinates
