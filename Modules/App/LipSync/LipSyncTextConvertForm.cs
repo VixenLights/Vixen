@@ -356,12 +356,14 @@ namespace VixenModules.App.LipSyncApp
 				markCollectionCombo.Enabled = true;
 				startOffsetCombo.Enabled = true;
 				alignCombo.Enabled = true;
-
-				alignCombo.Items.Clear();
-				alignCombo.Items.Add("Phoneme");
-				alignCombo.Items.Add("Word");
-				alignCombo.Items.Add("Phrase");
-				alignCombo.SelectedIndex = 1;
+				if(alignCombo.Items.Count != 3)
+				{
+					alignCombo.Items.Clear();
+					alignCombo.Items.Add("Phoneme");
+					alignCombo.Items.Add("Word");
+					alignCombo.Items.Add("Phrase");
+					alignCombo.SelectedIndex = 1;
+				}
 			}
 			else
 			{
