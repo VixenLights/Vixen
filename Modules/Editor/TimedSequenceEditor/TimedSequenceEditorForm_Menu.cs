@@ -522,14 +522,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
 				textConverter.NewTranslation += textConverterHandler;
 				textConverter.TranslateFailure += translateFailureHandler;
-				List<Dictionary<string, List<TimeSpan>>> tcMarks = new List<Dictionary<string, List<TimeSpan>>>();
-				foreach (var mc in _sequence.LabeledMarkCollections)
-				{
-					Dictionary<string, List<TimeSpan>> tcDict = new Dictionary<string, List<TimeSpan>>();
-					tcDict[mc.Name] = mc.Marks.Select(x => x.StartTime).ToList();
-					tcMarks.Add(tcDict);
-				}
-				textConverter.MarkCollections = tcMarks;
+				textConverter.MarkCollections = _sequence.LabeledMarkCollections;
 				textConverter.Show(this);
 			}
 		}

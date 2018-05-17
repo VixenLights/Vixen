@@ -10,6 +10,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using System.Text.RegularExpressions;
+using VixenModules.App.Marks;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -37,8 +38,8 @@ namespace VixenModules.App.LipSyncApp
 			_lastMarkIndex = -1;
 		}
 
-//		public List<MarkCollection> MarkCollections { get; set; }
-		public List<Dictionary<string,List<TimeSpan>>> MarkCollections { get; set; }
+		public IList<MarkCollection> MarkCollections { get; set; }
+		//public List<Dictionary<string,List<TimeSpan>>> MarkCollections { get; set; }
 
 		private List<string> CreateSubstringList()
 		{
@@ -134,10 +135,10 @@ namespace VixenModules.App.LipSyncApp
 
 			if (NewTranslation != null)
 			{
-                string mcKey = (null != markCollectionCombo.SelectedItem) ? markCollectionCombo.SelectedItem.ToString() : "";
+				var selectedMarkCollection = (markCollectionCombo.SelectedItem as ComboBoxItem)?.Value as MarkCollection;
 				List<string> subStrings = CreateSubstringList();
-				Dictionary<string, List<TimeSpan>> selMCDict = MarkCollections.Find(x => x.ContainsKey(mcKey));
-                List<TimeSpan> selMC = (null != selMCDict) ? selMCDict[mcKey] : null;
+				
+                var selMC = selectedMarkCollection?.Marks.Select(x => x.StartTime).ToList();
 				bool doPhonemeAlign = 
 					(alignCombo.SelectedIndex != -1) && (alignCombo.SelectedItem.Equals("Phoneme"));
 
@@ -246,22 +247,18 @@ namespace VixenModules.App.LipSyncApp
 			setMarkControls(false);
 		}
 
-		void populateStartOffsetCombo()
+		void PopulateStartOffsetCombo()
 		{
 			int lastIndex = startOffsetCombo.SelectedIndex;
-			int lastCount = startOffsetCombo.Items.Count;
-
+			
 			startOffsetCombo.Items.Clear();
 			if (markCollectionCombo.SelectedIndex > -1)
 			{
-				string selectedMarks = markCollectionCombo.SelectedItem.ToString();
-
-				Dictionary<string,List<TimeSpan>> mc =
-					MarkCollections.Find(x => x.ContainsKey(selectedMarks));
+				var mc = (markCollectionCombo.SelectedItem as ComboBoxItem)?.Value as MarkCollection;
 
 				if (mc != null)
 				{
-					foreach (TimeSpan ts in mc[selectedMarks])
+					foreach (TimeSpan ts in mc.Marks.Select(x => x.StartTime))
 					{
 						startOffsetCombo.Items.Add(ts);
 					}
@@ -290,14 +287,14 @@ namespace VixenModules.App.LipSyncApp
 				startOffsetCombo.SelectedIndex = -1;
 			}
 
-			populateStartOffsetCombo();
+			PopulateStartOffsetCombo();
 
 			_lastMarkIndex = markCollectionCombo.SelectedIndex;
 		}
 
 		private void startOffsetCombo_DropDown(object sender, EventArgs e)
 		{
-			populateStartOffsetCombo();
+			PopulateStartOffsetCombo();
 		}
 
 		private void markCollectionRadio_CheckedChanged(object sender, EventArgs e)
@@ -318,14 +315,12 @@ namespace VixenModules.App.LipSyncApp
 			int lastCount = markCollectionCombo.Items.Count;
 
 			markCollectionCombo.Items.Clear();
-			foreach (Dictionary<string,List<TimeSpan>> mc in MarkCollections)
+			foreach (var mc in MarkCollections)
 			{
-				foreach(KeyValuePair<string,List<TimeSpan>>kvp in mc)
+				if (mc.Marks.Any())
 				{
-					if ((kvp.Key != null) && (kvp.Value.Count != 0))
-					{
-						markCollectionCombo.Items.Add(kvp.Key);
-					}
+					var item = new ComboBoxItem(mc.Name, mc);
+					markCollectionCombo.Items.Add(item);
 				}
 			}
 
@@ -348,7 +343,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					markCollectionCombo.SelectedIndex = 0;
 				}
-				populateStartOffsetCombo();
+				PopulateStartOffsetCombo();
 
 				markCollectionRadio.AutoCheck = 
 					(markCollectionCombo.Items.Count > 0) && (startOffsetCombo.Items.Count > 0);
