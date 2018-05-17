@@ -170,9 +170,12 @@ namespace Common.Controls.TimelineControl
 				
 				if (!CtrlPressed && !ShiftPressed)
 				{
-					_lastSingleSelectedMarkLocation = location;
-					_marksSelectionManager.ClearSelected();
-					_marksSelectionManager.Select(_mouseDownMark);	
+					if (!_marksSelectionManager.IsSelected(_mouseDownMark))
+					{
+						_lastSingleSelectedMarkLocation = location;
+						_marksSelectionManager.ClearSelected();
+						_marksSelectionManager.Select(_mouseDownMark);
+					}
 				}
 				else if(ShiftPressed)
 				{
@@ -229,7 +232,7 @@ namespace Common.Controls.TimelineControl
 					delete.Click += DeleteMark_Click;
 					var rename = c.Items.Add("&Rename");
 					rename.Click += Rename_Click;
-					var copy = c.Items.Add("&Copt Text");
+					var copy = c.Items.Add("&Copy Text");
 					copy.Click += Copy_Click;
 					copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
 					c.Show(this, new Point(e.X, e.Y));
