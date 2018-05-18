@@ -15,6 +15,7 @@ using Vixen.Sys;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -25,6 +26,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private List<float> _points = new List<float>();
 		public string _name;
 		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
+		public static int EightFloatDataSize = 8 * Marshal.SizeOf(typeof(float));
+		public static int FloatDataSize = Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
 
@@ -659,7 +662,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				return;
 			}
 
-			program["pointSize"].SetValue((float)PixelSize);
+			//program["pointSize"].SetValue((float)PixelSize);
 			VBO<float> points = new VBO<float>(_points.ToArray());
 
 			//Logging.Debug("Created VBO.");
@@ -667,13 +670,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			GlUtility.BindBuffer(points);
 
 			//Logging.Debug("Buffer Bound.");
-			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, EightFloatDataSize, IntPtr.Zero);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
 
 			//Logging.Debug("Point pointer set.");
 
-			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, SevenFloatDataSize, Vector3.SizeInBytes);
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
+
+			GL.VertexAttribPointer(ShaderProgram.VertexSize, 1, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes + Vector4.SizeInBytes);
+			GL.EnableVertexAttribArray(ShaderProgram.VertexSize);
 
 			GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
 
@@ -682,7 +688,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Logging.Debug("Beginning draw.");
 
 			// draw the points
-			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 7);
+			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 8);
 
 			//Logging.Debug("Draw completed for shape.");
 			points.Dispose();
@@ -769,15 +775,16 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 							_points.Add(c.G);
 							_points.Add(c.B);
 							_points.Add(c.A);
-							
+							_points.Add(pixel.PixelSize);
+
 							if (col % 2 == 0)
 							{
-								xy.Y += PixelSize;
+								xy.Y += pixel.PixelSize;
 								xy.X = xy.X;
 							}
 							else
 							{
-								xy.X = xy.X + PixelSize;
+								xy.X = xy.X + pixel.PixelSize;
 							}
 
 							col++;
@@ -798,13 +805,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Color c = previewPixel.GetFullColor(state);
 					if (c.A > 0)
 					{
-						_points.Add(previewPixel.X);
-						_points.Add(referenceHeight - previewPixel.Y);
+						_points.Add(previewPixel.IsHighPrecision ? (float)previewPixel.Location.X:previewPixel.X);
+						_points.Add(referenceHeight - (previewPixel.IsHighPrecision ? (float)previewPixel.Location.Y : previewPixel.Y));
 						_points.Add(previewPixel.Z);
 						_points.Add(c.R);
 						_points.Add(c.G);
 						_points.Add(c.B);
 						_points.Add(c.A);
+						_points.Add(previewPixel.PixelSize);
 					}
 				}
 			}

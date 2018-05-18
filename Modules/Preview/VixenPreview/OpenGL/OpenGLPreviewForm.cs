@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
@@ -16,7 +12,6 @@ using Vixen;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
-using VixenModules.Preview.VixenPreview.Shapes;
 
 namespace VixenModules.Preview.VixenPreview.OpenGL
 {
@@ -50,7 +45,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
 
-		private static Object _contextLock = new Object();
+		internal static Object ContextLock = new Object();
 
 		public OpenGlPreviewForm(VixenPreviewData data)
 		{
@@ -87,7 +82,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		protected override void Dispose(bool disposing)
 		{
 			glControl.MouseWheel -= GlControl_MouseWheel;
-			lock (_contextLock)
+			lock (ContextLock)
 			{
 				glControl.MakeCurrent();
 				_program.DisposeChildren = true;
@@ -114,11 +109,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			// enable depth testing to ensure correct z-ordering of our fragments
 			//GL.Enable(EnableCap.DepthTest);
-			GL.Enable(EnableCap.Blend);
-			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-			GL.Enable(EnableCap.PointSprite);
-			GL.Enable(EnableCap.ProgramPointSize);
-			GL.Disable(EnableCap.CullFace);
+			lock (ContextLock)
+			{
+				GL.Enable(EnableCap.Blend);
+				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+				GL.Enable(EnableCap.PointSprite);
+				GL.Enable(EnableCap.ProgramPointSize);
+				GL.Disable(EnableCap.CullFace);
+			}
+			
 		}
 
 		private void Initialize()
@@ -372,7 +371,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				UpdateShapePoints();
 				_pointsUpdate.Set(_sw2.ElapsedMilliseconds);
 				var mvp = Matrix4.Identity * _camera.ViewMatrix * perspective;
-				lock (_contextLock)
+				lock (ContextLock)
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
@@ -388,7 +387,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			else
 			{
-				lock (_contextLock)
+				lock (ContextLock)
 				{
 					glControl.MakeCurrent();
 					ClearScreen();
@@ -575,11 +574,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		in vec3 vertexPosition;
 		in vec4 vertexColor;
+		in float vertexSize;
 		
 		out vec4 color;
 		out float pSize;
 
-		uniform float pointSize;
 		uniform float pointScale;
 		uniform mat4 mvp;
 
@@ -589,9 +588,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			gl_Position = mvp * vec4(vertexPosition, 1);
 
-			gl_PointSize = pointSize * pointScale;
+			gl_PointSize = vertexSize * pointScale;
 			
-			if(pointSize < 1)
+			if(vertexSize < 1)
 			{
 				gl_PointSize = 1;
 			}

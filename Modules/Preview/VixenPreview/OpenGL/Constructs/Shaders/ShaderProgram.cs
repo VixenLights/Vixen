@@ -13,7 +13,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
 		public static int VertexColor = 1;
 
-		public static int TextureCoords = 2;
+		public static int VertexSize = 2;
+
+		public static int TextureCoords = 3;
 
 		#endregion
 
@@ -75,6 +77,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders
 
 			GL.BindAttribLocation(ProgramId, VertexPosition, "vertexPosition");
 			GL.BindAttribLocation(ProgramId, VertexColor, "vertexColor");
+			GL.BindAttribLocation(ProgramId, VertexSize, "vertexSize");
 			GL.BindAttribLocation(ProgramId, TextureCoords, "textureCoord");
 
 			GL.AttachShader(ProgramId, vertexShader.ShaderID);

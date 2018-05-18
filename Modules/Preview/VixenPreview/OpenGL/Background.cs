@@ -66,6 +66,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			//Logging.Debug("Disabled VertexColor array.");
 
+			GL.DisableVertexAttribArray(ShaderProgram.VertexSize);
+
 			//textureCoords
 			GL.VertexAttribPointer(ShaderProgram.TextureCoords, 2, _points.PointerType, false, 5 * Marshal.SizeOf(typeof(float)), Vector3.SizeInBytes);
 			GL.EnableVertexAttribArray(ShaderProgram.TextureCoords);
