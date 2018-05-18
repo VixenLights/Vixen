@@ -235,6 +235,9 @@ namespace Common.Controls.TimelineControl
 					var copy = c.Items.Add("&Copy Text");
 					copy.Click += Copy_Click;
 					copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
+					var paste = c.Items.Add("&Paste Text");
+					paste.Click += Paste_Click;
+					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -255,7 +258,7 @@ namespace Common.Controls.TimelineControl
 			}
 
 		}
-
+		
 		#endregion
 
 		#region Mouse Move
@@ -556,10 +559,7 @@ namespace Common.Controls.TimelineControl
 
 			TimeSpan selStart = pixelsToTime(selectedArea.Left);
 			TimeSpan selEnd = pixelsToTime(selectedArea.Right);
-			int selTop = selectedArea.Top;
-			int selBottom = selTop + selectedArea.Height;
-			string moveDirection = (selectedArea.Left < _lastSingleSelectedMarkLocation.X) ? "Left" : "Right";
-
+			
 			// Iterate all elements of only the rows within our selection.
 			bool startFound = false, endFound = false;
 			int top = 0;
@@ -581,31 +581,11 @@ namespace Common.Controls.TimelineControl
 					// This row is in our selection
 					foreach (var elem in row)
 					{
-						var markStack = row.GetStackForMark(elem);
-						var displayHeight =
-							(markStack.StackCount != 0) ? ((row.Height - 1) / row.StackCount) : row.Height - 1;
-
-						var elemTop = top + displayHeight * markStack.StackIndex;
-						int elemBottom = elemTop + displayHeight;
-						
-						
-						//if (moveDirection == "Left")
-						//{
-							var selected = ((elem.StartTime < selEnd && elem.EndTime > selStart) );
-							if (selected)
-							{
-								_marksSelectionManager.Select(elem);
-							}
-						//}
-						//else
-						//{
-						//	var selected = ((elem.StartTime > selStart && elem.EndTime < selEnd) );
-						//	if (selected)
-						//	{
-						//		_marksSelectionManager.Select(elem);
-						//	}
-						//}
-						
+						var selected = ((elem.StartTime < selEnd && elem.EndTime > selStart) );
+						if (selected)
+						{
+							_marksSelectionManager.Select(elem);
+						}
 					}
 
 					top += row.Height;
@@ -674,6 +654,17 @@ namespace Common.Controls.TimelineControl
 					Clipboard.Clear();
 				}
 			}
+		}
+
+		private void Paste_Click(object sender, EventArgs e)
+		{
+			var text = Clipboard.GetText(TextDataFormat.Text);
+			foreach (var mark in _marksSelectionManager.SelectedMarks)
+			{
+				mark.Text = text;
+			}
+
+			Invalidate();
 		}
 
 
@@ -856,7 +847,7 @@ namespace Common.Controls.TimelineControl
 			//We set the DisplayHeight to the row height for the mark, and change the border to red.	
 			var markStack = row.GetStackForMark(mark);
 			var displayHeight =
-				(markStack.StackCount != 0) ? ((row.Height - 1) / row.StackCount) : row.Height - 1;
+				(markStack.StackCount > 1) ? ((row.Height - 2) / row.StackCount) : row.Height - 2;
 
 			var displayTop = top + displayHeight * markStack.StackIndex;
 			
