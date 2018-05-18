@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Diagnostics;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
 using Vixen.Sys.Instrumentation;
 using VixenModules.Preview.VixenPreview.GDIPreview;
@@ -37,9 +39,47 @@ namespace VixenModules.Preview.VixenPreview
 			}
 		}
 
-		public bool UseGDIPreviewRendering
+		public bool UseOpenGLRendering
 		{
-			get { return false; }
+			get
+			{
+				if (GetDataModel().UseOpenGL)
+				{
+					var supported = SupportsOpenGLPreview();
+					if (!supported)
+					{
+						GetDataModel().UseOpenGL = false;
+					}
+				}
+
+				return GetDataModel().UseOpenGL;
+			}
+		}
+
+		internal static bool SupportsOpenGLPreview()
+		{
+			bool supported = false;
+			try
+			{
+				lock (OpenGlPreviewForm.ContextLock)
+				{
+					var control = new GLControl();
+					control.MakeCurrent();
+					var major = GL.GetInteger(GetPName.MajorVersion);
+					var minor = GL.GetInteger(GetPName.MajorVersion);
+					if (major >= 3 && minor >= 3)
+					{
+						supported = true;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An error occured testing for OpenGL support.");
+			}
+
+			return supported;
+
 		}
 
 		protected override Form Initialize()
@@ -53,7 +93,7 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			lock (_formLock) {
 
-				if (UseGDIPreviewRendering)
+				if (!UseOpenGLRendering)
 				{
 					_displayForm = new GDIPreviewForm(GetDataModel());
 					_displayForm.DisplayName = Name;
@@ -99,9 +139,16 @@ namespace VixenModules.Preview.VixenPreview
 		public override bool Setup()
 		{
 			_setupForm = new VixenPreviewSetup3();
-			_setupForm.Data = GetDataModel();
-
+			var data = GetDataModel();
+			_setupForm.Data = data;
+			
 			_setupForm.ShowDialog();
+
+			if (data.UseOpenGL && _displayForm.GetType() != typeof(OpenGlPreviewForm))
+			{
+				_displayForm?.Close();
+				SetupPreviewForm();
+			}
 
 			if (_displayForm != null)
 			{

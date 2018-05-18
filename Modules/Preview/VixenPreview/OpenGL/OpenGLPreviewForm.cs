@@ -81,17 +81,24 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			glControl.MouseWheel -= GlControl_MouseWheel;
-			lock (ContextLock)
+			if (disposing && glControl != null)
 			{
-				glControl.MakeCurrent();
-				_program.DisposeChildren = true;
-				_program.Dispose();
-				_background.Dispose();
-				glControl.Context.MakeCurrent(null);
+				glControl.MouseWheel -= GlControl_MouseWheel;
+				lock (ContextLock)
+				{
+					glControl.MakeCurrent();
+					if (_program != null)
+					{
+						_program.DisposeChildren = true;
+						_program.Dispose();
+						_background.Dispose();
+					}
+					glControl.Context.MakeCurrent(null);
+				}
+
+				glControl.Dispose();
 			}
 			
-			glControl.Dispose();
 
 			if (disposing && (components != null))
 			{
@@ -150,6 +157,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 			Logging.Info("OpenGL v {0}", GL.GetString(StringName.Version));
 			Logging.Info("Vendor {0}, Renderer {1}", GL.GetString(StringName.Vendor), GL.GetString(StringName.Renderer));
+			Logging.Info("Shading language version {0}", GL.GetString(StringName.ShadingLanguageVersion));
 			Logging.Info("Extensions {0}", GL.GetString(StringName.Extensions));
 			var log = _program.ProgramLog;
 			if (!string.IsNullOrWhiteSpace(log))

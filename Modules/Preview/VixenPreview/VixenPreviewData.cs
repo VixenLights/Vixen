@@ -75,5 +75,8 @@ namespace VixenModules.Preview.VixenPreview
 
 			set { _displayItems = value ?? new List<DisplayItem>(); }
 		}
+
+		[DataMember]
+		public bool UseOpenGL { get; set; }
 	}
 }
