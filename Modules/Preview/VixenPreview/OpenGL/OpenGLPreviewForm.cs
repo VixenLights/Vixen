@@ -198,21 +198,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				if (_needsUpdate)
 				{
-					StartUpdate();
 					OnRenderFrame();
-					EndUpdate();
 					_needsUpdate = false;
 				}
 				toolStripStatusFPS.Text = @"0";
 			}
 		}
 
-		private void StartUpdate()
-		{
-
-		}
-
-		private void EndUpdate()
+		private void UpdateFrameRate()
 		{
 			_frameCount++;
 
@@ -436,6 +429,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 			_isRendering = false;
 			_previewUpdate.Set(_sw.ElapsedMilliseconds);
+			UpdateFrameRate();
 			//Logging.Debug("Exiting RenderFrame");
 		}
 

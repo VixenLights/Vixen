@@ -22,9 +22,6 @@ using Control = System.Windows.Forms.Control;
 using Cursors = System.Windows.Forms.Cursors;
 using CustomPropEditorWindow = VixenModules.App.CustomPropEditor.View.CustomPropEditorWindow;
 using Size = System.Drawing.Size;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using VixenModules.Preview.VixenPreview.OpenGL;
 
 namespace VixenModules.Preview.VixenPreview
 {
@@ -155,6 +152,7 @@ namespace VixenModules.Preview.VixenPreview
 			Setup();
 
 			useOpenGLPreviewToolStripMenuItem.Checked = Data.UseOpenGL;
+			useOpenGLPreviewToolStripMenuItem.Enabled = VixenPreviewModuleInstance.SupportsOpenGLPreview();
 			saveLocationsToolStripMenuItem.Checked = Data.SaveLocations;
 
 			// Choose the select tool to start
@@ -578,22 +576,10 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				Data.UseOpenGL = false;
 				useOpenGLPreviewToolStripMenuItem.Checked = false;
+				var messageBox = new MessageBoxForm("Open GL Preview is not supported on your hardware. Reverting to the GDI preview.", "Change Preview Viewer", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog();
 			}
-
-
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			//MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-			//var messageBox = new MessageBoxForm("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", true, false);
-			//messageBox.ShowDialog();
-			//if (messageBox.DialogResult == DialogResult.OK)
-			//{
-			//	Properties.Settings settings = new Properties.Settings();
-			//	settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
-			//	settings.Save();
-			//}
 		}
-
-	    
 
 	    private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
 		{

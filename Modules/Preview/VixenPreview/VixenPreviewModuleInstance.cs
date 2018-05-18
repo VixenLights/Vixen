@@ -71,6 +71,10 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						supported = true;
 					}
+					else
+					{
+						Logging.Error($"Open GL version not supported. {major}.{minor}");
+					}
 				}
 			}
 			catch (Exception e)
