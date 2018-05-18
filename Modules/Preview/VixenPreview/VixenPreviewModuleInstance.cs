@@ -66,15 +66,19 @@ namespace VixenModules.Preview.VixenPreview
 					var control = new GLControl();
 					control.MakeCurrent();
 					var major = GL.GetInteger(GetPName.MajorVersion);
-					var minor = GL.GetInteger(GetPName.MajorVersion);
-					if (major >= 3 && minor >= 3)
+					var minor = GL.GetInteger(GetPName.MinorVersion);
+					if (major > 3 || (major == 3 && minor >=3))
 					{
+						Logging.Info($"Open GL version supported!. {major}.{minor}");
 						supported = true;
 					}
 					else
 					{
 						Logging.Error($"Open GL version not supported. {major}.{minor}");
 					}
+
+					control.Context.MakeCurrent(null);
+					control.Dispose();
 				}
 			}
 			catch (Exception e)
