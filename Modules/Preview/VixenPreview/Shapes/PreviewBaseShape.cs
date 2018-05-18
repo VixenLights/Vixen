@@ -625,10 +625,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			return setupControl;
 		}
 
-		public void UpdatePixelCache()
+		public int UpdatePixelCache()
 		{
 			_pixelCache = Pixels.Where(x => x.Node != null).ToList();
-			_points = new List<float>(_pixelCache.Count * 7);
+			_points = new List<float>(_pixelCache.Count * 8);
+			return _pixelCache.Count;
 		}
 
 		public void UpdateDrawPoints(int referenceHeight)

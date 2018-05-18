@@ -17,6 +17,12 @@
 		private void InitializeComponent()
 		{
 			this.glControl = new OpenTK.GLControl();
+			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.toolStripStatusPixelsLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusPixels = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusFPS = new System.Windows.Forms.ToolStripStatusLabel();
+			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// glControl
@@ -34,23 +40,70 @@
 			this.glControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseMove);
 			this.glControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glControl_MouseUp);
 			// 
+			// statusStrip
+			// 
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusPixelsLabel,
+            this.toolStripStatusPixels,
+            this.toolStripStatusLabel1,
+            this.toolStripStatusFPS});
+			this.statusStrip.Location = new System.Drawing.Point(0, 240);
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+			this.statusStrip.Size = new System.Drawing.Size(284, 22);
+			this.statusStrip.TabIndex = 2;
+			this.statusStrip.Text = "statusStrip1";
+			// 
+			// toolStripStatusPixelsLabel
+			// 
+			this.toolStripStatusPixelsLabel.Name = "toolStripStatusPixelsLabel";
+			this.toolStripStatusPixelsLabel.Size = new System.Drawing.Size(42, 17);
+			this.toolStripStatusPixelsLabel.Text = "Lights:";
+			// 
+			// toolStripStatusPixels
+			// 
+			this.toolStripStatusPixels.Name = "toolStripStatusPixels";
+			this.toolStripStatusPixels.Size = new System.Drawing.Size(13, 17);
+			this.toolStripStatusPixels.Text = "0";
+			// 
+			// toolStripStatusLabel1
+			// 
+			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(29, 17);
+			this.toolStripStatusLabel1.Text = "FPS:";
+			// 
+			// toolStripStatusFPS
+			// 
+			this.toolStripStatusFPS.Name = "toolStripStatusFPS";
+			this.toolStripStatusFPS.Size = new System.Drawing.Size(61, 17);
+			this.toolStripStatusFPS.Text = "1,000,0009";
+			// 
 			// OpenGlPreviewForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.glControl);
 			this.Name = "OpenGlPreviewForm";
 			this.Text = "Preview";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PreviewWindow_FormClosing);
 			this.Move += new System.EventHandler(this.OpenGlPreviewForm_Move);
 			this.Resize += new System.EventHandler(this.glControl_Resize);
+			this.statusStrip.ResumeLayout(false);
+			this.statusStrip.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
 		#endregion
 
 		private OpenTK.GLControl glControl;
+		private System.Windows.Forms.StatusStrip statusStrip;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixelsLabel;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixels;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusFPS;
 	}
 }

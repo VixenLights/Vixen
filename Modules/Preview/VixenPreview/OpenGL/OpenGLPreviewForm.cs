@@ -45,6 +45,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
 
+		private DateTime _frameRateTime;
+		private long _frameCount;
+
 		internal static Object ContextLock = new Object();
 
 		public OpenGlPreviewForm(VixenPreviewData data)
@@ -174,10 +177,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		public VixenPreviewData Data { get; set; }
 		public void Setup()
 		{
+			var pixelCount = 0;
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
-				dataDisplayItem.Shape.UpdatePixelCache();
+				pixelCount += dataDisplayItem.Shape.UpdatePixelCache();
 			}
+			toolStripStatusPixels.Text = pixelCount.ToString();
 		}
 		
 		public void UpdatePreview()
@@ -187,16 +192,39 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			{
 				OnRenderFrame();
 				_needsUpdate = true;
+				toolStripStatusFPS.Text = FrameRate.ToString();
 			}
 			else
 			{
 				if (_needsUpdate)
 				{
+					StartUpdate();
 					OnRenderFrame();
+					EndUpdate();
 					_needsUpdate = false;
 				}
+				toolStripStatusFPS.Text = @"0";
 			}
 		}
+
+		private void StartUpdate()
+		{
+
+		}
+
+		private void EndUpdate()
+		{
+			_frameCount++;
+
+			if (DateTime.UtcNow.Subtract(_frameRateTime).TotalSeconds >= 1)
+			{
+				FrameRate = _frameCount;
+				_frameCount = 0;
+				_frameRateTime = DateTime.UtcNow;
+			}
+		}
+
+		public long FrameRate { get; private set; }
 
 		public string DisplayName
 		{
