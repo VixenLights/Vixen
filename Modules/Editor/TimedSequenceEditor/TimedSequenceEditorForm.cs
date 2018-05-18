@@ -1989,8 +1989,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
-			toolStripMenuItem_deleteElements.Enabled = MarksSelectionManager.Manager().SelectedMarks.Any() ||
-			                                           TimelineControl.SelectedElements.Any();
+			toolStripMenuItem_deleteElements.Enabled = TimelineControl.SelectedElements.Any();
 		}
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)

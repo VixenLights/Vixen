@@ -155,11 +155,26 @@ namespace Common.Controls.TimelineControl
 			RefreshView();
 		}
 
+		#region Overrides of Control
+
+		/// <inheritdoc />
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete)
+			{
+				DeleteSelectedMarks();
+				e.SuppressKeyPress = true;
+			}
+		}
+
+		#endregion
+
 		#region Mouse Down
 
 		/// <inheritdoc />
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			Focus();
 			_mouseDownMark = null;
 			Point location = _mouseDownLocation = TranslateLocation(e.Location);
 
@@ -633,10 +648,16 @@ namespace Common.Controls.TimelineControl
 
 		private void DeleteMark_Click(object sender, EventArgs e)
 		{
+			DeleteSelectedMarks();
+		}
+
+		private void DeleteSelectedMarks()
+		{
 			foreach (var mark in _marksSelectionManager.SelectedMarks)
 			{
 				mark.Parent.RemoveMark(mark);
 			}
+
 			_timeLineGlobalEventManager.OnDeleteMark(new MarksDeletedEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
 		}
 
