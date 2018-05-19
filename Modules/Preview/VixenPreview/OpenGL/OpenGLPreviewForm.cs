@@ -412,6 +412,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
 					var log = _program.ProgramLog;
+					log += _program.VertexShader.ShaderLog;
+					log += _program.FragmentShader.ShaderLog;
 					if (!string.IsNullOrWhiteSpace(log))
 					{
 						Logging.Info("Point program log: {0}", log);
@@ -430,6 +432,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
 					var log = _program.ProgramLog;
+					log += _program.VertexShader.ShaderLog;
+					log += _program.FragmentShader.ShaderLog;
 					if (!string.IsNullOrWhiteSpace(log))
 					{
 						Logging.Info("Point program log: {0}", log);
