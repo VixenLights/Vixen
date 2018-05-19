@@ -568,16 +568,23 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void useOpenGLPreviewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (useOpenGLPreviewToolStripMenuItem.Checked &&  VixenPreviewModuleInstance.SupportsOpenGLPreview())
+			if (useOpenGLPreviewToolStripMenuItem.Checked)
 			{
-				Data.UseOpenGL = true;
+				if (VixenPreviewModuleInstance.SupportsOpenGLPreview())
+				{
+					Data.UseOpenGL = true;
+				}
+				else
+				{
+					Data.UseOpenGL = false;
+					useOpenGLPreviewToolStripMenuItem.Checked = false;
+					var messageBox = new MessageBoxForm("Open GL Preview is not supported on your hardware. Reverting to the GDI preview.", "Change Preview Viewer", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog();
+				}
 			}
 			else
 			{
 				Data.UseOpenGL = false;
-				useOpenGLPreviewToolStripMenuItem.Checked = false;
-				var messageBox = new MessageBoxForm("Open GL Preview is not supported on your hardware. Reverting to the GDI preview.", "Change Preview Viewer", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog();
 			}
 		}
 
