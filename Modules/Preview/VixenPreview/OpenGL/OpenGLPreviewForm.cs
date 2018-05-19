@@ -411,6 +411,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					DrawPoints(mvp);
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
+					var log = _program.ProgramLog;
+					if (!string.IsNullOrWhiteSpace(log))
+					{
+						Logging.Info("Point program log: {0}", log);
+					}
 					glControl.Context.MakeCurrent(null);
 				}
 			}
@@ -424,6 +429,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
+					var log = _program.ProgramLog;
+					if (!string.IsNullOrWhiteSpace(log))
+					{
+						Logging.Info("Point program log: {0}", log);
+					}
 					glControl.Context.MakeCurrent(null);
 				}
 			}
