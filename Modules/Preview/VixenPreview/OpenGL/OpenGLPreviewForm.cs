@@ -661,7 +661,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		in vec4 color;
 		in float pSize;
-		out vec4 gl_FragColor;
+		out vec4 fragColor;
 
 		void main(void)
 		{
@@ -674,7 +674,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				}
 			}
 			
-			gl_FragColor = vec4(color.r/255.0, color.g/255.0, color.b/255.0, color.a/255.0);
+			fragColor = vec4(color.r/255.0, color.g/255.0, color.b/255.0, color.a/255.0);
 
 		}
 		";
