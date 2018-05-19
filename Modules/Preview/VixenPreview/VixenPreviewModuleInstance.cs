@@ -152,7 +152,7 @@ namespace VixenModules.Preview.VixenPreview
 			
 			_setupForm.ShowDialog();
 
-			if (data.UseOpenGL && _displayForm.GetType() != typeof(OpenGlPreviewForm))
+			if (data.UseOpenGL && _displayForm?.GetType() != typeof(OpenGlPreviewForm))
 			{
 				_displayForm?.Close();
 				SetupPreviewForm();
