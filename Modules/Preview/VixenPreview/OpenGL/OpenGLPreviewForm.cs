@@ -122,12 +122,21 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//GL.Enable(EnableCap.DepthTest);
 			lock (ContextLock)
 			{
+				Logging.Info("Debug Output");
 				GL.Enable(EnableCap.DebugOutput);
+				Logging.Info("Debug Output Sync");
 				GL.Enable(EnableCap.DebugOutputSynchronous);
+				Logging.Info("Blend");
 				GL.Enable(EnableCap.Blend);
+				Logging.Info("Blend Func");
 				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+				Logging.Info("Point Sprite");
 				GL.Enable(EnableCap.PointSprite);
+				Logging.Info("Vertex Point Sprite");
+				GL.Enable(EnableCap.VertexProgramPointSize);;
+				Logging.Info("Program Point");
 				GL.Enable(EnableCap.ProgramPointSize);
+				Logging.Info("Cull Face");
 				GL.Disable(EnableCap.CullFace);
 			}
 			
@@ -136,7 +145,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void Initialize()
 		{
 			_formLoading = true;
-			EnableFeatures();
+			
 			GL.DebugMessageControl(DebugSourceControl.DontCare, DebugTypeControl.DontCare, DebugSeverityControl.DebugSeverityNotification, 0, new int[] { }, false);
 			GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
 			{
@@ -146,8 +155,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					source, type, id, severity, msg);
 
 			}, IntPtr.Zero);
-			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadIdentity();
+
+			EnableFeatures();
+
+			//GL.MatrixMode(MatrixMode.Projection);
+			//GL.LoadIdentity();
 
 			// compile the shader program
 			_program = new ShaderProgram(VertexShader, FragmentShader);
