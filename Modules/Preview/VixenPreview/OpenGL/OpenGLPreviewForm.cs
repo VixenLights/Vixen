@@ -7,6 +7,7 @@ using System.Xml;
 using Common.Controls;
 using Common.Resources.Properties;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Vixen;
 using Vixen.Sys;
@@ -121,6 +122,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//GL.Enable(EnableCap.DepthTest);
 			lock (ContextLock)
 			{
+				GL.Enable(EnableCap.DebugOutput);
+				GL.Enable(EnableCap.DebugOutputSynchronous);
 				GL.Enable(EnableCap.Blend);
 				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 				GL.Enable(EnableCap.PointSprite);
@@ -130,11 +133,26 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 		}
 
+		private static void Callback(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+		{
+			string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
+			Logging.Info(
+				"{0} {1} {2} {3}: {4}",
+				source, type, id, severity, msg);
+		}
+
 		private void Initialize()
 		{
 			_formLoading = true;
 			EnableFeatures();
+			GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
+			{
+				string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
+				Logging.Info(
+					"{0} {1} {2} {3}: {4}",
+					source, type, id, severity, msg);
 
+			}, IntPtr.Zero);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
 
@@ -171,7 +189,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_formLoading = false;
 		}
 
-		
+
+
 		#region IDisplayForm
 
 		public VixenPreviewData Data { get; set; }
