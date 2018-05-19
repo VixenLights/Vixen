@@ -133,18 +133,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 		}
 
-		private static void Callback(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
-		{
-			string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
-			Logging.Info(
-				"{0} {1} {2} {3}: {4}",
-				source, type, id, severity, msg);
-		}
-
 		private void Initialize()
 		{
 			_formLoading = true;
 			EnableFeatures();
+			GL.DebugMessageControl(DebugSourceControl.DontCare, DebugTypeControl.DontCare, DebugSeverityControl.DebugSeverityNotification, 0, new int[] { }, false);
 			GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
 			{
 				string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
