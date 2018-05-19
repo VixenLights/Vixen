@@ -137,7 +137,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 
 		public static string VertexTextureShader = @"
-#version 130
+#version 330
 
 in vec3 vertexPosition;
 in vec2 textureCoord;
@@ -157,7 +157,7 @@ void main(void)
 
 
 		public static string FragmentTextureShader = @"
-#version 130
+#version 330
 
 uniform sampler2D textureIn;
 uniform float ambientStrength;

@@ -626,7 +626,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		//";
 
 		public static string VertexShader = @"
-		#version 130
+		#version 330
 
 		in vec3 vertexPosition;
 		in vec4 vertexColor;
