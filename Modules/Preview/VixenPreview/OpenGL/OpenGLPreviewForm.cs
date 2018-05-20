@@ -122,21 +122,21 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//GL.Enable(EnableCap.DepthTest);
 			lock (ContextLock)
 			{
-				Logging.Info("Debug Output");
+				//Logging.Info("Debug Output");
 				GL.Enable(EnableCap.DebugOutput);
-				Logging.Info("Debug Output Sync");
+				//Logging.Info("Debug Output Sync");
 				GL.Enable(EnableCap.DebugOutputSynchronous);
-				Logging.Info("Blend");
+				//Logging.Info("Blend");
 				GL.Enable(EnableCap.Blend);
-				Logging.Info("Blend Func");
+				//Logging.Info("Blend Func");
 				GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-				Logging.Info("Point Sprite");
+				//Logging.Info("Point Sprite");
 				GL.Enable(EnableCap.PointSprite);
-				Logging.Info("Vertex Point Sprite");
+				//Logging.Info("Vertex Point Sprite");
 				GL.Enable(EnableCap.VertexProgramPointSize);;
-				Logging.Info("Program Point");
+				//Logging.Info("Program Point");
 				GL.Enable(EnableCap.ProgramPointSize);
-				Logging.Info("Cull Face");
+				//Logging.Info("Cull Face");
 				GL.Disable(EnableCap.CullFace);
 			}
 			
@@ -146,15 +146,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			_formLoading = true;
 			
-			GL.DebugMessageControl(DebugSourceControl.DontCare, DebugTypeControl.DontCare, DebugSeverityControl.DebugSeverityNotification, 0, new int[] { }, false);
-			GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
-			{
-				string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
-				Logging.Info(
-					"{0} {1} {2} {3}: {4}",
-					source, type, id, severity, msg);
+			//GL.DebugMessageControl(DebugSourceControl.DontCare, DebugTypeControl.DontCare, DebugSeverityControl.DebugSeverityNotification, 0, new int[] { }, false);
+			//GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
+			//{
+			//	string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
+			//	Logging.Info(
+			//		"{0} {1} {2} {3}: {4}",
+			//		source, type, id, severity, msg);
 
-			}, IntPtr.Zero);
+			//}, IntPtr.Zero);
 
 			EnableFeatures();
 
@@ -522,7 +522,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
-			Data.DisplayItems.AsParallel().ForAll(d => d.Shape.UpdateDrawPoints(_background.Height));
+			Data.DisplayItems.AsParallel().ForAll(d => d.Shape.UpdateDrawPoints(_background.HasBackground?_background.Height:Height));
 		}
 
 		private double ConvertToRadians(double angle)
