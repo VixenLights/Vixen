@@ -99,6 +99,37 @@ namespace Common.Controls
 			return defaultValue;
 		}
 
+		public void DeleteNode(SettingType type, string xPath)
+		{
+			string path = $"{Root}/{type}/{xPath}";
+			XmlNode xmlNode = _xmlDocument.SelectSingleNode(path);
+			if (xmlNode != null)
+			{
+				xmlNode.ParentNode?.RemoveChild(xmlNode);
+				_xmlDocument.Save(_documentPath);
+			}
+			
+		}
+
+		public void RenameNode(SettingType type, string xPath, string newName)
+		{
+			string path = $"{Root}/{type}/{xPath}";
+			XmlNode xmlNode = _xmlDocument.SelectSingleNode(path);
+			if (xmlNode != null)
+			{
+				var newNode = _xmlDocument.CreateElement(newName);
+				while (xmlNode.HasChildNodes)
+				{
+					newNode.AppendChild(xmlNode.FirstChild);
+				}
+
+				var parent = xmlNode.ParentNode;
+				parent?.ReplaceChild(newNode, xmlNode);
+
+				_xmlDocument.Save(_documentPath);
+			}
+		}
+
 		private XmlNode CreateMissingNode(string xPath)
 		{
 			string[] xPathSections = xPath.Split('/');
