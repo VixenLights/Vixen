@@ -22,6 +22,8 @@
 			this.toolStripStatusPixels = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusFPS = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusLabelDistance = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripStatusDistance = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -45,6 +47,8 @@
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusPixelsLabel,
             this.toolStripStatusPixels,
+            this.toolStripStatusLabelDistance,
+            this.toolStripStatusDistance,
             this.toolStripStatusLabel1,
             this.toolStripStatusFPS});
 			this.statusStrip.Location = new System.Drawing.Point(0, 240);
@@ -75,8 +79,20 @@
 			// toolStripStatusFPS
 			// 
 			this.toolStripStatusFPS.Name = "toolStripStatusFPS";
-			this.toolStripStatusFPS.Size = new System.Drawing.Size(61, 17);
-			this.toolStripStatusFPS.Text = "1,000,0009";
+			this.toolStripStatusFPS.Size = new System.Drawing.Size(19, 17);
+			this.toolStripStatusFPS.Text = "20";
+			// 
+			// toolStripStatusLabelDistance
+			// 
+			this.toolStripStatusLabelDistance.Name = "toolStripStatusLabelDistance";
+			this.toolStripStatusLabelDistance.Size = new System.Drawing.Size(52, 17);
+			this.toolStripStatusLabelDistance.Text = "Distance";
+			// 
+			// toolStripStatusDistance
+			// 
+			this.toolStripStatusDistance.Name = "toolStripStatusDistance";
+			this.toolStripStatusDistance.Size = new System.Drawing.Size(13, 17);
+			this.toolStripStatusDistance.Text = "0";
 			// 
 			// OpenGlPreviewForm
 			// 
@@ -105,5 +121,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusPixels;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusFPS;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelDistance;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusDistance;
 	}
 }

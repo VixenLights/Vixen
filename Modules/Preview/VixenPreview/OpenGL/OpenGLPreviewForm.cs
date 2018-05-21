@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
+using Common.Controls.Scaling;
+using Common.Resources;
 using Common.Resources.Properties;
 using OpenTK;
 using OpenTK.Graphics;
@@ -46,6 +48,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _formLoading;
 		private string _displayName = "Vixen Preview";
 
+		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
+		private bool _showStatus;
+		private bool _alwaysOnTop;
+		
 		private DateTime _frameRateTime;
 		private long _frameCount;
 
@@ -78,6 +84,88 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				myCp.ClassStyle = myCp.ClassStyle | CP_NOCLOSE_BUTTON;
 				return myCp;
 			}
+		}
+
+		private void ConfigureAlwaysOnTop()
+		{
+			TopMost = _alwaysOnTop;
+		}
+
+		private void ConfigureStatusBar()
+		{
+			statusStrip.Visible = _showStatus;
+		}
+
+		private void HandleContextMenu()
+		{
+			_contextMenuStrip.Items.Clear();
+
+			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+
+			var item = new ToolStripMenuItem("Show Status");
+			item.ToolTipText = @"Enable/Disable the preview status bar.";
+
+			if (_showStatus)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_showStatus = !_showStatus;
+				ConfigureStatusBar();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			_contextMenuStrip.Items.Add(item);
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Always On Top");
+			item.ToolTipText = @"Enable/Disable the window always on top.";
+
+			if (_alwaysOnTop)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				_alwaysOnTop = !_alwaysOnTop;
+				ConfigureAlwaysOnTop();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Reset Size");
+			item.ToolTipText = @"Resets the viewable size to match the background size.";
+			item.Enabled = _background.HasBackground;
+			item.Click += (sender, args) =>
+			{
+				_width = _background.HasBackground ? _background.Width : _width;
+				_height = (_background.HasBackground ? _background.Height : _height) + (statusStrip.Visible ? statusStrip.Height : 0);
+				ClientSize = new Size(_width, _height);
+				_focalDepth = (float)(1 / Math.Tan(ConvertToRadians(Fov / 2)) * (ClientSize.Height / 2.0));
+				_camera.Position = new Vector3(_width / 2f, _height / 2f, _focalDepth);
+				glControl.Invalidate();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			var seperator = new ToolStripSeparator();
+			_contextMenuStrip.Items.Add(seperator);
+
+			var locationLabel = new ToolStripLabel(string.Format("Location: {0},{1}", DesktopLocation.X, DesktopLocation.Y));
+			_contextMenuStrip.Items.Add(locationLabel);
+
+			var sizeLabel = new ToolStripLabel(string.Format("Size: {0} X {1}", ClientSize.Width, ClientSize.Height));
+			_contextMenuStrip.Items.Add(sizeLabel);
+
+			_contextMenuStrip.Show(MousePosition);
 		}
 
 		/// <summary>
@@ -330,8 +418,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 
 			_camera.Move(new Vector3(0, 0, direction));
-			SaveWindowState();
 			glControl.Invalidate();
+			SaveWindowState();
+		}
+
+		private void UpdateStatusDistance(float distance)
+		{
+			toolStripStatusDistance.Text = distance.ToString("0.0");
 		}
 
 
@@ -370,7 +463,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void glControl_MouseDown(object sender, MouseEventArgs e)
 		{
-			//if (e.Button != MouseButtons.Right) return;
+			if (e.Button == MouseButtons.Right)
+			{
+				HandleContextMenu();
+				return;
+			}
 
 			// this method gets called whenever a new mouse button event happens
 			_mouseDown = true;
@@ -417,6 +514,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			//Logging.Debug("Entering RenderFrame");
 			if (_isRendering || _formLoading) return;
+			UpdateStatusDistance(_camera.Position.Z);
 			_isRendering = true;
 			_sw.Restart();
 			var perspective = CreatePerspective();
@@ -546,6 +644,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z);
 			//xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), WindowState.ToString());
+
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 		}
 
 		private void RestoreWindowState()
@@ -554,6 +655,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
 			var name = $"Preview_{InstanceId}";
+
+			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
+			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
+			
+			ConfigureStatusBar();
+			ConfigureAlwaysOnTop();
+
 			var desktopBounds =
 				new Rectangle(
 					new Point(
@@ -600,7 +708,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionX", name), _camera.Position.X),
 				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionY", name), _camera.Position.Y),
 				xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CameraPositionZ", name), _camera.Position.Z));
-
+			UpdateStatusDistance(_camera.Position.Z);
 		}
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
