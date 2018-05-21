@@ -16,6 +16,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	public sealed class ElementModelViewModel : ViewModelBase, ISelectableExpander, IDisposable
 	{
 		private DateTime _selectedTime = DateTime.MaxValue;
+		private string _textHoldValue = String.Empty;
 
 		public ElementModelViewModel(ElementModel model, ElementModelViewModel parent)
 		{
@@ -216,6 +217,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			if (IsSelected && _selectedTime.AddMilliseconds(750) < DateTime.Now)
 			{
 				IsEditing = true;
+				_textHoldValue = ElementModel.Name;
 			}
 		}
 
@@ -245,6 +247,29 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 			IsEditing = false;
 			IsDirty = true;
+		}
+
+		#endregion
+
+		#region CancelEditing command
+
+		private Command _cancelEditingCommand;
+
+		/// <summary>
+		/// Gets the CancelEditing command.
+		/// </summary>
+		public Command CancelEditingCommand
+		{
+			get { return _cancelEditingCommand ?? (_cancelEditingCommand = new Command(CancelEditing)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the CancelEditing command is executed.
+		/// </summary>
+		private void CancelEditing()
+		{
+			IsEditing = false;
+			ElementModel.Name = _textHoldValue;
 		}
 
 		#endregion

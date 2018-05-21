@@ -510,6 +510,15 @@ namespace VixenModules.App.CustomPropEditor.Controls
 				DependencyObject container = ItemContainerGenerator.ContainerFromItem(selectedItem);
 
 				Rect itemRect = VisualTreeHelper.GetDescendantBounds((Visual)container);
+				if (itemRect == Rect.Empty)
+				{
+					//try to derive from the light coord.
+					var lm = selectedItem as LightViewModel;
+					if (lm != null)
+					{
+						itemRect = new Rect(lm.X-lm.Size, lm.Y-lm.Size, lm.Size*2, lm.Size*2);
+					}
+				}
 				Rect itemBounds = ((Visual)container).TransformToAncestor(_drawingCanvas).TransformBounds(itemRect);
 
 				if (itemBounds != Rect.Empty)

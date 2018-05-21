@@ -2,22 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using Catel.Services;
+using Common.Controls;
 using Common.Controls.NameGeneration;
 using GongSolutions.Wpf.DragDrop;
 using GongSolutions.Wpf.DragDrop.Utilities;
-using Vixen.Sys;
 using VixenModules.App.CustomPropEditor.Converters;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
@@ -267,6 +263,64 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 
+		#region SubstitutionRename command
+
+		private Command _substitutionRenameCommand;
+
+		/// <summary>
+		/// Gets the PatternRename command.
+		/// </summary>
+		public Command SubstitutionRenameCommand
+		{
+			get { return _substitutionRenameCommand ?? (_substitutionRenameCommand = new Command(SubstitutionRename, CanSubstitutionRename)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the PatternRename command is executed.
+		/// </summary>
+		private void SubstitutionRename()
+		{
+			SubstitutionRenameSelectedItems();
+		}
+
+		/// <summary>
+		/// Method to check whether the PatternRename command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanSubstitutionRename()
+		{
+			return SelectedItems.Count > 1;
+		}
+
+		public bool SubstitutionRenameSelectedItems()
+		{
+			if (SelectedItems.Count <= 1)
+				return false;
+
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.Name).ToArray());
+			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
+			if (renamer.ShowDialog() == DialogResult.OK)
+			{
+				for (int i = 0; i < SelectedItems.Count; i++)
+				{
+					if (i >= renamer.Names.Count)
+					{
+						Logging.Warn("Bulk renaming elements, and ran out of new names!");
+						break;
+					}
+
+
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+
 		#region Rename command
 
 		private Command _renameCommand;
@@ -299,13 +353,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			}
 		}
 
+
 		public bool PatternRenameSelectedItems()
 		{
-			if (SelectedItems.Count <=1)
+			if (SelectedItems.Count <= 1)
 				return false;
 
-			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.Name).ToArray());
-			SubstitutionRenamer renamer = new SubstitutionRenamer(oldNames);
+			List<string> oldNames = new List<string>(SelectedItems.Select(x => x.ElementModel.Name).ToArray());
+			NameGenerator renamer = new NameGenerator(oldNames);
 			if (renamer.ShowDialog() == DialogResult.OK)
 			{
 				for (int i = 0; i < SelectedItems.Count; i++)
@@ -319,25 +374,13 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
 				}
-				
+
 				return true;
 			}
 
 			return false;
 		}
 
-		public bool IsElementsDirty
-		{
-			get
-			{
-				return ElementModelLookUpService.Instance.GetAllModels().Any(x => x.IsDirty);
-			}
-		}
-
-		public void ClearIsDirty()
-		{
-			this.ClearIsDirtyOnAllChilds();
-		}
 
 		#endregion
 
@@ -566,25 +609,32 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (dataObject.GetDataPresent(ClipboardFormatName.Name))
 				{
 					var parent = SelectedItem;
-					DeselectAll();
-					var newElementModels = new List<ElementModelViewModel>();
-					var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
-
-					if (data != null)
+					MessageBoxService mbs = new MessageBoxService();
+					var result = mbs.GetUserInput("Please enter the new name.", "Paste As New", PropModelServices.Instance().Uniquify(parent.Name));
+					if (result.Result == MessageResult.OK)
 					{
-						foreach (var elementModel in data)
+						DeselectAll();
+						var newElementModels = new List<ElementModelViewModel>();
+						var data = dataObject.GetData(ClipboardFormatName.Name) as List<ElementModel>;
+
+						if (data != null)
 						{
-							var em = PropModelServices.Instance().CreateElementModelTree(elementModel, parent.ElementModel);
-							var evm = ElementModelLookUpService.Instance.GetModels(em.Id);
-							if (evm != null)
+							foreach (var elementModel in data)
 							{
-								newElementModels.AddRange(evm);
+								var em = PropModelServices.Instance().CreateElementModelTree(elementModel, parent.ElementModel, result.Response);
+								var evm = ElementModelLookUpService.Instance.GetModels(em.Id);
+								if (evm != null)
+								{
+									newElementModels.AddRange(evm);
+								}
 							}
 						}
+
+						OnModelsChanged();
+						SelectModels(newElementModels);
 					}
 
-					OnModelsChanged();
-					SelectModels(newElementModels);
+					
 				}
 			}
 		}
@@ -626,6 +676,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 
 		#endregion
+
+		public bool IsElementsDirty
+		{
+			get
+			{
+				return ElementModelLookUpService.Instance.GetAllModels().Any(x => x.IsDirty);
+			}
+		}
+
+		public void ClearIsDirty()
+		{
+			this.ClearIsDirtyOnAllChilds();
+		}
 
 		public void DeselectAll()
 		{
@@ -705,7 +768,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			    return false;
 		    }
 
-		    Console.Out.WriteLine($"Target {evmTarget.ElementModel.Name},IsGroupNode {evmTarget.ElementModel.IsGroupNode} Position {dropInfo.InsertPosition}");
+		   // Console.Out.WriteLine($"Target {evmTarget.ElementModel.Name},IsGroupNode {evmTarget.ElementModel.IsGroupNode} Position {dropInfo.InsertPosition}");
 
 			if (elementModelViewModels != null)
 	        {
