@@ -146,5 +146,8 @@ namespace VixenModules.Preview.VixenPreview {
 		}
 
 		public string DisplayName { get; set; }
+
+		/// <inheritdoc />
+		public Guid InstanceId { get; set; }
 	}
 }

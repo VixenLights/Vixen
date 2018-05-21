@@ -103,15 +103,13 @@ namespace VixenModules.Preview.VixenPreview
 
 				if (!UseOpenGLRendering)
 				{
-					_displayForm = new GDIPreviewForm(GetDataModel());
-					_displayForm.DisplayName = Name;
+					_displayForm = new GDIPreviewForm(GetDataModel(), InstanceId);
 				}
 				else
 				{
 					try
 					{
-						_displayForm = new OpenGlPreviewForm(GetDataModel());
-						_displayForm.DisplayName = Name;
+						_displayForm = new OpenGlPreviewForm(GetDataModel(), InstanceId);
 					}
 					catch (Exception ex)
 					{
@@ -121,6 +119,7 @@ namespace VixenModules.Preview.VixenPreview
 					
 				}
 
+				_displayForm.DisplayName = Name;
 				_displayForm.Setup();
 			}
 		}

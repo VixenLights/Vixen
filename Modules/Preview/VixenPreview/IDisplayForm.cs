@@ -11,5 +11,7 @@ namespace VixenModules.Preview.VixenPreview {
 		void UpdatePreview();
 
 		String DisplayName { get; set; }
+
+		Guid InstanceId { get; set; }
 	}
 }

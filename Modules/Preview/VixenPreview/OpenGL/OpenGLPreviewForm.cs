@@ -51,11 +51,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		internal static Object ContextLock = new Object();
 
-		public OpenGlPreviewForm(VixenPreviewData data)
+		public OpenGlPreviewForm(VixenPreviewData data, Guid instanceId)
 		{
 			_formLoading = true;
 			Icon = Resources.Icon_Vixen3;
 			Data = data;
+			InstanceId = instanceId;
 			InitializeComponent();
 			_backgroundDraw = new MillisecondsValue("OpenGL preview background draw");
 			_pointsUpdate = new MillisecondsValue("OpenGL preview points update");
@@ -260,6 +261,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			}
 		}
+
+		/// <inheritdoc />
+		public Guid InstanceId { get; set; }
 
 		public void UpdateDisplayName()
 		{
@@ -533,7 +537,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
+			var name = $"Preview_{InstanceId}";
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name), ClientSize.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name), ClientSize.Width);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
@@ -549,7 +553,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
+			var name = $"Preview_{InstanceId}";
 			var desktopBounds =
 				new Rectangle(
 					new Point(
@@ -587,7 +591,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void CreateCamera()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = string.Format("Preview_{0}", XmlConvert.EncodeLocalName(DisplayName));
+			var name = $"Preview_{InstanceId}";
 			// create our camera
 			_camera = new Camera(new Vector3((_background.HasBackground ? _background.Width:ClientSize.Width) / 2f, (_background.HasBackground ? _background.Height:ClientSize.Height) / 2f, _focalDepth), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));

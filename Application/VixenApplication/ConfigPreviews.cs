@@ -107,7 +107,7 @@ namespace VixenApplication
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputPreview oc = item.Tag as OutputPreview;
 						XMLProfileSettings xml = new XMLProfileSettings();
-						var name = $"Preview_{XmlConvert.EncodeLocalName(oc.Name)}";
+						var name = $"Preview_{oc.ModuleInstanceId}";
 						xml.DeleteNode(XMLProfileSettings.SettingType.AppSettings, name);
 						VixenSystem.Previews.Remove(oc);
 					}
@@ -122,10 +122,6 @@ namespace VixenApplication
 			if (_displayedController == null)
 				return;
 
-			XMLProfileSettings xml = new XMLProfileSettings();
-			var oldName = $"Preview_{XmlConvert.EncodeLocalName(_displayedController.Name)}";
-			var newName = $"Preview_{XmlConvert.EncodeLocalName(textBoxName.Text)}";
-			xml.RenameNode(XMLProfileSettings.SettingType.AppSettings, oldName, newName);
 			_displayedController.Name = textBoxName.Text;
 
 			_PopulateControllerList();
