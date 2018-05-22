@@ -157,6 +157,10 @@ namespace VixenModules.App.CustomPropEditor.Behaviors
 		private void OnTreeViewItemKeyDown(object sender, KeyEventArgs e)
 		{
 			var treeViewItem = e.OriginalSource as TreeViewItem;
+			if (treeViewItem == null)
+			{
+				treeViewItem = FindParentTreeViewItem(e.OriginalSource);
+			}
 			if (treeViewItem != null)
 			{
 				TreeViewItem targetItem = null;
