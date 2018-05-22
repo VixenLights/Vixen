@@ -58,6 +58,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorHandling.cs" />
     <Compile Include="WipeDirection.cs" />
     <Compile Include="WipeData.cs" />
     <Compile Include="WipeDescriptor.cs" />
