@@ -193,6 +193,7 @@
 					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Header="Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.RenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
+				<MenuItem Header="Find/Replace Rename" Command="{Binding Path=DataContext.ElementTreeViewModel.SubstitutionRenameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"></MenuItem>
 			</ContextMenu>
 
 			<ContextMenu x:Key="ElementOrderTreeContextMenu">
@@ -264,12 +265,9 @@
 									</i:Interaction.Triggers>
 									<i:Interaction.Behaviors>
 										<interactivity:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+										<interactivity:KeyPressToCommand Command="{Binding CancelEditingCommand}" Key="Escape"/>
 									</i:Interaction.Behaviors>
 								</TextBox>
-								<!--<TextBlock x:Name="OrderText" Margin="5,2,0,2" Text="{Binding Order, StringFormat=[ #{0:G} ]}" 
-                                   Visibility="{Binding IsLightNode, Converter={StaticResource BooleanToVisibilityConverter }}">
-
-								</TextBlock>-->
 							</StackPanel>
 							<HierarchicalDataTemplate.Triggers>
 								<DataTrigger Binding="{Binding IsSelected}" Value="True">
@@ -330,6 +328,7 @@
 									</i:Interaction.Triggers>
 									<i:Interaction.Behaviors>
 										<interactivity:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+										<interactivity:KeyPressToCommand Command="{Binding CancelEditingCommand}" Key="Escape"/>
 									</i:Interaction.Behaviors>
 								</TextBox>
 								

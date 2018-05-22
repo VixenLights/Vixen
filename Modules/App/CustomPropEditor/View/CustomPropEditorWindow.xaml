@@ -9,7 +9,7 @@
 	    xmlns:wpfPropertyGrid="http://schemas.denisvuyka.wordpress.com/wpfpropertygrid"
         xmlns:catel="http://schemas.catelproject.com"
         xmlns:viewModels="clr-namespace:VixenModules.App.CustomPropEditor.ViewModels"
-        Title="Custom Prop Editor" Height="700" Width="900">
+        Title="Custom Prop Editor" Height="700" Width="900" WindowStartupLocation="CenterScreen">
 	
 		<Window.Resources>
 			<ResourceDictionary>

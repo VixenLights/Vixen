@@ -85,11 +85,13 @@ namespace VixenModules.App.CustomPropEditor.Services
 			try
 			{
 				BitmapImage bmi = new BitmapImage();
+				bmi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
 				bmi.BeginInit();
 				bmi.CacheOption = BitmapCacheOption.OnLoad;
 				bmi.UriSource = new Uri(filePath, UriKind.Absolute);
 				bmi.EndInit();
-				_prop.Image = bmi;
+				_prop.Image = bmi.Clone(); //To ensure the cache is buted and reloading a modified version of the same uri works.
+				bmi.UriSource = null;
 			}
 			catch (Exception ex)
 			{
@@ -102,14 +104,14 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return _prop.GetLeafNodes();
 		}
 
-		public ElementModel CreateNode(string name, ElementModel parent = null)
+		public ElementModel CreateNode(string name, ElementModel parent = null, bool oneBasedNaming = false)
 		{
 			if (parent == null)
 			{
 				parent = _prop.RootNode;
 			}
 
-			ElementModel em = new ElementModel(Uniquify(name), parent);
+			ElementModel em = new ElementModel(Uniquify(name, oneBasedNaming?1:2), parent);
 			parent.AddChild(em);
 			_models.Add(em.Id, em);
 			return em;
@@ -155,9 +157,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return em;
 		}
 
-		public ElementModel CreateElementModelTree(ElementModel elementModel, ElementModel parent)
+		public ElementModel CreateElementModelTree(ElementModel elementModel, ElementModel parent, string name = null, bool recursed = false)
 		{
-			var em = CreateNode(parent.Name, parent);
+			var em = CreateNode(recursed?parent.Name:name, parent, recursed);
 
 			if (elementModel.IsLightNode)
 			{
@@ -171,7 +173,7 @@ namespace VixenModules.App.CustomPropEditor.Services
 			
 			foreach (var child in elementModel.Children)
 			{
-				CreateElementModelTree(child, em);
+				CreateElementModelTree(child, em, string.Empty, true);
 			}
 			
 			return em;
