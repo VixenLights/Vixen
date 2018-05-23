@@ -210,7 +210,7 @@
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.MaximumSize = new System.Drawing.Size(1024, 1033);
 			this.Name = "LipSyncMapEditor";
-			this.ShowIcon = false;
+			this.ShowIcon = true;
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
