@@ -103,6 +103,12 @@
     <Compile Include="BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="DragDropListView\CancelListViewItemDragEventArgs.cs" />
+    <Compile Include="DragDropListView\InsertionMode.cs" />
+    <Compile Include="DragDropListView\DragDropListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DragDropListView\ListViewItemDragEventArgs.cs" />
     <Compile Include="MessageBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
