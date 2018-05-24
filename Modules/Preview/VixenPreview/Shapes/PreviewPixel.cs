@@ -104,7 +104,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				_nodeId = value;
 				_node = VixenSystem.Nodes.GetElementNode(NodeId);
-				_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
+				TestForDiscrete();
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			{
 				if (_node == null) {
 					_node = VixenSystem.Nodes.GetElementNode(NodeId);
-					_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
+					TestForDiscrete();
 				}
 				return _node;
 			}
@@ -125,9 +125,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				else
 					NodeId = value.Id;
 				_node = value;
-				_isDiscreteColored = _node!=null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
+				TestForDiscrete();
 			}
 
+		}
+
+		internal void TestForDiscrete()
+		{
+			_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
 		}
 
 		public void Resize()

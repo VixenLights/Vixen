@@ -75,6 +75,8 @@ namespace VixenModules.Preview.VixenPreview
 
 					helper.Perform(_leafNodes);
 				}
+
+				PreviewCustomProp.UpdateColorType();
 				
 				PreviewCustomProp.Layout();
 				
