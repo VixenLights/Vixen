@@ -36,7 +36,7 @@ namespace VixenApplication.Setup
 			label20.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 			buttonDoPatching.Font = new Font(Font.FontFamily, 12F);
 			labelPatchWarning.ForeColor = Color.FromArgb(255,255,0);
-			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet(), false);
+			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet());
 		}
 
 		private void SetupPatchingSimple_Load(object sender, EventArgs e)
@@ -98,9 +98,9 @@ namespace VixenApplication.Setup
 			PatchingUpdated(this, EventArgs.Empty);
 		}
 
-		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs, bool reverseElements)
+		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs)
 		{
-			_UpdateElementDetails(selectedNodes, reverseElements);
+			_UpdateElementDetails(selectedNodes);
 			_updateControllerDetails(controllersAndOutputs);
 			_updatePatchingSummary();
 		}
@@ -108,7 +108,7 @@ namespace VixenApplication.Setup
 
 		private List<PatchStatusItem<IDataFlowComponentReference>> _componentOutputs;
 
-		private void _UpdateElementDetails(IEnumerable<ElementNode> selectedNodes, bool reverseElements = false)
+		private void _UpdateElementDetails(IEnumerable<ElementNode> selectedNodes)
 		{
 			List<ElementNode> nodes = selectedNodes.ToList();
 
@@ -116,7 +116,7 @@ namespace VixenApplication.Setup
 
 			IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs;
 			int leafCount, groupCount, filterCount;
-			_countTypesDescendingFromElements(nodes, reverseElements, out leafCount, out groupCount, out filterCount, out outputs);
+			_countTypesDescendingFromElements(nodes, out leafCount, out groupCount, out filterCount, out outputs);
 			_componentOutputs = outputs.ToList();
 			int patchedCount = _componentOutputs.Count(x => x.Patched);
 			int unpatchedCount = _componentOutputs.Count(x => !x.Patched);
@@ -232,70 +232,45 @@ namespace VixenApplication.Setup
 			return helper.Perform(_cachedElementNodes);
 		}
 
-		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements, bool reverseElements,
-			out int leafElementCount, out int groupCount, out int filterCount,
-			out IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs)
+		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements,
+							out int leafElementCount, out int groupCount, out int filterCount,
+							out IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs)
 		{
-			int startingIndex, endingIndex, iterationValue;
-
 			leafElementCount = groupCount = filterCount = 0;
 			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
 			
-			// are there elements to process?
-			if (elements.Any())
+			// process each element
+			foreach (var element in elements)
 			{
-				// do we need to reverse the order of the elements?
-				if (reverseElements)
-				{
-					// work through the array backwards
-					endingIndex = -1;
-					startingIndex = elements.Count() - 1;
-					iterationValue = -1;
-					// MessageBox.Show("Reversing " + (startingIndex + 1) + " elements.", "Reversing Elements", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				} // end need to reverse the element order
-				else
-				{
-					// work through the array frontwards
-					startingIndex = 0;
-					endingIndex = elements.Count();
-					iterationValue = 1;
+				int lec, gc, fc;
+				IEnumerable<PatchStatusItem<IDataFlowComponentReference>> childOutputs;
+
+				// process any child elements
+				_countTypesDescendingFromElements(element.Children, out lec, out gc, out fc, out childOutputs);
+
+				outputList.AddRange(childOutputs);
+
+				if (element.Children.Any()) {
+					gc++;
+				} else {
+					lec++;
 				}
 
-				// process each element
-				for (int index = startingIndex; index != endingIndex; index += iterationValue)
-				{
-					ElementNode element = elements.ElementAt(index);
-					int lec, gc, fc;
-					IEnumerable<PatchStatusItem<IDataFlowComponentReference>> childOutputs;
+				IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
+				fc += filters.Count();
 
-					// process any child elements
-					_countTypesDescendingFromElements(element.Children, reverseElements, out lec, out gc, out fc, out childOutputs);
-
+				if (element.Element != null) {
+					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
+					childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
 					outputList.AddRange(childOutputs);
-
-					if (element.Children.Any()) {
-						gc++;
-					} else {
-						lec++;
-					}
-
-					IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
-					fc += filters.Count();
-
-					if (element.Element != null) {
-						IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
-						childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
-						outputList.AddRange(childOutputs);
-					}
-
-
-					// do some accounting
-					leafElementCount += lec;
-					groupCount += gc;
-					filterCount += fc;
 				}
-			}
 
+				// do some accounting
+				leafElementCount += lec;
+				groupCount += gc;
+				filterCount += fc;
+			}
+			
 			outputs = outputList;
 		}
 
@@ -497,7 +472,7 @@ namespace VixenApplication.Setup
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 
 			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
@@ -580,7 +555,7 @@ namespace VixenApplication.Setup
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 		}
 
 
@@ -613,7 +588,7 @@ namespace VixenApplication.Setup
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 		}
 
 		private void checkBoxReverseOutputOrder_CheckedChanged(object sender, EventArgs e)
