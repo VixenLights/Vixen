@@ -52,6 +52,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public event OnPropertiesChangedHandler OnPropertiesChanged;
 
+		public void UpdateColorType()
+		{
+			foreach (var previewPixel in Pixels)
+			{
+				previewPixel.TestForDiscrete();
+			}
+		}
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{
