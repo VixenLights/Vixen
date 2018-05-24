@@ -11,8 +11,10 @@ using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
+using Vixen.Rule;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenModules.Property.Order;
 
 namespace VixenApplication.Setup
 {
@@ -116,8 +118,8 @@ namespace VixenApplication.Setup
 			int leafCount, groupCount, filterCount;
 			_countTypesDescendingFromElements(nodes, reverseElements, out leafCount, out groupCount, out filterCount, out outputs);
 			_componentOutputs = outputs.ToList();
-			int patchedCount = _componentOutputs.Where(x => x.Patched).Count();
-			int unpatchedCount = _componentOutputs.Where(x => !x.Patched).Count();
+			int patchedCount = _componentOutputs.Count(x => x.Patched);
+			int unpatchedCount = _componentOutputs.Count(x => !x.Patched);
 
 			labelPatchPointCount.Text = (patchedCount + unpatchedCount).ToString();
 			labelConnectedPatchPointCount.Text = patchedCount.ToString();
@@ -129,6 +131,106 @@ namespace VixenApplication.Setup
 			buttonUnpatchElements.Enabled = patchedCount > 0;
 		}
 
+		private List<PatchStatusItem<IDataFlowComponentReference>> GetElementOutputs(IEnumerable<ElementNode> nodes)
+		{
+			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
+
+			//Compile the list of leaf nodes
+			List<ElementNode> leafNodes = new List<ElementNode>();
+			foreach (var node in nodes)
+			{
+				leafNodes.AddRange(node.GetLeafEnumerator());
+			}
+
+			var orderedLeafNodes = leafNodes;
+			//check to see if we have order properties or need to reverse.
+			if (leafNodes.Any(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
+			{
+				//Do all of them have an order property??
+				if (leafNodes.All(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
+				{
+					//Any dupes???
+					if (leafNodes.GroupBy(x => ((OrderModule) x.Properties.Get(OrderDescriptor.ModuleId)).Order)
+						.Any(g => g.Count() > 1))
+					{
+						MessageBoxForm mbf = new MessageBoxForm(@"Some elements have a duplicate preferred patching order set. Would you like to fix this before proceeding?" +
+							"\n\nYes) Open the order wizard.\nNo) Proceed using the element tree order.\nCancel) Abort patching.",
+							"Patching Order Conflict", MessageBoxButtons.YesNoCancel, SystemIcons.Warning);
+						var result = mbf.ShowDialog(this);
+						if (result == DialogResult.Cancel)
+						{
+							return null;
+						}
+
+						if (result == DialogResult.OK)
+						{
+							if (!ConfigureOrder())
+							{
+								return null;
+							}
+
+							orderedLeafNodes = OrderNodes(leafNodes);
+						}
+					}
+					else
+					{
+						orderedLeafNodes = OrderNodes(leafNodes);
+					}
+
+				}
+				else
+				{
+					MessageBoxForm mbf = new MessageBoxForm(@"Not all elements have a preferred patching order set. Would you like to fix this before proceding?" +
+						"\n\nYes) Open the order wizard.\nNo) Proceed using the element tree order.\nCancel) Abort patching.",
+						"Patching Order Conflict", MessageBoxButtons.YesNoCancel, SystemIcons.Warning);
+					var result = mbf.ShowDialog(this);
+					if (result == DialogResult.Cancel)
+					{
+						return null;
+					}
+
+					if (result == DialogResult.OK)
+					{
+						if (ConfigureOrder())
+						{
+							orderedLeafNodes = OrderNodes(leafNodes);
+						}
+						else
+						{
+							return null;
+						}
+					}
+				}
+			}
+
+			if (_reverseElementOrder)
+			{
+				orderedLeafNodes.Reverse();
+			}
+
+			foreach (var orderedLeafNode in orderedLeafNodes)
+			{
+				if (orderedLeafNode.Element != null)
+				{
+					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(orderedLeafNode.Element.Id);
+					var childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
+					outputList.AddRange(childOutputs);
+				}
+			}
+			
+			return outputList;
+		}
+
+		private static List<ElementNode> OrderNodes(List<ElementNode> leafNodes)
+		{
+			return leafNodes.OrderBy(x => ((OrderModule) x.Properties.Get(OrderDescriptor.ModuleId)).Order).ToList();
+		}
+
+		private bool ConfigureOrder()
+		{
+			IElementSetupHelper helper = new OrderSetupHelper();
+			return helper.Perform(_cachedElementNodes);
+		}
 
 		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements, bool reverseElements,
 			out int leafElementCount, out int groupCount, out int filterCount,
@@ -140,10 +242,10 @@ namespace VixenApplication.Setup
 			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
 			
 			// are there elements to process?
-			if (0 < elements.Count())
+			if (elements.Any())
 			{
 				// do we need to reverse the order of the elements?
-				if ((true == reverseElements) && (0 < elements.Count()))
+				if (reverseElements)
 				{
 					// work through the array backwards
 					endingIndex = -1;
@@ -171,20 +273,20 @@ namespace VixenApplication.Setup
 
 					outputList.AddRange(childOutputs);
 
-				if (element.Children.Any()) {
-					gc++;
-				} else {
-					lec++;
-				}
+					if (element.Children.Any()) {
+						gc++;
+					} else {
+						lec++;
+					}
 
-				IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
-				fc += filters.Count();
+					IEnumerable<IOutputFilterModuleInstance> filters = _findFiltersThatDescendFromElement(element);
+					fc += filters.Count();
 
-				if (element.Element != null) {
-					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
-					childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
-					outputList.AddRange(childOutputs);
-				}
+					if (element.Element != null) {
+						IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(element.Element.Id);
+						childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
+						outputList.AddRange(childOutputs);
+					}
 
 
 					// do some accounting
@@ -377,8 +479,19 @@ namespace VixenApplication.Setup
 			int max = Math.Min(_selectedPatchSources.Count, _selectedPatchDestinations.Count);
 
 			// reverse things if needed
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, _reverseElementOrder);
+			//_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, _reverseElementOrder);
 
+			var outputs = GetElementOutputs(_cachedElementNodes);
+			if (outputs == null)
+			{
+				//user canceled or somethng went wrong
+				return;
+			}
+
+			_componentOutputs = outputs;
+			_updateControllerDetails(_cachedControllersAndOutputs);
+			_updatePatchingSummary();
+			
 			for (int i = 0; i < max; i++) {
 				VixenSystem.DataFlow.SetComponentSource(_selectedPatchDestinations[i].Item, _selectedPatchSources[i].Item);
 			}
