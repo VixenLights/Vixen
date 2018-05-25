@@ -355,6 +355,7 @@
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
     <Compile Include="Sys\IHasLayers.cs" />
+    <Compile Include="Sys\IHasMarks.cs" />
     <Compile Include="Sys\IStateCombinator.cs" />
     <Compile Include="Sys\LayerMixing\Layer.cs" />
     <Compile Include="Sys\LayerMixing\DefaultLayer.cs" />

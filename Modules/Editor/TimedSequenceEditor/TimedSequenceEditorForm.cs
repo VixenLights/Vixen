@@ -3363,6 +3363,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					node.Effect.Media = Sequence.SequenceData.Media;
 				}
+
+				if (node.Effect.SupportsMarks)
+				{
+					node.Effect.MarkCollections = _sequence.LabeledMarkCollections;
+				}
+
 				TimedSequenceElement element = SetupNewElementFromNode(node);
 				foreach (ElementNode target in node.Effect.TargetNodes)
 				{

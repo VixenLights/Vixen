@@ -9,7 +9,7 @@ namespace VixenModules.Sequence.Timed
 	{
 		public static string Extension = ".tim";
 
-		public ObservableCollection<IMarkCollection> LabeledMarkCollections => ((TimedSequenceData)SequenceData).LabeledMarkCollections;
+		public override ObservableCollection<IMarkCollection> LabeledMarkCollections => ((TimedSequenceData)SequenceData).LabeledMarkCollections;
 
 		public RowSettings RowSettings
 		{
