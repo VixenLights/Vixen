@@ -131,7 +131,7 @@ namespace VixenApplication.Setup
 			buttonUnpatchElements.Enabled = patchedCount > 0;
 		}
 
-		private List<PatchStatusItem<IDataFlowComponentReference>> GetElementOutputs(IEnumerable<ElementNode> nodes)
+		private List<PatchStatusItem<IDataFlowComponentReference>> GetOrderedElementOutputs(IEnumerable<ElementNode> nodes)
 		{
 			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
 
@@ -143,13 +143,13 @@ namespace VixenApplication.Setup
 			}
 
 			var orderedLeafNodes = leafNodes;
-			//check to see if we have order properties or need to reverse.
+			//check to see if we have any order properties 
 			if (leafNodes.Any(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
 			{
-				//Do all of them have an order property??
+				//We have some, but do all of them have an order property??
 				if (leafNodes.All(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
 				{
-					//Any dupes???
+					//They all have them but are there any dupes???
 					if (leafNodes.GroupBy(x => ((OrderModule) x.Properties.Get(OrderDescriptor.ModuleId)).Order)
 						.Any(g => g.Count() > 1))
 					{
@@ -203,6 +203,7 @@ namespace VixenApplication.Setup
 				}
 			}
 
+			//Reverse if we need to.
 			if (_reverseElementOrder)
 			{
 				orderedLeafNodes.Reverse();
@@ -333,7 +334,7 @@ namespace VixenApplication.Setup
 
 		private List<PatchStatusItem<IDataFlowComponent>> _controllerInputs;
 
-		private void _updateControllerDetails(ControllersAndOutputsSet controllersAndOutputs)
+		private void _updateControllerDetails(ControllersAndOutputsSet controllersAndOutputs, bool skipStats = false)
 		{
 			int controllerCount = 0;
 			int patchedCount = 0;
@@ -363,16 +364,19 @@ namespace VixenApplication.Setup
 				}
 			}
 
+			if (checkBoxReverseOutputOrder.Checked)
+			{
+				_controllerInputs.Reverse();
+			}
+
+			if (skipStats) return;
+
 			labelControllerCount.Text = controllerCount.ToString();
 			labelOutputCount.Text = (patchedCount + unpatchedCount).ToString();
 			labelPatchedOutputCount.Text = patchedCount.ToString();
 			labelUnpatchedOutputCount.Text = unpatchedCount.ToString();
 
 			buttonUnpatchControllers.Enabled = patchedCount > 0;
-
-			if (checkBoxReverseOutputOrder.Checked) {
-				_controllerInputs.Reverse();
-			}
 
 			labelFirstOutput.Text = "";
 			labelLastOutput.Text = "";
@@ -446,17 +450,8 @@ namespace VixenApplication.Setup
 
 		private void buttonDoPatching_Click(object sender, EventArgs e)
 		{
-			if (_selectedPatchSources == null || _selectedPatchDestinations == null) {
-				Logging.Error("null patch sources or destinations!");
-				return;
-			}
-
-			int max = Math.Min(_selectedPatchSources.Count, _selectedPatchDestinations.Count);
-
-			// reverse things if needed
-			//_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, _reverseElementOrder);
-
-			var outputs = GetElementOutputs(_cachedElementNodes);
+			//update the element settings in preparation for patching.
+			var outputs = GetOrderedElementOutputs(_cachedElementNodes);
 			if (outputs == null)
 			{
 				//user canceled or somethng went wrong
@@ -464,9 +459,28 @@ namespace VixenApplication.Setup
 			}
 
 			_componentOutputs = outputs;
-			_updateControllerDetails(_cachedControllersAndOutputs);
-			_updatePatchingSummary();
-			
+
+			if (_componentOutputs != null)
+			{
+				_selectedPatchSources = radioButtonAllAvailablePatchPoints.Checked ? _componentOutputs : _componentOutputs.Where(x => !x.Patched).ToList();
+			}
+
+			//Now handle the controller side.
+			_updateControllerDetails(_cachedControllersAndOutputs, true);
+
+			if (_controllerInputs != null)
+			{
+				_selectedPatchDestinations = radioButtonAllOutputs.Checked ? _controllerInputs : _controllerInputs.Where(x => !x.Patched).ToList();
+			}
+
+			if (_selectedPatchSources == null || _selectedPatchDestinations == null)
+			{
+				Logging.Error("null patch sources or destinations!");
+				return;
+			}
+
+			int max = Math.Min(_selectedPatchSources.Count, _selectedPatchDestinations.Count);
+
 			for (int i = 0; i < max; i++) {
 				VixenSystem.DataFlow.SetComponentSource(_selectedPatchDestinations[i].Item, _selectedPatchSources[i].Item);
 			}
@@ -474,10 +488,8 @@ namespace VixenApplication.Setup
 			OnPatchingUpdated();
 			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Patched " + max + " element patch points to controllers.", "Patching Complete", false, false);
-			messageBox.ShowDialog();
+			var messageBox = new MessageBoxForm("Patched " + max + " element patch points to controllers.", "Patching Complete", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog(this);
 		}
 
 		private void radioButtonPatching_CheckedChanged(object sender, EventArgs e)
@@ -492,15 +504,13 @@ namespace VixenApplication.Setup
 			// then all other patches, in case we want to keep them.
 			// TODO: eh, I may have written this while drunk, it doesn't seem like a particlarly good way to do it
 
-			int patchedCount = _componentOutputs.Where(x => x.Patched).Count();
+			int patchedCount = _componentOutputs.Count(x => x.Patched);
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
 
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm(message, "Unpatch Elements?", true, false);
-				messageBox.ShowDialog();
+				var messageBox = new MessageBoxForm(message, "Unpatch Elements?", MessageBoxButtons.YesNo, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No)
 						return;
 			}
@@ -526,11 +536,9 @@ namespace VixenApplication.Setup
 
 			bool removeFilters = false;
 			if (nonDirectElementChildren.Any(x => x is IOutputFilterModuleInstance)) {
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Some elements are patched to filters.  Should these filters be removed as well?",
-									 "Remove Filters?", true, true);
-				messageBox.ShowDialog();
+									 "Remove Filters?", MessageBoxButtons.YesNoCancel, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 
 				if (messageBox.DialogResult == DialogResult.Cancel)
 					return;
@@ -565,10 +573,9 @@ namespace VixenApplication.Setup
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm(message, "Unpatch Controllers?", true, false);
-				messageBox.ShowDialog();
+				
+				var messageBox = new MessageBoxForm(message, "Unpatch Controllers?", MessageBoxButtons.YesNo, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No)
 					return;
 			}
