@@ -155,6 +155,10 @@
       <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Marks\Marks.csproj">
+      <Project>{27D283DF-52AD-4857-8359-DE134DB94728}</Project>
+      <Name>Marks</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LipSyncMapColorCtrl.resx">

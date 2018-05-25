@@ -5,11 +5,10 @@ using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
-using Common.Controls.Timeline;
 using QMLibrary;
 using VixenModules.Analysis.BeatsAndBars.Properties;
+using VixenModules.App.Marks;
 using VixenModules.Media.Audio;
-using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {
@@ -174,10 +173,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 			{
 				m_previewWaveForm.IntervalMarks =
 					(musicStaff1.SplitBeats) ?
-					PreviewData.PreviewSplitCollection.Marks :
-					PreviewData.PreviewCollection.Marks;
+					PreviewData.PreviewSplitCollection.Marks.Select(x => x.StartTime).ToList() :
+					PreviewData.PreviewCollection.Marks.Select(x => x.StartTime).ToList();
 
-				m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max();
+				m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max(x => x.StartTime);
 	
 				Refresh();
 			}

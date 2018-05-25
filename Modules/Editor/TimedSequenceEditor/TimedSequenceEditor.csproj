@@ -77,6 +77,11 @@
       <Name>WPFCommon</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Effect\Video\Video.csproj">
       <Project>{c5606015-2166-4866-a856-8eab67a5de26}</Project>
       <Name>Video</Name>
@@ -94,6 +99,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Catel.Core, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.Core.5.4.0\lib\net46\Catel.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Catel.MVVM, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.MVVM.5.4.0\lib\net46\Catel.MVVM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Expression.Blend.Sdk.WPF.1.0.1\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -106,8 +124,14 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Catel.MVVM.5.4.0\lib\net46\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TabControlEX">
       <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
       <Private>False</Private>
@@ -135,6 +159,15 @@
     </Compile>
     <Compile Include="AutomaticMusicDetection.Designer.cs">
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">
+      <DependentUpon>MarkCollectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml.cs">
+      <DependentUpon>MarkDockerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="TimeFormats.cs" />
     <Compile Include="TimedSequenceEditorForm_Menu.cs">
@@ -288,7 +321,6 @@
     <Compile Include="Forms\Form_ToolPalette.Designer.cs">
       <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </Compile>
-    <Compile Include="Undo\MarksMovedUndoAction.cs" />
     <Compile Include="Undo\MarksRemovedUndoAction.cs" />
     <Compile Include="Undo\MarksAddedUndoAction .cs" />
     <Compile Include="Undo\MarksAddedRemovedUndoAction.cs" />
@@ -307,6 +339,7 @@
     <Compile Include="LayerEditor.Designer.cs">
       <DependentUpon>LayerEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Undo\MarksTimeChangedUndoAction.cs" />
     <Compile Include="User32.cs" />
     <Compile Include="Shell32.cs" />
   </ItemGroup>
@@ -481,6 +514,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\WPF\MarksDocker\Views\MarkDockerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

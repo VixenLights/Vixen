@@ -100,19 +100,23 @@
       <Name>Controls</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
+      <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
+      <Name>WPFCommon</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Media\Audio\Audio.csproj">
       <Project>{4243ba4c-6371-4dd1-8a1d-675bed5322af}</Project>
       <Name>Audio</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Sequence\Timed\Timed.csproj">
-      <Project>{45e1228a-f714-41d5-bb9b-a776f2b23143}</Project>
-      <Name>Timed</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\QMLibrary\QMLibrary.vcxproj">

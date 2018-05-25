@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
 using Common.Controls.Theme;
 using VixenModules.Media.Audio;
-using System.Threading.Tasks;
 using Common.Controls.Scaling;
+using Common.Controls.TimelineControl;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -191,6 +188,16 @@ namespace Common.Controls.Timeline
 			grid.Scroll += GridScrolledHandler;
 			grid.VerticalOffsetChanged += GridScrollVerticalHandler;
 
+
+			//Marks
+			MarksBar = new MarksBar(TimeInfo)
+			{
+				Dock = DockStyle.Top,
+				Height = 50
+			};
+
+			splitContainer.Panel2.Controls.Add(MarksBar);
+
 			// Ruler
 			ruler = new Ruler(TimeInfo)
 			        	{
@@ -312,6 +319,10 @@ namespace Common.Controls.Timeline
 		{
 			get { return grid.TopVisibleRow; }
 		}
+
+		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public MarksBar MarksBar { get; set; }
+
 
 		#endregion
 
@@ -460,24 +471,33 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddSnapTime(TimeSpan time, int level, Color color, bool lineBold, bool solidLine)
+		public void AddMarks(ObservableCollection<MarkCollection> marks)
 		{
-			grid.AddSnapPoint(time, level, color, lineBold, solidLine);
-			ruler.AddSnapPoint(time, level, color, lineBold, solidLine);
+			
+			MarksBar.MarkCollections = marks;
+			ruler.MarkCollections = marks;
+			grid.MarkCollections = marks;
+			//ClearAllSnapTimes();
+			//foreach (MarkCollection mc in marks)
+			//{
+			//	if (!mc.IsEnabled) continue;
+			//	mc.EnsureOrder();
+			//	foreach (var mark in mc.Marks)
+			//	{
+			//		AddSnapTime(mark, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+			//	}
+			//}
 		}
 
-		public bool RemoveSnapTime(TimeSpan time)
-		{
-			ruler.RemoveSnapPoint(time);
-			return grid.RemoveSnapPoint(time);
-		}
+		//public void AddSnapTime(Mark labeledMark, int level, Color color, bool lineBold, bool solidLine)
+		//{
+		//	grid.AddSnapPoint(labeledMark.StartTime, level, color, lineBold, solidLine);
+		//}
 
-		public void ClearAllSnapTimes()
-		{
-			grid.ClearSnapPoints();
-			ruler.ClearSnapPoints();
-		}
-
+		//public void ClearAllSnapTimes()
+		//{
+		//	grid.ClearSnapPoints();
+		//}
 
 		public void AlignSelectedElementsLeft()
 		{
@@ -615,23 +635,53 @@ namespace Common.Controls.Timeline
 			remove { ruler.ClickedAtTime -= value; }
 		}
 
-		public event EventHandler<MarkMovedEventArgs> MarkMoved
-		{
-			add { ruler.MarkMoved += value; }
-			remove { ruler.MarkMoved -= value; }
-		}
+		//public event EventHandler<MarksMovedEventArgs> MarksMoved
+		//{
+		//	add
+		//	{
+		//		ruler.MarksMoved += value;
+		//		MarksBar.MarksMoved += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.MarksMoved -= value;
+		//		MarksBar.MarksMoved -= value;
+		//	}
+		//}
 
-		public event EventHandler<MarkNudgeEventArgs> MarkNudge
-		{
-			add { ruler.MarkNudge += value; }
-			remove { ruler.MarkNudge -= value; }
-		}
+		//public event EventHandler<MarksMovingEventArgs> MarksMoving
+		//{
+		//	add
+		//	{
+		//		ruler.MarksMoving += value;
+		//		MarksBar.MarksMoving += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.MarksMoving -= value;
+		//		MarksBar.MarksMoving -= value;
+		//	}
+		//}
 
-		public event EventHandler<DeleteMarkEventArgs> DeleteMark
-		{
-			add { ruler.DeleteMark += value; }
-			remove { ruler.DeleteMark -= value; }
-		}
+		//public event EventHandler<MarkNudgeEventArgs> MarkNudge
+		//{
+		//	add { ruler.MarkNudge += value; }
+		//	remove { ruler.MarkNudge -= value; }
+		//}
+
+		//public event EventHandler<MarksDeletedEventArgs> DeleteMark
+		//{
+		//	add
+		//	{
+		//		ruler.DeleteMark += value;
+		//		MarksBar.DeleteMark += value;
+		//	}
+		//	remove
+		//	{
+		//		ruler.DeleteMark -= value;
+		//		MarksBar.DeleteMark -= value;
+		//	}
+		//}
 
 		public event EventHandler RulerBeginDragTimeRange
 		{
@@ -645,11 +695,11 @@ namespace Common.Controls.Timeline
 			remove { ruler.TimeRangeDragged -= value; }
 		}
 
-		public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove
-		{
-			add { Ruler.SelectedMarkMove += value; }
-			remove { Ruler.SelectedMarkMove -= value; }
-		}
+		//public event EventHandler<SelectedMarkMoveEventArgs> SelectedMarkMove
+		//{
+		//	add { Ruler.SelectedMarkMove += value; }
+		//	remove { Ruler.SelectedMarkMove -= value; }
+		//}
 
 		#endregion
 		

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 
 namespace VixenModules.Sequence.Timed
 {
+	[Obsolete("Use VixenModules.App.Marks.MarkCollection", false)]
 	[DataContract]
 	public class MarkCollection
 	{
@@ -66,5 +65,7 @@ namespace VixenModules.Sequence.Timed
 		{
 			return Marks.IndexOf(time);
 		}
+
+		
 	}
 }

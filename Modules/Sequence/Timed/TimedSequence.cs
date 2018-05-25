@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Vixen.Sys.LayerMixing;
 
 namespace VixenModules.Sequence.Timed
@@ -8,11 +8,7 @@ namespace VixenModules.Sequence.Timed
 	{
 		public static string Extension = ".tim";
 
-		public List<MarkCollection> MarkCollections
-		{
-			get { return ((TimedSequenceData) SequenceData).MarkCollections; }
-			set { ((TimedSequenceData) SequenceData).MarkCollections = value; }
-		}
+		public ObservableCollection<App.Marks.MarkCollection> LabeledMarkCollections => ((TimedSequenceData)SequenceData).LabeledMarkCollections;
 
 		public RowSettings RowSettings
 		{

@@ -171,7 +171,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_deleteElements_Click(object sender, EventArgs e)
 		{
-			TimelineControl.ruler.DeleteSelectedMarks();
+			//TimelineControl.ruler.DeleteSelectedMarks(); //Why would we delete marks in element delete operations???
 			RemoveSelectedElements();
 		}
 
@@ -522,14 +522,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				LipSyncTextConvertForm textConverter = new LipSyncTextConvertForm();
 				textConverter.NewTranslation += textConverterHandler;
 				textConverter.TranslateFailure += translateFailureHandler;
-				List<Dictionary<string, List<TimeSpan>>> tcMarks = new List<Dictionary<string, List<TimeSpan>>>();
-				foreach (MarkCollection mc in _sequence.MarkCollections)
-				{
-					Dictionary<string, List<TimeSpan>> tcDict = new Dictionary<string, List<TimeSpan>>();
-					tcDict[mc.Name] = mc.Marks;
-					tcMarks.Add(tcDict);
-				}
-				textConverter.MarkCollections = tcMarks;
+				textConverter.MarkCollections = _sequence.LabeledMarkCollections;
 				textConverter.Show(this);
 			}
 		}
@@ -560,10 +553,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (module is Audio)
 				{
 					BeatsAndBars audioFeatures = new BeatsAndBars((Audio)module);
-					_sequence.MarkCollections = 
-						audioFeatures.DoBeatBarDetection(_sequence.MarkCollections);
-					
-					MarksForm.PopulateMarkCollectionsList(null);
+					 
+					audioFeatures.DoBeatBarDetection(_sequence.LabeledMarkCollections);
 					SequenceModified();
 					break;
 

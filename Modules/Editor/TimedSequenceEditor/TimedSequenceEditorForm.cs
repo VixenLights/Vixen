@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -11,12 +12,15 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
 using NLog;
@@ -39,13 +43,19 @@ using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
+using VixenModules.App.Marks;
 using VixenModules.Editor.EffectEditor;
+using VixenModules.Editor.TimedSequenceEditor.Forms;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
 using Element = Common.Controls.Timeline.Element;
 using Timer = System.Windows.Forms.Timer;
 using VixenModules.Property.Color;
+using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
+using ListView = System.Windows.Forms.ListView;
+using ListViewItem = System.Windows.Forms.ListViewItem;
+using MarkCollection = VixenModules.App.Marks.MarkCollection;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -128,7 +138,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//for external clipboard events.
 		IntPtr _clipboardViewerNext;
 
-		private Dictionary<TimeSpan, MarkCollection> _mcs;
+		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
 		#endregion
 
@@ -182,8 +192,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_Paste.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_AssociateAudio.Image = Resources.music;
 			toolStripButton_AssociateAudio.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			toolStripButton_MarkManager.Image = Resources.timeline_marker;
-			toolStripButton_MarkManager.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_ZoomTimeIn.Image = Resources.zoom_in;
 			toolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_ZoomTimeOut.Image = Resources.zoom_out;
@@ -237,7 +245,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
 
-
+			//So we can be aware of mark changes.
+			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -445,9 +454,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerBeginDragTimeRange += timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged += timelineControl_TimeRangeDragged;
 
-			TimelineControl.MarkMoved += timelineControl_MarkMoved;
-			TimelineControl.MarkNudge += timelineControl_MarkNudge;
-			TimelineControl.DeleteMark += timelineControl_DeleteMark;
+			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalMoving;
+			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
+			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -622,10 +631,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerClicked -= timelineControl_RulerClicked;
 			TimelineControl.RulerBeginDragTimeRange -= timelineControl_RulerBeginDragTimeRange;
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
-			TimelineControl.MarkMoved -= timelineControl_MarkMoved;
-			TimelineControl.MarkNudge -= timelineControl_MarkNudge;
-			TimelineControl.DeleteMark -= timelineControl_DeleteMark;
-
+			_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalMoved;
+			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
+			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
+			
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
 				EffectsForm.Dispose();
@@ -713,6 +722,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_sequence != null)
 			{
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
 				_sequence.Dispose();
 				_sequence = null;
 			}
@@ -856,11 +866,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					return _marksForm;
 				}
 
-				_marksForm = new Form_Marks(TimelineControl) {Sequence = _sequence};
-				_marksForm.PopulateMarkCollectionsList(null);
-				_marksForm.MarkCollectionChecked += MarkCollection_Checked;
-				_marksForm.EditMarkCollection += MarkCollection_Edit;
-				_marksForm.ChangedMarkCollection += MarkCollection_Changed;
+				_marksForm = new Form_Marks(_sequence);
+				//_marksForm.PopulateMarkCollectionsList(null);
+				//_marksForm.MarkCollectionChecked += MarkCollection_Checked;
+				//_marksForm.EditMarkCollection += MarkCollection_Edit;
+				//_marksForm.ChangedMarkCollection += MarkCollection_Changed;
 				_marksForm.Closing += _marksForm_Closing;
 
 				return _marksForm;
@@ -937,9 +947,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _marksForm_Closing(object sender, CancelEventArgs e)
 		{
-			MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
-			MarksForm.EditMarkCollection -= MarkCollection_Edit;
-			MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
+			//MarksForm.MarkCollectionChecked -= MarkCollection_Checked;
+			//MarksForm.EditMarkCollection -= MarkCollection_Edit;
+			//MarksForm.ChangedMarkCollection -= MarkCollection_Changed;
 			MarksForm.Closing -= _marksForm_Closing;
 		}
 
@@ -956,24 +966,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void LayerEditorLayersChanged(object sender, EventArgs e)
 		{
-			SequenceModified();
-		}
-
-
-		private void MarkCollection_Checked(object sender, MarkCollectionArgs e)
-		{
-			PopulateMarkSnapTimes();
-			SequenceModified();
-		}
-
-		private void MarkCollection_Edit(Object sender, EventArgs e)
-		{
-			ShowMarkManager();
-		}
-
-		private void MarkCollection_Changed(Object sender, MarkCollectionArgs e)
-		{
-			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
 
@@ -1449,27 +1441,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		
+
 		/// <summary>
 		/// Populates the mark snaptimes in the grid.
 		/// </summary>
 		private void PopulateMarkSnapTimes()
 		{
-			TimelineControl.ClearAllSnapTimes();
+			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
+		}
 
-			foreach (MarkCollection mc in _sequence.MarkCollections)
-			{
-				if (!mc.Enabled) continue;
-				foreach (TimeSpan time in mc.Marks)
-				{
-					TimelineControl.AddSnapTime(time, mc.Level, mc.MarkColor, mc.Bold, mc.SolidLine);
-				}
-			}
+		private void UpdateGridSnapTimes()
+		{
+			TimelineControl.grid.CreateSnapPointsFromMarks();
 		}
 
 		private void PopulateSnapStrength(int strength)
 		{
 			TimelineControl.grid.SnapStrength = strength;
-			TimelineControl.ruler.SnapStrength = strength;
 		}
 
 		private void PopulateAudioDropdown()
@@ -2000,13 +1989,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			toolStripButton_Copy.Enabled = toolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
-			toolStripMenuItem_deleteElements.Enabled = TimelineControl.ruler.selectedMarks.Any() ||
-			                                           TimelineControl.SelectedElements.Any();
+			toolStripMenuItem_deleteElements.Enabled = TimelineControl.SelectedElements.Any();
 		}
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)
 		{
-			TimelineControl.ruler.ClearSelectedMarks();
+			//TimelineControl.ruler.ClearSelectedMarks();
+			MarksSelectionManager.Manager().ClearSelected();
 			Invalidate(true);
 		}
 
@@ -2324,7 +2313,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			eDialog.EffectName = effectName;
 			eDialog.SequenceLength = eDialog.EndTime = SequenceLength;
-			eDialog.MarkCollections = _sequence.MarkCollections;
+			eDialog.MarkCollections = _sequence.LabeledMarkCollections;
 			eDialog.ShowDialog();
 			if (eDialog.DialogResult == DialogResult.OK)
 			{
@@ -2375,12 +2364,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
 		{
 			bool skipThisBeat = false;
-			List<TimeSpan> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.MarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark >= startTime select mark).ToList();
+			List<Mark> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.LabeledMarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark.StartTime >= startTime select mark).ToList();
 			times.Sort();
 			var newEffects = new List<EffectNode>();
 			if (times.Count > 0)
 			{
-				foreach (TimeSpan mark in times)
+				foreach (Mark mark in times)
 				{
 					if (newEffects.Count < effectCount)
 					{
@@ -2393,10 +2382,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 								{
 									if (times.IndexOf(mark) == times.Count - 1) //The dialog hanles this, but just to make sure
 										break; //We're done -- There are no more marks to fill, don't create it
-									duration = times[times.IndexOf(mark) + 1] - mark;
+									duration = times[times.IndexOf(mark) + 1].StartTime - mark.StartTime;
 									if (duration < TimeSpan.FromSeconds(.01)) duration = TimeSpan.FromSeconds(.01);
 								}
-								newEffects.Add(CreateEffectNode(newEffect, row, mark, duration));
+								newEffects.Add(CreateEffectNode(newEffect, row, mark.StartTime, duration));
 							}
 							catch (Exception ex)
 							{
@@ -2676,10 +2665,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddMarkAtTime(TimeSpan time, bool markEffects)
+		private Mark AddMarkAtTime(TimeSpan time, bool suppressUndo)
 		{
+			Mark newMark = null;
 			MarkCollection mc = null;
-			if (_sequence.MarkCollections.Count == 0)
+			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
 				var messageBox = new MessageBoxForm("Marks are stored in Mark Collections. There are no mark collections available to store this mark. Would you like to create a new one?", @"Create a Mark Collection", MessageBoxButtons.YesNo, SystemIcons.Information);
@@ -2687,45 +2677,54 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (messageBox.DialogResult == DialogResult.OK)
 				{
 					mc = GetOrAddNewMarkCollection(Color.White, "Default Marks");
-					MarksForm.PopulateMarkCollectionsList(mc);
 				}
 			}
 			else
 			{
-				mc = MarksForm.SelectedMarkCollection;
+				mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault && x.IsVisible);
 				if (mc == null)
 				{
 					if (_context.IsRunning) PauseSequence();
-					var messageBox = new MessageBoxForm("Please select a mark collection in the Mark Manager window before adding a new mark to the timeline.", @"New Mark", MessageBoxButtons.OK, SystemIcons.Error);
-					messageBox.ShowDialog();
+					var messageBox = new MessageBoxForm("The active mark collection is not visible on the timeline. Would you like to enable it to add the mark?", @"New Mark", MessageBoxButtons.OKCancel, SystemIcons.Error);
+					var result = messageBox.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						mc = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault);
+						if (mc != null)
+						{
+							mc.ShowGridLines = mc.ShowMarkBar = true;
+						}
+					}
 				}
 			}
-			if (mc != null && !mc.Marks.Contains(time))
+			if (mc != null && mc.Marks.All(x => x.StartTime != time))
 			{
-				mc.Marks.Add(time);
+				newMark = new Mark(time);
+				mc.AddMark(newMark);
 				PopulateMarkSnapTimes();
 				SequenceModified();
-				if (!markEffects)
+				if (!suppressUndo)
 				{
-					_mcs = new Dictionary<TimeSpan, MarkCollection>();
-					_mcs.Add(time, mc);
-					var act = new MarksAddedUndoAction(this, _mcs);
+					var act = new MarksAddedUndoAction(this, newMark, mc);
 					_undoMgr.AddUndoAction(act);
 				}
-				else
-				{
-					_mcs.Add(time, mc);
-				}
 			}
+
+			return newMark;
 		}
 
 		private MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			MarkCollection mc = _sequence.MarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			MarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
 			if (mc == null)
 			{
-				MarkCollection newCollection = new MarkCollection {Name = name, MarkColor = color};
-				_sequence.MarkCollections.Add(newCollection);
+				MarkCollection newCollection = new MarkCollection {Name = name};
+				newCollection.Decorator.Color = color;
+				if (!_sequence.LabeledMarkCollections.Any())
+				{
+					newCollection.IsDefault = true;
+				}
+				_sequence.LabeledMarkCollections.Add(newCollection);
 				mc = newCollection;
 				SequenceModified();
 			}
@@ -2733,77 +2732,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return mc;
 		}
 
-		private void timelineControl_MarkMoved(object sender, MarkMovedEventArgs e)
+		private void TimeLineGlobalMoving(object sender, MarksMovingEventArgs e)
 		{
-			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
-		//	MarkCollection markCollection = new MarkCollection();
-			foreach (MarkCollection mc in _sequence.MarkCollections)
-			{
-				if (/*e.SnapDetails.SnapColor == mc.MarkColor && */e.SnapDetails.SnapLevel == mc.Level)
-				{
-					if (mc.Marks.Contains(e.PreviousMark))
-					{
-						mc.Marks.Remove(e.PreviousMark);
-						mc.Marks.Add(e.NewMark);
-						if (e.MouseUp)
-						{
-							markCollection.Add(new MarkNdugeCollection(mc, e.NewMark, e.OriginalMarkTime));
-						}
-					}
-				}
-			}
-			PopulateMarkSnapTimes();
-			SequenceModified();
-			//Will only add the undo action after the move is complete and mouse button is released.
-			if (e.MouseUp)
-			{
-				_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
-			}
+			UpdateGridSnapTimes();
 		}
 
-		private void timelineControl_MarkNudge(object sender, MarkNudgeEventArgs e)
+		private void TimeLineGlobalMoved(object sender, MarksMovedEventArgs e)
 		{
-			SortedDictionary<TimeSpan, SnapDetails> newSelectedMarks = new SortedDictionary<TimeSpan, SnapDetails>();
-			List<MarkNdugeCollection> markCollection = new List<MarkNdugeCollection>();
-			foreach (KeyValuePair<TimeSpan, SnapDetails> kvp in e.SelectedMarks)
-			{
-				newSelectedMarks.Add(kvp.Key + e.Offset, kvp.Value);
-				foreach (MarkCollection mc in _sequence.MarkCollections)
-				{
-					if (kvp.Value.SnapLevel == mc.Level)
-					{
-						if (mc.Marks.Contains(kvp.Key))
-						{
-							markCollection.Add(new MarkNdugeCollection(mc, kvp.Key + e.Offset, kvp.Key));
-							mc.Marks.Remove(kvp.Key);
-							mc.Marks.Add(kvp.Key + e.Offset);
-						}
-					}
-				}
-			}
-			PopulateMarkSnapTimes();
+			_undoMgr.AddUndoAction(new MarksTimeChangedUndoAction(this, e.MoveResizeInfo, e.MoveType));
+			UpdateGridSnapTimes();
 			SequenceModified();
-			_undoMgr.AddUndoAction(new MarksMovedUndoAction(this, markCollection));
 		}
 
-		private void timelineControl_DeleteMark(object sender, DeleteMarkEventArgs e)
+		private void TimeLineGlobalDeleted(object sender, MarksDeletedEventArgs e)
 		{
-			Dictionary<TimeSpan, MarkCollection> mcs = new Dictionary<TimeSpan, MarkCollection>();
-			foreach (TimeSpan mark in e.Marks)
+			var marksDeleted = new Dictionary<Mark, MarkCollection>();
+			foreach (var mark in e.Marks)
 			{
-				foreach (MarkCollection mc in _sequence.MarkCollections)
-				{
-					if (mc.Marks.Contains(mark))
-					{
-						mc.Marks.Remove(mark);
-						mcs.Add(mark, mc);
-					}
-				}
+				marksDeleted.Add(mark, mark.Parent);
 			}
-			PopulateMarkSnapTimes();
-			SequenceModified();
-			var act = new MarksRemovedUndoAction(this, mcs);
+			var act = new MarksRemovedUndoAction(this, marksDeleted);
 			_undoMgr.AddUndoAction(act);
+
+			UpdateGridSnapTimes();
+			SequenceModified();
 		}
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
@@ -3201,11 +3153,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Adds a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void AddMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		public void AddMark(Dictionary<Mark, MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
-				mark.Value.Marks.Add(mark.Key);
+				mark.Value.AddMark(mark.Key);
 			}
 			
 			PopulateMarkSnapTimes();
@@ -3216,43 +3168,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Remove a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void RemoveMark(Dictionary<TimeSpan, MarkCollection> markCollections)
+		public void RemoveMark(Dictionary<Mark, MarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
-				mark.Value.Marks.Remove(mark.Key);
+				mark.Value.RemoveMark(mark.Key);
 			}
 			PopulateMarkSnapTimes();
 			SequenceModified();
-		}
-
-
-		/// <summary>
-		/// Moves a Mark on the timeline/ruler in a Mark Collection.
-		/// </summary>
-		/// <param name="markCollections"></param>
-		/// <param name="mark1"></param>
-		/// <param name="mark2"></param>
-		public void MovedMark(MarkCollection markCollections, TimeSpan mark1, TimeSpan mark2)
-		{
-			markCollections.Marks.Remove(mark1);
-			markCollections.Marks.Add(mark2);
-			PopulateMarkSnapTimes();
-			SequenceModified();
-		}
-
-		public class MarkNdugeCollection
-		{
-			public MarkNdugeCollection(MarkCollection markcollection, TimeSpan newMark, TimeSpan oldMark)
-			{
-				OldMark = oldMark;
-				NewMark = newMark;
-				MarkCollection = markcollection;
-			}
-
-			public TimeSpan OldMark { get; private set; }
-			public TimeSpan NewMark { get; private set; }
-			public MarkCollection MarkCollection { get; private set; }
 		}
 
 		/// <summary>
@@ -4478,6 +4401,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.SwapElementPlacement(changedElements);
 		}
 
+		/// <summary>
+		/// Used by the Undo/Redo engine
+		/// </summary>
+		/// <param name="changedMarks"></param>
+		public void SwapPlaces(Dictionary<Mark, MarkTimeInfo> changedMarks)
+		{
+			foreach (KeyValuePair<Mark, MarkTimeInfo> e in changedMarks)
+			{
+				// Key is reference to actual mark. Value is class with its times before move.
+				// Swap the mark's times with the saved times from before the move, so we can restore them later in redo.
+				MarkTimeInfo.SwapPlaces(e.Key, e.Value);
+			}
+
+			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(changedMarks.Keys.ToList()));
+		}
+
 		public void SwapLayers(Dictionary<IEffectNode, ILayer> effectNodes)
 		{
 			foreach (var node in effectNodes.Keys.ToList())
@@ -4563,13 +4502,72 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				if (value is TimedSequence)
 				{
+					SequenceRemoved();
 					_sequence = (TimedSequence)value;
+					SequenceAdded();
 				}
 				else
 				{
 					throw new NotImplementedException("Cannot use sequence type with a Timed Sequence Editor");
 				}
 				//loadSequence(value); 
+			}
+		}
+
+		private void SequenceAdded()
+		{
+			_sequence.LabeledMarkCollections.CollectionChanged += LabeledMarkCollections_CollectionChanged;
+			AddMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			SequenceModified();
+		}
+
+		private void LabeledMarkCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				RemoveMarkCollectionHandlers(e.OldItems.Cast<MarkCollection>());
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				AddMarkCollectionHandlers(e.NewItems.Cast<MarkCollection>());
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Reset)
+			{
+				//We don't know what happened, so remove all that may exist and add them back to be sure.
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+				AddMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+			}
+			SequenceModified();
+		}
+
+		private void SequenceRemoved()
+		{
+			if (_sequence != null)
+			{
+				_sequence.LabeledMarkCollections.CollectionChanged -= LabeledMarkCollections_CollectionChanged;
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+			}
+		}
+
+		private void RemoveMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		{
+			foreach (var mc in markCollections)
+			{
+				mc.PropertyChanged -= MarkCollection_PropertyChanged;
+				mc.Decorator.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void AddMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		{
+			foreach (var mc in markCollections)
+			{
+				mc.PropertyChanged += MarkCollection_PropertyChanged;
+				mc.Decorator.PropertyChanged += MarkCollection_PropertyChanged;
 			}
 		}
 
@@ -4716,14 +4714,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ShowMarkManager()
 		{
-			MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
-			if (manager.ShowDialog() == DialogResult.OK)
-			{
-				_sequence.MarkCollections = manager.MarkCollections;
-				PopulateMarkSnapTimes();
-				SequenceModified();
-				MarksForm.PopulateMarkCollectionsList(null);
-			}
+			//TODO finish the clean up of removing the mark manager
+			//MarkManager manager = new MarkManager(new List<MarkCollection>(_sequence.MarkCollections), this, this, this);
+			//if (manager.ShowDialog() == DialogResult.OK)
+			//{
+			//	_sequence.MarkCollections = manager.MarkCollections;
+			//	PopulateMarkSnapTimes();
+			//	SequenceModified();
+			//	MarksForm.PopulateMarkCollectionsList(null);
+			//}
 		}
 	
 		private void _SetTimingSpeed(float speed)
@@ -5044,14 +5043,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				elements = TimelineControl.SelectedElements;
 			}
-			_mcs = new Dictionary<TimeSpan, MarkCollection>();
+			var addedMarks = new Dictionary<Mark, MarkCollection>();
 			foreach (Element element in elements)
 			{
-				AddMarkAtTime(element.StartTime, true);
+				var mark = AddMarkAtTime(element.StartTime, true);
+				addedMarks.Add(mark, _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault));
 			}
-			if (_mcs.Count > 0)
+			if (addedMarks.Count > 0)
 			{
-				var act = new MarksAddedUndoAction(this, _mcs);
+				var act = new MarksAddedUndoAction(this, addedMarks);
 				_undoMgr.AddUndoAction(act);
 			}
 		}
@@ -5076,24 +5076,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan result = TimeSpan.Zero;
 			TimeSpan compareResult = TimeSpan.Zero;
 
-			foreach (var markTime in _sequence.MarkCollections.Where(markCollection => markCollection.Enabled).SelectMany(markCollection => markCollection.Marks))
+			foreach (var markTime in _sequence.LabeledMarkCollections.Where(markCollection => markCollection.ShowGridLines).SelectMany(markCollection => markCollection.Marks))
 			{
-				if (markTime == referenceTimeSpan)
+				if (markTime.StartTime == referenceTimeSpan)
 				{
-					return markTime;
+					return markTime.StartTime;
 				}
 
-				if (markTime > referenceTimeSpan - threshold && markTime < referenceTimeSpan + threshold && (alignMethod == "Start" && markTime < referenceTimeSpan1 || alignMethod == "End" && markTime > referenceTimeSpan1))
+				if (markTime.StartTime > referenceTimeSpan - threshold && markTime.StartTime < referenceTimeSpan + threshold && (alignMethod == "Start" && markTime.StartTime < referenceTimeSpan1 || alignMethod == "End" && markTime.StartTime > referenceTimeSpan1))
 				{
-					if (markTime > referenceTimeSpan && markTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
+					if (markTime.StartTime > referenceTimeSpan && markTime.StartTime - referenceTimeSpan < compareResult.Duration() || result == TimeSpan.Zero)
 					{
-						compareResult = markTime - referenceTimeSpan;
-						result = markTime;
+						compareResult = markTime.StartTime - referenceTimeSpan;
+						result = markTime.StartTime;
 					}
-					else if (markTime < referenceTimeSpan && referenceTimeSpan - markTime < compareResult.Duration() || result == TimeSpan.Zero)
+					else if (markTime.StartTime < referenceTimeSpan && referenceTimeSpan - markTime.StartTime < compareResult.Duration() || result == TimeSpan.Zero)
 					{
-						compareResult = referenceTimeSpan - markTime;
-						result = markTime;
+						compareResult = referenceTimeSpan - markTime.StartTime;
+						result = markTime.StartTime;
 					}
 				}
 			}

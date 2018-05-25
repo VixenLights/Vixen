@@ -28,31 +28,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-		{
-			switch (keyData)
-			{
-				case Keys.Left:
-					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.StandardNudgeTime);
-					break;
-				case (Keys.Left | Keys.Shift):
-					TimelineControl.ruler.NudgeMark(-TimelineControl.ruler.SuperNudgeTime);
-					break;
-				case Keys.Right:
-					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.StandardNudgeTime);
-					break;
-				case (Keys.Right | Keys.Shift):
-					TimelineControl.ruler.NudgeMark(TimelineControl.ruler.SuperNudgeTime);
-					break;
-				//case Keys.Escape:
-					//EffectsForm.DeselectAllNodes();
-					//toolStripButton_DrawMode.Checked = false;
-					//toolStripButton_SelectionMode.Checked = true;
-					//break;
-			}
-			return base.ProcessCmdKey(ref msg, keyData);
-		}
-
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (IgnoreKeyDownEvents) return;

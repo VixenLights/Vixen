@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using Common.Controls;
 using Common.Controls.Theme;
-using VixenModules.Sequence.Timed;
 using Common.Resources.Properties;
+using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -19,7 +16,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#region Member Variables
 
 		private const string timeFormat = @"m\:ss\.fff";
-		public List<MarkCollection> MarkCollections { get; set; }
+		public IEnumerable<MarkCollection> MarkCollections { get; set; }
 
 		public ListView.CheckedListViewItemCollection CheckedMarks
 		{
@@ -368,7 +365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (checkBoxAlignToBeatMarks.Checked)
 			{
 				var names = new HashSet<String>();
-				foreach (MarkCollection mc in MarkCollections)
+				foreach (var mc in MarkCollections)
 				{
 					if (!names.Add(mc.Name))
 					{
@@ -440,12 +437,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void PopulateMarksList()
 		{
 			listBoxMarkCollections.Items.Clear();
-			foreach (MarkCollection mc in MarkCollections)
+			foreach (var mc in MarkCollections)
 			{
 				if (mc.Name != null)
 				{
 					var lvItems = new ListViewItem();
-					lvItems.ForeColor = mc.MarkColor;
+					lvItems.ForeColor = mc.Decorator.Color;
 					lvItems.Text = mc.Name;
 					listBoxMarkCollections.Items.Add(lvItems);
 				}
@@ -492,13 +489,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			foreach (ListViewItem lvi in CheckedMarks)
 			{
-				foreach (MarkCollection item in MarkCollections)
+				foreach (var item in MarkCollections)
 				{
 					if (item.Name == lvi.Text)
 					{
-						foreach (TimeSpan mark in item.Marks)
+						foreach (var mark in item.Marks)
 						{
-							if (mark >= StartTime && mark < EndTime) Times.Add(mark);
+							if (mark.StartTime >= StartTime && mark.StartTime < EndTime) Times.Add(mark.StartTime);
 						}
 					}
 				}

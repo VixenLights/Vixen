@@ -92,7 +92,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				item.Checked = true;
-				TimelineControl.ruler.SnapStrength = TimelineControl.grid.SnapStrength = Convert.ToInt32(item.Tag);
 				PopulateMarkSnapTimes();				
 			} 			
 			// clicking the currently checked one--do not uncheck it			

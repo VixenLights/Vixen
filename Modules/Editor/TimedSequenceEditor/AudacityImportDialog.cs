@@ -54,6 +54,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		public bool IsXTimingSelection => radioXTiming.Checked;
+
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
 		{
 			var btn = (Button)sender;

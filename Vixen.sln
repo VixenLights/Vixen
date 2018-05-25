@@ -408,6 +408,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPropEditor", "Modules
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order", "Modules\Property\Order\Order.csproj", "{A4254642-2965-469A-8FBD-B45F6EDD651C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marks", "Modules\App\Marks\Marks.csproj", "{27D283DF-52AD-4857-8359-DE134DB94728}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1952,6 +1954,20 @@ Global
 		{A4254642-2965-469A-8FBD-B45F6EDD651C}.Release|x64.Build.0 = Release|x64
 		{A4254642-2965-469A-8FBD-B45F6EDD651C}.Release|x86.ActiveCfg = Release|x86
 		{A4254642-2965-469A-8FBD-B45F6EDD651C}.Release|x86.Build.0 = Release|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|x64.ActiveCfg = Debug|x64
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|x64.Build.0 = Debug|x64
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|x86.ActiveCfg = Debug|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Debug|x86.Build.0 = Debug|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|Any CPU.ActiveCfg = Release|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|Mixed Platforms.Build.0 = Release|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|x64.ActiveCfg = Release|x64
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|x64.Build.0 = Release|x64
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|x86.ActiveCfg = Release|x86
+		{27D283DF-52AD-4857-8359-DE134DB94728}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2090,9 +2106,9 @@ Global
 		{9246118A-0BE2-422F-80EB-26883BEF26BB} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 		{37FE2E42-50DA-4973-88F7-072BA570F997} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{A4254642-2965-469A-8FBD-B45F6EDD651C} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
+		{27D283DF-52AD-4857-8359-DE134DB94728} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {84BCA803-F054-475C-AC8E-7F492AEF3C69}
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution

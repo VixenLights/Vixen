@@ -254,7 +254,7 @@
     <None Include="add.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="colors.png" />
+    <Resource Include="colors.png" />
     <None Include="alignBoth.png" />
     <None Include="alignCenter.png" />
     <None Include="alignEnd.png" />
@@ -300,10 +300,10 @@
     <None Include="Resources\distribute.png" />
     <None Include="Resources\Settings.png" />
     <None Include="Resources\open.png" />
-    <None Include="Resources\boldLine.png" />
+    <Resource Include="Resources\boldLine.png" />
     <None Include="Resources\openMarkManager.png" />
-    <None Include="Resources\add_Collection.png" />
-    <None Include="Resources\dottedLine.png" />
+    <Resource Include="Resources\add_Collection.png" />
+    <Resource Include="Resources\dottedLine.png" />
     <Resource Include="Resources\delete_32.png" />
     <None Include="Resources\marks.png" />
     <None Include="Resources\VixenImage.png" />
@@ -313,8 +313,11 @@
     <Resource Include="NewFile_6276.png" />
     <Resource Include="Prop_Add.png" />
     <Resource Include="Prop_Edit.png" />
+    <Content Include="LineVisible.png" />
+    <Resource Include="MarkBarVisible.png" />
+    <Resource Include="MarkLineVisible.png" />
     <Content Include="table_chart_left.png" />
-    <Content Include="folder_open.png" />
+    <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />
     <None Include="hourglass_go.png" />
     <None Include="hourglass_delete.png" />
@@ -332,7 +335,7 @@
     <None Include="pencil_go.png" />
     <None Include="pencil_delete.png" />
     <None Include="pencil_add.png" />
-    <None Include="pencil.png" />
+    <Resource Include="pencil.png" />
     <None Include="toolbar_go.png" />
     <None Include="toolbar_error.png" />
     <None Include="toolbar_edit.png" />
@@ -489,7 +492,7 @@
     <Content Include="folder_edit.png" />
     <Content Include="folder_error.png" />
     <Content Include="folder_explore.png" />
-    <Content Include="folder_go.png" />
+    <Resource Include="folder_go.png" />
     <None Include="plus.png" />
     <None Include="minus.png" />
     <None Include="arrow_undo.png" />

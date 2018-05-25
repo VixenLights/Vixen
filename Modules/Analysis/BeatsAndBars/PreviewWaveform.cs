@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Timeline;
 using VixenModules.Media.Audio;
-using VixenModules.Sequence.Timed;
 
 namespace VixenModules.Analysis.BeatsAndBars
 {

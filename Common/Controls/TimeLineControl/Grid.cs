@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -11,10 +13,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
 using Vixen.Sys.LayerMixing;
+using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
 {
@@ -57,6 +62,9 @@ namespace Common.Controls.Timeline
 
 		private List<Row> _visibleRows = new List<Row>();
 		private bool _visibleRowsDirty = false;
+
+		//We turn these into snap points for effects.
+		private ObservableCollection<MarkCollection> _markCollections;
 
 		#region Initialization
 
@@ -145,6 +153,9 @@ namespace Common.Controls.Timeline
 			_blockingElementQueue.Dispose();
 			_blockingElementQueue= null;
 			Context=null;
+
+			UnConfigureMarks();
+			
 			base.Dispose(disposing);
 		}
 
@@ -189,6 +200,17 @@ namespace Common.Controls.Timeline
 		}
 
 		#region Properties
+
+		public ObservableCollection<MarkCollection> MarkCollections
+		{
+			get { return _markCollections; }
+			set
+			{
+				UnConfigureMarks();
+				_markCollections = value;
+				ConfigureMarks();
+			}
+		}
 
 		public bool EnableSnapTo { get; set; }
 
@@ -1928,6 +1950,79 @@ namespace Common.Controls.Timeline
 			if (!SuppressInvalidate) Invalidate();
 		}
 
+		#region Marks
+
+		private void ConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+			_markCollections.CollectionChanged += _markCollections_CollectionChanged;
+			AddMarkCollectionEvents();
+			CreateSnapPointsFromMarks();
+		}
+
+		private void AddMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged += MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged += MarkCollection_PropertyChanged;
+			}
+		}
+
+		private void RemoveMarkCollectionEvents()
+		{
+			foreach (var markCollection in _markCollections)
+			{
+				markCollection.PropertyChanged -= MarkCollection_PropertyChanged;
+				markCollection.Decorator.PropertyChanged -= MarkCollection_PropertyChanged;
+			}
+		}
+
+		public void CreateSnapPointsFromMarks()
+		{
+			ClearSnapPoints();
+			foreach (var mc in _markCollections)
+			{
+				if (!mc.ShowGridLines) continue;
+				mc.EnsureOrder();
+				foreach (var mark in mc.Marks)
+				{
+					AddSnapPoint(mark.StartTime, mc.Level, mc.Decorator.Color, mc.Decorator.IsBold, mc.Decorator.IsSolidLine);
+				}
+			}
+		}
+
+		private void UnConfigureMarks()
+		{
+			if (_markCollections == null)
+			{
+				return;
+			}
+
+			_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+			RemoveMarkCollectionEvents();
+			ClearSnapPoints();
+		}
+
+		private void _markCollections_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//TODO It would be nice to just update the appropriate piece instead of rebuilding the entire thing.
+			RemoveMarkCollectionEvents();
+			AddMarkCollectionEvents();
+			CreateSnapPointsFromMarks();
+		}
+
+		private void MarkCollection_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			//TODO It would be nice to just update the appropriate piece instead of rebuilding the entire thing.
+			CreateSnapPointsFromMarks();
+		}
+
+		#endregion
+
 		private void CalculateVisibleRowDisplayTops(bool visibleRowsOnly = true)
 		{
 			int top = 0;
@@ -2437,6 +2532,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.HResizing) //Draw line at start or end of effect, depending which end the user grabbed
 			{
+				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new []{ _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					var X = (m_mouseResizeZone == ResizeZone.Front ? timeToPixels(_workingElement.StartTime) : timeToPixels(_workingElement.EndTime) - 1);
@@ -2446,6 +2542,7 @@ namespace Common.Controls.Timeline
 
 			if (m_dragState == DragState.Waiting || m_dragState == DragState.Moving) //Draw line at both ends, the user is dragging the entire effect
 			{
+				TimeLineGlobalEventManager.Manager.OnAlignmentActivity(new AlignmentEventArgs(true, new[] { _workingElement. StartTime, _workingElement.EndTime }));
 				using (Pen p = new Pen(Color.FromName(ResizeIndicator_Color), 1))
 				{
 					g.DrawLine(p, timeToPixels(_workingElement.StartTime), 0, timeToPixels(_workingElement.StartTime), AutoScrollMinSize.Height);
@@ -2518,44 +2615,6 @@ namespace Common.Controls.Timeline
 		public bool SnapBold; // snap point is bold
 		public bool SnapSolidLine; // snap point is a solidline or dotted
 	}
-
-
-	// Enumerations
-	internal enum DragState
-	{
-		///<summary>Not dragging, mouse is up.</summary>
-		Normal = 0,
-
-		///<summary>Mouse down, but hasn't moved past threshold yet to be considered dragging.</summary>
-		Waiting,
-
-		///<summary>Actively dragging objects.</summary>
-		Moving,
-
-		///<summary>Like "Dragging", but dragging on the background, not an object.</summary>
-		Selecting,
-
-		///<summary>Dragging the mouse horizontally to resize an object in time.</summary>
-		HResizing,
-
-		///<summary>Drawing, like "Dragging", but anywhere on timeline.</summary>
-		Drawing,
-	}
-
-
-	///<summary>Describes where the mouse is at in an element's resize zone.</summary>
-	public enum ResizeZone
-	{
-		/// <summary>Mouse is not in an element's resize zone.</summary>
-		None,
-
-		///<summary>Mouse is in the element's front (left) resize zone.</summary>
-		Front,
-
-		///<summary>Moouse is in the element's back (right) resize zone.</summary>
-		Back
-	};
-
 
 	///<summary>Maintains all necessary information during the user modification of selected Elements.</summary>
 	public class ElementMoveInfo

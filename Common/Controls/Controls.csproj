@@ -62,6 +62,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Resources\Resources.csproj">
       <Project>{F7A80169-6310-4585-9D58-A6F6F5C5B380}</Project>
       <Name>Resources</Name>
@@ -83,6 +88,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -210,11 +216,25 @@
     </Compile>
     <Compile Include="PictureComboBoxItem.cs" />
     <Compile Include="Theme\ThemeGroupBoxRenderer.cs" />
+    <Compile Include="TimelineControl\AlignmentEventArgs.cs" />
     <Compile Include="TimelineControl\BlockingCollectionExtensions.cs" />
     <Compile Include="TimelineControl\DelegateBasedObserver.cs" />
+    <Compile Include="TimelineControl\DragState.cs" />
+    <Compile Include="TimelineControl\ElementMoveType.cs" />
     <Compile Include="TimelineControl\Grid.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\TimeLineGlobalEventManager.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksSelectionManager.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\SelectedMarkMoveEventArgs.cs" />
+    <Compile Include="TimelineControl\MarkRow.cs" />
+    <Compile Include="TimelineControl\MarksBar.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksMoveResizeInfo.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarkTimeInfo.cs" />
+    <Compile Include="TimelineControl\ResizeZone.cs" />
     <Compile Include="Undo\AddToListUndoAction.cs" />
     <Compile Include="Undo\ModifyItemUndoAction.cs" />
     <Compile Include="Wizard\Wizard.cs" />
