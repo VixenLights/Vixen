@@ -43,6 +43,7 @@ namespace VixenModules.Effect.LipSync
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LipSyncData result = new LipSyncData();
+			result.LyricData = LyricData;
 			result.StaticPhoneme = StaticPhoneme;
 			result.PhonemeMapping = PhonemeMapping;
 			result.ScaleToGrid = ScaleToGrid;

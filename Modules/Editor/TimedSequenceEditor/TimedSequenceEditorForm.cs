@@ -4968,7 +4968,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 if (element.EffectNode.Effect.GetType() == typeof(LipSync))
                 {
                     ((LipSync)element.EffectNode.Effect).PhonemeMapping =  toolStripSender.Text;
-                    ResetLipSyncNodes();
+                    //Render the element we updated
+					TimelineControl.grid.RenderElement(element);
                 }
             });
 

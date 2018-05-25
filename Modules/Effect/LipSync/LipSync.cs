@@ -225,7 +225,7 @@ namespace VixenModules.Effect.LipSync
 		[Value]
 		[ProviderCategory("Config",2)]
 		[DisplayName(@"Lyric")]
-		[Description(@"The lyric verbiage.")]
+		[Description(@"The lyric verbiage this Phoneme is associated with.")]
 		public String LyricData
 		{
 			get { return _data.LyricData; }
