@@ -11,8 +11,10 @@ using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module.OutputFilter;
+using Vixen.Rule;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenModules.Property.Order;
 
 namespace VixenApplication.Setup
 {
@@ -34,7 +36,7 @@ namespace VixenApplication.Setup
 			label20.Font = new Font(Font.FontFamily, Font.Size, FontStyle.Bold);
 			buttonDoPatching.Font = new Font(Font.FontFamily, 12F);
 			labelPatchWarning.ForeColor = Color.FromArgb(255,255,0);
-			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet(), false);
+			_UpdateEverything(Enumerable.Empty<ElementNode>(), new ControllersAndOutputsSet());
 		}
 
 		private void SetupPatchingSimple_Load(object sender, EventArgs e)
@@ -96,9 +98,9 @@ namespace VixenApplication.Setup
 			PatchingUpdated(this, EventArgs.Empty);
 		}
 
-		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs, bool reverseElements)
+		private void _UpdateEverything(IEnumerable<ElementNode> selectedNodes, ControllersAndOutputsSet controllersAndOutputs)
 		{
-			_UpdateElementDetails(selectedNodes, reverseElements);
+			_UpdateElementDetails(selectedNodes);
 			_updateControllerDetails(controllersAndOutputs);
 			_updatePatchingSummary();
 		}
@@ -106,7 +108,7 @@ namespace VixenApplication.Setup
 
 		private List<PatchStatusItem<IDataFlowComponentReference>> _componentOutputs;
 
-		private void _UpdateElementDetails(IEnumerable<ElementNode> selectedNodes, bool reverseElements = false)
+		private void _UpdateElementDetails(IEnumerable<ElementNode> selectedNodes)
 		{
 			List<ElementNode> nodes = selectedNodes.ToList();
 
@@ -114,10 +116,10 @@ namespace VixenApplication.Setup
 
 			IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs;
 			int leafCount, groupCount, filterCount;
-			_countTypesDescendingFromElements(nodes, reverseElements, out leafCount, out groupCount, out filterCount, out outputs);
+			_countTypesDescendingFromElements(nodes, out leafCount, out groupCount, out filterCount, out outputs);
 			_componentOutputs = outputs.ToList();
-			int patchedCount = _componentOutputs.Where(x => x.Patched).Count();
-			int unpatchedCount = _componentOutputs.Where(x => !x.Patched).Count();
+			int patchedCount = _componentOutputs.Count(x => x.Patched);
+			int unpatchedCount = _componentOutputs.Count(x => !x.Patched);
 
 			labelPatchPointCount.Text = (patchedCount + unpatchedCount).ToString();
 			labelConnectedPatchPointCount.Text = patchedCount.ToString();
@@ -129,47 +131,125 @@ namespace VixenApplication.Setup
 			buttonUnpatchElements.Enabled = patchedCount > 0;
 		}
 
-
-		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements, bool reverseElements,
-			out int leafElementCount, out int groupCount, out int filterCount,
-			out IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs)
+		private List<PatchStatusItem<IDataFlowComponentReference>> GetOrderedElementOutputs(IEnumerable<ElementNode> nodes)
 		{
-			int startingIndex, endingIndex, iterationValue;
+			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
 
+			//Compile the list of leaf nodes
+			List<ElementNode> leafNodes = new List<ElementNode>();
+			foreach (var node in nodes)
+			{
+				leafNodes.AddRange(node.GetLeafEnumerator());
+			}
+
+			var orderedLeafNodes = leafNodes;
+			//check to see if we have any order properties 
+			if (leafNodes.Any(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
+			{
+				//We have some, but do all of them have an order property??
+				if (leafNodes.All(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
+				{
+					//They all have them but are there any dupes???
+					if (leafNodes.GroupBy(x => ((OrderModule) x.Properties.Get(OrderDescriptor.ModuleId)).Order)
+						.Any(g => g.Count() > 1))
+					{
+						MessageBoxForm mbf = new MessageBoxForm(@"Some elements have a duplicate preferred patching order set. Would you like to fix this before proceeding?" +
+							"\n\nYes) Open the order wizard.\nNo) Proceed using the element tree order.\nCancel) Abort patching.",
+							"Patching Order Conflict", MessageBoxButtons.YesNoCancel, SystemIcons.Warning);
+						var result = mbf.ShowDialog(this);
+						if (result == DialogResult.Cancel)
+						{
+							return null;
+						}
+
+						if (result == DialogResult.OK)
+						{
+							if (!ConfigureOrder())
+							{
+								return null;
+							}
+
+							orderedLeafNodes = OrderNodes(leafNodes);
+						}
+					}
+					else
+					{
+						orderedLeafNodes = OrderNodes(leafNodes);
+					}
+
+				}
+				else
+				{
+					MessageBoxForm mbf = new MessageBoxForm(@"Not all elements have a preferred patching order set. Would you like to fix this before proceding?" +
+						"\n\nYes) Open the order wizard.\nNo) Proceed using the element tree order.\nCancel) Abort patching.",
+						"Patching Order Conflict", MessageBoxButtons.YesNoCancel, SystemIcons.Warning);
+					var result = mbf.ShowDialog(this);
+					if (result == DialogResult.Cancel)
+					{
+						return null;
+					}
+
+					if (result == DialogResult.OK)
+					{
+						if (ConfigureOrder())
+						{
+							orderedLeafNodes = OrderNodes(leafNodes);
+						}
+						else
+						{
+							return null;
+						}
+					}
+				}
+			}
+
+			//Reverse if we need to.
+			if (_reverseElementOrder)
+			{
+				orderedLeafNodes.Reverse();
+			}
+
+			foreach (var orderedLeafNode in orderedLeafNodes)
+			{
+				if (orderedLeafNode.Element != null)
+				{
+					IDataFlowComponent dfc = VixenSystem.DataFlow.GetComponent(orderedLeafNode.Element.Id);
+					var childOutputs = _findPatchedAndUnpatchedOutputsFromComponent(dfc);
+					outputList.AddRange(childOutputs);
+				}
+			}
+			
+			return outputList;
+		}
+
+		private static List<ElementNode> OrderNodes(List<ElementNode> leafNodes)
+		{
+			return leafNodes.OrderBy(x => ((OrderModule) x.Properties.Get(OrderDescriptor.ModuleId)).Order).ToList();
+		}
+
+		private bool ConfigureOrder()
+		{
+			IElementSetupHelper helper = new OrderSetupHelper();
+			return helper.Perform(_cachedElementNodes);
+		}
+
+		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements,
+							out int leafElementCount, out int groupCount, out int filterCount,
+							out IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs)
+		{
 			leafElementCount = groupCount = filterCount = 0;
 			List<PatchStatusItem<IDataFlowComponentReference>> outputList = new List<PatchStatusItem<IDataFlowComponentReference>>();
 			
-			// are there elements to process?
-			if (0 < elements.Count())
+			// process each element
+			foreach (var element in elements)
 			{
-				// do we need to reverse the order of the elements?
-				if ((true == reverseElements) && (0 < elements.Count()))
-				{
-					// work through the array backwards
-					endingIndex = -1;
-					startingIndex = elements.Count() - 1;
-					iterationValue = -1;
-					// MessageBox.Show("Reversing " + (startingIndex + 1) + " elements.", "Reversing Elements", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				} // end need to reverse the element order
-				else
-				{
-					// work through the array frontwards
-					startingIndex = 0;
-					endingIndex = elements.Count();
-					iterationValue = 1;
-				}
+				int lec, gc, fc;
+				IEnumerable<PatchStatusItem<IDataFlowComponentReference>> childOutputs;
 
-				// process each element
-				for (int index = startingIndex; index != endingIndex; index += iterationValue)
-				{
-					ElementNode element = elements.ElementAt(index);
-					int lec, gc, fc;
-					IEnumerable<PatchStatusItem<IDataFlowComponentReference>> childOutputs;
+				// process any child elements
+				_countTypesDescendingFromElements(element.Children, out lec, out gc, out fc, out childOutputs);
 
-					// process any child elements
-					_countTypesDescendingFromElements(element.Children, reverseElements, out lec, out gc, out fc, out childOutputs);
-
-					outputList.AddRange(childOutputs);
+				outputList.AddRange(childOutputs);
 
 				if (element.Children.Any()) {
 					gc++;
@@ -186,14 +266,12 @@ namespace VixenApplication.Setup
 					outputList.AddRange(childOutputs);
 				}
 
-
-					// do some accounting
-					leafElementCount += lec;
-					groupCount += gc;
-					filterCount += fc;
-				}
+				// do some accounting
+				leafElementCount += lec;
+				groupCount += gc;
+				filterCount += fc;
 			}
-
+			
 			outputs = outputList;
 		}
 
@@ -256,7 +334,7 @@ namespace VixenApplication.Setup
 
 		private List<PatchStatusItem<IDataFlowComponent>> _controllerInputs;
 
-		private void _updateControllerDetails(ControllersAndOutputsSet controllersAndOutputs)
+		private void _updateControllerDetails(ControllersAndOutputsSet controllersAndOutputs, bool skipStats = false)
 		{
 			int controllerCount = 0;
 			int patchedCount = 0;
@@ -286,16 +364,19 @@ namespace VixenApplication.Setup
 				}
 			}
 
+			if (checkBoxReverseOutputOrder.Checked)
+			{
+				_controllerInputs.Reverse();
+			}
+
+			if (skipStats) return;
+
 			labelControllerCount.Text = controllerCount.ToString();
 			labelOutputCount.Text = (patchedCount + unpatchedCount).ToString();
 			labelPatchedOutputCount.Text = patchedCount.ToString();
 			labelUnpatchedOutputCount.Text = unpatchedCount.ToString();
 
 			buttonUnpatchControllers.Enabled = patchedCount > 0;
-
-			if (checkBoxReverseOutputOrder.Checked) {
-				_controllerInputs.Reverse();
-			}
 
 			labelFirstOutput.Text = "";
 			labelLastOutput.Text = "";
@@ -369,27 +450,46 @@ namespace VixenApplication.Setup
 
 		private void buttonDoPatching_Click(object sender, EventArgs e)
 		{
-			if (_selectedPatchSources == null || _selectedPatchDestinations == null) {
+			//update the element settings in preparation for patching.
+			var outputs = GetOrderedElementOutputs(_cachedElementNodes);
+			if (outputs == null)
+			{
+				//user canceled or somethng went wrong
+				return;
+			}
+
+			_componentOutputs = outputs;
+
+			if (_componentOutputs != null)
+			{
+				_selectedPatchSources = radioButtonAllAvailablePatchPoints.Checked ? _componentOutputs : _componentOutputs.Where(x => !x.Patched).ToList();
+			}
+
+			//Now handle the controller side.
+			_updateControllerDetails(_cachedControllersAndOutputs, true);
+
+			if (_controllerInputs != null)
+			{
+				_selectedPatchDestinations = radioButtonAllOutputs.Checked ? _controllerInputs : _controllerInputs.Where(x => !x.Patched).ToList();
+			}
+
+			if (_selectedPatchSources == null || _selectedPatchDestinations == null)
+			{
 				Logging.Error("null patch sources or destinations!");
 				return;
 			}
 
 			int max = Math.Min(_selectedPatchSources.Count, _selectedPatchDestinations.Count);
 
-			// reverse things if needed
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, _reverseElementOrder);
-
 			for (int i = 0; i < max; i++) {
 				VixenSystem.DataFlow.SetComponentSource(_selectedPatchDestinations[i].Item, _selectedPatchSources[i].Item);
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Patched " + max + " element patch points to controllers.", "Patching Complete", false, false);
-			messageBox.ShowDialog();
+			var messageBox = new MessageBoxForm("Patched " + max + " element patch points to controllers.", "Patching Complete", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog(this);
 		}
 
 		private void radioButtonPatching_CheckedChanged(object sender, EventArgs e)
@@ -404,15 +504,13 @@ namespace VixenApplication.Setup
 			// then all other patches, in case we want to keep them.
 			// TODO: eh, I may have written this while drunk, it doesn't seem like a particlarly good way to do it
 
-			int patchedCount = _componentOutputs.Where(x => x.Patched).Count();
+			int patchedCount = _componentOutputs.Count(x => x.Patched);
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
 
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm(message, "Unpatch Elements?", true, false);
-				messageBox.ShowDialog();
+				var messageBox = new MessageBoxForm(message, "Unpatch Elements?", MessageBoxButtons.YesNo, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No)
 						return;
 			}
@@ -438,11 +536,9 @@ namespace VixenApplication.Setup
 
 			bool removeFilters = false;
 			if (nonDirectElementChildren.Any(x => x is IOutputFilterModuleInstance)) {
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Some elements are patched to filters.  Should these filters be removed as well?",
-									 "Remove Filters?", true, true);
-				messageBox.ShowDialog();
+									 "Remove Filters?", MessageBoxButtons.YesNoCancel, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 
 				if (messageBox.DialogResult == DialogResult.Cancel)
 					return;
@@ -467,7 +563,7 @@ namespace VixenApplication.Setup
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 		}
 
 
@@ -477,10 +573,9 @@ namespace VixenApplication.Setup
 			if (patchedCount > 20)
 			{
 				string message = string.Format("Are you sure you want to unpatch {0} patch points?", patchedCount);
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-				var messageBox = new MessageBoxForm(message, "Unpatch Controllers?", true, false);
-				messageBox.ShowDialog();
+				
+				var messageBox = new MessageBoxForm(message, "Unpatch Controllers?", MessageBoxButtons.YesNo, SystemIcons.Question);
+				messageBox.ShowDialog(this);
 				if (messageBox.DialogResult == DialogResult.No)
 					return;
 			}
@@ -500,7 +595,7 @@ namespace VixenApplication.Setup
 			}
 
 			OnPatchingUpdated();
-			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs, false);
+			_UpdateEverything(_cachedElementNodes, _cachedControllersAndOutputs);
 		}
 
 		private void checkBoxReverseOutputOrder_CheckedChanged(object sender, EventArgs e)

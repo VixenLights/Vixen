@@ -42,6 +42,8 @@ namespace VixenModules.Property.Order
 				return false;
 			}
 
+			ReIndexElementNodes();
+
 			foreach (var elementOrder in _elementOrderLookup)
 			{
 				if (elementOrder.Key.Properties.Contains(OrderDescriptor.ModuleId))
@@ -54,8 +56,11 @@ namespace VixenModules.Property.Order
 				}
 				else
 				{
-					var orderProperty = new OrderModule() {Order = elementOrder.Value};
-					elementOrder.Key.Properties.Add(orderProperty);
+					var order = elementOrder.Key.Properties.Add(OrderDescriptor.ModuleId) as OrderModule;
+					if (order != null)
+					{
+						order.Order = elementOrder.Value;
+					}
 				}
 			}
 

@@ -100,6 +100,11 @@
       <Name>WPFCommon</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Property\Order\Order.csproj">
+      <Project>{A4254642-2965-469A-8FBD-B45F6EDD651C}</Project>
+      <Name>Order</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
