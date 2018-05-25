@@ -33,6 +33,9 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
+		/// <inheritdoc />
+		public virtual bool SupportsMarks => false;
+
 		public abstract override string TypeName { get; }
 
 		public abstract override Guid TypeId { get; }

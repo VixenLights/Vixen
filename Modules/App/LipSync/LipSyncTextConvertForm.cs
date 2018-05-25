@@ -10,6 +10,7 @@ using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using System.Text.RegularExpressions;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace VixenModules.App.LipSyncApp
@@ -38,7 +39,7 @@ namespace VixenModules.App.LipSyncApp
 			_lastMarkIndex = -1;
 		}
 
-		public IList<MarkCollection> MarkCollections { get; set; }
+		public IList<IMarkCollection> MarkCollections { get; set; }
 		//public List<Dictionary<string,List<TimeSpan>>> MarkCollections { get; set; }
 
 		private List<string> CreateSubstringList()

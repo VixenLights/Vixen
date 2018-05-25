@@ -303,6 +303,9 @@
     <Compile Include="IO\Xml\XElementFileReader.cs" />
     <Compile Include="IO\Xml\XElementFileWriter.cs" />
     <Compile Include="IO\Xml\XmlRootAttributeVersion.cs" />
+    <Compile Include="Marks\IMark.cs" />
+    <Compile Include="Marks\IMarkCollection.cs" />
+    <Compile Include="Marks\IMarkDecorator.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleDescriptorBase.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleImplementation.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleInstanceBase.cs" />

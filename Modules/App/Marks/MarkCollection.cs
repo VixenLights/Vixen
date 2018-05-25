@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Marks;
 
 namespace VixenModules.App.Marks
 {
 	[DataContract]
-	public class MarkCollection: BindableBase, ICloneable
+	[KnownType(typeof(MarkDecorator))]
+	[KnownType(typeof(Mark))]
+	public class MarkCollection: BindableBase, IMarkCollection
 	{
 		[DataMember(Name = "Marks")]
-		private List<Mark> _marks;
+		private List<IMark> _marks;
 
 		private string _name;
 		private int _level;
-		private MarkDecorator _decorator;
+		private IMarkDecorator _decorator;
 		private bool _isDefault;
 		private bool _showMarkBar;
 		private bool _showGridLines;
@@ -23,7 +26,7 @@ namespace VixenModules.App.Marks
 		{
 			Name = @"Mark Collection";
 			Decorator = new MarkDecorator();
-			_marks = new List<Mark>();
+			_marks = new List<IMark>();
 			Marks = _marks.AsReadOnly();
 			Id = Guid.NewGuid();
 			Level = 1;
@@ -96,10 +99,10 @@ namespace VixenModules.App.Marks
 
 
 		[IgnoreDataMember]
-		public ReadOnlyCollection<Mark> Marks { get; private set; }
+		public ReadOnlyCollection<IMark> Marks { get; private set; }
 
 		[DataMember]
-		public MarkDecorator Decorator
+		public IMarkDecorator Decorator
 		{
 			get { return _decorator; }
 			set
@@ -112,14 +115,14 @@ namespace VixenModules.App.Marks
 
 		public bool IsVisible => ShowGridLines || ShowMarkBar;
 
-		public void AddMark(Mark mark)
+		public void AddMark(IMark mark)
 		{
 			_marks.Add(mark);
 			mark.Parent = this;
 			OnPropertyChanged(nameof(Marks));
 		}
 
-		public void AddMarks(IEnumerable<Mark> marks)
+		public void AddMarks(IEnumerable<IMark> marks)
 		{
 			foreach (var mark in marks)
 			{
@@ -129,13 +132,13 @@ namespace VixenModules.App.Marks
 			OnPropertyChanged(nameof(Marks));
 		}
 
-		public void RemoveMark(Mark mark)
+		public void RemoveMark(IMark mark)
 		{
 			_marks.Remove(mark);
 			OnPropertyChanged(nameof(Marks));
 		}
 
-		public void RemoveAll(Predicate<Mark> match)
+		public void RemoveAll(Predicate<IMark> match)
 		{
 			_marks.RemoveAll(match);
 			OnPropertyChanged(nameof(Marks));
@@ -171,7 +174,7 @@ namespace VixenModules.App.Marks
 				ShowGridLines = ShowGridLines,
 				Level = Level,
 				Name = Name,
-				_marks = Marks.Select(x => (Mark)x.Clone()).ToList(),
+				_marks = Marks.Select(x => (IMark)x.Clone()).ToList(),
 				Decorator = (MarkDecorator)Decorator.Clone()
 			};
 		}

@@ -18,6 +18,7 @@ using Common.Controls.TimelineControl.LabeledMarks;
 using NLog;
 using Vixen;
 using Vixen.Execution.Context;
+using Vixen.Marks;
 using Vixen.Sys.LayerMixing;
 using VixenModules.App.Marks;
 
@@ -64,7 +65,7 @@ namespace Common.Controls.Timeline
 		private bool _visibleRowsDirty = false;
 
 		//We turn these into snap points for effects.
-		private ObservableCollection<MarkCollection> _markCollections;
+		private ObservableCollection<IMarkCollection> _markCollections;
 
 		#region Initialization
 
@@ -201,7 +202,7 @@ namespace Common.Controls.Timeline
 
 		#region Properties
 
-		public ObservableCollection<MarkCollection> MarkCollections
+		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get { return _markCollections; }
 			set

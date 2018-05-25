@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using NLog;
+using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Services;
 using Vixen.Sys;
@@ -49,6 +51,7 @@ namespace Vixen.Module.Effect
 		}
 
 		private bool IsRendering;
+		private ObservableCollection<IMarkCollection> _markCollections;
 
 		[Browsable(false)]
 		public ElementNode[] TargetNodes
@@ -237,6 +240,20 @@ namespace Vixen.Module.Effect
 			set
 			{
 				_media = value;
+				IsDirty = true;
+			}
+		}
+
+		[Browsable(false)]
+		public bool SupportsMarks => ((IEffectModuleDescriptor)Descriptor).SupportsMarks;
+
+		[Browsable(false)]
+		public ObservableCollection<IMarkCollection> MarkCollections
+		{
+			get { return _markCollections; }
+			set
+			{
+				_markCollections = value;
 				IsDirty = true;
 			}
 		}

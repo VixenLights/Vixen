@@ -9,6 +9,7 @@ using Common.Controls.Theme;
 using VixenModules.Media.Audio;
 using Common.Controls.Scaling;
 using Common.Controls.TimelineControl;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
@@ -471,7 +472,7 @@ namespace Common.Controls.Timeline
 			set { waveform.Audio = value; }
 		}
 
-		public void AddMarks(ObservableCollection<MarkCollection> marks)
+		public void AddMarks(ObservableCollection<IMarkCollection> marks)
 		{
 			
 			MarksBar.MarkCollections = marks;

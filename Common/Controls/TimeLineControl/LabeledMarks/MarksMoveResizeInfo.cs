@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class MarksMoveResizeInfo
 	{
-		public MarksMoveResizeInfo(IEnumerable<Mark> modifyingMarks)
+		public MarksMoveResizeInfo(IEnumerable<IMark> modifyingMarks)
 		{
 			
-			OriginalMarks = new Dictionary<Mark, MarkTimeInfo>();
+			OriginalMarks = new Dictionary<IMark, MarkTimeInfo>();
 			foreach (var mark in modifyingMarks)
 			{
 				OriginalMarks.Add(mark, new MarkTimeInfo(mark));
@@ -16,7 +17,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		}
 			
 		///<summary>All marks being modified and their original parameters.</summary>
-		public Dictionary<Mark, MarkTimeInfo> OriginalMarks { get; private set; }
+		public Dictionary<IMark, MarkTimeInfo> OriginalMarks { get; private set; }
 
 	}
 	

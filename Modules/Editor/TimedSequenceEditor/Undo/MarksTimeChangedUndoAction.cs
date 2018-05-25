@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
 	public class MarksTimeChangedUndoAction : UndoAction
 	{
-		private Dictionary<Mark, MarkTimeInfo> _changedMarks;
+		private Dictionary<IMark, MarkTimeInfo> _changedMarks;
 		private readonly ElementMoveType _moveType;
 		private readonly TimedSequenceEditorForm _form;
 
-		public MarksTimeChangedUndoAction(TimedSequenceEditorForm form, Dictionary<Mark, MarkTimeInfo> changedMarks, ElementMoveType moveType)
+		public MarksTimeChangedUndoAction(TimedSequenceEditorForm form, Dictionary<IMark, MarkTimeInfo> changedMarks, ElementMoveType moveType)
 			: base()
 		{
 			_changedMarks = changedMarks;
@@ -31,7 +32,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Undo
 		public override void Redo()
 		{
 			//Check to see if our element still exists, or has been replaced because of a delete and add manuver
-			var validatedMarks = new Dictionary<Mark, MarkTimeInfo>();
+			var validatedMarks = new Dictionary<IMark, MarkTimeInfo>();
 			foreach (var markTimeInfo in _changedMarks)
 			{
 				if (markTimeInfo.Key.Parent.Marks.Contains(markTimeInfo.Key))

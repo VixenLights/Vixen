@@ -1,17 +1,18 @@
 using System.Collections.Generic;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
 	public class MarksAddedUndoAction : MarksAddedRemovedUndoAction
 	{
-		public MarksAddedUndoAction(TimedSequenceEditorForm form, Dictionary<Mark, MarkCollection> markCollections)
+		public MarksAddedUndoAction(TimedSequenceEditorForm form, Dictionary<IMark, IMarkCollection> markCollections)
 			: base(form, markCollections)
 		{
 		}
 
-		public MarksAddedUndoAction(TimedSequenceEditorForm form, Mark mark, MarkCollection mc)
-			: base(form, new Dictionary<Mark, MarkCollection>(){{mark, mc}})
+		public MarksAddedUndoAction(TimedSequenceEditorForm form, IMark mark, IMarkCollection mc)
+			: base(form, new Dictionary<IMark, IMarkCollection>(){{mark, mc}})
 		{
 		}
 

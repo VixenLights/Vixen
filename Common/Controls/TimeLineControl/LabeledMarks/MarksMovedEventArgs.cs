@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common.Controls.Timeline;
-using VixenModules.App.Marks;
+using Vixen.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
@@ -10,14 +10,14 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public MarksMovedEventArgs(MarksMoveResizeInfo marksMoveResizeInfo, ElementMoveType type)
 		{
 			MoveType = type;
-			MoveResizeInfo = new Dictionary<Mark, MarkTimeInfo>();
+			MoveResizeInfo = new Dictionary<IMark, MarkTimeInfo>();
 			foreach (var originalMark in marksMoveResizeInfo.OriginalMarks)
 			{
 				MoveResizeInfo.Add(originalMark.Key, originalMark.Value);	
 			}
 		}
 
-		public Dictionary<Mark, MarkTimeInfo> MoveResizeInfo { get; }
+		public Dictionary<IMark, MarkTimeInfo> MoveResizeInfo { get; }
 
 		public ElementMoveType MoveType { get; }
 		

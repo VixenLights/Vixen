@@ -28,6 +28,7 @@ using Vixen;
 using Vixen.Cache.Sequence;
 using Vixen.Execution;
 using Vixen.Execution.Context;
+using Vixen.Marks;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
@@ -2364,7 +2365,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<EffectNode> AddEffectsToBeatMarks(ListView.CheckedListViewItemCollection checkedMarks, int effectCount, Guid effectGuid, TimeSpan startTime, TimeSpan duration, Row row, Boolean fillDuration, Boolean skipEoBeat)
 		{
 			bool skipThisBeat = false;
-			List<Mark> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.LabeledMarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark.StartTime >= startTime select mark).ToList();
+			List<IMark> times = (from ListViewItem listItem in checkedMarks from mcItem in _sequence.LabeledMarkCollections where mcItem.Name == listItem.Text from mark in mcItem.Marks where mark.StartTime >= startTime select mark).ToList();
 			times.Sort();
 			var newEffects = new List<EffectNode>();
 			if (times.Count > 0)
@@ -2668,7 +2669,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Mark AddMarkAtTime(TimeSpan time, bool suppressUndo)
 		{
 			Mark newMark = null;
-			MarkCollection mc = null;
+			IMarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
 				if (_context.IsRunning) PauseSequence();
@@ -2713,9 +2714,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return newMark;
 		}
 
-		private MarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
+		private IMarkCollection GetOrAddNewMarkCollection(Color color, string name = "New Collection")
 		{
-			MarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
+			IMarkCollection mc = _sequence.LabeledMarkCollections.FirstOrDefault(mCollection => mCollection.Name == name);
 			if (mc == null)
 			{
 				MarkCollection newCollection = new MarkCollection {Name = name};
@@ -2746,7 +2747,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimeLineGlobalDeleted(object sender, MarksDeletedEventArgs e)
 		{
-			var marksDeleted = new Dictionary<Mark, MarkCollection>();
+			var marksDeleted = new Dictionary<IMark, IMarkCollection>();
 			foreach (var mark in e.Marks)
 			{
 				marksDeleted.Add(mark, mark.Parent);
@@ -3153,7 +3154,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Adds a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void AddMark(Dictionary<Mark, MarkCollection> markCollections)
+		public void AddMark(Dictionary<IMark, IMarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
@@ -3168,7 +3169,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Remove a Mark to a Mark Collection.
 		/// </summary>
 		/// <param name="markCollections"></param>
-		public void RemoveMark(Dictionary<Mark, MarkCollection> markCollections)
+		public void RemoveMark(Dictionary<IMark, IMarkCollection> markCollections)
 		{
 			foreach (var mark in markCollections)
 			{
@@ -3318,6 +3319,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (effectInstance.SupportsMedia)
 			{
 				effectInstance.Media = Sequence.SequenceData.Media;
+			}
+
+			if (effectInstance.SupportsMarks)
+			{
+				effectInstance.MarkCollections = _sequence.LabeledMarkCollections;
 			}
 			return new EffectNode(effectInstance, startTime);
 	
@@ -4405,9 +4411,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// Used by the Undo/Redo engine
 		/// </summary>
 		/// <param name="changedMarks"></param>
-		public void SwapPlaces(Dictionary<Mark, MarkTimeInfo> changedMarks)
+		public void SwapPlaces(Dictionary<IMark, MarkTimeInfo> changedMarks)
 		{
-			foreach (KeyValuePair<Mark, MarkTimeInfo> e in changedMarks)
+			foreach (KeyValuePair<IMark, MarkTimeInfo> e in changedMarks)
 			{
 				// Key is reference to actual mark. Value is class with its times before move.
 				// Swap the mark's times with the saved times from before the move, so we can restore them later in redo.
@@ -4553,7 +4559,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void RemoveMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		private void RemoveMarkCollectionHandlers(IEnumerable<IMarkCollection> markCollections)
 		{
 			foreach (var mc in markCollections)
 			{
@@ -4562,7 +4568,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private void AddMarkCollectionHandlers(IEnumerable<MarkCollection> markCollections)
+		private void AddMarkCollectionHandlers(IEnumerable<IMarkCollection> markCollections)
 		{
 			foreach (var mc in markCollections)
 			{
@@ -5044,7 +5050,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				elements = TimelineControl.SelectedElements;
 			}
-			var addedMarks = new Dictionary<Mark, MarkCollection>();
+			var addedMarks = new Dictionary<IMark, IMarkCollection>();
 			foreach (Element element in elements)
 			{
 				var mark = AddMarkAtTime(element.StartTime, true);

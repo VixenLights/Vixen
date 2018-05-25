@@ -1,11 +1,11 @@
 ﻿using System;
-using VixenModules.App.Marks;
+using Vixen.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class MarkTimeInfo
 	{
-		public MarkTimeInfo(Mark mark)
+		public MarkTimeInfo(IMark mark)
 		{
 			StartTime = mark.StartTime;
 			EndTime = mark.EndTime;
@@ -19,9 +19,9 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 
 		public TimeSpan Duration { get; private set; }
 
-		public MarkCollection MarkCollection { get; }
+		public IMarkCollection MarkCollection { get; }
 
-		public static void SwapPlaces(Mark lhs, MarkTimeInfo rhs)
+		public static void SwapPlaces(IMark lhs, MarkTimeInfo rhs)
 		{
 			TimeSpan temp = lhs.StartTime;
 			lhs.StartTime = rhs.StartTime;

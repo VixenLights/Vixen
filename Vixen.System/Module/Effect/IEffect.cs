@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
+using Vixen.Marks;
 using Vixen.Module.Media;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
@@ -46,6 +48,8 @@ namespace Vixen.Module.Effect
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
 		bool SupportsMedia { get; }
 		List<IMediaModuleInstance> Media { get; set; }
+		bool SupportsMarks { get; }
+		ObservableCollection<IMarkCollection> MarkCollections { get; set; }
 
 	}
 }

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using VixenModules.App.Marks;
+using Vixen.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
 	public class MarksDeletedEventArgs : EventArgs
 	{
-		public MarksDeletedEventArgs(List<Mark> marks)
+		public MarksDeletedEventArgs(List<IMark> marks)
 		{
 			Marks = marks;
 		}
 
-		public List<Mark> Marks { get; private set; }
+		public List<IMark> Marks { get; }
 	}
 }

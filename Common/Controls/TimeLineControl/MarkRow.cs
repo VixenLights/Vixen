@@ -2,19 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl
 {
-	internal class MarkRow: IEnumerable<Mark>, IDisposable
+	internal class MarkRow: IEnumerable<IMark>, IDisposable
 	{
 		// The marks contained in this row. Must be kept sorted; however, we can't use a SortedList
 		// or similar, as the elements within the list may have their times updated by the grid, which
 		// puts their order out.
 		
-		private readonly Dictionary<Mark, MarkStack> _stackIndexes = new Dictionary<Mark, MarkStack>();
+		private readonly Dictionary<IMark, MarkStack> _stackIndexes = new Dictionary<IMark, MarkStack>();
 
-		public MarkRow(MarkCollection markCollection)
+		public MarkRow(IMarkCollection markCollection)
 		{
 			MarkCollection = markCollection;
 			MarkCollection.EnsureOrder();
@@ -24,7 +25,7 @@ namespace Common.Controls.TimelineControl
 			StackCount = 1;
 		}
 
-		public MarkCollection MarkCollection { get; private set; }
+		public IMarkCollection MarkCollection { get; private set; }
 
 		public int StackCount { get; private set; }
 
@@ -59,9 +60,9 @@ namespace Common.Controls.TimelineControl
 
 		public bool Visible => MarkCollection.ShowMarkBar;
 
-		internal MarkDecorator MarkDecorator => MarkCollection.Decorator;
+		internal IMarkDecorator MarkDecorator => MarkCollection.Decorator;
 
-		internal MarkStack GetStackForMark(Mark mark)
+		internal MarkStack GetStackForMark(IMark mark)
 		{
 			MarkStack ms;
 			if (_stackIndexes.TryGetValue(mark, out ms))
@@ -85,10 +86,10 @@ namespace Common.Controls.TimelineControl
 			{
 				if (MarkCollection.Marks[i].EndTime < startTime) continue;
 				if (MarkCollection.Marks[i].StartTime > endTime) break;
-				List<Mark> overlappingElements = GetOverlappingMarks(MarkCollection.Marks[i]);
+				List<IMark> overlappingElements = GetOverlappingMarks(MarkCollection.Marks[i]);
 				if (overlappingElements.Count > 1)
 				{
-					List<List<Mark>> stack = DetermineMarkStack(overlappingElements);
+					List<List<IMark>> stack = DetermineMarkStack(overlappingElements);
 					int x = 0;
 					foreach (var elementGroup in stack)
 					{
@@ -123,11 +124,11 @@ namespace Common.Controls.TimelineControl
 
 		}
 
-		private List<List<Mark>> DetermineMarkStack(List<Mark> elements)
+		private List<List<IMark>> DetermineMarkStack(List<IMark> elements)
 		{
 
-			List<List<Mark>> stack = new List<List<Mark>>();
-			stack.Add(new List<Mark> { elements[0] });
+			List<List<IMark>> stack = new List<List<IMark>>();
+			stack.Add(new List<IMark> { elements[0] });
 			for (int i = 1; i < elements.Count; i++)
 			{
 				bool add = true;
@@ -140,16 +141,16 @@ namespace Common.Controls.TimelineControl
 						break;
 					}
 				}
-				if (add) stack.Add(new List<Mark> { elements[i] });
+				if (add) stack.Add(new List<IMark> { elements[i] });
 			}
 
 			return stack;
 
 		}
 
-		public List<Mark> GetOverlappingMarks(Mark elementMaster)
+		public List<IMark> GetOverlappingMarks(IMark elementMaster)
 		{
-			List<Mark> elements = new List<Mark>();
+			List<IMark> elements = new List<IMark>();
 			elements.Add(elementMaster); //add our reference
 			int startingIndex = IndexOfMark(elementMaster);
 			TimeSpan startTime = elementMaster.StartTime;
@@ -159,7 +160,7 @@ namespace Common.Controls.TimelineControl
 			//Look forward.
 			for (int i = startingIndex + 1; i < MarkCollection.Marks.Count; i++)
 			{
-				Mark element = GetMarkAtIndex(i);
+				var element = GetMarkAtIndex(i);
 				if (element.StartTime < endTime)
 				{
 					elements.Add(element);
@@ -175,7 +176,7 @@ namespace Common.Controls.TimelineControl
 			//Look backward.
 			for (int i = startingIndex - 1; i >= 0; i--)
 			{
-				Mark element = GetMarkAtIndex(i);
+				var element = GetMarkAtIndex(i);
 				if (element.EndTime > startTime)
 				{
 					elements.Insert(0, element);
@@ -187,12 +188,12 @@ namespace Common.Controls.TimelineControl
 			return elements;
 		}
 
-		public int IndexOfMark(Mark element)
+		public int IndexOfMark(IMark element)
 		{
 			return MarkCollection.Marks.IndexOf(element);
 		}
 
-		public Mark GetMarkAtIndex(int index)
+		public IMark GetMarkAtIndex(int index)
 		{
 			if (index < 0 || index >= MarkCollection.Marks.Count)
 				return null;
@@ -209,7 +210,7 @@ namespace Common.Controls.TimelineControl
 		#region Implementation of IEnumerable
 
 		/// <inheritdoc />
-		public IEnumerator<Mark> GetEnumerator()
+		public IEnumerator<IMark> GetEnumerator()
 		{
 			return MarkCollection.Marks.GetEnumerator();
 		}

@@ -10,6 +10,7 @@ using Catel.Collections;
 using Catel.Data;
 using Catel.MVVM;
 using Common.Controls;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services;
 
@@ -19,7 +20,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 	{
 		private bool _lineToggleState = true;
 		private bool _markBarToggleState = true;
-		public MarkDockerViewModel(ObservableCollection<MarkCollection> markCollections)
+		public MarkDockerViewModel(ObservableCollection<IMarkCollection> markCollections)
 		{
 			MarkCollections = markCollections;
 			if (MarkCollections.All(x => x.ShowGridLines))
@@ -38,20 +39,20 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// Gets or sets the MarkCollections value.
 		/// </summary>
 		[Model]
-		public ObservableCollection<MarkCollection> MarkCollections
+		public ObservableCollection<IMarkCollection> MarkCollections
 		{
-			get { return GetValue<ObservableCollection<MarkCollection>>(MarkCollectionsProperty); }
+			get { return GetValue<ObservableCollection<IMarkCollection>>(MarkCollectionsProperty); }
 			private set { SetValue(MarkCollectionsProperty, value); }
 		}
 
 		/// <summary>
 		/// MarkCollections property data.
 		/// </summary>
-		public static readonly PropertyData MarkCollectionsProperty = RegisterProperty("MarkCollections", typeof(ObservableCollection<MarkCollection>));
+		public static readonly PropertyData MarkCollectionsProperty = RegisterProperty("MarkCollections", typeof(ObservableCollection<IMarkCollection>));
 
 		#endregion
 
-		public void DeleteCollection(MarkCollection markCollection)
+		public void DeleteCollection(IMarkCollection markCollection)
 		{
 			MarkCollections.Remove(markCollection);
 			if (markCollection.IsDefault && MarkCollections.Any())
