@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Linq;
 using System.Text;
@@ -163,7 +164,12 @@ namespace VixenModules.App.LipSyncApp
 
 		public string PictureFileName(PhonemeType phoneme)
 		{
-			return PictureDirectory + phoneme.ToString() + ".bmp";
+			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
+		}
+
+		public string PictureFileName(string phoneme)
+		{
+			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
 		}
 
 		public string LibraryReferenceName

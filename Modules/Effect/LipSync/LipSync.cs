@@ -78,22 +78,47 @@ namespace VixenModules.Effect.LipSync
 				{
 					if (mapData.IsMatrix)
 					{
-						if (((_thePic == null) || IsDirty) && 
-							(File.Exists(mapData.PictureFileName(phoneme))))
+						SetupPictureEffect();
+						if (LipSyncMode == LipSyncMode.MarkCollection)
 						{
-							_thePic = new Picture.Picture();
-							_thePic.Source = PictureSource.File;
-							_thePic.TargetNodes = TargetNodes;
-							_thePic.FileName = mapData.PictureFileName(phoneme);
-							_thePic.Orientation = Orientation;
-							_thePic.ScaleToGrid = ScaleToGrid;
-							_thePic.ScalePercent = ScalePercent;
-							_thePic.TimeSpan = TimeSpan;
-
-							var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
-							_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve}));
-
+							foreach (var mark in marks)
+							{
+								var file = mapData.PictureFileName(mark.Text.ToUpper());
+								if (File.Exists(file)) //TODO figure out an alternative to checking every time.
+								{
+									_thePic.FileName = file;
+									_thePic.TimeSpan = mark.Duration;
+									result = _thePic.Render();
+									result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+									_elementData.Add(result);
+								}
+							}
 						}
+						else
+						{
+							if (File.Exists(mapData.PictureFileName(phoneme)))
+							{
+								_thePic.FileName = mapData.PictureFileName(phoneme);
+								result = _thePic.Render();
+								_elementData.Add(result);
+							}
+						}
+						//if (
+						//	)))
+						//{
+						//	//_thePic = new Picture.Picture();
+						//	//_thePic.Source = PictureSource.File;
+						//	//_thePic.TargetNodes = TargetNodes;
+						//	//_thePic.FileName = mapData.PictureFileName(phoneme);
+						//	//_thePic.Orientation = Orientation;
+						//	//_thePic.ScaleToGrid = ScaleToGrid;
+						//	//_thePic.ScalePercent = ScalePercent;
+						//	//_thePic.TimeSpan = TimeSpan;
+
+						//	//var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
+						//	//_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve}));
+
+						//}
 						if (null != _thePic)
 						{
 							result = _thePic.Render();
@@ -139,6 +164,23 @@ namespace VixenModules.Effect.LipSync
 					
 			}
 
+		}
+
+		private void SetupPictureEffect()
+		{
+			if (_thePic == null)
+			{
+				_thePic = new Picture.Picture();
+			}
+			_thePic.Source = PictureSource.File;
+			_thePic.TargetNodes = TargetNodes;
+			_thePic.Orientation = Orientation;
+			_thePic.ScaleToGrid = ScaleToGrid;
+			_thePic.ScalePercent = ScalePercent;
+			_thePic.TimeSpan = TimeSpan;
+
+			var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
+			_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve }));
 		}
 
 		private EffectIntents CreateIntentsForPhoneme(ElementNode element, double intensity, Color color, TimeSpan duration)

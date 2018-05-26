@@ -55,6 +55,8 @@ namespace VixenModules.Effect.LipSync
 			result.ScaleToGrid = ScaleToGrid;
 			result.Orientation = Orientation;
 			result.Level = Level;
+			result.MarkCollectionId = MarkCollectionId;
+			result.LipSyncMode = LipSyncMode;
 			return result;
 		}
 	}
