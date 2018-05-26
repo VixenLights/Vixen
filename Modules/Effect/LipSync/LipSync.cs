@@ -179,6 +179,19 @@ namespace VixenModules.Effect.LipSync
 			TypeDescriptor.Refresh(this);
 		}
 
+		protected void SetLipsyncModeBrowsables()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			{
+				{nameof(StaticPhoneme), LipSyncMode == LipSyncMode.Phoneme},
+				{nameof(LyricData), LipSyncMode == LipSyncMode.Phoneme},
+				{nameof(MarkCollectionId), LipSyncMode == LipSyncMode.MarkCollection}
+			};
+
+			SetBrowsable(propertyStates);
+			TypeDescriptor.Refresh(this);
+		}
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -186,6 +199,7 @@ namespace VixenModules.Effect.LipSync
 			{
 				_data = value as LipSyncData;
 				SetMatrixBrowesables();
+				SetLipsyncModeBrowsables();
 				IsDirty = true;
 			}
 		}
@@ -207,17 +221,26 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
-		[ProviderCategory("Config",2)]
-		[DisplayName(@"Phoneme")]
-		[Description(@"The Phoenme mouth affiliation")]
-		public PhonemeType StaticPhoneme
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Phoneme/Marks")]
+		[Description(@"Use a single Phoneme or Collection of Marks with Phonemes")]
+		[PropertyOrder(1)]
+		public LipSyncMode LipSyncMode
 		{
-			get { return _data.StaticPhoneme; }
+			get
+			{
+				return _data.LipSyncMode;
+
+			}
 			set
 			{
-				_data.StaticPhoneme = value;
-				IsDirty = true;
-				OnPropertyChanged();
+				if (_data.LipSyncMode != value)
+				{
+					_data.LipSyncMode = value;
+					SetLipsyncModeBrowsables();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -227,6 +250,7 @@ namespace VixenModules.Effect.LipSync
 		[Description(@"The mapping associated.")]
 		[PropertyEditor("SelectionEditor")]
 		[TypeConverter(typeof(PhonemeMappingConverter))]
+		[PropertyOrder(2)]
 		public String PhonemeMapping
 		{
 			get { return _data.PhonemeMapping;  }
@@ -240,85 +264,13 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
-		[ProviderCategory("Config", 2)]
-		[DisplayName(@"Phoneme/Marks")]
-		[Description(@"Use a single Phoneme or Collection of MArks with Phonemes")]
-		public LipSyncMode LipSyncMode
-		{
-			get
-			{
-				return _data.LipSyncMode;
-
-			}
-			set
-			{
-				if (_data.LipSyncMode != value)
-				{
-					_data.LipSyncMode = value;
-					IsDirty = true;
-					OnPropertyChanged();
-				}
-			}
-		}
-
-		[Value]
-		[ProviderCategory("Config",2)]
-		[DisplayName(@"Lyric")]
-		[Description(@"The lyric verbiage this Phoneme is associated with.")]
-		public String LyricData
-		{
-			get { return _data.LyricData; }
-			set
-			{
-				_data.LyricData = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"ScaleToGrid")]
-		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(3)]
-		public bool ScaleToGrid
-		{
-			get { return _data.ScaleToGrid; }
-			set
-			{
-				_data.ScaleToGrid = value;
-				IsDirty = true;
-				SetMatrixBrowesables();
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"ScalePercent")]
-		[ProviderDescription(@"ScalePercent")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 100, 1)]
-		[PropertyOrder(4)]
-		public int ScalePercent
-		{
-			get { return _data.ScalePercent; }
-			set
-			{
-				_data.ScalePercent = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Mark Collections")]
-		[ProviderDescription(@"Mark Collections")]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(2)]
-		public string MarkCollectionName
+		[PropertyOrder(3)]
+		public string MarkCollectionId
 		{
 			get
 			{
@@ -337,11 +289,83 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Lyric")]
+		[Description(@"The lyric verbiage this Phoneme is associated with.")]
+		[PropertyOrder(4)]
+		public String LyricData
+		{
+			get { return _data.LyricData; }
+			set
+			{
+				_data.LyricData = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Phoneme")]
+		[Description(@"The Phoenme mouth affiliation")]
+		[PropertyOrder(5)]
+		public PhonemeType StaticPhoneme
+		{
+			get { return _data.StaticPhoneme; }
+			set
+			{
+				_data.StaticPhoneme = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"ScaleToGrid")]
+		[ProviderDescription(@"ScaleToGrid")]
+		[PropertyOrder(6)]
+		public bool ScaleToGrid
+		{
+			get { return _data.ScaleToGrid; }
+			set
+			{
+				_data.ScaleToGrid = value;
+				IsDirty = true;
+				SetMatrixBrowesables();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"ScalePercent")]
+		[ProviderDescription(@"ScalePercent")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[PropertyOrder(7)]
+		public int ScalePercent
+		{
+			get { return _data.ScalePercent; }
+			set
+			{
+				_data.ScalePercent = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		
+
+		[Value]
 		[ProviderCategory(@"Brightness",3)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
+		[PropertyOrder(1)]
 		public int IntensityLevel
 		{
 			get { return _data.Level; }
