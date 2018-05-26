@@ -32,10 +32,16 @@ namespace VixenModules.Effect.LipSync
 		public StringOrientation Orientation { get; set; }
 
 		[DataMember]
+		public LipSyncMode LipSyncMode { get; set; }
+
+		[DataMember]
 		public bool ScaleToGrid { get; set; }
 
 		[DataMember]
 		public int ScalePercent { get; set; }
+
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
 
 		[DataMember]
 		public int Level { get; set; }

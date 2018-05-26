@@ -68,6 +68,7 @@
     <Compile Include="LipSync.cs" />
     <Compile Include="LipSyncData.cs" />
     <Compile Include="LipSyncDescriptor.cs" />
+    <Compile Include="LipSyncMode.cs" />
     <Compile Include="PhonemeMappingConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

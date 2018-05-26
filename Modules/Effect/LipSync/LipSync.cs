@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -8,12 +9,14 @@ using System.Threading;
 using System.Reflection;
 using System.Resources;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
@@ -32,8 +35,7 @@ namespace VixenModules.Effect.LipSync
 		private LipSyncMapLibrary _library = null;
 
 		private Picture.Picture _thePic = null;
-
-
+		
 		public LipSync()
 		{
 			_data = new LipSyncData();
@@ -49,26 +51,21 @@ namespace VixenModules.Effect.LipSync
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
-			var targetNodes = TargetNodes.AsParallel();
-
-			if (cancellationToken != null)
-				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
-
-			targetNodes.ForAll(node =>
-			{
-				if (node != null)
-					RenderNode(node);
-			});
+			RenderNodes();
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private void RenderNodes()
 		{
 			EffectIntents result;
 			LipSyncMapData mapData = null;
 			List<ElementNode> renderNodes = TargetNodes.SelectMany(x => x.GetNodeEnumerator()).ToList();
 
+			//Check to see if we are rendering by marks
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			var marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+		
 			if (_data.PhonemeMapping != null) 
 			{
 				if (!_library.Library.ContainsKey(_data.PhonemeMapping)) 
@@ -110,22 +107,30 @@ namespace VixenModules.Effect.LipSync
 							LipSyncMapItem item = mapData.FindMapItem(element.Name);
 							if (item != null)
 							{
-								var level = new SetLevel.SetLevel();
-								level.TargetNodes = new ElementNode[] { element };
-
-								if (mapData.PhonemeState(element.Name, _data.StaticPhoneme.ToString(), item))
+								if (LipSyncMode == LipSyncMode.MarkCollection && marks!=null)
 								{
-									level.Color = mapData.ConfiguredColor(element.Name, phoneme, item);
+									foreach (var mark in marks)
+									{
+										if (mapData.PhonemeState(element.Name, mark.Text.ToUpper(), item))
+										{
+											var colorVal = mapData.ConfiguredColorAndIntensity(element.Name, mark.Text.ToUpper(), item);
+											result = CreateIntentsForPhoneme(element, colorVal.Item1, colorVal.Item2, mark.Duration);
+											result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+											_elementData.Add(result);
+										}
+									}
 								}
 								else
 								{
-									level.Color = Color.FromArgb(255, 0, 0, 0);
+									if (mapData.PhonemeState(element.Name, phoneme.ToString(), item))
+									{
+										var colorVal = mapData.ConfiguredColorAndIntensity(element.Name, phoneme.ToString(), item);
+										result = CreateIntentsForPhoneme(element, colorVal.Item1, colorVal.Item2, TimeSpan);
+										_elementData.Add(result);
+									}
+									
 								}
-
-								level.IntensityLevel = mapData.ConfiguredIntensity(element.Name, phoneme, item);
-								level.TimeSpan = TimeSpan;
-								result = level.Render();
-								_elementData.Add(result);
+								
 							}
 						});
 					}
@@ -134,6 +139,18 @@ namespace VixenModules.Effect.LipSync
 					
 			}
 
+		}
+
+		private EffectIntents CreateIntentsForPhoneme(ElementNode element, double intensity, Color color, TimeSpan duration)
+		{
+			EffectIntents result;
+			var level = new SetLevel.SetLevel();
+			level.TargetNodes = new[] {element};
+			level.Color = color;
+			level.IntensityLevel = intensity;
+			level.TimeSpan = duration;
+			result = level.Render();
+			return result;
 		}
 
 		protected override EffectIntents _Render()
@@ -223,6 +240,28 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Phoneme/Marks")]
+		[Description(@"Use a single Phoneme or Collection of MArks with Phonemes")]
+		public LipSyncMode LipSyncMode
+		{
+			get
+			{
+				return _data.LipSyncMode;
+
+			}
+			set
+			{
+				if (_data.LipSyncMode != value)
+				{
+					_data.LipSyncMode = value;
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
 		[ProviderCategory("Config",2)]
 		[DisplayName(@"Lyric")]
 		[Description(@"The lyric verbiage this Phoneme is associated with.")]
@@ -269,6 +308,31 @@ namespace VixenModules.Effect.LipSync
 				_data.ScalePercent = value;
 				IsDirty = true;
 				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"Mark Collections")]
+		[ProviderDescription(@"Mark Collections")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(2)]
+		public string MarkCollectionName
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var id = MarkCollections.FirstOrDefault(x => x.Name.Equals(value))?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					_data.MarkCollectionId = id;
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 

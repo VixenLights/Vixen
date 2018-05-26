@@ -34,5 +34,13 @@ namespace Vixen.Marks
 		void AddMarks(IEnumerable<IMark> marks);
 
 		void EnsureOrder();
+
+		/// <summary>
+		/// Returns all marks that have a start time that is inclusive of the start end range
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		/// <returns></returns>
+		IEnumerable<IMark> MarksInclusiveOfTime(TimeSpan start, TimeSpan end);
 	}
 }

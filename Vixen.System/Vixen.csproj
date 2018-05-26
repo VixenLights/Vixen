@@ -882,6 +882,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\IMarkCollectionNameConverter.cs" />
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />

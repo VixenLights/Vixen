@@ -149,6 +149,22 @@ namespace VixenModules.App.Marks
 			_marks.Sort();
 		}
 
+		/// <inheritdoc />
+		public IEnumerable<IMark> MarksInclusiveOfTime(TimeSpan start, TimeSpan end)
+		{
+			List<IMark> marks = new List<IMark>();
+			foreach (var mark in _marks)
+			{
+				if (mark.StartTime >= start && mark.StartTime <= end)
+				{
+					marks.Add(mark);
+				} 
+			}
+
+			return marks;
+
+		}
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{
