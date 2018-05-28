@@ -970,7 +970,7 @@ namespace VixenModules.Effect.Picture
 			return newImage;
 		}
 
-		public Bitmap ScaleImage(Image image, double scale)
+		public static Bitmap ScaleImage(Image image, double scale)
 		{
 			int maxWidth = Convert.ToInt32((double)image.Width * scale);
 			int maxHeight = Convert.ToInt32((double)image.Height * scale);

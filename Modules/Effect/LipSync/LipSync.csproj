@@ -65,6 +65,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FastPictureEffect.cs" />
     <Compile Include="LipSync.cs" />
     <Compile Include="LipSyncData.cs" />
     <Compile Include="LipSyncDescriptor.cs" />
@@ -73,6 +74,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\FastPixel\FastPixel.csproj">
+      <Project>{4EA5025B-5FFC-4FF8-9001-D0F64655BFB6}</Project>
+      <Name>FastPixel</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>

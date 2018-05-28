@@ -155,9 +155,14 @@ namespace VixenModules.App.Marks
 			List<IMark> marks = new List<IMark>();
 			foreach (var mark in _marks)
 			{
-				if (mark.StartTime >= start && mark.StartTime <= end)
+				if(mark.StartTime < start) continue;
+				if (mark.StartTime <= end)
 				{
 					marks.Add(mark);
+				}
+				else if (mark.StartTime > end)
+				{
+					break;
 				} 
 			}
 

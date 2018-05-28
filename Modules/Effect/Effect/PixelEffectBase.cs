@@ -35,6 +35,20 @@ namespace VixenModules.Effect.Effect
 		private int _stringCount;
 		private int _maxPixelsPerString;
 		private Curve _baseLevelCurve = new Curve(CurveType.Flat100);
+		private bool _elementsCached;
+		private List<Element> _cachedElements;
+
+		public void CacheElementEnumerator()
+		{
+			_cachedElements = TargetNodes.First()?.Distinct().ToList();
+			_elementsCached = true;
+		}
+
+		public void UloadElementCache()
+		{
+			_cachedElements = null;
+			_elementsCached = false;
+		}
 
 		protected override EffectIntents _Render()
 		{
@@ -53,11 +67,12 @@ namespace VixenModules.Effect.Effect
 			}
 			
 			SetupRender();
-			EffectIntents data = new EffectIntents();
+			int bufferSize = StringPixelCounts.Sum();
+			EffectIntents data = new EffectIntents(bufferSize);
 			foreach (ElementNode node in TargetNodes)
 			{
 				if (node != null)
-					data.Add(RenderNode(node));
+					RenderNode(node, ref data);
 			}
 			_elementData = data;
 			CleanUpRender();
@@ -313,18 +328,17 @@ namespace VixenModules.Effect.Effect
 		}
 
 
-		protected EffectIntents RenderNode(ElementNode node)
+		protected EffectIntents RenderNode(ElementNode node, ref EffectIntents effectIntents)
 		{
 			if (TargetPositioning == TargetPositioningType.Strings)
 			{
-				return RenderNodeByStrings(node);
+				return RenderNodeByStrings(node, ref effectIntents);
 			}
-			return RenderNodeByLocation(node);
+			return RenderNodeByLocation(node, ref effectIntents);
 		}
 
-		protected EffectIntents RenderNodeByLocation(ElementNode node)
+		protected EffectIntents RenderNodeByLocation(ElementNode node, ref EffectIntents effectIntents)
 		{
-			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
 			if (nFrames <= 0 | BufferWi == 0 || BufferHt == 0) return effectIntents;
 			PixelLocationFrameBuffer buffer = new PixelLocationFrameBuffer(ElementLocations, nFrames);
@@ -347,15 +361,14 @@ namespace VixenModules.Effect.Effect
 			return effectIntents;
 		}
 
-		protected EffectIntents RenderNodeByStrings(ElementNode node)
+		protected EffectIntents RenderNodeByStrings(ElementNode node, ref EffectIntents effectIntents)
 		{
-			EffectIntents effectIntents = new EffectIntents();
 			int nFrames = GetNumberFrames();
-			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return effectIntents;
+			if (nFrames <= 0 | BufferWi==0 || BufferHt==0) return new EffectIntents();
 			var buffer = new PixelFrameBuffer(BufferWi, BufferHt, UseBaseColor?BaseColor:Color.Transparent);
 
 			int bufferSize = StringPixelCounts.Sum();
-
+			
 			TimeSpan startTime = TimeSpan.Zero;
 
 			// set up arrays to hold the generated colors
@@ -405,11 +418,12 @@ namespace VixenModules.Effect.Effect
 					}
 				}
 			}
-
+			
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
-			List<Element> elements = node.Distinct().ToList();
+			var elements = _elementsCached?_cachedElements:node.Distinct().ToList();
 			int numElements = elements.Count();
+
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
 				IIntent intent = new StaticArrayIntent<RGBValue>(frameTs, pixels[eidx], TimeSpan);

@@ -34,7 +34,8 @@ namespace VixenModules.Effect.LipSync
 		static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
 		private LipSyncMapLibrary _library = null;
 
-		private Picture.Picture _thePic = null;
+		private FastPictureEffect _thePic;
+		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 		
 		public LipSync()
 		{
@@ -65,7 +66,6 @@ namespace VixenModules.Effect.LipSync
 			//Check to see if we are rendering by marks
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			var marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
-		
 			if (_data.PhonemeMapping != null) 
 			{
 				if (!_library.Library.ContainsKey(_data.PhonemeMapping)) 
@@ -84,41 +84,29 @@ namespace VixenModules.Effect.LipSync
 							foreach (var mark in marks)
 							{
 								var file = mapData.PictureFileName(mark.Text.ToUpper());
-								if (File.Exists(file)) //TODO figure out an alternative to checking every time.
-								{
-									_thePic.FileName = file;
-									_thePic.TimeSpan = mark.Duration;
-									result = _thePic.Render();
-									result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
-									_elementData.Add(result);
-								}
+								//if (File.Exists(file)) //TODO figure out an alternative to checking every time.
+								//{
+									
+								_thePic.Image = LoadImage(file);
+								_thePic.TimeSpan = mark.Duration;
+								_thePic.MarkDirty();
+								result = _thePic.Render();
+								result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+								_elementData.Add(result);
+																//}
 							}
 						}
 						else
 						{
-							if (File.Exists(mapData.PictureFileName(phoneme)))
+							var file = mapData.PictureFileName(phoneme);
+							if (File.Exists(file))
 							{
-								_thePic.FileName = mapData.PictureFileName(phoneme);
+								_thePic.Image = LoadImage(file);
 								result = _thePic.Render();
 								_elementData.Add(result);
 							}
 						}
-						//if (
-						//	)))
-						//{
-						//	//_thePic = new Picture.Picture();
-						//	//_thePic.Source = PictureSource.File;
-						//	//_thePic.TargetNodes = TargetNodes;
-						//	//_thePic.FileName = mapData.PictureFileName(phoneme);
-						//	//_thePic.Orientation = Orientation;
-						//	//_thePic.ScaleToGrid = ScaleToGrid;
-						//	//_thePic.ScalePercent = ScalePercent;
-						//	//_thePic.TimeSpan = TimeSpan;
-
-						//	//var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
-						//	//_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve}));
-
-						//}
+						
 						if (null != _thePic)
 						{
 							result = _thePic.Render();
@@ -158,6 +146,8 @@ namespace VixenModules.Effect.LipSync
 								
 							}
 						});
+
+						TearDownPictureEffect();
 					}
 
 				}
@@ -166,21 +156,49 @@ namespace VixenModules.Effect.LipSync
 
 		}
 
+		private Image LoadImage(string filePath)
+		{
+			Image image;
+			if (!_imageCache.TryGetValue(filePath, out image))
+			{
+				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+				{
+					//var ms = new MemoryStream();
+					//fs.CopyTo(ms);
+					//ms.Position = 0;
+					image = Image.FromStream(fs);
+				}
+				_imageCache.Add(filePath, image);
+			}
+
+			return image;
+		}
+
 		private void SetupPictureEffect()
 		{
 			if (_thePic == null)
 			{
-				_thePic = new Picture.Picture();
+				_thePic = new FastPictureEffect();
 			}
-			_thePic.Source = PictureSource.File;
+			//_thePic.Source = PictureSource.File;
 			_thePic.TargetNodes = TargetNodes;
-			_thePic.Orientation = Orientation;
+			_thePic.CacheElementEnumerator();
+			_thePic.StringOrientation = Orientation;
 			_thePic.ScaleToGrid = ScaleToGrid;
 			_thePic.ScalePercent = ScalePercent;
-			_thePic.TimeSpan = TimeSpan;
+			//_thePic.TimeSpan = TimeSpan;
 
 			var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
 			_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve }));
+		}
+
+		private void TearDownPictureEffect()
+		{
+			if (_thePic != null)
+			{
+				_thePic.UloadElementCache();
+				_thePic = null;
+			}
 		}
 
 		private EffectIntents CreateIntentsForPhoneme(ElementNode element, double intensity, Color color, TimeSpan duration)
