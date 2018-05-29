@@ -524,7 +524,7 @@ namespace VixenModules.Effect.LipSync
 								scaledImage = new Bitmap(displayImage,
 									Math.Min(clipRectangle.Width, endX - startX),
 									clipRectangle.Height);
-								g.DrawImage(scaledImage, startX, clipRectangle.Y);
+								g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
 							}
 						}
 					}
