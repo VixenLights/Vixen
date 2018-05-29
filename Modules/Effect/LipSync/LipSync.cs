@@ -199,98 +199,11 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		#region IMark change event handlers 
-
-		
 		private void SetupMarks()
 		{
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
 		}
-
-		private void RemoveMarkListeners(IEnumerable<IMark> marks)
-		{
-			if (marks == null) return;
-			foreach (var mark in marks)
-			{
-				mark.PropertyChanged -= Mark_PropertyChanged;
-			}
-		}
-
-		private void AddMarkListeners(IEnumerable<IMark> marks)
-		{
-			if (marks == null) return;
-			foreach (var mark in marks)
-			{
-				mark.PropertyChanged += Mark_PropertyChanged;
-			}
-		}
-
-		private void AddMarkCollectionListener(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
-		}
-
-		private void RemoveMarkCollectionListener(IMarkCollection mc)
-		{
-			if (mc == null) return;
-			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
-		}
-
-		private void MarkCollectionPropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			//We are just going to deal with adds and removes here. The individual event handlers will deal with moves.
-			if (e.Action == NotifyCollectionChangedAction.Add)
-			{
-				var marks = e.NewItems.Cast<IMark>();
-				AddMarkListeners(marks);
-				if (!IsDirty)
-				{
-					IsDirty = IsAnyMarksInclusiveOfEffect(marks);
-				}
-			}
-			else if(e.Action == NotifyCollectionChangedAction.Remove)
-			{
-				var marks = e.OldItems.Cast<IMark>();
-				RemoveMarkListeners(marks);
-				if (!IsDirty)
-				{
-					IsDirty = IsAnyMarksInclusiveOfEffect(marks);
-				}
-			}
-			else if(e.Action == NotifyCollectionChangedAction.Reset)
-			{
-				ReloadMarkListeners();
-				IsDirty = true;
-			}
-		}
-
-		private void ReloadMarkListeners()
-		{
-			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			var marks = mc?.Marks;
-			if (marks != null)
-			{
-				RemoveMarkListeners(marks);
-				AddMarkListeners(marks);
-			}
-		}
-
-		private void Mark_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == "StartTime" || e.PropertyName == "EndTime" || e.PropertyName == "Text")
-			{
-				if (!IsDirty)
-				{
-					var mark = sender as IMark;
-					IsDirty = IsAnyMarksInclusiveOfEffect(new[] {mark});
-				}
-				
-			}
-		}
-
-		#endregion
 
 		#region Overrides of EffectModuleInstanceBase
 
@@ -300,12 +213,7 @@ namespace VixenModules.Effect.LipSync
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
 				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
-				if (markCollection != null)
-				{
-					AddMarkCollectionListener(markCollection);
-					ReloadMarkListeners();
-				}
-				
+				InitializeMarkCollectionListeners(markCollection);
 			}
 		}
 
@@ -453,11 +361,9 @@ namespace VixenModules.Effect.LipSync
 				if (!id.Equals(_data.MarkCollectionId))
 				{
 					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
-					RemoveMarkCollectionListener(oldMarkCollection);
-					RemoveMarkListeners(oldMarkCollection?.Marks);
+					RemoveMarkCollectionListeners(oldMarkCollection);
 					_data.MarkCollectionId = id;
-					AddMarkCollectionListener(newMarkCollection);
-					AddMarkListeners(newMarkCollection?.Marks);
+					AddMarkCollectionListeners(newMarkCollection);
 					IsDirty = true;
 					OnPropertyChanged();
 				}
