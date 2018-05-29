@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -257,9 +258,26 @@ namespace Vixen.Module.Effect
 				{
 					_markCollections = value;
 					MarkCollectionsChanged();
+					_markCollections.CollectionChanged += _markCollections_CollectionChanged;
 					IsDirty = true;
 				}
 				
+			}
+		}
+
+		private void _markCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				MarkCollectionsAdded(e.NewItems.Cast<IMarkCollection>().ToList());
+			}
+			else if(e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				MarkCollectionsRemoved(e.OldItems.Cast<IMarkCollection>().ToList());
+			}
+			else
+			{
+				MarkCollectionsChanged();
 			}
 		}
 
@@ -269,6 +287,22 @@ namespace Vixen.Module.Effect
 		protected virtual void MarkCollectionsChanged()
 		{
 			
+		}
+
+		/// <summary>
+		/// Method for effects to manage mark collections changing.
+		/// </summary>
+		protected virtual void MarkCollectionsAdded(IList<IMarkCollection> addedCollections)
+		{
+
+		}
+
+		/// <summary>
+		/// Method for effects to manage mark collections changing.
+		/// </summary>
+		protected virtual void MarkCollectionsRemoved(IList<IMarkCollection> removedCollections)
+		{
+
 		}
 
 		private void _EnsureTargetNodeProperties()

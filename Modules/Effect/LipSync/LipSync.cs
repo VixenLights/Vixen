@@ -217,6 +217,18 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if(mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
+		}
+
 		#endregion
 
 		private EffectIntents CreateIntentsForPhoneme(ElementNode element, double intensity, Color color, TimeSpan duration)
