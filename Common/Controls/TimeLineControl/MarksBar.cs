@@ -639,10 +639,14 @@ namespace Common.Controls.TimelineControl
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
+				List<MarksTextInfo> changedMarks = new List<MarksTextInfo>();
 				foreach (var mark in _marksSelectionManager.SelectedMarks)
 				{
+					var mti = new MarksTextInfo(mark, td.Response, mark.Text);
+					changedMarks.Add(mti);
 					mark.Text = td.Response;
 				}
+				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
 				Invalidate();
 			}
 		}

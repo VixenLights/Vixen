@@ -225,6 +225,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TimelineControl\LabeledMarks\MarksDeletedEventArgs.cs" />
+    <Compile Include="TimelineControl\LabeledMarks\MarksTextChangedEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\TimeLineGlobalEventManager.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovedEventArgs.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarksMovingEventArgs.cs" />

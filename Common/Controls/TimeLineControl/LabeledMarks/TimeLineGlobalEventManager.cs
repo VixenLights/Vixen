@@ -11,6 +11,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 	{
 		private static TimeLineGlobalEventManager _manager;
 
+		public event EventHandler<MarksTextChangedEventArgs> MarksTextChanged;
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
@@ -46,6 +47,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public void OnDeleteMark(MarksDeletedEventArgs e)
 		{
 			DeleteMark?.Invoke(this, e);
+		}
+
+		public void OnMarksTextChanged(MarksTextChangedEventArgs e)
+		{
+			MarksTextChanged?.Invoke(this, e);
 		}
 
 	}

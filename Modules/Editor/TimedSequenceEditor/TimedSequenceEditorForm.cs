@@ -458,6 +458,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
+			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalTextChanged;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -635,7 +636,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
-			
+			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
+
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
 				EffectsForm.Dispose();
@@ -1849,12 +1851,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			CheckAndRenderDirtyElements();
+			CheckAndRenderDirtyElementsAsync();
 		}
 
 		private void ColorGradientLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			CheckAndRenderDirtyElements();
+			CheckAndRenderDirtyElementsAsync();
 		}
 
 		private void AutoSaveEventProcessor(object sender, EventArgs e)
@@ -2666,9 +2668,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private Mark AddMarkAtTime(TimeSpan time, bool suppressUndo)
+		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo)
 		{
-			Mark newMark = null;
+			IMark newMark = null;
 			IMarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
 			{
@@ -2703,6 +2705,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				newMark = new Mark(time);
 				mc.AddMark(newMark);
 				PopulateMarkSnapTimes();
+				CheckAndRenderDirtyElementsAsync();
 				SequenceModified();
 				if (!suppressUndo)
 				{
@@ -2733,6 +2736,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return mc;
 		}
 
+		private void TimeLineGlobalTextChanged(object sender, MarksTextChangedEventArgs e)
+		{
+			SequenceModified();
+			CheckAndRenderDirtyElementsAsync();
+		}
+
 		private void TimeLineGlobalMoving(object sender, MarksMovingEventArgs e)
 		{
 			UpdateGridSnapTimes();
@@ -2742,6 +2751,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_undoMgr.AddUndoAction(new MarksTimeChangedUndoAction(this, e.MoveResizeInfo, e.MoveType));
 			UpdateGridSnapTimes();
+			CheckAndRenderDirtyElementsAsync();
 			SequenceModified();
 		}
 
@@ -2754,7 +2764,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			var act = new MarksRemovedUndoAction(this, marksDeleted);
 			_undoMgr.AddUndoAction(act);
-
+			CheckAndRenderDirtyElementsAsync();
 			UpdateGridSnapTimes();
 			SequenceModified();
 		}
@@ -3461,17 +3471,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <summary>
 		/// Checks all elements and if they are dirty they are placed in the render queue
 		/// </summary>
-		private void CheckAndRenderDirtyElements()
+		private async void CheckAndRenderDirtyElementsAsync()
 		{
-			var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
-
-			elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
+			Task t = Task.Factory.StartNew(() =>
 			{
-				if (element.EffectNode.Effect.IsDirty)
+				var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+				elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
 				{
-					TimelineControl.grid.RenderElement(element);
-				}
+					if (element.EffectNode.Effect.IsDirty)
+					{
+						TimelineControl.grid.RenderElement(element);
+					}
+				});
 			});
+
+			await t;
 		}
 
 		/// <summary>

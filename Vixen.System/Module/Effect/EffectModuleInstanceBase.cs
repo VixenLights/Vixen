@@ -253,9 +253,22 @@ namespace Vixen.Module.Effect
 			get { return _markCollections; }
 			set
 			{
-				_markCollections = value;
-				IsDirty = true;
+				if (_markCollections != value)
+				{
+					_markCollections = value;
+					MarkCollectionsChanged();
+					IsDirty = true;
+				}
+				
 			}
+		}
+
+		/// <summary>
+		/// Method for effects to manage mark collections changing.
+		/// </summary>
+		protected virtual void MarkCollectionsChanged()
+		{
+			
 		}
 
 		private void _EnsureTargetNodeProperties()
