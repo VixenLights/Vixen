@@ -4907,7 +4907,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					IEffectModuleInstance effect = elem.EffectNode.Effect;
 					if (effect.GetType() == typeof(LipSync))
 					{
-						((LipSync)effect).MakeDirty();
+						effect.MarkDirty();
 					}
                 }
             }

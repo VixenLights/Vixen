@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Extensions;
 using Vixen.Marks;
 
 namespace VixenModules.App.Marks
@@ -13,7 +14,7 @@ namespace VixenModules.App.Marks
 	public class MarkCollection: BindableBase, IMarkCollection
 	{
 		[DataMember(Name = "Marks")]
-		private List<IMark> _marks;
+		private ObservableCollection<IMark> _marks;
 
 		private string _name;
 		private int _level;
@@ -26,8 +27,8 @@ namespace VixenModules.App.Marks
 		{
 			Name = @"Mark Collection";
 			Decorator = new MarkDecorator();
-			_marks = new List<IMark>();
-			Marks = _marks.AsReadOnly();
+			_marks = new ObservableCollection<IMark>();
+			Marks = new ReadOnlyObservableCollection<IMark>(_marks);
 			Id = Guid.NewGuid();
 			Level = 1;
 			ShowGridLines = true;
@@ -99,7 +100,7 @@ namespace VixenModules.App.Marks
 
 
 		[IgnoreDataMember]
-		public ReadOnlyCollection<IMark> Marks { get; private set; }
+		public ReadOnlyObservableCollection<IMark> Marks { get; private set; }
 
 		[DataMember]
 		public IMarkDecorator Decorator
@@ -138,9 +139,9 @@ namespace VixenModules.App.Marks
 			OnPropertyChanged(nameof(Marks));
 		}
 
-		public void RemoveAll(Predicate<IMark> match)
+		public void RemoveAll(Func<IMark, bool> condition)
 		{
-			_marks.RemoveAll(match);
+			_marks.RemoveAll(condition);
 			OnPropertyChanged(nameof(Marks));
 		}
 
@@ -175,7 +176,7 @@ namespace VixenModules.App.Marks
 		{
 			if (Marks == null)
 			{
-				Marks = _marks.AsReadOnly();
+				Marks = new ReadOnlyObservableCollection<IMark>(_marks);
 			}
 
 			foreach (var mark in _marks)
@@ -195,7 +196,7 @@ namespace VixenModules.App.Marks
 				ShowGridLines = ShowGridLines,
 				Level = Level,
 				Name = Name,
-				_marks = Marks.Select(x => (IMark)x.Clone()).ToList(),
+				_marks = new ObservableCollection<IMark>(Marks.Select(x => (IMark)x.Clone())),
 				Decorator = (MarkDecorator)Decorator.Clone()
 			};
 		}

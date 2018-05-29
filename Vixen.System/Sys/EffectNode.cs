@@ -9,6 +9,8 @@ namespace Vixen.Sys
 	[Serializable]
 	public class EffectNode : IEffectNode
 	{
+		private TimeSpan _startTime;
+
 //, IEquatable<IEffectNode>, IEquatable<EffectNode> {
 		public EffectNode()
 			: this(null, TimeSpan.Zero)
@@ -24,7 +26,15 @@ namespace Vixen.Sys
 
 		public IEffectModuleInstance Effect { get; private set; }
 
-		public TimeSpan StartTime { get; set; }
+		public TimeSpan StartTime
+		{
+			get { return _startTime; }
+			set
+			{
+				_startTime = value;
+				Effect.StartTime = value;
+			}
+		}
 
 		public TimeSpan TimeSpan
 		{

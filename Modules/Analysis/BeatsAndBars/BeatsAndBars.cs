@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Common.WPFCommon.Utils;
 using QMLibrary;
+using Vixen.Extensions;
 using Vixen.Marks;
 using Vixen.Module.Analysis;
 using VixenModules.App.Marks;

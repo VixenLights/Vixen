@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using Vixen.Attributes;
 using Vixen.Intent;
+using Vixen.Marks;
 using Vixen.Module.Effect;
 using Vixen.Sys;
-using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Effect
@@ -103,5 +102,28 @@ namespace VixenModules.Effect.Effect
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
 
+		#region IMark helpers
+
+		/// <summary>
+		/// Returns true if any marks in the list have a start time inclusive of the effect time. 
+		/// </summary>
+		/// <param name="marks"></param>
+		/// <returns></returns>
+		protected bool IsAnyMarksInclusiveOfEffect(IEnumerable<IMark> marks)
+		{
+			bool result = false;
+			foreach (var mark in marks)
+			{
+				if (mark.StartTime >= StartTime && mark.StartTime <= StartTime + TimeSpan)
+				{
+					result = true;
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		#endregion
 	}
 }

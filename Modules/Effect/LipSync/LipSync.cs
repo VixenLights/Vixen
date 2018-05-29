@@ -26,7 +26,7 @@ using ZedGraph;
 namespace VixenModules.Effect.LipSync
 {
 
-	public class LipSync : EffectModuleInstanceBase
+	public class LipSync : BaseEffect
 	{
 		private LipSyncData _data;
 		private EffectIntents _elementData = null;
@@ -62,6 +62,10 @@ namespace VixenModules.Effect.LipSync
 			EffectIntents result;
 			LipSyncMapData mapData = null;
 			List<ElementNode> renderNodes = TargetNodes.SelectMany(x => x.GetNodeEnumerator()).ToList();
+			if (LipSyncMode == LipSyncMode.MarkCollection)
+			{
+				SetupMarks();
+			}
 
 			if (_data.PhonemeMapping != null) 
 			{
@@ -81,9 +85,6 @@ namespace VixenModules.Effect.LipSync
 							foreach (var mark in _marks)
 							{
 								var file = mapData.PictureFileName(mark.Text.ToUpper());
-								//if (File.Exists(file)) //TODO figure out an alternative to checking every time.
-								//{
-									
 								_thePic.Image = LoadImage(file);
 								_thePic.TimeSpan = mark.Duration;
 								_thePic.MarkDirty();
@@ -198,19 +199,18 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
+		#region IMark change event handlers 
+
+		
 		private void SetupMarks()
 		{
-			if (_marks != null)
-			{
-				RemoveMarkListeners(_marks);
-			}
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
 			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
-			AddMarkListeners(_marks);
 		}
 
 		private void RemoveMarkListeners(IEnumerable<IMark> marks)
 		{
+			if (marks == null) return;
 			foreach (var mark in marks)
 			{
 				mark.PropertyChanged -= Mark_PropertyChanged;
@@ -219,6 +219,7 @@ namespace VixenModules.Effect.LipSync
 
 		private void AddMarkListeners(IEnumerable<IMark> marks)
 		{
+			if (marks == null) return;
 			foreach (var mark in marks)
 			{
 				mark.PropertyChanged += Mark_PropertyChanged;
@@ -228,21 +229,51 @@ namespace VixenModules.Effect.LipSync
 		private void AddMarkCollectionListener(IMarkCollection mc)
 		{
 			if (mc == null) return;
-			mc.PropertyChanged += MarkCollectionPropertyChanged;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
 		}
 
 		private void RemoveMarkCollectionListener(IMarkCollection mc)
 		{
 			if (mc == null) return;
-			mc.PropertyChanged -= MarkCollectionPropertyChanged;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
 		}
 
-		private void MarkCollectionPropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void MarkCollectionPropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.PropertyName == "Marks")
+			//We are just going to deal with adds and removes here. The individual event handlers will deal with moves.
+			if (e.Action == NotifyCollectionChangedAction.Add)
 			{
-				SetupMarks();
+				var marks = e.NewItems.Cast<IMark>();
+				AddMarkListeners(marks);
+				if (!IsDirty)
+				{
+					IsDirty = IsAnyMarksInclusiveOfEffect(marks);
+				}
+			}
+			else if(e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				var marks = e.OldItems.Cast<IMark>();
+				RemoveMarkListeners(marks);
+				if (!IsDirty)
+				{
+					IsDirty = IsAnyMarksInclusiveOfEffect(marks);
+				}
+			}
+			else if(e.Action == NotifyCollectionChangedAction.Reset)
+			{
+				ReloadMarkListeners();
 				IsDirty = true;
+			}
+		}
+
+		private void ReloadMarkListeners()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			var marks = mc?.Marks;
+			if (marks != null)
+			{
+				RemoveMarkListeners(marks);
+				AddMarkListeners(marks);
 			}
 		}
 
@@ -250,10 +281,16 @@ namespace VixenModules.Effect.LipSync
 		{
 			if (e.PropertyName == "StartTime" || e.PropertyName == "EndTime" || e.PropertyName == "Text")
 			{
-				SetupMarks();
-				IsDirty = true;
+				if (!IsDirty)
+				{
+					var mark = sender as IMark;
+					IsDirty = IsAnyMarksInclusiveOfEffect(new[] {mark});
+				}
+				
 			}
 		}
+
+		#endregion
 
 		#region Overrides of EffectModuleInstanceBase
 
@@ -266,7 +303,7 @@ namespace VixenModules.Effect.LipSync
 				if (markCollection != null)
 				{
 					AddMarkCollectionListener(markCollection);
-					SetupMarks();
+					ReloadMarkListeners();
 				}
 				
 			}
@@ -417,9 +454,10 @@ namespace VixenModules.Effect.LipSync
 				{
 					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
 					RemoveMarkCollectionListener(oldMarkCollection);
+					RemoveMarkListeners(oldMarkCollection?.Marks);
 					_data.MarkCollectionId = id;
 					AddMarkCollectionListener(newMarkCollection);
-					SetupMarks();
+					AddMarkListeners(newMarkCollection?.Marks);
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -582,9 +620,11 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		public void MakeDirty()
-		{
-			this.IsDirty = true;
-		}
+		#region Overrides of BaseEffect
+
+		/// <inheritdoc />
+		protected override EffectTypeModuleData EffectModuleData => _data;
+
+		#endregion
 	}
 }

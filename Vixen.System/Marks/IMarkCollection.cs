@@ -21,13 +21,13 @@ namespace Vixen.Marks
 
 		int Level { get; set; }
 
-		ReadOnlyCollection<IMark> Marks { get;  }
+		ReadOnlyObservableCollection<IMark> Marks { get;  }
 
 		IMarkDecorator Decorator { get; set; }
 
 		void RemoveMark(IMark mark);
 
-		void RemoveAll(Predicate<IMark> match);
+		void RemoveAll(Func<IMark, bool> condition);
 
 		void AddMark(IMark mark);
 
