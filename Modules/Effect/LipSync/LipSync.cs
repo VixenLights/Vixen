@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -497,39 +498,62 @@ namespace VixenModules.Effect.LipSync
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 
-		public override void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{
 			try
 			{
-				//if (StaticPhoneme == "")
-				//{
-				//	StaticPhoneme = "REST";
-				//}
-
-				string DisplayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
 				Bitmap displayImage = null;
 				Bitmap scaledImage = null;
-				if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
+				using (var backgroundBrush = new SolidBrush(Color.Green))
 				{
-					scaledImage = new Bitmap(displayImage, 
-											Math.Min(clipRectangle.Height,clipRectangle.Width), 
-											clipRectangle.Height);
-					g.DrawImage(scaledImage, clipRectangle.X,clipRectangle.Y);
+					g.FillRectangle(backgroundBrush, clipRectangle);
 				}
-				if ((scaledImage != null) && (scaledImage.Width < clipRectangle.Width))
+				
+				if (LipSyncMode == LipSyncMode.MarkCollection)
 				{
-					clipRectangle.X += scaledImage.Width;
-					clipRectangle.Width -= scaledImage.Width;
-					Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Vixen.Fonts.DigitalDream.ttf");
-					using (var StringBrush = new SolidBrush(Color.Yellow))
+					foreach (var mark in _marks)
 					{
-						using (var backgroundBrush = new SolidBrush(Color.Green))
+						PhonemeType phoneme;
+
+						if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out phoneme))
 						{
-							g.FillRectangle(backgroundBrush, clipRectangle);
+							if (_phonemeBitmaps.TryGetValue(phoneme, out displayImage))
+							{
+								var endX = (int)( (mark.EndTime.Ticks - StartTime.Ticks) / (double) TimeSpan.Ticks * clipRectangle.Width);
+								var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+								scaledImage = new Bitmap(displayImage,
+									Math.Min(clipRectangle.Width, endX - startX),
+									clipRectangle.Height);
+								g.DrawImage(scaledImage, startX, clipRectangle.Y);
+							}
 						}
-						g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4 + scaledImage.Width, 4);
 					}
 				}
+				else
+				{
+					var displayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
+
+					if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
+					{
+						scaledImage = new Bitmap(displayImage,
+							Math.Min(clipRectangle.Height, clipRectangle.Width),
+							clipRectangle.Height);
+						g.DrawImage(scaledImage, clipRectangle.X, clipRectangle.Y);
+					}
+
+					if ((scaledImage != null) && (scaledImage.Width < clipRectangle.Width))
+					{
+						var textStart = clipRectangle.X + scaledImage.Width;
+						var textWidth = clipRectangle.Width - scaledImage.Width;
+						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf");
+						using (var stringBrush = new SolidBrush(Color.Yellow))
+						{
+							g.DrawString(displayValue, adjustedFont, stringBrush, 4 + textStart, 4);
+						}
+					}
+				}
+				
+				
 				
 			}
 			catch (Exception e)

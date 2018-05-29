@@ -20,8 +20,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//var sw = new System.Diagnostics.Stopwatch(); sw.Start();
 			IEffectModuleInstance effect = tsElement.EffectNode.Effect;
-			if (effect.ForceGenerateVisualRepresentation || Vixen.Common.Graphics.DisableEffectsEditorRendering) {
-				effect.GenerateVisualRepresentation(g, new Rectangle(0, 0, (int)g.VisibleClipBounds.Width, (int)g.VisibleClipBounds.Height));
+			if (effect.ForceGenerateVisualRepresentation || Vixen.Common.Graphics.DisableEffectsEditorRendering)
+			{
+
+				var startX = (int)((visibleStartOffset.Ticks / (float)tsElement.Duration.Ticks) * overallWidth);
+				effect.GenerateVisualRepresentation(g, new Rectangle(-startX, 0, overallWidth, (int)g.VisibleClipBounds.Height));
 			} else {
 				double width = g.VisibleClipBounds.Width;
 				double height = g.VisibleClipBounds.Height;

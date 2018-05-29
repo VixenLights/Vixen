@@ -75,7 +75,7 @@ namespace Launcher
 					using (var backgroundBrush = new SolidBrush(Color.DarkBlue)) {
 						g.FillRectangle(backgroundBrush, clipRectangle);
 					}
-					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
+					g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 4, 4);
 					//base.GenerateVisualRepresentation(g, clipRectangle);
 				}
 
