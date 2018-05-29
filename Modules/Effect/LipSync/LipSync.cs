@@ -262,7 +262,13 @@ namespace VixenModules.Effect.LipSync
 		{
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
-				SetupMarks();
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				if (markCollection != null)
+				{
+					AddMarkCollectionListener(markCollection);
+					SetupMarks();
+				}
+				
 			}
 		}
 
