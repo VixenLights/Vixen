@@ -511,6 +511,7 @@ namespace VixenModules.Effect.LipSync
 				
 				if (LipSyncMode == LipSyncMode.MarkCollection)
 				{
+					bool first = true;
 					foreach (var mark in _marks)
 					{
 						PhonemeType phoneme;
@@ -525,8 +526,14 @@ namespace VixenModules.Effect.LipSync
 									Math.Min(clipRectangle.Width, endX - startX),
 									clipRectangle.Height);
 								g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
+								if (!first)
+								{
+									g.DrawLine(Pens.Black, new Point(clipRectangle.X + startX, 0), new Point(clipRectangle.X + startX, clipRectangle.Height));
+								}
 							}
 						}
+
+						first = false;
 					}
 				}
 				else
