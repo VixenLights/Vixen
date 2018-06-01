@@ -35,6 +35,7 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.radioXTiming = new System.Windows.Forms.RadioButton();
+			this.radioPapagayo = new System.Windows.Forms.RadioButton();
 			this.SuspendLayout();
 			// 
 			// radioVixen3Beats
@@ -90,7 +91,7 @@
 			this.btnCancel.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnCancel.Location = new System.Drawing.Point(139, 179);
+			this.btnCancel.Location = new System.Drawing.Point(141, 203);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(87, 27);
 			this.btnCancel.TabIndex = 1;
@@ -106,7 +107,7 @@
 			this.btnOk.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
 			this.btnOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.btnOk.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.btnOk.Location = new System.Drawing.Point(24, 179);
+			this.btnOk.Location = new System.Drawing.Point(26, 203);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(87, 27);
 			this.btnOk.TabIndex = 2;
@@ -126,6 +127,17 @@
 			this.radioXTiming.Text = "xTiming";
 			this.radioXTiming.UseVisualStyleBackColor = true;
 			// 
+			// radioPapagayo
+			// 
+			this.radioPapagayo.AutoSize = true;
+			this.radioPapagayo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.radioPapagayo.Location = new System.Drawing.Point(36, 158);
+			this.radioPapagayo.Name = "radioPapagayo";
+			this.radioPapagayo.Size = new System.Drawing.Size(146, 19);
+			this.radioPapagayo.TabIndex = 5;
+			this.radioPapagayo.Text = "Papagayo Voice Tracks";
+			this.radioPapagayo.UseVisualStyleBackColor = true;
+			// 
 			// AudacityImportDialog
 			// 
 			this.AcceptButton = this.btnOk;
@@ -133,8 +145,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(252, 234);
+			this.ClientSize = new System.Drawing.Size(262, 285);
 			this.ControlBox = false;
+			this.Controls.Add(this.radioPapagayo);
 			this.Controls.Add(this.radioXTiming);
 			this.Controls.Add(this.radioVixen3Beats);
 			this.Controls.Add(this.btnOk);
@@ -148,7 +161,7 @@
 			this.MinimumSize = new System.Drawing.Size(268, 254);
 			this.Name = "AudacityImportDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Import Beat Selection";
+			this.Text = "Import Type Selection";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -163,5 +176,6 @@
 		private System.Windows.Forms.RadioButton radioAudacityBeats;
 		private System.Windows.Forms.RadioButton radioVixen3Beats;
 		private System.Windows.Forms.RadioButton radioXTiming;
+		private System.Windows.Forms.RadioButton radioPapagayo;
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using Vixen;
@@ -212,7 +213,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
             return retVal;
 
         }
-    }
+
+	    public List<PapagayoPhrase> PhraseList(string voiceStr)
+	    {
+		    List<PapagayoPhrase> retVal = null;
+		    PapagayoVoice voice;
+
+		    if (voiceStr == null)
+		    {
+			    throw new ArgumentNullException();
+		    }
+		    if (m_voices.TryGetValue(voiceStr.Trim(), out voice))
+		    {
+			    retVal = voice.PhraseList;
+		    }
+
+		    return retVal;
+
+	    }
+	}
 
     class PapagayoVoice : PapagayoImportObject
     {
@@ -222,7 +241,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
         PapagayoPhrase[] m_phrases = null;
         List<PapagayoPhoneme> m_phonemes = null;
 
-        public string VoiceName
+	    public string VoiceName
         {
             get { return m_voiceName; }
         }
@@ -231,6 +250,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
 
         }
+
+	    public List<PapagayoPhrase> Phrases => m_phrases.ToList();
 
         public void Load(StreamReader file)
         {
@@ -305,7 +326,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             {
                 if (coalescedPhoneme == null)
                 {
-                    coalescedPhoneme = phoneme;
+                    coalescedPhoneme = new PapagayoPhoneme(phoneme);
                 }
 
                 if (coalescedPhoneme.Type == phoneme.Type)
@@ -314,9 +335,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
                 else
                 {
-                    newPhoneme = new PapagayoPhoneme(coalescedPhoneme);
+                    newPhoneme = coalescedPhoneme;
                     newList.Add(newPhoneme);
-                    coalescedPhoneme = phoneme;
+                    coalescedPhoneme = new PapagayoPhoneme(phoneme);
                 }
 
             }
@@ -350,10 +371,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 return m_phonemes;
             }
         }
+
+	    public List<PapagayoPhrase> PhraseList => m_phrases.ToList();
     }
 
 
-    class PapagayoPhrase : PapagayoImportObject
+    public class PapagayoPhrase : PapagayoImportObject
     {
         string m_text;
         int m_numWords;
@@ -363,6 +386,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
 
         }
+
+	    public List<PapagayoWord> Words => m_words.ToList();
+
+	    public String Text => m_text;
 
         public void Load(StreamReader file, ref List<PapagayoPhoneme> phonemes)
         {
@@ -435,14 +462,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
     }
 
 
-    class PapagayoWord : PapagayoImportObject
+    public class PapagayoWord : PapagayoImportObject
     {
         string line = null;
         string m_wordText = null;
         int m_numPhoneme = 0;
         PapagayoPhoneme[] m_phoneme = null;
 
-        public PapagayoWord(StreamReader file,
+	    public List<PapagayoPhoneme> Phonemes => m_phoneme.ToList();
+
+	    public String Text => m_wordText;
+
+		public PapagayoWord(StreamReader file,
             ref List<PapagayoPhoneme> phonemes)
         {
             line = file.ReadLine();
