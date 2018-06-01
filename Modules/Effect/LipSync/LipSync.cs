@@ -504,41 +504,55 @@ namespace VixenModules.Effect.LipSync
 			{
 				Bitmap displayImage = null;
 				Bitmap scaledImage = null;
-				using (var backgroundBrush = new SolidBrush(Color.Green))
-				{
-					g.FillRectangle(backgroundBrush, clipRectangle);
-				}
 				
 				if (LipSyncMode == LipSyncMode.MarkCollection)
 				{
-					bool first = true;
-					foreach (var mark in _marks)
+					if (_marks.Any())
 					{
-						PhonemeType phoneme;
-
-						if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out phoneme))
+						bool first = true;
+						int endX = 0;
+						foreach (var mark in _marks)
 						{
-							if (_phonemeBitmaps.TryGetValue(phoneme, out displayImage))
+							PhonemeType phoneme;
+
+							if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out phoneme))
 							{
-								var endX = (int)( (mark.EndTime.Ticks - StartTime.Ticks) / (double) TimeSpan.Ticks * clipRectangle.Width);
-								var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
-								scaledImage = new Bitmap(displayImage,
-									Math.Min(clipRectangle.Width, endX - startX),
-									clipRectangle.Height);
-								g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
-								if (!first)
+								if (_phonemeBitmaps.TryGetValue(phoneme, out displayImage))
 								{
+									endX = (int)((mark.EndTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									scaledImage = new Bitmap(displayImage,
+										Math.Min(clipRectangle.Width, endX - startX),
+										clipRectangle.Height);
+									g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
+									if (first && mark.StartTime <= StartTime)
+									{
+										first = false;
+										continue;
+									}
+
 									g.DrawLine(Pens.Black, new Point(clipRectangle.X + startX, 0), new Point(clipRectangle.X + startX, clipRectangle.Height));
 								}
 							}
+
+							first = false;
 						}
 
-						first = false;
+						if (_marks.Last().EndTime < StartTime + TimeSpan)
+						{
+							//draw a closing line on the image
+							g.DrawLine(Pens.Black, new Point(clipRectangle.X + endX, 0), new Point(clipRectangle.X + endX, clipRectangle.Height));
+						}
 					}
 				}
 				else
 				{
 					var displayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
+
+					using (var backgroundBrush = new SolidBrush(Color.Green))
+					{
+						g.FillRectangle(backgroundBrush, clipRectangle);
+					}
 
 					if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
 					{
