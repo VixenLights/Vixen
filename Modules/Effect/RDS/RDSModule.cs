@@ -90,7 +90,7 @@ namespace VixenModules.Effect.RDS
 				using (var backgroundBrush = new SolidBrush(Color.DarkGray)) {
 					g.FillRectangle(backgroundBrush, clipRectangle);
 				}
-				g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
+				g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 4, 4);
 				//base.GenerateVisualRepresentation(g, clipRectangle);
 			}
 		

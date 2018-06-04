@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.IO;
 using Vixen.Module.Media;
 using Vixen.Module.Timing;
 using Vixen.Execution;
-using Vixen.Module.MixingFilter;
+using Vixen.Marks;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.LayerMixing;
@@ -213,6 +214,13 @@ namespace BaseSequence
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+		#endregion
+
+		#region Implementation of IHasMarks
+
+		/// <inheritdoc />
+		public abstract ObservableCollection<IMarkCollection> LabeledMarkCollections { get; }
 
 		#endregion
 	}

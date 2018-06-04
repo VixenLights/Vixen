@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl
@@ -29,7 +30,7 @@ namespace Common.Controls.TimelineControl
 		private const int DragThreshold = 8;
 		private const int MinMarkWidthPx = 12;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
-		private ObservableCollection<MarkCollection> _markCollections;
+		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly Font _textFont = SystemFonts.MessageBoxFont;
 
 		/// <inheritdoc />
@@ -45,7 +46,7 @@ namespace Common.Controls.TimelineControl
 			MarkRow.MarkRowChanged += MarkRow_MarkRowChanged;
 		}
 
-		public ObservableCollection<MarkCollection> MarkCollections
+		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get { return _markCollections; }
 			set
@@ -108,7 +109,7 @@ namespace Common.Controls.TimelineControl
 			}
 		}
 
-		private void CreateMarkRow(MarkCollection markCollection)
+		private void CreateMarkRow(IMarkCollection markCollection)
 		{
 			MarkRow row = new MarkRow(markCollection);
 			_rows.Add(row);
@@ -638,10 +639,14 @@ namespace Common.Controls.TimelineControl
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
+				List<MarksTextInfo> changedMarks = new List<MarksTextInfo>();
 				foreach (var mark in _marksSelectionManager.SelectedMarks)
 				{
+					var mti = new MarksTextInfo(mark, td.Response, mark.Text);
+					changedMarks.Add(mti);
 					mark.Text = td.Response;
 				}
+				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
 				Invalidate();
 			}
 		}
@@ -842,7 +847,7 @@ namespace Common.Controls.TimelineControl
 				{
 					for (int i = 0; i < row.MarksCount; i++)
 					{
-						Mark currentElement = row.GetMarkAtIndex(i);
+						var currentElement = row.GetMarkAtIndex(i);
 						if (currentElement.EndTime < VisibleTimeStart)
 							continue;
 
@@ -860,7 +865,7 @@ namespace Common.Controls.TimelineControl
 
 		}
 
-		private void DrawMark(Graphics g, MarkRow row, Mark mark, int top, Brush b)
+		private void DrawMark(Graphics g, MarkRow row, IMark mark, int top, Brush b)
 		{
 			int width;
 			

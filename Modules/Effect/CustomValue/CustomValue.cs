@@ -200,7 +200,7 @@ namespace VixenModules.Effect.CustomValue
 					{
 						g.FillRectangle(backgroundBrush, clipRectangle);
 					}
-					g.DrawString(displayValue, adjustedFont, stringBrush, 4, 4);
+					g.DrawString(displayValue, adjustedFont, stringBrush, clipRectangle.X + 4, 4);
 				}
 
 			}

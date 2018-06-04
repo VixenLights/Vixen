@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using Vixen.Attributes;
 using Vixen.Intent;
+using Vixen.Marks;
 using Vixen.Module.Effect;
 using Vixen.Sys;
-using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Effect
@@ -103,5 +103,140 @@ namespace VixenModules.Effect.Effect
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
 
+		#region IMark helpers
+
+		/// <summary>
+		/// Returns true if any marks in the list have a start time inclusive of the effect time. 
+		/// </summary>
+		/// <param name="marks"></param>
+		/// <returns></returns>
+		protected bool IsAnyMarksInclusiveOfEffectTimespan(IEnumerable<IMark> marks)
+		{
+			bool result = false;
+			foreach (var mark in marks)
+			{
+				if (mark.StartTime >= StartTime && mark.StartTime <= StartTime + TimeSpan)
+				{
+					result = true;
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		#endregion
+
+		#region IMark change event handlers 
+
+		/// <summary>
+		/// Initialize the listeners on a specific collection
+		/// </summary>
+		/// <param name="markCollection"></param>
+		protected void InitializeMarkCollectionListeners(IMarkCollection markCollection)
+		{
+			if (markCollection != null)
+			{
+				//Ensure we don't have any already attached listeners.
+				RemoveMarkListeners(markCollection.Marks);
+				AddMarkCollectionListeners(markCollection);
+			}
+		}
+
+		private void ReloadMarkListeners(IMarkCollection collection)
+		{
+			var marks = collection?.Marks;
+			if (marks != null)
+			{
+				RemoveMarkListeners(marks);
+				AddMarkListeners(marks);
+			}
+		}
+
+		private void RemoveMarkListeners(IEnumerable<IMark> marks)
+		{
+			if (marks == null) return;
+			foreach (var mark in marks)
+			{
+				mark.PropertyChanged -= Mark_PropertyChanged;
+			}
+		}
+
+		private void AddMarkListeners(IEnumerable<IMark> marks)
+		{
+			if (marks == null) return;
+			foreach (var mark in marks)
+			{
+				mark.PropertyChanged += Mark_PropertyChanged;
+			}
+		}
+
+		protected void AddMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged += MarkCollectionPropertyChanged;
+			AddMarkListeners(mc.Marks);
+		}
+
+		protected void RemoveMarkCollectionListeners(IMarkCollection mc)
+		{
+			if (mc == null) return;
+			((INotifyCollectionChanged)mc.Marks).CollectionChanged -= MarkCollectionPropertyChanged;
+			RemoveMarkListeners(mc.Marks);
+		}
+
+		/// <summary>
+		/// Gets called when a mark property changes. The default implementation looks for changes in marks that have a start time
+		/// inclusive of the effect timespan and have a change in time or text.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected virtual void Mark_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "StartTime" || e.PropertyName == "EndTime" || e.PropertyName == "Text")
+			{
+				if (!IsDirty)
+				{
+					var mark = sender as IMark;
+					IsDirty = IsAnyMarksInclusiveOfEffectTimespan(new[] { mark });
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets called when something changes in the overall collection being monitored. The default implementation adds/removes 
+		/// mark listeners when marks are added or removed from the collection.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected virtual void MarkCollectionPropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//We are just going to deal with adds and removes here. The individual event handlers will deal with moves.
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				var marks = e.NewItems.Cast<IMark>();
+				AddMarkListeners(marks);
+				if (!IsDirty)
+				{
+					IsDirty = IsAnyMarksInclusiveOfEffectTimespan(marks);
+				}
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Remove)
+			{
+				var marks = e.OldItems.Cast<IMark>();
+				RemoveMarkListeners(marks);
+				if (!IsDirty)
+				{
+					IsDirty = IsAnyMarksInclusiveOfEffectTimespan(marks);
+				}
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Reset)
+			{
+				ReloadMarkListeners(sender as IMarkCollection);
+				IsDirty = true;
+			}
+		}
+
+		#endregion
 	}
 }

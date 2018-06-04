@@ -32,10 +32,16 @@ namespace VixenModules.Effect.LipSync
 		public StringOrientation Orientation { get; set; }
 
 		[DataMember]
+		public LipSyncMode LipSyncMode { get; set; }
+
+		[DataMember]
 		public bool ScaleToGrid { get; set; }
 
 		[DataMember]
 		public int ScalePercent { get; set; }
+
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
 
 		[DataMember]
 		public int Level { get; set; }
@@ -43,11 +49,14 @@ namespace VixenModules.Effect.LipSync
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LipSyncData result = new LipSyncData();
+			result.LyricData = LyricData;
 			result.StaticPhoneme = StaticPhoneme;
 			result.PhonemeMapping = PhonemeMapping;
 			result.ScaleToGrid = ScaleToGrid;
 			result.Orientation = Orientation;
 			result.Level = Level;
+			result.MarkCollectionId = MarkCollectionId;
+			result.LipSyncMode = LipSyncMode;
 			return result;
 		}
 	}

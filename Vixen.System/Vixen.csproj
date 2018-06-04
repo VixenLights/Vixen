@@ -208,6 +208,7 @@
     <Compile Include="Export\Vir2Writer.cs" />
     <Compile Include="Export\HelixWriter.cs" />
     <Compile Include="Export\Vix2Writer.cs" />
+    <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Factory\CommandOutputFactory.cs" />
     <Compile Include="Factory\ControllerFactory.cs" />
@@ -303,6 +304,9 @@
     <Compile Include="IO\Xml\XElementFileReader.cs" />
     <Compile Include="IO\Xml\XElementFileWriter.cs" />
     <Compile Include="IO\Xml\XmlRootAttributeVersion.cs" />
+    <Compile Include="Marks\IMark.cs" />
+    <Compile Include="Marks\IMarkCollection.cs" />
+    <Compile Include="Marks\IMarkDecorator.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleDescriptorBase.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleImplementation.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleInstanceBase.cs" />
@@ -352,6 +356,7 @@
     <Compile Include="Sys\ElementIntentStates.cs" />
     <Compile Include="Sys\IDataPolicyFactory.cs" />
     <Compile Include="Sys\IHasLayers.cs" />
+    <Compile Include="Sys\IHasMarks.cs" />
     <Compile Include="Sys\IStateCombinator.cs" />
     <Compile Include="Sys\LayerMixing\Layer.cs" />
     <Compile Include="Sys\LayerMixing\DefaultLayer.cs" />
@@ -878,6 +883,7 @@
     <Compile Include="Sys\WindowsMultimedia.cs" />
     <Compile Include="Sys\XmlHelper.cs" />
     <Compile Include="TypeConverters\BooleanStringTypeConverter.cs" />
+    <Compile Include="TypeConverters\IMarkCollectionNameConverter.cs" />
     <Compile Include="TypeConverters\TargetElementDepthConverter.cs" />
     <Compile Include="Utility\cEventHelper.cs" />
     <Compile Include="Utility\MiniStackTrace.cs" />

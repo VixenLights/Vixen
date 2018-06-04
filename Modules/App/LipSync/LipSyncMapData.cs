@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Linq;
 using System.Text;
@@ -163,7 +164,12 @@ namespace VixenModules.App.LipSyncApp
 
 		public string PictureFileName(PhonemeType phoneme)
 		{
-			return PictureDirectory + phoneme.ToString() + ".bmp";
+			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
+		}
+
+		public string PictureFileName(string phoneme)
+		{
+			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
 		}
 
 		public string LibraryReferenceName
@@ -183,6 +189,32 @@ namespace VixenModules.App.LipSyncApp
 			return MapItems.Find(x => x.Name.Equals(itemName));
 		}
 
+		public Tuple<double, Color> ConfiguredColorAndIntensity(string itemName, string phoneme, LipSyncMapItem item)
+		{
+			double intensityRetVal = 0;
+			Color colorRetVal = Color.Black;
+
+			if (item == null)
+			{
+				item = FindMapItem(itemName);
+			}
+
+			if (item != null)
+			{
+				if (!IsMatrix)
+				{
+					if (item.PhonemeList[phoneme] == true)
+					{
+						HSV hsvVal = HSV.FromRGB(item.ElementColor);
+						hsvVal.V = 1;
+						colorRetVal = hsvVal.ToRGB().ToArgb();
+						intensityRetVal = HSV.VFromRgb(item.ElementColor);
+					}
+				}
+			}
+			return new Tuple<double, Color>(intensityRetVal, colorRetVal);
+		}
+
 		public double ConfiguredIntensity(string itemName, PhonemeType phoneme, LipSyncMapItem item = null)
 		{
 			double retVal = 0;
@@ -199,8 +231,7 @@ namespace VixenModules.App.LipSyncApp
 				{
 					if (item.PhonemeList[phoneme.ToString()] == true)
 					{
-						HSV hsvVal = HSV.FromRGB(new RGB(item.ElementColor));
-						retVal = hsvVal.V;
+						retVal = HSV.VFromRgb(item.ElementColor);
 					}
 				}
 			}
@@ -208,28 +239,33 @@ namespace VixenModules.App.LipSyncApp
 
 		}
 
-		public Color ConfiguredColor(string itemName, PhonemeType phoneme, LipSyncMapItem item = null)
+		public Color ConfiguredColor(string itemName, string phoneme, LipSyncMapItem item = null)
 		{
 			Color retVal = Color.Black;
-			
+
 			if (item == null)
 			{
 				item = FindMapItem(itemName);
 			}
-			
+
 			if (item != null)
 			{
-				if (!this.IsMatrix) 
+				if (!this.IsMatrix)
 				{
 					if (item.PhonemeList[phoneme.ToString()] == true)
 					{
-						HSV hsvVal = HSV.FromRGB(new RGB(item.ElementColor));
+						HSV hsvVal = HSV.FromRGB(item.ElementColor);
 						hsvVal.V = 1;
 						retVal = hsvVal.ToRGB().ToArgb();
 					}
 				}
 			}
 			return retVal;
+		}
+
+		public Color ConfiguredColor(string itemName, PhonemeType phoneme, LipSyncMapItem item = null)
+		{
+			return ConfiguredColor(itemName, phoneme.ToString(), item);
 		}
 
 		public bool PhonemeState(string itemName, string phonemeName, LipSyncMapItem item = null)

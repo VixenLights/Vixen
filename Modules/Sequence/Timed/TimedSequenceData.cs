@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using Vixen.Marks;
 using Vixen.Module;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Sequence.Timed
 {
 	[DataContract]
+	[KnownType(typeof(App.Marks.MarkCollection))]
 	public class TimedSequenceData : BaseSequence.SequenceData
 	{
 		[DataMember(EmitDefaultValue = false)]
 		public List<MarkCollection> MarkCollections { get; set; }
 
 		[DataMember]
-		public ObservableCollection<App.Marks.MarkCollection> LabeledMarkCollections { get; set; }
+		public ObservableCollection<IMarkCollection> LabeledMarkCollections { get; set; }
 
 		[DataMember]
 		public TimeSpan TimePerPixel { get; set; }
@@ -41,8 +43,8 @@ namespace VixenModules.Sequence.Timed
 
 		public TimedSequenceData()
 		{
-			MarkCollections = new List<MarkCollection>();
-			LabeledMarkCollections = new ObservableCollection<App.Marks.MarkCollection>();
+			MarkCollections = default(List<MarkCollection>);
+			LabeledMarkCollections = new ObservableCollection<IMarkCollection>();
 			TimePerPixel = TimeSpan.MinValue;
 			DefaultRowHeight = 0;
 			RowSettings = new RowSettings();
@@ -55,7 +57,7 @@ namespace VixenModules.Sequence.Timed
 		public void ConvertMarksToLabeledMarks()
 		{
 			//Temp method to convert until existing code is refactored and migration can occur
-			LabeledMarkCollections = new ObservableCollection<App.Marks.MarkCollection>();
+			LabeledMarkCollections = new ObservableCollection<IMarkCollection>();
 			foreach (var markCollection in MarkCollections)
 			{
 				var lmc = new App.Marks.MarkCollection();
@@ -108,7 +110,7 @@ namespace VixenModules.Sequence.Timed
 			TimedSequenceData result = new TimedSequenceData();
 			// Cloning each MarkCollection so that the cloned data objects don't share references
 			// and step on each other.
-			result.LabeledMarkCollections = new ObservableCollection<App.Marks.MarkCollection>(LabeledMarkCollections.Select(x => (App.Marks.MarkCollection)x.Clone()));
+			result.LabeledMarkCollections = new ObservableCollection<IMarkCollection>(LabeledMarkCollections.Select(x => (IMarkCollection)x.Clone()));
 			return result;
 		}
 	}

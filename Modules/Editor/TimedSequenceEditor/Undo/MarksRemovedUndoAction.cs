@@ -1,17 +1,17 @@
 using System.Collections.Generic;
-using VixenModules.App.Marks;
+using Vixen.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Undo
 {
 	public class MarksRemovedUndoAction : MarksAddedRemovedUndoAction
 	{
-		public MarksRemovedUndoAction(TimedSequenceEditorForm form, Dictionary<Mark, MarkCollection> markCollections)
+		public MarksRemovedUndoAction(TimedSequenceEditorForm form, Dictionary<IMark, IMarkCollection> markCollections)
 			: base(form, markCollections)
 		{
 		}
 
-		public MarksRemovedUndoAction(TimedSequenceEditorForm form, Mark mark, MarkCollection mc)
-			: base(form, new Dictionary<Mark, MarkCollection>() { { mark, mc } })
+		public MarksRemovedUndoAction(TimedSequenceEditorForm form, IMark mark, IMarkCollection mc)
+			: base(form, new Dictionary<IMark, IMarkCollection>() { { mark, mc } })
 		{
 		}
 		public override void Undo()

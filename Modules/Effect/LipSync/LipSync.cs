@@ -1,39 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Reflection;
 using System.Resources;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Effect.Effect;
-using VixenModules.Effect.Picture;
 using ZedGraph;
 
 namespace VixenModules.Effect.LipSync
 {
 
-	public class LipSync : EffectModuleInstanceBase
+	public class LipSync : BaseEffect
 	{
 		private LipSyncData _data;
 		private EffectIntents _elementData = null;
 		static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
 		private LipSyncMapLibrary _library = null;
+		private IEnumerable<IMark> _marks = null;
 
-		private Picture.Picture _thePic = null;
-
-
+		private FastPictureEffect _thePic;
+		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		
 		public LipSync()
 		{
 			_data = new LipSyncData();
@@ -49,25 +53,20 @@ namespace VixenModules.Effect.LipSync
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
-			var targetNodes = TargetNodes.AsParallel();
-
-			if (cancellationToken != null)
-				targetNodes = targetNodes.WithCancellation(cancellationToken.Token);
-
-			targetNodes.ForAll(node =>
-			{
-				if (node != null)
-					RenderNode(node);
-			});
+			RenderNodes();
 		}
 
 		// renders the given node to the internal ElementData dictionary. If the given node is
 		// not a element, will recursively descend until we render its elements.
-		private void RenderNode(ElementNode node)
+		private void RenderNodes()
 		{
 			EffectIntents result;
 			LipSyncMapData mapData = null;
 			List<ElementNode> renderNodes = TargetNodes.SelectMany(x => x.GetNodeEnumerator()).ToList();
+			if (LipSyncMode == LipSyncMode.MarkCollection)
+			{
+				SetupMarks();
+			}
 
 			if (_data.PhonemeMapping != null) 
 			{
@@ -81,22 +80,32 @@ namespace VixenModules.Effect.LipSync
 				{
 					if (mapData.IsMatrix)
 					{
-						if (((_thePic == null) || IsDirty) && 
-							(File.Exists(mapData.PictureFileName(phoneme))))
+						SetupPictureEffect();
+						if (LipSyncMode == LipSyncMode.MarkCollection)
 						{
-							_thePic = new Picture.Picture();
-							_thePic.Source = PictureSource.File;
-							_thePic.TargetNodes = TargetNodes;
-							_thePic.FileName = mapData.PictureFileName(phoneme);
-							_thePic.Orientation = Orientation;
-							_thePic.ScaleToGrid = ScaleToGrid;
-							_thePic.ScalePercent = ScalePercent;
-							_thePic.TimeSpan = TimeSpan;
-
-							var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
-							_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve}));
-
+							foreach (var mark in _marks)
+							{
+								var file = mapData.PictureFileName(mark.Text.ToUpper());
+								_thePic.Image = LoadImage(file);
+								_thePic.TimeSpan = mark.Duration;
+								_thePic.MarkDirty();
+								result = _thePic.Render();
+								result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+								_elementData.Add(result);
+																//}
+							}
 						}
+						else
+						{
+							var file = mapData.PictureFileName(phoneme);
+							if (File.Exists(file))
+							{
+								_thePic.Image = LoadImage(file);
+								result = _thePic.Render();
+								_elementData.Add(result);
+							}
+						}
+						
 						if (null != _thePic)
 						{
 							result = _thePic.Render();
@@ -110,30 +119,129 @@ namespace VixenModules.Effect.LipSync
 							LipSyncMapItem item = mapData.FindMapItem(element.Name);
 							if (item != null)
 							{
-								var level = new SetLevel.SetLevel();
-								level.TargetNodes = new ElementNode[] { element };
-
-								if (mapData.PhonemeState(element.Name, _data.StaticPhoneme.ToString(), item))
+								if (LipSyncMode == LipSyncMode.MarkCollection && _marks!=null)
 								{
-									level.Color = mapData.ConfiguredColor(element.Name, phoneme, item);
+									foreach (var mark in _marks)
+									{
+										if (mapData.PhonemeState(element.Name, mark.Text.ToUpper(), item))
+										{
+											var colorVal = mapData.ConfiguredColorAndIntensity(element.Name, mark.Text.ToUpper(), item);
+											result = CreateIntentsForPhoneme(element, colorVal.Item1, colorVal.Item2, mark.Duration);
+											result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+											_elementData.Add(result);
+										}
+									}
 								}
 								else
 								{
-									level.Color = Color.FromArgb(255, 0, 0, 0);
+									if (mapData.PhonemeState(element.Name, phoneme.ToString(), item))
+									{
+										var colorVal = mapData.ConfiguredColorAndIntensity(element.Name, phoneme.ToString(), item);
+										result = CreateIntentsForPhoneme(element, colorVal.Item1, colorVal.Item2, TimeSpan);
+										_elementData.Add(result);
+									}
+									
 								}
-
-								level.IntensityLevel = mapData.ConfiguredIntensity(element.Name, phoneme, item);
-								level.TimeSpan = TimeSpan;
-								result = level.Render();
-								_elementData.Add(result);
+								
 							}
 						});
+
+						TearDownPictureEffect();
 					}
 
 				}
 					
 			}
 
+		}
+
+		private Image LoadImage(string filePath)
+		{
+			Image image;
+			if (!_imageCache.TryGetValue(filePath, out image))
+			{
+				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+				{
+					//var ms = new MemoryStream();
+					//fs.CopyTo(ms);
+					//ms.Position = 0;
+					image = Image.FromStream(fs);
+				}
+				_imageCache.Add(filePath, image);
+			}
+
+			return image;
+		}
+
+		private void SetupPictureEffect()
+		{
+			if (_thePic == null)
+			{
+				_thePic = new FastPictureEffect();
+			}
+			//_thePic.Source = PictureSource.File;
+			_thePic.TargetNodes = TargetNodes;
+			_thePic.CacheElementEnumerator();
+			_thePic.StringOrientation = Orientation;
+			_thePic.ScaleToGrid = ScaleToGrid;
+			_thePic.ScalePercent = ScalePercent;
+			//_thePic.TimeSpan = TimeSpan;
+
+			var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
+			_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve }));
+		}
+
+		private void TearDownPictureEffect()
+		{
+			if (_thePic != null)
+			{
+				_thePic.UloadElementCache();
+				_thePic = null;
+			}
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+		}
+
+		#region Overrides of EffectModuleInstanceBase
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (LipSyncMode == LipSyncMode.MarkCollection)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if(mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
+		}
+
+		#endregion
+
+		private EffectIntents CreateIntentsForPhoneme(ElementNode element, double intensity, Color color, TimeSpan duration)
+		{
+			EffectIntents result;
+			var level = new SetLevel.SetLevel();
+			level.TargetNodes = new[] {element};
+			level.Color = color;
+			level.IntensityLevel = intensity;
+			level.TimeSpan = duration;
+			result = level.Render();
+			return result;
 		}
 
 		protected override EffectIntents _Render()
@@ -162,6 +270,19 @@ namespace VixenModules.Effect.LipSync
 			TypeDescriptor.Refresh(this);
 		}
 
+		protected void SetLipsyncModeBrowsables()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			{
+				{nameof(StaticPhoneme), LipSyncMode == LipSyncMode.Phoneme},
+				{nameof(LyricData), LipSyncMode == LipSyncMode.Phoneme},
+				{nameof(MarkCollectionId), LipSyncMode == LipSyncMode.MarkCollection}
+			};
+
+			SetBrowsable(propertyStates);
+			TypeDescriptor.Refresh(this);
+		}
+
 		public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
@@ -169,6 +290,7 @@ namespace VixenModules.Effect.LipSync
 			{
 				_data = value as LipSyncData;
 				SetMatrixBrowesables();
+				SetLipsyncModeBrowsables();
 				IsDirty = true;
 			}
 		}
@@ -190,17 +312,26 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
-		[ProviderCategory("Config",2)]
-		[DisplayName(@"Phoneme")]
-		[Description(@"The Phoenme mouth affiliation")]
-		public PhonemeType StaticPhoneme
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Phoneme/Marks")]
+		[Description(@"Use a single Phoneme or Collection of Marks with Phonemes")]
+		[PropertyOrder(1)]
+		public LipSyncMode LipSyncMode
 		{
-			get { return _data.StaticPhoneme; }
+			get
+			{
+				return _data.LipSyncMode;
+
+			}
 			set
 			{
-				_data.StaticPhoneme = value;
-				IsDirty = true;
-				OnPropertyChanged();
+				if (_data.LipSyncMode != value)
+				{
+					_data.LipSyncMode = value;
+					SetLipsyncModeBrowsables();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
 			}
 		}
 
@@ -210,6 +341,7 @@ namespace VixenModules.Effect.LipSync
 		[Description(@"The mapping associated.")]
 		[PropertyEditor("SelectionEditor")]
 		[TypeConverter(typeof(PhonemeMappingConverter))]
+		[PropertyOrder(2)]
 		public String PhonemeMapping
 		{
 			get { return _data.PhonemeMapping;  }
@@ -223,9 +355,39 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
-		[ProviderCategory("Config",2)]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(3)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory("Config", 2)]
 		[DisplayName(@"Lyric")]
-		[Description(@"The lyric verbiage.")]
+		[Description(@"The lyric verbiage this Phoneme is associated with.")]
+		[PropertyOrder(4)]
 		public String LyricData
 		{
 			get { return _data.LyricData; }
@@ -238,10 +400,28 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
+		[ProviderCategory("Config", 2)]
+		[DisplayName(@"Phoneme")]
+		[Description(@"The Phoenme mouth affiliation")]
+		[PropertyOrder(5)]
+		public PhonemeType StaticPhoneme
+		{
+			get { return _data.StaticPhoneme; }
+			set
+			{
+				_data.StaticPhoneme = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		
+
+		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"ScaleToGrid")]
 		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(3)]
+		[PropertyOrder(6)]
 		public bool ScaleToGrid
 		{
 			get { return _data.ScaleToGrid; }
@@ -260,7 +440,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderDescription(@"ScalePercent")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(7)]
 		public int ScalePercent
 		{
 			get { return _data.ScalePercent; }
@@ -272,12 +452,15 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
+		
+
 		[Value]
 		[ProviderCategory(@"Brightness",3)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
+		[PropertyOrder(1)]
 		public int IntensityLevel
 		{
 			get { return _data.Level; }
@@ -315,39 +498,83 @@ namespace VixenModules.Effect.LipSync
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 
-		public override void GenerateVisualRepresentation(System.Drawing.Graphics g, System.Drawing.Rectangle clipRectangle)
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
 		{
 			try
 			{
-				//if (StaticPhoneme == "")
-				//{
-				//	StaticPhoneme = "REST";
-				//}
-
-				string DisplayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
 				Bitmap displayImage = null;
 				Bitmap scaledImage = null;
-				if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
+				
+				if (LipSyncMode == LipSyncMode.MarkCollection)
 				{
-					scaledImage = new Bitmap(displayImage, 
-											Math.Min(clipRectangle.Height,clipRectangle.Width), 
-											clipRectangle.Height);
-					g.DrawImage(scaledImage, clipRectangle.X,clipRectangle.Y);
-				}
-				if ((scaledImage != null) && (scaledImage.Width < clipRectangle.Width))
-				{
-					clipRectangle.X += scaledImage.Width;
-					clipRectangle.Width -= scaledImage.Width;
-					Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Vixen.Fonts.DigitalDream.ttf");
-					using (var StringBrush = new SolidBrush(Color.Yellow))
+					if (_marks.Any())
 					{
-						using (var backgroundBrush = new SolidBrush(Color.Green))
+						bool first = true;
+						int endX = 0;
+						foreach (var mark in _marks)
 						{
-							g.FillRectangle(backgroundBrush, clipRectangle);
+							PhonemeType phoneme;
+
+							if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out phoneme))
+							{
+								if (_phonemeBitmaps.TryGetValue(phoneme, out displayImage))
+								{
+									endX = (int)((mark.EndTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									scaledImage = new Bitmap(displayImage,
+										Math.Min(clipRectangle.Width, endX - startX),
+										clipRectangle.Height);
+									g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
+									if (first && mark.StartTime <= StartTime)
+									{
+										first = false;
+										continue;
+									}
+
+									g.DrawLine(Pens.Black, new Point(clipRectangle.X + startX, 0), new Point(clipRectangle.X + startX, clipRectangle.Height));
+								}
+							}
+
+							first = false;
 						}
-						g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4 + scaledImage.Width, 4);
+
+						if (_marks.Last().EndTime < StartTime + TimeSpan)
+						{
+							//draw a closing line on the image
+							g.DrawLine(Pens.Black, new Point(clipRectangle.X + endX, 0), new Point(clipRectangle.X + endX, clipRectangle.Height));
+						}
 					}
 				}
+				else
+				{
+					var displayValue = string.IsNullOrWhiteSpace(LyricData) ? "-" : LyricData;
+
+					using (var backgroundBrush = new SolidBrush(Color.Green))
+					{
+						g.FillRectangle(backgroundBrush, clipRectangle);
+					}
+
+					if (_phonemeBitmaps.TryGetValue(StaticPhoneme, out displayImage))
+					{
+						scaledImage = new Bitmap(displayImage,
+							Math.Min(clipRectangle.Height, clipRectangle.Width),
+							clipRectangle.Height);
+						g.DrawImage(scaledImage, clipRectangle.X, clipRectangle.Y);
+					}
+
+					if ((scaledImage != null) && (scaledImage.Width < clipRectangle.Width))
+					{
+						var textStart = clipRectangle.X + scaledImage.Width;
+						var textWidth = clipRectangle.Width - scaledImage.Width;
+						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf");
+						using (var stringBrush = new SolidBrush(Color.Yellow))
+						{
+							g.DrawString(displayValue, adjustedFont, stringBrush, 4 + textStart, 4);
+						}
+					}
+				}
+				
+				
 				
 			}
 			catch (Exception e)
@@ -356,9 +583,11 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		public void MakeDirty()
-		{
-			this.IsDirty = true;
-		}
+		#region Overrides of BaseEffect
+
+		/// <inheritdoc />
+		protected override EffectTypeModuleData EffectModuleData => _data;
+
+		#endregion
 	}
 }

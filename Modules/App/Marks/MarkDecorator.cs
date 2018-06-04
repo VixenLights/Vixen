@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.Serialization;
+using Vixen.Marks;
 
 namespace VixenModules.App.Marks
 {
 	[DataContract]
-	public class MarkDecorator:BindableBase, ICloneable
+	public class MarkDecorator:BindableBase, IMarkDecorator
 	{
 		private bool _isBold;
 		private bool _isSolidLine;

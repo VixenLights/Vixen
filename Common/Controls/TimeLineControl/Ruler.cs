@@ -11,6 +11,7 @@ using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.Timeline
@@ -23,9 +24,9 @@ namespace Common.Controls.Timeline
 		private readonly int _arrowBase;
 		private readonly int _arrowLength;
 		private TimeSpan _dragLastTime;
-		private Mark _mouseDownMark;
+		private IMark _mouseDownMark;
 
-		private ObservableCollection<MarkCollection> _markCollections;
+		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly MarksSelectionManager _marksSelectionManager;
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
@@ -743,7 +744,7 @@ namespace Common.Controls.Timeline
 
 		#region Marks
 
-		public ObservableCollection<MarkCollection> MarkCollections
+		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get { return _markCollections; }
 			set
@@ -808,10 +809,10 @@ namespace Common.Controls.Timeline
 		/// </summary>
 		/// <param name="ts"></param>
 		/// <returns></returns>
-		private List<Mark> MarksAt(TimeSpan ts)
+		private List<IMark> MarksAt(TimeSpan ts)
 		{
 			const int markDifferential = 20;
-			var marksAtTime = new List<Mark>();
+			var marksAtTime = new List<IMark>();
 			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible).OrderByDescending(x => x.Level))
 			{
 				//labeledMarkCollection.EnsureOrder();

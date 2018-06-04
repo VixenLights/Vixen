@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Concurrent;
 
 namespace Vixen.Sys
 {
 	public class EffectIntents : Dictionary<Guid, IntentNodeCollection>
 	{
 		public EffectIntents()
+		{
+		}
+
+		public EffectIntents(int size):base(size)
 		{
 		}
 

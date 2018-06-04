@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
@@ -8,12 +9,12 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 	public class MarksSelectionManager
 	{
 		private static MarksSelectionManager _manager;
-		private static List<Mark> _selectedMarks;
+		private static List<IMark> _selectedMarks;
 		public event EventHandler SelectionChanged ;
 
 		private MarksSelectionManager()
 		{
-			_selectedMarks = new List<Mark>();
+			_selectedMarks = new List<IMark>();
 			SelectedMarks = _selectedMarks.AsReadOnly();
 		}
 
@@ -22,7 +23,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			return _manager ?? (_manager = new MarksSelectionManager());
 		}
 
-		public ReadOnlyCollection<Mark> SelectedMarks { get; }
+		public ReadOnlyCollection<IMark> SelectedMarks { get; }
 
 		public void ClearSelected()
 		{
@@ -30,7 +31,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			OnSelectionChanged();
 		}
 
-		public void Select(Mark mark)
+		public void Select(IMark mark)
 		{
 			if (!SelectedMarks.Contains(mark))
 			{
@@ -39,12 +40,12 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			}
 		}
 
-		public bool IsSelected(Mark mark)
+		public bool IsSelected(IMark mark)
 		{
 			return _selectedMarks.Contains(mark);
 		}
 
-		public void DeSelect(Mark mark)
+		public void DeSelect(IMark mark)
 		{
 			_selectedMarks.Remove(mark);
 			OnSelectionChanged();

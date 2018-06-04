@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Vixen.Marks;
 
 namespace VixenModules.App.Marks
 {
-	public class Mark:BindableBase, IComparable<Mark>, ICloneable
+	[DataContract]
+	public class Mark:BindableBase, IMark
 	{
 		private TimeSpan _startTime;
 		private string _text;
@@ -70,9 +72,9 @@ namespace VixenModules.App.Marks
 		public TimeSpan EndTime => StartTime + Duration;
 
 		[IgnoreDataMember]
-		public MarkCollection Parent { get; set; }
+		public IMarkCollection Parent { get; set; }
 
-		public int CompareTo(Mark other)
+		public int CompareTo(IMark other)
 		{
 			int rv = StartTime.CompareTo(other.StartTime);
 			if (rv != 0)

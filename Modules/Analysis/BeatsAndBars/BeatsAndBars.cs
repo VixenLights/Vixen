@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows.Forms;
 using Common.WPFCommon.Utils;
 using QMLibrary;
+using Vixen.Extensions;
+using Vixen.Marks;
 using Vixen.Module.Analysis;
 using VixenModules.App.Marks;
 using VixenModules.Media.Audio;
@@ -297,7 +299,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			return previewData;
 		}
 
-		private void BuildMarkCollections(ICollection<MarkCollection> markCollection, 
+		private void BuildMarkCollections(ICollection<IMarkCollection> markCollection, 
 															BeatBarSettingsData settings)
 		{
 			List<MarkCollection> retVal = new List<MarkCollection>();
@@ -349,7 +351,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			markCollection.AddRange(retVal.OrderBy(x => x.Name));
 		}
 
-		public void DoBeatBarDetection(ICollection<MarkCollection> markCollection)
+		public void DoBeatBarDetection(ICollection<IMarkCollection> markCollection)
 		{
 			if (m_audioModule.Channels != 0)
 			{

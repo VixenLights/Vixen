@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using VixenModules.App.Marks;
+using Vixen.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views
@@ -11,7 +11,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views
 			InitializeComponent();
 		}
 
-		public ObservableCollection<MarkCollection> MarkCollection
+		public ObservableCollection<IMarkCollection> MarkCollection
 		{
 			set
 			{

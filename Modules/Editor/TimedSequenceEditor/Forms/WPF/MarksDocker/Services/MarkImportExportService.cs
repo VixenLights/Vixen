@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Catel.Collections;
 using Common.Controls;
 using NLog;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
@@ -24,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 
 
 		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
-		public static void ImportVixen3Beats(ObservableCollection<MarkCollection> collections)
+		public static void ImportVixen3Beats(ObservableCollection<IMarkCollection> collections)
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".v3m";
@@ -99,7 +100,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		private static void MigrateMarkCollections(ObservableCollection<MarkCollection> collections, List<Sequence.Timed.MarkCollection> oldCollections)
+		private static void MigrateMarkCollections(ObservableCollection<IMarkCollection> collections, List<Sequence.Timed.MarkCollection> oldCollections)
 		{
 			foreach (var markCollection in oldCollections)
 			{
@@ -123,7 +124,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		private static void SetDefaultCollection(ObservableCollection<MarkCollection> collections)
+		private static void SetDefaultCollection(ObservableCollection<IMarkCollection> collections)
 		{
 			//Set one of them active
 			if (!collections.Any()) return;
@@ -138,7 +139,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		public static void LoadBarLabels(ObservableCollection<MarkCollection> collections)
+		public static void LoadBarLabels(ObservableCollection<IMarkCollection> collections)
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".txt";
@@ -194,7 +195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
-		public static void LoadBeatLabels(ObservableCollection<MarkCollection> collections)
+		public static void LoadBeatLabels(ObservableCollection<IMarkCollection> collections)
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".txt";
@@ -262,7 +263,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			return newCollection;
 		}
 
-		public static void LoadXTiming(ObservableCollection<MarkCollection> collections)
+		public static void LoadXTiming(ObservableCollection<IMarkCollection> collections)
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".txt";
@@ -332,7 +333,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++
 		//Other wise its beats, at least from the information I have studied, and we do not iMarkCollection++ to keep the collections together properly.
-		public static void ExportMarkCollections(string exportType, ObservableCollection<MarkCollection> collections)
+		public static void ExportMarkCollections(string exportType, ObservableCollection<IMarkCollection> collections)
 		{
 			var saveFileDialog = new SaveFileDialog();
 			if (exportType == "vixen3")
@@ -348,7 +349,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						IndentChars = "\t"
 					};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<MarkCollection>));
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<IMarkCollection>));
 					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
 					ser.WriteObject(writer, collections);
 					writer.Close();

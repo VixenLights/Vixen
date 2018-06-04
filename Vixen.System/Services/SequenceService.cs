@@ -62,9 +62,15 @@ namespace Vixen.Services
 
 			ISequence sequence = FileService.Instance.LoadSequenceFile(filePath);
 
-			Parallel.ForEach(sequence.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => AddMedia(effectNode, sequence));
+			Parallel.ForEach(sequence.SequenceData.EffectData.Cast<IEffectNode>(), effectNode => AddMediaAndMarks(effectNode, sequence));
 			
 			return sequence;
+		}
+
+		private void AddMediaAndMarks(IEffectNode effectNode, ISequence sequence)
+		{
+			AddMedia(effectNode, sequence);
+			AddMarks(effectNode, sequence);
 		}
 
 		private void AddMedia(IEffectNode effectNode, ISequence sequence)
@@ -72,6 +78,15 @@ namespace Vixen.Services
 			if (effectNode.Effect.SupportsMedia)
 			{
 				effectNode.Effect.Media = sequence.SequenceData.Media;
+
+			}
+		}
+
+		private void AddMarks(IEffectNode effectNode, ISequence sequence)
+		{
+			if (effectNode.Effect.SupportsMarks)
+			{
+				effectNode.Effect.MarkCollections = sequence.LabeledMarkCollections;
 
 			}
 		}
