@@ -329,6 +329,89 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			}
 		}
 
+		public static void ImportPapagayoTracks(ICollection<IMarkCollection> markCollection)
+		{
+			FileDialog openDialog = new OpenFileDialog();
+			openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
+			openDialog.FilterIndex = 1;
+			if (openDialog.ShowDialog() != DialogResult.OK)
+			{
+				return;
+			}
+			PapagayoDoc papagayoFile = new PapagayoDoc();
+			string fileName = openDialog.FileName;
+			papagayoFile.Load(fileName);
+			var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+			int rownum = 0;
+			foreach (string voice in papagayoFile.VoiceList)
+			{
+				var phraseCollection = new MarkCollection();
+				phraseCollection.Name = $"{fileWithoutExtension} {voice} Phrases";
+				phraseCollection.ShowMarkBar = true;
+				phraseCollection.Decorator.Color = Color.FromArgb(205,242,162);
+				var wordCollection = new MarkCollection();
+				wordCollection.Name = $"{fileWithoutExtension} {voice} Words";
+				wordCollection.ShowMarkBar = true;
+				wordCollection.Decorator.Color = Color.FromArgb(242,205,162);
+				var phonemeCollection = new MarkCollection();
+				phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes";
+				phonemeCollection.ShowMarkBar = true;
+				phonemeCollection.Decorator.Color = Color.FromArgb(235,185,210);
+				var phrases = papagayoFile.PhraseList(voice);
+				foreach (var phrase in phrases)
+				{
+					var mark = new Mark(TimeSpan.FromMilliseconds(phrase.StartMS));
+					mark.Duration = TimeSpan.FromMilliseconds(phrase.DurationMS);
+					mark.Text = phrase.Text;
+					phraseCollection.AddMark(mark);
+					foreach (var word in phrase.Words)
+					{
+						mark = new Mark(TimeSpan.FromMilliseconds(word.StartMS));
+						mark.Duration = TimeSpan.FromMilliseconds(word.EndMS) - mark.StartTime;
+						mark.Text = word.Text;
+						wordCollection.AddMark(mark);
+						foreach (var phoneme in word.Phonemes)
+						{
+							mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
+							mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
+							mark.Text = phoneme.TypeName;
+							phonemeCollection.AddMark(mark);
+						}
+					}
+				}
+				markCollection.Add(phraseCollection);
+				markCollection.Add(wordCollection);
+				markCollection.Add(phonemeCollection);
+
+
+				phonemeCollection = new MarkCollection();
+				phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes Coalesced";
+				phonemeCollection.ShowMarkBar = true;
+				phonemeCollection.Decorator.Color = Color.FromArgb(245, 75, 210); ;
+				foreach (var phoneme in papagayoFile.PhonemeList(voice))
+				{
+					var mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
+					mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
+					mark.Text = phoneme.TypeName;
+					phonemeCollection.AddMark(mark);
+				}
+				markCollection.Add(phonemeCollection);
+				rownum++;
+			}
+
+			string displayStr = rownum + " Voices imported to clipboard as Mark Collctions\n\n";
+			int j = 1;
+			foreach (string voiceStr in papagayoFile.VoiceList)
+			{
+				displayStr += "Row #" + j + " - " + voiceStr + "\n";
+				j++;
+			}
+			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+			MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
+			var messageBox = new MessageBoxForm(displayStr, @"Papagayo Import", false, false);
+			messageBox.ShowDialog();
+		}
+
 
 		//Beat Mark Collection Export routine 2-7-2014 JMB
 		//In the audacity section, if the MarkCollections.Count = 1 then we assume the collection is bars and iMarkCollection++

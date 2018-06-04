@@ -127,6 +127,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 					MarkImportExportService.LoadBeatLabels(MarkCollections);
 				if (aDialog.IsXTimingSelection)
 					MarkImportExportService.LoadXTiming(MarkCollections);
+				if (aDialog.IsPapagayoSelection)
+					MarkImportExportService.ImportPapagayoTracks(MarkCollections);
 			}
 		}
 
