@@ -20,7 +20,7 @@ namespace VixenModules.App.LipSyncApp
 		private static Dictionary<string, Bitmap> _phonemeBitmaps = null;
 		private List<string> _rowNames = null;
 		private static string COLOR_COLUMN_NAME = "Color";
-		private bool _doMatrixUpdate = false;
+		//private bool _doMatrixUpdate = false;
 
 		public LipSyncMapEditor()
 		{
@@ -43,10 +43,10 @@ namespace VixenModules.App.LipSyncApp
 			dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
 			dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
 			Icon = Resources.Icon_Vixen3;
-			_doMatrixUpdate = false;
+			//_doMatrixUpdate = false;
 			LoadResourceBitmaps();
 			this.MapData = mapData;
-			_doMatrixUpdate = true;
+			//_doMatrixUpdate = true;
 		}
 
 		public string LibraryMappingName
@@ -68,12 +68,11 @@ namespace VixenModules.App.LipSyncApp
 
 			foreach (string key in _phonemeBitmaps.Keys)
 			{
-				dt.Columns.Add(key, typeof(System.Boolean));
+				dt.Columns.Add(key, typeof(Boolean));
 			}
 
 			dt.Columns.Add(COLOR_COLUMN_NAME, typeof(Color));
-			
-			bool result = false;
+
 			foreach (LipSyncMapItem lsbItem in data.MapItems)
 			{
 				DataRow dr = dt.Rows.Add();
@@ -86,7 +85,8 @@ namespace VixenModules.App.LipSyncApp
 
 				foreach (string key in _phonemeBitmaps.Keys)
 				{
-					if (lsbItem.PhonemeList.TryGetValue(key, out result) == true)
+					bool result;
+					if (lsbItem.PhonemeList.TryGetValue(key, out result))
 					{
 						dr[key] = result;
 					}
@@ -120,7 +120,7 @@ namespace VixenModules.App.LipSyncApp
 			return theNode;
 		}
 
-		private void BuilMapDataFromDialog()
+		private void BuildMapDataFromDialog()
 		{
 			int currentRow = 0;
 
@@ -143,8 +143,7 @@ namespace VixenModules.App.LipSyncApp
 
 				for (int theCount = 1; theCount < dr.ItemArray.Count() - 1; theCount++) 
 				{
-					bool checkVal =
-						(dr[theCount].GetType() == typeof(Boolean)) ? (Boolean)dr[theCount] : false;
+					bool checkVal = dr[theCount] is bool && (Boolean)dr[theCount];
 					item.PhonemeList.Add(
 						dr.Table.Columns[theCount].ColumnName, checkVal
 						);
@@ -164,7 +163,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			get
 			{
-				BuilMapDataFromDialog();
+				BuildMapDataFromDialog();
 				return _mapping;
 			}
 
@@ -196,15 +195,9 @@ namespace VixenModules.App.LipSyncApp
 				catch (Exception e) { };
 				
 				currentDataTable = BuildDialogFromMap(value);
-				updatedataGridView1();
+				UpdatedataGridView();
 			}
 		}
-
-		public string HelperName
-		{
-			get { return "Phoneme Mapping"; }
-		}
-
 
 		private void LoadResourceBitmaps()
 		{
@@ -231,44 +224,37 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMapSetup_Load(object sender, EventArgs e)
 		{
-			updatedataGridView1();
+			UpdatedataGridView();
 			this.ForeColor = ThemeColorTable.ForeColor;
 			this.BackColor = ThemeColorTable.BackgroundColor;
-			dataGridView1.ForeColor = ThemeColorTable.ForeColor;
-			dataGridView1.BackgroundColor = ThemeColorTable.BackgroundColor;
-			nameTextBox.ForeColor = ThemeColorTable.ForeColor;
-			nameTextBox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-			buttonAssign.ForeColor = ThemeColorTable.ButtonTextColor;
-			buttonAssign.BackColor = ThemeColorTable.BackgroundColor;
-			notesLabel.ForeColor = ThemeColorTable.ForeColor;
-			notesLabel.BackColor = ThemeColorTable.BackgroundColor;
-			notesTextBox.ForeColor = ThemeColorTable.ForeColor;
-			notesTextBox.BackColor = ThemeColorTable.TextBoxBackgroundColor;
-			buttonOK.ForeColor = ThemeColorTable.ButtonTextColor;
-			buttonOK.BackColor = ThemeColorTable.ButtonBackColor;
-			buttonCancel.ForeColor = ThemeColorTable.ButtonTextColor;
-			buttonCancel.BackColor = ThemeColorTable.ButtonBackColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
-		private void updatedataGridView1()
+		private void UpdatedataGridView()
 		{
 			dataGridView1.DefaultCellStyle.ForeColor = ThemeColorTable.ForeColor;
 			dataGridView1.DefaultCellStyle.BackColor = ThemeColorTable.BackgroundColor;
 			dataGridView1.ForeColor = ThemeColorTable.ForeColor;
 			dataGridView1.BackgroundColor = ThemeColorTable.BackgroundColor;
 			dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-			dataGridView1.ColumnHeadersHeight = 100;
-			dataGridView1.MultiSelect = true;
+			dataGridView1.ColumnHeadersHeight = 75;
+			dataGridView1.MultiSelect = false;
+			dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.None;
+			dataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+			dataGridView1.SelectionMode = DataGridViewSelectionMode.CellSelect;
 			dataGridView1.EditMode = DataGridViewEditMode.EditOnEnter;
 			dataGridView1.AllowUserToAddRows = false;
-			dataGridView1.RowHeadersVisible = true;
+			dataGridView1.RowHeadersVisible = false;
 			dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 			dataGridView1.DataSource = currentDataTable;
+
 			//dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 			for (int j = 1; j < dataGridView1.Columns.Count - 1; j++)
 			{
-				dataGridView1.Columns[j].Width = 60;
+				dataGridView1.Columns[j].Width = 50;
 			}
+
+			dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 			dataGridView1.Columns[dataGridView1.Columns.Count - 1].Width = 90;
 			dataGridView1.Columns[COLOR_COLUMN_NAME].SortMode = DataGridViewColumnSortMode.NotSortable;
 
@@ -276,35 +262,33 @@ namespace VixenModules.App.LipSyncApp
 
 		private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
 		{
-			string phonemeStr;
-			Bitmap phonemeBitmap;
-
 			e.PaintBackground(e.CellBounds, true);
 			if (e.RowIndex == -1)
 			{
-				using (SolidBrush paintBrush = new SolidBrush(ThemeColorTable.TextBoxBackgroundColor))
+
+				using (SolidBrush paintBrush = new SolidBrush(e.ColumnIndex !=0?ThemeColorTable.TextBoxBackgroundColor:ThemeColorTable.BackgroundColor))
 				{
 					e.Graphics.FillRectangle(paintBrush, e.CellBounds);
-					e.Graphics.DrawRectangle(new Pen(ThemeColorTable.ForeColor, 1),
-												e.CellBounds.X,
-												e.CellBounds.Y,
-												e.CellBounds.Width,
-												e.CellBounds.Height-1);
+					//e.Graphics.DrawRectangle(new Pen(ThemeColorTable.ForeColor, 1),
+					//							e.CellBounds.X,
+					//							e.CellBounds.Y,
+					//							e.CellBounds.Width,
+					//							e.CellBounds.Height-1);
 				}
 
-				e.Graphics.TranslateTransform(e.CellBounds.Left, e.CellBounds.Bottom);
-				e.Graphics.RotateTransform(270);
-				phonemeStr = (e.ColumnIndex == -1) ? "" : e.FormattedValue.ToString();
+				e.Graphics.TranslateTransform(e.CellBounds.Left, e.CellBounds.Top);
+				var phonemeStr = (e.ColumnIndex == -1) ? "" : e.FormattedValue.ToString();
 
+				var stringSize = e.Graphics.MeasureString(phonemeStr, e.CellStyle.Font);
+				var stringLocation = (e.CellBounds.Width - stringSize.Width) / 2;
+
+				Bitmap phonemeBitmap;
 				if (_phonemeBitmaps.TryGetValue(phonemeStr, out phonemeBitmap))
 				{
-					e.Graphics.DrawImage(new Bitmap(_phonemeBitmaps[phonemeStr], 48, 48), 5, 5);
-					e.Graphics.DrawString(phonemeStr, e.CellStyle.Font, new SolidBrush(ThemeColorTable.ForeColor), 55, 5);
+					e.Graphics.DrawImage(new Bitmap(_phonemeBitmaps[phonemeStr], 48, 48), (e.CellBounds.Width - 48) / 2, 1);
 				}
-				else
-				{
-					e.Graphics.DrawString(phonemeStr, e.CellStyle.Font, new SolidBrush(ThemeColorTable.ForeColor), 5, 5);
-				}
+				
+				e.Graphics.DrawString(phonemeStr, e.CellStyle.Font, new SolidBrush(ThemeColorTable.ForeColor), stringLocation, e.CellBounds.Bottom - stringSize.Height - 5);
 
 				e.Graphics.ResetTransform();
 				e.Handled = true;
@@ -343,37 +327,24 @@ namespace VixenModules.App.LipSyncApp
 
 		}
 
-		private void buttonOK_Click(object sender, EventArgs e)
-		{
-
-		}
-
 
 		private void LipSyncBreakdownSetup_Resize(object sender, EventArgs e)
 		{
 			dataGridView1.Size = new Size(this.Size.Width - 40, this.Size.Height - 150);
 		}
 
-		private void reconfigureDataTable()
+		private void ReconfigureDataTable()
 		{
-			if (_doMatrixUpdate == true)
-			{
-				currentDataTable.Rows.Clear();
-				currentDataTable = BuildDialogFromMap(_mapping);
-				updatedataGridView1();
-			}
-		}
-
-		private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
-		{
-
+			currentDataTable.Rows.Clear();
+			currentDataTable = BuildDialogFromMap(_mapping);
+			UpdatedataGridView();
 		}
 
 		private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
 		{
 			if ((e.RowIndex > -1) && (e.ColumnIndex > 0))
 			{
-				BuilMapDataFromDialog();
+				BuildMapDataFromDialog();
 			}
 		}
 
@@ -458,6 +429,11 @@ namespace VixenModules.App.LipSyncApp
 			}
 		}
 
+		private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+		{
+			dataGridView1.ClearSelection();
+		}
+
 		private void buttonAssign_Click(object sender, EventArgs e)
 		{
 			LipSyncNodeSelect nodeSelectDlg = new LipSyncNodeSelect();
@@ -508,7 +484,7 @@ namespace VixenModules.App.LipSyncApp
 					_mapping.MapItems.Add(mapItem);
 				}
 
-				reconfigureDataTable();
+				ReconfigureDataTable();
 			}
 			Refresh();
 		}
@@ -524,5 +500,7 @@ namespace VixenModules.App.LipSyncApp
 			var btn = (Button)sender;
 			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
+
+		
 	}
 }

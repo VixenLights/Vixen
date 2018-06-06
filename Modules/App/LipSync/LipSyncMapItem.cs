@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Windows.Forms;
-using Common.Controls.ColorManagement.ColorModels;
-using Vixen.Module;
-using Vixen.Module.App;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -17,7 +11,6 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncMapItem()
 		{
 			PhonemeList = new Dictionary<string, Boolean>();
-			ElementColors = new Dictionary<PhonemeType, Color>();
 		}
 
 		public LipSyncMapItem(string name, int stringNum)
@@ -27,7 +20,6 @@ namespace VixenModules.App.LipSyncApp
 			StringNum = stringNum;
 			ElementColor = Color.White;
 			ElementGuid = new Guid();
-			ElementColors = new Dictionary<PhonemeType, Color>();
 		}
 
 		public LipSyncMapItem Clone()
@@ -38,7 +30,6 @@ namespace VixenModules.App.LipSyncApp
 			retVal.StringNum = StringNum;
 			retVal.ElementColor = ElementColor;
 			retVal.ElementGuid = ElementGuid;
-			retVal.ElementColors = new Dictionary<PhonemeType, Color>(ElementColors);
 
 			return retVal;
 		}
@@ -51,9 +42,6 @@ namespace VixenModules.App.LipSyncApp
 
 		[DataMember]
 		public Color ElementColor { get; set; }
-
-		[DataMember]
-		public Dictionary<PhonemeType, Color> ElementColors { get; set; }
 
 		[DataMember]
 		private string _stringName;
