@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
 
@@ -16,6 +15,9 @@ namespace VixenModules.Effect.LipSync
 		public String PhonemeMapping { get; set; }
 
 		[DataMember]
+		public MappingType MappingType { get; set; }
+
+		[DataMember]
 		public String LyricData { get; set; }
 
 		public LipSyncData()
@@ -23,6 +25,7 @@ namespace VixenModules.Effect.LipSync
 			LyricData = string.Empty;
 			StaticPhoneme = PhonemeType.REST;
 			PhonemeMapping = string.Empty;
+			MappingType = MappingType.FaceDefinition;
 			ScaleToGrid = true;
 			ScalePercent = 100;
 			Level = 100;

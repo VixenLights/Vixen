@@ -63,6 +63,27 @@ namespace VixenModules.Effect.Effect
 			return ColorModule.isElementNodeDiscreteColored(elementNode);
 		}
 
+		protected EffectIntents CreateIntentsForElement(ElementNode element, double intensity, Color color, TimeSpan duration)
+		{
+			EffectIntents effectIntents = new EffectIntents();
+			foreach (ElementNode elementNode in element.GetLeafEnumerator())
+			{
+				if (HasDiscreteColors && IsElementDiscrete(elementNode))
+				{
+					IEnumerable<Color> colors = ColorModule.getValidColorsForElementNode(elementNode, false);
+					if (!colors.Contains(color))
+					{
+						continue;
+					}
+				}
+
+				IIntent intent = CreateIntent(elementNode, color, intensity, duration);
+				effectIntents.AddIntentForElement(elementNode.Element.Id, intent, TimeSpan.Zero);
+			}
+
+			return effectIntents;
+		}
+
 		protected IIntent CreateIntent(ElementNode node, Color color, double intensity, TimeSpan duration)
 		{
 			if (HasDiscreteColors && IsElementDiscrete(node))

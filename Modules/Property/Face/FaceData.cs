@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Module;
@@ -9,17 +10,28 @@ namespace VixenModules.Property.Face
 	[DataContract]
 	public class FaceData : ModuleDataModelBase
 	{
+		public FaceData()
+		{
+			PhonemeList = new Dictionary<string, Boolean>();
+			FaceComponents = new Dictionary<FaceComponent, bool>();
+			DefaultColor = Color.White;
+		}
+
 		public override IModuleDataModel Clone() {
 			var data = new FaceData();
-			data.Phonemes = new HashSet<PhonemeType>(Phonemes);
+			data.PhonemeList = new Dictionary<string, Boolean>(PhonemeList);
+			data.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
+			data.DefaultColor = DefaultColor;
 			return data;
 		}
 
 		[DataMember]
-		public HashSet<PhonemeType> Phonemes { get; set; }
+		public Dictionary<string, Boolean> PhonemeList { get; set; }
 
-		public FaceComponent FaceComponent { get; set; }
+		[DataMember]
+		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
 
+		[DataMember]
 		public Color DefaultColor { get; set; }
 	}
 }

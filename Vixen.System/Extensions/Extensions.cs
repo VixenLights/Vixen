@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -46,5 +47,22 @@ namespace Vixen.Extensions
 
 	        return imageSource;
 	    }
-    }
+
+		public static string GetEnumDescription(this Enum value)
+		{
+			FieldInfo fi = value.GetType().GetField(value.ToString());
+
+			DescriptionAttribute[] attributes =
+				(DescriptionAttribute[])fi.GetCustomAttributes(
+					typeof(DescriptionAttribute),
+					false);
+
+			if (attributes.Length > 0)
+			{
+				return attributes[0].Description;
+			}
+
+			return value.ToString();
+		}
+	}
 }

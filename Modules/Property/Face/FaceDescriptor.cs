@@ -6,7 +6,7 @@ namespace VixenModules.Property.Face {
 	{
 		public static Guid Id = new Guid("{EDA73851-8350-4D3F-9DF2-0D3B34E70BB6}");
 
-		public override string TypeName => "Phoneme";
+		public override string TypeName => "Face";
 
 		public override Guid TypeId => Id;
 

@@ -10,32 +10,32 @@ namespace VixenModules.Property.Face
 	{
 		public FaceMapItem()
 		{
-			PhonemeList = PhonemeList = new Dictionary<PhonemeType, Boolean>();
+			PhonemeList = PhonemeList = new Dictionary<string, Boolean>();
 		}
 
 		public FaceMapItem(ElementNode node)
 		{
-			PhonemeList = PhonemeList = new Dictionary<PhonemeType, Boolean>();
+			PhonemeList = PhonemeList = new Dictionary<String, Boolean>();
 			Node = node;
-			ElementColor = Color.White;
+			DefaultColor = Color.White;
 		}
 
 		public FaceMapItem Clone()
 		{
 			FaceMapItem retVal = new FaceMapItem();
 			retVal.Node = Node;
-			retVal.PhonemeList = PhonemeList = new Dictionary<PhonemeType, Boolean>();
-			retVal.ElementColor = ElementColor;
-			retVal.FaceComponent = FaceComponent;
+			retVal.PhonemeList = PhonemeList = new Dictionary<String, Boolean>();
+			retVal.DefaultColor = DefaultColor;
+			retVal.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
 			return retVal;
 		}
 
 
-		public Dictionary<PhonemeType, Boolean> PhonemeList{ get; set; }
+		public Dictionary<string, Boolean> PhonemeList{ get; set; }
 
-		public FaceComponent FaceComponent { get; set; }
+		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
 
-		public Color ElementColor { get; set; }
+		public Color DefaultColor { get; set; }
 
 		public Guid ElementGuid => Node.Id;
 

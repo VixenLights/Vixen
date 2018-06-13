@@ -30,7 +30,6 @@
         {
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.nameTextBox = new System.Windows.Forms.TextBox();
@@ -38,8 +37,17 @@
 			this.notesLabel = new System.Windows.Forms.Label();
 			this.notesTextBox = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			this.tabControl = new Dotnetrix.Controls.TabControlEX();
+			this.tabMouth = new Dotnetrix.Controls.TabPageEX();
+			this.dataGridViewMouth = new System.Windows.Forms.DataGridView();
+			this.tabOther = new Dotnetrix.Controls.TabPageEX();
+			this.dataGridViewOther = new System.Windows.Forms.DataGridView();
 			this.tableLayoutPanel2.SuspendLayout();
+			this.tabControl.SuspendLayout();
+			this.tabMouth.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridViewMouth)).BeginInit();
+			this.tabOther.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridViewOther)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// buttonOK
@@ -54,7 +62,7 @@
 			this.buttonOK.Location = new System.Drawing.Point(695, 406);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(93, 25);
-			this.buttonOK.TabIndex = 16;
+			this.buttonOK.TabIndex = 7;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
@@ -72,27 +80,11 @@
 			this.buttonCancel.Location = new System.Drawing.Point(794, 406);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(93, 25);
-			this.buttonCancel.TabIndex = 15;
+			this.buttonCancel.TabIndex = 8;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.buttonCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
-			// 
-			// dataGridView1
-			// 
-			this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.tableLayoutPanel2.SetColumnSpan(this.dataGridView1, 7);
-			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridView1.Location = new System.Drawing.Point(8, 43);
-			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(879, 317);
-			this.dataGridView1.TabIndex = 18;
-			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
-			this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
-			this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
-			this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
 			// 
 			// label1
 			// 
@@ -101,7 +93,7 @@
 			this.label1.Location = new System.Drawing.Point(305, 15);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(55, 15);
-			this.label1.TabIndex = 22;
+			this.label1.TabIndex = 2;
 			this.label1.Text = "Elements";
 			// 
 			// label2
@@ -111,7 +103,7 @@
 			this.label2.Location = new System.Drawing.Point(8, 15);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(39, 15);
-			this.label2.TabIndex = 23;
+			this.label2.TabIndex = 0;
 			this.label2.Text = "Name";
 			// 
 			// nameTextBox
@@ -123,7 +115,7 @@
 			this.nameTextBox.Location = new System.Drawing.Point(55, 11);
 			this.nameTextBox.Name = "nameTextBox";
 			this.nameTextBox.Size = new System.Drawing.Size(244, 23);
-			this.nameTextBox.TabIndex = 24;
+			this.nameTextBox.TabIndex = 1;
 			// 
 			// buttonAssign
 			// 
@@ -135,7 +127,7 @@
 			this.buttonAssign.Location = new System.Drawing.Point(366, 8);
 			this.buttonAssign.Name = "buttonAssign";
 			this.buttonAssign.Size = new System.Drawing.Size(93, 29);
-			this.buttonAssign.TabIndex = 25;
+			this.buttonAssign.TabIndex = 3;
 			this.buttonAssign.Text = "Assign";
 			this.buttonAssign.UseVisualStyleBackColor = true;
 			this.buttonAssign.Click += new System.EventHandler(this.buttonAssign_Click);
@@ -163,7 +155,7 @@
 			this.notesTextBox.Name = "notesTextBox";
 			this.tableLayoutPanel2.SetRowSpan(this.notesTextBox, 2);
 			this.notesTextBox.Size = new System.Drawing.Size(634, 65);
-			this.notesTextBox.TabIndex = 29;
+			this.notesTextBox.TabIndex = 6;
 			// 
 			// tableLayoutPanel2
 			// 
@@ -175,8 +167,7 @@
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel2.Controls.Add(this.dataGridView1, 0, 1);
-			this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.tabControl, 0, 1);
 			this.tableLayoutPanel2.Controls.Add(this.nameTextBox, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.notesLabel, 0, 2);
 			this.tableLayoutPanel2.Controls.Add(this.label1, 2, 0);
@@ -184,6 +175,7 @@
 			this.tableLayoutPanel2.Controls.Add(this.buttonAssign, 3, 0);
 			this.tableLayoutPanel2.Controls.Add(this.buttonCancel, 6, 3);
 			this.tableLayoutPanel2.Controls.Add(this.buttonOK, 5, 3);
+			this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
 			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -193,8 +185,71 @@
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(895, 439);
 			this.tableLayoutPanel2.TabIndex = 30;
+			// 
+			// tabControl
+			// 
+			this.tableLayoutPanel2.SetColumnSpan(this.tabControl, 7);
+			this.tabControl.Controls.Add(this.tabMouth);
+			this.tabControl.Controls.Add(this.tabOther);
+			this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControl.ItemSize = new System.Drawing.Size(42, 18);
+			this.tabControl.Location = new System.Drawing.Point(11, 46);
+			this.tabControl.Margin = new System.Windows.Forms.Padding(6);
+			this.tabControl.Name = "tabControl";
+			this.tabControl.SelectedIndex = 0;
+			this.tabControl.Size = new System.Drawing.Size(873, 311);
+			this.tabControl.TabIndex = 4;
+			this.tabControl.UseVisualStyles = false;
+			// 
+			// tabMouth
+			// 
+			this.tabMouth.Controls.Add(this.dataGridViewMouth);
+			this.tabMouth.Location = new System.Drawing.Point(4, 22);
+			this.tabMouth.Margin = new System.Windows.Forms.Padding(6);
+			this.tabMouth.Name = "tabMouth";
+			this.tabMouth.Size = new System.Drawing.Size(865, 285);
+			this.tabMouth.TabIndex = 1;
+			this.tabMouth.Text = "Mouth";
+			this.tabMouth.UseVisualStyleBackColor = true;
+			// 
+			// dataGridViewMouth
+			// 
+			this.dataGridViewMouth.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.dataGridViewMouth.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridViewMouth.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridViewMouth.Location = new System.Drawing.Point(0, 0);
+			this.dataGridViewMouth.Name = "dataGridViewMouth";
+			this.dataGridViewMouth.Size = new System.Drawing.Size(865, 285);
+			this.dataGridViewMouth.TabIndex = 5;
+			this.dataGridViewMouth.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
+			this.dataGridViewMouth.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
+			this.dataGridViewMouth.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridViewMouth_CellPainting);
+			// 
+			// tabOther
+			// 
+			this.tabOther.Controls.Add(this.dataGridViewOther);
+			this.tabOther.Location = new System.Drawing.Point(4, 22);
+			this.tabOther.Margin = new System.Windows.Forms.Padding(6);
+			this.tabOther.Name = "tabOther";
+			this.tabOther.Size = new System.Drawing.Size(865, 285);
+			this.tabOther.TabIndex = 2;
+			this.tabOther.Text = "Outlines/Eyes";
+			// 
+			// dataGridViewOther
+			// 
+			this.dataGridViewOther.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.dataGridViewOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridViewOther.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridViewOther.Location = new System.Drawing.Point(0, 0);
+			this.dataGridViewOther.Name = "dataGridViewOther";
+			this.dataGridViewOther.Size = new System.Drawing.Size(865, 285);
+			this.dataGridViewOther.TabIndex = 22;
+			this.dataGridViewOther.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
+			this.dataGridViewOther.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
+			this.dataGridViewOther.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridViewOther_CellPainting);
 			// 
 			// LipSyncMapEditor
 			// 
@@ -214,10 +269,13 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "LipSync Mapping";
 			this.Load += new System.EventHandler(this.LipSyncMapSetup_Load);
-			this.Resize += new System.EventHandler(this.LipSyncBreakdownSetup_Resize);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
+			this.tabControl.ResumeLayout(false);
+			this.tabMouth.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridViewMouth)).EndInit();
+			this.tabOther.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridViewOther)).EndInit();
 			this.ResumeLayout(false);
 
         }
@@ -226,7 +284,6 @@
 
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox nameTextBox;
@@ -234,5 +291,10 @@
         private System.Windows.Forms.Label notesLabel;
         private System.Windows.Forms.TextBox notesTextBox;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private Dotnetrix.Controls.TabControlEX tabControl;
+		private Dotnetrix.Controls.TabPageEX tabMouth;
+		private Dotnetrix.Controls.TabPageEX tabOther;
+		private System.Windows.Forms.DataGridView dataGridViewMouth;
+		private System.Windows.Forms.DataGridView dataGridViewOther;
 	}
 }

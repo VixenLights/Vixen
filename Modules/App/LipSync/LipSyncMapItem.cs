@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace VixenModules.App.LipSyncApp
@@ -11,6 +12,7 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncMapItem()
 		{
 			PhonemeList = new Dictionary<string, Boolean>();
+			FaceComponents = new Dictionary<FaceComponent, bool>();
 		}
 
 		public LipSyncMapItem(string name, int stringNum)
@@ -20,6 +22,7 @@ namespace VixenModules.App.LipSyncApp
 			StringNum = stringNum;
 			ElementColor = Color.White;
 			ElementGuid = new Guid();
+			FaceComponents = new Dictionary<FaceComponent, bool>();
 		}
 
 		public LipSyncMapItem Clone()
@@ -30,6 +33,7 @@ namespace VixenModules.App.LipSyncApp
 			retVal.StringNum = StringNum;
 			retVal.ElementColor = ElementColor;
 			retVal.ElementGuid = ElementGuid;
+			retVal.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
 
 			return retVal;
 		}
@@ -48,6 +52,9 @@ namespace VixenModules.App.LipSyncApp
 
 		[DataMember]
 		public Guid ElementGuid { get; set; }
+
+		[DataMember]
+		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
 
 		public string Name 
 		{ 
@@ -69,6 +76,19 @@ namespace VixenModules.App.LipSyncApp
 		public override string ToString()
 		{
 			return Name;
+		}
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
+		{
+			if (FaceComponents == null)
+			{
+				FaceComponents = new Dictionary<FaceComponent, bool>();
+				if (PhonemeList.Values.Any(x => x))
+				{
+					FaceComponents.Add(FaceComponent.Mouth, true);
+				}
+			}
 		}
 
 	}
