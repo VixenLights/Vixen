@@ -58,8 +58,6 @@
 			this.toolStripGradients.Size = new System.Drawing.Size(602, 27);
 			this.toolStripGradients.TabIndex = 10;
 			this.toolStripGradients.Text = "Color Gradients";
-			this.toolStripGradients.Leave += new System.EventHandler(this.ToolStripMenuHide);
-			this.toolStripGradients.MouseLeave += new System.EventHandler(this.ToolStripMenuHide);
 			// 
 			// toolStripButtonEditGradient
 			// 
@@ -141,7 +139,6 @@
 			this.listViewGradients.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyDown);
 			this.listViewGradients.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyUp);
 			this.listViewGradients.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseDoubleClick);
-			this.listViewGradients.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseMove);
 			// 
 			// panel1
 			// 
@@ -171,10 +168,8 @@
 			this.Margin = new System.Windows.Forms.Padding(6);
 			this.Name = "Form_GradientLibrary";
 			this.Text = "Gradient Library";
-			this.Deactivate += new System.EventHandler(this.ToolStripMenuHide);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_ToolPalette_FormClosing);
 			this.Load += new System.EventHandler(this.ColorPalette_Load);
-			this.Leave += new System.EventHandler(this.ToolStripMenuHide);
 			this.toolStripGradients.ResumeLayout(false);
 			this.toolStripGradients.PerformLayout();
 			this.panel1.ResumeLayout(false);

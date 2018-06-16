@@ -58,8 +58,6 @@
 			this.toolStripCurves.Size = new System.Drawing.Size(602, 27);
 			this.toolStripCurves.TabIndex = 6;
 			this.toolStripCurves.Text = "Curves";
-			this.toolStripCurves.Leave += new System.EventHandler(this.ToolStripMenuHide);
-			this.toolStripCurves.MouseLeave += new System.EventHandler(this.ToolStripMenuHide);
 			// 
 			// toolStripButtonEditCurve
 			// 
@@ -140,7 +138,6 @@
 			this.listViewCurves.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyDown);
 			this.listViewCurves.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyUp);
 			this.listViewCurves.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCurves_MouseDoubleClick);
-			this.listViewCurves.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listViewCurves_MouseMove);
 			// 
 			// panel1
 			// 
@@ -170,10 +167,8 @@
 			this.Margin = new System.Windows.Forms.Padding(6);
 			this.Name = "Form_CurveLibrary";
 			this.Text = "Curve Library";
-			this.Deactivate += new System.EventHandler(this.ToolStripMenuHide);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_ToolPalette_FormClosing);
 			this.Load += new System.EventHandler(this.ColorPalette_Load);
-			this.Leave += new System.EventHandler(this.ToolStripMenuHide);
 			this.toolStripCurves.ResumeLayout(false);
 			this.toolStripCurves.PerformLayout();
 			this.panel1.ResumeLayout(false);

@@ -96,7 +96,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonImportGradients.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			listViewGradients.AllowDrop = true;
-			toolStripGradients.Height = 0;
 
 			var xml = new XMLProfileSettings();
 			_gradientLibraryTextScale = Convert.ToDouble(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), "1"), CultureInfo.InvariantCulture);
@@ -463,47 +462,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 		}
-
-
-		#region Menu AutoHide
-		private void listViewGradients_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (e.Y <= 3)
-			{
-				MenuShow();
-			}
-			else if (e.Y > 0)
-			{
-				MenuHide();
-			}
-		}
-
-		private void MenuShow()
-		{
-			while (toolStripGradients.Height <= 25 * ScalingTools.GetScaleFactor())
-			{
-				toolStripGradients.Height++;
-				Thread.Sleep(10);
-				toolStripGradients.Update();
-			}
-		}
-
-		private void MenuHide()
-		{
-			while (toolStripGradients.Height > 0)
-			{
-				toolStripGradients.Height--;
-				Thread.Sleep(10);
-				toolStripGradients.Update();
-			}
-		}
-
-		private void ToolStripMenuHide(object sender, EventArgs e)
-		{
-			MenuHide();
-		}
-
-		#endregion
 
 		private void listViewGradients_KeyDown(object sender, KeyEventArgs e)
 		{

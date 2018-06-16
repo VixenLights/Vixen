@@ -57,8 +57,6 @@
 			this.toolStripColors.Size = new System.Drawing.Size(602, 27);
 			this.toolStripColors.TabIndex = 3;
 			this.toolStripColors.Text = "Colors";
-			this.toolStripColors.Leave += new System.EventHandler(this.ToolStripMenuHide);
-			this.toolStripColors.MouseLeave += new System.EventHandler(this.ToolStripMenuHide);
 			// 
 			// toolStripButtonEditColor
 			// 
@@ -127,7 +125,6 @@
 			this.listViewColors.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragDrop);
 			this.listViewColors.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragEnter);
 			this.listViewColors.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewColors_MouseDoubleClick);
-			this.listViewColors.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listViewColors_MouseMove);
 			// 
 			// panel1
 			// 
@@ -156,10 +153,8 @@
 			this.Margin = new System.Windows.Forms.Padding(6);
 			this.Name = "Form_ColorLibrary";
 			this.Text = "Color Library";
-			this.Deactivate += new System.EventHandler(this.ToolStripMenuHide);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_ColorLibrary_FormClosing);
 			this.Load += new System.EventHandler(this.ColorPalette_Load);
-			this.Leave += new System.EventHandler(this.ToolStripMenuHide);
 			this.toolStripColors.ResumeLayout(false);
 			this.toolStripColors.PerformLayout();
 			this.panel1.ResumeLayout(false);

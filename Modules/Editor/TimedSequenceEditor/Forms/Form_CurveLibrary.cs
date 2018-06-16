@@ -97,7 +97,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonImportCurves.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			listViewCurves.AllowDrop = true;
-			toolStripCurves.Height = 0;
 
 			var xml = new XMLProfileSettings();
 			_curveLibraryImageScale = Convert.ToDouble(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryImageScale", Name), "1"), CultureInfo.InvariantCulture);
@@ -466,46 +465,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				
 			}
 		}
-		
-		#region Menu AutoHide
-		private void listViewCurves_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (e.Y <= 3)
-			{
-				MenuShow();
-			}
-			else if (e.Y > 0)
-			{
-				MenuHide();
-			}
-		}
-
-		private void MenuShow()
-		{
-			while (toolStripCurves.Height <= 25 * ScalingTools.GetScaleFactor())
-			{
-				toolStripCurves.Height++;
-				Thread.Sleep(10);
-				toolStripCurves.Update();
-			}
-		}
-
-		private void MenuHide()
-		{
-			while (toolStripCurves.Height > 0)
-			{
-				toolStripCurves.Height--;
-				Thread.Sleep(10);
-				toolStripCurves.Update();
-			}
-		}
-
-		private void ToolStripMenuHide(object sender, EventArgs e)
-		{
-			MenuHide();
-		}
-
-		#endregion
 
 		private void listViewCurves_KeyDown(object sender, KeyEventArgs e)
 		{

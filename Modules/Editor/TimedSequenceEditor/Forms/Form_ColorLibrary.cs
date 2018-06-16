@@ -97,7 +97,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButtonImportColors.Image = Tools.GetIcon(Resources.folder_open, iconSize);
 
 			listViewColors.AllowDrop = true;
-			toolStripColors.Height = 0;
 
 			var xml = new XMLProfileSettings();
 			_colorLibraryScale = Convert.ToDouble(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ColorLibraryScale", Name), "1"), CultureInfo.InvariantCulture);
@@ -460,7 +459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		#region Menu AutoHide
+		#region Adjust Color Icons height
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
@@ -475,43 +474,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ImageSetup();
 				PopulateColors();
 			}
-		}
-
-		private void listViewColors_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (e.Y <= 3)
-			{
-				MenuShow();
-			}
-			else if (e.Y > 0 && e.Y < 5)
-			{
-				MenuHide();
-			}
-		}
-
-		private void MenuHide()
-		{
-			while (toolStripColors.Height > 0)
-			{
-				toolStripColors.Height--;
-				Thread.Sleep(10);
-				toolStripColors.Update();
-			}
-		}
-
-		private void MenuShow()
-		{
-			while (toolStripColors.Height <= 25 * ScalingTools.GetScaleFactor())
-			{
-				toolStripColors.Height++;
-				Thread.Sleep(10);
-				toolStripColors.Update();
-			}
-		}
-
-		private void ToolStripMenuHide(object sender, EventArgs e)
-		{
-			MenuHide();
 		}
 
 		#endregion
