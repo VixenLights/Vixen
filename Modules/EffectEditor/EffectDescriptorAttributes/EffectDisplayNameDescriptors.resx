@@ -675,7 +675,7 @@
   <data name="RandomAngle" xml:space="preserve">
     <value>Random Angle</value>
   </data>
-  <data name="RandomShapeSize" xml:space="preserve">
+  <data name="RandomSize" xml:space="preserve">
     <value>Random Size</value>
   </data>
   <data name="RoundedCorners" xml:space="preserve">
@@ -721,6 +721,15 @@
     <value>Outline Fill</value>
   </data>
   <data name="StrokeWidth" xml:space="preserve">
-    <value>Outline Width</value>
+    <value>Outline Thickness</value>
+  </data>
+  <data name="CenterSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="SizeChange" xml:space="preserve">
+    <value>Size Change</value>
+  </data>
+  <data name="SizeVariation" xml:space="preserve">
+    <value>Size Variation</value>
   </data>
 </root>

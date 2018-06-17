@@ -12,6 +12,27 @@ namespace VixenModules.Effect.Shapes
 		Wrap
 	}
 
+	public enum FadeType
+	{
+		[Description("None")]
+		None,
+		[Description("In")]
+		In,
+		[Description("Out")]
+		Out,
+		[Description("Random")]
+		Random
+	}
+	public enum SizeMode
+	{
+		[Description("In")]
+		In,
+		[Description("Out")]
+		Out,
+		[Description("Random")]
+		Random
+	}
+
 	public enum GeometricShapesList
 	{
 		[Description("Random")]

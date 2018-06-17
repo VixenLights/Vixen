@@ -305,6 +305,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Shape size around the Size level by the amount of variation..
+        /// </summary>
+        internal static string CenterSize {
+            get {
+                return ResourceManager.GetString("CenterSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Moves the text into view and stops it in the center..
         /// </summary>
         internal static string CenterStop {
@@ -1465,6 +1474,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable increase/decrease of shape size based on size variation..
+        /// </summary>
+        internal static string SizeChange {
+            get {
+                return ResourceManager.GetString("SizeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the size speed of the shape..
         /// </summary>
         internal static string SizeSpeed {
@@ -1479,6 +1497,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string SizeSpeedVariation {
             get {
                 return ResourceManager.GetString("SizeSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Speed around the Speed level by the amount of variation..
+        /// </summary>
+        internal static string SizeVariation {
+            get {
+                return ResourceManager.GetString("SizeVariation", resourceCulture);
             }
         }
         

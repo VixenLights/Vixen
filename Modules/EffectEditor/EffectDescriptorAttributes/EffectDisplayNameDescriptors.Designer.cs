@@ -314,6 +314,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        internal static string CenterSize {
+            get {
+                return ResourceManager.GetString("CenterSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Center Stop.
         /// </summary>
         internal static string CenterStop {
@@ -1315,9 +1324,9 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         /// <summary>
         ///   Looks up a localized string similar to Random Size.
         /// </summary>
-        internal static string RandomShapeSize {
+        internal static string RandomSize {
             get {
-                return ResourceManager.GetString("RandomShapeSize", resourceCulture);
+                return ResourceManager.GetString("RandomSize", resourceCulture);
             }
         }
         
@@ -1529,6 +1538,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size Change.
+        /// </summary>
+        internal static string SizeChange {
+            get {
+                return ResourceManager.GetString("SizeChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size Speed.
         /// </summary>
         internal static string SizeSpeed {
@@ -1543,6 +1561,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string SizeSpeedVariation {
             get {
                 return ResourceManager.GetString("SizeSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size Variation.
+        /// </summary>
+        internal static string SizeVariation {
+            get {
+                return ResourceManager.GetString("SizeVariation", resourceCulture);
             }
         }
         
@@ -1655,7 +1682,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Outline Width.
+        ///   Looks up a localized string similar to Outline Thickness.
         /// </summary>
         internal static string StrokeWidth {
             get {

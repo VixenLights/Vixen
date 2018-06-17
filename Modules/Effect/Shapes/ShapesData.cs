@@ -25,10 +25,14 @@ namespace VixenModules.Effect.Shapes
 			SpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
 			CenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			ShapeType = ShapeType.Wrap;
+			SizeMode = SizeMode.Out;
 			FileName = String.Empty;
 			StrokeFill = true;
+			RandomSize = true;
+			FadeType = FadeType.None;
 			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
-			MaxSizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
+			SizeVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+			CenterSizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			ShapeList = ShapeList.GeometricShapes;
 			GeometricShapesList = GeometricShapesList.Square;
 			ChristmasShapesList = ChristmasShapesList.SnowMan;
@@ -47,7 +51,7 @@ namespace VixenModules.Effect.Shapes
 			CrossSizeRatio = 100;
 			PolygonSides = 6;
 			RoundedCorner = false;
-			RandomShapeSize = false;
+			RemoveShape = false;
 			ScaleToGrid = false;
 			RandomAngle = true;
 			StarPoints = 7;
@@ -70,6 +74,9 @@ namespace VixenModules.Effect.Shapes
 
 		[DataMember]
 		public bool RoundedCorner { get; set; }
+
+		[DataMember]
+		public FadeType FadeType { get; set; }
 
 		[DataMember]
 		public int StarPoints { get; set; }
@@ -118,18 +125,24 @@ namespace VixenModules.Effect.Shapes
 
 		[DataMember]
 		public Curve SizeCurve { get; set; }
+		
+		[DataMember]
+		public Curve SizeVariationCurve { get; set; }
 
 		[DataMember]
-		public Curve MaxSizeCurve { get; set; }
+		public Curve CenterSizeCurve { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public ShapeList ShapeList { get; set; }
-
+		
 		[DataMember]
 		public ShapeType ShapeType { get; set; }
+
+		[DataMember]
+		public SizeMode SizeMode { get; set; }
 
 		[DataMember]
 		public GeometricShapesList GeometricShapesList { get; set; }
@@ -142,6 +155,9 @@ namespace VixenModules.Effect.Shapes
 
 		[DataMember]
 		public BorderShapesList BorderShapesList { get; set; }
+		
+		[DataMember]
+		public bool RandomSize { get; set; }
 
 		[DataMember]
 		public bool Fill { get; set; }
@@ -156,7 +172,7 @@ namespace VixenModules.Effect.Shapes
 		public bool RandomAngle { get; set; }
 
 		[DataMember]
-		public bool RandomShapeSize { get; set; }
+		public bool RemoveShape { get; set; }
 
 		[DataMember]
 		public Curve YOffsetCurve { get; set; }
@@ -198,12 +214,13 @@ namespace VixenModules.Effect.Shapes
 				LevelCurve = new Curve(LevelCurve),
 				StrokeWidth = StrokeWidth,
 				ShapeCountCurve = new Curve(ShapeCountCurve),
-				RandomShapeSize = RandomShapeSize,
+				RemoveShape = RemoveShape,
 				SizeCurve = new Curve(SizeCurve),
 				ShapeOutLineCurve = new Curve(ShapeOutLineCurve),
 				ShapeOutLineSpaceCurve = new Curve(ShapeOutLineSpaceCurve),
 				StarInsideSize = StarInsideSize,
-				MaxSizeCurve = new Curve(MaxSizeCurve),
+				SizeVariationCurve = new Curve(SizeVariationCurve),
+				CenterSizeCurve = new Curve(CenterSizeCurve),
 				AngleSpeedVariationCurve = new Curve(AngleSpeedVariationCurve),
 				CenterAngleSpeedCurve = new Curve(CenterAngleSpeedCurve),
 				SizeSpeedVariationCurve = new Curve(SizeSpeedVariationCurve),
@@ -212,8 +229,11 @@ namespace VixenModules.Effect.Shapes
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				StarPoints = StarPoints,
 				SkipPoints = SkipPoints,
+				SizeMode = SizeMode,
+				RandomSize = RandomSize,
 				PolygonSides = PolygonSides,
 				Fill = Fill,
+				FadeType = FadeType,
 				StrokeFill = StrokeFill,
 				RoundedCorner = RoundedCorner
 			};

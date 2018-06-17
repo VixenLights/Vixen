@@ -43,6 +43,7 @@ namespace VixenModules.Effect.Shapes
 		private readonly int _svgViewBoxSize = 200;
 		private float _scaleShapeWidth;
 		private float _scaleShapeHeight;
+		private int _totalFrames;
 
 		public Shapes()
 		{
@@ -81,7 +82,7 @@ namespace VixenModules.Effect.Shapes
 
 		#endregion
 
-		#region Shape properties
+		#region Shape Effect properties
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
@@ -188,8 +189,8 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Mode")]
-		[ProviderDescription(@"Mode")]
+		[ProviderDisplayName(@"Movement")]
+		[ProviderDescription(@"Movement")]
 		[PropertyOrder(7)]
 		public ShapeType ShapeType
 		{
@@ -202,11 +203,46 @@ namespace VixenModules.Effect.Shapes
 				OnPropertyChanged();
 			}
 		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Fade")]
+		[ProviderDescription(@"Fade")]
+		[PropertyOrder(8)]
+		public FadeType FadeType
+		{
+			get { return _data.FadeType; }
+			set
+			{
+				_data.FadeType = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SizeMode")]
+		[ProviderDescription(@"SizeMode")]
+		[PropertyOrder(9)]
+		public SizeMode SizeMode
+		{
+			get { return _data.SizeMode; }
+			set
+			{
+				_data.SizeMode = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"VerticalOffset")]
 		[ProviderDescription(@"VerticalOffset")]
-		[PropertyOrder(8)]
+		[PropertyOrder(10)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -222,7 +258,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"HorizontalOffset")]
 		[ProviderDescription(@"HorizontalOffset")]
-		[PropertyOrder(9)]
+		[PropertyOrder(11)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -238,7 +274,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeSize")]
 		[ProviderDescription(@"ShapeSize")]
-		[PropertyOrder(10)]
+		[PropertyOrder(12)]
 		public Curve SizeCurve
 		{
 			get { return _data.SizeCurve; }
@@ -252,15 +288,31 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"MaxShapeSize")]
-		[ProviderDescription(@"MaxShapeSize")]
-		[PropertyOrder(11)]
-		public Curve MaxSizeCurve
+		[ProviderDisplayName(@"CenterSize")]
+		[ProviderDescription(@"CenterSize")]
+		[PropertyOrder(13)]
+		public Curve CenterSizeCurve
 		{
-			get { return _data.MaxSizeCurve; }
+			get { return _data.CenterSizeCurve; }
 			set
 			{
-				_data.MaxSizeCurve = value;
+				_data.CenterSizeCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SizeVariation")]
+		[ProviderDescription(@"SizeVariation")]
+		[PropertyOrder(14)]
+		public Curve SizeVariationCurve
+		{
+			get { return _data.SizeVariationCurve; }
+			set
+			{
+				_data.SizeVariationCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -270,7 +322,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeCount")]
 		[ProviderDescription(@"ShapeCount")]
-		[PropertyOrder(12)]
+		[PropertyOrder(15)]
 		public Curve ShapeCountCurve
 		{
 			get { return _data.ShapeCountCurve; }
@@ -284,16 +336,16 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RandomShapeSize")]
-		[ProviderDescription(@"RandomShapeSize")]
-		[PropertyOrder(13)]
-		public bool RandomShapeSize
+		[ProviderDisplayName(@"SizeChange")]
+		[ProviderDescription(@"SizeChange")]
+		[PropertyOrder(16)]
+		public bool RemoveShape
 		{
-			get { return _data.RandomShapeSize; }
+			get { return _data.RemoveShape; }
 			set
 			{
-				_data.RandomShapeSize = value;
-				UpdateShapeSizeAttribute();
+				_data.RemoveShape = value;
+				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -303,7 +355,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ScaleToGrid")]
 		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(14)]
+		[PropertyOrder(17)]
 		public bool ScaleToGrid
 		{
 			get { return _data.ScaleToGrid; }
@@ -320,7 +372,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomAngle")]
 		[ProviderDescription(@"RandomAngle")]
-		[PropertyOrder(15)]
+		[PropertyOrder(18)]
 		public bool RandomAngle
 		{
 			get { return _data.RandomAngle; }
@@ -335,9 +387,26 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RandomSize")]
+		[ProviderDescription(@"RandomSize")]
+		[PropertyOrder(19)]
+		public bool RandomSize
+		{
+			get { return _data.RandomSize; }
+			set
+			{
+				_data.RandomSize = value;
+				UpdateShapeTypeAttribute();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ColorFill")]
 		[ProviderDescription(@"ColorFill")]
-		[PropertyOrder(16)]
+		[PropertyOrder(20)]
 		public bool Fill
 		{
 			get { return _data.Fill; }
@@ -727,17 +796,6 @@ namespace VixenModules.Effect.Shapes
 
 		#endregion
 
-		public override IModuleDataModel ModuleData
-		{
-			get { return _data; }
-			set
-			{
-				_data = value as ShapesData;
-				UpdateAllAttributes();
-				IsDirty = true;
-			}
-		}
-
 		#region Information
 
 		public override string Information
@@ -752,6 +810,19 @@ namespace VixenModules.Effect.Shapes
 
 		#endregion
 
+		#region Attributes
+
+		public override IModuleDataModel ModuleData
+		{
+			get { return _data; }
+			set
+			{
+				_data = value as ShapesData;
+				UpdateAllAttributes();
+				IsDirty = true;
+			}
+		}
+
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
@@ -759,7 +830,6 @@ namespace VixenModules.Effect.Shapes
 
 		private void UpdateAllAttributes()
 		{
-			UpdateShapeSizeAttribute(false);
 			UpdatePositionAttribute(false);
 			UpdateShapeTypeAttribute(false);
 			UpdateStringOrientationAttributes();
@@ -785,26 +855,10 @@ namespace VixenModules.Effect.Shapes
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
-		private void UpdateShapeSizeAttribute (bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
-			{
-				{"SizeCurve", !RandomShapeSize},
-
-				{"MaxSizeCurve", RandomShapeSize}
-			};
-			SetBrowsable(propertyStates);
-
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
 		
 		private void UpdateShapeTypeAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(34)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(41)
 			{
 				{"GeometricShapesList", ShapeList == ShapeList.GeometricShapes},
 
@@ -840,9 +894,9 @@ namespace VixenModules.Effect.Shapes
 
 				{"StrokeFill", ShapeList == ShapeList.BorderShapes || ShapeList == ShapeList.File},
 
-				{"SizeCurve", !ScaleToGrid && !RandomShapeSize},
+				{"SizeCurve", !ScaleToGrid && !RemoveShape && !RandomSize},
 
-				{"MaxSizeCurve", !ScaleToGrid && RandomShapeSize},
+				{"MaxSizeCurve", !ScaleToGrid && RemoveShape},
 
 				{"CenterSpeedCurve", !ScaleToGrid && ShapeType != ShapeType.None},
 
@@ -853,8 +907,6 @@ namespace VixenModules.Effect.Shapes
 				{"XOffsetCurve", !ScaleToGrid && ShapeType == ShapeType.None},
 
 				{"ShapeCountCurve", !ScaleToGrid},
-
-				{"RandomShapeSize", !ScaleToGrid},
 
 				{"CenterSizeSpeedCurve", !ScaleToGrid},
 
@@ -874,7 +926,19 @@ namespace VixenModules.Effect.Shapes
 
 				{"StrokeWidth", StrokeFill},
 
-				{"RandomAngle", !ScaleToGrid}
+				{"RandomAngle", !ScaleToGrid},
+
+				{"FadeType", ShapeList != ShapeList.File && !ScaleToGrid},
+
+				{"SizeVariationCurve", !ScaleToGrid && (RemoveShape || RandomSize)},
+
+				{"CenterSizeCurve", !ScaleToGrid &&  (RemoveShape || RandomSize)},
+
+				{"SizeMode", !ScaleToGrid && RemoveShape},
+
+				{"RemoveShape", !ScaleToGrid},
+
+				{"RandomSize", !ScaleToGrid && !RemoveShape}
 
 			};
 			SetBrowsable(propertyStates);
@@ -884,6 +948,10 @@ namespace VixenModules.Effect.Shapes
 				TypeDescriptor.Refresh(this);
 			}
 		}
+
+		#endregion
+
+		#region Pre and Post processing
 
 		private string ConvertPath(string path)
 		{
@@ -916,6 +984,7 @@ namespace VixenModules.Effect.Shapes
 			_maxBuffer = Math.Max(BufferHt, BufferWi);
 			_shapes.Clear();
 			_shapesCount = 0;
+			_totalFrames = GetNumberFrames();
 
 			if (FileName != null && ShapeList == ShapeList.File)
 			{
@@ -926,7 +995,7 @@ namespace VixenModules.Effect.Shapes
 				}
 				else
 				{
-					//Logging.Error("File is missing or invalid path. {0}", filePath);
+					// Logging.Error("File is missing or invalid path. {0}", filePath);
 					FileName = "";
 				}
 
@@ -939,13 +1008,16 @@ namespace VixenModules.Effect.Shapes
 			_removeShapes.Clear();
 		}
 
+		#endregion
+
+		#region Render Effect
+
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				// copy to frameBuffer
 				for(int x = 0; x < BufferWi; x++)
 				{
 					for(int y = 0; y < BufferHt; y++)
@@ -979,183 +1051,13 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-		private void InitialRender(int frame, Bitmap bitmap)
-		{
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			_intervalPosFactor = intervalPos * 100;
-			//_radius = CalculateSize(_intervalPosFactor);
-
-			_centerAngleSpeed = CalculateCenterAngleSpeed(_intervalPosFactor);
-			_angleSpeedVariation = CalculateAngleSpeedVariation(_intervalPosFactor);
-			_centerSizeSpeed = CalculateCenterSizeSpeed(_intervalPosFactor);
-			_sizeSpeedVariation = CalculateSizeSpeedVariation(_intervalPosFactor);
-			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
-			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
-			_angle = CalculateAngle(_intervalPosFactor);
-
-			double minAngleSpeed = _centerAngleSpeed - (_angleSpeedVariation / 2);
-			double maxAngleSpeed = _centerAngleSpeed + (_angleSpeedVariation / 2);
-			double minSizeSpeed = _centerSizeSpeed - (_sizeSpeedVariation / 2);
-			double maxSizeSpeed = _centerSizeSpeed + (_sizeSpeedVariation / 2);
-			_minSpeed = _centerSpeed - (_speedVariation / 2);
-			_maxSpeed = _centerSpeed + (_speedVariation / 2);
-
-			// create new shapes and maintain maximum number as per users selection.
-			int adjustedPixelCount;
-			if (ScaleToGrid)
-			{
-				adjustedPixelCount = _shapesCount = 1;
-			}
-			else
-			{
-				_shapesCount = CalculateShapeCount(_intervalPosFactor);
-				adjustedPixelCount = frame >= _shapesCount ? _shapesCount : 2;
-			}
-				
-			for (int i = 0; i < adjustedPixelCount; i++)
-			{
-				//Create new Shapes and add shapes due to increase in shape count curve.
-				if (_shapes.Count < _shapesCount) CreateShapes();
-				else
-					break;
-			}
-
-			//Update Shape location, radius and speed.
-			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
-
-			//Remove Excess Shapes due to ShapeCount Curve.
-			RemoveShapes();
-			
-			foreach (var shape in _shapes)
-			{
-				_scaleShapeWidth = (float)(((_maxBuffer * 2) / shape.SvgImage.ViewBox.Width) * (shape.Size / (_maxBuffer * 2)));
-				_scaleShapeHeight = (float)(((_minBuffer * 2) / shape.SvgImage.ViewBox.Height) * (shape.Size / (_minBuffer * 2)));
-				if (ShapeList != ShapeList.File)
-				{
-					bool borderFill = false;
-					foreach (var child in shape.SvgImage.Children)
-					{
-						//Adjusts Shape properties based on effect settings
-						if (Fill && ShapeList != ShapeList.BorderShapes)
-						{
-							foreach (var descendant in shape.SvgImage.Descendants())
-							{
-								if (descendant.ID != null)
-								{
-									if (descendant.ID.Contains("firstFill"))
-									{
-										descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex]
-											.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-									}
-									if (descendant.ID.Contains("secondFill"))
-									{
-										descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex]
-											.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-									}
-									//if (shape.SvgImage.ID == "borderFillColor" || borderFill)
-									//{
-									//	descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex]
-									//		.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-									//	borderFill = true;
-									//}
-								}
-							}
-						}
-						else
-						{
-							shape.SvgImage.Children[0].FillOpacity = 0;
-						}
-
-						if (StrokeFill)
-						{
-							child.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
-								.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-							child.StrokeWidth = TargetPositioning == TargetPositioningType.Locations
-								? (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
-								             shape.LocationRatio1)
-								: (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth));
-							if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
-							{
-								child.StrokeDashArray = new SvgUnitCollection
-								{
-									CalculateShapeOutLine(_intervalPosFactor),
-									CalculateShapeOutLineSpace(_intervalPosFactor)
-								};
-							}
-						}
-					}
-				}
-				else
-				{
-					if (StrokeFill)
-					{
-						shape.SvgImage.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
-							.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-						shape.SvgImage.StrokeWidth = (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
-						                               shape.LocationRatio1);
-
-						if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
-						{
-							shape.SvgImage.StrokeDashArray = new SvgUnitCollection
-							{
-								CalculateShapeOutLine(_intervalPosFactor),
-								CalculateShapeOutLineSpace(_intervalPosFactor)
-							};
-						}
-					}
-				}
-
-				if (!ScaleToGrid)
-				{
-					shape.SvgImage.Transforms[0] = new SvgRotate(shape.RotateAngle, shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2, shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2);
-					shape.SvgImage.Transforms[1] = new SvgScale(_scaleShapeWidth, _scaleShapeHeight);
-				}
-
-				shape.SvgImage.ShapeRendering = SvgShapeRendering.Auto;
-				double locationX;
-				double locationY;
-				if (_shapes.Count == 1 && ShapeType == ShapeType.None && !ScaleToGrid)
-				{
-					locationX = (double)BufferWi / 2;
-					locationY = (double)BufferHt / 2; 
-				}
-				else
-				{
-					locationX = shape.LocationX;
-					locationY = shape.LocationY;
-				}
-
-				using (Graphics g = Graphics.FromImage(bitmap))
-				{
-					//Adjust position based on x and y offset.
-					int xOffset = 0;
-					int yOffset = 0;
-					if (ShapeType == ShapeType.None && !ScaleToGrid)
-					{
-						xOffset = CalculateXOffset(_intervalPosFactor, bitmap.Width);
-						yOffset = CalculateYOffset(_intervalPosFactor, bitmap.Height);
-					}
-
-					//Draw svg onto bitmap
-					g.DrawImage(shape.SvgImage.Draw(),
-						ScaleToGrid
-							? new Point(0, 0)
-							: new Point(
-								(int) (locationX + xOffset -
-								       Math.Ceiling(shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2)),
-								(int) (locationY + yOffset -
-								       Math.Ceiling(shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2))));
-				}
-			}
-		}
-
 		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
 		{
 			int yCoord = y;
 			int xCoord = x;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
-				//Flip me over and offset my coordinates so I can act like the string version
+				// Flip me over and offset my coordinates so I can act like the string version
 				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
@@ -1174,255 +1076,457 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
-		private void CreateShapes()
+		#endregion
+
+		#region Pre Render
+
+		private void InitialRender(int frame, Bitmap bitmap)
 		{
-			while (_shapesCount > _shapes.Count)
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			_intervalPosFactor = intervalPos * 100;
+			_centerAngleSpeed = CalculateCenterAngleSpeed(_intervalPosFactor);
+			_angleSpeedVariation = CalculateAngleSpeedVariation(_intervalPosFactor);
+			_centerSizeSpeed = CalculateCenterSizeSpeed(_intervalPosFactor);
+			_sizeSpeedVariation = CalculateSizeSpeedVariation(_intervalPosFactor);
+			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
+			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
+			_angle = CalculateAngle(_intervalPosFactor);
+
+			double minAngleSpeed = _centerAngleSpeed - (_angleSpeedVariation / 2);
+			double maxAngleSpeed = _centerAngleSpeed + (_angleSpeedVariation / 2);
+			double minSizeSpeed = _centerSizeSpeed - (_sizeSpeedVariation / 2);
+			double maxSizeSpeed = _centerSizeSpeed + (_sizeSpeedVariation / 2);
+			_minSpeed = _centerSpeed - (_speedVariation / 2);
+			_maxSpeed = _centerSpeed + (_speedVariation / 2);
+
+			// Create new shapes and maintain maximum number as per users selection.
+			int adjustedPixelCount = 0;
+			if (ScaleToGrid)
 			{
-				ShapesClass m = new ShapesClass();
-				
-				//Sets starting location of svg image
-				m.LocationX = _random.Next(0, BufferWi - 1);
-				m.LocationY = _random.Next(0, BufferHt - 1);
-				
-				//Sets initial speed of svg image
-				double speed = _random.NextDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
-				double vx = _random.NextDouble() * speed;
-				double vy = _random.NextDouble() * speed;
-				if (_random.Next(0, 2) == 0) vx = -vx;
-				if (_random.Next(0, 2) == 0) vy = -vy;
-				if (ShapeType != ShapeType.None)
+				// Scale to grid only requires a single shape so ensure there is only one created.
+				adjustedPixelCount = _shapesCount = 1;
+			}
+			else
+			{
+				_shapesCount = CalculateShapeCount(_intervalPosFactor);
+				if (frame / 3 >= _shapesCount || !RemoveShape)
 				{
-					m.VelocityX = vx;
-					m.VelocityY = vy;
-				}
-
-				//Starting angle based on position of angle curve
-				_angle = CalculateAngle(_intervalPosFactor);
-				m.Scale = 1;
-
-				if (ShapeList == ShapeList.GeometricShapes)
-				{
-					//Creates svg Viewbox used geometric Shapes as they are designed around this size.
-					m.SvgImage = new SvgDocument
-					{
-						ViewBox = new SvgViewBox(0, 0, _svgViewBoxSize, _svgViewBoxSize)
-					};
-				}
-				
-				//Get the shape from users selected source.
-				Array enumValues;
-				switch (ShapeList)
-				{
-					case ShapeList.GeometricShapes:
-						enumValues = Enum.GetValues(typeof(GeometricShapesList));
-						m.Shape = GeometricShapesList == GeometricShapesList.Random
-							? ((GeometricShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
-							: GeometricShapesList.ToString();
-						int radius = _svgViewBoxSize / 2 - (StrokeWidth + 1);
-						switch (m.Shape)
-						{
-							case "Square":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, 1));
-								break;
-							case "Arrow":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgArrow());
-								break;
-							case "Triangle":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgTriangle(radius));
-								break;
-							case "Circle":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCircle(radius));
-								break;
-							case "Rectangle":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, (float)ShapeSizeRatio / 100));
-								break;
-							case "Ellipse":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgEllipse(radius, (float)ShapeSizeRatio / 100));
-								break;
-							case "Cross":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCross((float)CrossSizeRatio / 100));
-								break;
-							case "Star":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgMultiStar(radius, StarPoints, SkipPoints));
-								break;
-							case "ConcaveStar":
-								m.SvgImage = getXMLShape("Geometric." + m.Shape);
-								break;
-							case "NonIntersectingStar":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, StarPoints, StarInsideSize, false));
-								break;
-							case "NorthStar":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, 8, 42, true));
-								break;
-							case "Polygon":
-								m.SvgImage.Children.Add(GetGeometricShape.CreateSvgPolygon(radius, PolygonSides));
-								break;
-							case "Heart":
-								m.SvgImage = getXMLShape("Geometric." + m.Shape);
-								break;
-						}
-						m.SvgImage.Children[0].ID = "firstFillColor";
-						break;
-
-					case ShapeList.ChristmasShapes:
-						enumValues = Enum.GetValues(typeof(ChristmasShapesList));
-						m.Shape = ChristmasShapesList == ChristmasShapesList.Random
-							? ((ChristmasShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
-							: ChristmasShapesList.ToString();
-
-						m.SvgImage = getXMLShape("Christmas." + m.Shape);
-						break;
-
-					case ShapeList.HalloweenShapes:
-						enumValues = Enum.GetValues(typeof(HalloweenShapesList));
-						m.Shape = HalloweenShapesList == HalloweenShapesList.Random
-							? ((HalloweenShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
-							: HalloweenShapesList.ToString();
-
-						m.SvgImage = getXMLShape("Halloween." + m.Shape);
-						break;
-
-					case ShapeList.BorderShapes:
-						enumValues = Enum.GetValues(typeof(BorderShapesList));
-						m.Shape = BorderShapesList == BorderShapesList.Random
-							? ((BorderShapesList)enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
-							: BorderShapesList.ToString();
-
-						m.SvgImage = getXMLShape("Borders." + m.Shape);
-						break;
-
-					case ShapeList.File:
-						m.SvgImage = SvgDocument.Open(_fileName);
-						break;
-				}
-
-				if ((int)m.SvgImage.ViewBox.Width == 0)
-				{
-					m.SvgImage.ViewBox = new SvgViewBox(0, 0, m.SvgImage.Width, m.SvgImage.Height);
-				}
-
-				if (!ScaleToGrid)
-				{
-					m.SvgImage.ViewBox = new SvgViewBox(-((m.SvgImage.ViewBox.Width * 1.42f - m.SvgImage.ViewBox.Width) / 2),
-						-((m.SvgImage.ViewBox.Height * 1.42f - m.SvgImage.ViewBox.Height) / 2), m.SvgImage.ViewBox.Width * 1.42f,
-						m.SvgImage.ViewBox.Height * 1.42f);
-					m.Scale = _svgViewBoxSize / m.SvgImage.ViewBox.Height;
-					m.SvgImage.Transforms.Add(new SvgRotate(0, (int)(m.SvgImage.Width / 2), (int)(m.SvgImage.Height / 2)));
-					m.LocationRatio = StringCount / m.SvgImage.ViewBox.Height * 2 * ((float)_minBuffer / StringCount);
-					m.LocationRatio1 = m.LocationRatio * m.LocationRatio;
-					m.SvgImage.Height = new SvgUnit(m.LocationRatio).ToPercentage();
-					m.SvgImage.Width = new SvgUnit(m.LocationRatio).ToPercentage();
-					m.SvgImage.Transforms.Add(new SvgScale(m.Scale));
+					adjustedPixelCount = _shapesCount;
 				}
 				else
 				{
-					// StringOrientation == StringOrientation.Vertical && TargetPositioning != TargetPositioningType.Locations && MaxPixelsPerString > StringCount)
-					// 
-					//if (StringOrientation != StringOrientation.Horizontal)
-					//{
-					//	var temp = _maxBuffer;
-					//	_maxBuffer = _minBuffer;
-					//	_minBuffer = temp;
-					//}
-					m.SvgImage.Height = new SvgUnit(BufferHt);
-					m.SvgImage.Width = new SvgUnit(BufferWi);
-					m.SvgImage.AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.none);
-					m.LocationRatio = m.LocationRatio1 = 1;
-					m.LocationX = m.LocationY = 0;
+					if ( frame % 3 == 0) adjustedPixelCount = 1;
 				}
-				
-				//Adds rounded corners to Geometric Shapes only, no point doing it to the others.
-				if (RoundedCorner && ShapeList == ShapeList.GeometricShapes)
+			}
+			
+			for (int i = 0; i < adjustedPixelCount; i++)
+			{
+				// Create new Shapes if shapes are below Shapecount.
+				if (_shapes.Count < _shapesCount) CreateShapes();
+				else
+					break;
+			}
+
+			// Update Shape location, radius and speed.
+			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
+
+			// Remove any shapes add to the _removeShapes variable.
+			RemoveShapes();
+
+			// Go through all used Shapes and adjust settings and then Draw SVG to Bitmap.
+			foreach (var shape in _shapes)
+			{
+				_scaleShapeWidth = (float)(((_maxBuffer * 2) / shape.SvgImage.ViewBox.Width) * (shape.Size / (_maxBuffer * 2)));
+				_scaleShapeHeight = (float)(((_minBuffer * 2) / shape.SvgImage.ViewBox.Height) * (shape.Size / (_minBuffer * 2)));
+
+				if (ShapeList != ShapeList.File)
 				{
-					foreach (var child in m.SvgImage.Children)
+					foreach (var child in shape.SvgImage.Children)
 					{
-						child.StrokeLineJoin = SvgStrokeLineJoin.Round;
+						// Adjusts Shape properties based on effect settings
+						if (Fill && ShapeList != ShapeList.BorderShapes)
+						{
+							foreach (var descendant in shape.SvgImage.Descendants())
+							{
+								if (descendant.ID != null)
+								{
+									// Will add random color form first and second color fill to all SVG Paths that contain appropiate ID.
+									if (descendant.ID.Contains("firstFill")) descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+										
+									if (descendant.ID.Contains("secondFill")) descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									
+									// Used to Fade individual Shapes. This will adjust the assigned colors brightness.
+									if (FadeType != FadeType.None && descendant.Fill != SvgPaintServer.None)
+									{
+										HSV fadeColor = HSV.FromRGB(ColorTranslator.FromHtml(descendant.Fill.ToString()));
+										fadeColor.V *= shape.Fade;
+										descendant.Fill = new SvgColourServer(fadeColor.ToRGB());
+									}
+								}
+							}
+						}
+						else
+						{
+							// When there is no Color Fill this allows the shape to show other shapes through.
+							// If you don't what other shapes to show through then just select Color Fill and shange Fill color to Black.
+							shape.SvgImage.Children[0].FillOpacity = 0;
+						}
+
+						// Adjusts the stroke fill and width for all embedded SVG's.
+						if (StrokeFill)
+						{
+							child.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
+								.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+							child.StrokeWidth = TargetPositioning == TargetPositioningType.Locations
+								? (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+								             shape.LocationRatio1)
+								: (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth));
+
+							if (FadeType != FadeType.None)
+							{
+								HSV fadeColor = HSV.FromRGB(ColorTranslator.FromHtml(child.Stroke.ToString()));
+								fadeColor.V *= shape.Fade;
+								child.Stroke = new SvgColourServer(fadeColor.ToRGB());
+							}
+
+							if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
+							{
+								child.StrokeDashArray = new SvgUnitCollection
+								{
+									CalculateShapeOutLine(_intervalPosFactor),
+									CalculateShapeOutLineSpace(_intervalPosFactor)
+								};
+							}
+						}
 					}
 				}
+				else
+				{
+					// Stroke fill and width for imported SVG Images from a file.
+					if (StrokeFill)
+					{
+						shape.SvgImage.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
+							.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+						shape.SvgImage.StrokeWidth = (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
+						                               shape.LocationRatio1);
 
-				//Sets starting size of svg image
+						if ((CalculateShapeOutLine(_intervalPosFactor) < 100) || (CalculateShapeOutLineSpace(_intervalPosFactor) > 0))
+						{
+							shape.SvgImage.StrokeDashArray = new SvgUnitCollection
+							{
+								CalculateShapeOutLine(_intervalPosFactor),
+								CalculateShapeOutLineSpace(_intervalPosFactor)
+							};
+						}
+					}
+				}
+				
 				if (!ScaleToGrid)
 				{
-					m.Size = RandomShapeSize
-						? _random.Next(5, 60)
-						: CalculateSize(_intervalPosFactor,
-							m.LocationRatio1);
+					// Rotates and scasles the shape, scaling is used as SVG images may have different sizes, especially for Imported files as they are not controlled.
+					shape.SvgImage.Transforms[0] = new SvgRotate(shape.RotateAngle, shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2, shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2);
+					shape.SvgImage.Transforms[1] = new SvgScale(_scaleShapeWidth, _scaleShapeHeight);
 				}
 
-				//_random.Next(3, CalculateSize(_intervalPosFactor));
-				switch (ShapeType)
+				// Ensures a better image vs speed, although there wasnt any visible differance in speed between this
+				// and optimized speed.
+				shape.SvgImage.ShapeRendering = SvgShapeRendering.CrispEdges;
+				double locationX;
+				double locationY;
+				if (_shapes.Count == 1 && ShapeType == ShapeType.None && !ScaleToGrid)
 				{
-					case ShapeType.Bounce:
-
-						var locationOffset = (m.SvgImage.ViewBox.Width / 1.42 * m.LocationRatio1 * _scaleShapeWidth / 2);
-						bool notCreated;
-						int i = 0;
-						do
-						{
-							notCreated = false;
-							m.LocationX = _random.Next(0, BufferWi - 1);
-							m.LocationY = _random.Next(0, BufferHt - 1);
-							if (m.LocationX - locationOffset < 0 || m.LocationY - locationOffset < 0 || m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= BufferHt) notCreated = true;
-							i++;
-						} while (notCreated && i < 10000);
-
-						break;
+					// Shape is added to center of grid.
+					locationX = (double)BufferWi / 2;
+					locationY = (double)BufferHt / 2; 
+				}
+				else
+				{
+					// Sets the shape location based off user or random location settings.
+					locationX = shape.LocationX;
+					locationY = shape.LocationY;
 				}
 
-				//Sets Random Colors
-				m.FirstFillColorIndex = _random.Next(0, FirstFillColors.Count);
-				m.SecondFillColorIndex = _random.Next(0, SecondFillColors.Count);
-				m.StrokeColorIndex = _random.Next(0, OutlineColors.Count);
-
-				//Sets random starting angle and rotation direction
-				m.RotateAngle = _random.Next(0, 360);
-				m.RotateCW = _random.Next(0, 2);
-
-				//Adds new Shape to _shapes
-				_shapes.Add(m);
-				
-				//int num = _random.Next(0, 26); // Zero to 25
+				using (Graphics g = Graphics.FromImage(bitmap))
+				{
+					// Adjust position based on x and y offset.
+					int xOffset = 0;
+					int yOffset = 0;
+					if (ShapeType == ShapeType.None && !ScaleToGrid)
+					{
+						xOffset = CalculateXOffset(_intervalPosFactor, bitmap.Width);
+						yOffset = CalculateYOffset(_intervalPosFactor, bitmap.Height);
+					}
+					
+					// Draw SVG onto bitmap
+					g.DrawImage(shape.SvgImage.Draw(),
+						ScaleToGrid
+							? new Point(0, 0)
+							: new Point(
+								(int) (locationX + xOffset -
+								       Math.Ceiling(shape.SvgImage.ViewBox.Width * shape.LocationRatio1 * _scaleShapeWidth / 2)),
+								(int) (locationY + yOffset -
+								       Math.Ceiling(shape.SvgImage.ViewBox.Height * shape.LocationRatio1 * _scaleShapeHeight / 2))));
+				}
 			}
 		}
 
-		private SvgDocument getXMLShape(string svgImage)
-		{
-			Stream s = Assembly.GetExecutingAssembly()
-				.GetManifestResourceStream("VixenModules.Effect.Shapes.SVGShapes." + svgImage + ".xml");
-			XmlDocument xdoc = new XmlDocument();
-			StreamReader reader = new StreamReader(s);
-			xdoc.LoadXml(reader.ReadToEnd());
-			reader.Close();
+		#endregion
 
-			//Used to get points
-			//var tempImage = SvgDocument.Open(xdoc);
-			//var svgPoints = tempImage.Path.PathPoints.ToArray();
-			////m.svgImage.Children.Add(GetGeometricShape.CreateSvgImage(svgPoints));
-			//string test = null;
-			//foreach (var point in svgPoints)
-			//{
-			//	test = test + point.X + ", " + point.Y + ", ";
-			//}
-			return SvgDocument.Open(xdoc);
+		#region Create Shapes
+
+		private void CreateShapes()
+		{
+			ShapesClass m = new ShapesClass();
+
+			// Sets starting location of svg image
+			m.LocationX = _random.Next(0, BufferWi - 1);
+			m.LocationY = _random.Next(0, BufferHt - 1);
+
+			//Sets initial speed of svg image
+			double speed = _random.NextDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
+			double vx = _random.NextDouble() * speed;
+			double vy = _random.NextDouble() * speed;
+			if (_random.Next(0, 2) == 0) vx = -vx;
+			if (_random.Next(0, 2) == 0) vy = -vy;
+			if (ShapeType != ShapeType.None)
+			{
+				m.VelocityX = vx;
+				m.VelocityY = vy;
+			}
+
+			// Starting angle based on position of angle curve
+			_angle = CalculateAngle(_intervalPosFactor);
+			m.Scale = 1;
+
+			if (ShapeList == ShapeList.GeometricShapes)
+			{
+				// Creates svg Viewbox used geometric Shapes as they are designed around this size.
+				m.SvgImage = new SvgDocument
+				{
+					ViewBox = new SvgViewBox(0, 0, _svgViewBoxSize, _svgViewBoxSize)
+				};
+			}
+
+			// Get the shape from users selected source.
+			Array enumValues;
+			switch (ShapeList)
+			{
+				case ShapeList.GeometricShapes:
+					enumValues = Enum.GetValues(typeof(GeometricShapesList));
+					m.Shape = GeometricShapesList == GeometricShapesList.Random
+						? ((GeometricShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						: GeometricShapesList.ToString();
+					int radius = _svgViewBoxSize / 2 - (StrokeWidth + 1);
+					switch (m.Shape)
+					{
+						case "Square":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, 1));
+							break;
+						case "Arrow":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgArrow());
+							break;
+						case "Triangle":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgTriangle(radius));
+							break;
+						case "Circle":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCircle(radius));
+							break;
+						case "Rectangle":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgRectangle(radius, (float) ShapeSizeRatio / 100));
+							break;
+						case "Ellipse":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgEllipse(radius, (float) ShapeSizeRatio / 100));
+							break;
+						case "Cross":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgCross((float) CrossSizeRatio / 100));
+							break;
+						case "Star":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgMultiStar(radius, StarPoints, SkipPoints));
+							break;
+						case "ConcaveStar":
+							m.SvgImage = getXMLShape("Geometric." + m.Shape);
+							break;
+						case "NonIntersectingStar":
+							m.SvgImage.Children.Add(
+								GetGeometricShape.CreateSvgNonIntersectingStar(radius, StarPoints, StarInsideSize, false));
+							break;
+						case "NorthStar":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, 8, 42, true));
+							break;
+						case "Polygon":
+							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgPolygon(radius, PolygonSides));
+							break;
+						case "Heart":
+							m.SvgImage = getXMLShape("Geometric." + m.Shape);
+							break;
+					}
+					m.SvgImage.Children[0].ID = "firstFillColor";
+					break;
+
+				case ShapeList.ChristmasShapes:
+					enumValues = Enum.GetValues(typeof(ChristmasShapesList));
+					m.Shape = ChristmasShapesList == ChristmasShapesList.Random
+						? ((ChristmasShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						: ChristmasShapesList.ToString();
+					m.SvgImage = getXMLShape("Christmas." + m.Shape);
+					break;
+
+				case ShapeList.HalloweenShapes:
+					enumValues = Enum.GetValues(typeof(HalloweenShapesList));
+					m.Shape = HalloweenShapesList == HalloweenShapesList.Random
+						? ((HalloweenShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						: HalloweenShapesList.ToString();
+					m.SvgImage = getXMLShape("Halloween." + m.Shape);
+					break;
+
+				case ShapeList.BorderShapes:
+					enumValues = Enum.GetValues(typeof(BorderShapesList));
+					m.Shape = BorderShapesList == BorderShapesList.Random
+						? ((BorderShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						: BorderShapesList.ToString();
+					m.SvgImage = getXMLShape("Borders." + m.Shape);
+					break;
+
+				case ShapeList.File:
+					m.SvgImage = SvgDocument.Open(_fileName);
+					break;
+			}
+
+			if ((int) m.SvgImage.ViewBox.Width == 0) m.SvgImage.ViewBox = new SvgViewBox(0, 0, m.SvgImage.Width, m.SvgImage.Height);
+			
+			if (!ScaleToGrid)
+			{
+				m.SvgImage.ViewBox = new SvgViewBox(-((m.SvgImage.ViewBox.Width * 1.42f - m.SvgImage.ViewBox.Width) / 2),
+					-((m.SvgImage.ViewBox.Height * 1.42f - m.SvgImage.ViewBox.Height) / 2), m.SvgImage.ViewBox.Width * 1.42f,
+					m.SvgImage.ViewBox.Height * 1.42f);
+				m.Scale = _svgViewBoxSize / m.SvgImage.ViewBox.Height;
+				m.SvgImage.Transforms.Add(new SvgRotate(0, (int) (m.SvgImage.Width / 2), (int) (m.SvgImage.Height / 2)));
+				m.LocationRatio = StringCount / m.SvgImage.ViewBox.Height * 2 * ((float) _minBuffer / StringCount);
+				m.LocationRatio1 = m.LocationRatio * m.LocationRatio;
+				m.SvgImage.Height = new SvgUnit(m.LocationRatio).ToPercentage();
+				m.SvgImage.Width = new SvgUnit(m.LocationRatio).ToPercentage();
+				m.SvgImage.Transforms.Add(new SvgScale(m.Scale));
+			}
+			else
+			{
+				m.SvgImage.Height = new SvgUnit(BufferHt);
+				m.SvgImage.Width = new SvgUnit(BufferWi);
+				m.SvgImage.AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.none);
+				m.LocationRatio = m.LocationRatio1 = 1;
+				m.LocationX = m.LocationY = 0;
+			}
+
+			// Adds rounded corners to Geometric Shapes only, no point doing it to the others.
+			if (RoundedCorner && ShapeList == ShapeList.GeometricShapes) m.SvgImage.StrokeLineJoin = SvgStrokeLineJoin.Round;
+			
+			var centerSize = CalculateCenterSize(_intervalPosFactor, m.LocationRatio1);
+			var sizeVariation = CalculateSizeVariation(_intervalPosFactor, m.LocationRatio1);
+			var minSize = centerSize - (sizeVariation / 2);
+			var maxSize = centerSize + (sizeVariation / 2);
+			if (minSize <= 9) minSize = 10; // No point having a shape that can't be seen.
+
+			switch (SizeMode)
+			{
+				case SizeMode.In:
+					m.SizeMode = "In";
+					break;
+				case SizeMode.Out:
+					m.SizeMode = "Out";
+					break;
+				case SizeMode.Random:
+					m.SizeMode = _random.Next(0, 2) == 0 ? "In" : "Out";
+					break;
+			}
+
+			// Sets starting size of shape
+			if (RemoveShape && !ScaleToGrid)
+			{
+				m.Size = m.SizeMode == "In" ? maxSize : minSize;
+				m.FadeStep = 0.9f / (maxSize - minSize);
+			}
+			else
+			{
+				m.FadeStep = 0.9f / _totalFrames;
+				m.Size = RandomSize
+					? _random.Next(minSize, maxSize)
+					: CalculateSize(_intervalPosFactor,
+						m.LocationRatio1);
+			}
+
+			if (ShapeType == ShapeType.Bounce)
+			{
+				// Ensures any new shape is added to the grid and not protuding off the grid where it could get stuck.
+				var locationOffset = (m.SvgImage.ViewBox.Width / 1.42 * m.LocationRatio1 * _scaleShapeWidth / 2);
+				bool notCreated;
+				int i = 0;
+				do
+				{
+					notCreated = false;
+					m.LocationX = _random.Next(0, BufferWi - 1);
+					m.LocationY = _random.Next(0, BufferHt - 1);
+					if (m.LocationX - locationOffset < 0 || m.LocationY - locationOffset < 0 ||
+					    m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= BufferHt) notCreated = true;
+					i++;
+				} while (notCreated && i < 10000);
+			}
+
+			// Allocates Random Colors to the shape.
+			m.FirstFillColorIndex = _random.Next(0, FirstFillColors.Count);
+			m.SecondFillColorIndex = _random.Next(0, SecondFillColors.Count);
+			m.StrokeColorIndex = _random.Next(0, OutlineColors.Count);
+
+			// Sets random starting angle and rotation direction
+			m.RotateAngle = RandomAngle ? _random.Next(0, 360) : 0;
+			m.RotateCW = _random.Next(0, 2);
+			if (ShapeList != ShapeList.File)
+			{
+				switch (FadeType)
+				{
+					case FadeType.In:
+						m.Fade = 0.05f;
+						m.FadeType = "In";
+						break;
+					case FadeType.Out:
+						m.Fade = 1;
+						m.FadeType = "Out";
+						break;
+					case FadeType.Random:
+						if (_random.Next(0, 2) == 0)
+						{
+							m.FadeType = "In";
+							m.Fade = 0.05f;
+						}
+						else
+						{
+							m.FadeType = "Out";
+							m.Fade = 1;
+						}
+						break;
+				}
+			}
+
+			// Finally adds new Shape to _shapes
+			_shapes.Add(m);
 		}
-		
+
+		#endregion
+
+		#region Update Shapes
+
 		private void UpdateShapes(double minAngleSpeed, double maxAngleSpeed, double minSizeSpeed, double maxSizeSpeed)
 		{
+			// Remove shapes if the shape count has been reduced.
+			while (_shapesCount < _shapes.Count - _removeShapes.Count)
+			{
+				// Removes random shape.
+				_shapes.Remove(_shapes[_random.Next(0, _shapes.Count)]);
+			}
+
 			foreach (var shape in _shapes)
 			{
-				//if (_shapesCount < _shapes.Count - _removeShapes.Count)
-				//{
-				//	//Removes shapes if shape count curve position is below the current number of shapes. Will only remove ones that hit the edge of the grid.
-				//	if (shape.LocationX + _radius >= BufferWi - 1 || shape.LocationY + _radius >= BufferHt - 1 ||
-				//	    shape.LocationX - _radius <= 1 || shape.LocationY + _radius <= 1)
-				//	{
-				//		_removeShapes.Add(shape);
-				//	}
-				//}
-
 				if (ShapeType != ShapeType.None)
 				{
-					//Adjust shape speeds when user adjust Speed curve
+					// Adjust shape speeds when user adjust Speed curve
 					if (_centerSpeed > CalculateCenterSpeed(_intervalPosFactor - 1) ||
 					    _centerSpeed < CalculateCenterSpeed(_intervalPosFactor - 1))
 					{
@@ -1442,24 +1546,32 @@ namespace VixenModules.Effect.Shapes
 
 				double angleSpeed = _random.NextDouble() * (maxAngleSpeed - minAngleSpeed) + minAngleSpeed;
 				double sizeSpeed = (_random.NextDouble() * (maxSizeSpeed - minSizeSpeed) + minSizeSpeed) / 10;
+				
+				var centerSize = CalculateCenterSize(_intervalPosFactor, shape.LocationRatio1);
+				var sizeVariation = CalculateSizeVariation(_intervalPosFactor, shape.LocationRatio1);
+				var minSize = centerSize - (sizeVariation / 2);
+				var maxSize = centerSize + (sizeVariation / 2);
 
-				if (RandomShapeSize && !ScaleToGrid)
+				if (minSize <= 9) minSize = 10;
+				if (RemoveShape && !ScaleToGrid)
 				{
-					if (sizeSpeed > 1) shape.Size *= sizeSpeed; //ratio;
-
-					if (shape.Size > CalculateMaxSize(_intervalPosFactor, shape.LocationRatio1)) //(int)(Math.Min(BufferWi, BufferHt) * 0.75))
+					switch (shape.SizeMode)
 					{
-						_removeShapes.Add(shape);
+						case "In":
+							if (sizeSpeed > 1) shape.Size /= sizeSpeed;
+							break;
+						default:
+							if (sizeSpeed > 1) shape.Size *= sizeSpeed;
+							break;
 					}
-				}
-				else
-				{
-					shape.Size = CalculateSize(_intervalPosFactor, shape.LocationRatio1);
-				}
 
+					// Remove shape if its bigger or smaller then the limits and then create new shape.
+					if (shape.Size > maxSize || shape.Size < minSize) _removeShapes.Add(shape);
+				}
+				
+				// Adjust shape angle.
 				if (RandomAngle)
 				{
-					//shape.RotateAngle = CalculateAngle(_intervalPosFactor);
 					if (shape.RotateCW == 1)
 					{
 						if (shape.RotateAngle > 358)
@@ -1488,6 +1600,42 @@ namespace VixenModules.Effect.Shapes
 					shape.RotateAngle = _angle;
 				}
 
+				if (ShapeList != ShapeList.File)
+				{
+					switch (shape.FadeType)
+					{
+						case "In":
+							if (RemoveShape && !ScaleToGrid)
+							{
+								// Adjust fading exponentially so it looks better on live lights.
+								shape.Fade = shape.SizeMode == "In"
+									? (float) Math.Pow(1 - (1 / (float) (maxSize - minSize / 2) * (shape.Size - (float) minSize / 2)), 2)
+									: (float)Math.Pow((1 / (float)(maxSize - minSize / 2) * (shape.Size - (float)minSize / 2)), 2);
+							}
+							else
+							{
+								shape.Fade += shape.FadeStep;
+							}
+
+							if (shape.Fade > .95) _removeShapes.Add(shape);
+							break;
+						case "Out":
+							if (RemoveShape && !ScaleToGrid)
+							{
+								// Adjust fading exponentially so it looks better on live lights.
+								shape.Fade = shape.SizeMode == "In"
+									? (float) Math.Pow(1 / (float) (maxSize - minSize / 2) * (shape.Size - (float) minSize / 2), 2)
+									: (float) Math.Pow(1 - (1 / (float) (maxSize - minSize / 2) * (shape.Size - (float) minSize / 2)), 2);
+							}
+							else
+							{
+								shape.Fade -= shape.FadeStep;
+							}
+							if (shape.Fade < 0.05) _removeShapes.Add(shape);
+							break;
+					}
+				}
+
 				// Move the shape.
 				if (ShapeType != ShapeType.None)
 				{
@@ -1497,14 +1645,6 @@ namespace VixenModules.Effect.Shapes
 
 					switch (ShapeType)
 					{
-						case ShapeType.None:
-							if (shape.LocationX + shape.Size < 0 || shape.LocationY + shape.Size < 0 ||
-							    shape.LocationX - shape.Size > BufferWi || shape.LocationY - shape.Size > BufferHt)
-							{
-								_removeShapes.Add(shape);
-							}
-							break;
-
 						case ShapeType.Bounce:
 							if (shape.LocationX - locationOffset < 0)
 							{
@@ -1548,6 +1688,32 @@ namespace VixenModules.Effect.Shapes
 			}
 		}
 
+		#endregion
+
+		#region Helpers
+
+		private SvgDocument getXMLShape(string svgImage)
+		{
+			// Gets SVG data from embedded Shape xml files within the Shape Effect project and conerts to an SVG image. 
+			Stream s = Assembly.GetExecutingAssembly()
+				.GetManifestResourceStream("VixenModules.Effect.Shapes.SVGShapes." + svgImage + ".xml");
+			XmlDocument xdoc = new XmlDocument();
+			StreamReader reader = new StreamReader(s);
+			xdoc.LoadXml(reader.ReadToEnd());
+			reader.Close();
+
+			//Used to get points
+			//var tempImage = SvgDocument.Open(xdoc);
+			//var svgPoints = tempImage.Path.PathPoints.ToArray();
+			////m.svgImage.Children.Add(GetGeometricShape.CreateSvgImage(svgPoints));
+			//string test = null;
+			//foreach (var point in svgPoints)
+			//{
+			//	test = test + point.X + ", " + point.Y + ", ";
+			//}
+			return SvgDocument.Open(xdoc);
+		}
+
 		private void RemoveShapes()
 		{
 			if (_shapesCount < _shapes.Count || _removeShapes.Count > 0)
@@ -1555,7 +1721,7 @@ namespace VixenModules.Effect.Shapes
 				foreach (var shape in _removeShapes)
 				{
 					_shapes.Remove(shape);
-					CreateShapes();
+					if (_shapes.Count < _shapesCount) CreateShapes();
 				}
 				_removeShapes.Clear();
 			}
@@ -1578,6 +1744,10 @@ namespace VixenModules.Effect.Shapes
 			internal SvgDocument SvgImage;
 			internal float LocationRatio;
 			internal float LocationRatio1;
+			internal float Fade;
+			internal string FadeType;
+			internal float FadeStep;
+			internal string SizeMode;
 		}
 		
 		private int CalculateShapeCount(double intervalPosFactor)
@@ -1623,10 +1793,17 @@ namespace VixenModules.Effect.Shapes
 			if (value < 1) value = 1;
 			return value;
 		}
-		
-		private int CalculateMaxSize(double intervalPosFactor, float locationRatio1)
+
+		private int CalculateSizeVariation(double intervalPosFactor, float locationRatio1)
 		{
-			int value = (int)ScaleCurveToValue(MaxSizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
+			int value = (int)ScaleCurveToValue(SizeVariationCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
+			if (value < 1) value = 1;
+			return value;
+		}
+
+		private int CalculateCenterSize(double intervalPosFactor, float locationRatio1)
+		{
+			int value = (int)ScaleCurveToValue(CenterSizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
 			if (value < 1) value = 1;
 			return value;
 		}
@@ -1656,5 +1833,6 @@ namespace VixenModules.Effect.Shapes
 			return (int)ScaleCurveToValue(ShapeOutLineSpaceCurve.GetValue(intervalPos), 100, 0);
 		}
 
+		#endregion
 	}
 }
