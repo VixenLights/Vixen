@@ -5,13 +5,17 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Extensions;
 using Vixen.Rule;
 using Vixen.Sys;
-using VixenModules.App.LipSyncApp;
+using ColorProperty = VixenModules.Property.Color;
+using Color = System.Drawing.Color;
+
 
 namespace VixenModules.Property.Face {
 	public partial class FaceSetupHelper : BaseForm, IElementSetupHelper
@@ -85,7 +89,7 @@ namespace VixenModules.Property.Face {
 				DataRow dr = _mouthDataTable.Rows[num];
 				var otherDataRow = _otherDataTable.Rows[num];
 				string elementName = dr[0].ToString();
-				LipSyncMapItem item = new LipSyncMapItem();
+				FaceMapItem item = new FaceMapItem();
 				ElementNode node = FindElementNode(elementName);
 
 				FaceModule fm;
@@ -109,7 +113,7 @@ namespace VixenModules.Property.Face {
 						dr.Table.Columns[theCount].ColumnName, checkVal
 					);
 				}
-				fm.DefaultColor = (Color)dr[dr.ItemArray.Count() - 1];
+				fm.DefaultColor = (System.Drawing.Color)dr[dr.ItemArray.Count() - 1];
 
 				fm.FaceComponents.Clear();
 				foreach (FaceComponent key in Enum.GetValues(typeof(FaceComponent)))
@@ -140,7 +144,7 @@ namespace VixenModules.Property.Face {
 				dt.Columns.Add(key, typeof(Boolean));
 			}
 
-			dt.Columns.Add(COLOR_COLUMN_NAME, typeof(Color));
+			dt.Columns.Add(COLOR_COLUMN_NAME, typeof(System.Drawing.Color));
 
 			foreach (var element in _targetNodes)
 			{
@@ -161,7 +165,7 @@ namespace VixenModules.Property.Face {
 						dr[key] = false;
 					}
 				}
-				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? Color.White;
+				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? System.Drawing.Color.White;
 			}
 
 			dt.Columns[" "].ReadOnly = true;
@@ -179,7 +183,7 @@ namespace VixenModules.Property.Face {
 			dt.Columns.Add(FaceComponent.EyesOpen.GetEnumDescription(), typeof(Boolean));
 			dt.Columns.Add(FaceComponent.EyesClosed.GetEnumDescription(), typeof(Boolean));
 
-			dt.Columns.Add(COLOR_COLUMN_NAME, typeof(Color));
+			dt.Columns.Add(COLOR_COLUMN_NAME, typeof(System.Drawing.Color));
 
 			foreach (var element in _targetNodes)
 			{
@@ -199,7 +203,7 @@ namespace VixenModules.Property.Face {
 						dr[key.GetEnumDescription()] = false;
 					}
 				}
-				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? Color.White;
+				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? System.Drawing.Color.White;
 			}
 
 			dt.Columns[" "].ReadOnly = true;
@@ -214,27 +218,27 @@ namespace VixenModules.Property.Face {
 			{
 
 				_phonemeBitmaps = new Dictionary<string, Bitmap>();
-				_phonemeBitmaps.Add("AI", Tools.GetIcon(App.LipSyncApp.Properties.Resources.AI_Transparent, 48));
-				_phonemeBitmaps.Add("E", Tools.GetIcon(App.LipSyncApp.Properties.Resources.E_Transparent, 48));
-				_phonemeBitmaps.Add("ETC", Tools.GetIcon(App.LipSyncApp.Properties.Resources.etc_Transparent, 48));
-				_phonemeBitmaps.Add("FV", Tools.GetIcon(App.LipSyncApp.Properties.Resources.FV_Transparent, 48));
-				_phonemeBitmaps.Add("L", Tools.GetIcon(App.LipSyncApp.Properties.Resources.L_Transparent, 48));
-				_phonemeBitmaps.Add("MBP", Tools.GetIcon(App.LipSyncApp.Properties.Resources.MBP_Transparent, 48));
-				_phonemeBitmaps.Add("O", Tools.GetIcon(App.LipSyncApp.Properties.Resources.O_Transparent, 48));
-				_phonemeBitmaps.Add("REST", Tools.GetIcon(App.LipSyncApp.Properties.Resources.rest_Transparent, 48));
-				_phonemeBitmaps.Add("U", Tools.GetIcon(App.LipSyncApp.Properties.Resources.U_Transparent, 48));
-				_phonemeBitmaps.Add("WQ", Tools.GetIcon(App.LipSyncApp.Properties.Resources.WQ_Transparent, 48));
+				_phonemeBitmaps.Add("AI", Tools.GetIcon(Resources.AI_Transparent, 48));
+				_phonemeBitmaps.Add("E", Tools.GetIcon(Resources.E_Transparent, 48));
+				_phonemeBitmaps.Add("ETC", Tools.GetIcon(Resources.etc_Transparent, 48));
+				_phonemeBitmaps.Add("FV", Tools.GetIcon(Resources.FV_Transparent, 48));
+				_phonemeBitmaps.Add("L", Tools.GetIcon(Resources.L_Transparent, 48));
+				_phonemeBitmaps.Add("MBP", Tools.GetIcon(Resources.MBP_Transparent, 48));
+				_phonemeBitmaps.Add("O", Tools.GetIcon(Resources.O_Transparent, 48));
+				_phonemeBitmaps.Add("REST", Tools.GetIcon(Resources.rest_Transparent, 48));
+				_phonemeBitmaps.Add("U", Tools.GetIcon(Resources.U_Transparent, 48));
+				_phonemeBitmaps.Add("WQ", Tools.GetIcon(Resources.WQ_Transparent, 48));
 
 				_faceComponentBitmaps = new Dictionary<string, Bitmap>
 				{
 					{
-						FaceComponent.EyesOpen.GetEnumDescription(), Tools.GetIcon(App.LipSyncApp.Properties.Resources.WQ_Transparent, 48)
+						FaceComponent.EyesOpen.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
 					},
 					{
-						FaceComponent.EyesClosed.GetEnumDescription(), Tools.GetIcon(App.LipSyncApp.Properties.Resources.WQ_Transparent, 48)
+						FaceComponent.EyesClosed.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
 					},
 					{
-						FaceComponent.Outlines.GetEnumDescription(), Tools.GetIcon(App.LipSyncApp.Properties.Resources.WQ_Transparent, 48)
+						FaceComponent.Outlines.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
 					}
 				};
 			}
@@ -370,13 +374,13 @@ namespace VixenModules.Property.Face {
 
 				e.Handled = true;
 			}
-			else if (e.ColumnIndex == colorColumn && e.Value is Color)
+			else if (e.ColumnIndex == colorColumn && e.Value is System.Drawing.Color)
 			{
 				e.Graphics.DrawRectangle(new Pen(ThemeColorTable.ForeColor, 2), e.CellBounds);
-				e.CellStyle.ForeColor = (Color)e.Value;
-				e.CellStyle.BackColor = (Color)e.Value;
-				e.CellStyle.SelectionForeColor = (Color)e.Value;
-				e.CellStyle.SelectionBackColor = (Color)e.Value;
+				e.CellStyle.ForeColor = (System.Drawing.Color)e.Value;
+				e.CellStyle.BackColor = (System.Drawing.Color)e.Value;
+				e.CellStyle.SelectionForeColor = (System.Drawing.Color)e.Value;
+				e.CellStyle.SelectionBackColor = (System.Drawing.Color)e.Value;
 			}
 			else
 			{
@@ -437,7 +441,7 @@ namespace VixenModules.Property.Face {
 				if (e.ColumnIndex == lastColumn)
 				{
 					List<ElementNode> chosenNodes = new List<ElementNode>();
-					LipSyncMapColorSelect colorDialog1 = new LipSyncMapColorSelect();
+					//LipSyncMapColorSelect colorDialog1 = new LipSyncMapColorSelect();
 
 					foreach (DataGridViewCell selCell in view.SelectedCells)
 					{
@@ -451,14 +455,15 @@ namespace VixenModules.Property.Face {
 						}
 					}
 
-					colorDialog1.ChosenNodes = chosenNodes;
-					colorDialog1.Color = (Color)view.SelectedCells[0].Value;
+					//colorDialog1.ChosenNodes = chosenNodes;
+					var origColor = (System.Drawing.Color)view.SelectedCells[0].Value;
 
 					// Show the color dialog.
-					DialogResult result = colorDialog1.ShowDialog();
+					//DialogResult result = colorDialog1.ShowDialog();
+					var result = ChooseColor(chosenNodes, origColor);
 
 					// See if user pressed ok.
-					if (result == DialogResult.OK)
+					if (result.Item1 == DialogResult.OK)
 					{
 						_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
 						_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = false;
@@ -466,18 +471,73 @@ namespace VixenModules.Property.Face {
 						{
 							if (selCell.ColumnIndex == lastColumn)
 							{
-								_mouthDataTable.Rows[selCell.RowIndex][_mouthDataTable.Columns[COLOR_COLUMN_NAME]] = colorDialog1.Color;
-								_otherDataTable.Rows[selCell.RowIndex][_otherDataTable.Columns[COLOR_COLUMN_NAME]] = colorDialog1.Color;
+								_mouthDataTable.Rows[selCell.RowIndex][_mouthDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
+								_otherDataTable.Rows[selCell.RowIndex][_otherDataTable.Columns[COLOR_COLUMN_NAME]] = result.Item2;
 								//selCell.Value = colorDialog1.Color;
 							}
 						}
 						DataGridViewCell cell = view.Rows[e.RowIndex].Cells[e.ColumnIndex];
-						cell.Value = colorDialog1.Color;
+						cell.Value = result.Item2;
 						_mouthDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
 						_otherDataTable.Columns[COLOR_COLUMN_NAME].ReadOnly = true;
 					}
 				}
 			}
+		}
+
+		private HashSet<System.Drawing.Color> ValidDiscreteColors(List<ElementNode> nodeList)
+		{
+			HashSet<System.Drawing.Color> validColors = new HashSet<System.Drawing.Color>();
+
+			if (nodeList == null) return validColors;
+			// look for the color property of the target effect element, and restrict the gradient.
+			// If it's a group, iterate through all children (and their children, etc.), finding as many color
+			// properties as possible; then we can decide what to do based on that.
+			validColors.AddRange(nodeList.SelectMany(x => ColorProperty.ColorModule.getValidColorsForElementNode(x, true)));
+			return validColors;
+		}
+
+		private Tuple<DialogResult,System.Drawing.Color> ChooseColor(List<ElementNode> selectedNodes, System.Drawing.Color color)
+		{
+			var returnColor = color;
+			var colors = ValidDiscreteColors(selectedNodes);
+			DialogResult result = DialogResult.Abort;
+			if (colors.Any())
+			{
+				using (DiscreteColorPicker dcp = new DiscreteColorPicker())
+				{
+					dcp.ValidColors = colors;
+					dcp.SingleColorOnly = true;
+					dcp.SelectedColors = new List<System.Drawing.Color> { color };
+					result = dcp.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						if (!dcp.SelectedColors.Any())
+						{
+							returnColor = System.Drawing.Color.White;
+						}
+						else
+						{
+							returnColor = dcp.SelectedColors.First();
+						}
+					}
+				}
+			}
+			else
+			{
+				using (ColorPicker cp = new ColorPicker())
+				{
+					cp.LockValue_V = false;
+					cp.Color = XYZ.FromRGB(color);
+					result = cp.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						returnColor = cp.Color.ToRGB();
+					}
+				}
+			}
+
+			return new Tuple<DialogResult, System.Drawing.Color>(result, returnColor);
 		}
 	}
 }

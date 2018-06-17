@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace VixenModules.App.LipSyncApp
+namespace VixenModules.Property.Face
 {
 	public enum FaceComponent
 	{

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Vixen.Sys;
-using VixenModules.App.LipSyncApp;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace VixenModules.Property.Face
 {
@@ -10,40 +10,48 @@ namespace VixenModules.Property.Face
 	{
 		public FaceMapItem()
 		{
-			PhonemeList = PhonemeList = new Dictionary<string, Boolean>();
-		}
-
-		public FaceMapItem(ElementNode node)
-		{
-			PhonemeList = PhonemeList = new Dictionary<String, Boolean>();
-			Node = node;
-			DefaultColor = Color.White;
+			PhonemeList = new Dictionary<string, Boolean>();
+			FaceComponents = new Dictionary<FaceComponent, bool>();
+			ElementColor = System.Drawing.Color.White;
 		}
 
 		public FaceMapItem Clone()
 		{
 			FaceMapItem retVal = new FaceMapItem();
-			retVal.Node = Node;
-			retVal.PhonemeList = PhonemeList = new Dictionary<String, Boolean>();
-			retVal.DefaultColor = DefaultColor;
+			retVal.PhonemeList = new Dictionary<string, bool>(PhonemeList);
+			retVal.ElementColor = ElementColor;
+			retVal.ElementGuid = ElementGuid;
 			retVal.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
+
 			return retVal;
 		}
 
+		[DataMember]
+		public Dictionary<string, Boolean> PhonemeList { get; set; }
 
-		public Dictionary<string, Boolean> PhonemeList{ get; set; }
+		[DataMember]
+		public System.Drawing.Color ElementColor { get; set; }
 
+		[DataMember]
+		private string _stringName;
+
+		[DataMember]
+		public Guid ElementGuid { get; set; }
+
+		[DataMember]
 		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
 
-		public Color DefaultColor { get; set; }
-
-		public Guid ElementGuid => Node.Id;
-
-		public ElementNode Node { get; set; }
-
-		public override string ToString()
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext context)
 		{
-			return Node.Name;
+			if (FaceComponents == null)
+			{
+				FaceComponents = new Dictionary<FaceComponent, bool>();
+				if (PhonemeList.Values.Any(x => x))
+				{
+					FaceComponents.Add(FaceComponent.Mouth, true);
+				}
+			}
 		}
 
 	}

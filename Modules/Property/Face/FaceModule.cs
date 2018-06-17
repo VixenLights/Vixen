@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module.Property;
 using Vixen.Sys;
-using VixenModules.App.LipSyncApp;
 
 namespace VixenModules.Property.Face {
 	public class FaceModule : PropertyModuleInstanceBase {
@@ -24,7 +21,7 @@ namespace VixenModules.Property.Face {
 			}
 			_data.PhonemeList = new Dictionary<string, bool>();
 			_data.FaceComponents = new Dictionary<FaceComponent, bool>();
-			DefaultColor = Color.White;
+			DefaultColor = System.Drawing.Color.White;
 		}
 
 		public override void CloneValues(IProperty sourceProperty)
@@ -54,7 +51,7 @@ namespace VixenModules.Property.Face {
 			set { _data.FaceComponents = value; }
 		}
 
-		public Color DefaultColor
+		public System.Drawing.Color DefaultColor
 		{
 			get { return _data.DefaultColor; }
 			set { _data.DefaultColor = value; }
@@ -74,22 +71,22 @@ namespace VixenModules.Property.Face {
 			return element.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
 		}
 
-		public Tuple<double, Color> ConfiguredColorAndIntensity()
+		public Tuple<double, System.Drawing.Color> ConfiguredColorAndIntensity()
 		{
 			HSV hsvVal = HSV.FromRGB(DefaultColor);
 			hsvVal.V = 1;
 			var colorRetVal = hsvVal.ToRGB().ToArgb();
 			double intensityRetVal = HSV.VFromRgb(DefaultColor);
 
-			return new Tuple<double, Color>(intensityRetVal, colorRetVal);
+			return new Tuple<double, System.Drawing.Color>(intensityRetVal, colorRetVal);
 		}
 
-		public double ConfiguredIntensity(LipSyncMapItem item)
+		public double ConfiguredIntensity(FaceMapItem item)
 		{
 			return HSV.VFromRgb(DefaultColor);
 		}
 
-		public Color ConfiguredColor()
+		public System.Drawing.Color ConfiguredColor()
 		{
 			HSV hsvVal = HSV.FromRGB(DefaultColor);
 			hsvVal.V = 1;

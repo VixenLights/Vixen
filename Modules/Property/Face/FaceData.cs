@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Runtime.Serialization;
 using Vixen.Module;
-using VixenModules.App.LipSyncApp;
 
 namespace VixenModules.Property.Face
 {
@@ -14,7 +12,7 @@ namespace VixenModules.Property.Face
 		{
 			PhonemeList = new Dictionary<string, Boolean>();
 			FaceComponents = new Dictionary<FaceComponent, bool>();
-			DefaultColor = Color.White;
+			DefaultColor = System.Drawing.Color.White;
 		}
 
 		public override IModuleDataModel Clone() {
@@ -32,6 +30,6 @@ namespace VixenModules.Property.Face
 		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
 
 		[DataMember]
-		public Color DefaultColor { get; set; }
+		public System.Drawing.Color DefaultColor { get; set; }
 	}
 }

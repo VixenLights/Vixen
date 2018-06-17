@@ -17,6 +17,7 @@ namespace VixenModules.App.LipSyncApp
 
 		public override void Loading()
 		{
+			MigrateMapsToProperties();
 		}
 
 		public override void Unloading()
@@ -312,6 +313,18 @@ namespace VixenModules.App.LipSyncApp
 				}
 			}
 			return retVal;
+		}
+
+		public bool MigrateMapsToProperties()
+		{
+			bool migrated = false;
+			if (!_staticData.MapMigrationCompleted)
+			{
+				_staticData.MigrateMaps();
+				migrated = true;
+			}
+
+			return migrated;
 		}
 
 	}

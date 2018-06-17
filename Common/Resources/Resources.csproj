@@ -76,6 +76,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LipSync\Tools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -209,6 +210,7 @@
     <None Include="filter_delete.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LipSync\standard_dictionary" />
     <None Include="magnifier.png" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +318,38 @@
     <Content Include="LineVisible.png" />
     <Resource Include="MarkBarVisible.png" />
     <Resource Include="MarkLineVisible.png" />
+    <EmbeddedResource Include="LipSync\AI.jpg" />
+    <EmbeddedResource Include="LipSync\AI_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\AI_Transparent.png" />
+    <EmbeddedResource Include="LipSync\E.jpg" />
+    <EmbeddedResource Include="LipSync\E_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\E_Transparent.png" />
+    <EmbeddedResource Include="LipSync\etc.jpg" />
+    <EmbeddedResource Include="LipSync\etc_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\etc_Transparent.png" />
+    <EmbeddedResource Include="LipSync\FV.jpg" />
+    <EmbeddedResource Include="LipSync\FV_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\FV_Transparent.png" />
+    <EmbeddedResource Include="LipSync\L.jpg" />
+    <EmbeddedResource Include="LipSync\L_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\L_Transparent.png" />
+    <EmbeddedResource Include="LipSync\MBP.jpg" />
+    <EmbeddedResource Include="LipSync\MBP_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\MBP_Transparent.png" />
+    <EmbeddedResource Include="LipSync\NoImage.png" />
+    <EmbeddedResource Include="LipSync\O.jpg" />
+    <EmbeddedResource Include="LipSync\O_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\O_Transparent.png" />
+    <EmbeddedResource Include="LipSync\Preview.jpg" />
+    <EmbeddedResource Include="LipSync\rest.jpg" />
+    <EmbeddedResource Include="LipSync\rest_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\rest_Transparent.png" />
+    <EmbeddedResource Include="LipSync\U.jpg" />
+    <EmbeddedResource Include="LipSync\U_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\U_Transparent.png" />
+    <EmbeddedResource Include="LipSync\WQ.jpg" />
+    <EmbeddedResource Include="LipSync\WQ_LightGray.jpg" />
+    <EmbeddedResource Include="LipSync\WQ_Transparent.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />

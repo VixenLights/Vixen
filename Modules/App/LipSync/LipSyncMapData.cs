@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using Vixen.Module;
 using Vixen.Sys;
 using Common.Controls.ColorManagement.ColorModels;
+using VixenModules.Property.Face;
 
 namespace VixenModules.App.LipSyncApp
 {

@@ -71,7 +71,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FaceComponent.cs" />
     <Compile Include="LipSyncMapColorCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -164,6 +163,11 @@
     <ProjectReference Include="..\..\Property\Color\Color.csproj">
       <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
       <Name>Color</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Face\Face.csproj">
+      <Project>{5fcc5484-8894-4e36-ba81-b2f1b9008404}</Project>
+      <Name>Face</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Marks\Marks.csproj">

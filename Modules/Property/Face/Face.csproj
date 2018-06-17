@@ -62,7 +62,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="TabControlEX">
       <HintPath>..\..\..\Common\Libraries\TabControlEX.dll</HintPath>
@@ -70,10 +69,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FaceMapItem.cs" />
+    <Compile Include="FaceComponent.cs" />
     <Compile Include="FaceDescriptor.cs" />
     <Compile Include="FaceData.cs" />
     <Compile Include="FaceModule.cs" />
+    <Compile Include="FaceMapItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FaceSetupHelper.cs">
       <SubType>Form</SubType>
@@ -98,9 +98,9 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\LipSync\LipSyncApp.csproj">
-      <Project>{e3689e21-2204-48b9-8370-d45ee4a23451}</Project>
-      <Name>LipSyncApp</Name>
+    <ProjectReference Include="..\Color\Color.csproj">
+      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
+      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

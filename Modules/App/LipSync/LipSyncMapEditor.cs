@@ -11,6 +11,7 @@ using Common.Resources.Properties;
 using Vixen.Sys;
 using Common.Controls.Theme;
 using Vixen.Extensions;
+using VixenModules.Property.Face;
 
 namespace VixenModules.App.LipSyncApp
 {
