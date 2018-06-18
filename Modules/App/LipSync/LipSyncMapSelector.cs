@@ -84,7 +84,7 @@ namespace VixenModules.App.LipSyncApp
 			mappingsListView.Columns.Add("Name");
 			mappingsListView.Columns.Add("Type");
 			mappingsListView.Columns.Add("Notes");
-
+			
 			mappingsListView.Items.Clear();
 			foreach (KeyValuePair<string, LipSyncMapData> kvp in Library)
 			{
@@ -116,23 +116,32 @@ namespace VixenModules.App.LipSyncApp
 				mappingsListView.Items.Add(lvi);
 			}
 
-			int totalSize = mappingsListView.Columns.Count + 1;
-			foreach (ColumnHeader column in mappingsListView.Columns)
+			if (!Library.Any())
 			{
-				column.Width = -1;
-				if (!column.Text.Equals("Notes"))
+				SetWidths();
+			}
+			else
+			{
+				int totalSize = mappingsListView.Columns.Count + 1;
+				foreach (ColumnHeader column in mappingsListView.Columns)
 				{
-					totalSize += column.Width;
-				}
-				else
-				{
-					int proposedViewSize = column.Width + totalSize;
-					if ( proposedViewSize <= mappingsListView.Width)
+					column.Width = -1;
+					if (!column.Text.Equals("Notes"))
 					{
-						column.Width = mappingsListView.Width - totalSize;
+						totalSize += column.Width;
+					}
+					else
+					{
+						int proposedViewSize = column.Width + totalSize;
+						if (proposedViewSize <= mappingsListView.Width)
+						{
+							column.Width = mappingsListView.Width - totalSize;
+						}
 					}
 				}
 			}
+
+			
 		}
 
 		private void PopulateListWithMappings()
@@ -161,6 +170,11 @@ namespace VixenModules.App.LipSyncApp
 				
 				mappingsListView.Items.Add(item);
 
+			}
+
+			if (!Library.Any())
+			{
+				SetWidths();
 			}
 			mappingsListView.EndUpdate();
 
@@ -347,6 +361,25 @@ namespace VixenModules.App.LipSyncApp
 
 			ListViewItem lvItem = mappingsListView.SelectedItems[0];
 			RenameOldLabel = lvItem.Name;
+		}
+
+		private void SetWidths()
+		{
+			foreach (ColumnHeader col in mappingsListView.Columns)
+			{
+				var width = col.Width;
+
+				// column items greatest width
+				col.Width = -1;
+				if (width > col.Width)
+					col.Width = width;
+
+				// column header width
+				col.Width = -2;
+				if (width > col.Width)
+					col.Width = width;
+			}
+
 		}
 	}
 }
