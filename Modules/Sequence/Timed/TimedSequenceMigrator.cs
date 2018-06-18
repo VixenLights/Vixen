@@ -43,7 +43,8 @@ namespace VixenModules.Sequence.Timed
 									new MigrationSegment<XElement>(1, 2, _Version_1_to_2),
 									new MigrationSegment<XElement>(2, 3, _Version_2_to_3),
 									new MigrationSegment<XElement>(3, 4, _Version_3_to_4),
-									new MigrationSegment<XElement>(4, 5, _Version_4_to_5)
+									new MigrationSegment<XElement>(4, 5, _Version_4_to_5),
+									new MigrationSegment<XElement>(5, 6, _Version_5_to_6)
 				};
 		}
 
@@ -463,6 +464,18 @@ namespace VixenModules.Sequence.Timed
 			return content;
 		}
 
+		private XElement _Version_5_to_6(XElement content)
+		{
+			var messageBox = new MessageBoxForm(string.Format(
+				"Migrating sequence from version 5 to version 6. This may take a few minutes if the sequence is large.{0}{0}Changes include the following:{0}{0}" +
+				"Changes to allow LipSync string elements to work with Face properties instead of maps.{0}" +
+				"These changes are not backward compatible.", Environment.NewLine), "Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+			messageBox.ShowDialog();
+
+			MigrateLipSyncFrom5To6(content);
+			return content;
+		}
+
 		private void MigrateChaseFrom3To4(XElement content)
 		{
 			//This migration deals with changing the Fireworks effect to accomodate multiple gradients instead of miltiple colors
@@ -608,6 +621,63 @@ namespace VixenModules.Sequence.Timed
 				//Extract the new data model that we want and insert it in the tree
 				datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
 			}
+		}
+
+		private void MigrateLipSyncFrom5To6(XElement content)
+		{
+			//This migration deals with changing the LipSync matrix elements from version 4 to 5
+			//Get the standard namespaces that are needed in the sequence
+			var namespaces = GetStandardNamespaces();
+			//Add in the ones for this effect
+			XNamespace d2p1 = "http://schemas.datacontract.org/2004/07/VixenModules.Effect.LipSync";
+			namespaces.AddNamespace("d2p1", d2p1.NamespaceName);
+
+			//Find the Chase effects.
+			IEnumerable<XElement> lipSyncElements =
+				content.XPathSelectElements(
+					"_dataModels/d1p1:anyType[@i:type = 'd2p1:LipSyncData']", namespaces);
+
+			var datamodel = content.XPathSelectElement("_dataModels", namespaces);
+
+			LipSyncMapLibrary library =
+				ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
+
+			if (library != null)
+			{
+				foreach (var lipSyncElement in lipSyncElements.ToList())
+				{
+					LipSyncMapData mapData;
+
+					var lipSyncData = DeSerializer<LipSyncData>(lipSyncElement);
+
+					if (library.Library.TryGetValue(lipSyncData.PhonemeMapping, out mapData))
+					{
+						if (!mapData.IsMatrix)
+						{
+							lipSyncData.MappingType = MappingType.FaceDefinition;
+						}
+					}
+					else
+					{
+						lipSyncData.MappingType = MappingType.FaceDefinition;
+					}
+
+					//Remove the old version
+					lipSyncElement.Remove();
+
+					//Build up a temporary container similar to the way sequences are stored to
+					//make all the namespace prefixes line up.
+					IModuleDataModel[] dm = { lipSyncData };
+					DataContainer dc = new DataContainer { _dataModels = dm };
+
+					//Serialize the object into a xelement
+					XElement glp = Serializer(dc, new[] { typeof(LipSyncData), typeof(IModuleDataModel[]), typeof(DataContainer) });
+
+					//Extract the new data model that we want and insert it in the tree
+					datamodel.Add(glp.XPathSelectElement("//*[local-name()='anyType']", namespaces));
+				}
+			}
+			
 		}
 
 		private static XmlNamespaceManager GetStandardNamespaces()

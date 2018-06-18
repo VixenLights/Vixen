@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Module.Property;
+using Vixen.Rule;
 using Vixen.Sys;
 
 namespace VixenModules.Property.Face {
@@ -113,17 +114,18 @@ namespace VixenModules.Property.Face {
 			return retVal;
 		}
 
-		public override bool Setup() {
-			//using (FaceSetupHelper faceSetupHelper = new FaceSetupHelper()) {
-			//	if (faceSetupHelper.ShowDialog() == DialogResult.OK) {
-			//		_data.PhonemeList = faceSetupHelper.PhonemeList;
-			//		return true;
-			//	}
-			//	return false;
-			//}
+		#region Overrides of PropertyModuleInstanceBase
 
-			return true;
+		/// <inheritdoc />
+		public override bool HasElementSetupHelper => true;
+
+		/// <inheritdoc />
+		public override bool SetupElements(IEnumerable<ElementNode> nodes)
+		{
+			var helper = new FaceSetupHelper();
+			return helper.Perform(nodes);
 		}
 
+		#endregion
 	}
 }

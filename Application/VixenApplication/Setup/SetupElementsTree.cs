@@ -200,17 +200,32 @@ namespace VixenApplication.Setup
 			if (listViewProperties.SelectedItems.Count == 1) {
 				var property = listViewProperties.SelectedItems[0].Tag as IPropertyModuleInstance;
 				if (property != null) {
-					result = property.Setup();
-					if (result) {
-						// try and 'clone' the property data to any other selected element with this property data
-						foreach (ElementNode elementNode in SelectedElements) {
-							IPropertyModuleInstance p = elementNode.Properties.Get(property.TypeId);
-							if (p != null) {
-								p.ModuleData = property.ModuleData.Clone();
-							}
-						}
 
-						OnElementsChanged();
+					if (property.HasSetup)
+					{
+						result = property.Setup();
+						if (result)
+						{
+							// try and 'clone' the property data to any other selected element with this property data
+							foreach (ElementNode elementNode in SelectedElements)
+							{
+								IPropertyModuleInstance p = elementNode.Properties.Get(property.TypeId);
+								if (p != null)
+								{
+									p.ModuleData = property.ModuleData.Clone();
+								}
+							}
+
+							OnElementsChanged();
+						}
+					}
+					else if (property.HasElementSetupHelper)
+					{
+						result = property.SetupElements(SelectedElements);
+						if (result)
+						{
+							OnElementsChanged();
+						}
 					}
 				}
 			}

@@ -428,7 +428,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void setDefaultMap_Click(object sender,EventArgs e)
 		{
 			ToolStripMenuItem menu = (ToolStripMenuItem)sender;
-			if (!_library.DefaultMappingName.Equals(menu.Text))
+			if ( _library.DefaultMapping != null && !_library.DefaultMappingName.Equals(menu.Text))
 			{
 				_library.DefaultMappingName = menu.Text; 
 				SequenceModified();
@@ -437,8 +437,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void defaultMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            string defaultText = _library.DefaultMappingName;
-            defaultMapToolStripMenuItem.DropDownItems.Clear();            
+           defaultMapToolStripMenuItem.DropDownItems.Clear();            
             foreach (LipSyncMapData mapping in _library.Library.Values)
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
@@ -536,7 +535,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void changeMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			string defaultText = _library.DefaultMappingName;
 			changeMapToolStripMenuItem.DropDownItems.Clear();
 			foreach (LipSyncMapData mapping in _library.Library.Values)
 			{

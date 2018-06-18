@@ -443,7 +443,7 @@ namespace VixenModules.Effect.LipSync
 		[Value]
 		[ProviderCategory("Config", 2)]
 		[DisplayName(@"Mapping Type")]
-		[Description(@"The mapping type. Face Property or Map.")]
+		[Description(@"The mapping type. Face Property or Matrix Map.")]
 		[PropertyOrder(3)]
 		public MappingType MappingType
 		{

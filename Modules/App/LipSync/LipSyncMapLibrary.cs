@@ -77,7 +77,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			get
 			{
-				return DefaultMapping.LibraryReferenceName;
+				return DefaultMapping!=null?DefaultMapping.LibraryReferenceName:string.Empty;
 			}
 
 			set

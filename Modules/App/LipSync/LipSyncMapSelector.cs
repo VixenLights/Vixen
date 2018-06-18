@@ -154,7 +154,7 @@ namespace VixenModules.App.LipSyncApp
 				item.Name = name;
 				item.ImageKey = name;
 				item.Tag = c;
-				if (Library.DefaultMappingName.Equals(name))
+				if (Library.DefaultMapping != null && Library.DefaultMappingName.Equals(name))
 				{
 					item.Font = new Font(item.Font, FontStyle.Bold);
 				}

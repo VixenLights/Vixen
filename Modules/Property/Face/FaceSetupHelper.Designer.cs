@@ -43,7 +43,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(873, 568);
+			this.buttonCancel.Location = new System.Drawing.Point(774, 364);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 6;
@@ -56,7 +56,7 @@
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonOK.Location = new System.Drawing.Point(780, 568);
+			this.buttonOK.Location = new System.Drawing.Point(681, 364);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(87, 27);
 			this.buttonOK.TabIndex = 5;
@@ -80,7 +80,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(963, 598);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(864, 394);
 			this.tableLayoutPanel1.TabIndex = 7;
 			// 
 			// tabControl
@@ -94,7 +94,7 @@
 			this.tabControl.Margin = new System.Windows.Forms.Padding(6);
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 1;
-			this.tabControl.Size = new System.Drawing.Size(951, 533);
+			this.tabControl.Size = new System.Drawing.Size(852, 329);
 			this.tabControl.TabIndex = 7;
 			this.tabControl.UseVisualStyles = false;
 			// 
@@ -128,7 +128,7 @@
 			this.tabOther.Location = new System.Drawing.Point(4, 22);
 			this.tabOther.Margin = new System.Windows.Forms.Padding(6);
 			this.tabOther.Name = "tabOther";
-			this.tabOther.Size = new System.Drawing.Size(943, 507);
+			this.tabOther.Size = new System.Drawing.Size(844, 303);
 			this.tabOther.TabIndex = 2;
 			this.tabOther.Text = "Outlines/Eyes";
 			// 
@@ -139,7 +139,7 @@
 			this.dataGridViewOther.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dataGridViewOther.Location = new System.Drawing.Point(0, 0);
 			this.dataGridViewOther.Name = "dataGridViewOther";
-			this.dataGridViewOther.Size = new System.Drawing.Size(943, 507);
+			this.dataGridViewOther.Size = new System.Drawing.Size(844, 303);
 			this.dataGridViewOther.TabIndex = 22;
 			this.dataGridViewOther.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
 			this.dataGridViewOther.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellDoubleClick);
@@ -151,7 +151,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(963, 598);
+			this.ClientSize = new System.Drawing.Size(864, 394);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

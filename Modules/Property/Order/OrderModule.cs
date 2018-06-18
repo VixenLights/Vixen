@@ -50,6 +50,11 @@ namespace VixenModules.Property.Order {
 			return p;
 		}
 
+		#region Overrides of PropertyModuleInstanceBase
+
+		/// <inheritdoc />
+		public override bool HasSetup => true;
+		
 		public override bool Setup() {
 			using (SetupForm setupForm = new SetupForm(_data)) {
 				if (setupForm.ShowDialog() == DialogResult.OK) {
@@ -59,6 +64,8 @@ namespace VixenModules.Property.Order {
 				return false;
 			}
 		}
+
+		#endregion
 
 	}
 }

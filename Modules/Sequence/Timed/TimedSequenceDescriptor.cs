@@ -47,12 +47,12 @@ namespace VixenModules.Sequence.Timed
 
 		public override string Version
 		{
-			get { return "3.0"; }
+			get { return "6.0"; }
 		}
 
 		public override int ObjectVersion
 		{
-			get { return 5; }
+			get { return 6; }
 		}
 	}
 }

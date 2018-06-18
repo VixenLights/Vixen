@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Vixen.Rule;
 using Vixen.Sys;
 
 namespace Vixen.Module.Property
@@ -67,5 +68,18 @@ namespace Vixen.Module.Property
 		{
 			return Equals(other as IPropertyModuleInstance);
 		}
+
+		#region Implementation of IPropertyModuleInstance
+
+		/// <inheritdoc />
+		public virtual bool HasElementSetupHelper => false;
+
+		/// <inheritdoc />
+		public virtual bool SetupElements(IEnumerable<ElementNode> nodes)
+		{
+			return false;
+		}
+
+		#endregion
 	}
 }

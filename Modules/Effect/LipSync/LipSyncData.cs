@@ -60,6 +60,7 @@ namespace VixenModules.Effect.LipSync
 			result.Level = Level;
 			result.MarkCollectionId = MarkCollectionId;
 			result.LipSyncMode = LipSyncMode;
+			result.MappingType = MappingType;
 			return result;
 		}
 	}

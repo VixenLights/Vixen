@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
 using Vixen.Module;
 using Vixen.Sys;
@@ -48,17 +49,18 @@ namespace VixenModules.App.LipSyncApp
 
 		internal void MigrateMaps()
 		{
+			List<string> migratedMapKeys = new List<string>();
 			//Here we will attempt to take the non matrix maps and turn them into properties.
 			foreach (var lipSyncMapData in _library)
 			{
 				if (!lipSyncMapData.Value.IsMatrix)
 				{
 					var map = lipSyncMapData.Value;
+					Logging.Info($"Migrating map {lipSyncMapData.Key} to Face properties.");
 					foreach (var lipSyncMapItem in map.MapItems)
 					{
 						var node = VixenSystem.Nodes.GetElementNode(lipSyncMapItem.ElementGuid);
 						if(node == null) continue;
-						Logging.Info($"Creating properties for element {node?.Name}");
 						FaceModule fm;
 						if (node.Properties.Contains(FaceDescriptor.ModuleId))
 						{
@@ -77,8 +79,11 @@ namespace VixenModules.App.LipSyncApp
 						fm.FaceComponents = new Dictionary<FaceComponent, bool>(lipSyncMapItem.FaceComponents);
 					}
 					
+					migratedMapKeys.Add(lipSyncMapData.Key);
 				}
 
+				//Remove the migrated maps
+				migratedMapKeys.ForEach(x => _library.Remove(x));
 				MapMigrationCompleted = true;
 			}
 		}
