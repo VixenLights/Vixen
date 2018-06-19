@@ -30,8 +30,8 @@ namespace VixenModules.Effect.Shapes
 			StrokeFill = true;
 			RandomSize = true;
 			FadeType = FadeType.None;
-			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
-			SizeVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 5.0, 5.0 }));
+			SizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 40.0, 40.0 }));
+			SizeVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 30.0, 30.0 }));
 			CenterSizeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 20.0, 20.0 }));
 			ShapeList = ShapeList.GeometricShapes;
 			GeometricShapesList = GeometricShapesList.Square;
@@ -57,7 +57,9 @@ namespace VixenModules.Effect.Shapes
 			StarPoints = 7;
 			SkipPoints = 3;
 			Fill = false;
-			ShapeCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
+			ShapeCount = 10;
+			ShapeCountCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 6.0, 6.0 }));
+			ShapeMode = ShapeMode.None;
 		}
 
 		[DataMember]
@@ -187,7 +189,16 @@ namespace VixenModules.Effect.Shapes
 		public Curve ShapeCountCurve { get; set; }
 
 		[DataMember]
+		public int ShapeCount { get; set; }
+
+		[DataMember]
 		public StringOrientation Orientation { get; set; }
+
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
+
+		[DataMember]
+		public ShapeMode ShapeMode { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -214,6 +225,7 @@ namespace VixenModules.Effect.Shapes
 				LevelCurve = new Curve(LevelCurve),
 				StrokeWidth = StrokeWidth,
 				ShapeCountCurve = new Curve(ShapeCountCurve),
+				ShapeCount = ShapeCount,
 				RemoveShape = RemoveShape,
 				SizeCurve = new Curve(SizeCurve),
 				ShapeOutLineCurve = new Curve(ShapeOutLineCurve),
@@ -235,7 +247,9 @@ namespace VixenModules.Effect.Shapes
 				Fill = Fill,
 				FadeType = FadeType,
 				StrokeFill = StrokeFill,
-				RoundedCorner = RoundedCorner
+				RoundedCorner = RoundedCorner,
+				ShapeMode = ShapeMode,
+				MarkCollectionId = MarkCollectionId
 			};
 			return result;
 		}

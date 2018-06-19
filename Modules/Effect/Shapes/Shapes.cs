@@ -17,6 +17,8 @@ using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using Svg;
 using Svg.Transforms;
+using Vixen.Marks;
+using Vixen.TypeConverters;
 
 namespace VixenModules.Effect.Shapes
 {
@@ -44,6 +46,8 @@ namespace VixenModules.Effect.Shapes
 		private float _scaleShapeWidth;
 		private float _scaleShapeHeight;
 		private int _totalFrames;
+		private IEnumerable<IMark> _marks = null;
+		private List<int> _shapeFrame = new List<int>();
 
 		public Shapes()
 		{
@@ -85,10 +89,62 @@ namespace VixenModules.Effect.Shapes
 		#region Shape Effect properties
 
 		[Value]
+		[ProviderCategory("Config", 1)]
+		[DisplayName(@"Shape Source")]
+		[Description(@"Selects what source is used to determine Shapes.")]
+		[PropertyOrder(0)]
+		public ShapeMode ShapeMode
+		{
+			get
+			{
+				return _data.ShapeMode;
+			}
+			set
+			{
+				if (_data.ShapeMode != value)
+				{
+					_data.ShapeMode = value;
+					UpdateShapeModeAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeType")]
 		[ProviderDescription(@"ShapeType")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public ShapeList ShapeList
 		{
 			get { return _data.ShapeList; }
@@ -106,7 +162,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"GeometricShapes")]
 		[ProviderDescription(@"GeometricShapes")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public GeometricShapesList GeometricShapesList
 		{
 			get { return _data.GeometricShapesList; }
@@ -123,7 +179,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ChristmasShapes")]
 		[ProviderDescription(@"ChristmasShapes")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public ChristmasShapesList ChristmasShapesList
 		{
 			get { return _data.ChristmasShapesList; }
@@ -140,7 +196,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"HalloweenShapes")]
 		[ProviderDescription(@"HalloweenShapes")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public HalloweenShapesList HalloweenShapesList
 		{
 			get { return _data.HalloweenShapesList; }
@@ -157,7 +213,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BorderShapes")]
 		[ProviderDescription(@"BorderShapes")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public BorderShapesList BorderShapesList
 		{
 			get { return _data.BorderShapesList; }
@@ -175,7 +231,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderDisplayName(@"Filename")]
 		[ProviderDescription(@"Filename")]
 		[PropertyEditor("SvgPathEditor")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public string FileName
 		{
 			get { return _data.FileName; }
@@ -191,7 +247,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Movement")]
 		[ProviderDescription(@"Movement")]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public ShapeType ShapeType
 		{
 			get { return _data.ShapeType; }
@@ -208,7 +264,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Fade")]
 		[ProviderDescription(@"Fade")]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public FadeType FadeType
 		{
 			get { return _data.FadeType; }
@@ -225,7 +281,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SizeMode")]
 		[ProviderDescription(@"SizeMode")]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public SizeMode SizeMode
 		{
 			get { return _data.SizeMode; }
@@ -242,7 +298,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"VerticalOffset")]
 		[ProviderDescription(@"VerticalOffset")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -258,7 +314,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"HorizontalOffset")]
 		[ProviderDescription(@"HorizontalOffset")]
-		[PropertyOrder(11)]
+		[PropertyOrder(12)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -274,7 +330,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeSize")]
 		[ProviderDescription(@"ShapeSize")]
-		[PropertyOrder(12)]
+		[PropertyOrder(13)]
 		public Curve SizeCurve
 		{
 			get { return _data.SizeCurve; }
@@ -290,7 +346,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CenterSize")]
 		[ProviderDescription(@"CenterSize")]
-		[PropertyOrder(13)]
+		[PropertyOrder(14)]
 		public Curve CenterSizeCurve
 		{
 			get { return _data.CenterSizeCurve; }
@@ -306,7 +362,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SizeVariation")]
 		[ProviderDescription(@"SizeVariation")]
-		[PropertyOrder(14)]
+		[PropertyOrder(15)]
 		public Curve SizeVariationCurve
 		{
 			get { return _data.SizeVariationCurve; }
@@ -322,7 +378,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ShapeCount")]
 		[ProviderDescription(@"ShapeCount")]
-		[PropertyOrder(15)]
+		[PropertyOrder(16)]
 		public Curve ShapeCountCurve
 		{
 			get { return _data.ShapeCountCurve; }
@@ -336,9 +392,27 @@ namespace VixenModules.Effect.Shapes
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"ShapeCount")]
+		[ProviderDescription(@"ShapeCount")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 50, 1)]
+		[PropertyOrder(17)]
+		public int ShapeCount
+		{
+			get { return _data.ShapeCount; }
+			set
+			{
+				_data.ShapeCount = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SizeChange")]
 		[ProviderDescription(@"SizeChange")]
-		[PropertyOrder(16)]
+		[PropertyOrder(18)]
 		public bool RemoveShape
 		{
 			get { return _data.RemoveShape; }
@@ -355,7 +429,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ScaleToGrid")]
 		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(17)]
+		[PropertyOrder(19)]
 		public bool ScaleToGrid
 		{
 			get { return _data.ScaleToGrid; }
@@ -372,7 +446,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomAngle")]
 		[ProviderDescription(@"RandomAngle")]
-		[PropertyOrder(18)]
+		[PropertyOrder(20)]
 		public bool RandomAngle
 		{
 			get { return _data.RandomAngle; }
@@ -389,7 +463,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"RandomSize")]
 		[ProviderDescription(@"RandomSize")]
-		[PropertyOrder(19)]
+		[PropertyOrder(21)]
 		public bool RandomSize
 		{
 			get { return _data.RandomSize; }
@@ -406,7 +480,7 @@ namespace VixenModules.Effect.Shapes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"ColorFill")]
 		[ProviderDescription(@"ColorFill")]
-		[PropertyOrder(20)]
+		[PropertyOrder(22)]
 		public bool Fill
 		{
 			get { return _data.Fill; }
@@ -832,8 +906,33 @@ namespace VixenModules.Effect.Shapes
 		{
 			UpdatePositionAttribute(false);
 			UpdateShapeTypeAttribute(false);
+			UpdateShapeModeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+		private void UpdateShapeModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"MarkCollectionId", ShapeMode != ShapeMode.None},
+				
+				{"ShapeCount", ShapeMode == ShapeMode.RemoveShapesMarkCollection},
+
+				{"ShapeCountCurve", ShapeMode == ShapeMode.None},
+
+				{"ScaleToGrid", ShapeMode == ShapeMode.None}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+
+			if (ShapeMode != ShapeMode.None)
+			{
+				ScaleToGrid = false;
+				UpdateShapeTypeAttribute();
+			}
 		}
 
 		private void UpdatePositionAttribute(bool refresh = true)
@@ -998,7 +1097,19 @@ namespace VixenModules.Effect.Shapes
 					// Logging.Error("File is missing or invalid path. {0}", filePath);
 					FileName = "";
 				}
+			}
+			if (ShapeMode != ShapeMode.None)
+			{
+				SetupMarks();
 
+				//_shapeFrame = new List<int>();
+				if (_marks != null)
+				{
+					foreach (var mark in _marks)
+					{
+						_shapeFrame.Add((int)((mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds) / 50));
+					}
+				}
 			}
 		}
 
@@ -1006,6 +1117,7 @@ namespace VixenModules.Effect.Shapes
 		{
 			_shapes.Clear();
 			_removeShapes.Clear();
+			_shapeFrame.Clear();
 		}
 
 		#endregion
@@ -1101,29 +1213,56 @@ namespace VixenModules.Effect.Shapes
 
 			// Create new shapes and maintain maximum number as per users selection.
 			int adjustedPixelCount = 0;
-			if (ScaleToGrid)
+			switch (ShapeMode)
 			{
-				// Scale to grid only requires a single shape so ensure there is only one created.
-				adjustedPixelCount = _shapesCount = 1;
-			}
-			else
-			{
-				_shapesCount = CalculateShapeCount(_intervalPosFactor);
-				if (frame / 3 >= _shapesCount || !RemoveShape)
-				{
-					adjustedPixelCount = _shapesCount;
-				}
-				else
-				{
-					if ( frame % 3 == 0) adjustedPixelCount = 1;
-				}
-			}
-			
-			for (int i = 0; i < adjustedPixelCount; i++)
-			{
-				// Create new Shapes if shapes are below Shapecount.
-				if (_shapes.Count < _shapesCount) CreateShapes();
-				else
+				case ShapeMode.None:
+					if (ScaleToGrid)
+					{
+						// Scale to grid only requires a single shape so ensure there is only one created.
+						adjustedPixelCount = _shapesCount = 1;
+					}
+					else
+					{
+						_shapesCount = CalculateShapeCount(_intervalPosFactor);
+						if (frame / 3 >= _shapesCount || !RemoveShape)
+						{
+							adjustedPixelCount = _shapesCount;
+						}
+						else
+						{
+							if (frame % 3 == 0) adjustedPixelCount = 1;
+						}
+					}
+
+					for (int i = 0; i < adjustedPixelCount; i++)
+					{
+						// Create new Shapes if shapes are below Shapecount.
+						if (_shapes.Count < _shapesCount) CreateShapes();
+						else
+							break;
+					}
+					break;
+				case ShapeMode.CreateShapesMarkCollection:
+					// Create shapes based on selected Mark Collection and Marks
+					foreach (var shapeFrame in _shapeFrame)
+					{
+						if (frame == shapeFrame)
+						{
+							CreateShapes();
+							_shapesCount = _shapes.Count;
+						}
+					}
+					break;
+				case ShapeMode.RemoveShapesMarkCollection:
+					if (frame == 0)
+					{
+						// Create marks at frame 0 based on Shape count.
+						_shapesCount = ShapeCount;
+						for (int i = 0; i < ShapeCount; i++)
+							if (_shapes.Count < ShapeCount) CreateShapes();
+							else
+								break;
+					}
 					break;
 			}
 
@@ -1131,7 +1270,7 @@ namespace VixenModules.Effect.Shapes
 			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
 
 			// Remove any shapes add to the _removeShapes variable.
-			RemoveShapes();
+			RemoveShapes(frame);
 
 			// Go through all used Shapes and adjust settings and then Draw SVG to Bitmap.
 			foreach (var shape in _shapes)
@@ -1418,7 +1557,6 @@ namespace VixenModules.Effect.Shapes
 
 			// Adds rounded corners to Geometric Shapes only, no point doing it to the others.
 			if (RoundedCorner && ShapeList == ShapeList.GeometricShapes) m.SvgImage.StrokeLineJoin = SvgStrokeLineJoin.Round;
-			
 			var centerSize = CalculateCenterSize(_intervalPosFactor, m.LocationRatio1);
 			var sizeVariation = CalculateSizeVariation(_intervalPosFactor, m.LocationRatio1);
 			var minSize = centerSize - (sizeVariation / 2);
@@ -1701,23 +1839,19 @@ namespace VixenModules.Effect.Shapes
 			StreamReader reader = new StreamReader(s);
 			xdoc.LoadXml(reader.ReadToEnd());
 			reader.Close();
-
-			//Used to get points
-			//var tempImage = SvgDocument.Open(xdoc);
-			//var svgPoints = tempImage.Path.PathPoints.ToArray();
-			////m.svgImage.Children.Add(GetGeometricShape.CreateSvgImage(svgPoints));
-			//string test = null;
-			//foreach (var point in svgPoints)
-			//{
-			//	test = test + point.X + ", " + point.Y + ", ";
-			//}
 			return SvgDocument.Open(xdoc);
 		}
 
-		private void RemoveShapes()
+		private void RemoveShapes(int frame)
 		{
-			if (_shapesCount < _shapes.Count || _removeShapes.Count > 0)
+			if (ShapeMode == ShapeMode.RemoveShapesMarkCollection && _removeShapes.Count == 0)
 			{
+				// Remnoves oldest shape if mark position is the same as the frame.
+				if (_shapeFrame.Any(shapeFrame => frame == shapeFrame && _shapes.Count > 0)) _shapes.RemoveAt(0);
+			}
+			else
+			{
+				if (_shapesCount >= _shapes.Count && _removeShapes.Count <= 0) return;
 				foreach (var shape in _removeShapes)
 				{
 					_shapes.Remove(shape);
@@ -1831,6 +1965,34 @@ namespace VixenModules.Effect.Shapes
 		private int CalculateShapeOutLineSpace(double intervalPos)
 		{
 			return (int)ScaleCurveToValue(ShapeOutLineSpaceCurve.GetValue(intervalPos), 100, 0);
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (ShapeMode != ShapeMode.None)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
 		}
 
 		#endregion
