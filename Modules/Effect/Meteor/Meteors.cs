@@ -588,7 +588,7 @@ namespace VixenModules.Effect.Meteors
 					if (RandomMeteorPosition || frame < pixelCount)
 					{
 						m.X = rand() % BufferWi - 1;
-						m.Y = _random.Next(_maxGroundHeight + 5, BufferHt - 1);
+						m.Y = BufferHt - 1 <= _maxGroundHeight ? 0 : _random.Next(_maxGroundHeight, BufferHt - 1);
 					}
 				}
 				m.DeltaXOrig = m.DeltaX;
@@ -757,7 +757,8 @@ namespace VixenModules.Effect.Meteors
 
 		private double CalculateGroundLevel(double intervalPos)
 		{
-			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt - 6, 0);
+			int maxGroundHeight = MeteorEffect == MeteorsEffect.Explode ? 0 : 6;
+			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt - maxGroundHeight, 0);
 		}
 
 		// for Meteor effects
