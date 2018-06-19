@@ -601,6 +601,8 @@ namespace VixenModules.Effect.Snowflakes
 						break;
 				}
 
+				int snowflakeOverShoot = snowflakeWidth * 2;
+
 				for (int c = 0; c < 1; c++)
 				{
 					int colorX;
@@ -647,7 +649,7 @@ namespace VixenModules.Effect.Snowflakes
 							snowFlakes.OuterHsv.V = 1.0f;
 						}
 
-						if (colorX >= BufferWi || colorY >= BufferHt || colorX <= 0 || colorY <= initialBuildUp)
+						if (colorX >= BufferWi + snowflakeOverShoot || colorY >= BufferHt + snowflakeOverShoot || colorX <= -snowflakeOverShoot || colorY <= initialBuildUp - snowflakeOverShoot)
 						{
 							//Flags SnowFlakes that have reached the end of the grid as expiried unless Buildup is checked and then record the Snowflake
 							//position to be used in future frames. Allows new Snowflakes to be created.
@@ -682,7 +684,7 @@ namespace VixenModules.Effect.Snowflakes
 					hsvInner.V *= snowFlakes.HsvBrightness*LevelCurve.GetValue(intervalPosFactor)/100;
 					hsvOuter.V *= snowFlakes.HsvBrightness*LevelCurve.GetValue(intervalPosFactor)/100;
 
-					if (initialBuildUp < BufferHt && colorY >= initialBuildUp)
+					if (initialBuildUp < BufferHt && colorY >= initialBuildUp - snowflakeOverShoot)
 					{
 						if (snowFlakes.BuildUp)
 						{
@@ -760,38 +762,30 @@ namespace VixenModules.Effect.Snowflakes
 									int ii = 4;
 									for (int j = -4; j < 5; j++)
 									{
-										if (colorX <= BufferWi && colorY <= BufferHt)
-											frameBuffer.SetPixel(colorX + j, colorY + ii, hsvInner);
+										frameBuffer.SetPixel(colorX + j, colorY + ii, hsvInner);
 										ii--;
 									}
 									for (int j = -4; j < 5; j++)
 									{
-										if (colorX <= BufferWi && colorY <= BufferHt)
-											frameBuffer.SetPixel(colorX + j, colorY + j, hsvInner);
+										frameBuffer.SetPixel(colorX + j, colorY + j, hsvInner);
 									}
-									if (colorX <= BufferWi && colorY <= BufferHt)
+									frameBuffer.SetPixel(colorX - 2, colorY + 3, hsvInner);
+									frameBuffer.SetPixel(colorX - 3, colorY + 2, hsvInner);
+									frameBuffer.SetPixel(colorX - 3, colorY - 2, hsvInner);
+									frameBuffer.SetPixel(colorX - 2, colorY - 3, hsvInner);
+									frameBuffer.SetPixel(colorX + 2, colorY + 3, hsvInner);
+									frameBuffer.SetPixel(colorX + 2, colorY - 3, hsvInner);
+									frameBuffer.SetPixel(colorX + 3, colorY + 2, hsvInner);
+									frameBuffer.SetPixel(colorX + 3, colorY - 2, hsvInner);
+									for (int j = -5; j < 6; j++)
 									{
-										frameBuffer.SetPixel(colorX - 2, colorY + 3, hsvInner);
-										frameBuffer.SetPixel(colorX - 3, colorY + 2, hsvInner);
-										frameBuffer.SetPixel(colorX - 3, colorY - 2, hsvInner);
-										frameBuffer.SetPixel(colorX - 2, colorY - 3, hsvInner);
-										frameBuffer.SetPixel(colorX + 2, colorY + 3, hsvInner);
-										frameBuffer.SetPixel(colorX + 2, colorY - 3, hsvInner);
-										frameBuffer.SetPixel(colorX + 3, colorY + 2, hsvInner);
-										frameBuffer.SetPixel(colorX + 3, colorY - 2, hsvInner);
+									frameBuffer.SetPixel(colorX, colorY + j, hsvInner);
 									}
 									for (int j = -5; j < 6; j++)
 									{
-										if (colorX <= BufferWi && colorY <= BufferHt)
-											frameBuffer.SetPixel(colorX, colorY + j, hsvInner);
+									frameBuffer.SetPixel(colorX + j, colorY, hsvInner);
 									}
-									for (int j = -5; j < 6; j++)
-									{
-										if (colorX <= BufferWi && colorY <= BufferHt)
-											frameBuffer.SetPixel(colorX + j, colorY, hsvInner);
-									}
-									if (colorX <= BufferWi && colorY <= BufferHt)
-										frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
 									break;
 							}
 						}
