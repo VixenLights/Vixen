@@ -431,10 +431,11 @@ namespace VixenModules.Effect.Picture
 
 		private void UpdateDirectionAttribute(bool refresh = true)
 		{
-			bool enableDirectionEffect = Type == EffectType.RenderPictureTiles;
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
 			{
-				{"Direction", enableDirectionEffect}
+				{"Direction", Type == EffectType.RenderPictureTiles},
+
+				{"Speed", Type != EffectType.RenderPictureNone}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
