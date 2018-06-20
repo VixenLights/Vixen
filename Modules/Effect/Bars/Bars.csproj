@@ -64,6 +64,7 @@
     <Compile Include="BarsData.cs" />
     <Compile Include="BarDescriptor.cs" />
     <Compile Include="BarDirection.cs" />
+    <Compile Include="MovementType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
