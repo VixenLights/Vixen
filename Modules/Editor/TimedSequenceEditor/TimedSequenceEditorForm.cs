@@ -5134,8 +5134,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			return result;
 		}
 
-		public Bitmap checkMark { get; set; }
-		}
+	}
 
 	[Serializable]
 	internal class TimelineElementsClipboardData

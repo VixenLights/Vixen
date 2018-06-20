@@ -48,10 +48,6 @@ namespace VixenModules.App.LipSyncApp
 			}
 
 			PopulateListWithMappings();
-			LipSyncMapStaticData data;
-			data =
-				(ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary).StaticModuleData as
-				LipSyncMapStaticData;
 			mappingsListView.Activation = ItemActivation.Standard;
 		}
 
@@ -71,9 +67,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMapSelector_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			LipSyncMapStaticData data;
-			data =
-				(ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary).StaticModuleData as
+			var data = (ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary)?.StaticModuleData as
 				LipSyncMapStaticData;
 			data.SelectorWindowBounds = Bounds;
 		}
@@ -82,7 +76,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			mappingsListView.Columns.Clear();
 			mappingsListView.Columns.Add("Name");
-			mappingsListView.Columns.Add("Type");
+			//mappingsListView.Columns.Add("Type");
 			mappingsListView.Columns.Add("Notes");
 			
 			mappingsListView.Items.Clear();
@@ -95,23 +89,23 @@ namespace VixenModules.App.LipSyncApp
 				lvi.Text = kvp.Key;
 				lvi.Name = kvp.Key;
 
-				ListViewItem.ListViewSubItem subItemType = new ListViewItem.ListViewSubItem(lvi, "Type");
-				subItemType.Name = "Type";
+				//ListViewItem.ListViewSubItem subItemType = new ListViewItem.ListViewSubItem(lvi, "Type");
+				//subItemType.Name = "Type";
 
-				if (kvp.Value.IsMatrix)
-				{
-					subItemType.Text = "Picture";
-				}
-				else
-				{
-					subItemType.Text = "String";
-				}
+				//if (kvp.Value.IsMatrix)
+				//{
+				//	subItemType.Text = "Picture";
+				//}
+				//else
+				//{
+				//	subItemType.Text = "String";
+				//}
 
 				ListViewItem.ListViewSubItem subItemNotes = new ListViewItem.ListViewSubItem(lvi, "Notes");
-				subItemNotes.Name = "Notes";
+				subItemNotes.Name = @"Notes";
 				subItemNotes.Text = kvp.Value.Notes;
 
-				lvi.SubItems.Add(subItemType);
+				//lvi.SubItems.Add(subItemType);
 				lvi.SubItems.Add(subItemNotes);
 				mappingsListView.Items.Add(lvi);
 			}

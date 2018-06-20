@@ -218,7 +218,7 @@
 			this.MinimumSize = new System.Drawing.Size(375, 300);
 			this.Name = "LipSyncMapSelector";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "LipSync Maps";
+			this.Text = "Image Maps";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LipSyncMapSelector_FormClosing);
 			this.Load += new System.EventHandler(this.LipSyncMapSelector_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LipSyncMapSelector_KeyDown);

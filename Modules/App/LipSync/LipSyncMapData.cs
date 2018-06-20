@@ -20,29 +20,11 @@ namespace VixenModules.App.LipSyncApp
 			StringsAreRows = false;
 			GroupsAllowed = false;
 			RecursionAllowed = true;
-			IsMatrix = false;
+			IsMatrix = true; //All maps are now matrix / image based
 			Notes = string.Empty;
 			UsingDefaults = true;
 
 			StartNode = "";
-		}
-
-		public LipSyncMapData(List<string> stringNames)
-		{
-			int stringNum = 0;
-			MapItems = new List<LipSyncMapItem>();
-			foreach(string stringName in stringNames)
-			{
-				MapItems.Add(new LipSyncMapItem(stringName,stringNum++));
-			}
-			StartNode = "";
-			StringsAreRows = false;
-			GroupsAllowed = false;
-			RecursionAllowed = true;
-			IsMatrix = false;
-			UsingDefaults = false;
-
-			Notes = "";
 		}
 
 		public LipSyncMapData(LipSyncMapData mapSetup)

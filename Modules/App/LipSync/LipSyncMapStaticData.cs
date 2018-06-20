@@ -20,7 +20,13 @@ namespace VixenModules.App.LipSyncApp
 		private Dictionary<string, LipSyncMapData> _library;
 
 		[DataMember]
-		internal bool MapMigrationCompleted { get; set; }
+		internal bool NeedsStringMapMigration
+		{
+			get
+			{
+				return _library != null && _library.Values.Any(x => !x.IsMatrix);
+			}
+		}
 
 		public Dictionary<string, LipSyncMapData> Library
 		{
@@ -32,7 +38,6 @@ namespace VixenModules.App.LipSyncApp
 					LipSyncMapData mapData = new LipSyncMapData();
 					mapData.LibraryReferenceName = "New Map";
 					_library.Add("New Map", mapData);
-					MapMigrationCompleted = true;
 				}
 
 				return _library;
@@ -81,11 +86,10 @@ namespace VixenModules.App.LipSyncApp
 					
 					migratedMapKeys.Add(lipSyncMapData.Key);
 				}
-
-				//Remove the migrated maps
-				migratedMapKeys.ForEach(x => _library.Remove(x));
-				MapMigrationCompleted = true;
 			}
+
+			//Remove the migrated maps
+			migratedMapKeys.ForEach(x => _library.Remove(x));
 		}
 	}
 }

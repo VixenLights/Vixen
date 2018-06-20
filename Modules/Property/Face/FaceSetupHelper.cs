@@ -57,7 +57,7 @@ namespace VixenModules.Property.Face {
 		#region Implementation of IElementSetupHelper
 
 		/// <inheritdoc />
-		public string HelperName => "Face Handling";
+		public string HelperName => "Face Mapping";
 
 		/// <inheritdoc />
 		public bool Perform(IEnumerable<ElementNode> selectedNodes)

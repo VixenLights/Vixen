@@ -121,6 +121,19 @@ namespace VixenModules.App.LipSyncApp
 
 		}
 
+		public List<ElementNode> SelectedElementNodes
+		{
+			get
+			{
+				List<ElementNode> retVal = new List<ElementNode>();
+				foreach (ElementNode element in chosenTargets.Items)
+				{
+					retVal.Add(element);
+				}
+				return retVal;
+			}
+		}
+
 		public List<string> SelectedNodeNames
 		{
 			get
@@ -146,7 +159,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void buttonReset_Click(object sender, EventArgs e)
 		{
-			_selectedNodeNames.Clear();
+			_selectedNodeNames?.Clear();
 			chosenTargets.Items.Clear();
 			Changed = true;
 		}
@@ -221,7 +234,7 @@ namespace VixenModules.App.LipSyncApp
 			if (_userAdd == false)
 			{
 				chosenTargets.Items.Clear();
-				_selectedNodeNames.ForEach(x => findAndAddElements(x, false));
+				_selectedNodeNames?.ForEach(x => findAndAddElements(x, false));
 				Changed = true;
 			}
 

@@ -318,7 +318,7 @@ namespace VixenModules.App.LipSyncApp
 		public bool MigrateMapsToProperties()
 		{
 			bool migrated = false;
-			if (!_staticData.MapMigrationCompleted)
+			if (_staticData.NeedsStringMapMigration)
 			{
 				_staticData.MigrateMaps();
 				migrated = true;
