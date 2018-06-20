@@ -81,7 +81,7 @@ namespace VixenModules.Effect.LipSync
 					{
 						if (mapData.IsMatrix)
 						{
-							_elementData = RenderMapMatrix(mapData, phoneme);
+							RenderMapMatrix(mapData, phoneme);
 						}
 						else
 						{
@@ -192,9 +192,8 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private EffectIntents RenderMapMatrix(LipSyncMapData mapData, PhonemeType phoneme)
+		private void RenderMapMatrix(LipSyncMapData mapData, PhonemeType phoneme)
 		{
-			EffectIntents result = null;
 			SetupPictureEffect();
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
@@ -204,7 +203,7 @@ namespace VixenModules.Effect.LipSync
 					_thePic.Image = LoadImage(file);
 					_thePic.TimeSpan = mark.Duration;
 					_thePic.MarkDirty();
-					result = _thePic.Render();
+					var result = _thePic.Render();
 					result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
 					_elementData.Add(result);
 				}
@@ -215,20 +214,12 @@ namespace VixenModules.Effect.LipSync
 				if (File.Exists(file))
 				{
 					_thePic.Image = LoadImage(file);
-					result = _thePic.Render();
+					var result = _thePic.Render();
 					_elementData.Add(result);
 				}
 			}
 
-			if (null != _thePic)
-			{
-				result = _thePic.Render();
-				_elementData.Add(result);
-			}
-
 			TearDownPictureEffect();
-
-			return result;
 		}
 
 		private Image LoadImage(string filePath)
