@@ -28,6 +28,7 @@ namespace VixenModules.Effect.LipSync
 
 	public class LipSync : BaseEffect
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LipSyncData _data;
 		private EffectIntents _elementData = null;
 		static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
@@ -65,43 +66,41 @@ namespace VixenModules.Effect.LipSync
 				SetupMarks();
 			}
 
-			if (_data.PhonemeMapping != null) 
+			PhonemeType phoneme = _data.StaticPhoneme;
+
+			if (MappingType == MappingType.Map)
 			{
-				if (!_library.Library.ContainsKey(_data.PhonemeMapping)) 
+
+				if (!_library.Library.ContainsKey(_data.PhonemeMapping))
 				{
 					_data.PhonemeMapping = _library.DefaultMappingName;
 				}
 
-				PhonemeType phoneme = _data.StaticPhoneme;
-
-				if (MappingType == MappingType.Map)
+				LipSyncMapData mapData;
+				if (_library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
 				{
-					LipSyncMapData mapData;
-					if (_library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
+					if (mapData.IsMatrix)
 					{
-						if (mapData.IsMatrix)
+						RenderMapMatrix(mapData, phoneme);
+					}
+					else
+					{
+						//We should never get here becasue we no longer have element maps
+						Logging.Error("Trying to render as deprecated string maps!");
+						renderNodes.ForEach(delegate (ElementNode element)
 						{
-							RenderMapMatrix(mapData, phoneme);
-						}
-						else
-						{
-							renderNodes.ForEach(delegate (ElementNode element)
-							{
-								RenderMapElements(mapData, element, phoneme);
-							});
-						}
+							RenderMapElements(mapData, element, phoneme);
+						});
 					}
 				}
-				else
-				{
-					renderNodes.ForEach(delegate (ElementNode element)
-					{
-						RenderPropertyMapElements(element, phoneme);
-					});
-				}
-
 			}
-
+			else
+			{
+				renderNodes.ForEach(delegate (ElementNode element)
+				{
+					RenderPropertyMapElements(element, phoneme);
+				});
+			}
 		}
 
 		private void RenderPropertyMapElements(ElementNode element, PhonemeType phoneme)
@@ -319,11 +318,11 @@ namespace VixenModules.Effect.LipSync
 		{
 			bool scaleIsBrowesable = false;
 			LipSyncMapData mapData = null;
-			if (_library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
+			if (MappingType == MappingType.Map && _library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
 			{
 				scaleIsBrowesable = mapData.IsMatrix;
 			}
-
+			
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
 				{"Orientation", scaleIsBrowesable},
