@@ -242,16 +242,11 @@ namespace VixenModules.App.LipSyncApp
 
 		private void buttonNewMap_Click(object sender, EventArgs e)
 		{
-			Point screenPoint = buttonNewMap.PointToScreen(new Point(buttonNewMap.Left, buttonNewMap.Bottom));
-			if (screenPoint.Y + newContextMenu.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-			{
-				newContextMenu.Show(buttonNewMap, new Point(0, -newContextMenu.Size.Height));
-			}
-			else
-			{
-				newContextMenu.Show(buttonNewMap, new Point(0, buttonNewMap.Height));
-			}
-			Refresh();
+			LipSyncMapData newMap = new LipSyncMapData();
+			string mapName = Library.AddMapping(true, null, newMap, true);
+
+			Changed = Library.EditLibraryMapping(mapName);
+			this.PopulateListWithMappings();
 		}
 
 		private void buttonCloneMap_Click(object sender, EventArgs e)
@@ -315,20 +310,6 @@ namespace VixenModules.App.LipSyncApp
 			buttonEditMap.Enabled = (mappingsListView.SelectedIndices.Count == 1);
 			buttonCloneMap.Enabled = (mappingsListView.SelectedIndices.Count >= 1);
 			buttonDeleteMap.Enabled = (mappingsListView.SelectedIndices.Count >= 1);
-		}
-
-		private void newContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-		{
-			LipSyncMapData newMap = new LipSyncMapData();
-			string mapName = Library.AddMapping(
-				true,
-				null,
-				newMap,
-				Convert.ToBoolean(e.ClickedItem.Tag));
-			
-			Changed = Library.EditLibraryMapping(mapName);
-			this.PopulateListWithMappings();
-
 		}
 
 		private void mappingsListView_AfterLabelEdit(object sender, LabelEditEventArgs e)

@@ -17,7 +17,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonEditMap = new System.Windows.Forms.Button();
@@ -25,10 +24,6 @@
 			this.buttonNewMap = new System.Windows.Forms.Button();
 			this.buttonCloneMap = new System.Windows.Forms.Button();
 			this.mappingsListView = new System.Windows.Forms.ListView();
-			this.newContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.stringMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pixelMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonCancel
@@ -168,34 +163,6 @@
 			this.mappingsListView.DoubleClick += new System.EventHandler(this.mappingsListView_DoubleClick);
 			this.mappingsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mappingsListView_KeyDown);
 			// 
-			// newContextMenu
-			// 
-			this.newContextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.newContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.stringMapToolStripMenuItem,
-            this.pixelMapToolStripMenuItem});
-			this.newContextMenu.Name = "newContextMenu";
-			this.newContextMenu.ShowImageMargin = false;
-			this.newContextMenu.Size = new System.Drawing.Size(110, 48);
-			this.newContextMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.newContextMenu_ItemClicked);
-			// 
-			// stringMapToolStripMenuItem
-			// 
-			this.stringMapToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.stringMapToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.stringMapToolStripMenuItem.Name = "stringMapToolStripMenuItem";
-			this.stringMapToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.stringMapToolStripMenuItem.Tag = "false";
-			this.stringMapToolStripMenuItem.Text = "String Map";
-			// 
-			// pixelMapToolStripMenuItem
-			// 
-			this.pixelMapToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.pixelMapToolStripMenuItem.Name = "pixelMapToolStripMenuItem";
-			this.pixelMapToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
-			this.pixelMapToolStripMenuItem.Tag = "true";
-			this.pixelMapToolStripMenuItem.Text = "Matrix Map";
-			// 
 			// LipSyncMapSelector
 			// 
 			this.AcceptButton = this.buttonOK;
@@ -223,7 +190,6 @@
 			this.Load += new System.EventHandler(this.LipSyncMapSelector_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LipSyncMapSelector_KeyDown);
 			this.Resize += new System.EventHandler(this.LipSyncMapSelector_Resize);
-			this.newContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -237,8 +203,5 @@
         private System.Windows.Forms.Button buttonNewMap;
         private System.Windows.Forms.Button buttonCloneMap;
         private System.Windows.Forms.ListView mappingsListView;
-        private System.Windows.Forms.ContextMenuStrip newContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem stringMapToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pixelMapToolStripMenuItem;
     }
 }
