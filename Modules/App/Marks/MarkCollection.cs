@@ -171,6 +171,27 @@ namespace VixenModules.App.Marks
 
 		}
 
+		public void FillGapTimes(IMark mark)
+		{
+			EnsureOrder();
+			var index = Marks.IndexOf(mark);
+
+			for (int i = index - 1; i >= 0; i--)
+			{
+				var time = Marks[i].EndTime;
+				if (time < mark.StartTime)
+				{
+					mark.StartTime = time + TimeSpan.FromMilliseconds(1);
+					break;
+				}
+			}
+
+			if (index != Marks.Count - 1)
+			{
+				mark.Duration = Marks[index + 1].StartTime - TimeSpan.FromMilliseconds(1) - mark.StartTime;
+			}
+		}
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{

@@ -113,9 +113,15 @@ namespace Common.Controls.Timeline
 				timelineRowList.Dispose();
 				timelineRowList= null;
 			}
-			if (waveform != null)
-				waveform.Dispose();
+			waveform?.Dispose();
 			waveform= null;
+
+			MarksBar?.Dispose();
+			MarksBar = null;
+
+			ruler?.Dispose();
+			ruler = null;
+
 			base.Dispose(disposing);
 		}
 		private void InitializeControls()
