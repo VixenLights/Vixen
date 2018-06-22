@@ -1007,7 +1007,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Phoneme Mapping.
+        ///   Looks up a localized string similar to Image Map.
         /// </summary>
         internal static string PhonemeMapping {
             get {

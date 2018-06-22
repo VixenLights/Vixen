@@ -908,7 +908,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The mapping to use to associate phonemes with movements..
+        ///   Looks up a localized string similar to The map to use to associate phonemes with images..
         /// </summary>
         internal static string PhonemeMapping {
             get {

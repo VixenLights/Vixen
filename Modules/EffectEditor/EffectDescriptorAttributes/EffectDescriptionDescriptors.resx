@@ -577,7 +577,7 @@
     <value>The Mark Collection to align the phoneme movements with. This collection should have the phoneme names for labels.</value>
   </data>
   <data name="PhonemeMapping" xml:space="preserve">
-    <value>The mapping to use to associate phonemes with movements.</value>
+    <value>The map to use to associate phonemes with images.</value>
   </data>
   <data name="ShowOutline" xml:space="preserve">
     <value>Detemines if the outline of the element is lit.</value>
