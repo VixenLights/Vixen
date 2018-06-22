@@ -19,7 +19,6 @@ namespace VixenModules.App.LipSyncApp
 		[DataMember]
 		private Dictionary<string, LipSyncMapData> _library;
 
-		[DataMember]
 		internal bool NeedsStringMapMigration
 		{
 			get
