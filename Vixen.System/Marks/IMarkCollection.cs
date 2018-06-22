@@ -42,5 +42,7 @@ namespace Vixen.Marks
 		/// <param name="end"></param>
 		/// <returns></returns>
 		IEnumerable<IMark> MarksInclusiveOfTime(TimeSpan start, TimeSpan end);
+
+		void FillGapTimes(IMark mark);
 	}
 }

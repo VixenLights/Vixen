@@ -40,12 +40,14 @@ namespace Common.Controls.TimelineControl
 			_marksSelectionManager = MarksSelectionManager.Manager();
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;
+			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalEventManager_MarksMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalEventManagerDeleteTimeLineGlobal;
-			_marksSelectionManager.SelectionChanged += _marksSelectionManager_SelectionChanged;
+			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalEventManager_MarksTextChanged;
+			_marksSelectionManager.SelectionChanged += MarksSelectionManager_SelectionChanged;
 			_rows = new List<MarkRow>();
 			MarkRow.MarkRowChanged += MarkRow_MarkRowChanged;
 		}
-
+		
 		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get { return _markCollections; }
@@ -179,11 +181,23 @@ namespace Common.Controls.TimelineControl
 			_mouseDownMark = null;
 			Point location = _mouseDownLocation = TranslateLocation(e.Location);
 
-			
 			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
 			{
 				_mouseDownMark = MarkAt(location);
-				
+
+				if (e.Clicks == 2)
+				{
+					var row = RowAt(location);
+					if (row != null)
+					{
+						BeginMoveResizeMarks(location);
+						row.MarkCollection.FillGapTimes(_mouseDownMark);
+						FinishedResizeMoveMarks(ElementMoveType.Resize);
+						return;
+					}
+					
+				}
+
 				if (!CtrlPressed && !ShiftPressed)
 				{
 					if (!_marksSelectionManager.IsSelected(_mouseDownMark))
@@ -254,6 +268,7 @@ namespace Common.Controls.TimelineControl
 					var paste = c.Items.Add("&Paste Text");
 					paste.Click += Paste_Click;
 					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
+					c.Items.Add(CreatePhonemeItem());
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -627,9 +642,50 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
-		private void _marksSelectionManager_SelectionChanged(object sender, EventArgs e)
+		private void MarksSelectionManager_SelectionChanged(object sender, EventArgs e)
 		{
 			Invalidate();
+		}
+
+		private void TimeLineGlobalEventManager_MarksMoved(object sender, MarksMovedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private void TimeLineGlobalEventManager_MarksTextChanged(object sender, MarksTextChangedEventArgs e)
+		{
+			Invalidate();
+		}
+
+		private ToolStripItem CreatePhonemeItem()
+		{
+			var phonemes = new[] { "REST", "AI", "E", "ETC", "FV", "L", "MBP", "O", "U", "WQ" };
+			ToolStripMenuItem menu = new ToolStripMenuItem("Phoneme");
+			foreach (var phoneme in phonemes)
+			{
+				var item = menu.DropDownItems.Add(phoneme);
+				item.Click += PhonemeSelect_Clicked;
+				item.Tag = phoneme;
+			}
+			
+			return menu;
+		}
+
+		private void PhonemeSelect_Clicked(object sender, EventArgs e)
+		{
+			var menuItem = sender as ToolStripMenuItem;
+			if (menuItem != null)
+			{
+				List<MarksTextInfo> changedMarks = new List<MarksTextInfo>();
+				foreach (var mark in _marksSelectionManager.SelectedMarks)
+				{
+					var mti = new MarksTextInfo(mark, menuItem.Text, mark.Text);
+					changedMarks.Add(mti);
+					mark.Text = menuItem.Text;
+				}
+				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
+			}
+			
 		}
 
 		private void Rename_Click(object sender, EventArgs e)
@@ -647,7 +703,6 @@ namespace Common.Controls.TimelineControl
 					mark.Text = td.Response;
 				}
 				TimeLineGlobalEventManager.Manager.OnMarksTextChanged(new MarksTextChangedEventArgs(changedMarks));
-				Invalidate();
 			}
 		}
 
@@ -931,7 +986,10 @@ namespace Common.Controls.TimelineControl
 			{
 				_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalEventManagerTimeLineGlobalMoving;
 				_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalEventManagerDeleteTimeLineGlobal;
-				_marksSelectionManager.SelectionChanged -= _marksSelectionManager_SelectionChanged;
+				_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalEventManager_MarksTextChanged;
+				_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalEventManager_MarksMoved;
+				_marksSelectionManager.SelectionChanged -= MarksSelectionManager_SelectionChanged;
+				
 				UnConfigureMarks();
 			}
 			base.Dispose(disposing);

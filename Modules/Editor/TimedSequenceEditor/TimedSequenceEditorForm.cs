@@ -2664,11 +2664,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				AddMarkAtTime(e.Time, false);
+				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control);
 			}
 		}
 
-		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo)
+		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false)
 		{
 			IMark newMark = null;
 			IMarkCollection mc = null;
@@ -2702,8 +2702,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			if (mc != null && mc.Marks.All(x => x.StartTime != time))
 			{
+
 				newMark = new Mark(time);
 				mc.AddMark(newMark);
+				if (fillGap)
+				{
+					mc.FillGapTimes(newMark);
+				}
+
 				PopulateMarkSnapTimes();
 				CheckAndRenderDirtyElementsAsync();
 				SequenceModified();
