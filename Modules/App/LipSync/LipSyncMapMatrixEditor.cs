@@ -13,6 +13,7 @@ using Common.Resources.Properties;
 using Vixen.Sys;
 using Common.Controls;
 using Common.Controls.Theme;
+using Common.Resources;
 
 namespace VixenModules.App.LipSyncApp
 {
@@ -254,44 +255,40 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LoadIconsAndBitmaps()
 		{
-			Assembly assembly = Assembly.Load("LipSyncApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-			if (assembly != null)
+			
+			if (_iconBitmaps == null)
 			{
-				ResourceManager lipSyncRM = new ResourceManager("VixenModules.App.LipSyncApp.LipSyncResources", assembly);
-				if (_iconBitmaps == null)
-				{
-					_iconBitmaps = new Dictionary<PhonemeType, Bitmap>();
-					_iconBitmaps.Add(PhonemeType.AI, (Bitmap)lipSyncRM.GetObject("AI"));
-					_iconBitmaps.Add(PhonemeType.E, (Bitmap)lipSyncRM.GetObject("E"));
-					_iconBitmaps.Add(PhonemeType.ETC, (Bitmap)lipSyncRM.GetObject("etc"));
-					_iconBitmaps.Add(PhonemeType.FV, (Bitmap)lipSyncRM.GetObject("FV"));
-					_iconBitmaps.Add(PhonemeType.L, (Bitmap)lipSyncRM.GetObject("L"));
-					_iconBitmaps.Add(PhonemeType.MBP, (Bitmap)lipSyncRM.GetObject("MBP"));
-					_iconBitmaps.Add(PhonemeType.O, (Bitmap)lipSyncRM.GetObject("O"));
-					_iconBitmaps.Add(PhonemeType.REST, (Bitmap)lipSyncRM.GetObject("rest"));
-					_iconBitmaps.Add(PhonemeType.U, (Bitmap)lipSyncRM.GetObject("U"));
-					_iconBitmaps.Add(PhonemeType.WQ, (Bitmap)lipSyncRM.GetObject("WQ"));
+				_iconBitmaps = new Dictionary<PhonemeType, Bitmap>();
+				_iconBitmaps.Add(PhonemeType.AI, Resources.AI);
+				_iconBitmaps.Add(PhonemeType.E, Resources.E);
+				_iconBitmaps.Add(PhonemeType.ETC, Resources.etc);
+				_iconBitmaps.Add(PhonemeType.FV, Resources.FV);
+				_iconBitmaps.Add(PhonemeType.L, Resources.L);
+				_iconBitmaps.Add(PhonemeType.MBP, Resources.MBP);
+				_iconBitmaps.Add(PhonemeType.O, Resources.O);
+				_iconBitmaps.Add(PhonemeType.REST, Resources.rest);
+				_iconBitmaps.Add(PhonemeType.U, Resources.U);
+				_iconBitmaps.Add(PhonemeType.WQ, Resources.WQ);
 
-					_noImageBmp = (Bitmap)lipSyncRM.GetObject("NoImage");
-				}
+				_noImageBmp = Resources.NoImage;
+			}
 
-				if (this.MapData.UsingDefaults)
-				{
-					_pictureBitmaps.Add(PhonemeType.AI.ToString(), (Bitmap)lipSyncRM.GetObject("AI_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.E.ToString(), (Bitmap)lipSyncRM.GetObject("E_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.ETC.ToString(), (Bitmap)lipSyncRM.GetObject("etc_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.FV.ToString(), (Bitmap)lipSyncRM.GetObject("FV_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.L.ToString(), (Bitmap)lipSyncRM.GetObject("L_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.MBP.ToString(), (Bitmap)lipSyncRM.GetObject("MBP_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.O.ToString(), (Bitmap)lipSyncRM.GetObject("O_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.REST.ToString(), (Bitmap)lipSyncRM.GetObject("rest_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.U.ToString(), (Bitmap)lipSyncRM.GetObject("U_Transparent"));
-					_pictureBitmaps.Add(PhonemeType.WQ.ToString(), (Bitmap)lipSyncRM.GetObject("WQ_Transparent"));
-					nameTextBox.Text = MapData.LibraryReferenceName;
-					savePicBitmaps();
-					_pictureBitmaps.Clear();
-					this.MapData.UsingDefaults = false;
-				}
+			if (this.MapData.UsingDefaults)
+			{
+				_pictureBitmaps.Add(PhonemeType.AI.ToString(), Resources.AI_Transparent);
+				_pictureBitmaps.Add(PhonemeType.E.ToString(), Resources.E_Transparent);
+				_pictureBitmaps.Add(PhonemeType.ETC.ToString(), Resources.etc_Transparent);
+				_pictureBitmaps.Add(PhonemeType.FV.ToString(), Resources.FV_Transparent);
+				_pictureBitmaps.Add(PhonemeType.L.ToString(), Resources.L_Transparent);
+				_pictureBitmaps.Add(PhonemeType.MBP.ToString(), Resources.MBP_Transparent);
+				_pictureBitmaps.Add(PhonemeType.O.ToString(), Resources.O_Transparent);
+				_pictureBitmaps.Add(PhonemeType.REST.ToString(), Resources.rest_Transparent);
+				_pictureBitmaps.Add(PhonemeType.U.ToString(), Resources.U_Transparent);
+				_pictureBitmaps.Add(PhonemeType.WQ.ToString(), Resources.WQ_Transparent);
+				nameTextBox.Text = MapData.LibraryReferenceName;
+				savePicBitmaps();
+				_pictureBitmaps.Clear();
+				this.MapData.UsingDefaults = false;
 			}
 
 			currentPhonemeIndex = 0;

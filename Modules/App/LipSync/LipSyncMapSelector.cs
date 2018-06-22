@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
@@ -19,8 +20,6 @@ namespace VixenModules.App.LipSyncApp
 {
 	public partial class LipSyncMapSelector : BaseForm
 	{
-		private Bitmap _iconBitmap;
-
 		private LipSyncMapLibrary _library;
 
 		public LipSyncMapSelector()
@@ -40,13 +39,6 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMapSelector_Load(object sender, EventArgs e)
 		{
-			Assembly assembly = Assembly.Load("LipSyncApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-			if (assembly != null)
-			{
-				ResourceManager lipSyncRM = new ResourceManager("VixenModules.App.LipSyncApp.LipSyncResources", assembly);
-				_iconBitmap = new Bitmap((Image)lipSyncRM.GetObject("AI"), new Size(64, 64));
-			}
-
 			PopulateListWithMappings();
 			mappingsListView.Activation = ItemActivation.Standard;
 		}
@@ -89,18 +81,6 @@ namespace VixenModules.App.LipSyncApp
 				lvi.Text = kvp.Key;
 				lvi.Name = kvp.Key;
 
-				//ListViewItem.ListViewSubItem subItemType = new ListViewItem.ListViewSubItem(lvi, "Type");
-				//subItemType.Name = "Type";
-
-				//if (kvp.Value.IsMatrix)
-				//{
-				//	subItemType.Text = "Picture";
-				//}
-				//else
-				//{
-				//	subItemType.Text = "String";
-				//}
-
 				ListViewItem.ListViewSubItem subItemNotes = new ListViewItem.ListViewSubItem(lvi, "Notes");
 				subItemNotes.Name = @"Notes";
 				subItemNotes.Text = kvp.Value.Notes;
@@ -119,23 +99,16 @@ namespace VixenModules.App.LipSyncApp
 				int totalSize = mappingsListView.Columns.Count + 1;
 				foreach (ColumnHeader column in mappingsListView.Columns)
 				{
-					column.Width = -1;
-					if (!column.Text.Equals("Notes"))
+					if (column.Index != mappingsListView.Columns.Count - 1)
 					{
-						totalSize += column.Width;
+						column.Width = -1;
 					}
 					else
 					{
-						int proposedViewSize = column.Width + totalSize;
-						if (proposedViewSize <= mappingsListView.Width)
-						{
-							column.Width = mappingsListView.Width - totalSize;
-						}
+						column.Width = -2;
 					}
 				}
 			}
-
-			
 		}
 
 		private void PopulateListWithMappings()
@@ -148,9 +121,6 @@ namespace VixenModules.App.LipSyncApp
 			foreach (KeyValuePair<string, LipSyncMapData> kvp in Library) {
 				LipSyncMapData c = kvp.Value;
 				string name = kvp.Key;
-
-				mappingsListView.LargeImageList.ImageSize = new Size(64, 64);
-				mappingsListView.LargeImageList.Images.Add(name, _iconBitmap);
 
 				ListViewItem item = new ListViewItem();
 				item.Text = name;
@@ -170,6 +140,7 @@ namespace VixenModules.App.LipSyncApp
 			{
 				SetWidths();
 			}
+			
 			mappingsListView.EndUpdate();
 
 			UpdateListViewCtrl();

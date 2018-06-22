@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
+using NLog;
 using Vixen.Module;
 using Vixen.Module.App;
 
@@ -12,6 +13,8 @@ namespace VixenModules.App.LipSyncApp
 {
 	public class LipSyncMapLibrary : AppModuleInstanceBase, IEnumerable<KeyValuePair<string, LipSyncMapData>>
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+
 		private LipSyncMapStaticData _staticData;
 		static int uniqueKeyIndex = 0;
 
@@ -126,7 +129,6 @@ namespace VixenModules.App.LipSyncApp
 
 		public string AddMapping(bool insertNew, string name, LipSyncMapData mapping, bool isMatrix)
 		{
-
 			string mapName = name;
 
 			if (insertNew)
@@ -183,39 +185,6 @@ namespace VixenModules.App.LipSyncApp
 					retVal = Library.Remove(name);
 				}
 			}
-			return retVal;
-		}
-
-		private bool EditStringMapping(string name, LipSyncMapData newMapping)
-		{
-			bool retVal = false;
-			bool doRemove = true;
-			LipSyncMapEditor editor = new LipSyncMapEditor(newMapping);
-			editor.LibraryMappingName = name;
-
-			if (editor.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-			{
-				if ((name.Equals(editor.LibraryMappingName) == false) &&
-					(this.Contains(editor.LibraryMappingName) == true))
-				{
-					MessageBoxForm.msgIcon = SystemIcons.Question;
-					var messageBox = new MessageBoxForm("Overwrite existing " +
-							editor.LibraryMappingName + " mapping?",
-							"Map exists", true, false);
-					messageBox.ShowDialog();
-
-					doRemove = (messageBox.DialogResult == DialogResult.OK) ? true : false;
-				}
-
-				if (doRemove == true)
-				{
-					RemoveMapping(name);
-				}
-
-				AddMapping(!doRemove, editor.LibraryMappingName, editor.MapData,false);
-				retVal = true;
-			}
-
 			return retVal;
 		}
 
@@ -305,7 +274,7 @@ namespace VixenModules.App.LipSyncApp
 
 				if (newMapping.IsMatrix == false)
 				{
-					retVal = EditStringMapping(name, newMapping);
+					Logging.Error($"Trying to edit a string map: {name}!");
 				}
 				else
 				{

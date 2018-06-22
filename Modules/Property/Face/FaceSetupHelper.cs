@@ -229,16 +229,22 @@ namespace VixenModules.Property.Face {
 				_phonemeBitmaps.Add("U", Tools.GetIcon(Resources.U_Transparent, 48));
 				_phonemeBitmaps.Add("WQ", Tools.GetIcon(Resources.WQ_Transparent, 48));
 
+				//Temp placeholder for outline and eye images.
+				Bitmap blank = new Bitmap(48, 48);
+				using (Graphics gr = Graphics.FromImage(blank))
+				{
+					gr.Clear(System.Drawing.Color.Transparent);
+				}
 				_faceComponentBitmaps = new Dictionary<string, Bitmap>
 				{
 					{
-						FaceComponent.EyesOpen.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
+						FaceComponent.EyesOpen.GetEnumDescription(), blank //Tools.GetIcon(Resources.NoImage, 48)
 					},
 					{
-						FaceComponent.EyesClosed.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
+						FaceComponent.EyesClosed.GetEnumDescription(), blank  //Tools.GetIcon(Resources.NoImage, 48)
 					},
 					{
-						FaceComponent.Outlines.GetEnumDescription(), Tools.GetIcon(Resources.WQ_Transparent, 48)
+						FaceComponent.Outlines.GetEnumDescription(), blank  //Tools.GetIcon(Resources.NoImage, 48)
 					}
 				};
 			}

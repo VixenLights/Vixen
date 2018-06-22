@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Reflection;
 using System.Resources;
+using Common.Resources.Properties;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;
@@ -559,23 +560,17 @@ namespace VixenModules.Effect.LipSync
 		{
 			if (_phonemeBitmaps == null)
 			{
-				Assembly assembly = Assembly.Load("LipSyncApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-				if (assembly != null)
-				{
-					ResourceManager rm = new ResourceManager("VixenModules.App.LipSyncApp.LipSyncResources", assembly);
-					_phonemeBitmaps = new Dictionary<PhonemeType, Bitmap>();
-					_phonemeBitmaps.Add(PhonemeType.AI, (Bitmap)rm.GetObject("AI"));
-					_phonemeBitmaps.Add(PhonemeType.E, (Bitmap)rm.GetObject("E"));
-					_phonemeBitmaps.Add(PhonemeType.ETC, (Bitmap)rm.GetObject("etc"));
-					_phonemeBitmaps.Add(PhonemeType.FV, (Bitmap)rm.GetObject("FV"));
-					_phonemeBitmaps.Add(PhonemeType.L, (Bitmap)rm.GetObject("L"));
-					_phonemeBitmaps.Add(PhonemeType.MBP, (Bitmap)rm.GetObject("MBP"));
-					_phonemeBitmaps.Add(PhonemeType.O, (Bitmap)rm.GetObject("O"));
-					//_phonemeBitmaps.Add("PREVIEW", (Bitmap)rm.GetObject("Preview"));
-					_phonemeBitmaps.Add(PhonemeType.REST, (Bitmap)rm.GetObject("rest"));
-					_phonemeBitmaps.Add(PhonemeType.U, (Bitmap)rm.GetObject("U"));
-					_phonemeBitmaps.Add(PhonemeType.WQ, (Bitmap)rm.GetObject("WQ"));
-				}
+				_phonemeBitmaps = new Dictionary<PhonemeType, Bitmap>();
+				_phonemeBitmaps.Add(PhonemeType.AI, Resources.AI);
+				_phonemeBitmaps.Add(PhonemeType.E, Resources.E);
+				_phonemeBitmaps.Add(PhonemeType.ETC, Resources.etc);
+				_phonemeBitmaps.Add(PhonemeType.FV, Resources.FV);
+				_phonemeBitmaps.Add(PhonemeType.L, Resources.L);
+				_phonemeBitmaps.Add(PhonemeType.MBP, Resources.MBP);
+				_phonemeBitmaps.Add(PhonemeType.O, Resources.O);
+				_phonemeBitmaps.Add(PhonemeType.REST, Resources.rest);
+				_phonemeBitmaps.Add(PhonemeType.U, Resources.U);
+				_phonemeBitmaps.Add(PhonemeType.WQ, Resources.WQ);
 			}
 		}
 

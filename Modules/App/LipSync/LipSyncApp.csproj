@@ -93,12 +93,6 @@
     </Compile>
     <Compile Include="LipSyncMapLibrary.cs" />
     <Compile Include="LipSyncMapItem.cs" />
-    <Compile Include="LipSyncMapEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LipSyncMapEditor.Designer.cs">
-      <DependentUpon>LipSyncMapEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="LipSyncMapSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,7 +136,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Resources\Tools.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
@@ -185,9 +178,6 @@
     <EmbeddedResource Include="LipSyncMapMatrixEditor.resx">
       <DependentUpon>LipSyncMapMatrixEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LipSyncMapEditor.resx">
-      <DependentUpon>LipSyncMapEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="LipSyncMapSelector.resx">
       <DependentUpon>LipSyncMapSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -214,61 +204,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\AI.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\E.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\etc.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\FV.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\L.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\MBP.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\O.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Preview.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\rest.jpg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\standard_dictionary" />
-    <EmbeddedResource Include="Resources\U.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\WQ.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\WQ_Transparent.png" />
-    <EmbeddedResource Include="Resources\AI_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\etc_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\E_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\FV_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\L_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\MBP_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\O_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\rest_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\U_LightGray.jpg" />
-    <EmbeddedResource Include="Resources\AI_Transparent.png" />
-    <EmbeddedResource Include="Resources\etc_Transparent.png" />
-    <EmbeddedResource Include="Resources\E_Transparent.png" />
-    <EmbeddedResource Include="Resources\FV_Transparent.png" />
-    <EmbeddedResource Include="Resources\L_Transparent.png" />
-    <EmbeddedResource Include="Resources\MBP_Transparent.png" />
-    <EmbeddedResource Include="Resources\NoImage.png" />
-    <EmbeddedResource Include="Resources\O_Transparent.png" />
-    <EmbeddedResource Include="Resources\rest_Transparent.png" />
-    <EmbeddedResource Include="Resources\U_Transparent.png" />
-    <EmbeddedResource Include="Resources\WQ_LightGray.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

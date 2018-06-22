@@ -182,7 +182,7 @@
 			this.openButton.Name = "openButton";
 			this.openButton.Size = new System.Drawing.Size(48, 25);
 			this.openButton.TabIndex = 48;
-			this.openButton.Text = "Open";
+			this.openButton.Text = "File";
 			this.openButton.UseVisualStyleBackColor = true;
 			this.openButton.Click += new System.EventHandler(this.openButton_Click);
 			// 
@@ -296,7 +296,7 @@
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "LipSync Matrix Editor";
+			this.Text = "LipSync Image Editor";
 			this.Load += new System.EventHandler(this.OnLoad);
 			this.ResizeEnd += new System.EventHandler(this.OnResizeEnd);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
