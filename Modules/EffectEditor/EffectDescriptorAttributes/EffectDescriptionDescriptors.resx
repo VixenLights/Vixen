@@ -561,4 +561,28 @@
   <data name="FontScale" xml:space="preserve">
     <value>Adjusts the Font size.</value>
   </data>
+  <data name="EyeMode" xml:space="preserve">
+    <value>Determines how the eyes are handled.</value>
+  </data>
+  <data name="LipSyncMode" xml:space="preserve">
+    <value>Use a single Phoneme or collection of Marks with Phoneme labels.</value>
+  </data>
+  <data name="LyricData" xml:space="preserve">
+    <value>The lyric verbiage this Phoneme is associated with.</value>
+  </data>
+  <data name="MappingType" xml:space="preserve">
+    <value>The mapping type. Face Mapping or Image Map.</value>
+  </data>
+  <data name="MarkCollection" xml:space="preserve">
+    <value>The Mark Collection to align the phoneme movements with. This collection should have the phoneme names for labels.</value>
+  </data>
+  <data name="PhonemeMapping" xml:space="preserve">
+    <value>The mapping to use to associate phonemes with movements.</value>
+  </data>
+  <data name="ShowOutline" xml:space="preserve">
+    <value>Detemines if the outline of the element is lit.</value>
+  </data>
+  <data name="StaticPhoneme" xml:space="preserve">
+    <value>The Phoneme mouth affiliation.</value>
+  </data>
 </root>

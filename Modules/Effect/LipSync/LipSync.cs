@@ -86,7 +86,7 @@ namespace VixenModules.Effect.LipSync
 					}
 					else
 					{
-						//We should never get here becasue we no longer have element maps
+						//We should never get here becasue we no longer have string maps
 						Logging.Error("Trying to render as deprecated string maps!");
 						renderNodes.ForEach(delegate (ElementNode element)
 						{
@@ -109,13 +109,19 @@ namespace VixenModules.Effect.LipSync
 			var fm = element.Properties.Get(FaceDescriptor.ModuleId) as FaceModule;
 			if (fm == null) return;
 
-			if (fm.IsFaceComponentType(FaceComponent.Outlines))
+			if (fm.IsFaceComponentType(FaceComponent.Outlines) && ShowOutline)
 			{
 				var colorVal = fm.ConfiguredColorAndIntensity();
 				var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
 				_elementData.Add(result);
 			}
-			else if (fm.IsFaceComponentType(FaceComponent.EyesOpen))
+			else if (fm.IsFaceComponentType(FaceComponent.EyesOpen) && EyeMode == EyeMode.Open)
+			{
+				var colorVal = fm.ConfiguredColorAndIntensity();
+				var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
+				_elementData.Add(result);
+			}
+			if (fm.IsFaceComponentType(FaceComponent.EyesClosed) && EyeMode == EyeMode.Closed)
 			{
 				var colorVal = fm.ConfiguredColorAndIntensity();
 				var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, TimeSpan);
@@ -317,19 +323,21 @@ namespace VixenModules.Effect.LipSync
 
 		protected void SetMatrixBrowesables()
 		{
-			bool scaleIsBrowesable = false;
+			bool isMatrix = false;
 			LipSyncMapData mapData = null;
 			if (MappingType == MappingType.Map && _library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
 			{
-				scaleIsBrowesable = mapData.IsMatrix;
+				isMatrix = mapData.IsMatrix;
 			}
 			
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
-				{"Orientation", scaleIsBrowesable},
-				{"ScaleToGrid", scaleIsBrowesable},
-				{"ScalePercent", scaleIsBrowesable && !ScaleToGrid },
-				{"IntensityLevel", scaleIsBrowesable }
+				{"Orientation", isMatrix},
+				{"ScaleToGrid", isMatrix},
+				{"ScalePercent", isMatrix && !ScaleToGrid },
+				{"IntensityLevel", isMatrix },
+				{"ShowOutline", !isMatrix },
+				{"EyeMode", !isMatrix }
 			};
 		
 			SetBrowsable(propertyStates);
@@ -380,8 +388,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[DisplayName(@"Phoneme/Marks")]
-		[Description(@"Use a single Phoneme or collection of Marks with Phoneme labels.")]
+		[ProviderDisplayName(@"LipSyncMode")]
+		[ProviderDescription(@"LipSyncMode")]
 		[PropertyOrder(1)]
 		public LipSyncMode LipSyncMode
 		{
@@ -404,8 +412,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
-		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[ProviderDisplayName(@"MarkCollection")]
+		[ProviderDescription(@"MarkCollection")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(2)]
@@ -433,8 +441,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[DisplayName(@"Mapping Type")]
-		[Description(@"The mapping type. Face Property or Matrix Map.")]
+		[ProviderDisplayName(@"MappingType")]
+		[ProviderDescription(@"MappingType")]
 		[PropertyOrder(3)]
 		public MappingType MappingType
 		{
@@ -450,8 +458,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory("Config",2)]
-		[DisplayName(@"Phoneme mapping")]
-		[Description(@"The mapping associated.")]
+		[ProviderDisplayName(@"PhonemeMapping")]
+		[ProviderDescription(@"PhonemeMapping")]
 		[PropertyEditor("SelectionEditor")]
 		[TypeConverter(typeof(PhonemeMappingConverter))]
 		[PropertyOrder(4)]
@@ -469,8 +477,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[DisplayName(@"Lyric")]
-		[Description(@"The lyric verbiage this Phoneme is associated with.")]
+		[ProviderDisplayName(@"LyricData")]
+		[ProviderDescription(@"LyricData")]
 		[PropertyOrder(4)]
 		public String LyricData
 		{
@@ -485,8 +493,8 @@ namespace VixenModules.Effect.LipSync
 
 		[Value]
 		[ProviderCategory("Config", 2)]
-		[DisplayName(@"Phoneme")]
-		[Description(@"The Phoneme mouth affiliation")]
+		[ProviderDisplayName(@"StaticPhoneme")]
+		[ProviderDescription(@"StaticPhoneme")]
 		[PropertyOrder(5)]
 		public PhonemeType StaticPhoneme
 		{
@@ -536,7 +544,37 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"EyeMode")]
+		[ProviderDescription(@"EyeMode")]
+		[PropertyOrder(8)]
+		public EyeMode EyeMode
+		{
+			get { return _data.EyeMode; }
+			set
+			{
+				_data.EyeMode = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"ShowOutline")]
+		[ProviderDescription(@"ShowOutline")]
+		[PropertyOrder(9)]
+		public bool ShowOutline
+		{
+			get { return _data.ShowOutline; }
+			set
+			{
+				_data.ShowOutline = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Brightness",3)]

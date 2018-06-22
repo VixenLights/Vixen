@@ -29,6 +29,8 @@ namespace VixenModules.Effect.LipSync
 			ScaleToGrid = true;
 			ScalePercent = 100;
 			Level = 100;
+			ShowOutline = false;
+			EyeMode = EyeMode.Off;
 		}
 
 		[DataMember]
@@ -49,6 +51,12 @@ namespace VixenModules.Effect.LipSync
 		[DataMember]
 		public int Level { get; set; }
 
+		[DataMember]
+		public bool ShowOutline { get; set; }
+
+		[DataMember]
+		public EyeMode EyeMode { get; set; }
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LipSyncData result = new LipSyncData();
@@ -61,6 +69,8 @@ namespace VixenModules.Effect.LipSync
 			result.MarkCollectionId = MarkCollectionId;
 			result.LipSyncMode = LipSyncMode;
 			result.MappingType = MappingType;
+			result.ShowOutline = ShowOutline;
+			result.EyeMode = EyeMode;
 			return result;
 		}
 	}

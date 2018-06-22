@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines how the eyes are handled..
+        /// </summary>
+        internal static string EyeMode {
+            get {
+                return ResourceManager.GetString("EyeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected file name..
         /// </summary>
         internal static string Filename {
@@ -710,11 +719,47 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use a single Phoneme or collection of Marks with Phoneme labels..
+        /// </summary>
+        internal static string LipSyncMode {
+            get {
+                return ResourceManager.GetString("LipSyncMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the location..
         /// </summary>
         internal static string Location {
             get {
                 return ResourceManager.GetString("Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The lyric verbiage this Phoneme is associated with..
+        /// </summary>
+        internal static string LyricData {
+            get {
+                return ResourceManager.GetString("LyricData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mapping type. Face Mapping or Image Map..
+        /// </summary>
+        internal static string MappingType {
+            get {
+                return ResourceManager.GetString("MappingType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Mark Collection to align the phoneme movements with. This collection should have the phoneme names for labels..
+        /// </summary>
+        internal static string MarkCollection {
+            get {
+                return ResourceManager.GetString("MarkCollection", resourceCulture);
             }
         }
         
@@ -859,6 +904,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mapping to use to associate phonemes with movements..
+        /// </summary>
+        internal static string PhonemeMapping {
+            get {
+                return ResourceManager.GetString("PhonemeMapping", resourceCulture);
             }
         }
         
@@ -1097,6 +1151,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detemines if the outline of the element is lit..
+        /// </summary>
+        internal static string ShowOutline {
+            get {
+                return ResourceManager.GetString("ShowOutline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shrink the legs of the spiral..
         /// </summary>
         internal static string Shrink {
@@ -1165,6 +1228,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StaticEffect {
             get {
                 return ResourceManager.GetString("StaticEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Phoneme mouth affiliation..
+        /// </summary>
+        internal static string StaticPhoneme {
+            get {
+                return ResourceManager.GetString("StaticPhoneme", resourceCulture);
             }
         }
         

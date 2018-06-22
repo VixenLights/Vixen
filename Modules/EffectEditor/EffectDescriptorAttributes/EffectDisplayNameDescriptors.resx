@@ -570,4 +570,28 @@
   <data name="FontScale" xml:space="preserve">
     <value>Scale Font</value>
   </data>
+  <data name="EyeMode" xml:space="preserve">
+    <value>Eye Mode</value>
+  </data>
+  <data name="LipSyncMode" xml:space="preserve">
+    <value>Phoneme / Marks</value>
+  </data>
+  <data name="LyricData" xml:space="preserve">
+    <value>Lyric</value>
+  </data>
+  <data name="MappingType" xml:space="preserve">
+    <value>Mapping Type</value>
+  </data>
+  <data name="MarkCollection" xml:space="preserve">
+    <value>Mark Collection</value>
+  </data>
+  <data name="PhonemeMapping" xml:space="preserve">
+    <value>Phoneme Mapping</value>
+  </data>
+  <data name="ShowOutline" xml:space="preserve">
+    <value>Show Outline</value>
+  </data>
+  <data name="StaticPhoneme" xml:space="preserve">
+    <value>Phoneme</value>
+  </data>
 </root>

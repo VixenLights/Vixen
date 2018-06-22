@@ -65,6 +65,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EyeMode.cs" />
     <Compile Include="FastPictureEffect.cs" />
     <Compile Include="LipSync.cs" />
     <Compile Include="LipSyncData.cs" />
