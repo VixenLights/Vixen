@@ -314,7 +314,9 @@ namespace VixenModules.Effect.LipSync
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
-				{"PhonemeMapping", MappingType == MappingType.Map}
+				{"PhonemeMapping", MappingType == MappingType.Map},
+				{"EyeMode", MappingType == MappingType.FaceDefinition},
+				{"ShowOutline", MappingType == MappingType.FaceDefinition}
 			};
 
 			SetBrowsable(propertyStates);
@@ -452,6 +454,7 @@ namespace VixenModules.Effect.LipSync
 				_data.MappingType = value;
 				IsDirty = true;
 				SetMappingType();
+				SetMatrixBrowesables();
 				OnPropertyChanged();
 			}
 		}
