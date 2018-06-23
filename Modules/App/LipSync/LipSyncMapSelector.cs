@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Services;
 using Vixen.Sys;
@@ -19,8 +20,6 @@ namespace VixenModules.App.LipSyncApp
 {
 	public partial class LipSyncMapSelector : BaseForm
 	{
-		private Bitmap _iconBitmap;
-
 		private LipSyncMapLibrary _library;
 
 		public LipSyncMapSelector()
@@ -40,18 +39,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMapSelector_Load(object sender, EventArgs e)
 		{
-			Assembly assembly = Assembly.Load("LipSyncApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-			if (assembly != null)
-			{
-				ResourceManager lipSyncRM = new ResourceManager("VixenModules.App.LipSyncApp.LipSyncResources", assembly);
-				_iconBitmap = new Bitmap((Image)lipSyncRM.GetObject("AI"), new Size(64, 64));
-			}
-
 			PopulateListWithMappings();
-			LipSyncMapStaticData data;
-			data =
-				(ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary).StaticModuleData as
-				LipSyncMapStaticData;
 			mappingsListView.Activation = ItemActivation.Standard;
 		}
 
@@ -71,9 +59,7 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncMapSelector_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			LipSyncMapStaticData data;
-			data =
-				(ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary).StaticModuleData as
+			var data = (ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary)?.StaticModuleData as
 				LipSyncMapStaticData;
 			data.SelectorWindowBounds = Bounds;
 		}
@@ -82,9 +68,9 @@ namespace VixenModules.App.LipSyncApp
 		{
 			mappingsListView.Columns.Clear();
 			mappingsListView.Columns.Add("Name");
-			mappingsListView.Columns.Add("Type");
+			//mappingsListView.Columns.Add("Type");
 			mappingsListView.Columns.Add("Notes");
-
+			
 			mappingsListView.Items.Clear();
 			foreach (KeyValuePair<string, LipSyncMapData> kvp in Library)
 			{
@@ -95,41 +81,31 @@ namespace VixenModules.App.LipSyncApp
 				lvi.Text = kvp.Key;
 				lvi.Name = kvp.Key;
 
-				ListViewItem.ListViewSubItem subItemType = new ListViewItem.ListViewSubItem(lvi, "Type");
-				subItemType.Name = "Type";
-
-				if (kvp.Value.IsMatrix)
-				{
-					subItemType.Text = "Picture";
-				}
-				else
-				{
-					subItemType.Text = "String";
-				}
-
 				ListViewItem.ListViewSubItem subItemNotes = new ListViewItem.ListViewSubItem(lvi, "Notes");
-				subItemNotes.Name = "Notes";
+				subItemNotes.Name = @"Notes";
 				subItemNotes.Text = kvp.Value.Notes;
 
-				lvi.SubItems.Add(subItemType);
+				//lvi.SubItems.Add(subItemType);
 				lvi.SubItems.Add(subItemNotes);
 				mappingsListView.Items.Add(lvi);
 			}
 
-			int totalSize = mappingsListView.Columns.Count + 1;
-			foreach (ColumnHeader column in mappingsListView.Columns)
+			if (!Library.Any())
 			{
-				column.Width = -1;
-				if (!column.Text.Equals("Notes"))
+				SetWidths();
+			}
+			else
+			{
+				int totalSize = mappingsListView.Columns.Count + 1;
+				foreach (ColumnHeader column in mappingsListView.Columns)
 				{
-					totalSize += column.Width;
-				}
-				else
-				{
-					int proposedViewSize = column.Width + totalSize;
-					if ( proposedViewSize <= mappingsListView.Width)
+					if (column.Index != mappingsListView.Columns.Count - 1)
 					{
-						column.Width = mappingsListView.Width - totalSize;
+						column.Width = -1;
+					}
+					else
+					{
+						column.Width = -2;
 					}
 				}
 			}
@@ -146,15 +122,12 @@ namespace VixenModules.App.LipSyncApp
 				LipSyncMapData c = kvp.Value;
 				string name = kvp.Key;
 
-				mappingsListView.LargeImageList.ImageSize = new Size(64, 64);
-				mappingsListView.LargeImageList.Images.Add(name, _iconBitmap);
-
 				ListViewItem item = new ListViewItem();
 				item.Text = name;
 				item.Name = name;
 				item.ImageKey = name;
 				item.Tag = c;
-				if (Library.DefaultMappingName.Equals(name))
+				if (Library.DefaultMapping != null && Library.DefaultMappingName.Equals(name))
 				{
 					item.Font = new Font(item.Font, FontStyle.Bold);
 				}
@@ -162,6 +135,12 @@ namespace VixenModules.App.LipSyncApp
 				mappingsListView.Items.Add(item);
 
 			}
+
+			if (!Library.Any())
+			{
+				SetWidths();
+			}
+			
 			mappingsListView.EndUpdate();
 
 			UpdateListViewCtrl();
@@ -234,16 +213,11 @@ namespace VixenModules.App.LipSyncApp
 
 		private void buttonNewMap_Click(object sender, EventArgs e)
 		{
-			Point screenPoint = buttonNewMap.PointToScreen(new Point(buttonNewMap.Left, buttonNewMap.Bottom));
-			if (screenPoint.Y + newContextMenu.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-			{
-				newContextMenu.Show(buttonNewMap, new Point(0, -newContextMenu.Size.Height));
-			}
-			else
-			{
-				newContextMenu.Show(buttonNewMap, new Point(0, buttonNewMap.Height));
-			}
-			Refresh();
+			LipSyncMapData newMap = new LipSyncMapData();
+			string mapName = Library.AddMapping(true, null, newMap, true);
+
+			Changed = Library.EditLibraryMapping(mapName);
+			this.PopulateListWithMappings();
 		}
 
 		private void buttonCloneMap_Click(object sender, EventArgs e)
@@ -309,20 +283,6 @@ namespace VixenModules.App.LipSyncApp
 			buttonDeleteMap.Enabled = (mappingsListView.SelectedIndices.Count >= 1);
 		}
 
-		private void newContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-		{
-			LipSyncMapData newMap = new LipSyncMapData();
-			string mapName = Library.AddMapping(
-				true,
-				null,
-				newMap,
-				Convert.ToBoolean(e.ClickedItem.Tag));
-			
-			Changed = Library.EditLibraryMapping(mapName);
-			this.PopulateListWithMappings();
-
-		}
-
 		private void mappingsListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
 			buttonNewMap.Enabled = true;
@@ -347,6 +307,25 @@ namespace VixenModules.App.LipSyncApp
 
 			ListViewItem lvItem = mappingsListView.SelectedItems[0];
 			RenameOldLabel = lvItem.Name;
+		}
+
+		private void SetWidths()
+		{
+			foreach (ColumnHeader col in mappingsListView.Columns)
+			{
+				var width = col.Width;
+
+				// column items greatest width
+				col.Width = -1;
+				if (width > col.Width)
+					col.Width = width;
+
+				// column header width
+				col.Width = -2;
+				if (width > col.Width)
+					col.Width = width;
+			}
+
 		}
 	}
 }

@@ -51,6 +51,13 @@ namespace VixenModules.Property.Location {
 			return p;
 		}
 
+		#region Overrides of PropertyModuleInstanceBase
+
+		/// <inheritdoc />
+		public override bool HasSetup => true;
+
+		#endregion
+
 		public override bool Setup() {
 			using (SetupForm setupForm = new SetupForm(_data)) {
 				if (setupForm.ShowDialog() == DialogResult.OK) {

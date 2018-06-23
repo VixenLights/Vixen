@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
 
@@ -16,6 +15,9 @@ namespace VixenModules.Effect.LipSync
 		public String PhonemeMapping { get; set; }
 
 		[DataMember]
+		public MappingType MappingType { get; set; }
+
+		[DataMember]
 		public String LyricData { get; set; }
 
 		public LipSyncData()
@@ -23,9 +25,12 @@ namespace VixenModules.Effect.LipSync
 			LyricData = string.Empty;
 			StaticPhoneme = PhonemeType.REST;
 			PhonemeMapping = string.Empty;
+			MappingType = MappingType.FaceDefinition;
 			ScaleToGrid = true;
 			ScalePercent = 100;
 			Level = 100;
+			ShowOutline = false;
+			EyeMode = EyeMode.Off;
 		}
 
 		[DataMember]
@@ -46,6 +51,12 @@ namespace VixenModules.Effect.LipSync
 		[DataMember]
 		public int Level { get; set; }
 
+		[DataMember]
+		public bool ShowOutline { get; set; }
+
+		[DataMember]
+		public EyeMode EyeMode { get; set; }
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LipSyncData result = new LipSyncData();
@@ -57,6 +68,9 @@ namespace VixenModules.Effect.LipSync
 			result.Level = Level;
 			result.MarkCollectionId = MarkCollectionId;
 			result.LipSyncMode = LipSyncMode;
+			result.MappingType = MappingType;
+			result.ShowOutline = ShowOutline;
+			result.EyeMode = EyeMode;
 			return result;
 		}
 	}

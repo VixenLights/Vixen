@@ -16,6 +16,7 @@ using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
+using VixenModules.Property.Face;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -428,7 +429,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void setDefaultMap_Click(object sender,EventArgs e)
 		{
 			ToolStripMenuItem menu = (ToolStripMenuItem)sender;
-			if (!_library.DefaultMappingName.Equals(menu.Text))
+			if ( _library.DefaultMapping != null && !_library.DefaultMappingName.Equals(menu.Text))
 			{
 				_library.DefaultMappingName = menu.Text; 
 				SequenceModified();
@@ -437,8 +438,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void defaultMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            string defaultText = _library.DefaultMappingName;
-            defaultMapToolStripMenuItem.DropDownItems.Clear();            
+           defaultMapToolStripMenuItem.DropDownItems.Clear();            
             foreach (LipSyncMapData mapping in _library.Library.Values)
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
@@ -529,20 +529,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void lipSyncMappingsToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
-			changeMapToolStripMenuItem.Enabled =
-				(_library.Library.Count > 1) &&
-				(TimelineControl.SelectedElements.Any(effect => effect.EffectNode.Effect.GetType() == typeof(LipSync)));
+			
 		}
 
-		private void changeMapToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		private void changeMapToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string defaultText = _library.DefaultMappingName;
-			changeMapToolStripMenuItem.DropDownItems.Clear();
-			foreach (LipSyncMapData mapping in _library.Library.Values)
+			LipSyncNodeSelect nodeSelectDlg = new LipSyncNodeSelect();
+			//nodeSelectDlg.MaxNodes = _mapping.MapItems.Count;
+			nodeSelectDlg.MaxNodes = Int32.MaxValue;
+			nodeSelectDlg.MatrixOptionsOnly = false;
+			nodeSelectDlg.AllowGroups = true;
+			nodeSelectDlg.AllowRecursiveAdd = false;
+			
+			DialogResult dr = nodeSelectDlg.ShowDialog(this);
+			if (dr == DialogResult.OK)
 			{
-				ToolStripMenuItem menuItem = new ToolStripMenuItem(mapping.LibraryReferenceName);
-				menuItem.Click += changeMappings_Click;
-				changeMapToolStripMenuItem.DropDownItems.Add(menuItem);
+				if (nodeSelectDlg.SelectedElementNodes.Any())
+				{
+					FaceSetupHelper helper = new FaceSetupHelper();
+					helper.Perform(nodeSelectDlg.SelectedElementNodes);
+				}
 			}
 		}
 

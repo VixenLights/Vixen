@@ -287,7 +287,7 @@
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.Name = "LipSyncNodeSelect";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "LipSyncNodeSelect";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LipSyncNodeSelect_FormClosing);
 			this.Load += new System.EventHandler(this.LipSyncNodeSelect_Load);
@@ -297,6 +297,7 @@
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.flowLayoutPanel1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 
         }

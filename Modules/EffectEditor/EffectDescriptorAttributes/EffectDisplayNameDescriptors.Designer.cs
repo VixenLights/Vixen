@@ -530,6 +530,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Eye Mode.
+        /// </summary>
+        internal static string EyeMode {
+            get {
+                return ResourceManager.GetString("EyeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Name.
         /// </summary>
         internal static string Filename {
@@ -791,6 +800,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phoneme / Marks.
+        /// </summary>
+        internal static string LipSyncMode {
+            get {
+                return ResourceManager.GetString("LipSyncMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         internal static string Location {
@@ -814,6 +832,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string LowPassFrequency {
             get {
                 return ResourceManager.GetString("LowPassFrequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lyric.
+        /// </summary>
+        internal static string LyricData {
+            get {
+                return ResourceManager.GetString("LyricData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mapping Type.
+        /// </summary>
+        internal static string MappingType {
+            get {
+                return ResourceManager.GetString("MappingType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark Collection.
+        /// </summary>
+        internal static string MarkCollection {
+            get {
+                return ResourceManager.GetString("MarkCollection", resourceCulture);
             }
         }
         
@@ -958,6 +1003,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image Map.
+        /// </summary>
+        internal static string PhonemeMapping {
+            get {
+                return ResourceManager.GetString("PhonemeMapping", resourceCulture);
             }
         }
         
@@ -1178,6 +1232,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Outline.
+        /// </summary>
+        internal static string ShowOutline {
+            get {
+                return ResourceManager.GetString("ShowOutline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size.
         /// </summary>
         internal static string Size {
@@ -1237,6 +1300,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StaticEffect {
             get {
                 return ResourceManager.GetString("StaticEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phoneme.
+        /// </summary>
+        internal static string StaticPhoneme {
+            get {
+                return ResourceManager.GetString("StaticPhoneme", resourceCulture);
             }
         }
         

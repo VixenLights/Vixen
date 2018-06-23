@@ -1290,31 +1290,31 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.defaultMapToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.defaultMapToolStripMenuItem.Name = "defaultMapToolStripMenuItem";
-			this.defaultMapToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.defaultMapToolStripMenuItem.Text = "Default Map";
+			this.defaultMapToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.defaultMapToolStripMenuItem.Text = "Default Image Map";
 			this.defaultMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.defaultMapToolStripMenuItem_DropDownOpening);
 			// 
 			// phonemeMappingsToolStripMenuItem
 			// 
 			this.phonemeMappingsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.phonemeMappingsToolStripMenuItem.Name = "phonemeMappingsToolStripMenuItem";
-			this.phonemeMappingsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.phonemeMappingsToolStripMenuItem.Text = "Edit Maps";
+			this.phonemeMappingsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.phonemeMappingsToolStripMenuItem.Text = "Edit Image Maps";
 			this.phonemeMappingsToolStripMenuItem.Click += new System.EventHandler(this.editMapsToolStripMenuItem_Click);
 			// 
 			// changeMapToolStripMenuItem
 			// 
 			this.changeMapToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.changeMapToolStripMenuItem.Name = "changeMapToolStripMenuItem";
-			this.changeMapToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-			this.changeMapToolStripMenuItem.Text = "Change Element Map";
-			this.changeMapToolStripMenuItem.DropDownOpening += new System.EventHandler(this.changeMapToolStripMenuItem_DropDownOpening);
+			this.changeMapToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.changeMapToolStripMenuItem.Text = "Edit Element Face Mapping";
+			this.changeMapToolStripMenuItem.Click += new System.EventHandler(this.changeMapToolStripMenuItem_Click);
 			// 
 			// lyricConverterToolStripMenuItem
 			// 
 			this.lyricConverterToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.lyricConverterToolStripMenuItem.Name = "lyricConverterToolStripMenuItem";
-			this.lyricConverterToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.lyricConverterToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.lyricConverterToolStripMenuItem.Text = "Lyric Converter";
 			this.lyricConverterToolStripMenuItem.Click += new System.EventHandler(this.textConverterToolStripMenuItem_Click);
 			// 
@@ -1322,7 +1322,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.papagayoImportToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.papagayoImportToolStripMenuItem.Name = "papagayoImportToolStripMenuItem";
-			this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.papagayoImportToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.papagayoImportToolStripMenuItem.Text = "Papagayo Import";
 			this.papagayoImportToolStripMenuItem.Click += new System.EventHandler(this.papagayoImportToolStripMenuItem_Click);
 			// 
@@ -1464,7 +1464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1436, 630);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
@@ -1490,7 +1490,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DockLeftPortion = 200D;
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
-			this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
 			this.dockPanel.Size = new System.Drawing.Size(1436, 630);
 			this.dockPanel.TabIndex = 13;
@@ -1527,7 +1527,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.DoubleBuffered = true;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";

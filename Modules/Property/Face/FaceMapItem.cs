@@ -3,35 +3,22 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
-using VixenModules.Property.Face;
 
-namespace VixenModules.App.LipSyncApp
+namespace VixenModules.Property.Face
 {
-	[DataContract]
-	public class LipSyncMapItem
+	public class FaceMapItem
 	{
-		public LipSyncMapItem()
+		public FaceMapItem()
 		{
 			PhonemeList = new Dictionary<string, Boolean>();
 			FaceComponents = new Dictionary<FaceComponent, bool>();
+			ElementColor = System.Drawing.Color.White;
 		}
 
-		public LipSyncMapItem(string name, int stringNum)
+		public FaceMapItem Clone()
 		{
-			PhonemeList = new Dictionary<string, bool>();
-			Name = name;
-			StringNum = stringNum;
-			ElementColor = Color.White;
-			ElementGuid = new Guid();
-			FaceComponents = new Dictionary<FaceComponent, bool>();
-		}
-
-		public LipSyncMapItem Clone()
-		{
-			LipSyncMapItem retVal = new LipSyncMapItem();
-			retVal.Name = Name;
+			FaceMapItem retVal = new FaceMapItem();
 			retVal.PhonemeList = new Dictionary<string, bool>(PhonemeList);
-			retVal.StringNum = StringNum;
 			retVal.ElementColor = ElementColor;
 			retVal.ElementGuid = ElementGuid;
 			retVal.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
@@ -40,13 +27,10 @@ namespace VixenModules.App.LipSyncApp
 		}
 
 		[DataMember]
-		public int StringNum { get; set; }
-
-		[DataMember]
 		public Dictionary<string, Boolean> PhonemeList { get; set; }
 
 		[DataMember]
-		public Color ElementColor { get; set; }
+		public System.Drawing.Color ElementColor { get; set; }
 
 		[DataMember]
 		private string _stringName;
@@ -56,28 +40,6 @@ namespace VixenModules.App.LipSyncApp
 
 		[DataMember]
 		public Dictionary<FaceComponent, bool> FaceComponents { get; set; }
-
-		public string Name 
-		{ 
-			get
-			{
-				if (_stringName == null)
-				{
-					_stringName = "String " + StringNum;
-				}
-				return _stringName;
-			}
-		
-			set
-			{
-				_stringName = value;
-			}
-		}
-
-		public override string ToString()
-		{
-			return Name;
-		}
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
