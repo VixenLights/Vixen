@@ -23,6 +23,13 @@ namespace VixenModules.Effect.Fireworks
 			get { return EffectGroups.Pixel; }
 		}
 
+		#region Overrides of EffectModuleDescriptorBase
+
+		/// <inheritdoc />
+		public override bool SupportsMarks => true;
+
+		#endregion
+
 		public override string TypeName
 		{
 			get { return EffectName; }

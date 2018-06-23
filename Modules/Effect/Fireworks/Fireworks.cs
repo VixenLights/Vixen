@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Module.Media;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -24,6 +27,7 @@ namespace VixenModules.Effect.Fireworks
 		private readonly AudioUtilities _audioUtilities;
 		private const int Spacing = 50;
 		private int _explosion;
+		private IEnumerable<IMark> _marks = null;
 		
 		public Fireworks()
 		{
@@ -37,12 +41,64 @@ namespace VixenModules.Effect.Fireworks
 		#region Config
 
 		[Value]
+		[ProviderCategory("Config", 1)]
+		[DisplayName(@"Fireworks Source")]
+		[Description(@"Selects what source is used to determine explosions.")]
+		[PropertyOrder(1)]
+		public FireworksSource FireworksSource
+		{
+			get
+			{
+				return _data.FireworksSource;
+			}
+			set
+			{
+				if (_data.FireworksSource != value)
+				{
+					_data.FireworksSource = value;
+					UpdateAudioAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(2)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Explosions")]
 		[ProviderDescription(@"Explosions")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(0)]
+		[PropertyOrder(3)]
 		public int Explosions
 		{
 			get { return _data.Explosions; }
@@ -60,7 +116,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Varies the Explosion sensitivity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(4)]
 		public int ExplosionSensitivity
 		{
 			get { return _data.ExplosionSensitivity; }
@@ -76,7 +132,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Random Velocity")]
 		[ProviderDescription(@"Random Velocity")]
-		[PropertyOrder(2)]
+		[PropertyOrder(5)]
 		public bool RandomVelocity
 		{
 			get { return _data.RandomVelocity; }
@@ -95,7 +151,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(6)]
 		public int Velocity
 		{
 			get { return _data.Velocity; }
@@ -113,7 +169,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Min Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(7)]
 		public int MinVelocity
 		{
 			get { return _data.MinVelocity; }
@@ -133,7 +189,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Max Velocity")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(8)]
 		public int MaxVelocity
 		{
 			get { return _data.MaxVelocity; }
@@ -151,7 +207,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Random Particles")]
 		[ProviderDescription(@"Random Particles")]
-		[PropertyOrder(6)]
+		[PropertyOrder(9)]
 		public bool RandomParticles
 		{
 			get { return _data.RandomParticles; }
@@ -170,7 +226,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(10)]
 		public int Particles
 		{
 			get { return _data.Particles; }
@@ -188,7 +244,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Min Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(11)]
 		public int MinParticles
 		{
 			get { return _data.MinParticles; }
@@ -208,7 +264,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"Max Particles")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(12)]
 		public int MaxParticles
 		{
 			get { return _data.MaxParticles; }
@@ -228,7 +284,7 @@ namespace VixenModules.Effect.Fireworks
 		[ProviderDescription(@"ParticleFade")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 100, 1)]
-		[PropertyOrder(10)]
+		[PropertyOrder(13)]
 		public int ParticalFade
 		{
 			get { return _data.ParticleFade; }
@@ -236,23 +292,6 @@ namespace VixenModules.Effect.Fireworks
 			{
 				_data.ParticleFade = value;
 				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Enable Audio")]
-		[ProviderDescription(@"Synchronise Fireworks to the music")]
-		[PropertyOrder(11)]
-		public bool EnableAudio
-		{
-			get { return _data.EnableAudio; }
-			set
-			{
-				_data.EnableAudio = value;
-				IsDirty = true;
-				UpdateAudioAttributes();
 				OnPropertyChanged();
 			}
 		}
@@ -560,33 +599,23 @@ namespace VixenModules.Effect.Fireworks
 				TypeDescriptor.Refresh(this);
 			}
 		}
-
-		private void UpdateEnableAudioAttribute(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("EnableAudio", _audioUtilities.AudioLoaded);
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-		}
-
+		
 		private void UpdateAudioAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10);
-			propertyStates.Add("Sensitivity", EnableAudio);
-			propertyStates.Add("LowPass", EnableAudio);
-			propertyStates.Add("LowPassFreq", EnableAudio);
-			propertyStates.Add("HighPass", EnableAudio);
-			propertyStates.Add("HighPassFreq", EnableAudio);
-			propertyStates.Add("Range", EnableAudio);
-			propertyStates.Add("Normalize", EnableAudio);
-			propertyStates.Add("DecayTime", EnableAudio);
-			propertyStates.Add("AttackTime", EnableAudio);
-			propertyStates.Add("Gain", EnableAudio);
-			propertyStates.Add("Explosions", !EnableAudio);
-			propertyStates.Add("ExplosionSensitivity", EnableAudio);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(13);
+			propertyStates.Add("Sensitivity", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("LowPass", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("LowPassFreq", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("HighPass", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("HighPassFreq", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("Range", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("Normalize", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("DecayTime", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("AttackTime", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("Gain", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("Explosions", FireworksSource == FireworksSource.None);
+			propertyStates.Add("ExplosionSensitivity", FireworksSource == FireworksSource.Audio && _audioUtilities.AudioLoaded);
+			propertyStates.Add("MarkCollectionId", FireworksSource == FireworksSource.MarkCollection);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -627,62 +656,77 @@ namespace VixenModules.Effect.Fireworks
 
 		protected override void SetupRender()
 		{
-			foreach (IMediaModuleInstance module in Media)
-			{
-				var audio = module as Audio;
-				if (audio != null)
-				{
-					if (audio.Channels == 0)
-					{
-						continue;
-					}
+			//UpdateAudioAttributes();
+			GetAudioSettings();
+			if (FireworksSource == FireworksSource.Audio) UpdateAudioAttributes();
 
-					_audioUtilities.TimeSpan = TimeSpan;
-					_audioUtilities.StartTime = StartTime;
-					_audioUtilities.ReloadAudio(audio);
-				}
-			}
-			UpdateEnableAudioAttribute();
 			var x25 = (int)(BufferWi * 0.25);
 			var x75 = (int)(BufferWi * 0.75);
 			var y25 = (int)(BufferHt * 0.25);
 			var y75 = (int)(BufferHt * 0.75);
 			
-			if (EnableAudio)
+			List<int> explosions;
+			switch (FireworksSource)
 			{
-				List<int> audioExplosions = new List<int>();
-				//Determines frame number for each explosion to start based off the audio
-				for (int i = 0; i < (int)(TimeSpan.TotalMilliseconds / Spacing); i++)
-				{
-					var currentValue = _audioUtilities.VolumeAtTime(i * Spacing);
-
-					if (currentValue > ((double)Sensitivity / 10))
+				case FireworksSource.Audio:
+					explosions = new List<int>();
+					if (_audioUtilities.AudioLoaded)
 					{
-						audioExplosions.Add(i);
-						i += ExplosionSensitivity;
+						//Determines frame number for each explosion to start based off the audio
+						for (int i = 0; i < (int) (TimeSpan.TotalMilliseconds / Spacing); i++)
+						{
+							var currentValue = _audioUtilities.VolumeAtTime(i * Spacing);
+
+							if (currentValue > ((double) Sensitivity / 10))
+							{
+								explosions.Add(i);
+								i += ExplosionSensitivity;
+							}
+						}
 					}
-				}
-				_maxFlakes = RandomParticles ? audioExplosions.Count * MaxParticles : audioExplosions.Count * Particles;
+					_maxFlakes = RandomParticles ? explosions.Count * MaxParticles : explosions.Count * Particles;
 
-				InitFireworksBuffer();
+					InitFireworksBuffer();
 
-				for (int x = 0; x < audioExplosions.Count; x++)
-				{
-					_explosion = x;
-					CreateExplosions(audioExplosions[x], x75, x25, y75, y25);
-				}
-				_explosion = audioExplosions.Count;
-			}
-			else
-			{
-				_maxFlakes = RandomParticles ? Explosions * MaxParticles : Explosions * Particles;
-				InitFireworksBuffer();
-				for (int x = 0; x < Explosions; x++)
-				{
-					_explosion = x;
-					CreateExplosions(0, x75, x25, y75, y25);
-				}
-				_explosion = Explosions;
+					for (int x = 0; x < explosions.Count; x++)
+					{
+						_explosion = x;
+						CreateExplosions(explosions[x], x75, x25, y75, y25);
+					}
+					_explosion = explosions.Count;
+					break;
+				case FireworksSource.MarkCollection:
+					SetupMarks();
+
+					explosions = new List<int>();
+					if (_marks != null)
+					{
+						foreach (var mark in _marks)
+						{
+							explosions.Add((int) ((mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds) / 50));
+						}
+					}
+					_maxFlakes = RandomParticles ? explosions.Count * MaxParticles : explosions.Count * Particles;
+
+					InitFireworksBuffer();
+
+					for (int x = 0; x < explosions.Count; x++)
+					{
+						_explosion = x;
+						CreateExplosions(explosions[x], x75, x25, y75, y25);
+					}
+					_explosion = explosions.Count;
+					break;
+				default:
+					_maxFlakes = RandomParticles ? Explosions * MaxParticles : Explosions * Particles;
+					InitFireworksBuffer();
+					for (int x = 0; x < Explosions; x++)
+					{
+						_explosion = x;
+						CreateExplosions(0, x75, x25, y75, y25);
+					}
+					_explosion = Explosions;
+					break;
 			}
 		}
 
@@ -695,7 +739,7 @@ namespace VixenModules.Effect.Fireworks
 				hsv.S = 1.0f;
 				hsv.V = 1.0f;
 			}
-			int start = EnableAudio ? ii : (int) (Rand01()*GetNumberFrames());
+			int start = FireworksSource != FireworksSource.None ? ii : (int) (Rand01()*GetNumberFrames());
 
 			int startX;
 			int startY;
@@ -723,6 +767,7 @@ namespace VixenModules.Effect.Fireworks
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
+
 			if (StringCount == 1) return;
 
 			int colorcnt = ColorGradients.Count;
@@ -790,6 +835,53 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
+		private void GetAudioSettings()
+		{
+			if (Media != null)
+				foreach (IMediaModuleInstance module in Media)
+				{
+					var audio = module as Audio;
+					if (audio != null)
+					{
+						if (audio.Channels == 0)
+						{
+							continue;
+						}
+						_audioUtilities.TimeSpan = TimeSpan;
+						_audioUtilities.StartTime = StartTime;
+						_audioUtilities.ReloadAudio(audio);
+					}
+				}
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (FireworksSource == FireworksSource.MarkCollection)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
+		}
+
 		private void InitFireworksBuffer()
 		{
 			_fireworkBursts = null;
@@ -846,5 +938,6 @@ namespace VixenModules.Effect.Fireworks
 								 1.0f);
 			return newHsv;
 		}
+
 	}
 }
