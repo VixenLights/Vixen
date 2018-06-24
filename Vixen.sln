@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vixen", "Vixen.System\Vixen.csproj", "{50B78623-FCF4-48AF-93FF-FA87C937028F}"
 EndProject
@@ -413,7 +413,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Face", "Modules\Property\Face\Face.csproj", "{5FCC5484-8894-4E36-BA81-B2F1B9008404}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountDown", "Modules\Effect\CountDown\CountDown.csproj", "{4F77A059-7A41-4630-8A3B-DAE87217F6C7}"
-EndProjectGlobal
+EndProject
+Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -1989,8 +1990,8 @@ EndProjectGlobal
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x64.Build.0 = Debug|Any CPU
+		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x64.ActiveCfg = Debug|x64
+		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x64.Build.0 = Debug|x64
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x86.ActiveCfg = Debug|x86
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Debug|x86.Build.0 = Debug|x86
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -2000,7 +2001,7 @@ EndProjectGlobal
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Release|x64.ActiveCfg = Release|x64
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Release|x64.Build.0 = Release|x64
 		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Release|x86.ActiveCfg = Release|x86
-		{4F77A059-7A41-4630-8A3B-DAE87217F6C7}.Release|x86.Build.0 = Release|x86	EndGlobalSection
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
@@ -2140,7 +2141,8 @@ EndProjectGlobal
 		{A4254642-2965-469A-8FBD-B45F6EDD651C} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
 		{27D283DF-52AD-4857-8359-DE134DB94728} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{5FCC5484-8894-4E36-BA81-B2F1B9008404} = {30A09AE0-71AC-4A08-B17A-8D82319068A7}
-		{4F77A059-7A41-4630-8A3B-DAE87217F6C7} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}	EndGlobalSection
+		{4F77A059-7A41-4630-8A3B-DAE87217F6C7} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
 	EndGlobalSection
