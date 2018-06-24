@@ -959,16 +959,20 @@ namespace VixenModules.Effect.Picture
 
 		public static Bitmap ScalePictureImage(Image image, int maxWidth, int maxHeight)
 		{
-			var ratioX = (double)maxWidth / image.Width;
-			var ratioY = (double)maxHeight / image.Height;
-			var ratio = Math.Min(ratioX, ratioY);
-			var newWidth = (int)(image.Width * ratio);
-			var newHeight = (int)(image.Height * ratio);
-			if (newHeight <= 0) newHeight = 1;
-			if (newWidth <= 0) newWidth = 1;
-			var newImage = new Bitmap(newWidth, newHeight);
-			Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
-			return newImage;
+			lock (image)
+			{
+				var ratioX = (double)maxWidth / image.Width;
+				var ratioY = (double)maxHeight / image.Height;
+				var ratio = Math.Min(ratioX, ratioY);
+				var newWidth = (int)(image.Width * ratio);
+				var newHeight = (int)(image.Height * ratio);
+				if (newHeight <= 0) newHeight = 1;
+				if (newWidth <= 0) newWidth = 1;
+				var newImage = new Bitmap(newWidth, newHeight);
+				Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
+				return newImage;
+			}
+			
 		}
 
 		public static Bitmap ScaleImage(Image image, double scale)
