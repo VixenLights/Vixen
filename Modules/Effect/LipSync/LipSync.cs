@@ -37,7 +37,7 @@ namespace VixenModules.Effect.LipSync
 		private IEnumerable<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
+		private static readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
 		
 		public LipSync()
 		{
@@ -220,6 +220,8 @@ namespace VixenModules.Effect.LipSync
 				if (File.Exists(file))
 				{
 					_thePic.Image = LoadImage(file);
+					_thePic.TimeSpan = TimeSpan;
+					_thePic.MarkDirty();
 					var result = _thePic.Render();
 					_elementData.Add(result);
 				}
@@ -231,7 +233,7 @@ namespace VixenModules.Effect.LipSync
 		private Image LoadImage(string filePath)
 		{
 			Image image;
-			if (!_imageCache.TryGetValue(filePath, out image))
+			if (!ImageCache.TryGetValue(filePath, out image))
 			{
 				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
 				{
@@ -240,7 +242,7 @@ namespace VixenModules.Effect.LipSync
 					//ms.Position = 0;
 					image = Image.FromStream(fs);
 				}
-				_imageCache.Add(filePath, image);
+				ImageCache.Add(filePath, image);
 			}
 
 			return image;
