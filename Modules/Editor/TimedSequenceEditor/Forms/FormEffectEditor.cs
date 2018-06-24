@@ -83,9 +83,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				VixenSystem.Contexts.ReleaseContext(_previewContext);
 			}
 
-			_sequenceEditorForm.TimelineControl.SelectionChanged -= timelineControl_SelectionChanged;
-			_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged -= EffectPropertyEditorValueChanged;
-			_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged -= EditorPreviewStateChanged;
+			if (_sequenceEditorForm != null && _sequenceEditorForm.TimelineControl != null)
+			{
+				_sequenceEditorForm.TimelineControl.SelectionChanged -= timelineControl_SelectionChanged;
+			}
+
+			if (_effectPropertyEditorGridEffectEffectPropertiesEditor != null)
+			{
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged -= EffectPropertyEditorValueChanged;
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged -= EditorPreviewStateChanged;
+			}
+			
 			_previewLoopTimer.Elapsed -= PreviewLoopTimerOnElapsed;
 			base.Dispose(disposing);
 		}
