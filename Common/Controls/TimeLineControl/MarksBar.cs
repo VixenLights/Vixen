@@ -187,15 +187,18 @@ namespace Common.Controls.TimelineControl
 
 				if (e.Clicks == 2)
 				{
-					var row = RowAt(location);
-					if (row != null)
+					if (_mouseDownMark != null)
 					{
-						BeginMoveResizeMarks(location);
-						row.MarkCollection.FillGapTimes(_mouseDownMark);
-						FinishedResizeMoveMarks(ElementMoveType.Resize);
-						return;
+						var row = RowAt(location);
+						if (row != null)
+						{
+							BeginMoveResizeMarks(location);
+							row.MarkCollection.FillGapTimes(_mouseDownMark);
+							FinishedResizeMoveMarks(ElementMoveType.Resize);
+							return;
+						}
 					}
-					
+
 				}
 
 				if (!CtrlPressed && !ShiftPressed)

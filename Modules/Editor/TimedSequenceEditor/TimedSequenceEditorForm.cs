@@ -5081,7 +5081,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (Element element in elements)
 			{
 				var mark = AddMarkAtTime(element.StartTime, true);
-				addedMarks.Add(mark, _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault));
+				if (mark != null)
+				{
+					addedMarks.Add(mark, _sequence.LabeledMarkCollections.FirstOrDefault(x => x.IsDefault));
+				}
 			}
 			if (addedMarks.Count > 0)
 			{
