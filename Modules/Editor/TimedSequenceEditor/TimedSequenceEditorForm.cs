@@ -459,6 +459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalTextChanged;
+			_timeLineGlobalEventManager.PhonemeBreakdownAction += PhonemeBreakdownAction;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -2667,6 +2668,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control);
 			}
 		}
+
+		private void PhonemeBreakdownAction(object sender, PhonemeBreakdownEventArgs e)
+		{
+			if (e.BreakdownType == BreakdownType.Phrase)
+			{
+				foreach (IGrouping<IMarkCollection, IMark> markGroup in e.Marks.GroupBy(m => m.Parent))
+				{
+					//Find the right collection
+					var linkedCollections = _sequence.LabeledMarkCollections.Where(x => x.LinkedMarkCollectionId == markGroup.Key.Id && x.CollectionType == MarkCollectionType.Word);
+					IMarkCollection mc = null;
+					if (linkedCollections.Any())
+					{
+						mc = linkedCollections.First();
+					}
+					else
+					{
+						mc = GetOrAddNewMarkCollection(Color.Blue, markGroup.Key.Name + " Words");
+						mc.CollectionType = MarkCollectionType.Word;
+					}
+					foreach (var mark in markGroup)
+					{
+						
+					}
+
+				}
+			}
+		}
+
 
 		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false)
 		{

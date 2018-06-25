@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Catel.Data;
 using Catel.MVVM;
+using Common.WPFCommon.Command;
+using Vixen.Marks;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
@@ -14,6 +18,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		public MarkCollectionViewModel(MarkCollection markCollection)
 		{
 			MarkCollection = markCollection;
+			SetupCheckboxes();
 		}
 
 		#region MarkCollection model property
@@ -111,6 +116,25 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region CollectionType property
+
+		/// <summary>
+		/// Gets or sets the CollectionType value.
+		/// </summary>
+		[ViewModelToModel("MarkCollection")]
+		public MarkCollectionType CollectionType
+		{
+			get { return GetValue<MarkCollectionType>(CollectionTypeProperty); }
+			set { SetValue(CollectionTypeProperty, value); }
+		}
+
+		/// <summary>
+		/// CollectionType property data.
+		/// </summary>
+		public static readonly PropertyData CollectionTypeProperty = RegisterProperty("CollectionType", typeof(MarkCollectionType), null);
+
+		#endregion
+		
 		#region BeginEdit command
 
 		private Command<MouseButtonEventArgs> _beginEditCommand;
@@ -267,5 +291,61 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region CheckBoxStates property
+
+		/// <summary>
+		/// Gets or sets the CheckBoxStates value.
+		/// </summary>
+		public ObservableCollection<CheckBoxState> CheckBoxStates
+		{
+			get { return GetValue<ObservableCollection<CheckBoxState>>(CheckBoxStatesProperty); }
+			set { SetValue(CheckBoxStatesProperty, value); }
+		}
+
+		/// <summary>
+		/// CheckBoxStates property data.
+		/// </summary>
+		public static readonly PropertyData CheckBoxStatesProperty = RegisterProperty("CheckBoxStates", typeof(ObservableCollection<CheckBoxState>));
+
+		#endregion
+
+		#region ResolveCollectionType command
+
+		private Command<CheckBoxState> _resolveCollectionTypeCommand;
+
+		/// <summary>
+		/// Gets the ResolveCollectionType command.
+		/// </summary>
+		public Command<CheckBoxState> ResolveCollectionTypeCommand
+		{
+			get { return _resolveCollectionTypeCommand ?? (_resolveCollectionTypeCommand = new Command<CheckBoxState>(ResolveCollectionType)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ResolveCollectionType command is executed.
+		/// </summary>
+		private void ResolveCollectionType(CheckBoxState state)
+		{
+			if (state.Value)
+			{
+				CollectionType = state.Type;
+				foreach (var checkBoxState in CheckBoxStates.Where(x => x.Type != state.Type))
+				{
+					checkBoxState.Value = false;
+				}
+			}
+		}
+
+		#endregion
+
+
+		private void SetupCheckboxes()
+		{
+			CheckBoxStates = new ObservableCollection<CheckBoxState>();
+			foreach (MarkCollectionType value in Enum.GetValues(typeof(MarkCollectionType)))
+			{
+				CheckBoxStates.Add(new CheckBoxState() { Text = value.ToString(), Value = (value == CollectionType), Type = value});
+			}
+		}
 	}
 }

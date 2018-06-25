@@ -189,14 +189,10 @@ namespace Common.Controls.TimelineControl
 				{
 					if (_mouseDownMark != null)
 					{
-						var row = RowAt(location);
-						if (row != null)
-						{
-							BeginMoveResizeMarks(location);
-							row.MarkCollection.FillGapTimes(_mouseDownMark);
-							FinishedResizeMoveMarks(ElementMoveType.Resize);
-							return;
-						}
+						BeginMoveResizeMarks(location);
+						_mouseDownMark.Parent.FillGapTimes(_mouseDownMark);
+						FinishedResizeMoveMarks(ElementMoveType.Resize);
+						return;
 					}
 
 				}
@@ -271,7 +267,27 @@ namespace Common.Controls.TimelineControl
 					var paste = c.Items.Add("&Paste Text");
 					paste.Click += Paste_Click;
 					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
-					c.Items.Add(CreatePhonemeItem());
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Phoneme))
+					{
+						c.Items.Add(CreatePhonemeMenuItem());
+					}
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Phrase))
+					{
+						var breakdownPhrase = c.Items.Add("Breakdown Phrase");
+						breakdownPhrase.Click += BreakdownPhrase_Click;
+					}
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Word))
+					{
+						var breakdownWord = c.Items.Add("Breakdown Word");
+						breakdownWord.Click += BreakdownWord_Click;
+					}
+
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -660,7 +676,7 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
-		private ToolStripItem CreatePhonemeItem()
+		private ToolStripItem CreatePhonemeMenuItem()
 		{
 			var phonemes = new[] { "REST", "AI", "E", "ETC", "FV", "L", "MBP", "O", "U", "WQ" };
 			ToolStripMenuItem menu = new ToolStripMenuItem("Phoneme");
@@ -712,6 +728,16 @@ namespace Common.Controls.TimelineControl
 		private void DeleteMark_Click(object sender, EventArgs e)
 		{
 			DeleteSelectedMarks();
+		}
+
+		private void BreakdownWord_Click(object sender, EventArgs e)
+		{
+			_timeLineGlobalEventManager.OnPhonemeBreakdownAction(new PhonemeBreakdownEventArgs(_marksSelectionManager.SelectedMarks.ToList(), BreakdownType.Word));
+		}
+
+		private void BreakdownPhrase_Click(object sender, EventArgs e)
+		{
+			_timeLineGlobalEventManager.OnPhonemeBreakdownAction(new PhonemeBreakdownEventArgs(_marksSelectionManager.SelectedMarks.ToList(), BreakdownType.Phrase));
 		}
 
 		private void DeleteSelectedMarks()
@@ -791,6 +817,20 @@ namespace Common.Controls.TimelineControl
 			}
 
 			return null;
+		}
+
+		private bool MarkCollectionAt(Point p, out IMarkCollection markCollection)
+		{
+			bool success = false;
+			markCollection = null;
+			var row = RowAt(p);
+			if (row != null)
+			{
+				markCollection = row.MarkCollection;
+				success = true;
+			}
+
+			return success;
 		}
 
 		/// <summary>

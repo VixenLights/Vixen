@@ -166,6 +166,7 @@
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CheckBoxState.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">

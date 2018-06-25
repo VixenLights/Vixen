@@ -22,6 +22,7 @@ namespace VixenModules.App.Marks
 		private bool _isDefault;
 		private bool _showMarkBar;
 		private bool _showGridLines;
+		private MarkCollectionType _collectionType = MarkCollectionType.Generic;
 
 		public MarkCollection()
 		{
@@ -33,6 +34,7 @@ namespace VixenModules.App.Marks
 			Level = 1;
 			ShowGridLines = true;
 			ShowMarkBar = false;
+			CollectionType = MarkCollectionType.Generic;
 		}
 
 		[DataMember]
@@ -113,6 +115,23 @@ namespace VixenModules.App.Marks
 				OnPropertyChanged(nameof(Decorator));
 			}
 		}
+
+		/// <inheritdoc />
+		[DataMember]
+		public MarkCollectionType CollectionType
+		{
+			get { return _collectionType; }
+			set
+			{
+				if (value == _collectionType) return;
+				_collectionType = value;
+				OnPropertyChanged(nameof(CollectionType));
+			}
+		}
+
+		/// <inheritdoc />
+		[DataMember]
+		public Guid LinkedMarkCollectionId { get; set; }
 
 		public bool IsVisible => ShowGridLines || ShowMarkBar;
 
@@ -218,7 +237,8 @@ namespace VixenModules.App.Marks
 				Level = Level,
 				Name = Name,
 				_marks = new ObservableCollection<IMark>(Marks.Select(x => (IMark)x.Clone())),
-				Decorator = (MarkDecorator)Decorator.Clone()
+				Decorator = (MarkDecorator)Decorator.Clone(),
+				CollectionType = CollectionType
 			};
 		}
 

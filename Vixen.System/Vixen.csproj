@@ -307,6 +307,7 @@
     <Compile Include="Marks\IMark.cs" />
     <Compile Include="Marks\IMarkCollection.cs" />
     <Compile Include="Marks\IMarkDecorator.cs" />
+    <Compile Include="Marks\IMarkType.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleDescriptorBase.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleImplementation.cs" />
     <Compile Include="Module\Analysis\AnalysisModuleInstanceBase.cs" />
