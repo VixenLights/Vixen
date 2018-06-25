@@ -20,6 +20,7 @@ namespace Common.Controls.Timeline
 		//These are the 96 DPI based defaults. They should be scaled if used.
 		public const int DefaultSplitterDistance = 200;
 		public const int DefaultRowHeight = 32;
+		public static TimeSpan SeqLength;
 
 		#region Member Controls
 

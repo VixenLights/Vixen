@@ -84,7 +84,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CountDown.cs" />
+    <Compile Include="CountDownFade.cs" />
+    <Compile Include="CountDownType.cs" />
     <Compile Include="GradientMode.cs" />
+    <Compile Include="CountDownMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializableFont.cs" />
     <Compile Include="CountDownData.cs" />
@@ -113,6 +116,10 @@
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
+      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
+      <Name>Marks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>

@@ -609,4 +609,21 @@
   <data name="TextDuration" xml:space="preserve">
     <value>Adjusts the way the text duration is used.</value>
   </data>
-</root>
+  <data name="TimeVisibleLength" xml:space="preserve">
+    <value>Length of time in milliseconds the countdown is shown at each mark.</value>
+  </data>
+  <data name="CountDownFade" xml:space="preserve">
+    <value>Will fade each displayed count down time.</value>
+  </data>
+  <data name="CountDownInterval" xml:space="preserve">
+    <value>Interval between showing count down time.</value>
+  </data>
+  <data name="CountDownType" xml:space="preserve">
+    <value>Users time left to either end of Effect or Sequence.</value>
+  </data>
+  <data name="TimeFormat" xml:space="preserve">
+    <value>Displays the count down in Minutes (over 60sec) or second.</value>
+  </data>
+  <data name="CountDownSource" xml:space="preserve">
+    <value>Selects what source is used to determine Coutdown time.</value>
+  </data></root>

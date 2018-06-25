@@ -623,4 +623,18 @@
   </data>
   <data name="TimeFormat" xml:space="preserve">
     <value>Time Format</value>
+  </data>
+  <data name="TimeVisibleLength" xml:space="preserve">
+    <value>Visible Time Length (ms)</value>
+  </data>
+  <data name="CountDownFade" xml:space="preserve">
+    <value>Fade</value>
+  </data>
+  <data name="CountDownSource" xml:space="preserve">
+    <value>Count Down Source</value>
+  </data>
+  <data name="CountDownType" xml:space="preserve">
+    <value>Count Down Type</value>
+  </data>
+</root>
   </data></root>

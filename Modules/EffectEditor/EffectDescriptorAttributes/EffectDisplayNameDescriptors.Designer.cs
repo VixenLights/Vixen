@@ -440,11 +440,38 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fade.
+        /// </summary>
+        internal static string CountDownFade {
+            get {
+                return ResourceManager.GetString("CountDownFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Count Down Interval.
         /// </summary>
         internal static string CountDownInterval {
             get {
                 return ResourceManager.GetString("CountDownInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Count Down Source.
+        /// </summary>
+        internal static string CountDownSource {
+            get {
+                return ResourceManager.GetString("CountDownSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Count Down Type.
+        /// </summary>
+        internal static string CountDownType {
+            get {
+                return ResourceManager.GetString("CountDownType", resourceCulture);
             }
         }
         
@@ -1462,6 +1489,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TimeFormat {
             get {
                 return ResourceManager.GetString("TimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visible Time Length (ms).
+        /// </summary>
+        internal static string TimeVisibleLength {
+            get {
+                return ResourceManager.GetString("TimeVisibleLength", resourceCulture);
             }
         }
         

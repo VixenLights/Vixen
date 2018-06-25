@@ -404,11 +404,38 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adjusts the Count Down Interval. Under 10 seconds will always display each second..
+        ///   Looks up a localized string similar to Will fade each displayed count down time..
+        /// </summary>
+        internal static string CountDownFade {
+            get {
+                return ResourceManager.GetString("CountDownFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interval between showing count down time..
         /// </summary>
         internal static string CountDownInterval {
             get {
                 return ResourceManager.GetString("CountDownInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects what source is used to determine Coutdown time..
+        /// </summary>
+        internal static string CountDownSource {
+            get {
+                return ResourceManager.GetString("CountDownSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users time left to either end of Effect or Sequence..
+        /// </summary>
+        internal static string CountDownType {
+            get {
+                return ResourceManager.GetString("CountDownType", resourceCulture);
             }
         }
         
@@ -1385,11 +1412,20 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display format for countdown time greater then 60 seconds. Time will show as X:XX.
+        ///   Looks up a localized string similar to Displays the count down in Minutes (over 60sec) or second..
         /// </summary>
         internal static string TimeFormat {
             get {
                 return ResourceManager.GetString("TimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length of time in milliseconds the countdown is shown at each mark..
+        /// </summary>
+        internal static string TimeVisibleLength {
+            get {
+                return ResourceManager.GetString("TimeVisibleLength", resourceCulture);
             }
         }
         

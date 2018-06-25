@@ -32,6 +32,10 @@ namespace VixenModules.Effect.CountDown
 			LevelCurve = new Curve(CurveType.Flat100);
 			TimeFormat = TimeFormat.Minutes;
 			CountDownInterval = 1;
+			CountDownMode = CountDownMode.None;
+			TimeVisibleLength = 10;
+			CountDownType = CountDownType.Effect;
+			CountDownFade = CountDownFade.Out;
 		}
 
 		[DataMember]
@@ -82,6 +86,21 @@ namespace VixenModules.Effect.CountDown
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
+
+		[DataMember]
+		public CountDownMode CountDownMode { get; set; }
+
+		[DataMember]
+		public int TimeVisibleLength { get; set; }
+
+		[DataMember]
+		public CountDownType CountDownType { get; set; }
+
+		[DataMember]
+		public CountDownFade CountDownFade { get; set; }
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			CountDownData result = new CountDownData
@@ -100,7 +119,12 @@ namespace VixenModules.Effect.CountDown
 				FontScaleCurve = new Curve(FontScaleCurve),
 				TimeFormat = TimeFormat,
 				CountDownInterval = CountDownInterval,
-				Fade = Fade
+				Fade = Fade,
+				CountDownMode = CountDownMode,
+				MarkCollectionId = MarkCollectionId,
+				TimeVisibleLength = TimeVisibleLength,
+				CountDownType = CountDownType,
+				CountDownFade = CountDownFade
 			};
 			return result;
 		}

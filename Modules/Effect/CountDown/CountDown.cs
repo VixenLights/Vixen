@@ -7,8 +7,10 @@ using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
+using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -26,6 +28,11 @@ namespace VixenModules.Effect.CountDown
 		private float _newFontSize;
 		private int _countDownNumber;
 		private int _maxTextSize;
+		private IEnumerable<IMark> _marks = null;
+		private List<int> _countDownFrame = new List<int>();
+		private int _countDownFrames;
+		private int _countDownTimer;
+		private string _text;
 
 		public CountDown()
 		{
@@ -67,10 +74,84 @@ namespace VixenModules.Effect.CountDown
 		#region Text properties
 
 		[Value]
+		[ProviderCategory("Config", 1)]
+		[DisplayName(@"CountDownSource")]
+		[Description(@"CountDownSource")]
+		[PropertyOrder(0)]
+		public CountDownMode CountDownMode
+		{
+			get
+			{
+				return _data.CountDownMode;
+			}
+			set
+			{
+				if (_data.CountDownMode != value)
+				{
+					_data.CountDownMode = value;
+					UpdateCountDownModeAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the time position.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory("Config", 1)]
+		[ProviderDisplayName(@"CountDownType")]
+		[ProviderDescription(@"CountDownType")]
+		[PropertyOrder(2)]
+		public CountDownType CountDownType
+		{
+			get
+			{
+				return _data.CountDownType;
+			}
+			set
+			{
+				if (_data.CountDownType != value)
+				{
+					_data.CountDownType = value;
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"TimeFormat")]
 		[ProviderDescription(@"TimeFormat")]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public TimeFormat TimeFormat
 		{
 			get { return _data.TimeFormat; }
@@ -84,11 +165,27 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CountDownFade")]
+		[ProviderDescription(@"CountDownFade")]
+		[PropertyOrder(4)]
+		public CountDownFade CountDownFade
+		{
+			get { return _data.CountDownFade; }
+			set
+			{
+				_data.CountDownFade = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountDownInterval")]
 		[ProviderDescription(@"CountDownInterval")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 60, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(5)]
 		public int CountDownInterval
 		{
 			get { return _data.CountDownInterval; }
@@ -102,9 +199,27 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"TimeVisibleLength")]
+		[ProviderDescription(@"TimeVisibleLength")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 10000, 1)]
+		[PropertyOrder(6)]
+		public int TimeVisibleLength
+		{
+			get { return _data.TimeVisibleLength; }
+			set
+			{
+				_data.TimeVisibleLength = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(3)]
+		[PropertyOrder(7)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
@@ -120,7 +235,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(4)]
+		[PropertyOrder(8)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -271,6 +386,10 @@ namespace VixenModules.Effect.CountDown
 			}
 		}
 
+		#endregion
+
+		#region Brightness
+
 		[Value]
 		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
@@ -322,8 +441,28 @@ namespace VixenModules.Effect.CountDown
 		private void UpdateAllAttributes()
 		{
 			UpdatePositionXAttribute(false);
+			UpdateCountDownModeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+		private void UpdateCountDownModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"MarkCollectionId", CountDownMode != CountDownMode.None},
+
+				{"TimeVisibleLength", CountDownMode != CountDownMode.None},
+
+				{"CountDownFade", CountDownMode != CountDownMode.None},
+
+				{"LevelCurve", CountDownMode == CountDownMode.None}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+			if (CountDownMode == CountDownMode.None) CountDownFade = CountDownFade.None;
 		}
 
 		private void UpdatePositionXAttribute(bool refresh = true)
@@ -340,13 +479,15 @@ namespace VixenModules.Effect.CountDown
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
 
 				{"YOffsetCurve", !hideYOffsetCurve},
 
-				{"AngleCurve", Direction == CountDownDirection.Rotate}
+				{"AngleCurve", Direction == CountDownDirection.Rotate},
+
+				{"Speed", Direction != CountDownDirection.None}
 			};
 			SetBrowsable(propertyStates);
 
@@ -358,6 +499,37 @@ namespace VixenModules.Effect.CountDown
 
 		protected override void SetupRender()
 		{
+			// Gets initial countdown value depending on if countdown to end of effect or sequence.
+			_countDownNumber = CountDownType == CountDownType.Sequence
+				? (int)Math.Ceiling(GetRemainingSequenceTime(0) / 1000)
+				: (int)Math.Ceiling(GetRemainingTime(0) / 1000);
+
+			if (CountDownMode != CountDownMode.None)
+			{
+				_countDownFrame.Clear();
+				SetupMarks();
+				_countDownFrames = TimeVisibleLength / 50;
+				_countDownTimer = 0;
+				if (_marks != null)
+				{
+					foreach (var mark in _marks)
+					{
+						switch (CountDownFade)
+						{
+							case CountDownFade.In:
+								_countDownFrame.Add((int)((mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds - TimeVisibleLength) / 50));
+								break;
+							case CountDownFade.InOut:
+								_countDownFrame.Add((int)((mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds - (double)TimeVisibleLength / 2) / 50));
+								break;
+							default:
+								_countDownFrame.Add((int)((mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds) / 50));
+								break;
+						}
+					}
+				}
+			}
+
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
@@ -369,13 +541,13 @@ namespace VixenModules.Effect.CountDown
 			}
 			_font = Font;
 			_newFontSize = Font.Size;
-			_countDownNumber = (int)Math.Ceiling(GetRemainingTime(0) / 1000);
 		}
 
 		protected override void CleanUpRender()
 		{
 			_font = null;
 			_newfont = null;
+			_countDownFrame.Clear();
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -383,13 +555,16 @@ namespace VixenModules.Effect.CountDown
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				// copy to frameBuffer
-				for (int x = 0; x < BufferWi; x++)
+				if (CountDownMode == CountDownMode.None || _countDownTimer > 0) // No point rendering if there is nothing to be displayed saves a significant amount of render time depending on countdown settings.
 				{
-					for (int y = 0; y < BufferHt; y++)
+					double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+					// copy to frameBuffer
+					for (int x = 0; x < BufferWi; x++)
 					{
-						CalculatePixel(x, y, bitmap, level, frameBuffer);
+						for (int y = 0; y < BufferHt; y++)
+						{
+							CalculatePixel(x, y, bitmap, level, frameBuffer);
+						}
 					}
 				}
 			}
@@ -405,122 +580,123 @@ namespace VixenModules.Effect.CountDown
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
-					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					if (CountDownMode == CountDownMode.None || _countDownTimer > 0) // No point rendering if there is nothing to be displayed saves a significant amount of render time depending on countdown settings.
 					{
-						foreach (var elementLocation in elementLocations)
+						foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+							foreach (var elementLocation in elementLocations)
+							{
+								CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+							}
 						}
 					}
 				}
 			}
 		}
-
+		
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
-			var textAngle = CalculateAngle(intervalPosFactor);
-
-			using (Graphics graphics = Graphics.FromImage(bitmap))
+			if (_countDownFrame.Any(countDownFrame => frame == countDownFrame)) _countDownTimer = _countDownFrames;
+			
+			// Only do this if we are required to show the count down on this frame.
+			if (CountDownMode == CountDownMode.None || _countDownTimer > 0)
 			{
-				string text = CountDownTime(frame);
+				var intervalPos = GetEffectTimeIntervalPosition(frame);
+				var intervalPosFactor = intervalPos * 100;
+				var textAngle = CalculateAngle(intervalPosFactor);
 
-				SizeF textsize = new SizeF(0, 0);
+				using (Graphics graphics = Graphics.FromImage(bitmap))
+				{
+					if (CountDownMode == CountDownMode.None || _countDownTimer == _countDownFrames) _text = CountDownTime(frame);
 
-				//Adjust Font Size based on the Font scaling factor
-				_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
-				_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
-				
-					if (!String.IsNullOrEmpty(text))
+					SizeF textsize = new SizeF(0, 0);
+
+					//Adjust Font Size based on the Font scaling factor
+					_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
+					_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
+
+					if (!String.IsNullOrEmpty(_text))
 					{
-						var size = graphics.MeasureString(text, _newfont);
+						var size = graphics.MeasureString(_text, _newfont);
 						if (size.Width > textsize.Width)
 						{
 							textsize = size;
 						}
 					}
 
-				_maxTextSize = Convert.ToInt32(textsize.Width * .95);
-				int maxht = Convert.ToInt32(textsize.Height);
+					_maxTextSize = Convert.ToInt32(textsize.Width * .95);
+					int maxht = Convert.ToInt32(textsize.Height);
 
-				int xOffset = CalculateXOffset(intervalPosFactor);
-				int yOffset = CalculateYOffset(intervalPosFactor, maxht);
+					int xOffset = CalculateXOffset(intervalPosFactor);
+					int yOffset = CalculateYOffset(intervalPosFactor, maxht);
 
-				//Rotate the text based off the angle setting
-				if (Direction == CountDownDirection.Rotate)
-				{
-					//move rotation point to center of image
-					graphics.TranslateTransform((float)(bitmap.Width / 2 + xOffset), (float)(bitmap.Height / 2 + (yOffset / 2)));
-					//rotate
-					graphics.SmoothingMode = SmoothingMode.HighQuality;
-					graphics.RotateTransform(textAngle);
-					//move image back
-					graphics.TranslateTransform(-(float)(bitmap.Width / 2 + xOffset), -(float)(bitmap.Height / 2 + (yOffset / 2)));
+					//Rotate the text based off the angle setting
+					if (Direction == CountDownDirection.Rotate)
+					{
+						//move rotation point to center of image
+						graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
+						//rotate
+						graphics.SmoothingMode = SmoothingMode.HighQuality;
+						graphics.RotateTransform(textAngle);
+						//move image back
+						graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
+					}
+
+					switch (Direction)
+					{
+						case CountDownDirection.Left:
+						case CountDownDirection.Right:
+							xOffset = 0;
+							break;
+						case CountDownDirection.Up:
+						case CountDownDirection.Down:
+							yOffset = 0;
+							break;
+					}
+					int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
+					int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
+					double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
+					Point point;
+
+					switch (Direction)
+					{
+						case CountDownDirection.Left:
+							// left
+							int leftX = BufferWi - (int) (intervalPosition * (textsize.Width + BufferWi));
+							point =
+								new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int) textsize.Width) / 2) : leftX),
+									offsetTop);
+							break;
+						case CountDownDirection.Right:
+							// right
+							int rightX = -_maxTextSize + (int) (intervalPosition * (_maxTextSize + BufferWi));
+							point =
+								new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int) textsize.Width) / 2) : rightX),
+									offsetTop);
+							break;
+						case CountDownDirection.Up:
+							// up
+							int upY = BufferHt - (int) ((textsize.Height + BufferHt) * intervalPosition);
+							point = new Point(offsetLeft,
+								Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int) textsize.Height) / 2) : upY));
+							break;
+						case CountDownDirection.Down:
+							// down
+							int downY = -(int) textsize.Height +
+							            (int) ((textsize.Height + BufferHt) * intervalPosition);
+							point = new Point(offsetLeft,
+								Convert.ToInt32(CenterStop
+									? Math.Min(downY, (BufferHt - (int) textsize.Height) / 2)
+									: downY));
+							break;
+						default:
+							// no movement - centered
+							point = new Point((BufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
+							break;
+					}
+					DrawText(_text, graphics, point);
 				}
-
-				switch (Direction)
-				{
-					case CountDownDirection.Left:
-					case CountDownDirection.Right:
-						xOffset = 0;
-						break;
-					case CountDownDirection.Up:
-					case CountDownDirection.Down:
-						yOffset = 0;
-						break;
-				}
-				int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
-				int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
-				double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-				Point point;
-
-				switch (Direction)
-				{
-					case CountDownDirection.Left:
-						// left
-						int leftX = BufferWi - (int)(intervalPosition * (textsize.Width + BufferWi));
-
-						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int)textsize.Width) / 2) : leftX), offsetTop);
-
-						DrawText(text, graphics, point);
-
-						break;
-					case CountDownDirection.Right:
-						// right
-						int rightX = -_maxTextSize + (int)(intervalPosition * (_maxTextSize + BufferWi));
-
-						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int)textsize.Width) / 2) : rightX),
-								offsetTop);
-						DrawText(text, graphics, point);
-						break;
-					case CountDownDirection.Up:
-						// up
-						int upY = BufferHt - (int)((textsize.Height + BufferHt) * intervalPosition);
-
-						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int)textsize.Height) / 2) : upY));
-						DrawText(text, graphics, point);
-						break;
-					case CountDownDirection.Down:
-						// down
-						int downY = -(int)textsize.Height +
-									(int)((textsize.Height + BufferHt) * intervalPosition);
-
-						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop
-								? Math.Min(downY, (BufferHt - (int)textsize.Height) / 2)
-								: downY));
-						DrawText(text, graphics, point);
-						break;
-					default:
-						// no movement - centered
-						point = new Point((BufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
-						DrawText(text, graphics, point);
-						break;
-				}
+				_countDownTimer--;
 			}
 		}
 
@@ -546,7 +722,11 @@ namespace VixenModules.Effect.CountDown
 
 		private string CountDownTime(int frame)
 		{
-			int countDownNumber = (int)Math.Ceiling(GetRemainingTime(frame) / 1000);
+			// Adjusts countdown value depending on if countdown to end of effect or sequence.
+			int countDownNumber = CountDownType == CountDownType.Sequence
+				? (int) Math.Ceiling(GetRemainingSequenceTime(frame) / 1000)
+				: (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
+
 			if (countDownNumber % CountDownInterval > 0 && countDownNumber > 10)
 			{
 				if (_countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
@@ -582,7 +762,23 @@ namespace VixenModules.Effect.CountDown
 			if (!_emptyColor.Equals(color))
 			{
 				var hsv = HSV.FromRGB(color);
-				hsv.V = hsv.V * level;
+				switch (CountDownFade)
+				{
+					case CountDownFade.Out:
+						hsv.V = hsv.V * ((double)1 / _countDownFrames * _countDownTimer);
+						break;
+					case CountDownFade.In:
+						hsv.V = hsv.V * (1 - (double)1 / _countDownFrames * _countDownTimer);
+						break;
+					case CountDownFade.InOut:
+						hsv.V = _countDownFrames / (_countDownTimer + 1) < 2
+							? hsv.V * ((1 - (double) 1 / _countDownFrames * (_countDownTimer + 1)) * 2)
+							: hsv.V * ((double) 1 / _countDownFrames * (_countDownTimer + 1) * 2);
+						break;
+					default:
+						hsv.V = hsv.V * level;
+						break;
+				}
 
 				frameBuffer.SetPixel(xCoord, yCoord, hsv);
 			}
@@ -633,7 +829,6 @@ namespace VixenModules.Effect.CountDown
 			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
 					Color.Black, mode)
 				{InterpolationColors = cg.GetColorBlend()};
-
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;
@@ -644,7 +839,6 @@ namespace VixenModules.Effect.CountDown
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
-
 			ColorGradient cg = Colors[0 % Colors.Count()];
 			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
@@ -652,7 +846,6 @@ namespace VixenModules.Effect.CountDown
 				{InterpolationColors = cg.GetColorBlend()};
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
-
 			p.Y += (int) size.Height;
 		}
 
@@ -660,7 +853,34 @@ namespace VixenModules.Effect.CountDown
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, _newfont, brush, p);
+		}
 
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (CountDownMode != CountDownMode.None)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
 		}
 	}
 }

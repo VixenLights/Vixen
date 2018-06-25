@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
+using Common.Controls.Timeline;
 using NLog;
 using Vixen.Attributes;
 using Vixen.Data.Value;
@@ -16,6 +17,7 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Location;
+using Element = Vixen.Sys.Element;
 
 namespace VixenModules.Effect.Effect
 {
@@ -462,6 +464,11 @@ namespace VixenModules.Effect.Effect
 			        TimeSpan.TotalMilliseconds / 100 * (GetEffectTimeIntervalPosition(frame) * 100));
 		}
 
+		protected double GetRemainingSequenceTime(int frame)
+		{
+			return (TimelineControl.SeqLength.TotalMilliseconds - StartTime.TotalMilliseconds - (frame * 50));
+		}
+		
 		protected double CalculateAcceleration(double ratio, double accel)
 		{
 			if (accel == 0) return ratio;

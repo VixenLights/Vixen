@@ -1144,7 +1144,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				if (TimelineControl.TotalTime != value)
 				{
-					TimelineControl.TotalTime = value;
+					TimelineControl.TotalTime = TimelineControl.SeqLength = value;
 				}
 
 				toolStripStatusLabel_sequenceLength.Text = _sequence.Length.ToString("m\\:ss\\.fff");
@@ -1300,7 +1300,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (_sequence.Length == TimeSpan.Zero)
 					_sequence.Length = DefaultSequenceTime;
 
-				SequenceLength = _sequence.Length;
+				SequenceLength = TimelineControl.SeqLength = _sequence.Length;
 				SetTitleBarText();
 
 				// update our program context with this sequence
