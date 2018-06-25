@@ -42,8 +42,8 @@ namespace VixenModules.Effect.Fireworks
 
 		[Value]
 		[ProviderCategory("Config", 1)]
-		[DisplayName(@"Fireworks Source")]
-		[Description(@"Selects what source is used to determine explosions.")]
+		[ProviderDisplayName(@"FireworksSource")]
+		[ProviderDescription(@"FireworksSource")]
 		[PropertyOrder(1)]
 		public FireworksSource FireworksSource
 		{
@@ -66,7 +66,7 @@ namespace VixenModules.Effect.Fireworks
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[ProviderDescription(@"Mark Collection that has the explosions align to.")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(2)]
