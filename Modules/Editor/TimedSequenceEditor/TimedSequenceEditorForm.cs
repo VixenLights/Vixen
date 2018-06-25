@@ -270,6 +270,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return EffectEditorForm;
 			if (persistString == typeof (LayerEditor).ToString())
 				return LayerEditor;
+			if (persistString == "VixenModules.Editor.TimedSequenceEditor.Form_ToolPalette")
+				return null;
 
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
