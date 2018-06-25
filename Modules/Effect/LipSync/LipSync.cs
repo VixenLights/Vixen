@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Reflection;
-using System.Resources;
 using Common.Resources.Properties;
 using Vixen.Attributes;
 using Vixen.Marks;
@@ -32,12 +29,12 @@ namespace VixenModules.Effect.LipSync
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LipSyncData _data;
 		private EffectIntents _elementData = null;
-		static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
+		private static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
 		private readonly LipSyncMapLibrary _library = null;
 		private IEnumerable<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
-		private static readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
+		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 		
 		public LipSync()
 		{
@@ -205,21 +202,24 @@ namespace VixenModules.Effect.LipSync
 			{
 				foreach (var mark in _marks)
 				{
-					var file = mapData.PictureFileName(mark.Text.ToUpper());
-					_thePic.Image = LoadImage(file);
-					_thePic.TimeSpan = mark.Duration;
-					_thePic.MarkDirty();
-					var result = _thePic.Render();
-					result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
-					_elementData.Add(result);
+					var image = mapData.ImageForPhoneme(mark.Text.ToUpper());
+					if (image != null)
+					{
+						_thePic.Image = image;
+						_thePic.TimeSpan = mark.Duration;
+						_thePic.MarkDirty();
+						var result = _thePic.Render();
+						result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+						_elementData.Add(result);
+					}
 				}
 			}
 			else
 			{
-				var file = mapData.PictureFileName(phoneme);
-				if (File.Exists(file))
+				var image = mapData.ImageForPhoneme(phoneme);
+				if (image!=null)
 				{
-					_thePic.Image = LoadImage(file);
+					_thePic.Image = image;
 					_thePic.TimeSpan = TimeSpan;
 					_thePic.MarkDirty();
 					var result = _thePic.Render();
@@ -230,22 +230,9 @@ namespace VixenModules.Effect.LipSync
 			TearDownPictureEffect();
 		}
 
-		private Image LoadImage(string filePath)
+		private void ClearImageCache()
 		{
-			Image image;
-			if (!ImageCache.TryGetValue(filePath, out image))
-			{
-				using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-				{
-					//var ms = new MemoryStream();
-					//fs.CopyTo(ms);
-					//ms.Position = 0;
-					image = Image.FromStream(fs);
-				}
-				ImageCache.Add(filePath, image);
-			}
-
-			return image;
+			_imageCache.Clear();
 		}
 
 		private void SetupPictureEffect()
@@ -327,21 +314,16 @@ namespace VixenModules.Effect.LipSync
 
 		protected void SetMatrixBrowesables()
 		{
-			bool isMatrix = false;
-			LipSyncMapData mapData = null;
-			if (MappingType == MappingType.Map && _library.Library.TryGetValue(_data.PhonemeMapping, out mapData))
-			{
-				isMatrix = mapData.IsMatrix;
-			}
+			bool isMap = MappingType == MappingType.Map;
 			
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
 			{
-				{"Orientation", isMatrix},
-				{"ScaleToGrid", isMatrix},
-				{"ScalePercent", isMatrix && !ScaleToGrid },
-				{"IntensityLevel", isMatrix },
-				{"ShowOutline", !isMatrix },
-				{"EyeMode", !isMatrix }
+				{"Orientation", isMap},
+				{"ScaleToGrid", isMap},
+				{"ScalePercent", isMap && !ScaleToGrid },
+				{"IntensityLevel", isMap },
+				{"ShowOutline", !isMap },
+				{"EyeMode", !isMap }
 			};
 		
 			SetBrowsable(propertyStates);
@@ -458,6 +440,18 @@ namespace VixenModules.Effect.LipSync
 				SetMappingType();
 				SetMatrixBrowesables();
 				OnPropertyChanged();
+				if (value == MappingType.Map)
+				{
+					EnsureDefaultMap();
+				}
+			}
+		}
+
+		private void EnsureDefaultMap()
+		{
+			if (PhonemeMapping == String.Empty && _library.Any())
+			{
+				PhonemeMapping = _library.DefaultMappingName;
 			}
 		}
 
@@ -642,9 +636,12 @@ namespace VixenModules.Effect.LipSync
 								{
 									endX = (int)((mark.EndTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
 									var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
-									scaledImage = new Bitmap(displayImage,
+									lock(displayImage)
+									{
+										scaledImage = new Bitmap(displayImage,
 										Math.Min(clipRectangle.Width, endX - startX),
 										clipRectangle.Height);
+									}
 									g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
 									if (first && mark.StartTime <= StartTime)
 									{

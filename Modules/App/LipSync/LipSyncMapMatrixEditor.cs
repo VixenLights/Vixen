@@ -341,7 +341,6 @@ namespace VixenModules.App.LipSyncApp
 		private void savePicBitmaps()
 		{
 			string fileName = null;
-			Bitmap saveBmp = null;
 
 			resetNewLibraryName();
 			MapData.Notes = notesTextBox.Text;
@@ -352,11 +351,10 @@ namespace VixenModules.App.LipSyncApp
 			{
 				try
 				{
-					fileName = phoneme.ToString() + ".bmp";
+					fileName = phoneme + ".bmp";
 					DirectoryInfo pictureDirInfo = new DirectoryInfo(PictureDirPath);
 					FileInfo[] fi = pictureDirInfo.GetFiles(fileName);
-
-					foreach (FileInfo file in fi)
+					if (fi.Any())
 					{
 						fi[0].Delete();
 					}
@@ -364,25 +362,27 @@ namespace VixenModules.App.LipSyncApp
 				catch (Exception e)
 				{
 					String errorMsg = "Unable to delete LipSync bitmap " + fileName + " from Module Data Directory";
-					Logging.LogException(NLog.LogLevel.Warn, errorMsg, e);
+					Logging.Error(e, errorMsg);
 				}
 
 				try
 				{
+					Bitmap saveBmp;
 					if (_pictureBitmaps.TryGetValue(phoneme.ToString(),out saveBmp))
 					{
 						saveBmp.Save(PictureDirPath + "\\" + fileName);
 						saveBmp.Dispose();
-						saveBmp = null;
 						MapData.IsMatrix = true;
 					}
 				}
 				catch (Exception e)
 				{
 					String errorMsg = "Unable to save copy of phoneme bitmap to Module Data Directory";
-					Logging.LogException(NLog.LogLevel.Warn, errorMsg, e);
+					Logging.Error(e, errorMsg);
 				}
 			}
+
+			MapData.ClearImageCache();
 			this.UseWaitCursor = false;
 		}
 
