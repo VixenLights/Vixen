@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,6 +13,7 @@ namespace VixenModules.App.LipSyncApp
 {
 	public class LipSyncMapData : ModuleDataModelBase
 	{
+		private readonly ConcurrentDictionary<string, Image> _imageCache = new ConcurrentDictionary<string, Image>();
 		public LipSyncMapData()
 		{
 			MapItems = new List<LipSyncMapItem>();
@@ -131,6 +133,28 @@ namespace VixenModules.App.LipSyncApp
 			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
 		}
 
+		public Image ImageForPhoneme(PhonemeType phoneme)
+		{
+			return ImageForPhoneme(phoneme.ToString());
+		}
+
+		public Image ImageForPhoneme(string phoneme)
+		{
+			Image image;
+			if (!_imageCache.TryGetValue(phoneme, out image))
+			{
+				using (var fs = new FileStream(Path.Combine(PictureDirectory, $"{phoneme}.bmp"), FileMode.Open, FileAccess.Read))
+				{
+					image = Image.FromStream(fs);
+				}
+
+				_imageCache.TryAdd(phoneme, image);
+			}
+
+			return image;
+
+		}
+
 		public string PictureFileName(string phoneme)
 		{
 			return Path.Combine(PictureDirectory, $"{phoneme}.bmp");
@@ -151,6 +175,16 @@ namespace VixenModules.App.LipSyncApp
 		public LipSyncMapItem FindMapItem(Guid id)
 		{
 			return MapItems.Find(x => x.ElementGuid.Equals(id));
+		}
+
+		internal void ClearImageCache()
+		{
+			var oldImages = _imageCache.Values;
+			_imageCache.Clear();
+			foreach (var oldImage in oldImages)
+			{
+				oldImage.Dispose();
+			}
 		}
 
 		public Tuple<double, Color> ConfiguredColorAndIntensity(Guid id)
