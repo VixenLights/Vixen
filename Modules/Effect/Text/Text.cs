@@ -7,6 +7,7 @@ using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
 using Vixen.TypeConverters;
@@ -26,6 +27,19 @@ namespace VixenModules.Effect.Text
 		private Font _newfont;
 		private static Random _random = new Random();
 		private float _newFontSize;
+		private List<string> _text;
+		private int _startFrame;
+		private int _frame;
+		private int _endFrame;
+		private readonly List<TextClass> _textClass = new List<TextClass>();
+		private IEnumerable<IMark> _marks = null;
+		private List<int> _countDownFrame = new List<int>();
+		private int _countDownFrames;
+		private int _countDownTimer;
+		private int _textIndex;
+		private int _countDownNumber;
+		private double _directionPosition;
+		private double _fade;
 
 		public Text()
 		{
@@ -67,10 +81,78 @@ namespace VixenModules.Effect.Text
 		#region Movement properties
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory("Config", 1)]
+		[DisplayName(@"TextSource")]
+		[Description(@"TextSource")]
+		[PropertyOrder(0)]
+		public TextSource TextSource
+		{
+			get
+			{
+				return _data.TextSource;
+			}
+			set
+			{
+				if (_data.TextSource != value)
+				{
+					_data.TextSource = value;
+					UpdateTextModeAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the time position.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"TextFade")]
+		[ProviderDescription(@"TextFade")]
+		[PropertyOrder(2)]
+		public TextFade TextFade
+		{
+			get { return _data.TextFade; }
+			set
+			{
+				_data.TextFade = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public TextDirection Direction
 		{
 			get { return _data.Direction; }
@@ -84,12 +166,12 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Iterations")]
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(4)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -102,11 +184,78 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"TimeVisibleLength")]
+		[ProviderDescription(@"TimeVisibleLength")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 10000, 1)]
+		[PropertyOrder(5)]
+		public int TimeVisibleLength
+		{
+			get { return _data.TimeVisibleLength; }
+			set
+			{
+				_data.TimeVisibleLength = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"AutoFit")]
+		[ProviderDescription(@"AutoFit")]
+		[PropertyOrder(6)]
+		public bool AutoFit
+		{
+			get { return _data.AutoFit; }
+			set
+			{
+				_data.AutoFit = value;
+				UpdateTextModeAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"RepeatText")]
+		[ProviderDescription(@"RepeatText")]
+		[PropertyOrder(7)]
+		public bool RepeatText
+		{
+			get { return _data.RepeatText; }
+			set
+			{
+				_data.RepeatText = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"DirectionPerWord")]
+		[ProviderDescription(@"DirectionPerWord")]
+		[PropertyOrder(8)]
+		public bool DirectionPerWord
+		{
+			get { return _data.DirectionPerWord; }
+			set
+			{
+				_data.DirectionPerWord = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"Vertical Offset")]
 		[ProviderDescription(@"Vertical Offset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(0)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -119,11 +268,11 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"Horizontal Offset")]
 		[ProviderDescription(@"Horizontal Offset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(1)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -136,7 +285,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"Angle")]
 		[ProviderDescription(@"Angle")]
 		[PropertyOrder(2)]
@@ -152,7 +301,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Movement", 1)]
+		[ProviderCategory(@"Movement", 2)]
 		[ProviderDisplayName(@"CenterStop")]
 		[ProviderDescription(@"CenterStop")]
 		[PropertyOrder(3)]
@@ -172,7 +321,7 @@ namespace VixenModules.Effect.Text
 		#region Text properties
 
 		[Value]
-		[ProviderCategory(@"Text", 2)]
+		[ProviderCategory(@"Text", 3)]
 		[ProviderDisplayName(@"TextLines")]
 		[ProviderDescription(@"TextLines")]
 		[PropertyOrder(1)]
@@ -188,7 +337,7 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Text", 2)]
+		[ProviderCategory(@"Text", 3)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
 		[PropertyOrder(2)]
@@ -204,10 +353,10 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Text", 1)]
+		[ProviderCategory(@"Text", 3)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(4)]
+		[PropertyOrder(3)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -220,10 +369,10 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Text", 2)]
+		[ProviderCategory(@"Text", 3)]
 		[ProviderDisplayName(@"CenterText")]
 		[ProviderDescription(@"CenterText")]
-		[PropertyOrder(5)]
+		[PropertyOrder(4)]
 		public bool CenterText
 		{
 			get { return _data.CenterText; }
@@ -236,10 +385,10 @@ namespace VixenModules.Effect.Text
 		}
 
 		[Value]
-		[ProviderCategory(@"Text", 2)]
+		[ProviderCategory(@"Text", 3)]
 		[ProviderDisplayName(@"Text Layout")]
 		[ProviderDescription(@"Text Layout")]
-		[PropertyOrder(6)]
+		[PropertyOrder(5)]
 		public TextMode TextMode
 		{
 			get { return _data.TextMode; }
@@ -392,8 +541,31 @@ namespace VixenModules.Effect.Text
 		{
 			UpdateBaseColorAttribute(false);
 			UpdatePositionXAttribute(false);
+			UpdateTextModeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
+		}
+		private void UpdateTextModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			{
+				{"MarkCollectionId", TextSource != TextSource.None},
+
+				{"DirectionPerWord", TextSource != TextSource.None && Direction < TextDirection.Rotate},
+
+				{"TimeVisibleLength", TextSource != TextSource.None && !AutoFit},
+
+				{"AutoFit", TextSource != TextSource.None},
+
+				{"RepeatText", TextSource != TextSource.None},
+
+				{"TextFade", TextSource != TextSource.None}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		private void UpdateBaseColorAttribute(bool refresh = true)
@@ -401,6 +573,7 @@ namespace VixenModules.Effect.Text
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
 			{
 				{"BaseColor", UseBaseColor},
+
 				{"BaseLevelCurve", UseBaseColor}
 			};
 			SetBrowsable(propertyStates);
@@ -430,7 +603,11 @@ namespace VixenModules.Effect.Text
 
 				{"YOffsetCurve", !hideYOffsetCurve},
 				
-				{"AngleCurve", Direction == TextDirection.Rotate}
+				{"AngleCurve", Direction == TextDirection.Rotate},
+
+				{"DirectionPerWord", TextSource != TextSource.None && Direction < TextDirection.Rotate},
+
+				{"Speed", Direction < TextDirection.Rotate}
 			};
 			SetBrowsable(propertyStates);
 
@@ -444,6 +621,8 @@ namespace VixenModules.Effect.Text
 
 		protected override void SetupRender()
 		{
+			_textClass.Clear();
+			_textIndex = -1;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
@@ -455,12 +634,20 @@ namespace VixenModules.Effect.Text
 			}
 			_font = Font;
 			_newFontSize = Font.Size;
+
+			_text = TextMode == TextMode.Normal
+				? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
+				: SplitTextIntoCharacters(TextLines);
+
+			if(TextSource != TextSource.None) SetupMarks();
 		}
 
 		protected override void CleanUpRender()
 		{
 			_font = null;
 			_newfont = null;
+			_countDownFrame.Clear();
+			_text.Clear();
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -468,6 +655,7 @@ namespace VixenModules.Effect.Text
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
+				if (_text.Count == 0) return;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				// copy to frameBuffer
 				for (int x = 0; x < BufferWi; x++)
@@ -490,6 +678,7 @@ namespace VixenModules.Effect.Text
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
+					if (_text.Count == 0) continue;
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
 						foreach (var elementLocation in elementLocations)
@@ -503,24 +692,27 @@ namespace VixenModules.Effect.Text
 
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
+			if (_countDownFrame.Any(countDownFrame => frame == countDownFrame)) _countDownTimer = _countDownFrames;
+			
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			var textAngle = CalculateAngle(intervalPosFactor);
-			
+
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{
-				var text = TextMode == TextMode.Normal
-					? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
-					: SplitTextIntoCharacters(TextLines);
-				int numberLines = text.Count();
-
-				SizeF textsize = new SizeF(0, 0);
+				// Sets Fade level and text position offset.
+				SetFadePositionLevel(frame);
 				
+				int numberLines = _text.Count();
+				if (_text.Count == 0) return; // No point going furthe if there is no text to display.
+				
+				SizeF textsize = new SizeF(0, 0);
+
 				//Adjust Font Size based on the Font scaling factor
-				_newFontSize = _font.SizeInPoints*(CalculateFontScale(intervalPosFactor)/100);
+				_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
 				_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
 
-				foreach (string t in text)
+				foreach (string t in _text)
 				{
 					if (!String.IsNullOrEmpty(t))
 					{
@@ -542,12 +734,12 @@ namespace VixenModules.Effect.Text
 				if (Direction == TextDirection.Rotate)
 				{
 					//move rotation point to center of image
-					graphics.TranslateTransform((float)(bitmap.Width / 2 + xOffset), (float)(bitmap.Height / 2 + (yOffset/2)));
+					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
 					//rotate
 					graphics.SmoothingMode = SmoothingMode.HighQuality;
 					graphics.RotateTransform(textAngle);
 					//move image back
-					graphics.TranslateTransform(-(float)(bitmap.Width / 2 + xOffset), -(float)(bitmap.Height / 2 + (yOffset/2)));
+					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
 				}
 
 				switch (Direction)
@@ -563,54 +755,85 @@ namespace VixenModules.Effect.Text
 				}
 				int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
 				int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
-				double intervalPosition = (GetEffectTimeIntervalPosition(frame)*Speed)%1;
 				Point point;
 
 				switch (Direction)
 				{
 					case TextDirection.Left:
 						// left
-						int leftX = BufferWi - (int) (intervalPosition*(textsize.Width + BufferWi));
-
+						int leftX = BufferWi - (int) (_directionPosition * (textsize.Width + BufferWi));
 						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int) textsize.Width)/2) : leftX), offsetTop);
-
-						DrawText(text, graphics, point);
-
+							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int) textsize.Width) / 2) : leftX),
+								offsetTop);
 						break;
 					case TextDirection.Right:
 						// right
-						int rightX = -_maxTextSize + (int) (intervalPosition*(_maxTextSize + BufferWi));
-
+						int rightX = -_maxTextSize + (int) (_directionPosition * (_maxTextSize + BufferWi));
 						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int) textsize.Width)/2) : rightX),
+							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int) textsize.Width) / 2) : rightX),
 								offsetTop);
-						DrawText(text, graphics, point);
 						break;
 					case TextDirection.Up:
 						// up
-						int upY = BufferHt - (int) (((textsize.Height*numberLines) + BufferHt)*intervalPosition);
-
+						int upY = BufferHt - (int) (((textsize.Height * numberLines) + BufferHt) * _directionPosition);
 						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int) (textsize.Height*numberLines))/2) : upY));
-						DrawText(text, graphics, point);
+							Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int) (textsize.Height * numberLines)) / 2) : upY));
 						break;
 					case TextDirection.Down:
 						// down
-						int downY = -(int) (textsize.Height*numberLines) +
-						            (int) (((textsize.Height*numberLines) + BufferHt)*intervalPosition);
-
+						int downY = -(int) (textsize.Height * numberLines) +
+						            (int) (((textsize.Height * numberLines) + BufferHt) * _directionPosition);
 						point = new Point(offsetLeft,
 							Convert.ToInt32(CenterStop
-								? Math.Min(downY, (BufferHt - (int) (textsize.Height*numberLines))/2)
+								? Math.Min(downY, (BufferHt - (int) (textsize.Height * numberLines)) / 2)
 								: downY));
-						DrawText(text, graphics, point);
 						break;
 					default:
 						// no movement - centered
 						point = new Point((BufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
-						DrawText(text, graphics, point);
 						break;
+				}
+
+				DrawText(_text, graphics, point);
+
+			}
+		}
+
+		private void SetFadePositionLevel(int frame)
+		{
+			double intervalPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
+			_directionPosition = intervalPosition;
+			_fade = 1;
+			if (TextSource == TextSource.MarkCollection)
+			{
+				//_text.Clear();
+				for (var i = 0; i < _textClass.Count; i++)
+				{
+					TextClass text = _textClass[i];
+					if (frame >= text.StartFrame && frame < text.EndFrame)
+					{
+						_text = text.Text;
+						switch (TextFade)
+						{
+							case TextFade.In:
+								_fade = (double)(frame - text.StartFrame) / (text.Frame - text.StartFrame);
+								break;
+							case TextFade.Out:
+								_fade = 1 - (double)(frame - text.Frame) / (text.EndFrame - text.Frame);
+								break;
+							case TextFade.InOut:
+								_fade = frame < text.Frame
+									? (double)(frame - text.StartFrame) / (text.Frame - text.StartFrame)
+									: 1 - (double)(frame - text.Frame) / (text.EndFrame - text.Frame);
+								break;
+							case TextFade.None:
+								_fade = 1;
+								break;
+						}
+						if (DirectionPerWord) _directionPosition = (double)(frame - text.StartFrame) / (text.EndFrame - text.StartFrame);
+						break;
+					}
+					if ((i == _textClass.Count - 1 && (TextFade == TextFade.In || TextFade == TextFade.InOut)) || (i == 0 && (TextFade == TextFade.Out || TextFade == TextFade.None) && frame < text.Frame)) _text.Clear();
 				}
 			}
 		}
@@ -651,7 +874,21 @@ namespace VixenModules.Effect.Text
 			if (!EmptyColor.Equals(color))
 			{
 				var hsv = HSV.FromRGB(color);
-				hsv.V = hsv.V*level;
+				switch (TextFade)
+				{
+					case TextFade.Out:
+						hsv.V = hsv.V * _fade;
+						break;
+					case TextFade.In:
+						hsv.V = hsv.V * _fade;
+						break;
+					case TextFade.InOut:
+						hsv.V = _fade;
+						break;
+					default:
+						hsv.V = hsv.V * level;
+						break;
+				}
 
 				frameBuffer.SetPixel(xCoord, yCoord, hsv);
 			}
@@ -783,6 +1020,129 @@ namespace VixenModules.Effect.Text
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, _newfont, brush, p);
 
+		}
+
+		// for Text Class
+		public class TextClass
+		{
+			public List<string> Text = new List<string>();
+			public int StartFrame;
+			public int Frame;
+			public int EndFrame;
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+
+			// Populate TextClass with start frame, mark frame and endframe
+			if (_text.Count > 0 && _marks != null)
+			{
+				_countDownFrame.Clear();
+				_countDownTimer = 0;
+				_countDownFrames = TimeVisibleLength / 50;
+				var i = 0;
+				var currentMark = 0;
+				foreach (var mark in _marks)
+				{
+					TextClass t = new TextClass();
+					foreach (string t1 in _text)
+					{
+						if (t1.Split(' ').Length > i) t.Text.Add(t1.Split(' ')[i]);
+					}
+
+					double markTime = mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds;
+					t.Frame = (int)markTime / 50;
+
+					if (_textClass.Count == 0)
+					{
+						t.StartFrame = 0;
+					}
+					else
+					{
+						t.StartFrame = ((t.Frame - _textClass[_textClass.Count - 1].Frame) / 2) + _textClass[_textClass.Count - 1].Frame;
+						_textClass[_textClass.Count - 1].EndFrame = t.StartFrame;
+					}
+
+					if (_marks.Count() == currentMark + 1) t.EndFrame = GetNumberFrames();
+
+					i++;
+					if (t.Text.Count == 0 && RepeatText)
+					{
+						t.Text = _textClass[0].Text;
+						i = 1;
+					}
+					_textClass.Add(t);
+					currentMark++;
+				}
+			}
+			else
+			{
+				_countDownTimer = GetNumberFrames();
+			}
+
+			for (var i = 0; i < _textClass.Count; i++)
+			{
+				TextClass text = _textClass[i];
+				switch (TextFade)
+				{
+					case TextFade.In:
+						if (AutoFit)
+						{
+							if (i != 0) text.StartFrame = _textClass[i - 1].Frame;
+							text.EndFrame = text.Frame;
+						}
+						else
+						{
+							text.StartFrame = text.Frame - TimeVisibleLength / 50;
+							text.EndFrame = text.Frame;
+						}
+						break;
+					case TextFade.None:
+					case TextFade.Out:
+						if (AutoFit)
+						{
+							if (i != _textClass.Count - 1) text.EndFrame = _textClass[i + 1].Frame;
+							text.StartFrame = text.Frame;
+						}
+						else
+						{
+							text.StartFrame = text.Frame;
+							text.EndFrame = text.Frame + TimeVisibleLength / 50;
+						}
+						break;
+					case TextFade.InOut:
+						if (!AutoFit)
+						{
+							text.StartFrame = text.Frame - TimeVisibleLength / 100;
+							text.EndFrame = text.Frame + TimeVisibleLength / 100;
+						}
+						break;
+				}
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (TextSource != TextSource.None)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
 		}
 	}
 }

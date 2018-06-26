@@ -61,6 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TextFade.cs" />
+    <Compile Include="TextSource.cs" />
     <Compile Include="SerializableFont.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="TextData.cs" />
