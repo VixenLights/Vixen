@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Fit.
+        /// </summary>
+        internal static string AutoFit {
+            get {
+                return ResourceManager.GetString("AutoFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Avg Pulse Time.
         /// </summary>
         internal static string AveragePulseTime {
@@ -481,6 +490,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direction Per Word.
+        /// </summary>
+        internal static string DirectionPerWord {
+            get {
+                return ResourceManager.GetString("DirectionPerWord", resourceCulture);
             }
         }
         
@@ -1151,6 +1169,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repeat Text.
+        /// </summary>
+        internal static string RepeatText {
+            get {
+                return ResourceManager.GetString("RepeatText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reverse Direction.
         /// </summary>
         internal static string ReverseDirection {
@@ -1358,6 +1385,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text Fade.
+        /// </summary>
+        internal static string TextFade {
+            get {
+                return ResourceManager.GetString("TextFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text Line(s).
         /// </summary>
         internal static string TextLines {
@@ -1372,6 +1408,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TextMode {
             get {
                 return ResourceManager.GetString("TextMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Source.
+        /// </summary>
+        internal static string TextSource {
+            get {
+                return ResourceManager.GetString("TextSource", resourceCulture);
             }
         }
         

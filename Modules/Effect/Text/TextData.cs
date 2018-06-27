@@ -38,7 +38,7 @@ namespace VixenModules.Effect.Text
 			BaseLevelCurve = new Curve(CurveType.Flat100);
 			TextSource = TextSource.None;
 			TextFade = TextFade.Out;
-			TimeVisibleLength = 500;
+			TimeVisibleLength = 750;
 			DirectionPerWord = false;
 			RepeatText = false;
 			AutoFit = true;

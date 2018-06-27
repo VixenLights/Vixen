@@ -597,4 +597,19 @@
   <data name="FireworksSource" xml:space="preserve">
     <value>Fireworks Source</value>
   </data>
+  <data name="AutoFit" xml:space="preserve">
+    <value>Auto Fit</value>
+  </data>
+  <data name="DirectionPerWord" xml:space="preserve">
+    <value>Direction Per Word</value>
+  </data>
+  <data name="RepeatText" xml:space="preserve">
+    <value>Repeat Text</value>
+  </data>
+  <data name="TextFade" xml:space="preserve">
+    <value>Text Fade</value>
+  </data>
+  <data name="TextSource" xml:space="preserve">
+    <value>Text Source</value>
+  </data>
 </root>

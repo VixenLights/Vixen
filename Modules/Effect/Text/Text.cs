@@ -28,19 +28,11 @@ namespace VixenModules.Effect.Text
 		private static Random _random = new Random();
 		private float _newFontSize;
 		private List<string> _text;
-		private int _startFrame;
-		private int _frame;
-		private int _endFrame;
 		private readonly List<TextClass> _textClass = new List<TextClass>();
 		private IEnumerable<IMark> _marks = null;
-		private List<int> _countDownFrame = new List<int>();
-		private int _countDownFrames;
-		private int _countDownTimer;
-		private int _textIndex;
-		private int _countDownNumber;
 		private double _directionPosition;
 		private double _fade;
-
+		
 		public Text()
 		{
 			_data = new TextData();
@@ -82,8 +74,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory("Config", 1)]
-		[DisplayName(@"TextSource")]
-		[Description(@"TextSource")]
+		[ProviderDisplayName(@"TextSource")]
+		[ProviderDescription(@"TextSource")]
 		[PropertyOrder(0)]
 		public TextSource TextSource
 		{
@@ -106,7 +98,7 @@ namespace VixenModules.Effect.Text
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the time position.")]
+		[ProviderDescription(@"Mark Collection that has the time position to display each word.")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(1)]
@@ -185,8 +177,8 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"TimeVisibleLength")]
-		[ProviderDescription(@"TimeVisibleLength")]
+		[ProviderDisplayName(@"Time Visible Length (ms)")]
+		[ProviderDescription(@"Shows each word for selected period of time up to the next word.")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10000, 1)]
 		[PropertyOrder(5)]
@@ -245,6 +237,7 @@ namespace VixenModules.Effect.Text
 			set
 			{
 				_data.DirectionPerWord = value;
+				UpdateTextModeAttributes();
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -559,7 +552,11 @@ namespace VixenModules.Effect.Text
 
 				{"RepeatText", TextSource != TextSource.None},
 
-				{"TextFade", TextSource != TextSource.None}
+				{"TextFade", TextSource != TextSource.None},
+
+				{"Speed", TextSource == TextSource.None || !DirectionPerWord},
+
+				{"TextMode", TextSource == TextSource.None}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -607,7 +604,9 @@ namespace VixenModules.Effect.Text
 
 				{"DirectionPerWord", TextSource != TextSource.None && Direction < TextDirection.Rotate},
 
-				{"Speed", Direction < TextDirection.Rotate}
+				{"Speed", Direction < TextDirection.Rotate},
+
+				{"CenterStop", Direction < TextDirection.Rotate}
 			};
 			SetBrowsable(propertyStates);
 
@@ -621,8 +620,12 @@ namespace VixenModules.Effect.Text
 
 		protected override void SetupRender()
 		{
-			_textClass.Clear();
-			_textIndex = -1;
+			_text = TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection
+				? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
+				: SplitTextIntoCharacters(TextLines);
+
+			if (TextSource != TextSource.None) SetupMarks();
+
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
@@ -634,20 +637,14 @@ namespace VixenModules.Effect.Text
 			}
 			_font = Font;
 			_newFontSize = Font.Size;
-
-			_text = TextMode == TextMode.Normal
-				? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
-				: SplitTextIntoCharacters(TextLines);
-
-			if(TextSource != TextSource.None) SetupMarks();
 		}
 
 		protected override void CleanUpRender()
 		{
 			_font = null;
 			_newfont = null;
-			_countDownFrame.Clear();
 			_text.Clear();
+			_textClass.Clear();
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -692,8 +689,6 @@ namespace VixenModules.Effect.Text
 
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
-			if (_countDownFrame.Any(countDownFrame => frame == countDownFrame)) _countDownTimer = _countDownFrames;
-			
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
 			var textAngle = CalculateAngle(intervalPosFactor);
@@ -806,13 +801,13 @@ namespace VixenModules.Effect.Text
 			_fade = 1;
 			if (TextSource == TextSource.MarkCollection)
 			{
-				//_text.Clear();
+				bool clearText = true;
 				for (var i = 0; i < _textClass.Count; i++)
 				{
 					TextClass text = _textClass[i];
 					if (frame >= text.StartFrame && frame < text.EndFrame)
 					{
-						_text = text.Text;
+						_text = new List<string>(text.Text);
 						switch (TextFade)
 						{
 							case TextFade.In:
@@ -831,10 +826,11 @@ namespace VixenModules.Effect.Text
 								break;
 						}
 						if (DirectionPerWord) _directionPosition = (double)(frame - text.StartFrame) / (text.EndFrame - text.StartFrame);
+						clearText = false;
 						break;
 					}
-					if ((i == _textClass.Count - 1 && (TextFade == TextFade.In || TextFade == TextFade.InOut)) || (i == 0 && (TextFade == TextFade.Out || TextFade == TextFade.None) && frame < text.Frame)) _text.Clear();
 				}
+				if (clearText) _text.Clear();
 			}
 		}
 
@@ -953,7 +949,7 @@ namespace VixenModules.Effect.Text
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 				var brushPointX = p.X;
-				if (CenterText && TextMode == TextMode.Rotated)
+				if (CenterText && TextMode == TextMode.Rotated && TextSource == TextSource.None)
 				{
 					brushPointX =p.X-offset/2;
 				}
@@ -962,13 +958,13 @@ namespace VixenModules.Effect.Text
 					brushPointX = offsetPoint.X;
 				}
 				ColorGradient cg = Colors[i % Colors.Count()];
-				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated?_maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
+				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated && TextSource == TextSource.None ? _maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
 				
 				DrawTextWithBrush(text, brush, g, CenterText?offsetPoint:p);
 				brush.Dispose();
 				p.Y += (int)size.Height;
-				if (TextMode == TextMode.Normal)
+				if (TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection)
 				{
 					i++;
 				}
@@ -1001,7 +997,7 @@ namespace VixenModules.Effect.Text
 				brush.Dispose();
 
 				p.Y += (int)size.Height;
-				if (TextMode == TextMode.Normal)
+				if (TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection)
 				{
 					i++;
 				}
@@ -1039,9 +1035,6 @@ namespace VixenModules.Effect.Text
 			// Populate TextClass with start frame, mark frame and endframe
 			if (_text.Count > 0 && _marks != null)
 			{
-				_countDownFrame.Clear();
-				_countDownTimer = 0;
-				_countDownFrames = TimeVisibleLength / 50;
 				var i = 0;
 				var currentMark = 0;
 				foreach (var mark in _marks)
@@ -1077,11 +1070,8 @@ namespace VixenModules.Effect.Text
 					currentMark++;
 				}
 			}
-			else
-			{
-				_countDownTimer = GetNumberFrames();
-			}
 
+			// Adjusts start and end frames for each mark depending on fade settings.
 			for (var i = 0; i < _textClass.Count; i++)
 			{
 				TextClass text = _textClass[i];
@@ -1095,8 +1085,12 @@ namespace VixenModules.Effect.Text
 						}
 						else
 						{
-							text.StartFrame = text.Frame - TimeVisibleLength / 50;
+							//Gets max and min frame to compare with users Visual time setting and pick the smallest.
+							int minFrameOffset = i != 0
+								? text.Frame - _textClass[i - 1].Frame
+								: text.Frame;
 							text.EndFrame = text.Frame;
+							text.StartFrame = (int)(text.Frame - Math.Min((double)TimeVisibleLength / 50, minFrameOffset));
 						}
 						break;
 					case TextFade.None:
@@ -1108,15 +1102,26 @@ namespace VixenModules.Effect.Text
 						}
 						else
 						{
+							//Gets max and min frame to compare with users Visual time setting and pick the smallest.
+							int maxFrameOffset = i != _textClass.Count - 1
+								? _textClass[i + 1].Frame - text.Frame
+								: GetNumberFrames() - text.Frame;
 							text.StartFrame = text.Frame;
-							text.EndFrame = text.Frame + TimeVisibleLength / 50;
+							text.EndFrame = (int) (text.Frame + Math.Min((double)TimeVisibleLength / 50, maxFrameOffset));
 						}
 						break;
 					case TextFade.InOut:
 						if (!AutoFit)
 						{
-							text.StartFrame = text.Frame - TimeVisibleLength / 100;
-							text.EndFrame = text.Frame + TimeVisibleLength / 100;
+							//Gets max and min frame to compare with users Visual time setting and pick the smallest.
+							int maxFrameOffset = i != _textClass.Count - 1
+								? _textClass[i + 1].Frame - text.Frame
+								: GetNumberFrames() - text.Frame;
+							int minFrameOffset = i != 0
+								? text.Frame - _textClass[i - 1].Frame
+								: text.Frame;
+							text.EndFrame = (int)(text.Frame + Math.Min((double)TimeVisibleLength / 100, maxFrameOffset));
+							text.StartFrame = (int)(text.Frame - Math.Min((double)TimeVisibleLength / 100, minFrameOffset));
 						}
 						break;
 				}
