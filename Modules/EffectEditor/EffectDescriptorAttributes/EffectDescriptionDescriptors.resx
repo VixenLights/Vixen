@@ -625,5 +625,14 @@
     <value>Displays the count down in Minutes (over 60sec) or second.</value>
   </data>
   <data name="CountDownSource" xml:space="preserve">
-    <value>Selects what source is used to determine Coutdown time.</value>
-  </data></root>
+    <value>Selects what source is used to determine the Count down time.</value>  </data>
+  <data name="CountDownDuration" xml:space="preserve">
+    <value>Count Down Duration</value>
+  </data>
+  <data name="DirectionPerWord" xml:space="preserve">
+    <value>When enabled will move the text basd on direction over the duration of each displayed word.</value>
+  </data>
+  <data name="MarkTimeFreeze" xml:space="preserve">
+    <value>Freezes on the tiem left when triggered.</value>
+  </data>
+</root>

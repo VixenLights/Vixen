@@ -33,9 +33,13 @@ namespace VixenModules.Effect.CountDown
 			TimeFormat = TimeFormat.Minutes;
 			CountDownInterval = 1;
 			CountDownMode = CountDownMode.None;
-			TimeVisibleLength = 10;
+			TimeVisibleLength = 750;
 			CountDownType = CountDownType.Effect;
-			CountDownFade = CountDownFade.Out;
+			CountDownFade = CountDownFade.InOut;
+			DirectionPerWord = false;
+			RepeatText = false;
+			CountDownDuration = CountDownDuration.AutoFit;
+			MarkTimeFreeze = true;
 		}
 
 		[DataMember]
@@ -100,6 +104,18 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public CountDownFade CountDownFade { get; set; }
+		
+		[DataMember]
+		public bool DirectionPerWord { get; set; }
+
+		[DataMember]
+		public bool RepeatText { get; set; }
+
+		[DataMember]
+		public CountDownDuration CountDownDuration { get; set; }
+
+		[DataMember]
+		public bool MarkTimeFreeze { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -124,7 +140,11 @@ namespace VixenModules.Effect.CountDown
 				MarkCollectionId = MarkCollectionId,
 				TimeVisibleLength = TimeVisibleLength,
 				CountDownType = CountDownType,
-				CountDownFade = CountDownFade
+				CountDownFade = CountDownFade,
+				DirectionPerWord = DirectionPerWord,
+				RepeatText = RepeatText,
+				CountDownDuration = CountDownDuration,
+				MarkTimeFreeze = MarkTimeFreeze
 			};
 			return result;
 		}

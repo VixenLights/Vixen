@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="CountDown.cs" />
     <Compile Include="CountDownFade.cs" />
+    <Compile Include="CountDownDuration.cs" />
     <Compile Include="CountDownType.cs" />
     <Compile Include="GradientMode.cs" />
     <Compile Include="CountDownMode.cs" />

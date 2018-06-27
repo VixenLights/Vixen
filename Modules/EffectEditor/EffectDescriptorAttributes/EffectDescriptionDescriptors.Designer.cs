@@ -404,6 +404,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count Down Duration.
+        /// </summary>
+        internal static string CountDownDuration {
+            get {
+                return ResourceManager.GetString("CountDownDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Will fade each displayed count down time..
         /// </summary>
         internal static string CountDownFade {
@@ -422,7 +431,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selects what source is used to determine Coutdown time..
+        ///   Looks up a localized string similar to Selects what source is used to determine the Count down time..
         /// </summary>
         internal static string CountDownSource {
             get {

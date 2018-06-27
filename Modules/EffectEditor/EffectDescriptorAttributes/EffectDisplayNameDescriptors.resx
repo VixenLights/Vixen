@@ -635,6 +635,7 @@
   </data>
   <data name="CountDownType" xml:space="preserve">
     <value>Count Down Type</value>
+  </data>  <data name="CountDownDuration" xml:space="preserve">
+    <value>Count Down Duration</value>
   </data>
 </root>
-  </data></root>
