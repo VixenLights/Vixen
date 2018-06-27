@@ -791,6 +791,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Mark Labels as text to be displayed..
+        /// </summary>
+        internal static string MarkLabels {
+            get {
+                return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max angle the Snowflake moves..
         /// </summary>
         internal static string MaxAngle {
@@ -1313,6 +1322,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the way the text duration is used..
+        /// </summary>
+        internal static string TextDuration {
+            get {
+                return ResourceManager.GetString("TextDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Will fade the displayed text as per setting..
         /// </summary>
         internal static string TextFade {
@@ -1340,11 +1358,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Standard text or Mark Collections to trigger when words are shown..
+        ///   Looks up a localized string similar to Use standard Text with no external trigger, Marks to trigger when words are shown or Marks to trigger and use Mark Labels to display..
         /// </summary>
-        internal static string TextSource {
+        internal static string TextTrigger {
             get {
-                return ResourceManager.GetString("TextSource", resourceCulture);
+                return ResourceManager.GetString("TextTrigger", resourceCulture);
             }
         }
         

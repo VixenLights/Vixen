@@ -7,6 +7,8 @@ namespace VixenModules.Effect.Text
 		[Description("None")]
 		None,
 		[Description("Mark Collection")]
-		MarkCollection
+		MarkCollection,
+		[Description("Mark Collection - Labels")]
+		MarkCollectionLabels
 	}
 }

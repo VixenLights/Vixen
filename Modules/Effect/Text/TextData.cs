@@ -41,7 +41,7 @@ namespace VixenModules.Effect.Text
 			TimeVisibleLength = 750;
 			DirectionPerWord = false;
 			RepeatText = false;
-			AutoFit = true;
+			TextDuration = TextDuration.AutoFit;
 		}
 
 		[DataMember]
@@ -118,7 +118,7 @@ namespace VixenModules.Effect.Text
 		
 		[DataMember]
 		public int TimeVisibleLength { get; set; }
-
+		
 		[DataMember]
 		public bool DirectionPerWord { get; set; }
 
@@ -126,12 +126,14 @@ namespace VixenModules.Effect.Text
 		public bool RepeatText { get; set; }
 
 		[DataMember]
-		public bool AutoFit { get; set; }
+		public TextDuration TextDuration { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
 			//Ensure defaults for new fields that might not be in older effects.
+			if (TimeVisibleLength == 0) TimeVisibleLength = 750;
+
 			if (LevelCurve == null)
 			{
 				LevelCurve = new Curve(CurveType.Flat100);
@@ -202,7 +204,7 @@ namespace VixenModules.Effect.Text
 				TimeVisibleLength = TimeVisibleLength,
 				DirectionPerWord = DirectionPerWord,
 				RepeatText = RepeatText,
-				AutoFit = AutoFit
+				TextDuration = TextDuration
 			};
 			return result;
 		}

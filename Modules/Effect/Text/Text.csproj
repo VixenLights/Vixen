@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TextFade.cs" />
+    <Compile Include="TextDuration.cs" />
     <Compile Include="TextSource.cs" />
     <Compile Include="SerializableFont.cs" />
     <Compile Include="Text.cs" />

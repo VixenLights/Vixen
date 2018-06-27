@@ -603,13 +603,19 @@
   <data name="DirectionPerWord" xml:space="preserve">
     <value>Direction Per Word</value>
   </data>
+  <data name="MarkLabels" xml:space="preserve">
+    <value>Use Mark Labels</value>
+  </data>
   <data name="RepeatText" xml:space="preserve">
     <value>Repeat Text</value>
   </data>
   <data name="TextFade" xml:space="preserve">
     <value>Text Fade</value>
   </data>
-  <data name="TextSource" xml:space="preserve">
-    <value>Text Source</value>
+  <data name="TextTrigger" xml:space="preserve">
+    <value>Text Trigger</value>
+  </data>
+  <data name="TextDuration" xml:space="preserve">
+    <value>Text Duration</value>
   </data>
 </root>

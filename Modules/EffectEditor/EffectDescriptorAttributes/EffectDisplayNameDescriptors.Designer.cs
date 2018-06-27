@@ -890,6 +890,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Mark Labels.
+        /// </summary>
+        internal static string MarkLabels {
+            get {
+                return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max Angle.
         /// </summary>
         internal static string MaxAngle {
@@ -1385,6 +1394,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text Duration.
+        /// </summary>
+        internal static string TextDuration {
+            get {
+                return ResourceManager.GetString("TextDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text Fade.
         /// </summary>
         internal static string TextFade {
@@ -1412,11 +1430,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text Source.
+        ///   Looks up a localized string similar to Text Trigger.
         /// </summary>
-        internal static string TextSource {
+        internal static string TextTrigger {
             get {
-                return ResourceManager.GetString("TextSource", resourceCulture);
+                return ResourceManager.GetString("TextTrigger", resourceCulture);
             }
         }
         
