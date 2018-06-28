@@ -147,20 +147,6 @@ namespace VixenModules.Effect.Shapes
 		Web
 	}
 
-	public enum BorderShapesList
-	{
-		[Description("Random")]
-		Random,
-		[Description("Border")]
-		Border,
-		[Description("Border1")]
-		Border1,
-		[Description("Border2")]
-		Border2,
-		[Description("Calendar")]
-		Calendar
-	}
-
 	public enum ShapeList
 	{
 		[Description("Geometric")]
@@ -169,10 +155,7 @@ namespace VixenModules.Effect.Shapes
 		ChristmasShapes,
 		[Description("Halloween")]
 		HalloweenShapes,
-		[Description("Borders")]
-		BorderShapes,
 		[Description("File")]
 		File
-
 	}
 }

@@ -1249,6 +1249,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the shape size..
+        /// </summary>
+        internal static string RandomSize {
+            get {
+                return ResourceManager.GetString("RandomSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enables Random Speed settings..
         /// </summary>
         internal static string RandomSpeed {
@@ -1501,7 +1510,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Randomly adjust the Speed around the Speed level by the amount of variation..
+        ///   Looks up a localized string similar to Randomly adjust the shape size around the size level by the amount of variation..
         /// </summary>
         internal static string SizeVariation {
             get {

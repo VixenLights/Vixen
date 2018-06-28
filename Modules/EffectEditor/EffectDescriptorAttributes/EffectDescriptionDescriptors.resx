@@ -724,6 +724,9 @@
     <value>Enable increase/decrease of shape size based on size variation.</value>
   </data>
   <data name="SizeVariation" xml:space="preserve">
-    <value>Randomly adjust the Speed around the Speed level by the amount of variation.</value>
+    <value>Randomly adjust the shape size around the size level by the amount of variation.</value>
+  </data>
+  <data name="RandomSize" xml:space="preserve">
+    <value>Randomly adjust the shape size.</value>
   </data>
 </root>

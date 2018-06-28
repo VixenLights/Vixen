@@ -151,7 +151,6 @@ namespace VixenModules.Effect.Shapes
 			set
 			{
 				_data.ShapeList = value;
-				if (ShapeList != ShapeList.BorderShapes) StrokeFill = true;
 				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
@@ -203,23 +202,6 @@ namespace VixenModules.Effect.Shapes
 			set
 			{
 				_data.HalloweenShapesList = value;
-				UpdateShapeTypeAttribute();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"BorderShapes")]
-		[ProviderDescription(@"BorderShapes")]
-		[PropertyOrder(6)]
-		public BorderShapesList BorderShapesList
-		{
-			get { return _data.BorderShapesList; }
-			set
-			{
-				_data.BorderShapesList = value;
 				UpdateShapeTypeAttribute();
 				IsDirty = true;
 				OnPropertyChanged();
@@ -556,6 +538,24 @@ namespace VixenModules.Effect.Shapes
 			set
 			{
 				_data.StarPoints = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"ShapeSettings", 2)]
+		[ProviderDisplayName(@"StarPoints")]
+		[ProviderDescription(@"StarPoints")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(3, 20, 1)]
+		[PropertyOrder(4)]
+		public int NonIntersectingStarPoints
+		{
+			get { return _data.NonIntersectingStarPoints; }
+			set
+			{
+				_data.NonIntersectingStarPoints = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -918,9 +918,9 @@ namespace VixenModules.Effect.Shapes
 				
 				{"ShapeCount", ShapeMode == ShapeMode.RemoveShapesMarkCollection},
 
-				{"ShapeCountCurve", ShapeMode == ShapeMode.None},
+				{"ScaleToGrid", ShapeMode == ShapeMode.None},
 
-				{"ScaleToGrid", ShapeMode == ShapeMode.None}
+				{"ShapeCountCurve", !ScaleToGrid && ShapeMode != ShapeMode.RemoveShapesMarkCollection},
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -957,15 +957,13 @@ namespace VixenModules.Effect.Shapes
 		
 		private void UpdateShapeTypeAttribute(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(41)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(42)
 			{
 				{"GeometricShapesList", ShapeList == ShapeList.GeometricShapes},
 
 				{"ChristmasShapesList", ShapeList == ShapeList.ChristmasShapes},
 
 				{"HalloweenShapesList", ShapeList == ShapeList.HalloweenShapes},
-
-				{"BorderShapesList", ShapeList == ShapeList.BorderShapes},
 
 				{"FileName", ShapeList == ShapeList.File},
 
@@ -975,23 +973,25 @@ namespace VixenModules.Effect.Shapes
 
 				{"StarInsideSize", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.NonIntersectingStar},
 
-				{"StarPoints", ShapeList == ShapeList.GeometricShapes && (GeometricShapesList == GeometricShapesList.Star || GeometricShapesList == GeometricShapesList.NonIntersectingStar)},
+				{"StarPoints", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.Star},
+
+				{"NonIntersectingStarPoints", ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.NonIntersectingStar},
 
 				{"ShapeSizeRatio", !ScaleToGrid && ShapeList == ShapeList.GeometricShapes && (GeometricShapesList == GeometricShapesList.Rectangle || GeometricShapesList == GeometricShapesList.Ellipse)},
 
 				{"CrossSizeRatio", !ScaleToGrid && ShapeList == ShapeList.GeometricShapes && GeometricShapesList == GeometricShapesList.Cross},
 
-				{"FirstFillColors", ShapeList != ShapeList.File && Fill && ShapeList != ShapeList.BorderShapes},
+				{"FirstFillColors", ShapeList != ShapeList.File && Fill},
 
-				{"SecondFillColors", ShapeList != ShapeList.File && Fill && ShapeList != ShapeList.BorderShapes && ShapeList != ShapeList.GeometricShapes && (ShapeList == ShapeList.ChristmasShapes && ChristmasShapesList != ChristmasShapesList.SnowFlake&& ChristmasShapesList != ChristmasShapesList.SnowFlake2) || (ShapeList == ShapeList.HalloweenShapes && HalloweenShapesList != HalloweenShapesList.Web)},
+				{"SecondFillColors", ShapeList != ShapeList.File && Fill && ShapeList != ShapeList.GeometricShapes && (ShapeList == ShapeList.ChristmasShapes && ChristmasShapesList != ChristmasShapesList.SnowFlake&& ChristmasShapesList != ChristmasShapesList.SnowFlake2) || (ShapeList == ShapeList.HalloweenShapes && HalloweenShapesList != HalloweenShapesList.Web)},
 
 				{"RoundedCorner", ShapeList == ShapeList.GeometricShapes},
 
 				{"OutlineColors", StrokeFill},
 
-				{"Fill", ShapeList != ShapeList.File && ShapeList != ShapeList.BorderShapes},
+				{"Fill", ShapeList != ShapeList.File},
 
-				{"StrokeFill", ShapeList == ShapeList.BorderShapes || ShapeList == ShapeList.File},
+				{"StrokeFill", ShapeList == ShapeList.File},
 
 				{"SizeCurve", !ScaleToGrid && !RemoveShape && !RandomSize},
 
@@ -1005,7 +1005,7 @@ namespace VixenModules.Effect.Shapes
 
 				{"XOffsetCurve", !ScaleToGrid && ShapeType == ShapeType.None},
 
-				{"ShapeCountCurve", !ScaleToGrid},
+				{"ShapeCountCurve", !ScaleToGrid && ShapeMode != ShapeMode.RemoveShapesMarkCollection},
 
 				{"CenterSizeSpeedCurve", !ScaleToGrid},
 
@@ -1037,7 +1037,9 @@ namespace VixenModules.Effect.Shapes
 
 				{"RemoveShape", !ScaleToGrid},
 
-				{"RandomSize", !ScaleToGrid && !RemoveShape}
+				{"RandomSize", !ScaleToGrid && !RemoveShape},
+
+				{"ShapeCount", ShapeMode == ShapeMode.RemoveShapesMarkCollection}
 
 			};
 			SetBrowsable(propertyStates);
@@ -1098,6 +1100,7 @@ namespace VixenModules.Effect.Shapes
 					FileName = "";
 				}
 			}
+
 			if (ShapeMode != ShapeMode.None)
 			{
 				SetupMarks();
@@ -1194,8 +1197,7 @@ namespace VixenModules.Effect.Shapes
 
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			_intervalPosFactor = intervalPos * 100;
+			_intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 			_centerAngleSpeed = CalculateCenterAngleSpeed(_intervalPosFactor);
 			_angleSpeedVariation = CalculateAngleSpeedVariation(_intervalPosFactor);
 			_centerSizeSpeed = CalculateCenterSizeSpeed(_intervalPosFactor);
@@ -1266,10 +1268,10 @@ namespace VixenModules.Effect.Shapes
 					break;
 			}
 
-			// Update Shape location, radius and speed.
+			// Update Shape properties like location, radius and speed.
 			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
 
-			// Remove any shapes add to the _removeShapes variable.
+			// Remove any shapes that have been added to the _removeShapes variable.
 			RemoveShapes(frame);
 
 			// Go through all used Shapes and adjust settings and then Draw SVG to Bitmap.
@@ -1283,31 +1285,29 @@ namespace VixenModules.Effect.Shapes
 					foreach (var child in shape.SvgImage.Children)
 					{
 						// Adjusts Shape properties based on effect settings
-						if (Fill && ShapeList != ShapeList.BorderShapes)
+						if (Fill)
 						{
 							foreach (var descendant in shape.SvgImage.Descendants())
 							{
-								if (descendant.ID != null)
-								{
-									// Will add random color form first and second color fill to all SVG Paths that contain appropiate ID.
-									if (descendant.ID.Contains("firstFill")) descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								if (descendant.ID == null) continue;
+								// Will add random color form first and second color fill to all SVG Paths that contain appropiate ID.
+								if (descendant.ID.Contains("firstFill")) descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
 										
-									if (descendant.ID.Contains("secondFill")) descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								if (descendant.ID.Contains("secondFill")) descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
 									
-									// Used to Fade individual Shapes. This will adjust the assigned colors brightness.
-									if (FadeType != FadeType.None && descendant.Fill != SvgPaintServer.None)
-									{
-										HSV fadeColor = HSV.FromRGB(ColorTranslator.FromHtml(descendant.Fill.ToString()));
-										fadeColor.V *= shape.Fade;
-										descendant.Fill = new SvgColourServer(fadeColor.ToRGB());
-									}
+								// Used to Fade individual Shapes. This will adjust the assigned colors brightness.
+								if (FadeType != FadeType.None && descendant.Fill != SvgPaintServer.None)
+								{
+									HSV fadeColor = HSV.FromRGB(ColorTranslator.FromHtml(descendant.Fill.ToString()));
+									fadeColor.V *= shape.Fade;
+									descendant.Fill = new SvgColourServer(fadeColor.ToRGB());
 								}
 							}
 						}
 						else
 						{
 							// When there is no Color Fill this allows the shape to show other shapes through.
-							// If you don't what other shapes to show through then just select Color Fill and shange Fill color to Black.
+							// If you don't what other shapes to show through then just select Color Fill and change Fill color to Black.
 							shape.SvgImage.Children[0].FillOpacity = 0;
 						}
 
@@ -1367,9 +1367,10 @@ namespace VixenModules.Effect.Shapes
 					shape.SvgImage.Transforms[1] = new SvgScale(_scaleShapeWidth, _scaleShapeHeight);
 				}
 
-				// Ensures a better image vs speed, although there wasnt any visible differance in speed between this
+				// Ensures a better image vs speed, although there wasnt any differance in render time between this
 				// and optimized speed.
 				shape.SvgImage.ShapeRendering = SvgShapeRendering.CrispEdges;
+
 				double locationX;
 				double locationY;
 				if (_shapes.Count == 1 && ShapeType == ShapeType.None && !ScaleToGrid)
@@ -1387,7 +1388,7 @@ namespace VixenModules.Effect.Shapes
 
 				using (Graphics g = Graphics.FromImage(bitmap))
 				{
-					// Adjust position based on x and y offset.
+					// Adjust position based on users x and y offset.
 					int xOffset = 0;
 					int yOffset = 0;
 					if (ShapeType == ShapeType.None && !ScaleToGrid)
@@ -1396,7 +1397,7 @@ namespace VixenModules.Effect.Shapes
 						yOffset = CalculateYOffset(_intervalPosFactor, bitmap.Height);
 					}
 					
-					// Draw SVG onto bitmap
+					// Draw SVG onto main bitmap
 					g.DrawImage(shape.SvgImage.Draw(),
 						ScaleToGrid
 							? new Point(0, 0)
@@ -1439,11 +1440,8 @@ namespace VixenModules.Effect.Shapes
 
 			if (ShapeList == ShapeList.GeometricShapes)
 			{
-				// Creates svg Viewbox used geometric Shapes as they are designed around this size.
-				m.SvgImage = new SvgDocument
-				{
-					ViewBox = new SvgViewBox(0, 0, _svgViewBoxSize, _svgViewBoxSize)
-				};
+				// The embedded geometric Shapes require a SVG Viewbox created as they are designed around this size.
+				m.SvgImage = new SvgDocument{ViewBox = new SvgViewBox(0, 0, _svgViewBoxSize, _svgViewBoxSize)};
 			}
 
 			// Get the shape from users selected source.
@@ -1487,7 +1485,7 @@ namespace VixenModules.Effect.Shapes
 							break;
 						case "NonIntersectingStar":
 							m.SvgImage.Children.Add(
-								GetGeometricShape.CreateSvgNonIntersectingStar(radius, StarPoints, StarInsideSize, false));
+								GetGeometricShape.CreateSvgNonIntersectingStar(radius, NonIntersectingStarPoints, StarInsideSize, false));
 							break;
 						case "NorthStar":
 							m.SvgImage.Children.Add(GetGeometricShape.CreateSvgNonIntersectingStar(radius, 8, 42, true));
@@ -1518,14 +1516,6 @@ namespace VixenModules.Effect.Shapes
 					m.SvgImage = getXMLShape("Halloween." + m.Shape);
 					break;
 
-				case ShapeList.BorderShapes:
-					enumValues = Enum.GetValues(typeof(BorderShapesList));
-					m.Shape = BorderShapesList == BorderShapesList.Random
-						? ((BorderShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
-						: BorderShapesList.ToString();
-					m.SvgImage = getXMLShape("Borders." + m.Shape);
-					break;
-
 				case ShapeList.File:
 					m.SvgImage = SvgDocument.Open(_fileName);
 					break;
@@ -1533,8 +1523,11 @@ namespace VixenModules.Effect.Shapes
 
 			if ((int) m.SvgImage.ViewBox.Width == 0) m.SvgImage.ViewBox = new SvgViewBox(0, 0, m.SvgImage.Width, m.SvgImage.Height);
 			
+			// The following is used to setting size, scale, position settings depending on if the SVG image is scaled to grid or not.
 			if (!ScaleToGrid)
 			{
+				// These adjustments ensure that any siazed SVG image can be used and adjusted to a standard size set by the user.
+				// That way large images are displayed the same size as smaller images.
 				m.SvgImage.ViewBox = new SvgViewBox(-((m.SvgImage.ViewBox.Width * 1.42f - m.SvgImage.ViewBox.Width) / 2),
 					-((m.SvgImage.ViewBox.Height * 1.42f - m.SvgImage.ViewBox.Height) / 2), m.SvgImage.ViewBox.Width * 1.42f,
 					m.SvgImage.ViewBox.Height * 1.42f);
@@ -1556,7 +1549,9 @@ namespace VixenModules.Effect.Shapes
 			}
 
 			// Adds rounded corners to Geometric Shapes only, no point doing it to the others.
+			// Rounded corners are really only visible on sharpe corners that have think outline.
 			if (RoundedCorner && ShapeList == ShapeList.GeometricShapes) m.SvgImage.StrokeLineJoin = SvgStrokeLineJoin.Round;
+
 			var centerSize = CalculateCenterSize(_intervalPosFactor, m.LocationRatio1);
 			var sizeVariation = CalculateSizeVariation(_intervalPosFactor, m.LocationRatio1);
 			var minSize = centerSize - (sizeVariation / 2);
@@ -1643,7 +1638,7 @@ namespace VixenModules.Effect.Shapes
 				}
 			}
 
-			// Finally adds new Shape to _shapes
+			// Finally adds a new Shape to _shapes class.
 			_shapes.Add(m);
 		}
 
@@ -1710,28 +1705,9 @@ namespace VixenModules.Effect.Shapes
 				// Adjust shape angle.
 				if (RandomAngle)
 				{
-					if (shape.RotateCW == 1)
-					{
-						if (shape.RotateAngle > 358)
-						{
-							shape.RotateAngle = 0;
-						}
-						else
-						{
-							shape.RotateAngle += (int) angleSpeed;
-						}
-					}
-					else
-					{
-						if (shape.RotateAngle < 2)
-						{
-							shape.RotateAngle = 360;
-						}
-						else
-						{
-							shape.RotateAngle -= (int) angleSpeed;
-						}
-					}
+					shape.RotateAngle = shape.RotateCW == 1
+						? (shape.RotateAngle > 358 ? 0 : shape.RotateAngle + (int) angleSpeed)
+						: (shape.RotateAngle < 2 ? 360 : shape.RotateAngle - (int) angleSpeed);
 				}
 				else
 				{

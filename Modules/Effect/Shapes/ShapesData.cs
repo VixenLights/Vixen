@@ -37,7 +37,6 @@ namespace VixenModules.Effect.Shapes
 			GeometricShapesList = GeometricShapesList.Square;
 			ChristmasShapesList = ChristmasShapesList.SnowMan;
 			HalloweenShapesList = HalloweenShapesList.Skull;
-			BorderShapesList = BorderShapesList.Border;
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			AngleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 }));
@@ -55,6 +54,7 @@ namespace VixenModules.Effect.Shapes
 			ScaleToGrid = false;
 			RandomAngle = true;
 			StarPoints = 7;
+			NonIntersectingStarPoints = 6;
 			SkipPoints = 3;
 			Fill = false;
 			ShapeCount = 10;
@@ -76,12 +76,15 @@ namespace VixenModules.Effect.Shapes
 
 		[DataMember]
 		public bool RoundedCorner { get; set; }
-
+		
 		[DataMember]
 		public FadeType FadeType { get; set; }
 
 		[DataMember]
 		public int StarPoints { get; set; }
+
+		[DataMember]
+		public int NonIntersectingStarPoints { get; set; }
 
 		[DataMember]
 		public int SkipPoints { get; set; }
@@ -154,9 +157,6 @@ namespace VixenModules.Effect.Shapes
 
 		[DataMember]
 		public HalloweenShapesList HalloweenShapesList { get; set; }
-
-		[DataMember]
-		public BorderShapesList BorderShapesList { get; set; }
 		
 		[DataMember]
 		public bool RandomSize { get; set; }
@@ -217,7 +217,6 @@ namespace VixenModules.Effect.Shapes
 				GeometricShapesList = GeometricShapesList,
 				ChristmasShapesList = ChristmasShapesList,
 				HalloweenShapesList = HalloweenShapesList,
-				BorderShapesList = BorderShapesList,
 				Orientation = Orientation,
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
@@ -240,6 +239,7 @@ namespace VixenModules.Effect.Shapes
 				SpeedVariationCurve = new Curve(SpeedVariationCurve),
 				CenterSpeedCurve = new Curve(CenterSpeedCurve),
 				StarPoints = StarPoints,
+				NonIntersectingStarPoints = NonIntersectingStarPoints,
 				SkipPoints = SkipPoints,
 				SizeMode = SizeMode,
 				RandomSize = RandomSize,

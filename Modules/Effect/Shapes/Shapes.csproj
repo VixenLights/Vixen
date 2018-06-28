@@ -195,9 +195,6 @@
     <EmbeddedResource Include="SVGShapes\Halloween\Web.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SVGShapes\Borders\Border.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Halloween\Cross.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -205,12 +202,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Halloween\Tombstone2.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SVGShapes\Borders\Border1.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SVGShapes\Borders\Border2.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Halloween\HauntedHouse.xml" />
@@ -223,9 +214,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Christmas\Bow.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="SVGShapes\Borders\Calendar.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Christmas\Wreath.xml" />
