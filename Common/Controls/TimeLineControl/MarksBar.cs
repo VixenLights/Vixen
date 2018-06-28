@@ -303,7 +303,7 @@ namespace Common.Controls.TimelineControl
 					MouseUp_HResizing();
 					break;
 				default:
-					if (!CtrlPressed && !ShiftPressed)
+					if (!CtrlPressed && !ShiftPressed && e.Button != MouseButtons.Right)
 					{
 						if (_marksSelectionManager.SelectedMarks.Count > 1)
 						{
