@@ -26,6 +26,13 @@ namespace VixenModules.Effect.Alternating
 			get { return EffectGroups.Basic; }
 		}
 
+		#region Overrides of EffectModuleDescriptorBase
+
+		/// <inheritdoc />
+		public override bool SupportsMarks => true;
+
+		#endregion
+
 		public override Guid TypeId
 		{
 			get { return _typeId; }
