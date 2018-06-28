@@ -303,6 +303,15 @@ namespace Common.Controls.TimelineControl
 					MouseUp_HResizing();
 					break;
 				default:
+					if (!CtrlPressed && !ShiftPressed)
+					{
+						if (_marksSelectionManager.SelectedMarks.Count > 1)
+						{
+							_lastSingleSelectedMarkLocation = location;
+							_marksSelectionManager.ClearSelected();
+							_marksSelectionManager.Select(_mouseDownMark);
+						}
+					}
 					EndAllDrag();
 					break;
 			}
@@ -464,11 +473,24 @@ namespace Common.Controls.TimelineControl
 
 			// Ensure minimum size
 			TimeSpan shortest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
+			IMark gluedMark = null;
+			var handleGluedMark = AltPressed && _marksSelectionManager.SelectedMarks.Count == 1;
 			
 			// Check boundary conditions
 			switch (_markResizeZone)
 			{
 				case ResizeZone.Front:
+
+					if (handleGluedMark)
+					{
+						int index = _mouseDownMark.Parent.Marks.IndexOf(_mouseDownMark);
+						if (index > 0)
+						{
+							gluedMark = _mouseDownMark.Parent.Marks[index - 1];
+							shortest = Min(shortest, gluedMark.Duration);
+						}
+					}
+
 					// Clip earliest element StartTime at zero
 					TimeSpan earliest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.StartTime);
 					if (earliest + dt < TimeSpan.Zero)
@@ -485,6 +507,16 @@ namespace Common.Controls.TimelineControl
 					break;
 
 				case ResizeZone.Back:
+
+					if (handleGluedMark)
+					{
+						int index = _mouseDownMark.Parent.Marks.IndexOf(_mouseDownMark);
+						if (index < _mouseDownMark.Parent.Marks.Count-1)
+						{
+							gluedMark = _mouseDownMark.Parent.Marks[index + 1];
+							shortest = Min(shortest, gluedMark.Duration);
+						}
+					}
 					// Clip latest mark EndTime at TotalTime
 					TimeSpan latest = _marksMoveResizeInfo.OriginalMarks.Values.Max(x => x.EndTime);
 					if (latest + dt > TimeInfo.TotalTime)
@@ -517,11 +549,28 @@ namespace Common.Controls.TimelineControl
 						break;
 				}
 			}
+			var movedMarks = _marksMoveResizeInfo.OriginalMarks.Keys.ToList();
 
-			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			if (handleGluedMark && gluedMark != null)
+			{
+				switch (_markResizeZone)
+				{
+					case ResizeZone.Front:
+						gluedMark.Duration = _mouseDownMark.StartTime - gluedMark.StartTime;
+						break;
+
+					case ResizeZone.Back:
+						var endTime = gluedMark.EndTime;
+						gluedMark.StartTime = _mouseDownMark.EndTime;
+						gluedMark.Duration = endTime - gluedMark.StartTime;
+						break;
+				}
+
+				movedMarks.Add(gluedMark);
+			}
+
+			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(movedMarks));
 			
-
-			//Invalidate();
 		}
 
 		private void BeginHResize(Point location)
@@ -784,6 +833,8 @@ namespace Common.Controls.TimelineControl
 
 		private bool ShiftPressed => ModifierKeys.HasFlag(Keys.Shift);
 
+		private bool AltPressed => ModifierKeys.HasFlag(Keys.Alt);
+
 		/// <summary>
 		/// Returns all elements located at the given point in client coordinates
 		/// </summary>
@@ -888,6 +939,16 @@ namespace Common.Controls.TimelineControl
 		private void CalculateHeight()
 		{
 			Height = _rows.Where(x => x.Visible).Sum(x => x.Height);
+		}
+
+		public static TimeSpan Min(TimeSpan val1, TimeSpan val2)
+		{
+			if (val1 > val2)
+			{
+				return val2;
+			}
+			
+			return val1;
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

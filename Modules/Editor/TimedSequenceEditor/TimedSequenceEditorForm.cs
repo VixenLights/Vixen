@@ -2666,7 +2666,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control);
+				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control || e.ModifierKeys == (Keys.Control|Keys.Shift), e.ModifierKeys == Keys.Shift || e.ModifierKeys == (Keys.Control | Keys.Shift));
 			}
 		}
 
@@ -2779,8 +2779,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false)
+		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false, bool promptForName=false)
 		{
+			var markName = string.Empty;
+			if (promptForName)
+			{
+				TextDialog td = new TextDialog("Enter the Mark label text.", string.Empty);
+				var result = td.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					markName = td.Response;
+				}
+			}
 			IMark newMark = null;
 			IMarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
@@ -2815,6 +2825,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 
 				newMark = new Mark(time);
+				newMark.Text = markName;
 				mc.AddMark(newMark);
 				if (fillGap)
 				{
