@@ -48,7 +48,7 @@ namespace VixenModules.Effect.Alternating {
 			IntervalSkipCount = 1;
 			DepthOfEffect = 0;
 			EnableDepth = false;
-			AlternatingMode = AlternatingMode.None;
+			AlternatingMode = AlternatingMode.TimeInterval;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()

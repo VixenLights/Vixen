@@ -337,8 +337,8 @@ namespace VixenModules.Effect.Alternating
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1); 
 			propertyStates.Add("MarkCollectionId", AlternatingMode == AlternatingMode.MarkCollection);
-			propertyStates.Add("Interval", AlternatingMode == AlternatingMode.None);
-			propertyStates.Add("EnableStatic", AlternatingMode == AlternatingMode.None);
+			propertyStates.Add("Interval", AlternatingMode == AlternatingMode.TimeInterval);
+			propertyStates.Add("EnableStatic", AlternatingMode == AlternatingMode.TimeInterval);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -455,7 +455,7 @@ namespace VixenModules.Effect.Alternating
 				startIndexOffset = (skip + startIndexOffset) % colorCount;
 				gradientLevelItem = startIndexOffset;
 
-				startTime = AlternatingMode == AlternatingMode.None ? startTime + intervalTime : markInterval[i];
+				startTime = AlternatingMode == AlternatingMode.TimeInterval ? startTime + intervalTime : markInterval[i];
 			}
 
 			return effectIntents;

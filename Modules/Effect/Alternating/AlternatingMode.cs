@@ -4,7 +4,8 @@ namespace VixenModules.Effect.Alternating
 {
 	public enum AlternatingMode
 	{
-		None,
+		[Description("Time Interval")]
+		TimeInterval,
 		[Description("Mark Collection")]
 		MarkCollection
 	}
