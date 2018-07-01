@@ -189,14 +189,10 @@ namespace Common.Controls.TimelineControl
 				{
 					if (_mouseDownMark != null)
 					{
-						var row = RowAt(location);
-						if (row != null)
-						{
-							BeginMoveResizeMarks(location);
-							row.MarkCollection.FillGapTimes(_mouseDownMark);
-							FinishedResizeMoveMarks(ElementMoveType.Resize);
-							return;
-						}
+						BeginMoveResizeMarks(location);
+						_mouseDownMark.Parent.FillGapTimes(_mouseDownMark);
+						FinishedResizeMoveMarks(ElementMoveType.Resize);
+						return;
 					}
 
 				}
@@ -271,7 +267,27 @@ namespace Common.Controls.TimelineControl
 					var paste = c.Items.Add("&Paste Text");
 					paste.Click += Paste_Click;
 					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
-					c.Items.Add(CreatePhonemeItem());
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Phoneme))
+					{
+						c.Items.Add(CreatePhonemeMenuItem());
+					}
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Phrase))
+					{
+						var breakdownPhrase = c.Items.Add("Breakdown Phrase");
+						breakdownPhrase.Click += BreakdownPhrase_Click;
+					}
+
+					if (_marksSelectionManager.SelectedMarks.All(x =>
+						x.Parent.CollectionType == MarkCollectionType.Word))
+					{
+						var breakdownWord = c.Items.Add("Breakdown Word");
+						breakdownWord.Click += BreakdownWord_Click;
+					}
+
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -287,6 +303,15 @@ namespace Common.Controls.TimelineControl
 					MouseUp_HResizing();
 					break;
 				default:
+					if (!CtrlPressed && !ShiftPressed && e.Button != MouseButtons.Right)
+					{
+						if (_marksSelectionManager.SelectedMarks.Count > 1)
+						{
+							_lastSingleSelectedMarkLocation = location;
+							_marksSelectionManager.ClearSelected();
+							_marksSelectionManager.Select(_mouseDownMark);
+						}
+					}
 					EndAllDrag();
 					break;
 			}
@@ -448,11 +473,24 @@ namespace Common.Controls.TimelineControl
 
 			// Ensure minimum size
 			TimeSpan shortest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
+			IMark gluedMark = null;
+			var handleGluedMark = AltPressed && _marksSelectionManager.SelectedMarks.Count == 1;
 			
 			// Check boundary conditions
 			switch (_markResizeZone)
 			{
 				case ResizeZone.Front:
+
+					if (handleGluedMark)
+					{
+						int index = _mouseDownMark.Parent.Marks.IndexOf(_mouseDownMark);
+						if (index > 0)
+						{
+							gluedMark = _mouseDownMark.Parent.Marks[index - 1];
+							shortest = Min(shortest, gluedMark.Duration);
+						}
+					}
+
 					// Clip earliest element StartTime at zero
 					TimeSpan earliest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.StartTime);
 					if (earliest + dt < TimeSpan.Zero)
@@ -469,6 +507,16 @@ namespace Common.Controls.TimelineControl
 					break;
 
 				case ResizeZone.Back:
+
+					if (handleGluedMark)
+					{
+						int index = _mouseDownMark.Parent.Marks.IndexOf(_mouseDownMark);
+						if (index < _mouseDownMark.Parent.Marks.Count-1)
+						{
+							gluedMark = _mouseDownMark.Parent.Marks[index + 1];
+							shortest = Min(shortest, gluedMark.Duration);
+						}
+					}
 					// Clip latest mark EndTime at TotalTime
 					TimeSpan latest = _marksMoveResizeInfo.OriginalMarks.Values.Max(x => x.EndTime);
 					if (latest + dt > TimeInfo.TotalTime)
@@ -501,11 +549,28 @@ namespace Common.Controls.TimelineControl
 						break;
 				}
 			}
+			var movedMarks = _marksMoveResizeInfo.OriginalMarks.Keys.ToList();
 
-			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(_marksSelectionManager.SelectedMarks.ToList()));
+			if (handleGluedMark && gluedMark != null)
+			{
+				switch (_markResizeZone)
+				{
+					case ResizeZone.Front:
+						gluedMark.Duration = _mouseDownMark.StartTime - gluedMark.StartTime;
+						break;
+
+					case ResizeZone.Back:
+						var endTime = gluedMark.EndTime;
+						gluedMark.StartTime = _mouseDownMark.EndTime;
+						gluedMark.Duration = endTime - gluedMark.StartTime;
+						break;
+				}
+
+				movedMarks.Add(gluedMark);
+			}
+
+			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(movedMarks));
 			
-
-			//Invalidate();
 		}
 
 		private void BeginHResize(Point location)
@@ -660,7 +725,7 @@ namespace Common.Controls.TimelineControl
 			Invalidate();
 		}
 
-		private ToolStripItem CreatePhonemeItem()
+		private ToolStripItem CreatePhonemeMenuItem()
 		{
 			var phonemes = new[] { "REST", "AI", "E", "ETC", "FV", "L", "MBP", "O", "U", "WQ" };
 			ToolStripMenuItem menu = new ToolStripMenuItem("Phoneme");
@@ -714,6 +779,16 @@ namespace Common.Controls.TimelineControl
 			DeleteSelectedMarks();
 		}
 
+		private void BreakdownWord_Click(object sender, EventArgs e)
+		{
+			_timeLineGlobalEventManager.OnPhonemeBreakdownAction(new PhonemeBreakdownEventArgs(_marksSelectionManager.SelectedMarks.ToList(), BreakdownType.Word));
+		}
+
+		private void BreakdownPhrase_Click(object sender, EventArgs e)
+		{
+			_timeLineGlobalEventManager.OnPhonemeBreakdownAction(new PhonemeBreakdownEventArgs(_marksSelectionManager.SelectedMarks.ToList(), BreakdownType.Phrase));
+		}
+
 		private void DeleteSelectedMarks()
 		{
 			foreach (var mark in _marksSelectionManager.SelectedMarks)
@@ -758,6 +833,8 @@ namespace Common.Controls.TimelineControl
 
 		private bool ShiftPressed => ModifierKeys.HasFlag(Keys.Shift);
 
+		private bool AltPressed => ModifierKeys.HasFlag(Keys.Alt);
+
 		/// <summary>
 		/// Returns all elements located at the given point in client coordinates
 		/// </summary>
@@ -791,6 +868,20 @@ namespace Common.Controls.TimelineControl
 			}
 
 			return null;
+		}
+
+		private bool MarkCollectionAt(Point p, out IMarkCollection markCollection)
+		{
+			bool success = false;
+			markCollection = null;
+			var row = RowAt(p);
+			if (row != null)
+			{
+				markCollection = row.MarkCollection;
+				success = true;
+			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -848,6 +939,16 @@ namespace Common.Controls.TimelineControl
 		private void CalculateHeight()
 		{
 			Height = _rows.Where(x => x.Visible).Sum(x => x.Height);
+		}
+
+		public static TimeSpan Min(TimeSpan val1, TimeSpan val2)
+		{
+			if (val1 > val2)
+			{
+				return val2;
+			}
+			
+			return val1;
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

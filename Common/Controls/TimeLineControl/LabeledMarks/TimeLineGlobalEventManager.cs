@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
@@ -16,6 +12,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
 		public event EventHandler<AlignmentEventArgs> AlignmentActivity;
+		public event EventHandler<PhonemeBreakdownEventArgs> PhonemeBreakdownAction;
 
 		private TimeLineGlobalEventManager()
 		{
@@ -52,6 +49,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public void OnMarksTextChanged(MarksTextChangedEventArgs e)
 		{
 			MarksTextChanged?.Invoke(this, e);
+		}
+
+		public void OnPhonemeBreakdownAction(PhonemeBreakdownEventArgs e)
+		{
+			PhonemeBreakdownAction?.Invoke(this, e);
 		}
 
 	}

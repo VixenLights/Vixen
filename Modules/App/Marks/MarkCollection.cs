@@ -22,6 +22,7 @@ namespace VixenModules.App.Marks
 		private bool _isDefault;
 		private bool _showMarkBar;
 		private bool _showGridLines;
+		private MarkCollectionType _collectionType = MarkCollectionType.Generic;
 
 		public MarkCollection()
 		{
@@ -33,6 +34,7 @@ namespace VixenModules.App.Marks
 			Level = 1;
 			ShowGridLines = true;
 			ShowMarkBar = false;
+			CollectionType = MarkCollectionType.Generic;
 		}
 
 		[DataMember]
@@ -114,12 +116,30 @@ namespace VixenModules.App.Marks
 			}
 		}
 
+		/// <inheritdoc />
+		[DataMember]
+		public MarkCollectionType CollectionType
+		{
+			get { return _collectionType; }
+			set
+			{
+				if (value == _collectionType) return;
+				_collectionType = value;
+				OnPropertyChanged(nameof(CollectionType));
+			}
+		}
+
+		/// <inheritdoc />
+		[DataMember]
+		public Guid LinkedMarkCollectionId { get; set; }
+
 		public bool IsVisible => ShowGridLines || ShowMarkBar;
 
 		public void AddMark(IMark mark)
 		{
 			_marks.Add(mark);
 			mark.Parent = this;
+			EnsureOrder();
 			OnPropertyChanged(nameof(Marks));
 		}
 
@@ -130,18 +150,21 @@ namespace VixenModules.App.Marks
 				mark.Parent = this;
 			}
 			_marks.AddRange(marks);
+			EnsureOrder();
 			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void RemoveMark(IMark mark)
 		{
 			_marks.Remove(mark);
+			EnsureOrder();
 			OnPropertyChanged(nameof(Marks));
 		}
 
 		public void RemoveAll(Func<IMark, bool> condition)
 		{
 			_marks.RemoveAll(condition);
+			EnsureOrder();
 			OnPropertyChanged(nameof(Marks));
 		}
 
@@ -218,7 +241,8 @@ namespace VixenModules.App.Marks
 				Level = Level,
 				Name = Name,
 				_marks = new ObservableCollection<IMark>(Marks.Select(x => (IMark)x.Clone())),
-				Decorator = (MarkDecorator)Decorator.Clone()
+				Decorator = (MarkDecorator)Decorator.Clone(),
+				CollectionType = CollectionType
 			};
 		}
 

@@ -459,6 +459,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalTextChanged;
+			_timeLineGlobalEventManager.PhonemeBreakdownAction += PhonemeBreakdownAction;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -637,6 +638,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
+			_timeLineGlobalEventManager.PhonemeBreakdownAction -= PhonemeBreakdownAction;
 
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{
@@ -2664,12 +2666,143 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else if (e.Button == MouseButtons.Right)
 			{
-				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control);
+				AddMarkAtTime(e.Time, false, e.ModifierKeys == Keys.Control || e.ModifierKeys == (Keys.Control|Keys.Shift), e.ModifierKeys == Keys.Shift || e.ModifierKeys == (Keys.Control | Keys.Shift));
 			}
 		}
 
-		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false)
+		private void PhonemeBreakdownAction(object sender, PhonemeBreakdownEventArgs e)
 		{
+			Dictionary<IMark, IMarkCollection> undoMarks = new Dictionary<IMark, IMarkCollection>();
+			if (e.BreakdownType == BreakdownType.Phrase)
+			{
+				foreach (IGrouping<IMarkCollection, IMark> markGroup in e.Marks.GroupBy(m => m.Parent))
+				{
+					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Word);
+					
+					foreach (var mark in markGroup)
+					{
+						string[] words = mark.Text.Split();
+						if (words.Any())
+						{
+							var duration = TimeSpan.FromTicks(mark.Duration.Ticks / words.Length);
+							var startTime = mark.StartTime;
+							foreach (var word in words)
+							{
+								var wordMark = new Mark(startTime)
+								{
+									Duration = duration,
+									Text = word
+								};
+								startTime = startTime + duration;
+								mc.AddMark(wordMark);
+								undoMarks.Add(wordMark, mc);
+							}
+						}
+					}
+				}
+			}
+			else if (e.BreakdownType == BreakdownType.Word)
+			{
+				foreach (IGrouping<IMarkCollection, IMark> markGroup in e.Marks.GroupBy(m => m.Parent))
+				{
+					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Phoneme);
+
+					if (LipSyncTextConvert.StandardDictExists() == false)
+					{
+						var messageBox = new MessageBoxForm("Unable to find Standard Phoneme Dictionary", "Error",
+							MessageBoxButtons.OK, SystemIcons.Error);
+						messageBox.ShowDialog();
+						return;
+					}
+
+					LipSyncTextConvert.InitDictionary();
+					List<IMark> marksAdded = new List<IMark>();
+					foreach (var mark in markGroup)
+					{
+						List<App.LipSyncApp.PhonemeType> phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+						if (!phonemeList.Any())
+						{
+							var value = GetUserMappingForFailedWord(mark.Text.Trim());
+							if (value != String.Empty)
+							{
+								phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+							}
+							else
+							{
+								continue;
+							}
+						}
+						var duration = TimeSpan.FromTicks(mark.Duration.Ticks / phonemeList.Count);
+						var startTime = mark.StartTime;
+						foreach (var phonemeType in phonemeList)
+						{
+							var phonemeMark = new Mark(startTime)
+							{
+								Duration = duration,
+								Text = phonemeType.ToString()
+							};
+							startTime = startTime + duration;
+							marksAdded.Add(phonemeMark);
+							undoMarks.Add(phonemeMark, mc);
+						}
+					}
+
+					mc.AddMarks(marksAdded);
+				}
+			}
+
+			if (undoMarks.Any())
+			{
+				CheckAndRenderDirtyElementsAsync();
+				var act = new MarksAddedUndoAction(this, undoMarks);
+				_undoMgr.AddUndoAction(act);
+			}
+		}
+
+		private IMarkCollection GetOrCreatePhonemeMarkCollection(IMarkCollection parent, MarkCollectionType type)
+		{
+			//Find the right collection
+			var linkedCollections = _sequence.LabeledMarkCollections.Where(x =>
+				x.LinkedMarkCollectionId == parent.Id && x.CollectionType == type);
+			IMarkCollection mc = null;
+			if (linkedCollections.Any())
+			{
+				mc = linkedCollections.First();
+			}
+			else
+			{
+				var name = $"{parent.Name} {type}";
+				if (parent.CollectionType != MarkCollectionType.Phrase)
+				{
+					//try to find the phrase parent
+					var phraseParent = _sequence.LabeledMarkCollections.First(x => x.Id == parent.LinkedMarkCollectionId);
+					if (phraseParent != null && phraseParent.CollectionType == MarkCollectionType.Phrase)
+					{
+						name = $"{phraseParent.Name} {type}";
+					}
+				}
+				mc = GetOrAddNewMarkCollection(parent.Decorator.Color, name);
+				mc.LinkedMarkCollectionId = parent.Id;
+				mc.CollectionType = type;
+				mc.ShowMarkBar = true;
+			}
+
+			return mc;
+		}
+
+
+		private IMark AddMarkAtTime(TimeSpan time, bool suppressUndo, bool fillGap=false, bool promptForName=false)
+		{
+			var markName = string.Empty;
+			if (promptForName)
+			{
+				TextDialog td = new TextDialog("Enter the Mark label text.", string.Empty);
+				var result = td.ShowDialog(this);
+				if (result == DialogResult.OK)
+				{
+					markName = td.Response;
+				}
+			}
 			IMark newMark = null;
 			IMarkCollection mc = null;
 			if (_sequence.LabeledMarkCollections.Count == 0)
@@ -2704,6 +2837,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 
 				newMark = new Mark(time);
+				newMark.Text = markName;
 				mc.AddMark(newMark);
 				if (fillGap)
 				{
@@ -2711,8 +2845,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				PopulateMarkSnapTimes();
-				CheckAndRenderDirtyElementsAsync();
 				SequenceModified();
+				CheckAndRenderDirtyElementsAsync();
 				if (!suppressUndo)
 				{
 					var act = new MarksAddedUndoAction(this, newMark, mc);
@@ -3176,7 +3310,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				mark.Value.AddMark(mark.Key);
 			}
-			
+
+			CheckAndRenderDirtyElementsAsync();
 			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
@@ -3191,6 +3326,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				mark.Value.RemoveMark(mark.Key);
 			}
+
+			CheckAndRenderDirtyElementsAsync();
 			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
@@ -4448,6 +4585,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			_timeLineGlobalEventManager.OnMarksMoving(new MarksMovingEventArgs(changedMarks.Keys.ToList()));
+			CheckAndRenderDirtyElementsAsync();
 		}
 
 		public void SwapLayers(Dictionary<IEffectNode, ILayer> effectNodes)
@@ -4977,20 +5115,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void translateFailureHandler(object sender, TranslateFailureEventArgs args)
         {
-            LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm
-            {
-	            errorLabel =
-	            {
-		            Text = @"Unable to find mapping for " + args.FailedWord + Environment.NewLine +
-		                   @"Please map using buttons below"
-	            }
-            };
-	        DialogResult dr = failForm.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                LipSyncTextConvert.AddUserMaping(args.FailedWord + " " + failForm.TranslatedString);
-            }
+            GetUserMappingForFailedWord(args.FailedWord);
         }
+
+		private string GetUserMappingForFailedWord(string failedWord)
+		{
+			var mappedPhonemes = string.Empty;
+			LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm
+			{
+				errorLabel =
+				{
+					Text = @"Unable to find mapping for " + failedWord + Environment.NewLine +
+					       @"Please map using buttons below"
+				}
+			};
+			DialogResult dr = failForm.ShowDialog(this);
+			if (dr == DialogResult.OK)
+			{
+				LipSyncTextConvert.AddUserMaping(failedWord + " " + failForm.TranslatedString);
+				mappedPhonemes = failForm.TranslatedString;
+			}
+
+			return mappedPhonemes;
+		}
 
         private void changeMappings_Click(object sender, EventArgs e)
         {
@@ -5090,6 +5237,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				var act = new MarksAddedUndoAction(this, addedMarks);
 				_undoMgr.AddUndoAction(act);
+				CheckAndRenderDirtyElementsAsync();
 			}
 		}
 

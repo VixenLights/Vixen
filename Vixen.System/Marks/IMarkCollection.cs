@@ -25,6 +25,10 @@ namespace Vixen.Marks
 
 		IMarkDecorator Decorator { get; set; }
 
+		MarkCollectionType CollectionType { get; set; }
+
+		Guid LinkedMarkCollectionId { get; set; }
+
 		void RemoveMark(IMark mark);
 
 		void RemoveAll(Func<IMark, bool> condition);

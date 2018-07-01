@@ -267,7 +267,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".txt";
-			openFileDialog.Filter = @"xTiming|*.xTiming.xml|All Files|*.*";
+			openFileDialog.Filter = @"xTiming xml|*.xTiming.xml|xTiming|*.xTiming|All Files|*.*";
 			openFileDialog.FilterIndex = 0;
 			openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -283,10 +283,31 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					if (effectLayers != null)
 					{
 						int counter = 1;
+						bool lipSyncTrack = effectLayers.Count > 1;
 						foreach (XmlNode effectLayer in effectLayers)
 						{
 							var collectionName = $"{name ?? "xTiming"} - {counter}";
 							var mc = CreateNewCollection(Color.Brown, collectionName);
+							if (lipSyncTrack)
+							{
+								switch (counter)
+								{
+									case 1:
+										mc.CollectionType = MarkCollectionType.Phrase;
+										mc.Name = $"{name ?? "xTiming"} - Phrase";
+										break;
+									case 2:
+										mc.CollectionType = MarkCollectionType.Word;
+										mc.LinkedMarkCollectionId = collections.Last().Id;
+										mc.Name = $"{name ?? "xTiming"} - Word";
+										break;
+									case 3:
+										mc.CollectionType = MarkCollectionType.Phoneme;
+										mc.LinkedMarkCollectionId = collections.Last().Id;
+										mc.Name = $"{name ?? "xTiming"} - Phoneme";
+										break;
+								}
+							}
 							mc.ShowMarkBar = true; //We have labels, so make sure they are seen.
 							var effects = effectLayer?.SelectNodes("Effect");
 							if (effects != null)
