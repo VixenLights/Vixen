@@ -108,6 +108,7 @@ namespace VixenModules.App.Curves
 			double newX, newY;
 			if (e.Button == MouseButtons.Left && _drawCurve)
 			{
+				int textThreshold = textBoxThreshold.Text == "" ? (int) 0 : Convert.ToInt16(textBoxThreshold.Text);
 				// only add if we've actually clicked on the pane, so make sure the mouse is over it first
 				if (zedGraphControl.MasterPane.FindPane(e.Location) != null)
 				{
@@ -135,7 +136,7 @@ namespace VixenModules.App.Curves
 						newY = 0;
 					}
 
-					if (_tempX < newX - Convert.ToInt16(textBoxThreshold.Text))
+					if (_tempX < newX - textThreshold)
 					{
 						if (newX >= 0)
 							pointList.Insert(0, newX, newY);
@@ -543,6 +544,7 @@ namespace VixenModules.App.Curves
 
 		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
 		{
+			if (textBoxThreshold.Text == "") return;
 			if (Convert.ToInt16(textBoxThreshold.Text) > 10)
 			{
 				textBoxThreshold.Text = "10";
