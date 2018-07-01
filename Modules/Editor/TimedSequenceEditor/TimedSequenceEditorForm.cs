@@ -2720,6 +2720,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					foreach (var mark in markGroup)
 					{
 						List<App.LipSyncApp.PhonemeType> phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+						if (!phonemeList.Any())
+						{
+							var value = GetUserMappingForFailedWord(mark.Text.Trim());
+							if (value != String.Empty)
+							{
+								phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+							}
+							else
+							{
+								continue;
+							}
+						}
 						var duration = TimeSpan.FromTicks(mark.Duration.Ticks / phonemeList.Count);
 						var startTime = mark.StartTime;
 						foreach (var phonemeType in phonemeList)
@@ -5103,20 +5115,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
         private void translateFailureHandler(object sender, TranslateFailureEventArgs args)
         {
-            LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm
-            {
-	            errorLabel =
-	            {
-		            Text = @"Unable to find mapping for " + args.FailedWord + Environment.NewLine +
-		                   @"Please map using buttons below"
-	            }
-            };
-	        DialogResult dr = failForm.ShowDialog();
-            if (dr == DialogResult.OK)
-            {
-                LipSyncTextConvert.AddUserMaping(args.FailedWord + " " + failForm.TranslatedString);
-            }
+            GetUserMappingForFailedWord(args.FailedWord);
         }
+
+		private string GetUserMappingForFailedWord(string failedWord)
+		{
+			var mappedPhonemes = string.Empty;
+			LipSyncTextConvertFailForm failForm = new LipSyncTextConvertFailForm
+			{
+				errorLabel =
+				{
+					Text = @"Unable to find mapping for " + failedWord + Environment.NewLine +
+					       @"Please map using buttons below"
+				}
+			};
+			DialogResult dr = failForm.ShowDialog(this);
+			if (dr == DialogResult.OK)
+			{
+				LipSyncTextConvert.AddUserMaping(failedWord + " " + failForm.TranslatedString);
+				mappedPhonemes = failForm.TranslatedString;
+			}
+
+			return mappedPhonemes;
+		}
 
         private void changeMappings_Click(object sender, EventArgs e)
         {

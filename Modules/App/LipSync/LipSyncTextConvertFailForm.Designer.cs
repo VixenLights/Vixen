@@ -58,9 +58,9 @@
 			// errorLabel
 			// 
 			this.errorLabel.AutoSize = true;
-			this.errorLabel.Location = new System.Drawing.Point(12, 21);
+			this.errorLabel.Location = new System.Drawing.Point(14, 24);
 			this.errorLabel.Name = "errorLabel";
-			this.errorLabel.Size = new System.Drawing.Size(29, 13);
+			this.errorLabel.Size = new System.Drawing.Size(32, 15);
 			this.errorLabel.TabIndex = 0;
 			this.errorLabel.Text = "Error";
 			// 
@@ -69,17 +69,17 @@
 			this.phonemeTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.phonemeTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.phonemeTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.phonemeTextBox.Location = new System.Drawing.Point(15, 53);
+			this.phonemeTextBox.Location = new System.Drawing.Point(17, 61);
 			this.phonemeTextBox.Name = "phonemeTextBox";
 			this.phonemeTextBox.ReadOnly = true;
-			this.phonemeTextBox.Size = new System.Drawing.Size(264, 20);
+			this.phonemeTextBox.Size = new System.Drawing.Size(308, 23);
 			this.phonemeTextBox.TabIndex = 1;
 			// 
 			// aiButton
 			// 
-			this.aiButton.Location = new System.Drawing.Point(15, 79);
+			this.aiButton.Location = new System.Drawing.Point(17, 91);
 			this.aiButton.Name = "aiButton";
-			this.aiButton.Size = new System.Drawing.Size(48, 43);
+			this.aiButton.Size = new System.Drawing.Size(56, 50);
 			this.aiButton.TabIndex = 2;
 			this.aiButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.aiButton.UseVisualStyleBackColor = true;
@@ -87,45 +87,45 @@
 			// 
 			// eButton
 			// 
-			this.eButton.Location = new System.Drawing.Point(69, 79);
+			this.eButton.Location = new System.Drawing.Point(80, 91);
 			this.eButton.Name = "eButton";
-			this.eButton.Size = new System.Drawing.Size(48, 43);
+			this.eButton.Size = new System.Drawing.Size(56, 50);
 			this.eButton.TabIndex = 3;
 			this.eButton.UseVisualStyleBackColor = true;
 			this.eButton.Click += new System.EventHandler(this.eButton_Click);
 			// 
 			// oButton
 			// 
-			this.oButton.Location = new System.Drawing.Point(69, 141);
+			this.oButton.Location = new System.Drawing.Point(80, 163);
 			this.oButton.Name = "oButton";
-			this.oButton.Size = new System.Drawing.Size(48, 43);
+			this.oButton.Size = new System.Drawing.Size(56, 50);
 			this.oButton.TabIndex = 4;
 			this.oButton.UseVisualStyleBackColor = true;
 			this.oButton.Click += new System.EventHandler(this.oButton_Click);
 			// 
 			// uButton
 			// 
-			this.uButton.Location = new System.Drawing.Point(177, 142);
+			this.uButton.Location = new System.Drawing.Point(206, 164);
 			this.uButton.Name = "uButton";
-			this.uButton.Size = new System.Drawing.Size(48, 43);
+			this.uButton.Size = new System.Drawing.Size(56, 50);
 			this.uButton.TabIndex = 5;
 			this.uButton.UseVisualStyleBackColor = true;
 			this.uButton.Click += new System.EventHandler(this.uButton_Click);
 			// 
 			// fvButton
 			// 
-			this.fvButton.Location = new System.Drawing.Point(177, 79);
+			this.fvButton.Location = new System.Drawing.Point(206, 91);
 			this.fvButton.Name = "fvButton";
-			this.fvButton.Size = new System.Drawing.Size(48, 43);
+			this.fvButton.Size = new System.Drawing.Size(56, 50);
 			this.fvButton.TabIndex = 6;
 			this.fvButton.UseVisualStyleBackColor = true;
 			this.fvButton.Click += new System.EventHandler(this.fvButton_Click);
 			// 
 			// mbpButton
 			// 
-			this.mbpButton.Location = new System.Drawing.Point(15, 141);
+			this.mbpButton.Location = new System.Drawing.Point(17, 163);
 			this.mbpButton.Name = "mbpButton";
-			this.mbpButton.Size = new System.Drawing.Size(48, 43);
+			this.mbpButton.Size = new System.Drawing.Size(56, 50);
 			this.mbpButton.TabIndex = 7;
 			this.mbpButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.mbpButton.UseVisualStyleBackColor = true;
@@ -133,36 +133,36 @@
 			// 
 			// wqButton
 			// 
-			this.wqButton.Location = new System.Drawing.Point(231, 142);
+			this.wqButton.Location = new System.Drawing.Point(269, 164);
 			this.wqButton.Name = "wqButton";
-			this.wqButton.Size = new System.Drawing.Size(48, 43);
+			this.wqButton.Size = new System.Drawing.Size(56, 50);
 			this.wqButton.TabIndex = 8;
 			this.wqButton.UseVisualStyleBackColor = true;
 			this.wqButton.Click += new System.EventHandler(this.wqButton_Click);
 			// 
 			// etcButton
 			// 
-			this.etcButton.Location = new System.Drawing.Point(123, 79);
+			this.etcButton.Location = new System.Drawing.Point(143, 91);
 			this.etcButton.Name = "etcButton";
-			this.etcButton.Size = new System.Drawing.Size(48, 43);
+			this.etcButton.Size = new System.Drawing.Size(56, 50);
 			this.etcButton.TabIndex = 9;
 			this.etcButton.UseVisualStyleBackColor = true;
 			this.etcButton.Click += new System.EventHandler(this.etcButton_Click);
 			// 
 			// restButton
 			// 
-			this.restButton.Location = new System.Drawing.Point(123, 142);
+			this.restButton.Location = new System.Drawing.Point(143, 164);
 			this.restButton.Name = "restButton";
-			this.restButton.Size = new System.Drawing.Size(48, 43);
+			this.restButton.Size = new System.Drawing.Size(56, 50);
 			this.restButton.TabIndex = 10;
 			this.restButton.UseVisualStyleBackColor = true;
 			this.restButton.Click += new System.EventHandler(this.restButton_Click);
 			// 
 			// lButton
 			// 
-			this.lButton.Location = new System.Drawing.Point(231, 79);
+			this.lButton.Location = new System.Drawing.Point(269, 91);
 			this.lButton.Name = "lButton";
-			this.lButton.Size = new System.Drawing.Size(48, 43);
+			this.lButton.Size = new System.Drawing.Size(56, 50);
 			this.lButton.TabIndex = 11;
 			this.lButton.UseVisualStyleBackColor = true;
 			this.lButton.Click += new System.EventHandler(this.lButton_Click);
@@ -174,9 +174,9 @@
 			this.buttonClear.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonClear.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonClear.Location = new System.Drawing.Point(291, 53);
+			this.buttonClear.Location = new System.Drawing.Point(339, 61);
 			this.buttonClear.Name = "buttonClear";
-			this.buttonClear.Size = new System.Drawing.Size(75, 23);
+			this.buttonClear.Size = new System.Drawing.Size(87, 27);
 			this.buttonClear.TabIndex = 12;
 			this.buttonClear.Text = "Clear";
 			this.buttonClear.UseVisualStyleBackColor = true;
@@ -192,9 +192,9 @@
 			this.buttonOk.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOk.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonOk.Location = new System.Drawing.Point(204, 223);
+			this.buttonOk.Location = new System.Drawing.Point(238, 257);
 			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(75, 23);
+			this.buttonOk.Size = new System.Drawing.Size(87, 27);
 			this.buttonOk.TabIndex = 13;
 			this.buttonOk.Text = "OK";
 			this.buttonOk.UseVisualStyleBackColor = true;
@@ -210,9 +210,9 @@
 			this.buttonCancel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.buttonCancel.Location = new System.Drawing.Point(291, 223);
+			this.buttonCancel.Location = new System.Drawing.Point(339, 257);
 			this.buttonCancel.Name = "buttonCancel";
-			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
 			this.buttonCancel.TabIndex = 14;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
@@ -222,101 +222,101 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 125);
+			this.label1.Location = new System.Drawing.Point(14, 144);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(17, 13);
+			this.label1.Size = new System.Drawing.Size(18, 15);
 			this.label1.TabIndex = 15;
 			this.label1.Text = "AI";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(69, 125);
+			this.label2.Location = new System.Drawing.Point(80, 144);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(14, 13);
+			this.label2.Size = new System.Drawing.Size(13, 15);
 			this.label2.TabIndex = 16;
 			this.label2.Text = "E";
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(123, 125);
+			this.label3.Location = new System.Drawing.Point(143, 144);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(28, 13);
+			this.label3.Size = new System.Drawing.Size(28, 15);
 			this.label3.TabIndex = 17;
 			this.label3.Text = "ETC";
 			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(177, 125);
+			this.label4.Location = new System.Drawing.Point(206, 144);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(20, 13);
+			this.label4.Size = new System.Drawing.Size(20, 15);
 			this.label4.TabIndex = 18;
 			this.label4.Text = "FV";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(228, 125);
+			this.label5.Location = new System.Drawing.Point(266, 144);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(10, 13);
+			this.label5.Size = new System.Drawing.Size(10, 15);
 			this.label5.TabIndex = 19;
 			this.label5.Text = "I";
 			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 187);
+			this.label6.Location = new System.Drawing.Point(14, 216);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(30, 13);
+			this.label6.Size = new System.Drawing.Size(32, 15);
 			this.label6.TabIndex = 20;
 			this.label6.Text = "MBP";
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(69, 187);
+			this.label7.Location = new System.Drawing.Point(80, 216);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(15, 13);
+			this.label7.Size = new System.Drawing.Size(16, 15);
 			this.label7.TabIndex = 21;
 			this.label7.Text = "O";
 			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(123, 188);
+			this.label8.Location = new System.Drawing.Point(143, 217);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(36, 13);
+			this.label8.Size = new System.Drawing.Size(33, 15);
 			this.label8.TabIndex = 22;
 			this.label8.Text = "REST";
 			// 
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(177, 187);
+			this.label9.Location = new System.Drawing.Point(206, 216);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(15, 13);
+			this.label9.Size = new System.Drawing.Size(15, 15);
 			this.label9.TabIndex = 23;
 			this.label9.Text = "U";
 			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(228, 188);
+			this.label10.Location = new System.Drawing.Point(266, 217);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(26, 13);
+			this.label10.Size = new System.Drawing.Size(27, 15);
 			this.label10.TabIndex = 24;
 			this.label10.Text = "WQ";
 			// 
 			// LipSyncTextConvertFailForm
 			// 
 			this.AcceptButton = this.buttonOk;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(382, 276);
+			this.ClientSize = new System.Drawing.Size(446, 320);
 			this.Controls.Add(this.label10);
 			this.Controls.Add(this.label9);
 			this.Controls.Add(this.label8);
@@ -343,10 +343,11 @@
 			this.Controls.Add(this.phonemeTextBox);
 			this.Controls.Add(this.errorLabel);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.MaximumSize = new System.Drawing.Size(398, 315);
-			this.MinimumSize = new System.Drawing.Size(398, 315);
+			this.MaximumSize = new System.Drawing.Size(462, 358);
+			this.MinimumSize = new System.Drawing.Size(462, 358);
 			this.Name = "LipSyncTextConvertFailForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Text Conversion Failure";
 			this.Load += new System.EventHandler(this.LipSyncTextConvertFailForm_Load);
 			this.ResumeLayout(false);
