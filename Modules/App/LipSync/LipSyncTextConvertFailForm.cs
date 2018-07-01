@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 
 namespace VixenModules.App.LipSyncApp
@@ -28,17 +29,16 @@ namespace VixenModules.App.LipSyncApp
 
 		private void LipSyncTextConvertFailForm_Load(object sender, EventArgs e)
 		{
-			ResourceManager lipSyncRM = LipSyncResources.ResourceManager;
-			aiButton.Image = new Bitmap((Image)lipSyncRM.GetObject("AI"), new Size(45, 45));
-			eButton.Image = new Bitmap((Image)lipSyncRM.GetObject("E"), new Size(45, 45));
-			etcButton.Image = new Bitmap((Image)lipSyncRM.GetObject("etc"), new Size(45, 45));
-			fvButton.Image = new Bitmap((Image)lipSyncRM.GetObject("FV"), new Size(45, 45));
-			lButton.Image = new Bitmap((Image)lipSyncRM.GetObject("L"), new Size(45, 45));
-			mbpButton.Image = new Bitmap((Image)lipSyncRM.GetObject("MBP"), new Size(45, 45));
-			oButton.Image = new Bitmap((Image)lipSyncRM.GetObject("O"), new Size(45, 45));
-			restButton.Image = new Bitmap((Image)lipSyncRM.GetObject("rest"), new Size(45, 45));
-			uButton.Image = new Bitmap((Image)lipSyncRM.GetObject("U"), new Size(45, 45));
-			wqButton.Image = new Bitmap((Image)lipSyncRM.GetObject("WQ"), new Size(45, 45));
+			aiButton.Image = Tools.GetIcon(Resources.AI, 45);
+			eButton.Image = Tools.GetIcon(Resources.E, 45);
+			etcButton.Image = Tools.GetIcon(Resources.etc, 45);
+			fvButton.Image = Tools.GetIcon(Resources.FV, 45);
+			lButton.Image = Tools.GetIcon(Resources.L, 45);
+			mbpButton.Image = Tools.GetIcon(Resources.MBP, 45);
+			oButton.Image = Tools.GetIcon(Resources.O, 45);
+			restButton.Image = Tools.GetIcon(Resources.rest, 45);
+			uButton.Image = Tools.GetIcon(Resources.U, 45);
+			wqButton.Image = Tools.GetIcon(Resources.WQ, 45);
 
 		}
 
