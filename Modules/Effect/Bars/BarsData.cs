@@ -20,8 +20,10 @@ namespace VixenModules.Effect.Bars
 			Direction = BarDirection.Up;
 			Speed = 1;
 			Repeat = 1;
+			MovementType = MovementType.Iterations;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
-			Orientation=StringOrientation.Vertical;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			Orientation =StringOrientation.Vertical;
 		}
 
 		[DataMember]
@@ -31,7 +33,13 @@ namespace VixenModules.Effect.Bars
 		public BarDirection Direction { get; set; }
 
 		[DataMember]
+		public MovementType MovementType { get; set; }
+
+		[DataMember]
 		public int Speed { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
 
 		[DataMember]
 		public int Repeat { get; set; }
@@ -48,6 +56,17 @@ namespace VixenModules.Effect.Bars
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (SpeedCurve == null)
+			{
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			BarsData result = new BarsData
@@ -58,8 +77,10 @@ namespace VixenModules.Effect.Bars
 				Repeat = Repeat,
 				Orientation = Orientation,
 				Show3D = Show3D,
+				MovementType = MovementType,
 				Highlight = Highlight,
-				LevelCurve = new Curve(LevelCurve)
+				LevelCurve = new Curve(LevelCurve),
+				SpeedCurve = new Curve(SpeedCurve)
 			};
 			return result;
 		}
