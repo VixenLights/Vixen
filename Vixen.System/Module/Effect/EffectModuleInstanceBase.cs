@@ -237,7 +237,7 @@ namespace Vixen.Module.Effect
 		[Browsable(false)]
 		public string[] SupportsExtensions
 		{
-			get { return ((IEffectModuleDescriptor)Descriptor).SupportsExtensions; }
+			get { return ((IEffectModuleDescriptor)Descriptor).SupportedFileExtensions; }
 		}
 
 		[Browsable(false)]

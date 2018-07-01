@@ -36,6 +36,9 @@ namespace Vixen.Module.Effect {
 		/// <inheritdoc />
 		public virtual bool SupportsMarks => false;
 
+		/// <inheritdoc />
+		public virtual bool SupportsFiles => false;
+
 		public virtual bool SupportsVideo
 		{
 			get
@@ -58,13 +61,7 @@ namespace Vixen.Module.Effect {
 			}
 		}
 
-		public virtual string[] SupportsExtensions
-		{
-			get
-			{
-				return null;
-			}
-		}
+		public virtual string[] SupportedFileExtensions => new string[0];
 
 		public abstract override string TypeName { get; }
 

@@ -149,11 +149,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
-		//Used for Dragging of Files from Windows Explorer
-		private string _dragFileName = string.Empty;
-		private bool _dragFileHorizontalStringOrientation;
-		private bool _dragFileSequencialEffectPlacement;
-
 		#endregion
 
 		#region Constructor / Initialization
@@ -754,8 +749,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
-				CreateWindowsExplorerEffects(e);
+				string[] filePaths = e.Data.GetData(DataFormats.FileDrop) as string[]; //Stores path of all selected files.
+				if (filePaths != null)
+				{
+					HandleFileDrop(filePaths);
+				}
 			}
 			else
 			{
@@ -3296,13 +3294,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
-		private void AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
+		private EffectNode AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			AddEffectInstance(effect, row, startTime, timeSpan, select);
+			return AddEffectInstance(effect, row, startTime, timeSpan, select);
 		}
 
 		/// <summary>
@@ -3314,8 +3312,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
-		private void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
+		private EffectNode AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
 		{
+			EffectNode effectNode = null;
 			try
 			{
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
@@ -3325,21 +3324,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					timeSpan = SequenceLength - startTime;
 				}
 
-				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
-
-				//Do this if a File is being dragged from Windows Explorer and modify Effect accordingly.
-				if (_dragFileName != String.Empty)
-				{
-					foreach (var propertyData in MetadataRepository.GetProperties(effectNode.Effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
-					{
-						if (propertyData.PropertyType == typeof(PictureSource)) propertyData.Descriptor.SetValue(effectNode.Effect, PictureSource.File);
-						if (propertyData.PropertyType == typeof(String)) propertyData.Descriptor.SetValue(effectNode.Effect, _dragFileName);
-						if (_dragFileHorizontalStringOrientation)
-						{
-							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effectNode.Effect, StringOrientation.Horizontal);
-						}
-					}
-				}
+				effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
 
 				// put it in the sequence and in the timeline display
 				Element element = AddEffectNode(effectNode);
@@ -3352,6 +3337,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var act = new EffectsAddedUndoAction(this, new[] { effectNode });
 				_undoMgr.AddUndoAction(act);
+
 			}
 			catch (Exception ex)
 			{
@@ -3359,6 +3345,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							 ((row == null) ? "<null>" : row.Name);
 				Logging.Error(msg, ex);
 			}
+
+			return effectNode;
 		}
 
 		private EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
@@ -3625,7 +3613,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
 			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
 
-			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any() && _dragFileName == string.Empty)
+			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
 			{
 
 				var message = string.Format("This action will replace {0} effects, are you sure ?",
@@ -4216,45 +4204,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Dragging Windows Explorer Files to Timeline.
 
-		private void CreateWindowsExplorerEffects(DragEventArgs e)
+		private void HandleFileDrop(string[] filePaths)
 		{
+			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
+			
 			//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
 			//Holding the Ctrl key down while dragging will add the effects sequentialy onto the timeline.
-			switch (ModifierKeys)
-			{
-				case (Keys.Alt | Keys.Control):
-					_dragFileHorizontalStringOrientation = true;
-					_dragFileSequencialEffectPlacement = true;
-					break;
-				default:
-					_dragFileHorizontalStringOrientation = ModifierKeys == Keys.Alt;
-					_dragFileSequencialEffectPlacement = ModifierKeys == Keys.Control;
-					break;
-			}
 
-			string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop)); //Stores path of all selected files.
+			bool dragFileHorizontalStringOrientation = ModifierKeys == Keys.Alt || ModifierKeys == (Keys.Alt | Keys.Control);
+			bool dragFileSequencialEffectPlacement = ModifierKeys == Keys.Control || ModifierKeys == (Keys.Alt | Keys.Control);
+
+
 			List<Guid> tempeffectGuid = new List<Guid>();
 			int i = 0;
+
+			var supportedEffectDescriptors = ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>().Where(x => x.SupportsFiles);
+
 			//Iterate through each selected file that was dragged.
 			foreach (string filePath in filePaths)
 			{
 				Guid guid = Guid.Empty;
 				//Check each Effect to see if it supports any File types
-				List<IEffectModuleDescriptor> effectDescriptors = new List<IEffectModuleDescriptor>();
-				foreach (IEffectModuleDescriptor effectDesriptor in
-					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
-				{
-					if (effectDesriptor.SupportsExtensions != null)
-					{
-						var fileExtension = Path.GetExtension(filePath);
-						if (!effectDesriptor.SupportsExtensions.Contains(fileExtension)) continue;
-						_dragFileName = filePath;
-						effectDescriptors.Add(effectDesriptor); //Adds each effect that can use the file type
-					}
-				}
+				
+				var fileExtension = Path.GetExtension(filePath);
 
-				Point p = new Point(e.X, e.Y);
-				if (effectDescriptors.Count > 0)
+				var effectDescriptors =
+					supportedEffectDescriptors.Where(x => x.SupportedFileExtensions.Contains(fileExtension)).ToList();
+
+				//Point p = new Point(e.X, e.Y);
+				if (effectDescriptors.Any())
 				{
 					if (effectDescriptors.Count <= 1)
 					{
@@ -4281,14 +4259,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 
 					//If effect Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
-					if (!_dragFileSequencialEffectPlacement) i = 0;
-					//Adds the effect
-					EffectDropped(guid, TimelineControl.grid.TimeAtPosition(p) + TimeSpan.FromTicks(20000000 * i),
-						TimelineControl.grid.RowAtPosition(p));
+					if (!dragFileSequencialEffectPlacement) i = 0;
+
+					IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(guid);
+
+					
+					//This is extremely brittle. If anything changes in these effects
+					//this could break. I added a qualifier to use the common FileName property name for the file 
+					//property, but if any new effects don't use that name they could break. This should probably be 
+					//some type of attribute. The intimate knowledge of the Picture source is yet another problem.
+					foreach (var propertyData in MetadataRepository.GetProperties(effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
+					{
+						if (propertyData.PropertyType == typeof(PictureSource))
+						{
+							propertyData.Descriptor.SetValue(effect, PictureSource.File);
+						}
+
+						if (propertyData.PropertyType == typeof(String) && propertyData.Name == @"FileName")
+						{
+							propertyData.Descriptor.SetValue(effect, filePath);
+						}
+						if (dragFileHorizontalStringOrientation)
+						{
+							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effect, StringOrientation.Horizontal);
+						}
+					}
+
+					AddEffectInstance(effect, TimelineControl.grid.RowAtPosition(_mouseOriginalPoint), TimelineControl.grid.TimeAtPosition(_mouseOriginalPoint) + TimeSpan.FromTicks(20000000 * i), TimeSpan.FromSeconds(2.0), true);
 				}
 				i++;
 			}
-			_dragFileName = string.Empty;
 		}
 
 		//Will add each effect to the Effect Selection Parameter form so the user can select which effect to use with the file type.

@@ -38,11 +38,11 @@ namespace VixenModules.Effect.Picture
 			get { return _typeId; }
 		}
 
+		/// <inheritdoc />
+		public override bool SupportsFiles => true;
+
 		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
-		public override string[] SupportsExtensions
-		{
-			get { return SupportedMediaExtensions.SupportedImageExtensions; }
-		}
+		public override string[] SupportedFileExtensions => StandardMediaExtensions.ImageExtensions;
 
 		public override Type ModuleClass
 		{

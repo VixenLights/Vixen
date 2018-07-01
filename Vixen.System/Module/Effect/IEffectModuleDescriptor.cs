@@ -10,7 +10,8 @@ namespace Vixen.Module.Effect
 		EffectGroups EffectGroup { get; }
 		bool SupportsMedia { get; }
 		bool SupportsMarks { get; }
-		string[] SupportsExtensions { get; }
+		bool SupportsFiles { get; }
+		string[] SupportedFileExtensions { get; }
 		Image GetRepresentativeImage(int desiredWidth, int desiredHeight);
 	}
 }
