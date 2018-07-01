@@ -159,6 +159,7 @@ namespace VixenModules.Effect.CountDown
 				if (_data.CountDownType != value)
 				{
 					_data.CountDownType = value;
+					UpdateCountDownTypeAttributes();
 					IsDirty = true;
 					OnPropertyChanged();
 				}
@@ -167,9 +168,27 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"SequenceTime")]
+		[ProviderDescription(@"SequenceTime")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 600, 1)]
+		[PropertyOrder(4)]
+		public int SequenceTime
+		{
+			get { return _data.SequenceTime; }
+			set
+			{
+				_data.SequenceTime = StartTime.Seconds > value ? StartTime.Seconds + 1 : value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"TimeFormat")]
 		[ProviderDescription(@"TimeFormat")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public TimeFormat TimeFormat
 		{
 			get { return _data.TimeFormat; }
@@ -185,7 +204,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountDownFade")]
 		[ProviderDescription(@"CountDownFade")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public CountDownFade CountDownFade
 		{
 			get { return _data.CountDownFade; }
@@ -201,7 +220,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"DirectionPerWord")]
 		[ProviderDescription(@"DirectionPerWord")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public bool DirectionPerWord
 		{
 			get { return _data.DirectionPerWord; }
@@ -218,7 +237,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MarkTimeFreeze")]
 		[ProviderDescription(@"MarkTimeFreeze")]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public bool MarkTimeFreeze
 		{
 			get { return _data.MarkTimeFreeze; }
@@ -237,7 +256,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderDescription(@"CountDownInterval")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 60, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public int CountDownInterval
 		{
 			get { return _data.CountDownInterval; }
@@ -255,7 +274,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderDescription(@"TimeVisibleLength")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10000, 1)]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public int TimeVisibleLength
 		{
 			get { return _data.TimeVisibleLength; }
@@ -271,7 +290,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
@@ -287,7 +306,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(11)]
+		[PropertyOrder(12)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -494,9 +513,24 @@ namespace VixenModules.Effect.CountDown
 		{
 			UpdatePositionXAttribute(false);
 			UpdateCountDownModeAttributes(false);
+			UpdateCountDownTypeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
+		private void UpdateCountDownTypeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"SequenceTime", CountDownType == CountDownType.Sequence}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+			if (CountDownMode == CountDownMode.None) CountDownFade = CountDownFade.None;
+		}
+
 		private void UpdateCountDownModeAttributes(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
@@ -515,7 +549,9 @@ namespace VixenModules.Effect.CountDown
 
 				{"Speed", CountDownMode == CountDownMode.None || !DirectionPerWord},
 
-				{"MarkTimeFreeze", CountDownMode != CountDownMode.None}
+				{"MarkTimeFreeze", CountDownMode != CountDownMode.None},
+
+				{"SequenceTime", CountDownType == CountDownType.Sequence && CountDownMode != CountDownMode.None}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -796,7 +832,7 @@ namespace VixenModules.Effect.CountDown
 		{
 			// Adjusts countdown value depending on if countdown to end of effect or sequence.
 			int countDownNumber = CountDownType == CountDownType.Sequence
-				? (int) Math.Ceiling(GetRemainingSequenceTime(frame) / 1000)
+				? (int) Math.Ceiling((SequenceTime * 1000 - StartTime.TotalMilliseconds - (double)(frame * 50)) / 1000)
 				: (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
 
 			if (countDownNumber % CountDownInterval > 0 && countDownNumber > 10)

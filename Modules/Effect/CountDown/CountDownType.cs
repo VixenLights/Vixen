@@ -6,7 +6,7 @@ namespace VixenModules.Effect.CountDown
 	{
 		[Description("Calculate to end of Effect")]
 		Effect,
-		[Description("Calculate to end of Sequence")]
+		[Description("Calculate to user specified Sequence Time")]
 		Sequence
 	}
 }

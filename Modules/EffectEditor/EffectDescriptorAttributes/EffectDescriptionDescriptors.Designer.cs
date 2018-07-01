@@ -440,7 +440,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Users time left to either end of Effect or Sequence..
+        ///   Looks up a localized string similar to Uses time left to end of effect or user adjusted Sequence time..
         /// </summary>
         internal static string CountDownType {
             get {
@@ -1219,6 +1219,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string ScaleToGrid {
             get {
                 return ResourceManager.GetString("ScaleToGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Determines the Sequence time to count down to..
+        /// </summary>
+        internal static string SequenceTime {
+            get {
+                return ResourceManager.GetString("SequenceTime", resourceCulture);
             }
         }
         

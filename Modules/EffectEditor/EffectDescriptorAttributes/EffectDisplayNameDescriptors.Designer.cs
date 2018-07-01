@@ -1313,6 +1313,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count Down Time (s).
+        /// </summary>
+        internal static string SequenceTime {
+            get {
+                return ResourceManager.GetString("SequenceTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3D.
         /// </summary>
         internal static string Show3D {

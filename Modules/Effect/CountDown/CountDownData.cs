@@ -40,6 +40,7 @@ namespace VixenModules.Effect.CountDown
 			RepeatText = false;
 			CountDownDuration = CountDownDuration.AutoFit;
 			MarkTimeFreeze = true;
+			SequenceTime = 60;
 		}
 
 		[DataMember]
@@ -56,6 +57,9 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public int CountDownInterval { get; set; }
+
+		[DataMember]
+		public int SequenceTime { get; set; }
 
 		[DataMember]
 		public int Speed { get; set; }
@@ -144,7 +148,8 @@ namespace VixenModules.Effect.CountDown
 				DirectionPerWord = DirectionPerWord,
 				RepeatText = RepeatText,
 				CountDownDuration = CountDownDuration,
-				MarkTimeFreeze = MarkTimeFreeze
+				MarkTimeFreeze = MarkTimeFreeze,
+				SequenceTime = SequenceTime
 			};
 			return result;
 		}

@@ -638,4 +638,7 @@
   </data>  <data name="CountDownDuration" xml:space="preserve">
     <value>Count Down Duration</value>
   </data>
+  <data name="SequenceTime" xml:space="preserve">
+    <value>Count Down Time (s)</value>
+  </data>
 </root>
