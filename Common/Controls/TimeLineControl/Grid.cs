@@ -2188,7 +2188,7 @@ namespace Common.Controls.Timeline
 
 		private void _drawSnapPoints(Graphics g)
 		{
-			Pen p;
+			Pen p = new Pen(Color.Black, 1);
 
 			// iterate through all snap points, and if it's visible, draw it
 			foreach (KeyValuePair<TimeSpan, List<SnapDetails>> kvp in StaticSnapPoints)
@@ -2201,18 +2201,23 @@ namespace Common.Controls.Timeline
 						if (details == null || (d.SnapLevel > details.SnapLevel && d.SnapColor != Color.Empty))
 							details = d;
 					}
-					int lineBold = 1;
-					if (details.SnapBold)
-						lineBold = 3;
-					p = new Pen(details.SnapColor, lineBold);
+
+					p.Color = details.SnapColor;
+					p.Width = details.SnapBold?3:1;
 					Single x = timeToPixels(kvp.Key);
 					if (!details.SnapSolidLine)
+					{
 						p.DashPattern = new float[] {details.SnapLevel, details.SnapLevel};
+					}
+					else
+					{
+						p.DashStyle = DashStyle.Solid;
+					}
 					g.DrawLine(p, x, 0, x, AutoScrollMinSize.Height);
-					p.Dispose();
+					
 				}
-				
 			}
+			p.Dispose();
 		}
 
 		#region Element rendering background worker

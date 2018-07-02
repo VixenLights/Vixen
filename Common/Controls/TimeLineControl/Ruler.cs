@@ -82,7 +82,7 @@ namespace Common.Controls.Timeline
 				drawTicks(e.Graphics, MajorTick, 2, 0.4);
 				drawTicks(e.Graphics, MinorTick, 1, 0.20);
 				drawTimes(e.Graphics);
-
+				
 				using (Pen p = new Pen(Color.Black, 2))
 				{
 					e.Graphics.DrawLine(p, 0, Height - 1, timeToPixels(TotalTime), Height - 1);
@@ -102,6 +102,7 @@ namespace Common.Controls.Timeline
 			}
 		}
 
+		private readonly Pen _tickPen = new Pen(Color.Black){Alignment = PenAlignment.Right};
 		private void drawTicks(Graphics graphics, TimeSpan interval, int width, double height)
 		{
 			Single pxint = timeToPixels(interval);
@@ -111,12 +112,10 @@ namespace Common.Controls.Timeline
 			Single start = timeToPixels(VisibleTimeStart) - (timeToPixels(VisibleTimeStart)%pxint) + pxint;
 			Single end = timeToPixels(VisibleTimeEnd);
 
-			Pen p = new Pen(Color.Black);
-			p.Width = width;
-			p.Alignment = PenAlignment.Right;
-
+			_tickPen.Width = width;
+			
 			for (Single x = start; x <= end; x += pxint) {	
-				graphics.DrawLine(p, x, (Single) (Height*(1.0 - height)), x, Height);
+				graphics.DrawLine(_tickPen, x, (Single) (Height*(1.0 - height)), x, Height);
 			}
 		}
 
@@ -731,6 +730,7 @@ namespace Common.Controls.Timeline
 					m_font.Dispose();
 				if (m_textBrush != null)
 					m_textBrush.Dispose();
+				_tickPen?.Dispose();
 				m_font = null;
 				m_textBrush = null;
 				_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalEventManagerTimeLineGlobalMoving;
@@ -836,23 +836,23 @@ namespace Common.Controls.Timeline
 
 		private void _drawMarks(Graphics g)
 		{
-			Pen p;
+			Pen p = new Pen(Color.Black);
+			var origDashPattern = new []{0f};
 
 			// iterate through all marks, and if it's visible, draw it
 			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible))
 			{
-				int lineBold = 1;
-				if (labeledMarkCollection.Decorator.IsBold)
-				{
-					lineBold = 3;
-				}
-
-				p = new Pen(labeledMarkCollection.Decorator.Color, lineBold);
+				p.Width = labeledMarkCollection.Decorator.IsBold ? 3 : 1;
+				p.Color = labeledMarkCollection.Decorator.Color;
 				if (!labeledMarkCollection.Decorator.IsSolidLine)
 				{
 					p.DashPattern = new float[] {labeledMarkCollection.Level, labeledMarkCollection.Level};
 				}
-
+				else
+				{
+					p.DashStyle = DashStyle.Solid;
+				}
+				
 				foreach (var labeledMark in labeledMarkCollection.Marks)
 				{
 					//Only draw visible marks
@@ -868,13 +868,13 @@ namespace Common.Controls.Timeline
 					p.Width = _marksSelectionManager.SelectedMarks.Contains(labeledMark) ? 3 : 1;
 					g.DrawLine(p, x, 0, x, Height);
 				}
-
-				p.Dispose();
 			}
 
 			if (m_button == MouseButtons.Left && m_mouseState == MouseState.DraggingMark)
 			{
-				p = new Pen(Brushes.Yellow) {DashPattern = new float[] {2, 2}};
+				p.Color = Color.Yellow;
+				p.DashPattern = new float[] {2, 2};
+				p.Width = 1;
 				TimeSpan newMarkPosition = pixelsToTime(PointToClient(new Point(MousePosition.X, MousePosition.Y)).X) + VisibleTimeStart;
 				Single x = timeToPixels(newMarkPosition);
 				g.DrawLine(p, x, 0, x, Height);
@@ -890,6 +890,8 @@ namespace Common.Controls.Timeline
 				drawBrush.Dispose();
 				drawFormat.Dispose();
 			}
+
+			p.Dispose();
 		}
 
 		#endregion
