@@ -215,7 +215,7 @@ namespace Vixen.Module.Effect
 			string DisplayValue = string.Format("{0}", this.EffectName);
 
 
-			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial"))
+			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial", 18))
 			{
 				using (var StringBrush = new SolidBrush(Color.Black))
 				{
