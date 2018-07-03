@@ -124,6 +124,27 @@ namespace VixenModules.Effect.Effect
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
 
+		#region Overrides of ModuleInstanceBase
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (SupportsMarks && MarkCollections != null)
+				{
+					foreach (var markCollection in MarkCollections)
+					{
+						RemoveMarkCollectionListeners(markCollection);
+					}
+				}
+			}
+
+			base.Dispose(disposing);
+		}
+
+		#endregion
+
 		#region IMark helpers
 
 		/// <summary>

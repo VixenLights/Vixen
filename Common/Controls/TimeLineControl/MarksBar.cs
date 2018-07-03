@@ -1093,7 +1093,8 @@ namespace Common.Controls.TimelineControl
 				_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalEventManager_MarksTextChanged;
 				_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalEventManager_MarksMoved;
 				_marksSelectionManager.SelectionChanged -= MarksSelectionManager_SelectionChanged;
-				
+				MarkRow.MarkRowChanged -= MarkRow_MarkRowChanged;
+
 				UnConfigureMarks();
 			}
 			base.Dispose(disposing);

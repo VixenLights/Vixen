@@ -643,6 +643,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_cancellationTokenSource.Cancel();
 			}
 
+			foreach (var node in _effectNodeToElement.Keys)
+			{
+				node.Effect.Dispose();
+			}
 
 			//TimelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
 
@@ -664,6 +668,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction -= PhonemeBreakdownAction;
+
+			if (_sequence != null && _sequence.LabeledMarkCollections != null)
+			{
+				_sequence.LabeledMarkCollections.CollectionChanged -= LabeledMarkCollections_CollectionChanged;
+				RemoveMarkCollectionHandlers(_sequence.LabeledMarkCollections);
+			}
 
 			if (_effectsForm != null && !_effectsForm.IsDisposed)
 			{

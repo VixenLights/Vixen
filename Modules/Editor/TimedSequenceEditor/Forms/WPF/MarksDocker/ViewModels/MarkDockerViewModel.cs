@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Catel.Collections;
@@ -42,7 +43,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		public ObservableCollection<IMarkCollection> MarkCollections
 		{
 			get { return GetValue<ObservableCollection<IMarkCollection>>(MarkCollectionsProperty); }
-			private set { SetValue(MarkCollectionsProperty, value); }
+			set { SetValue(MarkCollectionsProperty, value); }
 		}
 
 		/// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Catel.Data;
@@ -20,6 +21,22 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			MarkCollection = markCollection;
 			SetupCheckboxes();
 		}
+
+		#region Overrides of ViewModelBase
+
+		/// <inheritdoc />
+		protected override Task CloseAsync()
+		{
+			return Task.Factory.StartNew(() =>
+			{
+				foreach (var checkBoxState in CheckBoxStates)
+				{
+					checkBoxState.CloseViewModelAsync(true);
+				}
+			});
+		}
+
+		#endregion
 
 		#region MarkCollection model property
 

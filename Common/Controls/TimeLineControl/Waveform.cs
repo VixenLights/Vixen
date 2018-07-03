@@ -387,6 +387,12 @@ namespace Common.Controls.Timeline
 				samples	 = null;
 				//samples = new SampleAggregator();
 			}
+
+			if (disposing)
+			{
+				_timeLineGlobalEventManager.AlignmentActivity -= WaveFormSelectedTimeLineGlobalMove;
+			}
+
 			base.Dispose(disposing);
 		}
 

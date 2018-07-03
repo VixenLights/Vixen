@@ -311,6 +311,29 @@ namespace Vixen.Module.Effect
 
 		}
 
+		#region Overrides of ModuleInstanceBase
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (SupportsMarks && _markCollections != null)
+				{
+					_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+				}
+
+				_parameterValues = null;
+				_markCollections = null;
+				var md = ModuleData.ModuleDataSet as ModuleDataSet;
+				md?.Dispose();
+			}
+
+			base.Dispose(disposing);
+		}
+
+		#endregion
+
 		private void _EnsureTargetNodeProperties()
 		{
 			// If the effect requires any properties, make sure the target nodes have those properties.

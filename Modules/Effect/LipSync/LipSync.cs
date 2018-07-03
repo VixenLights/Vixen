@@ -34,12 +34,15 @@ namespace VixenModules.Effect.LipSync
 		private IEnumerable<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
-		
+
+		static LipSync()
+		{
+			LoadResourceBitmaps();
+		}
+
 		public LipSync()
 		{
 			_data = new LipSyncData();
-			LoadResourceBitmaps();
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 		}
 
@@ -228,11 +231,6 @@ namespace VixenModules.Effect.LipSync
 			}
 
 			TearDownPictureEffect();
-		}
-
-		private void ClearImageCache()
-		{
-			_imageCache.Clear();
 		}
 
 		private void SetupPictureEffect()
@@ -593,7 +591,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void LoadResourceBitmaps()
+		private static void LoadResourceBitmaps()
 		{
 			if (_phonemeBitmaps == null)
 			{

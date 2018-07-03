@@ -63,16 +63,6 @@ namespace VixenModules.Effect.LipSync
 			get { return "1.0"; }
 		}
 
-		public override ParameterSignature Parameters
-		{
-			get
-			{
-				return new ParameterSignature(
-					new ParameterSpecification("StaticPhoneme", typeof(string),false),
-					new ParameterSpecification("PGOFilename", typeof(string),false),
-					new ParameterSpecification("PhonemeMapping", typeof(string),false)
-					);
-			}
-		}
+		public override ParameterSignature Parameters => new ParameterSignature();
 	}
 }
