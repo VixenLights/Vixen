@@ -32,106 +32,102 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// As recommended by R#
 				if (Math.Abs(width - 0) < double.Epsilon || Math.Abs(height - 0) < double.Epsilon)
 					return;
-
-				Element[] elements = effect.TargetNodes.GetElements();
-
+				
 				// limit the number of 'rows' rasterized
 				int tmpsiz = (int)(height / 2) + 1;
 
-				int count = elements.Length;
+				EffectIntents effectIntents = effect.Render();
+
+				int count = effectIntents.Count;
 
 				int skipCount = count>tmpsiz ? count / tmpsiz: 1;
 
 				double heightPerElement = height/ ( count / skipCount);
 
-				EffectIntents effectIntents = effect.Render();
-
 				double y = 0;
 				int ctr = 0;
-				foreach (Element element in elements)
+				foreach (var element in effectIntents)
 				{
 					if(ctr++ % skipCount != 0) continue;
 				
-					//Getting exception on null elements here... A simple check to look for these null values and ignore them
-					if (element != null) {
-						IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);
-						if (elementIntents != null && elementIntents.Count > 0)
+					IntentNodeCollection elementIntents = element.Value;//effectIntents.GetIntentNodesForElement(element.Id);
+					if (elementIntents != null && elementIntents.Count > 0)
+					{
+						//Determine if we have parallel intents used on this element for this effect.
+						var stack = new List<List<IIntentNode>> {new List<IIntentNode> {elementIntents[0]}};
+						for (int i = 1; i < elementIntents.Count; i++)
 						{
-							//Determine if we have parallel intents used on this element for this effect.
-							var stack = new List<List<IIntentNode>> {new List<IIntentNode> {elementIntents[0]}};
-							for (int i = 1; i < elementIntents.Count; i++)
+							bool add = true;
+							foreach (List<IIntentNode> t in stack)
 							{
-								bool add = true;
-								foreach (List<IIntentNode> t in stack)
+								if (elementIntents[i].StartTime >= t.Last().EndTime)
 								{
-									if (elementIntents[i].StartTime >= t.Last().EndTime)
-									{
-										t.Add(elementIntents[i]);
-										add = false;
-										break;
-									}
+									t.Add(elementIntents[i]);
+									add = false;
+									break;
 								}
-								if (add) stack.Add(new List<IIntentNode> { elementIntents[i] });
 							}
-							int skip = 0;
-							//Check for base or minimum level intent.
-							if (stack.Count > 1 && stack[0].Count == 1 && stack[0][0].TimeSpan.Equals(effect.TimeSpan) && stack[1][0].TimeSpan != effect.TimeSpan)
-							{
-								//this is most likely a underlying base intent like chase, spin and twinkle use to provide a minimum value
-								//so render it full size as it is usually a lower intensity and the pulses can be drawn over the top and look nice.
-								
-								intentRasterizer.Rasterize(stack[0][0].Intent,
-														   new RectangleF(0, (float)y, (float)width,
-																		  (float)heightPerElement), g, visibleStartOffset,stack[0][0].TimeSpan);
-								skip=1;
-							}
-
-							float h = (float)heightPerElement / (stack.Count-skip);
-							int stackCount = 0;
-							//Now we have a good idea what our element should look like, lets draw it up
-							foreach (List<IIntentNode> intentNodes in stack.Skip(skip))
-							{
-								foreach (IntentNode elementIntentNode in intentNodes)
-								{
-									if (elementIntentNode == null)
-									{
-										Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
-										continue;
-									}
-									
-									if(elementIntentNode.EndTime<visibleStartOffset || elementIntentNode.StartTime>visibleEndOffset) continue;
-
-									TimeSpan visibleIntentStart = elementIntentNode.StartTime < visibleStartOffset
-										? visibleStartOffset - elementIntentNode.StartTime
-										: TimeSpan.Zero;
-
-									TimeSpan visibleIntentEnd = elementIntentNode.EndTime > visibleEndOffset
-										? visibleEndOffset - elementIntentNode.StartTime
-										: elementIntentNode.TimeSpan;
-
-									double startPixelX = overallWidth * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
-									double widthPixelX = overallWidth * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
-
-									widthPixelX = widthPixelX * ((visibleIntentEnd.TotalMilliseconds - visibleIntentStart.TotalMilliseconds) / elementIntentNode.TimeSpan.TotalMilliseconds);
-									if (visibleIntentStart == TimeSpan.Zero)
-									{
-										startPixelX -= overallWidth*_GetPercentage(visibleStartOffset, effect.TimeSpan);
-									}
-									else
-									{
-										startPixelX = 0;
-									}
-									
-
-									intentRasterizer.Rasterize(elementIntentNode.Intent,
-															   new RectangleF((float)startPixelX, (float)y+h*stackCount , (float)widthPixelX,
-																			  h), g, visibleIntentStart , visibleIntentEnd);
-								}
-
-								stackCount++;
-							}	
+							if (add) stack.Add(new List<IIntentNode> { elementIntents[i] });
 						}
+						int skip = 0;
+						//Check for base or minimum level intent.
+						if (stack.Count > 1 && stack[0].Count == 1 && stack[0][0].TimeSpan.Equals(effect.TimeSpan) && stack[1][0].TimeSpan != effect.TimeSpan)
+						{
+							//this is most likely a underlying base intent like chase, spin and twinkle use to provide a minimum value
+							//so render it full size as it is usually a lower intensity and the pulses can be drawn over the top and look nice.
+							
+							intentRasterizer.Rasterize(stack[0][0].Intent,
+													   new RectangleF(0, (float)y, (float)width,
+																	  (float)heightPerElement), g, visibleStartOffset,stack[0][0].TimeSpan);
+							skip=1;
+						}
+
+						float h = (float)heightPerElement / (stack.Count-skip);
+						int stackCount = 0;
+						//Now we have a good idea what our element should look like, lets draw it up
+						foreach (List<IIntentNode> intentNodes in stack.Skip(skip))
+						{
+							foreach (IntentNode elementIntentNode in intentNodes)
+							{
+								if (elementIntentNode == null)
+								{
+									Logging.Error("Error: elementIntentNode was null when Rasterizing an effect (ID: " + effect.InstanceId + ")");
+									continue;
+								}
+								
+								if(elementIntentNode.EndTime<visibleStartOffset || elementIntentNode.StartTime>visibleEndOffset) continue;
+
+								TimeSpan visibleIntentStart = elementIntentNode.StartTime < visibleStartOffset
+									? visibleStartOffset - elementIntentNode.StartTime
+									: TimeSpan.Zero;
+
+								TimeSpan visibleIntentEnd = elementIntentNode.EndTime > visibleEndOffset
+									? visibleEndOffset - elementIntentNode.StartTime
+									: elementIntentNode.TimeSpan;
+
+								double startPixelX = overallWidth * _GetPercentage(elementIntentNode.StartTime, effect.TimeSpan);
+								double widthPixelX = overallWidth * _GetPercentage(elementIntentNode.TimeSpan, effect.TimeSpan);
+
+								widthPixelX = widthPixelX * ((visibleIntentEnd.TotalMilliseconds - visibleIntentStart.TotalMilliseconds) / elementIntentNode.TimeSpan.TotalMilliseconds);
+								if (visibleIntentStart == TimeSpan.Zero)
+								{
+									startPixelX -= overallWidth*_GetPercentage(visibleStartOffset, effect.TimeSpan);
+								}
+								else
+								{
+									startPixelX = 0;
+								}
+								
+
+								intentRasterizer.Rasterize(elementIntentNode.Intent,
+														   new RectangleF((float)startPixelX, (float)y+h*stackCount , (float)widthPixelX,
+																		  h), g, visibleIntentStart , visibleIntentEnd);
+							}
+
+							stackCount++;
+						}	
 					}
+					
 					y += heightPerElement;
 				}
 				//long tRast = sw.ElapsedMilliseconds - tRend;
