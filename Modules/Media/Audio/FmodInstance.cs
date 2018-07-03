@@ -154,18 +154,14 @@ namespace VixenModules.Media.Audio
 			uint len1 = 0, len2 = 0;
 
 			checkErrors(_channel.Sound.@lock((uint) startByte, (uint) bufferSize, ref ptr1, ref ptr2, ref len1, ref len2));
-			byte[] sampleBytes1 = new byte[len1];
-			byte[] sampleBytes2 = new byte[len2];
-			System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes1, 0, (int) len1);
+			byte[] sampleBytes = new byte[len1 + len2];
+			System.Runtime.InteropServices.Marshal.Copy(ptr1, sampleBytes, 0, (int) len1);
 			if (len2 > 0) {
-				System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes2, 0, (int) len2);
+				System.Runtime.InteropServices.Marshal.Copy(ptr2, sampleBytes, (int)len1, (int) len2);
 			}
 
 			_channel.Sound.unlock(ptr1, ptr2, len1, len2);
-			byte[] sampleBytes = new byte[sampleBytes1.Length + sampleBytes2.Length];
-			System.Buffer.BlockCopy(sampleBytes1, 0, sampleBytes, 0, sampleBytes1.Length);
-			System.Buffer.BlockCopy(sampleBytes2, 0, sampleBytes, sampleBytes1.Length, sampleBytes2.Length);
-
+			
 			return sampleBytes;
 		}
 
