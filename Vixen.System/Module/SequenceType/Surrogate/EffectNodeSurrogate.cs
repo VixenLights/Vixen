@@ -22,17 +22,27 @@ namespace Vixen.Module.SequenceType.Surrogate
 		public IEffectNode CreateEffectNode(Dictionary<Guid,ElementNode> elementNodes)
 		{
 			// Create a element node lookup of elements that are currently valid.
-			//var elementNodes = VixenSystem.Nodes.Distinct().ToDictionary(x => x.Id);
+			
+			//Currently we only have one TargetNode per effect, so removing all the extra junk that sorts though
+			//Multiples. If it changes in the future, we can change this around.
 
-			IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);
-			IEnumerable<Guid> validElementIds = targetNodeIds.Intersect(elementNodes.Keys);
+			//IEnumerable<Guid> targetNodeIds = TargetNodes.Select(x => x.NodeId);
+			//IEnumerable<Guid> validElementIds = targetNodeIds.Intersect(elementNodes.Keys);
 
 			IEffectModuleInstance effect = Modules.ModuleManagement.GetEffect(TypeId);
 			effect.InstanceId = InstanceId;
 			effect.TimeSpan = TimeSpan;
 			effect.StartTime = StartTime;
-			effect.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
-
+			//effect.TargetNodes = validElementIds.Select(x => elementNodes[x]).ToArray();
+			ElementNode node;
+			if (elementNodes.TryGetValue(TargetNodes.First().NodeId, out node))
+			{
+				effect.TargetNodes = new[] {node};
+			}
+			else
+			{
+				effect.TargetNodes = new ElementNode[]{};
+			}
 			return new EffectNode(effect, StartTime);
 		}
 	}

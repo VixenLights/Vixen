@@ -192,9 +192,8 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
-		private void CalculatePixelsPerString()
+		private void CalculatePixelsPerString(IEnumerable<ElementNode> nodes)
 		{
-			IEnumerable<ElementNode> nodes = FindLeafParents();
 			StringPixelCounts.Clear();
 			foreach (var node in nodes)
 			{
@@ -202,9 +201,9 @@ namespace VixenModules.Effect.Effect
 			}
 		}
 
-		private int CalculateMaxStringCount()
+		private int CalculateMaxStringCount(IEnumerable<ElementNode> nodes)
 		{
-			return FindLeafParents().Count();
+			return nodes.Count();
 		}
 
 		protected IEnumerable<ElementNode> FindLeafParents()
@@ -214,7 +213,7 @@ namespace VixenModules.Effect.Effect
 
 			if (TargetNodes.FirstOrDefault() != null)
 			{
-				nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator()).ToList();
+				nonLeafElements = TargetNodes.SelectMany(x => x.GetNonLeafEnumerator());
 				foreach (var elementNode in TargetNodes)
 				{
 					foreach (var leafNode in elementNode.GetLeafEnumerator())
@@ -244,9 +243,10 @@ namespace VixenModules.Effect.Effect
 
 		private void CalculateStringCounts()
 		{
-			CalculatePixelsPerString();
+			var nodes = FindLeafParents();
+			CalculatePixelsPerString(nodes);
 			MaxPixelsPerString = StringPixelCounts.Concat(new[] {0}).Max();
-			StringCount = CalculateMaxStringCount();
+			StringCount = CalculateMaxStringCount(nodes);
 		}
 
 		private void ConfigureVirtualBuffer()
@@ -422,7 +422,7 @@ namespace VixenModules.Effect.Effect
 			// create the intents
 			var frameTs = new TimeSpan(0, 0, 0, 0, FrameTime);
 			var elements = _elementsCached?_cachedElements:node.Distinct().ToList();
-			int numElements = elements.Count();
+			int numElements = elements.Count;
 
 			for (int eidx = 0; eidx < numElements; eidx++)
 			{
