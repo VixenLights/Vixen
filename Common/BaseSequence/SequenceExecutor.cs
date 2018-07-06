@@ -373,10 +373,8 @@ namespace BaseSequence
 
 			lock (_endCheckTimer) {
 
-				_endCheckTimer.Enabled = false;
-
-				if (!_CheckForNaturalEnd() && IsRunning) {
-					_endCheckTimer.Enabled = true;
+				if (_CheckForNaturalEnd() || !IsRunning) {
+					_endCheckTimer.Enabled = false;
 				}
 			}
 		}

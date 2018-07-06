@@ -539,8 +539,9 @@ namespace VixenModules.Effect.Wipe
 									//result = pulse.Render();
 									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 									result.OffsetAllCommandsByTime(effectTime);
-									bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
-									_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
+									//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+									//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
+									_elementData.Add(result);
 								}
 							}
 							effectTime += intervalTime;

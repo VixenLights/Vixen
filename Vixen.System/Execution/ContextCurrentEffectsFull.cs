@@ -61,8 +61,7 @@ namespace Vixen.Execution
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
 		{
 			// Remove expired effects.
-			var nodes = ToArray();
-			for (int i = nodes.Length - 1; i >= 0; i--)
+			for (int i = Count - 1; i >= 0; i--)
 			{
 				if (_IsExpired(currentTime, this[i]))
 				{

@@ -385,7 +385,7 @@ namespace Common.Controls.Timeline
 				if (m_elements[i].EndTime < startTime) continue;
 				if (m_elements[i].StartTime > endTime) break;
 				List<Element> overlappingElements = GetOverlappingElements(m_elements[i]);
-				if (overlappingElements.Count > 0)
+				if (overlappingElements.Count > 1)
 				{
 					DetermineElementStack(overlappingElements);
 					int x = 0;
