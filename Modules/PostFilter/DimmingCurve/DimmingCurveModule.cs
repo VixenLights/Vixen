@@ -167,6 +167,8 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	internal class DimmingCurveFilter : IntentStateDispatch
 	{
 		private IIntentState _intentValue;
+		private readonly StaticIntentState<LightingValue> _lvState = new StaticIntentState<LightingValue>(new LightingValue());
+		private readonly StaticIntentState<RGBValue> _rgbState = new StaticIntentState<RGBValue>(new RGBValue());
 		private readonly Curve _curve;
 
 		public DimmingCurveFilter(Curve curve)
@@ -183,8 +185,26 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<LightingValue> obj)
 		{
 			LightingValue lightingValue = obj.GetValue();
-			double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<LightingValue>(new LightingValue(lightingValue, newIntensity));
+			if (lightingValue.Intensity > 0)
+			{
+				double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
+				var state = obj as StaticIntentState<LightingValue>;
+				if (state != null)
+				{
+					state.SetValue(new LightingValue(lightingValue, newIntensity));
+					_intentValue = state;
+				}
+				else
+				{
+					_lvState.SetValue(new LightingValue(lightingValue, newIntensity));
+					_intentValue = _lvState;
+				}
+			}
+			else
+			{
+				_intentValue = null;
+			}
+			
 		}
 
 		public override void Handle(IIntentState<RGBValue> obj)
@@ -193,21 +213,52 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			HSV hsv = HSV.FromRGB(rgbValue.FullColor);
 			double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
 			hsv.V = newIntensity;
-			_intentValue = new StaticIntentState<RGBValue>(new RGBValue(hsv.ToRGB()));
+			var state = obj as StaticIntentState<RGBValue>;
+			if (state != null)
+			{
+				state.SetValue(new RGBValue(hsv.ToRGB()));
+				_intentValue = state;
+			}
+			else
+			{
+				_rgbState.SetValue(new RGBValue(hsv.ToRGB()));
+				_intentValue = _rgbState;
+			}
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
 		{
 			DiscreteValue discreteValue = obj.GetValue();
 			double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
+			var state = obj as StaticIntentState<DiscreteValue>;
+			if (state != null)
+			{
+				discreteValue.Intensity = newIntensity;
+				state.SetValue(discreteValue);
+				_intentValue = state;
+			}
+			else
+			{
+				_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
+			}
+			
 		}
 
 		public override void Handle(IIntentState<IntensityValue> obj)
 		{
 			IntensityValue intensityValue = obj.GetValue();
 			double newIntensity = _curve.GetValue(intensityValue.Intensity * 100.0) / 100.0;
-			_intentValue = new StaticIntentState<IntensityValue>(new IntensityValue(newIntensity));
+			var state = obj as StaticIntentState<IntensityValue>;
+			if (state != null)
+			{
+				intensityValue.Intensity = newIntensity;
+				state.SetValue(intensityValue);
+				_intentValue = state;
+			}
+			else
+			{
+				_intentValue = new StaticIntentState<IntensityValue>(new IntensityValue(newIntensity));
+			}
 		}
 	}
 
@@ -228,27 +279,43 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			//Very important!!! 
 			//using foreach here instead of linq to reduce iterator allocations
 			//If we had better control over our update cycle, we could possibly eliminate the new list.
-			if (data.Value.Count > 0)
+			if (data.Value?.Count > 0)
 			{
 				var states = new List<IIntentState>(data.Value.Count);
 				foreach (var intentState in data.Value)
 				{
-					states.Add(_filter.Filter(intentState));
+					var state = _filter.Filter(intentState);
+					if (state != null)
+					{
+						states.Add(state);
+					}
 				}
 
 				Data.Value = states;
 			}
 			else
 			{
-				Data.Value = EmptyState;
+				Data.Value = null;
 			}
 		}
 
 		public void ProcessInputData(IntentDataFlowData data)
 		{
-			var states = new List<IIntentState>(1);
-			states.Add(_filter.Filter(data.Value));
-			Data.Value = states;
+			if (data != null)
+			{
+				var states = new List<IIntentState>(1);
+				var state = _filter.Filter(data.Value);
+				if (state != null)
+				{
+					states.Add(state);
+				}
+				Data.Value = states;
+			}
+			else
+			{
+				Data.Value = null;
+			}
+			
 		}
 
 		public IntentsDataFlowData Data { get; private set; }

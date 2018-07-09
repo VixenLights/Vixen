@@ -52,6 +52,10 @@ namespace Vixen.Data.Policy
 				List<ICommand> intentStates = EvaluateIntentStates(obj.Value);
 				_commandResult = CombineCommands(intentStates);
 			}
+			else
+			{
+				_commandResult = null;
+			}
 		}
 		public override void Handle(IntentDataFlowData obj)
 		{

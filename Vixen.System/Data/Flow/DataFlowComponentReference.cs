@@ -18,7 +18,7 @@ namespace Vixen.Data.Flow
 
 		public IDataFlowData GetOutputState()
 		{
-			return (OutputIndex < Component.Outputs.Length) ? Component.Outputs[OutputIndex].Data : null;
+			return Component.Outputs[OutputIndex].Data;
 		}
 
 		#region Equality

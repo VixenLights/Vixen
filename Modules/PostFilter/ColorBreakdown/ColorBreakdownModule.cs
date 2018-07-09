@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -220,6 +221,10 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		/// <returns></returns>
 		public double GetIntensityForState(IIntentState intentValue)
 		{
+			if (intentValue == null)
+			{
+				Debugger.Break();
+			}
 			intentValue.Dispatch(this);
 			return _intensityValue;
 		}
@@ -319,6 +324,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
 			_intentData = new IntentDataFlowData(_state);
+			Data = _intentData;
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
 		}
@@ -329,7 +335,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			//intent that matches this outputs color setting. 
 			//Everything else will have a zero intensity and should be thrown away when it does not match our outputs color.
 			double intensity = 0;
-			if (data.Value.Count > 0)
+			if (data.Value?.Count > 0)
 			{
 				foreach (var intentState in data.Value)
 				{
@@ -341,12 +347,18 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				}
 			}
 
-			
-			//Get a copy of the state value which is a struct and update it with the new intensity and then set it back
-			var intensityValue = _state.GetValue();
-			intensityValue.Intensity = intensity;
-			_state.SetValue(intensityValue);
-			Data = _intentData;
+			if (intensity > 0)
+			{
+				//Get a copy of the state value which is a struct and update it with the new intensity and then set it back
+				var intensityValue = _state.GetValue();
+				intensityValue.Intensity = intensity;
+				_state.SetValue(intensityValue);
+				Data.Value = _state;
+			}
+			else
+			{
+				Data.Value = null;
+			}
 			
 		}
 
