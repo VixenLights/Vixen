@@ -26,12 +26,8 @@ namespace VixenModules.Effect.CountDown
 		private Font _font;
 		private Font _newfont;
 		private float _newFontSize;
-		private int _countDownNumber;
 		private int _maxTextSize;
-
 		private string _text;
-		private readonly List<TextClass> _textClass = new List<TextClass>();
-		private IEnumerable<IMark> _marks = null;
 		private double _directionPosition;
 		private double _fade;
 
@@ -73,81 +69,12 @@ namespace VixenModules.Effect.CountDown
 		#endregion
 
 		#region Text properties
-
-		[Value]
-		[ProviderCategory("Config", 1)]
-		[ProviderDisplayName(@"CountDownSource")]
-		[ProviderDescription(@"CountDownSource")]
-		[PropertyOrder(0)]
-		public CountDownMode CountDownMode
-		{
-			get
-			{
-				return _data.CountDownMode;
-			}
-			set
-			{
-				if (_data.CountDownMode != value)
-				{
-					_data.CountDownMode = value;
-					UpdateCountDownModeAttributes();
-					IsDirty = true;
-					OnPropertyChanged();
-				}
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the time position.")]
-		[TypeConverter(typeof(IMarkCollectionNameConverter))]
-		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(1)]
-		public string MarkCollectionId
-		{
-			get
-			{
-				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
-			}
-			set
-			{
-				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
-				var id = newMarkCollection?.Id ?? Guid.Empty;
-				if (!id.Equals(_data.MarkCollectionId))
-				{
-					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
-					RemoveMarkCollectionListeners(oldMarkCollection);
-					_data.MarkCollectionId = id;
-					AddMarkCollectionListeners(newMarkCollection);
-					IsDirty = true;
-					OnPropertyChanged();
-				}
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CountDownDuration")]
-		[ProviderDescription(@"CountDownDuration")]
-		[PropertyOrder(2)]
-		public CountDownDuration CountDownDuration
-		{
-			get { return _data.CountDownDuration; }
-			set
-			{
-				_data.CountDownDuration = value;
-				UpdateCountDownModeAttributes();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
+		
 		[Value]
 		[ProviderCategory("Config", 1)]
 		[ProviderDisplayName(@"CountDownType")]
 		[ProviderDescription(@"CountDownType")]
-		[PropertyOrder(3)]
+		[PropertyOrder(0)]
 		public CountDownType CountDownType
 		{
 			get
@@ -168,27 +95,9 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"SequenceTime")]
-		[ProviderDescription(@"SequenceTime")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 600, 1)]
-		[PropertyOrder(4)]
-		public int SequenceTime
-		{
-			get { return _data.SequenceTime; }
-			set
-			{
-				_data.SequenceTime = StartTime.Seconds > value ? StartTime.Seconds + 1 : value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"TimeFormat")]
 		[ProviderDescription(@"TimeFormat")]
-		[PropertyOrder(5)]
+		[PropertyOrder(1)]
 		public TimeFormat TimeFormat
 		{
 			get { return _data.TimeFormat; }
@@ -204,7 +113,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountDownFade")]
 		[ProviderDescription(@"CountDownFade")]
-		[PropertyOrder(6)]
+		[PropertyOrder(2)]
 		public CountDownFade CountDownFade
 		{
 			get { return _data.CountDownFade; }
@@ -218,69 +127,17 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"DirectionPerWord")]
-		[ProviderDescription(@"DirectionPerWord")]
-		[PropertyOrder(7)]
-		public bool DirectionPerWord
+		[ProviderDisplayName(@"CountDownTime")]
+		[ProviderDescription(@"CountDownTime")]
+		[PropertyOrder(3)]
+		public string CountDownTime
 		{
-			get { return _data.DirectionPerWord; }
+			get { return _data.CountDownTime; }
 			set
 			{
-				_data.DirectionPerWord = value;
-				UpdateCountDownModeAttributes();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"MarkTimeFreeze")]
-		[ProviderDescription(@"MarkTimeFreeze")]
-		[PropertyOrder(8)]
-		public bool MarkTimeFreeze
-		{
-			get { return _data.MarkTimeFreeze; }
-			set
-			{
-				_data.MarkTimeFreeze = value;
-				UpdateCountDownModeAttributes();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"CountDownInterval")]
-		[ProviderDescription(@"CountDownInterval")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 60, 1)]
-		[PropertyOrder(9)]
-		public int CountDownInterval
-		{
-			get { return _data.CountDownInterval; }
-			set
-			{
-				_data.CountDownInterval = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"TimeVisibleLength")]
-		[ProviderDescription(@"TimeVisibleLength")]
-		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 10000, 1)]
-		[PropertyOrder(10)]
-		public int TimeVisibleLength
-		{
-			get { return _data.TimeVisibleLength; }
-			set
-			{
-				_data.TimeVisibleLength = value;
+				int test;
+				bool isNum = int.TryParse(value, out test);
+				_data.CountDownTime = !isNum ? "0" : value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -290,7 +147,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(11)]
+		[PropertyOrder(4)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
@@ -306,7 +163,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(12)]
+		[PropertyOrder(5)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -512,53 +369,21 @@ namespace VixenModules.Effect.CountDown
 		private void UpdateAllAttributes()
 		{
 			UpdatePositionXAttribute(false);
-			UpdateCountDownModeAttributes(false);
 			UpdateCountDownTypeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 		private void UpdateCountDownTypeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
-				{"SequenceTime", CountDownType == CountDownType.Sequence}
+				{"CountDownTime", CountDownType != CountDownType.Effect }
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
 			}
-			if (CountDownMode == CountDownMode.None) CountDownFade = CountDownFade.None;
-		}
-
-		private void UpdateCountDownModeAttributes(bool refresh = true)
-		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
-			{
-				{"MarkCollectionId", CountDownMode != CountDownMode.None},
-
-				{"DirectionPerWord", CountDownMode != CountDownMode.None && Direction < CountDownDirection.Rotate},
-
-				{"TimeVisibleLength", CountDownMode != CountDownMode.None && CountDownDuration == CountDownDuration.UserDefined},
-
-				{"CountDownFade", CountDownMode != CountDownMode.None},
-
-				{"LevelCurve", CountDownMode == CountDownMode.None},
-
-				{"CountDownDuration", CountDownMode != CountDownMode.None},
-
-				{"Speed", CountDownMode == CountDownMode.None || !DirectionPerWord},
-
-				{"MarkTimeFreeze", CountDownMode != CountDownMode.None},
-
-				{"SequenceTime", CountDownType == CountDownType.Sequence && CountDownMode != CountDownMode.None}
-			};
-			SetBrowsable(propertyStates);
-			if (refresh)
-			{
-				TypeDescriptor.Refresh(this);
-			}
-			if (CountDownMode == CountDownMode.None) CountDownFade = CountDownFade.None;
 		}
 
 		private void UpdatePositionXAttribute(bool refresh = true)
@@ -583,9 +408,7 @@ namespace VixenModules.Effect.CountDown
 
 				{"AngleCurve", Direction == CountDownDirection.Rotate},
 
-				{"Speed", Direction != CountDownDirection.None},
-
-				{"DirectionPerWord", CountDownMode != CountDownMode.None && Direction < CountDownDirection.Rotate},
+				{"Speed", Direction != CountDownDirection.None}
 
 			};
 			SetBrowsable(propertyStates);
@@ -598,8 +421,6 @@ namespace VixenModules.Effect.CountDown
 
 		protected override void SetupRender()
 		{
-			if (CountDownMode != CountDownMode.None) SetupMarks();
-
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
@@ -617,7 +438,6 @@ namespace VixenModules.Effect.CountDown
 		{
 			_font = null;
 			_newfont = null;
-			_textClass.Clear();
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -625,8 +445,6 @@ namespace VixenModules.Effect.CountDown
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
-				if (_text == "") return; // No point going any further as there is no text to be display for this frame.
-
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				// copy to frameBuffer
 				for (int x = 0; x < BufferWi; x++)
@@ -649,8 +467,6 @@ namespace VixenModules.Effect.CountDown
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
-					if (_text == "") continue; // No point going any further as there is no text to be display for this frame.
-
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
 						foreach (var elementLocation in elementLocations)
@@ -673,9 +489,7 @@ namespace VixenModules.Effect.CountDown
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{
 				SetFadePositionLevel(frame);
-
-				if (_text == "") return; // No point going any further as there is no text to be display for this frame.
-
+				
 				SizeF textsize = new SizeF(0, 0);
 
 				//Adjust Font Size based on the Font scaling factor
@@ -767,44 +581,39 @@ namespace VixenModules.Effect.CountDown
 		private void SetFadePositionLevel(int frame)
 		{
 			_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-			_fade = 1;
-			if (CountDownMode != CountDownMode.None)
-			{
-				bool clearText = true;
-				for (var i = 0; i < _textClass.Count; i++)
-				{
-					TextClass text = _textClass[i];
-					if (frame >= text.StartFrame && frame < text.EndFrame)
-					{
-						_text = GetCountDownTime(MarkTimeFreeze ? text.Frame : frame);
+			_text = GetCountDownTime(frame);
 
-						switch (CountDownFade)
-						{
-							case CountDownFade.In:
-								_fade = (double) (frame - text.StartFrame) / (text.Frame - text.StartFrame);
-								break;
-							case CountDownFade.Out:
-								_fade = 1 - (double)(frame - text.Frame) / (text.EndFrame - text.Frame);
-								break;
-							case CountDownFade.InOut:
-									_fade = frame < text.Frame
-										? (double)(frame - text.StartFrame) / (text.Frame - text.StartFrame)
-										: 1 - (double)(frame - text.Frame) / (text.EndFrame - text.Frame);
-								break;
-							case CountDownFade.None:
-								_fade = 1;
-								break;
-						}
-						if (DirectionPerWord) _directionPosition = (double)(frame - text.StartFrame) / (text.EndFrame - text.StartFrame);
-						clearText = false;
-						break;
-					}
-				}
-				if (clearText) _text = "";
-			}
-			else
+			var totalFrames = GetNumberFrames();
+			int startFrame = 0;
+			if (CountDownType == CountDownType.Effect) startFrame = (int)(((decimal)totalFrames / 20 - Math.Floor((decimal)totalFrames / 20)) * 20);
+				
+			switch (CountDownFade)
 			{
-				_text = GetCountDownTime(frame);
+				case CountDownFade.In:
+					_fade = (double) 1 / 20 * ((frame - startFrame) % 20);
+					if (_fade < 0) _fade += 1;
+					break;
+				case CountDownFade.Out:
+					_fade = 1 - (double) 1 / 20 * ((frame - startFrame - 1) % 20);
+					if (_fade > 1) _fade -= 1;
+						break;
+				case CountDownFade.InOut:
+					_fade = (frame - startFrame) % 20;
+					if (_fade < 0) _fade = -_fade;
+					if (_fade < 10)
+					{
+						_fade = (double) 1 / 20 * _fade;
+						if (_fade < 0) _fade += 1;
+					}
+					else
+					{
+						_fade = 1 - (double)1 / 20 * _fade;
+						if (_fade > 1) _fade -= 1;
+					}
+					break;
+				case CountDownFade.None:
+					_fade = 1;
+					break;
 			}
 		}
 
@@ -830,28 +639,31 @@ namespace VixenModules.Effect.CountDown
 
 		private string GetCountDownTime(int frame)
 		{
-			// Adjusts countdown value depending on if countdown to end of effect or sequence.
-			int countDownNumber = CountDownType == CountDownType.Sequence
-				? (int) Math.Ceiling((SequenceTime * 1000 - StartTime.TotalMilliseconds - (double)(frame * 50)) / 1000)
-				: (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
-
-			if (countDownNumber % CountDownInterval > 0 && countDownNumber > 10)
+			// Adjusts countdown value depending on if countdown to end of effect or user defined.
+			int countDownNumber;
+			switch (CountDownType)
 			{
-				if (_countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
-				{
-					TimeSpan time = TimeSpan.FromSeconds(_countDownNumber);
-					return time.ToString(@"m\:ss");
-				}
-				return _countDownNumber.ToString();
+				case CountDownType.CountDown:
+					countDownNumber =
+						(int) Math.Ceiling((Convert.ToInt16(CountDownTime) * 1000 - (double) (frame * 50)) / 1000);
+					if (CountDownFade == CountDownFade.In) countDownNumber -= 1;
+					break;
+				case CountDownType.CountUp:
+					countDownNumber =
+						(int)Math.Floor((Convert.ToInt16(CountDownTime) * 1000 + (double)(frame * 50)) / 1000);
+					if (CountDownFade == CountDownFade.In) countDownNumber += 1;
+					break;
+				default:
+					countDownNumber = (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
+					break;
 			}
-			_countDownNumber = countDownNumber;
 
-			if (_countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
+			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
 			{
-				TimeSpan time = TimeSpan.FromSeconds(_countDownNumber);
+				TimeSpan time = TimeSpan.FromSeconds(countDownNumber);
 				return time.ToString(@"m\:ss");
 			}
-			return _countDownNumber.ToString();
+			return countDownNumber.ToString();
 		}
 
 		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
@@ -959,134 +771,6 @@ namespace VixenModules.Effect.CountDown
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, _newfont, brush, p);
-		}
-
-		// Text Class
-		public class TextClass
-		{
-			public string Text;
-			public int StartFrame;
-			public int Frame;
-			public int EndFrame;
-		}
-
-		private void SetupMarks()
-		{
-			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
-
-			// Populate TextClass with start frame, mark frame and endframe
-			if (CountDownMode == CountDownMode.MarkCollection && _marks != null)
-			{
-				var i = 0;
-				var currentMark = 0;
-				foreach (var mark in _marks)
-				{
-					TextClass t = new TextClass();
-
-					double markTime = mark.StartTime.TotalMilliseconds - StartTime.TotalMilliseconds;
-					t.Frame = (int)markTime / 50;
-
-					t.EndFrame = (int)(mark.EndTime.TotalMilliseconds - StartTime.TotalMilliseconds) / 50;
-					if (_textClass.Count == 0)
-					{
-						t.StartFrame = 0;
-					}
-					else
-					{
-						t.StartFrame = ((t.Frame - _textClass[_textClass.Count - 1].Frame) / 2) + _textClass[_textClass.Count - 1].Frame;
-						_textClass[_textClass.Count - 1].EndFrame = t.StartFrame;
-					}
-
-					if (_marks.Count() == currentMark + 1) t.EndFrame = GetNumberFrames();
-
-					i++;
-					_textClass.Add(t);
-					currentMark++;
-				}
-			}
-
-			// Adjusts start and end frames for each mark depending on fade settings.
-			for (var i = 0; i < _textClass.Count; i++)
-			{
-				TextClass text = _textClass[i];
-				switch (CountDownFade)
-				{
-					case CountDownFade.In:
-						switch (CountDownDuration)
-						{
-							case CountDownDuration.AutoFit:
-								if (i != 0) text.StartFrame = _textClass[i - 1].Frame;
-								text.EndFrame = text.Frame;
-								break;
-							case CountDownDuration.UserDefined:
-								//Gets max and min frame to compare with users Visual time setting and pick the smallest.
-								int minFrameOffset = i != 0
-									? text.Frame - _textClass[i - 1].Frame
-									: text.Frame;
-								text.EndFrame = text.Frame;
-								text.StartFrame = (int)(text.Frame - Math.Min((double)TimeVisibleLength / 50, minFrameOffset));
-								break;
-						}
-						break;
-					case CountDownFade.None:
-					case CountDownFade.Out:
-						switch (CountDownDuration)
-						{
-							case CountDownDuration.AutoFit:
-								if (i != _textClass.Count - 1) text.EndFrame = _textClass[i + 1].Frame;
-								text.StartFrame = text.Frame;
-								break;
-							case CountDownDuration.UserDefined:
-								//Gets max and min frame to compare with users Visual time setting and pick the smallest.
-								int maxFrameOffset = i != _textClass.Count - 1
-									? _textClass[i + 1].Frame - text.Frame
-									: GetNumberFrames() - text.Frame;
-								text.StartFrame = text.Frame;
-								text.EndFrame = (int)(text.Frame + Math.Min((double)TimeVisibleLength / 50, maxFrameOffset));
-								break;
-						}
-						break;
-					case CountDownFade.InOut:
-						switch (CountDownDuration)
-						{
-							case CountDownDuration.UserDefined:
-								//Gets max and min frame to compare with users Visual time setting and pick the smallest.
-								int maxFrameOffset = i != _textClass.Count - 1
-									? _textClass[i + 1].Frame - text.Frame
-									: GetNumberFrames() - text.Frame;
-								int minFrameOffset = i != 0
-									? text.Frame - _textClass[i - 1].Frame
-									: text.Frame;
-								text.EndFrame = (int)(text.Frame + Math.Min((double)TimeVisibleLength / 100, maxFrameOffset));
-								text.StartFrame = (int)(text.Frame - Math.Min((double)TimeVisibleLength / 100, minFrameOffset));
-								break;
-						}
-						break;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		protected override void MarkCollectionsChanged()
-		{
-			if (CountDownMode != CountDownMode.None)
-			{
-				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
-				InitializeMarkCollectionListeners(markCollection);
-			}
-		}
-
-		/// <inheritdoc />
-		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
-		{
-			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			if (mc != null)
-			{
-				//Our collection is gone!!!!
-				RemoveMarkCollectionListeners(mc);
-				MarkCollectionId = String.Empty;
-			}
 		}
 	}
 }

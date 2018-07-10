@@ -422,20 +422,11 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interval between showing count down time..
+        ///   Looks up a localized string similar to Determines the Sequence time to count down up or down to..
         /// </summary>
-        internal static string CountDownInterval {
+        internal static string CountDownTime {
             get {
-                return ResourceManager.GetString("CountDownInterval", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selects what source is used to determine the Count down time..
-        /// </summary>
-        internal static string CountDownSource {
-            get {
-                return ResourceManager.GetString("CountDownSource", resourceCulture);
+                return ResourceManager.GetString("CountDownTime", resourceCulture);
             }
         }
         
@@ -472,15 +463,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to When enabled will move the text basd on direction over the duration of each displayed word..
-        /// </summary>
-        internal static string DirectionPerWord {
-            get {
-                return ResourceManager.GetString("DirectionPerWord", resourceCulture);
             }
         }
         
@@ -1219,15 +1201,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string ScaleToGrid {
             get {
                 return ResourceManager.GetString("ScaleToGrid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Determines the Sequence time to count down to..
-        /// </summary>
-        internal static string SequenceTime {
-            get {
-                return ResourceManager.GetString("SequenceTime", resourceCulture);
             }
         }
         

@@ -4,9 +4,11 @@ namespace VixenModules.Effect.CountDown
 {
 	public enum CountDownType
 	{
-		[Description("Calculate to end of Effect")]
+		[Description("Countdown to end of Effect")]
 		Effect,
-		[Description("Calculate to user specified Sequence Time")]
-		Sequence
+		[Description("Count Down from specified Time")]
+		CountDown,
+		[Description("Count Up from specified Time")]
+		CountUp
 	}
 }

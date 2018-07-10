@@ -30,17 +30,10 @@ namespace VixenModules.Effect.CountDown
 			Orientation=StringOrientation.Vertical;
 			Font = new SerializableFont(new Font("Arial", 20));
 			LevelCurve = new Curve(CurveType.Flat100);
-			TimeFormat = TimeFormat.Minutes;
-			CountDownInterval = 1;
-			CountDownMode = CountDownMode.None;
-			TimeVisibleLength = 750;
+			TimeFormat = TimeFormat.Seconds;
 			CountDownType = CountDownType.Effect;
 			CountDownFade = CountDownFade.InOut;
-			DirectionPerWord = false;
-			RepeatText = false;
-			CountDownDuration = CountDownDuration.AutoFit;
-			MarkTimeFreeze = true;
-			SequenceTime = 60;
+			CountDownTime = "10";
 		}
 
 		[DataMember]
@@ -56,10 +49,7 @@ namespace VixenModules.Effect.CountDown
 		public TimeFormat TimeFormat { get; set; }
 
 		[DataMember]
-		public int CountDownInterval { get; set; }
-
-		[DataMember]
-		public int SequenceTime { get; set; }
+		public string CountDownTime { get; set; }
 
 		[DataMember]
 		public int Speed { get; set; }
@@ -95,31 +85,10 @@ namespace VixenModules.Effect.CountDown
 		public StringOrientation Orientation { get; set; }
 
 		[DataMember]
-		public Guid MarkCollectionId { get; set; }
-
-		[DataMember]
-		public CountDownMode CountDownMode { get; set; }
-
-		[DataMember]
-		public int TimeVisibleLength { get; set; }
-
-		[DataMember]
 		public CountDownType CountDownType { get; set; }
 
 		[DataMember]
 		public CountDownFade CountDownFade { get; set; }
-		
-		[DataMember]
-		public bool DirectionPerWord { get; set; }
-
-		[DataMember]
-		public bool RepeatText { get; set; }
-
-		[DataMember]
-		public CountDownDuration CountDownDuration { get; set; }
-
-		[DataMember]
-		public bool MarkTimeFreeze { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
@@ -138,18 +107,10 @@ namespace VixenModules.Effect.CountDown
 				LevelCurve = LevelCurve,
 				FontScaleCurve = new Curve(FontScaleCurve),
 				TimeFormat = TimeFormat,
-				CountDownInterval = CountDownInterval,
 				Fade = Fade,
-				CountDownMode = CountDownMode,
-				MarkCollectionId = MarkCollectionId,
-				TimeVisibleLength = TimeVisibleLength,
 				CountDownType = CountDownType,
 				CountDownFade = CountDownFade,
-				DirectionPerWord = DirectionPerWord,
-				RepeatText = RepeatText,
-				CountDownDuration = CountDownDuration,
-				MarkTimeFreeze = MarkTimeFreeze,
-				SequenceTime = SequenceTime
+				CountDownTime = CountDownTime
 			};
 			return result;
 		}

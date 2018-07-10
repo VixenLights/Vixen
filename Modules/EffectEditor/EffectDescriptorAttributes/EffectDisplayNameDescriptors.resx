@@ -630,15 +630,12 @@
   <data name="CountDownFade" xml:space="preserve">
     <value>Fade</value>
   </data>
-  <data name="CountDownSource" xml:space="preserve">
-    <value>Count Down Source</value>
-  </data>
   <data name="CountDownType" xml:space="preserve">
     <value>Count Down Type</value>
   </data>  <data name="CountDownDuration" xml:space="preserve">
     <value>Count Down Duration</value>
   </data>
-  <data name="SequenceTime" xml:space="preserve">
-    <value>Count Down Time (s)</value>
+  <data name="CountDownTime" xml:space="preserve">
+    <value>Count Down/Up Time (s)</value>
   </data>
 </root>

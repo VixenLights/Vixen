@@ -615,27 +615,19 @@
   <data name="CountDownFade" xml:space="preserve">
     <value>Will fade each displayed count down time.</value>
   </data>
-  <data name="CountDownInterval" xml:space="preserve">
-    <value>Interval between showing count down time.</value>
-  </data>
   <data name="CountDownType" xml:space="preserve">
     <value>Uses time left to end of effect or user adjusted Sequence time.</value>
   </data>
   <data name="TimeFormat" xml:space="preserve">
     <value>Displays the count down in Minutes (over 60sec) or second.</value>
   </data>
-  <data name="CountDownSource" xml:space="preserve">
-    <value>Selects what source is used to determine the Count down time.</value>  </data>
   <data name="CountDownDuration" xml:space="preserve">
     <value>Count Down Duration</value>
-  </data>
-  <data name="DirectionPerWord" xml:space="preserve">
-    <value>When enabled will move the text basd on direction over the duration of each displayed word.</value>
   </data>
   <data name="MarkTimeFreeze" xml:space="preserve">
     <value>Freezes on the tiem left when triggered.</value>
   </data>
-  <data name="SequenceTime" xml:space="preserve">
-    <value>Determines the Sequence time to count down to.</value>
+  <data name="CountDownTime" xml:space="preserve">
+    <value>Determines the Sequence time to count down up or down to.</value>
   </data>
 </root>
