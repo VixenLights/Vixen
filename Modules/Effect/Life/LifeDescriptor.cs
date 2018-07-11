@@ -1,6 +1,7 @@
 ﻿using System;
 using Vixen.Module.Effect;
 using Vixen.Sys;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Life
 {

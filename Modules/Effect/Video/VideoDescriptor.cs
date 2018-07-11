@@ -2,6 +2,7 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Video
 {
@@ -46,6 +47,12 @@ namespace VixenModules.Effect.Video
 		{
 			get { return typeof(VideoData); }
 		}
+
+		/// <inheritdoc />
+		public override bool SupportsFiles => true;
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportedFileExtensions => StandardMediaExtensions.VideoExtensions;
 
 		public override string Author
 		{

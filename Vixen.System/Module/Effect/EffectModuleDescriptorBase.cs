@@ -36,6 +36,33 @@ namespace Vixen.Module.Effect {
 		/// <inheritdoc />
 		public virtual bool SupportsMarks => false;
 
+		/// <inheritdoc />
+		public virtual bool SupportsFiles => false;
+
+		public virtual bool SupportsVideo
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		public virtual bool SupportsImage
+		{
+			get
+			{
+				return false;
+			}
+		}		public virtual string MediaPath
+		{
+			get
+			{
+				return "";
+			}
+		}
+
+		public virtual string[] SupportedFileExtensions => new string[0];
+
 		public abstract override string TypeName { get; }
 
 		public abstract override Guid TypeId { get; }

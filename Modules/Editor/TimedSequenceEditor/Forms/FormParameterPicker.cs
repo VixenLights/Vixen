@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Common.Controls;
+using Vixen.Module.Effect;
 using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -47,11 +48,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timer.Stop();
 			EffectParameterPickerControl control = (EffectParameterPickerControl)sender;
 			PropertyInfo = control.PropertyInfo;
+			EffectPropertyInfo = control.EffectPropertyInfo;
 			SelectedControl = control;
 			CloseForm(DialogResult.OK);
 		}
 
 		public PropertyDescriptor PropertyInfo { get; private set; }
+
+		public IEffectModuleDescriptor EffectPropertyInfo { get; set; }
 
 		public int ParameterIndex { get; set; }
 

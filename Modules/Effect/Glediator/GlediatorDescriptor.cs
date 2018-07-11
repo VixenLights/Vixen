@@ -2,6 +2,7 @@
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
+using VixenModules.Effect.Effect;
 
 namespace VixenModules.Effect.Glediator
 {
@@ -41,6 +42,12 @@ namespace VixenModules.Effect.Glediator
 		{
 			get { return typeof(Glediator); }
 		}
+
+		/// <inheritdoc />
+		public override bool SupportsFiles => true;
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportedFileExtensions => new[] { ".gled" };
 
 		public override Type ModuleDataClass
 		{

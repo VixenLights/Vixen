@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Vixen.Module.Effect;
 
 namespace Common.Controls
 {
@@ -19,6 +20,8 @@ namespace Common.Controls
 
 		private PropertyDescriptor _propertyInfo;
 
+		private IEffectModuleDescriptor _effectPropertyInfo;
+
 		public PropertyDescriptor PropertyInfo
 		{
 			get { return _propertyInfo; }
@@ -28,6 +31,18 @@ namespace Common.Controls
 				if (_propertyInfo != null)
 				{
 					DisplayName = _propertyInfo.DisplayName;
+				}
+			}
+		}
+		public IEffectModuleDescriptor EffectPropertyInfo
+		{
+			get { return _effectPropertyInfo; }
+			set
+			{
+				_effectPropertyInfo = value;
+				if (_propertyInfo != null)
+				{
+					DisplayName = _effectPropertyInfo.EffectName;
 				}
 			}
 		}

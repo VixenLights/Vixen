@@ -47,6 +47,7 @@ namespace Vixen.Module.Effect
 		ParameterSignature Parameters { get; }
 		void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle);
 		bool SupportsMedia { get; }
+		string[] SupportsExtensions { get; }
 		List<IMediaModuleInstance> Media { get; set; }
 		bool SupportsMarks { get; }
 		ObservableCollection<IMarkCollection> MarkCollections { get; set; }

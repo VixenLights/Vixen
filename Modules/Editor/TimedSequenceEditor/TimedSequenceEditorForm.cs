@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Scaling;
@@ -32,6 +34,8 @@ using Vixen.Marks;
 using Vixen.Module.App;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
+using VixenModules.Effect.Effect;
+using VixenModules.Effect.Picture;
 using VixenModules.Effect.Video;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
@@ -57,6 +61,10 @@ using DockPanel = WeifenLuo.WinFormsUI.Docking.DockPanel;
 using ListView = System.Windows.Forms.ListView;
 using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.App.Marks.MarkCollection;
+using Cursor = System.Windows.Forms.Cursor;
+using Cursors = System.Windows.Forms.Cursors;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -740,36 +748,48 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlGrid_DragDrop(object sender, DragEventArgs e)
 		{
-			Point p = new Point(e.X, e.Y);
-			//Check for effect drop
-			if (e.Data.GetDataPresent(typeof(Guid)))
+			//Checks to see if drag items are of a Filetype, dragged from Windows Explorer.
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				Guid g = (Guid)e.Data.GetData(typeof(Guid));
-				EffectDropped(g,TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				string[] filePaths = e.Data.GetData(DataFormats.FileDrop) as string[]; //Stores path of all selected files.
+				if (filePaths != null)
+				{
+					HandleFileDrop(filePaths);
+				}
+			}
+			else
+			{
+				Point p = new Point(e.X, e.Y);
+				//Check for effect drop
+				if (e.Data.GetDataPresent(typeof (Guid)))
+				{
+					Guid g = (Guid) e.Data.GetData(typeof (Guid));
+					EffectDropped(g, TimelineControl.grid.TimeAtPosition(p), TimelineControl.grid.RowAtPosition(p));
+				}
+
+				//Everything else applies to a element
+				Element element = TimelineControl.grid.ElementAtPosition(p);
+				if (element != null)
+				{
+					if (e.Data.GetDataPresent(typeof (ColorGradient)))
+					{
+						ColorGradient cg = (ColorGradient) e.Data.GetData(typeof (ColorGradient));
+						HandleGradientDrop(element, cg);
+					}
+					else if (e.Data.GetDataPresent(typeof (Curve)))
+					{
+						Curve curve = (Curve) e.Data.GetData(typeof (Curve));
+						HandleCurveDrop(element, curve);
+					}
+					else if (e.Data.GetDataPresent(typeof (Color)))
+					{
+						Color color = (Color) e.Data.GetData(typeof (Color));
+						HandleColorDrop(element, color);
+					}
+
+				}
 			}
 
-			//Everything else applies to a element
-			Element element = TimelineControl.grid.ElementAtPosition(p);
-			if (element != null)
-			{
-				if (e.Data.GetDataPresent(typeof (ColorGradient)))
-				{
-					ColorGradient cg = (ColorGradient)e.Data.GetData(typeof (ColorGradient));
-					HandleGradientDrop(element, cg);
-				}
-				else if (e.Data.GetDataPresent(typeof (Curve)))
-				{
-					Curve curve = (Curve) e.Data.GetData(typeof (Curve));
-					HandleCurveDrop(element, curve);
-				}
-				else if (e.Data.GetDataPresent(typeof(Color)))
-				{
-					Color color = (Color)e.Data.GetData(typeof(Color));
-					HandleColorDrop(element, color);
-				}
-				
-			}
-			
 		}
 
 		private void TimelineControlGrid_DragEnter(object sender, DragEventArgs e)
@@ -779,7 +799,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void TimelineControlGrid_DragOver(object sender, DragEventArgs e)
 		{
-			e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				e.Effect = DragDropEffects.Copy;
+			else
+				e.Effect = IsValidDataObject(e.Data, new Point(e.X, e.Y));
 		}
 
 		private DragDropEffects IsValidDataObject(IDataObject dataObject, Point mouseLocation)
@@ -3408,13 +3431,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
-		private void AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
+		private EffectNode AddNewEffectById(Guid effectId, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select=false)
 		{
 			//Debug.WriteLine("{0}   addNewEffectById({1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectId);
 			// get a new instance of this effect, populate it, and make a node for it
 
 			IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(effectId);
-			AddEffectInstance(effect, row, startTime, timeSpan, select);
+			return AddEffectInstance(effect, row, startTime, timeSpan, select);
 		}
 
 		/// <summary>
@@ -3426,8 +3449,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// <param name="startTime">The start time of the effect</param>
 		/// <param name="timeSpan">The duration of the effect</param>
 		/// <param name="select">Optional indicator to set as the sole selection in the timeline</param>
-		private void AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
+		private EffectNode AddEffectInstance(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime, TimeSpan timeSpan, bool select = false)
 		{
+			EffectNode effectNode = null;
 			try
 			{
 				//Debug.WriteLine("{0}   addEffectInstance(InstanceId={1})", (int)DateTime.Now.TimeOfDay.TotalMilliseconds, effectInstance.InstanceId);
@@ -3437,7 +3461,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					timeSpan = SequenceLength - startTime;
 				}
 
-				var effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
+				effectNode = CreateEffectNode(effectInstance, row, startTime, timeSpan);
+
 				// put it in the sequence and in the timeline display
 				Element element = AddEffectNode(effectNode);
 				if (select)
@@ -3449,6 +3474,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				var act = new EffectsAddedUndoAction(this, new[] { effectNode });
 				_undoMgr.AddUndoAction(act);
+
 			}
 			catch (Exception ex)
 			{
@@ -3456,6 +3482,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							 ((row == null) ? "<null>" : row.Name);
 				Logging.Error(msg, ex);
 			}
+
+			return effectNode;
 		}
 
 		private EffectNode CreateEffectNode(IEffectModuleInstance effectInstance, Row row, TimeSpan startTime,
@@ -4279,7 +4307,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Graphics gfx = Graphics.FromImage(colorBitmap);
 			using (SolidBrush brush = new SolidBrush(color))
 			{
-				gfx.FillRectangle(brush, 0, 0, 48, 48);
+				gfx.FillRectangle(brush, 0, 0, 64, 64);
 			}
 
 			return drawBitmapBorder(colorBitmap);
@@ -4287,13 +4315,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private Bitmap GetCurveBitmap(Curve curve)
 		{
-			var curveBitmap = new Bitmap((curve.GenerateGenericCurveImage(new Size(48, 48))));
+			var curveBitmap = new Bitmap((curve.GenerateGenericCurveImage(new Size(64, 64))));
 			return drawBitmapBorder(curveBitmap);
 		}
 
 		private Bitmap GetColorGradientBitmap(ColorGradient colorGradient)
 		{
-			var gradientBitmap = new Bitmap((colorGradient.GenerateColorGradientImage(new Size(48, 48), false)));
+			var gradientBitmap = new Bitmap((colorGradient.GenerateColorGradientImage(new Size(64, 64), false)));
 			return drawBitmapBorder(gradientBitmap);
 		}
 
@@ -4309,6 +4337,128 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion Bitmap methods for PL item drops
 
+		#endregion
+
+		#region Dragging Windows Explorer Files to Timeline.
+
+		private void HandleFileDrop(string[] filePaths)
+		{
+			_mouseOriginalPoint = new Point(MousePosition.X, MousePosition.Y);
+			
+			//Holding Alt key down while dragging into timeline will flip the String Orientation from the default Vertical to Horizontal.
+			//Holding the Ctrl key down while dragging will add the effects sequentialy onto the timeline.
+
+			bool dragFileHorizontalStringOrientation = ModifierKeys == Keys.Alt || ModifierKeys == (Keys.Alt | Keys.Control);
+			bool dragFileSequencialEffectPlacement = ModifierKeys == Keys.Control || ModifierKeys == (Keys.Alt | Keys.Control);
+
+
+			List<Guid> tempeffectGuid = new List<Guid>();
+			int i = 0;
+
+			var supportedEffectDescriptors = ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>().Where(x => x.SupportsFiles);
+
+			//Iterate through each selected file that was dragged.
+			foreach (string filePath in filePaths)
+			{
+				Guid guid = Guid.Empty;
+				//Check each Effect to see if it supports any File types
+				
+				var fileExtension = Path.GetExtension(filePath);
+
+				var effectDescriptors =
+					supportedEffectDescriptors.Where(x => x.SupportedFileExtensions.Contains(fileExtension)).ToList();
+
+				//Point p = new Point(e.X, e.Y);
+				if (effectDescriptors.Any())
+				{
+					if (effectDescriptors.Count <= 1)
+					{
+						//Do this if there is only one effect that the file can be used with.
+						guid = effectDescriptors[0].TypeId;
+					}
+					else
+					{
+						//Checks to see if an effect has already been used for the selected file type and if so then just use that effect agiain.
+						//Saves having the user select an effect for multiple files that are the same type.
+						foreach (var effectDescriptor in effectDescriptors.Where(effectDescriptor => tempeffectGuid.Contains(effectDescriptor.TypeId)))
+						{
+							guid = effectDescriptor.TypeId; //effect has already been selected so just use that same effect again.
+							break;
+						}
+
+						//If effect hasn't been auto selected then get the user to select one. Will bring up the Effect Selection Parameter Form
+						if (guid == Guid.Empty) guid = HandleFileDropOnEffectList(effectDescriptors);
+
+						//if guid is still empty then the file is not supported or user hit escape key and didn't select an effect to use in Vixen so go to the next file.
+						if (guid == Guid.Empty) continue;
+
+						tempeffectGuid.Add(guid); //Adds Effect Guid's so it can be checked against for the next file. This will save showing the Effect selection form everytime or the same file type.
+					}
+
+					//If effect Placement is false then just stack all the new effcts on top of each other, else add them sequentially in the timeline.
+					if (!dragFileSequencialEffectPlacement) i = 0;
+
+					IEffectModuleInstance effect = ApplicationServices.Get<IEffectModuleInstance>(guid);
+
+					
+					//This is extremely brittle. If anything changes in these effects
+					//this could break. I added a qualifier to use the common FileName property name for the file 
+					//property, but if any new effects don't use that name they could break. This should probably be 
+					//some type of attribute. The intimate knowledge of the Picture source is yet another problem.
+					foreach (var propertyData in MetadataRepository.GetProperties(effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
+					{
+						if (propertyData.PropertyType == typeof(PictureSource))
+						{
+							propertyData.Descriptor.SetValue(effect, PictureSource.File);
+						}
+
+						if (propertyData.PropertyType == typeof(String) && propertyData.Name == @"FileName")
+						{
+							propertyData.Descriptor.SetValue(effect, filePath);
+						}
+						if (dragFileHorizontalStringOrientation)
+						{
+							if (propertyData.PropertyType == typeof(StringOrientation)) propertyData.Descriptor.SetValue(effect, StringOrientation.Horizontal);
+						}
+					}
+
+					AddEffectInstance(effect, TimelineControl.grid.RowAtPosition(_mouseOriginalPoint), TimelineControl.grid.TimeAtPosition(_mouseOriginalPoint) + TimeSpan.FromTicks(20000000 * i), TimeSpan.FromSeconds(2.0), true);
+				}
+				i++;
+			}
+		}
+
+		//Will add each effect to the Effect Selection Parameter form so the user can select which effect to use with the file type.
+		private Guid HandleFileDropOnEffectList(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var parameterPickerControls = CreateEffectListPickerControls(effectDescriptors);
+
+			var parameterPicker = CreateParameterPicker(parameterPickerControls);
+
+			UpdateToolStrip4("Choose the Effect to use, press Escape to cancel.", 12);
+			var dr = parameterPicker.ShowDialog();
+			if (dr == DialogResult.OK)
+			{
+				return parameterPicker.EffectPropertyInfo.TypeId;
+			}
+			return Guid.Empty;
+		}
+
+		private List<EffectParameterPickerControl> CreateEffectListPickerControls(IEnumerable<IEffectModuleDescriptor> effectDescriptors)
+		{
+			var effectModuleDescriptors = effectDescriptors as IList<IEffectModuleDescriptor> ?? effectDescriptors.ToList();
+
+			return effectModuleDescriptors.Select((t, i) =>
+			{
+				return new EffectParameterPickerControl
+				{
+					Index = i,
+					EffectPropertyInfo = t,
+					ParameterImage = new Bitmap(t.GetRepresentativeImage(48, 48), 64, 64),
+					DisplayName = t.EffectName
+				};
+			}).ToList();
+		}
 		#endregion
 
 		#region Overridden form functions (On___)

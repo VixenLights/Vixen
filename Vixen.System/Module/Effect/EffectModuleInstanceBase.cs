@@ -235,6 +235,12 @@ namespace Vixen.Module.Effect
 		}
 
 		[Browsable(false)]
+		public string[] SupportsExtensions
+		{
+			get { return ((IEffectModuleDescriptor)Descriptor).SupportedFileExtensions; }
+		}
+
+		[Browsable(false)]
 		public List<IMediaModuleInstance> Media
 		{
 			get { return _media; }

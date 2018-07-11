@@ -35,9 +35,10 @@
 			// 
 			// labelParameterName
 			// 
-			this.labelParameterName.Location = new System.Drawing.Point(-1, 70);
+			this.labelParameterName.Location = new System.Drawing.Point(-3, 72);
+			this.labelParameterName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.labelParameterName.Name = "labelParameterName";
-			this.labelParameterName.Size = new System.Drawing.Size(113, 19);
+			this.labelParameterName.Size = new System.Drawing.Size(106, 42);
 			this.labelParameterName.TabIndex = 1;
 			this.labelParameterName.Text = "Parameter Name";
 			this.labelParameterName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -45,21 +46,23 @@
 			// 
 			// pictureParameterImage
 			// 
-			this.pictureParameterImage.Location = new System.Drawing.Point(27, 12);
+			this.pictureParameterImage.Location = new System.Drawing.Point(16, 4);
+			this.pictureParameterImage.Margin = new System.Windows.Forms.Padding(4);
 			this.pictureParameterImage.Name = "pictureParameterImage";
-			this.pictureParameterImage.Size = new System.Drawing.Size(55, 55);
+			this.pictureParameterImage.Size = new System.Drawing.Size(64, 64);
 			this.pictureParameterImage.TabIndex = 2;
 			this.pictureParameterImage.TabStop = false;
 			this.pictureParameterImage.Click += new System.EventHandler(this.pictureParameterImage_Click);
 			// 
 			// EffectParameterPickerControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.pictureParameterImage);
 			this.Controls.Add(this.labelParameterName);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.Name = "EffectParameterPickerControl";
-			this.Size = new System.Drawing.Size(110, 95);
+			this.Size = new System.Drawing.Size(102, 123);
 			((System.ComponentModel.ISupportInitialize)(this.pictureParameterImage)).EndInit();
 			this.ResumeLayout(false);
 

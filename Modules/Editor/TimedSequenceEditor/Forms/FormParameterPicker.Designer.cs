@@ -39,23 +39,24 @@
 			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(1, 1);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-			this.flowLayoutPanel1.MaximumSize = new System.Drawing.Size(800, 800);
+			this.flowLayoutPanel1.MaximumSize = new System.Drawing.Size(914, 1067);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(724, 123);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(828, 165);
 			this.flowLayoutPanel1.TabIndex = 1;
 			this.flowLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanel1_Paint);
 			// 
 			// FormParameterPicker
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.ClientSize = new System.Drawing.Size(726, 125);
+			this.ClientSize = new System.Drawing.Size(830, 167);
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.Name = "FormParameterPicker";
 			this.Padding = new System.Windows.Forms.Padding(1);
 			this.Text = "FormParameterPicker";
