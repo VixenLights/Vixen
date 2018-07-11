@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Vixen.Attributes;
+using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Sys;
 using Vixen.Sys.Attribute;
@@ -21,7 +23,7 @@ namespace VixenModules.Effect.Alternating
 	{
 		private EffectIntents _elementData;
 		private AlternatingData _data;
-
+		private IEnumerable<IMark> _marks = null;
 		public Alternating()
 		{
 			_data = new AlternatingData();
@@ -143,13 +145,65 @@ namespace VixenModules.Effect.Alternating
 		#region Config
 
 		[Value]
+		[ProviderCategory("Config", 1)]
+		[DisplayName(@"Alternating Source")]
+		[Description(@"Selects what source is used to determine change.")]
+		[PropertyOrder(0)]
+		public AlternatingMode AlternatingMode
+		{
+			get
+			{
+				return _data.AlternatingMode;
+			}
+			set
+			{
+				if (_data.AlternatingMode != value)
+				{
+					_data.AlternatingMode = value;
+					UpdateAlternatingModeAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Mark Collection")]
+		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"StaticEffect")]
 		[ProviderDescription(@"StaticEffect")]
 		[TypeConverter(typeof(BooleanStringTypeConverter))]
 		[BoolDescription("Yes", "No")]
 		[PropertyEditor("SelectionEditor")]
-		[PropertyOrder(0)]
+		[PropertyOrder(2)]
 		public bool EnableStatic
 		{
 			get { return _data.EnableStatic; }
@@ -167,7 +221,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDisplayName(@"GroupLevel")]
 		[ProviderDescription(@"GroupLevel")]
 		[NumberRange(1, 5000, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public int GroupLevel
 		{
 			get { return _data.GroupLevel; }
@@ -184,7 +238,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDisplayName(@"Interval")]
 		[ProviderDescription(@"Interval")]
 		[NumberRange(0, 10000, 1, 0)]
-		[PropertyOrder(2)]
+		[PropertyOrder(4)]
 		public int Interval
 		{
 			get { return _data.Interval; }
@@ -202,7 +256,7 @@ namespace VixenModules.Effect.Alternating
 		[ProviderDescription(@"IntervalSkip")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 10, 1)]
-		[PropertyOrder(3)]
+		[PropertyOrder(5)]
 		public int IntervalSkipCount
 		{
 			get { return _data.IntervalSkipCount; }
@@ -274,17 +328,29 @@ namespace VixenModules.Effect.Alternating
 		private void InitAllAttributes()
 		{
 			UpdateIntervalAttribute(false);
+			UpdateAlternatingModeAttributes(false);
 			UpdateDepthAttributes();
 			TypeDescriptor.Refresh(this);
 		}
+		
+		private void UpdateAlternatingModeAttributes(bool refresh=true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1); 
+			propertyStates.Add("MarkCollectionId", AlternatingMode == AlternatingMode.MarkCollection);
+			propertyStates.Add("Interval", AlternatingMode == AlternatingMode.TimeInterval);
+			propertyStates.Add("EnableStatic", AlternatingMode == AlternatingMode.TimeInterval);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
 
-
-		private void UpdateIntervalAttribute(bool refresh=true)
+		private void UpdateIntervalAttribute(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2);
 			propertyStates.Add("IntervalSkipCount", !EnableStatic);
 			propertyStates.Add("Interval", !EnableStatic);
-			SetBrowsable(propertyStates);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -347,24 +413,34 @@ namespace VixenModules.Effect.Alternating
 			int group = GroupLevel;
 			var skip = IntervalSkipCount;
 			int colorCount = Colors.Count();
+			TimeSpan intervalTime = TimeSpan;
+			List<TimeSpan> markInterval = new List<TimeSpan>();
 			//Use a single pulse to do our work, we don't need to keep creating it and then thowing it away making the GC work
 			//hard for no reason.
 			
-			if (!EnableStatic)
+			if (AlternatingMode == AlternatingMode.MarkCollection)
 			{
-				intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds/Interval));
+				SetupMarks();
+				if (_marks != null) markInterval.AddRange(_marks.Select(mark => mark.StartTime - StartTime));
+				markInterval.Add(TimeSpan);
+				intervals = markInterval.Count;
 			}
+			else
+			{
+				if (!EnableStatic)
+				{
+					intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds / Interval));
+					if (intervals >= 1) intervalTime = TimeSpan.FromMilliseconds(Interval);
+				}
+			}
+			
+			var elements = nodes.Select((x, index) => new { x, index })
+				.GroupBy(x => x.index / group, y => y.x);
 
 			var startTime = TimeSpan.Zero;
-			
-			var intervalTime = intervals == 1
-					? TimeSpan
-					: TimeSpan.FromMilliseconds(Interval);
-
-			for (int i = 0; i < intervals; i++)
+			for (var i = 0; i < intervals; i++)
 			{
-				var elements = nodes.Select((x, index) => new { x, index })
-					.GroupBy(x => x.index / group, y => y.x);
+				if (AlternatingMode == AlternatingMode.MarkCollection) intervalTime = markInterval[i] - startTime;
 
 				foreach (IGrouping<int, ElementNode> elementGroup in elements)
 				{
@@ -374,13 +450,12 @@ namespace VixenModules.Effect.Alternating
 						RenderElement(glp, startTime, intervalTime.Subtract(TimeSpan.FromMilliseconds(1)), element, effectIntents);
 					}
 					gradientLevelItem = ++gradientLevelItem % colorCount;
-
 				}
 
-				startIndexOffset = (skip+startIndexOffset) % colorCount;
+				startIndexOffset = (skip + startIndexOffset) % colorCount;
 				gradientLevelItem = startIndexOffset;
-				
-				startTime += intervalTime;
+
+				startTime = AlternatingMode == AlternatingMode.TimeInterval ? startTime + intervalTime : markInterval[i];
 			}
 
 			return effectIntents;
@@ -393,6 +468,35 @@ namespace VixenModules.Effect.Alternating
 			var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, HasDiscreteColors);
 			result.OffsetAllCommandsByTime(startTime);
 			effectIntents.Add(result);
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (AlternatingMode == AlternatingMode.MarkCollection)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
 		}
 	}
 

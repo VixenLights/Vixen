@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -24,12 +25,18 @@ namespace VixenModules.Effect.Alternating {
 
 		[DataMember]
 		public int IntervalSkipCount { get; set; }
-
+		
 		[DataMember]
 		public int DepthOfEffect { get; set; }
-
+		
 		[DataMember]
 		public bool EnableDepth { get; set; }
+
+		[DataMember]
+		public AlternatingMode AlternatingMode { get; set; }
+
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
 
 		public AlternatingData()
 		{
@@ -41,6 +48,7 @@ namespace VixenModules.Effect.Alternating {
 			IntervalSkipCount = 1;
 			DepthOfEffect = 0;
 			EnableDepth = false;
+			AlternatingMode = AlternatingMode.TimeInterval;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -54,7 +62,9 @@ namespace VixenModules.Effect.Alternating {
 				GroupLevel = GroupLevel,
 				IntervalSkipCount = IntervalSkipCount,
 				DepthOfEffect = DepthOfEffect,
-				EnableDepth = EnableDepth
+				EnableDepth = EnableDepth,
+				AlternatingMode = AlternatingMode,
+				MarkCollectionId = MarkCollectionId
 			};
 			return result;
 		}
