@@ -260,6 +260,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	{
 		private readonly DimmingCurveFilter _filter;
 		private readonly IntentsDataFlowData _data;
+		private readonly List<IIntentState> _states = new List<IIntentState>();
 
 		public DimmingCurveOutput(Curve curve)
 		{
@@ -271,20 +272,21 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		{
 			//Very important!!! 
 			//using foreach here instead of linq to reduce iterator allocations
-			//If we had better control over our update cycle, we could possibly eliminate the new list.
 			if (data.Value?.Count > 0)
 			{
-				var states = new List<IIntentState>(data.Value.Count);
+				//We can use a reuable list here because we are going to be first in the controlled update
+				//cycle of the filter chain.
+				_states.Clear();
 				foreach (var intentState in data.Value)
 				{
 					var state = _filter.Filter(intentState);
 					if (state != null)
 					{
-						states.Add(state);
+						_states.Add(state);
 					}
 				}
 
-				_data.Value = states;
+				_data.Value = _states;
 			}
 			else
 			{
@@ -294,10 +296,14 @@ namespace VixenModules.OutputFilter.DimmingCurve
 
 		public void ProcessInputData(IntentDataFlowData data)
 		{
+			//In this case, we might have a controller consuming the output and that is not
+			//predicatble so we can't write to a list that might be accessed at
+			//the same time for read. So we are stuck creating a new one. Fortunatly this 
+			//Should be a little used use case where the dimming curve is last.
 			if (data != null)
 			{
-				var states = new List<IIntentState>(1);
 				var state = _filter.Filter(data.Value);
+				var states = new List<IIntentState>(1);
 				if (state != null)
 				{
 					states.Add(state);

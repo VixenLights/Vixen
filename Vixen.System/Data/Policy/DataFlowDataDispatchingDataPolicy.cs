@@ -70,7 +70,7 @@ namespace Vixen.Data.Policy
 			}
 		}
 
-		protected internal virtual List<ICommand> EvaluateIntentStates(List<IIntentState> intentStates)
+		protected internal List<ICommand> EvaluateIntentStates(List<IIntentState> intentStates)
 		{
 			_commands.Clear();
 			foreach (var intentState in intentStates)
@@ -81,12 +81,12 @@ namespace Vixen.Data.Policy
 			return _commands;
 		}
 
-		protected internal virtual ICommand EvaluateIntentState(IIntentState intentState)
+		protected internal ICommand EvaluateIntentState(IIntentState intentState)
 		{
 			return _GetEvaluator().Evaluate(intentState);
 		}
 
-		protected internal virtual ICommand CombineCommands(List<ICommand> commands)
+		protected internal ICommand CombineCommands(List<ICommand> commands)
 		{
 			return _GetCombinator().Combine(commands);
 		}
