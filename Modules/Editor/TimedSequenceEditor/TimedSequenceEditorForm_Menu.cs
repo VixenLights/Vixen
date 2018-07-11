@@ -360,11 +360,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			HandleDockContentToolStripMenuClick(MarksForm, DockState.DockRight);
 			}
 
-		private void toolWindowToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			HandleDockContentToolStripMenuClick(ToolsForm, DockState.DockRight);
-			}
-
 		private void mixingFilterEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 			{
 			HandleDockContentToolStripMenuClick(LayerEditor, DockState.DockLeft);
@@ -373,6 +368,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItemFindEffects_Click(object sender, EventArgs e)
 		{
 			HandleDockContentToolStripMenuClick(FindEffects, DockState.DockLeft);
+		}
+
+		private void toolStripMenuItemColorLibrary_Click(object sender, EventArgs e)
+		{
+			HandleDockContentToolStripMenuClick(ColorLibraryForm, DockState.DockRight);
+		}
+
+		private void toolStripMenuItemCurveLibrary_Click(object sender, EventArgs e)
+		{
+			HandleDockContentToolStripMenuClick(CurveLibraryForm, DockState.DockRight);
+		}
+
+		private void toolStripMenuItemGradientLibrary_Click(object sender, EventArgs e)
+		{
+			HandleDockContentToolStripMenuClick(GradientLibraryForm, DockState.DockRight);
 		}
 
 		private void HandleDockContentToolStripMenuClick(DockContent dockWindow, DockState state)

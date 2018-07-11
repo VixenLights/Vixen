@@ -272,6 +272,24 @@
     <Compile Include="Forms\Form_Grid.Designer.cs">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Form_ColorLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form_ColorLibrary.Designer.cs">
+      <DependentUpon>Form_ColorLibrary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Form_GradientLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form_GradientLibrary.Designer.cs">
+      <DependentUpon>Form_GradientLibrary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Form_CurveLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Form_CurveLibrary.Designer.cs">
+      <DependentUpon>Form_CurveLibrary.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntentRasterizer.cs" />
     <Compile Include="InvalidAudioPathDialog.cs">
       <SubType>Form</SubType>
@@ -331,12 +349,6 @@
     </Compile>
     <Compile Include="TimedSequenceElement.cs" />
     <Compile Include="TimedSequenceRowLabel.cs" />
-    <Compile Include="Forms\Form_ToolPalette.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Form_ToolPalette.Designer.cs">
-      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
-    </Compile>
     <Compile Include="Undo\MarksRemovedUndoAction.cs" />
     <Compile Include="Undo\MarksAddedUndoAction .cs" />
     <Compile Include="Undo\MarksAddedRemovedUndoAction.cs" />
@@ -406,6 +418,15 @@
     <EmbeddedResource Include="Forms\Form_Grid.resx">
       <DependentUpon>Form_Grid.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Form_ColorLibrary.resx">
+      <DependentUpon>Form_ColorLibrary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Form_GradientLibrary.resx">
+      <DependentUpon>Form_GradientLibrary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Form_CurveLibrary.resx">
+      <DependentUpon>Form_CurveLibrary.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InvalidAudioPathDialog.resx">
       <DependentUpon>InvalidAudioPathDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -430,9 +451,6 @@
     <EmbeddedResource Include="TimedSequenceEditorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TimedSequenceEditorResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form_ToolPalette.resx">
-      <DependentUpon>Form_ToolPalette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LayerEditor.resx">
       <DependentUpon>LayerEditor.cs</DependentUpon>

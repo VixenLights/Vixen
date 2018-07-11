@@ -266,14 +266,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return GridForm;
 			if (persistString == typeof (Form_Marks).ToString())
 				return MarksForm;
-			if (persistString == typeof (Form_ToolPalette).ToString())
-				return ToolsForm;
+			if (persistString == typeof(Form_ColorLibrary).ToString())
+				return ColorLibraryForm;
+			if (persistString == typeof(Form_CurveLibrary).ToString())
+				return CurveLibraryForm;
+			if (persistString == typeof(Form_GradientLibrary).ToString())
+				return GradientLibraryForm;
 			if (persistString == typeof (FindEffectForm).ToString())
 				return FindEffects;
 			if (persistString == typeof (FormEffectEditor).ToString())
 				return EffectEditorForm;
 			if (persistString == typeof (LayerEditor).ToString())
 				return LayerEditor;
+			if (persistString == "VixenModules.Editor.TimedSequenceEditor.Form_ToolPalette")
+				return null;
 
 			//Else
 			throw new NotImplementedException("Unable to find docking window type: " + persistString);
@@ -338,8 +344,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItem_ResizeIndicator.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), false);
 			toolStripButton_DrawMode.Checked = TimelineControl.grid.EnableDrawMode = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/DrawModeSelected", Name), false);
 			toolStripButton_SelectionMode.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SelectionModeSelected", Name), true);
-			ToolsForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), false);
-			ToolsForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), false);
+			CurveLibraryForm.LinkCurves = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLinkCurves", Name), false);
+			GradientLibraryForm.LinkGradients = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLinkGradients", Name), false);
 			cADStyleSelectionBoxToolStripMenuItem.Checked = TimelineControl.grid.aCadStyleSelectionBox = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), false);
 			CheckRiColorMenuItem(xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), "Red"));
 			zoomUnderMousePositionToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), false);
@@ -553,10 +559,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_gridForm.Dispose();
 				_gridForm = null;
 			}
-			if (_toolPaletteForm != null)
+			if (_colorLibraryForm != null)
 			{
-				_toolPaletteForm.Dispose();
-				_toolPaletteForm = null;
+				_colorLibraryForm.Dispose();
+				_colorLibraryForm = null;
+			}
+			if (_curveLibraryForm != null)
+			{
+				_curveLibraryForm.Dispose();
+				_curveLibraryForm = null;
+			}
+			if (_gradientLibraryForm != null)
+			{
+				_gradientLibraryForm.Dispose();
+				_gradientLibraryForm = null;
 			}
 			if (_marksForm != null)
 			{
@@ -589,12 +605,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void SetDockDefaults()
 		{
 			GridForm.Show(dockPanel, DockState.Document);
-			ToolsForm.Show(dockPanel, DockState.DockRight);
+			ColorLibraryForm.Show(dockPanel, DockState.DockRight);
+			CurveLibraryForm.Show(dockPanel, DockState.DockRight);
+			GradientLibraryForm.Show(dockPanel, DockState.DockRight);
 			MarksForm.Show(dockPanel, DockState.DockRight);
 			LayerEditor.Show(dockPanel, DockState.DockRight);
 			FindEffects.Show(dockPanel, DockState.DockRight);
 			EffectsForm.Show(dockPanel, DockState.DockLeft);
-			EffectEditorForm.Show(ToolsForm.Pane, DockAlignment.Top, .6);
 		}
 
 
@@ -663,9 +680,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_marksForm.Dispose();	
 			}
 
-			if (_toolPaletteForm != null && !_toolPaletteForm.IsDisposed)
+			if (_colorLibraryForm != null && !_colorLibraryForm.IsDisposed)
 			{
-				ToolsForm.Dispose();
+				ColorLibraryForm.Dispose();
+			}
+
+			if (_curveLibraryForm != null && !_curveLibraryForm.IsDisposed)
+			{
+				CurveLibraryForm.Dispose();
+			}
+
+			if (_gradientLibraryForm != null && !_gradientLibraryForm.IsDisposed)
+			{
+				GradientLibraryForm.Dispose();
 			}
 
 			if (_layerEditor != null && !_layerEditor.IsDisposed)
@@ -924,19 +951,51 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private Form_ToolPalette _toolPaletteForm;
+		private Form_ColorLibrary _colorLibraryForm;
 
-		private Form_ToolPalette ToolsForm
+		private Form_ColorLibrary ColorLibraryForm
 		{
 			get
 			{
-				if (_toolPaletteForm != null && !_toolPaletteForm.IsDisposed)
+				if (_colorLibraryForm != null && !_colorLibraryForm.IsDisposed)
 				{
-					return _toolPaletteForm;
+					return _colorLibraryForm;
 				}
-				
-				_toolPaletteForm = new Form_ToolPalette(TimelineControl);
-				return _toolPaletteForm;
+
+				_colorLibraryForm = new Form_ColorLibrary(TimelineControl);
+				return _colorLibraryForm;
+			}
+		}
+
+		private Form_CurveLibrary _curveLibraryForm;
+
+		private Form_CurveLibrary CurveLibraryForm
+		{
+			get
+			{
+				if (_curveLibraryForm != null && !_curveLibraryForm.IsDisposed)
+				{
+					return _curveLibraryForm;
+				}
+
+				_curveLibraryForm = new Form_CurveLibrary(TimelineControl);
+				return _curveLibraryForm;
+			}
+		}
+
+		private Form_GradientLibrary _gradientLibraryForm;
+
+		private Form_GradientLibrary GradientLibraryForm
+		{
+			get
+			{
+				if (_gradientLibraryForm != null && !_gradientLibraryForm.IsDisposed)
+				{
+					return _gradientLibraryForm;
+				}
+
+				_gradientLibraryForm = new Form_GradientLibrary(TimelineControl);
+				return _gradientLibraryForm;
 			}
 		}
 
@@ -4489,8 +4548,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			int rownum = 0;
 			var affectedElements = new List<Element>();
 			var layerManager = LayerManager;
+			HashSet<string> uniqueStrings = new HashSet<string>();
 			foreach (Row row in TimelineControl.VisibleRows)
 			{
+				//Check that the same Row name has not already been processed and will skip if the same Row is found visible in another group.
+				if (uniqueStrings.Contains(row.Name)) continue;
+				uniqueStrings.Add(row.Name);
+
 				// Since removals may happen during enumeration, make a copy with ToArray().
 
 				//If we already have the elements becasue the same row is duplicated then skip.
@@ -4937,14 +5001,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorEnabled", Name), TimelineControl.grid.ResizeIndicator_Enabled);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CadStyleSelectionBox", Name), cADStyleSelectionBoxToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ResizeIndicatorColor", Name), TimelineControl.grid.ResizeIndicator_Color);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkCurves", Name), ToolsForm.LinkCurves);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolPaletteLinkGradients", Name), ToolsForm.LinkGradients);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLinkCurves", Name), CurveLibraryForm.LinkCurves);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLinkGradients", Name), GradientLibraryForm.LinkGradients);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
-			ToolsForm.Close();
+			ColorLibraryForm.Close();
+			GradientLibraryForm.Close();
+			CurveLibraryForm.Close();
 
 			//These are only saved in options
 			//xml.PutPreference(string.Format("{0}/AutoSaveInterval", Name), _autoSaveTimer.Interval);
@@ -5162,8 +5228,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			markWindowToolStripMenuItem.Checked = !(_marksForm == null || _marksForm.DockState == DockState.Unknown);
 			mixingFilterEditorWindowToolStripMenuItem.Checked =
 				!(_layerEditor == null || _layerEditor.DockState == DockState.Unknown);
-			toolWindowToolStripMenuItem.Checked = !(_toolPaletteForm == null || _toolPaletteForm.DockState == DockState.Unknown);
 			toolStripMenuItemFindEffects.Checked = !(_findEffects == null || _findEffects.DockState == DockState.Unknown);
+			toolStripMenuItemColorLibrary.Checked = !(_colorLibraryForm == null || _colorLibraryForm.DockState == DockState.Unknown);
+			toolStripMenuItemGradientLibrary.Checked = !(_gradientLibraryForm == null || _gradientLibraryForm.DockState == DockState.Unknown);
+			toolStripMenuItemCurveLibrary.Checked = !(_curveLibraryForm == null || _curveLibraryForm.DockState == DockState.Unknown);
 			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
 			effectEditorWindowToolStripMenuItem.Checked =
 				!(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
