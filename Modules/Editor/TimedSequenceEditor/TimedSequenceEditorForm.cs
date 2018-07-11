@@ -37,6 +37,7 @@ using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Picture;
 using VixenModules.Effect.Video;
+using VixenModules.Effect.Shapes;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
 using Vixen.Module.Editor;
@@ -4474,11 +4475,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					//this could break. I added a qualifier to use the common FileName property name for the file 
 					//property, but if any new effects don't use that name they could break. This should probably be 
 					//some type of attribute. The intimate knowledge of the Picture source is yet another problem.
-					foreach (var propertyData in MetadataRepository.GetProperties(effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
+					foreach (var propertyData in MetadataRepository.GetProperties(effect).Where(propertyData => propertyData.PropertyType == typeof(PictureSource) || propertyData.PropertyType == typeof(ShapeList) || propertyData.PropertyType == typeof(String) || propertyData.PropertyType == typeof(StringOrientation)))
 					{
 						if (propertyData.PropertyType == typeof(PictureSource))
 						{
 							propertyData.Descriptor.SetValue(effect, PictureSource.File);
+						}
+
+						if (propertyData.PropertyType == typeof(ShapeList))
+						{
+							propertyData.Descriptor.SetValue(effect, ShapeList.File);
 						}
 
 						if (propertyData.PropertyType == typeof(String) && propertyData.Name == @"FileName")

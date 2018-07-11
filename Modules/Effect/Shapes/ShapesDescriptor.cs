@@ -32,6 +32,12 @@ namespace VixenModules.Effect.Shapes
 		/// <inheritdoc />
 		public override bool SupportsMarks => true;
 
+		/// <inheritdoc />
+		public override bool SupportsFiles => true;
+
+		//Used when dragging files from Windows Explorer and will grab the appropiate file extensions to check.
+		public override string[] SupportedFileExtensions => new[] { ".svg" };
+
 		#endregion
 
 		public override string TypeName
