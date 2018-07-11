@@ -631,11 +631,11 @@
     <value>Fade</value>
   </data>
   <data name="CountDownType" xml:space="preserve">
-    <value>Count Down Type</value>
+    <value>Count Type</value>
   </data>  <data name="CountDownDuration" xml:space="preserve">
     <value>Count Down Duration</value>
   </data>
   <data name="CountDownTime" xml:space="preserve">
-    <value>Count Down/Up Time (s)</value>
+    <value>Start Time</value>
   </data>
 </root>

@@ -458,7 +458,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Count Down/Up Time (s).
+        ///   Looks up a localized string similar to Start Time.
         /// </summary>
         internal static string CountDownTime {
             get {
@@ -467,7 +467,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Count Down Type.
+        ///   Looks up a localized string similar to Count Type.
         /// </summary>
         internal static string CountDownType {
             get {

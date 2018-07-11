@@ -616,7 +616,7 @@
     <value>Will fade each displayed count down time.</value>
   </data>
   <data name="CountDownType" xml:space="preserve">
-    <value>Uses time left to end of effect or user adjusted Sequence time.</value>
+    <value>Sets the type as count down the time to the end of the effect, or count up/down from user specified start time.</value>
   </data>
   <data name="TimeFormat" xml:space="preserve">
     <value>Displays the count down in Minutes (over 60sec) or second.</value>
@@ -628,6 +628,6 @@
     <value>Freezes on the tiem left when triggered.</value>
   </data>
   <data name="CountDownTime" xml:space="preserve">
-    <value>Determines the Sequence time to count down up or down to.</value>
+    <value>Sets the starting time in seconds for the count to begin.</value>
   </data>
 </root>

@@ -422,7 +422,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Determines the Sequence time to count down up or down to..
+        ///   Looks up a localized string similar to Sets the starting time in seconds for the count to begin..
         /// </summary>
         internal static string CountDownTime {
             get {
@@ -431,7 +431,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uses time left to end of effect or user adjusted Sequence time..
+        ///   Looks up a localized string similar to Sets the type as count down the time to the end of the effect, or count up/down from user specified start time..
         /// </summary>
         internal static string CountDownType {
             get {
