@@ -39,6 +39,11 @@ namespace Vixen.Intent
 			_value = value;
 		}
 
+		public ref ResultType GetValueRef()
+		{
+			return ref _value;
+		}
+
 		public ResultType GetValue()
 		{
 			return _value;

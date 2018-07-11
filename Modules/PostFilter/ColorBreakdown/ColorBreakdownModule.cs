@@ -221,10 +221,6 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		/// <returns></returns>
 		public double GetIntensityForState(IIntentState intentValue)
 		{
-			if (intentValue == null)
-			{
-				Debugger.Break();
-			}
 			intentValue.Dispatch(this);
 			return _intensityValue;
 		}
@@ -319,12 +315,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
 		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
-		private readonly IntentDataFlowData _intentData;
-		
+		private readonly IntentDataFlowData _data;
+
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			_intentData = new IntentDataFlowData(_state);
-			Data = _intentData;
+			_data = new IntentDataFlowData(_state);
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
 		}
@@ -349,25 +344,21 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 
 			if (intensity > 0)
 			{
-				//Get a copy of the state value which is a struct and update it with the new intensity and then set it back
-				var intensityValue = _state.GetValue();
+				//Get a ref to the state value which is a struct and update it with the new intensity
+				ref IntensityValue intensityValue = ref _state.GetValueRef();
 				intensityValue.Intensity = intensity;
-				_state.SetValue(intensityValue);
-				Data.Value = _state;
+				_data.Value = _state;
 			}
 			else
 			{
-				Data.Value = null;
+				_data.Value = null;
 			}
 			
 		}
 
-		public IntentDataFlowData Data { get; private set; }
+		public IntentDataFlowData Data => _data;
 
-		IDataFlowData IDataFlowOutput.Data
-		{
-			get { return Data; }
-		}
+		IDataFlowData IDataFlowOutput.Data => _data;
 
 		public string Name
 		{

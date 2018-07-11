@@ -188,17 +188,8 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			if (lightingValue.Intensity > 0)
 			{
 				double newIntensity = _curve.GetValue(lightingValue.Intensity * 100.0) / 100.0;
-				var state = obj as StaticIntentState<LightingValue>;
-				if (state != null)
-				{
-					state.SetValue(new LightingValue(lightingValue, newIntensity));
-					_intentValue = state;
-				}
-				else
-				{
-					_lvState.SetValue(new LightingValue(lightingValue, newIntensity));
-					_intentValue = _lvState;
-				}
+				_lvState.SetValue(new LightingValue(lightingValue, newIntensity));
+				_intentValue = _lvState;
 			}
 			else
 			{
@@ -210,46 +201,48 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue rgbValue = obj.GetValue();
-			HSV hsv = HSV.FromRGB(rgbValue.FullColor);
-			double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
-			hsv.V = newIntensity;
-			var state = obj as StaticIntentState<RGBValue>;
-			if (state != null)
+			if (rgbValue.Intensity > 0)
 			{
-				state.SetValue(new RGBValue(hsv.ToRGB()));
-				_intentValue = state;
+				double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
+				HSV hsv = HSV.FromRGB(rgbValue.FullColor);
+				hsv.V = newIntensity;
+				_rgbState.SetValue(new RGBValue(hsv.ToRGB()));
+				_intentValue = _rgbState;
 			}
 			else
 			{
-				_rgbState.SetValue(new RGBValue(hsv.ToRGB()));
-				_intentValue = _rgbState;
+				_intentValue = null;
 			}
 		}
 
 		public override void Handle(IIntentState<DiscreteValue> obj)
 		{
 			DiscreteValue discreteValue = obj.GetValue();
-			double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
-			var state = obj as StaticIntentState<DiscreteValue>;
-			if (state != null)
+			if (discreteValue.Intensity > 0)
 			{
-				discreteValue.Intensity = newIntensity;
-				state.SetValue(discreteValue);
-				_intentValue = state;
+				double newIntensity = _curve.GetValue(discreteValue.Intensity * 100.0) / 100.0;
+				if (obj is StaticIntentState<DiscreteValue> state)
+				{
+					discreteValue.Intensity = newIntensity;
+					state.SetValue(discreteValue);
+					_intentValue = state;
+				}
+				else
+				{
+					_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
+				}
 			}
 			else
 			{
-				_intentValue = new StaticIntentState<DiscreteValue>(new DiscreteValue(discreteValue.Color, newIntensity));
+				_intentValue = null;
 			}
-			
 		}
 
 		public override void Handle(IIntentState<IntensityValue> obj)
 		{
 			IntensityValue intensityValue = obj.GetValue();
 			double newIntensity = _curve.GetValue(intensityValue.Intensity * 100.0) / 100.0;
-			var state = obj as StaticIntentState<IntensityValue>;
-			if (state != null)
+			if (obj is StaticIntentState<IntensityValue> state)
 			{
 				intensityValue.Intensity = newIntensity;
 				state.SetValue(intensityValue);
@@ -266,11 +259,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 	internal class DimmingCurveOutput : IDataFlowOutput<IntentsDataFlowData>
 	{
 		private readonly DimmingCurveFilter _filter;
-		private static readonly List<IIntentState> EmptyState = Enumerable.Empty<IIntentState>().ToList(); 
+		private readonly IntentsDataFlowData _data;
 
 		public DimmingCurveOutput(Curve curve)
 		{
-			Data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
+			_data = new IntentsDataFlowData(Enumerable.Empty<IIntentState>().ToList());
 			_filter = new DimmingCurveFilter(curve);
 		}
 
@@ -291,11 +284,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 					}
 				}
 
-				Data.Value = states;
+				_data.Value = states;
 			}
 			else
 			{
-				Data.Value = null;
+				_data.Value = null;
 			}
 		}
 
@@ -309,22 +302,19 @@ namespace VixenModules.OutputFilter.DimmingCurve
 				{
 					states.Add(state);
 				}
-				Data.Value = states;
+				_data.Value = states;
 			}
 			else
 			{
-				Data.Value = null;
+				_data.Value = null;
 			}
 			
 		}
 
-		public IntentsDataFlowData Data { get; private set; }
+		public IntentsDataFlowData Data => _data;
 
-	
-		IDataFlowData IDataFlowOutput.Data
-		{
-			get { return Data; }
-		}
+
+		IDataFlowData IDataFlowOutput.Data => _data;
 
 		public string Name
 		{
