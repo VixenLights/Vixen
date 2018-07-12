@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -36,8 +37,8 @@ namespace VixenModules.Effect.Fireworks
 			Normalize = true;
 			DecayTime = 1500;
 			AttackTime = 52;
-			EnableAudio = false;
 			Gain = 0;
+			FireworksSource = FireworksSource.None;
 		}
 
 		[DataMember]
@@ -49,7 +50,7 @@ namespace VixenModules.Effect.Fireworks
 		[DataMember]
 		public int DecayTime { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool EnableAudio { get; set; }
 
 		[DataMember]
@@ -112,9 +113,18 @@ namespace VixenModules.Effect.Fireworks
 		[DataMember]
 		public bool Normalize { get; set; }
 
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
+
+		[DataMember]
+		public FireworksSource FireworksSource { get; set; }
+
 		[OnDeserialized]
 		void OnDeserialized(StreamingContext c)
 		{
+			if (EnableAudio) FireworksSource = FireworksSource.Audio;
+			EnableAudio = false;
+
 			//Ensure defaults for new fields that were not in older effects.
 			if (DecayTime == 0)
 			{
@@ -156,7 +166,8 @@ namespace VixenModules.Effect.Fireworks
 				DecayTime = DecayTime,
 				AttackTime = AttackTime,
 				ExplosionSensitivity = ExplosionSensitivity,
-				EnableAudio = EnableAudio,
+				MarkCollectionId = MarkCollectionId,
+				FireworksSource = FireworksSource
 			};
 			return result;
 		}

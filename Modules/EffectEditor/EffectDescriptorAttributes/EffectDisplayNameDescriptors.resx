@@ -594,4 +594,7 @@
   <data name="StaticPhoneme" xml:space="preserve">
     <value>Phoneme</value>
   </data>
+  <data name="FireworksSource" xml:space="preserve">
+    <value>Fireworks Source</value>
+  </data>
 </root>

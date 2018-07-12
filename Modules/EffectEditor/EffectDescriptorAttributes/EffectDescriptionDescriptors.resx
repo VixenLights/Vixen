@@ -585,4 +585,7 @@
   <data name="StaticPhoneme" xml:space="preserve">
     <value>The Phoneme mouth affiliation.</value>
   </data>
+  <data name="FireworksSource" xml:space="preserve">
+    <value>Selects what source is used to determine explosions.</value>
+  </data>
 </root>

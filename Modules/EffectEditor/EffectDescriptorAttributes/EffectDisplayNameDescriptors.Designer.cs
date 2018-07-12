@@ -548,6 +548,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fireworks Source.
+        /// </summary>
+        internal static string FireworksSource {
+            get {
+                return ResourceManager.GetString("FireworksSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fit To Time.
         /// </summary>
         internal static string FitTime {

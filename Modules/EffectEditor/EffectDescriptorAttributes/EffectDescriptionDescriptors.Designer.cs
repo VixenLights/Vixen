@@ -494,6 +494,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selects what source is used to determine explosions..
+        /// </summary>
+        internal static string FireworksSource {
+            get {
+                return ResourceManager.GetString("FireworksSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Times the effect so that it will fit in the allotted time span..
         /// </summary>
         internal static string FitTime {
