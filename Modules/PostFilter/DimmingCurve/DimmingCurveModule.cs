@@ -201,10 +201,11 @@ namespace VixenModules.OutputFilter.DimmingCurve
 		public override void Handle(IIntentState<RGBValue> obj)
 		{
 			RGBValue rgbValue = obj.GetValue();
-			if (rgbValue.Intensity > 0)
+			var i = rgbValue.Intensity;
+			if (i > 0)
 			{
-				double newIntensity = _curve.GetValue(rgbValue.Intensity * 100.0) / 100.0;
-				HSV hsv = HSV.FromRGB(rgbValue.FullColor);
+				double newIntensity = _curve.GetValue(i * 100.0) / 100.0;
+				HSV hsv = HSV.FromRGB(rgbValue.R, rgbValue.G, rgbValue.B);
 				hsv.V = newIntensity;
 				_rgbState.SetValue(new RGBValue(hsv.ToRGB()));
 				_intentValue = _rgbState;

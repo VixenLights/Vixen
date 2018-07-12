@@ -65,7 +65,7 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				return HSV.VFromRgb(FullColor);
+				return HSV.VFromRgb(R,G,B);
 			}
 		}
 

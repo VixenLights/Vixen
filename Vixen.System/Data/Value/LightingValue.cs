@@ -66,6 +66,14 @@ namespace Vixen.Data.Value
 			_intensity = i;
 		}
 
+		public LightingValue(HSV hsv, double i)
+		{
+			_hue = hsv.H;
+			_saturation = hsv.S;
+			_value = hsv.V;
+			_intensity = i;
+		}
+
 		/// <summary>
 		/// Percentage value in the range 0.0 -> 1.0 (from 0% to 100%).
 		/// </summary>
