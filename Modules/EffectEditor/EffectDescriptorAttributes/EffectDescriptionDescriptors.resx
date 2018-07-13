@@ -621,9 +621,6 @@
   <data name="TimeFormat" xml:space="preserve">
     <value>Displays the count down in Minutes (over 60sec) or second.</value>
   </data>
-  <data name="CountDownDuration" xml:space="preserve">
-    <value>Count Down Duration</value>
-  </data>
   <data name="MarkTimeFreeze" xml:space="preserve">
     <value>Freezes on the tiem left when triggered.</value>
   </data>

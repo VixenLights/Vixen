@@ -440,15 +440,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Count Down Duration.
-        /// </summary>
-        internal static string CountDownDuration {
-            get {
-                return ResourceManager.GetString("CountDownDuration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fade.
         /// </summary>
         internal static string CountDownFade {
@@ -526,6 +517,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direction Per Word.
+        /// </summary>
+        internal static string DirectionPerWord {
+            get {
+                return ResourceManager.GetString("DirectionPerWord", resourceCulture);
             }
         }
         

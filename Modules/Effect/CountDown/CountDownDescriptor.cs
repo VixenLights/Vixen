@@ -62,7 +62,7 @@ namespace VixenModules.Effect.CountDown
 
 		public override string EffectName
 		{
-			get { return "CountDown"; }
+			get { return "Count Down"; }
 		}
 	}
 }
