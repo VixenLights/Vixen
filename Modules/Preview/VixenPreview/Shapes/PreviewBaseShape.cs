@@ -30,6 +30,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public static int FloatDataSize = Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
+		private bool _isHighPrecision;
 
 		private List<PreviewPixel> _pixelCache = new List<PreviewPixel>();
 
@@ -134,6 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_stringType = value;
+				_isHighPrecision = _stringType == StringTypes.Custom;
 				if (_strings != null) {
 					foreach (var line in _strings) {
 						line.StringType = _stringType;
@@ -804,7 +806,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void CreateFullColorPoints(int referenceHeight)
 		{
-			var isHighPrecision = StringType == StringTypes.Custom;
 			foreach (PreviewPixel previewPixel in _pixelCache)
 			{
 				var state = previewPixel.Node.Element.State;
@@ -814,8 +815,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Color c = previewPixel.GetFullColor(state);
 					if (c.A > 0)
 					{
-						_points.Add(isHighPrecision ? (float)previewPixel.Location.X:previewPixel.X);
-						_points.Add(referenceHeight - (isHighPrecision ? (float)previewPixel.Location.Y : previewPixel.Y));
+						if (_isHighPrecision)
+						{
+							_points.Add((float)previewPixel.Location.X);
+							_points.Add(referenceHeight - (float)previewPixel.Location.Y);
+						}
+						else
+						{
+							_points.Add(previewPixel.X);
+							_points.Add(referenceHeight - previewPixel.Y);
+						}
+						
 						_points.Add(previewPixel.Z);
 						_points.Add(c.R);
 						_points.Add(c.G);

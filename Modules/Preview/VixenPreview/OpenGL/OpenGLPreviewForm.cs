@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Catel.Collections;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Resources;
@@ -56,6 +58,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private long _frameCount;
 
 		internal static Object ContextLock = new Object();
+
+		private ParallelOptions _parallelOptions = new ParallelOptions()
+		{
+			MaxDegreeOfParallelism = Environment.ProcessorCount
+		};
 
 		public OpenGlPreviewForm(VixenPreviewData data, Guid instanceId)
 		{
@@ -614,7 +621,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			//Prepare the points
 			//Logging.Debug("Begin Update Shape Points.");
-			Data.DisplayItems.AsParallel().ForAll(d => d.Shape.UpdateDrawPoints(_background.HasBackground?_background.Height:Height));
+			int height = _background.HasBackground ? _background.Height : Height;
+			Parallel.ForEach(Data.DisplayItems, _parallelOptions, d => d.Shape.UpdateDrawPoints(height));
 		}
 
 		private double ConvertToRadians(double angle)

@@ -336,8 +336,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			var state = states[0];
 			if (state != null)
 			{
-				Color intentColor = _fullColorHandler.GetFullColor(state);
-				return intentColor;
+				return _fullColorHandler.GetFullColor(state);
 			}
 			return Color.Empty;
 		}
