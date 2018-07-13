@@ -36,6 +36,12 @@ namespace VixenModules.Effect.Text
 			Font = new SerializableFont(new Font("Arial", 8));
 			LevelCurve = new Curve(CurveType.Flat100);
 			BaseLevelCurve = new Curve(CurveType.Flat100);
+			TextSource = TextSource.None;
+			TextFade = TextFade.Out;
+			TimeVisibleLength = 750;
+			DirectionPerWord = false;
+			RepeatText = false;
+			TextDuration = TextDuration.AutoFit;
 		}
 
 		[DataMember]
@@ -101,10 +107,33 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
+		
+		[DataMember]
+		public TextSource TextSource { get; set; }
+
+		[DataMember]
+		public TextFade TextFade { get; set; }
+		
+		[DataMember]
+		public int TimeVisibleLength { get; set; }
+		
+		[DataMember]
+		public bool DirectionPerWord { get; set; }
+
+		[DataMember]
+		public bool RepeatText { get; set; }
+
+		[DataMember]
+		public TextDuration TextDuration { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
 			//Ensure defaults for new fields that might not be in older effects.
+			if (TimeVisibleLength == 0) TimeVisibleLength = 750;
+
 			if (LevelCurve == null)
 			{
 				LevelCurve = new Curve(CurveType.Flat100);
@@ -168,7 +197,14 @@ namespace VixenModules.Effect.Text
 				Font = new SerializableFont(Font.FontValue),
 				LevelCurve = LevelCurve,
 				FontScaleCurve = new Curve(FontScaleCurve),
-				BaseLevelCurve = BaseLevelCurve
+				BaseLevelCurve = BaseLevelCurve,
+				TextSource = TextSource,
+				MarkCollectionId = MarkCollectionId,
+				TextFade = TextFade,
+				TimeVisibleLength = TimeVisibleLength,
+				DirectionPerWord = DirectionPerWord,
+				RepeatText = RepeatText,
+				TextDuration = TextDuration
 			};
 			return result;
 		}

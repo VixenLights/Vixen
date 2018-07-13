@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the time the word is displayed to auto fit between words either side..
+        /// </summary>
+        internal static string AutoFit {
+            get {
+                return ResourceManager.GetString("AutoFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the amount of background chunks..
         /// </summary>
         internal static string BackgroundChunks {
@@ -418,6 +427,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Direction {
             get {
                 return ResourceManager.GetString("Direction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled will move the text basd on direction over the duration of each displayed word..
+        /// </summary>
+        internal static string DirectionPerWord {
+            get {
+                return ResourceManager.GetString("DirectionPerWord", resourceCulture);
             }
         }
         
@@ -773,6 +791,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Mark Labels as text to be displayed..
+        /// </summary>
+        internal static string MarkLabels {
+            get {
+                return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max angle the Snowflake moves..
         /// </summary>
         internal static string MaxAngle {
@@ -1061,6 +1088,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When enabled will repeat the individual words if there are more Marks in the collection then number of total words..
+        /// </summary>
+        internal static string RepeatText {
+            get {
+                return ResourceManager.GetString("RepeatText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changes direction of effect..
         /// </summary>
         internal static string ReverseDirection {
@@ -1286,6 +1322,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the way the text duration is used..
+        /// </summary>
+        internal static string TextDuration {
+            get {
+                return ResourceManager.GetString("TextDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Will fade the displayed text as per setting..
+        /// </summary>
+        internal static string TextFade {
+            get {
+                return ResourceManager.GetString("TextFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The text to be displayed..
         /// </summary>
         internal static string TextLines {
@@ -1300,6 +1354,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TextMode {
             get {
                 return ResourceManager.GetString("TextMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use standard Text with no external trigger, Marks to trigger when words are shown or Marks to trigger and use Mark Labels to display..
+        /// </summary>
+        internal static string TextTrigger {
+            get {
+                return ResourceManager.GetString("TextTrigger", resourceCulture);
             }
         }
         

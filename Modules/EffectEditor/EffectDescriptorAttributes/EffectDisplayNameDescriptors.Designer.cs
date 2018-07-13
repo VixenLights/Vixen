@@ -80,6 +80,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Fit.
+        /// </summary>
+        internal static string AutoFit {
+            get {
+                return ResourceManager.GetString("AutoFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Avg Pulse Time.
         /// </summary>
         internal static string AveragePulseTime {
@@ -485,6 +494,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Direction Per Word.
+        /// </summary>
+        internal static string DirectionPerWord {
+            get {
+                return ResourceManager.GetString("DirectionPerWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ground Level.
         /// </summary>
         internal static string EnableGroundLevel {
@@ -872,6 +890,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Mark Labels.
+        /// </summary>
+        internal static string MarkLabels {
+            get {
+                return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max Angle.
         /// </summary>
         internal static string MaxAngle {
@@ -1151,6 +1178,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repeat Text.
+        /// </summary>
+        internal static string RepeatText {
+            get {
+                return ResourceManager.GetString("RepeatText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reverse Direction.
         /// </summary>
         internal static string ReverseDirection {
@@ -1358,6 +1394,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text Duration.
+        /// </summary>
+        internal static string TextDuration {
+            get {
+                return ResourceManager.GetString("TextDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Fade.
+        /// </summary>
+        internal static string TextFade {
+            get {
+                return ResourceManager.GetString("TextFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text Line(s).
         /// </summary>
         internal static string TextLines {
@@ -1372,6 +1426,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TextMode {
             get {
                 return ResourceManager.GetString("TextMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Trigger.
+        /// </summary>
+        internal static string TextTrigger {
+            get {
+                return ResourceManager.GetString("TextTrigger", resourceCulture);
             }
         }
         

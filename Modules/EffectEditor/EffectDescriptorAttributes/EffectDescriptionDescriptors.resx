@@ -588,4 +588,25 @@
   <data name="FireworksSource" xml:space="preserve">
     <value>Selects what source is used to determine explosions.</value>
   </data>
+  <data name="AutoFit" xml:space="preserve">
+    <value>Adjusts the time the word is displayed to auto fit between words either side.</value>
+  </data>
+  <data name="DirectionPerWord" xml:space="preserve">
+    <value>When enabled will move the text basd on direction over the duration of each displayed word.</value>
+  </data>
+  <data name="MarkLabels" xml:space="preserve">
+    <value>Use Mark Labels as text to be displayed.</value>
+  </data>
+  <data name="RepeatText" xml:space="preserve">
+    <value>When enabled will repeat the individual words if there are more Marks in the collection then number of total words.</value>
+  </data>
+  <data name="TextFade" xml:space="preserve">
+    <value>Will fade the displayed text as per setting.</value>
+  </data>
+  <data name="TextTrigger" xml:space="preserve">
+    <value>Use standard Text with no external trigger, Marks to trigger when words are shown or Marks to trigger and use Mark Labels to display.</value>
+  </data>
+  <data name="TextDuration" xml:space="preserve">
+    <value>Adjusts the way the text duration is used.</value>
+  </data>
 </root>
