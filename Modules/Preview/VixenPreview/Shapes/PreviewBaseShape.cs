@@ -637,17 +637,17 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			//Logging.Debug("Updating Drawing Shape {0}.", ToString());
 
 			_points.Clear();
-			if (!_pixelCache.Any()) return;
+			if (_pixelCache.Count == 0) return;
 			
-			if (StringType == StringTypes.Pixel)
-			{
-				//Logging.Debug("Pixel Type.");
-				CreateFullColorPoints(referenceHeight);
-			}
-			else
+			if (_pixelCache[0].IsDiscreteColored)
 			{
 				//Logging.Debug("Standard Type.");
 				CreateDiscreteColorPoints(referenceHeight);
+			}
+			else
+			{
+				//Logging.Debug("Pixel Type.");
+				CreateFullColorPoints(referenceHeight);
 			}
 
 			//Logging.Debug("{0} Points generated.", _points.Count() / 7);
@@ -657,7 +657,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public void Draw(ShaderProgram program)
 		{
 			//Logging.Debug("Entering Draw.");
-			if (!_points.Any())
+			if (_points.Count == 0)
 			{
 				//Logging.Debug("Exiting Draw.");
 				return;
@@ -751,41 +751,48 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		//	Logging.Debug("VBO Disposed.");
 		//}
+		private static readonly List<Color> _emptyColors = new List<Color>();
 
 		private void CreateDiscreteColorPoints(int referenceHeight)
 		{
-			//All points are the same in standard discrete 
-			var previewPixel = _pixelCache.First();
-			var state = previewPixel.Node.Element.State;
-			
-			if (state.Count > 0)
+			List<Color> colors = _emptyColors;
+			Guid nodeId = Guid.Empty;
+			IIntentStates state = null;
+			foreach (PreviewPixel previewPixel in _pixelCache)
 			{
-				List<Color> colors = previewPixel.GetDiscreteColors(state);
-				foreach (var pixel in Pixels)
+				if (previewPixel.NodeId != nodeId)
 				{
+					nodeId = previewPixel.NodeId;
+					state = previewPixel.Node.Element.State;
+					colors = previewPixel.GetDiscreteColors(state);
+				}
+
+				if (state?.Count > 0)
+				{
+					//All points are the same in standard discrete 
 					int col = 1;
-					Point xy = new Point(pixel.X, pixel.Y);
+					Point xy = new Point(previewPixel.X, previewPixel.Y);
 					foreach (Color c in colors)
 					{
 						if (c.A > 0)
 						{
 							_points.Add(xy.X);
 							_points.Add(referenceHeight - xy.Y);
-							_points.Add(pixel.Z);
+							_points.Add(previewPixel.Z);
 							_points.Add(c.R);
 							_points.Add(c.G);
 							_points.Add(c.B);
 							_points.Add(c.A);
-							_points.Add(pixel.PixelSize);
+							_points.Add(previewPixel.PixelSize);
 
 							if (col % 2 == 0)
 							{
-								xy.Y += pixel.PixelSize;
+								xy.Y += previewPixel.PixelSize;
 								xy.X = xy.X;
 							}
 							else
 							{
-								xy.X = xy.X + pixel.PixelSize;
+								xy.X = xy.X + previewPixel.PixelSize;
 							}
 
 							col++;
@@ -797,6 +804,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void CreateFullColorPoints(int referenceHeight)
 		{
+			var isHighPrecision = StringType == StringTypes.Custom;
 			foreach (PreviewPixel previewPixel in _pixelCache)
 			{
 				var state = previewPixel.Node.Element.State;
@@ -806,8 +814,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Color c = previewPixel.GetFullColor(state);
 					if (c.A > 0)
 					{
-						_points.Add(previewPixel.IsHighPrecision ? (float)previewPixel.Location.X:previewPixel.X);
-						_points.Add(referenceHeight - (previewPixel.IsHighPrecision ? (float)previewPixel.Location.Y : previewPixel.Y));
+						_points.Add(isHighPrecision ? (float)previewPixel.Location.X:previewPixel.X);
+						_points.Add(referenceHeight - (isHighPrecision ? (float)previewPixel.Location.Y : previewPixel.Y));
 						_points.Add(previewPixel.Z);
 						_points.Add(c.R);
 						_points.Add(c.G);

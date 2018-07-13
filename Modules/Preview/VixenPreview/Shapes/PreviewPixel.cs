@@ -333,7 +333,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		public Color GetFullColor(IIntentStates states)
 		{
-			var state = states.FirstOrDefault();
+			var state = states[0];
 			if (state != null)
 			{
 				Color intentColor = _fullColorHandler.GetFullColor(state);
