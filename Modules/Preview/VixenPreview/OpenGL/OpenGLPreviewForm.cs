@@ -30,7 +30,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
 
-		private int _width = 1280, _height = 720;
+		private int _width = 800, _height = 600;
 		private float _focalDepth = 0;
 		private float _aspectRatio;
 
@@ -145,11 +145,13 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			item.Enabled = _background.HasBackground;
 			item.Click += (sender, args) =>
 			{
-				_width = _background.HasBackground ? _background.Width : _width;
-				_height = (_background.HasBackground ? _background.Height : _height) + (statusStrip.Visible ? statusStrip.Height : 0);
+				_width = _background.Width;
+				_height = _background.Height;
 				ClientSize = new Size(_width, _height);
 				_focalDepth = (float)(1 / Math.Tan(ConvertToRadians(Fov / 2)) * (ClientSize.Height / 2.0));
 				_camera.Position = new Vector3(_width / 2f, _height / 2f, _focalDepth);
+				_camera.SetDirection(new Vector3(0, 0, -1));
+				
 				glControl.Invalidate();
 				SaveWindowState();
 			};
@@ -367,6 +369,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_width = glControl.ClientSize.Width;
 			_height = glControl.ClientSize.Height;
+			_aspectRatio = (float)_width / _height;
 			if (!_formLoading)
 			{
 				SaveWindowState();
@@ -378,10 +381,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			if (e.KeyCode == Keys.I || e.KeyCode == Keys.O)
 			{
-				int factor = 30;
+				int factor = 20;
 				if ((ModifierKeys & Keys.Shift) == Keys.Shift)
 				{
-					factor = 10;
+					factor = 5;
 				}
 
 				int delta = 120;
@@ -398,10 +401,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void GlControl_MouseWheel(object sender, MouseEventArgs e)
 		{
-			int factor = 30;
+			int factor = 20;
 			if ((ModifierKeys & Keys.Shift) == Keys.Shift)
 			{
-				factor = 10;
+				factor = 5;
 			}
 			int direction = -(e.Delta * SystemInformation.MouseWheelScrollLines / factor);
 
@@ -433,23 +436,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			if (e.X == _prevX && e.Y == _prevY) return;
 
 			// move the camera when the mouse is down
-			if (_mouseDown && (e.Button == MouseButtons.Right))
-			{
-				float yaw = (_prevX - e.X) * 0.05f;
-				_camera.Yaw(yaw);
-
-				float pitch = (_prevY - e.Y) * 0.05f;
-				_camera.Pitch(pitch);
-
-				_prevX = e.X;
-				_prevY = e.Y;
-
-				glControl.Invalidate();
-			}
-			else if(_mouseDown && e.Button == MouseButtons.Left)
+			if(_mouseDown && e.Button == MouseButtons.Left)
 			{
 				
-				var moveFactor = (_camera.Position.Z / FarDistance) * 3;
+				var moveFactor = (_camera.Position.Z / FarDistance) * 7;
 				float yaw = (_prevX - e.X) * moveFactor;
 				float pitch = (_prevY - e.Y) * moveFactor;
 				_camera.Move(new Vector3(yaw, -pitch, 0f));
@@ -688,12 +678,28 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 
 			var cHeight = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name),
-				_background.HasBackground ? _background.Height : _height);
+				_background.HasBackground ? _background.Height : 0);
 			var cWidth = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name),
-				_background.HasBackground ? _background.Width : _width);
+				_background.HasBackground ? _background.Width : 0);
+
+			if (cHeight == 0 && cWidth == 0)
+			{
+				var size = FindMaxPreviewSize();
+				if (size.Height > 50 && size.Width > 50)
+				{
+					cHeight = size.Height;
+					cWidth = size.Width;
+				}
+				else
+				{
+					cHeight = _height;
+					cWidth = _width;
+				}
+				
+			}
 			ClientSize = new Size(cWidth, cHeight);
-			_width = _background.HasBackground ? _background.Width : _width;
-			_height = _background.HasBackground ? _background.Height : _height;
+			_width = cWidth;
+			_height = cHeight;
 		}
 
 		private void CreateCamera()
@@ -714,6 +720,19 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+		}
+
+		private Size FindMaxPreviewSize()
+		{
+			int bottom = 0;
+			int right = 0;
+			foreach (var dataDisplayItem in Data.DisplayItems)
+			{
+				bottom = Math.Max(bottom, dataDisplayItem.Shape.Bottom);
+				right = Math.Max(right, dataDisplayItem.Shape.Right);
+			}
+
+			return new Size(right, bottom);
 		}
 
 		
