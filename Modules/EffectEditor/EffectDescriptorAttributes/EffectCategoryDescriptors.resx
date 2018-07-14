@@ -162,8 +162,14 @@
   <data name="Setup" xml:space="preserve">
     <value>String Setup</value>
   </data>
+  <data name="ShapeSettings" xml:space="preserve">
+    <value>Shape Settings</value>
+  </data>
   <data name="Speed" xml:space="preserve">
     <value>Speed</value>
+  </data>
+  <data name="SpeedSettings" xml:space="preserve">
+    <value>Speed Settings</value>
   </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
