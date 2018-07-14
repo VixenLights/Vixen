@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Vixen.Sys;
 
 namespace Vixen.Execution.DataSource
@@ -33,8 +32,7 @@ namespace Vixen.Execution.DataSource
 
 		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time)
 		{
-			IEffectNode[] data = _data.Get(time).ToArray();
-			return data;
+			return _data.Get(time);
 		}
 
 		private void _Add(EffectNode effectNode)

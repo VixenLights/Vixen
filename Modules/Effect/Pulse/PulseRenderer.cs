@@ -20,7 +20,7 @@ namespace VixenModules.Effect.Pulse
 		public static EffectIntents RenderNode(ElementNode node, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, bool isDiscrete, bool allowZeroIntensity = false)
 		{
 			//Collect all the points first.
-			double[] allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient).ToArray();
+			var allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient);
 			var elementData = new EffectIntents();
 			foreach (ElementNode elementNode in node.GetLeafEnumerator())
 			{
@@ -50,15 +50,15 @@ namespace VixenModules.Effect.Pulse
 			return elementData;
 		}
 
-		private static void AddIntentsToElement(Element element, double[] allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, bool allowZeroIntensity, Color? color = null)
+		private static void AddIntentsToElement(Element element, IEnumerable<double> allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, bool allowZeroIntensity, Color? color = null)
 		{
 			if (element != null)
 			{
-				double lastPosition = allPointsTimeOrdered[0];
+				double lastPosition = allPointsTimeOrdered.First();
 				TimeSpan lastEnd = TimeSpan.Zero;
-				for (var i = 1; i < allPointsTimeOrdered.Length; i++)
+				foreach (var position in allPointsTimeOrdered)
 				{
-					double position = allPointsTimeOrdered[i];
+					//double position = allPointsTimeOrdered[i];
 					TimeSpan startTime = lastEnd;
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(duration.TotalMilliseconds * (position - lastPosition));
 
@@ -100,6 +100,7 @@ namespace VixenModules.Effect.Pulse
 		{
 			HashSet<double> points = new HashSet<double> {0.0};
 
+			levelCurve.Points.Sort();
 			foreach (PointPair point in levelCurve.Points)
 			{
 				points.Add(point.X / 100);
@@ -141,7 +142,7 @@ namespace VixenModules.Effect.Pulse
 
 			points.Add(1.0);
 
-			return points.OrderBy(x => x);
+			return points;
 		}
 
 		private static bool IsElementDiscrete(ElementNode elementNode)

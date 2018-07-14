@@ -40,7 +40,7 @@ namespace Vixen.Intent
 
 			var interval = VixenSystem.DefaultUpdateTimeSpan;
 			var intervals = (int)(duration.TotalMilliseconds / interval.TotalMilliseconds);
-			EffectIntents effectIntents = new EffectIntents();
+			EffectIntents effectIntents = new EffectIntents(intents.Count);
 	
 			foreach (var effectIntent in intents)
 			{

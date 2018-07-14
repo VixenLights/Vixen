@@ -92,9 +92,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PropertyValueChanged -= EffectPropertyEditorValueChanged;
 				_effectPropertyEditorGridEffectEffectPropertiesEditor.PreviewChanged -= EditorPreviewStateChanged;
+				_effectPropertyEditorGridEffectEffectPropertiesEditor.KeyDown -= Editor_OnKeyDown;
 			}
 			
 			_previewLoopTimer.Elapsed -= PreviewLoopTimerOnElapsed;
+			
 			base.Dispose(disposing);
 		}
 

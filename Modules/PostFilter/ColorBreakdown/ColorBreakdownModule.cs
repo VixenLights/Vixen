@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -314,11 +315,11 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 		private readonly ColorBreakdownFilter _filter;
 		private readonly ColorBreakdownItem _breakdownItem;
 		private readonly StaticIntentState<IntensityValue> _state = new StaticIntentState<IntensityValue>(new IntensityValue());
-		private readonly IntentDataFlowData _intentData;
-		
+		private readonly IntentDataFlowData _data;
+
 		public ColorBreakdownOutput(ColorBreakdownItem breakdownItem, bool mixColors)
 		{
-			_intentData = new IntentDataFlowData(_state);
+			_data = new IntentDataFlowData(_state);
 			_filter = new ColorBreakdownFilter(breakdownItem, mixColors);
 			_breakdownItem = breakdownItem;
 		}
@@ -329,7 +330,7 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 			//intent that matches this outputs color setting. 
 			//Everything else will have a zero intensity and should be thrown away when it does not match our outputs color.
 			double intensity = 0;
-			if (data.Value.Count > 0)
+			if (data.Value?.Count > 0)
 			{
 				foreach (var intentState in data.Value)
 				{
@@ -341,21 +342,23 @@ namespace VixenModules.OutputFilter.ColorBreakdown
 				}
 			}
 
-			
-			//Get a copy of the state value which is a struct and update it with the new intensity and then set it back
-			var intensityValue = _state.GetValue();
-			intensityValue.Intensity = intensity;
-			_state.SetValue(intensityValue);
-			Data = _intentData;
+			if (intensity > 0)
+			{
+				//Get a ref to the state value which is a struct and update it with the new intensity
+				ref IntensityValue intensityValue = ref _state.GetValueRef();
+				intensityValue.Intensity = intensity;
+				_data.Value = _state;
+			}
+			else
+			{
+				_data.Value = null;
+			}
 			
 		}
 
-		public IntentDataFlowData Data { get; private set; }
+		public IntentDataFlowData Data => _data;
 
-		IDataFlowData IDataFlowOutput.Data
-		{
-			get { return Data; }
-		}
+		IDataFlowData IDataFlowOutput.Data => _data;
 
 		public string Name
 		{

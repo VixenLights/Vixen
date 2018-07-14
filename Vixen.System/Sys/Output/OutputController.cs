@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Vixen.Factory;
 using Vixen.Data.Flow;
 using Vixen.Module.Controller;
@@ -27,6 +28,12 @@ namespace Vixen.Sys.Output
 		private MillisecondsValue _updateTimeValue;
 		private ICommand[] commands = new ICommand[0];
 
+		private ParallelOptions _parallelOptions = new ParallelOptions()
+		{
+			MaxDegreeOfParallelism = Environment.ProcessorCount
+		};
+		
+
 		internal OutputController(Guid id, string name, IOutputMediator<CommandOutput> outputMediator,
 								  IHardware executionControl,
 								  IOutputModuleConsumer<IControllerModuleInstance> outputModuleConsumer)
@@ -48,7 +55,7 @@ namespace Vixen.Sys.Output
 
 		private void CreatePerformanceValues()
 		{
-			_updateTimeValue = new MillisecondsValue(string.Format("{0} Update", Name));
+			_updateTimeValue = new MillisecondsValue(string.Format("{0} Output Total Update", Name));
 			VixenSystem.Instrumentation.AddValue(_updateTimeValue);
 		}
 
@@ -97,11 +104,22 @@ namespace Vixen.Sys.Output
 			_outputMediator.LockOutputs();
 			try
 			{
-				foreach (var x in Outputs)
+				if (OutputCount > 5000)
 				{
-					x.Command = GenerateOutputCommand(x);
+					Parallel.For(0, OutputCount, _parallelOptions, x =>
+					{
+						var o = Outputs[x].State;
+						Outputs[x].Command = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
+					});
 				}
-
+				else
+				{
+					for (int x = 0; x < OutputCount; x++)
+					{
+						var o = Outputs[x].State;
+						Outputs[x].Command = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
+					}
+				}
 			}
 			finally
 			{
@@ -121,16 +139,30 @@ namespace Vixen.Sys.Output
 				}
 				_outputMediator.LockOutputs();
 
-				for (int i = 0; i < OutputCount; i++)
+				if (OutputCount > 10000)
 				{
-					commands[i] = GenerateOutputCommand(Outputs[i]);
+					Parallel.For(0, OutputCount, _parallelOptions, x =>
+					{
+						var o = Outputs[x].State;
+						commands[x] = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
+					});
 				}
+				else
+				{
+					for (int x = 0; x < OutputCount; x++)
+					{
+						var o = Outputs[x].State;
+						commands[x] = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
+					}
+				}
+
+
 				ControllerModule.UpdateState(0, commands);
 
 			}
 			catch (Exception e)
 			{
-				Logging.Error(e, "An error ocuered outputing data for controller {0}", Name);
+				Logging.Error(e, "An error occured outputting data for controller {0}", Name);
 			}
 			finally
 			{

@@ -1024,10 +1024,11 @@ namespace Common.Controls.TimelineControl
 
 		}
 
+		private static readonly Pen MarkBorderPen = new Pen(Color.Black);
+		private static readonly StringFormat DrawFormat = StringFormat.GenericDefault;
+		private static readonly SolidBrush TextBrush = new SolidBrush(Color.Black);
 		private void DrawMark(Graphics g, MarkRow row, IMark mark, int top, Brush b)
 		{
-			int width;
-			
 			//Sanity check - it is possible for .DisplayHeight to become zero if there are too many marks stacked.
 			//We set the DisplayHeight to the row height for the mark, and change the border to red.	
 			var markStack = row.GetStackForMark(mark);
@@ -1041,7 +1042,7 @@ namespace Common.Controls.TimelineControl
 				displayHeight = row.Height;
 			}
 
-			width = (int)timeToPixels(mark.Duration);
+			var width = (int)timeToPixels(mark.Duration);
 			if (width <= 0) return;
 			Size size = new Size(width, displayHeight);
 
@@ -1052,11 +1053,9 @@ namespace Common.Controls.TimelineControl
 			
 			var isSelected = _marksSelectionManager.SelectedMarks.Contains(mark);
 
-			using (Pen bp = new Pen(Color.Black, isSelected?3:1))
-			{
-				g.DrawRectangle(bp, destRect);
-			}
-
+			MarkBorderPen.Width = isSelected ? 3 : 1;
+			g.DrawRectangle(MarkBorderPen, destRect);
+			
 			if (isSelected)
 			{
 				using (Pen bp = new Pen(ThemeColorTable.ForeColor,1))
@@ -1068,9 +1067,8 @@ namespace Common.Controls.TimelineControl
 			}
 			
 			//Draw the text
-			SolidBrush drawBrush = new SolidBrush(IdealTextColor(row.MarkDecorator.Color));
-			StringFormat drawFormat = new StringFormat();
-			g.DrawString(mark.Text, _textFont, drawBrush, destRect, drawFormat);
+			TextBrush.Color = IdealTextColor(row.MarkDecorator.Color);
+			g.DrawString(mark.Text, _textFont, TextBrush, destRect, DrawFormat);
 
 		}
 
@@ -1093,7 +1091,8 @@ namespace Common.Controls.TimelineControl
 				_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalEventManager_MarksTextChanged;
 				_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalEventManager_MarksMoved;
 				_marksSelectionManager.SelectionChanged -= MarksSelectionManager_SelectionChanged;
-				
+				MarkRow.MarkRowChanged -= MarkRow_MarkRowChanged;
+
 				UnConfigureMarks();
 			}
 			base.Dispose(disposing);

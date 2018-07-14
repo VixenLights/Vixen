@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using Common.Controls.Timeline;
-using Vixen.Module.Editor;
-using Vixen.Module.Effect;
 using Vixen.Sys;
-using Vixen.Commands;
 using System.Drawing;
-using System.Drawing.Imaging;
 using Element = Common.Controls.Timeline.Element;
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -23,14 +13,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			StartTime = effectNode.StartTime;
 			Duration = effectNode.TimeSpan;
 			EffectNode = effectNode;
-		}
-
-		// copy ctor
-		public TimedSequenceElement(TimedSequenceElement other)
-			: base(other)
-		{
-			//TODO: This needs to be a deep-copy of the effect node.
-			EffectNode = other.EffectNode;
 		}
 
 		private bool ElementTimeHasChangedSinceDraw { get; set; }

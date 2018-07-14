@@ -371,6 +371,8 @@ namespace Common.Controls.Timeline
 				foreach (var n in node.ChildRows) nodes.Push(n);
 			}
 		}
+
+		private readonly List<List<Element>> _stack = new List<List<Element>>();
 		/// <summary>
 		/// Set the stacking indexes for overlapping elements in the specific time range.
 		/// </summary>
@@ -383,16 +385,16 @@ namespace Common.Controls.Timeline
 				if (m_elements[i].EndTime < startTime) continue;
 				if (m_elements[i].StartTime > endTime) break;
 				List<Element> overlappingElements = GetOverlappingElements(m_elements[i]);
-				if (overlappingElements.Any())
+				if (overlappingElements.Count > 1)
 				{
-					List<List<Element>> stack = DetermineElementStack(overlappingElements);
+					DetermineElementStack(overlappingElements);
 					int x = 0;
-					foreach (var elementGroup in stack)
+					foreach (var elementGroup in _stack)
 					{
 						foreach (var element in elementGroup)
 						{
 							element.StackIndex = x;
-							element.StackCount = stack.Count;
+							element.StackCount = _stack.Count;
 						}
 						x++;
 					}
@@ -405,32 +407,26 @@ namespace Common.Controls.Timeline
 				i += overlappingElements.Count - overlappingElements.IndexOf(m_elements[i]) - 1;
 
 			}
-
-			
 		}
 
-		private List<List<Element>> DetermineElementStack(List<Element> elements)
+		private void DetermineElementStack(List<Element> elements)
 		{
-
-			List<List<Element>> stack = new List<List<Element>>();
-			stack.Add(new List<Element> { elements[0] });
+			_stack.Clear();
+			_stack.Add(new List<Element> { elements[0] });
 			for (int i = 1; i < elements.Count; i++)
 			{
 				bool add = true;
-				for (int x = 0; x < stack.Count; x++)
+				for (int x = 0; x < _stack.Count; x++)
 				{
-					if (elements[i].StartTime >= stack[x].Last().EndTime)
+					if (elements[i].StartTime >= _stack[x].Last().EndTime)
 					{
-						stack[x].Add(elements[i]);
+						_stack[x].Add(elements[i]);
 						add = false;
 						break;
 					}
 				}
-				if (add) stack.Add(new List<Element> { elements[i] });
+				if (add) _stack.Add(new List<Element> { elements[i] });
 			}
-
-			return stack;
-
 		}
 
 		public List<Element> GetOverlappingElements(Element elementMaster)

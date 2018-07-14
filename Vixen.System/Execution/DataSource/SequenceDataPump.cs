@@ -44,7 +44,7 @@ namespace Vixen.Execution.DataSource
 		public IEnumerable<IEffectNode> GetDataAt(TimeSpan time)
 		{
 			if (IsRunning) {
-				return _effectNodeQueue.Get(time).ToArray();
+				return _effectNodeQueue.Get(time);
 			}
 			return Enumerable.Empty<IEffectNode>();
 		}

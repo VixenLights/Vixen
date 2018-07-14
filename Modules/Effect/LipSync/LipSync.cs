@@ -34,12 +34,15 @@ namespace VixenModules.Effect.LipSync
 		private IEnumerable<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
-		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
-		
+
+		static LipSync()
+		{
+			LoadResourceBitmaps();
+		}
+
 		public LipSync()
 		{
 			_data = new LipSyncData();
-			LoadResourceBitmaps();
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 		}
 
@@ -58,7 +61,7 @@ namespace VixenModules.Effect.LipSync
 		// not a element, will recursively descend until we render its elements.
 		private void RenderNodes()
 		{
-			List<ElementNode> renderNodes = TargetNodes.SelectMany(x => x.GetNodeEnumerator()).ToList();
+			var renderNodes = TargetNodes.SelectMany(x => x.GetNodeEnumerator());
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
 				SetupMarks();
@@ -85,19 +88,19 @@ namespace VixenModules.Effect.LipSync
 					{
 						//We should never get here becasue we no longer have string maps
 						Logging.Error("Trying to render as deprecated string maps!");
-						renderNodes.ForEach(delegate (ElementNode element)
+						foreach (var element in renderNodes)
 						{
 							RenderMapElements(mapData, element, phoneme);
-						});
+						}
 					}
 				}
 			}
 			else
 			{
-				renderNodes.ForEach(delegate (ElementNode element)
+				foreach (var element in renderNodes)
 				{
 					RenderPropertyMapElements(element, phoneme);
-				});
+				}
 			}
 		}
 
@@ -228,11 +231,6 @@ namespace VixenModules.Effect.LipSync
 			}
 
 			TearDownPictureEffect();
-		}
-
-		private void ClearImageCache()
-		{
-			_imageCache.Clear();
 		}
 
 		private void SetupPictureEffect()
@@ -593,7 +591,7 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		private void LoadResourceBitmaps()
+		private static void LoadResourceBitmaps()
 		{
 			if (_phonemeBitmaps == null)
 			{
@@ -684,7 +682,7 @@ namespace VixenModules.Effect.LipSync
 					{
 						var textStart = clipRectangle.X + scaledImage.Width;
 						var textWidth = clipRectangle.Width - scaledImage.Width;
-						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf");
+						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf", 18);
 						using (var stringBrush = new SolidBrush(Color.Yellow))
 						{
 							g.DrawString(displayValue, adjustedFont, stringBrush, 4 + textStart, 4);

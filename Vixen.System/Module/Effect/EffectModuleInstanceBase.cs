@@ -215,7 +215,7 @@ namespace Vixen.Module.Effect
 			string DisplayValue = string.Format("{0}", this.EffectName);
 
 
-			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial"))
+			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial", 18))
 			{
 				using (var StringBrush = new SolidBrush(Color.Black))
 				{
@@ -310,6 +310,29 @@ namespace Vixen.Module.Effect
 		{
 
 		}
+
+		#region Overrides of ModuleInstanceBase
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (SupportsMarks && _markCollections != null)
+				{
+					_markCollections.CollectionChanged -= _markCollections_CollectionChanged;
+				}
+
+				_parameterValues = null;
+				_markCollections = null;
+				var md = ModuleData.ModuleDataSet as ModuleDataSet;
+				md?.Dispose();
+			}
+
+			base.Dispose(disposing);
+		}
+
+		#endregion
 
 		private void _EnsureTargetNodeProperties()
 		{
