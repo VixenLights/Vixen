@@ -554,7 +554,7 @@ namespace VixenModules.Effect.Text
 
 				{"TextDuration", TextSource != TextSource.None},
 
-				{"RepeatText", TextSource != TextSource.MarkCollectionLabels},
+				{"RepeatText", TextSource == TextSource.MarkCollection},
 
 				{"TextFade", TextSource != TextSource.None},
 
