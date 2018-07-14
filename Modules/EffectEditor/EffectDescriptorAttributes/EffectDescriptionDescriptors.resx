@@ -609,4 +609,22 @@
   <data name="TextDuration" xml:space="preserve">
     <value>Adjusts the way the text duration is used.</value>
   </data>
+  <data name="TimeVisibleLength" xml:space="preserve">
+    <value>Length of time in milliseconds the countdown is shown at each mark.</value>
+  </data>
+  <data name="CountDownFade" xml:space="preserve">
+    <value>Will fade each displayed count down time.</value>
+  </data>
+  <data name="CountDownType" xml:space="preserve">
+    <value>Sets the type as count down the time to the end of the effect, or count up/down from user specified start time.</value>
+  </data>
+  <data name="TimeFormat" xml:space="preserve">
+    <value>Displays the count down in Minutes (over 60sec) or second.</value>
+  </data>
+  <data name="MarkTimeFreeze" xml:space="preserve">
+    <value>Freezes on the tiem left when triggered.</value>
+  </data>
+  <data name="CountDownTime" xml:space="preserve">
+    <value>Sets the starting time in seconds for the count to begin.</value>
+  </data>
 </root>

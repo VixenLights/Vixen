@@ -404,6 +404,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Will fade each displayed count down time..
+        /// </summary>
+        internal static string CountDownFade {
+            get {
+                return ResourceManager.GetString("CountDownFade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the starting time in seconds for the count to begin..
+        /// </summary>
+        internal static string CountDownTime {
+            get {
+                return ResourceManager.GetString("CountDownTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the type as count down the time to the end of the effect, or count up/down from user specified start time..
+        /// </summary>
+        internal static string CountDownType {
+            get {
+                return ResourceManager.GetString("CountDownType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
@@ -796,6 +823,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MarkLabels {
             get {
                 return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Freezes on the tiem left when triggered..
+        /// </summary>
+        internal static string MarkTimeFreeze {
+            get {
+                return ResourceManager.GetString("MarkTimeFreeze", resourceCulture);
             }
         }
         
@@ -1372,6 +1408,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Thickness {
             get {
                 return ResourceManager.GetString("Thickness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the count down in Minutes (over 60sec) or second..
+        /// </summary>
+        internal static string TimeFormat {
+            get {
+                return ResourceManager.GetString("TimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length of time in milliseconds the countdown is shown at each mark..
+        /// </summary>
+        internal static string TimeVisibleLength {
+            get {
+                return ResourceManager.GetString("TimeVisibleLength", resourceCulture);
             }
         }
         

@@ -456,6 +456,12 @@ namespace VixenModules.Effect.Effect
 			return (int)(TimeSpan.TotalMilliseconds / FrameTime);
 		}
 
+		protected double GetRemainingTime(int frame)
+		{
+			return (TimeSpan.TotalMilliseconds -
+			        TimeSpan.TotalMilliseconds / 100 * (GetEffectTimeIntervalPosition(frame) * 100));
+		}
+		
 		protected double CalculateAcceleration(double ratio, double accel)
 		{
 			if (accel == 0) return ratio;

@@ -618,4 +618,19 @@
   <data name="TextDuration" xml:space="preserve">
     <value>Text Duration</value>
   </data>
+  <data name="TimeFormat" xml:space="preserve">
+    <value>Time Format</value>
+  </data>
+  <data name="TimeVisibleLength" xml:space="preserve">
+    <value>Visible Time Length (ms)</value>
+  </data>
+  <data name="CountDownFade" xml:space="preserve">
+    <value>Fade</value>
+  </data>
+  <data name="CountDownType" xml:space="preserve">
+    <value>Count Type</value>
+  </data>
+  <data name="CountDownTime" xml:space="preserve">
+    <value>Start Time</value>
+  </data>
 </root>
