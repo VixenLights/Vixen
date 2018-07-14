@@ -17,6 +17,7 @@ namespace VixenModules.App.SuperScheduler
 {
 	public partial class SetupForm : BaseForm
 	{
+		private bool _isDirty;
 		public SetupForm(SuperSchedulerData data)
 		{
 			InitializeComponent();
@@ -37,6 +38,16 @@ namespace VixenModules.App.SuperScheduler
 			ThemeUpdateControls.UpdateControls(this);
 			
 			Data = data;
+
+			Closing += SetupForm_Closing;
+		}
+
+		private void SetupForm_Closing(object sender, CancelEventArgs e)
+		{
+			if (_isDirty)
+			{
+				VixenSystem.SaveModuleConfigAsync();
+			}
 		}
 
 		public SuperSchedulerData Data { get; set; }
@@ -53,6 +64,7 @@ namespace VixenModules.App.SuperScheduler
 
 		private void SetupForm_Load(object sender, EventArgs e)
 		{
+			_isDirty = false;
 			PopulateListBox();
 		}
 
@@ -139,6 +151,7 @@ namespace VixenModules.App.SuperScheduler
 		private void buttonDeleteSchedule_Click(object sender, EventArgs e)
 		{
 			DeleteCurrentItem();
+			_isDirty = true;
 		}
 
 		private void listViewItems_DoubleClick(object sender, EventArgs e)
@@ -155,6 +168,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					Data.Items.Add(item);
 					AddListItem(item);
+					_isDirty = true;
 				}
 			}
 		}
@@ -170,7 +184,7 @@ namespace VixenModules.App.SuperScheduler
 					if (f.ShowDialog() == DialogResult.OK)
 					{
 						UpdateListItem(scheduleItem);
-						await VixenSystem.SaveModuleConfigAsync();
+						_isDirty = true;
 					}
 				}
 			}
@@ -190,7 +204,7 @@ namespace VixenModules.App.SuperScheduler
 				{
 					listViewItems.Items.Remove(lvItem);
 					Data.Items.Remove(scheduleItem);
-					await VixenSystem.SaveModuleConfigAsync();
+					_isDirty = true;
 				}
 			}
 		}
@@ -219,6 +233,7 @@ namespace VixenModules.App.SuperScheduler
 						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 						{
 							UpdateListItem(scheduleItem);
+							_isDirty = true;
 						}
 					}
 				}
