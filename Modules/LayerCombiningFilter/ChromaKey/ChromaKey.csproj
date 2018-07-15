@@ -53,10 +53,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Color">
-      <HintPath>..\..\Property\Color\obj\x86\Release\Color.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -83,6 +79,11 @@
     <ProjectReference Include="..\..\..\Common\Resources\Resources.csproj">
       <Project>{f7a80169-6310-4585-9d58-a6f6f5c5b380}</Project>
       <Name>Resources</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Property\Color\Color.csproj">
+      <Project>{73068a83-b3b7-4a2c-923d-71c7886cd5e3}</Project>
+      <Name>Color</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
