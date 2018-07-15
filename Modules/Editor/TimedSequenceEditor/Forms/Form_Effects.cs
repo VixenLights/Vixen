@@ -21,11 +21,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public Form_Effects(TimelineControl timelineControl)
 		{
-			Font = SystemFonts.MessageBoxFont;
 			InitializeComponent();
 			TimelineControl = timelineControl;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 		}
 

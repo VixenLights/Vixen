@@ -19,17 +19,19 @@ namespace Common.Controls.Theme
 {
 	public sealed class ThemeUpdateControls
 	{
+		public static Font StandardFont = SystemFonts.MessageBoxFont;
+		
 		//used to provide color to various controls.
 		//will move through each control and sub controls and adjust each control properties as required.
 		public static void UpdateControls(Control control, List<Control> excludes = null)
 		{
-			control.Font = SystemFonts.MessageBoxFont;
+			control.Font = StandardFont;
 			control.ForeColor = ThemeColorTable.ForeColor;
 			control.BackColor = ThemeColorTable.BackgroundColor;
 			foreach (Control c in control.Controls)
 			{
 				if (excludes != null && excludes.Contains(c)) continue;
-				c.Font = SystemFonts.MessageBoxFont;
+				c.Font = StandardFont;
 				if (c is GroupBox | c is Panel | c is Label | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
 				{
 					c.ForeColor = ThemeColorTable.ForeColor;

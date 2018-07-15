@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls
 {
@@ -16,7 +17,7 @@ namespace Common.Controls
 		{
 			//need to work on the broken layouts so we can just use the system font size.
 			//Font = new Font(SystemFonts.MessageBoxFont.FontFamily, 9);
-			Font = SystemFonts.MessageBoxFont;
+			Font = ThemeUpdateControls.StandardFont;
 		}
 	}
 }
