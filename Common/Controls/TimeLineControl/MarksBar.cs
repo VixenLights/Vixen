@@ -856,7 +856,7 @@ namespace Common.Controls.TimelineControl
 				if (x > p.X) break; //The rest of them are beyond our point.
 				Single width = timeToPixels(mark.Duration);
 				MarkRow.MarkStack ms = containingRow.GetStackForMark(mark);
-				var displayHeight = containingRow.Height / containingRow.StackCount;
+				var displayHeight = containingRow.Height / ms.StackCount;
 				var rowTopOffset = displayHeight * ms.StackIndex;
 				if (p.X >= x &&
 				    p.X <= x + width &&
