@@ -858,7 +858,7 @@ namespace Common.Controls.TimelineControl
 				Single x = timeToPixels(mark.StartTime);
 				Single width = timeToPixels(mark.Duration);
 				MarkRow.MarkStack ms = containingRow.GetStackForMark(mark);
-				var displayHeight = containingRow.Height / ms.StackCount;
+				var displayHeight = ms.StackCount == 1?containingRow.Height:containingRow.Height / containingRow.StackCount;
 				var rowTopOffset = displayHeight * ms.StackIndex;
 				if (p.X >= x &&
 				    p.X <= x + width &&
