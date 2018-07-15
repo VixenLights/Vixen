@@ -473,8 +473,8 @@ namespace ZedGraph
 			// if it is already sorted we don't have to sort again
 			if (_sorted)
 				return true;
-
 			Sort(new PointPair.PointPairComparer(SortType.XValues));
+			_sorted = true;
 			return false;
 		}
 
@@ -491,9 +491,8 @@ namespace ZedGraph
 			// if it is already sorted we don't have to sort again
 			if (_sorted)
 				return true;
-
 			this.Sort(new PointPair.PointPairComparer(type));
-
+			_sorted = true;
 			return false;
 		}
 
