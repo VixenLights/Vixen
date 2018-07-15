@@ -35,6 +35,7 @@ namespace Common.Controls.Timeline
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
+			Font = SystemFonts.MessageBoxFont;
 		}
 
 

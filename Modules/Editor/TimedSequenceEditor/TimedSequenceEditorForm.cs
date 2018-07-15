@@ -1327,7 +1327,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				TimelineControl.grid.SupressRendering = true; //Hold off rendering while we load elements. 
 				// This takes quite a bit of time so queue it up
 				//The sequence loader now adds the media to the effects on sequences it loads so we don't have to do it here.
-				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData.ToList(), false)));
+				taskQueue.Enqueue(Task.Factory.StartNew(() => AddElementsForEffectNodes(_sequence.SequenceData.EffectData, false)));
 
 				// Now that it is queued up, let 'er rip and start background rendering when complete.
 				Task.Factory.ContinueWhenAll(taskQueue.ToArray(), completedTasks =>
@@ -3588,18 +3588,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		/// the EffectNode references. It will also add callbacks to event handlers for the element.
 		/// </summary>
 		/// <param name="nodes">The EffectNode to make element(s) in the grid for.</param>
-		/// <param name="assignMedia">Option to assign media to the effect nodes or not</param>
-		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes, bool assignMedia = true)
+		/// <param name="assignMediaAndMarks">Option to assign media and marks to the effect nodes or not</param>
+		private void AddElementsForEffectNodes(IEnumerable<IDataNode> nodes, bool assignMediaAndMarks = true)
 		{
 			Dictionary<Row, List<Element>> rowMap =
-			_elementNodeToRows.SelectMany(x => x.Value).ToList().ToDictionary(x => x, x => new List<Element>());
-
+			_elementNodeToRows.SelectMany(x => x.Value).ToDictionary(x => x, x => new List<Element>());
+			List<EffectNode> nodesToRemove = null;
 			foreach (EffectNode node in nodes)
 			{
 				if (node.StartTime > _sequence.Length)
 				{
 					Logging.Warn("Effect start time {0} is beyond the sequence end time {1}. Dropping the effect.", node.StartTime, _sequence.Length);
-					_sequence.RemoveData(node);
+					if (nodesToRemove == null)
+					{
+						nodesToRemove = new List<EffectNode>();
+					}
+					nodesToRemove.Add(node);
 					continue;
 				}
 				if (node.EndTime > _sequence.Length)
@@ -3610,16 +3614,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						node.Effect.TimeSpan = _sequence.Length - node.StartTime;
 					}
 				}
-				if (assignMedia && node.Effect.SupportsMedia)
-				{
-					node.Effect.Media = Sequence.SequenceData.Media;
-				}
 
-				if (node.Effect.SupportsMarks)
+				if (assignMediaAndMarks)
 				{
-					node.Effect.MarkCollections = _sequence.LabeledMarkCollections;
-				}
+					if (node.Effect.SupportsMedia)
+					{
+						node.Effect.Media = Sequence.SequenceData.Media;
+					}
 
+					if (node.Effect.SupportsMarks)
+					{
+						node.Effect.MarkCollections = _sequence.LabeledMarkCollections;
+					}
+				}
+				
 				TimedSequenceElement element = SetupNewElementFromNode(node);
 				foreach (ElementNode target in node.Effect.TargetNodes)
 				{
@@ -3648,6 +3656,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						var messageBox = new MessageBoxForm(message, @"", false, false);
 						messageBox.ShowDialog();
 					}
+				}
+			}
+
+			if (nodesToRemove != null)
+			{
+				foreach (var effectNode in nodesToRemove)
+				{
+					_sequence.RemoveData(effectNode);
 				}
 			}
 
@@ -3784,8 +3800,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimedSequenceRowLabel label = new TimedSequenceRowLabel {Name = node.Name};
 			
 			Row newRow = TimelineControl.AddRow(label, parentRow, TimelineControl.rowHeight);
-			newRow.ElementRemoved += ElementRemovedFromRowHandler;
-			newRow.ElementAdded += ElementAddedToRowHandler;
+			if (parentRow == null)
+			{
+				newRow.Visible = true;
+			}
+			//newRow.ElementRemoved += ElementRemovedFromRowHandler;
+			//newRow.ElementAdded += ElementAddedToRowHandler;
 
 			// Tag it with the node it refers to, and take note of which row the given element node will refer to.
 			newRow.Tag = node;
@@ -3805,7 +3825,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (ElementNode child in node.Children)
 			{
 				AddNodeAsRow(child, newRow);
-				
+
 			}
 		}
 

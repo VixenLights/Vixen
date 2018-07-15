@@ -28,7 +28,6 @@ namespace Common.Controls.Timeline
 			SetStyle(ControlStyles.ResizeRedraw, true);
 			ResizeBarWidth = 4;
 			Resizing = false;
-			Font = SystemFonts.MessageBoxFont;
 		}
 
 		#region Properties

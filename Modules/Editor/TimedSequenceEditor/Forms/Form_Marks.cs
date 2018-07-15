@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using Vixen.Marks;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels;
 using WeifenLuo.WinFormsUI.Docking;
 using VixenModules.Sequence.Timed;
 using VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Views;
-using MarkCollection = VixenModules.App.Marks.MarkCollection;
 
 
 namespace VixenModules.Editor.TimedSequenceEditor
@@ -24,6 +20,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			host = new ElementHost { Dock = DockStyle.Fill };
 
+			Catel.Windows.Controls.UserControl.DefaultSkipSearchingForInfoBarMessageControlValue = true;
+			
 			_mdvm = new MarkDockerViewModel(sequence.LabeledMarkCollections);
 			_markDockerView = new MarkDockerView(_mdvm);
 			_markDockerView.CloseViewModelOnUnloaded = true;
