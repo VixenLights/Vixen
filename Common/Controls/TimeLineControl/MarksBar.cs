@@ -20,7 +20,7 @@ namespace Common.Controls.TimelineControl
 		private Point _mouseDownLocation;
 		private Point _moveResizeStartLocation;
 		private Point _lastSingleSelectedMarkLocation;
-		private Mark _mouseDownMark;
+		private IMark _mouseDownMark;
 		
 		private DragState _dragState = DragState.Normal; // the current dragging state
 		private ResizeZone _markResizeZone = ResizeZone.None;
@@ -363,7 +363,7 @@ namespace Common.Controls.TimelineControl
 		private void MouseMove_Normal(Point gridLocation)
 		{
 			// Are we in a 'resize zone' at the front or back of an element?
-			Mark mark = MarkAt(gridLocation);
+			IMark mark = MarkAt(gridLocation);
 			if (mark == null)
 			{
 				_markResizeZone = ResizeZone.None;
@@ -840,7 +840,7 @@ namespace Common.Controls.TimelineControl
 		/// </summary>
 		/// <param name="p">Client coordinates.</param>
 		/// <returns>Elements at given point, or null if none exists.</returns>
-		private Mark MarkAt(Point p)
+		private IMark MarkAt(Point p)
 		{
 			
 			// First figure out which row we are in
@@ -849,11 +849,13 @@ namespace Common.Controls.TimelineControl
 			if (containingRow == null)
 				return null;
 
+			var pointTime = pixelsToTime(p.X);
 			// Now figure out which element we are on
-			foreach (Mark mark in containingRow)
+			foreach (IMark mark in containingRow)
 			{
+				if (pointTime > mark.EndTime) continue; //Mark is before our point time.
+				if (pointTime < mark.StartTime) break; //The rest of them are beyond our point.
 				Single x = timeToPixels(mark.StartTime);
-				if (x > p.X) break; //The rest of them are beyond our point.
 				Single width = timeToPixels(mark.Duration);
 				MarkRow.MarkStack ms = containingRow.GetStackForMark(mark);
 				var displayHeight = containingRow.Height / ms.StackCount;
