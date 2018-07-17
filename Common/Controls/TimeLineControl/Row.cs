@@ -43,7 +43,9 @@ namespace Common.Controls.Timeline
 			set
 			{
 				// cap the height to a minimum of 10 pixels
-				RowLabel.Height = m_height = Math.Max(value, 10);
+				m_height = Math.Max(value, 10);
+				if(m_visible)
+				{ RowLabel.Height = m_height;}
 
 				//_RowChanged();
 				_RowHeightChanged();
@@ -201,7 +203,7 @@ namespace Common.Controls.Timeline
 			_RowChanged();
 		}
 
-		private bool m_visible = true;
+		private bool m_visible;
 
 		public bool Visible
 		{
@@ -216,6 +218,10 @@ namespace Common.Controls.Timeline
 
 				RowLabel.Visible = value;
 				m_visible = value;
+				if (m_visible && RowLabel.Height != Height)
+				{
+					RowLabel.Height = Height;
+				}
 				_RowChanged();
 			}
 		}

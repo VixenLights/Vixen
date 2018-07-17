@@ -40,7 +40,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this, new List<Control>(new []{textBox1}));
 	        textBox1.BackColor = ThemeColorTable.BackgroundColor;
 	        textBox1.ForeColor = ThemeColorTable.ForeColor;
-	        textBox1.Font = SystemFonts.MessageBoxFont;
+	        textBox1.Font = ThemeUpdateControls.StandardFont;
 	        textBox1.AutoSize = true;
 		
             Icon = Resources.Icon_Vixen3;

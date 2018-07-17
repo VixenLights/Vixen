@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Theme;
 
 namespace Common.Controls
 {
@@ -12,7 +13,7 @@ namespace Common.Controls
 	{
 		public BaseUserControl()
 		{
-			Font = SystemFonts.MessageBoxFont;
+			Font = ThemeUpdateControls.StandardFont;
 		}
 	}
 }

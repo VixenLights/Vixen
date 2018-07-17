@@ -31,12 +31,13 @@ namespace Common.Controls.TimelineControl
 		private const int MinMarkWidthPx = 12;
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 		private ObservableCollection<IMarkCollection> _markCollections;
-		private readonly Font _textFont = SystemFonts.MessageBoxFont;
+		private readonly Font _textFont;
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
 		{
 			BackColor = Color.Gray;
+			_textFont = Font;
 			_marksSelectionManager = MarksSelectionManager.Manager();
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalEventManagerTimeLineGlobalMoving;

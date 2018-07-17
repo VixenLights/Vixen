@@ -20,7 +20,7 @@ namespace Common.Controls.Timeline
 			AutoScaleMode = AutoScaleMode.Font;
 			if (timeinfo== null)
 				timeinfo= new Timeline.TimeInfo();
-
+			
 			TimeInfo = timeinfo;
 			TimeInfo.TimePerPixelChanged += OnTimePerPixelChanged;
 			TimeInfo.VisibleTimeStartChanged += OnVisibleTimeStartChanged;
@@ -29,12 +29,13 @@ namespace Common.Controls.Timeline
 			TimeInfo.PlaybackEndTimeChanged += OnPlaybackEndTimeChanged;
 			TimeInfo.PlaybackCurrentTimeChanged += OnPlaybackCurrentTimeChanged;
 
-
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
+
+			Font = SystemFonts.MessageBoxFont;
 		}
 
 
