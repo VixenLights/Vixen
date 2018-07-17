@@ -1007,9 +1007,9 @@ namespace VixenModules.Effect.Shapes
 
 				{"ShapeCountCurve", !ScaleToGrid && ShapeMode != ShapeMode.RemoveShapesMarkCollection},
 
-				{"CenterSizeSpeedCurve", !ScaleToGrid},
+				{"CenterSizeSpeedCurve", !ScaleToGrid && (RemoveShape || RandomSize)},
 
-				{"SizeSpeedVariationCurve", !ScaleToGrid},
+				{"SizeSpeedVariationCurve", !ScaleToGrid && (RemoveShape || RandomSize)},
 
 				{"CenterAngleSpeedCurve", !ScaleToGrid && RandomAngle},
 
@@ -1700,6 +1700,13 @@ namespace VixenModules.Effect.Shapes
 
 					// Remove shape if its bigger or smaller then the limits and then create new shape.
 					if (shape.Size > maxSize || shape.Size < minSize) _removeShapes.Add(shape);
+				}
+				else
+				{
+					if (!RandomSize && !RemoveShape && !ScaleToGrid)
+					{
+						shape.Size = CalculateSize(_intervalPosFactor, shape.LocationRatio1);
+					}
 				}
 				
 				// Adjust shape angle.
