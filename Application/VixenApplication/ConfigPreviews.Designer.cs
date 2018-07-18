@@ -289,7 +289,7 @@
 			this.MinimumSize = new System.Drawing.Size(429, 502);
 			this.Name = "ConfigPreviews";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Previews Configuration";
+			this.Text = "Setup Previews";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConfigPreviews_FormClosing);
 			this.Load += new System.EventHandler(this.ConfigPreviews_Load);
 			this.groupBoxSelectedController.ResumeLayout(false);
