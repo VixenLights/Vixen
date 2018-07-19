@@ -301,7 +301,7 @@ namespace VixenModules.OutputFilter.DimmingCurve
 			//predicatble so we can't write to a list that might be accessed at
 			//the same time for read. So we are stuck creating a new one. Fortunatly this 
 			//Should be a little used use case where the dimming curve is last.
-			if (data != null)
+			if (data.Value != null)
 			{
 				var state = _filter.Filter(data.Value);
 				var states = new List<IIntentState>(1);
