@@ -31,6 +31,7 @@ namespace VixenModules.Property.Face {
 			InitializeComponent();
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
+			Icon = Resources.Icon_Vixen3;
 		}
 
 		private void FaceSetupHelper_Load(object sender, EventArgs e)
