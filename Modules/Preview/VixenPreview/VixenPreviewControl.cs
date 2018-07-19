@@ -778,8 +778,8 @@ namespace VixenModules.Preview.VixenPreview
 							{
 								contextMenuStrip1.Items.Add(new ToolStripMenuItem
 								{
-									Text = "Separate Template Items",
-									Tag = "Separate",
+									Text = "Ungroup",
+									Tag = "Ungroup",
 									Image = Common.Resources.Properties.Resources.Split
 								});
 							}
@@ -789,8 +789,8 @@ namespace VixenModules.Preview.VixenPreview
 					{
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
-							Text = "Create Group...",
-							Tag = "CreateGroup",
+							Text = "Group",
+							Tag = "Group",
 							Image = Common.Resources.Properties.Resources.group
 						});
 						contextMenuStrip1.Items.Add(new ToolStripSeparator());
@@ -918,14 +918,14 @@ namespace VixenModules.Preview.VixenPreview
 						_selectedDisplayItem.Shape.Select(true);
 					}
 					break;
-				case "CreateGroup":
+				case "Group":
 					_selectedDisplayItem = CreateGroup();
 					if (_selectedDisplayItem != null)
 					{
 						_selectedDisplayItem.Shape.Select(true);
 					}
 					break;
-				case "Separate":
+				case "Ungroup":
 					if (_selectedDisplayItem != null)
 						SeparateTemplateItems(_selectedDisplayItem);
 					break;
@@ -1679,10 +1679,7 @@ namespace VixenModules.Preview.VixenPreview
 			{
 				if (item.Shape.GetType().ToString().Contains("PreviewCustom"))
 				{
-					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.",
-						"Grouping Error", false, true);
+					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.", "Grouping Error", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
 					return null;
 				}
@@ -2104,9 +2101,7 @@ namespace VixenModules.Preview.VixenPreview
                 {
                     if (shape.GetType().ToString() != SelectedShapes()[0].GetType().ToString())
                     {
-						//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-						MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
-						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", false, true);
+						var messageBox = new MessageBoxForm("You can only match the properties of like shapes.", "Match Properties", MessageBoxButtons.OK, SystemIcons.Error);
 						messageBox.ShowDialog();
                         return;
                     }
