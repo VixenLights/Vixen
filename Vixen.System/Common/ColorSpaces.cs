@@ -413,7 +413,7 @@ namespace Common.Controls.ColorManagement.ColorModels
 
 		public static double VFromRgb(double r, double b, double g)
 		{
-			double max = Math.Max(Math.Max(r, g), b);
+			double max = Math.Max(Math.Max(r, g), b)/255d;
 			return max;
 		}
 
