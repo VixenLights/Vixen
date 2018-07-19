@@ -7,11 +7,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	public class FullColorIntentHandler:IntentStateDispatch
 	{
-		private Color _color = Color.Transparent;
+		private Color _color = Color.Empty;
 
 		public Color GetFullColor(IIntentState state)
 		{
-			_color = Color.Transparent;
+			_color = Color.Empty;
 			state.Dispatch(this);
 			return _color;;
 		}

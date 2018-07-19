@@ -261,22 +261,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
 		}
 
-		public void SetPixelNode(int pixelNum, ElementNode node)
-		{
-			Pixels[pixelNum].Node = node;
-		}
-
-		public void SetPixelColor(int pixelNum, Color color)
-		{
-			Pixels[pixelNum].PixelColor = color;
-		}
-
-		public void SetColor(Color pixelColor)
-		{
-			foreach (PreviewPixel pixel in Pixels)
-				pixel.PixelColor = pixelColor;
-		}
-
 		[Browsable(false)]
 		public bool Selected
 		{
