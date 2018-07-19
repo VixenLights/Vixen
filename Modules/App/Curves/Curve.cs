@@ -226,7 +226,7 @@ namespace VixenModules.App.Curves
 							g.FillRectangle(b, new Rectangle(0, 0, size.Width+adjust, size.Height+adjust));
 					
 							PointPair lastPoint = null;
-							foreach (var point in Points)
+							foreach (var point in Points.ToArray()) //get an array so if the points are modified we can still enumerate.
 							{
 								if (lastPoint == null)
 								{
