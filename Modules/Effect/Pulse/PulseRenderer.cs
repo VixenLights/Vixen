@@ -50,15 +50,15 @@ namespace VixenModules.Effect.Pulse
 			return elementData;
 		}
 
-		private static void AddIntentsToElement(Element element, IEnumerable<double> allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, bool allowZeroIntensity, Color? color = null)
+		private static void AddIntentsToElement(Element element, double[] allPointsTimeOrdered, Curve levelCurve, ColorGradient colorGradient, TimeSpan duration, EffectIntents elementData, bool allowZeroIntensity, Color? color = null)
 		{
 			if (element != null)
 			{
-				double lastPosition = allPointsTimeOrdered.First();
+				double lastPosition = allPointsTimeOrdered[0];
 				TimeSpan lastEnd = TimeSpan.Zero;
-				foreach (var position in allPointsTimeOrdered)
+				for (int i = 1; i < allPointsTimeOrdered.Length; i++)
 				{
-					//double position = allPointsTimeOrdered[i];
+					double position = allPointsTimeOrdered[i];
 					TimeSpan startTime = lastEnd;
 					TimeSpan timeSpan = TimeSpan.FromMilliseconds(duration.TotalMilliseconds * (position - lastPosition));
 
@@ -96,7 +96,7 @@ namespace VixenModules.Effect.Pulse
 
 		}
 
-		private static IEnumerable<double> _GetAllSignificantDataPoints(Curve levelCurve, ColorGradient colorGradient, Color? color = null)
+		private static double[] _GetAllSignificantDataPoints(Curve levelCurve, ColorGradient colorGradient, Color? color = null)
 		{
 			HashSet<double> points = new HashSet<double> {0.0};
 
@@ -142,7 +142,7 @@ namespace VixenModules.Effect.Pulse
 
 			points.Add(1.0);
 
-			return points;
+			return points.OrderBy(x => x).ToArray();
 		}
 
 		private static bool IsElementDiscrete(ElementNode elementNode)
