@@ -12,13 +12,13 @@ namespace VixenModules.App.LipSyncApp
 	{
 		public LipSyncMapItem()
 		{
-			PhonemeList = new Dictionary<string, Boolean>();
+			PhonemeList = new Dictionary<string, Boolean>(StringComparer.OrdinalIgnoreCase);
 			FaceComponents = new Dictionary<FaceComponent, bool>();
 		}
 
 		public LipSyncMapItem(string name, int stringNum)
 		{
-			PhonemeList = new Dictionary<string, bool>();
+			PhonemeList = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 			Name = name;
 			StringNum = stringNum;
 			ElementColor = Color.White;
@@ -30,7 +30,7 @@ namespace VixenModules.App.LipSyncApp
 		{
 			LipSyncMapItem retVal = new LipSyncMapItem();
 			retVal.Name = Name;
-			retVal.PhonemeList = new Dictionary<string, bool>(PhonemeList);
+			retVal.PhonemeList = new Dictionary<string, bool>(PhonemeList, StringComparer.OrdinalIgnoreCase);
 			retVal.StringNum = StringNum;
 			retVal.ElementColor = ElementColor;
 			retVal.ElementGuid = ElementGuid;

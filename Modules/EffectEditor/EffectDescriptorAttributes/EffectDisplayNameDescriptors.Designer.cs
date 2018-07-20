@@ -62,6 +62,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow Mark Gaps.
+        /// </summary>
+        internal static string AllowMarkGaps {
+            get {
+                return ResourceManager.GetString("AllowMarkGaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Angle.
         /// </summary>
         internal static string Angle {

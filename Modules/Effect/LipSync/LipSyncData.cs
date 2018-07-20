@@ -54,6 +54,9 @@ namespace VixenModules.Effect.LipSync
 		[DataMember]
 		public bool ShowOutline { get; set; }
 
+		[DataMember(EmitDefaultValue = false)]
+		public bool AllowMarkGaps { get; set; }
+
 		[DataMember]
 		public EyeMode EyeMode { get; set; }
 
@@ -71,6 +74,7 @@ namespace VixenModules.Effect.LipSync
 			result.MappingType = MappingType;
 			result.ShowOutline = ShowOutline;
 			result.EyeMode = EyeMode;
+			result.AllowMarkGaps = AllowMarkGaps;
 			return result;
 		}
 	}

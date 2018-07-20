@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -79,7 +80,7 @@ namespace VixenModules.App.LipSyncApp
 						if (fm == null) continue;
 
 						fm.DefaultColor = lipSyncMapItem.ElementColor;
-						fm.PhonemeList = new Dictionary<string, bool>(lipSyncMapItem.PhonemeList);
+						fm.PhonemeList = new Dictionary<string, bool>(lipSyncMapItem.PhonemeList, StringComparer.OrdinalIgnoreCase);
 						fm.FaceComponents = new Dictionary<FaceComponent, bool>(lipSyncMapItem.FaceComponents);
 					}
 					
