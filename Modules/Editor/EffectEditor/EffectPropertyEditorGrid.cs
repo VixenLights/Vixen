@@ -42,9 +42,12 @@ namespace VixenModules.Editor.EffectEditor
 	{
 		public delegate void PreviewStateChangedEventHandler(object sender, PreviewStateEventArgs e);
 
+		private static int MultiEditLimit = 75;
+		private static string TooManyEffectsMessage = String.Empty;
 		private const string InformationMessage = "Select an Effect to edit.";
 		private const string InformationLinkUrl = "http://www.vixenlights.com/vixen-3-documentation/sequencer/effect-editor";
 		private static readonly Type ThisType = typeof (EffectPropertyEditorGrid);
+		private bool _tooManySelectedEffects = false;
 
 		/// <summary>
 		///     CurrentDescription Dependency Property
@@ -191,13 +194,25 @@ namespace VixenModules.Editor.EffectEditor
 			get { return (currentObjects == null) ? new IEffect[0] : (IEffect[]) currentObjects.Clone(); }
 			set
 			{
+				if (value.Length > MultiEditLimit)
+				{
+					_tooManySelectedEffects = true;
+					currentObjects = null;
+					DoReload();
+					OnPropertyChanged("SelectedObjects");
+					OnPropertyChanged("SelectedObject");
+					OnSelectedObjectsChanged();
+					return;
+				}
+
+				_tooManySelectedEffects = false;
 				// Ensure there are no nulls in the array
 				VerifySelectedObjects(value);
 
 				var sameSelection = false;
 
 				// Check whether new selection is the same as was previously defined
-				if (currentObjects != null && value != null && currentObjects.Length == value.Length)
+				if (currentObjects != null && currentObjects.Length == value.Length)
 				{
 					sameSelection = true;
 
@@ -211,34 +226,26 @@ namespace VixenModules.Editor.EffectEditor
 				if (!sameSelection)
 				{
 					// Assign new objects and reload
-					if (value == null)
+					// process single selection
+					if (value.Length == 1 && currentObjects != null && currentObjects.Length == 1)
 					{
-						currentObjects = new IEffect[0];
-						DoReload();
-					}
-					else
-					{
-						// process single selection
-						if (value.Length == 1 && currentObjects != null && currentObjects.Length == 1)
-						{
-							var oldValue = (currentObjects != null && currentObjects.Length > 0) ? currentObjects[0] : null;
-							var newValue = (value.Length > 0) ? value[0] : null;
+						var oldValue = (currentObjects != null && currentObjects.Length > 0) ? currentObjects[0] : null;
+						var newValue = (value.Length > 0) ? value[0] : null;
 
-							currentObjects = (IEffect[]) value.Clone();
+						currentObjects = (IEffect[])value.Clone();
 
-							if (oldValue != null && newValue != null && oldValue.GetType().Equals(newValue.GetType()))
-								SwapSelectedObject(newValue);
-							else
-							{
-								DoReload();
-							}
-						}
-						// process multiple selection
+						if (oldValue != null && newValue != null && oldValue.GetType().Equals(newValue.GetType()))
+							SwapSelectedObject(newValue);
 						else
 						{
-							currentObjects = (IEffect[]) value.Clone();
 							DoReload();
 						}
+					}
+					// process multiple selection
+					else
+					{
+						currentObjects = (IEffect[])value.Clone();
+						DoReload();
 					}
 
 					OnPropertyChanged("SelectedObjects");
@@ -267,7 +274,7 @@ namespace VixenModules.Editor.EffectEditor
 						item.Dispose();
 					}
 				}
-				Information = InformationMessage;
+				Information = _tooManySelectedEffects?TooManyEffectsMessage:InformationMessage;
 				InformationLink = InformationLinkUrl;
 				if (value != null)
 				{
@@ -1099,6 +1106,12 @@ namespace VixenModules.Editor.EffectEditor
 		static EffectPropertyEditorGrid()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(ThisType, new FrameworkPropertyMetadata(ThisType));
+			var limit = System.Configuration.ConfigurationManager.AppSettings.GetValues("MultiEditLimit");
+			if (limit?.Length > 0)
+			{
+				MultiEditLimit = Convert.ToInt32(limit[0]);
+			}
+			TooManyEffectsMessage = $"Multi-Edit is limited to < {MultiEditLimit} Effects";
 		}
 
 		/// <summary>
