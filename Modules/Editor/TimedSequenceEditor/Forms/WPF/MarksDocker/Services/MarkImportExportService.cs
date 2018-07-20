@@ -267,7 +267,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 		{
 			var openFileDialog = new OpenFileDialog();
 			openFileDialog.DefaultExt = ".txt";
-			openFileDialog.Filter = @"xTiming xml|*.xTiming.xml|xTiming|*.xTiming|All Files|*.*";
+			openFileDialog.Filter = @"xTiming|*.xTiming|xTiming xml|*.xTiming.xml|All Files|*.*";
 			openFileDialog.FilterIndex = 0;
 			openFileDialog.InitialDirectory = _lastFolder;
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -277,60 +277,22 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				{
 					var xmlDoc = new XmlDocument();
 					xmlDoc.Load(openFileDialog.FileName);
-					XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
-					var name = timingNode?.Attributes.GetNamedItem("name").Value;
-					var effectLayers = timingNode?.SelectNodes("EffectLayer");
-					if (effectLayers != null)
+					XmlNode timingGroups = xmlDoc.SelectSingleNode("/timings");
+					if (timingGroups != null)
 					{
-						int counter = 1;
-						bool lipSyncTrack = effectLayers.Count > 1;
-						foreach (XmlNode effectLayer in effectLayers)
+						//We have multiples
+						var timingNodes = timingGroups.SelectNodes("timing");
+						foreach (XmlNode timingNode in timingNodes)
 						{
-							var collectionName = $"{name ?? "xTiming"} - {counter}";
-							var mc = CreateNewCollection(Color.Brown, collectionName);
-							if (lipSyncTrack)
-							{
-								switch (counter)
-								{
-									case 1:
-										mc.CollectionType = MarkCollectionType.Phrase;
-										mc.Name = $"{name ?? "xTiming"} - Phrase";
-										break;
-									case 2:
-										mc.CollectionType = MarkCollectionType.Word;
-										mc.LinkedMarkCollectionId = collections.Last().Id;
-										mc.Name = $"{name ?? "xTiming"} - Word";
-										break;
-									case 3:
-										mc.CollectionType = MarkCollectionType.Phoneme;
-										mc.LinkedMarkCollectionId = collections.Last().Id;
-										mc.Name = $"{name ?? "xTiming"} - Phoneme";
-										break;
-								}
-							}
-							mc.ShowMarkBar = true; //We have labels, so make sure they are seen.
-							var effects = effectLayer?.SelectNodes("Effect");
-							if (effects != null)
-							{
-								//iterate the marks
-								foreach (XmlNode effect in effects)
-								{
-									var label = effect.Attributes?.GetNamedItem("label").Value;
-									var startTime = effect.Attributes?.GetNamedItem("starttime").Value;
-									var endTime = effect.Attributes?.GetNamedItem("endtime").Value;
-
-									var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)));
-									mark.Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
-									mark.Text = label;
-									mc.AddMark(mark);
-								}
-							}
-							
-							if (mc.Marks.Any())
-							{
-								counter++;
-								collections.Add(mc);
-							}
+							ProcessTiming(timingNode, collections);
+						}
+					}
+					else
+					{
+						XmlNode timingNode = xmlDoc.SelectSingleNode("/timing");
+						if (timingNode != null)
+						{
+							ProcessTiming(timingNode, collections);
 						}
 					}
 					
@@ -346,6 +308,70 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					Logging.Error(ex, msg);
 					var messageBox = new MessageBoxForm(msg, "Audacity Import Error", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
+				}
+			}
+		}
+
+		private static void ProcessTiming(XmlNode timingNode,  ObservableCollection<IMarkCollection> collections)
+		{
+			if (timingNode == null)
+			{
+				return;
+			}
+			var name = timingNode.Attributes?.GetNamedItem("name").Value;
+			var effectLayers = timingNode.SelectNodes("EffectLayer");
+			if (effectLayers != null)
+			{
+				int counter = 1;
+				bool lipSyncTrack = effectLayers.Count > 1;
+				foreach (XmlNode effectLayer in effectLayers)
+				{
+					var collectionName = $"{name ?? "xTiming"} - {counter}";
+					var mc = CreateNewCollection(Color.Brown, collectionName);
+					if (lipSyncTrack)
+					{
+						switch (counter)
+						{
+							case 1:
+								mc.CollectionType = MarkCollectionType.Phrase;
+								mc.Name = $"{name ?? "xTiming"} - Phrase";
+								break;
+							case 2:
+								mc.CollectionType = MarkCollectionType.Word;
+								mc.LinkedMarkCollectionId = collections.Last().Id;
+								mc.Name = $"{name ?? "xTiming"} - Word";
+								break;
+							case 3:
+								mc.CollectionType = MarkCollectionType.Phoneme;
+								mc.LinkedMarkCollectionId = collections.Last().Id;
+								mc.Name = $"{name ?? "xTiming"} - Phoneme";
+								break;
+						}
+					}
+
+					mc.ShowMarkBar = true; //We have labels, so make sure they are seen.
+					var effects = effectLayer?.SelectNodes("Effect");
+					if (effects != null)
+					{
+						//iterate the marks
+						foreach (XmlNode effect in effects)
+						{
+							var label = effect.Attributes?.GetNamedItem("label").Value;
+							var startTime = effect.Attributes?.GetNamedItem("starttime").Value;
+							var endTime = effect.Attributes?.GetNamedItem("endtime").Value;
+							if(startTime == endTime) continue; //Due to some odd reason there can be zero length labels. Right/Wrong we are going to skip those.
+							var mark = new Mark(TimeSpan.FromMilliseconds(Convert.ToDouble(startTime)));
+							mark.Duration = TimeSpan.FromMilliseconds(Convert.ToDouble(endTime)) - mark.StartTime;
+							mark.Text = label;
+							mc.AddMark(mark);
+						}
+					}
+
+					if (mc.Marks.Any())
+					{
+						counter++;
+						collections.Add(mc);
+					}
 				}
 			}
 		}
