@@ -47,14 +47,18 @@ namespace Vixen.Data.Value
 		{
 			get
 			{
-				//return Color.FromArgb((byte) (Intensity * Byte.MaxValue), R, G, B);
 				//This is already a brightness compensated color so applying the intensity to the alpha will dim it further.
 				//Need to convert it to it's full brightness color and then apply the alpha.
 				var hsv = HSV.FromRGB(R / 255d, G / 255d, B / 255d);
 				var v = hsv.V;
-				hsv.V = 1;
-				var c = hsv.ToRGB().ToArgb();
-				return Color.FromArgb((int)(255d * v), c.R, c.G, c.B);
+				if (v < 1)
+				{
+					hsv.SetFullIntensity();
+					var c = RGB.FromHsv(hsv);
+					return Color.FromArgb((int)(255d * v), (int)(c.R * 255d), (int)(c.G * 255d), (int)(c.B * 255d));
+				}
+
+				return Color.FromArgb(255,R,G,B);
 			}
 		}
 

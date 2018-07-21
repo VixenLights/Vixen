@@ -235,6 +235,61 @@ namespace Common.Controls.ColorManagement.ColorModels
 				(int)Math.Round(255.0 * _b));
 		}
 
+		public static RGB FromHsv(HSV hsv)
+		{
+			if (hsv.S == 0.0)
+			{
+				var v = hsv.V;
+				return new RGB{_r=v, _g=v, _b=v};
+			}
+			else
+			{
+				double h = hsv.H * 6.0;
+				if (h == 6.0) h = 0.0;
+				int h_i = (int)Math.Floor(h);
+				double
+					var_1 = hsv.V * (1.0 - hsv.S),
+					var_2 = hsv.V * (1.0 - hsv.S * (h - h_i)),
+					var_3 = hsv.V * (1.0 - hsv.S * (1.0 - (h - h_i)));
+
+				double r, g, b;
+				switch (h_i)
+				{
+					case 0:
+						r = hsv.V;
+						g = var_3;
+						b = var_1;
+						break;
+					case 1:
+						r = var_2;
+						g = hsv.V;
+						b = var_1;
+						break;
+					case 2:
+						r = var_1;
+						g = hsv.V;
+						b = var_3;
+						break;
+					case 3:
+						r = var_1;
+						g = var_2;
+						b = hsv.V;
+						break;
+					case 4:
+						r = var_3;
+						g = var_1;
+						b = hsv.V;
+						break;
+					default:
+						r = hsv.V;
+						g = var_1;
+						b = var_2;
+						break;
+				}
+				return new RGB{_r=r, _g=g, _b=b};
+			}
+		}
+
 		#endregion
 
 		#region properties
@@ -434,15 +489,9 @@ namespace Common.Controls.ColorManagement.ColorModels
 				max = Math.Max(Math.Max(r, g), b),
 				delta_max = max - min;
 
-			HSV ret = new HSV(0, 0, 0);
-			ret._v = max;
+			HSV ret = new HSV {_v = max};
 
-			if (delta_max == 0.0)
-			{
-				ret._h = 0.0;
-				ret._s = 0.0;
-			}
-			else
+			if (delta_max > 0.0)
 			{
 				ret._s = delta_max / max;
 
@@ -587,6 +636,11 @@ namespace Common.Controls.ColorManagement.ColorModels
 			}
 		}
 
+		public void SetFullIntensity()
+		{
+			_v = 1;
+		}
+
 		public override string ToString()
 		{
 			return string.Format("HSV[\nH={0};\tS={1};\tV={2}\n]",
@@ -600,19 +654,24 @@ namespace Common.Controls.ColorManagement.ColorModels
 		public double H
 		{
 			get { return _h; }
-			set { _h = XYZ.ClipValue(value, 0.0, 1.0); }
+			set { _h = Clamp(value, 0.0, 1.0); }
 		}
 
 		public double S
 		{
 			get { return _s; }
-			set { _s = XYZ.ClipValue(value, 0.0, 1.0); }
+			set { _s = Clamp(value, 0.0, 1.0); }
 		}
 
 		public double V
 		{
 			get { return _v; }
-			set { _v = XYZ.ClipValue(value, 0.0, 1.0); }
+			set { _v = Clamp(value, 0.0, 1.0); }
+		}
+
+		public static double Clamp(double value, double min, double max)
+		{
+			return (value < min) ? min : (value > max) ? max : value;
 		}
 
 		#endregion

@@ -15,7 +15,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	{
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private Color color = Color.White;
-		private Brush brush;
 		private int _x = 0;
 		private int _y = 0;
 		private int _z = 0;
@@ -32,7 +31,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private int savedPixelSize;
 		private Point _location;
 
-		[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
+		//[XmlIgnore] public static Dictionary<ElementNode, Color> IntentNodeToColor = new Dictionary<ElementNode, Color>();
 
 		public PreviewPixel()
 		{
@@ -46,7 +45,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Y = yPositoin;
 			Z = zPosition;
 			size = pixelSize;
-			brush = new SolidBrush(Color.White);
 			Resize();
 		}
 
@@ -55,15 +53,21 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			IsHighPrecision = true;
 			Location = location;
 			size = pixelSize;
-			brush = new SolidBrush(Color.White);
 			Resize();
 		}
 
 		[OnDeserialized]
 		private void OnDeserialized(StreamingContext context)
 		{
-			_discreteHandler = new DiscreteIntentHandler();
-			_fullColorHandler = new FullColorIntentHandler();
+			if (_isDiscreteColored)
+			{
+				_discreteHandler = new DiscreteIntentHandler();
+			}
+			else
+			{
+				_fullColorHandler = new FullColorIntentHandler();
+			}
+			
 		}
 
 		public PreviewPixel Clone()
@@ -133,6 +137,22 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		internal void TestForDiscrete()
 		{
 			_isDiscreteColored = _node != null && Property.Color.ColorModule.isElementNodeDiscreteColored(_node);
+			if (_isDiscreteColored)
+			{
+				_fullColorHandler = null;
+				if (_discreteHandler == null)
+				{
+					_discreteHandler = new DiscreteIntentHandler();
+				}
+			}
+			else
+			{
+				_discreteHandler = null;
+				if (_fullColorHandler == null)
+				{
+					_fullColorHandler = new FullColorIntentHandler();
+				}
+			}
 		}
 
 		public void Resize()
@@ -223,11 +243,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			if (forceDraw) {
 				Draw(fp, color);
 			}
-			else if (Node != null) {
-				if (PreviewPixel.IntentNodeToColor.TryGetValue(Node, out color)) {
-					Draw(fp, color);
-				}
-			}
 		}
 
 		public void Draw(FastPixel.FastPixel fp, Color newColor)
@@ -311,11 +326,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		protected void Dispose(bool disposing)
 		{
-			if (disposing) {
-				if (brush != null)
-					brush.Dispose();
-			}
-			brush = null;
 			_node = null;
 		}
 

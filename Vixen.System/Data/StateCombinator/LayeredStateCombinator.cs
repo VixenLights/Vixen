@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Vixen.Data.Value;
 using Vixen.Intent;
 using Vixen.Module.MixingFilter;
@@ -12,8 +14,8 @@ namespace Vixen.Data.StateCombinator
 	{
 		private Color? _combinedMixingColor;
 		private Color? _tempMixingColor;
-		private Dictionary<int, DiscreteValue> _combinedDiscreteColors = new Dictionary<int, DiscreteValue>(4);
-		private readonly Dictionary<int, DiscreteValue> _tempDiscreteColors = new Dictionary<int, DiscreteValue>(4);
+		private Dictionary<int, DiscreteValue> _combinedDiscreteColors = null;
+		private Dictionary<int, DiscreteValue> _tempDiscreteColors = null;
 		private readonly StaticIntentState<RGBValue> _mixedIntentState = new StaticIntentState<RGBValue>(new RGBValue(Color.Black));
 		private static readonly IntentStateLayerComparer LayerComparer = new IntentStateLayerComparer();
 		private static readonly List<IIntentState>  EmptyState = Enumerable.Empty<IIntentState>().ToList();
@@ -35,9 +37,7 @@ namespace Vixen.Data.StateCombinator
 			StateCombinatorValue.Clear();
 			_tempMixingColor = null;
 			_combinedMixingColor = null;
-			_combinedDiscreteColors.Clear();
-			_tempDiscreteColors.Clear();
-
+			
 			//Order all states in decending order by layer
 			//We are going to do this without Linq because it is way more memory efficient
 			states.Sort(LayerComparer);
@@ -79,12 +79,13 @@ namespace Vixen.Data.StateCombinator
 
 			//Do the same for the discrete types. Here we should be down to one per color and we return these as Discrete values
 			//so we can maintatin the source color and an intensity
-			if (_combinedDiscreteColors.Count > 0)
+			if (_combinedDiscreteColors?.Count > 0)
 			{
 				foreach (var combinedDiscreteColor in _combinedDiscreteColors)
 				{
 					StateCombinatorValue.Add(new StaticIntentState<DiscreteValue>(combinedDiscreteColor.Value));
 				}
+				_combinedDiscreteColors.Clear();
 			}
 
 			return StateCombinatorValue;
@@ -103,8 +104,9 @@ namespace Vixen.Data.StateCombinator
 					: MixLayerColors(_combinedMixingColor.Value, _tempMixingColor.Value, filter);
 			}
 			//Check to see if there were any discrete types. These are combined down to one per color
-			if (_tempDiscreteColors.Count > 0)
+			if (_tempDiscreteColors?.Count > 0)
 			{
+				LazyInitializer.EnsureInitialized(ref _combinedDiscreteColors, () => new Dictionary<int, DiscreteValue>(4));
 				if (_combinedDiscreteColors.Count == 0)
 				{
 					foreach (var tempDiscreteColor in _tempDiscreteColors)
@@ -118,12 +120,12 @@ namespace Vixen.Data.StateCombinator
 					//Discrete are special, so we have to handle them a litle different. We need to maintain each indivdual color and manipulate the intensity
 					MixDiscreteLayerColors(ref _combinedDiscreteColors, _tempDiscreteColors, filter);
 				}
-				
+				_tempDiscreteColors.Clear();
 			}
 
 			//reset our temp variables and go back for more layers
 			_tempMixingColor = Color.Empty;
-			_tempDiscreteColors.Clear();
+			
 		}
 
 		public override void Handle(IIntentState<LightingValue> obj)
@@ -146,9 +148,9 @@ namespace Vixen.Data.StateCombinator
 			//per color fashion
 			var discreteValue = obj.GetValue();
 			var argbColor = discreteValue.Color.ToArgb();
-			DiscreteValue value;
 
-			if (_tempDiscreteColors.TryGetValue(argbColor, out value))
+			LazyInitializer.EnsureInitialized(ref _tempDiscreteColors, () => new Dictionary<int, DiscreteValue>(4));
+			if (_tempDiscreteColors.TryGetValue(argbColor, out var value))
 			{
 				if (value.Intensity < discreteValue.Intensity)
 				{

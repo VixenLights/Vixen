@@ -359,7 +359,7 @@ namespace VixenModules.Effect.Plasma
 			int colorcnt = Colors.Count();
 			if (colorcnt <= 1)
 			{
-				return Colors[0].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
+				return Colors[0].GetColorAt(GetEffectTimeIntervalPosition(frame));
 			}
 			if (n >= 1.0) n = 0.99999;
 			if (n < 0.0) n = 0.0;
@@ -371,9 +371,9 @@ namespace VixenModules.Effect.Plasma
 
 		public Color Get2ColorBlend(int coloridx1, int coloridx2, double ratio, int frame)
 		{
-			Color c1, c2;
-			c1 = Colors[coloridx1].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
-			c2 = Colors[coloridx2].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100);
+			var pos = GetEffectTimeIntervalPosition(frame);
+			var c1 = Colors[coloridx1].GetColorAt(pos);
+			var c2 = Colors[coloridx2].GetColorAt(pos);
 
 			return Color.FromArgb(ChannelBlend(c1.R, c2.R, ratio), ChannelBlend(c1.G, c2.G, ratio), ChannelBlend(c1.B, c2.B, ratio));
 		}
