@@ -125,6 +125,7 @@ namespace VixenModules.App.SuperScheduler
 			enabledCommand.Checked += async (sender, e) =>
 			{
 				_data.IsEnabled = e.CheckedState;
+				_executor.CheckSchedule();
 				await VixenSystem.SaveModuleConfigAsync();
 			};
 

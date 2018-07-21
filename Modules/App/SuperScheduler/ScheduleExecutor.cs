@@ -23,7 +23,10 @@ namespace VixenModules.App.SuperScheduler
 		{
 			Data = data;
 			_synchronizationContext = SynchronizationContext.Current;
-			Timer.Enabled = true;
+			if (Enabled)
+			{
+				Timer.Enabled = true;
+			}
 		}
 
 		private SuperSchedulerData Data { get; set; }
@@ -55,7 +58,15 @@ namespace VixenModules.App.SuperScheduler
 			{
 				_enabled = value;
 				ShowStatusForm(_enabled);
+				if (Enabled)
+				{
+					Timer.Enabled = true;
+				}
+				else
+				{
+					Timer.Enabled = false;
 
+				}
 				Logging.Info(_enabled  ? "Schedule Enabled" : "Schedule Disabled");
 
 			}
@@ -161,7 +172,7 @@ namespace VixenModules.App.SuperScheduler
 			statusForm.Visible = show;
 		}
 
-		private void CheckSchedule()
+		internal void CheckSchedule()
 		{
 			// Were we just enabled?
 			if (Data.IsEnabled && !Enabled)
