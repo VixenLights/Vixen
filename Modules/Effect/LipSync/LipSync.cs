@@ -31,7 +31,7 @@ namespace VixenModules.Effect.LipSync
 		private EffectIntents _elementData = null;
 		private static Dictionary<PhonemeType, Bitmap> _phonemeBitmaps = null;
 		private readonly LipSyncMapLibrary _library = null;
-		private IEnumerable<IMark> _marks = null;
+		private List<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
 
@@ -131,13 +131,41 @@ namespace VixenModules.Effect.LipSync
 			{
 				if (LipSyncMode == LipSyncMode.MarkCollection && _marks != null)
 				{
+					TimeSpan lastMarkTime = StartTime;
 					foreach (var mark in _marks)
 					{
-						if (fm.PhonemeState(mark.Text.ToUpper()))
+						if (!AllowMarkGaps)
+						{
+							var gapDuration = mark.StartTime - lastMarkTime;
+							if (gapDuration.TotalMilliseconds > 10 && fm.PhonemeState("REST"))
+							{
+								//Fill the gap with a rest
+								var colorVal = fm.ConfiguredColorAndIntensity();
+								var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
+								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+								_elementData.Add(result);
+							}
+
+							lastMarkTime = mark.EndTime;
+						}
+						if (fm.PhonemeState(mark.Text))
 						{
 							var colorVal = fm.ConfiguredColorAndIntensity();
 							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, mark.Duration);
 							result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
+							_elementData.Add(result);
+						}
+					}
+
+					if (!AllowMarkGaps)
+					{
+						var gapDuration = StartTime + TimeSpan - lastMarkTime;
+						if (gapDuration.TotalMilliseconds > 10 && fm.PhonemeState("REST"))
+						{
+							//Fill the gap with a rest
+							var colorVal = fm.ConfiguredColorAndIntensity();
+							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
+							result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
 							_elementData.Add(result);
 						}
 					}
@@ -175,14 +203,42 @@ namespace VixenModules.Effect.LipSync
 			{
 				if (LipSyncMode == LipSyncMode.MarkCollection && _marks != null)
 				{
+					TimeSpan lastMarkTime = StartTime;
 					foreach (var mark in _marks)
 					{
-						if (mapData.PhonemeState(mark.Text.ToUpper(), item))
+						if (!AllowMarkGaps)
+						{
+							var gapDuration = mark.StartTime - lastMarkTime;
+							if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
+							{
+								//Fill the gap with a rest
+								var colorVal = mapData.ConfiguredColorAndIntensity(item);
+								var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
+								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+								_elementData.Add(result);
+							}
+
+							lastMarkTime = mark.EndTime;
+						}
+						if (mapData.PhonemeState(mark.Text, item))
 						{
 							var colorVal = mapData.ConfiguredColorAndIntensity(item);
 							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, mark.Duration);
 							result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
 							_elementData.Add(result);
+						}
+
+						if (!AllowMarkGaps)
+						{
+							var gapDuration = StartTime + TimeSpan - lastMarkTime;
+							if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
+							{
+								//Fill the gap with a rest
+								var colorVal = mapData.ConfiguredColorAndIntensity(item);
+								var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
+								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+								_elementData.Add(result);
+							}
 						}
 					}
 				}
@@ -203,9 +259,31 @@ namespace VixenModules.Effect.LipSync
 			SetupPictureEffect();
 			if (LipSyncMode == LipSyncMode.MarkCollection)
 			{
+				TimeSpan lastMarkTime = StartTime;
 				foreach (var mark in _marks)
 				{
-					var image = mapData.ImageForPhoneme(mark.Text.ToUpper());
+					if (!AllowMarkGaps)
+					{
+						var gapDuration = mark.StartTime - lastMarkTime;
+						if (gapDuration.TotalMilliseconds > 10)
+						{
+							//Fill the gap with a rest
+							var restImage = mapData.ImageForPhoneme("REST");
+							if (restImage != null)
+							{
+								_thePic.Image = restImage;
+								_thePic.TimeSpan = gapDuration;
+								_thePic.MarkDirty();
+								var result = _thePic.Render();
+								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+								_elementData.Add(result);
+							}
+						}
+
+						lastMarkTime = mark.EndTime;
+					}
+
+					var image = mapData.ImageForPhoneme(mark.Text);
 					if (image != null)
 					{
 						_thePic.Image = image;
@@ -214,6 +292,25 @@ namespace VixenModules.Effect.LipSync
 						var result = _thePic.Render();
 						result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
 						_elementData.Add(result);
+					}
+
+					if (!AllowMarkGaps)
+					{
+						var gapDuration = StartTime + TimeSpan - lastMarkTime;
+						if (gapDuration.TotalMilliseconds > 10)
+						{
+							//Fill the gap with a rest
+							var restImage = mapData.ImageForPhoneme("REST");
+							if (restImage != null)
+							{
+								_thePic.Image = restImage;
+								_thePic.TimeSpan = gapDuration;
+								_thePic.MarkDirty();
+								var result = _thePic.Render();
+								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+								_elementData.Add(result);
+							}
+						}
 					}
 				}
 			}
@@ -334,7 +431,8 @@ namespace VixenModules.Effect.LipSync
 			{
 				{nameof(StaticPhoneme), LipSyncMode == LipSyncMode.Phoneme},
 				{nameof(LyricData), LipSyncMode == LipSyncMode.Phoneme},
-				{nameof(MarkCollectionId), LipSyncMode == LipSyncMode.MarkCollection}
+				{nameof(MarkCollectionId), LipSyncMode == LipSyncMode.MarkCollection},
+				{nameof(AllowMarkGaps), LipSyncMode == LipSyncMode.MarkCollection}
 			};
 
 			SetBrowsable(propertyStates);
@@ -574,6 +672,22 @@ namespace VixenModules.Effect.LipSync
 		}
 
 		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"AllowMarkGaps")]
+		[ProviderDescription(@"AllowMarkGaps")]
+		[PropertyOrder(10)]
+		public bool AllowMarkGaps
+		{
+			get { return _data.AllowMarkGaps; }
+			set
+			{
+				_data.AllowMarkGaps = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Brightness",3)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
@@ -624,16 +738,47 @@ namespace VixenModules.Effect.LipSync
 					{
 						bool first = true;
 						int endX = 0;
+
+						TimeSpan lastMarkTime = StartTime;
 						foreach (var mark in _marks)
 						{
-							PhonemeType phoneme;
+							if (!AllowMarkGaps)
+							{
+								var gapDuration = mark.StartTime - lastMarkTime;
+								if (gapDuration.TotalMilliseconds > 10)
+								{
+									if (_phonemeBitmaps.TryGetValue(PhonemeType.REST, out displayImage))
+									{
+										endX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+										var startX = (int)((lastMarkTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+										lock (displayImage)
+										{
+											scaledImage = new Bitmap(displayImage,
+												Math.Min(clipRectangle.Width, endX - startX),
+												clipRectangle.Height);
+										}
+										g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
+										if (first)
+										{
+											first = false;
+										}
+										else
+										{
+											g.DrawLine(Pens.Black, new Point(clipRectangle.X + startX, 0), new Point(clipRectangle.X + startX, clipRectangle.Height));
+										}
+									}
+								}
 
-							if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out phoneme))
+								lastMarkTime = mark.EndTime;
+							}
+
+							if (Enum.TryParse(mark.Text.ToUpper(CultureInfo.InvariantCulture), out PhonemeType phoneme))
 							{
 								if (_phonemeBitmaps.TryGetValue(phoneme, out displayImage))
 								{
 									endX = (int)((mark.EndTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
-									var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									if (endX <= 0) continue;
+									var startX = (int)(Math.Max(0,mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
 									lock(displayImage)
 									{
 										scaledImage = new Bitmap(displayImage,
@@ -654,10 +799,34 @@ namespace VixenModules.Effect.LipSync
 							first = false;
 						}
 
-						if (_marks.Last().EndTime < StartTime + TimeSpan)
+						if (!AllowMarkGaps)
 						{
-							//draw a closing line on the image
-							g.DrawLine(Pens.Black, new Point(clipRectangle.X + endX, 0), new Point(clipRectangle.X + endX, clipRectangle.Height));
+							var gapDuration = StartTime + TimeSpan - lastMarkTime;
+							if (gapDuration.TotalMilliseconds > 10)
+							{
+								if (_phonemeBitmaps.TryGetValue(PhonemeType.REST, out displayImage))
+								{
+									endX = clipRectangle.Width;
+									var startX = (int)((lastMarkTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+									lock (displayImage)
+									{
+										scaledImage = new Bitmap(displayImage,
+											Math.Min(clipRectangle.Width, endX - startX),
+											clipRectangle.Height);
+									}
+									g.DrawImage(scaledImage, clipRectangle.X + startX, clipRectangle.Y);
+
+									g.DrawLine(Pens.Black, new Point(clipRectangle.X + startX, 0), new Point(clipRectangle.X + startX, clipRectangle.Height));
+								}
+							}
+						}
+						else
+						{
+							if (_marks.Last().EndTime < StartTime + TimeSpan)
+							{
+								//draw a closing line on the image
+								g.DrawLine(Pens.Black, new Point(clipRectangle.X + endX, 0), new Point(clipRectangle.X + endX, clipRectangle.Height));
+							}
 						}
 					}
 				}

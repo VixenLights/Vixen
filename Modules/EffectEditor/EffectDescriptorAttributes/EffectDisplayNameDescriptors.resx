@@ -732,4 +732,7 @@
   <data name="SizeVariation" xml:space="preserve">
     <value>Size Variation</value>
   </data>
+  <data name="AllowMarkGaps" xml:space="preserve">
+    <value>Allow Mark Gaps</value>
+  </data>
 </root>

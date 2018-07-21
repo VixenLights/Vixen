@@ -62,6 +62,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When selected, the effect does not fill gaps in the marks with a REST..
+        /// </summary>
+        internal static string AllowMarkGaps {
+            get {
+                return ResourceManager.GetString("AllowMarkGaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls whether each individual element is alternated independantly or controlled by the depth of the effect..
         /// </summary>
         internal static string AlternatingDepth {
@@ -80,15 +89,6 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adjusts the time the word is displayed to auto fit between words either side..
-        /// </summary>
-        internal static string AutoFit {
-            get {
-                return ResourceManager.GetString("AutoFit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Adjusts the angle speed of the shape..
         /// </summary>
         internal static string AngleSpeed {
@@ -103,6 +103,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string AngleSpeedVariation {
             get {
                 return ResourceManager.GetString("AngleSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the time the word is displayed to auto fit between words either side..
+        /// </summary>
+        internal static string AutoFit {
+            get {
+                return ResourceManager.GetString("AutoFit", resourceCulture);
             }
         }
         
@@ -493,7 +502,8 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
             }
         }
         
-        /// <summary>        ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
+        /// <summary>
+        ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
             get {

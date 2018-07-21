@@ -20,7 +20,7 @@ namespace VixenModules.Property.Face {
 			{
 				_data = new FaceData();
 			}
-			_data.PhonemeList = new Dictionary<string, bool>();
+			_data.PhonemeList = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 			_data.FaceComponents = new Dictionary<FaceComponent, bool>();
 			DefaultColor = System.Drawing.Color.White;
 		}
@@ -35,7 +35,7 @@ namespace VixenModules.Property.Face {
 				return;
 			}
 
-			PhonemeList = new Dictionary<string, bool>(source.PhonemeList);
+			PhonemeList = new Dictionary<string, bool>(source.PhonemeList, StringComparer.OrdinalIgnoreCase);
 			FaceComponents = new Dictionary<FaceComponent, bool>(source.FaceComponents);
 			DefaultColor = source.DefaultColor;
 		}

@@ -13,7 +13,7 @@ namespace VixenModules.App.LipSyncApp
 {
 	public class LipSyncMapData : ModuleDataModelBase
 	{
-		private readonly ConcurrentDictionary<string, Image> _imageCache = new ConcurrentDictionary<string, Image>();
+		private readonly ConcurrentDictionary<string, Image> _imageCache = new ConcurrentDictionary<string, Image>(StringComparer.OrdinalIgnoreCase);
 		public LipSyncMapData()
 		{
 			MapItems = new List<LipSyncMapItem>();
