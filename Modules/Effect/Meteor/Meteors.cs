@@ -464,8 +464,6 @@ namespace VixenModules.Effect.Meteors
 			if (maxSpeed > 200)
 				maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
-			int tailStart = BufferHt;
-			if (tailStart < 1) tailStart = 1;
 
 			
 

@@ -1205,6 +1205,7 @@ namespace VixenModules.Effect.Shapes
 			_centerSpeed = CalculateCenterSpeed(_intervalPosFactor);
 			_speedVariation = CalculateSpeedVariation(_intervalPosFactor);
 			_angle = CalculateAngle(_intervalPosFactor);
+			double pos = GetEffectTimeIntervalPosition(frame);
 
 			double minAngleSpeed = _centerAngleSpeed - (_angleSpeedVariation / 2);
 			double maxAngleSpeed = _centerAngleSpeed + (_angleSpeedVariation / 2);
@@ -1291,9 +1292,9 @@ namespace VixenModules.Effect.Shapes
 							{
 								if (descendant.ID == null) continue;
 								// Will add random color form first and second color fill to all SVG Paths that contain appropiate ID.
-								if (descendant.ID.Contains("firstFill")) descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								if (descendant.ID.Contains("firstFill")) descendant.Fill = new SvgColourServer(FirstFillColors[shape.FirstFillColorIndex].GetColorAt(pos));
 										
-								if (descendant.ID.Contains("secondFill")) descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								if (descendant.ID.Contains("secondFill")) descendant.Fill = new SvgColourServer(SecondFillColors[shape.SecondFillColorIndex].GetColorAt(pos));
 									
 								// Used to Fade individual Shapes. This will adjust the assigned colors brightness.
 								if (FadeType != FadeType.None && descendant.Fill != SvgPaintServer.None)
@@ -1315,7 +1316,7 @@ namespace VixenModules.Effect.Shapes
 						if (StrokeFill)
 						{
 							child.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
-								.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								.GetColorAt(pos));
 							child.StrokeWidth = TargetPositioning == TargetPositioningType.Locations
 								? (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
 								             shape.LocationRatio1)
@@ -1345,7 +1346,7 @@ namespace VixenModules.Effect.Shapes
 					if (StrokeFill)
 					{
 						shape.SvgImage.Stroke = new SvgColourServer(OutlineColors[shape.StrokeColorIndex]
-							.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+							.GetColorAt(pos));
 						shape.SvgImage.StrokeWidth = (SvgUnit) (new SvgUnit(StrokeWidth / _scaleShapeWidth) * _minBuffer / StringCount /
 						                               shape.LocationRatio1);
 
@@ -1655,6 +1656,9 @@ namespace VixenModules.Effect.Shapes
 				_shapes.Remove(_shapes[_random.Next(0, _shapes.Count)]);
 			}
 
+			double angleStartSpeed = (maxAngleSpeed - minAngleSpeed) + minAngleSpeed;
+			double sizeStartSpeed = ((maxSizeSpeed - minSizeSpeed) + minSizeSpeed) / 10;
+
 			foreach (var shape in _shapes)
 			{
 				if (ShapeType != ShapeType.None)
@@ -1677,8 +1681,8 @@ namespace VixenModules.Effect.Shapes
 					}
 				}    
 
-				double angleSpeed = _random.NextDouble() * (maxAngleSpeed - minAngleSpeed) + minAngleSpeed;
-				double sizeSpeed = (_random.NextDouble() * (maxSizeSpeed - minSizeSpeed) + minSizeSpeed) / 10;
+				double angleSpeed = _random.NextDouble() * angleStartSpeed;
+				double sizeSpeed = _random.NextDouble() * sizeStartSpeed;
 				
 				var centerSize = CalculateCenterSize(_intervalPosFactor, shape.LocationRatio1);
 				var sizeVariation = CalculateSizeVariation(_intervalPosFactor, shape.LocationRatio1);
