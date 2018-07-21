@@ -260,6 +260,9 @@ namespace VixenModules.Effect.Fire
 			{
 				for (x = 0; x < maxWi; x++)
 				{
+					var colorIndex = GetFireBuffer(x, y, maxWi, maxHt);
+					if (colorIndex == 0) continue; // No point going any further if color index is 0 (Black). Significantly reduces render time.
+					Color color = FirePalette.GetColor(colorIndex);
 					int xp = x;
 					int yp = y;
 					if (Location == FireDirection.Top || Location == FireDirection.Right)
@@ -273,7 +276,6 @@ namespace VixenModules.Effect.Fire
 						yp = t;
 					}
 
-					Color color = FirePalette.GetColor(GetFireBuffer(x, y, maxWi, maxHt));
 					var hsv = HSV.FromRGB(color);
 					if (CalculateHueShift(intervalPosFactor) > 0)
 					{
@@ -281,10 +283,6 @@ namespace VixenModules.Effect.Fire
 					}
 
 					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
-					//if (color.R == 0 && color.G == 0 && color.B == 0)
-					//{
-					//	color = Color.Transparent;
-					//}
 					
 					frameBuffer.SetPixel(xp, yp, hsv);
 				}

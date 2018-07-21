@@ -480,11 +480,9 @@ namespace VixenModules.Effect.CountDown
 		
 		private void InitialRender(int frame, Bitmap bitmap)
 		{
-			// Only do this if we are required to show the count down on this frame.
-			
-				var intervalPos = GetEffectTimeIntervalPosition(frame);
-				var intervalPosFactor = intervalPos * 100;
-				var textAngle = CalculateAngle(intervalPosFactor);
+			var intervalPos = GetEffectTimeIntervalPosition(frame);
+			var intervalPosFactor = intervalPos * 100;
+			var textAngle = CalculateAngle(intervalPosFactor);
 
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{
