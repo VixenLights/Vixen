@@ -767,9 +767,11 @@ namespace VixenModules.Effect.Fireworks
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-
 			if (StringCount == 1) return;
 
+			double pos = GetEffectTimeIntervalPosition(frame);
+			double level = LevelCurve.GetValue(pos * 100) / 100;
+			double particalFade = ParticalFade * 10.0;
 			int colorcnt = ColorGradients.Count;
 
 			for (int i = 0; i < _maxFlakes; i++)
@@ -801,23 +803,21 @@ namespace VixenModules.Effect.Fireworks
 				}
 			}
 
-			double position = GetEffectTimeIntervalPosition(frame);
-			double level = LevelCurve.GetValue(position * 100) / 100;
 			for (int i = 0; i < _maxFlakes; i++)
 			{
 				if (_fireworkBursts[i].Active)
 				{
-					var v = (float)(((ParticalFade * 10.0) - _fireworkBursts[i].Cycles) / (ParticalFade * 10.0));
+					var v = (float)((particalFade - _fireworkBursts[i].Cycles) / particalFade);
 					if (v < 0) v = 0.0f;
 					switch (ColorType)
 					{
 						case FireworksColorType.Range: //Random two colors are selected from the list for each Firework.
 							_fireworkBursts[i].HSV =
-								SetRangeColor(HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)),
-									HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100)));
+								SetRangeColor(HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt(pos)),
+									HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt(pos)));
 							break;
 						case FireworksColorType.Palette: //All colors are used
-							_fireworkBursts[i].HSV = HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+							_fireworkBursts[i].HSV = HSV.FromRGB(ColorGradients[Rand() % colorcnt].GetColorAt(pos));
 							break;
 						case FireworksColorType.RainBow: //No user colors are used for Rainbow effect.
 							_fireworkBursts[i].HSV.H = (float)(Rand() % 1000) / 1000.0f;
@@ -825,7 +825,7 @@ namespace VixenModules.Effect.Fireworks
 							_fireworkBursts[i].HSV.V = 1.0f;
 							break;
 						case FireworksColorType.Standard:
-							_fireworkBursts[i].HSV = HSV.FromRGB(ColorGradients[_fireworkBursts[i].ColorLocation].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+							_fireworkBursts[i].HSV = HSV.FromRGB(ColorGradients[_fireworkBursts[i].ColorLocation].GetColorAt(pos));
 							break;
 					}
 					HSV hsv = _fireworkBursts[i].HSV;
