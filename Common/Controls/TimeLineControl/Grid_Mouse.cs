@@ -579,7 +579,7 @@ namespace Common.Controls.Timeline
 		private void beginDragSelect(Point gridLocation)
 		{
 			m_dragState = DragState.Selecting;
-			if (!ShiftPressed) ClearSelectedElements();
+			if (!ShiftPressed && SelectedElements.Any()) ClearSelectedElements();
 			else tempSelectedElements = SelectedElements.ToList();
 			ClearSelectedRows(m_mouseDownElementRow);
 			ClearActiveRows(m_mouseDownElementRow);

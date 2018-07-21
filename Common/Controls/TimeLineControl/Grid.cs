@@ -1418,6 +1418,7 @@ namespace Common.Controls.Timeline
 		// are no worse than Windows Explorer (although it would be hard to be much worse.)
 		private void selectElementsWithin(Rectangle SelectedArea)
 		{
+			if (SelectedArea.Size.IsEmpty) return;
 			Row startRow = rowAt(SelectedArea.Location);
 			Row endRow = rowAt(SelectedArea.BottomRight());
 
@@ -1428,7 +1429,8 @@ namespace Common.Controls.Timeline
 			string moveDirection = (SelectedArea.Left < mouseDownGridLocation.X || !aCadStyleSelectionBox) ? "Left" : "Right";
 
 			SelectionBorder = (moveDirection == "Right") ? Color.Green : Color.Blue;
-			
+
+			SupressSelectionEvents = true;
 			// deselect all elements in the grid first, then only select the ones in the box.
 			ClearSelectedElements();
 
@@ -1500,7 +1502,7 @@ namespace Common.Controls.Timeline
 					}
 				}
 			} // end foreach
-
+			SupressSelectionEvents = false;
 			_SelectionChanged();
 		}
 
