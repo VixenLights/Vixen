@@ -61,14 +61,14 @@
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
-							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='0'}"></WrapPanel>
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-2'}"></WrapPanel>
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel  Name="CollectionContainer" HorizontalAlignment="Stretch" Orientation="Vertical"  Margin="5,5,0,5" 
                                      Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}, Path=ActualWidth,
-                                    Converter={StaticResource AdditionConverter}, ConverterParameter='-20'}">
+                                    Converter={StaticResource AdditionConverter}, ConverterParameter='-15'}">
                             <controls:InlineGradientEditor
                                 x:Name="GradientEditor"
 			                    Value="{Binding Value, Mode=TwoWay}"
