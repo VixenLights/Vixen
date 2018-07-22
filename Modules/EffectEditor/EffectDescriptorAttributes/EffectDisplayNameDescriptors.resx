@@ -241,7 +241,7 @@
     <value>Hue Shift</value>
   </data>
   <data name="IndividualElements" xml:space="preserve">
-    <value>Choose Effect Depth</value>
+    <value>Effect Depth</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Location</value>
@@ -430,7 +430,7 @@
     <value>Min Angle</value>
   </data>
   <data name="MovementType" xml:space="preserve">
-    <value>Movement Type</value>
+    <value>Motion</value>
   </data>
   <data name="RandomPosition" xml:space="preserve">
     <value>Random Position</value>

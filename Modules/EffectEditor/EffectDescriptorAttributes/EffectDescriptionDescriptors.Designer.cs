@@ -1043,7 +1043,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Control type of movement, either Speed and Iterations..
+        ///   Looks up a localized string similar to Controls variance of the motion over time..
         /// </summary>
         internal static string Movement {
             get {
@@ -1052,7 +1052,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls the Type of Movement..
+        ///   Looks up a localized string similar to Controls how the effect progresses across time between speed or iterations..
         /// </summary>
         internal static string MovementType {
             get {
