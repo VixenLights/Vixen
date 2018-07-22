@@ -127,7 +127,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"GradientLevelPair")]
+		[ProviderDisplayName(@"ColorGradients")]
 		[ProviderDescription(@"GradientLevelPair")]
 		public List<GradientLevelPair> Colors
 		{
@@ -146,7 +146,7 @@ namespace VixenModules.Effect.Alternating
 
 		[Value]
 		[ProviderCategory("Config", 1)]
-		[DisplayName(@"Alternating Source")]
+		[DisplayName(@"Timing Source")]
 		[Description(@"Selects what source is used to determine change.")]
 		[PropertyOrder(0)]
 		public AlternatingMode AlternatingMode

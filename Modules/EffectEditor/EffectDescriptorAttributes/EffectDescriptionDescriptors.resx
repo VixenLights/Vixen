@@ -415,7 +415,7 @@
     <value>Min angle the Meteor moves.</value>
   </data>
   <data name="MovementType" xml:space="preserve">
-    <value>Controls the Type of Movement.</value>
+    <value>Controls how the effect progresses across time between speed or iterations.</value>
   </data>
   <data name="RandomPosition" xml:space="preserve">
     <value>Creates new Meteors at a Random Position</value>
@@ -460,7 +460,7 @@
     <value>Changes direction of effect.</value>
   </data>
   <data name="Movement" xml:space="preserve">
-    <value>Control type of movement, either Speed and Iterations.</value>
+    <value>Controls variance of the motion over time.</value>
   </data>
   <data name="BorderType" xml:space="preserve">
     <value>Enable Single or Independent Border width control.</value>

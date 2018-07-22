@@ -269,7 +269,7 @@ namespace VixenModules.Effect.PinWheel
 		[Value]
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"ColorGradients")]
-		[ProviderDescription(@"Color")]
+		[ProviderDescription(@"GradientLevelPair")]
 		[PropertyOrder(1)]
 		public List<GradientLevelPair> Colors
 		{

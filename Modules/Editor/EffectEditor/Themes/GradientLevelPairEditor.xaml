@@ -18,7 +18,7 @@
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel Orientation="Vertical" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}, 
-							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-10'}"></WrapPanel>
+							Path=ActualWidth, Converter={StaticResource AdditionConverter}, ConverterParameter='-5'}"></WrapPanel>
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>

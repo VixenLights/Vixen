@@ -899,7 +899,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose Effect Depth.
+        ///   Looks up a localized string similar to Effect Depth.
         /// </summary>
         internal static string IndividualElements {
             get {
@@ -1133,7 +1133,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movement Type.
+        ///   Looks up a localized string similar to Motion.
         /// </summary>
         internal static string MovementType {
             get {
