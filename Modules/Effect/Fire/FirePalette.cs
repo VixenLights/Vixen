@@ -10,7 +10,7 @@ namespace VixenModules.Effect.Fire
 {
 	public static class FirePalette
 	{
-		private static readonly List<Color> Palette = new List<Color>();
+		private static readonly List<HSV> Palette = new List<HSV>();
 
 		static FirePalette()
 		{
@@ -20,7 +20,6 @@ namespace VixenModules.Effect.Fire
 		private static void InitPalette()
 		{
 			HSV hsv = new HSV();
-			Color color;
 
 			Palette.Clear();
 			int i;
@@ -30,8 +29,7 @@ namespace VixenModules.Effect.Fire
 			for (i = 0; i < 100; i++)
 			{
 				hsv.V = i / 100.0f;
-				color = hsv.ToRGB().ToArgb();
-				Palette.Add(color);
+				Palette.Add(hsv);
 
 			}
 
@@ -39,14 +37,13 @@ namespace VixenModules.Effect.Fire
 			hsv.V = 1.0f;
 			for (i = 0; i < 100; i++)
 			{
-				color = hsv.ToRGB().ToArgb();
-				Palette.Add(color);
+				Palette.Add(hsv);
 				hsv.H += 0.00166666f;
 			}
 		}
 
 
-		public static Color GetColor(int index)
+		public static HSV GetColor(int index)
 		{
 			if (index >= 0 && index >= Palette.Count)
 			{
