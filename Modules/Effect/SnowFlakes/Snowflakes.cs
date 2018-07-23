@@ -448,8 +448,8 @@ namespace VixenModules.Effect.Snowflakes
 			int colorcntInside = InnerColor.Count;
 			int minDirection = 1;
 			int maxDirection = 360;
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
+			var intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 
 			// create new SnowFlakes and maintain maximum number as per users selection.
 			int flakeCount = (int) (SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor));
@@ -469,8 +469,8 @@ namespace VixenModules.Effect.Snowflakes
 			
 			for (int i = 0; i < flakeCount; i++)
 			{
+				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount - _snowfalakeCountAdjust) break;
 				double position = (_random.NextDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
-				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount - _snowfalakeCountAdjust) continue;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
@@ -561,7 +561,7 @@ namespace VixenModules.Effect.Snowflakes
 			{
 				//Renders the Snow on the ground based off the cuurrent height.
 				HSV hsv = HSV.FromRGB(OutSideColor[0].GetColorAt((intervalPosFactor) / 100));
-				hsv.V *= hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
+				hsv.V *= level;
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < initialBuildUp; y++)
@@ -572,32 +572,25 @@ namespace VixenModules.Effect.Snowflakes
 				}
 			}
 
+			int snowflakeWidth;
 			// render all SnowFlakes
 			foreach (SnowFlakeClass snowFlakes in _snowFlakes)
 			{
 				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
 				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
 
-				int snowflakeWidth = 1;
 				switch (snowFlakes.Type)
 				{
-					case SnowflakeType.Single:
-						snowflakeWidth = 1;
-						break;
-					case SnowflakeType.Three:
-						snowflakeWidth = 1;
-						break;
 					case SnowflakeType.Five:
-						snowflakeWidth = 2;
-						break;
 					case SnowflakeType.Nine:
 						snowflakeWidth = 2;
 						break;
 					case SnowflakeType.Thirteen:
-						snowflakeWidth = 3;
-						break;
 					case SnowflakeType.FortyFive:
 						snowflakeWidth = 3;
+						break;
+					default:
+						snowflakeWidth = 1;
 						break;
 				}
 
@@ -611,8 +604,8 @@ namespace VixenModules.Effect.Snowflakes
 						//Skips the location processing part to not waste time as the Snowflake is no longer moving and sitting on the bottom.
 					{
 						//Sets the new position the SnowFlake is moving to
-						colorX = (snowFlakes.X + Convert.ToInt32(snowFlakes.DeltaX) - (BufferWi/100));
-						colorY = (snowFlakes.Y + Convert.ToInt32(snowFlakes.DeltaY) + (BufferHt/100));
+						colorX = snowFlakes.X + (int)snowFlakes.DeltaX - BufferWi/100;
+						colorY = snowFlakes.Y + (int)snowFlakes.DeltaY + BufferHt/100;
 
 						if (SnowflakeEffect != SnowflakeEffect.Explode)
 						{
@@ -681,8 +674,8 @@ namespace VixenModules.Effect.Snowflakes
 					//Added the color and then adjusts brightness based on effect time position, randon Brightness and over all brightness level.
 					HSV hsvInner = snowFlakes.OuterHsv;
 					HSV hsvOuter = snowFlakes.InnerHsv;
-					hsvInner.V *= snowFlakes.HsvBrightness*LevelCurve.GetValue(intervalPosFactor)/100;
-					hsvOuter.V *= snowFlakes.HsvBrightness*LevelCurve.GetValue(intervalPosFactor)/100;
+					hsvInner.V *= snowFlakes.HsvBrightness * level;
+					hsvOuter.V *= snowFlakes.HsvBrightness * level;
 
 					if (initialBuildUp < BufferHt && colorY >= initialBuildUp - snowflakeOverShoot)
 					{

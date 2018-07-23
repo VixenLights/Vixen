@@ -432,15 +432,14 @@ namespace VixenModules.Effect.Borders
 				x = x - BufferWiOffset;
 			}
 
-			HSV hsv = GraidentColorSelection(x, y, effectFrame);
-			hsv.V = hsv.V * level;
-
 			if (BorderType == BorderType.Single || BorderMode == BorderMode.Simple)//Single Border Control
 			{
 				//Displays borders 
 				if ((y < borderWidth + thickness || y >= BufferHt - borderWidth - thickness || x < borderWidth + thickness || x >= BufferWi - borderWidth - thickness)
 					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
+					HSV hsv = GraidentColorSelection(x, y, effectFrame);
+					hsv.V = hsv.V * level;
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
 			}
@@ -450,6 +449,8 @@ namespace VixenModules.Effect.Borders
 				if ((y < borderWidth + bottomThickness || y >= BufferHt - borderWidth - topThickness || x < borderWidth + leftThickness || x >= BufferWi - borderWidth - rightThickness)
 					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
+					HSV hsv = GraidentColorSelection(x, y, effectFrame);
+					hsv.V = hsv.V * level;
 					frameBuffer.SetPixel(xCoord, yCoord, hsv);
 				}
 			}

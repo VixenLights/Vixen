@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Meteors
 	public class Meteors : PixelEffectBase
 	{
 		private MeteorsData _data;
-		private readonly List<MeteorClass> _meteors = new List<MeteorClass>();
+		private List<MeteorClass> _meteors;
 		private static Random _random = new Random();
 		private double _gradientPosition = 0;
 		private IPixelFrameBuffer _tempBuffer;
@@ -433,25 +433,22 @@ namespace VixenModules.Effect.Meteors
 					}
 				}
 			}
+
+			_meteors = new List<MeteorClass>(32);
 		}
 
 		protected override void CleanUpRender()
 		{
-			//Nothing to clean up
+			_meteors = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			if (frame == 0)
-			{
-				_meteors.Clear();
-			}
-
-			int colorcnt = Colors.Count();
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
+			int colorcnt = Colors.Count;
+			var intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			var length = CalculateLength(intervalPosFactor);
-			int tailLength = (BufferHt < 10) ? length / 10 : BufferHt * length / 100;
+			int tailLength = BufferHt < 10 ? length / 10 : BufferHt * length / 100;
 			int minDirection = 1;
 			int maxDirection = 360;
 			int pixelCount = CalculatePixelCount(intervalPosFactor);
@@ -464,21 +461,17 @@ namespace VixenModules.Effect.Meteors
 			if (maxSpeed > 200)
 				maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
-			int tailStart = BufferHt;
-			if (tailStart < 1) tailStart = 1;
-
 			
-
 			// create new meteors and maintain maximum number as per users selection.
-			HSV hsv = new HSV();
+			HSV hsv;
 			int adjustedPixelCount = frame < pixelCount
 				? (!RandomMeteorPosition && frame > pixelCount ? 1 : (pixelCount < 10 ? pixelCount : pixelCount / 10))
 				: pixelCount;
 
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
+				if (_meteors.Count >= pixelCount) break;
 				double position = (_random.NextDouble() * ((maxSpeed+ 1) - minSpeed) + minSpeed)/20;
-				if (_meteors.Count >= pixelCount) continue;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
 				{
@@ -617,7 +610,7 @@ namespace VixenModules.Effect.Meteors
 			if (EnableGroundLevel)
 			{
 				hsv = HSV.FromRGB(GroundColor.GetColorAt((intervalPosFactor) / 100));
-				hsv.V *= hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
+				hsv.V *= LevelCurve.GetValue(intervalPosFactor) / 100;
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < CalculateGroundLevel(((double) 100/BufferWi)*x); y++)
@@ -633,8 +626,8 @@ namespace VixenModules.Effect.Meteors
 			{
 				meteor.DeltaX += meteor.DeltaXOrig;
 				meteor.DeltaY += meteor.DeltaYOrig;
-				int colorX = (meteor.X + Convert.ToInt32(meteor.DeltaX) - (BufferWi / 100));
-				int colorY = (meteor.Y + Convert.ToInt32(meteor.DeltaY) + (BufferHt / 100));
+				int colorX = meteor.X + (int)meteor.DeltaX - BufferWi / 100;
+				int colorY = meteor.Y + (int)meteor.DeltaY + BufferHt / 100;
 
 				for (int ph = 0; ph < tailLength; ph++)
 				{
@@ -650,11 +643,9 @@ namespace VixenModules.Effect.Meteors
 							break;
 					}
 					hsv = meteor.Hsv;
-					hsv.V *= meteor.HsvBrightness;
-					hsv.V *= (float) (1.0 - ((double) ph/tailLength)*0.75);
-					//Adjusts the brightness based on the level curve
-					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
-					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
+					hsv.V *= meteor.HsvBrightness * (float) (1.0 - ((double) ph/tailLength)*0.75) * level;
+					//var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
+					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 					{
 						if (MeteorEffect == MeteorsEffect.Explode && ph > 0 && (colorX == (BufferWi / 2) + (int)(Math.Round(meteor.TailX * ph)) || colorX == (BufferWi / 2) - (int)(Math.Round(meteor.TailX * ph)) || colorY == (BufferHt / 2) + (int)(Math.Round(meteor.TailY * ph)) || colorY == (BufferHt / 2) - (int)(Math.Round(meteor.TailY * ph))))
@@ -706,7 +697,6 @@ namespace VixenModules.Effect.Meteors
 					//	break;
 				}
 			}
-
 
 			// delete old meteors
 			int meteorNum = 0;

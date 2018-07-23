@@ -569,10 +569,10 @@ namespace VixenModules.App.ColorGradients
 			float bal = (pos - positions[a])/(positions[b] - positions[a]);
 			//
 			return Color.FromArgb(
-				(int) ((float) list[a].A + bal*(float) (list[b].A - list[a].A)),
-				(int) ((float) list[a].R + bal*(float) (list[b].R - list[a].R)),
-				(int) ((float) list[a].G + bal*(float) (list[b].G - list[a].G)),
-				(int) ((float) list[a].B + bal*(float) (list[b].B - list[a].B)));
+				(int) (list[a].A + bal*(list[b].A - list[a].A)),
+				(int) (list[a].R + bal*(list[b].R - list[a].R)),
+				(int) (list[a].G + bal*(list[b].G - list[a].G)),
+				(int) (list[a].B + bal*(list[b].B - list[a].B)));
 		}
 
 		// interpolate a fractional proportion of a given color at the given position

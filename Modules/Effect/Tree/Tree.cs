@@ -309,10 +309,11 @@ namespace VixenModules.Effect.Tree
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-			double blendLevel = BlendCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-			double backgroundLevelCurve = BackgroundLevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-
+			double pos = GetEffectTimeIntervalPosition(frame);
+			double level = LevelCurve.GetValue(pos * 100) / 100;
+			double blendLevel = BlendCurve.GetValue(pos * 100) / 100;
+			double backgroundLevelCurve = BackgroundLevelCurve.GetValue(pos * 100) / 100;
+			HSV backgroundhsv = HSV.FromRGB(BackgroundColor.GetColorAt(pos));
 			int x, y, mod, b;
 			float V;
 			int cycleLen = frame * Speed;
@@ -331,35 +332,33 @@ namespace VixenModules.Effect.Tree
 
 			for (y = 0; y < BufferHt; y++)
 			{
+				mod = y % pixelsPerBranch;
+				if (mod == 0) mod = pixelsPerBranch;
+				V = ToggleBlend //Fade between branches
+					? (float)(1 - (1.0 * mod / pixelsPerBranch) * (1 - blendLevel))
+					: (float)((1.0 * mod / pixelsPerBranch) * (blendLevel));
+
+				backgroundhsv.V = backgroundLevelCurve * V; // we have now set the color for the background tree
+				Branch = (int)((y - 1) / pixelsPerBranch);
+				if (_branchColor >= Colors.Count || Branch == 0)
+					_branchColor = 0;
+				_row = pixelsPerBranch - mod; // now row=0 is bottom of branch, row=1 is one above bottom
+				//  mod = which pixel we are in the branch
+				//	mod=1,row=pixels_per_branch-1   top picrl in branch
+				//	mod=2, second pixel down into branch
+				//	mod=pixels_per_branch,row=0  last pixel in branch
+				//
+				//	row = 0, the $p is in the bottom row of tree
+				//	row =1, the $p is in second row from bottom
+				b = (int)((cycleLen) / BufferWi) % Branches; // what branch we are on based on frame #
+				//
+				//	b = 0, we are on bottomow row of tree during frames 1 to BufferWi
+				//	b = 1, we are on second row from bottom, frames = BufferWi+1 to 2*BufferWi
+				//	b = 2, we are on third row from bottome, frames - 2*BufferWi+1 to 3*BufferWi
+
 				for (x = 0; x < BufferWi; x++)
 				{
-					mod = y % pixelsPerBranch;
-					if (mod == 0) mod = pixelsPerBranch;
-					V = ToggleBlend //Fade between branches
-						? (float) (1 - (1.0*mod/pixelsPerBranch)*(1 - blendLevel))
-						: (float) ((1.0*mod/pixelsPerBranch)*(blendLevel));
-
-					HSV hsv = HSV.FromRGB(BackgroundColor.GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
-					hsv.V = backgroundLevelCurve * V; // we have now set the color for the background tree
-
-					//   $orig_rgbval=$rgb_val;
-					Branch = (int)((y - 1) / pixelsPerBranch);
-					if (_branchColor >= Colors.Count || Branch == 0)
-						_branchColor = 0;
-					_row = pixelsPerBranch - mod; // now row=0 is bottom of branch, row=1 is one above bottom
-					//  mod = which pixel we are in the branch
-					//	mod=1,row=pixels_per_branch-1   top picrl in branch
-					//	mod=2, second pixel down into branch
-					//	mod=pixels_per_branch,row=0  last pixel in branch
-					//
-					//	row = 0, the $p is in the bottom row of tree
-					//	row =1, the $p is in second row from bottom
-					b = (int)((cycleLen) / BufferWi) % Branches; // what branch we are on based on frame #
-					//
-					//	b = 0, we are on bottomow row of tree during frames 1 to BufferWi
-					//	b = 1, we are on second row from bottom, frames = BufferWi+1 to 2*BufferWi
-					//	b = 2, we are on third row from bottome, frames - 2*BufferWi+1 to 3*BufferWi
-
+					HSV hsv = backgroundhsv;
 					M = (x % 6);
 					// m=0, 1sr strand
 					// m=1, 2nd strand
@@ -387,42 +386,42 @@ namespace VixenModules.Effect.Tree
 							case TreeBranchDirection.UpLeft:
 							case TreeBranchDirection.DownLeft:
 								if (Branch <= b && x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 							break;
 
 							case TreeBranchDirection.Up:
 							case TreeBranchDirection.Down:
 								if (Branch <= b && 
 								(((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 							break;
 
 							case TreeBranchDirection.Left:
 								if ((BufferWi - x) <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 							break;
 
 							case TreeBranchDirection.Alternate:
 								if (Branch%2 != 0)
 								{
 									if ((BufferWi - x) <= _treeWidth &&  (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 								}
 								else
 								{
 									if (x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 								}
 							break;
 
 							case TreeBranchDirection.Right:
 							if (x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-								hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+								hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 							break;
 
 							case TreeBranchDirection.None:
 								if (((((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3))))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt((GetEffectTimeIntervalPosition(frame) * 100) / 100));
+									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
 							break;
 					}
 

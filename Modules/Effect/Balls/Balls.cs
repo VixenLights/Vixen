@@ -578,50 +578,52 @@ namespace VixenModules.Effect.Balls
 			foreach (var ball in _balls)
 			{
 				//This saves going through all X and Y locations, significantly reducing render times.
-				if ((y >= ball.LocationY + ball.Radius + 1 || y <= ball.LocationY - ball.Radius) &&
-					(x >= ball.LocationX + ball.Radius + 1 || x <= ball.LocationX - ball.Radius)) continue;
-
-				double distanceFromBallCenter = DistanceFromPoint(new Point((int)Math.Round(ball.LocationX), (int)Math.Round(ball.LocationY)), x, y);
-
-				double distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
-					? 2
-					: distanceFromBallCenter;
-				HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((_intervalPos)));
-				hsv.V = hsv.V*_level;
-
-				switch (BallFill)
+				if (y <= ball.LocationY + ball.Radius + 1 && y >= ball.LocationY - ball.Radius &&
+				    x <= ball.LocationX + ball.Radius + 1 && x >= ball.LocationX - ball.Radius)
 				{
-					case BallFill.Solid:
-						if (distance <= ball.Radius)
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						break;
-					case BallFill.Empty:
-						if (distance >= ball.Radius - CalculateEdgeWidth(_intervalPosFactor) && distance < ball.Radius)
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						break;
-					case BallFill.Inverse:
-						if (distance <= ball.Radius)
-						{
-							inverseColor = true;
-							hsv = HSV.FromRGB(Color.Black);
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						}
-						break;
-					case BallFill.Fade:
-						if (distance <= ball.Radius*0.9)
-						{
-							hsv.V *= 1.0 - distance/(double) ball.Radius;
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						}
-						break;
-					case BallFill.Gradient:
-						if (distance <= ball.Radius)
-						{
-							hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt(distance/(double) ball.Radius));
-							hsv.V = hsv.V*_level;
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						}
-						break;
+					double distanceFromBallCenter =
+						DistanceFromPoint(new Point((int) Math.Round(ball.LocationX), (int) Math.Round(ball.LocationY)), x, y);
+
+					double distance = distanceFromBallCenter > 1.4 && distanceFromBallCenter < 1.51
+						? 2
+						: distanceFromBallCenter;
+					HSV hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt((_intervalPos)));
+					hsv.V = hsv.V * _level;
+
+					switch (BallFill)
+					{
+						case BallFill.Solid:
+							if (distance <= ball.Radius)
+								frameBuffer.SetPixel(xCoord, yCoord, hsv);
+							break;
+						case BallFill.Empty:
+							if (distance >= ball.Radius - CalculateEdgeWidth(_intervalPosFactor) && distance < ball.Radius)
+								frameBuffer.SetPixel(xCoord, yCoord, hsv);
+							break;
+						case BallFill.Inverse:
+							if (distance <= ball.Radius)
+							{
+								inverseColor = true;
+								hsv = HSV.FromRGB(Color.Black);
+								frameBuffer.SetPixel(xCoord, yCoord, hsv);
+							}
+							break;
+						case BallFill.Fade:
+							if (distance <= ball.Radius * 0.9)
+							{
+								hsv.V *= 1.0 - distance / (double) ball.Radius;
+								frameBuffer.SetPixel(xCoord, yCoord, hsv);
+							}
+							break;
+						case BallFill.Gradient:
+							if (distance <= ball.Radius)
+							{
+								hsv = HSV.FromRGB(Colors[ball.ColorIndex].GetColorAt(distance / (double) ball.Radius));
+								hsv.V = hsv.V * _level;
+								frameBuffer.SetPixel(xCoord, yCoord, hsv);
+							}
+							break;
+					}
 				}
 			}
 

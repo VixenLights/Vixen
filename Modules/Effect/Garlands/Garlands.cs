@@ -265,9 +265,8 @@ namespace VixenModules.Effect.Garlands
 		{
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
-			double level = LevelCurve.GetValue(intervalPos * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			int width, height;
-			double totalFrames = (int)(TimeSpan.TotalMilliseconds / FrameTime) -1;
 
 			int pixelSpacing = CalculateSpacing(intervalPosFactor) * BufferHt / 100 + 3;
 			if (Direction == GarlandsDirection.Up || Direction == GarlandsDirection.Down)
@@ -284,7 +283,7 @@ namespace VixenModules.Effect.Garlands
 			int garlandsState;
 			if (MovementType == MovementType.Iterations)
 			{
-				garlandsState = (int) (limit - ((_frames)*(limit/totalFrames*Iterations)))/4; //Iterations
+				garlandsState = (int) (limit - _frames*(limit/ GetNumberFrames() * Iterations))/4; //Iterations
 				if (garlandsState <= 0)
 					_frames = 0;
 			}
@@ -298,8 +297,7 @@ namespace VixenModules.Effect.Garlands
 			for (int ring = 0; ring < height; ring++)
 			{
 				var ratio = ring / (double)height;
-				var color = GetMultiColorBlend(ratio, false, frame);
-				var hsv = HSV.FromRGB(color);
+				var hsv = HSV.FromRGB(GetMultiColorBlend(ratio, false, frame));
 				hsv.V = hsv.V*level;
 				
 				var y = garlandsState - ring * pixelSpacing;
@@ -416,12 +414,9 @@ namespace VixenModules.Effect.Garlands
 		public Color GetMultiColorBlend(double n, bool circular, int frame)
 		{
 			int colorcnt = Colors.Count;
-			if (colorcnt <= 1)
-			{
-				return Colors[0].GetColorAt(GetEffectTimeIntervalPosition(frame));
-			}
+			if (colorcnt <= 1) return Colors[0].GetColorAt(GetEffectTimeIntervalPosition(frame));
 			if (n >= 1.0) n = 0.99999;
-			if (n < 0.0) n = 0.0;
+			else if (n < 0.0) n = 0.0;
 			double realidx = circular ? n * colorcnt : n * (colorcnt - 1);
 			int coloridx1 = (int)Math.Floor(realidx);
 			int coloridx2 = (coloridx1 + 1) % colorcnt;

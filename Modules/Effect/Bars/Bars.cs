@@ -292,6 +292,7 @@ namespace VixenModules.Effect.Bars
 			int x, y, n, colorIdx;
 			int colorcnt = Colors.Count();
 			int barCount = Repeat * colorcnt;
+			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 
 			_negPosition = false;
 
@@ -301,7 +302,6 @@ namespace VixenModules.Effect.Bars
 			}
 			else
 			{
-				double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 				if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
 				_position += CalculateSpeed(intervalPosFactor) / 100;
 				if (_position < 0)
@@ -312,7 +312,7 @@ namespace VixenModules.Effect.Bars
 			}
 
 			if (barCount < 1) barCount = 1;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 
 			if (Direction < BarDirection.Left || Direction == BarDirection.AlternateUp || Direction == BarDirection.AlternateDown)
 			{
@@ -555,7 +555,8 @@ namespace VixenModules.Effect.Bars
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+				double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 				
 				if (MovementType == MovementType.Iterations)
 				{
@@ -563,7 +564,6 @@ namespace VixenModules.Effect.Bars
 				}
 				else
 				{
-					double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 					if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
 					_position += CalculateSpeed(intervalPosFactor) / 100;
 				}
