@@ -1556,6 +1556,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size Mode.
+        /// </summary>
+        internal static string SizeMode {
+            get {
+                return ResourceManager.GetString("SizeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size Speed.
         /// </summary>
         internal static string SizeSpeed {

@@ -735,4 +735,7 @@
   <data name="AllowMarkGaps" xml:space="preserve">
     <value>Allow Mark Gaps</value>
   </data>
+  <data name="SizeMode" xml:space="preserve">
+    <value>Size Mode</value>
+  </data>
 </root>

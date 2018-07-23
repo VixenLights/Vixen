@@ -1502,6 +1502,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines how the shapes size changes..
+        /// </summary>
+        internal static string SizeMode {
+            get {
+                return ResourceManager.GetString("SizeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjusts the size speed of the shape..
         /// </summary>
         internal static string SizeSpeed {
