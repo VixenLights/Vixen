@@ -19,7 +19,7 @@ namespace VixenModules.Effect.Meteors
 	public class Meteors : PixelEffectBase
 	{
 		private MeteorsData _data;
-		private readonly List<MeteorClass> _meteors = new List<MeteorClass>();
+		private List<MeteorClass> _meteors;
 		private static Random _random = new Random();
 		private double _gradientPosition = 0;
 		private IPixelFrameBuffer _tempBuffer;
@@ -433,11 +433,13 @@ namespace VixenModules.Effect.Meteors
 					}
 				}
 			}
+
+			_meteors = new List<MeteorClass>(32);
 		}
 
 		protected override void CleanUpRender()
 		{
-			_meteors.Clear();
+			_meteors = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -642,7 +644,8 @@ namespace VixenModules.Effect.Meteors
 					}
 					hsv = meteor.Hsv;
 					hsv.V *= meteor.HsvBrightness * (float) (1.0 - ((double) ph/tailLength)*0.75) * level;
-					var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
+					//var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
+					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);
 					if (decPlaces <= 40 || decPlaces >= 60)
 					{
 						if (MeteorEffect == MeteorsEffect.Explode && ph > 0 && (colorX == (BufferWi / 2) + (int)(Math.Round(meteor.TailX * ph)) || colorX == (BufferWi / 2) - (int)(Math.Round(meteor.TailX * ph)) || colorY == (BufferHt / 2) + (int)(Math.Round(meteor.TailY * ph)) || colorY == (BufferHt / 2) - (int)(Math.Round(meteor.TailY * ph))))
