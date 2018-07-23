@@ -732,4 +732,7 @@
   <data name="AllowMarkGaps" xml:space="preserve">
     <value>When selected, the effect does not fill gaps in the marks with a REST.</value>
   </data>
+  <data name="SizeMode" xml:space="preserve">
+    <value>Determines how the shapes size changes.</value>
+  </data>
 </root>

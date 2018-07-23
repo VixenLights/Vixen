@@ -25,9 +25,9 @@ namespace VixenModules.Effect.Shapes
 	}
 	public enum SizeMode
 	{
-		[Description("In")]
+		[Description("Shrink")]
 		In,
-		[Description("Out")]
+		[Description("Grow")]
 		Out,
 		[Description("Random")]
 		Random
