@@ -320,61 +320,6 @@ namespace Common.Controls.ColorManagement.ColorModels
 				(int)Math.Round(255.0 * _b));
 		}
 
-		public static RGB FromHsv(HSV hsv)
-		{
-			if (hsv.S == 0.0)
-			{
-				var v = hsv.V;
-				return new RGB{_r=v, _g=v, _b=v};
-			}
-			else
-			{
-				double h = hsv.H * 6.0;
-				if (h == 6.0) h = 0.0;
-				int h_i = (int)Math.Floor(h);
-				double
-					var_1 = hsv.V * (1.0 - hsv.S),
-					var_2 = hsv.V * (1.0 - hsv.S * (h - h_i)),
-					var_3 = hsv.V * (1.0 - hsv.S * (1.0 - (h - h_i)));
-
-				double r, g, b;
-				switch (h_i)
-				{
-					case 0:
-						r = hsv.V;
-						g = var_3;
-						b = var_1;
-						break;
-					case 1:
-						r = var_2;
-						g = hsv.V;
-						b = var_1;
-						break;
-					case 2:
-						r = var_1;
-						g = hsv.V;
-						b = var_3;
-						break;
-					case 3:
-						r = var_1;
-						g = var_2;
-						b = hsv.V;
-						break;
-					case 4:
-						r = var_3;
-						g = var_1;
-						b = hsv.V;
-						break;
-					default:
-						r = hsv.V;
-						g = var_1;
-						b = var_2;
-						break;
-				}
-				return new RGB{_r=r, _g=g, _b=b};
-			}
-		}
-
 		#endregion
 
 		#region properties
