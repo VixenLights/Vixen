@@ -46,6 +46,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			gdiControl.MouseMove += GdiControl_MouseMove;
 			gdiControl.MouseUp += GdiControl_MouseUp;
 			gdiControl.MouseDown += GdiControl_MouseDown;
+			gdiControl.MouseWheel += GdiControl_MouseWheel;
+			gdiControl.KeyDown += GdiControl_KeyDown;
 			double scaleFactor = ScalingTools.GetScaleFactor();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * scaleFactor);
@@ -147,6 +149,39 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		private void GdiControl_MouseWheel(object sender, MouseEventArgs e)
+		{
+			double delta = e.Delta / 1500d;
+
+			// Zoom to the pointer location
+			//zoomTo = MousePointToZoomPoint(e.Location);
+
+			ZoomLevel += delta;
+		}
+
+		private void GdiControl_KeyDown(object sender, KeyEventArgs e)
+		{
+
+			if (e.KeyCode == Keys.I || e.KeyCode == Keys.O)
+			{
+				double factor = 1;
+				if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+				{
+					factor = 2;
+				}
+
+				double delta = .05;
+				if (e.KeyCode != Keys.I)
+				{
+					delta = -delta;
+				}
+
+				ZoomLevel = ZoomLevel + delta * factor;
+
+			}
+
+		}
+
 		private void HandleContextMenu()
 		{
 			_contextMenuStrip.Items.Clear();
@@ -225,7 +260,19 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			item.Click += (sender, args) =>
 			{
-				ClientSize = new Size(gdiControl.Background.Width, gdiControl.Background.Height+ (statusStrip.Visible?statusStrip.Height:0));
+				Size s = gdiControl.BackgroundSize;
+				ClientSize = new Size(s.Width, s.Height+ (statusStrip.Visible?statusStrip.Height:0));
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Reset Zoom");
+			item.ToolTipText = @"Resets the Zoom to 100%.";
+
+			item.Click += (sender, args) =>
+			{
+				ZoomLevel = 1;
 				SaveWindowState();
 			};
 
@@ -300,7 +347,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				{
 					foreach (PreviewPixel pixel in pixels)
 					{
-						pixel.Draw(gdiControl.FastPixel, element.State);
+						pixel.Draw(gdiControl.FastPixel, element.State, ZoomLevel);
 					}
 				}
 			}
@@ -467,6 +514,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), _showBorders);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), _lockPosition);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), ZoomLevel);
 		}
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
@@ -487,6 +535,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_showBorders = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowBorders", name), true);
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
 			_lockPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), false);
+			ZoomLevel = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), 1d);
 
 			ConfigureStatusBar();
 			ConfigureBorders();
@@ -564,6 +613,37 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		{
 			Text = _displayName;
 		}
-		
+
+		private double _zoomLevel = 1;
+
+		public double ZoomLevel
+		{
+			get { return _zoomLevel; }
+			set
+			{
+				double ZoomMax = 2;
+
+				const double ZoomMin = .25;
+
+				if (value >= ZoomMin && value <= ZoomMax)
+					_zoomLevel = value;
+				else if (value < ZoomMin)
+					_zoomLevel = ZoomMin;
+				else if (value > ZoomMax)
+					_zoomLevel = ZoomMax;
+
+				//if (DisplayItems != null)
+				//{
+				//	foreach (DisplayItem item in DisplayItems)
+				//	{
+				//		item.ZoomLevel = _zoomLevel;
+				//	}
+				//}
+
+				gdiControl.ZoomLevel = _zoomLevel;
+				gdiControl.CreateAlphaBackground();
+			}
+		}
+
 	}
 }

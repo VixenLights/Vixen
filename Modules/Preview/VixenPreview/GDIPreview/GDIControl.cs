@@ -12,8 +12,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		private Bitmap _backgroundAlphaImage;
 		private int _backgroundAlpha;
 		private readonly Stopwatch _renderTimer = new Stopwatch();
+		private readonly Stopwatch _frameRateTimer = new Stopwatch();
 		private FastPixel.FastPixel _fastPixel;
-		private DateTime _frameRateTime;
 		private long _frameCount;
         private bool _defaultBackground = true;
 
@@ -25,6 +25,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			SetStyle(ControlStyles.AllPaintingInWmPaint,true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer,true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
+			_frameRateTimer.Start();
 		}
 
 		public Image Background
@@ -66,6 +67,8 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			}
 		}
 
+		public Size BackgroundSize => new Size((int)(_background.Width*ZoomLevel), (int)(_background.Height*ZoomLevel));
+
 		public long RenderTime 
 		{ 
 			get
@@ -93,26 +96,36 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			get { return FastPixel.locked; }
 		}
 
+		public double ZoomLevel { get; set; } = 1;
+
 		public void CreateAlphaBackground()
 		{
 			if (Width <= 0 || Height <= 0)
 			{
 				return;
 			}
+
+			int newWidth = Convert.ToInt32(_background.Width * ZoomLevel);
+			int newHeight = Convert.ToInt32(_background.Height * ZoomLevel);
+
+			if (newWidth <= 0 || newHeight <= 0)
+			{
+				return;
+			}
+			
 			if (Background != null)
 			{
-                Color c;
-                c = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
+				Color c = Color.FromArgb(255 - BackgroundAlpha, 0, 0, 0);
 
                 //_backgroundAlphaImage = new Bitmap(Background.Width, Background.Height, PixelFormat.Format32bppPArgb);
                 _backgroundAlphaImage = new Bitmap(Width, Height, PixelFormat.Format32bppPArgb);
-                Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
-                using (SolidBrush brush = new SolidBrush(c))
-                {
-                    gfx.FillRectangle(Brushes.Black, 0, 0, _backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
-                    gfx.DrawImage(Background, 0, 0, Background.Width, Background.Height);
-                    gfx.FillRectangle(brush, 0, 0, Background.Width, Background.Height);
-                }
+				Graphics gfx = Graphics.FromImage(_backgroundAlphaImage);
+				using (SolidBrush brush = new SolidBrush(c))
+				{
+					gfx.FillRectangle(Brushes.Black, 0, 0, Width, Height);
+					gfx.DrawImage(Background, 0, 0, newWidth, newHeight);
+					gfx.FillRectangle(brush, 0, 0, Width, Height);
+				}
 				gfx.Dispose();
 			}
 			else
@@ -123,6 +136,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 				gfx.Dispose();
 			}
 			_fastPixel = new FastPixel.FastPixel(_backgroundAlphaImage.Width, _backgroundAlphaImage.Height);
+			BeginUpdate();
+			EndUpdate();
+			Invalidate();
 		}
 
 		public void BeginUpdate()
@@ -137,11 +153,11 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			// Calculate our actual frame rate
 			_frameCount++;
 
-			if (DateTime.UtcNow.Subtract(_frameRateTime).TotalSeconds >= 1)
+			if (_frameRateTimer.ElapsedMilliseconds > 999)
 			{
 				FrameRate = _frameCount;
 				_frameCount = 0;
-				_frameRateTime = DateTime.UtcNow;
+				_frameRateTimer.Restart();
 			}
 
 			_fastPixel.UnlockFromBuffer();

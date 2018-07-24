@@ -2171,78 +2171,78 @@ namespace VixenModules.Preview.VixenPreview
 		//}
 		//#endregion
 
-		public void ProcessUpdateParallel( /*Vixen.Preview.PreviewElementIntentStates elementStates*/)
-		{
-			renderTimer.Reset();
-			renderTimer.Start();
-			CancellationTokenSource tokenSource = new CancellationTokenSource();
-			if (!_paused)
-			{
-				Bitmap clone = (Bitmap) _alphaBackground.Clone();
-				using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
-				{
-					try
-					{
-						fp.Lock();
+		//public void ProcessUpdateParallel( /*Vixen.Preview.PreviewElementIntentStates elementStates*/)
+		//{
+		//	renderTimer.Reset();
+		//	renderTimer.Start();
+		//	CancellationTokenSource tokenSource = new CancellationTokenSource();
+		//	if (!_paused)
+		//	{
+		//		Bitmap clone = (Bitmap) _alphaBackground.Clone();
+		//		using (FastPixel.FastPixel fp = new FastPixel.FastPixel(clone))
+		//		{
+		//			try
+		//			{
+		//				fp.Lock();
 
-						Vixen.Preview.PreviewElementIntentStates elementStates =
-							new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
+		//				Vixen.Preview.PreviewElementIntentStates elementStates =
+		//					new Vixen.Preview.PreviewElementIntentStates(VixenSystem.Elements.ToDictionary(x => x, x => x.State));
 
-						elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
-						{
-							Element element = channelIntentState.Key;
-							if (element != null)
-							{
-								ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
-								if (node != null)
-								{
-									List<PreviewPixel> pixels;
-									if (NodeToPixel.TryGetValue(node, out pixels))
-									{
-										foreach (PreviewPixel pixel in pixels)
-										{
-											pixel.Draw(fp, channelIntentState.Value);
-										}
-									}
-								}
-							}
-						});
-						fp.Unlock(true);
-						RenderBufferedGraphics(fp);
-					}
-					catch (Exception)
-					{
-						tokenSource.Cancel();
-					}
-				}
-			}
+		//				elementStates.AsParallel().WithCancellation(tokenSource.Token).ForAll(channelIntentState =>
+		//				{
+		//					Element element = channelIntentState.Key;
+		//					if (element != null)
+		//					{
+		//						ElementNode node = VixenSystem.Elements.GetElementNodeForElement(element);
+		//						if (node != null)
+		//						{
+		//							List<PreviewPixel> pixels;
+		//							if (NodeToPixel.TryGetValue(node, out pixels))
+		//							{
+		//								foreach (PreviewPixel pixel in pixels)
+		//								{
+		//									pixel.Draw(fp, channelIntentState.Value);
+		//								}
+		//							}
+		//						}
+		//					}
+		//				});
+		//				fp.Unlock(true);
+		//				RenderBufferedGraphics(fp);
+		//			}
+		//			catch (Exception)
+		//			{
+		//				tokenSource.Cancel();
+		//			}
+		//		}
+		//	}
 
-			renderTimer.Stop();
-			lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
-		}
+		//	renderTimer.Stop();
+		//	lastRenderUpdateTime = renderTimer.ElapsedMilliseconds;
+		//}
 
-		private object lockObject = new object();
+		//private object lockObject = new object();
 
 		private delegate void RenderBufferedGraphicsDelgate(FastPixel.FastPixel fp /*, Bitmap floodBG*/);
 
-		private void RenderBufferedGraphics(FastPixel.FastPixel fp /*, Bitmap floodBG*/)
-		{
-			if (this.InvokeRequired)
-			{
-				this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp /*, floodBG*/);
-			}
-			else
-				// No, this doesn't allocate every time. It first checks to see if the screen is 
-				// resized or the graphics buffer is not allocated. So it is checked for validity every time
-				// and re-allocated only if the something changed.
-				AllocateGraphicsBuffer(false);
+		//private void RenderBufferedGraphics(FastPixel.FastPixel fp /*, Bitmap floodBG*/)
+		//{
+		//	if (this.InvokeRequired)
+		//	{
+		//		this.Invoke(new RenderBufferedGraphicsDelgate(RenderBufferedGraphics), fp /*, floodBG*/);
+		//	}
+		//	else
+		//		// No, this doesn't allocate every time. It first checks to see if the screen is 
+		//		// resized or the graphics buffer is not allocated. So it is checked for validity every time
+		//		// and re-allocated only if the something changed.
+		//		AllocateGraphicsBuffer(false);
 
-			// First, draw our background image opaque
-			bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-			bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
-			if (!this.Disposing && bufferedGraphics != null)
-				bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
-		}
+		//	// First, draw our background image opaque
+		//	bufferedGraphics.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+		//	bufferedGraphics.Graphics.DrawImage(fp.Bitmap, 0, 0, fp.Width, fp.Height);
+		//	if (!this.Disposing && bufferedGraphics != null)
+		//		bufferedGraphics.Render(Graphics.FromHwnd(this.Handle));
+		//}
 
 		#region "Foreground updates"
 

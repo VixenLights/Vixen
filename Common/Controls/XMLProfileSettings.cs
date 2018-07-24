@@ -47,6 +47,11 @@ namespace Common.Controls
 			}		
 		}
 
+		public void PutSetting(SettingType type, string xPath, double value)
+		{
+			PutSetting(type, xPath, Convert.ToString(value));
+		}
+
 		public void PutSetting(SettingType type, string xPath, int value)
 		{
 			PutSetting(type, xPath, Convert.ToString(value));
@@ -72,6 +77,11 @@ namespace Common.Controls
 			}
 			xmlNode.InnerText = value;
 			_xmlDocument.Save(_documentPath);
+		}
+
+		public double GetSetting(SettingType type, string xPath, double defaultValue)
+		{
+			return Convert.ToDouble(GetSetting(type, xPath, Convert.ToString(defaultValue)));
 		}
 
 		public int GetSetting(SettingType type, string xPath, int defaultValue)
