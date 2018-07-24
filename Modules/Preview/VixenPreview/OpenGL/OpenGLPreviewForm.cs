@@ -8,6 +8,7 @@ using System.Xml;
 using Catel.Collections;
 using Common.Controls;
 using Common.Controls.Scaling;
+using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
 using OpenTK;
@@ -31,6 +32,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly MillisecondsValue _previewUpdate;
 		private readonly Stopwatch _sw = Stopwatch.StartNew();
 		private readonly Stopwatch _sw2 = Stopwatch.StartNew();
+		private readonly Stopwatch _frameRateTimer = Stopwatch.StartNew();
 
 		private int _width = 800, _height = 600;
 		private float _focalDepth = 0;
@@ -54,12 +56,14 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private bool _showStatus;
 		private bool _alwaysOnTop;
 		
-		private DateTime _frameRateTime;
+		private float _pointScaleFactor;
 		private long _frameCount;
 
-		internal static Object ContextLock = new Object();
+		private string _programLog = string.Empty;
 
-		private ParallelOptions _parallelOptions = new ParallelOptions()
+		internal static readonly Object ContextLock = new Object();
+
+		private readonly ParallelOptions _parallelOptions = new ParallelOptions()
 		{
 			MaxDegreeOfParallelism = Environment.ProcessorCount
 		};
@@ -71,6 +75,10 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			Data = data;
 			InstanceId = instanceId;
 			InitializeComponent();
+			double scaleFactor = ScalingTools.GetScaleFactor();
+			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
+			int imageSize = (int)(16 * scaleFactor);
+			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			_backgroundDraw = new MillisecondsValue("OpenGL preview background draw");
 			_pointsUpdate = new MillisecondsValue("OpenGL preview points update");
 			_pointsDraw = new MillisecondsValue("OpenGL preview points draw");
@@ -158,7 +166,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_focalDepth = (float)(1 / Math.Tan(ConvertToRadians(Fov / 2)) * (ClientSize.Height / 2.0));
 				_camera.Position = new Vector3(_width / 2f, _height / 2f, _focalDepth);
 				_camera.SetDirection(new Vector3(0, 0, -1));
-				
+				CalculatePointScaleFactor();
 				glControl.Invalidate();
 				SaveWindowState();
 			};
@@ -244,20 +252,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			_formLoading = true;
 			
-			//GL.DebugMessageControl(DebugSourceControl.DontCare, DebugTypeControl.DontCare, DebugSeverityControl.DebugSeverityNotification, 0, new int[] { }, false);
-			//GL.DebugMessageCallback((source, type, id, severity, length, message, param) =>
-			//{
-			//	string msg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(message, length);
-			//	Logging.Info(
-			//		"{0} {1} {2} {3}: {4}",
-			//		source, type, id, severity, msg);
-
-			//}, IntPtr.Zero);
-
 			EnableFeatures();
-
-			//GL.MatrixMode(MatrixMode.Projection);
-			//GL.LoadIdentity();
 
 			// compile the shader program
 			_program = new ShaderProgram(VertexShader, FragmentShader);
@@ -266,15 +261,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			
 			RestoreWindowState();
 
-			//if (_background.HasBackground)
-			//{
-			//	_aspectRatio = (float)_background.Width / _background.Height;
-			//}
-			//else
-			//{
-				_aspectRatio = (float)_width / _height;
-			//}
-
+			_aspectRatio = (float)_width / _height;
+			
 			_focalDepth = (float)( 1 / Math.Tan(ConvertToRadians(Fov / 2)) * (ClientSize.Height / 2.0));
 			
 			CreateCamera();
@@ -283,12 +271,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			Logging.Info("Vendor {0}, Renderer {1}", GL.GetString(StringName.Vendor), GL.GetString(StringName.Renderer));
 			Logging.Info("Shading language version {0}", GL.GetString(StringName.ShadingLanguageVersion));
 			Logging.Info("Extensions {0}", GL.GetString(StringName.Extensions));
-			var log = _program.ProgramLog;
-			if (!string.IsNullOrWhiteSpace(log))
+			_programLog = _program.ProgramLog;
+			_programLog += _program.VertexShader.ShaderLog;
+			_programLog += _program.FragmentShader.ShaderLog;
+			if (!string.IsNullOrEmpty(_programLog))
 			{
-				Logging.Info("Point program log: {0}", log);
+				Logging.Error($"Shader log output: {_programLog}");
 			}
+
 			glControl_Resize(this, EventArgs.Empty);
+
+			CalculatePointScaleFactor();
 			_formLoading = false;
 		}
 
@@ -331,11 +324,11 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		{
 			_frameCount++;
 
-			if (DateTime.UtcNow.Subtract(_frameRateTime).TotalSeconds >= 1)
+			if (_frameRateTimer.ElapsedMilliseconds > 999)
 			{
 				FrameRate = _frameCount;
 				_frameCount = 0;
-				_frameRateTime = DateTime.UtcNow;
+				_frameRateTimer.Restart();
 			}
 		}
 
@@ -428,6 +421,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			}
 
 			_camera.Move(new Vector3(0, 0, direction));
+			CalculatePointScaleFactor();
 			glControl.Invalidate();
 			SaveWindowState();
 		}
@@ -454,6 +448,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_prevX = e.X;
 				_prevY = e.Y;
 
+				CalculatePointScaleFactor();
 				glControl.Invalidate();
 			}
 		}
@@ -534,13 +529,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					DrawPoints(mvp);
 					_pointsDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
-					var log = _program.ProgramLog;
-					log += _program.VertexShader.ShaderLog;
-					log += _program.FragmentShader.ShaderLog;
-					if (!string.IsNullOrWhiteSpace(log))
-					{
-						Logging.Info("Point program log: {0}", log);
-					}
 					glControl.Context.MakeCurrent(null);
 				}
 			}
@@ -554,13 +542,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 					_background.Draw(perspective, _camera.ViewMatrix);
 					_backgroundDraw.Set(_sw2.ElapsedMilliseconds);
 					glControl.SwapBuffers();
-					var log = _program.ProgramLog;
-					log += _program.VertexShader.ShaderLog;
-					log += _program.FragmentShader.ShaderLog;
-					if (!string.IsNullOrWhiteSpace(log))
-					{
-						Logging.Info("Point program log: {0}", log);
-					}
 					glControl.Context.MakeCurrent(null);
 				}
 			}
@@ -579,31 +560,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void DrawPoints(Matrix4 mvp)
 		{
-			//Logging.Debug("Entering DrawPoints");
-			// calculate our point scaling
-			float scale = _focalDepth / _camera.Position.Z;
-			float sizeScale = 0;
-			if (_background.HasBackground)
-			{
-				sizeScale = ((float)_width / _background.Width + (float)_height / _background.Height) / 2f;
-			}
-			else
-			{
-				sizeScale = 1;
-			}
-			
-			scale *= sizeScale;
-
-			scale = scale >= .1f ? scale : .1f;
-
-			//Logging.Debug("Point Scale is {0}",scale);
-
 			try
 			{
 				//Logging.Debug("Selecting point program.");
 				_program.Use();
 				_program["mvp"].SetValue(mvp);
-				_program["pointScale"].SetValue(scale);
+				_program["pointScale"].SetValue(_pointScaleFactor);
 
 				foreach (var dataDisplayItem in Data.DisplayItems)
 				{
@@ -615,6 +577,27 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				Logging.Error(e, "An error occured rendering display items.");
 			}
 			//Logging.Debug("Exiting DrawPoints.");
+		}
+
+		private void CalculatePointScaleFactor()
+		{
+			float scale = 1.2f * (_focalDepth / _camera.Position.Z);
+			float sizeScale = 0;
+			if (_background.HasBackground)
+			{
+				sizeScale = ((float) _width / _background.Width + (float) _height / _background.Height) / 2f;
+			}
+			else
+			{
+				sizeScale = 1;
+			}
+
+			scale *= sizeScale;
+
+			scale = scale >= .1f ? scale : .1f;
+
+			_pointScaleFactor = scale;
+
 		}
 
 		private void UpdateShapePoints()
@@ -633,7 +616,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void SaveWindowState()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = $"Preview_{InstanceId}";
+			var name = $"OpenGLPreview_{InstanceId}";
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientHeight", name), ClientSize.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ClientWidth", name), ClientSize.Width);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowLocationX", name), Location.X);
@@ -652,7 +635,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			WindowState = FormWindowState.Normal;
 			StartPosition = FormStartPosition.WindowsDefaultBounds;
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = $"Preview_{InstanceId}";
+			var name = $"OpenGLPreview_{InstanceId}";
 
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
@@ -713,7 +696,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void CreateCamera()
 		{
 			XMLProfileSettings xml = new XMLProfileSettings();
-			var name = $"Preview_{InstanceId}";
+			var name = $"OpenGLPreview_{InstanceId}";
 			// create our camera
 			_camera = new Camera(new Vector3((_background.HasBackground ? _background.Width:ClientSize.Width) / 2f, (_background.HasBackground ? _background.Height:ClientSize.Height) / 2f, _focalDepth), Quaternion.Identity);
 			_camera.SetDirection(new Vector3(0, 0, -1));
@@ -744,38 +727,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		}
 
 		
-
-		//public static string VertexShader = @"
-		//#version 130
-
-		//in vec3 vertexPosition;
-		//in vec4 vertexColor;
-		//in float pointSize;
-
-		//out vec4 color;
-		//out float pSize;
-
-		//uniform float pointScale;
-		//uniform mat4 mvp;
-
-		//void main(void)
-		//{
-		//	color = vertexColor;
-
-		//	gl_Position = mvp * vec4(vertexPosition, 1);
-
-		//	gl_PointSize = pointSize * pointScale;
-
-		//	if(pointSize < 1)
-		//	{
-		//		gl_PointSize = 1;
-		//	}
-
-		//	pSize = gl_PointSize; //pass through
-
-		//}
-		//";
-
 		public static string VertexShader = @"
 		#version 330
 
@@ -816,7 +767,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		void main(void)
 		{
-			if(pSize > 2) //We only need to round points that are bigger than 1
+			if(pSize > 2) //We only need to round points that are bigger than 2
 			{
 				vec2 circCoord = 2.0 * gl_PointCoord - 1.0;
 				if (dot(circCoord, circCoord) > 1)
