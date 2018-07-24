@@ -581,7 +581,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void CalculatePointScaleFactor()
 		{
-			float scale = 1.2f * (_focalDepth / _camera.Position.Z);
+			float scale = 1.1f * (_focalDepth / _camera.Position.Z);
 			float sizeScale = 0;
 			if (_background.HasBackground)
 			{
