@@ -120,7 +120,6 @@ namespace VixenModules.Preview.VixenPreview
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
-			
 		}
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
@@ -152,13 +151,8 @@ namespace VixenModules.Preview.VixenPreview
 
 			Setup();
 
-			// disable the D2D preview option for now; the GDI performs just as well, and is more reliable (eg. older machines, not HW accelerated machines, etc.)
-			//performanceToolStripMenuItem.Visible = Vixen.Sys.VixenSystem.VersionBeyondWindowsXP;
-			performanceToolStripMenuItem.Visible = false;
-
-			Properties.Settings settings = new Properties.Settings();
-
-			useDirect2DPreviewRenderingToolStripMenuItem.Checked = !settings.UseGDIRendering;
+			useOpenGLPreviewToolStripMenuItem.Checked = Data.UseOpenGL;
+			useOpenGLPreviewToolStripMenuItem.Enabled = VixenPreviewModuleInstance.SupportsOpenGLPreview();
 			saveLocationsToolStripMenuItem.Checked = Data.SaveLocations;
 
 			// Choose the select tool to start
@@ -572,20 +566,29 @@ namespace VixenModules.Preview.VixenPreview
 			propInformationToolStripMenuItem.Checked = previewForm.Preview.ShowInfo;
 		}
 
-		private void useDirect2DPreviewRenderingToolStripMenuItem_Click(object sender, EventArgs e) {
-			//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-			MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
-			var messageBox = new MessageBoxForm("Preview will be restarted. This is a system-wide change that will apply to all previews. Are you sure you want to do this?", "Change Preview", true, false);
-			messageBox.ShowDialog();
-			if (messageBox.DialogResult == DialogResult.OK)
+		private void useOpenGLPreviewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (useOpenGLPreviewToolStripMenuItem.Checked)
 			{
-				Properties.Settings settings = new Properties.Settings();
-				settings.UseGDIRendering = !useDirect2DPreviewRenderingToolStripMenuItem.Checked;
-				settings.Save();
+				if (VixenPreviewModuleInstance.SupportsOpenGLPreview())
+				{
+					Data.UseOpenGL = true;
+				}
+				else
+				{
+					Data.UseOpenGL = false;
+					useOpenGLPreviewToolStripMenuItem.Checked = false;
+					var messageBox = new MessageBoxForm("Open GL Preview is not supported on your hardware. Reverting to the GDI preview.", "Change Preview Viewer", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog();
+				}
+			}
+			else
+			{
+				Data.UseOpenGL = false;
 			}
 		}
 
-		private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
+	    private void saveLocationsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Data.SaveLocations = saveLocationsToolStripMenuItem.Checked;
         }

@@ -4,21 +4,35 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using Vixen.Sys;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Shaders;
+using VixenModules.Preview.VixenPreview.OpenGL.Constructs.Vertex;
+using Point = System.Drawing.Point;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
 	[DataContract]
 	public abstract class PreviewBaseShape : ICloneable, IDisposable
 	{
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private List<float> _points = new List<float>();
 		public string _name;
-
+		public static int SevenFloatDataSize = 7 * Marshal.SizeOf(typeof(float));
+		public static int EightFloatDataSize = 8 * Marshal.SizeOf(typeof(float));
+		public static int FloatDataSize = Marshal.SizeOf(typeof(float));
 		public bool connectStandardStrings = false;
 		public StringTypes _stringType = StringTypes.Standard;
+		private bool _isHighPrecision;
+
+		private List<PreviewPixel> _pixelCache = new List<PreviewPixel>();
 
 		public enum StringTypes
 		{
@@ -63,6 +77,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext context)
 		{
+			
 			ResizePixels();
 		}
 
@@ -120,6 +135,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set
 			{
 				_stringType = value;
+				_isHighPrecision = _stringType == StringTypes.Custom;
 				if (_strings != null) {
 					foreach (var line in _strings) {
 						line.StringType = _stringType;
@@ -220,6 +236,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		private double _zoomLevel = 1;
+		
+
 		[Browsable(false)]
 		public virtual double ZoomLevel
 		{
@@ -607,6 +625,216 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 
 			return setupControl;
+		}
+
+		public int UpdatePixelCache()
+		{
+			_pixelCache = Pixels.Where(x => x.Node != null).ToList();
+			_points = new List<float>(_pixelCache.Count * 8);
+			return _pixelCache.Count;
+		}
+
+		public void UpdateDrawPoints(int referenceHeight)
+		{
+			//Logging.Debug("Updating Drawing Shape {0}.", ToString());
+
+			_points.Clear();
+			if (_pixelCache.Count == 0) return;
+			
+			if (_pixelCache[0].IsDiscreteColored)
+			{
+				//Logging.Debug("Standard Type.");
+				CreateDiscreteColorPoints(referenceHeight);
+			}
+			else
+			{
+				//Logging.Debug("Pixel Type.");
+				CreateFullColorPoints(referenceHeight);
+			}
+
+			//Logging.Debug("{0} Points generated.", _points.Count() / 7);
+
+		}
+
+		public void Draw(ShaderProgram program)
+		{
+			//Logging.Debug("Entering Draw.");
+			if (_points.Count == 0)
+			{
+				//Logging.Debug("Exiting Draw.");
+				return;
+			}
+
+			//program["pointSize"].SetValue((float)PixelSize);
+			VBO<float> points = new VBO<float>(_points.ToArray());
+
+			//Logging.Debug("Created VBO.");
+
+			GlUtility.BindBuffer(points);
+
+			//Logging.Debug("Buffer Bound.");
+			GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, EightFloatDataSize, IntPtr.Zero);
+			GL.EnableVertexAttribArray(ShaderProgram.VertexPosition);
+
+			//Logging.Debug("Point pointer set.");
+
+			GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes);
+			GL.EnableVertexAttribArray(ShaderProgram.VertexColor);
+
+			GL.VertexAttribPointer(ShaderProgram.VertexSize, 1, VertexAttribPointerType.Float, false, EightFloatDataSize, Vector3.SizeInBytes + Vector4.SizeInBytes);
+			GL.EnableVertexAttribArray(ShaderProgram.VertexSize);
+
+			GL.DisableVertexAttribArray(ShaderProgram.TextureCoords);
+
+			//Logging.Debug("Color pointer set.");
+
+			//Logging.Debug("Beginning draw.");
+
+			// draw the points
+			GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 8);
+
+			//Logging.Debug("Draw completed for shape.");
+			points.Dispose();
+
+			//Logging.Debug("VBO Disposed.");
+			//Logging.Debug("Exiting Draw.");
+		}
+
+		
+		//public void Draw(ShaderProgram program, int referenceHeight)
+		//{
+		//	Logging.Debug("Drawing Shape {0}.", ToString());
+		//	int pointCount = 0;
+		//	List<float> p;
+
+		//	if (StringType == StringTypes.Pixel)
+		//	{
+		//		Logging.Debug("Pixel Type.");
+		//		var fullColorPoints = CreateFullColorPoints(referenceHeight);
+		//		p = fullColorPoints;
+
+		//	}
+		//	else
+		//	{
+		//		Logging.Debug("Standard Type.");
+		//		var discreteColorPoints = CreateDiscreteColorPoints(referenceHeight);
+		//		p = discreteColorPoints;
+		//	}
+
+		//	Logging.Debug("{0} Points generated.", pointCount);
+
+		//	if (!p.Any()) return;
+
+		//	program["pointSize"].SetValue((float)PixelSize);//>1?PixelSize:2
+		//	VBO<float> points = new VBO<float>(p.ToArray());
+
+		//	Logging.Debug("Created VBO.");
+
+		//	GlUtility.BindBuffer(points);
+
+		//	Logging.Debug("Buffer Bound.");
+		//	GL.VertexAttribPointer(ShaderProgram.VertexPosition, 3, VertexAttribPointerType.Float, false, SevenFloatDataSize, IntPtr.Zero);
+		//	GL.EnableVertexAttribArray(0);
+
+		//	Logging.Debug("Point pointer set.");
+
+		//	GL.VertexAttribPointer(ShaderProgram.VertexColor, 4, VertexAttribPointerType.Float, true, SevenFloatDataSize, Vector3.SizeInBytes);
+		//	GL.EnableVertexAttribArray(1);
+
+		//	Logging.Debug("Color pointer set.");
+
+		//	Logging.Debug("Beginning draw.");
+
+		//	// draw the points
+		//	GL.DrawArrays(PrimitiveType.Points, 0, points.Count / 7);
+
+		//	Logging.Debug("Draw completed for shape.");
+		//	points.Dispose();
+
+		//	Logging.Debug("VBO Disposed.");
+		//}
+		private static readonly List<Color> _emptyColors = new List<Color>();
+
+		private void CreateDiscreteColorPoints(int referenceHeight)
+		{
+			List<Color> colors = _emptyColors;
+			Guid nodeId = Guid.Empty;
+			IIntentStates state = null;
+			foreach (PreviewPixel previewPixel in _pixelCache)
+			{
+				if (previewPixel.NodeId != nodeId)
+				{
+					nodeId = previewPixel.NodeId;
+					state = previewPixel.Node.Element.State;
+					colors = previewPixel.GetDiscreteColors(state);
+				}
+
+				if (state?.Count > 0)
+				{
+					//All points are the same in standard discrete 
+					int col = 1;
+					Point xy = new Point(previewPixel.X, previewPixel.Y);
+					foreach (Color c in colors)
+					{
+						if (c.A > 0)
+						{
+							_points.Add(xy.X);
+							_points.Add(referenceHeight - xy.Y);
+							_points.Add(previewPixel.Z);
+							_points.Add(c.R);
+							_points.Add(c.G);
+							_points.Add(c.B);
+							_points.Add(c.A);
+							_points.Add(previewPixel.PixelSize);
+
+							if (col % 2 == 0)
+							{
+								xy.Y += previewPixel.PixelSize;
+								xy.X = xy.X;
+							}
+							else
+							{
+								xy.X = xy.X + previewPixel.PixelSize;
+							}
+
+							col++;
+						}
+					}
+				}
+			}
+		}
+
+		private void CreateFullColorPoints(int referenceHeight)
+		{
+			foreach (PreviewPixel previewPixel in _pixelCache)
+			{
+				var state = previewPixel.Node.Element.State;
+				
+				if (state.Count > 0)
+				{
+					Color c = previewPixel.GetFullColor(state);
+					if (c.A > 0)
+					{
+						if (_isHighPrecision)
+						{
+							_points.Add((float)previewPixel.Location.X);
+							_points.Add(referenceHeight - (float)previewPixel.Location.Y);
+						}
+						else
+						{
+							_points.Add(previewPixel.X);
+							_points.Add(referenceHeight - previewPixel.Y);
+						}
+						
+						_points.Add(previewPixel.Z);
+						_points.Add(c.R);
+						_points.Add(c.G);
+						_points.Add(c.B);
+						_points.Add(c.A);
+						_points.Add(previewPixel.PixelSize);
+					}
+				}
+			}
 		}
 
 		protected void Dispose(bool disposing)

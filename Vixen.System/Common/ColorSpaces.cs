@@ -153,6 +153,91 @@ namespace Common.Controls.ColorManagement.ColorModels
 		#endregion
 	}
 
+	public struct RGBA
+	{
+		private double _r, _g, _b, _a;
+
+		#region ctor
+
+		public RGBA(double r, double g, double b, double a)
+		{
+			_r = r;
+			_g = g;
+			_b = b;
+			_a = a;
+		}
+
+		public RGBA(Color value) :
+			this(
+			(double)(value.R) / 255.0,
+			(double)(value.G) / 255.0,
+			(double)(value.B) / 255.0,
+			(double)(value.A) / 255.0)
+		{
+		}
+
+		#endregion
+
+		#region operators
+
+		public static bool operator ==(RGBA a, RGBA b)
+		{
+			return
+				a._r == b._r &&
+				a._g == b._g &&
+				a._b == b._b &&
+				a._a == b._a;
+		}
+
+		public static bool operator !=(RGBA a, RGBA b)
+		{
+			return !(a == b);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is RGBA)
+			{
+				return ((RGBA)obj) == this;
+			}
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+
+			return string.Format("{0}:{1}:{2}:{3}", _r, _g, _b, _a).GetHashCode();
+
+		}
+
+		#endregion
+
+		public double R
+		{
+			get { return _r; }
+			set { _r = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double G
+		{
+			get { return _g; }
+			set { _g = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double B
+		{
+			get { return _b; }
+			set { _b = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+
+		public double A
+		{
+			get { return _a; }
+			set { _a = XYZ.ClipValue(value, 0.0, 1.0); }
+		}
+	}
+
+
 	[DataContract]
 	public struct RGB
 	{
@@ -233,61 +318,6 @@ namespace Common.Controls.ColorManagement.ColorModels
 				(int)Math.Round(255.0 * _r),
 				(int)Math.Round(255.0 * _g),
 				(int)Math.Round(255.0 * _b));
-		}
-
-		public static RGB FromHsv(HSV hsv)
-		{
-			if (hsv.S == 0.0)
-			{
-				var v = hsv.V;
-				return new RGB{_r=v, _g=v, _b=v};
-			}
-			else
-			{
-				double h = hsv.H * 6.0;
-				if (h == 6.0) h = 0.0;
-				int h_i = (int)Math.Floor(h);
-				double
-					var_1 = hsv.V * (1.0 - hsv.S),
-					var_2 = hsv.V * (1.0 - hsv.S * (h - h_i)),
-					var_3 = hsv.V * (1.0 - hsv.S * (1.0 - (h - h_i)));
-
-				double r, g, b;
-				switch (h_i)
-				{
-					case 0:
-						r = hsv.V;
-						g = var_3;
-						b = var_1;
-						break;
-					case 1:
-						r = var_2;
-						g = hsv.V;
-						b = var_1;
-						break;
-					case 2:
-						r = var_1;
-						g = hsv.V;
-						b = var_3;
-						break;
-					case 3:
-						r = var_1;
-						g = var_2;
-						b = hsv.V;
-						break;
-					case 4:
-						r = var_3;
-						g = var_1;
-						b = hsv.V;
-						break;
-					default:
-						r = hsv.V;
-						g = var_1;
-						b = var_2;
-						break;
-				}
-				return new RGB{_r=r, _g=g, _b=b};
-			}
 		}
 
 		#endregion

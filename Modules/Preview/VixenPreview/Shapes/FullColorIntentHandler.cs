@@ -25,5 +25,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		{
 			_color = obj.GetValue().FullColorWithAlpha;
 		}
+
+		public override void Handle(IIntentState<DiscreteValue> obj)
+		{
+			_color = Color.Empty;
+		}
+
 	}
 }

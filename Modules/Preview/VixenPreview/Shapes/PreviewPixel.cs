@@ -233,6 +233,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			set { color = value; }
 		}
 
+		internal bool IsDiscreteColored
+		{
+			get { return _isDiscreteColored; }
+			set { _isDiscreteColored = value; }
+		}
+
 		public void Draw(Graphics graphics, Color c)
 		{
 			graphics.FillEllipse(new SolidBrush(c), Bounds);
@@ -322,6 +328,24 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				PixelSize = savedPixelSize;
 			}
 			
+		}
+
+
+		public Color GetFullColor(IIntentStates states)
+		{
+			var state = states[0];
+			if (state != null)
+			{
+				return _fullColorHandler.GetFullColor(state);
+			}
+			return Color.Empty;
+		}
+
+		public List<Color> GetDiscreteColors(IIntentStates states)
+		{
+			// Get states for each color
+			List<Color> colors = _discreteHandler.GetAlphaAffectedColor(states);
+			return colors;
 		}
 
 		protected void Dispose(bool disposing)

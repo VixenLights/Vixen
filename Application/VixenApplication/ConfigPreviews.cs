@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Common.Controls;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
@@ -105,6 +106,9 @@ namespace VixenApplication
 				{
 					foreach (ListViewItem item in listViewControllers.SelectedItems) {
 						OutputPreview oc = item.Tag as OutputPreview;
+						XMLProfileSettings xml = new XMLProfileSettings();
+						var name = $"Preview_{oc.ModuleInstanceId}";
+						xml.DeleteNode(XMLProfileSettings.SettingType.AppSettings, name);
 						VixenSystem.Previews.Remove(oc);
 					}
 					_PopulateControllerList();

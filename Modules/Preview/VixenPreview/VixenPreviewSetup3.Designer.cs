@@ -92,8 +92,6 @@
 			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.templateHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.customPropHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.performanceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.useDirect2DPreviewRenderingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.buttonIcicle = new System.Windows.Forms.Button();
 			this.buttonMultiString = new System.Windows.Forms.Button();
@@ -130,6 +128,7 @@
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
 			this.btnBulbDecrease = new System.Windows.Forms.Button();
 			this.btnBulbIncrease = new System.Windows.Forms.Button();
+			this.useOpenGLPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -762,14 +761,14 @@
 			// propInformationToolStripMenuItem
 			// 
 			this.propInformationToolStripMenuItem.Name = "propInformationToolStripMenuItem";
-			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propInformationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.propInformationToolStripMenuItem.Text = "Prop &Information";
 			this.propInformationToolStripMenuItem.Click += new System.EventHandler(this.propInformationToolStripMenuItem_Click);
 			// 
 			// propEditorToolStripMenuItem
 			// 
 			this.propEditorToolStripMenuItem.Name = "propEditorToolStripMenuItem";
-			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.propEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.propEditorToolStripMenuItem.Text = "Prop Editor";
 			this.propEditorToolStripMenuItem.Click += new System.EventHandler(this.btnCustomPropEditor_Click);
 			// 
@@ -795,7 +794,7 @@
 			this.copyToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem.Image")));
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.copyToolStripMenuItem.Text = "Cu&t";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
@@ -804,7 +803,7 @@
 			this.copyToolStripMenuItem1.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripMenuItem1.Image")));
 			this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
 			this.copyToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
+			this.copyToolStripMenuItem1.Size = new System.Drawing.Size(211, 30);
 			this.copyToolStripMenuItem1.Text = "&Copy";
 			this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem1_Click);
 			// 
@@ -813,7 +812,7 @@
 			this.pasteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("pasteToolStripMenuItem.Image")));
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.pasteToolStripMenuItem.Text = "&Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
@@ -822,7 +821,7 @@
 			this.deleteToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("deleteToolStripMenuItem.Image")));
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeyDisplayString = "Del";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.deleteToolStripMenuItem.Text = "&Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
 			// 
@@ -831,7 +830,7 @@
 			this.undoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("undoToolStripMenuItem.Image")));
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_ButtonClick);
 			// 
@@ -840,31 +839,31 @@
 			this.redoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("redoToolStripMenuItem.Image")));
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Y";
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.redoToolStripMenuItem.Text = "&Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_ButtonClick);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(200, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(208, 6);
 			// 
 			// backgroundPropertiesToolStripMenuItem
 			// 
 			this.backgroundPropertiesToolStripMenuItem.Name = "backgroundPropertiesToolStripMenuItem";
-			this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.backgroundPropertiesToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
 			this.backgroundPropertiesToolStripMenuItem.Text = "&Background Properties...";
 			this.backgroundPropertiesToolStripMenuItem.Click += new System.EventHandler(this.backgroundPropertiesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(208, 6);
 			// 
 			// addTemplateMenu
 			// 
 			this.addTemplateMenu.Name = "addTemplateMenu";
-			this.addTemplateMenu.Size = new System.Drawing.Size(203, 22);
+			this.addTemplateMenu.Size = new System.Drawing.Size(211, 30);
 			this.addTemplateMenu.Text = "Templates (Legacy)";
 			this.addTemplateMenu.Click += new System.EventHandler(this.buttonAddToPreview_Click);
 			// 
@@ -872,7 +871,8 @@
 			// 
 			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveLocationsToolStripMenuItem,
-            this.locationOffsetSetupToolStripMenuItem});
+            this.locationOffsetSetupToolStripMenuItem,
+            this.useOpenGLPreviewToolStripMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "Settings";
@@ -926,22 +926,6 @@
 			this.customPropHelpToolStripMenuItem.Name = "customPropHelpToolStripMenuItem";
 			this.customPropHelpToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
 			this.customPropHelpToolStripMenuItem.Text = "Custom Prop Help";
-			// 
-			// performanceToolStripMenuItem
-			// 
-			this.performanceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.useDirect2DPreviewRenderingToolStripMenuItem});
-			this.performanceToolStripMenuItem.Name = "performanceToolStripMenuItem";
-			this.performanceToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
-			this.performanceToolStripMenuItem.Text = "Performance";
-			// 
-			// useDirect2DPreviewRenderingToolStripMenuItem
-			// 
-			this.useDirect2DPreviewRenderingToolStripMenuItem.CheckOnClick = true;
-			this.useDirect2DPreviewRenderingToolStripMenuItem.Name = "useDirect2DPreviewRenderingToolStripMenuItem";
-			this.useDirect2DPreviewRenderingToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-			this.useDirect2DPreviewRenderingToolStripMenuItem.Text = "Use Direct2D Preview Rendering";
-			this.useDirect2DPreviewRenderingToolStripMenuItem.Click += new System.EventHandler(this.useDirect2DPreviewRenderingToolStripMenuItem_Click);
 			// 
 			// buttonIcicle
 			// 
@@ -1522,6 +1506,14 @@
 			this.btnBulbIncrease.UseVisualStyleBackColor = false;
 			this.btnBulbIncrease.Click += new System.EventHandler(this.btnBulbIncrease_Click);
 			// 
+			// useOpenGLPreviewToolStripMenuItem
+			// 
+			this.useOpenGLPreviewToolStripMenuItem.CheckOnClick = true;
+			this.useOpenGLPreviewToolStripMenuItem.Name = "useOpenGLPreviewToolStripMenuItem";
+			this.useOpenGLPreviewToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.useOpenGLPreviewToolStripMenuItem.Text = "Use OpenGL Preview";
+			this.useOpenGLPreviewToolStripMenuItem.CheckedChanged += new System.EventHandler(this.useOpenGLPreviewToolStripMenuItem_Click);
+			// 
 			// VixenPreviewSetup3
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1613,8 +1605,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem propInformationToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem performanceToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem useDirect2DPreviewRenderingToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveLocationsToolStripMenuItem;
 		private System.Windows.Forms.Button buttonStarBurst;
@@ -1677,5 +1667,6 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
 		private System.Windows.Forms.Button btnBulbDecrease;
 		private System.Windows.Forms.Button btnBulbIncrease;
+		private System.Windows.Forms.ToolStripMenuItem useOpenGLPreviewToolStripMenuItem;
 	}
 }

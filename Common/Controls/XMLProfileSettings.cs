@@ -52,6 +52,11 @@ namespace Common.Controls
 			PutSetting(type, xPath, Convert.ToString(value));
 		}
 
+		public void PutSetting(SettingType type, string xPath, double  value)
+		{
+			PutSetting(type, xPath, Convert.ToString(value));
+		}
+
 		public void PutSetting(SettingType type, string xPath, bool value)
 		{
 			PutSetting(type, xPath, Convert.ToString(value));
@@ -74,6 +79,11 @@ namespace Common.Controls
 			return Convert.ToInt32(GetSetting(type, xPath, Convert.ToString(defaultValue)));
 		}
 
+		public float GetSetting(SettingType type, string xPath, float defaultValue)
+		{
+			return (float)Convert.ToDouble(GetSetting(type, xPath, Convert.ToString(defaultValue)));
+		}
+
 		public bool GetSetting(SettingType type, string xPath, bool defaultValue)
 		{
 			return Convert.ToBoolean(GetSetting(type, xPath, Convert.ToString(defaultValue)));
@@ -87,6 +97,37 @@ namespace Common.Controls
 				return xmlNode.InnerText;
 			}
 			return defaultValue;
+		}
+
+		public void DeleteNode(SettingType type, string xPath)
+		{
+			string path = $"{Root}/{type}/{xPath}";
+			XmlNode xmlNode = _xmlDocument.SelectSingleNode(path);
+			if (xmlNode != null)
+			{
+				xmlNode.ParentNode?.RemoveChild(xmlNode);
+				_xmlDocument.Save(_documentPath);
+			}
+			
+		}
+
+		public void RenameNode(SettingType type, string xPath, string newName)
+		{
+			string path = $"{Root}/{type}/{xPath}";
+			XmlNode xmlNode = _xmlDocument.SelectSingleNode(path);
+			if (xmlNode != null)
+			{
+				var newNode = _xmlDocument.CreateElement(newName);
+				while (xmlNode.HasChildNodes)
+				{
+					newNode.AppendChild(xmlNode.FirstChild);
+				}
+
+				var parent = xmlNode.ParentNode;
+				parent?.ReplaceChild(newNode, xmlNode);
+
+				_xmlDocument.Save(_documentPath);
+			}
 		}
 
 		private XmlNode CreateMissingNode(string xPath)
