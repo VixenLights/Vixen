@@ -4453,7 +4453,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Guid guid = Guid.Empty;
 				//Check each Effect to see if it supports any File types
 				
-				var fileExtension = Path.GetExtension(filePath);
+				var fileExtension = Path.GetExtension(filePath).ToLower();
 
 				var effectDescriptors =
 					supportedEffectDescriptors.Where(x => x.SupportedFileExtensions.Contains(fileExtension)).ToList();
