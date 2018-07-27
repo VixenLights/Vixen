@@ -129,7 +129,14 @@ namespace VixenApplication
 						{
 							if (releaseVersion.name == _currentVersion)
 							{
-								currentReleaseDate = Convert.ToDateTime(releaseVersion.releaseDate.ToString());
+								if (releaseVersion.releaseDate != null)
+								{
+									currentReleaseDate = Convert.ToDateTime(releaseVersion.releaseDate.ToString());
+							}
+								else
+								{
+									currentReleaseDate = DateTime.Now;
+								}
 								break;
 							}
 						}
