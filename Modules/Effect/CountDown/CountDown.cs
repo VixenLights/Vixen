@@ -42,7 +42,7 @@ namespace VixenModules.Effect.CountDown
 		{
 			get
 			{
-				if (Colors.Any(x => !x.CheckLibraryReference()))
+				if (!Colors.CheckLibraryReference())
 				{
 					base.IsDirty = true;
 				}
@@ -287,7 +287,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderDisplayName(@"TextColors")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(0)]
-		public List<ColorGradient> Colors
+		public ColorGradient Colors
 		{
 			get { return _data.Colors; }
 			set
@@ -741,10 +741,9 @@ namespace VixenModules.Effect.CountDown
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
 			var brushPointX = offsetPoint.X;
-			ColorGradient cg = Colors[0 % Colors.Count()];
 			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
 					Color.Black, mode)
-				{InterpolationColors = cg.GetColorBlend()};
+				{InterpolationColors = Colors.GetColorBlend()};
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;
@@ -755,11 +754,10 @@ namespace VixenModules.Effect.CountDown
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
-			ColorGradient cg = Colors[0 % Colors.Count()];
 			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode)
-				{InterpolationColors = cg.GetColorBlend()};
+				{InterpolationColors = Colors.GetColorBlend()};
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;

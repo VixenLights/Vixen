@@ -17,7 +17,7 @@ namespace VixenModules.Effect.CountDown
 	{
 		public CountDownData()
 		{
-			Colors = new List<ColorGradient>{new ColorGradient(Color.Red)};
+			Colors = new ColorGradient(Color.Red);
 			Direction = CountDownDirection.None;
 			Speed = 1;
 			Fade = true;
@@ -37,7 +37,7 @@ namespace VixenModules.Effect.CountDown
 		}
 
 		[DataMember]
-		public List<ColorGradient> Colors { get; set; }
+		public ColorGradient Colors { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
@@ -94,7 +94,7 @@ namespace VixenModules.Effect.CountDown
 		{
 			CountDownData result = new CountDownData
 			{
-				Colors = Colors.ToList(),
+				Colors = Colors,
 				Direction = Direction,
 				Speed = Speed,
 				CenterStop = CenterStop,
