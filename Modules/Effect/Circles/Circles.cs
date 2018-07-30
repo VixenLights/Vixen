@@ -393,32 +393,28 @@ namespace VixenModules.Effect.Circles
 				double n = i - foffset + blockHt;
 
 				_colorIndex = (int) ((n)%blockHt/barht);
-
-				HSV hsv = HSV.FromRGB(Colors[_colorIndex].GetColorAt(intervalPos));
+				Color color = Colors[_colorIndex].GetColorAt(intervalPos);
 				switch (CircleFill)
 				{
-					case CircleFill.GradientOverTime:
-						hsv.V = hsv.V*level;
-						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						break;
 					case CircleFill.GradientOverElement: //Gradient over Element
-						hsv = HSV.FromRGB(Colors[_colorIndex].GetColorAt((1 / radius1) * radius));
-						hsv.V = hsv.V*level;
-						frameBuffer.SetPixel(xCoord, yCoord, hsv);
+						color = Colors[_colorIndex].GetColorAt((1 / radius1) * radius);
 						break;
 					case CircleFill.Empty:
-						if (distance >= radius - CalculateEdgeWidth(intervalPosFactor, currentRadius))
-						{
-							hsv.V = hsv.V * level;
-							frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						}
+						if (!(distance >= radius - CalculateEdgeWidth(intervalPosFactor, currentRadius))) return;
 						break;
 					case CircleFill.Fade:
-						hsv.V *= 1.0 - distance/radius;
-						hsv.V = hsv.V*level;
+						HSV hsv = HSV.FromRGB(color);
+						hsv.V *= 1.0 - distance/radius * level;
 						frameBuffer.SetPixel(xCoord, yCoord, hsv);
-						break;
+						return;
 				}
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(color);
+					hsv.V = hsv.V * level;
+					color = hsv.ToRGB();
+				}
+				frameBuffer.SetPixel(xCoord, yCoord, color);
 			}
 		}
 
