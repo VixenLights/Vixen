@@ -52,10 +52,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ColorGradients">
-      <HintPath>..\..\App\ColorGradients\obj\x86\Debug\ColorGradients.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -101,6 +97,11 @@
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\App\ColorGradients\ColorGradients.csproj">
+      <Project>{1b189b36-02af-4a57-9e1b-6dc833212725}</Project>
+      <Name>ColorGradients</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
