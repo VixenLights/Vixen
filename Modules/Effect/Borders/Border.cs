@@ -351,6 +351,7 @@ namespace VixenModules.Effect.Borders
 			int leftThickness = (int)Math.Round(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 			int rightThickness = (int)Math.Round(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 			int borderWidth = (int)Math.Round(CalculateBorderSize(intervalPosFactor) / 2);
+			Color color = Color.GetColorAt(GetEffectTimeIntervalPosition(effectFrame));
 
 			if (BorderMode == BorderMode.Simple)
 			{
@@ -371,7 +372,7 @@ namespace VixenModules.Effect.Borders
 				{
 					CalculatePixel(x, y, frameBuffer, thickness, topThickness,
 						bottomThickness, leftThickness, rightThickness,
-						intervalPosFactor, level, effectFrame, borderWidth);
+						intervalPosFactor, level, effectFrame, borderWidth, color);
 				}
 			}
 		}
@@ -394,6 +395,7 @@ namespace VixenModules.Effect.Borders
 				int leftThickness = (int)(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 				int rightThickness = (int)(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
 				int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) / 2);
+				Color color = Color.GetColorAt(GetEffectTimeIntervalPosition(effectFrame));
 
 				if (BorderMode == BorderMode.Simple)
 				{
@@ -414,13 +416,13 @@ namespace VixenModules.Effect.Borders
 					{
 						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, thickness,
 							topThickness, bottomThickness, leftThickness, rightThickness,
-							intervalPosFactor, level, effectFrame, borderWidth);
+							intervalPosFactor, level, effectFrame, borderWidth, color);
 					}
 				}
 			}
 		}
 
-		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int thickness, int topThickness, int bottomThickness, int leftThickness, int rightThickness, double intervalPosFactor, double level, int effectFrame, double borderWidth)
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int thickness, int topThickness, int bottomThickness, int leftThickness, int rightThickness, double intervalPosFactor, double level, int effectFrame, double borderWidth, Color color)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -438,9 +440,8 @@ namespace VixenModules.Effect.Borders
 				if ((y < borderWidth + thickness || y >= BufferHt - borderWidth - thickness || x < borderWidth + thickness || x >= BufferWi - borderWidth - thickness)
 					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
-					HSV hsv = GraidentColorSelection(x, y, effectFrame);
-					hsv.V = hsv.V * level;
-					frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					color = GetColor(x, y, color, level);
+					frameBuffer.SetPixel(xCoord, yCoord, color);
 				}
 			}
 			else
@@ -449,35 +450,40 @@ namespace VixenModules.Effect.Borders
 				if ((y < borderWidth + bottomThickness || y >= BufferHt - borderWidth - topThickness || x < borderWidth + leftThickness || x >= BufferWi - borderWidth - rightThickness)
 					&& x >= borderWidth && y < BufferHt - borderWidth && y >= borderWidth && x < BufferWi - borderWidth)
 				{
-					HSV hsv = GraidentColorSelection(x, y, effectFrame);
-					hsv.V = hsv.V * level;
-					frameBuffer.SetPixel(xCoord, yCoord, hsv);
+					color = GetColor(x, y, color, level);
+					frameBuffer.SetPixel(xCoord, yCoord, color);
 				}
 			}
 		}
-
-		private HSV GraidentColorSelection(int x, int y, int effectFrame)
+		
+		private Color GetColor(int x, int y, Color color, double level)
 		{
-			Color color = new Color();
-			switch (GradientMode)
+			if (GradientMode != GradientMode.OverTime)
 			{
-				case GradientMode.OverTime:
-					color = Color.GetColorAt(GetEffectTimeIntervalPosition(effectFrame));
-					break;
-				case GradientMode.AcrossElement:
-					color = Color.GetColorAt(((100 / (double)(BufferWi - 1)) * x) / 100);
-					break;
-				case GradientMode.VerticalAcrossElement:
-					color = Color.GetColorAt(((100 / (double)(BufferHt - 1)) * (BufferHt - y)) / 100);
-					break;
-				case GradientMode.DiagonalTopBottomElement:
-					color = Color.GetColorAt(((100 / (double)(BufferHt - 1) * (BufferHt - y)) + (100 / (double)(BufferWi - 1) * x)) / 200);
-					break;
-				case GradientMode.DiagonalBottomTopElement:
-					color = Color.GetColorAt(((100 / (double)(BufferHt - 1) * y) + (100 / (double)(BufferWi - 1) * x)) / 200);
-					break;
+				switch (GradientMode)
+				{
+					case GradientMode.AcrossElement:
+						color = Color.GetColorAt(100 / (double) BufferWi * x / 100);
+						break;
+					case GradientMode.VerticalAcrossElement:
+						color = Color.GetColorAt(100 / (double) BufferHt * (BufferHt - y) / 100);
+						break;
+					case GradientMode.DiagonalTopBottomElement:
+						color = Color.GetColorAt(
+							(100 / (double) BufferHt * (BufferHt - y) + 100 / (double) BufferWi * x) / 200);
+						break;
+					case GradientMode.DiagonalBottomTopElement:
+						color = Color.GetColorAt((100 / (double) BufferHt * y + 100 / (double) BufferWi * x) / 200);
+						break;
+				}
 			}
-			return HSV.FromRGB(color);
+			if (level < 1)
+			{
+				HSV hsv = HSV.FromRGB(color);
+				hsv.V *= level;
+				color = hsv.ToRGB();
+			}
+			return color;
 		}
 
 		private double CalculateBorderSize(double intervalPosFactor)
