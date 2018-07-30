@@ -30,6 +30,7 @@ namespace VixenModules.Effect.CountDown
 		private string _text;
 		private double _directionPosition;
 		private double _fade;
+		private double _level;
 
 		public CountDown()
 		{
@@ -445,13 +446,13 @@ namespace VixenModules.Effect.CountDown
 			using (var bitmap = new Bitmap(BufferWi, BufferHt))
 			{
 				InitialRender(frame, bitmap);
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				// copy to frameBuffer
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < BufferHt; y++)
 					{
-						CalculatePixel(x, y, bitmap, level, frameBuffer);
+						CalculatePixel(x, y, bitmap, frameBuffer);
 					}
 				}
 			}
@@ -463,7 +464,7 @@ namespace VixenModules.Effect.CountDown
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
@@ -471,7 +472,7 @@ namespace VixenModules.Effect.CountDown
 					{
 						foreach (var elementLocation in elementLocations)
 						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, frameBuffer);
 						}
 					}
 				}
@@ -664,7 +665,7 @@ namespace VixenModules.Effect.CountDown
 			return countDownNumber.ToString();
 		}
 
-		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, Bitmap bitmap, IPixelFrameBuffer frameBuffer)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -679,24 +680,7 @@ namespace VixenModules.Effect.CountDown
 
 			if (!_emptyColor.Equals(color))
 			{
-				var hsv = HSV.FromRGB(color);
-				switch (CountDownFade)
-				{
-					case CountDownFade.Out:
-						hsv.V = hsv.V * _fade;
-						break;
-					case CountDownFade.In:
-						hsv.V = hsv.V * _fade;
-						break;
-					case CountDownFade.InOut:
-						hsv.V = _fade;
-						break;
-					default:
-						hsv.V = hsv.V * level;
-						break;
-				}
-
-				frameBuffer.SetPixel(xCoord, yCoord, hsv);
+				frameBuffer.SetPixel(xCoord, yCoord, color);
 			}
 			else if (TargetPositioning == TargetPositioningType.Locations)
 			{
@@ -741,9 +725,10 @@ namespace VixenModules.Effect.CountDown
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
 			var brushPointX = offsetPoint.X;
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
 			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
 					Color.Black, mode)
-				{InterpolationColors = Colors.GetColorBlend()};
+				{InterpolationColors = cg.GetColorBlend()};
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;
@@ -754,13 +739,38 @@ namespace VixenModules.Effect.CountDown
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
 			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode)
-				{InterpolationColors = Colors.GetColorBlend()};
+				{InterpolationColors = cg.GetColorBlend()};
 			DrawTextWithBrush(text, brush, g, offsetPoint);
 			brush.Dispose();
 			p.Y += (int) size.Height;
+		}
+
+		private ColorGradient GetNewGolorGradient()
+		{
+			ColorGradient cg = new ColorGradient(Colors);
+			foreach (var color in cg.Colors)
+			{
+				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
+				switch (CountDownFade)
+				{
+					case CountDownFade.Out:
+						hsv.V = hsv.V * _fade;
+						break;
+					case CountDownFade.In:
+						hsv.V = hsv.V * _fade;
+						break;
+					case CountDownFade.InOut:
+						hsv.V = _fade;
+						break;
+				}
+				hsv.V *= _level;
+				color.Color = XYZ.FromRGB(hsv.ToRGB());
+			}
+			return cg;
 		}
 
 		private void DrawTextWithBrush(string text, Brush brush, Graphics g, Point p)
