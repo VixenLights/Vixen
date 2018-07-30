@@ -55,7 +55,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
 		private bool _showStatus;
 		private bool _alwaysOnTop;
-		
+		private bool _enableLightScaling = true;
+
 		private float _pointScaleFactor;
 		private long _frameCount;
 
@@ -173,6 +174,18 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_contextMenuStrip.Items.Add(item);
 
+			item = new ToolStripMenuItem("Enable Light Scaling");
+			item.ToolTipText = @"Scales the light size as the camera is zoomed in or out.";
+			item.Checked = _enableLightScaling;
+			item.Click += (sender, args) =>
+			{
+				_enableLightScaling = !_enableLightScaling;
+				CalculatePointScaleFactor();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
 			var seperator = new ToolStripSeparator();
 			_contextMenuStrip.Items.Add(seperator);
 
@@ -228,10 +241,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			//GL.Enable(EnableCap.DepthTest);
 			lock (ContextLock)
 			{
+#if DEBUG
 				//Logging.Info("Debug Output");
 				GL.Enable(EnableCap.DebugOutput);
 				//Logging.Info("Debug Output Sync");
 				GL.Enable(EnableCap.DebugOutputSynchronous);
+#endif
 				//Logging.Info("Blend");
 				GL.Enable(EnableCap.Blend);
 				//Logging.Info("Blend Func");
@@ -581,7 +596,12 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void CalculatePointScaleFactor()
 		{
-			float scale = 1.1f * (_focalDepth / _camera.Position.Z);
+			if (!_enableLightScaling)
+			{
+				_pointScaleFactor = 1;
+				return;
+			}
+			float scale = _focalDepth / _camera.Position.Z;
 			float sizeScale = 0;
 			if (_background.HasBackground)
 			{
@@ -628,6 +648,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), _enableLightScaling);
 		}
 
 		private void RestoreWindowState()
@@ -639,7 +660,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
-			
+			_enableLightScaling = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), true);
+
 			ConfigureStatusBar();
 			ConfigureAlwaysOnTop();
 
