@@ -22,6 +22,125 @@ Release Notes - Vixen 3 - 3.5 Release Build
     * [VIX-2315] - Intensity Layer not working for LipSync
     * [VIX-2345] - Add a help menu to the main Vixen form for online documentation.
     * [VIX-2348] - An empty draw threshold in the curve editor will cause Vixen to crash.
+    * [VIX-2366] - Lyric Converter convert to clipboard message box uses wrong icon
+    * [VIX-2370] - Add NumericalTextBox Control to Solution
+    * [VIX-2371] - Correct various dependency issues within the projects that cause dependent libraries to be copied to local projects when they should not be.
+    * [VIX-2372] - Clean up and organize massive TimedSequenceEditorForm.cs file
+    * [VIX-2375] - The new check for updates can hang Vixen if the JIRA site is down or slow to respond.
+    * [VIX-2378] - On some network connections, the app will hang in a race condition attempting to check for updates.
+    * [VIX-2379] - LipSync Mapping Form Missing Icon
+    * [VIX-2380] - LipSync Mapping Form Notes Box Anchoring
+    * [VIX-2393] - Bugs and oddities in the new Custom Prop Editor.
+    * [VIX-2395] - Imported discrete Custom Props require restart before preview will work.
+    * [VIX-2399] - The new Order module and the Chroma Key module need project config fixes.
+    * [VIX-2406] - The new lip-sync effect updates to use marks causes an issue effects to re-render each pass in the live preview in the editor.
+    * [VIX-2410] - Regular lip-sync image effects that do not use marks are not rendering the image.
+    * [VIX-2411] - There are a few bugs in the new marks bar logic that crash Vixen.
+    * [VIX-2413] - Image object already in use errors in Lip-sync
+    * [VIX-2416] - Lip-sync conversion error crashes Vixen
+    * [VIX-2417] - Memory and performance optimizations. 
+    * [VIX-2421] - Changes to the Scheduler do not save.
+    * [VIX-2423] - Text effect "Repeat Text" checkbox only needs to be visible when Trigger is set to MarkCollections.
+    * [VIX-2426] - Shapes effect size curve doesnt work
+    * [VIX-2427] - If a Mark spans across multiple rows then resizing and context menu only work on the top row of that Mark.
+    * [VIX-2428] - ChromaKey project reference to the color breakdown is specific to the x86 binary instead of the project itself. 
+    * [VIX-2429] - Crash when adding effects that use the PulseRenderer on large element count props.
+    * [VIX-2430] - Clean up broken dependency references and upgrade some outdated ones to current.
+    * [VIX-2432] - Export is not working
+    * [VIX-2433] - When I try to play my sequences the preview shows nothing in build 603.
+    * [VIX-2434] - The Audio helper plugin build output points to the wrong directory.
+    * [VIX-2436] - Wipe / Pulse effect gradient colors wrong
+    * [VIX-2437] - Rapid edits on a curve in the effect editor can cause a crash.
+    * [VIX-2440] - The xTiming import does not work correctly if there are more than one set of tracks in the file.
+    * [VIX-2441] - The editor can crash of the user attempts to edit a very large amount of effects at the same time.
+    * [VIX-2442] - The scheduler timer that checks for a show to start runs even when the scheduler is disabled.
+    * [VIX-2445] - Shapes Effect Size Mode Label Spacing and Wording
+    * [VIX-2446] - Gradient Editor has Unnecessary Horizontal Scroll Bar
+    * [VIX-2448] - Files not dropping on timeline when file extension has any uppercase characters.
+    * [VIX-2449] - The Check for updates throws an exception if the current release does not have an official release date.
+    * [VIX-2453] - No need for the Count Down effect to have multiple gradient colors.
+
+** New Feature
+    * [VIX-725] - OpenGL Output for 2D Preview
+    * [VIX-799] - Add support to scale preview window
+    * [VIX-812] - Add Zoom functionality to Vixen live preview window
+    * [VIX-969] - Custom Prop Editor
+    * [VIX-1040] - Add mixing filter for chroma key
+    * [VIX-1041] - Add luma key mixing filter
+    * [VIX-1094] - Zoom control for preview
+    * [VIX-2244] - Ability to Drag and Drop Pictures or Video from a Windows folder onto the Timeline
+    * [VIX-2264] - Create Countdown timer Effect
+    * [VIX-2350] - Add check when Vixen loads to see if there are any Release or Build updates available
+    * [VIX-2367] - Allow for stationary Bars Effect and variable speed options.
+    * [VIX-2388] - Add a wizard to the Display setup to help add order properties to existing elements.
+    * [VIX-2389] - Add options to the patching to utilize the new order properties.
+    * [VIX-2404] - Add Shapes effect
+    * [VIX-2409] - Add Mark Collections to Fireworks Effect
+    * [VIX-2412] - Add Mark Collection to the Text Effect
+    * [VIX-2414] - Add Mark Collection to the Alternating effect
+
+** Improvement
+    * [VIX-1008] - LipSync Map Assignment Load
+    * [VIX-1920] - Add a mark at the beginning of selected effect(s)
+    * [VIX-1950] - More gradient options for the Wipe effect
+    * [VIX-2111] - Add the Information Web page links to the remaining effects that don't have it.
+    * [VIX-2129] - Add Rotation and Font size curves to the Text effect
+    * [VIX-2200] - Preview Zoom to 100%
+    * [VIX-2203] - Seperate Preset Libraries to own Docking forms
+    * [VIX-2227] - Enhance the profile zip wizard to omit the .lock file when exporting a profile.
+    * [VIX-2250] - Show locked profile in profile selector
+    * [VIX-2280] - Version Control grows out of control
+    * [VIX-2308] - Update major libraries to the latest versions.
+    * [VIX-2312] - Remove outdated controllers from the packaged product.
+    * [VIX-2319] - Update QMLibrary Compiler, Libraries and Project Files
+    * [VIX-2321] - Refine UI for Lip-Sync map setup
+    * [VIX-2322] - Lip-Sync map image vs draw
+    * [VIX-2326] - Create a process that will automatically update release notes for each development build from the JIRA tickets
+    * [VIX-2329] - Update CMU Standard Phoneme Dictionary to 0.7b
+    * [VIX-2346] - Add ignore intent if alone functionality to layer mixing filter interface
+    * [VIX-2349] - Add access keys to display setup context menus
+    * [VIX-2358] - Create an element creation helper for uneven patterned groups
+    * [VIX-2359] - Add the ability to specify the string and pixel prefix names to the Display Element templates
+    * [VIX-2365] - Picture effect movement options
+    * [VIX-2368] - Change Intensity Overlay mixing filter so it doesn't return the high layer when there is no low layer state.
+    * [VIX-2386] - Extend marks to allow for duration and text fields
+    * [VIX-2396] - Explore the idea of a enhancement or new LipSync effect that can associate itself one of the new mark collections that represent phonomes..
+    * [VIX-2397] - Add abilities to generate Lyric mark collections.
+    * [VIX-2403] - Add the ability to import Papagayo voice tracks as Mark Collections
+    * [VIX-2405] - Create a mechanism to do lip-sync maps on string type elements via properties.
+    * [VIX-2408] - Mark editing enhancements
+    * [VIX-2424] - Improve load performance of the editor with high element counts.
+    * [VIX-2438] - Performance improvements part 2
+    * [VIX-2439] - Add enhancement to the Lip-Sync effect to fill mark gaps with a rest face movement.
+    * [VIX-2443] - Performance improvements to some of the Effects.
+    * [VIX-2454] - Allow the user to switch off the light size scaling.
+    * [VIX-2455] - The Order module references the ColorGradient module incorrectly and the PSC module has an incorrect output path.
+    * [VIX-2456] - Add basic zoom function to the original preview. 
+
+
+
+Release Notes - Vixen 3 - 3.5 Release Build 
+
+** Bug
+    * [VIX-496] - Issue with Undo/Redo in Sequencer
+    * [VIX-928] - Pasting effects with no target crashes Vixen
+    * [VIX-1889] - In the Snowflake effect, the flakes disappear as soon as part of them touch the bottom of the element instead if transitioning through.
+    * [VIX-1928] - Alternating Effect.  Flashing on change
+    * [VIX-1973] - Adding Pixel Star causes crash when using odd pixel counts
+    * [VIX-1984] - Oval Ellipse / Copy Paste issue
+    * [VIX-2199] - Grouping Error Button Options
+    * [VIX-2205] - When you have same element in multiple groups visible and paste will paste twice as many.
+    * [VIX-2233] - Add render overide for the Menu Seperator to the themetoolstriprender module
+    * [VIX-2236] - Meteors effect blanks all elements when dropped on single element.
+    * [VIX-2240] - Preset Libraries (Curve/Gradient) does not save correctly when removing/adding multiple items.
+    * [VIX-2243] - Preview setup screen should have title bar text changed
+    * [VIX-2246] - Video Effect 'Start Time (sec)' limited to 500
+    * [VIX-2278] - Effect Time Editor Title 
+    * [VIX-2289] - Vixen won't open
+    * [VIX-2290] - Scheduler crashes Vixen and now it no longer restarts
+    * [VIX-2315] - Intensity Layer not working for LipSync
+    * [VIX-2345] - Add a help menu to the main Vixen form for online documentation.
+    * [VIX-2348] - An empty draw threshold in the curve editor will cause Vixen to crash.
 
 ** New Feature
     * [VIX-725] - OpenGL Output for 2D Preview
