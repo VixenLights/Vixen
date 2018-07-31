@@ -74,6 +74,11 @@ namespace Common.Controls
 			_xmlDocument.Save(_documentPath);
 		}
 
+		public double GetSetting(SettingType type, string xPath, double defaultValue)
+		{
+			return Convert.ToDouble(GetSetting(type, xPath, Convert.ToString(defaultValue)));
+		}
+
 		public int GetSetting(SettingType type, string xPath, int defaultValue)
 		{
 			return Convert.ToInt32(GetSetting(type, xPath, Convert.ToString(defaultValue)));

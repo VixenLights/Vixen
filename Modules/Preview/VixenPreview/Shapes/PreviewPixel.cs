@@ -256,13 +256,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			fp.DrawCircle(Bounds, newColor);
 		}
 
-        public void Draw(FastPixel.FastPixel fp, IIntentStates states)
+        public void Draw(FastPixel.FastPixel fp, IIntentStates states, double zoomLevel)
         {
 			
 			if(_isDiscreteColored)
 			{
 				int col = 1;
-				Rectangle drawRect = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
+				int zoomedX = (int) (Bounds.X * zoomLevel);
+				Rectangle drawRect = new Rectangle(zoomedX, (int)(Bounds.Y * zoomLevel), Bounds.Width, Bounds.Height);
 				// Get states for each color
 				List<Color> colors = _discreteHandler.GetAlphaAffectedColor(states);
 				foreach (Color c in colors)
@@ -274,10 +275,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 						if (col % 2 == 0)
 						{
 							drawRect.Y += PixelSize;
-							drawRect.X = Bounds.X;
+							drawRect.X = zoomedX;
 						} else
 						{
-							drawRect.X = Bounds.X + PixelSize;
+							drawRect.X = zoomedX + PixelSize;
 						}
 
 						col++;
@@ -292,7 +293,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					Color intentColor = _fullColorHandler.GetFullColor(state);
 					if (intentColor.A > 0)
 					{
-						fp.DrawCircle(Bounds, intentColor);
+						Rectangle drawRect = zoomLevel != 1?new Rectangle((int)(Bounds.X * zoomLevel), (int)(Bounds.Y * zoomLevel), Bounds.Width, Bounds.Height):Bounds;
+						fp.DrawCircle(drawRect, intentColor);
 					}
 			
 				}
