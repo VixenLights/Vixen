@@ -47,11 +47,6 @@ namespace Common.Controls
 			}		
 		}
 
-		public void PutSetting(SettingType type, string xPath, double value)
-		{
-			PutSetting(type, xPath, Convert.ToString(value));
-		}
-
 		public void PutSetting(SettingType type, string xPath, int value)
 		{
 			PutSetting(type, xPath, Convert.ToString(value));
