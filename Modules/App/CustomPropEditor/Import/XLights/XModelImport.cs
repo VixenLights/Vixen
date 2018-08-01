@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
+using Catel.IoC;
+using Catel.Services;
+using NLog;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
 
@@ -11,6 +14,7 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 {
 	public class XModelImport : IModelImport
 	{
+		protected static Logger Logging = LogManager.GetCurrentClassLogger();
 		private int _scale = 4;
 		
 		public async Task<Prop> ImportAsync(string filePath)
@@ -68,6 +72,12 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 					var modelNodes = await CreateModelNodesAsync(model);
 					Assemble(modelNodes, subModels, nodeSize);
 
+				}
+				else
+				{
+					var dependencyResolver = this.GetDependencyResolver();
+					var ms = dependencyResolver.Resolve<IMessageService>();
+					await ms.ShowErrorAsync($"Unsupported model type: {reader.Name}. \nImport only supports custom model types at this time.", "Model import error");
 				}
 			}
 
