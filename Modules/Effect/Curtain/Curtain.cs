@@ -421,8 +421,6 @@ namespace VixenModules.Effect.Curtain
 						break;
 				}
 			}
-
-			
 		}
 
 		private void DrawCurtainLocation(bool leftEdge, int xlimit, List<int> swagArray, PixelLocationFrameBuffer frameBuffer,
@@ -437,9 +435,14 @@ namespace VixenModules.Effect.Curtain
 
 			foreach (var elementLocation in elements)
 			{
-				var hsv = GetLocationColor(leftEdge, width, elementLocation);
-				hsv.V = hsv.V * level;
-				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+				var col = GetLocationColor(leftEdge, width, elementLocation);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
+				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, col);
 			}
 
 			// swag
@@ -456,9 +459,14 @@ namespace VixenModules.Effect.Curtain
 					{
 						if (elementLocation.Y < limit)
 						{
-							var hsv = GetLocationColor(leftEdge, width, elementLocation);
-							hsv.V = hsv.V * level;
-							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+							var col = GetLocationColor(leftEdge, width, elementLocation);
+							if (level < 1)
+							{
+								HSV hsv = HSV.FromRGB(col);
+								hsv.V *= level;
+								col = hsv.ToRGB();
+							}
+							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, col);
 						}
 					}
 
@@ -466,20 +474,20 @@ namespace VixenModules.Effect.Curtain
 			}
 		}
 
-		private HSV GetLocationColor(bool leftEdge, int width, ElementLocation elementLocation)
+		private Color GetLocationColor(bool leftEdge, int width, ElementLocation elementLocation)
 		{
-			HSV hsv;
+			Color col;
 			if (!leftEdge || BufferWi == width)
 			{
 				var percent = (double) (elementLocation.X - BufferWiOffset) / width;
-				hsv = HSV.FromRGB(Color.GetColorAt(leftEdge ? 1 - percent : percent));
+				col = Color.GetColorAt(leftEdge ? 1 - percent : percent);
 			}
 			else
 			{
 				var percent = (double) (elementLocation.X - BufferWiOffset - (BufferWi - width)) / width;
-				hsv = HSV.FromRGB(Color.GetColorAt(1 - percent));
+				col = Color.GetColorAt(1 - percent);
 			}
-			return hsv;
+			return col;
 		}
 
 		private void DrawCurtainVerticalLocation(bool topEdge, int ylimit, List<int> swagArray, PixelLocationFrameBuffer frameBuffer,
@@ -490,9 +498,14 @@ namespace VixenModules.Effect.Curtain
 
 			foreach (var elementLocation in elements)
 			{
-				var hsv = GetVerticalLocationColor(topEdge, width, elementLocation);
-				hsv.V = hsv.V * level;
-				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+				var col = GetVerticalLocationColor(topEdge, width, elementLocation);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
+				frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, col);
 			}
 
 			//Swag
@@ -509,43 +522,53 @@ namespace VixenModules.Effect.Curtain
 					{
 						if (elementLocation.X > limit)
 						{
-							var hsv = GetVerticalLocationColor(topEdge, width, elementLocation);
-							hsv.V = hsv.V * level;
-							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, hsv);
+							var col = GetVerticalLocationColor(topEdge, width, elementLocation);
+							if (level < 1)
+							{
+								HSV hsv = HSV.FromRGB(col);
+								hsv.V *= level;
+								col = hsv.ToRGB();
+							}
+							frameBuffer.SetPixel(elementLocation.X, elementLocation.Y, col);
 						}
 					}
-
 				}
 			}
 		}
 
-		private HSV GetVerticalLocationColor(bool topEdge, int width, ElementLocation elementLocation)
+		private Color GetVerticalLocationColor(bool topEdge, int width, ElementLocation elementLocation)
 		{
-			HSV hsv;
+			Color col;
 			if (!topEdge || BufferHt == width)
 			{
 				var percent = (double) (elementLocation.Y - BufferHtOffset) / width;
-				hsv = HSV.FromRGB(Color.GetColorAt(topEdge ? 1 - percent : percent));
+				col = Color.GetColorAt(topEdge ? 1 - percent : percent);
 			}
 			else
 			{
 				var percent = (double) (elementLocation.Y - BufferHtOffset - (BufferHt - width)) / width;
-				hsv = HSV.FromRGB(Color.GetColorAt(1 - percent));
+				col = Color.GetColorAt(1 - percent);
 			}
-			return hsv;
+			return col;
 		}
-
 
 		private void DrawCurtain(bool leftEdge, int xlimit, List<int> swagArray, IPixelFrameBuffer frameBuffer, double level, int width)
 		{
+			Color col;
 			for (int i = 0; i < xlimit; i++)
 			{
-				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)i / width));
+				col = Color.GetColorAt((double)i / width);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
+				
 				int x = leftEdge ? BufferWi - i - 1 : i;
 				for (int y = BufferHt - 1; y >= 0; y--)
 				{
-					hsv.V = hsv.V*level;
-					frameBuffer.SetPixel(x, y, hsv);
+					frameBuffer.SetPixel(x, y, col);
 				}
 			}
 
@@ -553,12 +576,18 @@ namespace VixenModules.Effect.Curtain
 			for (int i = 0; i < swagArray.Count; i++)
 			{
 				int x = xlimit + i;
-				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)x / width));
+				col = Color.GetColorAt((double)x / width);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
+
 				if (leftEdge) x = BufferWi - x - 1;
 				for (int y = BufferHt - 1; y > swagArray[i]; y--)
 				{
-					hsv.V = hsv.V*level;
-					frameBuffer.SetPixel(x, y, hsv);
+					frameBuffer.SetPixel(x, y, col);
 				}
 			}
 		}
@@ -567,14 +596,20 @@ namespace VixenModules.Effect.Curtain
 			double level, int width)
 		{
 			int i, x, y;
+			Color col;
 			for (i = 0; i < ylimit; i++)
 			{
-				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)i / width));
+				col = Color.GetColorAt((double)i / width);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
 				y = topEdge ? BufferHt - i - 1 : i;
 				for (x = BufferWi - 1; x >= 0; x--)
 				{
-					hsv.V = hsv.V*level;
-					frameBuffer.SetPixel(x, y, hsv);
+					frameBuffer.SetPixel(x, y, col);
 				}
 			}
 
@@ -582,16 +617,19 @@ namespace VixenModules.Effect.Curtain
 			for (i = 0; i < swagArray.Count(); i++)
 			{
 				y = ylimit + i;
-				HSV hsv = HSV.FromRGB(Color.GetColorAt((double)y / width));
+				col = Color.GetColorAt((double)y / width);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
 				if (topEdge) y = BufferHt - y - 1;
 				for (x = BufferWi - 1; x > swagArray[i]; x--)
 				{
-					hsv.V = hsv.V*level;
-					frameBuffer.SetPixel(x, y, hsv);
+					frameBuffer.SetPixel(x, y, col);
 				}
 			}
 		}
-
-		
 	}
 }
