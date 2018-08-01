@@ -740,8 +740,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				if (!string.IsNullOrEmpty(path))
 				{
 					IModelImport import = new XModelImport();
-					Prop = await import.ImportAsync(path);
-					FilePath = String.Empty;
+					var p = await import.ImportAsync(path);
+					if (p != null)
+					{
+						Prop = p;
+						FilePath = String.Empty;
+					}
 				}
 			}
 		}
