@@ -59,6 +59,7 @@ Release Notes - Vixen 3 - 3.5 Release Build
     * [VIX-2448] - Files not dropping on timeline when file extension has any uppercase characters.
     * [VIX-2449] - The Check for updates throws an exception if the current release does not have an official release date.
     * [VIX-2453] - No need for the Count Down effect to have multiple gradient colors.
+    * [VIX-2459] - Vixen crashes when trying to import some xLights models
 
 ** New Feature
     * [VIX-725] - OpenGL Output for 2D Preview
@@ -116,66 +117,6 @@ Release Notes - Vixen 3 - 3.5 Release Build
     * [VIX-2454] - Allow the user to switch off the light size scaling.
     * [VIX-2455] - The Order module references the ColorGradient module incorrectly and the PSC module has an incorrect output path.
     * [VIX-2456] - Add basic zoom function to the original preview. 
-
-
-
-Release Notes - Vixen 3 - 3.5 Release Build 
-
-** Bug
-    * [VIX-496] - Issue with Undo/Redo in Sequencer
-    * [VIX-928] - Pasting effects with no target crashes Vixen
-    * [VIX-1889] - In the Snowflake effect, the flakes disappear as soon as part of them touch the bottom of the element instead if transitioning through.
-    * [VIX-1928] - Alternating Effect.  Flashing on change
-    * [VIX-1973] - Adding Pixel Star causes crash when using odd pixel counts
-    * [VIX-1984] - Oval Ellipse / Copy Paste issue
-    * [VIX-2199] - Grouping Error Button Options
-    * [VIX-2205] - When you have same element in multiple groups visible and paste will paste twice as many.
-    * [VIX-2233] - Add render overide for the Menu Seperator to the themetoolstriprender module
-    * [VIX-2236] - Meteors effect blanks all elements when dropped on single element.
-    * [VIX-2240] - Preset Libraries (Curve/Gradient) does not save correctly when removing/adding multiple items.
-    * [VIX-2243] - Preview setup screen should have title bar text changed
-    * [VIX-2246] - Video Effect 'Start Time (sec)' limited to 500
-    * [VIX-2278] - Effect Time Editor Title 
-    * [VIX-2289] - Vixen won't open
-    * [VIX-2290] - Scheduler crashes Vixen and now it no longer restarts
-    * [VIX-2315] - Intensity Layer not working for LipSync
-    * [VIX-2345] - Add a help menu to the main Vixen form for online documentation.
-    * [VIX-2348] - An empty draw threshold in the curve editor will cause Vixen to crash.
-
-** New Feature
-    * [VIX-725] - OpenGL Output for 2D Preview
-    * [VIX-799] - Add support to scale preview window
-    * [VIX-812] - Add Zoom functionality to Vixen live preview window
-    * [VIX-969] - Custom Prop Editor
-    * [VIX-1040] - Add mixing filter for chroma key
-    * [VIX-1041] - Add luma key mixing filter
-    * [VIX-1094] - Zoom control for preview
-    * [VIX-2244] - Ability to Drag and Drop Pictures or Video from a Windows folder onto the Timeline
-    * [VIX-2264] - Create Countdown timer Effect
-    * [VIX-2350] - Add check when Vixen loads to see if there are any Release or Build updates available
-
-** Improvement
-    * [VIX-1008] - LipSync Map Assignment Load
-    * [VIX-1920] - Add a mark at the beginning of selected effect(s)
-    * [VIX-1950] - More gradient options for the Wipe effect
-    * [VIX-2111] - Add the Information Web page links to the remaining effects that don't have it.
-    * [VIX-2129] - Add Rotation and Font size curves to the Text effect
-    * [VIX-2200] - Preview Zoom to 100%
-    * [VIX-2203] - Seperate Preset Libraries to own Docking forms
-    * [VIX-2227] - Enhance the profile zip wizard to omit the .lock file when exporting a profile.
-    * [VIX-2250] - Show locked profile in profile selector
-    * [VIX-2280] - Version Control grows out of control
-    * [VIX-2308] - Update major libraries to the latest versions.
-    * [VIX-2312] - Remove outdated controllers from the packaged product.
-    * [VIX-2319] - Update QMLibrary Compiler, Libraries and Project Files
-    * [VIX-2321] - Refine UI for Lip-Sync map setup
-    * [VIX-2322] - Lip-Sync map image vs draw
-    * [VIX-2326] - Create a process that will automatically update release notes for each development build from the JIRA tickets
-    * [VIX-2329] - Update CMU Standard Phoneme Dictionary to 0.7b
-    * [VIX-2346] - Add ignore intent if alone functionality to layer mixing filter interface
-    * [VIX-2349] - Add access keys to display setup context menus
-    * [VIX-2358] - Create an element creation helper for uneven patterned groups
-    * [VIX-2359] - Add the ability to specify the string and pixel prefix names to the Display Element templates
 
 
 
