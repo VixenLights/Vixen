@@ -25,14 +25,15 @@ namespace VixenModules.Effect.Text
 		private static Color EmptyColor = Color.FromArgb(0, 0, 0, 0);
 		private Font _font;
 		private Font _newfont;
-		private static Random _random = new Random();
 		private float _newFontSize;
 		private List<string> _text;
-		private readonly List<TextClass> _textClass = new List<TextClass>();
+		private List<TextClass> _textClass;
 		private IEnumerable<IMark> _marks = null;
 		private double _directionPosition;
 		private double _fade;
-		
+		private double _level;
+
+
 		public Text()
 		{
 			_data = new TextData();
@@ -626,6 +627,7 @@ namespace VixenModules.Effect.Text
 
 		protected override void SetupRender()
 		{
+			_textClass = new List<TextClass>();
 			_text = TextMode == TextMode.Normal || TextSource == TextSource.MarkCollection
 				? TextLines.Where(x => !String.IsNullOrEmpty(x)).ToList()
 				: SplitTextIntoCharacters(TextLines);
@@ -650,7 +652,7 @@ namespace VixenModules.Effect.Text
 			_font = null;
 			_newfont = null;
 			_text.Clear();
-			_textClass.Clear();
+			_textClass = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -659,13 +661,13 @@ namespace VixenModules.Effect.Text
 			{
 				InitialRender(frame, bitmap);
 				if (_text.Count == 0 && !UseBaseColor) return;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				// copy to frameBuffer
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < BufferHt; y++)
 					{
-						CalculatePixel(x, y, bitmap, level, frameBuffer);
+						CalculatePixel(x, y, bitmap, frameBuffer);
 					}
 				}
 			}
@@ -677,7 +679,7 @@ namespace VixenModules.Effect.Text
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
-				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
@@ -686,7 +688,7 @@ namespace VixenModules.Effect.Text
 					{
 						foreach (var elementLocation in elementLocations)
 						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, frameBuffer);
 						}
 					}
 				}
@@ -870,7 +872,7 @@ namespace VixenModules.Effect.Text
 			return (float)ScaleCurveToValue(FontScaleCurve.GetValue(intervalPos), 100, 1);
 		}
 
-		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, Bitmap bitmap, IPixelFrameBuffer frameBuffer)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -885,24 +887,7 @@ namespace VixenModules.Effect.Text
 
 			if (!EmptyColor.Equals(color))
 			{
-				var hsv = HSV.FromRGB(color);
-				switch (TextFade)
-				{
-					case TextFade.Out:
-						hsv.V = hsv.V * _fade;
-						break;
-					case TextFade.In:
-						hsv.V = hsv.V * _fade;
-						break;
-					case TextFade.InOut:
-						hsv.V = _fade;
-						break;
-					default:
-						hsv.V = hsv.V * level;
-						break;
-				}
-
-				frameBuffer.SetPixel(xCoord, yCoord, hsv);
+				frameBuffer.SetPixel(xCoord, yCoord, color);
 			}
 			else if (TargetPositioning == TargetPositioningType.Locations)
 			{
@@ -954,13 +939,11 @@ namespace VixenModules.Effect.Text
 			}
 		}
 
-
 		private void DrawTextWithGradient(IEnumerable<String> textLines, Graphics g, Point p, LinearGradientMode mode)
 		{
 			int i = 0;
 			foreach (var text in textLines)
 			{
-
 				var size = g.MeasureString(text, _newfont);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
@@ -974,6 +957,8 @@ namespace VixenModules.Effect.Text
 					brushPointX = offsetPoint.X;
 				}
 				ColorGradient cg = Colors[i % Colors.Count()];
+				if (_level < 1 || TextFade != TextFade.None) cg = GetNewGolorGradient(cg);
+
 				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated && TextSource == TextSource.None ? _maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
 				
@@ -991,9 +976,7 @@ namespace VixenModules.Effect.Text
 						i++;
 					}	
 				}
-				
 			}
-			
 		}
 
 		private void DrawTextAcrossGradient(IEnumerable<String> textLines, Graphics g, Point p, LinearGradientMode mode)
@@ -1006,6 +989,7 @@ namespace VixenModules.Effect.Text
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
 
 				ColorGradient cg = Colors[i % Colors.Count()];
+				if (_level < 1 || TextFade != TextFade.None) cg = GetNewGolorGradient(cg);
 				var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode) { InterpolationColors = cg.GetColorBlend() };
@@ -1031,7 +1015,19 @@ namespace VixenModules.Effect.Text
 		{
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, _newfont, brush, p);
-
+		}
+		
+		private ColorGradient GetNewGolorGradient(ColorGradient cg)
+		{
+			cg = new ColorGradient(cg);
+			foreach (var color in cg.Colors)
+			{
+				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
+				if (TextFade != TextFade.None) hsv.V *= _fade;
+				hsv.V *= _level;
+				color.Color = XYZ.FromRGB(hsv.ToRGB());
+			}
+			return cg;
 		}
 
 		// Text Class
