@@ -121,11 +121,6 @@
       <Name>Curves</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">
       <Project>{1c84da63-a5db-4086-88ae-b2b43fccad7b}</Project>
       <Name>EffectDescriptorAttributes</Name>

@@ -7,10 +7,8 @@ using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
-using Vixen.Marks;
 using Vixen.Module;
 using Vixen.Sys.Attribute;
-using Vixen.TypeConverters;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -755,18 +753,7 @@ namespace VixenModules.Effect.CountDown
 			foreach (var color in cg.Colors)
 			{
 				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
-				switch (CountDownFade)
-				{
-					case CountDownFade.Out:
-						hsv.V = hsv.V * _fade;
-						break;
-					case CountDownFade.In:
-						hsv.V = hsv.V * _fade;
-						break;
-					case CountDownFade.InOut:
-						hsv.V = _fade;
-						break;
-				}
+				if (CountDownFade != CountDownFade.None) hsv.V *= _fade;
 				hsv.V *= _level;
 				color.Color = XYZ.FromRGB(hsv.ToRGB());
 			}
