@@ -310,7 +310,7 @@ namespace VixenModules.Effect.Spirograph
 			double state = frame * CalculateSpeed(intervalPosFactor);
 			float R, r, d, d_orig, t;
 			double hyp, x2, y2;
-			HSV hsv = new HSV(); //   we will define an hsv color model.
+			Color col; //   we will define an hsv color model.
 			int colorcnt = Colors.Count;
 
 			xc = (int) (BufferWi/2); // 20x100 flex strips with 2 fols per strip = 40x50
@@ -349,9 +349,6 @@ namespace VixenModules.Effect.Spirograph
 							break;
 							case ColorType.Rainbow:
 								ColorIdx = 1;
-								hsv.H = (float) (rand()%1000)/1000.0f;
-								hsv.S = 1.0f;
-								hsv.V = 1.0f;
 							break;
 							default:
 								ColorIdx = (int)(hyp / d_mod);
@@ -362,10 +359,20 @@ namespace VixenModules.Effect.Spirograph
 
 					if (Type != ColorType.Rainbow)
 					{
-						hsv = HSV.FromRGB(Colors[ColorIdx].GetColorAt((intervalPosFactor) / 100));
-						hsv.V = hsv.V*level;
+						col = Colors[ColorIdx].GetColorAt((intervalPosFactor) / 100);
+						if (level < 1)
+						{
+							HSV hsv = HSV.FromRGB(col);
+							hsv.V = hsv.V*level;
+							col = hsv.ToRGB();
+						}
 					}
-					frameBuffer.SetPixel(x, y, hsv);
+					else
+					{
+						HSV hsv = new HSV((float)(rand() % 1000) / 1000.0f, 1.0f, 1.0f * level);
+						col = hsv.ToRGB();
+					}
+					frameBuffer.SetPixel(x, y, col);
 				}
 			}
 			catch {
