@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -310,9 +309,10 @@ namespace VixenModules.Effect.Tree
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
 			double pos = GetEffectTimeIntervalPosition(frame);
-			double level = LevelCurve.GetValue(pos * 100) / 100;
-			double blendLevel = BlendCurve.GetValue(pos * 100) / 100;
-			double backgroundLevelCurve = BackgroundLevelCurve.GetValue(pos * 100) / 100;
+			double intervalPosFactor = pos * 100;
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			double blendLevel = BlendCurve.GetValue(intervalPosFactor) / 100;
+			double backgroundLevelCurve = BackgroundLevelCurve.GetValue(intervalPosFactor) / 100;
 			HSV backgroundhsv = HSV.FromRGB(BackgroundColor.GetColorAt(pos));
 			int x, y, mod, b;
 			float V;
@@ -358,7 +358,7 @@ namespace VixenModules.Effect.Tree
 
 				for (x = 0; x < BufferWi; x++)
 				{
-					HSV hsv = backgroundhsv;
+					Color col = backgroundhsv.ToRGB();
 					M = (x % 6);
 					// m=0, 1sr strand
 					// m=1, 2nd strand
@@ -386,60 +386,66 @@ namespace VixenModules.Effect.Tree
 							case TreeBranchDirection.UpLeft:
 							case TreeBranchDirection.DownLeft:
 								if (Branch <= b && x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+									col = Colors[_colorIdx].GetColorAt(pos);
 							break;
 
 							case TreeBranchDirection.Up:
 							case TreeBranchDirection.Down:
 								if (Branch <= b && 
 								(((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+									col = Colors[_colorIdx].GetColorAt(pos);
 							break;
 
 							case TreeBranchDirection.Left:
 								if ((BufferWi - x) <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+									col = Colors[_colorIdx].GetColorAt(pos);
 							break;
 
 							case TreeBranchDirection.Alternate:
 								if (Branch%2 != 0)
 								{
 									if ((BufferWi - x) <= _treeWidth &&  (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+										col = Colors[_colorIdx].GetColorAt(pos);
 								}
 								else
 								{
 									if (x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-										hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+										col = Colors[_colorIdx].GetColorAt(pos);
 								}
 							break;
 
 							case TreeBranchDirection.Right:
 							if (x <= _treeWidth && (((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3)))))))
-								hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+								col = Colors[_colorIdx].GetColorAt(pos);
 							break;
 
 							case TreeBranchDirection.None:
 								if (((((_row == 3 && (M == 0 || M == 5)) || ((_row == 2 && (M == 1 || M == 4)) || ((_row == 1 && (M == 2 || M == 3))))))))
-									hsv = HSV.FromRGB(Colors[_colorIdx].GetColorAt(pos));
+									col = Colors[_colorIdx].GetColorAt(pos);
 							break;
 					}
 
-					hsv.V = hsv.V*level; //adjusts overall intensity
+					if (level < 1)
+					{
+						HSV hsv = HSV.FromRGB(col);
+						hsv.V = hsv.V*level; //adjusts overall intensity
+						col = hsv.ToRGB();
+					}
+					
 					switch (BranchDirection)
 					{
 							case TreeBranchDirection.Down:
 							case TreeBranchDirection.DownRight:
-								frameBuffer.SetPixel(x, BufferHt - y, hsv);
+								frameBuffer.SetPixel(x, BufferHt - y, col);
 							break;
 							case TreeBranchDirection.UpLeft:
-								frameBuffer.SetPixel(BufferWi - x, y, hsv);
+								frameBuffer.SetPixel(BufferWi - x, y, col);
 							break;
 							case TreeBranchDirection.DownLeft:
-								frameBuffer.SetPixel(BufferWi - x, BufferHt - y, hsv);
+								frameBuffer.SetPixel(BufferWi - x, BufferHt - y, col);
 							break;
 							default:
-								frameBuffer.SetPixel(x, y, hsv);
+								frameBuffer.SetPixel(x, y, col);
 							break;
 					}
 				}
