@@ -1098,6 +1098,8 @@ namespace VixenModules.Effect.Text
 			for (var i = 0; i < _textClass.Count; i++)
 			{
 				TextClass text = _textClass[i];
+				if (text.Text.Count == 0) text.Text.Add(" ");
+				else if (text.Text[0] == "") text.Text[0] = " ";
 				switch (TextFade)
 				{
 					case TextFade.In:
@@ -1185,5 +1187,75 @@ namespace VixenModules.Effect.Text
 				MarkCollectionId = String.Empty;
 			}
 		}
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		{
+			LinearGradientMode mode = LinearGradientMode.Horizontal;
+			switch (GradientMode)
+			{
+				case GradientMode.VerticalAcrossElement:
+				case GradientMode.VerticalAcrossText:
+					mode = LinearGradientMode.Vertical;
+					break;
+				case GradientMode.DiagonalAcrossElement:
+				case GradientMode.DiagonalAcrossText:
+					mode = LinearGradientMode.ForwardDiagonal;
+					break;
+				case GradientMode.BackwardDiagonalAcrossElement:
+				case GradientMode.BackwardDiagonalAcrossText:
+					mode = LinearGradientMode.BackwardDiagonal;
+					break;
+			}
+			switch (TextSource)
+			{
+				case TextSource.MarkCollectionLabels:
+					if (_marks != null && _marks.Any())
+					{
+						foreach (var mark in _marks)
+						{
+							if (mark.Text == "") continue;
+							var startX = (int) ((mark.StartTime.Ticks - StartTime.Ticks) / (double) TimeSpan.Ticks * clipRectangle.Width);
+							DrawText(g, clipRectangle, mark.Text, mode, startX);
+						}
+					}
+					break;
+				case TextSource.MarkCollection:
+					if (_marks != null && TextLines[0] != "" && _marks.Any())
+					{
+						string[] text = TextLines[0].Split();
+						if (TextLines[0] == "") return;
+						int i = 0;
+						foreach (var mark in _marks)
+						{
+							var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
+							DrawText(g, clipRectangle, text[i], mode, startX);
+							i++;
+							if (RepeatText)
+							{
+								if (i % text.Length == 0) i = 0;
+							}
+							else if (text.Length <= i) return;
+						}
+					}
+					break;
+				default:
+					if (TextLines[0] == "") return;
+					DrawText(g, clipRectangle, TextLines[0], mode, 2);
+					break;
+			}
+		}
+
+		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
+		{
+			Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48);
+			SizeF AdjustedSizeNew = g.MeasureString(displayedText, AdjustedFont);
+			var brush = new LinearGradientBrush(
+					new Rectangle(0, 0, (int)AdjustedSizeNew.Width, (int)AdjustedSizeNew.Height),
+					Color.Black,
+					Color.Black, mode)
+				{ InterpolationColors = Colors[0].GetColorBlend() };
+			g.DrawString(displayedText, AdjustedFont, brush, clipRectangle.X + startX, 2);
+		}
+
+		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 	}
 }

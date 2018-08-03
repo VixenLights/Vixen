@@ -851,10 +851,10 @@ namespace VixenModules.Effect.LipSync
 					{
 						var textStart = clipRectangle.X + scaledImage.Width;
 						var textWidth = clipRectangle.Width - scaledImage.Width;
-						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf", 18);
+						Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, new Rectangle(textStart, clipRectangle.Y, textWidth, clipRectangle.Height), "Vixen.Fonts.DigitalDream.ttf", 48);
 						using (var stringBrush = new SolidBrush(Color.Yellow))
 						{
-							g.DrawString(displayValue, adjustedFont, stringBrush, 4 + textStart, 4);
+							g.DrawString(displayValue, adjustedFont, stringBrush, 2 + textStart, 2);
 						}
 					}
 				}

@@ -50,59 +50,31 @@ namespace Vixen.Common
 			}
 			return new Font(private_fonts.Families[0], 22);
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="GraphicRef"></param>
-		/// <param name="GraphicString"></param>
+		/// <param name="graphicRef"></param>
+		/// <param name="graphicString"></param>
 		/// <param name="clipRectangle"></param>
 		/// <param name="fontResourceName">Either Font Family Name or the full path to the Font Resourse (RESX)</param>
-		/// <param name="MaxFontSize"></param>
-		/// <param name="MinFontSize"></param>
-		/// <param name="SmallestOnFail"></param>
+		/// <param name="maxFontSize"></param>
+		/// <param name="minFontSize"></param>
 		/// <returns></returns>
-		static public Font GetAdjustedFont(System.Drawing.Graphics GraphicRef, string GraphicString, System.Drawing.Rectangle clipRectangle, string fontResourceName, int MaxFontSize=100, int MinFontSize=10, bool SmallestOnFail=true)
+		public static Font GetAdjustedFont(System.Drawing.Graphics graphicRef, string graphicString,
+			System.Drawing.Rectangle clipRectangle, string fontResourceName, int maxFontSize = 100, int minFontSize = 10)
 		{
 			bool privateFont = fontResourceName.ToLower().EndsWith("ttf");
-			Font OriginalFont=null;
-			try {
+			Font  originalFont = privateFont ? new Font(GetFontFromResx(fontResourceName).Name, 100) : new Font(fontResourceName, 100);
+			SizeF adjustedSizeNew = graphicRef.MeasureString(graphicString, originalFont);
 
+			double minRatio = Math.Min(clipRectangle.Height / adjustedSizeNew.Height, (clipRectangle.Width + 15) / adjustedSizeNew.Width);
+			float newFontSize = (float)(originalFont.Size * minRatio) - 2;
 
-				if (privateFont)
-					OriginalFont = GetFontFromResx(fontResourceName);
-				else
-					OriginalFont= new Font(fontResourceName, 100);
+			if (newFontSize < minFontSize) newFontSize = minFontSize;
+			else if (newFontSize > maxFontSize) newFontSize = maxFontSize;
 
-				// We utilize MeasureString which we get via a control instance           
-				for (int AdjustedSize = MaxFontSize; AdjustedSize >= MinFontSize; AdjustedSize--) {
-					Font TestFont;
-
-					if (privateFont)
-						TestFont = new Font(private_fonts.Families[0], AdjustedSize);
-					else
-						TestFont= new Font(fontResourceName, AdjustedSize);
-
-					// Test the string with the new size
-					SizeF AdjustedSizeNew = GraphicRef.MeasureString(GraphicString, TestFont);
-
-					if (clipRectangle.Width-4 > Convert.ToInt32(AdjustedSizeNew.Width) && clipRectangle.Height-4> Convert.ToInt32(AdjustedSizeNew.Height)) {
-						// Good font, return it
-						return TestFont;
-					} else
-						TestFont.Dispose();
-				}
-
-				// If you get here there was no fontsize that worked
-				// return MinimumSize or Original?
-				if (SmallestOnFail) {
-					return new Font(OriginalFont.Name, MinFontSize, OriginalFont.Style);
-				} else {
-					return OriginalFont;
-				}
-			} finally {
-				if (OriginalFont != null)
-					OriginalFont.Dispose();
-			}
+			return new Font(originalFont.Name, newFontSize);
 		}
 	}
 }

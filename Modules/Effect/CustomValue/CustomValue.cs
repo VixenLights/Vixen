@@ -193,14 +193,14 @@ namespace VixenModules.Effect.CustomValue
 
 				string displayValue = string.Format("Custom Value - {0}", value);
 
-				Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, clipRectangle, "Segoe UI", 18);
+				Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayValue, clipRectangle, "Segoe UI", 48);
 				using (var stringBrush = new SolidBrush(Color.White))
 				{
 					using (var backgroundBrush = new SolidBrush(Color.DarkGray))
 					{
 						g.FillRectangle(backgroundBrush, clipRectangle);
 					}
-					g.DrawString(displayValue, adjustedFont, stringBrush, clipRectangle.X + 4, 4);
+					g.DrawString(displayValue, adjustedFont, stringBrush, clipRectangle.X + 2, 2);
 				}
 
 			}

@@ -215,14 +215,14 @@ namespace Vixen.Module.Effect
 			string DisplayValue = string.Format("{0}", this.EffectName);
 
 
-			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial", 18))
+			using (Font AdjustedFont = Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Arial", 48))
 			{
 				using (var StringBrush = new SolidBrush(Color.Black))
 				{
 					//g.Clear(Color.White);
 					g.DrawRectangle(Pens.Black, clipRectangle.X, clipRectangle.Y, clipRectangle.Width - 1, clipRectangle.Height - 1);
 
-					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 4, 4);
+					g.DrawString(DisplayValue, AdjustedFont, StringBrush, 2, 2);
 					//base.GenerateVisualRepresentation(g, clipRectangle);
 				}
 			}
