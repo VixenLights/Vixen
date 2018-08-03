@@ -70,7 +70,10 @@ namespace VixenModules.Sequence.Timed
 					IsBold = markCollection.Bold,
 					IsSolidLine = markCollection.SolidLine
 				};
-				markCollection.Marks.ForEach(x => lmc.AddMark(new Mark(x)));  
+
+				//add them as a big block in case there are a lot of them to avoid numerous sorts.
+				var marks = markCollection.Marks.Select(x => new Mark(x));
+				lmc.AddMarks(marks);
 				LabeledMarkCollections.Add(lmc);
 			}
 

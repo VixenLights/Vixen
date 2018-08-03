@@ -538,7 +538,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					{
 						foreach (var elementModel in data)
 						{
-							if(parent.Children.Contains(elementModel)) continue;
+							if(parent.ElementModel.Equals(elementModel) || parent.Children.Contains(elementModel)) continue;
 							//if(elementModel.Parents.Contains(parent.ElementModel.Id)) continue; //Don't add another copy 
 							PropModelServices.Instance().FindOrCreateElementModelTree(elementModel, parent.ElementModel);
 						}
