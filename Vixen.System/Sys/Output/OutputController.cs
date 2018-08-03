@@ -104,21 +104,10 @@ namespace Vixen.Sys.Output
 			_outputMediator.LockOutputs();
 			try
 			{
-				if (OutputCount > 5000)
+				for (int x = 0; x < OutputCount; x++)
 				{
-					Parallel.For(0, OutputCount, _parallelOptions, x =>
-					{
-						var o = Outputs[x].State;
-						Outputs[x].Command = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
-					});
-				}
-				else
-				{
-					for (int x = 0; x < OutputCount; x++)
-					{
-						var o = Outputs[x].State;
-						Outputs[x].Command = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
-					}
+					var o = Outputs[x].State;
+					Outputs[x].Command = o?.Value != null ? _dataPolicy.GenerateCommand(o) : null;
 				}
 			}
 			finally
