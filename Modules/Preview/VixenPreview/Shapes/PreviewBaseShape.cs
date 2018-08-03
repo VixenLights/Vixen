@@ -219,7 +219,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			get { return _pixelSize; }
 			set
 			{
-				_pixelSize = value;
+				if (value > 0)
+				{
+					_pixelSize = value;
+				}
+				else if(_pixelSize <= 0)
+				{
+					//set a reasonable default.
+					_pixelSize = 3;
+				}
 				ResizePixels();
 			}
 		}
