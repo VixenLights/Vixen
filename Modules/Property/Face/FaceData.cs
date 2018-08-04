@@ -10,14 +10,14 @@ namespace VixenModules.Property.Face
 	{
 		public FaceData()
 		{
-			PhonemeList = new Dictionary<string, Boolean>();
+			PhonemeList = new Dictionary<string, Boolean>(StringComparer.OrdinalIgnoreCase);
 			FaceComponents = new Dictionary<FaceComponent, bool>();
 			DefaultColor = System.Drawing.Color.White;
 		}
 
 		public override IModuleDataModel Clone() {
 			var data = new FaceData();
-			data.PhonemeList = new Dictionary<string, Boolean>(PhonemeList);
+			data.PhonemeList = new Dictionary<string, Boolean>(PhonemeList, StringComparer.OrdinalIgnoreCase);
 			data.FaceComponents = new Dictionary<FaceComponent, bool>(FaceComponents);
 			data.DefaultColor = DefaultColor;
 			return data;
@@ -31,5 +31,14 @@ namespace VixenModules.Property.Face
 
 		[DataMember]
 		public System.Drawing.Color DefaultColor { get; set; }
+
+		[OnDeserialized]
+		void OnDeserialized(StreamingContext c)
+		{
+			if (!PhonemeList.Comparer.Equals(StringComparer.OrdinalIgnoreCase))
+			{
+				PhonemeList = new Dictionary<string, Boolean>(PhonemeList, StringComparer.OrdinalIgnoreCase);
+			}
+		}
 	}
 }

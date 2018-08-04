@@ -90,6 +90,11 @@ namespace VixenModules.App.LipSyncApp
 					FaceComponents.Add(FaceComponent.Mouth, true);
 				}
 			}
+
+			if (!PhonemeList.Comparer.Equals(StringComparer.OrdinalIgnoreCase))
+			{
+				PhonemeList = new Dictionary<string, Boolean>(PhonemeList, StringComparer.OrdinalIgnoreCase);
+			}
 		}
 
 	}
