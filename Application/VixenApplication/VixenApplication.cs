@@ -390,6 +390,7 @@ namespace VixenApplication
 					labelDebugVersion.Text = $@"Build #{version.Build}" ;
 					_currentBuildVersion = version.Build;
 					labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Yellow;
+					Logging.Info($"{labelVersion.Text} - {labelDebugVersion.Text}");
 					CheckForDevBuildUpdates();
 				}
 				else
@@ -398,8 +399,11 @@ namespace VixenApplication
 					labelDebugVersion.Text = $@"Build #";
 					labelDebugVersion.ForeColor = labelVersion.ForeColor = Color.Red;
 					toolStripStatusUpdates.Text = String.Empty;
+					Logging.Info($"{labelVersion.Text}");
 					_testBuild = true;
 				}
+
+				
 			}
 			else
 			{
@@ -411,7 +415,7 @@ namespace VixenApplication
 				labelVersion.Text = $@"Release {_currentReleaseVersion}";
 				labelDebugVersion.Text = $@"Build #{version.Build}";
 				_currentBuildVersion = version.Build;
-				
+				Logging.Info($"{labelVersion.Text} - {labelDebugVersion.Text}");
 
 				CheckForReleaseUpdates();
 			}
@@ -429,6 +433,7 @@ namespace VixenApplication
 			if (!string.IsNullOrEmpty(version))
 			{
 				toolStripStatusUpdates.Text = $@" Release version {version} available.";
+				Logging.Info(toolStripStatusUpdates.Text);
 			}
 		}
 
@@ -438,6 +443,7 @@ namespace VixenApplication
 			if (!string.IsNullOrEmpty(version))
 			{
 				toolStripStatusUpdates.Text = $@" Development build {version} available.";
+				Logging.Info(toolStripStatusUpdates.Text);
 			}
 		}
 
@@ -453,16 +459,23 @@ namespace VixenApplication
 						//Get Latest Build
 						string getLatestDevelopementBuild =
 							await wc.GetStringAsync(
-								"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>500 ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
+								$"http://bugs.vixenlights.com/rest/api/latest/search?jql=Project='Vixen 3' AND fixVersion=DevBuild AND 'Fix Build Number'>{_currentBuildVersion} ORDER BY 'Fix Build Number' DESC&startAt=0&maxResults=1");
 						//This will parse the latest development build number
 						dynamic developementBuild = JObject.Parse(getLatestDevelopementBuild);
-						int latestDevelopementBuild = developementBuild.issues[0].fields.customfield_10112;
-						//This does not return an array as the results are contained in a wrapper object for paging info
-						//There results are in an array called issues, with in that is a set of fields that contain our custom field 
-						if (latestDevelopementBuild > _currentBuildVersion)
+						if (developementBuild.issues.Count > 0)
 						{
-							return latestDevelopementBuild.ToString();
+							if (developementBuild.issues[0].fields.customfield_10112 != null)
+							{
+								int latestDevelopementBuild = developementBuild.issues[0].fields.customfield_10112;
+								//This does not return an array as the results are contained in a wrapper object for paging info
+								//There results are in an array called issues, with in that is a set of fields that contain our custom field 
+								if (latestDevelopementBuild > _currentBuildVersion)
+								{
+									return latestDevelopementBuild.ToString();
+								}
+							}
 						}
+						
 					}
 				}
 			}
@@ -609,7 +622,7 @@ namespace VixenApplication
 					throw new NotImplementedException("SelectProfile.ShowDialog() returned " + result.ToString());
 				}
 			}
-
+			Logging.Info($"Profile root : {_rootDataDirectory}");
 			SetLogFilePaths();
 		}
 
