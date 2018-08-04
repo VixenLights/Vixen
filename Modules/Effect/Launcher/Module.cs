@@ -70,12 +70,12 @@ namespace Launcher
 
 				string DisplayValue = string.Format("Launcher - {0}", Description);
 
-				Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Vixen.Fonts.DigitalDream.ttf");
+				Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle, "Vixen.Fonts.DigitalDream.ttf", 48);
 				using (var StringBrush = new SolidBrush(Color.White)) {
 					using (var backgroundBrush = new SolidBrush(Color.DarkBlue)) {
 						g.FillRectangle(backgroundBrush, clipRectangle);
 					}
-					g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 4, 4);
+					g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 2, 2);
 					//base.GenerateVisualRepresentation(g, clipRectangle);
 				}
 

@@ -85,12 +85,12 @@ namespace VixenModules.Effect.RDS
 
 			string DisplayValue = string.Format("RDS - {0}", Title);
 
-			Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle,"Vixen.Fonts.DigitalDream.ttf", 18);
+			Font AdjustedFont =  Vixen.Common.Graphics.GetAdjustedFont(g, DisplayValue, clipRectangle,"Vixen.Fonts.DigitalDream.ttf", 48);
 			using (var StringBrush = new SolidBrush(Color.White)) {
 				using (var backgroundBrush = new SolidBrush(Color.DarkGray)) {
 					g.FillRectangle(backgroundBrush, clipRectangle);
 				}
-				g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 4, 4);
+				g.DrawString(DisplayValue, AdjustedFont, StringBrush, clipRectangle.X + 2, 2);
 				//base.GenerateVisualRepresentation(g, clipRectangle);
 			}
 		
