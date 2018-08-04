@@ -12,7 +12,10 @@ namespace VixenModules.App.CustomPropEditor.Services
 		{
 			TextDialog dialog = new TextDialog(question, title, defaultText, true);
 
-			CenterDialog(dialog);
+			if (parent == null)
+			{
+				CenterDialog(dialog);
+			}
 
 			var input = string.Empty;
 

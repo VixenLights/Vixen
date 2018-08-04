@@ -1888,7 +1888,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			var returnValue = string.Empty;
 			MessageBoxService mbs = new MessageBoxService();
-			var response = mbs.GetUserInput($"Enter token replacement value for {token}.", "Prop naming", "1");
+			var response = mbs.GetUserInput($"Enter token replacement value for {token}.", "Prop naming", "1", ParentForm);
 			if (response.Result == MessageResult.OK)
 			{
 				returnValue = response.Response;
