@@ -19,7 +19,7 @@ namespace VixenModules.Effect.SnowStorm
 		private SnowStormData _data;
 		private static Random _random = new Random();
 		private double _gradientPosition = 0;
-		private readonly List<SnowstormClass> _snowstormItems = new List<SnowstormClass>();
+		private List<SnowstormClass> _snowstormItems;
 		private int _lastSnowstormCount = 0;
 
 		public SnowStorm()
@@ -234,12 +234,12 @@ namespace VixenModules.Effect.SnowStorm
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
+			_snowstormItems = new List<SnowstormClass>();
 		}
 
 		protected override void CleanUpRender()
 		{
-			//Nothing to clean up
+			_snowstormItems = null;
 		}
 
 		private class SnowstormClass
@@ -338,6 +338,7 @@ namespace VixenModules.Effect.SnowStorm
 			var adjustSpeed = CalculateSpeed(intervalPosFactor);
 			int count = Convert.ToInt32(BufferWi * BufferHt * CalculateCount(intervalPosFactor) / 2000) + 1;
 			int tailLength = (int)Math.Round(BufferWi * BufferHt * CalculateLength(intervalPosFactor) / 2000 + 2);
+			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			Point xy = new Point();
 			int r;
 			if (frame == 0)
@@ -420,7 +421,7 @@ namespace VixenModules.Effect.SnowStorm
 					}
 					var hsv = it.Hsv;
 					hsv.V = (float)(1.0 - (double)(sz - pt + it.SsDecay) / tailLength);
-					hsv.V = hsv.V * LevelCurve.GetValue(intervalPosFactor) / 100;
+					hsv.V *= level;
 					if (it.Points[pt].X >= BufferWi - 1 || it.Points[pt].Y >= BufferHt - 1 || it.Points[pt].X <= 1 || it.Points[pt].Y <= 1)
 					{
 						it.Expired = true; //flags Snowstorms that have reached the end of the grid as expiried.

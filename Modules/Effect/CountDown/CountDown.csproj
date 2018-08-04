@@ -102,6 +102,10 @@
     <EmbeddedResource Include="Images\Effect48.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
+      <Project>{A54FB6A1-A9C3-488C-B961-41B8DBC81B36}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
@@ -115,11 +119,6 @@
     <ProjectReference Include="..\..\App\Curves\Curves.csproj">
       <Project>{f0ba7127-61b4-453a-802b-abcb5a0d3d54}</Project>
       <Name>Curves</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\App\Marks\Marks.csproj">
-      <Project>{27d283df-52ad-4857-8359-de134db94728}</Project>
-      <Name>Marks</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\EffectEditor\EffectDescriptorAttributes\EffectDescriptorAttributes.csproj">

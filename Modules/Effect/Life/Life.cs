@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
@@ -19,7 +18,7 @@ namespace VixenModules.Effect.Life
 		private LifeData _data;
 		private long _lastLifeState = 0;
 		private Random random = new Random();
-		private List<List<Color>> _tempbuf = new List<List<Color>>();
+		private List<List<Color>> _tempbuf;
 
 		public Life()
 		{
@@ -184,10 +183,7 @@ namespace VixenModules.Effect.Life
 
 		protected override void SetupRender()
 		{
-			if (_tempbuf != null)
-			{
-				_tempbuf.Clear();
-			}
+			_tempbuf = new List<List<Color>>();
 
 			for (int width = 0; width < BufferWi; width++)
 			{
@@ -202,7 +198,7 @@ namespace VixenModules.Effect.Life
 
 		protected override void CleanUpRender()
 		{
-			//Nothing to clean up
+			_tempbuf = null;
 		}
 
 		private int Life_CountNeighbors(int x0, int y0)
@@ -241,16 +237,19 @@ namespace VixenModules.Effect.Life
 			int count = BufferWi * BufferHt * CellsToStart / 200 + 1;
 			if (frame == 0)
 			{
-				ClearTempBuf();
+				//ClearTempBuf();
 				for (i = 0; i < count; i++)
 				{
 					x = rand() % BufferWi;
 					y = rand() % BufferHt;
 					color = GetMultiColorBlend(rand01(), frame);
-					HSV hsv = HSV.FromRGB(color);
-					hsv.V = hsv.V * level;
-					color = hsv.ToRGB();
-					SetTempPixel(x, y, color);
+					if (level < 1)
+					{
+						HSV hsv = HSV.FromRGB(color);
+						hsv.V = hsv.V * level;
+						color = hsv.ToRGB();
+					}
+					_tempbuf[x][y] = color;
 				}
 			}
 			long tempState = (long)(state % 400) / 20;
@@ -282,16 +281,12 @@ namespace VixenModules.Effect.Life
                         */
 							if (isLive && cnt >= 2 && cnt <= 3)
 							{
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && cnt == 3)
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
 						case 1:
@@ -299,64 +294,48 @@ namespace VixenModules.Effect.Life
 							if (isLive && (cnt == 2 || cnt == 3 || cnt == 6))
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && (cnt == 3 || cnt == 5))
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
 						case 2:
 							// B357/S1358
 							if (isLive && (cnt == 1 || cnt == 3 || cnt == 5 || cnt == 8))
 							{
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && (cnt == 3 || cnt == 5 || cnt == 7))
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
 						case 3:
 							// B378/S235678
 							if (isLive && (cnt == 2 || cnt == 3 || cnt >= 5))
 							{
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && (cnt == 3 || cnt == 7 || cnt == 8))
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
 						case 4:
 							// B25678/S5678
 							if (isLive && (cnt >= 5))
 							{
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && (cnt == 2 || cnt >= 5))
 							{
 								color = GetMultiColorBlend(rand01(), frame);
-								HSV hsv = HSV.FromRGB(color);
-								hsv.V = hsv.V * level;
-								frameBuffer.SetPixel(x, y, hsv);
+								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
 					}
@@ -364,6 +343,17 @@ namespace VixenModules.Effect.Life
 			}
 			// copy new life state to tempbuf
 			CopyPixelsToTempBuf(frameBuffer);
+		}
+
+		private void SetFramePixel(IPixelFrameBuffer frameBuffer, Color color, double level, int x, int y)
+		{
+			if (level < 1)
+			{
+				HSV hsv = HSV.FromRGB(color);
+				hsv.V = hsv.V * level;
+				color = hsv.ToRGB();
+			}
+			frameBuffer.SetPixel(x, y, color);
 		}
 
 		private double CalculateSpeed(double intervalPos)
@@ -377,10 +367,7 @@ namespace VixenModules.Effect.Life
 		public Color GetMultiColorBlend(double n, int frame)
 		{
 			int colorcnt = Colors.Count();
-			if (colorcnt <= 1)
-			{
-				return Colors[0].GetColorAt(GetEffectTimeIntervalPosition(frame));
-			}
+			if (colorcnt <= 1) return Colors[0].GetColorAt(GetEffectTimeIntervalPosition(frame));
 			if (n >= 1.0) n = 0.99999;
 			if (n < 0.0) n = 0.0;
 			int coloridx1 = (int)Math.Floor(n * colorcnt);
@@ -424,31 +411,11 @@ namespace VixenModules.Effect.Life
 			return Color.Transparent;
 		}
 
-		// 0,0 is lower left
-		private void SetTempPixel(int x, int y, Color color)
-		{
-			if (x >= 0 && x < BufferWi && y >= 0 && y < BufferHt)
-			{
-				_tempbuf[x][y] = color;
-			}
-		}
-
 		private void CopyTempBufToPixels(IPixelFrameBuffer frameBuffer)
 		{
 			for (int x = 0; x < BufferWi; x++) {
 				for (int y = 0; y < BufferHt; y++) {
 					frameBuffer.SetPixel(x, y, _tempbuf[x][y]);
-				}
-			}
-		}
-
-		private void ClearTempBuf()
-		{
-			for (int x = 0; x < BufferWi; x++)
-			{
-				for (int y = 0; y < BufferHt; y++)
-				{
-					_tempbuf[x][y] = Color.Transparent;
 				}
 			}
 		}

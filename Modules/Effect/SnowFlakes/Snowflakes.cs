@@ -18,7 +18,7 @@ namespace VixenModules.Effect.Snowflakes
 	{
 		private SnowflakesData _data;
 
-		private readonly List<SnowFlakeClass> _snowFlakes = new List<SnowFlakeClass>();
+		private List<SnowFlakeClass> _snowFlakes;
 		private static Random _random = new Random();
 		private int _increaseFlakeCount;
 		private int _snowfalakeCountAdjust;
@@ -435,11 +435,12 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			_increaseFlakeCount = 0;
 			_snowfalakeCountAdjust = 0;
+			_snowFlakes = new List<SnowFlakeClass>();
 		}
 
 		protected override void CleanUpRender()
 		{
-			_snowFlakes.Clear();
+			_snowFlakes = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -560,14 +561,19 @@ namespace VixenModules.Effect.Snowflakes
 			if (SnowBuildUp)
 			{
 				//Renders the Snow on the ground based off the cuurrent height.
-				HSV hsv = HSV.FromRGB(OutSideColor[0].GetColorAt((intervalPosFactor) / 100));
-				hsv.V *= level;
+				Color col = OutSideColor[0].GetColorAt((intervalPosFactor) / 100);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V *= level;
+					col = hsv.ToRGB();
+				}
 				for (int x = 0; x < BufferWi; x++)
 				{
 					for (int y = 0; y < initialBuildUp; y++)
 					{
 						//The ground color will be use the first outside color of the snowflakes.
-						frameBuffer.SetPixel(x, y, hsv);
+						frameBuffer.SetPixel(x, y, col);
 					}
 				}
 			}
@@ -675,7 +681,9 @@ namespace VixenModules.Effect.Snowflakes
 					HSV hsvInner = snowFlakes.OuterHsv;
 					HSV hsvOuter = snowFlakes.InnerHsv;
 					hsvInner.V *= snowFlakes.HsvBrightness * level;
+					Color innerColor = hsvInner.ToRGB();
 					hsvOuter.V *= snowFlakes.HsvBrightness * level;
+					Color outerColor = hsvOuter.ToRGB();
 
 					if (initialBuildUp < BufferHt && colorY >= initialBuildUp - snowflakeOverShoot)
 					{
@@ -686,7 +694,7 @@ namespace VixenModules.Effect.Snowflakes
 							{
 								for (int x = -y - snowflakeWidth; x <= y + snowflakeWidth; x++)
 								{
-									frameBuffer.SetPixel(colorX + x, colorY - y, hsvInner);
+									frameBuffer.SetPixel(colorX + x, colorY - y, innerColor);
 								}
 							}
 						}
@@ -697,88 +705,88 @@ namespace VixenModules.Effect.Snowflakes
 							{
 								case SnowflakeType.Single:
 									// single node
-									frameBuffer.SetPixel(colorX, colorY, hsvInner);
+									frameBuffer.SetPixel(colorX, colorY, innerColor);
 									break;
 								case SnowflakeType.Five:
 									// 5 nodes
-									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
-									frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
-									frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
-									frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
-									frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX - 1, colorY, innerColor);
+									frameBuffer.SetPixel(colorX + 1, colorY, innerColor);
+									frameBuffer.SetPixel(colorX, colorY - 1, innerColor);
+									frameBuffer.SetPixel(colorX, colorY + 1, innerColor);
 									break;
 								case SnowflakeType.Three:
 									// 3 nodes
-									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
 									if (rand()%100 > 50)
 									{
-										frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
-										frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
+										frameBuffer.SetPixel(colorX - 1, colorY, innerColor);
+										frameBuffer.SetPixel(colorX + 1, colorY, innerColor);
 									}
 									else
 									{
-										frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
-										frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+										frameBuffer.SetPixel(colorX, colorY - 1, innerColor);
+										frameBuffer.SetPixel(colorX, colorY + 1, innerColor);
 									}
 									break;
 								case SnowflakeType.Nine:
 									// 9 nodes
-									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
 									int i;
 									for (i = 1; i <= 2; i++)
 									{
-										frameBuffer.SetPixel(colorX - i, colorY, hsvInner);
-										frameBuffer.SetPixel(colorX + i, colorY, hsvInner);
-										frameBuffer.SetPixel(colorX, colorY - i, hsvInner);
-										frameBuffer.SetPixel(colorX, colorY + i, hsvInner);
+										frameBuffer.SetPixel(colorX - i, colorY, innerColor);
+										frameBuffer.SetPixel(colorX + i, colorY, innerColor);
+										frameBuffer.SetPixel(colorX, colorY - i, innerColor);
+										frameBuffer.SetPixel(colorX, colorY + i, innerColor);
 									}
 									break;
 								case SnowflakeType.Thirteen:
 									// 13 nodes
-									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
-									frameBuffer.SetPixel(colorX - 1, colorY, hsvInner);
-									frameBuffer.SetPixel(colorX + 1, colorY, hsvInner);
-									frameBuffer.SetPixel(colorX, colorY - 1, hsvInner);
-									frameBuffer.SetPixel(colorX, colorY + 1, hsvInner);
+									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX - 1, colorY, innerColor);
+									frameBuffer.SetPixel(colorX + 1, colorY, innerColor);
+									frameBuffer.SetPixel(colorX, colorY - 1, innerColor);
+									frameBuffer.SetPixel(colorX, colorY + 1, innerColor);
 
-									frameBuffer.SetPixel(colorX - 1, colorY + 2, hsvInner);
-									frameBuffer.SetPixel(colorX + 1, colorY + 2, hsvInner);
-									frameBuffer.SetPixel(colorX - 1, colorY - 2, hsvInner);
-									frameBuffer.SetPixel(colorX + 1, colorY - 2, hsvInner);
-									frameBuffer.SetPixel(colorX + 2, colorY - 1, hsvInner);
-									frameBuffer.SetPixel(colorX + 2, colorY + 1, hsvInner);
-									frameBuffer.SetPixel(colorX - 2, colorY - 1, hsvInner);
-									frameBuffer.SetPixel(colorX - 2, colorY + 1, hsvInner);
+									frameBuffer.SetPixel(colorX - 1, colorY + 2, innerColor);
+									frameBuffer.SetPixel(colorX + 1, colorY + 2, innerColor);
+									frameBuffer.SetPixel(colorX - 1, colorY - 2, innerColor);
+									frameBuffer.SetPixel(colorX + 1, colorY - 2, innerColor);
+									frameBuffer.SetPixel(colorX + 2, colorY - 1, innerColor);
+									frameBuffer.SetPixel(colorX + 2, colorY + 1, innerColor);
+									frameBuffer.SetPixel(colorX - 2, colorY - 1, innerColor);
+									frameBuffer.SetPixel(colorX - 2, colorY + 1, innerColor);
 									break;
 								case SnowflakeType.FortyFive:
 									// 45 nodes
 									int ii = 4;
 									for (int j = -4; j < 5; j++)
 									{
-										frameBuffer.SetPixel(colorX + j, colorY + ii, hsvInner);
+										frameBuffer.SetPixel(colorX + j, colorY + ii, innerColor);
 										ii--;
 									}
 									for (int j = -4; j < 5; j++)
 									{
-										frameBuffer.SetPixel(colorX + j, colorY + j, hsvInner);
+										frameBuffer.SetPixel(colorX + j, colorY + j, innerColor);
 									}
-									frameBuffer.SetPixel(colorX - 2, colorY + 3, hsvInner);
-									frameBuffer.SetPixel(colorX - 3, colorY + 2, hsvInner);
-									frameBuffer.SetPixel(colorX - 3, colorY - 2, hsvInner);
-									frameBuffer.SetPixel(colorX - 2, colorY - 3, hsvInner);
-									frameBuffer.SetPixel(colorX + 2, colorY + 3, hsvInner);
-									frameBuffer.SetPixel(colorX + 2, colorY - 3, hsvInner);
-									frameBuffer.SetPixel(colorX + 3, colorY + 2, hsvInner);
-									frameBuffer.SetPixel(colorX + 3, colorY - 2, hsvInner);
+									frameBuffer.SetPixel(colorX - 2, colorY + 3, innerColor);
+									frameBuffer.SetPixel(colorX - 3, colorY + 2, innerColor);
+									frameBuffer.SetPixel(colorX - 3, colorY - 2, innerColor);
+									frameBuffer.SetPixel(colorX - 2, colorY - 3, innerColor);
+									frameBuffer.SetPixel(colorX + 2, colorY + 3, innerColor);
+									frameBuffer.SetPixel(colorX + 2, colorY - 3, innerColor);
+									frameBuffer.SetPixel(colorX + 3, colorY + 2, innerColor);
+									frameBuffer.SetPixel(colorX + 3, colorY - 2, innerColor);
 									for (int j = -5; j < 6; j++)
 									{
-									frameBuffer.SetPixel(colorX, colorY + j, hsvInner);
+									frameBuffer.SetPixel(colorX, colorY + j, innerColor);
 									}
 									for (int j = -5; j < 6; j++)
 									{
-									frameBuffer.SetPixel(colorX + j, colorY, hsvInner);
+									frameBuffer.SetPixel(colorX + j, colorY, innerColor);
 									}
-									frameBuffer.SetPixel(colorX, colorY, hsvOuter); //Inner point of the Flake
+									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
 									break;
 							}
 						}

@@ -509,8 +509,7 @@ namespace VixenModules.Effect.Video
 			double position = (intervalPos * Speed) % 1;
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			double adjustBrightness = CalculateIncreaseBrightness(intervalPosFactor);
-
-
+			
 			// If we don't have any pictures, do nothing!
 			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
 				return;
@@ -604,11 +603,16 @@ namespace VixenModules.Effect.Video
 					fpColor = currentMovieImage.GetPixel(x, y);
 					if (fpColor != Color.Transparent && fpColor != Color.Black)
 					{
-						var hsv = HSV.FromRGB(fpColor);
-						double tempV = hsv.V * level * (adjustBrightness / 10);
-						if (tempV > 1)
-							tempV = 1;
-						hsv.V = tempV;
+						if (level < 1 || adjustBrightness > 10)
+						{
+							var hsv = HSV.FromRGB(fpColor);
+							double tempV = hsv.V * level * (adjustBrightness / 10);
+							if (tempV > 1)
+								tempV = 1;
+							hsv.V = tempV;
+							fpColor = hsv.ToRGB();
+						}
+
 						int leftX, rightX, upY, downY;
 						switch (_data.EffectType)
 						{
@@ -616,77 +620,77 @@ namespace VixenModules.Effect.Video
 								// left
 								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
 
-								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureRight:
 								// right
 								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
 
-								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureUp:
 								// up
 								upY = (int)((imght + BufferHt) * position) - y;
 
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureDown:
 								// down
 								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
 
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureUpleft:
 								// up-left
 								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
 								upY = (int)((imght + BufferHt) * position) - y;
 
-								frameBuffer.SetPixel(leftX + xOffsetAdj, upY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(leftX + xOffsetAdj, upY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureDownleft:
 								// down-left
 								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
 								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
 
-								frameBuffer.SetPixel(leftX + xOffsetAdj, downY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(leftX + xOffsetAdj, downY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureUpright:
 								// up-right
 								upY = (int)((imght + BufferHt) * position) - y; 
 								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
 								
-								frameBuffer.SetPixel(rightX + xOffsetAdj, upY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(rightX + xOffsetAdj, upY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureDownright:
 								// down-right
 								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
 								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
 
-								frameBuffer.SetPixel(rightX + xOffsetAdj, downY + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(rightX + xOffsetAdj, downY + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPicturePeekaboo0:
 								// Peek a boo 0
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPictureWiggle:
 								// Wiggle
-								frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPicturePeekaboo90:
 								// Peekaboo90
-								frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPicturePeekaboo180:
 								// Peekaboo180
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, fpColor);
 								break;
 							case EffectType.RenderPicturePeekaboo270:
 								// Peekaboo270
-								frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, fpColor);
 								break;
 							default:
 								// no movement - centered
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, hsv);
+								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
 								break;
 						}
 					}

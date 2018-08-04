@@ -26,8 +26,8 @@ namespace VixenModules.Effect.Shapes
 	{
 		private ShapesData _data;
 		private readonly Random _random = new Random();
-		private readonly List<ShapesClass> _shapes = new List<ShapesClass>();
-		private readonly List<ShapesClass> _removeShapes = new List<ShapesClass>();
+		private List<ShapesClass> _shapes;
+		private List<ShapesClass> _removeShapes;
 		private int _shapesCount;
 		private double _intervalPosFactor;
 		private double _centerAngleSpeed;
@@ -47,7 +47,7 @@ namespace VixenModules.Effect.Shapes
 		private float _scaleShapeHeight;
 		private int _totalFrames;
 		private IEnumerable<IMark> _marks = null;
-		private List<int> _shapeFrame = new List<int>();
+		private List<int> _shapeFrame;
 
 		public Shapes()
 		{
@@ -1083,7 +1083,9 @@ namespace VixenModules.Effect.Shapes
 		{
 			_minBuffer = Math.Min(BufferHt, BufferWi);
 			_maxBuffer = Math.Max(BufferHt, BufferWi);
-			_shapes.Clear();
+			_shapes = new List<ShapesClass>();
+			_removeShapes = new List<ShapesClass>();
+			_shapeFrame = new List<int>();
 			_shapesCount = 0;
 			_totalFrames = GetNumberFrames();
 
@@ -1104,8 +1106,7 @@ namespace VixenModules.Effect.Shapes
 			if (ShapeMode != ShapeMode.None)
 			{
 				SetupMarks();
-
-				//_shapeFrame = new List<int>();
+				
 				if (_marks != null)
 				{
 					foreach (var mark in _marks)
@@ -1118,9 +1119,9 @@ namespace VixenModules.Effect.Shapes
 
 		protected override void CleanUpRender()
 		{
-			_shapes.Clear();
-			_removeShapes.Clear();
-			_shapeFrame.Clear();
+			_shapes = null;
+			_removeShapes = null;
+			_shapeFrame = null;
 		}
 
 		#endregion
@@ -1181,13 +1182,13 @@ namespace VixenModules.Effect.Shapes
 
 			if (color.R != 0 || color.G != 0 || color.B != 0)
 			{
-				var hsv = HSV.FromRGB(color);
-				hsv.V = hsv.V * level;
-				frameBuffer.SetPixel(xCoord, yCoord, hsv);
-			}
-			else if (TargetPositioning == TargetPositioningType.Locations)
-			{
-				frameBuffer.SetPixel(xCoord, yCoord, Color.Transparent);
+				if (level < 1)
+				{
+					var hsv = HSV.FromRGB(color);
+					hsv.V = hsv.V * level;
+					color = hsv.ToRGB();
+				}
+				frameBuffer.SetPixel(xCoord, yCoord, color);
 			}
 		}
 

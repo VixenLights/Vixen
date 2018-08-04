@@ -267,7 +267,8 @@ namespace VixenModules.Effect.Glediator
 		{
 			if (_f == null) return;
 			long fileLength = _f.Length;
-			
+			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
 			int seqNumPeriods = (int) (fileLength/ _seqNumChannels);
 
 			if (frame == 0)
@@ -290,11 +291,15 @@ namespace VixenModules.Effect.Glediator
 				Color color = Color.FromArgb(255, _glediatorFrameBuffer[j], _glediatorFrameBuffer[j + 1], _glediatorFrameBuffer[j + 2]);
 				int x = (j%(BufferWi*3))/3;
 				int y = (BufferHt - 1) - (j/(BufferWi*3));
-				var hsv = HSV.FromRGB(color);
-				hsv.V = hsv.V*LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
+				if (level < 1)
+				{
+					var hsv = HSV.FromRGB(color);
+					hsv.V *= level;
+					color = hsv.ToRGB();
+				}
 				if (x < BufferWi && y < BufferHt && y >= 0)
 				{
-					frameBuffer.SetPixel(x, y, hsv);
+					frameBuffer.SetPixel(x, y, color);
 				}
 			}
 		}

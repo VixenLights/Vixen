@@ -297,8 +297,13 @@ namespace VixenModules.Effect.Garlands
 			for (int ring = 0; ring < height; ring++)
 			{
 				var ratio = ring / (double)height;
-				var hsv = HSV.FromRGB(GetMultiColorBlend(ratio, false, frame));
-				hsv.V = hsv.V*level;
+				Color col = GetMultiColorBlend(ratio, false, frame);
+				if (level < 1)
+				{
+					HSV hsv = HSV.FromRGB(col);
+					hsv.V = hsv.V * level;
+					col = hsv.ToRGB();
+				}
 				
 				var y = garlandsState - ring * pixelSpacing;
 				var ylimit = height - ring - 1;
@@ -361,19 +366,19 @@ namespace VixenModules.Effect.Garlands
 					{
 						case GarlandsDirection.Down:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferHt) frameBuffer.SetPixel(x, BufferHt - 1 - yadj, hsv);
+							if (yadj < BufferHt) frameBuffer.SetPixel(x, BufferHt - 1 - yadj, col);
 						break;
 						case GarlandsDirection.Up:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferHt) frameBuffer.SetPixel(x, yadj, hsv);
+							if (yadj < BufferHt) frameBuffer.SetPixel(x, yadj, col);
 						break;
 						case GarlandsDirection.Left:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferWi) frameBuffer.SetPixel(BufferWi - 1 - yadj, x, hsv);
+							if (yadj < BufferWi) frameBuffer.SetPixel(BufferWi - 1 - yadj, x, col);
 						break;
 						case GarlandsDirection.Right:
 							if (yadj < ylimit) yadj = ylimit;
-							if (yadj < BufferWi) frameBuffer.SetPixel(yadj, x, hsv);
+							if (yadj < BufferWi) frameBuffer.SetPixel(yadj, x, col);
 						break;
 					}
 				}
@@ -420,7 +425,7 @@ namespace VixenModules.Effect.Garlands
 			double realidx = circular ? n * colorcnt : n * (colorcnt - 1);
 			int coloridx1 = (int)Math.Floor(realidx);
 			int coloridx2 = (coloridx1 + 1) % colorcnt;
-			double ratio = realidx - (double)coloridx1;
+			double ratio = realidx - coloridx1;
 			return Get2ColorBlend(coloridx1, coloridx2, ratio, frame);
 		}
 	}
