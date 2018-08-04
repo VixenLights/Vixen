@@ -103,6 +103,8 @@ SetCompressorDictSize 64
 !insertmacro GetVersionLocal "${BUILD_DIR}\VixenApplication.exe" AssemblyVersion_
 VIProductVersion "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}.${AssemblyVersion_4}"
 VIAddVersionKey "FileVersion" "${AssemblyVersion_1}.${AssemblyVersion_2}.${AssemblyVersion_3}.${AssemblyVersion_4}"
+VIAddVersionKey "FileDescription" "Vixen Lighting Software"
+VIAddVersionKey "LegalCopyright" "Copyright VixenLights 2018. Free for personal use."
 
 !if ${AssemblyVersion_1} == 0
 	!define DEVBUILD
@@ -239,8 +241,37 @@ Function .onInit
 	
 FunctionEnd
 
+Function .onVerifyInstDir
+	StrCpy $0 $WINDIR 2
+	StrCmp $INSTDIR $0 DoAbort
+	StrCmp $INSTDIR $Desktop DoAbort
+	StrCmp $INSTDIR $PROGRAMFILES DoAbort
+	StrCmp $INSTDIR $PROGRAMFILES64 DoAbort
+	StrLen $0 $WINDIR
+	StrCpy $0 $INSTDIR $0
+	StrCmp $0 $WINDIR DoAbort
+	IfFileExists "$INSTDIR\SystemData\ModuleStore.xml" DoAbort PathGood
+	DoAbort:
+	Abort
+	PathGood:
+FunctionEnd
+
 Function DirectoryLeave
-  GetInstDirError $0
+    GetInstDirError $0
+    StrCmp $0 1 DoAbort
+	StrCpy $0 $WINDIR 3
+	StrCmp $INSTDIR $0 DoAbort
+    StrCmp $INSTDIR $Desktop DoAbort
+	StrCmp $INSTDIR $PROGRAMFILES DoAbort
+	StrCmp $INSTDIR $PROGRAMFILES64 DoAbort
+	StrLen $0 $WINDIR
+	StrCpy $0 $INSTDIR $0
+	StrCmp $0 $WINDIR 0 PathGood
+	DoAbort:
+	MessageBox MB_OK|MB_ICONEXCLAMATION "'$InstDir' is a special folder that should not be installed to."
+	Pop $R0
+	Abort
+	PathGood:
   
   ;=== Does it look like a profile folder?
 	IfFileExists "$INSTDIR\SystemData\ModuleStore.xml" 0 +3
