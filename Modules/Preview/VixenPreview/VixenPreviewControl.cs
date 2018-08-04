@@ -771,10 +771,9 @@ namespace VixenModules.Preview.VixenPreview
 
 					if (_selectedDisplayItem != null)
 					{
-						PreviewPoint selectedPoint = _selectedDisplayItem.Shape.PointInSelectPoint(translatedPoint);
 						if (_selectedDisplayItem.Shape.PointInShape(translatedPoint))
 						{
-							if (_selectedDisplayItem.Shape.GetType().ToString().Contains("PreviewCustom"))
+							if (_selectedDisplayItem.Shape.GetType() == typeof(PreviewCustom))
 							{
 								contextMenuStrip1.Items.Add(new ToolStripMenuItem
 								{
@@ -785,7 +784,7 @@ namespace VixenModules.Preview.VixenPreview
 							}
 						}
 					}
-					else if (SelectedDisplayItems.Count > 1)
+					else if (SelectedDisplayItems.Count > 1 && SelectedDisplayItems.All(x => x.Shape.GetType() != typeof(PreviewCustomProp)))
 					{
 						contextMenuStrip1.Items.Add(new ToolStripMenuItem
 						{
@@ -1677,9 +1676,15 @@ namespace VixenModules.Preview.VixenPreview
 
 			foreach (DisplayItem item in SelectedDisplayItems)
 			{
-				if (item.Shape.GetType().ToString().Contains("PreviewCustom"))
+				if (item.Shape.GetType() == typeof(PreviewCustom))
 				{
 					var messageBox = new MessageBoxForm("You cannot create a group or a template with an item that is already grouped or a template item. First, separate the items and then re-group all the items you would like.", "Grouping Error", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog();
+					return null;
+				}
+				if (item.Shape.GetType() == typeof(PreviewCustomProp))
+				{
+					var messageBox = new MessageBoxForm("Grouping or creating a template with a Custom Prop is not suppported at this time.", "Grouping Error", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
 					return null;
 				}
