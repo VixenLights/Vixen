@@ -765,5 +765,115 @@ namespace VixenModules.Effect.CountDown
 			g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
 			g.DrawString(text, _newfont, brush, p);
 		}
+
+		public override void GenerateVisualRepresentation(Graphics g, Rectangle clipRectangle)
+		{
+			LinearGradientMode mode = LinearGradientMode.Horizontal;
+			switch (GradientMode)
+			{
+				case GradientMode.VerticalAcrossElement:
+				case GradientMode.VerticalAcrossText:
+					mode = LinearGradientMode.Vertical;
+					break;
+				case GradientMode.DiagonalAcrossElement:
+				case GradientMode.DiagonalAcrossText:
+					mode = LinearGradientMode.ForwardDiagonal;
+					break;
+				case GradientMode.BackwardDiagonalAcrossElement:
+				case GradientMode.BackwardDiagonalAcrossText:
+					mode = LinearGradientMode.BackwardDiagonal;
+					break;
+			}
+			int secondTicks;
+			string displayTime;
+			int countTime = Convert.ToInt32(CountDownTime);
+			switch (CountDownType)
+			{
+				case CountDownType.CountDown:
+					if (CountDownFade == CountDownFade.In) countTime--;
+					secondTicks = (int)((double)clipRectangle.Width / (int)TimeSpan.Ticks * 10000000);// TimeSpan.TicksPerMinute / 60 / 100000;
+					for (int i = 0; i < clipRectangle.Width; i++)
+					{
+						if (i% secondTicks == 0)
+						{
+							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
+							{
+								TimeSpan time = TimeSpan.FromSeconds(countTime);
+								displayTime = time.ToString(@"m\:ss");
+							}
+							else
+							{
+								displayTime = countTime.ToString();
+							}
+							DrawText(g, clipRectangle, displayTime, mode, i);
+							countTime -= 1;
+						}
+					}
+					break;
+				case CountDownType.CountUp:
+					if (CountDownFade == CountDownFade.In) countTime++;
+					secondTicks = (int)((double)clipRectangle.Width / (int)TimeSpan.Ticks * 10000000);
+					for (int i = 0; i < clipRectangle.Width; i++)
+					{
+						if (i % secondTicks == 0)
+						{
+							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
+							{
+								TimeSpan time = TimeSpan.FromSeconds(countTime);
+								displayTime = time.ToString(@"m\:ss");
+							}
+							else
+							{
+								displayTime = countTime.ToString();
+							}
+							DrawText(g, clipRectangle, displayTime, mode, i);
+							countTime += 1;
+						}
+					}
+					break;
+				default:
+					double totalFrames = GetNumberFrames();
+					string displayTime1 = "";
+					bool isInt = ((double)totalFrames / 20) == (int)(totalFrames / 20);
+					int startTick = (int)((double)clipRectangle.Width / totalFrames * (int)((totalFrames / 20 - Math.Floor(totalFrames / 20)) * 20));
+					countTime = (int)Math.Ceiling(totalFrames * .050);
+					if (!isInt) countTime--;
+					secondTicks = (int)((double)clipRectangle.Width / (int)TimeSpan.Ticks * 10000000);
+					for ( int i = 0; i < clipRectangle.Width; i++)
+					{
+						if (i % secondTicks == 0)
+						{
+							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
+							{
+								displayTime = TimeSpan.FromSeconds(countTime).ToString(@"m\:ss");
+								if (i == 0 && startTick > 2) displayTime1 = TimeSpan.FromSeconds(countTime + 1).ToString(@"m\:ss");
+							}
+							else
+							{
+								displayTime = countTime.ToString();
+								if (i == 0 && startTick > 2) displayTime1 = (countTime + 1).ToString();
+							}
+							if (i == 0 && startTick > 2) DrawText(g, clipRectangle, displayTime1, mode, i);
+							DrawText(g, clipRectangle, displayTime, mode, i + startTick);
+							countTime -= 1;
+						}
+					}
+					break;
+			}
+		}
+
+		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
+		{
+			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48);
+			SizeF adjustedSizeNew = g.MeasureString(displayedText, adjustedFont);
+			var brush = new LinearGradientBrush(
+					new Rectangle(0, 0, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
+					Color.Black,
+					Color.Black, mode)
+			{ InterpolationColors = Colors.GetColorBlend() };
+			g.DrawString(displayedText, adjustedFont, brush, clipRectangle.X + startX, 2);
+		}
+
+		public override bool ForceGenerateVisualRepresentation { get { return true; } }
 	}
 }
