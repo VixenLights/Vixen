@@ -31,6 +31,7 @@ namespace VixenModules.Effect.Picture
 			ScaleToGrid = true;
 			TilePictures = TilePictures.BlueGlowDots;
 			GifSpeed = 1;
+			StretchToGrid = false;
 		}
 
 		[DataMember]
@@ -59,6 +60,9 @@ namespace VixenModules.Effect.Picture
 
 		[DataMember]
 		public bool ScaleToGrid { get; set; }
+
+		[DataMember]
+		public bool StretchToGrid { get; set; }
 
 		[DataMember]
 		public int ScalePercent { get; set; }
@@ -153,7 +157,8 @@ namespace VixenModules.Effect.Picture
 				Direction = Direction,
 				GifSpeed = GifSpeed,
 				Colors = Colors,
-				Source = Source
+				Source = Source,
+				StretchToGrid = StretchToGrid
 			};
 			return result;
 		}
