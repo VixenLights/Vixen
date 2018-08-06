@@ -28,11 +28,13 @@ namespace VixenModules.App.SuperScheduler
 			CreateMenu();
 			//SetSchedulerEnableState(_data.IsEnabled);
 			_executor = new ScheduleExecutor(_data);
+			_executor.CheckSchedule();
 		}
 
 		public override void Unloading()
 		{
 			//SetSchedulerEnableState(false);
+			_executor.Enabled = false;
 			_executor = null;
 		}
 
