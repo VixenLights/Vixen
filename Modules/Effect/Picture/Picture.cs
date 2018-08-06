@@ -652,21 +652,22 @@ namespace VixenModules.Effect.Picture
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			
 			InitFrameData(frame, out double intervalPosFactor, out double level, out double adjustedBrightness);
 			InitialRender(frame, intervalPosFactor);
-			_fp.Lock();
-			var bufferWi = BufferWi;
-			var bufferHt = BufferHt;
-			for (int x = 0; x < _imageWi; x++)
+			if (_fp != null)
 			{
-				for (int y = 0; y < _imageHt; y++)
+				_fp.Lock();
+				var bufferWi = BufferWi;
+				var bufferHt = BufferHt;
+				for (int x = 0; x < _imageWi; x++)
 				{
-					CalculatePixel(x, y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+					for (int y = 0; y < _imageHt; y++)
+					{
+						CalculatePixel(x, y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+					}
 				}
+				_fp.Unlock(false);
 			}
-			_fp.Unlock(false);
-			
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
@@ -681,16 +682,19 @@ namespace VixenModules.Effect.Picture
 
 				InitFrameData(frame, out double intervalPosFactor, out double level, out double adjustedBrightness);
 				InitialRender(frame, intervalPosFactor);
-				_fp.Lock();
-				foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+				if (_fp != null)
 				{
-					foreach (var elementLocation in elementLocations)
+					_fp.Lock();
+					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+						foreach (var elementLocation in elementLocations)
+						{
+							CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+						}
 					}
-				}
 
-				_fp.Unlock(false);
+					_fp.Unlock(false);
+				}
 			}
 		}
 
