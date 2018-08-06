@@ -201,6 +201,7 @@
 			this.listViewShowItems.SelectedIndexChanged += new System.EventHandler(this.listViewShowItems_SelectedIndexChanged);
 			this.listViewShowItems.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewShowItems_DragDrop);
 			this.listViewShowItems.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewShowItems_DragEnter);
+			this.listViewShowItems.DragOver += new System.Windows.Forms.DragEventHandler(this.listViewShowItems_DragOver);
 			// 
 			// columnHeader1
 			// 
