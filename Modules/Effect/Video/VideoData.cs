@@ -31,6 +31,7 @@ namespace VixenModules.Effect.Video
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			MovementRate = 4;
 		}
 
 		[DataMember]
@@ -89,12 +90,15 @@ namespace VixenModules.Effect.Video
 
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
-
+		
 		[DataMember]
 		public Curve LevelCurve { get; set; }
 
 		[DataMember]
 		public int VideoLength { get; set; }
+
+		[DataMember]
+		public int MovementRate { get; set; }
 
 		[DataMember]
 		public string Video_DataPath { get; set; }
@@ -149,7 +153,8 @@ namespace VixenModules.Effect.Video
 				LevelCurve = new Curve(LevelCurve),
 				FileName = FileName,
 				EffectColorType = EffectColorType,
-				MaintainAspect = MaintainAspect
+				MaintainAspect = MaintainAspect,
+				MovementRate = MovementRate
 			};
 			return result;
 		}

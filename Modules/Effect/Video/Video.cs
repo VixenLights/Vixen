@@ -12,6 +12,7 @@ using Vixen.Module;
 using Vixen.Sys.Attribute;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
+using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 
 namespace VixenModules.Effect.Video
@@ -25,10 +26,22 @@ namespace VixenModules.Effect.Video
 		private readonly string _videoPath = VideoDescriptor.ModulePath;
 		private readonly string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
 		private bool _processVideo = true;
-
+		private double _movementX;
+		private double _movementY;
+		private double _position;
+		private int _xOffsetAdj;
+		private int _yOffsetAdj;
+		private int _imageWidth;
+		private int _imageHeight;
+		private int _imageHt;
+		private int _imageWi;
+		private int _xoffset;
+		private int _yoffset;
+		private FastPixel.FastPixel _fp;
 		public Video()
 		{
 			_data = new VideoData();
+			EnableTargetPositioning(true, true);
 			UpdateAttributes();
 		}
 
@@ -48,6 +61,7 @@ namespace VixenModules.Effect.Video
 				IsDirty = true;
 				_processVideo = false;
 				UpdateIterationsAttribute();
+				UpdateMovementRateAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -122,6 +136,24 @@ namespace VixenModules.Effect.Video
 				_data.YOffsetCurve = value;
 				IsDirty = true;
 				_processVideo = false;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"Movement Rate")]
+		[ProviderDescription(@"MovementRate")]
+		[PropertyEditor("SliderEditor")]
+		[NumberRange(1, 100, 1)]
+		[PropertyOrder(6)]
+		public int MovementRate
+		{
+			get { return _data.MovementRate; }
+			set
+			{
+				_data.MovementRate = value;
+				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
@@ -353,6 +385,8 @@ namespace VixenModules.Effect.Video
 		private void UpdateAttributes()
 		{
 			UpdateScaleAttribute(false);
+			UpdateStringOrientationAttributes();
+			UpdateMovementRateAttribute(false);
 			UpdateIterationsAttribute(false);
 			TypeDescriptor.Refresh(this);
 		}
@@ -376,6 +410,21 @@ namespace VixenModules.Effect.Video
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"Speed", showIterations}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+
+		private void UpdateMovementRateAttribute(bool refresh = true)
+		{
+			bool movementRate = Type == EffectType.RenderPictureDownleft || Type == EffectType.RenderPictureDownright ||
+			                    Type == EffectType.RenderPictureUpleft || Type == EffectType.RenderPictureUpright;
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"MovementRate", movementRate}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -434,7 +483,8 @@ namespace VixenModules.Effect.Video
 
 		protected override void CleanUpRender()
 		{
-			//Nothing to clean up
+			_fp?.Dispose();
+			_fp = null;
 		}
 
 		private void ProcessMovie(string folder)
@@ -451,7 +501,8 @@ namespace VixenModules.Effect.Video
 			//Setup scale size to process.
 			int renderHeight = BufferHt;
 			int renderWidth = BufferWi;
-			if (!ScaleToGrid)
+
+			if (!ScaleToGrid && TargetPositioning != TargetPositioningType.Locations)
 			{
 				renderWidth = (int)(BufferWi * ((double)ScalePercent / 100 + 1));
 				renderHeight = (int)(BufferHt * ((double)ScalePercent / 100 + 1));
@@ -502,13 +553,66 @@ namespace VixenModules.Effect.Video
 		}
 
 		#region Render Video Effect
+
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
-			double position = (intervalPos * Speed) % 1;
-			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
-			double adjustBrightness = CalculateIncreaseBrightness(intervalPosFactor);
+			InitFrameData(frame, out double intervalPos, out double intervalPosFactor, out double level, out double adjustedBrightness);
+			InitialRender(frame, intervalPos, intervalPosFactor);
+			if (_fp != null)
+			{
+				_fp.Lock();
+				var bufferWi = BufferWi;
+				var bufferHt = BufferHt;
+				for (int x = 0; x < _imageWi; x++)
+				{
+					for (int y = 0; y < _imageHt; y++)
+					{
+						CalculatePixel(x, y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+					}
+				}
+				_fp.Unlock(false);
+			}
+		}
+
+		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
+		{
+			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			var bufferWi = BufferWi;
+			var bufferHt = BufferHt;
+
+			for (int frame = 0; frame < numFrames; frame++)
+			{
+				frameBuffer.CurrentFrame = frame;
+
+				InitFrameData(frame, out double intervalPos, out double intervalPosFactor, out double level, out double adjustedBrightness);
+				InitialRender(frame, intervalPos, intervalPosFactor);
+				if (_fp != null)
+				{
+					_fp.Lock();
+					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					{
+						foreach (var elementLocation in elementLocations)
+						{
+							CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
+						}
+					}
+
+					_fp.Unlock(false);
+				}
+			}
+		}
+
+		private void InitFrameData(int frame, out double intervalPos, out double intervalPosFactor, out double level, out double adjustedBrightness)
+		{
+			intervalPos = GetEffectTimeIntervalPosition(frame);
+			intervalPosFactor = intervalPos * 100;
+			level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			adjustedBrightness = CalculateIncreaseBrightness(intervalPosFactor) / 10;
+		}
+
+		private void InitialRender(int frame, double intervalPos, double intervalPosFactor)
+		{
+			_position = (intervalPos * Speed) % 1;
 			
 			// If we don't have any pictures, do nothing!
 			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
@@ -535,172 +639,265 @@ namespace VixenModules.Effect.Video
 
 			// copy image to buffer
 			Bitmap resizeImage = new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage]));
-			FastPixel.FastPixel currentMovieImage = new FastPixel.FastPixel(new Bitmap(resizeImage));
+			_fp = new FastPixel.FastPixel(new Bitmap(resizeImage));
 
-			int imgwidth = currentMovieImage.Width;
-			int imght = currentMovieImage.Height;
-			int yoffset = (BufferHt + imght) / 2;
-			int xoffset = (imgwidth - BufferWi) / 2;
-			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
-			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
+			_imageWi = _fp.Width;
+			_imageHt = _fp.Height;
+			_yoffset = (BufferHt + _imageHt) / 2;
+			_xoffset = (_imageWi - BufferWi) / 2;
+			_xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
+			_yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
 
 			switch (Type)
 			{
 				case EffectType.RenderPicturePeekaboo0:
 				case EffectType.RenderPicturePeekaboo180:
 					//Peek a boo
-					yoffset = -(BufferHt) + (int)((BufferHt + 5) * position * 2);
-					if (yoffset > 10)
+					_yoffset = -(BufferHt) + (int)((BufferHt + 5) * _position * 2);
+					if (_yoffset > 10)
 					{
-						yoffset = -yoffset + 10; //reverse direction
+						_yoffset = -_yoffset + 10; //reverse direction
 					}
-					else if (yoffset >= -1)
+					else if (_yoffset >= -1)
 					{
-						yoffset = -1; //pause in middle
+						_yoffset = -1; //pause in middle
 					}
-
 					break;
 				case EffectType.RenderPictureWiggle:
-					if (position >= 0.5)
+					if (_position >= 0.5)
 					{
-						xoffset += (int)(BufferWi * ((1.0 - position) * 2.0 - 0.5));
+						_xoffset += (int)(_imageWi * ((1.0 - _position) * 2.0 - 0.5));
 					}
 					else
 					{
-						xoffset += (int)(BufferWi * (position * 2.0 - 0.5));
+						_xoffset += (int)(_imageWi * (_position * 2.0 - 0.5));
 					}
 					break;
 				case EffectType.RenderPicturePeekaboo90: //peekaboo 90
 				case EffectType.RenderPicturePeekaboo270: //peekaboo 270
-					if (Orientation == StringOrientation.Vertical)
+					if (Orientation == StringOrientation.Horizontal || TargetPositioning == TargetPositioningType.Locations)
 					{
-						yoffset = (imght - BufferWi) / 2; //adjust offsets for other axis
-						xoffset = -(BufferHt) + (int)((BufferHt + 5) * position * 2);
+						_yoffset = (BufferHt - _imageWi) / 2; //adjust offsets for other axis	
+						_xoffset = -(BufferWi) + (int)((BufferWi + 5) * _position * 2);
 					}
 					else
 					{
-						yoffset = (imgwidth - BufferHt) / 2; //adjust offsets for other axis
-						xoffset = -(BufferWi) + (int)((BufferWi + 5) * position * 2);
-					}
-					if (xoffset > 10)
-					{
-						xoffset = -xoffset + 10; //reverse direction
-					}
-					else if (xoffset >= -1)
-					{
-						xoffset = -1; //pause in middle
+						_yoffset = (BufferWi) / 2; //adjust offsets for other axis
+						_xoffset = -(BufferHt) + (int)((BufferHt + 5) * _position * 2);
 					}
 
+					if (_xoffset > 10)
+					{
+						_xoffset = -_xoffset + 10; //reverse direction
+					}
+					else if (_xoffset >= -1)
+					{
+						_xoffset = -1; //pause in middle
+					}
 					break;
 			}
-
-			currentMovieImage.Lock();
-			Color fpColor = new Color();
-			for (int x = 0; x < imgwidth; x++)
-			{
-				for (int y = 0; y < imght; y++)
-				{
-					fpColor = currentMovieImage.GetPixel(x, y);
-					if (fpColor != Color.Transparent && fpColor != Color.Black)
-					{
-						if (level < 1 || adjustBrightness > 10)
-						{
-							var hsv = HSV.FromRGB(fpColor);
-							double tempV = hsv.V * level * (adjustBrightness / 10);
-							if (tempV > 1)
-								tempV = 1;
-							hsv.V = tempV;
-							fpColor = hsv.ToRGB();
-						}
-
-						int leftX, rightX, upY, downY;
-						switch (_data.EffectType)
-						{
-							case EffectType.RenderPictureLeft:
-								// left
-								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
-
-								frameBuffer.SetPixel(leftX + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureRight:
-								// right
-								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
-
-								frameBuffer.SetPixel(rightX + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureUp:
-								// up
-								upY = (int)((imght + BufferHt) * position) - y;
-
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, upY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureDown:
-								// down
-								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
-
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, downY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureUpleft:
-								// up-left
-								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
-								upY = (int)((imght + BufferHt) * position) - y;
-
-								frameBuffer.SetPixel(leftX + xOffsetAdj, upY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureDownleft:
-								// down-left
-								leftX = x + (BufferWi - (int)(position * (imgwidth + BufferWi)));
-								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
-
-								frameBuffer.SetPixel(leftX + xOffsetAdj, downY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureUpright:
-								// up-right
-								upY = (int)((imght + BufferHt) * position) - y; 
-								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
-								
-								frameBuffer.SetPixel(rightX + xOffsetAdj, upY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureDownright:
-								// down-right
-								downY = (BufferHt + imght - 1) - (int)((imght + BufferHt) * position) - y;
-								rightX = x + -imgwidth + (int)(position * (imgwidth + BufferWi));
-
-								frameBuffer.SetPixel(rightX + xOffsetAdj, downY + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPicturePeekaboo0:
-								// Peek a boo 0
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, BufferHt + yoffset - y + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPictureWiggle:
-								// Wiggle
-								frameBuffer.SetPixel(x + xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPicturePeekaboo90:
-								// Peekaboo90
-								frameBuffer.SetPixel(BufferWi + xoffset - y + xOffsetAdj, x - yoffset + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPicturePeekaboo180:
-								// Peekaboo180
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, y - yoffset + yOffsetAdj, fpColor);
-								break;
-							case EffectType.RenderPicturePeekaboo270:
-								// Peekaboo270
-								frameBuffer.SetPixel(y - xoffset + xOffsetAdj, BufferHt + yoffset - x + yOffsetAdj, fpColor);
-								break;
-							default:
-								// no movement - centered
-								frameBuffer.SetPixel(x - xoffset + xOffsetAdj, yoffset - y + yOffsetAdj, fpColor);
-								break;
-						}
-					}
-				}
-			}
-			currentMovieImage.Unlock(false);
-			currentMovieImage.Dispose();
 			resizeImage.Dispose();
 		}
+
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int frame, double level, double adjustedBrightness, ref int bufferHt, ref int bufferWi)
+		{
+			int yCoord = y;
+			int xCoord = x;
+			int speedFactor = 4;
+			int state = MovementRate * frame;
+			int locationY = 0;
+			int locationX = 0;
+
+			Color fpColor = Color.Empty;
+
+			if (TargetPositioning == TargetPositioningType.Locations)
+			{
+				var bufferHtOffset = BufferHtOffset;
+				//Flip me over and offset my coordinates so I can act like the string version
+				y = Math.Abs((bufferHtOffset - y) + (bufferHt - 1 + bufferHtOffset));
+				y = y - bufferHtOffset;
+				x = x - BufferWiOffset;
+			}
+			else
+			{
+				fpColor = GetIntensity(level, _fp.GetPixel(x, y), adjustedBrightness);
+			}
+			switch (Type)
+			{
+				case EffectType.RenderPicturePeekaboo0:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = bufferHt + _yoffset - y + _yOffsetAdj;
+						locationX = x + _xoffset - _xOffsetAdj;
+						break;
+					}
+					frameBuffer.SetPixel(xCoord - _xoffset + _xOffsetAdj, bufferHt + _yoffset - yCoord + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureWiggle:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _yoffset - y + _yOffsetAdj;
+						locationX = x - _xoffset - _xOffsetAdj - bufferWi + _imageWi;
+						break;
+					}
+					frameBuffer.SetPixel(xCoord + _xoffset + _xOffsetAdj + bufferWi - _imageWi, _yoffset - yCoord + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPicturePeekaboo90:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _xoffset + bufferWi - x - _xOffsetAdj;
+						locationX = bufferHt - y - _yOffsetAdj - _yoffset;
+						break;
+					}
+					frameBuffer.SetPixel(bufferWi + _xoffset - yCoord + _xOffsetAdj, bufferHt - xCoord - _yoffset + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPicturePeekaboo180:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = y - _yOffsetAdj + bufferHt - _imageHt + _yoffset;
+						locationX = (bufferWi - x) + _xoffset + _xOffsetAdj;
+						break;
+					}
+					if (Orientation == StringOrientation.Horizontal)
+					{
+						frameBuffer.SetPixel((_imageWi - xCoord) - _xoffset + _xOffsetAdj - bufferWi + bufferWi, yCoord - _yoffset + _yOffsetAdj, fpColor);
+					}
+					else
+					{
+						frameBuffer.SetPixel((bufferWi - xCoord) - _xoffset + _xOffsetAdj - _imageWi + bufferWi, yCoord - _yoffset + _yOffsetAdj, fpColor);
+					}
+					return;
+				case EffectType.RenderPicturePeekaboo270:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _xoffset + x - _xOffsetAdj;
+						locationX = y - _yOffsetAdj - _yoffset;
+						break;
+					}
+					frameBuffer.SetPixel(yCoord - _xoffset + _xOffsetAdj, bufferHt + _yoffset - (bufferHt - xCoord) + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureLeft:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _yoffset - y + _yOffsetAdj;
+						locationX = ((x - bufferWi) + (int)(_position * (_imageWi + bufferWi))) + _xOffsetAdj;
+						break;
+					}
+					int leftX = xCoord + (bufferWi - (int)(_position * (_imageWi + bufferWi)));
+					frameBuffer.SetPixel(leftX + _xOffsetAdj, _yoffset - y + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureRight:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _yoffset - y + _yOffsetAdj;
+						locationX = ((x + _imageWi) - (int)(_position * (_imageWi + bufferWi))) + _xOffsetAdj;
+						break;
+					}
+					int rightX = xCoord + -_imageWi + (int)(_position * (_imageWi + bufferWi));
+					frameBuffer.SetPixel(rightX + _xOffsetAdj, _yoffset - yCoord + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureUp:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = x + _xoffset - _xOffsetAdj;
+						break;
+					}
+					int upY = (int)((_imageHt + bufferHt) * _position) - y;
+					frameBuffer.SetPixel(xCoord - _xoffset + _xOffsetAdj, upY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureDown:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = x + _xoffset - _xOffsetAdj;
+						break;
+					}
+					int downY = (bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - yCoord;
+					frameBuffer.SetPixel(x - _xoffset + _xOffsetAdj, downY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureUpleft:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = (x - bufferWi + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
+						break;
+					}
+					int upLeftY = (int)((_imageHt + bufferHt) * _position) - yCoord;
+					frameBuffer.SetPixel(
+						Convert.ToInt32(xCoord + bufferWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj,
+						upLeftY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureDownleft:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = (x - bufferWi + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
+						break;
+					}
+					int downLeftY = bufferHt + _imageHt - (int)((_imageHt + bufferHt) * _position) - yCoord;
+					frameBuffer.SetPixel(
+						Convert.ToInt32(xCoord + bufferWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj,
+						downLeftY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureUpright:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = (x + _imageWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
+						break;
+					}
+					int upRightY = (int)((_imageHt + bufferHt) * _position) - yCoord;
+					frameBuffer.SetPixel(
+						Convert.ToInt32(xCoord + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor - _imageWi) + _xOffsetAdj,
+						upRightY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureDownright:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
+						locationX = (x + _imageWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
+						break;
+					}
+					int downRightY = bufferHt + _imageHt - (int)((_imageHt + bufferHt) * _position) - yCoord;
+					frameBuffer.SetPixel(
+						Convert.ToInt32(xCoord + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor - _imageWi) + _xOffsetAdj,
+						downRightY + _yOffsetAdj, fpColor);
+					return;
+				case EffectType.RenderPictureNone:
+					if (TargetPositioning == TargetPositioningType.Locations)
+					{
+						locationY = _yoffset - y + _yOffsetAdj;
+						locationX = x + _xoffset - _xOffsetAdj;
+						break;
+					}
+					frameBuffer.SetPixel(xCoord - _xoffset + _xOffsetAdj, _yoffset - yCoord + _yOffsetAdj, fpColor);
+					return;
+			}
+
+			//will only get to here if Location and/or Tiles is selected.
+			if (locationX < _fp.Width && locationY < _fp.Height && locationX >= 0 && locationY >= 0)
+			{
+				fpColor = GetIntensity(level, _fp.GetPixel(locationX, locationY), adjustedBrightness);
+				frameBuffer.SetPixel(xCoord, yCoord, fpColor);
+			}
+		}
+
 		#endregion
+
+		private Color GetIntensity(double level, Color fpColor, double adjustedBrightness)
+		{
+			if (level < 1 || adjustedBrightness > 1)
+			{
+				HSV hsv = HSV.FromRGB(fpColor);
+				double tempV = hsv.V * level * adjustedBrightness;
+				if (tempV > 1) tempV = 1;
+				hsv.V = tempV;
+				fpColor = hsv.ToRGB();
+			}
+
+			return fpColor;
+		}
 
 		private int CalculateXOffset(double intervalPos)
 		{

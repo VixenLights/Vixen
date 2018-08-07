@@ -4,6 +4,8 @@ namespace VixenModules.Effect.Video
 {
 	public enum EffectType
 	{
+		[Description("None")]
+		RenderPictureNone,
 		[Description("Left")]
 		RenderPictureLeft,
 		[Description("Right")]
@@ -12,8 +14,6 @@ namespace VixenModules.Effect.Video
 		RenderPictureUp,
 		[Description("Down")]
 		RenderPictureDown,
-		[Description("None")]
-		RenderPictureNone,
 		[Description("Up & Left")]
 		RenderPictureUpleft,
 		[Description("Down & Left")]
