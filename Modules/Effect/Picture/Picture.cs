@@ -64,9 +64,7 @@ namespace VixenModules.Effect.Picture
 				_data.EffectType = value;
 				IsDirty = true;
 				UpdateDirectionAttribute();
-				bool movementRate = Type == EffectType.RenderPictureDownleft || Type == EffectType.RenderPictureDownright ||
-				    Type == EffectType.RenderPictureUpleft || Type == EffectType.RenderPictureUpright;
-				UpdateMovementRateAttribute(movementRate);
+				UpdateMovementRateAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -293,7 +291,7 @@ namespace VixenModules.Effect.Picture
 		[ProviderDisplayName(@"Movement Rate")]
 		[ProviderDescription(@"MovementRate")]
 		[PropertyEditor("SliderEditor")]
-		[NumberRange(1, 20, 1)]
+		[NumberRange(1, 100, 1)]
 		[PropertyOrder(6)]
 		public int MovementRate
 		{
@@ -404,7 +402,7 @@ namespace VixenModules.Effect.Picture
 			UpdateDirectionAttribute(false);
 			UpdateGifSpeedAttribute(false);
 			UpdateScaleAttribute(false);
-			UpdateMovementRateAttribute(false, false);
+			UpdateMovementRateAttribute(false);
 			UpdateStringOrientationAttributes();
 			UpdatePictureSourceAttribute(false);
 			TypeDescriptor.Refresh(this);
@@ -439,11 +437,13 @@ namespace VixenModules.Effect.Picture
 			}
 		}
 
-		private void UpdateMovementRateAttribute(bool enable, bool refresh = true)
+		private void UpdateMovementRateAttribute(bool refresh = true)
 		{
+			bool movementRate = Type == EffectType.RenderPictureDownleft || Type == EffectType.RenderPictureDownright ||
+			                    Type == EffectType.RenderPictureUpleft || Type == EffectType.RenderPictureUpright;
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
-				{"MovementRate", enable}
+				{"MovementRate", movementRate}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -648,7 +648,6 @@ namespace VixenModules.Effect.Picture
 			_fp = null;
 			_pictures = null;
 		}
-
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
@@ -885,10 +884,7 @@ namespace VixenModules.Effect.Picture
 			{
 				if (Type != EffectType.RenderPictureTiles) // change this so only when tiles are disabled
 				{
-					if (x < _fp.Width && y < _fp.Height && x >= 0 && y >= 0)
-					{
-						fpColor = CustomColor(frame, level, _fp.GetPixel(x, y), adjustedBrightness);
-					}
+					fpColor = CustomColor(frame, level, _fp.GetPixel(x, y), adjustedBrightness);
 				}
 			}
 			switch (Type)
@@ -989,7 +985,7 @@ namespace VixenModules.Effect.Picture
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
 						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
-						locationX = ((x - bufferWi) + (int)(_position * (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor)) + _xOffsetAdj;
+						locationX = (x - bufferWi + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
 						break;
 					}
 					int upLeftY = (int)((_imageHt + bufferHt) * _position) - yCoord;
@@ -1001,7 +997,7 @@ namespace VixenModules.Effect.Picture
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
 						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
-						locationX = ((x - bufferWi) + (int)(_position * (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor)) + _xOffsetAdj;
+						locationX = (x - bufferWi + (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
 						break;
 					}
 					int downLeftY = bufferHt + _imageHt - (int)((_imageHt + bufferHt) * _position) - yCoord;
@@ -1013,7 +1009,7 @@ namespace VixenModules.Effect.Picture
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
 						locationY = ((int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
-						locationX = ((x + _imageWi) - (int)(_position * (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor)) + _xOffsetAdj;
+						locationX = (x + _imageWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) +_xOffsetAdj;
 						break;
 					}
 					int upRightY = (int)((_imageHt + bufferHt) * _position) - yCoord;
@@ -1025,7 +1021,7 @@ namespace VixenModules.Effect.Picture
 					if (TargetPositioning == TargetPositioningType.Locations)
 					{
 						locationY = ((bufferHt + _imageHt - 1) - (int)((_imageHt + bufferHt) * _position) - y) + _yOffsetAdj;
-						locationX = ((x + _imageWi) - (int)(_position * (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor)) + _xOffsetAdj;
+						locationX = (x + _imageWi - (state % ((_imageWi + bufferWi) * speedFactor)) / speedFactor) + _xOffsetAdj;
 						break;
 					}
 					int downRightY = bufferHt + _imageHt - (int)((_imageHt + bufferHt) * _position) - yCoord;
