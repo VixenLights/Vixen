@@ -227,18 +227,18 @@ namespace VixenModules.Effect.LipSync
 							result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
 							_elementData.Add(result);
 						}
+					}
 
-						if (!AllowMarkGaps)
+					if (!AllowMarkGaps)
+					{
+						var gapDuration = StartTime + TimeSpan - lastMarkTime;
+						if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
 						{
-							var gapDuration = StartTime + TimeSpan - lastMarkTime;
-							if (gapDuration.TotalMilliseconds > 10 && mapData.PhonemeState("REST", item))
-							{
-								//Fill the gap with a rest
-								var colorVal = mapData.ConfiguredColorAndIntensity(item);
-								var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
-								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
-								_elementData.Add(result);
-							}
+							//Fill the gap with a rest
+							var colorVal = mapData.ConfiguredColorAndIntensity(item);
+							var result = CreateIntentsForElement(element, colorVal.Item1, colorVal.Item2, gapDuration);
+							result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+							_elementData.Add(result);
 						}
 					}
 				}
@@ -293,23 +293,23 @@ namespace VixenModules.Effect.LipSync
 						result.OffsetAllCommandsByTime(mark.StartTime - StartTime);
 						_elementData.Add(result);
 					}
+				}
 
-					if (!AllowMarkGaps)
+				if (!AllowMarkGaps)
+				{
+					var gapDuration = StartTime + TimeSpan - lastMarkTime;
+					if (gapDuration.TotalMilliseconds > 10)
 					{
-						var gapDuration = StartTime + TimeSpan - lastMarkTime;
-						if (gapDuration.TotalMilliseconds > 10)
+						//Fill the gap with a rest
+						var restImage = mapData.ImageForPhoneme("REST");
+						if (restImage != null)
 						{
-							//Fill the gap with a rest
-							var restImage = mapData.ImageForPhoneme("REST");
-							if (restImage != null)
-							{
-								_thePic.Image = restImage;
-								_thePic.TimeSpan = gapDuration;
-								_thePic.MarkDirty();
-								var result = _thePic.Render();
-								result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
-								_elementData.Add(result);
-							}
+							_thePic.Image = restImage;
+							_thePic.TimeSpan = gapDuration;
+							_thePic.MarkDirty();
+							var result = _thePic.Render();
+							result.OffsetAllCommandsByTime(lastMarkTime - StartTime);
+							_elementData.Add(result);
 						}
 					}
 				}
