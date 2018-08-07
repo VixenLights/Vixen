@@ -374,21 +374,61 @@ namespace VixenModules.App.Shows
 			}
 		}
 
+		#region Overrides of Control
+
+		private void listViewShowItems_DragOver(object sender, DragEventArgs e)
+		{
+			if (!e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
+			{
+				e.Effect = DragDropEffects.None;
+			}
+
+			Point cp = listViewShowItems.PointToClient(new Point(e.X, e.Y));
+			ListViewItem hoverItem = listViewShowItems.GetItemAt(cp.X, cp.Y);
+			if (hoverItem == null)
+			{
+				e.Effect = DragDropEffects.None;
+				return;
+			}
+			foreach (ListViewItem moveItem in listViewShowItems.SelectedItems)
+			{
+				if (moveItem.Index == hoverItem.Index)
+				{
+					e.Effect = DragDropEffects.None;
+					hoverItem.EnsureVisible();
+					return;
+				}
+			}
+
+			e.Effect = DragDropEffects.Move;
+
+			if (hoverItem.Index > 0)
+			{
+				listViewShowItems.Items[hoverItem.Index - 1].EnsureVisible();
+			}
+
+			if (hoverItem.Index < listViewShowItems.Items.Count - 1)
+			{
+				listViewShowItems.Items[hoverItem.Index + 1].EnsureVisible();
+			}
+		}
+
+		#endregion
+
 		private void listViewShowItems_DragDrop(object sender, DragEventArgs e)
 		{
-			listViewShowItems.Alignment = ListViewAlignment.Default;
 			if (listViewShowItems.SelectedItems.Count == 0)
 				return;
 			Point p = listViewShowItems.PointToClient(new Point(e.X, e.Y));
-			ListViewItem MovetoNewPosition = listViewShowItems.GetItemAt(p.X, p.Y);
-			if (MovetoNewPosition == null) return;
-			ListViewItem DropToNewPosition = (e.Data.GetData(typeof(ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-			ListViewItem CloneToNew = (ListViewItem)DropToNewPosition.Clone();
-			int index = MovetoNewPosition.Index;
-			listViewShowItems.Items.Remove(DropToNewPosition);
-			listViewShowItems.Items.Insert(index, CloneToNew);
-			listViewShowItems.Alignment = ListViewAlignment.SnapToGrid;
-			this.listViewShowItems.Items[index].Selected = true;
+			
+			ListViewItem movetoNewPosition = listViewShowItems.GetItemAt(p.X, p.Y);
+			if (movetoNewPosition == null) return;
+			ListViewItem dropToNewPosition = listViewShowItems.SelectedItems[0]; //We are single select
+			ListViewItem cloneToNew = (ListViewItem)dropToNewPosition.Clone();
+			int index = movetoNewPosition.Index;
+			listViewShowItems.Items.Remove(dropToNewPosition);
+			listViewShowItems.Items.Insert(index, cloneToNew);
+			listViewShowItems.Items[index].Selected = true;
 			UpdateListViewItems();
 		}
 
