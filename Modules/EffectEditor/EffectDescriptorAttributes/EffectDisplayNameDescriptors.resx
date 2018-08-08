@@ -738,4 +738,7 @@
   <data name="SizeMode" xml:space="preserve">
     <value>Size Mode</value>
   </data>
+  <data name="StretchToGrid" xml:space="preserve">
+    <value>Stretch To Grid</value>
+  </data>
 </root>
