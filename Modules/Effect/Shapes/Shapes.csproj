@@ -237,5 +237,14 @@
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Christmas\Mistletoe.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SVGShapes\Christmas\Balloon.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SVGShapes\Christmas\Balloon2.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SVGShapes\Christmas\Star.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

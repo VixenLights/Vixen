@@ -1558,7 +1558,6 @@ namespace VixenModules.Effect.Shapes
 			var sizeVariation = CalculateSizeVariation(_intervalPosFactor, m.LocationRatio1);
 			var minSize = centerSize - (sizeVariation / 2);
 			var maxSize = centerSize + (sizeVariation / 2);
-			if (minSize <= 9) minSize = 10; // No point having a shape that can't be seen.
 
 			switch (SizeMode)
 			{
@@ -1937,7 +1936,7 @@ namespace VixenModules.Effect.Shapes
 
 		private int CalculateYOffset(double intervalPos, int height)
 		{
-			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), height, -height);
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), -height, height);
 		}
 
 		private int CalculateAngle(double intervalPos)
