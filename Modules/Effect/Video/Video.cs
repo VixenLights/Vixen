@@ -530,21 +530,24 @@ namespace VixenModules.Effect.Video
 				_reader = new VideoFileReader();
 				_reader.Open(videoFilename);
 				var count = _reader.FrameCount;
-				var seconds = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
+				var videoTimespan = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
 				var frameScale = _reader.FrameRate.Value / 20;
-				Console.Out.WriteLine($"{_reader.FrameRate}, {_reader.CodecName}, {_reader.FrameCount}, {seconds}");
+				//Console.Out.WriteLine($"{_reader.FrameRate}, {_reader.CodecName}, {_reader.FrameCount}, {videoTimespan}");
 				_reader.Close();
 				_reader.Dispose();
 
 				//Gets Video length and will continue if users start position is less then the video length.
-				ffmpeg.ffmpeg videoLengthInfo = new ffmpeg.ffmpeg(videoFilename);
-				string result = videoLengthInfo.MakeThumbnails(_data.Video_DataPath);
-				int index = result.IndexOf("Duration: ");
-				string videoInfo = result.Substring(index + 10, 8);
-				string[] words = videoInfo.Split(':');
-				TimeSpan videoTimeSpan = new TimeSpan(Int32.Parse(words[0]), Int32.Parse(words[1]), Int32.Parse(words[2]));
-				VideoLength = (int)videoTimeSpan.TotalSeconds;
+				//ffmpeg.ffmpeg videoLengthInfo = new ffmpeg.ffmpeg(videoFilename);
+				//string result = videoLengthInfo.MakeThumbnails(_data.Video_DataPath);
+				//int index = result.IndexOf("Duration: ");
+				//string videoInfo = result.Substring(index + 10, 8);
+				//string[] words = videoInfo.Split(':');
+				//TimeSpan videoTimeSpan = new TimeSpan(Int32.Parse(words[0]), Int32.Parse(words[1]), Int32.Parse(words[2]));
+				//VideoLength = (int)videoTimeSpan.TotalSeconds;
 
+				//Console.Out.WriteLine($"ffmpeg length {videoTimeSpan} / Seconds {VideoLength} - Calculated {seconds} / Seconds {seconds.TotalSeconds}");
+
+				VideoLength = (int)videoTimespan.TotalSeconds;
 				//Gets selected video if Video length is longer then the entered start time.
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1)))
 				{
@@ -554,6 +557,7 @@ namespace VixenModules.Effect.Video
 					
 					//_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
 					_currentMovieImageNum = 0;
+					//hieght needs to be evenly divisible to work or ffmpeg complains.
 					if (renderHeight % 2 != 0)
 					{
 						renderHeight++;
