@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 
 namespace ffmpeg
@@ -52,7 +53,7 @@ namespace ffmpeg
 				   + " \"" + outputPath + "\\%5d.bmp\"";
 			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
 			ffmpegPath += "Common\\ffmpeg.exe";
-
+			Console.Out.WriteLine(args);
 			ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
 			psi.UseShellExecute = false;
 			psi.CreateNoWindow = true;
@@ -60,6 +61,24 @@ namespace ffmpeg
 			process.StartInfo = psi;
 			process.Start();
 			process.WaitForExit();
+		}
+
+		public void MakeScaledVideo(string outputPath, double startPosition, double duration, int width, int height, double frameScale, bool maintainAspect, int frameRate, string colorType, int rotateVideo)
+		{
+			int maintainAspectValue = maintainAspect ? -1 : height;
+			//make arguements string
+			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration}{colorType} -vf \"setpts={frameScale}*PTS, scale={width}:{maintainAspectValue}, rotate={rotateVideo}*(PI/180)\" -r {frameRate} \"{outputPath}\\video{Path.GetExtension(_movieFile)}\"";
+			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
+			ffmpegPath += "Common\\ffmpeg.exe";
+			Console.Out.WriteLine(args);
+			ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
+			psi.UseShellExecute = false;
+			psi.CreateNoWindow = true;
+			Process process = new Process();
+			process.StartInfo = psi;
+			process.Start();
+			process.WaitForExit();
+			
 		}
 
 		//Get Video Info for native Video effect

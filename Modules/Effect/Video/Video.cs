@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using Accord.Video.FFMPEG;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -39,6 +40,7 @@ namespace VixenModules.Effect.Video
 		private int _xoffset;
 		private int _yoffset;
 		private FastPixel.FastPixel _fp;
+		private VideoFileReader _reader;
 		public Video()
 		{
 			_data = new VideoData();
@@ -480,12 +482,17 @@ namespace VixenModules.Effect.Video
 			if (_processVideo && _data.FileName != "")
 				ProcessMovie(_data.Video_DataPath);
 			_currentMovieImageNum = 0;
+			_reader = new VideoFileReader();
+			_reader.Open(Path.Combine(_data.Video_DataPath, $"video{Path.GetExtension(_data.FileName)}"));
 		}
 
 		protected override void CleanUpRender()
 		{
 			_fp?.Dispose();
 			_fp = null;
+			_reader.Close();
+			_reader.Dispose();
+			_reader = null;
 		}
 
 		private void ProcessMovie(string folder)
@@ -519,6 +526,16 @@ namespace VixenModules.Effect.Video
 			string videoFilename = Path.Combine(_videoPath, _data.FileName);
 			try
 			{
+
+				_reader = new VideoFileReader();
+				_reader.Open(videoFilename);
+				var count = _reader.FrameCount;
+				var seconds = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
+				var frameScale = _reader.FrameRate.Value / 20;
+				Console.Out.WriteLine($"{_reader.FrameRate}, {_reader.CodecName}, {_reader.FrameCount}, {seconds}");
+				_reader.Close();
+				_reader.Dispose();
+
 				//Gets Video length and will continue if users start position is less then the video length.
 				ffmpeg.ffmpeg videoLengthInfo = new ffmpeg.ffmpeg(videoFilename);
 				string result = videoLengthInfo.MakeThumbnails(_data.Video_DataPath);
@@ -532,10 +549,17 @@ namespace VixenModules.Effect.Video
 				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1)))
 				{
 					ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(videoFilename);
-					converter.MakeThumbnails(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1))),
-						renderWidth, renderHeight, MaintainAspect, frameRate, colorType, RotateVideo);
-					_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
+					//converter.MakeThumbnails(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1))),
+					//	renderWidth, renderHeight, MaintainAspect, frameRate, colorType, RotateVideo);
+					
+					//_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
 					_currentMovieImageNum = 0;
+					if (renderHeight % 2 != 0)
+					{
+						renderHeight++;
+					}
+					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
+						renderWidth, renderHeight, frameScale, MaintainAspect, 20, colorType, RotateVideo);
 				}
 				else
 				{
@@ -618,10 +642,12 @@ namespace VixenModules.Effect.Video
 			_position = (intervalPos * Speed) % 1;
 
 			// If we don't have any pictures, do nothing!
-			if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
-				return;
+			//if (_moviePicturesFileList == null || !_moviePicturesFileList.Any())
+			//	return;
 
-			int pictureCount = _moviePicturesFileList.Count;
+			if(_reader.FrameCount <= 0) return;
+
+			var pictureCount = _reader.FrameCount;//_moviePicturesFileList.Count;
 
 			if (PlayBackSpeed > 0)
 			{
@@ -641,9 +667,17 @@ namespace VixenModules.Effect.Video
 				_currentMovieImageNum = currentImage = 0;
 
 			// copy image to buffer
-			Bitmap resizeImage = new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage]));
+			if (currentImage >= _reader.FrameCount)
+			{
+				return;
+			}
+			//Bitmap resizeImage = new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage]));
+			var i = _reader.ReadVideoFrame(currentImage);
+			Bitmap image = new Bitmap(i); //ensure it is the right 32bbpArgb format to work around the broken fast pixel logic that can't deal 
+			//with 24bppRgb
+			i.Dispose();
 			
-			_fp = new FastPixel.FastPixel(resizeImage);
+			_fp = new FastPixel.FastPixel(image);
 
 			_imageWi = _fp.Width;
 			_imageHt = _fp.Height;
