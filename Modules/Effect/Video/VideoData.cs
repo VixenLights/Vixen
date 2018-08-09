@@ -32,6 +32,7 @@ namespace VixenModules.Effect.Video
 			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			MovementRate = 4;
+			StretchToGrid = false;
 		}
 
 		[DataMember]
@@ -60,12 +61,15 @@ namespace VixenModules.Effect.Video
 
 		[DataMember]
 		public bool FitToTime { get; set; }
-
+		
 		[DataMember]
 		public string FileName { get; set; }
 
 		[DataMember]
 		public bool ScaleToGrid { get; set; }
+
+		[DataMember]
+		public bool StretchToGrid { get; set; }
 
 		[DataMember]
 		public bool MaintainAspect { get; set; }
@@ -154,7 +158,8 @@ namespace VixenModules.Effect.Video
 				FileName = FileName,
 				EffectColorType = EffectColorType,
 				MaintainAspect = MaintainAspect,
-				MovementRate = MovementRate
+				MovementRate = MovementRate,
+				StretchToGrid = StretchToGrid
 			};
 			return result;
 		}
