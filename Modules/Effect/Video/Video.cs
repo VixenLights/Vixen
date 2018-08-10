@@ -23,7 +23,6 @@ namespace VixenModules.Effect.Video
 	{
 		private const int SpeedFactor = 4;
 		private VideoData _data;
-		private List<string> _moviePicturesFileList;
 		private double _currentMovieImageNum;
 		private readonly string _videoPath = VideoDescriptor.ModulePath;
 		private readonly string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
@@ -37,6 +36,7 @@ namespace VixenModules.Effect.Video
 		private int _yoffset;
 		private FastPixel.FastPixel _fp;
 		private VideoFileReader _reader;
+		private bool _videoFileDetected;
 
 		public Video()
 		{
@@ -108,7 +108,6 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
-		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(3)]
 		public Curve XOffsetCurve
 		{
@@ -126,7 +125,6 @@ namespace VixenModules.Effect.Video
 		[ProviderCategory(@"Movement", 1)]
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
-		//[NumberRange(-100, 100, 1)]
 		[PropertyOrder(3)]
 		public Curve YOffsetCurve
 		{
@@ -175,8 +173,8 @@ namespace VixenModules.Effect.Video
 			{
 				_data.Orientation = value;
 				StringOrientation = value;
-				IsDirty = true;
 				_processVideo = true;
+				IsDirty = true;
 				OnPropertyChanged();
 			}
 		}
@@ -211,7 +209,7 @@ namespace VixenModules.Effect.Video
 			{
 				_data.EffectColorType = value;
 				IsDirty = true;
-				_processVideo = true;
+				_processVideo = false;
 				OnPropertyChanged();
 			}
 		}
@@ -228,7 +226,8 @@ namespace VixenModules.Effect.Video
 			{
 				_data.StretchToGrid = value;
 				IsDirty = true;
-				if (StretchToGrid) MaintainAspect = true;
+				_processVideo = true;
+				if (StretchToGrid) MaintainAspect = false;
 				UpdateScaleAttribute();
 				OnPropertyChanged();
 			}
@@ -305,7 +304,7 @@ namespace VixenModules.Effect.Video
 			{
 				_data.VideoLength = value;
 				IsDirty = true;
-				_processVideo = true;
+				_processVideo = false;
 				OnPropertyChanged();
 			}
 		}
@@ -498,21 +497,28 @@ namespace VixenModules.Effect.Video
 		
 		protected override void SetupRender()
 		{
-			if (_processVideo && _data.FileName != "")
-				ProcessMovie(_data.Video_DataPath);
-			_currentMovieImageNum = 0;
-			if (_data.FileName == "") return;
+			if ( _data.FileName == "") return;
+
+			if (_processVideo) ProcessMovie(_data.Video_DataPath);
+			if (_videoFileDetected)
+			{
+				_currentMovieImageNum = 0;
 			_reader = new VideoFileReader();
 			_reader.Open(Path.Combine(_data.Video_DataPath, $"video{Path.GetExtension(_data.FileName)}"));
+			}
 		}
 
 		protected override void CleanUpRender()
 		{
 			_fp?.Dispose();
 			_fp = null;
-			_reader.Close();
-			_reader.Dispose();
-			_reader = null;
+			if (_reader != null)
+			{
+				_reader.Close();
+				_reader.Dispose();
+				_reader = null;
+			}
+			_processVideo = true;
 		}
 
 		private void ProcessMovie(string folder)
@@ -524,10 +530,7 @@ namespace VixenModules.Effect.Video
 			}
 			_data.Video_DataPath = Path.Combine(_tempPath, Guid.NewGuid().ToString());
 			Directory.CreateDirectory(_data.Video_DataPath);
-			_moviePicturesFileList = null;
 			
-			string colorType = EffectColorType == EffectColorType.RenderGreyScale ? " -pix_fmt gray" : ""; //Effcet type will be Color or Gray scale
-
 			string videoFilename = Path.Combine(_videoPath, _data.FileName);
 			try
 			{
@@ -536,28 +539,47 @@ namespace VixenModules.Effect.Video
 				var count = _reader.FrameCount;
 				var videoTimespan = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
 				var frameScale = _reader.FrameRate.Value / 20;
-				
 				int renderHeight;
 				int renderWidth;
-				if (BufferHt < _reader.Height || BufferWi < _reader.Width)
+				string cropVideo = "";
+
+				if (StretchToGrid) // Will stretch the image to the grid size.
 				{
-					//Need to add some logic to protect against to small of buffers
-					//ffmpeg will refuse to scale it to small like may happen if some small model is set to strings.
-					renderHeight = BufferHt;
 					renderWidth = BufferWi;
+					renderHeight = BufferHt;
 				}
 				else
 				{
-					renderHeight = _reader.Height;
-					renderWidth = _reader.Width;
+					// Will scaled the image to the grid size.
+					GetNewImageSize(out renderWidth, out renderHeight, BufferWi, BufferHt);
+					if (!ScaleToGrid) // Scale and crop the image based on users scale setting
+					{
+						renderWidth = (int)(renderWidth * ((double)ScalePercent / 100 + 1));
+						renderHeight = (int)(renderHeight * ((double)ScalePercent / 100 + 1));
+						int cropWidth = Math.Min(renderWidth, BufferWi);
+						int cropHeight = Math.Min(renderHeight, BufferHt);
+						cropVideo = $", crop={cropWidth}:{cropHeight}:{renderWidth - cropWidth / 2}:{renderHeight - cropHeight / 2}";
+					}
+				}
+
+				// Will adjust the render size if element is below 10 as FFMPEG could refuse to scale.
+				if (renderHeight < 10 || renderWidth < 10)
+				{
+					// I don't see any point continuing if the element is this small.
+					if (renderHeight <= 2 || renderWidth <= 2)
+					{
+						_videoFileDetected = false;
+						return;
+					}
+					GetNewImageSize(out renderWidth, out renderHeight, 50, (int) (50 * ((double)renderWidth / renderHeight)));
 				}
 
 				_reader.Close();
 				_reader.Dispose();
-
+				
 				VideoLength = (int)videoTimespan.TotalSeconds;
-				//Gets selected video if Video length is longer then the entered start time.
-				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds*((double) PlayBackSpeed/100 + 1)))
+				// Gets selected video if Video length is longer then the entered start time.
+				if (VideoLength > StartTimeSeconds + (TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1)))
 				{
 					ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(videoFilename);
 					_currentMovieImageNum = 0;
@@ -565,14 +587,16 @@ namespace VixenModules.Effect.Video
 					if (renderHeight % 2 != 0) renderHeight++;
 					if (renderWidth % 2 != 0) renderWidth++;
 					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-						renderWidth, renderHeight, frameScale, MaintainAspect, 20, colorType, RotateVideo);
+						renderWidth, renderHeight, frameScale, MaintainAspect, 20, RotateVideo, cropVideo);
+					_videoFileDetected = true;
 				}
 				else
 				{
-					MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
+					MessageBoxForm.msgIcon = SystemIcons.Error; // This is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Entered Start Time plus Effect length is greater than the Video Length of " + _data.FileName,
 						"Invalid Start Time. Decrease the Start Time", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
+					_videoFileDetected = false;
 				}
 			}
 			catch (Exception ex)
@@ -580,6 +604,7 @@ namespace VixenModules.Effect.Video
 				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
 					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
+				_videoFileDetected = false;
 			}
 		}
 
@@ -587,7 +612,7 @@ namespace VixenModules.Effect.Video
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			if (_data.FileName == "") return;
+			if (!_videoFileDetected) return;
 			InitFrameData(frame, out double intervalPos, out double intervalPosFactor, out double level, out double adjustedBrightness);
 			InitialRender(intervalPos, intervalPosFactor);
 			if (_fp != null)
@@ -608,7 +633,7 @@ namespace VixenModules.Effect.Video
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			if (_data.FileName == "") return;
+			if (!_videoFileDetected) return;
 			var bufferWi = BufferWi;
 			var bufferHt = BufferHt;
 			//these lookups are a bit expensive when called a lot of times
@@ -646,10 +671,17 @@ namespace VixenModules.Effect.Video
 		{
 			_position = (intervalPos * Speed) % 1;
 
-			// If we don't have any pictures, do nothing!
-			if(_reader.FrameCount <= 0) return;
-
 			var pictureCount = _reader.FrameCount;
+			int currentImage = Convert.ToInt32(_currentMovieImageNum);
+			if (currentImage >= pictureCount || currentImage < 0) _currentMovieImageNum = 0;
+
+			// Grab image from video
+			var img = _reader.ReadVideoFrame((int)_currentMovieImageNum);
+			
+			// Convert to Grey scale if selected.
+			_fp = EffectColorType == EffectColorType.RenderGreyScale ? new FastPixel.FastPixel(new Bitmap(ConvertToGrayScale(img))) : new FastPixel.FastPixel(new Bitmap(img));
+
+			img.Dispose();
 
 			if (PlayBackSpeed > 0)
 			{
@@ -664,42 +696,6 @@ namespace VixenModules.Effect.Video
 				_currentMovieImageNum++;
 			}
 
-			int currentImage = Convert.ToInt32(_currentMovieImageNum);
-			if (currentImage >= pictureCount || currentImage < 0)
-				_currentMovieImageNum = currentImage = 0;
-
-			// copy image to buffer
-			if (currentImage >= _reader.FrameCount) return;
-			
-			var i = _reader.ReadVideoFrame(currentImage);
-			int renderWidth = BufferWi;
-			int renderHeight = BufferHt;
-			if (!ScaleToGrid && !StretchToGrid)
-			{
-				renderWidth = (int) (BufferWi * ((double) ScalePercent / 100 + 1));
-				renderHeight = (int) (BufferHt * ((double) ScalePercent / 100 + 1));
-			}
-
-			if (StretchToGrid)
-			{
-				var newImage = new Bitmap(BufferWi, BufferHt);
-				Graphics.FromImage(newImage).DrawImage(i, 0, 0, BufferWi, BufferHt);
-				_fp = new FastPixel.FastPixel(newImage);
-			}
-			else
-			{
-				if (i.Height == renderHeight && i.Width == renderWidth)
-				{
-					//ensure it is the right 32bbpArgb format to work around the broken fast pixel logic that can't deal 
-					//with 24bppRgb
-					_fp = new FastPixel.FastPixel(new Bitmap(i));
-				}
-				else
-				{
-					_fp = new FastPixel.FastPixel(ScalePictureImage(i, renderWidth, renderHeight));
-				}
-			}
-			i.Dispose();
 			_imageWi = _fp.Width;
 			_imageHt = _fp.Height;
 			_yoffset = (BufferHt + _imageHt) / 2;
@@ -756,7 +752,7 @@ namespace VixenModules.Effect.Video
 					break;
 			}
 		}
-
+		
 		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int frame, double level, double adjustedBrightness, ref int bufferHt, ref int bufferWi, bool locations=false, int bufferHtOffset = 0, int bufferWiOffset=0)
 		{
 			int yCoord = y;
@@ -777,6 +773,7 @@ namespace VixenModules.Effect.Video
 			{
 				fpColor = GetIntensity(level, _fp.GetPixel(x, y), adjustedBrightness);
 			}
+
 			switch (Type)
 			{
 				case EffectType.RenderPicturePeekaboo0:
@@ -954,20 +951,35 @@ namespace VixenModules.Effect.Video
 			return fpColor;
 		}
 
-		public static Bitmap ScalePictureImage(Bitmap image, int maxWidth, int maxHeight)
+		private void GetNewImageSize(out int renderWidth, out int renderHeight, int maxWidth, int maxHeight)
 		{
-			lock (image)
+			var ratioX = (double) maxWidth / _reader.Width;
+			var ratioY = (double) maxHeight / _reader.Height;
+			var ratio = maxHeight > maxWidth ? Math.Max(ratioX, ratioY) : Math.Min(ratioX, ratioY);
+			renderWidth = (int) (_reader.Width * ratio);
+			renderHeight = (int) (_reader.Height * ratio);
+			if (renderHeight <= 0) renderHeight = 1;
+			if (renderWidth <= 0) renderWidth = 1;
+		}
+
+		public static Image ConvertToGrayScale(Bitmap srce)
+		{
+			//Bitmap bmp = new Bitmap(srce.Width, srce.Height);
+			using (Graphics gr = Graphics.FromImage(srce))
 			{
-				var ratioX = (double)maxWidth / image.Width;
-				var ratioY = (double)maxHeight / image.Height;
-				var ratio = Math.Min(ratioX, ratioY);
-				var newWidth = (int)(image.Width * ratio);
-				var newHeight = (int)(image.Height * ratio);
-				if (newHeight <= 0) newHeight = 1;
-				if (newWidth <= 0) newWidth = 1;
-				var newImage = new Bitmap(newWidth, newHeight);
-				Graphics.FromImage(newImage).DrawImage(image, 0, 0, newWidth, newHeight);
-				return newImage;
+				var matrix = new float[][]
+				{
+					new float[] {0.299f, 0.299f, 0.299f, 0, 0},
+					new float[] {0.587f, 0.587f, 0.587f, 0, 0},
+					new float[] {0.114f, 0.114f, 0.114f, 0, 0},
+					new float[] {0, 0, 0, 1, 0},
+					new float[] {0, 0, 0, 0, 1}
+				};
+				var ia = new System.Drawing.Imaging.ImageAttributes();
+				ia.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix(matrix));
+				var rc = new Rectangle(0, 0, srce.Width, srce.Height);
+				gr.DrawImage(srce, rc, 0, 0, srce.Width, srce.Height, GraphicsUnit.Pixel, ia);
+				return srce;
 			}
 		}
 
