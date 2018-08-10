@@ -352,7 +352,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			zoomUnderMousePositionToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), false);
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
-
+			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
@@ -1356,8 +1356,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					SequenceNotModified();
 				}
 
-				//PopulateMarkSnapTimes();
-
 				if (_sequence.TimePerPixel > TimeSpan.Zero)
 				{
 					TimelineControl.TimePerPixel = _sequence.TimePerPixel;
@@ -1537,16 +1535,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_autoSaveTimer.Stop();
 			}
-		}
-
-		
-
-		/// <summary>
-		/// Populates the mark snaptimes in the grid.
-		/// </summary>
-		private void PopulateMarkSnapTimes()
-		{
-			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
 		}
 
 		private void UpdateGridSnapTimes()
@@ -2937,7 +2925,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					mc.FillGapTimes(newMark);
 				}
 
-				PopulateMarkSnapTimes();
 				SequenceModified();
 				CheckAndRenderDirtyElementsAsync();
 				if (!suppressUndo)
@@ -3405,7 +3392,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			CheckAndRenderDirtyElementsAsync();
-			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
 
@@ -3421,7 +3407,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			CheckAndRenderDirtyElementsAsync();
-			PopulateMarkSnapTimes();
 			SequenceModified();
 		}
 

@@ -181,9 +181,11 @@
       <DependentUpon>AutomaticMusicDetection.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
-    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CheckBoxState.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CheckBoxStateBase.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\CollectionTypeCheckBoxState.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\LevelCheckBoxState.cs" />
     <Compile Include="Forms\WPF\MarksDocker\Views\MarkCollectionView.xaml.cs">
       <DependentUpon>MarkCollectionView.xaml</DependentUpon>
     </Compile>

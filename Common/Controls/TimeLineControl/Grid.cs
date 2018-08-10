@@ -215,7 +215,15 @@ namespace Common.Controls.Timeline
 
 		public bool EnableSnapTo { get; set; }
 
-		public int SnapStrength { get; set; }
+		public int SnapStrength
+		{
+			get => _snapStrength;
+			set
+			{
+				_snapStrength = value;
+				CreateSnapPointsFromMarks();
+			}
+		}
 
 		public string CloseGap_Threshold { get; set; }
 		
@@ -1987,6 +1995,7 @@ namespace Common.Controls.Timeline
 		public void CreateSnapPointsFromMarks()
 		{
 			ClearSnapPoints();
+			if (_markCollections == null) return;
 			foreach (var mc in _markCollections)
 			{
 				if (!mc.ShowGridLines) continue;
@@ -2250,6 +2259,7 @@ namespace Common.Controls.Timeline
 
 		private long _renderQueueSize = 0;
 		private long _processed = 0;
+		private int _snapStrength;
 
 		//This whole thing need to be redone as a task once we get to .NET 4.5 where we can easily report progress
 		//from it.

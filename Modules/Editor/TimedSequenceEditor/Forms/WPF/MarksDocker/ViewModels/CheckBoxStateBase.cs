@@ -1,13 +1,11 @@
 ﻿using Catel.Data;
 using Catel.MVVM;
-using Vixen.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewModels
 {
-	public class CheckBoxState:ViewModelBase
+	public class CheckBoxStateBase : ViewModelBase
 	{
 		#region Text property
-
 		/// <summary>
 		/// Gets or sets the Text value.
 		/// </summary>
@@ -22,10 +20,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		public static readonly PropertyData TextProperty = RegisterProperty("Text", typeof(string));
 
+
 		#endregion
 
 		#region Value property
-
+		
 		/// <summary>
 		/// Gets or sets the Value value.
 		/// </summary>
@@ -39,9 +38,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// Value property data.
 		/// </summary>
 		public static readonly PropertyData ValueProperty = RegisterProperty("Value", typeof(bool));
-
+		
 		#endregion
-
-		public MarkCollectionType Type { get; set; }
 	}
 }
