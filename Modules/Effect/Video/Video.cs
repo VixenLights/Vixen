@@ -518,16 +518,15 @@ namespace VixenModules.Effect.Video
 		private void ProcessMovie(string folder)
 		{
 			//Delete old path and create new path for processed video
-			if (System.IO.Directory.Exists(_data.Video_DataPath))
+			if (Directory.Exists(_data.Video_DataPath))
 			{
 				Directory.Delete(folder, true);
 			}
 			_data.Video_DataPath = Path.Combine(_tempPath, Guid.NewGuid().ToString());
-			System.IO.Directory.CreateDirectory(_data.Video_DataPath);
+			Directory.CreateDirectory(_data.Video_DataPath);
 			_moviePicturesFileList = null;
 			
 			string colorType = EffectColorType == EffectColorType.RenderGreyScale ? " -pix_fmt gray" : ""; //Effcet type will be Color or Gray scale
-			string frameRate = " -r " + 20; //Video Frame rate is set to 20 to matach Vixen
 
 			string videoFilename = Path.Combine(_videoPath, _data.FileName);
 			try
@@ -537,12 +536,13 @@ namespace VixenModules.Effect.Video
 				var count = _reader.FrameCount;
 				var videoTimespan = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
 				var frameScale = _reader.FrameRate.Value / 20;
-				//Console.Out.WriteLine($"{_reader.FrameRate}, {_reader.CodecName}, {_reader.FrameCount}, {videoTimespan}");
-
+				
 				int renderHeight;
 				int renderWidth;
 				if (BufferHt < _reader.Height || BufferWi < _reader.Width)
 				{
+					//Need to add some logic to protect against to small of buffers
+					//ffmpeg will refuse to scale it to small like may happen if some small model is set to strings.
 					renderHeight = BufferHt;
 					renderWidth = BufferWi;
 				}
@@ -551,7 +551,7 @@ namespace VixenModules.Effect.Video
 					renderHeight = _reader.Height;
 					renderWidth = _reader.Width;
 				}
-				
+
 				_reader.Close();
 				_reader.Dispose();
 
@@ -561,7 +561,7 @@ namespace VixenModules.Effect.Video
 				{
 					ffmpeg.ffmpeg converter = new ffmpeg.ffmpeg(videoFilename);
 					_currentMovieImageNum = 0;
-					// Height ad Width needs to be evenly divisible to work or ffmpeg complains.
+					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (renderHeight % 2 != 0) renderHeight++;
 					if (renderWidth % 2 != 0) renderWidth++;
 					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
@@ -672,31 +672,34 @@ namespace VixenModules.Effect.Video
 			if (currentImage >= _reader.FrameCount) return;
 			
 			var i = _reader.ReadVideoFrame(currentImage);
-			Bitmap image = new Bitmap(i); //ensure it is the right 32bbpArgb format to work around the broken fast pixel logic that can't deal 
-			//with 24bppRgb
-			i.Dispose();
 			int renderWidth = BufferWi;
 			int renderHeight = BufferHt;
 			if (!ScaleToGrid && !StretchToGrid)
 			{
 				renderWidth = (int) (BufferWi * ((double) ScalePercent / 100 + 1));
 				renderHeight = (int) (BufferHt * ((double) ScalePercent / 100 + 1));
-				// Height and Width needs to be evenly divisible to work or ffmpeg complains.
-				if (renderHeight % 2 != 0) renderHeight++;
-				if (renderWidth % 2 != 0) renderWidth++;
 			}
 
 			if (StretchToGrid)
 			{
 				var newImage = new Bitmap(BufferWi, BufferHt);
-				Graphics.FromImage(newImage).DrawImage(image, 0, 0, BufferWi, BufferHt);
+				Graphics.FromImage(newImage).DrawImage(i, 0, 0, BufferWi, BufferHt);
 				_fp = new FastPixel.FastPixel(newImage);
 			}
 			else
 			{
-				_fp = new FastPixel.FastPixel(ScalePictureImage(new Bitmap(image), renderWidth, renderHeight));
+				if (i.Height == renderHeight && i.Width == renderWidth)
+				{
+					//ensure it is the right 32bbpArgb format to work around the broken fast pixel logic that can't deal 
+					//with 24bppRgb
+					_fp = new FastPixel.FastPixel(new Bitmap(i));
+				}
+				else
+				{
+					_fp = new FastPixel.FastPixel(ScalePictureImage(i, renderWidth, renderHeight));
+				}
 			}
-
+			i.Dispose();
 			_imageWi = _fp.Width;
 			_imageHt = _fp.Height;
 			_yoffset = (BufferHt + _imageHt) / 2;
