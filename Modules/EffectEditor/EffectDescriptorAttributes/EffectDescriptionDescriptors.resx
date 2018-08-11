@@ -735,4 +735,7 @@
   <data name="SizeMode" xml:space="preserve">
     <value>Determines how the shapes size changes.</value>
   </data>
+  <data name="StretchToGrid" xml:space="preserve">
+    <value>Adjusts image dimensions to fit the grid size.</value>
+  </data>
 </root>

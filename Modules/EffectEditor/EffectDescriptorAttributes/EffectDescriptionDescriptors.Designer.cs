@@ -1628,6 +1628,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts image dimensions to fit the grid size..
+        /// </summary>
+        internal static string StretchToGrid {
+            get {
+                return ResourceManager.GetString("StretchToGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The count of strings the effect will use..
         /// </summary>
         internal static string StringCount {

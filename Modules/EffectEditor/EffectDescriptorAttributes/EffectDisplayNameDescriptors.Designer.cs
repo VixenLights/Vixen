@@ -1682,6 +1682,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stretch To Grid.
+        /// </summary>
+        internal static string StretchToGrid {
+            get {
+                return ResourceManager.GetString("StretchToGrid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to String Count.
         /// </summary>
         internal static string StringCount {
