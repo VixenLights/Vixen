@@ -50,19 +50,29 @@
 												<Image Source="/Resources;component/colors.png" Width="16" Height="16"/>
 											</MenuItem.Icon>
 										</MenuItem>
-											<MenuItem Header="Type"  ItemsSource="{Binding CheckBoxStates}">
-												<MenuItem.ItemContainerStyle>
-													<Style TargetType="MenuItem">
-														<Setter Property="Header" Value="{Binding Text}" />
-														<Setter Property="IsCheckable" Value="True" />
+										<MenuItem Header="Weight" ItemsSource="{Binding LevelCheckBoxStates}">
+											<MenuItem.ItemContainerStyle>
+												<Style TargetType="MenuItem">
+													<Setter Property="Header" Value="{Binding Text}" />
+													<Setter Property="IsCheckable" Value="True" />
+													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+													<Setter Property="Command" Value="{Binding DataContext.ResolveLevelCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+													<Setter Property="CommandParameter" Value="{Binding}" />
+												</Style>
+											</MenuItem.ItemContainerStyle>
+										</MenuItem>
+										<MenuItem Header="Type"  ItemsSource="{Binding CollectionTypeCheckBoxStates}">
+											<MenuItem.ItemContainerStyle>
+												<Style TargetType="MenuItem">
+													<Setter Property="Header" Value="{Binding Text}" />
+													<Setter Property="IsCheckable" Value="True" />
 
-														<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-														<Setter Property="Command" Value="{Binding DataContext.ResolveCollectionTypeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
-														<Setter Property="CommandParameter" Value="{Binding}" />
-													</Style>
-												</MenuItem.ItemContainerStyle>
-											</MenuItem>
-										
+													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+													<Setter Property="Command" Value="{Binding DataContext.ResolveCollectionTypeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+													<Setter Property="CommandParameter" Value="{Binding}" />
+												</Style>
+											</MenuItem.ItemContainerStyle>
+										</MenuItem>
 									</ContextMenu>
 								</TextBlock.ContextMenu>
 								<i:Interaction.Triggers>

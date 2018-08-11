@@ -92,7 +92,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 				item.Checked = true;
-				PopulateMarkSnapTimes();				
+				PopulateSnapStrength(Convert.ToInt32(item.Tag));		
 			} 			
 			// clicking the currently checked one--do not uncheck it			
 		}

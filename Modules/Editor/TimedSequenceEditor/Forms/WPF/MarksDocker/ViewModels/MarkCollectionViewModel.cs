@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Catel.Data;
 using Catel.MVVM;
-using Common.WPFCommon.Command;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 
@@ -19,7 +18,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		public MarkCollectionViewModel(MarkCollection markCollection)
 		{
 			MarkCollection = markCollection;
-			SetupCheckboxes();
+			SetupCollectionTypeCheckboxes();
+			SetupLevelCheckboxes();
 		}
 
 		#region Overrides of ViewModelBase
@@ -29,7 +29,12 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		{
 			return Task.Factory.StartNew(() =>
 			{
-				foreach (var checkBoxState in CheckBoxStates)
+				foreach (var checkBoxState in CollectionTypeCheckBoxStates)
+				{
+					checkBoxState.CloseViewModelAsync(true);
+				}
+
+				foreach (var checkBoxState in LevelCheckBoxStates)
 				{
 					checkBoxState.CloseViewModelAsync(true);
 				}
@@ -130,6 +135,25 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// IsDefault property data.
 		/// </summary>
 		public static readonly PropertyData IsDefaultProperty = RegisterProperty("IsDefault", typeof(bool), null);
+
+		#endregion
+
+		#region Level property
+
+		/// <summary>
+		/// Gets or sets the SnapLevel value.
+		/// </summary>
+		[ViewModelToModel("MarkCollection")]
+		public int Level
+		{
+			get { return GetValue<int>(LevelProperty); }
+			set { SetValue(LevelProperty, value); }
+		}
+
+		/// <summary>
+		/// SnapLevel property data.
+		/// </summary>
+		public static readonly PropertyData LevelProperty = RegisterProperty("Level", typeof(int), null);
 
 		#endregion
 
@@ -308,45 +332,63 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
-		#region CheckBoxStates property
+		#region CollectionTypeCheckBoxStates property
 
 		/// <summary>
 		/// Gets or sets the CheckBoxStates value.
 		/// </summary>
-		public ObservableCollection<CheckBoxState> CheckBoxStates
+		public ObservableCollection<CollectionTypeCheckBoxState> CollectionTypeCheckBoxStates
 		{
-			get { return GetValue<ObservableCollection<CheckBoxState>>(CheckBoxStatesProperty); }
+			get { return GetValue<ObservableCollection<CollectionTypeCheckBoxState>>(CheckBoxStatesProperty); }
 			set { SetValue(CheckBoxStatesProperty, value); }
 		}
 
 		/// <summary>
 		/// CheckBoxStates property data.
 		/// </summary>
-		public static readonly PropertyData CheckBoxStatesProperty = RegisterProperty("CheckBoxStates", typeof(ObservableCollection<CheckBoxState>));
+		public static readonly PropertyData CheckBoxStatesProperty = RegisterProperty("CollectionTypeCheckBoxStates", typeof(ObservableCollection<CollectionTypeCheckBoxState>));
 
 		#endregion
 
+		#region LevelCheckBoxStates property
+
+		/// <summary>
+		/// Gets or sets the LevelCheckBoxStates value.
+		/// </summary>
+		public ObservableCollection<LevelCheckBoxState> LevelCheckBoxStates
+		{
+			get { return GetValue<ObservableCollection<LevelCheckBoxState>>(LevelCheckBoxStatesProperty); }
+			set { SetValue(LevelCheckBoxStatesProperty, value); }
+		}
+
+		/// <summary>
+		/// LevelCheckBoxStates property data.
+		/// </summary>
+		public static readonly PropertyData LevelCheckBoxStatesProperty = RegisterProperty("LevelCheckBoxStates", typeof(ObservableCollection<LevelCheckBoxState>));
+
+		#endregion
+		
 		#region ResolveCollectionType command
 
-		private Command<CheckBoxState> _resolveCollectionTypeCommand;
+		private Command<CollectionTypeCheckBoxState> _resolveCollectionTypeCommand;
 
 		/// <summary>
 		/// Gets the ResolveCollectionType command.
 		/// </summary>
-		public Command<CheckBoxState> ResolveCollectionTypeCommand
+		public Command<CollectionTypeCheckBoxState> ResolveCollectionTypeCommand
 		{
-			get { return _resolveCollectionTypeCommand ?? (_resolveCollectionTypeCommand = new Command<CheckBoxState>(ResolveCollectionType)); }
+			get { return _resolveCollectionTypeCommand ?? (_resolveCollectionTypeCommand = new Command<CollectionTypeCheckBoxState>(ResolveCollectionType)); }
 		}
 
 		/// <summary>
 		/// Method to invoke when the ResolveCollectionType command is executed.
 		/// </summary>
-		private void ResolveCollectionType(CheckBoxState state)
+		private void ResolveCollectionType(CollectionTypeCheckBoxState state)
 		{
 			if (state.Value)
 			{
 				CollectionType = state.Type;
-				foreach (var checkBoxState in CheckBoxStates.Where(x => x.Type != state.Type))
+				foreach (var checkBoxState in CollectionTypeCheckBoxStates.Where(x => x.Type != state.Type))
 				{
 					checkBoxState.Value = false;
 				}
@@ -355,13 +397,50 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region ResolveSnapLevelCommand command
 
-		private void SetupCheckboxes()
+		private Command<LevelCheckBoxState> _resolveLevelCommand;
+
+		/// <summary>
+		/// Gets the ResolveSnapLevelCommand command.
+		/// </summary>
+		public Command<LevelCheckBoxState> ResolveLevelCommand
 		{
-			CheckBoxStates = new ObservableCollection<CheckBoxState>();
+			get { return _resolveLevelCommand ?? (_resolveLevelCommand = new Command<LevelCheckBoxState>(ResolveLevel)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ResolveSnapLevelCommand command is executed.
+		/// </summary>
+		private void ResolveLevel(LevelCheckBoxState state)
+		{
+			if (state.Value)
+			{
+				Level = state.Level;
+				foreach (var snapLevelCheckBoxState in LevelCheckBoxStates.Where(x => x.Level != state.Level))
+				{
+					snapLevelCheckBoxState.Value = false;
+				}
+			}
+		}
+
+		#endregion
+
+		private void SetupCollectionTypeCheckboxes()
+		{
+			CollectionTypeCheckBoxStates = new ObservableCollection<CollectionTypeCheckBoxState>();
 			foreach (MarkCollectionType value in Enum.GetValues(typeof(MarkCollectionType)))
 			{
-				CheckBoxStates.Add(new CheckBoxState() { Text = value.ToString(), Value = (value == CollectionType), Type = value});
+				CollectionTypeCheckBoxStates.Add(new CollectionTypeCheckBoxState() { Text = value.ToString(), Value = (value == CollectionType), Type = value});
+			}
+		}
+
+		private void SetupLevelCheckboxes()
+		{
+			LevelCheckBoxStates = new ObservableCollection<LevelCheckBoxState>();
+			for (int i = 1; i <= 6; i++)
+			{
+				LevelCheckBoxStates.Add(new LevelCheckBoxState { Text = i.ToString(), Value = Level == i, Level = i });
 			}
 		}
 	}

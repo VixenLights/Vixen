@@ -836,9 +836,10 @@ namespace Common.Controls.Timeline
 
 		private void _drawMarks(Graphics g)
 		{
-			Pen p = new Pen(Color.Black);
-			var origDashPattern = new []{0f};
+			if (_markCollections == null) return;
 
+			Pen p = new Pen(Color.Black);
+			
 			// iterate through all marks, and if it's visible, draw it
 			foreach (var labeledMarkCollection in _markCollections.Where(x => x.IsVisible))
 			{
