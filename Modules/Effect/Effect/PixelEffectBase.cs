@@ -16,6 +16,7 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect.Location;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
 using VixenModules.Property.Location;
+using VixenModules.Property.Orientation;
 
 namespace VixenModules.Effect.Effect
 {
@@ -130,6 +131,10 @@ namespace VixenModules.Effect.Effect
 				{
 					StringOrientation = StringOrientation.Vertical;
 				}
+				else
+				{
+					SetOrientation();
+				}
 				UpdateStringOrientationAttributes(true);
 				TargetPositioningChanged();
 				IsDirty = true;
@@ -230,7 +235,25 @@ namespace VixenModules.Effect.Effect
 
 		protected override void TargetNodesChanged()
 		{
+			if (TargetPositioning == TargetPositioningType.Strings)
+			{
+				SetOrientation();
+			}
 			CalculateStringCounts();
+		}
+
+		protected void SetOrientation()
+		{
+			var orientation = OrientationModule.GetOrientationForElement(TargetNodes.First());
+			switch (orientation)
+			{
+				case Orientation.Horizontal:
+					StringOrientation = StringOrientation.Horizontal;
+					break;
+				default:
+					StringOrientation = StringOrientation.Vertical;
+					break;
+			}
 		}
 
 		private void ConfigureStringBuffer()
