@@ -512,7 +512,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private Matrix4 CreatePerspective()
 		{
-			var perspective = Matrix4.CreatePerspectiveFieldOfView((float)ConvertToRadians(Fov), _aspectRatio, 1f, 7500f);
+			var perspective = Matrix4.CreatePerspectiveFieldOfView((float)ConvertToRadians(Fov), _aspectRatio>0?_aspectRatio:1, 1f, 7500f);
 			return perspective;
 		}
 
@@ -520,7 +520,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private void OnRenderFrame()
 		{
 			//Logging.Debug("Entering RenderFrame");
-			if (_isRendering || _formLoading) return;
+			if (_isRendering || _formLoading || WindowState==FormWindowState.Minimized) return;
 			UpdateStatusDistance(_camera.Position.Z);
 			_isRendering = true;
 			_sw.Restart();
