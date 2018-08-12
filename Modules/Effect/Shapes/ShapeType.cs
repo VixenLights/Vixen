@@ -69,6 +69,10 @@ namespace VixenModules.Effect.Shapes
 	{
 		[Description("Random")]
 		Random,
+		[Description("Balloon")]
+		Balloon,
+		[Description("Balloon2")]
+		Balloon2,
 		[Description("Bauble")]
 		Bauble,
 		[Description("Bauble2")]
@@ -97,6 +101,8 @@ namespace VixenModules.Effect.Shapes
 		SnowMan,
 		[Description("SnowMan2")]
 		SnowMan2,
+		[Description("Star")]
+		Star,
 		[Description("Stocking")]
 		Stocking,
 		[Description("Tree")]
