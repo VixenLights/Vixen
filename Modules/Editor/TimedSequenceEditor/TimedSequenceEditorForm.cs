@@ -2101,8 +2101,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)
 		{
 			//TimelineControl.ruler.ClearSelectedMarks();
-			MarksSelectionManager.Manager().ClearSelected();
-			Invalidate(true);
+			if (e.Button != MouseButtons.Right)
+			{
+				MarksSelectionManager.Manager().ClearSelected();
+				Invalidate(true);
+			}
 		}
 
 		protected void ElementContentChangedHandler(object sender, EventArgs e)
@@ -4765,6 +4768,50 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				data = dataObject.GetData(ClipboardFormatName.Name) as TimelineElementsClipboardData;
 			}
+			
+			List<TimeSpan> markStartTimes = new List<TimeSpan>();
+			List<KeyValuePair<EffectModelCandidate, int>> effects;
+			switch (PastingMode)
+			{
+				case PastingMode.VisibleMarks:
+				{
+					// We need to order the effects by Start time as they are currently ordered by Row index first which is
+					// no good for pasting to Mark Collection or Visible Marks.
+					effects = data.EffectModelCandidates.OrderBy(x => (x.Key.StartTime)).ToList();
+					for (int i = 0; i < _sequence.LabeledMarkCollections.Count; i++)
+					{
+						// Only continue process visible Mark collections
+						if (_sequence.LabeledMarkCollections[i].IsVisible)
+						{
+							for (int markIndex = 0;
+								markIndex < _sequence.LabeledMarkCollections[i].Marks.Count;
+								markIndex++)
+							{
+								if (pasteTime <= _sequence.LabeledMarkCollections[i].Marks[markIndex].StartTime)
+								{
+									for (int j = 0; j < effects.Count; j++)
+									{
+										// Will only add the Mark start times for required number of effects or number of
+										// marks available whichever is the lesser.
+										markStartTimes.Add(_sequence.LabeledMarkCollections[i].Marks[markIndex]
+											.StartTime);
+										markIndex++;
+										if (markIndex == _sequence.LabeledMarkCollections[i].Marks.Count) break;
+									}
+									break;
+								}
+							}
+						}
+					}
+					// If we processed multiple MArk Collections that were visible we need to sort the results so the Times are in ascending order.
+					markStartTimes.Sort();
+					break;
+				}
+				default:
+					// This is the standard paste
+					effects = data.EffectModelCandidates.ToList();
+					break;
+			}
 
 			if (data == null)
 				return result;
@@ -4773,13 +4820,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<Row> visibleRows = new List<Row>(TimelineControl.VisibleRows);
 			int topTargetRoxIndex = visibleRows.IndexOf(targetRow);
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
-			foreach (KeyValuePair<EffectModelCandidate, int> kvp in data.EffectModelCandidates)
+			foreach (KeyValuePair<EffectModelCandidate, int> kvp in effects)
 			{
+				if (PastingMode == PastingMode.VisibleMarks)
+				{
+					// now grab the start time of the next mark.
+					if (result == markStartTimes.Count) break; // will break if there are more effects then there are marks.
+					pasteTime = markStartTimes[result];
+				}
+
 				EffectModelCandidate effectModelCandidate = kvp.Key;
 				int relativeRow = kvp.Value;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
-				TimeSpan targetTime = effectModelCandidate.StartTime - offset + pasteTime;
+				TimeSpan targetTime = PastingMode != PastingMode.Default ? pasteTime : effectModelCandidate.StartTime - offset + pasteTime;
 				if (targetTime > TimelineControl.grid.TotalTime)
 				{
 					continue;
@@ -4825,6 +4879,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			return result;
 		}
+
+		public PastingMode PastingMode { get; private set; }
 
 		#endregion
 
@@ -5469,8 +5525,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     args.FirstMark += _timeLineGlobalStateManager.CursorPosition;
                 }
                 if (args.Placement != TranslatePlacement.Clipboard)
-                {
-                    pasted = ClipboardPaste(args.FirstMark);
+				{
+					PastingMode = PastingMode.Default;
+					pasted = ClipboardPaste(args.FirstMark);
                 }
                 if (pasted == 0)
                 {

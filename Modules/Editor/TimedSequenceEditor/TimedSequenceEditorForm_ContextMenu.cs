@@ -414,7 +414,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Enabled = ClipboardHasData()
 			};
 
-			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCut, contextMenuItemCopy,  contextMenuItemPaste});
+			ToolStripMenuItem contextMenuItemPasteToMarks = new ToolStripMenuItem("Paste to Marks", null, toolStripMenuItem_PasteToMarks_Click)
+			{
+				Image = Resources.page_white_paste,
+				//Enabled = ClipboardHasData()
+			};
+
+			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCut, contextMenuItemCopy,  contextMenuItemPaste, contextMenuItemPasteToMarks});
 
 			if (TimelineControl.SelectedElements.Any())
 			{
