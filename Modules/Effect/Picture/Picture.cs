@@ -671,7 +671,6 @@ namespace VixenModules.Effect.Picture
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			var bufferWi = BufferWi;
 			var bufferHt = BufferHt;
 
@@ -684,14 +683,12 @@ namespace VixenModules.Effect.Picture
 				if (_fp != null)
 				{
 					_fp.Lock();
-					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					
+					foreach (var elementLocation in frameBuffer.ElementLocations)
 					{
-						foreach (var elementLocation in elementLocations)
-						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
-						}
+						CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, frame, level, adjustedBrightness, ref bufferHt, ref bufferWi);
 					}
-
+					
 					_fp.Unlock(false);
 				}
 			}
