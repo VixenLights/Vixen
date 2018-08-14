@@ -14,6 +14,8 @@ using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Utility;
+using VixenModules.Property.Orientation;
+using Orientation = VixenModules.Property.Orientation.Orientation;
 
 namespace VixenApplication.Setup.ElementTemplates
 {
@@ -79,6 +81,22 @@ namespace VixenApplication.Setup.ElementTemplates
 
 			ElementNode head = ElementNodeService.Instance.CreateSingle(null, NamingUtilities.Uniquify(elementNames,gridname), true, false);
 			result.Add(head);
+
+			if (radioButtonHorizontalFirst.Checked)
+			{
+				OrientationModule om;
+				if (head.Properties.Contains(OrientationDescriptor.ModuleId))
+				{
+					om = head.Properties.Get(OrientationDescriptor.ModuleId) as OrientationModule;
+				}
+				else
+				{
+					om = head.Properties.Add(OrientationDescriptor.ModuleId) as OrientationModule;
+				}
+
+				om.Orientation = Orientation.Horizontal;
+			}
+
 
 			int firstlimit, secondlimit;
 

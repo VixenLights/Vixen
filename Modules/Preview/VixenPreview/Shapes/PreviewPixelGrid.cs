@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Windows.Forms.Design;
+using VixenModules.Property.Orientation;
+using Orientation = VixenModules.Property.Orientation.Orientation;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
@@ -73,6 +75,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			StringCount = _strings.Count();
 
+			if (selectedNode.Properties.Contains(OrientationDescriptor._typeId))
+			{
+				var m = selectedNode.Properties.Get(OrientationDescriptor._typeId) as OrientationModule;
+				if (m.Orientation == Orientation.Horizontal)
+				{
+					_stringOrientation = StringOrientations.Horizontal;
+				}
+			}
 			// Lay out the pixels
 			Layout();
 		}

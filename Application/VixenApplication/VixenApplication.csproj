@@ -105,6 +105,11 @@
       <Name>Order</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\Property\Orientation\Orientation.csproj">
+      <Project>{3BCD7307-C584-4770-BC60-4142DDC88C76}</Project>
+      <Name>Orientation</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
