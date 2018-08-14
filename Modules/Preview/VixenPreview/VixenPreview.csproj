@@ -110,6 +110,11 @@
       <Name>Order</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Property\Orientation\Orientation.csproj">
+      <Project>{3bcd7307-c584-4770-bc60-4142ddc88c76}</Project>
+      <Name>Orientation</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Catel.Core, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
