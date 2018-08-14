@@ -1147,7 +1147,6 @@ namespace VixenModules.Effect.Shapes
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
-			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
@@ -1155,15 +1154,11 @@ namespace VixenModules.Effect.Shapes
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
 					InitialRender(frame, bitmap);
-					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
+					foreach (var elementLocation in frameBuffer.ElementLocations)
 					{
-						foreach (var elementLocation in elementLocations)
-						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
-						}
+						CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
 					}
 				}
-
 			}
 		}
 
@@ -1558,6 +1553,7 @@ namespace VixenModules.Effect.Shapes
 			var sizeVariation = CalculateSizeVariation(_intervalPosFactor, m.LocationRatio1);
 			var minSize = centerSize - (sizeVariation / 2);
 			var maxSize = centerSize + (sizeVariation / 2);
+			if (minSize < 1) minSize = 1;
 
 			switch (SizeMode)
 			{
@@ -1688,8 +1684,7 @@ namespace VixenModules.Effect.Shapes
 				var sizeVariation = CalculateSizeVariation(_intervalPosFactor, shape.LocationRatio1);
 				var minSize = centerSize - (sizeVariation / 2);
 				var maxSize = centerSize + (sizeVariation / 2);
-
-				if (minSize <= 9) minSize = 10;
+				
 				if (RemoveShape && !ScaleToGrid)
 				{
 					switch (shape.SizeMode)
@@ -1890,7 +1885,7 @@ namespace VixenModules.Effect.Shapes
 
 		private double CalculateCenterSizeSpeed(double intervalPosFactor)
 		{
-			return ScaleCurveToValue(CenterSizeSpeedCurve.GetValue(intervalPosFactor), 12, 10);
+			return ScaleCurveToValue(CenterSizeSpeedCurve.GetValue(intervalPosFactor), 16, 10);
 		}
 
 		private double CalculateSizeSpeedVariation(double intervalPosFactor)
@@ -1910,14 +1905,14 @@ namespace VixenModules.Effect.Shapes
 
 		private int CalculateSize(double intervalPosFactor, float locationRatio1)
 		{
-			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
+			int value = (int)ScaleCurveToValue(SizeCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 1);
 			if (value < 1) value = 1;
 			return value;
 		}
 
 		private int CalculateSizeVariation(double intervalPosFactor, float locationRatio1)
 		{
-			int value = (int)ScaleCurveToValue(SizeVariationCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 4);
+			int value = (int)ScaleCurveToValue(SizeVariationCurve.GetValue(intervalPosFactor), (int)(_minBuffer * 2 / locationRatio1), 1);
 			if (value < 1) value = 1;
 			return value;
 		}
