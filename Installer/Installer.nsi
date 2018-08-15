@@ -88,7 +88,8 @@ SetCompressorDictSize 64
 	!define BITS 32
 	!define BITS_READABLE "32-bit"
 	!define PROG_FILES $PROGRAMFILES
-	!define VC++_REDIST_NAMEx64 "vcredist_x86.exe"
+	!define VC++_REDIST_NAMEx86 "vcredist_x86.exe"
+	!define VC++_REDIST_NAMEx64 "vcredist_x64.exe"
 !else
 	!define BUILD_DIR ".\Release64"
 	!define BITS 64
