@@ -548,6 +548,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cycle Color.
+        /// </summary>
+        internal static string CycleColor {
+            get {
+                return ResourceManager.GetString("CycleColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data Type.
         /// </summary>
         internal static string DataType {

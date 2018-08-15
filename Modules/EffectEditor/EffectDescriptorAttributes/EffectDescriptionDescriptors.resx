@@ -738,4 +738,7 @@
   <data name="StretchToGrid" xml:space="preserve">
     <value>Adjusts image dimensions to fit the grid size.</value>
   </data>
+  <data name="CycleColor" xml:space="preserve">
+    <value>Will cycle through gradient colors for each word.</value>
+  </data>
 </root>
