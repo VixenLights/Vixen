@@ -1,5 +1,39 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.5u1 Release Build 
+
+** New Feature
+    * [VIX-2179] - Add Location Support to the Picture Effect
+    * [VIX-2478] - Add Location Support to the Video Effect
+
+** Improvement
+    * [VIX-2450] - Performance and Memory improvements to Effects Part 2
+    * [VIX-2464] - Log the build/release version to the info logs on startup to aid in diagnostics.
+    * [VIX-2468] - Change the Text effect visual representation on the timeline to show the users text.
+    * [VIX-2473] - Have the installer prevent the user from choosing their Desktop or Windows folder for install paths.
+    * [VIX-2474] - Change the Coundown effect visual representation on the timeline to show countdown values.
+    * [VIX-2482] - Add grid orientation property for elements to influence effect orientation
+    * [VIX-2485] - Restore some of the performance lost in the fix for VIX-2461
+    * [VIX-2495] - Picture effect locations render performance improvement.
+
+** Bug
+    * [VIX-2461] - Save Error/crash during export sequence
+    * [VIX-2466] - Lip-Sync effect is not properly ignoring case of the phonemes in Marks.
+    * [VIX-2467] - The token replacement message box in the preview does not center parent.
+    * [VIX-2469] - Vixen Crashing while ungrouping Custom Prop at preview editor 
+    * [VIX-2475] - More than 20 items in show, rearranging doesn't work correctly
+    * [VIX-2476] - Scheduler does not automatically start when it is enabled and Vixen is started.
+    * [VIX-2477] - Lips-sync fill mark gaps adds overlapping rests where they should not be.
+    * [VIX-2480] - Shapes effect fails to render when size is reduced to a low number.
+    * [VIX-2481] - Picture effect stretch to grid was not added to the name and description descriptors
+    * [VIX-2484] - Miscellaneous issues with Marks
+    * [VIX-2487] - Beat bar detection causing crash
+    * [VIX-2488] - Minimizing the OpenGL preview causes the preview to stop working.
+    * [VIX-2492] - Video effect fails to render in 32 and 64 bit when not running from Visual Studio.
+    * [VIX-2494] - Shapes effect can get into a state where it fails to render.
+
+
+
 Release Notes - Vixen 3 - 3.5 Release Build 
 
 ** Bug
