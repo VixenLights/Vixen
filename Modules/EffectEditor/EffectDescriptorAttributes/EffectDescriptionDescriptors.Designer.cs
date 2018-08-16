@@ -1115,7 +1115,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabled will adjust movement per number wheras disabled adjust movement over effect length..
+        ///   Looks up a localized string similar to Enabled will adjust movement per number where as disabled adjusts movement over effect length..
         /// </summary>
         internal static string PerIteration {
             get {

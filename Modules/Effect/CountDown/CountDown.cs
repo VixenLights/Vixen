@@ -31,6 +31,8 @@ namespace VixenModules.Effect.CountDown
 		private double _level;
 		private int _countDownNumberIteration;
 		private int _previousCountDownNumber;
+		private CountDownDirection _direction;
+		private static Random _random = new Random();
 
 		public CountDown()
 		{
@@ -417,7 +419,7 @@ namespace VixenModules.Effect.CountDown
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(6)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
 
@@ -425,7 +427,11 @@ namespace VixenModules.Effect.CountDown
 
 				{"AngleCurve", Direction == CountDownDirection.Rotate},
 
-				{"Speed", Direction != CountDownDirection.None}
+				{"Speed", Direction != CountDownDirection.None && Direction != CountDownDirection.Rotate},
+
+				{"CenterStop",Direction != CountDownDirection.None &&  Direction != CountDownDirection.Rotate},
+
+				{"PerIteration", Direction != CountDownDirection.None && Direction != CountDownDirection.Rotate}
 
 			};
 			SetBrowsable(propertyStates);
@@ -450,6 +456,7 @@ namespace VixenModules.Effect.CountDown
 			_font = Font;
 			_newFontSize = Font.Size;
 			_countDownNumberIteration = -1;
+			_direction = Direction;
 		}
 
 		protected override void CleanUpRender()
@@ -528,7 +535,7 @@ namespace VixenModules.Effect.CountDown
 				int yOffset = CalculateYOffset(intervalPosFactor, maxht);
 
 				//Rotate the text based off the angle setting
-				if (Direction == CountDownDirection.Rotate)
+				if (_direction == CountDownDirection.Rotate)
 				{
 					//move rotation point to center of image
 					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
@@ -539,7 +546,7 @@ namespace VixenModules.Effect.CountDown
 					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
 				}
 
-				switch (Direction)
+				switch (_direction)
 				{
 					case CountDownDirection.Left:
 					case CountDownDirection.Right:
@@ -554,7 +561,7 @@ namespace VixenModules.Effect.CountDown
 				int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
 				Point point;
 
-				switch (Direction)
+				switch (_direction)
 				{
 					case CountDownDirection.Left:
 						// left
@@ -688,9 +695,12 @@ namespace VixenModules.Effect.CountDown
 			{
 				_previousCountDownNumber = countDownNumber;
 				_countDownNumberIteration++;
+				if (Direction == CountDownDirection.Random)
+				{
+					_direction = (CountDownDirection)_random.Next(0, 6);
+				}
 			}
 			
-
 			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
 			{
 				TimeSpan time = TimeSpan.FromSeconds(countDownNumber);
