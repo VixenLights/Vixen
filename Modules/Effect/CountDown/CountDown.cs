@@ -29,6 +29,8 @@ namespace VixenModules.Effect.CountDown
 		private double _directionPosition;
 		private double _fade;
 		private double _level;
+		private int _countDownNumberIteration;
+		private int _previousCountDownNumber;
 
 		public CountDown()
 		{
@@ -41,7 +43,7 @@ namespace VixenModules.Effect.CountDown
 		{
 			get
 			{
-				if (!Colors.CheckLibraryReference())
+				if (GradientColors.Any(x => !x.CheckLibraryReference()))
 				{
 					base.IsDirty = true;
 				}
@@ -286,12 +288,12 @@ namespace VixenModules.Effect.CountDown
 		[ProviderDisplayName(@"TextColors")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(0)]
-		public ColorGradient Colors
+		public List<ColorGradient> GradientColors
 		{
-			get { return _data.Colors; }
+			get { return _data.GradientColors; }
 			set
 			{
-				_data.Colors = value;
+				_data.GradientColors = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -431,6 +433,7 @@ namespace VixenModules.Effect.CountDown
 			}
 			_font = Font;
 			_newFontSize = Font.Size;
+			_countDownNumberIteration = -1;
 		}
 
 		protected override void CleanUpRender()
@@ -654,6 +657,12 @@ namespace VixenModules.Effect.CountDown
 					countDownNumber = (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
 					break;
 			}
+			if (_previousCountDownNumber != countDownNumber)
+			{
+				_previousCountDownNumber = countDownNumber;
+				_countDownNumberIteration++;
+			}
+			
 
 			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
 			{
@@ -723,7 +732,7 @@ namespace VixenModules.Effect.CountDown
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
 			var brushPointX = offsetPoint.X;
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
 					Color.Black, mode)
 				{InterpolationColors = cg.GetColorBlend()};
@@ -737,7 +746,7 @@ namespace VixenModules.Effect.CountDown
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode)
@@ -749,7 +758,7 @@ namespace VixenModules.Effect.CountDown
 
 		private ColorGradient GetNewGolorGradient()
 		{
-			ColorGradient cg = new ColorGradient(Colors);
+			ColorGradient cg = new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			foreach (var color in cg.Colors)
 			{
 				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
@@ -787,6 +796,7 @@ namespace VixenModules.Effect.CountDown
 			int secondTicks;
 			string displayTime;
 			int countTime = Convert.ToInt32(CountDownTime);
+			_countDownNumberIteration = 0;
 			switch (CountDownType)
 			{
 				case CountDownType.CountDown:
@@ -870,8 +880,9 @@ namespace VixenModules.Effect.CountDown
 					new Rectangle(0, 0, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
-			{ InterpolationColors = Colors.GetColorBlend() };
+			{ InterpolationColors = GradientColors[_countDownNumberIteration % GradientColors.Count()].GetColorBlend() };
 			g.DrawString(displayedText, adjustedFont, brush, clipRectangle.X + startX, 2);
+			_countDownNumberIteration++;
 		}
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }
