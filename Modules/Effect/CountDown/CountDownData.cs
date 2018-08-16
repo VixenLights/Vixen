@@ -34,6 +34,7 @@ namespace VixenModules.Effect.CountDown
 			CountDownType = CountDownType.Effect;
 			CountDownFade = CountDownFade.InOut;
 			CountDownTime = "10";
+			PerIteration = false;
 		}
 
 		[DataMember(EmitDefaultValue = false)]
@@ -62,6 +63,9 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public bool Fade { get; set; }
+
+		[DataMember]
+		public bool PerIteration { get; set; }
 
 		[DataMember]
 		public GradientMode GradientMode { get; set; }
@@ -123,7 +127,8 @@ namespace VixenModules.Effect.CountDown
 				Fade = Fade,
 				CountDownType = CountDownType,
 				CountDownFade = CountDownFade,
-				CountDownTime = CountDownTime
+				CountDownTime = CountDownTime,
+				PerIteration = PerIteration
 			};
 			return result;
 		}

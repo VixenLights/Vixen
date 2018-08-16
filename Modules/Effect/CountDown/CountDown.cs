@@ -279,6 +279,22 @@ namespace VixenModules.Effect.CountDown
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"PerIteration")]
+		[ProviderDescription(@"PerIteration")]
+		[PropertyOrder(4)]
+		public bool PerIteration
+		{
+			get { return _data.PerIteration; }
+			set
+			{
+				_data.PerIteration = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Color properties
@@ -580,12 +596,23 @@ namespace VixenModules.Effect.CountDown
 
 		private void SetFadePositionLevel(int frame)
 		{
-			_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-			_text = GetCountDownTime(frame);
-
 			var totalFrames = GetNumberFrames();
 			int startFrame = 0;
 			if (CountDownType == CountDownType.Effect) startFrame = (int)(((decimal)totalFrames / 20 - Math.Floor((decimal)totalFrames / 20)) * 20);
+
+			if (PerIteration)
+			{
+				_directionPosition = CountDownType != CountDownType.Effect
+					? (double) 1 / totalFrames * (TimeSpan.TotalSeconds) * frame % 1
+					: (double) 1 / 20 * ((frame - startFrame - 1) % 20);
+			}
+			else
+			{
+				_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
+			}
+			
+			_text = GetCountDownTime(frame);
+
 				
 			switch (CountDownFade)
 			{

@@ -1205,6 +1205,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Movement per number.
+        /// </summary>
+        internal static string PerIteration {
+            get {
+                return ResourceManager.GetString("PerIteration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image Map.
         /// </summary>
         internal static string PhonemeMapping {

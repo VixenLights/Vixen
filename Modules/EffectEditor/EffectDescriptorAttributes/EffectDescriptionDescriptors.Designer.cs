@@ -1115,6 +1115,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enabled will adjust movement per number wheras disabled adjust movement over effect length..
+        /// </summary>
+        internal static string PerIteration {
+            get {
+                return ResourceManager.GetString("PerIteration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The map to use to associate phonemes with images..
         /// </summary>
         internal static string PhonemeMapping {

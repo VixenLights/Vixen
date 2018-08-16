@@ -741,4 +741,7 @@
   <data name="CycleColor" xml:space="preserve">
     <value>Will cycle through gradient colors for each word.</value>
   </data>
+  <data name="PerIteration" xml:space="preserve">
+    <value>Enabled will adjust movement per number wheras disabled adjust movement over effect length.</value>
+  </data>
 </root>
