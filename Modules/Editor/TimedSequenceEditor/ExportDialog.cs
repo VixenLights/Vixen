@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Theme;
@@ -149,9 +150,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var progress = new Progress<ExportProgressStatus>(ReportExportProgress);
 	        _exportOps.AudioFilename = _audioFileName;
-
 			await _exportOps.DoExport(_sequence, outputFormatComboBox.SelectedItem.ToString(), progress);
 
+	        if (outputFormatComboBox.SelectedItem.ToString().Contains("Falcon"))
+	        {
+		        if (_exportOps.CanWriteUniverseFile())
+		        {
+					//Silently generate the file if we can.
+			        string fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
+			                          Path.DirectorySeparatorChar +
+			                          Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
+			                          "_universe.txt";
+
+			        await _exportOps.WriteUniverseFile(fileName);
+				}
+			}
+	        else
+	        {
+		        _exportOps.WriteControllerInfo(_sequence);
+			}
+	      
 			UseWaitCursor = false;
 		}
 

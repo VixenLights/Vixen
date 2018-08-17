@@ -66,6 +66,15 @@ namespace VixenModules.App.ExportWizard
 		[DataMember]
 		public string AudioOutputFolder { get; set; }
 
+		[DataMember(EmitDefaultValue = false)]
+		public bool CreateUniverseFile { get; set; }
+
+		[DataMember(EmitDefaultValue = false)]
+		public bool BackupUniverseFile { get; set; }
+
+		[DataMember]
+		public string UniverseOutputFolder { get; set; }
+
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
 
@@ -121,7 +130,11 @@ namespace VixenModules.App.ExportWizard
 				OutputFolder = OutputFolder,
 				IncludeAudio = IncludeAudio,
 				RenameAudio = RenameAudio,
-				AudioOutputFolder = AudioOutputFolder
+				AudioOutputFolder = AudioOutputFolder,
+				UniverseOutputFolder = UniverseOutputFolder,
+				CreateUniverseFile = CreateUniverseFile,
+				BackupUniverseFile = BackupUniverseFile
+				
 			};
 			return data;
 		}
