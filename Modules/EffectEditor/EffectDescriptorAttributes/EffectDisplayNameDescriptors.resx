@@ -747,4 +747,7 @@
   <data name="PerIteration" xml:space="preserve">
     <value>Movement per number</value>
   </data>
+  <data name="CountDownSizeMode" xml:space="preserve">
+    <value>Size Mode</value>
+  </data>
 </root>

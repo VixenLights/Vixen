@@ -33,6 +33,7 @@ namespace VixenModules.Effect.CountDown
 		private int _previousCountDownNumber;
 		private CountDownDirection _direction;
 		private static Random _random = new Random();
+		private int _sizeAdjust;
 
 		public CountDown()
 		{
@@ -130,9 +131,26 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CountDownSizeMode")]
+		[ProviderDescription(@"CountDownSizeMode")]
+		[PropertyOrder(3)]
+		public SizeMode SizeMode
+		{
+			get { return _data.SizeMode; }
+			set
+			{
+				_data.SizeMode = value;
+				UpdateSizeModeAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountDownTime")]
 		[ProviderDescription(@"CountDownTime")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public string CountDownTime
 		{
 			get { return _data.CountDownTime; }
@@ -150,7 +168,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
@@ -166,7 +184,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -389,14 +407,28 @@ namespace VixenModules.Effect.CountDown
 		{
 			UpdatePositionXAttribute(false);
 			UpdateCountDownTypeAttributes(false);
+			UpdateSizeModeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
+
 		private void UpdateCountDownTypeAttributes(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"CountDownTime", CountDownType != CountDownType.Effect }
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+		private void UpdateSizeModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"FontScaleCurve", SizeMode == SizeMode.None }
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -457,6 +489,7 @@ namespace VixenModules.Effect.CountDown
 			_newFontSize = Font.Size;
 			_countDownNumberIteration = -1;
 			_direction = Direction;
+			_sizeAdjust = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -515,8 +548,21 @@ namespace VixenModules.Effect.CountDown
 				
 				SizeF textsize = new SizeF(0, 0);
 
-				//Adjust Font Size based on the Font scaling factor
-				_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
+				//Adjust Font Size based on the Size mode.
+				_sizeAdjust++;
+				switch (SizeMode)
+				{
+					case SizeMode.Grow:
+						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust;
+						break;
+					case SizeMode.Shrink:
+						_newFontSize = _font.SizeInPoints / 20 * (21 - _sizeAdjust);
+						break;
+					default:
+						_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
+						break;
+
+				}
 				_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
 
 				if (!String.IsNullOrEmpty(_text))
@@ -699,6 +745,7 @@ namespace VixenModules.Effect.CountDown
 				{
 					_direction = (CountDownDirection)_random.Next(0, 6);
 				}
+				_sizeAdjust = 0;
 			}
 			
 			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)

@@ -35,6 +35,7 @@ namespace VixenModules.Effect.CountDown
 			CountDownFade = CountDownFade.InOut;
 			CountDownTime = "10";
 			PerIteration = false;
+			SizeMode = SizeMode.None;
 		}
 
 		[DataMember(EmitDefaultValue = false)]
@@ -97,6 +98,9 @@ namespace VixenModules.Effect.CountDown
 		[DataMember]
 		public CountDownFade CountDownFade { get; set; }
 
+		[DataMember]
+		public SizeMode SizeMode { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -128,7 +132,8 @@ namespace VixenModules.Effect.CountDown
 				CountDownType = CountDownType,
 				CountDownFade = CountDownFade,
 				CountDownTime = CountDownTime,
-				PerIteration = PerIteration
+				PerIteration = PerIteration,
+				SizeMode = SizeMode
 			};
 			return result;
 		}

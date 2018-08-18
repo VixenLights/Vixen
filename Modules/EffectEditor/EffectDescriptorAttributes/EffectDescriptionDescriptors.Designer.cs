@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vary the size of the Count down value..
+        /// </summary>
+        internal static string CountDownSizeMode {
+            get {
+                return ResourceManager.GetString("CountDownSizeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets the starting time in seconds for the count to begin..
         /// </summary>
         internal static string CountDownTime {
