@@ -50,7 +50,7 @@ namespace VixenModules.App.ExportWizard
 			lblAudioOption.Text = audioOption;
 			if (_data.ActiveProfile.CreateUniverseFile)
 			{
-				lblUniverseFolder.Text = _data.ActiveProfile.UniverseOutputFolder;
+				lblUniverseFolder.Text = _data.ActiveProfile.FalconOutputFolder;
 			}
 			else
 			{
@@ -189,7 +189,7 @@ namespace VixenModules.App.ExportWizard
 			{
 				if (_data.Export.CanWriteUniverseFile())
 				{
-					string fileName = _data.ActiveProfile.UniverseOutputFolder +
+					string fileName = _data.ActiveProfile.FalconOutputFolder +
 					                  Path.DirectorySeparatorChar + "universes";
 
 					if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))

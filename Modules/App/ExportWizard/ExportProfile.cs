@@ -73,7 +73,7 @@ namespace VixenModules.App.ExportWizard
 		public bool BackupUniverseFile { get; set; }
 
 		[DataMember]
-		public string UniverseOutputFolder { get; set; }
+		public string FalconOutputFolder { get; set; }
 
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
@@ -131,7 +131,7 @@ namespace VixenModules.App.ExportWizard
 				IncludeAudio = IncludeAudio,
 				RenameAudio = RenameAudio,
 				AudioOutputFolder = AudioOutputFolder,
-				UniverseOutputFolder = UniverseOutputFolder,
+				FalconOutputFolder = FalconOutputFolder,
 				CreateUniverseFile = CreateUniverseFile,
 				BackupUniverseFile = BackupUniverseFile
 				
