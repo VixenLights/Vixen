@@ -538,7 +538,7 @@ namespace VixenModules.Effect.Video
 				_reader.Open(videoFilename);
 				var count = _reader.FrameCount;
 				var videoTimespan = TimeSpan.FromSeconds(count / _reader.FrameRate.Value);
-				var frameScale = _reader.FrameRate.Value / 20;
+				var frameScale =  20 / _reader.FrameRate.Value;
 				int renderHeight;
 				int renderWidth;
 				string cropVideo = "";
@@ -556,9 +556,9 @@ namespace VixenModules.Effect.Video
 					{
 						renderWidth = (int)(renderWidth * ((double)ScalePercent / 100 + 1));
 						renderHeight = (int)(renderHeight * ((double)ScalePercent / 100 + 1));
-						int cropWidth = Math.Min(renderWidth, BufferWi);
-						int cropHeight = Math.Min(renderHeight, BufferHt);
-						cropVideo = $", crop={cropWidth}:{cropHeight}:{renderWidth - cropWidth / 2}:{renderHeight - cropHeight / 2}";
+						int cropWidth = renderWidth > BufferWi ? BufferWi : renderWidth;
+						int cropHeight = renderHeight > BufferHt ? BufferHt : renderHeight;
+						cropVideo = $", crop={cropWidth}:{cropHeight}:{(renderWidth - cropWidth) / 2}:{(renderHeight - cropHeight) / 2}";
 					}
 				}
 
@@ -587,7 +587,7 @@ namespace VixenModules.Effect.Video
 					if (renderHeight % 2 != 0) renderHeight++;
 					if (renderWidth % 2 != 0) renderWidth++;
 					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-						renderWidth, renderHeight, frameScale, MaintainAspect, 20, RotateVideo, cropVideo);
+						renderWidth, renderHeight, frameScale, MaintainAspect, RotateVideo, cropVideo);
 					_videoFileDetected = true;
 				}
 				else
@@ -955,7 +955,7 @@ namespace VixenModules.Effect.Video
 		{
 			var ratioX = (double) maxWidth / _reader.Width;
 			var ratioY = (double) maxHeight / _reader.Height;
-			var ratio = maxHeight > maxWidth ? Math.Max(ratioX, ratioY) : Math.Min(ratioX, ratioY);
+			var ratio = maxHeight > maxWidth && !MaintainAspect ? Math.Max(ratioX, ratioY) : Math.Min(ratioX, ratioY);
 			renderWidth = (int) (_reader.Width * ratio);
 			renderHeight = (int) (_reader.Height * ratio);
 			if (renderHeight <= 0) renderHeight = 1;
