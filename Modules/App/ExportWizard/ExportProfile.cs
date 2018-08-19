@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -78,6 +79,10 @@ namespace VixenModules.App.ExportWizard
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
 
+		public bool IsFalconFormat => Format.Contains("Falcon");
+		
+		public bool IsFalconEffectFormat => Format.Equals("Falcon Player Effect");
+		
 		public override string ToString()
 		{
 			return Name;
@@ -146,6 +151,23 @@ namespace VixenModules.App.ExportWizard
 		{
 			var handler = PropertyChanged;
 			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		[OnDeserialized]
+		private void OnDeserialized(StreamingContext c)
+		{
+			//try to map old ones to the new format. Best effort here.
+			if (IsFalconFormat && string.IsNullOrEmpty(FalconOutputFolder))
+			{
+				if (OutputFolder.EndsWith("sequences") || OutputFolder.EndsWith("sequences/"))
+				{
+					var path = Directory.GetParent(OutputFolder).FullName;
+					if(Directory.Exists(path))
+					{
+						FalconOutputFolder = path;
+					}
+				}
+			}
 		}
 	}
 }

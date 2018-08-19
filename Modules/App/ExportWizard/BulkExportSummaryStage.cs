@@ -48,13 +48,14 @@ namespace VixenModules.App.ExportWizard
 			}
 			
 			lblAudioOption.Text = audioOption;
-			if (_data.ActiveProfile.CreateUniverseFile)
+			if (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.CreateUniverseFile)
 			{
 				lblUniverseFolder.Text = _data.ActiveProfile.FalconOutputFolder;
+				lblUniverseFolder.Visible = lblUniverse.Visible = true;
 			}
 			else
 			{
-				lblUniverseFolder.Text = @"Not included.";
+				lblUniverseFolder.Visible = lblUniverse.Visible = false;
 			}
 		}
 
@@ -185,7 +186,7 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task CreateUniverseFile()
 		{
-			if (_data.ActiveProfile.Format.Contains("Falcon"))
+			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				if (_data.Export.CanWriteUniverseFile())
 				{

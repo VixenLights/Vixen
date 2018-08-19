@@ -45,6 +45,7 @@
 			this.lblAudioExportPath = new System.Windows.Forms.Label();
 			this.btnAudioOutputFolder = new System.Windows.Forms.Button();
 			this.grpFalcon = new System.Windows.Forms.GroupBox();
+			this.lblFalconInfo = new System.Windows.Forms.Label();
 			this.chkFppIncludeAudio = new System.Windows.Forms.CheckBox();
 			this.chkBackupUniverseFile = new System.Windows.Forms.CheckBox();
 			this.chkCreateUniverseFile = new System.Windows.Forms.CheckBox();
@@ -52,7 +53,6 @@
 			this.lblFppUniverse = new System.Windows.Forms.Label();
 			this.btnFalconUniverseFolder = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.lblFalconInfo = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.grpSequence.SuspendLayout();
 			this.grpAudio.SuspendLayout();
@@ -91,7 +91,7 @@
 			this.resolutionComboBox.Location = new System.Drawing.Point(431, 24);
 			this.resolutionComboBox.Name = "resolutionComboBox";
 			this.resolutionComboBox.Size = new System.Drawing.Size(61, 24);
-			this.resolutionComboBox.TabIndex = 12;
+			this.resolutionComboBox.TabIndex = 2;
 			this.resolutionComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.resolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.resolutionComboBox_SelectedIndexChanged);
 			// 
@@ -116,7 +116,7 @@
 			this.outputFormatComboBox.Location = new System.Drawing.Point(66, 24);
 			this.outputFormatComboBox.Name = "outputFormatComboBox";
 			this.outputFormatComboBox.Size = new System.Drawing.Size(260, 24);
-			this.outputFormatComboBox.TabIndex = 10;
+			this.outputFormatComboBox.TabIndex = 1;
 			this.outputFormatComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.outputFormatComboBox.SelectedIndexChanged += new System.EventHandler(this.outputFormatComboBox_SelectedIndexChanged);
 			// 
@@ -144,7 +144,7 @@
 			this.btnOuputFolderSelect.Location = new System.Drawing.Point(25, 37);
 			this.btnOuputFolderSelect.Name = "btnOuputFolderSelect";
 			this.btnOuputFolderSelect.Size = new System.Drawing.Size(24, 23);
-			this.btnOuputFolderSelect.TabIndex = 16;
+			this.btnOuputFolderSelect.TabIndex = 8;
 			this.btnOuputFolderSelect.Text = "Output Folder";
 			this.btnOuputFolderSelect.UseVisualStyleBackColor = true;
 			this.btnOuputFolderSelect.Click += new System.EventHandler(this.btnOuputFolderSelect_Click);
@@ -170,7 +170,7 @@
 			this.txtOutputFolder.Name = "txtOutputFolder";
 			this.txtOutputFolder.ReadOnly = true;
 			this.txtOutputFolder.Size = new System.Drawing.Size(438, 23);
-			this.txtOutputFolder.TabIndex = 22;
+			this.txtOutputFolder.TabIndex = 9;
 			// 
 			// label2
 			// 
@@ -187,7 +187,7 @@
 			this.chkRenameAudio.Location = new System.Drawing.Point(25, 47);
 			this.chkRenameAudio.Name = "chkRenameAudio";
 			this.chkRenameAudio.Size = new System.Drawing.Size(192, 19);
-			this.chkRenameAudio.TabIndex = 19;
+			this.chkRenameAudio.TabIndex = 11;
 			this.chkRenameAudio.Text = "Rename file to match sequence";
 			this.chkRenameAudio.UseVisualStyleBackColor = true;
 			this.chkRenameAudio.CheckedChanged += new System.EventHandler(this.chkRenameAudio_CheckedChanged);
@@ -198,7 +198,7 @@
 			this.chkIncludeAudio.Location = new System.Drawing.Point(24, 22);
 			this.chkIncludeAudio.Name = "chkIncludeAudio";
 			this.chkIncludeAudio.Size = new System.Drawing.Size(100, 19);
-			this.chkIncludeAudio.TabIndex = 18;
+			this.chkIncludeAudio.TabIndex = 10;
 			this.chkIncludeAudio.Text = "Include Audio";
 			this.chkIncludeAudio.UseVisualStyleBackColor = true;
 			this.chkIncludeAudio.CheckedChanged += new System.EventHandler(this.chkIncludeAudio_CheckedChanged);
@@ -226,7 +226,7 @@
 			this.txtAudioOutputFolder.Name = "txtAudioOutputFolder";
 			this.txtAudioOutputFolder.ReadOnly = true;
 			this.txtAudioOutputFolder.Size = new System.Drawing.Size(437, 23);
-			this.txtAudioOutputFolder.TabIndex = 21;
+			this.txtAudioOutputFolder.TabIndex = 12;
 			// 
 			// lblAudioExportPath
 			// 
@@ -242,7 +242,7 @@
 			this.btnAudioOutputFolder.Location = new System.Drawing.Point(24, 87);
 			this.btnAudioOutputFolder.Name = "btnAudioOutputFolder";
 			this.btnAudioOutputFolder.Size = new System.Drawing.Size(24, 23);
-			this.btnAudioOutputFolder.TabIndex = 16;
+			this.btnAudioOutputFolder.TabIndex = 11;
 			this.btnAudioOutputFolder.Text = "Audio Output Folder";
 			this.btnAudioOutputFolder.UseVisualStyleBackColor = true;
 			this.btnAudioOutputFolder.Click += new System.EventHandler(this.btnAudioOutputFolder_Click);
@@ -266,13 +266,23 @@
 			this.grpFalcon.Text = "Falcon Pi Player";
 			this.grpFalcon.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
+			// lblFalconInfo
+			// 
+			this.lblFalconInfo.Location = new System.Drawing.Point(16, 69);
+			this.lblFalconInfo.Name = "lblFalconInfo";
+			this.lblFalconInfo.Size = new System.Drawing.Size(477, 41);
+			this.lblFalconInfo.TabIndex = 26;
+			this.lblFalconInfo.Text = "Enter or select the output folder location. To save directly to FPP, select the m" +
+    "apped media folder or enter the network path in the form of \\\\hostname or ip\\fpp" +
+    "\\media";
+			// 
 			// chkFppIncludeAudio
 			// 
 			this.chkFppIncludeAudio.AutoSize = true;
 			this.chkFppIncludeAudio.Location = new System.Drawing.Point(179, 22);
 			this.chkFppIncludeAudio.Name = "chkFppIncludeAudio";
 			this.chkFppIncludeAudio.Size = new System.Drawing.Size(100, 19);
-			this.chkFppIncludeAudio.TabIndex = 25;
+			this.chkFppIncludeAudio.TabIndex = 5;
 			this.chkFppIncludeAudio.Text = "Include Audio";
 			this.chkFppIncludeAudio.UseVisualStyleBackColor = true;
 			this.chkFppIncludeAudio.CheckedChanged += new System.EventHandler(this.chkIncludeAudio_CheckedChanged);
@@ -283,7 +293,7 @@
 			this.chkBackupUniverseFile.Location = new System.Drawing.Point(24, 47);
 			this.chkBackupUniverseFile.Name = "chkBackupUniverseFile";
 			this.chkBackupUniverseFile.Size = new System.Drawing.Size(134, 19);
-			this.chkBackupUniverseFile.TabIndex = 24;
+			this.chkBackupUniverseFile.TabIndex = 4;
 			this.chkBackupUniverseFile.Text = "Backup Universe File";
 			this.chkBackupUniverseFile.UseVisualStyleBackColor = true;
 			this.chkBackupUniverseFile.CheckedChanged += new System.EventHandler(this.chkBackupUniverseFile_CheckedChanged);
@@ -294,7 +304,7 @@
 			this.chkCreateUniverseFile.Location = new System.Drawing.Point(24, 22);
 			this.chkCreateUniverseFile.Name = "chkCreateUniverseFile";
 			this.chkCreateUniverseFile.Size = new System.Drawing.Size(129, 19);
-			this.chkCreateUniverseFile.TabIndex = 23;
+			this.chkCreateUniverseFile.TabIndex = 3;
 			this.chkCreateUniverseFile.Text = "Create Universe File";
 			this.chkCreateUniverseFile.UseVisualStyleBackColor = true;
 			this.chkCreateUniverseFile.CheckedChanged += new System.EventHandler(this.chkCreateUniverseFile_CheckedChanged);
@@ -304,7 +314,7 @@
 			this.txtFalconOutputFolder.Location = new System.Drawing.Point(54, 113);
 			this.txtFalconOutputFolder.Name = "txtFalconOutputFolder";
 			this.txtFalconOutputFolder.Size = new System.Drawing.Size(438, 23);
-			this.txtFalconOutputFolder.TabIndex = 22;
+			this.txtFalconOutputFolder.TabIndex = 7;
 			this.txtFalconOutputFolder.TextChanged += new System.EventHandler(this.txtFalconOutputFolder_TextChanged);
 			this.txtFalconOutputFolder.Leave += new System.EventHandler(this.txtFalconOutputFolder_Leave);
 			// 
@@ -322,7 +332,7 @@
 			this.btnFalconUniverseFolder.Location = new System.Drawing.Point(23, 112);
 			this.btnFalconUniverseFolder.Name = "btnFalconUniverseFolder";
 			this.btnFalconUniverseFolder.Size = new System.Drawing.Size(24, 23);
-			this.btnFalconUniverseFolder.TabIndex = 16;
+			this.btnFalconUniverseFolder.TabIndex = 6;
 			this.btnFalconUniverseFolder.Text = "Output Folder";
 			this.btnFalconUniverseFolder.UseVisualStyleBackColor = true;
 			this.btnFalconUniverseFolder.Click += new System.EventHandler(this.btnFalconOutputFolder_Click);
@@ -345,18 +355,8 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 430);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 467);
 			this.tableLayoutPanel1.TabIndex = 24;
-			// 
-			// lblFalconInfo
-			// 
-			this.lblFalconInfo.Location = new System.Drawing.Point(16, 69);
-			this.lblFalconInfo.Name = "lblFalconInfo";
-			this.lblFalconInfo.Size = new System.Drawing.Size(477, 41);
-			this.lblFalconInfo.TabIndex = 26;
-			this.lblFalconInfo.Text = "Enter or select the output folder location. To save directly to FPP, select the m" +
-    "apped media folder or enter the network path in the form of \\\\hostname or ip\\fpp" +
-    "\\media";
 			// 
 			// BulkExportOutputFormatStage
 			// 
@@ -365,7 +365,7 @@
 			this.AutoSize = true;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "BulkExportOutputFormatStage";
-			this.Size = new System.Drawing.Size(509, 430);
+			this.Size = new System.Drawing.Size(509, 467);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.grpSequence.ResumeLayout(false);

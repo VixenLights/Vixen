@@ -16,9 +16,7 @@ namespace VixenModules.App.ExportWizard
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
-		private bool _isFalcon;
-		private bool _isFalconEffect;
-
+		
 		public BulkExportOutputFormatStage(BulkExportWizardData data)
 		{
 			_data = data;
@@ -40,7 +38,6 @@ namespace VixenModules.App.ExportWizard
 
 		public override void StageStart()
 		{
-			CheckFalcon();
 			outputFormatComboBox.Items.Clear();
 			outputFormatComboBox.Items.AddRange(_data.Export.FormatTypes);
 			outputFormatComboBox.Sorted = true;
@@ -53,7 +50,7 @@ namespace VixenModules.App.ExportWizard
 			chkRenameAudio.Enabled = btnAudioOutputFolder.Enabled = lblAudioExportPath.Enabled = txtAudioOutputFolder.Enabled = _data.ActiveProfile.IncludeAudio;
 			chkRenameAudio.Checked = _data.ActiveProfile.RenameAudio;
 			
-			grpFalcon.Visible = _isFalcon;
+			grpFalcon.Visible = _data.ActiveProfile.IsFalconFormat;
 			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
 			chkCreateUniverseFile.Checked = _data.ActiveProfile.CreateUniverseFile;
 			chkBackupUniverseFile.Checked = _data.ActiveProfile.BackupUniverseFile;
@@ -115,12 +112,12 @@ namespace VixenModules.App.ExportWizard
 		private void UpdateFalconPaths(string path)
 		{
 			_data.ActiveProfile.FalconOutputFolder = path;
-			if (string.IsNullOrEmpty(path))
+			if (!string.IsNullOrEmpty(path))
 			{
-				return;
+				_data.ActiveProfile.OutputFolder = Path.Combine(path, _data.ActiveProfile.IsFalconFormat ? @"effects" : @"sequences");
+				_data.ActiveProfile.AudioOutputFolder = Path.Combine(path, @"music");
 			}
-			_data.ActiveProfile.OutputFolder = Path.Combine(path, _isFalconEffect ? @"effects" : @"sequences");
-			_data.ActiveProfile.AudioOutputFolder = Path.Combine(path, @"music");
+			
 			_WizardStageChanged();
 		}
 
@@ -171,7 +168,7 @@ namespace VixenModules.App.ExportWizard
 		{
 			get
 			{
-				if (_isFalcon)
+				if (_data.ActiveProfile.IsFalconFormat)
 				{
 					if (Directory.Exists(_data.ActiveProfile.FalconOutputFolder)
 					    && Directory.Exists(_data.ActiveProfile.OutputFolder))
@@ -197,12 +194,6 @@ namespace VixenModules.App.ExportWizard
 			}
 		}
 
-		private void CheckFalcon()
-		{
-			_isFalcon = _data.ActiveProfile.Format.Contains("Falcon"); //yuck
-			_isFalconEffect = _data.ActiveProfile.Format.Equals("Falcon Player Effect"); //yuck
-		}
-
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
 		{
 			ThemeGroupBoxRenderer.GroupBoxesDrawBorder(sender, e, Font);
@@ -217,10 +208,9 @@ namespace VixenModules.App.ExportWizard
 		{
 			ComboBox comboBox = (ComboBox)sender;
 			_data.ActiveProfile.Format = comboBox.SelectedItem.ToString();
-			CheckFalcon();
-			grpFalcon.Visible = _isFalcon;
+			grpFalcon.Visible = _data.ActiveProfile.IsFalconFormat;
 			grpAudio.Visible = grpSequence.Visible = !grpFalcon.Visible;
-			if (_isFalcon)
+			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				UpdateFalconPaths(_data.ActiveProfile.FalconOutputFolder);
 				ValidateFalconOutputFolder();
@@ -236,7 +226,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void chkIncludeAudio_CheckedChanged(object sender, EventArgs e)
 		{
-			if (_isFalcon)
+			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				_data.ActiveProfile.RenameAudio = chkFppIncludeAudio.Checked;
 				_data.ActiveProfile.IncludeAudio = chkFppIncludeAudio.Checked;
