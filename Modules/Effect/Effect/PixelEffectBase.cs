@@ -244,7 +244,7 @@ namespace VixenModules.Effect.Effect
 
 		protected void SetOrientation()
 		{
-			var orientation = OrientationModule.GetOrientationForElement(TargetNodes.First());
+			var orientation = OrientationModule.GetOrientationForElement(TargetNodes.FirstOrDefault());
 			switch (orientation)
 			{
 				case Orientation.Horizontal:
