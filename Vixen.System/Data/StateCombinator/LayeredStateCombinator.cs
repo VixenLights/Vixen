@@ -33,6 +33,11 @@ namespace Vixen.Data.StateCombinator
 				return states;
 			}
 
+			if (states.All(x => x.Layer.RequiresMixingPartner))
+			{
+				return EmptyState;
+			}
+
 			//Reset all our temp variables
 			StateCombinatorValue.Clear();
 			_tempMixingColor = null;

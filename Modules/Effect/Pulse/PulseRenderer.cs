@@ -22,7 +22,7 @@ namespace VixenModules.Effect.Pulse
 			//Collect all the points first.
 			var allPointsTimeOrdered = _GetAllSignificantDataPoints(levelCurve, colorGradient);
 			var elementData = new EffectIntents();
-			foreach (ElementNode elementNode in node.GetLeafEnumerator())
+			foreach (ElementNode elementNode in node.GetLeafEnumerator().Distinct())
 			{
 				// this is probably always going to be a single element for the given node, as
 				// we have iterated down to leaf nodes in RenderNode() above. May as well do
