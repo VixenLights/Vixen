@@ -40,12 +40,6 @@ namespace VixenModules.Sequence.Timed
 			set { ((TimedSequenceData)SequenceData).DefaultRowHeight = value; }
 		}
 
-		public int DefaultSplitterDistance
-		{
-			get { return ((TimedSequenceData)SequenceData).DefaultSplitterDistance; }
-			set { ((TimedSequenceData)SequenceData).DefaultSplitterDistance = value; }
-		}
-
 		public TimeSpan? DefaultPlaybackStartTime
 		{
 			get { return ((TimedSequenceData)SequenceData).DefaultPlaybackStartTime; }

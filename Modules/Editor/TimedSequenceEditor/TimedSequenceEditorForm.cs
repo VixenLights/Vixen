@@ -523,14 +523,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
-			if (_sequence.DefaultSplitterDistance != 0)
+
+			var splitterDistance = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), (int)(TimelineControl.DefaultSplitterDistance * _scaleFactor));
+
+			if (splitterDistance > 0 && TimelineControl.splitContainer.Width > splitterDistance)
 			{
-				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
+				TimelineControl.splitContainer.SplitterDistance = splitterDistance;
 			}
 			else
 			{
 				var distance = (int) (TimelineControl.DefaultSplitterDistance * _scaleFactor);
-				if (TimelineControl.Width > distance)
+				if (TimelineControl.splitContainer.Width > distance)
 				{
 					TimelineControl.splitContainer.SplitterDistance = distance;
 				}
@@ -1483,11 +1486,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{			
 			//Add Default Row Height
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
-			//Add Splitter Distance, the width of the RowList Column
-			if (TimelineControl.splitContainer.SplitterDistance != TimelineControl.DefaultSplitterDistance)
-			{
-				_sequence.DefaultSplitterDistance = TimelineControl.splitContainer.SplitterDistance;
-			}
+			
 			//Add Playback start and end time
 			_sequence.DefaultPlaybackStartTime = TimelineControl.PlaybackStartTime;
 			_sequence.DefaultPlaybackEndTime = TimelineControl.PlaybackEndTime;
@@ -5040,6 +5039,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ColorLibraryForm.Close();
