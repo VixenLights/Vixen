@@ -319,6 +319,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				GridForm.DockState = DockState.Document;
 			}
 
+			//Check to see if the timeline is undocked and in some small size that might be lost or hard to find. 
+			if (GridForm.Width < 200 && GridForm.DockState == DockState.Float)
+			{
+				//Set a reasonable float size and dock us back in the main form where we belong.
+				//This will also help ensure we can set the splitter location later
+				GridForm.Pane.FloatWindow.Size = new Size(300, 300);
+				GridForm.DockState = DockState.Document;
+			}
+
 			if (EffectEditorForm.DockState == DockState.Unknown)
 			{
 				EffectEditorForm.Show(dockPanel, DockState.DockRight);
@@ -520,7 +529,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				TimelineControl.splitContainer.SplitterDistance = (int) (TimelineControl.DefaultSplitterDistance*_scaleFactor);
+				var distance = (int) (TimelineControl.DefaultSplitterDistance * _scaleFactor);
+				if (TimelineControl.Width > distance)
+				{
+					TimelineControl.splitContainer.SplitterDistance = distance;
+				}
 			}
 
 			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)
@@ -550,7 +563,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.Name = "dockPanel";
 			dockPanel.Size = new Size(1579, 630);
 			toolStripContainer.ContentPanel.Controls.Add(dockPanel);
-			Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
+			Logging.Error(ex, "Error loading dock panel config. Restoring to the default.");
 
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;
