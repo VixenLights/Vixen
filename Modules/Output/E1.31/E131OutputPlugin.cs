@@ -103,6 +103,7 @@ namespace VixenModules.Controller.E131
 			DataPolicyFactory = new DataPolicyFactory();
 			isSetupOpen = false;
 			running = false;
+			SupportsNetwork = true;
 		}
 
 		public override Vixen.Module.IModuleDataModel ModuleData
@@ -591,6 +592,76 @@ namespace VixenModules.Controller.E131
 #if VIXEN21
 			return new List<Form> {};
 #endif
+		}
+
+		#region Overrides of ControllerModuleInstanceBase
+
+		/// <inheritdoc />
+		public override ControllerNetworkConfiguration GetNetworkConfiguration()
+		{
+			ControllerNetworkConfiguration config = new ControllerNetworkConfiguration();
+			config.SupportsUniverses = true;
+			List<UniverseConfiguration> universes = new List<UniverseConfiguration>(_data.Universes.Count);
+			foreach (var universeEntry in _data.Universes)
+			{
+				var uc = new UniverseConfiguration();
+				uc.Universe = universeEntry.Universe;
+				uc.Start = universeEntry.Start+1;
+				uc.Size = universeEntry.Size;
+				uc.Active = universeEntry.Active;
+				uc.IsMultiCast = _data.Multicast != null;
+				if (!uc.IsMultiCast)
+				{
+					uc.IpAddress = DetermineIp();
+				}
+				universes.Add(uc);
+			}
+
+			config.Universes = universes;
+			return config;
+		}
+
+		#endregion
+
+		private IPEndPoint DetermineIp()
+		{
+			IPEndPoint ep = null;
+			IPAddress[] ips = null;
+			try
+			{
+				ips = Dns.GetHostAddresses(_data.Unicast);
+			}
+			catch
+			{
+				//Probably couldn't find the host name
+				NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't lookup host ip " + _data.Unicast + ".");
+			}
+
+			if (ips != null)
+			{
+				// try to parse our ip address
+				IPAddress ip = null;
+				foreach (IPAddress i in ips)
+				{
+					if (i.AddressFamily == AddressFamily.InterNetwork)
+					{
+						ip = i;
+					}
+				}
+					
+				if (ip == null)
+				{
+					// oops - bad ip, fuss and deactivate
+					NLog.LogManager.GetCurrentClassLogger().Warn("Couldn't connect to host " + _data.Unicast + ".");
+				}
+				else
+				{
+					// if good, make our destination endpoint
+					ep = new IPEndPoint(ip, 5568);
+				}
+			}
+
+			return ep;
 		}
 
 		private E131ModuleDataModel GetDataModel()

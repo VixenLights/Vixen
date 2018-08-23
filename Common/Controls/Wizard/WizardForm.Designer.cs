@@ -51,7 +51,7 @@
 			this.buttonNext.Location = new System.Drawing.Point(364, 19);
 			this.buttonNext.Name = "buttonNext";
 			this.buttonNext.Size = new System.Drawing.Size(105, 29);
-			this.buttonNext.TabIndex = 11;
+			this.buttonNext.TabIndex = 100;
 			this.buttonNext.Text = "Next >>";
 			this.buttonNext.UseVisualStyleBackColor = true;
 			this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
@@ -63,7 +63,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(475, 19);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
-			this.buttonCancel.TabIndex = 10;
+			this.buttonCancel.TabIndex = 102;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -74,7 +74,7 @@
 			this.buttonPrevious.Location = new System.Drawing.Point(253, 19);
 			this.buttonPrevious.Name = "buttonPrevious";
 			this.buttonPrevious.Size = new System.Drawing.Size(105, 29);
-			this.buttonPrevious.TabIndex = 12;
+			this.buttonPrevious.TabIndex = 101;
 			this.buttonPrevious.Text = "<< Previous";
 			this.buttonPrevious.UseVisualStyleBackColor = true;
 			this.buttonPrevious.Click += new System.EventHandler(this.buttonPrevious_Click);

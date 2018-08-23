@@ -15,5 +15,9 @@ namespace Vixen.Module.Controller
 		// a descriptor or module, this could change at runtime.
 		IDataPolicyFactory DataPolicyFactory { get; }
 		event EventHandler DataPolicyFactoryChanged;
+
+		bool SupportsNetwork { get; set; }
+
+		ControllerNetworkConfiguration GetNetworkConfiguration();
 	}
 }

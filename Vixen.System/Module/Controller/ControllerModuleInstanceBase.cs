@@ -16,6 +16,16 @@ namespace Vixen.Module.Controller
 
 		public event EventHandler DataPolicyFactoryChanged;
 
+		/// <inheritdoc />
+		public bool SupportsNetwork { get; set; }
+
+		/// <inheritdoc />
+		public virtual ControllerNetworkConfiguration GetNetworkConfiguration()
+		{
+			throw new NotImplementedException();
+		}
+
+
 		public IDataPolicyFactory DataPolicyFactory
 		{
 			get { return _dataPolicyFactory; }

@@ -9,6 +9,7 @@ using System.Xml;
 using Vixen.Cache.Sequence;
 using Vixen.Commands;
 using Vixen.Data.Flow;
+using Vixen.Module.Controller;
 using Vixen.Sys;
 using Vixen.Sys.Output;
 
@@ -167,7 +168,47 @@ namespace Vixen.Export
             return true;
         }
 
-        public void WriteControllerInfo(ISequence sequence)
+	    public bool CanWriteUniverseFile()
+	    {
+		    return ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
+	    }
+
+	    public async Task WriteUniverseFile(string fileName)
+	    {
+		    if (!CanWriteUniverseFile())
+		    {
+			    return;
+		    }
+		    
+		    using (var writer = new StreamWriter(fileName))
+		    {
+			    var fppStartChannel = 1;
+			    foreach (var controller in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
+			    {
+				    var universes = controller.ControllerNetworkConfiguration.Universes;
+				    foreach (var uc in universes)
+				    {
+					    string ip = string.Empty;
+					    if (!uc.IsMultiCast)
+					    {
+							//Validate ip address
+						    ip = uc.IpAddress?.Address.ToString();
+						    if (ip == null)
+						    {
+							    ip = string.Empty;
+						    }
+					    }
+					    var s = $"{(uc.Active ? "1" : "0")},{uc.Universe},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
+					    await writer.WriteAsync(s);
+					    fppStartChannel = fppStartChannel + uc.Size;
+				    }
+			    }
+
+			    await writer.FlushAsync();
+		    }
+	    }
+
+		public void WriteControllerInfo(ISequence sequence)
         {
             int chanStart = 1;
 
@@ -190,7 +231,7 @@ namespace Vixen.Export
                 writer.WriteElementString("Duration", sequence.Length.ToString());
 
                 writer.WriteStartElement("Network");
-                foreach (Controller exportInfo in ControllerExportInfo.OrderBy(x => x.Index))
+                foreach (Controller exportInfo in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
                 {
                     writer.WriteStartElement("Controller");
                     writer.WriteElementString("Index", exportInfo.Index.ToString());
@@ -221,8 +262,8 @@ namespace Vixen.Export
                 if (_writers.TryGetValue(fileType, out _output))
                 {
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
-                    WriteControllerInfo(sequence);
-					await Task.Factory.StartNew(() => ProcessExport(progress));
+                    //WriteControllerInfo(sequence);
+	                await Task.Factory.StartNew(() => ProcessExport(progress));
                 }
             }
         }
@@ -393,6 +434,15 @@ namespace Vixen.Export
             Channels = controller.OutputCount;
 	        Id = controller.Id;
 	        IsActive = true;
+	        if (controller.ControllerModule.SupportsNetwork)
+	        {
+		        var config = controller.ControllerModule.GetNetworkConfiguration();
+		        if (config.SupportsUniverses)
+		        {
+			        HasNetworkSupport = true;
+			        ControllerNetworkConfiguration = config;
+				}
+	        }
         }
 
 		[DataMember]
@@ -405,6 +455,10 @@ namespace Vixen.Export
 		public string Name { get; set; }
 	    [DataMember]
 		public Guid Id { get; private set; }
+
+	    public bool HasNetworkSupport { get; set; }
+
+	    public ControllerNetworkConfiguration ControllerNetworkConfiguration { get; private set; }
 
 	    public object Clone()
 	    {

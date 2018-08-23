@@ -48,6 +48,15 @@ namespace VixenModules.App.ExportWizard
 			}
 			
 			lblAudioOption.Text = audioOption;
+			if (_data.ActiveProfile.IsFalconFormat && _data.ActiveProfile.CreateUniverseFile)
+			{
+				lblUniverseFolder.Text = _data.ActiveProfile.FalconOutputFolder;
+				lblUniverseFolder.Visible = lblUniverse.Visible = true;
+			}
+			else
+			{
+				lblUniverseFolder.Visible = lblUniverse.Visible = false;
+			}
 		}
 
 		private void PopulateProfiles()
@@ -89,6 +98,7 @@ namespace VixenModules.App.ExportWizard
 			lblTaskProgress.Visible = true;
 			lblOverallProgress.Visible = true;
 			await DoExport(progress);
+			
 			_data.ActiveProfile = null;
 		}
 
@@ -157,12 +167,14 @@ namespace VixenModules.App.ExportWizard
 
 					//Begin export step.
 					await Export(sequence, progress);
+
 					overallProgressStep++;
 					exportProgressStatus.OverallProgressValue = (int)(overallProgressStep / overallProgressSteps * 100);
 					progress.Report(exportProgressStatus);
 					
 				}
 
+				await CreateUniverseFile();
 				exportProgressStatus.TaskProgressMessage = "";
 				exportProgressStatus.TaskProgressValue = 0;
 				exportProgressStatus.OverallProgressMessage = "Completed";
@@ -170,6 +182,27 @@ namespace VixenModules.App.ExportWizard
 
 			});
 			return true;
+		}
+
+		private async Task CreateUniverseFile()
+		{
+			if (_data.ActiveProfile.IsFalconFormat)
+			{
+				if (_data.Export.CanWriteUniverseFile())
+				{
+					string fileName = _data.ActiveProfile.FalconOutputFolder +
+					                  Path.DirectorySeparatorChar + "universes";
+
+					if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
+					{
+						var now = DateTime.Now;
+						var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
+						File.Move(fileName, newFile);
+					}
+
+					await _data.Export.WriteUniverseFile(fileName);
+				}
+			}
 		}
 
 		private bool RenderSequence(ISequence sequence, IProgress<ExportProgressStatus> progress)

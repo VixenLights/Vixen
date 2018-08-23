@@ -296,7 +296,7 @@ namespace Vixen.Sys.Output
 			return null;
 		}
 
-		private IControllerModuleInstance ControllerModule
+		internal IControllerModuleInstance ControllerModule
 		{
 			get { return _outputModuleConsumer.Module; }
 		}
