@@ -32,6 +32,7 @@ namespace VixenModules.Effect.Text
 		private double _directionPosition;
 		private double _fade;
 		private double _level;
+		private int _wordIteration;
 
 
 		public Text()
@@ -420,9 +421,25 @@ namespace VixenModules.Effect.Text
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"CycleColor")]
+		[ProviderDescription(@"CycleColor")]
+		[PropertyOrder(1)]
+		public bool CycleColor
+		{
+			get { return _data.CycleColor; }
+			set
+			{
+				_data.CycleColor = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public GradientMode GradientMode
 		{
 			get { return _data.GradientMode; }
@@ -442,7 +459,7 @@ namespace VixenModules.Effect.Text
 		[BoolDescription("Yes", "No")]
 		[PropertyEditor("SelectionEditor")]
 		[Browsable(true)]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public override bool UseBaseColor
 		{
 			get { return _data.UseBaseColor; }
@@ -459,7 +476,7 @@ namespace VixenModules.Effect.Text
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"BaseColor")]
 		[ProviderDescription(@"BaseColor")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public override Color BaseColor
 		{
 			get { return _data.BaseColor; }
@@ -545,7 +562,7 @@ namespace VixenModules.Effect.Text
 		}
 		private void UpdateTextModeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10)
 			{
 				{"MarkCollectionId", TextSource != TextSource.None},
 
@@ -563,7 +580,9 @@ namespace VixenModules.Effect.Text
 
 				{"TextMode", TextSource == TextSource.None},
 
-				{"TextLines", TextSource != TextSource.MarkCollectionLabels}
+				{"TextLines", TextSource != TextSource.MarkCollectionLabels},
+
+				{"CycleColor", TextSource != TextSource.None}
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -814,6 +833,7 @@ namespace VixenModules.Effect.Text
 					TextClass text = _textClass[i];
 					if (frame >= text.StartFrame && frame < text.EndFrame)
 					{
+						_wordIteration = i;
 						_text = new List<string>(text.Text);
 						switch (TextFade)
 						{
@@ -956,7 +976,9 @@ namespace VixenModules.Effect.Text
 				{
 					brushPointX = offsetPoint.X;
 				}
-				ColorGradient cg = Colors[i % Colors.Count()];
+
+				ColorGradient cg = TextSource != TextSource.None && CycleColor ? Colors[_wordIteration % Colors.Count()] : Colors[i % Colors.Count()];
+
 				if (_level < 1 || TextFade != TextFade.None) cg = GetNewGolorGradient(cg);
 
 				var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, TextMode==TextMode.Rotated && TextSource == TextSource.None ? _maxTextSize:(int)size.Width, (int)size.Height), Color.Black,
@@ -987,8 +1009,9 @@ namespace VixenModules.Effect.Text
 				var size = g.MeasureString(text, _newfont);
 				var offset = _maxTextSize - (int)size.Width;
 				var offsetPoint = new Point(p.X + offset / 2, p.Y);
-
-				ColorGradient cg = Colors[i % Colors.Count()];
+				
+				ColorGradient cg = TextSource != TextSource.None && CycleColor ? Colors[_wordIteration % Colors.Count()] : Colors[i % Colors.Count()];
+				
 				if (_level < 1 || TextFade != TextFade.None) cg = GetNewGolorGradient(cg);
 				var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
@@ -1210,8 +1233,10 @@ namespace VixenModules.Effect.Text
 				case TextSource.MarkCollectionLabels:
 					if (_marks != null && _marks.Any())
 					{
+						_wordIteration = -1;
 						foreach (var mark in _marks)
 						{
+							_wordIteration = TextSource != TextSource.None && CycleColor ? _wordIteration + 1 : 0;
 							if (mark.Text == "") continue;
 							var startX = (int) ((mark.StartTime.Ticks - StartTime.Ticks) / (double) TimeSpan.Ticks * clipRectangle.Width);
 							DrawText(g, clipRectangle, mark.Text, mode, startX);
@@ -1224,11 +1249,13 @@ namespace VixenModules.Effect.Text
 						string[] text = TextLines[0].Split();
 						if (TextLines[0] == "") return;
 						int i = 0;
+						_wordIteration = 0;
 						foreach (var mark in _marks)
 						{
 							var startX = (int)((mark.StartTime.Ticks - StartTime.Ticks) / (double)TimeSpan.Ticks * clipRectangle.Width);
 							DrawText(g, clipRectangle, text[i], mode, startX);
 							i++;
+							if (TextSource != TextSource.None && CycleColor) _wordIteration++;
 							if (RepeatText)
 							{
 								if (i % text.Length == 0) i = 0;
@@ -1252,7 +1279,7 @@ namespace VixenModules.Effect.Text
 					new Rectangle(0, 0, (int)AdjustedSizeNew.Width, (int)AdjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
-				{ InterpolationColors = Colors[0].GetColorBlend() };
+				{ InterpolationColors = Colors[_wordIteration % Colors.Count].GetColorBlend() };
 			g.DrawString(displayedText, AdjustedFont, brush, clipRectangle.X + startX, 2);
 		}
 

@@ -503,6 +503,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Will cycle through gradient colors for each word..
+        /// </summary>
+        internal static string CycleColor {
+            get {
+                return ResourceManager.GetString("CycleColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {

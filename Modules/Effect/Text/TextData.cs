@@ -42,6 +42,7 @@ namespace VixenModules.Effect.Text
 			DirectionPerWord = false;
 			RepeatText = false;
 			TextDuration = TextDuration.AutoFit;
+			CycleColor = false;
 		}
 
 		[DataMember]
@@ -128,6 +129,9 @@ namespace VixenModules.Effect.Text
 		[DataMember]
 		public TextDuration TextDuration { get; set; }
 
+		[DataMember]
+		public bool CycleColor { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -204,7 +208,8 @@ namespace VixenModules.Effect.Text
 				TimeVisibleLength = TimeVisibleLength,
 				DirectionPerWord = DirectionPerWord,
 				RepeatText = RepeatText,
-				TextDuration = TextDuration
+				TextDuration = TextDuration,
+				CycleColor = CycleColor
 			};
 			return result;
 		}
