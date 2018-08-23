@@ -32,10 +32,10 @@
 						<CheckBox IsChecked="{Binding ShowMarkBar}" Style="{StaticResource ContentlessCheckBox}" 
 						          VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,2,0"/>
 					</Border>
-					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0" >
+					<Border Background="{StaticResource BackColorBrush}" Grid.Column="3" BorderBrush="Transparent" BorderThickness="0,0,1,0">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock x:Name="ReadOnlyText" Text="{Binding Name}" Foreground="{Binding Decorator.Color,Converter={StaticResource ColorToSolidBrushConverter}}" 
-							           Focusable="True" Margin="2,3,2,3">
+							           Focusable="True" Margin="2,3,2,3" MinWidth="50">
 								<TextBlock.ContextMenu>
 									<ContextMenu>
 										<MenuItem Header="Delete" Command="{Binding DeleteCommand}">
@@ -83,9 +83,9 @@
 							</TextBlock>
 							<TextBox x:Name="EditableText" Text="{Binding Name}" Tag="{Binding}" Visibility="Collapsed" Margin="2,0,2,0"
 				         utils:TextBoxExtender.CommitOnEnter="true"
-				         utils:TextBoxExtender.RollbackOnEscape="true"
+				         utils:TextBoxExtender.RollbackOnEscape="false"
 				         utils:TextBoxExtender.SelectAllOnFocus="True"
-				         utils:TextBoxExtender.CommitOnTyping="false">
+				         utils:TextBoxExtender.CommitOnTyping="true">
 								<i:Interaction.Triggers>
 									<i:EventTrigger EventName="LostKeyboardFocus">
 										<catel:EventToCommand Command="{Binding DoneEditingCommand}" DisableAssociatedObjectOnCannotExecute="False" />
@@ -93,6 +93,7 @@
 								</i:Interaction.Triggers>
 								<i:Interaction.Behaviors>
 									<catel:KeyPressToCommand Command="{Binding DoneEditingCommand}" Key="Enter"/>
+									<catel:KeyPressToCommand Command="{Binding CancelEditingCommand}" Key="Escape"/>
 								</i:Interaction.Behaviors>
 							</TextBox>
 						</StackPanel>

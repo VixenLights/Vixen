@@ -14,6 +14,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 	public class MarkCollectionViewModel: ViewModelBase
 	{
 		private System.Timers.Timer _nameclickTimer = null;
+		private string _textHold = String.Empty;
 
 		public MarkCollectionViewModel(MarkCollection markCollection)
 		{
@@ -207,7 +208,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			else
 			{ // Equal: (e.ClickCount == 2)
 				_nameclickTimer.Stop();
-
+				_textHold = Name;
 				IsEditing = true;
 			}
 
@@ -257,11 +258,38 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// </summary>
 		private void DoneEditing()
 		{
+			if (string.IsNullOrEmpty(Name))
+			{
+				Name = _textHold;
+			}
 			IsEditing = false;
 			IsDirty = true;
 		}
 
 		#endregion
+
+		#region CancelEditing command
+
+		private Command _cancelEditingCommand;
+
+		/// <summary>
+		/// Gets the CancelEditing command.
+		/// </summary>
+		public Command CancelEditingCommand
+		{
+			get { return _cancelEditingCommand ?? (_cancelEditingCommand = new Command(CancelEditing)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the CancelEditing command is executed.
+		/// </summary>
+		private void CancelEditing()
+		{
+			Name = _textHold;
+			IsEditing = false;
+		}
+
+		#endregion	
 
 		#region Decorator property
 
