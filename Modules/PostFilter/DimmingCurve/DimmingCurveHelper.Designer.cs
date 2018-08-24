@@ -37,6 +37,7 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
+			this.radioButtonInsertAfter = new System.Windows.Forms.RadioButton();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -104,7 +105,7 @@
 			// radioButtonExistingAddNew
 			// 
 			this.radioButtonExistingAddNew.AutoSize = true;
-			this.radioButtonExistingAddNew.Location = new System.Drawing.Point(31, 241);
+			this.radioButtonExistingAddNew.Location = new System.Drawing.Point(31, 265);
 			this.radioButtonExistingAddNew.Name = "radioButtonExistingAddNew";
 			this.radioButtonExistingAddNew.Size = new System.Drawing.Size(321, 19);
 			this.radioButtonExistingAddNew.TabIndex = 6;
@@ -116,7 +117,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(399, 294);
+			this.buttonCancel.Location = new System.Drawing.Point(399, 319);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(105, 29);
 			this.buttonCancel.TabIndex = 24;
@@ -130,7 +131,7 @@
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.buttonOk.Enabled = false;
-			this.buttonOk.Location = new System.Drawing.Point(287, 294);
+			this.buttonOk.Location = new System.Drawing.Point(287, 319);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(105, 29);
 			this.buttonOk.TabIndex = 23;
@@ -148,12 +149,24 @@
 			this.label4.TabIndex = 25;
 			this.label4.Text = "Hint: Use a library curve to make editing easier.";
 			// 
+			// radioButtonInsertAfter
+			// 
+			this.radioButtonInsertAfter.AutoSize = true;
+			this.radioButtonInsertAfter.Location = new System.Drawing.Point(31, 240);
+			this.radioButtonInsertAfter.Name = "radioButtonInsertAfter";
+			this.radioButtonInsertAfter.Size = new System.Drawing.Size(268, 19);
+			this.radioButtonInsertAfter.TabIndex = 26;
+			this.radioButtonInsertAfter.TabStop = true;
+			this.radioButtonInsertAfter.Text = "Insert a new dimming curve after the element.";
+			this.radioButtonInsertAfter.UseVisualStyleBackColor = true;
+			// 
 			// DimmingCurveHelper
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(518, 338);
+			this.ClientSize = new System.Drawing.Size(518, 363);
+			this.Controls.Add(this.radioButtonInsertAfter);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOk);
@@ -193,5 +206,6 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.Button buttonOk;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.RadioButton radioButtonInsertAfter;
 	}
 }
