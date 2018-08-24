@@ -255,6 +255,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 				}
 				while (_strings.Count < _stringCount) {
 					PreviewLine line = new PreviewLine(new PreviewPoint(10, 10), new PreviewPoint(10, 10), _lightsPerString, null, ZoomLevel);
+					if (_strings.Count > 0)
+					{
+						line.StringType = _strings[0].StringType;
+					}
 					_strings.Add(line);
 				}
 				Layout();
