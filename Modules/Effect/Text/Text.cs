@@ -1273,8 +1273,7 @@ namespace VixenModules.Effect.Text
 
 		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
 		{
-			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48);
-			adjustedFont = new Font(Font.Name, adjustedFont.Size, Font.Style);
+			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48, Font);
 			SizeF adjustedSizeNew = g.MeasureString(displayedText, adjustedFont);
 			int adjustedStartPosition = TextSource == TextSource.None ? startX : clipRectangle.X + startX;
 			var brush = new LinearGradientBrush(

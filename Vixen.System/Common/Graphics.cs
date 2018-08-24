@@ -59,13 +59,14 @@ namespace Vixen.Common
 		/// <param name="clipRectangle"></param>
 		/// <param name="fontResourceName">Either Font Family Name or the full path to the Font Resourse (RESX)</param>
 		/// <param name="maxFontSize"></param>
+		/// <param name="font"></param>
 		/// <param name="minFontSize"></param>
 		/// <returns></returns>
 		public static Font GetAdjustedFont(System.Drawing.Graphics graphicRef, string graphicString,
-			System.Drawing.Rectangle clipRectangle, string fontResourceName, int maxFontSize = 100, int minFontSize = 10)
+			System.Drawing.Rectangle clipRectangle, string fontResourceName, int maxFontSize = 100, Font font = null, int minFontSize = 10)
 		{
 			bool privateFont = fontResourceName.ToLower().EndsWith("ttf");
-			Font  originalFont = privateFont ? new Font(GetFontFromResx(fontResourceName).Name, 100) : new Font(fontResourceName, 100);
+			Font  originalFont = (privateFont ? new Font(GetFontFromResx(fontResourceName).Name, 100) : font) ?? new Font("Arial", 100);
 			SizeF adjustedSizeNew = graphicRef.MeasureString(graphicString, originalFont);
 
 			double minRatio = Math.Min(clipRectangle.Height / adjustedSizeNew.Height, (clipRectangle.Width + 15) / adjustedSizeNew.Width);
@@ -74,7 +75,7 @@ namespace Vixen.Common
 			if (newFontSize < minFontSize) newFontSize = minFontSize;
 			else if (newFontSize > maxFontSize) newFontSize = maxFontSize;
 
-			return new Font(originalFont.Name, newFontSize);
+			return new Font(originalFont.Name, newFontSize, originalFont.Style);
 		}
 	}
 }
