@@ -187,11 +187,28 @@ namespace VixenApplication
 				messageBox.ShowDialog();
 				return;
 			}
+
+			var invalidChars = Path.GetInvalidPathChars();
+			if (textBoxSaveFolder.Text.Any(s => invalidChars.Contains(s)))
+			{
+				var messageBox = new MessageBoxForm("The folder path for the zip file contains invalid characters.", @"Invalid Folder Path.", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog();
+				return;
+			}
+
 			if (textBoxFileName.Text == "")
 			{
 				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
 				MessageBoxForm.msgIcon = SystemIcons.Information; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Please choose a filename for the zip file.", @"Missing Zip file name", false, false);
+				messageBox.ShowDialog();
+				return;
+			}
+
+			invalidChars = Path.GetInvalidFileNameChars();
+			if (textBoxFileName.Text.Any(s => invalidChars.Contains(s)))
+			{
+				var messageBox = new MessageBoxForm("The filename for the zip file contains invalid characters.", @"Invalid Zip file name", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 				return;
 			}
