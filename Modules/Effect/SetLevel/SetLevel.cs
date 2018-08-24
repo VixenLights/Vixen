@@ -59,6 +59,7 @@ namespace VixenModules.Effect.SetLevel
 			set
 			{
 				_data = value as SetLevelData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 			}
 		}

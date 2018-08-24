@@ -52,6 +52,7 @@ namespace VixenModules.Effect.Pulse
 			set
 			{
 				_data = value as PulseData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 			}
 		}

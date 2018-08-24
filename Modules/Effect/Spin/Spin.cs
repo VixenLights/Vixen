@@ -86,6 +86,7 @@ namespace VixenModules.Effect.Spin
 			set
 			{
 				_data = value as SpinData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 				InitAllAttributes();
 			}
