@@ -1273,14 +1273,15 @@ namespace VixenModules.Effect.Text
 
 		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
 		{
-			Font AdjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48);
-			SizeF AdjustedSizeNew = g.MeasureString(displayedText, AdjustedFont);
+			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48, Font);
+			SizeF adjustedSizeNew = g.MeasureString(displayedText, adjustedFont);
+			int adjustedStartPosition = TextSource == TextSource.None ? startX : clipRectangle.X + startX;
 			var brush = new LinearGradientBrush(
-					new Rectangle(0, 0, (int)AdjustedSizeNew.Width, (int)AdjustedSizeNew.Height),
+					new Rectangle(adjustedStartPosition, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
 				{ InterpolationColors = Colors[_wordIteration % Colors.Count].GetColorBlend() };
-			g.DrawString(displayedText, AdjustedFont, brush, clipRectangle.X + startX, 2);
+			g.DrawString(displayedText, adjustedFont, brush, adjustedStartPosition, 2);
 		}
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }

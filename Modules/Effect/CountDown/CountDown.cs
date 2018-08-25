@@ -864,10 +864,10 @@ namespace VixenModules.Effect.CountDown
 
 		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
 		{
-			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48);
+			Font adjustedFont = Vixen.Common.Graphics.GetAdjustedFont(g, displayedText, clipRectangle, Font.Name, 48, Font);
 			SizeF adjustedSizeNew = g.MeasureString(displayedText, adjustedFont);
 			var brush = new LinearGradientBrush(
-					new Rectangle(0, 0, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
+					new Rectangle(clipRectangle.X + startX, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
 			{ InterpolationColors = Colors.GetColorBlend() };
