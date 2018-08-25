@@ -8,6 +8,7 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
+using NCalc;
 using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
@@ -535,6 +536,37 @@ namespace VixenModules.App.Curves
 			zedGraphControl.Invalidate();
 			_tempX = 0;
 			_drawCurve = true;
+		}
+
+		private void btnFunctionCurve_Click(object sender, EventArgs e)
+		{
+			zedGraphControl.GraphPane.CurveList[0].Clear();
+			zedGraphControl.Invalidate();
+			string f = "Sin(2 * Pi * (x / 100)) * ((25-7)/2) + ((25-7) /2) + 7";
+			try
+			{
+				var exp = new Expression(f, EvaluateOptions.IgnoreCase);
+				if (exp.HasErrors())
+				{
+					Console.WriteLine("Error catched: " + exp.Error);
+					return;
+				}
+
+				for (int x = 0; x <= 100; x+=5)
+				{
+					exp.Parameters["x"] = x;
+					exp.Parameters["Pi"] = Math.PI;
+					var ans = exp.Evaluate();
+					var y = Convert.ToDouble(ans);
+					if (y < 0) continue;
+					zedGraphControl.GraphPane.CurveList[0].AddPoint(x, y);
+				}
+				zedGraphControl.Invalidate();
+			}
+			catch (EvaluationException ex)
+			{
+				Console.WriteLine("Error catched: " + ex.Message);
+			}
 		}
 
 		private void textBoxThreshold_KeyPress(object sender, KeyPressEventArgs e)
