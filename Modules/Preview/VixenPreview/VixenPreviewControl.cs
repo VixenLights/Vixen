@@ -168,7 +168,7 @@ namespace VixenModules.Preview.VixenPreview
 			get { return _zoomLevel; }
 			set
 			{
-				double ZoomMax = 2;
+				double ZoomMax = 4;
 				
 				const double ZoomMin = .25;
 
