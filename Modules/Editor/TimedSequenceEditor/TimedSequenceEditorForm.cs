@@ -319,6 +319,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				GridForm.DockState = DockState.Document;
 			}
 
+			//Check to see if the timeline is undocked and in some small size that might be lost or hard to find. 
+			if (GridForm.Width < 200 && GridForm.DockState == DockState.Float)
+			{
+				//Set a reasonable float size and dock us back in the main form where we belong.
+				//This will also help ensure we can set the splitter location later
+				GridForm.Pane.FloatWindow.Size = new Size(300, 300);
+				GridForm.DockState = DockState.Document;
+			}
+
 			if (EffectEditorForm.DockState == DockState.Unknown)
 			{
 				EffectEditorForm.Show(dockPanel, DockState.DockRight);
@@ -514,13 +523,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
-			if (_sequence.DefaultSplitterDistance != 0)
+
+			var splitterDistance = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), (int)(TimelineControl.DefaultSplitterDistance * _scaleFactor));
+
+			if (splitterDistance > 0 && TimelineControl.splitContainer.Width > splitterDistance)
 			{
-				TimelineControl.splitContainer.SplitterDistance = _sequence.DefaultSplitterDistance;
+				TimelineControl.splitContainer.SplitterDistance = splitterDistance;
 			}
 			else
 			{
-				TimelineControl.splitContainer.SplitterDistance = (int) (TimelineControl.DefaultSplitterDistance*_scaleFactor);
+				var distance = (int) (TimelineControl.DefaultSplitterDistance * _scaleFactor);
+				if (TimelineControl.splitContainer.Width > distance)
+				{
+					TimelineControl.splitContainer.SplitterDistance = distance;
+				}
 			}
 
 			if (_sequence.DefaultPlaybackEndTime != TimeSpan.Zero)
@@ -550,7 +566,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.Name = "dockPanel";
 			dockPanel.Size = new Size(1579, 630);
 			toolStripContainer.ContentPanel.Controls.Add(dockPanel);
-			Logging.Error("Error loading dock panel config. Restoring to the default.", ex);
+			Logging.Error(ex, "Error loading dock panel config. Restoring to the default.");
 
 			var theme = new VS2015DarkTheme();
 			dockPanel.Theme = theme;
@@ -1470,11 +1486,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{			
 			//Add Default Row Height
 			_sequence.DefaultRowHeight = TimelineControl.rowHeight;
-			//Add Splitter Distance, the width of the RowList Column
-			if (TimelineControl.splitContainer.SplitterDistance != TimelineControl.DefaultSplitterDistance)
-			{
-				_sequence.DefaultSplitterDistance = TimelineControl.splitContainer.SplitterDistance;
-			}
+			
 			//Add Playback start and end time
 			_sequence.DefaultPlaybackStartTime = TimelineControl.PlaybackStartTime;
 			_sequence.DefaultPlaybackEndTime = TimelineControl.PlaybackEndTime;
@@ -5027,6 +5039,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomUnderMousePosition", Name), zoomUnderMousePositionToolStripMenuItem.Checked);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ColorLibraryForm.Close();
