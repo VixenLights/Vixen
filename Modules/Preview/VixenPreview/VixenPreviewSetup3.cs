@@ -120,6 +120,7 @@ namespace VixenModules.Preview.VixenPreview
 
 			undoToolStripMenuItem.Enabled = false;
 			redoToolStripMenuItem.Enabled = false;
+			trackerZoom.Maximum = Environment.Is64BitProcess ? 400 : 200;
 		}
 
 		private void VixenPreviewSetup3_Load(object sender, EventArgs e) {
@@ -157,6 +158,8 @@ namespace VixenModules.Preview.VixenPreview
 
 			// Choose the select tool to start
 			toolbarButton_Click(buttonSelect, new EventArgs());
+
+			SetZoomTextAndTracker(previewForm.Preview.ZoomLevel);
 			
 			InitUndo();
 		}
