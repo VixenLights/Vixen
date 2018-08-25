@@ -1173,6 +1173,7 @@ namespace VixenApplication.Setup
 			if (filterShape != null) {
 				_RemoveShapeFromDiagram(filterShape, true);
 				VixenSystem.Filters.RemoveFilter(filterShape.FilterInstance);
+				_filterShapes.Remove(filterShape);
 			}
 		}
 
