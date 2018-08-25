@@ -17,7 +17,7 @@ namespace VixenModules.Effect.CountDown
 	{
 		public CountDownData()
 		{
-			Colors = new ColorGradient(Color.Red);
+			GradientColors = new List<ColorGradient> { new ColorGradient(Color.Red) };
 			Direction = CountDownDirection.None;
 			Speed = 1;
 			Fade = true;
@@ -34,10 +34,15 @@ namespace VixenModules.Effect.CountDown
 			CountDownType = CountDownType.Effect;
 			CountDownFade = CountDownFade.InOut;
 			CountDownTime = "10";
+			PerIteration = false;
+			SizeMode = SizeMode.None;
 		}
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public ColorGradient Colors { get; set; }
+
+		[DataMember]
+		public List<ColorGradient> GradientColors { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
@@ -59,6 +64,9 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public bool Fade { get; set; }
+
+		[DataMember]
+		public bool PerIteration { get; set; }
 
 		[DataMember]
 		public GradientMode GradientMode { get; set; }
@@ -90,11 +98,24 @@ namespace VixenModules.Effect.CountDown
 		[DataMember]
 		public CountDownFade CountDownFade { get; set; }
 
+		[DataMember]
+		public SizeMode SizeMode { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//Ensure defaults for new fields that might not be in older effects.
+			if (GradientColors == null)
+			{
+				GradientColors = new List<ColorGradient> { Colors };
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			CountDownData result = new CountDownData
 			{
-				Colors = Colors,
+				GradientColors = GradientColors.ToList(),
 				Direction = Direction,
 				Speed = Speed,
 				CenterStop = CenterStop,
@@ -110,7 +131,9 @@ namespace VixenModules.Effect.CountDown
 				Fade = Fade,
 				CountDownType = CountDownType,
 				CountDownFade = CountDownFade,
-				CountDownTime = CountDownTime
+				CountDownTime = CountDownTime,
+				PerIteration = PerIteration,
+				SizeMode = SizeMode
 			};
 			return result;
 		}

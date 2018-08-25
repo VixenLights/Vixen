@@ -512,6 +512,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Size Mode.
+        /// </summary>
+        internal static string CountDownSizeMode {
+            get {
+                return ResourceManager.GetString("CountDownSizeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start Time.
         /// </summary>
         internal static string CountDownTime {
@@ -1201,6 +1210,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movement per number.
+        /// </summary>
+        internal static string PerIteration {
+            get {
+                return ResourceManager.GetString("PerIteration", resourceCulture);
             }
         }
         

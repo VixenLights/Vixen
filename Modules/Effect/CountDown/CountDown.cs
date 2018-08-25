@@ -29,6 +29,11 @@ namespace VixenModules.Effect.CountDown
 		private double _directionPosition;
 		private double _fade;
 		private double _level;
+		private int _countDownNumberIteration;
+		private int _previousCountDownNumber;
+		private CountDownDirection _direction;
+		private static Random _random = new Random();
+		private int _sizeAdjust;
 
 		public CountDown()
 		{
@@ -41,7 +46,7 @@ namespace VixenModules.Effect.CountDown
 		{
 			get
 			{
-				if (!Colors.CheckLibraryReference())
+				if (GradientColors.Any(x => !x.CheckLibraryReference()))
 				{
 					base.IsDirty = true;
 				}
@@ -126,9 +131,26 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CountDownSizeMode")]
+		[ProviderDescription(@"CountDownSizeMode")]
+		[PropertyOrder(3)]
+		public SizeMode SizeMode
+		{
+			get { return _data.SizeMode; }
+			set
+			{
+				_data.SizeMode = value;
+				UpdateSizeModeAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountDownTime")]
 		[ProviderDescription(@"CountDownTime")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public string CountDownTime
 		{
 			get { return _data.CountDownTime; }
@@ -146,7 +168,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Font")]
 		[ProviderDescription(@"Font")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Font Font
 		{
 			get { return _data.Font.FontValue; }
@@ -162,7 +184,7 @@ namespace VixenModules.Effect.CountDown
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FontScale")]
 		[ProviderDescription(@"FontScale")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve FontScaleCurve
 		{
 			get { return _data.FontScaleCurve; }
@@ -277,6 +299,22 @@ namespace VixenModules.Effect.CountDown
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"PerIteration")]
+		[ProviderDescription(@"PerIteration")]
+		[PropertyOrder(4)]
+		public bool PerIteration
+		{
+			get { return _data.PerIteration; }
+			set
+			{
+				_data.PerIteration = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Color properties
@@ -286,12 +324,12 @@ namespace VixenModules.Effect.CountDown
 		[ProviderDisplayName(@"TextColors")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(0)]
-		public ColorGradient Colors
+		public List<ColorGradient> GradientColors
 		{
-			get { return _data.Colors; }
+			get { return _data.GradientColors; }
 			set
 			{
-				_data.Colors = value;
+				_data.GradientColors = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -369,14 +407,28 @@ namespace VixenModules.Effect.CountDown
 		{
 			UpdatePositionXAttribute(false);
 			UpdateCountDownTypeAttributes(false);
+			UpdateSizeModeAttributes(false);
 			UpdateStringOrientationAttributes();
 			TypeDescriptor.Refresh(this);
 		}
+
 		private void UpdateCountDownTypeAttributes(bool refresh = true)
 		{
 			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
 			{
 				{"CountDownTime", CountDownType != CountDownType.Effect }
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
+		}
+		private void UpdateSizeModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"FontScaleCurve", SizeMode == SizeMode.None }
 			};
 			SetBrowsable(propertyStates);
 			if (refresh)
@@ -399,7 +451,7 @@ namespace VixenModules.Effect.CountDown
 					hideYOffsetCurve = true;
 					break;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(6)
 			{
 				{"XOffsetCurve", !hideXOffsetCurve},
 
@@ -407,7 +459,11 @@ namespace VixenModules.Effect.CountDown
 
 				{"AngleCurve", Direction == CountDownDirection.Rotate},
 
-				{"Speed", Direction != CountDownDirection.None}
+				{"Speed", Direction != CountDownDirection.None && Direction != CountDownDirection.Rotate},
+
+				{"CenterStop",Direction != CountDownDirection.None &&  Direction != CountDownDirection.Rotate},
+
+				{"PerIteration", Direction != CountDownDirection.None && Direction != CountDownDirection.Rotate}
 
 			};
 			SetBrowsable(propertyStates);
@@ -431,6 +487,9 @@ namespace VixenModules.Effect.CountDown
 			}
 			_font = Font;
 			_newFontSize = Font.Size;
+			_countDownNumberIteration = -1;
+			_direction = Direction;
+			_sizeAdjust = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -489,8 +548,21 @@ namespace VixenModules.Effect.CountDown
 				
 				SizeF textsize = new SizeF(0, 0);
 
-				//Adjust Font Size based on the Font scaling factor
-				_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
+				//Adjust Font Size based on the Size mode.
+				_sizeAdjust++;
+				switch (SizeMode)
+				{
+					case SizeMode.Grow:
+						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust;
+						break;
+					case SizeMode.Shrink:
+						_newFontSize = _font.SizeInPoints / 20 * (21 - _sizeAdjust);
+						break;
+					default:
+						_newFontSize = _font.SizeInPoints * (CalculateFontScale(intervalPosFactor) / 100);
+						break;
+
+				}
 				_newfont = new Font(Font.FontFamily.Name, _newFontSize, Font.Style);
 
 				if (!String.IsNullOrEmpty(_text))
@@ -509,7 +581,7 @@ namespace VixenModules.Effect.CountDown
 				int yOffset = CalculateYOffset(intervalPosFactor, maxht);
 
 				//Rotate the text based off the angle setting
-				if (Direction == CountDownDirection.Rotate)
+				if (_direction == CountDownDirection.Rotate)
 				{
 					//move rotation point to center of image
 					graphics.TranslateTransform((float) (bitmap.Width / 2 + xOffset), (float) (bitmap.Height / 2 + (yOffset / 2)));
@@ -520,7 +592,7 @@ namespace VixenModules.Effect.CountDown
 					graphics.TranslateTransform(-(float) (bitmap.Width / 2 + xOffset), -(float) (bitmap.Height / 2 + (yOffset / 2)));
 				}
 
-				switch (Direction)
+				switch (_direction)
 				{
 					case CountDownDirection.Left:
 					case CountDownDirection.Right:
@@ -535,7 +607,7 @@ namespace VixenModules.Effect.CountDown
 				int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
 				Point point;
 
-				switch (Direction)
+				switch (_direction)
 				{
 					case CountDownDirection.Left:
 						// left
@@ -577,12 +649,23 @@ namespace VixenModules.Effect.CountDown
 
 		private void SetFadePositionLevel(int frame)
 		{
-			_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
-			_text = GetCountDownTime(frame);
-
 			var totalFrames = GetNumberFrames();
 			int startFrame = 0;
 			if (CountDownType == CountDownType.Effect) startFrame = (int)(((decimal)totalFrames / 20 - Math.Floor((decimal)totalFrames / 20)) * 20);
+
+			if (PerIteration)
+			{
+				_directionPosition = CountDownType != CountDownType.Effect
+					? (double) 1 / totalFrames * (TimeSpan.TotalSeconds) * frame % 1
+					: (double) 1 / 20 * ((frame - startFrame - 1) % 20);
+			}
+			else
+			{
+				_directionPosition = (GetEffectTimeIntervalPosition(frame) * Speed) % 1;
+			}
+			
+			_text = GetCountDownTime(frame);
+
 				
 			switch (CountDownFade)
 			{
@@ -654,7 +737,17 @@ namespace VixenModules.Effect.CountDown
 					countDownNumber = (int) Math.Ceiling(GetRemainingTime(frame) / 1000);
 					break;
 			}
-
+			if (_previousCountDownNumber != countDownNumber)
+			{
+				_previousCountDownNumber = countDownNumber;
+				_countDownNumberIteration++;
+				if (Direction == CountDownDirection.Random)
+				{
+					_direction = (CountDownDirection)_random.Next(0, 6);
+				}
+				_sizeAdjust = 0;
+			}
+			
 			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
 			{
 				TimeSpan time = TimeSpan.FromSeconds(countDownNumber);
@@ -723,7 +816,7 @@ namespace VixenModules.Effect.CountDown
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
 			var brushPointX = offsetPoint.X;
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			var brush = new LinearGradientBrush(new Rectangle(brushPointX, p.Y, _maxTextSize, (int) size.Height), Color.Black,
 					Color.Black, mode)
 				{InterpolationColors = cg.GetColorBlend()};
@@ -737,7 +830,7 @@ namespace VixenModules.Effect.CountDown
 			var size = g.MeasureString(text, _newfont);
 			var offset = _maxTextSize - (int) size.Width;
 			var offsetPoint = new Point(p.X + offset / 2, p.Y);
-			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(Colors);
+			ColorGradient cg = _level < 1 || CountDownFade != CountDownFade.None ? GetNewGolorGradient() : new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			var brush = new LinearGradientBrush(new Rectangle(0, 0, BufferWi, BufferHt),
 					Color.Black,
 					Color.Black, mode)
@@ -749,7 +842,7 @@ namespace VixenModules.Effect.CountDown
 
 		private ColorGradient GetNewGolorGradient()
 		{
-			ColorGradient cg = new ColorGradient(Colors);
+			ColorGradient cg = new ColorGradient(GradientColors[_countDownNumberIteration % GradientColors.Count()]);
 			foreach (var color in cg.Colors)
 			{
 				HSV hsv = HSV.FromRGB(color.Color.ToRGB());
@@ -787,6 +880,7 @@ namespace VixenModules.Effect.CountDown
 			int secondTicks;
 			string displayTime;
 			int countTime = Convert.ToInt32(CountDownTime);
+			_countDownNumberIteration = 0;
 			switch (CountDownType)
 			{
 				case CountDownType.CountDown:
@@ -870,8 +964,9 @@ namespace VixenModules.Effect.CountDown
 					new Rectangle(clipRectangle.X + startX, 2, (int)adjustedSizeNew.Width, (int)adjustedSizeNew.Height),
 					Color.Black,
 					Color.Black, mode)
-			{ InterpolationColors = Colors.GetColorBlend() };
+			{ InterpolationColors = GradientColors[_countDownNumberIteration % GradientColors.Count()].GetColorBlend() };
 			g.DrawString(displayedText, adjustedFont, brush, clipRectangle.X + startX, 2);
+			_countDownNumberIteration++;
 		}
 
 		public override bool ForceGenerateVisualRepresentation { get { return true; } }

@@ -11,4 +11,14 @@ namespace VixenModules.Effect.CountDown
 		[Description("Up from time")]
 		CountUp
 	}
+
+	public enum SizeMode
+	{
+		[Description("None")]
+		None,
+		[Description("Shrink")]
+		Shrink,
+		[Description("Grow")]
+		Grow
+	}
 }

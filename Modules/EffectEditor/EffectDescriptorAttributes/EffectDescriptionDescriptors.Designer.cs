@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vary the size of the Count down value..
+        /// </summary>
+        internal static string CountDownSizeMode {
+            get {
+                return ResourceManager.GetString("CountDownSizeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sets the starting time in seconds for the count to begin..
         /// </summary>
         internal static string CountDownTime {
@@ -1111,6 +1120,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string Particles {
             get {
                 return ResourceManager.GetString("Particles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled will adjust movement per number where as disabled adjusts movement over effect length..
+        /// </summary>
+        internal static string PerIteration {
+            get {
+                return ResourceManager.GetString("PerIteration", resourceCulture);
             }
         }
         

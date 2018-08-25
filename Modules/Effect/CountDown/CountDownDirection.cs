@@ -15,7 +15,9 @@ namespace VixenModules.Effect.CountDown
 		[Description("Rotate")]
 		Rotate,
 		[Description("None")]
-		None
-		
+		None,
+		[Description("Random")]
+		Random
+
 	}
 }
