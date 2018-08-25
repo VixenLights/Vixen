@@ -89,13 +89,21 @@ namespace VixenModules.Property.Color
 		public System.Drawing.Color SingleColor
 		{
 			get { return _data.SingleColor; }
-			set { _data.SingleColor = value; }
+			set
+			{
+				_data.SingleColor = value;
+				_cachedColorSetReference = null;
+			}
 		}
 
 		public string ColorSetName
 		{
 			get { return _data.ColorSetName; }
-			set { _data.ColorSetName = value; }
+			set
+			{
+				_data.ColorSetName = value;
+				_cachedColorSetReference = null;
+			}
 		}
 
 

@@ -114,6 +114,7 @@ namespace VixenModules.Effect.Alternating
 			set
 			{
 				_data = value as AlternatingData;
+				CheckForInvalidColorData();
 				InitAllAttributes();
 			}
 		}

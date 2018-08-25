@@ -102,6 +102,7 @@ namespace VixenModules.Effect.Twinkle
 			set
 			{
 				_data = value as TwinkleData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 				UpdateAllAttributes();
 			}

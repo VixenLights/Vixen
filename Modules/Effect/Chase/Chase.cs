@@ -66,6 +66,7 @@ namespace VixenModules.Effect.Chase
 			set
 			{
 				_data = value as ChaseData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 				InitAllAttributes();
 			}

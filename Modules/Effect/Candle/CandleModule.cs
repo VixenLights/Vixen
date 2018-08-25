@@ -29,6 +29,7 @@ namespace VixenModules.Effect.Candle
 			set
 			{
 				_data = (CandleData) value;
+				CheckForInvalidColorData();
 				IsDirty = true;
 			}
 		}

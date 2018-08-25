@@ -568,6 +568,7 @@ namespace VixenModules.Effect.Wipe
 			set
 			{
 				_data = value as WipeData;
+				CheckForInvalidColorData();
 				IsDirty = true;
 				UpdateAttributes();
 			}

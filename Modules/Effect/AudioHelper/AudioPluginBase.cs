@@ -537,7 +537,8 @@ namespace VixenModules.Effect.AudioHelp
             get { return Data; }
 			set {
                 Data = value as IAudioPluginData;
-                UpdateColorGradient();
+				CheckForInvalidColorData();
+				UpdateColorGradient();
 				InitAllAttributes();
                 _audioUtilities.DecayTime = Data.DecayTime;
                 _audioUtilities.AttackTime = Data.AttackTime;
