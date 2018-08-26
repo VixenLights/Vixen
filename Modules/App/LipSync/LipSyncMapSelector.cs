@@ -217,6 +217,10 @@ namespace VixenModules.App.LipSyncApp
 			string mapName = Library.AddMapping(true, null, newMap, true);
 
 			Changed = Library.EditLibraryMapping(mapName);
+			if (!Changed)
+			{
+				Library.RemoveMapping(mapName);
+			}
 			this.PopulateListWithMappings();
 		}
 
