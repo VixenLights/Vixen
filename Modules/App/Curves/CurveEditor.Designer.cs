@@ -42,6 +42,7 @@ namespace VixenModules.App.Curves
 			this.yLabel = new System.Windows.Forms.Label();
 			this.xLabel = new System.Windows.Forms.Label();
 			this.grpCurve = new System.Windows.Forms.GroupBox();
+			this.btnFunctionCurve = new System.Windows.Forms.Button();
 			this.textBoxThreshold = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnDraw = new System.Windows.Forms.Button();
@@ -53,7 +54,6 @@ namespace VixenModules.App.Curves
 			this.btnReverse = new System.Windows.Forms.Button();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.zedGraphControl = new ZedGraph.ZedGraphControl();
-			this.btnFunctionCurve = new System.Windows.Forms.Button();
 			this.groupBoxLibrary.SuspendLayout();
 			this.grpCurve.SuspendLayout();
 			this.SuspendLayout();
@@ -258,9 +258,26 @@ namespace VixenModules.App.Curves
 			this.grpCurve.Text = "Curve";
 			this.grpCurve.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
+			// btnFunctionCurve
+			// 
+			this.btnFunctionCurve.AutoSize = true;
+			this.btnFunctionCurve.BackColor = System.Drawing.Color.Transparent;
+			this.btnFunctionCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+			this.btnFunctionCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+			this.btnFunctionCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+			this.btnFunctionCurve.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+			this.btnFunctionCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnFunctionCurve.Location = new System.Drawing.Point(114, 57);
+			this.btnFunctionCurve.Name = "btnFunctionCurve";
+			this.btnFunctionCurve.Size = new System.Drawing.Size(93, 29);
+			this.btnFunctionCurve.TabIndex = 19;
+			this.btnFunctionCurve.Text = "f(x) Curve";
+			this.btnFunctionCurve.UseVisualStyleBackColor = false;
+			this.btnFunctionCurve.Click += new System.EventHandler(this.btnFunctionCurve_Click);
+			// 
 			// textBoxThreshold
 			// 
-			this.textBoxThreshold.Location = new System.Drawing.Point(225, 61);
+			this.textBoxThreshold.Location = new System.Drawing.Point(297, 24);
 			this.textBoxThreshold.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.textBoxThreshold.Name = "textBoxThreshold";
 			this.textBoxThreshold.Size = new System.Drawing.Size(36, 23);
@@ -273,11 +290,11 @@ namespace VixenModules.App.Curves
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(125, 64);
+			this.label1.Location = new System.Drawing.Point(213, 27);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(90, 15);
+			this.label1.Size = new System.Drawing.Size(76, 15);
 			this.label1.TabIndex = 17;
-			this.label1.Text = "Draw Threshold";
+			this.label1.Text = "Draw Interval";
 			this.toolTip.SetToolTip(this.label1, "Min distance to create Curve point");
 			// 
 			// btnDraw
@@ -289,7 +306,7 @@ namespace VixenModules.App.Curves
 			this.btnDraw.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
 			this.btnDraw.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.btnDraw.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnDraw.Location = new System.Drawing.Point(128, 20);
+			this.btnDraw.Location = new System.Drawing.Point(114, 20);
 			this.btnDraw.Name = "btnDraw";
 			this.btnDraw.Size = new System.Drawing.Size(93, 29);
 			this.btnDraw.TabIndex = 16;
@@ -322,7 +339,7 @@ namespace VixenModules.App.Curves
 			// lblSelectedPoint
 			// 
 			this.lblSelectedPoint.AutoSize = true;
-			this.lblSelectedPoint.Location = new System.Drawing.Point(343, 27);
+			this.lblSelectedPoint.Location = new System.Drawing.Point(351, 27);
 			this.lblSelectedPoint.Name = "lblSelectedPoint";
 			this.lblSelectedPoint.Size = new System.Drawing.Size(82, 15);
 			this.lblSelectedPoint.TabIndex = 14;
@@ -436,23 +453,6 @@ namespace VixenModules.App.Curves
 			this.zedGraphControl.MouseUpEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_MouseUpEvent);
 			this.zedGraphControl.PreMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PreMouseMoveEvent);
 			this.zedGraphControl.PostMouseMoveEvent += new ZedGraph.ZedGraphControl.ZedMouseEventHandler(this.zedGraphControl_PostMouseMoveEvent);
-			// 
-			// btnFunctionCurve
-			// 
-			this.btnFunctionCurve.AutoSize = true;
-			this.btnFunctionCurve.BackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-			this.btnFunctionCurve.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-			this.btnFunctionCurve.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnFunctionCurve.Location = new System.Drawing.Point(227, 20);
-			this.btnFunctionCurve.Name = "btnFunctionCurve";
-			this.btnFunctionCurve.Size = new System.Drawing.Size(100, 29);
-			this.btnFunctionCurve.TabIndex = 19;
-			this.btnFunctionCurve.Text = "Function Curve";
-			this.btnFunctionCurve.UseVisualStyleBackColor = false;
-			this.btnFunctionCurve.Click += new System.EventHandler(this.btnFunctionCurve_Click);
 			// 
 			// CurveEditor
 			// 

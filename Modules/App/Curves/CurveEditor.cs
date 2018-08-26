@@ -18,6 +18,7 @@ namespace VixenModules.App.Curves
 		private double _previousCurveYLocation;
 		private double _tempX;
 		private bool _drawCurve;
+		private string _holdFunction = String.Empty;
 
 		public CurveEditor()
 		{
@@ -540,15 +541,30 @@ namespace VixenModules.App.Curves
 
 		private void btnFunctionCurve_Click(object sender, EventArgs e)
 		{
+			FunctionGenerator fGen = new FunctionGenerator(_holdFunction);
+			var result = fGen.ShowDialog(this);
+			if (result == DialogResult.Cancel)
+			{
+				return;
+			}
 			zedGraphControl.GraphPane.CurveList[0].Clear();
 			zedGraphControl.Invalidate();
-			string f = "Sin(2 * Pi * (x / 100)) * ((25-7)/2) + ((25-7) /2) + 7";
+			//string f = "Sin(2 * Pi * (x / 100)) * ((25-7)/2) + ((25-7) /2) + 7";
+			if (string.IsNullOrEmpty(fGen.Function))
+			{
+				MessageBoxForm mbf = new MessageBoxForm($"The function entered is empty.", "Function Error", MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
+				return;
+			}
+
+			_holdFunction = fGen.Function;
 			try
 			{
-				var exp = new Expression(f, EvaluateOptions.IgnoreCase);
+				var exp = new Expression(fGen.Function, EvaluateOptions.IgnoreCase);
 				if (exp.HasErrors())
 				{
-					Console.WriteLine("Error catched: " + exp.Error);
+					MessageBoxForm mbf = new MessageBoxForm($"The function entered has the following syntax errors.\n {exp.Error}","Function Error", MessageBoxButtons.OK, SystemIcons.Error);
+					mbf.ShowDialog(this);
 					return;
 				}
 
@@ -558,14 +574,16 @@ namespace VixenModules.App.Curves
 					exp.Parameters["Pi"] = Math.PI;
 					var ans = exp.Evaluate();
 					var y = Convert.ToDouble(ans);
-					if (y < 0) continue;
+					if (y < 0) y=0;
+					if (y > 100) y = 100;
 					zedGraphControl.GraphPane.CurveList[0].AddPoint(x, y);
 				}
 				zedGraphControl.Invalidate();
 			}
-			catch (EvaluationException ex)
+			catch (Exception ex)
 			{
-				Console.WriteLine("Error catched: " + ex.Message);
+				MessageBoxForm mbf = new MessageBoxForm($"The function entered has the following syntax errors.\n {ex.Message}", "Function Errors", MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
 			}
 		}
 

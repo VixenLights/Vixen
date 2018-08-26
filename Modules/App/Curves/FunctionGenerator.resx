@@ -117,4 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Enter the mathmatical f(x) that provides the value of y. The function will be run 20 times with stepped values of x to produce the x,y values in the curve.  Example gamma correction function Pow(x/100, 2.8) * 100 +.5</value>
+  </data>
 </root>
