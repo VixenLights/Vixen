@@ -793,6 +793,20 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				        //Can't add lights to group of groups
 				        return false;
 			        }
+
+					
+			        if (evmTarget.ParentViewModel is ElementModelViewModel parent)
+			        {
+				        if (elementModelViewModels.Any(x => x.ParentViewModel != parent))
+				        {
+					        if (parent.Children.Intersect(elementModelViewModels.Select(x => x.ElementModel)).Any())
+					        {
+						        //already part of this group.
+						        return false;
+					        }
+						}
+					}
+
 				}
 
 		        if (dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.AfterTargetItem))
@@ -802,7 +816,19 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 				        //Can't add lights to group of groups
 				        return false;
 			        }
-		        }
+
+					if (evmTarget.ParentViewModel is ElementModelViewModel parent)
+					{
+						if (elementModelViewModels.Any(x => x.ParentViewModel != parent))
+						{
+							if (parent.Children.Intersect(elementModelViewModels.Select(x => x.ElementModel)).Any())
+							{
+								//already part of this group.
+								return false;
+							}
+						}
+					}
+				}
 
 				if (isTreeViewItem && dropInfo.InsertPosition.HasFlag(RelativeInsertPosition.TargetItemCenter))
 	            {
