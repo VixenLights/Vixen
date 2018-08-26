@@ -249,7 +249,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		    var lightstoDelete = SelectedItems.Select(l => l.Light).ToList();
 		    DeselectAll();
             PropModelServices.Instance().RemoveLights(lightstoDelete);
-			_RefreshElementLeaf_LightViewModelsChanged();
+			RefreshLightViewModels();
+			OnLightModelsChanged();
 		}
 
 		public void DeselectAll()
@@ -539,12 +540,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 
 		#endregion
 		
-		public event EventHandler RefreshElementLeaf_LightViewModels;
+		public event EventHandler LightModelsChanged;
 
-		private void _RefreshElementLeaf_LightViewModelsChanged()
+		private void OnLightModelsChanged()
 		{
-			if (RefreshElementLeaf_LightViewModels != null)
-				RefreshElementLeaf_LightViewModels(this, EventArgs.Empty);
+			if (LightModelsChanged != null)
+				LightModelsChanged(this, EventArgs.Empty);
 		}
 
 	}
