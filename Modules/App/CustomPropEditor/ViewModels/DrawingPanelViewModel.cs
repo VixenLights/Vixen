@@ -250,6 +250,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		    DeselectAll();
             PropModelServices.Instance().RemoveLights(lightstoDelete);
 			RefreshLightViewModels();
+			OnLightModelsChanged();
 		}
 
 		public void DeselectAll()
@@ -538,7 +539,14 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 		#endregion
 
 		#endregion
+		
+		public event EventHandler LightModelsChanged;
 
+		private void OnLightModelsChanged()
+		{
+			if (LightModelsChanged != null)
+				LightModelsChanged(this, EventArgs.Empty);
+		}
 
 	}
 }
