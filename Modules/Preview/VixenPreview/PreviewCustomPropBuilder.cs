@@ -141,7 +141,7 @@ namespace VixenModules.Preview.VixenPreview
 			else
 			{
 				//Our element exists, so add this one as a child.
-				parentNode.AddChild(node);
+				VixenSystem.Nodes.AddChildToParent(node,parentNode);
 			}
 
 			return node;
