@@ -78,7 +78,7 @@ namespace VixenModules.Sequence.Timed
 		{
 			var messageBox = new MessageBoxForm(
 				string.Format("Migration from version {0} to {1} is complete. You will need to save the sequence in the editor for the migration to persist or use it in a Vixen scheduled show.", fromVersion, toVersion),
-				"Sequence upgrade", MessageBoxButtons.OK, SystemIcons.Information);
+				"Sequence Upgrade", MessageBoxButtons.OK, SystemIcons.Information);
 			messageBox.ShowDialog();
 		}
 
