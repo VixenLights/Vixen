@@ -299,6 +299,7 @@
 				          dd:DragDrop.DropHandler="{Binding ElementOrderViewModel}">
 					<i:Interaction.Behaviors>
 						<behaviors:MultiSelectionBehavior SelectedItems="{Binding ElementOrderViewModel.SelectedItems}" />
+						<interactivity:KeyPressToCommand Command="{Binding DrawingPanelViewModel.DeleteSelectedLightsCommand}" Key="Delete" />
 					</i:Interaction.Behaviors>
 					<ListView.ItemTemplate >
 						<DataTemplate DataType="{x:Type viewModels:ElementModelViewModel}">
