@@ -568,15 +568,17 @@ namespace VixenModules.App.Curves
 					return;
 				}
 
-				for (int x = 0; x <= 100; x+=5)
+				var step = Convert.ToInt16(textBoxThreshold.Text);
+				int lastXValue = 0;
+				for (int x = 0; x <= 100; x+=step)
 				{
-					exp.Parameters["x"] = x;
-					exp.Parameters["Pi"] = Math.PI;
-					var ans = exp.Evaluate();
-					var y = Convert.ToDouble(ans);
-					if (y < 0) y=0;
-					if (y > 100) y = 100;
-					zedGraphControl.GraphPane.CurveList[0].AddPoint(x, y);
+					CalculateFunction(exp, x);
+					lastXValue = x;
+				}
+
+				if (lastXValue != 100)
+				{
+					CalculateFunction(exp, 100);
 				}
 				zedGraphControl.Invalidate();
 			}
@@ -587,6 +589,17 @@ namespace VixenModules.App.Curves
 			}
 		}
 
+		private void CalculateFunction(Expression exp, int x)
+		{
+			exp.Parameters["x"] = x;
+			exp.Parameters["Pi"] = Math.PI;
+			var ans = exp.Evaluate();
+			var y = Convert.ToDouble(ans);
+			if (y < 0) y = 0;
+			if (y > 100) y = 100;
+			zedGraphControl.GraphPane.CurveList[0].AddPoint(x, y);
+		}
+
 		private void textBoxThreshold_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
@@ -595,10 +608,10 @@ namespace VixenModules.App.Curves
 		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
 		{
 			if (textBoxThreshold.Text == "") return;
-			if (Convert.ToInt16(textBoxThreshold.Text) > 10)
+			if (Convert.ToInt16(textBoxThreshold.Text) > 20)
 			{
-				textBoxThreshold.Text = "10";
-				toolTip.Show("Draw Threshold has a maximun value of 10", textBoxThreshold, 0, 30, 3000);
+				textBoxThreshold.Text = @"20";
+				toolTip.Show("Draw Threshold has a maximun value of 20", textBoxThreshold, 0, 30, 3000);
 			}
 		}
 	}
