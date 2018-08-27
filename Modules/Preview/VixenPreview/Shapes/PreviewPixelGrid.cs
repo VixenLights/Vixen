@@ -75,7 +75,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			}
 			StringCount = _strings.Count();
 
-			if (selectedNode.Properties.Contains(OrientationDescriptor._typeId))
+			if (selectedNode!= null && selectedNode.Properties.Contains(OrientationDescriptor._typeId))
 			{
 				var m = selectedNode.Properties.Get(OrientationDescriptor._typeId) as OrientationModule;
 				if (m.Orientation == Orientation.Horizontal)
