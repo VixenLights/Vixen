@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Vixen.Module;
@@ -33,6 +34,9 @@ namespace VixenModules.Effect.Video
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			MovementRate = 4;
 			StretchToGrid = false;
+			VideoQuality = 50;
+			VideoSize = new Size(600, 400);
+			FrameScale = 1.0;
 		}
 
 		[DataMember]
@@ -101,11 +105,20 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public int VideoLength { get; set; }
 
-		[DataMember]
+		[DataMember] 
 		public int MovementRate { get; set; }
 
 		[DataMember]
 		public string Video_DataPath { get; set; }
+
+		[DataMember]
+		public int VideoQuality { get; set; }
+
+		[DataMember]
+		public Size VideoSize { get; set; }
+
+		[DataMember]
+		public Double FrameScale { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -159,7 +172,10 @@ namespace VixenModules.Effect.Video
 				EffectColorType = EffectColorType,
 				MaintainAspect = MaintainAspect,
 				MovementRate = MovementRate,
-				StretchToGrid = StretchToGrid
+				StretchToGrid = StretchToGrid,
+				VideoQuality = VideoQuality,
+				VideoSize = VideoSize,
+				FrameScale = FrameScale
 			};
 			return result;
 		}
