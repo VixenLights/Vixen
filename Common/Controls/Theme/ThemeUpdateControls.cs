@@ -32,10 +32,26 @@ namespace Common.Controls.Theme
 			{
 				if (excludes != null && excludes.Contains(c)) continue;
 				c.Font = StandardFont;
-				if (c is GroupBox | c is Panel | c is Label | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
+				if (c is Label l)
+				{
+					l.ForeColor = ThemeColorTable.ForeColor;
+					l.BackColor = ThemeColorTable.BackgroundColor;
+					if (l is LinkLabel ll)
+					{
+						ll.LinkColor = ThemeColorTable.LinkColor;
+					}
+					continue;
+				}
+				if (c is GroupBox | c is Panel | c is ToolStripEx | c is ToolStrip | c is RadioButton | c is CheckBox | c is TreeView | c.ToString().Contains("PropertyGrid"))
 				{
 					c.ForeColor = ThemeColorTable.ForeColor;
 					c.BackColor = ThemeColorTable.BackgroundColor;
+
+					if (c.Controls.Count > 0)
+					{
+						UpdateControls(c, excludes);
+					}
+					continue;
 				}
 				if (c is Button)
 				{
@@ -54,17 +70,24 @@ namespace Common.Controls.Theme
 						btn.FlatAppearance.MouseOverBackColor = Color.Transparent;
 						btn.FlatAppearance.MouseDownBackColor = Color.Transparent;
 					}
+					continue;
 				}
 				if (c is TextBox & !c.ToString().Contains("UpDown"))
 				{
 					TextBox btn = c as TextBox;
 					btn.ForeColor = ThemeColorTable.ForeColor;
 					btn.BackColor = ThemeColorTable.TextBoxBackgroundColor;
+					if (btn.ReadOnly)
+					{
+						btn.BackColor = ThemeColorTable.BackgroundColor;
+					}
 					if (btn.BorderStyle != BorderStyle.None)
 					{
 						btn.BorderStyle = BorderStyle.FixedSingle;
 					}
+					continue;
 				}
+	
 				if (c is RichTextBox)
 				{
 					RichTextBox txt = c as RichTextBox;
@@ -74,6 +97,7 @@ namespace Common.Controls.Theme
 					{
 						txt.BorderStyle = BorderStyle.FixedSingle;
 					}
+					continue;
 				}
 				if (c is MaskedTextBox & !c.ToString().Contains("UpDown"))
 				{
@@ -81,6 +105,7 @@ namespace Common.Controls.Theme
 					btn.ForeColor = ThemeColorTable.ForeColor;
 					btn.BackColor = ThemeColorTable.TextBoxBackgroundColor;
 					btn.BorderStyle = BorderStyle.FixedSingle;
+					continue;
 				}
 				if (c is ComboBox)
 				{
@@ -88,6 +113,7 @@ namespace Common.Controls.Theme
 					btn.BackColor = ThemeColorTable.ComboBoxBackColor;
 					btn.ForeColor = ThemeColorTable.ForeColor;
 					btn.FlatStyle = FlatStyle.Flat;
+					continue;
 				}
 				if (c.ToString().Contains("DateTimePicker"))
 				{

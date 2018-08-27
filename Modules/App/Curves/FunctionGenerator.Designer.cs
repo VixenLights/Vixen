@@ -33,7 +33,8 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.txtFunction = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.txtDescription = new System.Windows.Forms.TextBox();
+			this.lnkHelp = new System.Windows.Forms.LinkLabel();
 			this.SuspendLayout();
 			// 
 			// btnGenerate
@@ -59,7 +60,7 @@
 			// 
 			// txtFunction
 			// 
-			this.txtFunction.Location = new System.Drawing.Point(75, 69);
+			this.txtFunction.Location = new System.Drawing.Point(75, 104);
 			this.txtFunction.Name = "txtFunction";
 			this.txtFunction.Size = new System.Drawing.Size(283, 20);
 			this.txtFunction.TabIndex = 3;
@@ -67,21 +68,35 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(21, 72);
+			this.label1.Location = new System.Drawing.Point(21, 107);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(48, 13);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "Function";
 			// 
-			// label2
+			// txtDescription
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(18, 13);
-			this.label2.MaximumSize = new System.Drawing.Size(350, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(350, 39);
-			this.label2.TabIndex = 5;
-			this.label2.Text = resources.GetString("label2.Text");
+			this.txtDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.txtDescription.Location = new System.Drawing.Point(24, 12);
+			this.txtDescription.Multiline = true;
+			this.txtDescription.Name = "txtDescription";
+			this.txtDescription.ReadOnly = true;
+			this.txtDescription.Size = new System.Drawing.Size(334, 63);
+			this.txtDescription.TabIndex = 6;
+			this.txtDescription.Text = resources.GetString("txtDescription.Text");
+			// 
+			// lnkHelp
+			// 
+			this.lnkHelp.AutoSize = true;
+			this.lnkHelp.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(200)))));
+			this.lnkHelp.Location = new System.Drawing.Point(24, 72);
+			this.lnkHelp.Name = "lnkHelp";
+			this.lnkHelp.Size = new System.Drawing.Size(29, 13);
+			this.lnkHelp.TabIndex = 7;
+			this.lnkHelp.TabStop = true;
+			this.lnkHelp.Text = "Help";
+			this.lnkHelp.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(0)))), ((int)(((byte)(100)))));
+			this.lnkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHelp_LinkClicked);
 			// 
 			// FunctionGenerator
 			// 
@@ -90,12 +105,15 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(370, 175);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.lnkHelp);
+			this.Controls.Add(this.txtDescription);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtFunction);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnGenerate);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "FunctionGenerator";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Function Curve Generator";
@@ -110,6 +128,7 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.TextBox txtFunction;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox txtDescription;
+		private System.Windows.Forms.LinkLabel lnkHelp;
 	}
 }

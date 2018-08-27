@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Common.Controls.Theme;
+using Common.Resources.Properties;
 
 namespace VixenModules.App.Curves
 {
@@ -9,6 +10,7 @@ namespace VixenModules.App.Curves
 		public FunctionGenerator(string function)
 		{
 			InitializeComponent();
+			Icon = Resources.Icon_Vixen3;
 			ThemeUpdateControls.UpdateControls(this);
 			txtFunction.Text = function;
 		}
@@ -24,6 +26,11 @@ namespace VixenModules.App.Curves
 		{
 			Function = txtFunction.Text;
 			DialogResult = DialogResult.OK;
+		}
+
+		private void lnkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://www.vixenlights.com/vixen-3-documentation/basic-concepts-of-vixen-3/curve-editor/");
 		}
 	}
 }
