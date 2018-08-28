@@ -559,6 +559,10 @@ namespace VixenModules.Effect.Video
 			//Delete old path and create new path for processed video
 			if (Directory.Exists(_data.Video_DataPath))
 			{
+				DirectoryInfo dir = new DirectoryInfo(_data.Video_DataPath);
+				foreach (FileInfo file in dir.GetFiles()) file.Delete();
+				System.GC.Collect();
+				System.GC.WaitForPendingFinalizers();
 				Directory.Delete(_data.Video_DataPath, true);
 			}
 			_data.Video_DataPath = Path.Combine(_tempPath, Guid.NewGuid().ToString());
@@ -623,7 +627,7 @@ namespace VixenModules.Effect.Video
 					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
-					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
+					converter.MakeScaledThumbNails(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
 						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo);
 					_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
 

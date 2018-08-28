@@ -45,7 +45,7 @@ namespace ffmpeg
 		}
 
 		//Native Video Effect
-		public void MakeScaledVideo(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo)
+		public void MakeScaledThumbNails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo)
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguements string
