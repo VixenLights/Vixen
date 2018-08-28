@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
-using Accord.Video.FFMPEG;
 using Common.Controls;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -37,7 +36,6 @@ namespace VixenModules.Effect.Video
 		private int _xoffset;
 		private int _yoffset;
 		private FastPixel.FastPixel _fp;
-		private VideoFileReader _reader;
 		private bool _videoFileDetected;
 		private List<string> _moviePicturesFileList;
 		private double _ratioWidth;
