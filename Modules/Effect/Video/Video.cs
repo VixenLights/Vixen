@@ -624,7 +624,7 @@ namespace VixenModules.Effect.Video
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
 					converter.MakeScaledVideo(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
-						_renderWidth, _renderHeight, _data.FrameScale, MaintainAspect, RotateVideo, cropVideo);
+						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo);
 					_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
 
 					_videoFileDetected = true;
@@ -1049,14 +1049,7 @@ namespace VixenModules.Effect.Video
 				string[] words = videoInfo.Split(':');
 				TimeSpan videoTimeSpan = new TimeSpan(Int32.Parse(words[0]), Int32.Parse(words[1]), Int32.Parse(words[2]));
 				VideoLength = (int) videoTimeSpan.TotalSeconds;
-
-				// Get Video Frame Rate
-				// Tested with multi image types.
-				int frameRateIndex = result.IndexOf("tbr, "); 
-				string[] frameInfo = result.Substring(frameRateIndex - 7, 8).Split(' ');
-				double frameRate = 25; //default frame rate.
-				foreach (var frame in frameInfo) if(double.TryParse(frame, out frameRate)) break; // Video frame rate
-
+				
 				// Saves one frame from video then grabs it to determine Video size.
 				// This was to replace the way Accord did it as it makes sense to do the Video size
 				// conversion when generating all the images. This can reduces each bitmap file size significantly.
@@ -1066,7 +1059,6 @@ namespace VixenModules.Effect.Video
 
 				// Saves the Video info to data store.
 				_data.VideoSize = new Size(sizedImage.Width, sizedImage.Height);
-				_data.FrameScale = 20 / frameRate;
 
 				sizedImage.Dispose();
 				_getNewVideoInfo = false;

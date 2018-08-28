@@ -36,7 +36,6 @@ namespace VixenModules.Effect.Video
 			StretchToGrid = false;
 			VideoQuality = 50;
 			VideoSize = new Size(600, 400);
-			FrameScale = 1.0;
 		}
 
 		[DataMember]
@@ -117,9 +116,6 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public Size VideoSize { get; set; }
 
-		[DataMember]
-		public Double FrameScale { get; set; }
-
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -174,8 +170,7 @@ namespace VixenModules.Effect.Video
 				MovementRate = MovementRate,
 				StretchToGrid = StretchToGrid,
 				VideoQuality = VideoQuality,
-				VideoSize = VideoSize,
-				FrameScale = FrameScale
+				VideoSize = VideoSize
 			};
 			return result;
 		}

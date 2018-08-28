@@ -45,11 +45,11 @@ namespace ffmpeg
 		}
 
 		//Native Video Effect
-		public void MakeScaledVideo(string outputPath, double startPosition, double duration, int width, int height, double frameScale, bool maintainAspect, int rotateVideo, string cropVideo)
+		public void MakeScaledVideo(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo)
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguements string
-			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration} -vf \"setpts={frameScale}*PTS, scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\"  \"{outputPath}\\%5d.bmp\"";
+			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r 20 \"{outputPath}\\%5d.bmp\"";
 			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
 			ffmpegPath += "Common\\ffmpeg.exe";
 			Console.Out.WriteLine(args);
