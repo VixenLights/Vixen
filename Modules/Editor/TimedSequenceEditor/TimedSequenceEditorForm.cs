@@ -645,7 +645,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
-			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location));
+			//return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 

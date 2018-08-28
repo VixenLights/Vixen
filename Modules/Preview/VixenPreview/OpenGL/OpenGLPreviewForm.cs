@@ -732,7 +732,8 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
-			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+			//return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location));
 		}
 
 		private Size FindMaxPreviewSize()
