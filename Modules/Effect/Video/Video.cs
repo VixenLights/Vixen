@@ -26,8 +26,8 @@ namespace VixenModules.Effect.Video
 		private const int MaxRenderHeight = 600;
 		private VideoData _data;
 		private double _currentMovieImageNum;
-		private readonly string _videoPath = VideoDescriptor.ModulePath;
-		private readonly string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
+		private static readonly string VideoPath = VideoDescriptor.ModulePath;
+		private static readonly string TempPath = Path.Combine(Path.GetTempPath(), "VixenVideoTemp");
 		private bool _processVideo = true;
 		private double _position;
 		private int _xOffsetAdj;
@@ -527,7 +527,7 @@ namespace VixenModules.Effect.Video
 		private string CopyLocal(string path)
 		{
 			string name = Path.GetFileName(path);
-			string destPathFilename = Path.Combine(_videoPath, name);
+			string destPathFilename = Path.Combine(VideoPath, name);
 			if (path != destPathFilename)
 			{
 				File.Copy(path, destPathFilename, true);
@@ -556,19 +556,9 @@ namespace VixenModules.Effect.Video
 
 		private void ProcessMovie()
 		{
-			//Delete old path and create new path for processed video
-			if (Directory.Exists(_data.Video_DataPath))
-			{
-				DirectoryInfo dir = new DirectoryInfo(_data.Video_DataPath);
-				foreach (FileInfo file in dir.GetFiles()) file.Delete();
-				System.GC.Collect();
-				System.GC.WaitForPendingFinalizers();
-				Directory.Delete(_data.Video_DataPath, true);
-			}
-			_data.Video_DataPath = Path.Combine(_tempPath, Guid.NewGuid().ToString());
-			Directory.CreateDirectory(_data.Video_DataPath);
+			EstablishTempFolder();
 			
-			string videoFilename = Path.Combine(_videoPath, _data.FileName);
+			string videoFilename = Path.Combine(VideoPath, _data.FileName);
 			try
 			{
 				if (VideoQuality == 0 || _getNewVideoInfo) GetVideoInformation();
@@ -635,7 +625,6 @@ namespace VixenModules.Effect.Video
 				}
 				else
 				{
-					MessageBoxForm.msgIcon = SystemIcons.Error; // This is used if you want to add a system icon to the message form.
 					var messageBox = new MessageBoxForm("Entered Start Time plus Effect length is greater than the Video Length of " + _data.FileName,
 						"Invalid Start Time. Decrease the Start Time", MessageBoxButtons.OK, SystemIcons.Error);
 					messageBox.ShowDialog();
@@ -644,10 +633,35 @@ namespace VixenModules.Effect.Video
 			}
 			catch (Exception ex)
 			{
+				Logging.Error(ex, $"There was a problem converting {videoFilename}");
 				var messageBox = new MessageBoxForm("There was a problem converting " + videoFilename + ": " + ex.Message,
 					"Error Converting Video", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 				_videoFileDetected = false;
+			}
+		}
+
+		private void EstablishTempFolder()
+		{
+			//Delete old path and create new path for processed video
+			RemoveTempFiles();
+
+			_data.Video_DataPath = Path.Combine(TempPath, Guid.NewGuid().ToString());
+			Directory.CreateDirectory(_data.Video_DataPath);
+		}
+
+		private void RemoveTempFiles()
+		{
+			if (Directory.Exists(_data.Video_DataPath))
+			{
+				try
+				{
+					Directory.Delete(_data.Video_DataPath, true);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(e, "Unable to delete all the video temp files.");
+				}
 			}
 		}
 
@@ -721,10 +735,10 @@ namespace VixenModules.Effect.Video
 
 			int currentImage = Convert.ToInt32(_currentMovieImageNum);
 			if (currentImage >= pictureCount || currentImage < 0) _currentMovieImageNum = 0;
-			
+			var image = Image.FromFile(_moviePicturesFileList[currentImage]);
 			// Convert to Grey scale if selected.
-			_fp = EffectColorType == EffectColorType.RenderGreyScale ? new FastPixel.FastPixel(new Bitmap(ConvertToGrayScale(currentImage))) : new FastPixel.FastPixel(new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage]), (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight)));
-
+			_fp = EffectColorType == EffectColorType.RenderGreyScale ? new FastPixel.FastPixel(new Bitmap(ConvertToGrayScale(image))) : new FastPixel.FastPixel(new Bitmap(image, (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight)));
+			image.Dispose();
 			//resizeImage.Dispose();
 
 			if (PlayBackSpeed > 0)
@@ -1006,9 +1020,9 @@ namespace VixenModules.Effect.Video
 			if (renderWidth <= 0) renderWidth = 1;
 		}
 		
-		public Image ConvertToGrayScale(int currentImage)
+		public Image ConvertToGrayScale(Image image)
 		{
-			Bitmap srce = new Bitmap(Image.FromFile(_moviePicturesFileList[currentImage]), (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight));
+			Bitmap srce = new Bitmap(image, (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight));
 			using (Graphics gr = Graphics.FromImage(srce))
 			{
 				var matrix = new float[][]
@@ -1032,18 +1046,12 @@ namespace VixenModules.Effect.Video
 			// This is only done each time a Video file is changed.
 			// No point doing this every time it needs to render.
 			// So once a user adds a video file to the effect this code will no longer be used.
-			string videoFilename = Path.Combine(_videoPath, _data.FileName);
+			string videoFilename = Path.Combine(VideoPath, _data.FileName);
 			try
 			{
 				VideoQuality = 50; // Set quality to 50% when a new file is opened.
 				// Delete old path and create new path for processed video
-				if (Directory.Exists(_data.Video_DataPath))
-				{
-					Directory.Delete(_data.Video_DataPath, true);
-				}
-				_data.Video_DataPath = Path.Combine(_tempPath, Guid.NewGuid().ToString());
-				Directory.CreateDirectory(_data.Video_DataPath);
-
+				EstablishTempFolder();
 				// Gets Video length and Frame rate will continue if users start position is less then the video length.
 				ffmpeg.ffmpeg videoLengthInfo = new ffmpeg.ffmpeg(videoFilename);
 				string result = videoLengthInfo.GetVideoInfo(_data.Video_DataPath);
@@ -1059,12 +1067,12 @@ namespace VixenModules.Effect.Video
 				// conversion when generating all the images. This can reduces each bitmap file size significantly.
 				ffmpeg.ffmpeg videoSizeInfo = new ffmpeg.ffmpeg(videoFilename);
 				videoSizeInfo.GetVideoSize(_data.Video_DataPath + "\\Temp.bmp");
-				Bitmap sizedImage = new Bitmap(Image.FromFile(_data.Video_DataPath + "\\Temp.bmp"));
-
+				var image = Image.FromFile(_data.Video_DataPath + "\\Temp.bmp");
+				
 				// Saves the Video info to data store.
-				_data.VideoSize = new Size(sizedImage.Width, sizedImage.Height);
+				_data.VideoSize = new Size(image.Width, image.Height);
 
-				sizedImage.Dispose();
+				image.Dispose();
 				_getNewVideoInfo = false;
 			}
 			catch (Exception ex)
@@ -1090,6 +1098,16 @@ namespace VixenModules.Effect.Video
 		private double CalculateIncreaseBrightness(double intervalPos)
 		{
 			return ScaleCurveToValue(IncreaseBrightnessCurve.GetValue(intervalPos), 100, 10);
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				RemoveTempFiles();
+			}
+
+			base.Dispose(disposing);
 		}
 	}
 }
