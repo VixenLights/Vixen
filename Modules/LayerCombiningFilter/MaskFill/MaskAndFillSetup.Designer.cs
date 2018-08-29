@@ -31,9 +31,10 @@
 			this.chkExcludeZero = new System.Windows.Forms.CheckBox();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
+			this.chkRequireMixingPartner = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
-			// chkIncludeZero
+			// chkExcludeZero
 			// 
 			this.chkExcludeZero.AutoSize = true;
 			this.chkExcludeZero.Location = new System.Drawing.Point(33, 28);
@@ -70,6 +71,17 @@
 			this.btnCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
+			// chkRequireMixingPartner
+			// 
+			this.chkRequireMixingPartner.AutoSize = true;
+			this.chkRequireMixingPartner.Location = new System.Drawing.Point(33, 53);
+			this.chkRequireMixingPartner.Name = "chkRequireMixingPartner";
+			this.chkRequireMixingPartner.Size = new System.Drawing.Size(146, 19);
+			this.chkRequireMixingPartner.TabIndex = 3;
+			this.chkRequireMixingPartner.Text = "Require Mixing Partner";
+			this.chkRequireMixingPartner.UseVisualStyleBackColor = true;
+			this.chkRequireMixingPartner.CheckedChanged += new System.EventHandler(this.chkRequireMixingPartner_CheckedChanged);
+			// 
 			// MaskAndFillSetup
 			// 
 			this.AcceptButton = this.btnOk;
@@ -78,6 +90,7 @@
 			this.AutoSize = true;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(284, 123);
+			this.Controls.Add(this.chkRequireMixingPartner);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.chkExcludeZero);
@@ -96,5 +109,6 @@
 		private System.Windows.Forms.CheckBox chkExcludeZero;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.CheckBox chkRequireMixingPartner;
 	}
 }

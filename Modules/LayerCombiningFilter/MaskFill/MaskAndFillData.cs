@@ -18,6 +18,9 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 
 		[DataMember]
 		public bool ExcludeZeroValues { get; set; }
-		
+
+		[DataMember]
+		public bool RequiresMixingPartner { get; set; }
+
 	}
 }

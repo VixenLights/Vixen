@@ -47,16 +47,24 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 
 		public override bool Setup()
 		{
-			using (MaskAndFillSetup setup = new MaskAndFillSetup(_data.ExcludeZeroValues))
+			using (MaskAndFillSetup setup = new MaskAndFillSetup(_data.ExcludeZeroValues, _data.RequiresMixingPartner))
 			{
 				if (setup.ShowDialog() == DialogResult.OK)
 				{
 					_data.ExcludeZeroValues = setup.ExcludeZeroValuesValues;
+					_data.RequiresMixingPartner = setup.RequireMixingPartner;
 					return true;
 				}
 			}
 			return false;
 		}
+
+		#region Overrides of LayerMixingFilterModuleInstanceBase
+
+		/// <inheritdoc />
+		public override bool RequiresMixingPartner => _data.RequiresMixingPartner;
+
+		#endregion
 	}
 
 	
