@@ -98,24 +98,5 @@ namespace ffmpeg
 			process.WaitForExit();
 		}
 
-		//Native Video Effect Prior to Version 3.5 Update 1
-		//public void MakeThumbnails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, string frameRate, string colorType, int rotateVideo)
-		//{
-		//	int maintainAspectValue = maintainAspect ? -1 : height;
-		//	//make arguements string
-		//	string args = " -ss " + startPosition + " -i \"" + _movieFile + "\"" + " -t " + duration + colorType + " -vf " + " \"scale=" + width + ":" + maintainAspectValue + ", rotate=" + rotateVideo + "*(PI/180)\" " + frameRate
-		//		   + " \"" + outputPath + "\\%5d.bmp\"";
-		//	string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
-		//	ffmpegPath += "Common\\ffmpeg.exe";
-		//	Console.Out.WriteLine(args);
-		//	ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
-		//	psi.UseShellExecute = false;
-		//	psi.CreateNoWindow = true;
-		//	Process process = new Process();
-		//	process.StartInfo = psi;
-		//	process.Start();
-		//	process.WaitForExit();
-		//}
-
 	}
 }

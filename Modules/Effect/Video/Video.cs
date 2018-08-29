@@ -48,6 +48,7 @@ namespace VixenModules.Effect.Video
 		{
 			_data = new VideoData();
 			EnableTargetPositioning(true, true);
+			_processVideo = true;
 			UpdateAttributes();
 		}
 
@@ -538,7 +539,7 @@ namespace VixenModules.Effect.Video
 			UpdateQualityAttribute();
 			if ( _data.FileName == "") return;
 			
-			if (_processVideo) ProcessMovie();
+			if (_processVideo || !Directory.Exists(_data.Video_DataPath)) ProcessMovie(); // Check if directory exist is needed for when an effect is cloned.
 			if (_videoFileDetected)
 			{
 				_currentMovieImageNum = 0;
@@ -737,7 +738,6 @@ namespace VixenModules.Effect.Video
 			// Convert to Grey scale if selected.
 			_fp = EffectColorType == EffectColorType.RenderGreyScale ? new FastPixel.FastPixel(new Bitmap(ConvertToGrayScale(image))) : new FastPixel.FastPixel(new Bitmap(image, (int)(_renderWidth * _ratioWidth), (int)(_renderHeight * _ratioHeight)));
 			image.Dispose();
-			//resizeImage.Dispose();
 
 			if (PlayBackSpeed > 0)
 			{

@@ -36,7 +36,6 @@ using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Picture;
-using VixenModules.Effect.Video;
 using VixenModules.Effect.Shapes;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
@@ -158,7 +157,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			_scaleFactor = ScalingTools.GetScaleFactor();
-			DeleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
@@ -1466,20 +1464,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			
 			SequenceNotModified();
-		}
-
-		private void DeleteVideoTempFolder()
-		{
-			try
-			{
-				string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
-				if (Directory.Exists(_tempPath))
-				{
-					Directory.Delete(_tempPath, true);
-				}
-			}
-			catch
-			{}
 		}
 
 		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
@@ -4559,7 +4543,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			DeleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

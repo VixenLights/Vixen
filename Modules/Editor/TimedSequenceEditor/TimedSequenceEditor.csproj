@@ -97,11 +97,6 @@
       <Name>Shapes</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Effect\Video\Video.csproj">
-      <Project>{c5606015-2166-4866-a856-8eab67a5de26}</Project>
-      <Name>Video</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Property\Face\Face.csproj">
       <Project>{5FCC5484-8894-4E36-BA81-B2F1B9008404}</Project>
       <Name>Face</Name>
