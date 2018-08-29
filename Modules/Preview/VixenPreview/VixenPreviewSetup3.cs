@@ -165,11 +165,11 @@ namespace VixenModules.Preview.VixenPreview
 		}
 
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
-	    {
-			//return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
-		   return  Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location));
+		{
+			return  Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
+				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
 
-	    }
+		}
 
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{

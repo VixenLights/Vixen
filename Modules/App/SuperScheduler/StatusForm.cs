@@ -77,7 +77,6 @@ namespace VixenModules.App.SuperScheduler
 		private bool IsVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location));
-			//return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 
