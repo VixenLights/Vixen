@@ -45,7 +45,7 @@
 			this.lblAudioExportPath = new System.Windows.Forms.Label();
 			this.btnAudioOutputFolder = new System.Windows.Forms.Button();
 			this.grpFalcon = new System.Windows.Forms.GroupBox();
-			this.lblFalconInfo = new System.Windows.Forms.Label();
+			this.txtFalconInfo = new System.Windows.Forms.TextBox();
 			this.chkFppIncludeAudio = new System.Windows.Forms.CheckBox();
 			this.chkBackupUniverseFile = new System.Windows.Forms.CheckBox();
 			this.chkCreateUniverseFile = new System.Windows.Forms.CheckBox();
@@ -156,7 +156,7 @@
 			this.grpSequence.Controls.Add(this.label2);
 			this.grpSequence.Controls.Add(this.btnOuputFolderSelect);
 			this.grpSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.grpSequence.Location = new System.Drawing.Point(3, 263);
+			this.grpSequence.Location = new System.Drawing.Point(3, 291);
 			this.grpSequence.Name = "grpSequence";
 			this.grpSequence.Size = new System.Drawing.Size(499, 83);
 			this.grpSequence.TabIndex = 15;
@@ -212,7 +212,7 @@
 			this.grpAudio.Controls.Add(this.chkRenameAudio);
 			this.grpAudio.Controls.Add(this.chkIncludeAudio);
 			this.grpAudio.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.grpAudio.Location = new System.Drawing.Point(3, 352);
+			this.grpAudio.Location = new System.Drawing.Point(3, 380);
 			this.grpAudio.Name = "grpAudio";
 			this.grpAudio.Size = new System.Drawing.Size(498, 133);
 			this.grpAudio.TabIndex = 20;
@@ -250,7 +250,7 @@
 			// grpFalcon
 			// 
 			this.grpFalcon.AutoSize = true;
-			this.grpFalcon.Controls.Add(this.lblFalconInfo);
+			this.grpFalcon.Controls.Add(this.txtFalconInfo);
 			this.grpFalcon.Controls.Add(this.chkFppIncludeAudio);
 			this.grpFalcon.Controls.Add(this.chkBackupUniverseFile);
 			this.grpFalcon.Controls.Add(this.chkCreateUniverseFile);
@@ -260,21 +260,27 @@
 			this.grpFalcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.grpFalcon.Location = new System.Drawing.Point(3, 99);
 			this.grpFalcon.Name = "grpFalcon";
-			this.grpFalcon.Size = new System.Drawing.Size(499, 158);
+			this.grpFalcon.Size = new System.Drawing.Size(499, 186);
 			this.grpFalcon.TabIndex = 23;
 			this.grpFalcon.TabStop = false;
 			this.grpFalcon.Text = "Falcon Pi Player";
 			this.grpFalcon.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
-			// lblFalconInfo
+			// txtFalconInfo
 			// 
-			this.lblFalconInfo.Location = new System.Drawing.Point(16, 69);
-			this.lblFalconInfo.Name = "lblFalconInfo";
-			this.lblFalconInfo.Size = new System.Drawing.Size(477, 41);
-			this.lblFalconInfo.TabIndex = 26;
-			this.lblFalconInfo.Text = "Enter or select the output folder location. To save directly to FPP, select the m" +
-    "apped media folder or enter the network path in the form of \\\\hostname or ip\\fpp" +
-    "\\media";
+			this.txtFalconInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.txtFalconInfo.Cursor = System.Windows.Forms.Cursors.Default;
+			this.txtFalconInfo.Location = new System.Drawing.Point(24, 76);
+			this.txtFalconInfo.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+			this.txtFalconInfo.Multiline = true;
+			this.txtFalconInfo.Name = "txtFalconInfo";
+			this.txtFalconInfo.ReadOnly = true;
+			this.txtFalconInfo.Size = new System.Drawing.Size(466, 51);
+			this.txtFalconInfo.TabIndex = 27;
+			this.txtFalconInfo.TabStop = false;
+			this.txtFalconInfo.Text = "Output folder or FPP network location. To save directly to FPP, select the mapped" +
+    " media folder or network path in the form of \\\\hostname\\fpp\\media or \\\\ip\\fpp\\me" +
+    "dia";
 			// 
 			// chkFppIncludeAudio
 			// 
@@ -303,15 +309,15 @@
 			this.chkCreateUniverseFile.AutoSize = true;
 			this.chkCreateUniverseFile.Location = new System.Drawing.Point(24, 22);
 			this.chkCreateUniverseFile.Name = "chkCreateUniverseFile";
-			this.chkCreateUniverseFile.Size = new System.Drawing.Size(129, 19);
+			this.chkCreateUniverseFile.Size = new System.Drawing.Size(146, 19);
 			this.chkCreateUniverseFile.TabIndex = 3;
-			this.chkCreateUniverseFile.Text = "Create Universe File";
+			this.chkCreateUniverseFile.Text = "Create 1.x Universe File";
 			this.chkCreateUniverseFile.UseVisualStyleBackColor = true;
 			this.chkCreateUniverseFile.CheckedChanged += new System.EventHandler(this.chkCreateUniverseFile_CheckedChanged);
 			// 
 			// txtFalconOutputFolder
 			// 
-			this.txtFalconOutputFolder.Location = new System.Drawing.Point(54, 113);
+			this.txtFalconOutputFolder.Location = new System.Drawing.Point(55, 141);
 			this.txtFalconOutputFolder.Name = "txtFalconOutputFolder";
 			this.txtFalconOutputFolder.Size = new System.Drawing.Size(438, 23);
 			this.txtFalconOutputFolder.TabIndex = 7;
@@ -329,7 +335,7 @@
 			// 
 			// btnFalconUniverseFolder
 			// 
-			this.btnFalconUniverseFolder.Location = new System.Drawing.Point(23, 112);
+			this.btnFalconUniverseFolder.Location = new System.Drawing.Point(24, 141);
 			this.btnFalconUniverseFolder.Name = "btnFalconUniverseFolder";
 			this.btnFalconUniverseFolder.Size = new System.Drawing.Size(24, 23);
 			this.btnFalconUniverseFolder.TabIndex = 6;
@@ -406,6 +412,6 @@
 		private System.Windows.Forms.CheckBox chkCreateUniverseFile;
 		private System.Windows.Forms.CheckBox chkBackupUniverseFile;
 		private System.Windows.Forms.CheckBox chkFppIncludeAudio;
-		private System.Windows.Forms.Label lblFalconInfo;
+		private System.Windows.Forms.TextBox txtFalconInfo;
 	}
 }

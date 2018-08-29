@@ -34,6 +34,21 @@ namespace VixenModules.App.ExportWizard
 			btnFalconUniverseFolder.Text = "";
 
 			ThemeUpdateControls.UpdateControls(this);
+
+			txtFalconInfo.BackColor = ThemeColorTable.BackgroundColor;
+			SizeFalconInfo();
+		}
+
+		private void SizeFalconInfo()
+		{
+			// amount of padding to add
+			const int padding = 3;
+			// get number of lines (first line is 0, so add 1)
+			int numLines = txtFalconInfo.GetLineFromCharIndex(txtFalconInfo.TextLength) + 1;
+			// get border thickness
+			int border = txtFalconInfo.Height - txtFalconInfo.ClientSize.Height;
+			// set height (height of one line * number of lines + spacing)
+			txtFalconInfo.Height = txtFalconInfo.Font.Height * numLines + padding + border;
 		}
 
 		public override void StageStart()
