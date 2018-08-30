@@ -34,7 +34,7 @@ namespace VixenModules.Effect.LipSync
 		private List<IMark> _marks = null;
 
 		private FastPictureEffect _thePic;
-
+		
 		static LipSync()
 		{
 			LoadResourceBitmaps();
@@ -48,7 +48,13 @@ namespace VixenModules.Effect.LipSync
 
 		protected override void TargetNodesChanged()
 		{
+			CheckForInvalidColorData();
+		}
 
+		private void CheckForInvalidColorData()
+		{
+			// initialize the color handling
+			GetValidColors();
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
@@ -445,6 +451,7 @@ namespace VixenModules.Effect.LipSync
 			set
 			{
 				_data = value as LipSyncData;
+				CheckForInvalidColorData();
 				SetMatrixBrowesables();
 				SetLipsyncModeBrowsables();
 				SetMappingType();
