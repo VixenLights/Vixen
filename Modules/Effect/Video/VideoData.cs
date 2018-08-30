@@ -26,7 +26,6 @@ namespace VixenModules.Effect.Video
 			PlayBackSpeed = 0;
 			StartTime = 0;
 			RotateVideo = 0;
-			Video_DataPath = string.Empty;
 			FileName = String.Empty;
 			Orientation = StringOrientation.Vertical;
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
@@ -108,9 +107,6 @@ namespace VixenModules.Effect.Video
 		public int MovementRate { get; set; }
 
 		[DataMember]
-		public string Video_DataPath { get; set; }
-
-		[DataMember]
 		public int VideoQuality { get; set; }
 
 		[DataMember]
@@ -149,7 +145,6 @@ namespace VixenModules.Effect.Video
 			VideoData result = new VideoData
 			{
 				EffectType = EffectType,
-				Video_DataPath = Video_DataPath,
 				FitToTime = FitToTime,
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),

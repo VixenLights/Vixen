@@ -26,8 +26,8 @@ namespace VixenModules.Effect.Video
 		private VideoData _data;
 		private double _currentMovieImageNum;
 		private static readonly string VideoPath = VideoDescriptor.ModulePath;
-		private static readonly string TempPath = Path.Combine(Path.GetTempPath(), "VixenVideoTemp");
-		private bool _processVideo = true;
+		private static readonly string TempPath = Path.Combine(Path.GetTempPath(), "Vixen", "VideoEffect");
+		private bool _processVideo;
 		private double _position;
 		private int _xOffsetAdj;
 		private int _yOffsetAdj;
@@ -43,10 +43,12 @@ namespace VixenModules.Effect.Video
 		private int _renderHeight;
 		private int _renderWidth;
 		private bool _getNewVideoInfo;
+		private string _tempFilePath;
 
 		public Video()
 		{
 			_data = new VideoData();
+			PopulateTempPath();
 			EnableTargetPositioning(true, true);
 			_processVideo = true;
 			UpdateAttributes();
@@ -539,7 +541,7 @@ namespace VixenModules.Effect.Video
 			UpdateQualityAttribute();
 			if ( _data.FileName == "") return;
 			
-			if (_processVideo || !Directory.Exists(_data.Video_DataPath)) ProcessMovie(); // Check if directory exist is needed for when an effect is cloned.
+			if (_processVideo || !Directory.Exists(_tempFilePath)) ProcessMovie(); // Check if directory exist is needed for when an effect is cloned.
 			if (_videoFileDetected)
 			{
 				_currentMovieImageNum = 0;
@@ -616,9 +618,9 @@ namespace VixenModules.Effect.Video
 					// Height and Width needs to be evenly divisible to work or ffmpeg complains.
 					if (_renderHeight % 2 != 0) _renderHeight++;
 					if (_renderWidth % 2 != 0) _renderWidth++;
-					converter.MakeScaledThumbNails(_data.Video_DataPath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
+					converter.MakeScaledThumbNails(_tempFilePath, StartTimeSeconds, ((TimeSpan.TotalSeconds * ((double)PlayBackSpeed / 100 + 1))),
 						_renderWidth, _renderHeight, MaintainAspect, RotateVideo, cropVideo);
-					_moviePicturesFileList = Directory.GetFiles(_data.Video_DataPath).OrderBy(f => f).ToList();
+					_moviePicturesFileList = Directory.GetFiles(_tempFilePath).OrderBy(f => f).ToList();
 
 					_videoFileDetected = true;
 				}
@@ -640,22 +642,27 @@ namespace VixenModules.Effect.Video
 			}
 		}
 
+		private void PopulateTempPath()
+		{
+			_tempFilePath = TempPath + Path.PathSeparator + InstanceId;
+		}
+
 		private void EstablishTempFolder()
 		{
 			//Delete old path and create new path for processed video
 			RemoveTempFiles();
 
-			_data.Video_DataPath = Path.Combine(TempPath, Guid.NewGuid().ToString());
-			Directory.CreateDirectory(_data.Video_DataPath);
+			_tempFilePath = Path.Combine(TempPath, InstanceId.ToString());
+			Directory.CreateDirectory(_tempFilePath);
 		}
 
 		private void RemoveTempFiles()
 		{
-			if (Directory.Exists(_data.Video_DataPath))
+			if (Directory.Exists(_tempFilePath))
 			{
 				try
 				{
-					Directory.Delete(_data.Video_DataPath, true);
+					Directory.Delete(_tempFilePath, true);
 				}
 				catch (Exception e)
 				{
@@ -1052,7 +1059,7 @@ namespace VixenModules.Effect.Video
 				EstablishTempFolder();
 				// Gets Video length and Frame rate will continue if users start position is less then the video length.
 				ffmpeg.ffmpeg videoLengthInfo = new ffmpeg.ffmpeg(videoFilename);
-				string result = videoLengthInfo.GetVideoInfo(_data.Video_DataPath);
+				string result = videoLengthInfo.GetVideoInfo(_tempFilePath);
 				// Get Video Length
 				int durationIndex = result.IndexOf("Duration: ");
 				string videoInfo = result.Substring(durationIndex + 10, 8);
@@ -1064,8 +1071,8 @@ namespace VixenModules.Effect.Video
 				// This was to replace the way Accord did it as it makes sense to do the Video size
 				// conversion when generating all the images. This can reduces each bitmap file size significantly.
 				ffmpeg.ffmpeg videoSizeInfo = new ffmpeg.ffmpeg(videoFilename);
-				videoSizeInfo.GetVideoSize(_data.Video_DataPath + "\\Temp.bmp");
-				var image = Image.FromFile(_data.Video_DataPath + "\\Temp.bmp");
+				videoSizeInfo.GetVideoSize(_tempFilePath + "\\Temp.bmp");
+				var image = Image.FromFile(_tempFilePath + "\\Temp.bmp");
 				
 				// Saves the Video info to data store.
 				_data.VideoSize = new Size(image.Width, image.Height);
