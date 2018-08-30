@@ -542,7 +542,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 		}
 
-		private void changeMapToolStripMenuItem_Click(object sender, EventArgs e)
+		private async void changeMapToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LipSyncNodeSelect nodeSelectDlg = new LipSyncNodeSelect();
 			//nodeSelectDlg.MaxNodes = _mapping.MapItems.Count;
@@ -557,7 +557,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (nodeSelectDlg.SelectedElementNodes.Any())
 				{
 					FaceSetupHelper helper = new FaceSetupHelper();
-					helper.Perform(nodeSelectDlg.SelectedElementNodes);
+					var success = helper.Perform(nodeSelectDlg.SelectedElementNodes);
+					if (success)
+					{
+						await VixenSystem.SaveModuleConfigAsync();
+					}
 				}
 			}
 		}
