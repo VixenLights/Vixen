@@ -36,7 +36,6 @@ using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Picture;
-using VixenModules.Effect.Video;
 using VixenModules.Effect.Shapes;
 using VixenModules.Media.Audio;
 using VixenModules.Effect.LipSync;
@@ -150,6 +149,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
 
+		//List to hold removed nodes so we can clean them up later. Due to how the undo works, nodes are sticky and 
+		//live on past removal so they can can be added back
+		//TODO Fix that stickyness so this can go away
+		private List<EffectNode> _removedNodes = new List<EffectNode>();
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -158,7 +162,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			InitializeComponent();
 			_scaleFactor = ScalingTools.GetScaleFactor();
-			DeleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
@@ -660,10 +663,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_cancellationTokenSource.Cancel();
 			}
 
+			foreach (var node in _removedNodes)
+			{
+				//Dispose any nodes that where removed
+				if (!_effectNodeToElement.ContainsKey(node))
+				{
+					node.Effect.Dispose();
+				}
+			}
+
 			foreach (var node in _effectNodeToElement.Keys)
 			{
 				node.Effect.Dispose();
 			}
+
+			
 
 			//TimelineControl.grid.RenderProgressChanged -= OnRenderProgressChanged;
 
@@ -1466,20 +1480,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			
 			SequenceNotModified();
-		}
-
-		private void DeleteVideoTempFolder()
-		{
-			try
-			{
-				string _tempPath = Path.Combine(VideoDescriptor.ModulePath, "Temp");
-				if (Directory.Exists(_tempPath))
-				{
-					Directory.Delete(_tempPath, true);
-				}
-			}
-			catch
-			{}
 		}
 
 		private void SaveGridRowSettings() //Adds Row and Grid settings to _sequence to be saved. 
@@ -3474,10 +3474,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				// TODO: Unnecessary?
 				tse.ContentChanged -= ElementContentChangedHandler; // Unregister event handlers
 				tse.TimeChanged -= ElementTimeChangedHandler;
-
+				
 				_effectNodeToElement.Remove(node); // Remove the effect node from the map
 				_sequence.RemoveData(node); // Remove the effect node from sequence
 				Sequence.GetSequenceLayerManager().RemoveEffectNodeFromLayers(node);
+				_removedNodes.Add(node); //Store this away so we can clean it up later
 			}
 			else
 			{
@@ -4559,7 +4560,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			DeleteVideoTempFolder(); //Clean Up Temp Video File used for any Video Effects
 			VixenSystem.Contexts.ReleaseContext(_context);
 		}
 

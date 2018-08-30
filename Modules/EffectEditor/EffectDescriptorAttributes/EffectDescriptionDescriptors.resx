@@ -747,4 +747,7 @@
   <data name="CountDownSizeMode" xml:space="preserve">
     <value>Vary the size of the Count down value.</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Higher the value will result in higher quality but slower render time.</value>
+  </data>
 </root>

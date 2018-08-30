@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Vixen.Module;
@@ -25,7 +26,6 @@ namespace VixenModules.Effect.Video
 			PlayBackSpeed = 0;
 			StartTime = 0;
 			RotateVideo = 0;
-			Video_DataPath = string.Empty;
 			FileName = String.Empty;
 			Orientation = StringOrientation.Vertical;
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
@@ -33,6 +33,8 @@ namespace VixenModules.Effect.Video
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			MovementRate = 4;
 			StretchToGrid = false;
+			VideoQuality = 50;
+			VideoSize = new Size(600, 400);
 		}
 
 		[DataMember]
@@ -101,11 +103,14 @@ namespace VixenModules.Effect.Video
 		[DataMember]
 		public int VideoLength { get; set; }
 
-		[DataMember]
+		[DataMember] 
 		public int MovementRate { get; set; }
 
 		[DataMember]
-		public string Video_DataPath { get; set; }
+		public int VideoQuality { get; set; }
+
+		[DataMember]
+		public Size VideoSize { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -140,7 +145,6 @@ namespace VixenModules.Effect.Video
 			VideoData result = new VideoData
 			{
 				EffectType = EffectType,
-				Video_DataPath = Video_DataPath,
 				FitToTime = FitToTime,
 				YOffsetCurve = new Curve(YOffsetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
@@ -159,7 +163,9 @@ namespace VixenModules.Effect.Video
 				EffectColorType = EffectColorType,
 				MaintainAspect = MaintainAspect,
 				MovementRate = MovementRate,
-				StretchToGrid = StretchToGrid
+				StretchToGrid = StretchToGrid,
+				VideoQuality = VideoQuality,
+				VideoSize = VideoSize
 			};
 			return result;
 		}

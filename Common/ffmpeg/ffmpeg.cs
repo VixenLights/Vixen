@@ -45,11 +45,11 @@ namespace ffmpeg
 		}
 
 		//Native Video Effect
-		public void MakeScaledVideo(string outputPath, double startPosition, double duration, int width, int height, double frameScale, bool maintainAspect, int rotateVideo, string cropVideo)
+		public void MakeScaledThumbNails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, int rotateVideo, string cropVideo)
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguements string
-			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration} -vf \"setpts={frameScale}*PTS, scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\"  \"{outputPath}\\video{Path.GetExtension(_movieFile)}\"";
+			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r 20 \"{outputPath}\\%5d.bmp\"";
 			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
 			ffmpegPath += "Common\\ffmpeg.exe";
 			Console.Out.WriteLine(args);
@@ -62,43 +62,41 @@ namespace ffmpeg
 			process.WaitForExit();
 		}
 
-		//Native Video Effect Prior to Version 3.5 Update 1
-		//public void MakeThumbnails(string outputPath, double startPosition, double duration, int width, int height, bool maintainAspect, string frameRate, string colorType, int rotateVideo)
-		//{
-		//	int maintainAspectValue = maintainAspect ? -1 : height;
-		//	//make arguements string
-		//	string args = " -ss " + startPosition + " -i \"" + _movieFile + "\"" + " -t " + duration + colorType + " -vf " + " \"scale=" + width + ":" + maintainAspectValue + ", rotate=" + rotateVideo + "*(PI/180)\" " + frameRate
-		//		   + " \"" + outputPath + "\\%5d.bmp\"";
-		//	string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
-		//	ffmpegPath += "Common\\ffmpeg.exe";
-		//	Console.Out.WriteLine(args);
-		//	ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
-		//	psi.UseShellExecute = false;
-		//	psi.CreateNoWindow = true;
-		//	Process process = new Process();
-		//	process.StartInfo = psi;
-		//	process.Start();
-		//	process.WaitForExit();
-		//}
+		//Get Video Info for native Video effect.
+		public string GetVideoInfo(string outputPath)
+		{
+			//Gets Video length and will continue if users start position is less then the video length.
+			string args = " -i \"" + _movieFile + "\"";
+			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
+			ffmpegPath += "Common\\ffmpeg.exe";
 
-		//Get Video Info for native Video effect. Prior to Version 3.5 Update 1
-		//public string MakeThumbnails(string outputPath)
-		//{
-		//	//Gets Video length and will continue if users start position is less then the video length.
-		//	string args;
-		//	args = " -i \"" + _movieFile + "\"";
-		//	string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
-		//	ffmpegPath += "Common\\ffmpeg.exe";
+			ProcessStartInfo procStartInfo = new ProcessStartInfo(ffmpegPath, args);
+			procStartInfo.RedirectStandardError = true;
+			procStartInfo.UseShellExecute = false;
+			procStartInfo.CreateNoWindow = true;
+			Process proc = new Process();
+			proc.StartInfo = procStartInfo;
+			proc.Start();
+			string result = proc.StandardError.ReadToEnd();
+			return result;
+		}
 
-		//	ProcessStartInfo procStartInfo = new ProcessStartInfo(ffmpegPath, args);
-		//	procStartInfo.RedirectStandardError = true;
-		//	procStartInfo.UseShellExecute = false;
-		//	procStartInfo.CreateNoWindow = true;
-		//	Process proc = new Process();
-		//	proc.StartInfo = procStartInfo;
-		//	proc.Start();
-		//	string result = proc.StandardError.ReadToEnd();
-		//	return result;
-		//}
+		//Get Native Video Size Effect
+		public void GetVideoSize(string outputPath)
+		{
+			//make arguements string
+			string args = $" -i \"{_movieFile}\"  -vframes 1 \"{outputPath}\"";
+			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
+			ffmpegPath += "Common\\ffmpeg.exe";
+			Console.Out.WriteLine(args);
+			ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
+			psi.UseShellExecute = false;
+			psi.CreateNoWindow = true;
+			Process process = new Process();
+			process.StartInfo = psi;
+			process.Start();
+			process.WaitForExit();
+		}
+
 	}
 }
