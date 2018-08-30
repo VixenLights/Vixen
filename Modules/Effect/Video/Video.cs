@@ -579,10 +579,27 @@ namespace VixenModules.Effect.Video
 					{
 						_renderWidth = (int)(_renderWidth * ((double)ScalePercent / 100 + 1));
 						_renderHeight = (int)(_renderHeight * ((double)ScalePercent / 100 + 1));
-						int cropWidth = _renderWidth > BufferWi ? BufferWi : _renderWidth;
-						int cropHeight = _renderHeight > BufferHt ? BufferHt : _renderHeight;
-						cropVideo = $", crop={cropWidth}:{cropHeight}:{(_renderWidth - cropWidth) / 2}:{(_renderHeight - cropHeight) / 2}";
 					}
+				}
+
+				double videoQuality = TargetPositioning == TargetPositioningType.Locations ? (double)VideoQuality / 100 : 1;
+				if (_renderWidth > MaxRenderWidth || _renderHeight > MaxRenderHeight)
+				{
+					_ratioWidth = (double)_renderWidth / MaxRenderWidth / videoQuality;
+					_ratioHeight = (double)_renderHeight / MaxRenderHeight / videoQuality;
+					_renderHeight = (int)(MaxRenderHeight * videoQuality);
+					_renderWidth = (int)(MaxRenderWidth * videoQuality);
+				}
+				else
+				{
+					_ratioWidth = _ratioHeight = 1;
+				}
+
+				if (!StretchToGrid && !ScaleToGrid)
+				{
+					int cropWidth = _renderWidth > BufferWi ? BufferWi : _renderWidth;
+					int cropHeight = _renderHeight > BufferHt ? BufferHt : _renderHeight;
+					cropVideo = $", crop={cropWidth}:{cropHeight}:{(_renderWidth - cropWidth) / 2}:{(_renderHeight - cropHeight) / 2}";
 				}
 
 				// Will adjust the render size if element is below 10 as FFMPEG could refuse to scale.
@@ -595,19 +612,6 @@ namespace VixenModules.Effect.Video
 						return;
 					}
 					GetNewImageSize(out _renderWidth, out _renderHeight, 50, (int) (50 * ((double)_renderWidth / _renderHeight)));
-				}
-				
-				double videoQuality = TargetPositioning == TargetPositioningType.Locations ? (double) VideoQuality / 100 : 1;
-				if (_renderWidth > MaxRenderWidth * videoQuality || _renderHeight > MaxRenderHeight * videoQuality)
-				{
-					_ratioWidth = (double)_renderWidth / MaxRenderWidth / videoQuality;
-					_ratioHeight = (double)_renderHeight / MaxRenderHeight / videoQuality;
-					_renderHeight = (int)(MaxRenderHeight * videoQuality);
-					_renderWidth = (int)(MaxRenderWidth * videoQuality);
-				}
-				else
-				{
-					_ratioWidth = _ratioHeight = 1;
 				}
 
 				// Gets selected video if Video length is longer then the entered start time.
