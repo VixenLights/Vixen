@@ -170,7 +170,7 @@ namespace Common.Controls.Timeline
 			timelineRowList = new RowList()
 			                  	{
 			                  		Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
-			                  		DottedLineColor = ThemeColorTable.TimeLineGridColor,
+			                  		DottedLineColor = ThemeColorTable.ForeColor,
 			                  		Name = "timelineRowList",
 			                  	};
 			splitContainer.Panel1.Controls.Add(timelineRowList);

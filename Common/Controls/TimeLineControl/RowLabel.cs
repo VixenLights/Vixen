@@ -40,7 +40,7 @@ namespace Common.Controls.Timeline
 			set { m_parentRow = value; }
 		}
 
-		private static int m_toggleTreeButtonWidth = 32;
+		private static int m_toggleTreeButtonWidth = 28;
 
 		public static int ToggleTreeButtonWidth
 		{
@@ -194,16 +194,26 @@ namespace Common.Controls.Timeline
 									int fontHeight = 12;
 									fontHeight = Math.Min(fontHeight, (int) (Height*0.4));
 									using (Font font = new Font(Font.FontFamily, fontHeight)) {
-										IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
-										LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
+										if (ParentRow.ChildRows.Count > 0 || ParentRow.ParentDepth == 0)
+										{
+											IconArea = new Rectangle(0, 0, ToggleTreeButtonWidth, Height);
+											LabelArea = new Rectangle(ToggleTreeButtonWidth, 0, Width - ToggleTreeButtonWidth, Height);
+										}
+										else
+										{
+											var width = ToggleTreeButtonWidth / 2;
+											IconArea = new Rectangle(0, 0, width, Height);
+											LabelArea = new Rectangle(width, 0, Width - width, Height);
+										}
+										
 
 										Rectangle wholeBorderArea = new Rectangle(0, -1, Width - 1, Height);
-										Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
+										//Rectangle iconBorderArea = new Rectangle(0, -1, IconArea.Width, IconArea.Height);
 
 										e.Graphics.FillRectangle((ParentRow.ChildRows.Count == 0) ? nodeIconBrush : toggleBrush, IconArea);
 										e.Graphics.FillRectangle(backgroundBrush, LabelArea);
 
-										e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
+										//e.Graphics.DrawRectangle(toggleBorderPen, iconBorderArea);
 										e.Graphics.DrawRectangle(wholeBorderPen, wholeBorderArea);
 
 										using (StringFormat sf = new StringFormat()) {
@@ -211,7 +221,7 @@ namespace Common.Controls.Timeline
 											sf.LineAlignment = StringAlignment.Center;
 											sf.Trimming = StringTrimming.EllipsisCharacter;
 											sf.FormatFlags = StringFormatFlags.NoWrap;
-											Rectangle stringPos = new Rectangle(LabelArea.X + 6, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
+											Rectangle stringPos = new Rectangle(LabelArea.X, LabelArea.Y, LabelArea.Width - 6, LabelArea.Height);
 											e.Graphics.DrawString(Name, font, textBrush, stringPos, sf);
 										}
 									}
