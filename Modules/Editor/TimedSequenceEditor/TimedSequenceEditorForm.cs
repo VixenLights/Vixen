@@ -434,17 +434,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			var windowState =
 					xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", Name), "Normal");
-
-			if (IsVisibleOnAnyScreen(desktopBounds))
+			
+			if (windowState.Equals("Maximized") && IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopLocation = desktopBounds.Location;
+				WindowState = FormWindowState.Maximized;
+			}
+			else if (AreCornersVisibleOnAnyScreen(desktopBounds))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;
-				
-				if (windowState.Equals("Maximized"))
-				{
-					WindowState = FormWindowState.Maximized;
-				}
-				
 			}
 			else
 			{
@@ -646,10 +646,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 #endif
 
-		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		private bool AreCornersVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
 				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
+		}
+
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 		/// <summary>
