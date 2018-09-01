@@ -2775,7 +2775,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (IGrouping<IMarkCollection, IMark> markGroup in e.Marks.GroupBy(m => m.Parent))
 				{
-					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Word);
+					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Word).First();
 					
 					foreach (var mark in markGroup)
 					{
@@ -2803,7 +2803,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (IGrouping<IMarkCollection, IMark> markGroup in e.Marks.GroupBy(m => m.Parent))
 				{
-					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Phoneme);
+					var mc = GetOrCreatePhonemeMarkCollection(markGroup.Key, MarkCollectionType.Phoneme).First();
 
 					if (LipSyncTextConvert.StandardDictExists() == false)
 					{
@@ -2857,15 +2857,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
-		private IMarkCollection GetOrCreatePhonemeMarkCollection(IMarkCollection parent, MarkCollectionType type)
+		private List<IMarkCollection> GetOrCreatePhonemeMarkCollection(IMarkCollection parent, MarkCollectionType type)
 		{
 			//Find the right collection
 			var linkedCollections = _sequence.LabeledMarkCollections.Where(x =>
 				x.LinkedMarkCollectionId == parent.Id && x.CollectionType == type);
-			IMarkCollection mc = null;
+			List<IMarkCollection> mcList = new List<IMarkCollection>();
 			if (linkedCollections.Any())
 			{
-				mc = linkedCollections.First();
+				mcList.AddRange(linkedCollections);
 			}
 			else
 			{
@@ -2879,13 +2879,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						name = $"{phraseParent.Name} {type}";
 					}
 				}
-				mc = GetOrAddNewMarkCollection(parent.Decorator.Color, name);
+				var mc = GetOrAddNewMarkCollection(parent.Decorator.Color, name);
 				mc.LinkedMarkCollectionId = parent.Id;
 				mc.CollectionType = type;
 				mc.ShowMarkBar = true;
+				mcList.Add(mc);
 			}
 
-			return mc;
+			return mcList;
 		}
 
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Catel.Data;
+using Catel.IoC;
 using Catel.MVVM;
 using Vixen.Marks;
 using VixenModules.App.Marks;
@@ -15,12 +16,23 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 	{
 		private System.Timers.Timer _nameclickTimer = null;
 		private string _textHold = String.Empty;
+		private ObservableCollection<IMarkCollection> _markCollections;
 
 		public MarkCollectionViewModel(MarkCollection markCollection)
 		{
 			MarkCollection = markCollection;
+			var mgr = ServiceLocator.Default.ResolveType<IViewModelManager>();
+			var pvm = mgr.GetFirstOrDefaultInstance<MarkDockerViewModel>();
+			_markCollections = pvm.MarkCollections;
+			_markCollections.CollectionChanged += ParentMarkCollections_CollectionChanged;
 			SetupCollectionTypeCheckboxes();
 			SetupLevelCheckboxes();
+			SetupLinkedToCheckboxes();
+		}
+
+		private void ParentMarkCollections_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			SetupLinkedToCheckboxes();
 		}
 
 		#region Overrides of ViewModelBase
@@ -39,6 +51,13 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 				{
 					checkBoxState.CloseViewModelAsync(true);
 				}
+
+				foreach (var checkBoxState in LinkedToCheckBoxStates)
+				{
+					checkBoxState.CloseViewModelAsync(true);
+				}
+
+				_markCollections.CollectionChanged -= ParentMarkCollections_CollectionChanged;
 			});
 		}
 
@@ -378,6 +397,24 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region LinkedToCheckBoxStates property
+
+		/// <summary>
+		/// Gets or sets the LinkedToCheckBoxState value.
+		/// </summary>
+		public ObservableCollection<LinkedToCheckBoxState> LinkedToCheckBoxStates
+		{
+			get { return GetValue<ObservableCollection<LinkedToCheckBoxState>>(LinkedToCheckBoxStatesProperty); }
+			set { SetValue(LinkedToCheckBoxStatesProperty, value); }
+		}
+
+		/// <summary>
+		/// LinkedToCheckBoxState property data.
+		/// </summary>
+		public static readonly PropertyData LinkedToCheckBoxStatesProperty = RegisterProperty("LinkedToCheckBoxStates", typeof(ObservableCollection<LinkedToCheckBoxState>));
+
+		#endregion
+
 		#region LevelCheckBoxStates property
 
 		/// <summary>
@@ -393,6 +430,24 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 		/// LevelCheckBoxStates property data.
 		/// </summary>
 		public static readonly PropertyData LevelCheckBoxStatesProperty = RegisterProperty("LevelCheckBoxStates", typeof(ObservableCollection<LevelCheckBoxState>));
+
+		#endregion
+
+		#region IsPhonemeType property
+
+		/// <summary>
+		/// Gets or sets the IsPhonemeType value.
+		/// </summary>
+		public bool IsLinkableType
+		{
+			get { return GetValue<bool>(IsLinkableTypeProperty); }
+			set { SetValue(IsLinkableTypeProperty, value); }
+		}
+
+		/// <summary>
+		/// IsPhonemeType property data.
+		/// </summary>
+		public static readonly PropertyData IsLinkableTypeProperty = RegisterProperty("IsLinkableType", typeof(bool));
 
 		#endregion
 		
@@ -420,6 +475,8 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 				{
 					checkBoxState.Value = false;
 				}
+
+				SetupLinkedToCheckboxes();
 			}
 		}
 
@@ -454,6 +511,77 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 
 		#endregion
 
+		#region ResolveLinkTo command
+
+		private Command<LinkedToCheckBoxState> _resolveLinkToCommand;
+
+		/// <summary>
+		/// Gets the ResolveLinkTo command.
+		/// </summary>
+		public Command<LinkedToCheckBoxState> ResolveLinkToCommand
+		{
+			get { return _resolveLinkToCommand ?? (_resolveLinkToCommand = new Command<LinkedToCheckBoxState>(ResolveLinkTo, CanResolveLinkTo)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the ResolveLinkTo command is executed.
+		/// </summary>
+		private void ResolveLinkTo(LinkedToCheckBoxState state)
+		{
+			if (state.Value)
+			{
+				if (state.ParentId != Guid.Empty)
+				{
+					foreach (var markCollection in _markCollections)
+					{
+						if (markCollection.LinkedMarkCollectionId == state.ParentId)
+						{
+							markCollection.LinkedMarkCollectionId = Guid.Empty;
+						}
+					}
+				}
+				
+				MarkCollection.LinkedMarkCollectionId = state.ParentId;
+				foreach (var linkedToCheckBoxState in LinkedToCheckBoxStates.Where(x => x.ParentId != state.ParentId))
+				{
+					linkedToCheckBoxState.Value = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Method to check whether the ResolveLinkTo command can be executed.
+		/// </summary>
+		/// <returns><c>true</c> if the command can be executed; otherwise <c>false</c></returns>
+		private bool CanResolveLinkTo(LinkedToCheckBoxState state)
+		{
+			return true;
+		}
+
+		#endregion
+
+		#region MenuOpen command
+
+		private Command _menuOpenCommand;
+
+		/// <summary>
+		/// Gets the MenuOpen command.
+		/// </summary>
+		public Command MenuOpenCommand
+		{
+			get { return _menuOpenCommand ?? (_menuOpenCommand = new Command(MenuOpen)); }
+		}
+
+		/// <summary>
+		/// Method to invoke when the MenuOpen command is executed.
+		/// </summary>
+		private void MenuOpen()
+		{
+			SetupLinkedToCheckboxes();
+		}
+
+		#endregion
+		
 		private void SetupCollectionTypeCheckboxes()
 		{
 			CollectionTypeCheckBoxStates = new ObservableCollection<CollectionTypeCheckBoxState>();
@@ -470,6 +598,40 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.ViewMode
 			{
 				LevelCheckBoxStates.Add(new LevelCheckBoxState { Text = i.ToString(), Value = Level == i, Level = i });
 			}
+		}
+
+		private void SetupLinkedToCheckboxes()
+		{
+			LinkedToCheckBoxStates = new ObservableCollection<LinkedToCheckBoxState>();
+
+			MarkCollectionType linkToType;
+			switch (MarkCollection.CollectionType)
+			{
+				case MarkCollectionType.Phoneme:
+					linkToType = MarkCollectionType.Word;
+					break;
+				case MarkCollectionType.Word:
+					linkToType = MarkCollectionType.Phrase;
+					break;
+				default:
+					linkToType = MarkCollectionType.Generic;
+					break;
+			}
+
+			if (linkToType == MarkCollectionType.Generic)
+			{
+				IsLinkableType = false;
+				return;
+			}
+
+			IsLinkableType = true;
+
+			foreach (var mc in _markCollections.Where(x => x.CollectionType == linkToType))
+			{
+				LinkedToCheckBoxStates.Add(new LinkedToCheckBoxState() { Text = mc.Name, Value = MarkCollection.LinkedMarkCollectionId == mc.Id, ParentId = mc.Id});
+			}
+
+			LinkedToCheckBoxStates.Add(new LinkedToCheckBoxState() { Text = @"None", Value = MarkCollection.LinkedMarkCollectionId == Guid.Empty, ParentId = Guid.Empty });
 		}
 	}
 }
