@@ -290,10 +290,15 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_contextMenuStrip.Show(MousePosition);
 		}
 
-		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		private bool AreCornersVisibleOnAnyScreen(Rectangle rect)
 		{
 			return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(rect.Location)) ||
-				Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
+			       Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(new Point(rect.Top, rect.Right)));
+		}
+
+		private bool IsVisibleOnAnyScreen(Rectangle rect)
+		{
+			return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(rect));
 		}
 
 		public VixenPreviewData Data { get; set; }
@@ -567,15 +572,18 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 					desktopBounds.Height = 300;
 			}
 
-			if (IsVisibleOnAnyScreen(desktopBounds))
+			var windowState = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", name), "Normal");
+			
+			if (windowState.Equals("Maximized") && IsVisibleOnAnyScreen(desktopBounds))
+			{
+				StartPosition = FormStartPosition.Manual;
+				DesktopLocation = desktopBounds.Location;
+				WindowState = FormWindowState.Maximized;
+			}
+			else if (AreCornersVisibleOnAnyScreen(desktopBounds))
 			{
 				StartPosition = FormStartPosition.Manual;
 				DesktopBounds = desktopBounds;
-
-				if (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WindowState", name), "Normal").Equals("Maximized"))
-				{
-					WindowState = FormWindowState.Maximized;
-				}
 			}
 			else
 			{
