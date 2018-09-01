@@ -178,6 +178,7 @@
     <Compile Include="Forms\WPF\MarksDocker\Services\MarkImportExportService.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\CheckBoxStateBase.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\CollectionTypeCheckBoxState.cs" />
+    <Compile Include="Forms\WPF\MarksDocker\ViewModels\LinkedToCheckBoxState.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkCollectionViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\MarkDockerViewModel.cs" />
     <Compile Include="Forms\WPF\MarksDocker\ViewModels\LevelCheckBoxState.cs" />

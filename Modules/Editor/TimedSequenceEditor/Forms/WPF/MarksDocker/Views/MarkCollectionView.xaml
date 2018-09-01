@@ -38,6 +38,11 @@
 							           Focusable="True" Margin="2,3,2,3" MinWidth="50">
 								<TextBlock.ContextMenu>
 									<ContextMenu>
+										<i:Interaction.Triggers>
+											<i:EventTrigger EventName="Opened">
+												<catel:EventToCommand Command="{Binding MenuOpenCommand}" DisableAssociatedObjectOnCannotExecute="False" PassEventArgsToCommand="False"/>
+											</i:EventTrigger>
+										</i:Interaction.Triggers>
 										<MenuItem Header="Delete" Command="{Binding DeleteCommand}">
 											<MenuItem.Icon>
 												<Image Source="/Resources;component/Resources/delete_32.png" Width="16" Height="16"/>
@@ -69,6 +74,17 @@
 
 													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 													<Setter Property="Command" Value="{Binding DataContext.ResolveCollectionTypeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
+													<Setter Property="CommandParameter" Value="{Binding}" />
+												</Style>
+											</MenuItem.ItemContainerStyle>
+										</MenuItem>
+										<MenuItem Header="Linked To"  ItemsSource="{Binding LinkedToCheckBoxStates}" Visibility="{Binding IsLinkableType, Converter={StaticResource BooleanToVisibilityConverter}}">
+											<MenuItem.ItemContainerStyle>
+												<Style TargetType="MenuItem">
+													<Setter Property="Header" Value="{Binding Text}" />
+													<Setter Property="IsCheckable" Value="True" />
+													<Setter Property="IsChecked" Value="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+													<Setter Property="Command" Value="{Binding DataContext.ResolveLinkToCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}}" />
 													<Setter Property="CommandParameter" Value="{Binding}" />
 												</Style>
 											</MenuItem.ItemContainerStyle>

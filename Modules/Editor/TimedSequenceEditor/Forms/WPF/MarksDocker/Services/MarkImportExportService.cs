@@ -426,23 +426,30 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						}
 					}
 				}
+
+				phraseCollection.CollectionType = MarkCollectionType.Phrase;
 				markCollection.Add(phraseCollection);
+				wordCollection.CollectionType = MarkCollectionType.Word;
+				wordCollection.LinkedMarkCollectionId = phraseCollection.Id;
 				markCollection.Add(wordCollection);
+				phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
+				phonemeCollection.LinkedMarkCollectionId = wordCollection.Id;
 				markCollection.Add(phonemeCollection);
 
 
-				phonemeCollection = new MarkCollection();
-				phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes Coalesced";
-				phonemeCollection.ShowMarkBar = true;
-				phonemeCollection.Decorator.Color = Color.FromArgb(245, 75, 210); ;
-				foreach (var phoneme in papagayoFile.PhonemeList(voice))
-				{
-					var mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
-					mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
-					mark.Text = phoneme.TypeName;
-					phonemeCollection.AddMark(mark);
-				}
-				markCollection.Add(phonemeCollection);
+				//phonemeCollection = new MarkCollection();
+				//phonemeCollection.Name = $"{fileWithoutExtension} {voice} Phonemes Coalesced";
+				//phonemeCollection.ShowMarkBar = true;
+				//phonemeCollection.Decorator.Color = Color.FromArgb(245, 75, 210); ;
+				//foreach (var phoneme in papagayoFile.PhonemeList(voice))
+				//{
+				//	var mark = new Mark(TimeSpan.FromMilliseconds(phoneme.StartMS));
+				//	mark.Duration = TimeSpan.FromMilliseconds(phoneme.EndMS) - mark.StartTime;
+				//	mark.Text = phoneme.TypeName;
+				//	phonemeCollection.AddMark(mark);
+				//}
+				//phonemeCollection.CollectionType = MarkCollectionType.Phoneme;
+				//markCollection.Add(phonemeCollection);
 				rownum++;
 			}
 
