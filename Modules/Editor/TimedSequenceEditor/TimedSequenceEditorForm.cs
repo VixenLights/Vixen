@@ -3750,6 +3750,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			await t;
 		}
 
+		private async void RenderLipSyncElementsAsync()
+		{
+			//This is not ideal having the editor look for specific type of effect. Need to find a better way for 
+			//the Lipsync effects to know if their mapping changed and mark themselves dirty.
+			Task t = Task.Factory.StartNew(() =>
+			{
+				var elements = TimelineControl.Rows.SelectMany(row => row).Distinct();
+
+				elements.AsParallel().WithCancellation(_cancellationTokenSource.Token).ForAll(element =>
+				{
+					if (element.EffectNode.Effect is LipSync)
+					{
+						element.EffectNode.Effect.MarkDirty();
+						TimelineControl.grid.RenderElement(element);
+					}
+				});
+			});
+
+			await t;
+		}
+
 		/// <summary>
 		/// Checks all elements and if they support audio is updates the media property and puts them in the render queue
 		/// </summary>
