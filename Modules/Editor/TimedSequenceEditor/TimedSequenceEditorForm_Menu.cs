@@ -560,6 +560,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					var success = helper.Perform(nodeSelectDlg.SelectedElementNodes);
 					if (success)
 					{
+						RenderLipSyncElementsAsync();
 						await VixenSystem.SaveModuleConfigAsync();
 					}
 				}

@@ -114,7 +114,7 @@ namespace VixenModules.Property.Face {
 						dr.Table.Columns[theCount].ColumnName, checkVal
 					);
 				}
-				fm.DefaultColor = (System.Drawing.Color)dr[dr.ItemArray.Count() - 1];
+				fm.DefaultColor = ValidateColorForElement(node, (System.Drawing.Color)dr[dr.ItemArray.Count() - 1]);
 
 				fm.FaceComponents.Clear();
 				foreach (FaceComponent key in Enum.GetValues(typeof(FaceComponent)))
@@ -166,7 +166,7 @@ namespace VixenModules.Property.Face {
 						dr[key] = false;
 					}
 				}
-				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? System.Drawing.Color.White;
+				dr[COLOR_COLUMN_NAME] = ValidateColorForElement(element, fm?.DefaultColor??System.Drawing.Color.White);
 			}
 
 			dt.Columns[" "].ReadOnly = true;
@@ -204,7 +204,7 @@ namespace VixenModules.Property.Face {
 						dr[key.GetEnumDescription()] = false;
 					}
 				}
-				dr[COLOR_COLUMN_NAME] = fm?.DefaultColor ?? System.Drawing.Color.White;
+				dr[COLOR_COLUMN_NAME] = ValidateColorForElement(element, fm?.DefaultColor ?? System.Drawing.Color.White);
 			}
 
 			dt.Columns[" "].ReadOnly = true;
@@ -490,6 +490,20 @@ namespace VixenModules.Property.Face {
 					}
 				}
 			}
+		}
+
+		private System.Drawing.Color ValidateColorForElement(ElementNode e, System.Drawing.Color defaultColor)
+		{
+			var colors = ColorProperty.ColorModule.getValidColorsForElementNode(e, false);
+			if (colors.Any())
+			{
+				if (!colors.Contains(defaultColor))
+				{
+					return colors.First();
+				}
+			}
+
+			return defaultColor;
 		}
 
 		private HashSet<System.Drawing.Color> ValidDiscreteColors(List<ElementNode> nodeList)

@@ -74,26 +74,17 @@ namespace VixenModules.Property.Face {
 
 		public Tuple<double, System.Drawing.Color> ConfiguredColorAndIntensity()
 		{
-			HSV hsvVal = HSV.FromRGB(DefaultColor);
-			hsvVal.V = 1;
-			var colorRetVal = hsvVal.ToRGB().ToArgb();
-			double intensityRetVal = HSV.VFromRgb(DefaultColor);
-
-			return new Tuple<double, System.Drawing.Color>(intensityRetVal, colorRetVal);
+			return new Tuple<double, System.Drawing.Color>(1, DefaultColor);
 		}
 
 		public double ConfiguredIntensity(FaceMapItem item)
 		{
-			return HSV.VFromRgb(DefaultColor);
+			return 1;
 		}
 
 		public System.Drawing.Color ConfiguredColor()
 		{
-			HSV hsvVal = HSV.FromRGB(DefaultColor);
-			hsvVal.V = 1;
-			var retVal = hsvVal.ToRGB().ToArgb();
-				
-			return retVal;
+			return DefaultColor;
 		}
 
 		public bool PhonemeState(string phonemeName)
