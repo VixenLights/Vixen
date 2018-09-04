@@ -350,6 +350,7 @@
     <EmbeddedResource Include="LipSync\WQ.jpg" />
     <EmbeddedResource Include="LipSync\WQ_LightGray.jpg" />
     <EmbeddedResource Include="LipSync\WQ_Transparent.png" />
+    <None Include="Resources\check-mark.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />

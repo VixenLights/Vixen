@@ -164,7 +164,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
+			toolStripEffects.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
+			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			statusStrip.Renderer = new ThemeToolStripRenderer();
@@ -253,6 +255,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					toolStripMenuItem.Click += toolStripDropDownButtonAlignToStrength_MenuItem_Click;
 				}
 			}
+
+			effectGroupsToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
+			basicToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
+			pixelToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
+			deviceToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
 
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
@@ -365,6 +372,39 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
+
+			// Effect Toolstrip settings
+			effectToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name), false);
+			string effectLabelPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectLabelIndex", Name), "2");
+			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
+			{
+				if (subItem.Tag.ToString() == effectLabelPosition)
+				{
+					subItem.Checked = true;
+					break;
+				}
+			}
+
+			basicToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/BasicEffectToolStrip", Name), true));
+			pixelToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name), true));
+			deviceToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name), true));
+
+			// Populate Effect Toolstrip context menu
+			PopulateEffectGroupToolStrip();
+			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			{
+				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
+				{
+					groupDropDownItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/{1}/{2}", Name, dropDownItem.Text, groupDropDownItem.Text.Replace(" ", "")), true));
+				}
+			}
+
+			//Set scale size and populate Effect ToolStrip
+			int imageSize = (int)(20 * _scaleFactor);
+			toolStripEffects.ImageScalingSize = new Size(imageSize, imageSize);
+
+			PopulateToolStripEffects();
+
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
@@ -760,6 +800,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
+			effectGroupsToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
+			basicToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
+			pixelToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
+			deviceToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -1137,7 +1181,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (effectDesriptor.EffectName == "Nutcracker") continue; //Remove this when the Nutcracker module is removed
 				//Populate Drag Box Filter drop down with effect types
 				ToolStripMenuItem dbfMenuItem = new ToolStripMenuItem(effectDesriptor.EffectName,
-					effectDesriptor.GetRepresentativeImage(36, 36));
+					effectDesriptor.GetRepresentativeImage());
 				dbfMenuItem.CheckOnClick = true;
 				dbfMenuItem.CheckStateChanged += (sender, e) =>
 				{
@@ -4574,7 +4618,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					Index = i,
 					EffectPropertyInfo = t,
-					ParameterImage = new Bitmap(t.GetRepresentativeImage(48, 48), 64, 64),
+					ParameterImage = new Bitmap(t.GetRepresentativeImage(), 64, 64),
 					DisplayName = t.EffectName
 				};
 			}).ToList();
@@ -5067,6 +5111,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), TimelineControl.waveform.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
+
+			// Effect Toolstrip settings
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name),
+				effectToolStripToolStripMenuItem.Checked);
+			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
+			{
+				if (subItem.Checked)
+				{
+					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectLabelIndex", Name),
+						subItem.Tag.ToString());
+					break;
+				}
+			}
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/BasicEffectToolStrip", Name),
+				basicToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name),
+				pixelToolStripMenuItem.Checked);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name),
+				deviceToolStripMenuItem.Checked);
+			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			{
+				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
+				{
+					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings,
+						string.Format("{0}/{1}/{2}", Name, dropDownItem.Text, groupDropDownItem.Text.Replace(" ", "")),
+						groupDropDownItem.Checked);
+				}
+			}
 
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ColorLibraryForm.Close();
@@ -5563,7 +5635,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			return result;
 		}
-
 	}
 
 	[Serializable]

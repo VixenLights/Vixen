@@ -73,7 +73,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				node.ForeColor = ThemeColorTable.ForeColor;
 				parentNode.Nodes.Add(node);
 				// Set the image
-				Image image = effectDesriptor.GetRepresentativeImage(48, 48);
+				Image image = effectDesriptor.GetRepresentativeImage();
 				if (image != null)
 				{
 					effectTreeImages.Images.Add(effectDesriptor.EffectName, image);

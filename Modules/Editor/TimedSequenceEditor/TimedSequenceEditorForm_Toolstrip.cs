@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using Vixen.Module.Effect;
+using Vixen.Services;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
 	public partial class TimedSequenceEditorForm
 	{
+		//Used for the Effects ToolStrip
+		private ToolStripItem _mToolStripEffects;
+		private bool _beginNewEffectDragDrop;
+
+		#region Main Operations ToolStrip
+
 		private void toolStripButton_DrawMode_Click(object sender, EventArgs e)
 		{
 			TimelineControl.grid.EnableDrawMode = true;
@@ -17,6 +27,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.EnableDrawMode = false;
 			toolStripButton_SelectionMode.Checked = true;
 			toolStripButton_DrawMode.Checked = false;
+			
+			// Ensure any Effect buttons in the toolstrip do not hav ethe selected box around it.
+			foreach (ToolStripItem effectButton in toolStripEffects.Items)
+			{
+				if (effectButton is ToolStripButton) ((ToolStripButton)effectButton).Checked = false;
+			}
 		}
 
 		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
@@ -130,5 +146,222 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				AlignTo_Threshold = item.ToString();
 			}
 		}
+
+		#endregion
+
+		#region Effect ToolStrip
+
+		// Populate the Effect groups context menu
+		private void PopulateEffectGroupToolStrip()
+		{
+			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			{
+				foreach (
+					IEffectModuleDescriptor effectDesriptor in
+					ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+				{
+					if (effectDesriptor.EffectName != "Nutcracker" &&
+						effectDesriptor.EffectGroup.ToString() == dropDownItem.Tag.ToString())
+					{
+						dropDownItem.DropDownItems.Add(effectDesriptor.EffectName);
+					}
+				}
+				foreach (ToolStripMenuItem items in dropDownItem.DropDownItems)
+				{
+					items.Checked = true;
+					items.CheckOnClick = true;
+					items.CheckState = CheckState.Checked;
+					items.Click += PopulateToolStripEffects;
+				}
+			}
+		}
+
+		// Populate the Effects toolstrip
+		private void PopulateToolStripEffects(object sender, EventArgs e)
+		{
+			if (sender is ToolStripDropDownItem item && item.OwnerItem is ToolStripMenuItem itemOwner) itemOwner.Checked = true;
+			contextMenuStripEffect.SuspendLayout();
+			PopulateToolStripEffects();
+			contextMenuStripEffect.ResumeLayout();
+		}
+
+		private void PopulateToolStripEffects()
+		{
+			toolStripEffects.SuspendLayout();
+			toolStripEffects.Items.Clear();
+
+			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			{
+				if (!dropDownItem.Checked) continue;
+				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
+				{
+					foreach (
+						IEffectModuleDescriptor effectDesriptor in
+						ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
+					{
+						if (effectDesriptor.EffectName != "Nutcracker" &&
+							effectDesriptor.EffectGroup.ToString() == dropDownItem.Tag.ToString() &&
+							groupDropDownItem.Text == effectDesriptor.EffectName && groupDropDownItem.Checked) AddEffect(effectDesriptor);
+					}
+				}
+
+				//Adds a toolstrip seperator to seperate effects groups. 
+				ToolStripSeparator tss = new ToolStripSeparator();
+				toolStripEffects.Items.Add(tss);
+			}
+
+			AlignText();
+			toolStripEffects.ResumeLayout();
+		}
+
+		private void AddEffect(IEffectModuleDescriptor effectDesriptor)
+		{
+			ToolStripButton tsb = new ToolStripButton
+			{
+				ToolTipText = effectDesriptor.EffectName,
+				Tag = effectDesriptor.TypeId,
+				ImageIndex = toolStripEffects.Items.Count - 1,
+				ImageKey = effectDesriptor.EffectName,
+				Image = effectDesriptor.GetRepresentativeImage(),
+				Text = effectDesriptor.EffectName
+			};
+			tsb.MouseDown += tsb_MouseDown;
+			tsb.MouseMove += tsb_MouseMove;
+			toolStripEffects.Items.Add(tsb);
+		}
+
+		private void SelectNodeForDrawing(ToolStripButton selectedButton)
+		{
+			//This is for when Drawing effects is enabled.
+
+			if (selectedButton.Checked) //If button is already selected then deselect and remove GUID from grid selected effect.
+			{
+				TimelineControl.grid.SelectedEffect = Guid.Empty;
+				selectedButton.Checked = false;
+			}
+			else
+			{
+				TimelineControl.grid.SelectedEffect = (Guid)_mToolStripEffects.Tag;
+
+				foreach (ToolStripItem tsi in toolStripEffects.Items)
+				{
+					if (tsi != null && tsi.CanSelect) if (tsi is ToolStripButton tsb) tsb.Checked = false;
+				}
+				//Ensures the one selected to be drawn is Checked
+				selectedButton.Checked = true;
+			}
+		}
+
+		private void AlignText()
+		{
+			//Adjusts location of the effect label.
+			TextImageRelation alignText = TextImageRelation.ImageAboveText;
+			var newFontSize = new Font(Font.FontFamily.Name, (float)(7 * _scaleFactor), Font.Style);
+			bool noText = false;
+			int effectLabelPosition = 2;
+			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
+			{
+				if (subItem.Checked)
+				{
+					effectLabelPosition = Convert.ToInt16(subItem.Tag);
+					break;
+				}
+			}
+
+			switch (effectLabelPosition)
+			{
+				case 0:
+					noText = true;
+					break;
+				case 1:
+					alignText = TextImageRelation.TextAboveImage;
+					break;
+				case 2:
+					alignText = TextImageRelation.ImageAboveText;
+					break;
+			}
+
+			foreach (ToolStripItem tsi in toolStripEffects.Items)
+			{
+				if (!noText)
+				{
+					tsi.TextImageRelation = alignText;
+					tsi.Text = tsi.ToolTipText;
+				}
+				else
+				{
+					tsi.Text = "";
+				}
+				tsi.Font = newFontSize;
+			}
+		}
+
+		private void tsb_MouseDown(object sender, MouseEventArgs e)
+		{
+			_mToolStripEffects = sender as ToolStripItem;
+			ToolStripButton selectedButton = sender as ToolStripButton;
+
+			if (selectedButton == null) return;
+
+			_beginNewEffectDragDrop =
+				(_mToolStripEffects != null) &&
+				(e.Button == MouseButtons.Left && e.Clicks == 1);
+
+			if (toolStripButton_DrawMode.Checked)
+			{
+				SelectNodeForDrawing(selectedButton);
+			}
+			else
+			{
+				selectedButton.Checked = false;
+			}
+		}
+
+		private void tsb_MouseMove(object sender, MouseEventArgs e)
+		{
+			ToolStripButton item = sender as ToolStripButton;
+			if (e.Button == MouseButtons.Left && _beginNewEffectDragDrop)
+			{
+				_beginNewEffectDragDrop = false;
+				DataObject data = new DataObject(_mToolStripEffects.Tag);
+				item?.Owner.DoDragDrop(data, DragDropEffects.Copy);
+			}
+		}
+
+		private void toolStripMenuItemLabelPosition_Click(object sender, EventArgs e)
+		{
+			if (sender is ToolStripMenuItem item && !item.Checked)
+			{
+				foreach (ToolStripMenuItem subItem in item.Owner.Items)
+				{
+					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
+				}
+				item.Checked = true;
+			}
+			AlignText();
+		}
+
+		private void toolStripMenuItemEffectGroup_Click(object sender, EventArgs e)
+		{
+			PopulateToolStripEffects();
+		}
+
+
+		private void effectToolStripMenuItem_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+		{
+			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
+		}
+
+		private void effectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			effectToolStripToolStripMenuItem.Checked = !effectToolStripToolStripMenuItem.Checked;
+		}
+
+		private void effectToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripEffects.Visible = !toolStripEffects.Visible;
+		}
+
+		#endregion
 	}
 }
