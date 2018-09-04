@@ -400,7 +400,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			//Set scale size and populate Effect ToolStrip
-			int imageSize = (int)(16 * _scaleFactor);
+			int imageSize = (int)(20 * _scaleFactor);
 			toolStripEffects.ImageScalingSize = new Size(imageSize, imageSize);
 
 			PopulateToolStripEffects();
