@@ -12,6 +12,6 @@ namespace Vixen.Module.Effect
 		bool SupportsMarks { get; }
 		bool SupportsFiles { get; }
 		string[] SupportedFileExtensions { get; }
-		Image GetRepresentativeImage(int desiredWidth, int desiredHeight);
+		Image GetRepresentativeImage();
 	}
 }

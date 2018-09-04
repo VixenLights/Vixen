@@ -81,38 +81,27 @@ namespace Vixen.Module.Effect {
 
 		public virtual Guid[] PropertyDependencies { get; private set; }
 
-		public virtual Image GetRepresentativeImage(int desiredWidth, int desiredHeight) {
-			try {
-
+		public virtual Image GetRepresentativeImage()
+		{
+			try
+			{
 				//Default to Null image
 				var resources = this.Assembly.GetManifestResourceNames().ToList();
-				//resources.ToList().ForEach(a => Console.WriteLine(a)); 
-				int maxDimension = Math.Max(desiredWidth, desiredHeight);
-				if (maxDimension <= 16) {
-					var resName = resources.FirstOrDefault(r => r.ContainsString(".Effect16.", StringComparison.CurrentCultureIgnoreCase));
-					if (!string.IsNullOrWhiteSpace(resName))
-						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-					return null;
-				}
-				if (maxDimension <= 48) {
-					var resName = resources.FirstOrDefault(r => r.ContainsString(".Effect48.", StringComparison.CurrentCultureIgnoreCase));
-					if (!string.IsNullOrWhiteSpace(resName))
-						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-					return null;
-				}
-				else {
-					var resName = resources.FirstOrDefault(r => r.ContainsString(".Effect64.", StringComparison.CurrentCultureIgnoreCase));
-					if (!string.IsNullOrWhiteSpace(resName))
-						return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
-					return null;
-				}
+
+				var resName =
+					resources.FirstOrDefault(r => r.ContainsString(".EffectImage.", StringComparison.CurrentCultureIgnoreCase));
+				if (!string.IsNullOrWhiteSpace(resName))
+					return Image.FromStream(this.Assembly.GetManifestResourceStream(resName));
+				return null;
+
 			}
-			catch (Exception e) {
+			catch (Exception e)
+			{
 				Logging.Error(e.Message, e);
 				return null;
 			}
 		}
-		
+
 		public bool Equals(IEffectModuleDescriptor x, IEffectModuleDescriptor y) {
 			return base.Equals(x, y);
 		}

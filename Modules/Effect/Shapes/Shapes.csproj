@@ -89,9 +89,6 @@
     <Compile Include="ShapesDescriptor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Effect48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Vixen.System\Vixen.csproj">
       <Project>{50b78623-fcf4-48af-93ff-fa87c937028f}</Project>
       <Name>Vixen</Name>
@@ -245,6 +242,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SVGShapes\Christmas\Star.xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EffectImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

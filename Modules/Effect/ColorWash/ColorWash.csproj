@@ -69,9 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Effect48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Controls\Controls.csproj">
       <Project>{a54fb6a1-a9c3-488c-b961-41b8dbc81b36}</Project>
       <Name>Controls</Name>
@@ -102,6 +99,9 @@
       <Name>Effect</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\EffectImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

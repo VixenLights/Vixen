@@ -85,7 +85,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				// Add an entry to the menu
 				ToolStripMenuItem contextMenuItemEffect = new ToolStripMenuItem(effectDesriptor.EffectName);
-				contextMenuItemEffect.Image = effectDesriptor.GetRepresentativeImage(48, 48);
+				contextMenuItemEffect.Image = effectDesriptor.GetRepresentativeImage();
 				contextMenuItemEffect.Tag = effectDesriptor.TypeId;
 				contextMenuItemEffect.ToolTipText = @"Use Shift key to add multiple effects of the same type.";
 				contextMenuItemEffect.Click += (mySender, myE) =>
