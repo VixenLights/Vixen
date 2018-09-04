@@ -67,13 +67,13 @@ namespace VixenApplication
 			string parentFolder = folderFullPath.Split(Path.DirectorySeparatorChar).Last();
 
 			UpdateStatus("Zipping profile please wait...");
-			Archive(item.DataFolder, profileExclusions, parentFolder, outPath);
-			if (includeLogs)
+			var success = Archive(item.DataFolder, profileExclusions, parentFolder, outPath);
+			if (success && includeLogs)
 			{
 				UpdateStatus("Zipping logs please wait...");
-				Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);	
+				success = Archive(logDataFolder, new List<string>(), Path.Combine(parentFolder, @"Core Logs"), outPath);	
 			}
-			if (includeUserSettings)
+			if (success && includeUserSettings)
 			{
 				UpdateStatus("Zipping user settings please wait...");
 				Archive(appDataFolder, new List<string>(), Path.Combine(parentFolder, @"User Settings"), outPath);
@@ -303,25 +303,26 @@ namespace VixenApplication
 			toolStripStatusLabel.Text = text;	
 		}
 
-		private void Archive(string folder, IList<string> exceptions, string parentFolder, string archivePath)
+		private bool Archive(string folder, IList<string> exceptions, string parentFolder, string archivePath)
 		{
+			bool success = false;
 			string folderFullPath = Path.GetFullPath(folder);
 			
 			IEnumerable<string> files = Directory.EnumerateFiles(folder,
 					"*.*", SearchOption.AllDirectories);
 			int fileCount = files.Count();
 			int filesComplete = 0;
-			using (ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
+			try
 			{
-				foreach (string file in files)
+				using (ZipArchive archive = ZipFile.Open(archivePath, ZipArchiveMode.Update))
 				{
-					if (_bw.CancellationPending)
+					foreach (string file in files)
 					{
-						break;
-					}
-					if (!Excluded(file, exceptions))
-					{
-						try
+						if (_bw.CancellationPending)
+						{
+							break;
+						}
+						if (!Excluded(file, exceptions))
 						{
 							var addFile = Path.GetFullPath(file);
 							if (addFile != archivePath)
@@ -333,13 +334,18 @@ namespace VixenApplication
 								_bw.ReportProgress(value);
 							}
 						}
-						catch (IOException ex)
-						{
-							Logging.Error("An error occured adding files to archive", ex);
-						}
 					}
 				}
+				success = true;
 			}
+			catch (Exception ex)
+			{
+				Logging.Error(ex, "An error occured adding files to archive");
+				MessageBoxForm mbf = new MessageBoxForm($"An error occured during the zip process.\n\r {ex.Message}","Error Zipping Files",MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
+			}
+
+			return success;
 
 		}
 
