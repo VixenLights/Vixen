@@ -1,5 +1,48 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.5u2 Release Build 
+
+** Bug
+    * [VIX-461] - Adding additional Strings to existing Mega Tree does not work correctly. 
+    * [VIX-896] - Color property doesn't update editor when modifying discrete color set
+    * [VIX-1139] - When the editor is closed with a small size it fails to reopen.
+    * [VIX-2023] - Vixen closes down with invalid file characters in zip wizard
+    * [VIX-2383] - LipSync new map then cancel still creates a new map.
+    * [VIX-2384] - Sequence Update Message Box not Capitalized
+    * [VIX-2435] - Face mapping face setup form missing Vixen icon
+    * [VIX-2462] - When I click anywhere in the preview editing screen Vixen shuts down.
+    * [VIX-2497] - Color in the Text and Count down effect visual representation is incorrectly represented.
+    * [VIX-2501] - Incorrect patch point counts for imported Custom Prop
+    * [VIX-2502] - Rendering error or freeze on opening sequence
+    * [VIX-2503] - Video speed in the Video effect is slower then it should be and some video are off center.
+    * [VIX-2506] - Updated to Vixen 3.5.1 and could not open 3 sequences
+    * [VIX-2507] - Intensity overlay doesn't work if element is repeated in a group
+    * [VIX-2508] - Beat marks able to be given empty names
+    * [VIX-2515] - Custom Prop Editor Order View List does not update when lights are deleted from the Drawing Panel.
+    * [VIX-2517] - Drag Drop in the tree view of Custom Prop Editor will let you duplicate an element in the same group 
+    * [VIX-2518] - Full crash when adding pixel grid to preview configuration screen without selecting a node.
+    * [VIX-2519] - The logic to detect if a window is on screen has some holes in it and can leave a user unable to see the window. 
+    * [VIX-2524] - The lip sync effect does not properly honor discrete elements. 
+    * [VIX-2526] - Editing element face mapping from within the sequence editor does not save the changes. 
+    * [VIX-2531] - Singing faces elements missing on discrete colored elements
+    * [VIX-2534] - Zip profile wizard can crash if the target runs out of space.
+
+** New Feature
+    * [VIX-2208] - Add Effect Toolstrip
+    * [VIX-2457] - Add 400% zoom back to preview configuration
+
+** Improvement
+    * [VIX-2496] - Allow different colors for each word in Text Effect when Marks are used.
+    * [VIX-2498] - Add some new features to the Countdown effect.
+    * [VIX-2504] - Add the ability to generate the universe file for the Falcon Pi Player.
+    * [VIX-2511] - Add ability to insert a dimming curve after an element that is already patched.
+    * [VIX-2516] - Add ability to delete lights from the Order tab in the Custom Prop Editor
+    * [VIX-2525] - Add an option to the Mask and Fill Layer filter to require a mixing partner.
+    * [VIX-2528] - Compact the space the time line tree view takes up.
+    * [VIX-2530] - Phoneme Mark collections linking improvements.
+
+
+
 Release Notes - Vixen 3 - 3.5u1 Release Build 
 
 ** New Feature
