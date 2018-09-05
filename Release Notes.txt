@@ -26,6 +26,7 @@ Release Notes - Vixen 3 - 3.5u2 Release Build
     * [VIX-2526] - Editing element face mapping from within the sequence editor does not save the changes. 
     * [VIX-2531] - Singing faces elements missing on discrete colored elements
     * [VIX-2534] - Zip profile wizard can crash if the target runs out of space.
+    * [VIX-2535] - Effects only flip colors when change in direction
 
 ** New Feature
     * [VIX-2208] - Add Effect Toolstrip
