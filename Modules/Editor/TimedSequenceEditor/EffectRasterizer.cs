@@ -46,11 +46,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				double y = 0;
 				int ctr = 0;
-				foreach (var element in effectIntents)
+
+				var elements = effect.TargetNodes.GetElements();
+
+				foreach (var element in elements)
 				{
 					if(ctr++ % skipCount != 0) continue;
-				
-					IntentNodeCollection elementIntents = element.Value;//effectIntents.GetIntentNodesForElement(element.Id);
+					
+					IntentNodeCollection elementIntents = effectIntents.GetIntentNodesForElement(element.Id);//effectIntents.GetIntentNodesForElement(element.Id);
 					if (elementIntents != null && elementIntents.Count > 0)
 					{
 						//Determine if we have parallel intents used on this element for this effect.
