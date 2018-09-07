@@ -35,7 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 
-
+				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 				var xdoc = XDocument.Load(openFileDialog.FileName);
 				if (xdoc.Root != null)
 				{
@@ -391,12 +391,14 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			FileDialog openDialog = new OpenFileDialog();
 			openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
 			openDialog.FilterIndex = 1;
+			openDialog.InitialDirectory = _lastFolder;
 			if (openDialog.ShowDialog() != DialogResult.OK)
 			{
 				return;
 			}
 			PapagayoDoc papagayoFile = new PapagayoDoc();
 			string fileName = openDialog.FileName;
+			_lastFolder = Path.GetDirectoryName(openDialog.FileName);
 			papagayoFile.Load(fileName);
 			var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 			int rownum = 0;
@@ -487,9 +489,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			{
 				saveFileDialog.DefaultExt = ".v3m";
 				saveFileDialog.Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
-				saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				saveFileDialog.InitialDirectory = _lastFolder;
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
+					_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 					var xmlsettings = new XmlWriterSettings
 					{
 						Indent = true,
