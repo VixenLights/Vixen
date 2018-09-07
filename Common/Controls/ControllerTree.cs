@@ -490,6 +490,15 @@ namespace Common.Controls
 			SetControllerOutputCount(SelectedControllers.First());
 		}
 
+		private void startControllerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StartController();
+		}
+
+		private void stopControllerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopController();
+		}
 
 		#endregion
 
@@ -502,6 +511,40 @@ namespace Common.Controls
 				if (SelectedControllers.Count() > 0) {
 					DeleteControllersWithPrompt(SelectedControllers);
 				}
+			}
+		}
+
+		public void StartController()
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in SelectedControllers){
+				if (!controller.IsRunning){
+					VixenSystem.OutputControllers.Start(VixenSystem.OutputControllers.GetController(controller.Id));
+					changes = true;
+				}
+			}
+
+			if (changes){
+				PopulateControllerTree();
+				OnControllersChanged();
+			}
+		}
+
+		public void StopController()
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in SelectedControllers) {
+				if (controller.IsRunning) {
+					VixenSystem.OutputControllers.Stop(VixenSystem.OutputControllers.GetController(controller.Id));
+					changes = true;
+				}
+			}
+
+			if (changes){
+				PopulateControllerTree();
+				OnControllersChanged();
 			}
 		}
 	}

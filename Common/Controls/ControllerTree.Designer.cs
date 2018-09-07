@@ -35,6 +35,8 @@
 			this.channelCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.startControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stopControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.SuspendLayout();
@@ -55,10 +57,13 @@
 			// 
 			this.contextMenuStripTreeView.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.contextMenuStripTreeView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.configureToolStripMenuItem,
-            this.channelCountToolStripMenuItem,
-            this.renameToolStripMenuItem,
-            this.deleteToolStripMenuItem});
+				this.configureToolStripMenuItem,
+				this.channelCountToolStripMenuItem,
+				this.renameToolStripMenuItem,
+				this.deleteToolStripMenuItem,
+				this.startControllerToolStripMenuItem,
+				this.stopControllerToolStripMenuItem
+				});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
 			this.contextMenuStripTreeView.Size = new System.Drawing.Size(201, 124);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
@@ -90,6 +95,20 @@
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
 			this.deleteToolStripMenuItem.Text = "&Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+			// 
+			// startControllerToolStripMenuItem
+			// 
+			this.startControllerToolStripMenuItem.Name = "startControllerToolStripMenuItem";
+			this.startControllerToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.startControllerToolStripMenuItem.Text = "&Start / Enable";
+			this.startControllerToolStripMenuItem.Click += new System.EventHandler(this.startControllerToolStripMenuItem_Click);
+			// 
+			// stopControllerToolStripMenuItem
+			// 
+			this.stopControllerToolStripMenuItem.Name = "stopControllerToolStripMenuItem";
+			this.stopControllerToolStripMenuItem.Size = new System.Drawing.Size(200, 30);
+			this.stopControllerToolStripMenuItem.Text = "&Stop / Disable";
+			this.stopControllerToolStripMenuItem.Click += new System.EventHandler(this.stopControllerToolStripMenuItem_Click);
 			// 
 			// treeview
 			// 
@@ -143,5 +162,7 @@
 		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem configureToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem channelCountToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem startControllerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem stopControllerToolStripMenuItem;
 	}
 }

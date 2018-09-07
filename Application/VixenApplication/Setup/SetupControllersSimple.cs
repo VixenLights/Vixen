@@ -290,38 +290,14 @@ namespace VixenApplication.Setup
 
 		private void buttonStartController_Click(object sender, EventArgs e)
 		{
-			bool changes = false;
-
-			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
-				if (!controller.IsRunning) {
-					VixenSystem.OutputControllers.Start(VixenSystem.OutputControllers.GetController(controller.Id));
-					changes = true;
-				}
-			}
-
-			if (changes) {
-				controllerTree.PopulateControllerTree();
-				OnControllersChanged();
-				UpdateForm();
-			}
+			controllerTree.StartController();
+			UpdateForm();
 		}
 
 		private void buttonStopController_Click(object sender, EventArgs e)
 		{
-			bool changes = false;
-
-			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
-				if (controller.IsRunning) {
-					VixenSystem.OutputControllers.Stop(VixenSystem.OutputControllers.GetController(controller.Id));
-					changes = true;
-				}
-			}
-
-			if (changes) {
-				controllerTree.PopulateControllerTree();
-				OnControllersChanged();
-				UpdateForm();
-			}
+			controllerTree.StopController();
+			UpdateForm();
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
