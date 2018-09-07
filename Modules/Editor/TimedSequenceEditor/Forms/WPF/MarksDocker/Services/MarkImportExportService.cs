@@ -486,7 +486,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						IndentChars = "\t"
 					};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<IMarkCollection>));
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<IMarkCollection>), new []{typeof(MarkCollection), typeof(Mark), typeof(MarkDecorator) });
 					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
 					ser.WriteObject(writer, collections);
 					writer.Close();
