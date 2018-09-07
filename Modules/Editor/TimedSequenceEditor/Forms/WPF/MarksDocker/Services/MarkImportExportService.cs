@@ -41,12 +41,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				{
 					Type type;
 					bool migrate = false;
-					if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.App.Marks"))
+					if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection)))
 					{
-						type = typeof(List<MarkCollection>);
+						type = typeof(List<IMarkCollection>);
 					}
-					else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed")
-					)
+					else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed"))
 					{
 						type = typeof(List<Sequence.Timed.MarkCollection>);
 						migrate = true;
@@ -64,11 +63,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					{
 						try
 						{
-							DataContractSerializer ser = new DataContractSerializer(type);
+							DataContractSerializer ser = CreateSerializer(type, migrate);
 							var markCollections = ser.ReadObject(reader);
 							if (!migrate)
 							{
-								var imc = markCollections as List<MarkCollection>;
+								var imc = markCollections as List<IMarkCollection>;
 								if (imc != null && collections.Any(x => x.IsDefault))
 								{
 									//make sure any imported are not default becasue we have a set and there will
@@ -98,6 +97,17 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				}
 				
 			}
+		}
+
+		private static DataContractSerializer CreateSerializer(Type type, bool legacy)
+		{
+			if (legacy)
+			{
+				return new DataContractSerializer(type);
+			}
+
+			return new DataContractSerializer(type, "ArrayOfIMarkCollection", "http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection), new[] { typeof(MarkCollection), typeof(Mark), typeof(MarkDecorator) });
+
 		}
 
 		private static void MigrateMarkCollections(ObservableCollection<IMarkCollection> collections, List<Sequence.Timed.MarkCollection> oldCollections)
@@ -486,7 +496,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 						IndentChars = "\t"
 					};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<IMarkCollection>), new []{typeof(MarkCollection), typeof(Mark), typeof(MarkDecorator) });
+					DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
 					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
 					ser.WriteObject(writer, collections);
 					writer.Close();
@@ -497,10 +507,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			{
 				int iMarkCollection = 0;
 				List<string> beatMarks = new List<string>();
-				foreach (MarkCollection mc in collections)
+				foreach (IMarkCollection mc in collections)
 				{
 					iMarkCollection++;
-					foreach (Mark mark in mc.Marks)
+					foreach (IMark mark in mc.Marks)
 					{
 						beatMarks.Add(mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + iMarkCollection);
 						if (collections.Count == 1)
