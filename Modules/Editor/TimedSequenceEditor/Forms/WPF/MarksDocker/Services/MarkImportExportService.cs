@@ -13,6 +13,7 @@ using Catel.Collections;
 using Common.Controls;
 using NLog;
 using Vixen.Marks;
+using Vixen.Sys;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
@@ -21,7 +22,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		private static string _lastFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		private static string _lastFolder = Paths.DataRootPath;
 
 
 		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
