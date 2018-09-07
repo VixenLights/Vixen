@@ -13,6 +13,7 @@ using Catel.Collections;
 using Common.Controls;
 using NLog;
 using Vixen.Marks;
+using Vixen.Sys;
 using VixenModules.App.Marks;
 
 namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
@@ -21,7 +22,7 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 	{
 		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 
-		private static string _lastFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		private static string _lastFolder = Paths.DataRootPath;
 
 
 		//Vixen 3 Beat Mark Collection Import routine 2-7-2014 JMB
@@ -35,18 +36,17 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 
-
+				_lastFolder = Path.GetDirectoryName(openFileDialog.FileName);
 				var xdoc = XDocument.Load(openFileDialog.FileName);
 				if (xdoc.Root != null)
 				{
 					Type type;
 					bool migrate = false;
-					if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.App.Marks"))
+					if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection)))
 					{
-						type = typeof(List<MarkCollection>);
+						type = typeof(List<IMarkCollection>);
 					}
-					else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed")
-					)
+					else if (xdoc.Root.Name.NamespaceName.Equals("http://schemas.datacontract.org/2004/07/VixenModules.Sequence.Timed"))
 					{
 						type = typeof(List<Sequence.Timed.MarkCollection>);
 						migrate = true;
@@ -64,11 +64,11 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 					{
 						try
 						{
-							DataContractSerializer ser = new DataContractSerializer(type);
+							DataContractSerializer ser = CreateSerializer(type, migrate);
 							var markCollections = ser.ReadObject(reader);
 							if (!migrate)
 							{
-								var imc = markCollections as List<MarkCollection>;
+								var imc = markCollections as List<IMarkCollection>;
 								if (imc != null && collections.Any(x => x.IsDefault))
 								{
 									//make sure any imported are not default becasue we have a set and there will
@@ -98,6 +98,17 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 				}
 				
 			}
+		}
+
+		private static DataContractSerializer CreateSerializer(Type type, bool legacy)
+		{
+			if (legacy)
+			{
+				return new DataContractSerializer(type);
+			}
+
+			return new DataContractSerializer(type, "ArrayOfIMarkCollection", "http://schemas.datacontract.org/2004/07/" + typeof(IMarkCollection), new[] { typeof(MarkCollection), typeof(Mark), typeof(MarkDecorator) });
+
 		}
 
 		private static void MigrateMarkCollections(ObservableCollection<IMarkCollection> collections, List<Sequence.Timed.MarkCollection> oldCollections)
@@ -381,12 +392,14 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			FileDialog openDialog = new OpenFileDialog();
 			openDialog.Filter = @"Papagayo files (*.pgo)|*.pgo|All files (*.*)|*.*";
 			openDialog.FilterIndex = 1;
+			openDialog.InitialDirectory = _lastFolder;
 			if (openDialog.ShowDialog() != DialogResult.OK)
 			{
 				return;
 			}
 			PapagayoDoc papagayoFile = new PapagayoDoc();
 			string fileName = openDialog.FileName;
+			_lastFolder = Path.GetDirectoryName(openDialog.FileName);
 			papagayoFile.Load(fileName);
 			var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 			int rownum = 0;
@@ -477,16 +490,17 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			{
 				saveFileDialog.DefaultExt = ".v3m";
 				saveFileDialog.Filter = @"Vixen 3 Mark Collection (*.v3m)|*.v3m|All Files (*.*)|*.*";
-				saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				saveFileDialog.InitialDirectory = _lastFolder;
 				if (saveFileDialog.ShowDialog() == DialogResult.OK)
 				{
+					_lastFolder = Path.GetDirectoryName(saveFileDialog.FileName);
 					var xmlsettings = new XmlWriterSettings
 					{
 						Indent = true,
 						IndentChars = "\t"
 					};
 
-					DataContractSerializer ser = new DataContractSerializer(typeof(List<IMarkCollection>));
+					DataContractSerializer ser = CreateSerializer(typeof(List<IMarkCollection>), false);
 					var writer = XmlWriter.Create(saveFileDialog.FileName, xmlsettings);
 					ser.WriteObject(writer, collections);
 					writer.Close();
@@ -497,10 +511,10 @@ namespace VixenModules.Editor.TimedSequenceEditor.Forms.WPF.MarksDocker.Services
 			{
 				int iMarkCollection = 0;
 				List<string> beatMarks = new List<string>();
-				foreach (MarkCollection mc in collections)
+				foreach (IMarkCollection mc in collections)
 				{
 					iMarkCollection++;
-					foreach (Mark mark in mc.Marks)
+					foreach (IMark mark in mc.Marks)
 					{
 						beatMarks.Add(mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + mark.StartTime.TotalSeconds.ToString("0000.000") + "\t" + iMarkCollection);
 						if (collections.Count == 1)
