@@ -2917,7 +2917,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (parent.CollectionType != MarkCollectionType.Phrase)
 				{
 					//try to find the phrase parent
-					var phraseParent = _sequence.LabeledMarkCollections.First(x => x.Id == parent.LinkedMarkCollectionId);
+					var phraseParent = _sequence.LabeledMarkCollections.FirstOrDefault(x => x.Id == parent.LinkedMarkCollectionId);
 					if (phraseParent != null && phraseParent.CollectionType == MarkCollectionType.Phrase)
 					{
 						name = $"{phraseParent.Name} {type}";
