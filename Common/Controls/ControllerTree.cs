@@ -27,6 +27,8 @@ namespace Common.Controls
 		private List<string> _topDisplayedNodes; // TreeNode paths that are at the top of the view. Should only
 		// need one, but will have multiple in case the top node is deleted.
 		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
+		private bool _someSelectedControllersRunning;
+		private bool _someSelectedControllersNotRunning;
 
 		public ControllerTree()
 		{
@@ -34,6 +36,16 @@ namespace Common.Controls
 			AutoSize = true;
 			treeview.Dock = DockStyle.Fill;
 			contextMenuStripTreeView.Renderer = new ThemeToolStripRenderer();
+		}
+
+		public bool SomeSelectedControllersRunning
+		{
+			get {return _someSelectedControllersRunning;}
+		}
+
+		public bool SomeSelectedControllersNotRunning
+		{
+			get {return _someSelectedControllersNotRunning;}
 		}
 
 		private void ControllerTree_Load(object sender, EventArgs e)
@@ -465,15 +477,13 @@ namespace Common.Controls
 			channelCountToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 			renameToolStripMenuItem.Enabled = (SelectedControllers.Count() == 1);
 			deleteToolStripMenuItem.Enabled = (SelectedControllers.Count() > 0);
+			CheckIfSelectedControllersRunning();
 		}
-
-
 
 		private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DeleteControllersWithPrompt(SelectedControllers);
 		}
-
 
 		private void renameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -490,6 +500,15 @@ namespace Common.Controls
 			SetControllerOutputCount(SelectedControllers.First());
 		}
 
+		private void startControllerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StartController();
+		}
+
+		private void stopControllerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopController();
+		}
 
 		#endregion
 
@@ -503,6 +522,58 @@ namespace Common.Controls
 					DeleteControllersWithPrompt(SelectedControllers);
 				}
 			}
+		}
+
+		public void StartController()
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in SelectedControllers){
+				if (!controller.IsRunning){
+					VixenSystem.OutputControllers.Start(VixenSystem.OutputControllers.GetController(controller.Id));
+					changes = true;
+				}
+			}
+
+			if (changes){
+				PopulateControllerTree();
+				OnControllersChanged();
+			}
+		}
+
+		public void StopController()
+		{
+			bool changes = false;
+
+			foreach (IControllerDevice controller in SelectedControllers) {
+				if (controller.IsRunning) {
+					VixenSystem.OutputControllers.Stop(VixenSystem.OutputControllers.GetController(controller.Id));
+					changes = true;
+				}
+			}
+
+			if (changes){
+				PopulateControllerTree();
+				OnControllersChanged();
+			}
+		}
+
+		public void CheckIfSelectedControllersRunning()
+		{
+			int runningCount = 0;
+			int notRunningCount = 0;
+
+			foreach (IControllerDevice controller in SelectedControllers) {
+				if (controller.IsRunning) {
+					runningCount++;
+				}else {
+					notRunningCount++;
+				}
+			}
+			_someSelectedControllersRunning = runningCount > 0;
+			_someSelectedControllersNotRunning = notRunningCount > 0;
+			startControllerToolStripMenuItem.Enabled = _someSelectedControllersNotRunning;
+			stopControllerToolStripMenuItem.Enabled = _someSelectedControllersRunning;
 		}
 	}
 }

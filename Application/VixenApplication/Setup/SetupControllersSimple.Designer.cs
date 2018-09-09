@@ -107,7 +107,7 @@
 			this.buttonStopController.Size = new System.Drawing.Size(24, 24);
 			this.buttonStopController.TabIndex = 45;
 			this.buttonStopController.Text = "S";
-			this.toolTip1.SetToolTip(this.buttonStopController, "Stop");
+			this.toolTip1.SetToolTip(this.buttonStopController, "Stop / Disable");
 			this.buttonStopController.UseVisualStyleBackColor = false;
 			this.buttonStopController.Click += new System.EventHandler(this.buttonStopController_Click);
 			// 
@@ -123,7 +123,7 @@
 			this.buttonStartController.Size = new System.Drawing.Size(24, 24);
 			this.buttonStartController.TabIndex = 44;
 			this.buttonStartController.Text = "P";
-			this.toolTip1.SetToolTip(this.buttonStartController, "Start");
+			this.toolTip1.SetToolTip(this.buttonStartController, "Start / Enable");
 			this.buttonStartController.UseVisualStyleBackColor = false;
 			this.buttonStartController.Click += new System.EventHandler(this.buttonStartController_Click);
 			// 
