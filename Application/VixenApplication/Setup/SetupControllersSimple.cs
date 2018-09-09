@@ -86,24 +86,9 @@ namespace VixenApplication.Setup
 
 			buttonDeleteController.Enabled = selectedControllerCount >= 1;
 
-			int runningCount = 0;
-			int notRunningCount = 0;
-			int pausedCount = 0;
-			int notPausedCount = 0;
-			foreach (IControllerDevice controller in controllerTree.SelectedControllers) {
-				if (controller.IsRunning) {
-					runningCount++;
-				} else {
-					notRunningCount++;
-				}
-				if (controller.IsPaused) {
-					pausedCount++;
-				} else {
-					notPausedCount++;
-				}
-			}
-			buttonStartController.Enabled = notRunningCount > 0;
-			buttonStopController.Enabled = runningCount > 0;
+			controllerTree.CheckIfSelectedControllersRunning();
+			buttonStartController.Enabled = controllerTree.SomeSelectedControllersNotRunning;
+			buttonStopController.Enabled = controllerTree.SomeSelectedControllersRunning;
 
 			buttonAddController.Enabled = comboBoxNewControllerType.SelectedIndex >= 0;
 
@@ -212,8 +197,6 @@ namespace VixenApplication.Setup
 
 			ControllersChanged(this, EventArgs.Empty);
 		}
-
-
 
 		private void buttonAddController_Click(object sender, EventArgs e)
 		{
