@@ -314,5 +314,15 @@ namespace VixenModules.App.Curves
 				return hashCode;
 			}
 		}
+
+		#region Overrides of Object
+
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			return $"Library Curve {IsLibraryReference}, Points: {Points}";
+		}
+
+		#endregion
 	}
 }

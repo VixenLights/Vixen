@@ -23,7 +23,9 @@ namespace Vixen.Execution
 		{
 			if (_reset)
 			{
+#if DEBUG
 				Logging.Info("Resetting effect list. Current time: {0}", currentTime);
+#endif
 				ResetEffectList();
 			}
 
@@ -42,7 +44,9 @@ namespace Vixen.Execution
 
 		public void Reset()
 		{
+#if DEBUG
 			Logging.Info("Current effects reset requested.");
+#endif
 			_reset = true;
 		}
 
@@ -55,7 +59,9 @@ namespace Vixen.Execution
 		{
 			Clear();
 			_reset = false;
+#if DEBUG
 			Logging.Info("Current effects reset request satisfied.");
+#endif
 		}
 
 		private void _RemoveExpiredEffects(TimeSpan currentTime)
