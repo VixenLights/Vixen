@@ -1536,8 +1536,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripEffects
-			// 
+			//
 			this.toolStripEffects.ContextMenuStrip = this.contextMenuStripEffect;
+			this.toolStripEffects.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStripEffects.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripEffects.ImageScalingSize = new System.Drawing.Size(20, 20);
