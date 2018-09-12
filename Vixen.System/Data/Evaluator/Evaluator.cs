@@ -9,7 +9,7 @@ namespace Vixen.Data.Evaluator
 	{
 		public ICommand Evaluate(IIntentState intentState)
 		{
-			intentState.Dispatch(this);
+			intentState?.Dispatch(this);
 			return EvaluatorValue;
 		}
 
