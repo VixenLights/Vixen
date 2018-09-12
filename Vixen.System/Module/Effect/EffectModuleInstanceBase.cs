@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using NLog;
 using Vixen.Marks;
@@ -128,7 +129,8 @@ namespace Vixen.Module.Effect
 				catch (Exception e)
 				{
 					//Trap any errors to prevent the effect from staying in a state of rendering.
-					Logging.Error(String.Format("Error rendering {0}", EffectName), e);
+					Logging.Error(e, $"Error rendering {EffectName} on element {TargetNodes?.FirstOrDefault()?.Name}");
+					Logging.Error($"Error rendering Effect Property settings: {PropertyInfo()}");
 				}
 				finally
 				{
@@ -146,6 +148,29 @@ namespace Vixen.Module.Effect
 			}
 
 			return _Render();
+		}
+
+		public string PropertyInfo()
+		{
+			
+			var sb = new StringBuilder();
+
+
+			try
+			{
+				var propertyInfos = this.GetType().GetProperties();
+				foreach (var info in propertyInfos)
+				{
+					var value = info.GetValue(this, null) ?? "(null)";
+					sb.AppendLine(info.Name + ": " + value.ToString());
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Could not capture effect properties");
+			}
+
+			return sb.ToString();
 		}
 
 		public EffectIntents Render(TimeSpan restrictingOffsetTime, TimeSpan restrictingTimeSpan)

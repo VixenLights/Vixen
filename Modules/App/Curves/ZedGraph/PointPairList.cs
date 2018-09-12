@@ -20,6 +20,7 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ZedGraph
 {
@@ -902,6 +903,22 @@ namespace ZedGraph
 			}
 
 			return newPoints;
+		}
+
+		#endregion
+
+		#region Overrides of Object
+
+		/// <inheritdoc />
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (var pointPair in this)
+			{
+				sb.Append($"[{pointPair.ToString(false)}],");
+			}
+
+			return sb.ToString();
 		}
 
 		#endregion
