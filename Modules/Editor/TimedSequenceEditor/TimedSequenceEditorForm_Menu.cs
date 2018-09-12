@@ -561,7 +561,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (success)
 					{
 						RenderLipSyncElementsAsync();
-						await VixenSystem.SaveModuleConfigAsync();
+						await VixenSystem.SaveSystemAndModuleConfigAsync();
 					}
 				}
 			}
