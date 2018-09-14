@@ -13,7 +13,8 @@ namespace VixenModules.Property.Order
 {
 	public partial class OrderSetupHelper : BaseForm, IElementSetupHelper
 	{
-		private Dictionary<ElementNode, int>  _elementOrderLookup = new Dictionary<ElementNode, int>();
+		private readonly Dictionary<ElementNode, int>  _elementOrderLookup = new Dictionary<ElementNode, int>();
+		private readonly ContextMenuStrip _contextMenu = new ContextMenuStrip();
 
 		public OrderSetupHelper()
 		{
@@ -22,8 +23,47 @@ namespace VixenModules.Property.Order
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-
+			_contextMenu.Renderer = new ThemeToolStripRenderer();
 			elementList.ItemDragDropCompleted += ElementList_ItemDragDropCompleted;
+			elementList.MouseClick += ElementListOnMouseClick;
+		}
+
+		private void ElementListOnMouseClick(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right)
+			{
+				_contextMenu.Items.Clear();
+				if (elementList.FocusedItem.Bounds.Contains(e.Location))
+				{
+					if (elementList.SelectedItems.Count > 1)
+					{
+						var reverseItems = new ToolStripMenuItem("Reverse");
+						reverseItems.Click += ReverseItems_Click;
+						_contextMenu.Items.Add(reverseItems);
+					}
+					_contextMenu.Show(elementList, e.Location);
+				}
+			}
+		}
+
+		private void ReverseItems_Click(object sender, EventArgs e)
+		{
+			var selectedindexes = elementList.SelectedIndices;
+			var indexMap = new Dictionary<int, ListViewItem>();
+			int counter = selectedindexes.Count - 1;
+			foreach (int selectedindex in selectedindexes)
+			{
+				indexMap.Add(selectedindexes[counter--], elementList.Items[selectedindex]);
+			}
+
+			foreach (var item in indexMap)
+			{
+				elementList.Items.RemoveAt(item.Key);
+				elementList.Items.Insert(item.Key, (ListViewItem)item.Value.Clone());
+				elementList.Items[item.Key].Selected = true;
+			}
+
+			ReIndexElementNodes();
 		}
 
 		#region Implementation of IElementSetupHelper
