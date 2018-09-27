@@ -19,6 +19,7 @@ using Vixen.Rule;
 using Vixen.Services;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using VixenModules.App.Modeling;
 
 namespace VixenApplication.Setup
 {
@@ -69,9 +70,14 @@ namespace VixenApplication.Setup
 				comboBoxSetupHelperType.SelectedIndex = 0;
 
 			UpdateFormWithNode(null);
+
+			elementTree.ExportDiagram = ExportWireDiagram;
 		}
 
-
+		private void ExportWireDiagram(ElementNode node)
+		{
+			ElementModeling.ElementsToSvg(node);
+		}
 
 		public event EventHandler<ElementNodesEventArgs> ElementSelectionChanged;
 		public void OnElementSelectionChanged(ElementNodesEventArgs e)

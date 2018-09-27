@@ -49,11 +49,12 @@ namespace Common.Controls
 			this.patternRenameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.reverseElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripDragging = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.moveHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.treeview = new Common.Controls.MultiSelectTreeview();
-			this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportWireDiagramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStripTreeView.SuspendLayout();
 			this.contextMenuStripDragging.SuspendLayout();
 			this.SuspendLayout();
@@ -89,9 +90,10 @@ namespace Common.Controls
             this.patternRenameToolStripMenuItem,
             this.collapseAllToolStripMenuItem,
             this.reverseElementsToolStripMenuItem,
-            this.sortToolStripMenuItem});
+            this.sortToolStripMenuItem,
+            this.exportWireDiagramToolStripMenuItem});
 			this.contextMenuStripTreeView.Name = "contextMenuStripTreeView";
-			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 346);
+			this.contextMenuStripTreeView.Size = new System.Drawing.Size(217, 368);
 			this.contextMenuStripTreeView.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTreeView_Opening);
 			// 
 			// cutNodesToolStripMenuItem
@@ -217,6 +219,13 @@ namespace Common.Controls
 			this.reverseElementsToolStripMenuItem.Text = "Reverse Elements";
 			this.reverseElementsToolStripMenuItem.Click += new System.EventHandler(this.reverseElementsToolStripMenuItem_Click);
 			// 
+			// sortToolStripMenuItem
+			// 
+			this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
+			this.sortToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.sortToolStripMenuItem.Text = "&Sort";
+			this.sortToolStripMenuItem.Click += new System.EventHandler(this.sortToolStripMenuItem_Click);
+			// 
 			// contextMenuStripDragging
 			// 
 			this.contextMenuStripDragging.ImageScalingSize = new System.Drawing.Size(24, 24);
@@ -224,18 +233,18 @@ namespace Common.Controls
             this.moveHereToolStripMenuItem,
             this.copyHereToolStripMenuItem});
 			this.contextMenuStripDragging.Name = "contextMenuStripProperties";
-			this.contextMenuStripDragging.Size = new System.Drawing.Size(131, 48);
+			this.contextMenuStripDragging.Size = new System.Drawing.Size(133, 48);
 			// 
 			// moveHereToolStripMenuItem
 			// 
 			this.moveHereToolStripMenuItem.Name = "moveHereToolStripMenuItem";
-			this.moveHereToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+			this.moveHereToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
 			this.moveHereToolStripMenuItem.Text = "Move Here";
 			// 
 			// copyHereToolStripMenuItem
 			// 
 			this.copyHereToolStripMenuItem.Name = "copyHereToolStripMenuItem";
-			this.copyHereToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+			this.copyHereToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
 			this.copyHereToolStripMenuItem.Text = "Copy Here";
 			// 
 			// treeview
@@ -264,12 +273,12 @@ namespace Common.Controls
 			this.treeview.UsingCustomDragCursor = false;
 			this.treeview.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeview_KeyDown);
 			// 
-			// sortToolStripMenuItem
+			// exportWireDiagramToolStripMenuItem
 			// 
-			this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
-			this.sortToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.sortToolStripMenuItem.Text = "&Sort";
-			this.sortToolStripMenuItem.Click += new System.EventHandler(this.sortToolStripMenuItem_Click);
+			this.exportWireDiagramToolStripMenuItem.Name = "exportWireDiagramToolStripMenuItem";
+			this.exportWireDiagramToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.exportWireDiagramToolStripMenuItem.Text = "Export Wire Diagram";
+			this.exportWireDiagramToolStripMenuItem.Click += new System.EventHandler(this.exportWireDiagramToolStripMenuItem_Click);
 			// 
 			// ElementTree
 			// 
@@ -312,5 +321,6 @@ namespace Common.Controls
 		private ToolStripMenuItem reverseElementsToolStripMenuItem;
 		private ToolStripMenuItem patternRenameToolStripMenuItem;
 		private ToolStripMenuItem sortToolStripMenuItem;
+		private ToolStripMenuItem exportWireDiagramToolStripMenuItem;
 	}
 }
