@@ -129,7 +129,7 @@ namespace VixenModules.App.ExportWizard
 			_data.ActiveProfile.FalconOutputFolder = path;
 			if (!string.IsNullOrEmpty(path))
 			{
-				_data.ActiveProfile.OutputFolder = Path.Combine(path, _data.ActiveProfile.IsFalconFormat ? @"effects" : @"sequences");
+				_data.ActiveProfile.OutputFolder = Path.Combine(path, _data.ActiveProfile.IsFalconEffectFormat ? @"effects" : @"sequences");
 				_data.ActiveProfile.AudioOutputFolder = Path.Combine(path, @"music");
 			}
 			
