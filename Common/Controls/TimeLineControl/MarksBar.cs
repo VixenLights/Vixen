@@ -467,13 +467,15 @@ namespace Common.Controls.TimelineControl
 		private void MouseMove_HResizing(Point location)
 		{
 			if (_mouseDownMark == null) return;
+			var moveInfo = _marksMoveResizeInfo; //Make a reference copy so it won't get changed out from under us.
+			if(!moveInfo.OriginalMarks.Values.Any()) return;
 			TimeSpan dt = pixelsToTime(location.X - _moveResizeStartLocation.X);
 
 			if (dt == TimeSpan.Zero)
 				return;
 
 			// Ensure minimum size
-			TimeSpan shortest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.Duration);
+			TimeSpan shortest = moveInfo.OriginalMarks.Values.Min(x => x.Duration);
 			IMark gluedMark = null;
 			var handleGluedMark = AltPressed && _marksSelectionManager.SelectedMarks.Count == 1;
 			
@@ -493,7 +495,7 @@ namespace Common.Controls.TimelineControl
 					}
 
 					// Clip earliest element StartTime at zero
-					TimeSpan earliest = _marksMoveResizeInfo.OriginalMarks.Values.Min(x => x.StartTime);
+					TimeSpan earliest = moveInfo.OriginalMarks.Values.Min(x => x.StartTime);
 					if (earliest + dt < TimeSpan.Zero)
 					{
 						dt = -earliest;
@@ -519,7 +521,7 @@ namespace Common.Controls.TimelineControl
 						}
 					}
 					// Clip latest mark EndTime at TotalTime
-					TimeSpan latest = _marksMoveResizeInfo.OriginalMarks.Values.Max(x => x.EndTime);
+					TimeSpan latest = moveInfo.OriginalMarks.Values.Max(x => x.EndTime);
 					if (latest + dt > TimeInfo.TotalTime)
 					{
 						dt = TimeInfo.TotalTime - latest;
@@ -536,7 +538,7 @@ namespace Common.Controls.TimelineControl
 
 
 			// Apply dt to all selected elements.
-			foreach (var originalMarkInfo in _marksMoveResizeInfo.OriginalMarks)
+			foreach (var originalMarkInfo in moveInfo.OriginalMarks)
 			{
 				switch (_markResizeZone)
 				{
@@ -550,7 +552,7 @@ namespace Common.Controls.TimelineControl
 						break;
 				}
 			}
-			var movedMarks = _marksMoveResizeInfo.OriginalMarks.Keys.ToList();
+			var movedMarks = moveInfo.OriginalMarks.Keys.ToList();
 
 			if (handleGluedMark && gluedMark != null)
 			{
@@ -593,7 +595,7 @@ namespace Common.Controls.TimelineControl
 		private void BeginMoveResizeMarks(Point location)
 		{
 			_moveResizeStartLocation = location;
-			_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks);
+			_marksMoveResizeInfo = new MarksMoveResizeInfo(_marksSelectionManager.SelectedMarks.ToArray());
 		}
 
 		private void FinishedResizeMoveMarks(ElementMoveType type)
