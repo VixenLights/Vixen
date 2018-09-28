@@ -123,7 +123,7 @@ namespace VixenApplication
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("A duplicate profile name, or data path exists." + Environment.NewLine + Environment.NewLine +
 						@"The duplicate items found were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, duplicateItems) + Environment.NewLine + Environment.NewLine +
-						@"Click OK to accept and contine, or Cancel to go back and edit.",
+						@"Click OK to accept and continue, or Cancel to go back and edit.",
 						@"Warning - Duplicate Entries", false, true);
 				messageBox.ShowDialog();
 
@@ -140,7 +140,7 @@ namespace VixenApplication
 				MessageBoxForm.msgIcon = SystemIcons.Warning; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("An invalid profile data folder exists." + Environment.NewLine + Environment.NewLine +
 					@"The items with invalid paths were:" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, checkDataPath) + Environment.NewLine + Environment.NewLine +
-					@"Click OK to accept and contine, or Cancel to go back and edit.",
+					@"Click OK to accept and continue, or Cancel to go back and edit.",
 					@"Warning - Invalid Data Path", false, true);
 				messageBox.ShowDialog();
 
@@ -236,7 +236,7 @@ namespace VixenApplication
 		{
 			if (_currentItem != null) {
 				_currentItem.Name = textBoxProfileName.Text;
-				_currentItem.DataFolder = textBoxDataFolder.Text;
+				_currentItem.DataFolder = textBoxDataFolder.Text.Trim();
 			}
 		}
 
