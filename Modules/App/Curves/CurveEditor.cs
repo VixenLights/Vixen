@@ -8,6 +8,7 @@ using Vixen.Module.App;
 using Vixen.Services;
 using ZedGraph;
 using Common.Controls.Theme;
+using NCalc;
 using Point = System.Drawing.Point;
 
 namespace VixenModules.App.Curves
@@ -17,6 +18,7 @@ namespace VixenModules.App.Curves
 		private double _previousCurveYLocation;
 		private double _tempX;
 		private bool _drawCurve;
+		private string _holdFunction = String.Empty;
 
 		public CurveEditor()
 		{
@@ -537,6 +539,67 @@ namespace VixenModules.App.Curves
 			_drawCurve = true;
 		}
 
+		private void btnFunctionCurve_Click(object sender, EventArgs e)
+		{
+			FunctionGenerator fGen = new FunctionGenerator(_holdFunction);
+			var result = fGen.ShowDialog(this);
+			if (result == DialogResult.Cancel)
+			{
+				return;
+			}
+			zedGraphControl.GraphPane.CurveList[0].Clear();
+			zedGraphControl.Invalidate();
+			//string f = "Sin(2 * Pi * (x / 100)) * ((25-7)/2) + ((25-7) /2) + 7";
+			if (string.IsNullOrEmpty(fGen.Function))
+			{
+				MessageBoxForm mbf = new MessageBoxForm($"The function entered is empty.", "Function Error", MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
+				return;
+			}
+
+			_holdFunction = fGen.Function;
+			try
+			{
+				var exp = new Expression(fGen.Function, EvaluateOptions.IgnoreCase);
+				if (exp.HasErrors())
+				{
+					MessageBoxForm mbf = new MessageBoxForm($"The function entered has the following syntax errors.\n {exp.Error}","Function Error", MessageBoxButtons.OK, SystemIcons.Error);
+					mbf.ShowDialog(this);
+					return;
+				}
+
+				var step = Convert.ToInt16(textBoxThreshold.Text);
+				int lastXValue = 0;
+				for (int x = 0; x <= 100; x+=step)
+				{
+					CalculateFunction(exp, x);
+					lastXValue = x;
+				}
+
+				if (lastXValue != 100)
+				{
+					CalculateFunction(exp, 100);
+				}
+				zedGraphControl.Invalidate();
+			}
+			catch (Exception ex)
+			{
+				MessageBoxForm mbf = new MessageBoxForm($"The function entered has the following syntax errors.\n {ex.Message}", "Function Errors", MessageBoxButtons.OK, SystemIcons.Error);
+				mbf.ShowDialog(this);
+			}
+		}
+
+		private void CalculateFunction(Expression exp, int x)
+		{
+			exp.Parameters["x"] = x;
+			exp.Parameters["Pi"] = Math.PI;
+			var ans = exp.Evaluate();
+			var y = Convert.ToDouble(ans);
+			if (y < 0) y = 0;
+			if (y > 100) y = 100;
+			zedGraphControl.GraphPane.CurveList[0].AddPoint(x, y);
+		}
+
 		private void textBoxThreshold_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
@@ -545,10 +608,10 @@ namespace VixenModules.App.Curves
 		private void textBoxThreshold_TextChanged(object sender, EventArgs e)
 		{
 			if (textBoxThreshold.Text == "") return;
-			if (Convert.ToInt16(textBoxThreshold.Text) > 10)
+			if (Convert.ToInt16(textBoxThreshold.Text) > 20)
 			{
-				textBoxThreshold.Text = "10";
-				toolTip.Show("Draw Threshold has a maximun value of 10", textBoxThreshold, 0, 30, 3000);
+				textBoxThreshold.Text = @"20";
+				toolTip.Show("Draw Threshold has a maximun value of 20", textBoxThreshold, 0, 30, 3000);
 			}
 		}
 	}
