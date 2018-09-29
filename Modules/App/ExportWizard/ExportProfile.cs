@@ -162,10 +162,10 @@ namespace VixenModules.App.ExportWizard
 				if (OutputFolder.EndsWith("sequences") || OutputFolder.EndsWith("sequences/"))
 				{
 					var path = Directory.GetParent(OutputFolder).FullName;
-					if(Directory.Exists(path))
-					{
+					//if(Directory.Exists(path))
+					//{
 						FalconOutputFolder = path;
-					}
+					//}
 				}
 			}
 		}

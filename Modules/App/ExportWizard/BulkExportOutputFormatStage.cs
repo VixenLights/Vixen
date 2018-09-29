@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Scaling;
@@ -127,6 +128,7 @@ namespace VixenModules.App.ExportWizard
 		private void UpdateFalconPaths(string path)
 		{
 			_data.ActiveProfile.FalconOutputFolder = path;
+			txtFalconOutputFolder.Text = path;
 			if (!string.IsNullOrEmpty(path))
 			{
 				_data.ActiveProfile.OutputFolder = Path.Combine(path, _data.ActiveProfile.IsFalconEffectFormat ? @"effects" : @"sequences");
@@ -140,7 +142,7 @@ namespace VixenModules.App.ExportWizard
 		{
 			var path = _data.ActiveProfile.FalconOutputFolder;
 			
-			if (Directory.Exists(path))
+			if (CanTestPath() && Directory.Exists(path))
 			{
 				_data.ActiveProfile.FalconOutputFolder = path;
 				var sequencePath = _data.ActiveProfile.OutputFolder;
@@ -163,7 +165,7 @@ namespace VixenModules.App.ExportWizard
 						}
 						catch (Exception e)
 						{
-							messageBox = new MessageBoxForm($"Unable to create the directory struture.\n{e.Message}",
+							messageBox = new MessageBoxForm($"Unable to create the directory structure.\n{e.Message}",
 								"Error creating Falcon structure.", MessageBoxButtons.OK, SystemIcons.Error);
 							messageBox.ShowDialog(this);
 							Logging.Error(e, "An error occured trying to create the Falcon directory structure.");
@@ -185,7 +187,7 @@ namespace VixenModules.App.ExportWizard
 			{
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
-					if (Directory.Exists(_data.ActiveProfile.FalconOutputFolder)
+					if (CanTestPath() && Directory.Exists(_data.ActiveProfile.FalconOutputFolder)
 					    && Directory.Exists(_data.ActiveProfile.OutputFolder))
 					{
 						if (_data.ActiveProfile.IncludeAudio)
@@ -207,6 +209,44 @@ namespace VixenModules.App.ExportWizard
 
 				return ok;
 			}
+		}
+
+		private bool CanTestPath()
+		{
+			bool success = true;
+			if (!string.IsNullOrEmpty(_data.ActiveProfile.FalconOutputFolder))
+			{
+				Uri uri = new Uri(_data.ActiveProfile.FalconOutputFolder);
+				if (!string.IsNullOrEmpty(uri.Host))
+				{
+					success = PingHost(uri.Host);
+				}
+			}
+			
+			return success;
+		}
+
+		public static bool PingHost(string nameOrAddress)
+		{
+			bool pingable = false;
+			Ping pinger = null;
+
+			try
+			{
+				pinger = new Ping();
+				PingReply reply = pinger.Send(nameOrAddress,500);
+				if (reply != null) pingable = reply.Status == IPStatus.Success;
+			}
+			catch (PingException)
+			{
+				// Discard PingExceptions and return false;
+			}
+			finally
+			{
+				pinger?.Dispose();
+			}
+
+			return pingable;
 		}
 
 		private void groupBoxes_Paint(object sender, PaintEventArgs e)
