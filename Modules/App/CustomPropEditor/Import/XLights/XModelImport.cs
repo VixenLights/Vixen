@@ -67,6 +67,27 @@ namespace VixenModules.App.CustomPropEditor.Import.XLights
 							subModels.Add(sm);
 
 						}
+						else if("faceInfo".Equals(reader.Name))
+						{
+							var type = reader.GetAttribute("Type");
+							if (!string.IsNullOrEmpty(type) && type.Equals("NodeRange"))
+							{
+								foreach (var attribute in FaceInfo.Attributes)
+								{
+									var range = reader.GetAttribute(attribute);
+									if (!string.IsNullOrEmpty(range))
+									{
+										SubModel sm = new SubModel();
+										sm.Name = attribute;
+										sm.Type = SubModelType.Ranges;
+										sm.Ranges = ParseRanges(range);
+										subModels.Add(sm);
+									}
+								}
+								
+							}
+							
+						}
 					}
 
 					var modelNodes = await CreateModelNodesAsync(model);
