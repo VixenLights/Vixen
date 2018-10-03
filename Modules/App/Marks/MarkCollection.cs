@@ -177,7 +177,7 @@ namespace VixenModules.App.Marks
 		public List<IMark> MarksInclusiveOfTime(TimeSpan start, TimeSpan end)
 		{
 			List<IMark> marks = new List<IMark>();
-			foreach (var mark in _marks)
+			foreach (var mark in _marks.ToArray())
 			{
 				if (mark.EndTime < start) continue;
 				if (mark.StartTime > end) break;
