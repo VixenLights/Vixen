@@ -116,6 +116,7 @@ namespace VixenApplication.Setup
 
 			IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs;
 			int leafCount, groupCount, filterCount;
+			_countedNodes.Clear();
 			_countTypesDescendingFromElements(nodes, out leafCount, out groupCount, out filterCount, out outputs);
 			_componentOutputs = outputs.ToList();
 			int patchedCount = _componentOutputs.Count(x => x.Patched);
@@ -142,6 +143,7 @@ namespace VixenApplication.Setup
 				leafNodes.AddRange(node.GetLeafEnumerator());
 			}
 
+			leafNodes = leafNodes.Distinct().ToList();
 			var orderedLeafNodes = leafNodes;
 			//check to see if we have any order properties 
 			if (leafNodes.Any(x => x.Properties.Contains(OrderDescriptor.ModuleId)))
@@ -233,6 +235,7 @@ namespace VixenApplication.Setup
 			return helper.Perform(_cachedElementNodes);
 		}
 
+		private readonly HashSet<ElementNode> _countedNodes = new HashSet<ElementNode>();
 		private void _countTypesDescendingFromElements(IEnumerable<ElementNode> elements,
 							out int leafElementCount, out int groupCount, out int filterCount,
 							out IEnumerable<PatchStatusItem<IDataFlowComponentReference>> outputs)
@@ -243,6 +246,8 @@ namespace VixenApplication.Setup
 			// process each element
 			foreach (var element in elements)
 			{
+				if(_countedNodes.Contains(element)) continue;
+				_countedNodes.Add(element);
 				int lec, gc, fc;
 				IEnumerable<PatchStatusItem<IDataFlowComponentReference>> childOutputs;
 
