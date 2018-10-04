@@ -14,7 +14,7 @@ namespace VixenModules.Effect.Dissolve
 	public class DissolveData : EffectTypeModuleData {
 
 		[DataMember]
-		public List<GradientLevelPair> Colors { get; set; }
+		public List<ColorGradient> Colors { get; set; }
 
 		[DataMember]
 		public DissolveMode DissolveMode { get; set; }
@@ -27,17 +27,17 @@ namespace VixenModules.Effect.Dissolve
 
 		public DissolveData()
 		{
-			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.White, CurveType.Flat100)};
+			Colors = new List<ColorGradient> {new ColorGradient(Color.White)};
 			DissolveMode = DissolveMode.TimeInterval;
 			DissolveCurve = new Curve(new PointPairList(new[] { 100.0, 0.0 }, new[] { 0.0, 100.0 }));
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
-			var gradientLevelList = Colors.Select(glp => new GradientLevelPair(new ColorGradient(glp.ColorGradient), new Curve(glp.Curve))).ToList();
+			var gradientList = Colors.ToList();
 			var result = new DissolveData
             {
-				Colors = gradientLevelList,
+				Colors = gradientList,
                 DissolveMode = DissolveMode,
 				MarkCollectionId = MarkCollectionId,
 	            DissolveCurve = new Curve(DissolveCurve)

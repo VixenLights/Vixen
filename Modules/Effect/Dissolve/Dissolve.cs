@@ -27,10 +27,12 @@ namespace VixenModules.Effect.Dissolve
         private DissolveData _data;
         private IEnumerable<IMark> _marks = null;
         private int _pixels;
-        private static Random _random = new Random();
+        private Random _random = new Random();
         private int _totalNodes;
-	    private List<DissolveClass> _tempNodes;
-	    private List<DissolveClass> _nodes;
+	    private List<int> _tempNodes;
+	    private List<int> _nodes;
+	    private List<DissolveClass> _elements;
+	    private List<DissolveClass> _renderElements;
 
 		public Dissolve()
         {
@@ -54,8 +56,10 @@ namespace VixenModules.Effect.Dissolve
 	        _totalNodes = renderNodes.GetElements().Length;
 	        _pixels = 0;
 
-			_tempNodes = new List<DissolveClass>(_totalNodes);
-	        _nodes = new List<DissolveClass>(_totalNodes);
+			_tempNodes = new List<int>(_totalNodes);
+	        _nodes = new List<int>(_totalNodes);
+	        _elements = new List<DissolveClass>();
+	        _renderElements = new List<DissolveClass>();
 
 			InitializeDissolveClasses();
 			
@@ -63,7 +67,9 @@ namespace VixenModules.Effect.Dissolve
 
 	        _nodes = null;
 	        _tempNodes = null;
-        }
+	        _elements = null;
+	        _renderElements = null;
+		}
 
         private IEnumerable<ElementNode> GetNodesToRenderOn()
         {
@@ -89,15 +95,16 @@ namespace VixenModules.Effect.Dissolve
             if (validColors.Any())
             {
                 bool changed = false;
-                foreach (GradientLevelPair t in Colors)
-                {
-                    if (!t.ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
-                    {
-                        t.ColorGradient = new ColorGradient(validColors.First());
-                        changed = true;
-                    }
-                }
-                if (changed)
+	            for (var index = 0; index < Colors.Count; index++)
+	            {
+		            if (!Colors[index].GetColorsInGradient().IsSubsetOf(validColors))
+		            {
+			            Colors[index] = new ColorGradient(validColors.First());
+			            changed = true;
+		            }
+	            }
+
+	            if (changed)
                 {
                     OnPropertyChanged("Colors");
                 }
@@ -131,8 +138,8 @@ namespace VixenModules.Effect.Dissolve
         [Value]
         [ProviderCategory(@"Color", 2)]
         [ProviderDisplayName(@"ColorGradients")]
-        [ProviderDescription(@"GradientLevelPair")]
-        public List<GradientLevelPair> Colors
+        [ProviderDescription(@"Gradient")]
+        public List<ColorGradient> Colors
         {
             get { return _data.Colors; }
             set
@@ -256,12 +263,12 @@ namespace VixenModules.Effect.Dissolve
         {
             get
             {
-                if (Colors.Any(x => !x.ColorGradient.CheckLibraryReference() || !x.Curve.CheckLibraryReference()))
-                {
-                    base.IsDirty = true;
-                }
+	            if (Colors.Any(x => !x.CheckLibraryReference()))
+	            {
+		            base.IsDirty = true;
+	            }
 
-                return base.IsDirty;
+				return base.IsDirty;
             }
             protected set { base.IsDirty = value; }
         }
@@ -278,6 +285,9 @@ namespace VixenModules.Effect.Dissolve
 	        TimeSpan startTime = TimeSpan.Zero;
 	        int intervals;
 	        double interval = 1;
+	        var gradientLevelItem = 0;
+	        int colorCount = Colors.Count;
+	        int totalPixelCount = 0;
 
 			if (DissolveMode == DissolveMode.MarkCollection)
             {
@@ -291,11 +301,16 @@ namespace VixenModules.Effect.Dissolve
 		        intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds / 50));
 		        if (intervals >= 1) intervalTime = TimeSpan.FromMilliseconds(50);
 	        }
-			
+
+	        var endTime = TimeSpan;
 			for (var i = 0; i < intervals; i++)
             {
-	            if (DissolveMode == DissolveMode.MarkCollection) interval = (markInterval[i] - startTime).TotalMilliseconds / 50;
-
+	            if (DissolveMode == DissolveMode.MarkCollection)
+	            {
+		            interval = (markInterval[i] - startTime).TotalMilliseconds / 50;
+		            endTime = markInterval[i];
+	            }
+				
                 for (int j = 0; j < interval; j++)
                 {
 	                double position = DissolveMode == DissolveMode.TimeInterval
@@ -303,42 +318,63 @@ namespace VixenModules.Effect.Dissolve
 		                : (double) 100 / interval * j;
 					
 					// Gets number of Pixels that need to be created/removed.
-	                _pixels = (int) (pixelCount * DissolveCurve.GetValue(position) / 100) - _tempNodes.Count;
+	                _pixels = (int) (pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
 
 	                if (_pixels >= 0)
 	                {
-						//Adds pixels to the Temp buffer and remove from initial buffer. Gives a Fill effect
+						// Adds Displayed Pixels.
 		                for (int pixel = 0; pixel < _pixels; pixel++)
 		                {
 			                if ( _nodes.Count <= 0) break;
-			                var random = _random.Next(0, _nodes.Count);
+			                totalPixelCount++;
+							var random = _random.Next(0, _nodes.Count);
+
+							// Add element.
+							DissolveClass m = new DissolveClass();
+							m.StartTime = startTime;
+			                m.EndTime = endTime;
+							m.Duration = endTime - startTime;
+			                m.ColorIndex = _random.Next(0, colorCount);
+							m.ElementIndex = _nodes[random];
+							_elements.Add(m);
+
 			                _tempNodes.Add(_nodes[random]);
-			                _nodes.RemoveAt(random);
+							_nodes.RemoveAt(random);
 						}
 	                }
 	                else
 					{
-						//Adds pixels to the initial buffer and remove from Temp buffer. Gives a Dissolve effect
+						// Removes Displayed Pixels.
 						for (int pixel = 0; pixel < -_pixels; pixel++)
 		                {
 			                if (_tempNodes.Count <= 0) break;
 			                var random = _random.Next(0, _tempNodes.Count);
-			                _nodes.Add(_tempNodes[random]);
-			                _tempNodes.RemoveAt(random);
+			                totalPixelCount--;
+							
+							for (int ii = 0; ii < _elements.Count; ii++)
+							{
+								if (_elements[ii].ElementIndex == _tempNodes[random] && _elements[ii].StartTime + _elements[ii].Duration > startTime)
+								{
+									// Transfer the Element data to the RenderElement as we are finished with it.
+									// Element is then removed to save cycles.
+									// This saved a considerable amount of time as it will only loop through
+									// elements that have not be finalized.
+									DissolveClass m = new DissolveClass();
+									m.Duration = startTime - _elements[ii].StartTime;
+									m.StartTime = _elements[ii].StartTime;
+									m.EndTime = _elements[ii].EndTime;
+									m.ColorIndex = _elements[ii].ColorIndex;
+									m.ElementIndex = _elements[ii].ElementIndex;
+									_renderElements.Add(m);
+									_elements.RemoveAt(ii);
+									break;
+								}
+							}
+							_nodes.Add(_tempNodes[random]);
+							_tempNodes.RemoveAt(random);
 						}
 	                }
 					
-					// Gets current Color and Level based on position.
-	                List<GradientLevelPair> currentColorPosition = GetCurrentPositionGLP(position);
-
-					// Now render element
-					foreach (DissolveClass dissolveNode in _tempNodes)
-	                {
-		                ElementNode element = elementGroups[dissolveNode.X];
-						RenderElement(currentColorPosition[dissolveNode.ColorIndex], startTime, TimeSpan.FromMilliseconds(50),
-			                element, effectIntents);
-	                }
-
 	                if (DissolveMode == DissolveMode.MarkCollection) startTime = startTime.Add(TimeSpan.FromMilliseconds(50));
                 }
 
@@ -346,53 +382,60 @@ namespace VixenModules.Effect.Dissolve
                     ? startTime + intervalTime
                     : markInterval[i];
 
-	            if (DissolveMode == DissolveMode.MarkCollection) InitializeDissolveClasses();
+	            if (DissolveMode == DissolveMode.MarkCollection)
+	            {
+		            InitializeDissolveClasses();
+		            totalPixelCount = 0;
+		            CopyElements();
+	            }
             }
 
-            return effectIntents;
+	        CopyElements();
+
+			// Now render element
+			foreach (DissolveClass dissolveNode in _renderElements)
+			{
+				ElementNode element = elementGroups[dissolveNode.ElementIndex];
+		        RenderElement(Colors[dissolveNode.ColorIndex], dissolveNode.StartTime, dissolveNode.Duration,
+			        element, effectIntents);
+		        gradientLevelItem = ++gradientLevelItem % colorCount;
+			}
+
+			return effectIntents;
         }
 
-	    private List<GradientLevelPair> GetCurrentPositionGLP(double position)
-	    {
-		    List<GradientLevelPair> currentColorPosition = new List<GradientLevelPair>();
-			foreach (var glp in Colors)
-		    {
-			    Color color = glp.ColorGradient.GetColorAt(position / 100);
-			    double intensity = glp.Curve.GetValue(position);
-			    GradientLevelPair levelPair = new GradientLevelPair(color, new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensity, intensity })));
-			    currentColorPosition.Add(levelPair);
-		    }
-		    return currentColorPosition;
-	    }
-
-        private void RenderElement(GradientLevelPair gradientLevelPair, TimeSpan startTime, TimeSpan interval,
+        private void RenderElement(ColorGradient gradient, TimeSpan startTime, TimeSpan interval,
             ElementNode element, EffectIntents effectIntents)
         {
             if (interval <= TimeSpan.Zero) return;
-            var result = PulseRenderer.RenderNode(element, gradientLevelPair.Curve, gradientLevelPair.ColorGradient, interval, HasDiscreteColors);
+            var result = PulseRenderer.RenderNode(element, new Curve(CurveType.Flat100), gradient, interval, HasDiscreteColors);
             result.OffsetAllCommandsByTime(startTime);
             effectIntents.Add(result);
+		}
+
+	    private void CopyElements()
+	    {
+		    foreach (var element in _elements) _renderElements.Add(element);
+		    _elements.Clear();
 		}
 
 	    private void InitializeDissolveClasses()
 	    {
 		    _nodes.Clear();
 		    _tempNodes.Clear();
-		    int colorCount = Colors.Count;
 
 		    for (int x = 0; x < _totalNodes; x++)
 		    {
-			    DissolveClass m = new DissolveClass();
-			    m.X = x;
-			    m.ColorIndex = _random.Next(0, colorCount);
-				_nodes.Add(m);
+				_nodes.Add(x);
 		    }
-
 	    }
 	    public class DissolveClass
 	    {
-		    public int X;
+		    public int ElementIndex;
 		    public int ColorIndex;
+		    public TimeSpan StartTime;
+		    public TimeSpan Duration;
+			public TimeSpan EndTime;
 	    }
 
 		private void SetupMarks()
