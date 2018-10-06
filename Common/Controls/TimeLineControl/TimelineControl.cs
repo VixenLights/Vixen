@@ -171,7 +171,7 @@ namespace Common.Controls.Timeline
 			                  	{
 			                  		Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right,
 			                  		DottedLineColor = ThemeColorTable.ForeColor,
-			                  		Name = "timelineRowList",
+			                  		Name = "timelineRowList"
 			                  	};
 			splitContainer.Panel1.Controls.Add(timelineRowList);
 
@@ -715,7 +715,10 @@ namespace Common.Controls.Timeline
 		private void GridScrollVerticalHandler(object sender, EventArgs e)
 		{
 			if (timelineRowList != null)
+			{
 				timelineRowList.Top = grid.Top;
+				timelineRowList.Height = grid.ClientSize.Height;
+			}
 			timelineRowList.VerticalOffset = grid.VerticalOffset;
 
 			// I know it's bad to do this, but when we scroll we can get very nasty artifacts
@@ -937,6 +940,7 @@ namespace Common.Controls.Timeline
 			if (grid != null)
 			{
 				timelineRowList.Top = grid.Top;
+				timelineRowList.Height = grid.ClientSize.Height;
 			}
 			base.OnLayout(e);
 		}

@@ -256,7 +256,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Adjusts location of the effect label.
 			TextImageRelation alignText = TextImageRelation.ImageAboveText;
-			var newFontSize = new Font(Font.FontFamily.Name, (float)(7 * _scaleFactor), Font.Style);
+			var newFontSize = new Font(Font.FontFamily.Name, Font.Size-2, Font.Style);
 			bool noText = false;
 			int effectLabelPosition = 2;
 			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
