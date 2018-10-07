@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
+using Common.Controls.Scaling;
 using Vixen.Attributes;
 using Vixen.Marks;
 using Vixen.Module;
@@ -662,8 +663,9 @@ namespace VixenModules.Effect.Text
 				_newFontSize = _font.Size;
 				return;
 			}
-			_font = Font;
-			_newFontSize = Font.Size;
+			double scaleFactor = ScalingTools.GetScaleFactor();
+			_font = new Font(Font.FontFamily, Font.Size / (float)scaleFactor, Font.Style);
+			_newFontSize = _font.Size;
 		}
 
 		protected override void CleanUpRender()
