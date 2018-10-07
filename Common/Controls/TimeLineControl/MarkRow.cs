@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Controls.Scaling;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 
@@ -14,6 +15,7 @@ namespace Common.Controls.TimelineControl
 		// puts their order out.
 		
 		private readonly Dictionary<IMark, MarkStack> _stackIndexes = new Dictionary<IMark, MarkStack>();
+		private static int _baseRowHeight = (int)(20 * ScalingTools.GetScaleFactor());
 
 		public MarkRow(IMarkCollection markCollection)
 		{
@@ -21,7 +23,7 @@ namespace Common.Controls.TimelineControl
 			MarkCollection.EnsureOrder();
 			MarkCollection.PropertyChanged += MarkCollection_PropertyChanged;
 			MarkCollection.Decorator.PropertyChanged += Decorator_PropertyChanged;
-			Height = 20;
+			Height = _baseRowHeight;
 			StackCount = 1;
 		}
 
@@ -120,7 +122,7 @@ namespace Common.Controls.TimelineControl
 			}
 
 			StackCount = maxStack;
-			Height = 20 * maxStack;
+			Height = _baseRowHeight * maxStack;
 
 		}
 
