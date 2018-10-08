@@ -39,13 +39,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void LoadAvailableEffects()
 		{
 			int imageSize = (int)(18 * ScalingTools.GetScaleFactor());
-			effectTreeImages.ImageSize = new Size(imageSize, imageSize);
+			
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Effects));
 			effectTreeImages.ImageStream = ((ImageListStreamer)(resources.GetObject("effectTreeImages.ImageStream")));
 			effectTreeImages.TransparentColor = treeEffects.BackColor;
 			effectTreeImages.Images.SetKeyName(0, "rightarrow.png");
 			effectTreeImages.Images.SetKeyName(1, "downarrow.png");
 			treeEffects.ItemHeight = (int)ScalingTools.MeasureHeight(treeEffects.Font, "My Text");
+			effectTreeImages.ImageSize = new Size(imageSize, imageSize);
 
 			foreach (
 				IEffectModuleDescriptor effectDesriptor in
