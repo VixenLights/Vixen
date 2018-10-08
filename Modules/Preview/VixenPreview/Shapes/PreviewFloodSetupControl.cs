@@ -15,8 +15,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewFloodSetupControl(PreviewBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			propertyGrid.SelectedObject = Shape;

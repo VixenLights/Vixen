@@ -6,7 +6,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
@@ -20,6 +22,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
+			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
+			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 			propertyGrid.SelectedObject = Shape;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}

@@ -9,6 +9,7 @@ namespace Common.Controls.Theme
 		public static void PropertyGridRender(Object sender)
 		{
 			PropertyGrid propertyGrid = sender as PropertyGrid;
+			propertyGrid.AutoScaleMode = AutoScaleMode.Font;
 			if (propertyGrid == null) return;
 			propertyGrid.ViewBackColor = ThemeColorTable.BackgroundColor;
 			propertyGrid.CommandsBackColor = ThemeColorTable.BackgroundColor;
