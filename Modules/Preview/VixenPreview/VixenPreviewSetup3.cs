@@ -57,10 +57,14 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewSetup3() {
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
+			var scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
+			int imageSize = (int)(16 * scaleFactor);
+			menuStrip.ImageScalingSize = new Size(imageSize, imageSize);
+
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
-			int iconSize = (int)(24 * ScalingTools.GetScaleFactor());
+			int iconSize = (int)(24 * scaleFactor);
 			undoButton.Image = Tools.GetIcon(Resources.arrow_undo, iconSize);
 			undoButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			redoButton.Image = Tools.GetIcon(Resources.arrow_redo, iconSize);
