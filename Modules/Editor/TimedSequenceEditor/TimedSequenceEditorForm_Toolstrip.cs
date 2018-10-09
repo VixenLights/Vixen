@@ -28,7 +28,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_SelectionMode.Checked = true;
 			toolStripButton_DrawMode.Checked = false;
 			
-			// Ensure any Effect buttons in the toolstrip do not hav ethe selected box around it.
+			// Ensure any Effect buttons in the toolstrip do not have the selected box around it.
 			foreach (ToolStripItem effectButton in toolStripEffects.Items)
 			{
 				if (effectButton is ToolStripButton) ((ToolStripButton)effectButton).Checked = false;
@@ -144,6 +144,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				item.Checked = true;
 				AlignTo_Threshold = item.ToString();
+			}
+		}
+		
+		// Populate the Operations toolstrip contextMenu.
+		private void PopulateOperationsGroupToolStrip()
+		{
+			foreach (ToolStripItem item in toolStripOperations.Items)
+			{
+				if (item.Tag != null && (item is ToolStripButton || item is ToolStripComboBox || (item is ToolStripDropDownButton && !item.ToString().Contains("DropDown"))))
+				{
+					ToolStripMenuItem tsmi = new ToolStripMenuItem();
+					bool menuItemExists = false;
+					foreach (ToolStripMenuItem ddi in add_RemoveOperationsToolStripMenuItem.DropDownItems)
+					{
+						if (ddi.Text == item.Tag.ToString())
+						{
+							menuItemExists = true;
+							break;
+						}
+					}
+
+					if (menuItemExists) continue;
+					tsmi.Text = item.Tag.ToString();
+					tsmi.CheckOnClick = true;
+					tsmi.CheckState = CheckState.Checked;
+					tsmi.Checked = item.Visible;
+					tsmi.Click += PopulateToolStripOperations;
+					add_RemoveOperationsToolStripMenuItem.DropDownItems.Add(tsmi);
+				}
+			}
+		}
+		
+		// Show/Hide Operations toolstrip item.
+		private void PopulateToolStripOperations(object sender, EventArgs e)
+		{
+			var tsi = sender as ToolStripItem;
+			foreach (ToolStripItem item in toolStripOperations.Items)
+			{
+				if (item.Tag != null && item.Tag.ToString() == tsi.Text) item.Visible = !item.Visible;
 			}
 		}
 
@@ -347,7 +386,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 
-		private void effectToolStripMenuItem_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+		private void toolStripMenuItem_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
 			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
 		}

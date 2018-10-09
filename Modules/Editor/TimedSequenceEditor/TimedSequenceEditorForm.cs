@@ -167,6 +167,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripEffects.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
+			contextMenuStripOperations.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			statusStrip.Renderer = new ThemeToolStripRenderer();
@@ -182,6 +183,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			Icon = Resources.Icon_Vixen3;
 			int iconSize = (int) (24*_scaleFactor);
 			toolStripOperations.ImageScalingSize = new Size(iconSize, iconSize);
+			toolStripButton_Save.Image = Resources.Save;
+			toolStripButton_Save.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_SaveAs.Image = Resources.SaveAs;
+			toolStripButton_SaveAs.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_Start.Image = Resources.control_start_blue;
 			toolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_Play.Image = Resources.control_play_blue;
@@ -219,6 +224,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_SelectionMode.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DragBoxFilter.Image = Resources.table_select_big;
 			toolStripButton_DragBoxFilter.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_CurveLibrary.Image = Resources.Curve;
+			toolStripButton_CurveLibrary.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_ColorLibrary.Image = Resources.Color;
+			toolStripButton_ColorLibrary.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_ColorGradient.Image = Resources.ColorGradient;
+			toolStripButton_ColorGradient.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			toolStripButton_LipSync.Image = Resources.Lipsync;
+			toolStripButton_LipSync.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
 			toolStripButton_IncreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_DecreaseTimingSpeed.Image = Resources.minus;
@@ -256,10 +269,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
-			effectGroupsToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
-			basicToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
-			pixelToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
-			deviceToolStripMenuItem.DropDown.Closing += effectToolStripMenuItem_Closing;
+			effectGroupsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			basicToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			pixelToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			deviceToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			add_RemoveOperationsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
@@ -404,6 +418,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripEffects.ImageScalingSize = new Size(imageSize, imageSize);
 
 			PopulateToolStripEffects();
+
+			// Show/Hide Operations toolstrip items based on saved settings.
+			if (!xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/InitialLoad", Name), true))
+			{
+				foreach (ToolStripItem item in toolStripOperations.Items)
+				{
+					if (item.Tag != null) item.Visible = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
+							string.Format("{0}/OperationsToolStrip/{1}", Name, item.Tag.ToString().Replace(" ", "")), true);
+				}
+			}
+
+			// Populate the Operations toolstrip contextMenu.
+			PopulateOperationsGroupToolStrip();
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -800,10 +827,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
 			TimelineControl.VisibleTimeStartChanged -= TimelineControl_VisibleTimeStartChanged;
 			Row.RowHeightChanged -= TimeLineControl_Row_RowHeightChanged;
-			effectGroupsToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
-			basicToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
-			pixelToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
-			deviceToolStripMenuItem.DropDown.Closing -= effectToolStripMenuItem_Closing;
+			effectGroupsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			basicToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			deviceToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			add_RemoveOperationsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -5140,6 +5168,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 
+			// Save visibility status of the Operations Toolstrip items.
+			foreach (ToolStripItem item in toolStripOperations.Items)
+			{
+				if (item.Tag != null) xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/{1}", Name, item.Tag.ToString().Replace(" ", "")), item.Visible);
+			}
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/InitialLoad", Name), false);
+			
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ColorLibraryForm.Close();
 			GradientLibraryForm.Close();

@@ -351,6 +351,13 @@
     <EmbeddedResource Include="LipSync\WQ_LightGray.jpg" />
     <EmbeddedResource Include="LipSync\WQ_Transparent.png" />
     <None Include="Resources\check-mark.png" />
+    <None Include="Resources\Saveall.png" />
+    <None Include="Resources\Save.png" />
+    <None Include="Resources\SaveAs.png" />
+    <None Include="Resources\ColorGradient.png" />
+    <None Include="Resources\Color.png" />
+    <None Include="Resources\Curve.png" />
+    <None Include="Resources\Lipsync.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />
