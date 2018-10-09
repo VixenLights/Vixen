@@ -141,7 +141,7 @@ namespace VixenModules.App.ExportWizard
 		private bool ValidateFalconOutputFolder()
 		{
 			var path = _data.ActiveProfile.FalconOutputFolder;
-			
+			if (string.IsNullOrEmpty(path)) return false;
 			if (CanTestPath() && Directory.Exists(path))
 			{
 				_data.ActiveProfile.FalconOutputFolder = path;
@@ -176,6 +176,14 @@ namespace VixenModules.App.ExportWizard
 				{
 					return true;
 				}
+			}
+			else
+			{
+				var messageBox =
+					new MessageBoxForm(
+						"The Falcon output path does not seem correct. Please verify.",
+						"Invalid output path", MessageBoxButtons.OK, SystemIcons.Error);
+				messageBox.ShowDialog(this);
 			}
 
 			return false;
@@ -216,11 +224,19 @@ namespace VixenModules.App.ExportWizard
 			bool success = true;
 			if (!string.IsNullOrEmpty(_data.ActiveProfile.FalconOutputFolder))
 			{
-				Uri uri = new Uri(_data.ActiveProfile.FalconOutputFolder);
-				if (!string.IsNullOrEmpty(uri.Host))
+				try
 				{
-					success = PingHost(uri.Host);
+					Uri uri = new Uri(_data.ActiveProfile.FalconOutputFolder);
+					if (uri.HostNameType != UriHostNameType.Unknown && !string.IsNullOrEmpty(uri.Host))
+					{
+						success = PingHost(uri.Host);
+					}
 				}
+				catch (Exception e)
+				{
+					success = false;
+				}
+				
 			}
 			
 			return success;
@@ -316,7 +332,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void txtFalconOutputFolder_TextChanged(object sender, EventArgs e)
 		{
-			UpdateFalconPaths(txtFalconOutputFolder.Text);
+			//UpdateFalconPaths(txtFalconOutputFolder.Text);
 		}
 	}
 }
