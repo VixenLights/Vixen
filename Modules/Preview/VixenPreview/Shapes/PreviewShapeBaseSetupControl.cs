@@ -17,6 +17,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			propertyGrid.SelectedObject = Shape;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
+			if (ScalingTools.GetScaleFactor() >= 2)
+			{
+				propertyGrid.LargeButtons = true;
+			}
+
 		}
 
 		~PreviewShapeBaseSetupControl()
