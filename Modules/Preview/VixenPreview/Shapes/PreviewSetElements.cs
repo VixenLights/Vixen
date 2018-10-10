@@ -7,7 +7,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
+using Common.Resources;
 using Common.Resources.Properties;
 using Vixen.Data.Flow;
 using Vixen.Module;
@@ -28,11 +30,12 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         {
 			InitializeComponent();
 			Icon = Resources.Icon_Vixen3;
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			contextMenuLinkedElements.Renderer = new ThemeToolStripRenderer();
-            _shapes = shapes;
+	        contextMenuLinkedElements.Renderer = new ThemeToolStripRenderer();
+	        int imageSize = (int)(16 * ScalingTools.GetScaleFactor());
+	        contextMenuLinkedElements.ImageScalingSize = new Size(imageSize, imageSize);
+	        buttonHelp.Image = Tools.GetIcon(Resources.help, imageSize);
+			_shapes = shapes;
             connectStandardStrings = shapes[0].connectStandardStrings;
             int i = 1;
             foreach (PreviewBaseShape shape in _shapes)
@@ -74,7 +77,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 shapeType = _shapes[0].Parent.GetType().ToString();
                 if ((shapeType.Contains("Icicle") && _shapes[0].StringType != PreviewBaseShape.StringTypes.Standard) || shapeType.Contains("MultiString") )
                 {
-                    panelSetLightCount.Visible = true;
+                    tblLightCountControls.Visible = true;
                 }
             }
         }
@@ -208,6 +211,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 	            var count = elementString.Pixels.Count();
 
 				numericUpDownLightCount.Value = count>0?count:1;
+
+	            if (listLinkedElements.Columns.Count > 1)
+	            {
+		            listLinkedElements.Columns[1].Width = -1;
+	            }
             }
         }
 
