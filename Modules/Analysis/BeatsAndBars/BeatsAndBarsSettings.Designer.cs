@@ -32,8 +32,7 @@
 			this.BeatsNameTB = new System.Windows.Forms.TextBox();
 			this.GenerateButton = new System.Windows.Forms.Button();
 			this.CancelButton = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.musicStaff1 = new VixenModules.Analysis.BeatsAndBars.MusicStaff();
+			this.grpDivisions = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.AllColorPanel = new System.Windows.Forms.Panel();
 			this.BeatSplitsColorPanel = new System.Windows.Forms.Panel();
@@ -44,7 +43,8 @@
 			this.BeatCountsCB = new System.Windows.Forms.CheckBox();
 			this.BarsCB = new System.Windows.Forms.CheckBox();
 			this.PreviewGroupBox = new System.Windows.Forms.GroupBox();
-			this.groupBox1.SuspendLayout();
+			this.musicStaff1 = new VixenModules.Analysis.BeatsAndBars.MusicStaff();
+			this.grpDivisions.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -106,33 +106,17 @@
 			this.CancelButton.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.CancelButton.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
-			// groupBox1
+			// grpDivisions
 			// 
-			this.groupBox1.Controls.Add(this.musicStaff1);
-			this.groupBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.groupBox1.Location = new System.Drawing.Point(14, 14);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(714, 205);
-			this.groupBox1.TabIndex = 13;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Divisons";
-			this.groupBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
-			// 
-			// musicStaff1
-			// 
-			this.musicStaff1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.musicStaff1.AutoSize = true;
-			this.musicStaff1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-			this.musicStaff1.BeatPeriod = 0D;
-			this.musicStaff1.BeatsPerBar = 4;
-			this.musicStaff1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.musicStaff1.Location = new System.Drawing.Point(7, 22);
-			this.musicStaff1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-			this.musicStaff1.Name = "musicStaff1";
-			this.musicStaff1.Size = new System.Drawing.Size(696, 174);
-			this.musicStaff1.TabIndex = 6;
-			this.musicStaff1.Paint += new System.Windows.Forms.PaintEventHandler(this.musicStaff1_Paint);
+			this.grpDivisions.Controls.Add(this.musicStaff1);
+			this.grpDivisions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.grpDivisions.Location = new System.Drawing.Point(14, 14);
+			this.grpDivisions.Name = "grpDivisions";
+			this.grpDivisions.Size = new System.Drawing.Size(714, 205);
+			this.grpDivisions.TabIndex = 13;
+			this.grpDivisions.TabStop = false;
+			this.grpDivisions.Text = "Divisons";
+			this.grpDivisions.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
 			// groupBox2
 			// 
@@ -258,6 +242,21 @@
 			this.PreviewGroupBox.Text = "Preview";
 			this.PreviewGroupBox.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxes_Paint);
 			// 
+			// musicStaff1
+			// 
+			this.musicStaff1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.musicStaff1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+			this.musicStaff1.BeatPeriod = 0D;
+			this.musicStaff1.BeatsPerBar = 4;
+			this.musicStaff1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
+			this.musicStaff1.Location = new System.Drawing.Point(7, 22);
+			this.musicStaff1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+			this.musicStaff1.Name = "musicStaff1";
+			this.musicStaff1.Size = new System.Drawing.Size(696, 174);
+			this.musicStaff1.TabIndex = 6;
+			this.musicStaff1.Paint += new System.Windows.Forms.PaintEventHandler(this.musicStaff1_Paint);
+			// 
 			// BeatsAndBarsDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -266,7 +265,7 @@
 			this.ClientSize = new System.Drawing.Size(740, 600);
 			this.Controls.Add(this.PreviewGroupBox);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.grpDivisions);
 			this.Controls.Add(this.CancelButton);
 			this.Controls.Add(this.GenerateButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -274,8 +273,7 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Beats and Bars";
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			this.grpDivisions.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
@@ -289,7 +287,7 @@
 		private System.Windows.Forms.TextBox BeatsNameTB;
 		private System.Windows.Forms.Button CancelButton;
 		private MusicStaff musicStaff1;
-		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.GroupBox grpDivisions;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox AllFeaturesCB;
 		private System.Windows.Forms.CheckBox BeatCountsCB;
