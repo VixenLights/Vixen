@@ -66,13 +66,15 @@ namespace VixenModules.Analysis.BeatsAndBars
 			SetBeatBarOutputSettings();
 
 			m_previewWaveForm = new PreviewWaveform(audio);
-			m_previewWaveForm.Width = musicStaff1.Width;
+			m_previewWaveForm.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+			PreviewGroupBox.Controls.Add(m_previewWaveForm);
+			m_previewWaveForm.Width = PreviewGroupBox.ClientSize.Width-20;
 			m_previewWaveForm.Height = 75;
 			m_previewWaveForm.Location = new Point(musicStaff1.Location.X, 25);
 
 			musicStaff1.SettingChanged += MusicStaffSettingsChanged;
 
-			PreviewGroupBox.Controls.Add(m_previewWaveForm);
+			
 		}
 
 		public BeatBarSettingsData Settings
@@ -176,8 +178,10 @@ namespace VixenModules.Analysis.BeatsAndBars
 					(musicStaff1.SplitBeats) ?
 					PreviewData.PreviewSplitCollection.Marks.Select(x => x.StartTime).ToList() :
 					PreviewData.PreviewCollection.Marks.Select(x => x.StartTime).ToList();
-
-				m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max(x => x.StartTime);
+				if (PreviewData.PreviewSplitCollection.Marks.Any())
+				{
+					m_previewWaveForm.PreviewPeriod = PreviewData.PreviewSplitCollection.Marks.Max(x => x.StartTime);
+				}
 	
 				Refresh();
 			}
