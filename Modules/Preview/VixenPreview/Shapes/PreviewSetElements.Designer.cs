@@ -120,10 +120,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label11.AutoSize = true;
 			this.tblMain.SetColumnSpan(this.label11, 2);
-			this.label11.Location = new System.Drawing.Point(5, 494);
+			this.label11.Location = new System.Drawing.Point(10, 494);
 			this.label11.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(571, 15);
+			this.label11.Size = new System.Drawing.Size(561, 15);
 			this.label11.TabIndex = 25;
 			this.label11.Text = "- Ctrl+Click or Shift+Click to select multiple elements to drag.";
 			// 
@@ -133,10 +133,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label10.AutoSize = true;
 			this.tblMain.SetColumnSpan(this.label10, 2);
-			this.label10.Location = new System.Drawing.Point(5, 479);
+			this.label10.Location = new System.Drawing.Point(10, 479);
 			this.label10.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(571, 15);
+			this.label10.Size = new System.Drawing.Size(561, 15);
 			this.label10.TabIndex = 24;
 			this.label10.Text = "- Drag a group with children to link them all.";
 			// 
@@ -146,10 +146,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.label9.AutoSize = true;
 			this.tblMain.SetColumnSpan(this.label9, 2);
-			this.label9.Location = new System.Drawing.Point(5, 464);
+			this.label9.Location = new System.Drawing.Point(10, 464);
 			this.label9.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(571, 15);
+			this.label9.Size = new System.Drawing.Size(561, 15);
 			this.label9.TabIndex = 23;
 			this.label9.Text = "- Drag elements from left to right to link them.";
 			// 
@@ -166,11 +166,11 @@
 			this.treeElements.DragSourceNodeBackColor = System.Drawing.SystemColors.ControlLight;
 			this.treeElements.DragSourceNodeForeColor = System.Drawing.SystemColors.ControlText;
 			this.treeElements.HideSelection = false;
-			this.treeElements.Location = new System.Drawing.Point(3, 65);
-			this.treeElements.Margin = new System.Windows.Forms.Padding(3, 3, 5, 3);
+			this.treeElements.Location = new System.Drawing.Point(10, 65);
+			this.treeElements.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.treeElements.Name = "treeElements";
 			this.treeElements.SelectedNodes = ((System.Collections.Generic.List<System.Windows.Forms.TreeNode>)(resources.GetObject("treeElements.SelectedNodes")));
-			this.treeElements.Size = new System.Drawing.Size(282, 396);
+			this.treeElements.Size = new System.Drawing.Size(275, 396);
 			this.treeElements.TabIndex = 3;
 			this.treeElements.UsingCustomDragCursor = false;
 			this.treeElements.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeElements_ItemDrag);
@@ -197,7 +197,7 @@
 			this.comboStrings.Location = new System.Drawing.Point(91, 6);
 			this.comboStrings.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
 			this.comboStrings.Name = "comboStrings";
-			this.comboStrings.Size = new System.Drawing.Size(188, 24);
+			this.comboStrings.Size = new System.Drawing.Size(183, 24);
 			this.comboStrings.TabIndex = 0;
 			this.comboStrings.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.comboBox_DrawItem);
 			this.comboStrings.SelectedIndexChanged += new System.EventHandler(this.comboStrings_SelectedIndexChanged);
@@ -215,9 +215,9 @@
 			this.listLinkedElements.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listLinkedElements.HideSelection = false;
 			this.listLinkedElements.Location = new System.Drawing.Point(295, 65);
-			this.listLinkedElements.Margin = new System.Windows.Forms.Padding(5, 3, 3, 3);
+			this.listLinkedElements.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.listLinkedElements.Name = "listLinkedElements";
-			this.listLinkedElements.Size = new System.Drawing.Size(283, 396);
+			this.listLinkedElements.Size = new System.Drawing.Size(276, 396);
 			this.listLinkedElements.TabIndex = 4;
 			this.listLinkedElements.UseCompatibleStateImageBehavior = false;
 			this.listLinkedElements.View = System.Windows.Forms.View.Details;
@@ -270,7 +270,7 @@
 			// 
 			this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(3, 44);
+			this.label6.Location = new System.Drawing.Point(8, 44);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(106, 15);
 			this.label6.TabIndex = 2;
@@ -279,7 +279,7 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(96, 6);
+			this.buttonOK.Location = new System.Drawing.Point(91, 6);
 			this.buttonOK.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(87, 27);
@@ -294,7 +294,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(193, 6);
+			this.buttonCancel.Location = new System.Drawing.Point(188, 6);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(87, 27);
@@ -311,7 +311,7 @@
 			this.buttonHelp.AutoSize = true;
 			this.buttonHelp.Image = ((System.Drawing.Image)(resources.GetObject("buttonHelp.Image")));
 			this.buttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.buttonHelp.Location = new System.Drawing.Point(5, 521);
+			this.buttonHelp.Location = new System.Drawing.Point(10, 521);
 			this.buttonHelp.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
 			this.buttonHelp.Name = "buttonHelp";
 			this.buttonHelp.Size = new System.Drawing.Size(24, 27);
@@ -352,6 +352,7 @@
 			this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tblMain.Location = new System.Drawing.Point(0, 0);
 			this.tblMain.Name = "tblMain";
+			this.tblMain.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
 			this.tblMain.RowCount = 7;
 			this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -376,7 +377,7 @@
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(285, 39);
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(280, 39);
 			this.tableLayoutPanel2.TabIndex = 28;
 			// 
 			// tblLightCountControls
@@ -394,7 +395,7 @@
 			this.tblLightCountControls.Name = "tblLightCountControls";
 			this.tblLightCountControls.RowCount = 1;
 			this.tblLightCountControls.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblLightCountControls.Size = new System.Drawing.Size(285, 36);
+			this.tblLightCountControls.Size = new System.Drawing.Size(280, 36);
 			this.tblLightCountControls.TabIndex = 29;
 			// 
 			// tblStringToLink
@@ -406,11 +407,11 @@
 			this.tblStringToLink.Controls.Add(this.comboStrings, 1, 0);
 			this.tblStringToLink.Controls.Add(this.label7, 0, 0);
 			this.tblStringToLink.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tblStringToLink.Location = new System.Drawing.Point(3, 3);
+			this.tblStringToLink.Location = new System.Drawing.Point(8, 3);
 			this.tblStringToLink.Name = "tblStringToLink";
 			this.tblStringToLink.RowCount = 1;
 			this.tblStringToLink.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblStringToLink.Size = new System.Drawing.Size(284, 36);
+			this.tblStringToLink.Size = new System.Drawing.Size(279, 36);
 			this.tblStringToLink.TabIndex = 30;
 			// 
 			// PreviewSetElements

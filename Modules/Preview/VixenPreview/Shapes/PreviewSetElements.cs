@@ -214,7 +214,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 	            if (listLinkedElements.Columns.Count > 1)
 	            {
-		            listLinkedElements.Columns[1].Width = -1;
+		            listLinkedElements.Columns[0].Width = -1;
+					listLinkedElements.Columns[1].Width = -1;
 	            }
             }
         }
