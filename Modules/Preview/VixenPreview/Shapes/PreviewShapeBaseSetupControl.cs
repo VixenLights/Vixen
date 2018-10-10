@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -7,20 +6,20 @@ using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {
-	public partial class PreviewTriangleSetupControl : DisplayItemBaseControl
+	public partial class PreviewShapeBaseSetupControl : DisplayItemBaseControl
 	{
-		public PreviewTriangleSetupControl(PreviewBaseShape shape) : base(shape)
+		public PreviewShapeBaseSetupControl(PreviewBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
-			ThemeUpdateControls.UpdateControls(this);
-			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
+			ThemeUpdateControls.UpdateControls(this);
+			ThemePropertyGridRenderer.PropertyGridRender(propertyGrid);
 			propertyGrid.SelectedObject = Shape;
 			Shape.OnPropertiesChanged += OnPropertiesChanged;
 		}
 
-		~PreviewTriangleSetupControl()
+		~PreviewShapeBaseSetupControl()
 		{
 			Shape.OnPropertiesChanged -= OnPropertiesChanged;
 		}
@@ -30,21 +29,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			propertyGrid.Refresh();
 		}
 
-		private void buttonHelp_Click(object sender, EventArgs e)
+		protected virtual void buttonHelp_Click(object sender, EventArgs e)
 		{
 			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Preview_BasicShapes);
-		}
-
-		private void buttonBackground_MouseHover(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImageHover;
-		}
-
-		private void buttonBackground_MouseLeave(object sender, EventArgs e)
-		{
-			var btn = (Button)sender;
-			btn.BackgroundImage = Resources.ButtonBackgroundImage;
 		}
 	}
 }
