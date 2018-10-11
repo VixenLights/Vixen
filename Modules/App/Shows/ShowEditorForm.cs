@@ -117,6 +117,8 @@ namespace VixenModules.App.Shows
 					AddItemToList(item);
 				}
 			}
+
+			listViewShowItems.Columns[0].Width = -1;
 		}
 
 		public ListViewItem AddItemToList(ShowItem item)
