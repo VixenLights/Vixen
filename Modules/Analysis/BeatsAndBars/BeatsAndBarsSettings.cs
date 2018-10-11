@@ -70,7 +70,7 @@ namespace VixenModules.Analysis.BeatsAndBars
 			m_previewWaveForm = new PreviewWaveform(audio);
 			m_previewWaveForm.Anchor = AnchorStyles.Left | AnchorStyles.Right;
 			PreviewGroupBox.Controls.Add(m_previewWaveForm);
-			m_previewWaveForm.Width = PreviewGroupBox.ClientSize.Width-20;
+			m_previewWaveForm.Width = PreviewGroupBox.ClientSize.Width-25;
 			m_previewWaveForm.Height = PreviewGroupBox.ClientSize.Height/2;
 			m_previewWaveForm.Location = new Point(musicStaff1.Location.X, PreviewGroupBox.ClientSize.Height/2 - m_previewWaveForm.Height/2);
 
