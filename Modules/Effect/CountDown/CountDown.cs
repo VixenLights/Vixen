@@ -752,8 +752,7 @@ namespace VixenModules.Effect.CountDown
 			
 			if (countDownNumber > 60 && TimeFormat == TimeFormat.Minutes)
 			{
-				TimeSpan time = TimeSpan.FromSeconds(countDownNumber);
-				return time.ToString(@"m\:ss");
+				return ConvertMinutesToString(countDownNumber);
 			}
 			return countDownNumber.ToString();
 		}
@@ -894,8 +893,7 @@ namespace VixenModules.Effect.CountDown
 						{
 							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
 							{
-								TimeSpan time = TimeSpan.FromSeconds(countTime);
-								displayTime = time.ToString(@"m\:ss");
+								displayTime = ConvertMinutesToString(countTime);
 							}
 							else
 							{
@@ -915,8 +913,7 @@ namespace VixenModules.Effect.CountDown
 						{
 							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
 							{
-								TimeSpan time = TimeSpan.FromSeconds(countTime);
-								displayTime = time.ToString(@"m\:ss");
+								displayTime = ConvertMinutesToString(countTime);
 							}
 							else
 							{
@@ -941,8 +938,8 @@ namespace VixenModules.Effect.CountDown
 						{
 							if (countTime > 60 && TimeFormat == TimeFormat.Minutes)
 							{
-								displayTime = TimeSpan.FromSeconds(countTime).ToString(@"m\:ss");
-								if (i == 0 && startTick > 2) displayTime1 = TimeSpan.FromSeconds(countTime + 1).ToString(@"m\:ss");
+								displayTime = ConvertMinutesToString(countTime);
+								if (i == 0 && startTick > 2) displayTime1 = ConvertMinutesToString(countTime + 1);
 							}
 							else
 							{
@@ -956,6 +953,15 @@ namespace VixenModules.Effect.CountDown
 					}
 					break;
 			}
+		}
+
+		private string ConvertMinutesToString(long countTime)
+		{
+			if (countTime < 3600)
+			{
+				return TimeSpan.FromSeconds(countTime).ToString(@"m\:ss");
+			}
+			return TimeSpan.FromSeconds(countTime).ToString(@"h\:mm\:ss");
 		}
 
 		private void DrawText(Graphics g, Rectangle clipRectangle, string displayedText, LinearGradientMode mode, int startX)
