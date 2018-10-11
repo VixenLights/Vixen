@@ -16,8 +16,7 @@ namespace VixenModules.Preview.VixenPreview
 		public VixenPreviewSetupPropertiesDocument()
 		{
 			InitializeComponent();
-			BackColor = ThemeColorTable.BackgroundColor;
-			ForeColor = ThemeColorTable.ForeColor;
+			ThemeUpdateControls.UpdateControls(this);
 		}
 
 		public void ShowSetupControl(VixenModules.Preview.VixenPreview.Shapes.DisplayItemBaseControl setupControl)

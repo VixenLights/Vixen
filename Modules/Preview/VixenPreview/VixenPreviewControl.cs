@@ -18,6 +18,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using Catel.IoC;
 using Catel.Services;
+using Common.Controls.Scaling;
 using Vixen;
 using VixenModules.App.CustomPropEditor.Model;
 using VixenModules.App.CustomPropEditor.Services;
@@ -320,6 +321,8 @@ namespace VixenModules.Preview.VixenPreview
 		{
 			InitializeComponent();
 			contextMenuStrip1.Renderer = new ThemeToolStripRenderer();
+			int imageSize = (int)(16 * ScalingTools.GetScaleFactor());
+			contextMenuStrip1.ImageScalingSize = new Size(imageSize, imageSize);
 			PreviewItemsResizingNew += vixenpreviewControl_PreviewItemsResizingNew;
 			PreviewItemsMovedNew += vixenpreviewControl_PreviewItemsMovedNew;
 			AllowDrop = true;

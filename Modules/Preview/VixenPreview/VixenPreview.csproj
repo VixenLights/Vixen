@@ -266,11 +266,11 @@
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewMultiString.cs" />
-    <Compile Include="Shapes\PreviewMultiStringSetupControl.cs">
+    <Compile Include="Shapes\PreviewShapeBaseSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shapes\PreviewMultiStringSetupControl.Designer.cs">
-      <DependentUpon>PreviewMultiStringSetupControl.cs</DependentUpon>
+    <Compile Include="Shapes\PreviewShapeBaseSetupControl.Designer.cs">
+      <DependentUpon>PreviewShapeBaseSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewPolyLine.cs" />
     <Compile Include="Shapes\PreviewIcicle.cs" />
@@ -283,34 +283,7 @@
     <Compile Include="Shapes\PreviewIcicleSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shapes\PreviewIcicleSetupControl.Designer.cs">
-      <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewPixelGrid.cs" />
-    <Compile Include="Shapes\PreviewPixelGridSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewPixelGridSetupControl.Designer.cs">
-      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Shapes\PreviewCustomPropSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewCustomPropSetupControl.Designer.cs">
-      <DependentUpon>PreviewCustomPropSetupControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Shapes\PreviewStarBurstSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewStarBurstSetupControl.Designer.cs">
-      <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Shapes\PreviewRectangleSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewRectangleSetupControl.Designer.cs">
-      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewStarBurst.cs" />
     <Compile Include="Shapes\PreviewRectangle.cs" />
     <Compile Include="Shapes\PreviewStarSetupControl.cs">
@@ -323,31 +296,13 @@
     <Compile Include="Shapes\PreviewCaneSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shapes\PreviewCaneSetupControl.Designer.cs">
-      <DependentUpon>PreviewCaneSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewCane.cs" />
-    <Compile Include="Shapes\PreviewFloodSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewFloodSetupControl.Designer.cs">
-      <DependentUpon>PreviewFloodSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewFlood.cs" />
     <Compile Include="Shapes\PreviewNetSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shapes\PreviewNetSetupControl.Designer.cs">
-      <DependentUpon>PreviewNetSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewNet.cs" />
     <Compile Include="Shapes\PreviewTriangle.cs" />
-    <Compile Include="Shapes\PreviewTriangleSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewTriangleSetupControl.Designer.cs">
-      <DependentUpon>PreviewTriangleSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\DisplayItemBaseControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -357,28 +312,7 @@
     <Compile Include="Shapes\PreviewArchSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Shapes\PreviewArchSetupControl.Designer.cs">
-      <DependentUpon>PreviewArchSetupControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Shapes\PreviewEllipseSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewEllipseSetupControl.Designer.cs">
-      <DependentUpon>PreviewEllipseSetupControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Shapes\PreviewLineSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewLineSetupControl.Designer.cs">
-      <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewMegaTree.cs" />
-    <Compile Include="Shapes\PreviewMegaTreeSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewMegaTreeSetupControl.Designer.cs">
-      <DependentUpon>PreviewMegaTreeSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewSetElements.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -387,12 +321,6 @@
     </Compile>
     <Compile Include="Shapes\PreviewSetElementString.cs" />
     <Compile Include="Shapes\PreviewSetElementsUIEditor.cs" />
-    <Compile Include="Shapes\PreviewSingleSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewSingleSetupControl.Designer.cs">
-      <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewSingle.cs" />
     <Compile Include="Shapes\PreviewEllipse.cs" />
     <Compile Include="Shapes\PreviewArch.cs" />
@@ -508,59 +436,17 @@
     <EmbeddedResource Include="Shapes\PreviewCustomSetupControl.resx">
       <DependentUpon>PreviewCustomSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewMultiStringSetupControl.resx">
-      <DependentUpon>PreviewMultiStringSetupControl.cs</DependentUpon>
+    <EmbeddedResource Include="Shapes\PreviewShapeBaseSetupControl.resx">
+      <DependentUpon>PreviewShapeBaseSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewPolyLineSetupControl.resx">
       <DependentUpon>PreviewPolyLineSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewIcicleSetupControl.resx">
-      <DependentUpon>PreviewIcicleSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewPixelGridSetupControl.resx">
-      <DependentUpon>PreviewPixelGridSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewCustomPropSetupControl.resx">
-      <DependentUpon>PreviewCustomPropSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewStarBurstSetupControl.resx">
-      <DependentUpon>PreviewStarBurstSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewRectangleSetupControl.resx">
-      <DependentUpon>PreviewRectangleSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
       <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewCaneSetupControl.resx">
-      <DependentUpon>PreviewCaneSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewFloodSetupControl.resx">
-      <DependentUpon>PreviewFloodSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewNetSetupControl.resx">
-      <DependentUpon>PreviewNetSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewTriangleSetupControl.resx">
-      <DependentUpon>PreviewTriangleSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewArchSetupControl.resx">
-      <DependentUpon>PreviewArchSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewEllipseSetupControl.resx">
-      <DependentUpon>PreviewEllipseSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewLineSetupControl.resx">
-      <DependentUpon>PreviewLineSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewMegaTreeSetupControl.resx">
-      <DependentUpon>PreviewMegaTreeSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSetElements.resx">
       <DependentUpon>PreviewSetElements.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewSingleSetupControl.resx">
-      <DependentUpon>PreviewSingleSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TemplateDialog.resx">
       <DependentUpon>TemplateDialog.cs</DependentUpon>

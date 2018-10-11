@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 
 namespace Common.Controls.Theme
 {
 	public sealed class ThemePropertyGridRenderer
 	{
 		//Used on the Preview property grid
-		public static void PropertyGridRender(Object sender)
+		public static void PropertyGridRender(PropertyGrid propertyGrid)
 		{
-			PropertyGrid propertyGrid = sender as PropertyGrid;
-			if (propertyGrid == null) return;
+			propertyGrid.AutoScaleMode = AutoScaleMode.Font;
 			propertyGrid.ViewBackColor = ThemeColorTable.BackgroundColor;
 			propertyGrid.CommandsBackColor = ThemeColorTable.BackgroundColor;
 			propertyGrid.BackColor = ThemeColorTable.BackgroundColor;
@@ -18,6 +18,10 @@ namespace Common.Controls.Theme
 			propertyGrid.CategoryForeColor = ThemeColorTable.ForeColor;
 			propertyGrid.CommandsForeColor = ThemeColorTable.ForeColor;
 			propertyGrid.HelpForeColor = ThemeColorTable.ForeColor;
+			if (ScalingTools.GetScaleFactor() >= 2)
+			{
+				propertyGrid.LargeButtons = true;
+			}
 		}
 	}
 }
