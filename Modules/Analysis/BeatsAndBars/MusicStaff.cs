@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 
 namespace VixenModules.Analysis.BeatsAndBars
@@ -15,16 +16,18 @@ namespace VixenModules.Analysis.BeatsAndBars
 	public partial class MusicStaff : UserControl
 	{
 		private const int TSLABEL_XOFFSET = 80;
-		private const int FIRST_BAR_OFFSET = TSLABEL_XOFFSET + 35;
+		private static int _firstBarOffset;
 		private const int DIV_Y_OFFSET = 20;
 		private const int VAL_LABEL_OFFSET = 25;
 		private const int LABEL_VAL_OFFSET = 5;
 		private double m_beatPeriod;
-
+		private double _scale = 1;
 
 		public MusicStaff()
 		{
 			InitializeComponent();
+			_scale = ScalingTools.GetScaleFactor();
+			_firstBarOffset = ScaleValue(TSLABEL_XOFFSET) + ScaleValue(45);
 
 			BeatsPerBar = 4;
 			//NoteSize = 4;
@@ -37,7 +40,12 @@ namespace VixenModules.Analysis.BeatsAndBars
 			BPMLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
 			BarPeriodLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
 			DivTimeLabel.Font = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size, FontStyle.Bold);
+			staffPictureBox.Width = ClientSize.Width - 5;
+		}
 
+		private int ScaleValue(int x)
+		{
+			return (int)(x * _scale);
 		}
 
 		public int BeatsPerBar { get; set; }
@@ -111,31 +119,32 @@ namespace VixenModules.Analysis.BeatsAndBars
 		
 		private void MusicStaff_Paint(object sender, PaintEventArgs e)
 		{
+			staffPictureBox.Width = ClientSize.Width - 17;
 			staffPictureBox.Invalidate();
 			BeatsPerBarLabel.Text = BeatsPerBar.ToString();
 			NoteSizeLabel.Text = NoteSize.ToString();
 
 			BeatsPerBarLabel.Location =
-				new Point(TSLABEL_XOFFSET, staffPictureBox.Location.Y + 17);
+				new Point(ScaleValue(TSLABEL_XOFFSET), staffPictureBox.Location.Y + staffPictureBox.Height/2-BeatsPerBarLabel.Height);
 
 			NoteSizeLabel.Location =
-				new Point(TSLABEL_XOFFSET, BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
+				new Point(ScaleValue(TSLABEL_XOFFSET), BeatsPerBarLabel.Location.Y + BeatsPerBarLabel.Height + 1);
 
 			BPMLabelVal.Text = (60000/m_beatPeriod).ToString("F1");
 			BPMLabelVal.Location = 
-				new Point(BPMLabel.Location.X + BPMLabel.PreferredWidth + LABEL_VAL_OFFSET, BPMLabel.Location.Y);
+				new Point(BPMLabel.Location.X + BPMLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), BPMLabel.Location.Y);
 
 			BarPeriodLabel.Location =
-				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + VAL_LABEL_OFFSET, BPMLabelVal.Location.Y);
+				new Point(BPMLabelVal.Location.X + BPMLabelVal.PreferredWidth + ScaleValue(VAL_LABEL_OFFSET), BPMLabelVal.Location.Y);
 			BarPeriodLabelVal.Location =
-				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + LABEL_VAL_OFFSET, BarPeriodLabel.Location.Y);
+				new Point(BarPeriodLabel.Location.X + BarPeriodLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), BarPeriodLabel.Location.Y);
 			BarPeriodLabelVal.Text = (BarPeriod / 1000).ToString("F2");
 
 			double divTime = splitBeatsCB.Checked ? m_beatPeriod/2 : m_beatPeriod;
 			DivTimeLabel.Location =
-				new Point(BarPeriodLabelVal.Location.X + BarPeriodLabelVal.PreferredWidth + VAL_LABEL_OFFSET, BarPeriodLabelVal.Location.Y);
+				new Point(BarPeriodLabelVal.Location.X + BarPeriodLabelVal.PreferredWidth + ScaleValue(VAL_LABEL_OFFSET), BarPeriodLabelVal.Location.Y);
 			DivTimeLabelVal.Location =
-				new Point(DivTimeLabel.Location.X + DivTimeLabel.PreferredWidth + LABEL_VAL_OFFSET, DivTimeLabel.Location.Y);
+				new Point(DivTimeLabel.Location.X + DivTimeLabel.PreferredWidth + ScaleValue(LABEL_VAL_OFFSET), DivTimeLabel.Location.Y);
 			DivTimeLabelVal.Text = divTime.ToString("F0");
 
 		}
@@ -145,16 +154,15 @@ namespace VixenModules.Analysis.BeatsAndBars
 
 		private void staffBox1_Paint(object sender, PaintEventArgs e)
 		{
-
 			int marksInBar = BeatsPerBar * ((splitBeatsCB.Checked) ? 2 : 1);
 			for (int j = 0; j < marksInBar; j++)
 			{
-				decimal interval = (decimal)(staffPictureBox.Width - 16 - FIRST_BAR_OFFSET) / marksInBar;
+				decimal interval = (decimal)(staffPictureBox.Width - ScaleValue(16) - _firstBarOffset) / marksInBar;
 
 				Bitmap noteBitmap = NotesizeBitmap;
 
-				Point point1 = new Point(FIRST_BAR_OFFSET + (int)(interval * j), 
-					staffPictureBox.Location.Y - DIV_Y_OFFSET);
+				Point point1 = new Point(_firstBarOffset + (int)(interval * j), 
+					staffPictureBox.Location.Y - ScaleValue(DIV_Y_OFFSET));
 
 				if ((splitBeatsCB.Checked) && ((j %2) == 1))
 				{
