@@ -222,6 +222,56 @@ namespace VixenModules.Effect.Dissolve
 			}
 		}
 
+	    [Value]
+	    [ProviderCategory(@"Config", 1)]
+	    [ProviderDisplayName(@"Dissolve Mark Type")]
+	    [ProviderDescription(@"Can use the Marks to determine how the effect is dissolved.")]
+	    [PropertyOrder(3)]
+	    public DissolveMarkType DissolveMarkType
+		{
+		    get { return _data.DissolveMarkType; }
+		    set
+		    {
+			    _data.DissolveMarkType = value;
+			    IsDirty = true;
+			    OnPropertyChanged();
+		    }
+		}
+
+	    [Value]
+	    [ProviderCategory(@"Config", 1)]
+	    [ProviderDisplayName(@"Random Dissolve")]
+	    [ProviderDescription(@"Can use the Marks to determine how the effect is dissolved.")]
+	    [PropertyOrder(4)]
+	    public bool RandomDissolve
+	    {
+		    get { return _data.RandomDissolve; }
+		    set
+		    {
+			    _data.RandomDissolve = value;
+			    IsDirty = true;
+			    UpdateDissolveModeAttributes();
+				OnPropertyChanged();
+		    }
+		}
+
+	    [Value]
+	    [ProviderCategory(@"Config", 1)]
+	    [ProviderDisplayName(@"Dissolve Flip")]
+	    [ProviderDescription(@"Flips to direction of the sequential dissolve.")]
+	    [PropertyOrder(5)]
+	    public bool DissolveFlip
+	    {
+		    get { return _data.DissolveFlip; }
+		    set
+		    {
+			    _data.DissolveFlip = value;
+			    IsDirty = true;
+			    UpdateDissolveModeAttributes();
+				OnPropertyChanged();
+		    }
+	    }
+
 		#endregion
 
 		#region Information
@@ -248,8 +298,11 @@ namespace VixenModules.Effect.Dissolve
 
 		private void UpdateDissolveModeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1); 
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4); 
 			propertyStates.Add("MarkCollectionId", DissolveMode == DissolveMode.MarkCollection);
+			propertyStates.Add("DissolveCurve", DissolveMarkType == DissolveMarkType.PerMark || DissolveMode == DissolveMode.TimeInterval);
+			propertyStates.Add("DissolveMarkType", DissolveMode == DissolveMode.MarkCollection);
+			propertyStates.Add("DissolveFlip", !RandomDissolve);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -280,7 +333,8 @@ namespace VixenModules.Effect.Dissolve
             EffectIntents effectIntents = new EffectIntents();
             TimeSpan intervalTime = TimeSpan;
             List<TimeSpan> markInterval = new List<TimeSpan>();
-	        List<ElementNode> elementGroups = nodes.ToList();
+	        List<string> markPercentage = new List<string>();
+			List<ElementNode> elementGroups = nodes.ToList();
 			int pixelCount = _nodes.Count;
 	        TimeSpan startTime = TimeSpan.Zero;
 	        int intervals;
@@ -292,9 +346,14 @@ namespace VixenModules.Effect.Dissolve
 			if (DissolveMode == DissolveMode.MarkCollection)
             {
                 SetupMarks();
-                if (_marks != null) markInterval.AddRange(_marks.Select(mark => mark.StartTime - StartTime));
+	            if (_marks != null)
+	            {
+		            markInterval.AddRange(_marks.Select(mark => mark.StartTime - StartTime));
+		            markPercentage.AddRange(_marks.Select(mark => mark.Text));
+				}
                 markInterval.Add(TimeSpan);
                 intervals = markInterval.Count;
+	            if (DissolveMarkType == DissolveMarkType.MarkLabelValue) intervals--;
             }
 	        else
 	        {
@@ -305,21 +364,29 @@ namespace VixenModules.Effect.Dissolve
 	        var endTime = TimeSpan;
 			for (var i = 0; i < intervals; i++)
             {
-	            if (DissolveMode == DissolveMode.MarkCollection)
+	            if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.PerMark)
 	            {
 		            interval = (markInterval[i] - startTime).TotalMilliseconds / 50;
 		            endTime = markInterval[i];
 	            }
-				
-                for (int j = 0; j < interval; j++)
+
+				for (int j = 0; j < interval; j++)
                 {
-	                double position = DissolveMode == DissolveMode.TimeInterval
-		                ? (double) 100 / intervals * i
+	                double position = DissolveMode == DissolveMode.TimeInterval || DissolveMarkType == DissolveMarkType.MarkLabelValue
+						? (double) 100 / intervals * i
 		                : (double) 100 / interval * j;
 					
 					// Gets number of Pixels that need to be created/removed.
-	                _pixels = (int) (pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
-
+	                if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.MarkLabelValue)
+	                {
+		                int.TryParse(markPercentage[i], out int percentage);
+						_pixels = (int)(pixelCount * percentage / 100) - totalPixelCount;
+					}
+	                else
+	                {
+						_pixels = (int)(pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
+					}
+	                
 	                if (_pixels >= 0)
 	                {
 						// Adds Displayed Pixels.
@@ -327,7 +394,11 @@ namespace VixenModules.Effect.Dissolve
 		                {
 			                if ( _nodes.Count <= 0) break;
 			                totalPixelCount++;
-							var random = _random.Next(0, _nodes.Count);
+							var random = _nodes.Count - 1;
+			                if (RandomDissolve)
+			                {
+				                random = _random.Next(0, _nodes.Count);
+							}
 
 							// Add element.
 							DissolveClass m = new DissolveClass();
@@ -348,7 +419,11 @@ namespace VixenModules.Effect.Dissolve
 						for (int pixel = 0; pixel < -_pixels; pixel++)
 		                {
 			                if (_tempNodes.Count <= 0) break;
-			                var random = _random.Next(0, _tempNodes.Count);
+			                var random = _tempNodes.Count - 1;
+			                if (RandomDissolve)
+			                {
+				                random = _random.Next(0, _tempNodes.Count);
+			                }
 			                totalPixelCount--;
 							
 							for (int ii = 0; ii < _elements.Count; ii++)
@@ -375,20 +450,19 @@ namespace VixenModules.Effect.Dissolve
 						}
 	                }
 					
-	                if (DissolveMode == DissolveMode.MarkCollection) startTime = startTime.Add(TimeSpan.FromMilliseconds(50));
+	                if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.PerMark) startTime = startTime.Add(TimeSpan.FromMilliseconds(50));
                 }
 
-                startTime = DissolveMode == DissolveMode.TimeInterval
-                    ? startTime + intervalTime
-                    : markInterval[i];
-
-	            if (DissolveMode == DissolveMode.MarkCollection)
+	            startTime = DissolveMode == DissolveMode.TimeInterval ? startTime + intervalTime :
+		            DissolveMarkType == DissolveMarkType.MarkLabelValue ? markInterval[i + 1] : markInterval[i];
+				
+	            if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.PerMark)
 	            {
 		            InitializeDissolveClasses();
 		            totalPixelCount = 0;
 		            CopyElements();
 	            }
-            }
+			}
 
 	        CopyElements();
 
@@ -428,6 +502,9 @@ namespace VixenModules.Effect.Dissolve
 		    {
 				_nodes.Add(x);
 		    }
+
+			if (DissolveFlip) _nodes.Reverse();
+
 	    }
 	    public class DissolveClass
 	    {

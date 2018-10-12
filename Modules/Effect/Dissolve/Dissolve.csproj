@@ -81,6 +81,7 @@
   <ItemGroup>
     <Compile Include="DissolveData.cs" />
     <Compile Include="DissolveDescriptor.cs" />
+    <Compile Include="DissolveMarkType.cs" />
     <Compile Include="DissolveMode.cs" />
     <Compile Include="Dissolve.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
