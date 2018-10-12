@@ -97,9 +97,9 @@ namespace VixenModules.Effect.Dissolve
                 bool changed = false;
 	            for (var index = 0; index < Colors.Count; index++)
 	            {
-		            if (!Colors[index].GetColorsInGradient().IsSubsetOf(validColors))
+		            if (!Colors[index].ColorGradient.GetColorsInGradient().IsSubsetOf(validColors))
 		            {
-			            Colors[index] = new ColorGradient(validColors.First());
+			            Colors[index].ColorGradient = new ColorGradient(validColors.First());
 			            changed = true;
 		            }
 	            }
@@ -139,22 +139,39 @@ namespace VixenModules.Effect.Dissolve
         [ProviderCategory(@"Color", 2)]
         [ProviderDisplayName(@"ColorGradients")]
         [ProviderDescription(@"Gradient")]
-        public List<ColorGradient> Colors
+        public List<GradientLevelPair> Colors
         {
             get { return _data.Colors; }
             set
             {
                 _data.Colors = value;
                 IsDirty = true;
-                OnPropertyChanged();
+	            CheckForInvalidColorData();
+				OnPropertyChanged();
             }
         }
 
-        #endregion
+	    [Value]
+	    [ProviderCategory(@"Color", 3)]
+	    [ProviderDisplayName(@"Group Colors")]
+	    [ProviderDescription(@"Each element will have all colors generated in parallel")]
+	    [PropertyOrder(4)]
+	    public bool GroupColors
+	    {
+		    get { return _data.GroupColors; }
+		    set
+		    {
+			    _data.GroupColors = value;
+			    IsDirty = true;
+			    OnPropertyChanged();
+		    }
+	    }
 
-        #region Config
+		#endregion
 
-        [Value]
+		#region Config
+
+		[Value]
         [ProviderCategory("Config", 1)]
         [DisplayName(@"Timing Source")]
         [Description(@"Selects what source is used to determine change.")]
@@ -316,7 +333,7 @@ namespace VixenModules.Effect.Dissolve
         {
             get
             {
-	            if (Colors.Any(x => !x.CheckLibraryReference()))
+	            if (Colors.Any(x => !x.ColorGradient.CheckLibraryReference() || !x.Curve.CheckLibraryReference()))
 	            {
 		            base.IsDirty = true;
 	            }
@@ -470,19 +487,31 @@ namespace VixenModules.Effect.Dissolve
 			foreach (DissolveClass dissolveNode in _renderElements)
 			{
 				ElementNode element = elementGroups[dissolveNode.ElementIndex];
-		        RenderElement(Colors[dissolveNode.ColorIndex], dissolveNode.StartTime, dissolveNode.Duration,
-			        element, effectIntents);
+				if (GroupColors)
+				{
+					foreach (var gradientLevelPair in Colors)
+					{
+						RenderElement(gradientLevelPair, dissolveNode.StartTime, dissolveNode.Duration,
+							element, effectIntents);
+					}
+				}
+				else
+				{
+					RenderElement(Colors[dissolveNode.ColorIndex], dissolveNode.StartTime, dissolveNode.Duration,
+						element, effectIntents);
+				}
+		        
 		        gradientLevelItem = ++gradientLevelItem % colorCount;
 			}
 
 			return effectIntents;
         }
 
-        private void RenderElement(ColorGradient gradient, TimeSpan startTime, TimeSpan interval,
+        private void RenderElement(GradientLevelPair gradient, TimeSpan startTime, TimeSpan interval,
             ElementNode element, EffectIntents effectIntents)
         {
             if (interval <= TimeSpan.Zero) return;
-            var result = PulseRenderer.RenderNode(element, new Curve(CurveType.Flat100), gradient, interval, HasDiscreteColors);
+            var result = PulseRenderer.RenderNode(element, gradient.Curve, gradient.ColorGradient, interval, HasDiscreteColors);
             result.OffsetAllCommandsByTime(startTime);
             effectIntents.Add(result);
 		}

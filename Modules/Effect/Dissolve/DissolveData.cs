@@ -14,7 +14,10 @@ namespace VixenModules.Effect.Dissolve
 	public class DissolveData : EffectTypeModuleData {
 		
 		[DataMember]
-		public List<ColorGradient> Colors { get; set; }
+		public List<GradientLevelPair> Colors { get; set; }
+
+		[DataMember]
+		public bool GroupColors { get; set; }
 
 		[DataMember]
 		public DissolveMode DissolveMode { get; set; }
@@ -39,7 +42,7 @@ namespace VixenModules.Effect.Dissolve
 
 		public DissolveData()
 		{
-			Colors = new List<ColorGradient> {new ColorGradient(Color.White)};
+			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.White,CurveType.Flat100) };
 			DissolveMode = DissolveMode.TimeInterval;
 			DissolveCurve = new Curve(new PointPairList(new[] { 100.0, 0.0 }, new[] { 0.0, 100.0 }));
 			DissolveMarkType = DissolveMarkType.PerMark;
