@@ -34,7 +34,8 @@
                             <controls:InlineGradientPairGradientEditor
 			                    x:Name="CollectionGradientEditor"
 			                    Value="{Binding Value, Mode=TwoWay}"
-                                IsEnabled="True">
+                                IsEnabled="True"
+	                            Component="{Binding ParentProperty.Component}">
 
                             </controls:InlineGradientPairGradientEditor>
                         </StackPanel>
