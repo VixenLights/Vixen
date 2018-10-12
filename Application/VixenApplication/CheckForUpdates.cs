@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls;
+using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -32,10 +33,10 @@ namespace VixenApplication
 		public CheckForUpdates(string currentVersion, string latestVersion, string currentVersionType)
 		{
 			InitializeComponent();
-			ForeColor = ThemeColorTable.ForeColor;
-			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
 			Icon = Resources.Icon_Vixen3;
+			textBoxReleaseNotes.AutoSize = false;
+			textBoxReleaseNotes.Height = (int)(ScalingTools.GetScaleFactor() * 225);
 			pictureBoxIcon.Image = Resources.VixenImage;
 			labelHeading.Font = new Font(labelHeading.Font.Name, 20F);
 			labelCurrentVersion.Font = new Font(labelCurrentVersion.Font.Name, 10F);
@@ -229,6 +230,7 @@ namespace VixenApplication
 						}
 
 					}
+				SetScrollbars();
 				
 			}
 			catch (Exception e)
@@ -254,6 +256,23 @@ namespace VixenApplication
 		private void linkLabelVixenDownLoadPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			Process.Start("www.vixenlights.com/downloads/vixen-3-downloads/");
+		}
+
+		private void SetScrollbars()
+		{
+			
+			Size tS = TextRenderer.MeasureText(textBoxReleaseNotes.Text, textBoxReleaseNotes.Font);
+			bool Hsb = textBoxReleaseNotes.ClientSize.Height < tS.Height + Convert.ToInt32(textBoxReleaseNotes.Font.Size);
+			bool Vsb = textBoxReleaseNotes.ClientSize.Width < tS.Width;
+
+			if (Hsb && Vsb)
+				textBoxReleaseNotes.ScrollBars = ScrollBars.Both;
+			else if (!Hsb && !Vsb)
+				textBoxReleaseNotes.ScrollBars = ScrollBars.None;
+			else if (Hsb && !Vsb)
+				textBoxReleaseNotes.ScrollBars = ScrollBars.Vertical;
+			else if (!Hsb && Vsb)
+				textBoxReleaseNotes.ScrollBars = ScrollBars.Horizontal;
 		}
 	}
 }

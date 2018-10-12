@@ -44,8 +44,8 @@
 			// 
 			this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.btnOK.Location = new System.Drawing.Point(631, 420);
-			this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.btnOK.Location = new System.Drawing.Point(677, 430);
+			this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 8, 4);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(88, 26);
 			this.btnOK.TabIndex = 1;
@@ -56,13 +56,13 @@
 			// 
 			// pictureBoxIcon
 			// 
-			this.pictureBoxIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.pictureBoxIcon.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pictureBoxIcon.Location = new System.Drawing.Point(3, 2);
 			this.pictureBoxIcon.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
 			this.pictureBoxIcon.Name = "pictureBoxIcon";
 			this.tableLayoutPanel1.SetRowSpan(this.pictureBoxIcon, 3);
 			this.pictureBoxIcon.Size = new System.Drawing.Size(172, 172);
+			this.pictureBoxIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBoxIcon.TabIndex = 7;
 			this.pictureBoxIcon.TabStop = false;
 			// 
@@ -75,7 +75,7 @@
 			this.labelHeading.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeading.Location = new System.Drawing.Point(181, 0);
 			this.labelHeading.Name = "labelHeading";
-			this.labelHeading.Size = new System.Drawing.Size(539, 30);
+			this.labelHeading.Size = new System.Drawing.Size(589, 25);
 			this.labelHeading.TabIndex = 6;
 			this.labelHeading.Text = "A new version of Vixen is available!";
 			this.labelHeading.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -87,9 +87,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelCurrentVersion.AutoSize = true;
-			this.labelCurrentVersion.Location = new System.Drawing.Point(181, 30);
+			this.labelCurrentVersion.Location = new System.Drawing.Point(181, 25);
 			this.labelCurrentVersion.Name = "labelCurrentVersion";
-			this.labelCurrentVersion.Size = new System.Drawing.Size(539, 30);
+			this.labelCurrentVersion.Size = new System.Drawing.Size(589, 15);
 			this.labelCurrentVersion.TabIndex = 5;
 			this.labelCurrentVersion.Text = "label1";
 			this.labelCurrentVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -100,10 +100,12 @@
 			this.textBoxReleaseNotes.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textBoxReleaseNotes.Location = new System.Drawing.Point(8, 203);
 			this.textBoxReleaseNotes.Margin = new System.Windows.Forms.Padding(8, 2, 8, 10);
+			this.textBoxReleaseNotes.MaximumSize = new System.Drawing.Size(1000, 225);
 			this.textBoxReleaseNotes.Multiline = true;
 			this.textBoxReleaseNotes.Name = "textBoxReleaseNotes";
+			this.textBoxReleaseNotes.ReadOnly = true;
 			this.textBoxReleaseNotes.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.textBoxReleaseNotes.Size = new System.Drawing.Size(707, 203);
+			this.textBoxReleaseNotes.Size = new System.Drawing.Size(757, 213);
 			this.textBoxReleaseNotes.TabIndex = 4;
 			this.textBoxReleaseNotes.Visible = false;
 			this.textBoxReleaseNotes.WordWrap = false;
@@ -115,7 +117,7 @@
 			this.lblChangeLog.Location = new System.Drawing.Point(3, 181);
 			this.lblChangeLog.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
 			this.lblChangeLog.Name = "lblChangeLog";
-			this.lblChangeLog.Size = new System.Drawing.Size(288, 15);
+			this.lblChangeLog.Size = new System.Drawing.Size(287, 15);
 			this.lblChangeLog.TabIndex = 8;
 			this.lblChangeLog.Text = "Change Log between installed and available Versions:";
 			this.lblChangeLog.Visible = false;
@@ -127,9 +129,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabelVixenDownLoadPage.AutoSize = true;
 			this.linkLabelVixenDownLoadPage.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.linkLabelVixenDownLoadPage.Location = new System.Drawing.Point(181, 60);
+			this.linkLabelVixenDownLoadPage.Location = new System.Drawing.Point(181, 40);
 			this.linkLabelVixenDownLoadPage.Name = "linkLabelVixenDownLoadPage";
-			this.linkLabelVixenDownLoadPage.Size = new System.Drawing.Size(539, 116);
+			this.linkLabelVixenDownLoadPage.Size = new System.Drawing.Size(589, 136);
 			this.linkLabelVixenDownLoadPage.TabIndex = 9;
 			this.linkLabelVixenDownLoadPage.TabStop = true;
 			this.linkLabelVixenDownLoadPage.Text = "linkLabel1";
@@ -139,6 +141,7 @@
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.AutoSize = true;
+			this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.tableLayoutPanel1.ColumnCount = 2;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -153,13 +156,13 @@
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 6;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(723, 436);
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 225F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(773, 466);
 			this.tableLayoutPanel1.TabIndex = 10;
 			// 
 			// CheckForUpdates
@@ -169,14 +172,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ClientSize = new System.Drawing.Size(723, 436);
+			this.ClientSize = new System.Drawing.Size(773, 466);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(800, 600);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(700, 0);
 			this.Name = "CheckForUpdates";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
