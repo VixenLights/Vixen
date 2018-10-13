@@ -258,7 +258,7 @@ namespace VixenModules.Effect.Dissolve
 	    [Value]
 	    [ProviderCategory(@"Config", 1)]
 	    [ProviderDisplayName(@"Random Dissolve")]
-	    [ProviderDescription(@"Can use the Marks to determine how the effect is dissolved.")]
+	    [ProviderDescription(@"Generates a random or sequential Dissolve.")]
 	    [PropertyOrder(4)]
 	    public bool RandomDissolve
 	    {
@@ -397,11 +397,11 @@ namespace VixenModules.Effect.Dissolve
 	                if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.MarkLabelValue)
 	                {
 		                int.TryParse(markPercentage[i], out int percentage);
-						_pixels = (int)(pixelCount * percentage / 100) - totalPixelCount;
+						_pixels = (int)Math.Ceiling((double)pixelCount * percentage / 100) - totalPixelCount;
 					}
 	                else
 	                {
-						_pixels = (int)(pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
+						_pixels = (int)Math.Ceiling(pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
 					}
 	                
 	                if (_pixels >= 0)
@@ -452,7 +452,7 @@ namespace VixenModules.Effect.Dissolve
 									// This saved a considerable amount of time as it will only loop through
 									// elements that have not be finalized.
 									DissolveClass m = new DissolveClass();
-									m.Duration = startTime - _elements[ii].StartTime;
+									m.Duration = startTime - _elements[ii].StartTime - TimeSpan.FromMilliseconds(1);
 									m.StartTime = _elements[ii].StartTime;
 									m.EndTime = _elements[ii].EndTime;
 									m.ColorIndex = _elements[ii].ColorIndex;
