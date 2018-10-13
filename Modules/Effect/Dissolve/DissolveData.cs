@@ -33,12 +33,15 @@ namespace VixenModules.Effect.Dissolve
 
 		[DataMember]
 		public Guid MarkCollectionId { get; set; }
-
+		
 		[DataMember]
 		public bool RandomDissolve { get; set; }
 
 		[DataMember]
 		public bool DissolveFlip { get; set; }
+
+		[DataMember]
+		public int GroupLevel { get; set; }
 
 		public DissolveData()
 		{
@@ -48,6 +51,7 @@ namespace VixenModules.Effect.Dissolve
 			DissolveMarkType = DissolveMarkType.PerMark;
 			RandomDissolve = true;
 			DissolveFlip = true;
+			GroupLevel = 1;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -61,7 +65,8 @@ namespace VixenModules.Effect.Dissolve
 	            DissolveCurve = new Curve(DissolveCurve),
 	            DissolveMethod = DissolveMethod,
 	            RandomDissolve = RandomDissolve,
-	            DissolveFlip = DissolveFlip
+	            DissolveFlip = DissolveFlip,
+	            GroupLevel = GroupLevel
 			};
 			return result;
 		}
