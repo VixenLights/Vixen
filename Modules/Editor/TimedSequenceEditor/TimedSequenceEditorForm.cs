@@ -2851,7 +2851,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 					foreach (var mark in markGroup)
 					{
-						string[] words = mark.Text.Split();
+						string[] words = mark.Text.Trim().Split();
 						if (words.Any())
 						{
 							var duration = TimeSpan.FromTicks(mark.Duration.Ticks / words.Length);
