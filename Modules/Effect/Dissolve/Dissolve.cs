@@ -23,7 +23,7 @@ namespace VixenModules.Effect.Dissolve
 		private DissolveData _data;
 		private IEnumerable<IMark> _marks = null;
 		private int _pixels;
-		private Random _random = new Random();
+		private readonly Random _random = new Random();
 		private int _totalNodes;
 		private List<TempClass> _tempNodes;
 		private List<TempClass> _nodes;
@@ -73,16 +73,7 @@ namespace VixenModules.Effect.Dissolve
 
 		private IEnumerable<ElementNode> GetNodesToRenderOn()
 		{
-			IEnumerable<ElementNode> renderNodes = TargetNodes;
-
-			renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
-
-			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
-			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
-			if (!renderNodes.Any())
-				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
-
-			return renderNodes;
+			return TargetNodes.SelectMany(x => x.GetLeafEnumerator());
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -607,7 +598,7 @@ namespace VixenModules.Effect.Dissolve
 			if (DissolveFlip) _nodes.Reverse();
 		}
 
-		public class DissolveClass
+		private class DissolveClass
 		{
 			public int ElementIndex;
 			public int ColorIndex;
@@ -616,7 +607,7 @@ namespace VixenModules.Effect.Dissolve
 			public TimeSpan EndTime;
 		}
 
-		public class TempClass
+		private class TempClass
 		{
 			public int ElementIndex;
 			public int ColorIndex;
