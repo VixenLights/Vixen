@@ -39,9 +39,15 @@ namespace VixenModules.Effect.Dissolve
 
 		[DataMember]
 		public bool DissolveFlip { get; set; }
-
+		
 		[DataMember]
 		public int GroupLevel { get; set; }
+
+		[DataMember]
+		public int StartingNode { get; set; }
+
+		[DataMember]
+		public bool RandomColor { get; set; }
 
 		public DissolveData()
 		{
@@ -52,6 +58,8 @@ namespace VixenModules.Effect.Dissolve
 			RandomDissolve = true;
 			DissolveFlip = true;
 			GroupLevel = 1;
+			StartingNode = 1;
+			RandomColor = true;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -67,7 +75,9 @@ namespace VixenModules.Effect.Dissolve
 	            RandomDissolve = RandomDissolve,
 	            DissolveFlip = DissolveFlip,
 	            GroupLevel = GroupLevel,
-	            DissolveMarkType = DissolveMarkType
+	            DissolveMarkType = DissolveMarkType,
+	            StartingNode = StartingNode,
+	            RandomColor = RandomColor
 			};
 			return result;
 		}

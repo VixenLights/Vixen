@@ -25,9 +25,9 @@ namespace VixenModules.Effect.Dissolve
         private int _pixels;
         private Random _random = new Random();
         private int _totalNodes;
-	    private List<int> _tempNodes;
-	    private List<int> _nodes;
-	    private List<DissolveClass> _elements;
+	    private List<TempClass> _tempNodes;
+	    private List<TempClass> _nodes;
+		private List<DissolveClass> _elements;
 	    private List<DissolveClass> _renderElements;
 		private readonly int _timeInterval = 25;
 
@@ -56,8 +56,8 @@ namespace VixenModules.Effect.Dissolve
 
 			_pixels = 0;
 
-			_tempNodes = new List<int>(_totalNodes);
-	        _nodes = new List<int>(_totalNodes);
+			_tempNodes = new List<TempClass>(_totalNodes);
+	        _nodes = new List<TempClass>(_totalNodes);
 	        _elements = new List<DissolveClass>();
 	        _renderElements = new List<DissolveClass>();
 
@@ -139,7 +139,8 @@ namespace VixenModules.Effect.Dissolve
         [ProviderCategory(@"Color", 2)]
         [ProviderDisplayName(@"ColorGradients")]
         [ProviderDescription(@"Gradient")]
-        public List<GradientLevelPair> Colors
+        [PropertyOrder(0)]
+		public List<GradientLevelPair> Colors
         {
             get { return _data.Colors; }
             set
@@ -149,13 +150,30 @@ namespace VixenModules.Effect.Dissolve
 	            CheckForInvalidColorData();
 				OnPropertyChanged();
             }
-        }
+		}
 
 	    [Value]
-	    [ProviderCategory(@"Color", 3)]
+	    [ProviderCategory(@"Color", 2)]
+	    [ProviderDisplayName(@"Random Color Order")]
+	    [ProviderDescription(@"Random Color Order")]
+	    [PropertyOrder(1)]
+	    public bool RandomColor
+	    {
+		    get { return _data.RandomColor; }
+		    set
+		    {
+			    _data.RandomColor = value;
+			    IsDirty = true;
+			    UpdateDissolveModeAttributes();
+			    OnPropertyChanged();
+		    }
+	    }
+
+		[Value]
+	    [ProviderCategory(@"Color", 2)]
 	    [ProviderDisplayName(@"Group Colors")]
 	    [ProviderDescription(@"Each element will have all colors generated in parallel")]
-	    [PropertyOrder(4)]
+	    [PropertyOrder(2)]
 	    public bool GroupColors
 	    {
 		    get { return _data.GroupColors; }
@@ -251,15 +269,16 @@ namespace VixenModules.Effect.Dissolve
 		    {
 			    _data.DissolveMarkType = value;
 			    IsDirty = true;
-			    OnPropertyChanged();
+			    UpdateDissolveModeAttributes();
+				OnPropertyChanged();
 		    }
 		}
-
-	    [Value]
+	    
+		[Value]
 	    [ProviderCategory(@"Config", 1)]
 	    [ProviderDisplayName(@"GroupLevel")]
 	    [ProviderDescription(@"GroupLevel")]
-	    [NumberRange(1, 5000, 1)]
+	    [NumberRange(1, 50000, 1)]
 	    [PropertyOrder(4)]
 	    public int GroupLevel
 	    {
@@ -272,11 +291,28 @@ namespace VixenModules.Effect.Dissolve
 		    }
 	    }
 
+	    [Value]
+	    [ProviderCategory(@"Config", 1)]
+	    [ProviderDisplayName(@"Starting Node")]
+	    [ProviderDescription(@"Starting Node")]
+	    [NumberRange(1, 50000, 1)]
+	    [PropertyOrder(5)]
+	    public int StartingNode
+		{
+		    get { return _data.StartingNode; }
+		    set
+		    {
+			    _data.StartingNode = value > 0 ? value : 1;
+			    IsDirty = true;
+			    OnPropertyChanged();
+		    }
+	    }
+
 		[Value]
 	    [ProviderCategory(@"Config", 1)]
 	    [ProviderDisplayName(@"Random Dissolve")]
 	    [ProviderDescription(@"Generates a random or sequential Dissolve.")]
-	    [PropertyOrder(5)]
+	    [PropertyOrder(6)]
 	    public bool RandomDissolve
 	    {
 		    get { return _data.RandomDissolve; }
@@ -293,7 +329,7 @@ namespace VixenModules.Effect.Dissolve
 	    [ProviderCategory(@"Config", 1)]
 	    [ProviderDisplayName(@"Dissolve Flip")]
 	    [ProviderDescription(@"Flips the direction of the sequential dissolve.")]
-	    [PropertyOrder(6)]
+	    [PropertyOrder(7)]
 	    public bool DissolveFlip
 	    {
 		    get { return _data.DissolveFlip; }
@@ -332,11 +368,15 @@ namespace VixenModules.Effect.Dissolve
 
 		private void UpdateDissolveModeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4); 
-			propertyStates.Add("MarkCollectionId", DissolveMode == DissolveMode.MarkCollection);
-			propertyStates.Add("DissolveCurve", DissolveMarkType == DissolveMarkType.PerMark || DissolveMode == DissolveMode.TimeInterval);
-			propertyStates.Add("DissolveMarkType", DissolveMode == DissolveMode.MarkCollection);
-			propertyStates.Add("DissolveFlip", !RandomDissolve);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			{
+				{"MarkCollectionId", DissolveMode == DissolveMode.MarkCollection},
+				{"DissolveCurve", DissolveMarkType == DissolveMarkType.PerMark || DissolveMode == DissolveMode.TimeInterval},
+				{"DissolveMarkType", DissolveMode == DissolveMode.MarkCollection},
+				{"DissolveFlip", !RandomDissolve},
+				{"StartingNode", !RandomDissolve}
+			};
+
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -372,7 +412,6 @@ namespace VixenModules.Effect.Dissolve
 	        TimeSpan startTime = TimeSpan.Zero;
 	        int intervals;
 	        double interval = 1;
-	        int colorCount = Colors.Count;
 	        int totalPixelCount = 0;
 			
 			if (DissolveMode == DissolveMode.MarkCollection)
@@ -436,19 +475,18 @@ namespace VixenModules.Effect.Dissolve
 			                if ( _nodes.Count <= 0) break;
 			                totalPixelCount++;
 							var random = _nodes.Count - 1;
-			                if (RandomDissolve)
-			                {
-				                random = _random.Next(0, _nodes.Count);
-							}
+			                if (RandomDissolve) random = _random.Next(0, _nodes.Count);
 
 							// Add element.
-							DissolveClass m = new DissolveClass();
-							m.StartTime = startTime;
-			                m.EndTime = endTime;
-							m.Duration = endTime - startTime;
-			                m.ColorIndex = _random.Next(0, colorCount);
-							m.ElementIndex = _nodes[random];
-							_elements.Add(m);
+			                DissolveClass m = new DissolveClass
+			                {
+				                StartTime = startTime,
+				                EndTime = endTime,
+				                Duration = endTime - startTime,
+				                ColorIndex = _nodes[random].ColorIndex,
+				                ElementIndex = _nodes[random].ElementIndex
+			                };
+			                _elements.Add(m);
 
 			                _tempNodes.Add(_nodes[random]);
 							_nodes.RemoveAt(random);
@@ -461,26 +499,25 @@ namespace VixenModules.Effect.Dissolve
 		                {
 			                if (_tempNodes.Count <= 0) break;
 			                var random = _tempNodes.Count - 1;
-			                if (RandomDissolve)
-			                {
-				                random = _random.Next(0, _tempNodes.Count);
-			                }
+			                if (RandomDissolve) random = _random.Next(0, _tempNodes.Count);
 			                totalPixelCount--;
 							
 							for (int ii = 0; ii < _elements.Count; ii++)
 							{
-								if (_elements[ii].ElementIndex == _tempNodes[random] && _elements[ii].StartTime + _elements[ii].Duration > startTime)
+								if (_elements[ii].ElementIndex == _tempNodes[random].ElementIndex && _elements[ii].StartTime + _elements[ii].Duration > startTime)
 								{
 									// Transfer the Element data to the RenderElement as we are finished with it.
 									// Element is then removed to save cycles.
 									// This saved a considerable amount of time as it will only loop through
 									// elements that have not be finalized.
-									DissolveClass m = new DissolveClass();
-									m.Duration = startTime - _elements[ii].StartTime - TimeSpan.FromMilliseconds(1);
-									m.StartTime = _elements[ii].StartTime;
-									m.EndTime = _elements[ii].EndTime;
-									m.ColorIndex = _elements[ii].ColorIndex;
-									m.ElementIndex = _elements[ii].ElementIndex;
+									DissolveClass m = new DissolveClass
+									{
+										Duration = startTime - _elements[ii].StartTime - TimeSpan.FromMilliseconds(1),
+										StartTime = _elements[ii].StartTime,
+										EndTime = _elements[ii].EndTime,
+										ColorIndex = _elements[ii].ColorIndex,
+										ElementIndex = _elements[ii].ElementIndex
+									};
 									_renderElements.Add(m);
 									_elements.RemoveAt(ii);
 									break;
@@ -501,10 +538,12 @@ namespace VixenModules.Effect.Dissolve
 	            {
 		            InitializeDissolveClasses();
 		            totalPixelCount = 0;
+					// Copies Elements to be rendered. This will be done per Mark.
 		            CopyElements();
 	            }
 			}
 
+			// Copies any remaining Elements to be rendered.
 	        CopyElements();
 			
 			// Now render element
@@ -551,14 +590,23 @@ namespace VixenModules.Effect.Dissolve
 	    {
 		    _nodes.Clear();
 		    _tempNodes.Clear();
+		    int colorCount = Colors.Count;
+			int startingNode = (StartingNode / GroupLevel);
+		    if (startingNode < 0) startingNode = 0;
+
 			for (int x = 0; x < _totalNodes; x++)
-		    {
-				_nodes.Add(x);
-		    }
+			{
+				var currentNode = startingNode % _totalNodes;
+				// Randomly or sequentially add color index to class and Element Index.
+				int colorIndex = RandomColor ? _random.Next(0, colorCount) : x % colorCount;
+				TempClass tc = new TempClass {ElementIndex = currentNode, ColorIndex = colorIndex};
+				_nodes.Add(tc);
+				startingNode++;
+			}
 
 			if (DissolveFlip) _nodes.Reverse();
-
 	    }
+
 	    public class DissolveClass
 	    {
 		    public int ElementIndex;
@@ -566,6 +614,12 @@ namespace VixenModules.Effect.Dissolve
 		    public TimeSpan StartTime;
 		    public TimeSpan Duration;
 			public TimeSpan EndTime;
+		}
+
+	    public class TempClass
+	    {
+		    public int ElementIndex;
+		    public int ColorIndex;
 	    }
 
 		private void SetupMarks()
