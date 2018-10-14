@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using Vixen.Module.Effect;
 using Vixen.Sys;
-using VixenModules.App.ColorGradients;
-using VixenModules.App.Curves;
 
 namespace VixenModules.Effect.Dissolve
 {
