@@ -66,7 +66,8 @@ namespace VixenModules.Effect.Dissolve
 	            DissolveMethod = DissolveMethod,
 	            RandomDissolve = RandomDissolve,
 	            DissolveFlip = DissolveFlip,
-	            GroupLevel = GroupLevel
+	            GroupLevel = GroupLevel,
+	            DissolveMarkType = DissolveMarkType
 			};
 			return result;
 		}

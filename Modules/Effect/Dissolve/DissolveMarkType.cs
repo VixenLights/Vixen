@@ -6,7 +6,9 @@ namespace VixenModules.Effect.Dissolve
 	{
 		[Description("Per Mark")]
 		PerMark,
-		[Description("Mark Label Value %")]
-		MarkLabelValue
+		[Description("Mark Label Value - %")]
+		MarkLabelValue,
+		[Description("Mark Label Value - Pixels")]
+		MarkLabelPixels
 	}
 }

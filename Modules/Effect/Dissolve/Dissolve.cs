@@ -385,7 +385,7 @@ namespace VixenModules.Effect.Dissolve
 				}
                 markInterval.Add(TimeSpan);
                 intervals = markInterval.Count;
-	            if (DissolveMarkType == DissolveMarkType.MarkLabelValue) intervals--;
+	            if (DissolveMarkType != DissolveMarkType.PerMark) intervals--;
             }
 	        else
 	        {
@@ -404,15 +404,24 @@ namespace VixenModules.Effect.Dissolve
 
 				for (int j = 0; j < interval; j++)
                 {
-	                double position = DissolveMode == DissolveMode.TimeInterval || DissolveMarkType == DissolveMarkType.MarkLabelValue
+	                double position = DissolveMode == DissolveMode.TimeInterval || DissolveMarkType != DissolveMarkType.PerMark
 						? (double) 100 / intervals * i
 		                : (double) 100 / interval * j;
 					
 					// Gets number of Pixels that need to be created/removed.
-	                if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.MarkLabelValue)
+	                if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType != DissolveMarkType.PerMark)
 	                {
-		                int.TryParse(markPercentage[i], out int percentage);
-						_pixels = (int)Math.Ceiling((double)pixelCount * percentage / 100) - totalPixelCount;
+		                switch (DissolveMarkType)
+		                {
+							case DissolveMarkType.MarkLabelValue:
+								int.TryParse(markPercentage[i], out int percentage);
+								_pixels = (int)Math.Ceiling((double)pixelCount * percentage / 100) - totalPixelCount;
+								break;
+							case DissolveMarkType.MarkLabelPixels:
+								int.TryParse(markPercentage[i], out int pixels);
+								_pixels = (int)Math.Ceiling((double)pixels /  GroupLevel) - totalPixelCount;
+								break;
+						}
 					}
 	                else
 	                {
@@ -486,7 +495,7 @@ namespace VixenModules.Effect.Dissolve
                 }
 
 	            startTime = DissolveMode == DissolveMode.TimeInterval ? startTime + intervalTime :
-		            DissolveMarkType == DissolveMarkType.MarkLabelValue ? markInterval[i + 1] : markInterval[i];
+		            DissolveMarkType != DissolveMarkType.PerMark ? markInterval[i + 1] : markInterval[i];
 				
 	            if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.PerMark)
 	            {
@@ -542,8 +551,7 @@ namespace VixenModules.Effect.Dissolve
 	    {
 		    _nodes.Clear();
 		    _tempNodes.Clear();
-
-		    for (int x = 0; x < _totalNodes; x++)
+			for (int x = 0; x < _totalNodes; x++)
 		    {
 				_nodes.Add(x);
 		    }
