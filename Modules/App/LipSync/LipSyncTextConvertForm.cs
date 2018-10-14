@@ -57,7 +57,7 @@ namespace VixenModules.App.LipSyncApp
 			}
 			foreach (string line in linesToConvert)
 			{
-				cleanLine = Regex.Replace(line, "[.,?!\"]", ""); //Remove punctuation marks as these always fail to match words
+				cleanLine = LipSyncTextConvert.RemovePunctuation(line); //Remove punctuation marks as these always fail to match words
 				if ((alignCombo.SelectedIndex == -1) || !(alignCombo.SelectedItem.Equals("Phrase")))
 				{
 					retVal.AddRange(cleanLine.Split());

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Vixen;
 using Vixen.Sys;
@@ -757,6 +758,12 @@ namespace VixenModules.App.LipSyncApp
 				reader.Close();
 			}
 
+		}
+
+		private static readonly Regex PunctuationFilter = new Regex("[.,?!\"]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		public static string RemovePunctuation(string text)
+		{
+			return PunctuationFilter.Replace(text, "");
 		}
 
 		public static List<PhonemeType> TryConvert(string text)

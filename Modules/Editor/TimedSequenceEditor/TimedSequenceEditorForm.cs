@@ -2851,7 +2851,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					
 					foreach (var mark in markGroup)
 					{
-						string[] words = mark.Text.Split();
+						string[] words = mark.Text.Trim().Split();
 						if (words.Any())
 						{
 							var duration = TimeSpan.FromTicks(mark.Duration.Ticks / words.Length);
@@ -2889,13 +2889,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					List<IMark> marksAdded = new List<IMark>();
 					foreach (var mark in markGroup)
 					{
-						List<App.LipSyncApp.PhonemeType> phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+						var cleanText = LipSyncTextConvert.RemovePunctuation(mark.Text.Trim());
+						List<App.LipSyncApp.PhonemeType> phonemeList = LipSyncTextConvert.TryConvert(cleanText);
 						if (!phonemeList.Any())
 						{
-							var value = GetUserMappingForFailedWord(mark.Text.Trim());
+							var value = GetUserMappingForFailedWord(cleanText);
 							if (value != String.Empty)
 							{
-								phonemeList = LipSyncTextConvert.TryConvert(mark.Text.Trim());
+								phonemeList = LipSyncTextConvert.TryConvert(cleanText);
 							}
 							else
 							{
