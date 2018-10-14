@@ -141,7 +141,14 @@ namespace VixenModules.App.SuperScheduler
 						var item = UpNext();
 						if (item != null)
 						{
-							stateStr = string.Format("Up Next: {0} on {1}", item.Show.Name, item.NextStartDateTime);
+							if (item.Show != null)
+							{
+								stateStr = string.Format("Up Next: {0} on {1}", item.Show.Name, item.NextStartDateTime);
+							}
+							else
+							{
+								stateStr = $"Up Next: Show not selected on {item.NextStartDateTime}";
+							}
 						}
 						else
 						{
