@@ -471,8 +471,6 @@ namespace VixenModules.Effect.Dissolve
 						{
 							if (_nodes.Count <= 0) break;
 							totalPixelCount++;
-							var random = _nodes.Count - 1;
-							if (RandomDissolve) random = _random.Next(0, _nodes.Count);
 
 							// Add element.
 							DissolveClass m = new DissolveClass
@@ -480,13 +478,21 @@ namespace VixenModules.Effect.Dissolve
 								StartTime = startTime,
 								EndTime = endTime,
 								Duration = endTime - startTime,
-								ColorIndex = _nodes[random].ColorIndex,
-								ElementIndex = _nodes[random].ElementIndex
+								ColorIndex = _nodes[0].ColorIndex,
+								ElementIndex = _nodes[0].ElementIndex
 							};
 							_elements.Add(m);
 
-							_tempNodes.Add(_nodes[random]);
-							_nodes.RemoveAt(random);
+							if (RandomDissolve)
+							{
+								_tempNodes.Add(_nodes[0]);
+							}
+							else
+							{
+								_tempNodes.Insert(0, _nodes[0]);
+							}
+							
+							_nodes.RemoveAt(0);
 						}
 					}
 					else
@@ -495,13 +501,11 @@ namespace VixenModules.Effect.Dissolve
 						for (int pixel = 0; pixel < -_pixels; pixel++)
 						{
 							if (_tempNodes.Count <= 0) break;
-							var random = _tempNodes.Count - 1;
-							if (RandomDissolve) random = _random.Next(0, _tempNodes.Count);
 							totalPixelCount--;
 
 							for (int ii = 0; ii < _elements.Count; ii++)
 							{
-								if (_elements[ii].ElementIndex == _tempNodes[random].ElementIndex && _elements[ii].StartTime + _elements[ii].Duration > startTime)
+								if (_elements[ii].ElementIndex == _tempNodes[0].ElementIndex && _elements[ii].StartTime + _elements[ii].Duration > startTime)
 								{
 									// Transfer the Element data to the RenderElement as we are finished with it.
 									// Element is then removed to save cycles.
@@ -520,8 +524,15 @@ namespace VixenModules.Effect.Dissolve
 									break;
 								}
 							}
-							_nodes.Add(_tempNodes[random]);
-							_tempNodes.RemoveAt(random);
+							if (RandomDissolve)
+							{
+								_nodes.Add(_tempNodes[0]);
+							}
+							else
+							{
+								_nodes.Insert(0, _tempNodes[0]);
+							}
+							_tempNodes.RemoveAt(0);
 						}
 					}
 
@@ -579,7 +590,7 @@ namespace VixenModules.Effect.Dissolve
 
 		private void CopyElements()
 		{
-			foreach (var element in _elements) _renderElements.Add(element);
+			_renderElements.AddRange(_elements);
 			_elements.Clear();
 		}
 
@@ -590,18 +601,35 @@ namespace VixenModules.Effect.Dissolve
 			int colorCount = Colors.Count;
 			int startingNode = StartingNode - 1;
 			if (startingNode < 0) startingNode = 0;
+			List<int> elementIndex = new List<int>();
+
+			for (int node = 0; node < _totalNodes; node++)
+			{
+				elementIndex.Add(node);
+			}
 
 			for (int x = 0; x < _totalNodes; x++)
 			{
-				var currentNode = startingNode % _totalNodes;
+				int currentNode;
+				if (RandomDissolve)
+				{
+					int currentIndex = _random.Next(0, elementIndex.Count);
+					currentNode = elementIndex[currentIndex];
+					elementIndex.RemoveAt(currentIndex);
+				}
+				else
+				{
+					currentNode = startingNode % _totalNodes;
+				}
+				
 				// Randomly or sequentially add color index to class and Element Index.
-				int colorIndex = RandomColor ? _random.Next(0, colorCount) : x % colorCount;
+				int colorIndex = RandomColor ? _random.Next(0, colorCount) : currentNode % colorCount;
 				TempClass tc = new TempClass { ElementIndex = currentNode, ColorIndex = colorIndex };
 				_nodes.Add(tc);
 				startingNode++;
 			}
 
-			if (DissolveFlip) _nodes.Reverse();
+			if (!DissolveFlip) _nodes.Reverse();
 		}
 
 		private class DissolveClass
