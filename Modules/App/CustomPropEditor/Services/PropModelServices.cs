@@ -378,9 +378,9 @@ namespace VixenModules.App.CustomPropEditor.Services
 			return _models.Values.Count(x => x.Name == name) > 1;
 		}
 
-		public string Uniquify(string name, int orderIndex = 2)
+		public string Uniquify(string name, int orderIndex = 2, ElementModel renameModel=null)
 		{
-			if (_models.Values.Any(x => x.Name == name))
+			if (_models.Values.Except(new []{renameModel}).Any(x => x.Name == name))
 			{
 				string originalName = name;
 				bool unique;

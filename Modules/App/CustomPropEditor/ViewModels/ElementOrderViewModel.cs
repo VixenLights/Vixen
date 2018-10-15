@@ -173,7 +173,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 					}
 
 
-					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i]);
+					SelectedItems[i].Name = PropModelServices.Instance().Uniquify(renamer.Names[i], 2, SelectedItems[i].ElementModel);
 				}
 
 				return true;
