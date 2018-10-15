@@ -12,7 +12,7 @@ namespace VixenModules.Effect.Dissolve
 		PerMarkDissolve,
 		[Description("Mark Label Value - %")]
 		MarkLabelValue,
-		[Description("Mark Label Value - Pixels")]
+		[Description("Mark Label Value - Elements")]
 		MarkLabelPixels
 	}
 }

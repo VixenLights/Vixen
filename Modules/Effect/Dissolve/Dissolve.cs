@@ -284,8 +284,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Starting Node")]
-		[ProviderDescription(@"Starting Node")]
+		[ProviderDisplayName(@"Starting Element")]
+		[ProviderDescription(@"Starting Element")]
 		[NumberRange(1, 50000, 1)]
 		[PropertyOrder(5)]
 		public int StartingNode
@@ -449,7 +449,7 @@ namespace VixenModules.Effect.Dissolve
 								break;
 							case DissolveMarkType.MarkLabelPixels:
 								int.TryParse(markPercentage[i], out int pixels);
-								_pixels = (int)Math.Ceiling((double)pixels / GroupLevel) - totalPixelCount;
+								_pixels = (int)Math.Ceiling((double)pixels) - totalPixelCount;
 								break;
 							case DissolveMarkType.PerMarkFill:
 								_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (i + 1)) - totalPixelCount;
@@ -588,7 +588,7 @@ namespace VixenModules.Effect.Dissolve
 			_nodes.Clear();
 			_tempNodes.Clear();
 			int colorCount = Colors.Count;
-			int startingNode = (StartingNode / GroupLevel);
+			int startingNode = StartingNode - 1;
 			if (startingNode < 0) startingNode = 0;
 
 			for (int x = 0; x < _totalNodes; x++)
