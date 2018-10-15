@@ -502,7 +502,17 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		private void PreviewWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
 		{
-			Close();
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				var messageBox = new MessageBoxForm("The preview can only be closed from the Preview Configuration dialog.", "Close", MessageBoxButtons.OK, SystemIcons.Information);
+				messageBox.ShowDialog();
+				e.Cancel = true;
+			}
+			else
+			{
+				glControl.MouseWheel -= GlControl_MouseWheel;
+				Close();
+			}
 		}
 
 		private void glControl_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
