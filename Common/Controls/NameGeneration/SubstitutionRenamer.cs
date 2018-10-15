@@ -180,9 +180,9 @@ namespace Common.Controls.NameGeneration
 		private void txtFind_TextChanged(object sender, EventArgs e)
 		{
 			if (_suspendNameGeneration) return;
-			buttonOk.Enabled = _patterns.Any(x => !string.IsNullOrEmpty(x.Find));
 			PopulatePatternFields();
 			PopulateNames();
+			buttonOk.Enabled = _patterns.Any(x => !string.IsNullOrEmpty(x.Find));
 		}
 
 		private void txtReplace_TextChanged(object sender, EventArgs e)

@@ -189,8 +189,10 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			get { return ElementModel.Name; }
 			set
 			{
+				object oldValue = ElementModel.Name;
 				ElementModel.Name = value;
 				IsDirty = true;
+				RaisePropertyChanged(nameof(Name), oldValue , value);
 			}
 		}
 
