@@ -250,7 +250,7 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Dissolve Mark Type")]
+		[ProviderDisplayName(@"Mark Type")]
 		[ProviderDescription(@"Can use the Marks to determine how the effect is dissolved.")]
 		[PropertyOrder(3)]
 		public DissolveMarkType DissolveMarkType
@@ -450,6 +450,12 @@ namespace VixenModules.Effect.Dissolve
 							case DissolveMarkType.MarkLabelPixels:
 								int.TryParse(markPercentage[i], out int pixels);
 								_pixels = (int)Math.Ceiling((double)pixels / GroupLevel) - totalPixelCount;
+								break;
+							case DissolveMarkType.PerMarkFill:
+								_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (i + 1)) - totalPixelCount;
+								break;
+							case DissolveMarkType.PerMarkDissolve:
+								_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (intervals - i - 1)) - totalPixelCount;
 								break;
 						}
 					}
