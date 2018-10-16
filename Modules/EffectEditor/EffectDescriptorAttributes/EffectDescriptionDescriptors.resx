@@ -750,4 +750,31 @@
   <data name="Quality" xml:space="preserve">
     <value>Higher the value will result in higher quality but slower render time.</value>
   </data>
+  <data name="Density" xml:space="preserve">
+    <value>Adjust the density of the elements.</value>
+  </data>
+  <data name="DissolveFlip" xml:space="preserve">
+    <value>Flips the direction of the sequential dissolve.</value>
+  </data>
+  <data name="DissolveMarkCollection" xml:space="preserve">
+    <value>The Mark Collection to align changes to the Dissolve pattern.</value>
+  </data>
+  <data name="GroupColors" xml:space="preserve">
+    <value>Each element will have all colors generated in parallel.</value>
+  </data>
+  <data name="MarkType" xml:space="preserve">
+    <value>Can use the Marks to determine how the effect is rendered.</value>
+  </data>
+  <data name="RandomColorOrder" xml:space="preserve">
+    <value>Generates colors in a random order from teh Color collection.</value>
+  </data>
+  <data name="RandomDissolve" xml:space="preserve">
+    <value>Generates a random or sequential Dissolve.</value>
+  </data>
+  <data name="StartingElement" xml:space="preserve">
+    <value>Starting location were the Dissolve or Fill will commence from.</value>
+  </data>
+  <data name="TimingSource" xml:space="preserve">
+    <value>Selects what source is used to determine change.</value>
+  </data>
 </root>

@@ -584,6 +584,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Density.
+        /// </summary>
+        internal static string Density {
+            get {
+                return ResourceManager.GetString("Density", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Levels Deep.
         /// </summary>
         internal static string Depth {
@@ -616,6 +625,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string DirectionPerWord {
             get {
                 return ResourceManager.GetString("DirectionPerWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dissolve Flip.
+        /// </summary>
+        internal static string DissolveFlip {
+            get {
+                return ResourceManager.GetString("DissolveFlip", resourceCulture);
             }
         }
         
@@ -836,6 +854,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Colors.
+        /// </summary>
+        internal static string GroupColors {
+            get {
+                return ResourceManager.GetString("GroupColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group Level.
         /// </summary>
         internal static string GroupLevel {
@@ -1039,6 +1066,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MarkLabels {
             get {
                 return ResourceManager.GetString("MarkLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark Type.
+        /// </summary>
+        internal static string MarkType {
+            get {
+                return ResourceManager.GetString("MarkType", resourceCulture);
             }
         }
         
@@ -1327,6 +1363,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RandomAngle {
             get {
                 return ResourceManager.GetString("RandomAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Color Order.
+        /// </summary>
+        internal static string RandomColorOrder {
+            get {
+                return ResourceManager.GetString("RandomColorOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random Dissolve.
+        /// </summary>
+        internal static string RandomDissolve {
+            get {
+                return ResourceManager.GetString("RandomDissolve", resourceCulture);
             }
         }
         
@@ -1691,6 +1745,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Starting Element.
+        /// </summary>
+        internal static string StartingElement {
+            get {
+                return ResourceManager.GetString("StartingElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Static Effect.
         /// </summary>
         internal static string StaticEffect {
@@ -1840,6 +1903,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TimeVisibleLength {
             get {
                 return ResourceManager.GetString("TimeVisibleLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timing Source.
+        /// </summary>
+        internal static string TimingSource {
+            get {
+                return ResourceManager.GetString("TimingSource", resourceCulture);
             }
         }
         

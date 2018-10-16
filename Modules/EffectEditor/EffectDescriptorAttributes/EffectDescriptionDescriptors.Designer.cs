@@ -521,6 +521,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the density of the elements..
+        /// </summary>
+        internal static string Density {
+            get {
+                return ResourceManager.GetString("Density", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates how many levels deep the effect should be grouped..
         /// </summary>
         internal static string Depth {
@@ -553,6 +562,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string DirectionPerWord {
             get {
                 return ResourceManager.GetString("DirectionPerWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flips the direction of the sequential dissolve..
+        /// </summary>
+        internal static string DissolveFlip {
+            get {
+                return ResourceManager.GetString("DissolveFlip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Mark Collection to align changes to the Dissolve pattern..
+        /// </summary>
+        internal static string DissolveMarkCollection {
+            get {
+                return ResourceManager.GetString("DissolveMarkCollection", resourceCulture);
             }
         }
         
@@ -773,6 +800,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Each element will have all colors generated in parallel..
+        /// </summary>
+        internal static string GroupColors {
+            get {
+                return ResourceManager.GetString("GroupColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the grouping together of elements that will be in the same state..
         /// </summary>
         internal static string GroupLevel {
@@ -949,6 +985,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MarkTimeFreeze {
             get {
                 return ResourceManager.GetString("MarkTimeFreeze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can use the Marks to determine how the effect is rendered..
+        /// </summary>
+        internal static string MarkType {
+            get {
+                return ResourceManager.GetString("MarkType", resourceCulture);
             }
         }
         
@@ -1255,6 +1300,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RandomAngle {
             get {
                 return ResourceManager.GetString("RandomAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generates colors in a random order from teh Color collection..
+        /// </summary>
+        internal static string RandomColorOrder {
+            get {
+                return ResourceManager.GetString("RandomColorOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generates a random or sequential Dissolve..
+        /// </summary>
+        internal static string RandomDissolve {
+            get {
+                return ResourceManager.GetString("RandomDissolve", resourceCulture);
             }
         }
         
@@ -1637,6 +1700,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Starting location were the Dissolve or Fill will commence from..
+        /// </summary>
+        internal static string StartingElement {
+            get {
+                return ResourceManager.GetString("StartingElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates the color is a static color..
         /// </summary>
         internal static string StaticColorIndicator {
@@ -1795,6 +1867,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string TimeVisibleLength {
             get {
                 return ResourceManager.GetString("TimeVisibleLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects what source is used to determine change..
+        /// </summary>
+        internal static string TimingSource {
+            get {
+                return ResourceManager.GetString("TimingSource", resourceCulture);
             }
         }
         
