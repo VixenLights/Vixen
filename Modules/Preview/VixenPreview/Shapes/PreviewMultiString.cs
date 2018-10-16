@@ -21,9 +21,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialLightsPerString = 10;
 
-        public PreviewMultiString(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
-        {
-            ZoomLevel = zoomLevel;
+	    public override string TypeName => @"Multi-String";
+
+		public PreviewMultiString(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
+		{ 
+			ZoomLevel = zoomLevel;
             AddPoint(PointToZoomPoint(point1));
             _strings = new List<PreviewBaseShape>();
             Creating = true;

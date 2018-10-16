@@ -17,7 +17,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _point3 = new PreviewPoint(10, 10);
 		private PreviewPoint _bottomRightPoint; 
 
-		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart; 
+		private PreviewPoint p1Start, p2Start, p3Start, pBottomRightStart;
+
+		public override string TypeName => @"Triangle";
 
 		public PreviewTriangle(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{

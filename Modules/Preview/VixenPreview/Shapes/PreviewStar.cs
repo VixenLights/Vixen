@@ -25,9 +25,10 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         [DataMember] private StringDirections _stringDirection;
 
 		private int pixelsPerPoint;
-		private int lineCount;
 
 		private PreviewPoint bottomRightStart, topLeftStart;
+
+		public override string TypeName => @"Star";
 
 		public PreviewStar(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
@@ -325,7 +326,6 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private void RecalcPoints()
 		{
-			lineCount = _pointCount*2;
 			pixelsPerPoint = PixelCount/_pointCount;
 			while (
 				((pixelsPerPoint%2) != 0)

@@ -99,9 +99,15 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		}
 
 		/// <summary>
+		/// Display name for the type of shape.
+		/// </summary>
+		[Browsable(false)]
+		public virtual string TypeName => @"Shape";
+
+		/// <summary>
 		/// Top most pixel location
 		/// </summary>
-        [Browsable(false)]
+		[Browsable(false)]
         public abstract int Top { get; set; }
 
 		/// <summary>
@@ -621,7 +627,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
             }
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewPolyLine")
             {
-                setupControl = new Shapes.PreviewPolyLineSetupControl(this);
+                setupControl = new Shapes.PreviewShapeBaseSetupControl(this);
             }
             else if (GetType().ToString() == "VixenModules.Preview.VixenPreview.Shapes.PreviewMultiString")
             {

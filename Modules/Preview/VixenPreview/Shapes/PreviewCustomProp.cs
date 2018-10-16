@@ -28,6 +28,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private PreviewDoublePoint _selectionPoint;
 		private int _rotationAngle;
 
+		public override string TypeName => @"Custom Prop";
+
 		public PreviewCustomProp(double zoomLevel)
 		{
 			PropPixels = new List<PreviewPixel>();

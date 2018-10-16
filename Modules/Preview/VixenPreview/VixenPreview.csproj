@@ -274,12 +274,6 @@
     </Compile>
     <Compile Include="Shapes\PreviewPolyLine.cs" />
     <Compile Include="Shapes\PreviewIcicle.cs" />
-    <Compile Include="Shapes\PreviewPolyLineSetupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewPolyLineSetupControl.Designer.cs">
-      <DependentUpon>PreviewPolyLineSetupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Shapes\PreviewIcicleSetupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -288,9 +282,6 @@
     <Compile Include="Shapes\PreviewRectangle.cs" />
     <Compile Include="Shapes\PreviewStarSetupControl.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Shapes\PreviewStarSetupControl.Designer.cs">
-      <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\PreviewStar.cs" />
     <Compile Include="Shapes\PreviewCaneSetupControl.cs">
@@ -438,12 +429,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewShapeBaseSetupControl.resx">
       <DependentUpon>PreviewShapeBaseSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewPolyLineSetupControl.resx">
-      <DependentUpon>PreviewPolyLineSetupControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shapes\PreviewStarSetupControl.resx">
-      <DependentUpon>PreviewStarSetupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shapes\PreviewSetElements.resx">
       <DependentUpon>PreviewSetElements.cs</DependentUpon>

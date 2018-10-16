@@ -19,9 +19,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         //private PreviewPoint p1Start, p2Start;
         private List<PreviewPoint> pStart = new List<PreviewPoint>();
         const int InitialPixelSpacing = 10;
-        PreviewTools previewTools = new PreviewTools();
+		public override string TypeName => @"Poly Line";
 
-        public PreviewPolyLine(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
+		public PreviewPolyLine(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
 			AddPoint(PointToZoomPoint(point1));

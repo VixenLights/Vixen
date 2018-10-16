@@ -39,6 +39,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 			Layout();
 		}
 
+		public override string TypeName => @"Single";
+
 		[OnDeserialized]
 		private new void OnDeserialized(StreamingContext context)
 		{

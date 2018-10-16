@@ -22,6 +22,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
+		public override string TypeName => @"Ellipse";
+
 		public PreviewEllipse(PreviewPoint point1, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;

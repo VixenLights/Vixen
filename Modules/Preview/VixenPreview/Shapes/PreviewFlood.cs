@@ -20,6 +20,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _p1;
 		private PreviewPoint p1Start;
 
+		public override string TypeName => @"Flood";
+
 		public PreviewFlood(PreviewPoint point, ElementNode selectedNode)
 		{
 			_p1 = point;

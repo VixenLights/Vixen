@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewCustomSetupControl));
-			this.buttonHelp = new System.Windows.Forms.Button();
+			this.buttonHelp = new Common.Controls.RoundButton();
 			this.btnSyncLightSize = new System.Windows.Forms.Button();
 			this.label6 = new System.Windows.Forms.Label();
 			this.comboBoxStringToEdit = new System.Windows.Forms.ComboBox();
@@ -154,7 +154,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button buttonHelp;
+        private Common.Controls.RoundButton buttonHelp;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxStringToEdit;
 		private System.Windows.Forms.Button btnSyncLightSize;
