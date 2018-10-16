@@ -72,6 +72,11 @@
       <Name>Vixen</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Help\VixenHelp.csproj">
+      <Project>{bd12bffc-7039-4c79-aba0-51f99773a916}</Project>
+      <Name>VixenHelp</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\WPFCommon\WPFCommon.csproj">
       <Project>{44c23ecf-ea1c-4806-956a-07ec1203f8b4}</Project>
       <Name>WPFCommon</Name>

@@ -159,6 +159,10 @@ namespace VixenApplication
 			onlineMenu.Click += new System.EventHandler(this.OnlineHelpMenu_Click);
 			helpMenu.DropDown.Items.Add(onlineMenu);
 
+			ToolStripMenuItem vixenYouTubeChannelMenu = new ToolStripMenuItem("Vixen YouTube Channel");
+			vixenYouTubeChannelMenu.Click += new System.EventHandler(this.VixenYouTubeChannelMenu_Click);
+			helpMenu.DropDown.Items.Add(vixenYouTubeChannelMenu);
+
 			ToolStripMenuItem updatesMenu = new ToolStripMenuItem("Check for Updates");
 			updatesMenu.Click += new System.EventHandler(this.UpdatesMenu_Click);
 			helpMenu.DropDown.Items.Add(updatesMenu);
@@ -1145,7 +1149,12 @@ namespace VixenApplication
 
 		private void OnlineHelpMenu_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://www.vixenlights.com/vixen-3-documentation/");
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Sequencer);
+		}
+
+		private void VixenYouTubeChannelMenu_Click(object sender, EventArgs e)
+		{
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.YouTubeChannel);
 		}
 
 		private async void UpdatesMenu_Click(object sender, EventArgs e)

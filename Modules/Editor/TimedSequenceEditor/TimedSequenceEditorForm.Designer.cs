@@ -160,6 +160,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.papagayoImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bulkEffectMoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpDocumentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.onlineHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.vixenYouTubeChannelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerPlaying = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -1503,11 +1505,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// helpDocumentationToolStripMenuItem
 			// 
+			this.helpDocumentationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onlineHelpToolStripMenuItem,
+            this.vixenYouTubeChannelToolStripMenuItem});
 			this.helpDocumentationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.helpDocumentationToolStripMenuItem.Name = "helpDocumentationToolStripMenuItem";
 			this.helpDocumentationToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpDocumentationToolStripMenuItem.Text = "Help";
-			this.helpDocumentationToolStripMenuItem.Click += new System.EventHandler(this.helpDocumentationToolStripMenuItem_Click);
+			// 
+			// onlineHelpToolStripMenuItem
+			// 
+			this.onlineHelpToolStripMenuItem.Name = "onlineHelpToolStripMenuItem";
+			this.onlineHelpToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.onlineHelpToolStripMenuItem.Text = "Online Help";
+			this.onlineHelpToolStripMenuItem.Click += new System.EventHandler(this.helpDocumentationToolStripMenuItem_Click);
+			// 
+			// vixenYouTubeChannelToolStripMenuItem
+			// 
+			this.vixenYouTubeChannelToolStripMenuItem.Name = "vixenYouTubeChannelToolStripMenuItem";
+			this.vixenYouTubeChannelToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.vixenYouTubeChannelToolStripMenuItem.Text = "Vixen YouTube Channel";
+			this.vixenYouTubeChannelToolStripMenuItem.Click += new System.EventHandler(this.vixenYouTubeChannelToolStripMenuItem_Click);
 			// 
 			// timerPlaying
 			// 
@@ -1631,7 +1649,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// toolStripContainer.ContentPanel
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
-			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 561);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
@@ -1658,7 +1676,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.DockLeftPortion = 200D;
 			this.dockPanel.DocumentStyle = WeifenLuo.WinFormsUI.Docking.DocumentStyle.DockingWindow;
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
-			this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
 			this.dockPanel.Size = new System.Drawing.Size(1348, 561);
 			this.dockPanel.TabIndex = 13;
@@ -1798,7 +1816,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.DoubleBuffered = true;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.Margin = new System.Windows.Forms.Padding(4);
 			this.Name = "TimedSequenceEditorForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Timed Sequence Editor";
@@ -1992,5 +2010,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripButton toolStripButton_ColorLibrary;
 		private System.Windows.Forms.ToolStripButton toolStripButton_ColorGradient;
 		private System.Windows.Forms.ToolStripButton toolStripButton_LipSync;
+		private System.Windows.Forms.ToolStripMenuItem onlineHelpToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem vixenYouTubeChannelToolStripMenuItem;
 	}
 }

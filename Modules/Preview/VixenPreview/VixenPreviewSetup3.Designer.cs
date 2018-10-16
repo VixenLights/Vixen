@@ -129,6 +129,7 @@
 			this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
 			this.btnBulbDecrease = new System.Windows.Forms.Button();
 			this.btnBulbIncrease = new System.Windows.Forms.Button();
+			this.vixenYouTubeChannelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel11.SuspendLayout();
 			this.toolStripUndo.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -907,6 +908,7 @@
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.viewHelpToolStripMenuItem,
+            this.vixenYouTubeChannelToolStripMenuItem,
             this.templateHelpToolStripMenuItem,
             this.customPropHelpToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -918,21 +920,21 @@
 			this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
 			this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
 			this.viewHelpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
-			this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(207, 30);
 			this.viewHelpToolStripMenuItem.Text = "&View Help";
 			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
 			// 
 			// templateHelpToolStripMenuItem
 			// 
 			this.templateHelpToolStripMenuItem.Name = "templateHelpToolStripMenuItem";
-			this.templateHelpToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.templateHelpToolStripMenuItem.Size = new System.Drawing.Size(207, 30);
 			this.templateHelpToolStripMenuItem.Text = "Template Help";
 			this.templateHelpToolStripMenuItem.Click += new System.EventHandler(this.templateHelpToolStripMenuItem_Click);
 			// 
 			// customPropHelpToolStripMenuItem
 			// 
 			this.customPropHelpToolStripMenuItem.Name = "customPropHelpToolStripMenuItem";
-			this.customPropHelpToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+			this.customPropHelpToolStripMenuItem.Size = new System.Drawing.Size(207, 30);
 			this.customPropHelpToolStripMenuItem.Text = "Custom Prop Help";
 			// 
 			// buttonIcicle
@@ -1514,6 +1516,13 @@
 			this.btnBulbIncrease.UseVisualStyleBackColor = false;
 			this.btnBulbIncrease.Click += new System.EventHandler(this.btnBulbIncrease_Click);
 			// 
+			// vixenYouTubeChannelToolStripMenuItem
+			// 
+			this.vixenYouTubeChannelToolStripMenuItem.Name = "vixenYouTubeChannelToolStripMenuItem";
+			this.vixenYouTubeChannelToolStripMenuItem.Size = new System.Drawing.Size(207, 30);
+			this.vixenYouTubeChannelToolStripMenuItem.Text = "Vixen YouTube Channel";
+			this.vixenYouTubeChannelToolStripMenuItem.Click += new System.EventHandler(this.vixenYouTubeChannelToolStripMenuItem_Click);
+			// 
 			// VixenPreviewSetup3
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1668,5 +1677,6 @@
 		private System.Windows.Forms.Button btnBulbDecrease;
 		private System.Windows.Forms.Button btnBulbIncrease;
 		private System.Windows.Forms.ToolStripMenuItem useOpenGLPreviewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem vixenYouTubeChannelToolStripMenuItem;
 	}
 }
