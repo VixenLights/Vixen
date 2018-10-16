@@ -750,4 +750,28 @@
   <data name="CountDownSizeMode" xml:space="preserve">
     <value>Size Mode</value>
   </data>
+  <data name="Density" xml:space="preserve">
+    <value>Density</value>
+  </data>
+  <data name="DissolveFlip" xml:space="preserve">
+    <value>Dissolve Flip</value>
+  </data>
+  <data name="GroupColors" xml:space="preserve">
+    <value>Group Colors</value>
+  </data>
+  <data name="MarkType" xml:space="preserve">
+    <value>Mark Type</value>
+  </data>
+  <data name="RandomColorOrder" xml:space="preserve">
+    <value>Random Color Order</value>
+  </data>
+  <data name="RandomDissolve" xml:space="preserve">
+    <value>Random Dissolve</value>
+  </data>
+  <data name="StartingElement" xml:space="preserve">
+    <value>Starting Element</value>
+  </data>
+  <data name="TimingSource" xml:space="preserve">
+    <value>Timing Source</value>
+  </data>
 </root>

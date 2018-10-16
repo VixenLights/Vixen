@@ -145,8 +145,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Random Color Order")]
-		[ProviderDescription(@"Random Color Order")]
+		[ProviderDisplayName(@"RandomColorOrder")]
+		[ProviderDescription(@"RandomColorOrder")]
 		[PropertyOrder(1)]
 		public bool RandomColor
 		{
@@ -162,8 +162,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
-		[ProviderDisplayName(@"Group Colors")]
-		[ProviderDescription(@"Each element will have all colors generated in parallel")]
+		[ProviderDisplayName(@"GroupColors")]
+		[ProviderDescription(@"GroupColors")]
 		[PropertyOrder(2)]
 		public bool GroupColors
 		{
@@ -182,8 +182,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory("Config", 1)]
-		[DisplayName(@"Timing Source")]
-		[Description(@"Selects what source is used to determine change.")]
+		[ProviderDisplayName(@"TimingSource")]
+		[ProviderDescription(@"TimingSource")]
 		[PropertyOrder(0)]
 		public DissolveMode DissolveMode
 		{
@@ -205,8 +205,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Mark Collection")]
-		[ProviderDescription(@"Mark Collection that has the phonemes to align to.")]
+		[ProviderDisplayName(@"MarkCollection")]
+		[ProviderDescription(@"DissolveMarkCollection")]
 		[TypeConverter(typeof(IMarkCollectionNameConverter))]
 		[PropertyEditor("SelectionEditor")]
 		[PropertyOrder(1)]
@@ -235,7 +235,7 @@ namespace VixenModules.Effect.Dissolve
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Density")]
-		[ProviderDescription(@"Adjust the density of the elements.")]
+		[ProviderDescription(@"Density")]
 		[PropertyOrder(2)]
 		public Curve DissolveCurve
 		{
@@ -250,8 +250,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Mark Type")]
-		[ProviderDescription(@"Can use the Marks to determine how the effect is dissolved.")]
+		[ProviderDisplayName(@"MarkType")]
+		[ProviderDescription(@"MarkType")]
 		[PropertyOrder(3)]
 		public DissolveMarkType DissolveMarkType
 		{
@@ -284,8 +284,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Starting Element")]
-		[ProviderDescription(@"Starting Element")]
+		[ProviderDisplayName(@"StartingElement")]
+		[ProviderDescription(@"StartingElement")]
 		[NumberRange(1, 50000, 1)]
 		[PropertyOrder(5)]
 		public int StartingNode
@@ -301,8 +301,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Random Dissolve")]
-		[ProviderDescription(@"Generates a random or sequential Dissolve.")]
+		[ProviderDisplayName(@"RandomDissolve")]
+		[ProviderDescription(@"RandomDissolve")]
 		[PropertyOrder(6)]
 		public bool RandomDissolve
 		{
@@ -318,8 +318,8 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Dissolve Flip")]
-		[ProviderDescription(@"Flips the direction of the sequential dissolve.")]
+		[ProviderDisplayName(@"DissolveFlip")]
+		[ProviderDescription(@"DissolveFlip")]
 		[PropertyOrder(7)]
 		public bool DissolveFlip
 		{
