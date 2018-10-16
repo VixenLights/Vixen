@@ -100,6 +100,11 @@
       <Name>WPFCommon</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\App\Modeling\Modeling.csproj">
+      <Project>{fe86f615-e983-47e2-944e-14ee273f7530}</Project>
+      <Name>Modeling</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Modules\Property\Order\Order.csproj">
       <Project>{A4254642-2965-469A-8FBD-B45F6EDD651C}</Project>
       <Name>Order</Name>

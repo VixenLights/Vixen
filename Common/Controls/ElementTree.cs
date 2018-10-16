@@ -482,6 +482,10 @@ namespace Common.Controls
 
 		#region Helper functions
 
+		public delegate void ExportDiagramDelegate(ElementNode node);
+
+		public ExportDiagramDelegate ExportDiagram { get; set; }
+
 		public void DeleteNode(TreeNode tn)
 		{
 			ElementNode cn = tn.Tag as ElementNode;
@@ -688,6 +692,21 @@ namespace Common.Controls
 			patternRenameToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 0);
 			reverseElementsToolStripMenuItem.Enabled = (SelectedTreeNodes.Count > 1) && (treeview.CanReverseElements());
 			sortToolStripMenuItem.Enabled = CanSortSelected();
+			exportWireDiagramToolStripMenuItem.Enabled = CanExportDiagram();
+		}
+
+		private bool CanExportDiagram()
+		{
+			var canExport = false;
+			if (SelectedTreeNodes.Count == 1)
+			{
+				if (SelectedTreeNodes.Any(x => x.GetNodeCount(true) > 1))
+				{
+					canExport = true;
+				}
+			}
+
+			return canExport;
 		}
 
 		// TODO: use the system clipboard properly; I couldn't get it working in the sequencer, so I'm not
@@ -958,6 +977,10 @@ namespace Common.Controls
 		{
 			SortNodes();
 		}
+		private void exportWireDiagramToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ExportDiagram?.Invoke(SelectedElementNodes.FirstOrDefault());
+		}
 
 		private bool CanSortSelected()
 		{
@@ -1039,6 +1062,5 @@ namespace Common.Controls
 			//}
 		}
 
-		
 	}
 }
