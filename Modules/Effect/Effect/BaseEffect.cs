@@ -9,6 +9,7 @@ using Vixen.Marks;
 using Vixen.Module.Effect;
 using Vixen.Sys;
 using VixenModules.Property.Color;
+using VixenModules.Property.Orientation;
 
 namespace VixenModules.Effect.Effect
 {
@@ -56,6 +57,28 @@ namespace VixenModules.Effect.Effect
 				HasDiscreteColors = false;
 			}
 			return validColors;
+		}
+
+		protected Tuple<bool, StringOrientation> GetOrientation()
+		{
+			var value = new Tuple<bool, StringOrientation>(false, StringOrientation.Vertical);
+			var node = TargetNodes.FirstOrDefault();
+			if (node != null && node.Properties.Contains(OrientationDescriptor._typeId))
+			{
+				var orientation = OrientationModule.GetOrientationForElement(node);
+				switch (orientation)
+				{
+					case Orientation.Horizontal:
+						value = new Tuple<bool, StringOrientation>(true, StringOrientation.Horizontal);
+						break;
+					default:
+						value = new Tuple<bool, StringOrientation>(true, StringOrientation.Vertical);
+						break;
+				}
+			}
+
+			return value;
+
 		}
 
 		protected bool IsElementDiscrete(ElementNode elementNode)

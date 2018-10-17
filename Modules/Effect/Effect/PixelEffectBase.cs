@@ -244,21 +244,11 @@ namespace VixenModules.Effect.Effect
 
 		protected void SetOrientation()
 		{
-			var node = TargetNodes.FirstOrDefault();
-			if (node!=null && node.Properties.Contains(OrientationDescriptor._typeId))
+			var orientation = GetOrientation();
+			if (orientation.Item1)
 			{
-				var orientation = OrientationModule.GetOrientationForElement(node);
-				switch (orientation)
-				{
-					case Orientation.Horizontal:
-						StringOrientation = StringOrientation.Horizontal;
-						break;
-					default:
-						StringOrientation = StringOrientation.Vertical;
-						break;
-				}
+				StringOrientation = orientation.Item2;
 			}
-			
 		}
 
 		private void ConfigureStringBuffer()
