@@ -73,7 +73,27 @@ namespace VixenModules.Effect.Dissolve
 
 		private IEnumerable<ElementNode> GetNodesToRenderOn()
 		{
-			return TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			IEnumerable<ElementNode> renderNodes = TargetNodes;
+
+			if (!EnableDepth)
+			{
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+			}
+			else
+			{
+				for (int i = 0; i < DepthOfEffect; i++)
+				{
+					renderNodes = renderNodes.SelectMany(x => x.Children);
+				}
+			}
+
+			// If the given DepthOfEffect results in no nodes (because it goes "too deep" and misses all nodes), 
+			// then we'll default to the LeafElements, which will at least return 1 element (the TargetNode)
+			if (!renderNodes.Any())
+				renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator());
+
+			return renderNodes;
+
 		}
 
 		//Validate that the we are using valid colors and set appropriate defaults if not.
@@ -335,6 +355,46 @@ namespace VixenModules.Effect.Dissolve
 
 		#endregion
 
+		#region Depth
+
+		[Value]
+		[ProviderCategory(@"Depth", 2)]
+		[ProviderDisplayName(@"IndividualElements")]
+		[ProviderDescription(@"AlternatingDepth")]
+		[PropertyOrder(0)]
+		public bool EnableDepth
+		{
+			get { return (bool)_data.EnableDepth; }
+			set
+			{
+				_data.EnableDepth = value;
+				IsDirty = true;
+				UpdateDepthAttributes();
+				TypeDescriptor.Refresh(this);
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Depth", 2)]
+		[ProviderDisplayName(@"Depth")]
+		[ProviderDescription(@"Depth")]
+		[TypeConverter(typeof(TargetElementDepthConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public int DepthOfEffect
+		{
+			get { return _data.DepthOfEffect; }
+			set
+			{
+				_data.DepthOfEffect = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Information
 
 		public override string Information
@@ -354,6 +414,7 @@ namespace VixenModules.Effect.Dissolve
 		private void InitAllAttributes()
 		{
 			UpdateDissolveModeAttributes(false);
+			UpdateDepthAttributes();
 			TypeDescriptor.Refresh(this);
 		}
 
@@ -373,6 +434,15 @@ namespace VixenModules.Effect.Dissolve
 			{
 				TypeDescriptor.Refresh(this);
 			}
+		}
+
+		private void UpdateDepthAttributes()
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1)
+			{
+				{"DepthOfEffect", EnableDepth}
+			};
+			SetBrowsable(propertyStates);
 		}
 
 		#endregion
