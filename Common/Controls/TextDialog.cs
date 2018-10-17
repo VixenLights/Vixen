@@ -36,6 +36,18 @@ namespace Common.Controls
 				textBoxResponse.SelectAll();
 		}
 
+		#region Overrides of Form
+
+		/// <inheritdoc />
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+			Activate();
+			textBoxResponse.Focus();
+		}
+
+		#endregion
+
 		private void TextDialog_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
