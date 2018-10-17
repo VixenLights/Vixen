@@ -310,6 +310,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			var pixelCount = 0;
 			foreach (var dataDisplayItem in Data.DisplayItems)
 			{
+				dataDisplayItem.Shape.Layout();
 				pixelCount += dataDisplayItem.Shape.UpdatePixelCache();
 			}
 			toolStripStatusPixels.Text = pixelCount.ToString();
