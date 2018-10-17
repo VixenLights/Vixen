@@ -26,7 +26,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
 
-        public PreviewStarBurst(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
+		public override string TypeName => @"Star Burst";
+
+		public PreviewStarBurst(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
 			_topLeft = PointToZoomPoint(point1);

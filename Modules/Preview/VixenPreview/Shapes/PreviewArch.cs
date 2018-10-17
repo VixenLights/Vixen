@@ -21,9 +21,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
-		public PreviewArch()
-		{
-		}
+		public override string TypeName => @"Arch";
 
 		public PreviewArch(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{

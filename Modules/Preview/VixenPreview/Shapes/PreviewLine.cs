@@ -20,9 +20,11 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
+		public override string TypeName => @"Line";
+
 		public PreviewLine(PreviewPoint point1, PreviewPoint point2, int lightCount, ElementNode selectedNode, double zoomLevel)
 		{
-		    AddStartPadding = false;
+			AddStartPadding = false;
 			ZoomLevel = zoomLevel;
 			AddPoint(PointToZoomPoint(point1));
 			AddPoint(PointToZoomPoint(point2));

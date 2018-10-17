@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
-using Common.Controls.Scaling;
-using Common.Controls.Theme;
-using Common.Resources;
-using Common.Resources.Properties;
 
 namespace VixenModules.Preview.VixenPreview.Shapes
 {

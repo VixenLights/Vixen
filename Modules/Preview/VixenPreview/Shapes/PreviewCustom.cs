@@ -21,6 +21,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private PreviewPoint topLeftStart;
 		private int startWidth, startHeight;
 
+		public override string TypeName => @"Custom Template";
+
 		public PreviewCustom(PreviewPoint point, List<PreviewBaseShape> shapes)
 		{
 			_topLeft = point;

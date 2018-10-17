@@ -18,6 +18,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		[DataMember] private PreviewPoint _bottomLeft;
 		[DataMember] private PreviewPoint _bottomRight;
 
+		public override string TypeName => @"Rectangle";
+
 		public enum Directions
 		{
 			Clockwise,

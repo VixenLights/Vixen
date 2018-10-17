@@ -26,6 +26,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool justPlaced = false;
 		private PreviewPoint bottomRightStart, topLeftStart, archStart;
 
+		public override string TypeName => @"Cane";
+
 		public PreviewCane(PreviewPoint point, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;

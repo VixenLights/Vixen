@@ -27,6 +27,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
+		public override string TypeName => @"Pixel Grid";
+
 		public enum StringOrientations 
 		{
 			Vertical, 

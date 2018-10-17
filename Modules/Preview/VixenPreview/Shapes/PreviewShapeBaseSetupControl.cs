@@ -11,6 +11,7 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		public PreviewShapeBaseSetupControl(PreviewBaseShape shape) : base(shape)
 		{
 			InitializeComponent();
+			Title = $"{shape.TypeName} Properties";
 			int iconSize = (int)(16 * ScalingTools.GetScaleFactor());
 			buttonHelp.Image = Tools.GetIcon(Resources.help, iconSize);
 			ThemeUpdateControls.UpdateControls(this);

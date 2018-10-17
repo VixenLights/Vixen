@@ -25,6 +25,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 		private bool lockXY = false;
 		private PreviewPoint topLeftStart, topRightStart, bottomLeftStart, bottomRightStart;
 
+		public override string TypeName => @"Net";
+
 		public PreviewNet(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;

@@ -22,12 +22,14 @@ namespace VixenModules.Preview.VixenPreview.Shapes
         const int InitialStringSpacing = 10;
         const int InitialLightsPerString = 10;
         private ElementNode initialNode;
-        //const int InitialStringLength = 20;
+		//const int InitialStringLength = 20;
+
+		public override string TypeName => @"Icicle";
 
 		public PreviewIcicle(PreviewPoint point1, PreviewPoint point2, ElementNode selectedNode, double zoomLevel)
 		{
-            // If we are creating this fresh, we need to know so we can add strings, etc. as drawn.
-            creating = true;
+			// If we are creating this fresh, we need to know so we can add strings, etc. as drawn.
+			creating = true;
             initialNode = selectedNode;
 
 			ZoomLevel = zoomLevel;

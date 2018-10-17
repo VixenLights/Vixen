@@ -32,6 +32,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 		private PreviewPoint p1Start, p2Start;
 
+		public override string TypeName => @"Mega Tree";
+
 		public PreviewMegaTree(PreviewPoint point1, ElementNode selectedNode, double zoomLevel)
 		{
 			ZoomLevel = zoomLevel;
