@@ -49,6 +49,12 @@ namespace VixenModules.Effect.Dissolve
 		[DataMember]
 		public bool RandomColor { get; set; }
 
+		[DataMember]
+		public int DepthOfEffect { get; set; }
+
+		[DataMember]
+		public bool EnableDepth { get; set; }
+
 		public DissolveData()
 		{
 			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.White,CurveType.Flat100) };
@@ -60,6 +66,8 @@ namespace VixenModules.Effect.Dissolve
 			GroupLevel = 1;
 			StartingNode = 1;
 			RandomColor = true;
+			DepthOfEffect = 1;
+			EnableDepth = false;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -77,7 +85,9 @@ namespace VixenModules.Effect.Dissolve
 	            GroupLevel = GroupLevel,
 	            DissolveMarkType = DissolveMarkType,
 	            StartingNode = StartingNode,
-	            RandomColor = RandomColor
+	            RandomColor = RandomColor,
+	            DepthOfEffect = DepthOfEffect,
+	            EnableDepth = EnableDepth,
 			};
 			return result;
 		}
