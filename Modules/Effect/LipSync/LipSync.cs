@@ -49,12 +49,23 @@ namespace VixenModules.Effect.LipSync
 		protected override void TargetNodesChanged()
 		{
 			CheckForInvalidColorData();
+			
+			SetOrientation();
 		}
 
 		private void CheckForInvalidColorData()
 		{
 			// initialize the color handling
 			GetValidColors();
+		}
+
+		protected void SetOrientation()
+		{
+			var orientation = GetOrientation();
+			if (orientation.Item1)
+			{
+				Orientation = orientation.Item2;
+			}
 		}
 
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
