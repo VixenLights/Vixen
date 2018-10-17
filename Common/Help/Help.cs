@@ -43,7 +43,11 @@ namespace Common.VixenHelp
 			[Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/")]
 			Setup_Main,
 	        [Description("http://www.vixenlights.com/vixen-3-documentation/setup-configuration/link-elements-to-controllers/")]
-	        Patching
+	        Patching,
+			[Description("https://www.youtube.com/user/VixenLightsSoftware")]
+	        YouTubeChannel,
+	        [Description("http://www.vixenlights.com/vixen-3-documentation/sequencer/")]
+	        Sequencer
 		}
 		
 		public static void ShowHelp(HelpStrings helpString)

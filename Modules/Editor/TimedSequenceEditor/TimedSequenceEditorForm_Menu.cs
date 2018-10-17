@@ -601,7 +601,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void helpDocumentationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Process.Start("http://www.vixenlights.com/vixen-3-documentation/sequencer/");
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.Sequencer);
+		}
+
+		private void vixenYouTubeChannelToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Common.VixenHelp.VixenHelp.ShowHelp(Common.VixenHelp.VixenHelp.HelpStrings.YouTubeChannel);
 		}
 
 		#endregion
