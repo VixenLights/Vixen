@@ -22,7 +22,6 @@ namespace VixenModules.Effect.Fireworks
 	{
 		private FireworksData _data;
 		private List<RgbFireworks> _fireworkBursts;
-		private static Random _random = new Random();
 		private int _maxFlakes;
 		private readonly AudioUtilities _audioUtilities;
 		private const int Spacing = 50;
@@ -739,7 +738,7 @@ namespace VixenModules.Effect.Fireworks
 				hsv.S = 1.0f;
 				hsv.V = 1.0f;
 			}
-			int start = FireworksSource != FireworksSource.None ? ii : (int) (Rand01()*GetNumberFrames());
+			int start = FireworksSource != FireworksSource.None ? ii : (int) (RandDouble()*GetNumberFrames());
 
 			int startX;
 			int startY;
@@ -750,11 +749,11 @@ namespace VixenModules.Effect.Fireworks
 
 			int colorLocation = Rand() % ColorGradients.Count;
 
-			int randomParticles = RandomParticles ? _random.Next(MinParticles, MaxParticles) : Particles;
+			int randomParticles = RandomParticles ? Rand(MinParticles, MaxParticles) : Particles;
 
 			for (int i = 0; i < randomParticles; i++)
 			{
-				int velocity = RandomVelocity ? _random.Next(MinVelocity, MaxVelocity) : Velocity;
+				int velocity = RandomVelocity ? Rand(MinVelocity, MaxVelocity) : Velocity;
 				_fireworkBursts[_explosion * randomParticles + i].Reset(startX, startY, false, velocity, hsv, start, colorLocation);
 			}
 		}
@@ -895,21 +894,10 @@ namespace VixenModules.Effect.Fireworks
 			}
 		}
 
-		private int Rand()
-		{
-			return _random.Next();
-		}
-
-		private double Rand01()
-		{
-			return _random.NextDouble();
-		}
-
 		// generates a random number between Color num1 and and Color num2.
-		private static float RandomRange(float num1, float num2)
+		private float RandomRange(float num1, float num2)
 		{
 			double hi, lo;
-			InitRandom();
 
 			if (num1 < num2)
 			{
@@ -921,17 +909,11 @@ namespace VixenModules.Effect.Fireworks
 				lo = num2;
 				hi = num1;
 			}
-			return (float)(_random.NextDouble() * (hi - lo) + lo);
-		}
-
-		private static void InitRandom()
-		{
-			if (_random == null)
-				_random = new Random();
+			return (float)(RandDouble() * (hi - lo) + lo);
 		}
 
 		//Use for Range type
-		public static HSV SetRangeColor(HSV hsv1, HSV hsv2)
+		public HSV SetRangeColor(HSV hsv1, HSV hsv2)
 		{
 			HSV newHsv = new HSV(RandomRange((float)hsv1.H, (float)hsv2.H),
 								 RandomRange((float)hsv1.S, (float)hsv2.S),
