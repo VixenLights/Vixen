@@ -17,7 +17,6 @@ namespace VixenModules.Effect.SnowStorm
 	public class SnowStorm : PixelEffectBase
 	{
 		private SnowStormData _data;
-		private static Random _random = new Random();
 		private double _gradientPosition = 0;
 		private List<SnowstormClass> _snowstormItems;
 		private int _lastSnowstormCount = 0;
@@ -304,7 +303,7 @@ namespace VixenModules.Effect.SnowStorm
 			// 2 sets of 8 numbers, each of which add up to 100
 			Point adv = SnowstormVector(7);
 			int i0 = ssItem.Idx % 7 <= 4 ? 0 : cnt;
-			int r = rand() % 100;
+			int r = Rand() % 100;
 			for (int i = 0, val = 0; i < cnt; i++)
 			{
 				val += arr[i0 + i];
@@ -358,24 +357,24 @@ namespace VixenModules.Effect.SnowStorm
 					{
 						case SnowStormColorType.Range: //Random two colors are selected from the list for each Snowstorms.
 							ssItem.Hsv =
-								SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
-									HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
+								SetRangeColor(HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
+									HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
 							break;
 						case SnowStormColorType.Palette: //All colors are used
-							ssItem.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
+							ssItem.Hsv = HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
 							break;
 						case SnowStormColorType.Gradient:
-							ssItem.Color = rand()%colorcnt;
+							ssItem.Color = Rand()%colorcnt;
 							_gradientPosition = 100/(double) tailLength/100;
 							ssItem.Hsv = HSV.FromRGB(Colors[ssItem.Color].GetColorAt(0));
 							break;
 					}
 					// start in a random state
-					r = rand()%(2*tailLength);
+					r = Rand()%(2*tailLength);
 					if (r > 0)
 					{
-						xy.X = rand()%BufferWi;
-						xy.Y = rand()%BufferHt;
+						xy.X = Rand()%BufferWi;
+						xy.Y = Rand()%BufferHt;
 						//ssItem.points.push_back(xy);
 						ssItem.Points.Add(xy);
 					}
@@ -397,11 +396,11 @@ namespace VixenModules.Effect.SnowStorm
 			{
 				if (it.Points.Count == 0)
 				{
-					xy.X = rand() % BufferWi;
-					xy.Y = rand() % BufferHt;
+					xy.X = Rand() % BufferWi;
+					xy.Y = Rand() % BufferHt;
 					it.Points.Add(xy);
 				}
-				else if (rand() % 20 < adjustSpeed)
+				else if (Rand() % 20 < adjustSpeed)
 				{
 					SnowstormAdvance(it);
 				}
@@ -411,7 +410,7 @@ namespace VixenModules.Effect.SnowStorm
 					switch (ColorType)
 					{
 						case SnowStormColorType.RainBow: //No user colors are used for Rainbow effect.
-							it.Hsv.H = (float)(rand() % 1000) / 1000.0f;
+							it.Hsv.H = (float)(Rand() % 1000) / 1000.0f;
 							it.Hsv.S = 1.0f;
 							it.Hsv.V = 1.0f;
 							break;
@@ -471,16 +470,10 @@ namespace VixenModules.Effect.SnowStorm
 			return value;
 		}
 
-		private int rand()
-		{
-			return _random.Next();
-		}
-
 		// generates a random number between Color num1 and and Color num2.
-		private static float RandomRange(double num1, double num2)
+		private float RandomRange(double num1, double num2)
 		{
 			double hi, lo;
-			InitRandom();
 
 			if (num1 < num2)
 			{
@@ -492,16 +485,10 @@ namespace VixenModules.Effect.SnowStorm
 				lo = num2;
 				hi = num1;
 			}
-			return (float)(_random.NextDouble() * (hi - lo) + lo);
+			return (float)(RandDouble() * (hi - lo) + lo);
 		}
 
-		private static void InitRandom()
-		{
-			if (_random == null)
-				_random = new Random();
-		}
-
-		public static HSV SetRangeColor(HSV hsv, HSV hsv1)
+		public HSV SetRangeColor(HSV hsv, HSV hsv1)
 		{
 			HSV newHsv = new HSV(RandomRange(hsv.H, hsv1.H),
 								 RandomRange(hsv.S, hsv1.S),

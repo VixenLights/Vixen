@@ -20,7 +20,6 @@ namespace VixenModules.Effect.Meteors
 	{
 		private MeteorsData _data;
 		private List<MeteorClass> _meteors;
-		private static Random _random = new Random();
 		private double _gradientPosition = 0;
 		private IPixelFrameBuffer _tempBuffer;
 		private int _maxGroundHeight;
@@ -471,7 +470,7 @@ namespace VixenModules.Effect.Meteors
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
 				if (_meteors.Count >= pixelCount) break;
-				double position = (_random.NextDouble() * ((maxSpeed+ 1) - minSpeed) + minSpeed)/20;
+				double position = (RandDouble() * ((maxSpeed+ 1) - minSpeed) + minSpeed)/20;
 				MeteorClass m = new MeteorClass();
 				if (MeteorEffect == MeteorsEffect.RandomDirection)
 				{
@@ -491,31 +490,31 @@ namespace VixenModules.Effect.Meteors
 					if (maxDirection <= minDirection)
 					{
 						//used for the Upward movement of the Meteor (added feature)
-						direction = _random.Next(1, 3) == 1 ? _random.Next(1, maxDirection) : _random.Next(minDirection, 360);
+						direction = Rand(1, 3) == 1 ? Rand(1, maxDirection) : Rand(minDirection, 360);
 					}
 					else
 					{
 						//used for the downward movemnet of the Meteor (standard way)
-						direction = _random.Next(minDirection, maxDirection);
+						direction = Rand(minDirection, maxDirection);
 					}
 				}
 				//Moving
-				m.X = rand() % BufferWi;
-				m.Y = rand() % BufferHt;
+				m.X = Rand() % BufferWi;
+				m.Y = Rand() % BufferHt;
 				if (direction >= 0 && direction <= 90)
 				{
 					m.TailX = ((double)direction / 90);
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(direction - 90) / 90);
 					m.DeltaY = m.TailY * position;
-					if (_random.NextDouble() >= (double)(90 - direction) / 100)
+					if (RandDouble() >= (double)(90 - direction) / 100)
 					{
 						m.X = 0;
-						m.Y = rand() % BufferHt;
+						m.Y = Rand() % BufferHt;
 					}
 					else
 					{
-						m.X = rand()%BufferWi;
+						m.X = Rand()%BufferWi;
 						m.Y = 0;
 					}
 				}
@@ -525,15 +524,15 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 90) / 90);
 					m.DeltaY = m.TailY * position;
-					if (_random.NextDouble() >= (double)(180 - direction) / 100)
+					if (RandDouble() >= (double)(180 - direction) / 100)
 					{
-						m.X = rand() % BufferWi;
+						m.X = Rand() % BufferWi;
 						m.Y = BufferHt;
 					}
 					else
 					{
 						m.X = 0;
-						m.Y = rand() % BufferHt;
+						m.Y = Rand() % BufferHt;
 					}
 				}
 				else if (direction > 180 && direction <= 270)
@@ -542,14 +541,14 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = -1 * ((double)Math.Abs(direction - 270) / 90);
 					m.DeltaY = m.TailY * position;
-					if (_random.NextDouble() >= (double)(270 - direction) / 100)
+					if (RandDouble() >= (double)(270 - direction) / 100)
 					{
 						m.X = BufferWi;
-						m.Y = rand() % BufferHt;
+						m.Y = Rand() % BufferHt;
 					}
 					else
 					{
-						m.X = rand() % BufferWi;
+						m.X = Rand() % BufferWi;
 						m.Y = BufferHt;
 					}
 				}
@@ -559,15 +558,15 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaX = m.TailX * position;
 					m.TailY = ((double)Math.Abs(270 - direction) / 90);
 					m.DeltaY = m.TailY * position;
-					if (_random.NextDouble() >= (double)(360-direction)/100)
+					if (RandDouble() >= (double)(360-direction)/100)
 					{
-						m.X = rand() % BufferWi;
+						m.X = Rand() % BufferWi;
 						m.Y = 0;
 					}
 					else
 					{
 						m.X = BufferWi;
-						m.Y = rand() % BufferHt;
+						m.Y = Rand() % BufferHt;
 					}
 				}
 
@@ -580,8 +579,8 @@ namespace VixenModules.Effect.Meteors
 				{
 					if (RandomMeteorPosition || frame < pixelCount)
 					{
-						m.X = rand() % BufferWi - 1;
-						m.Y = BufferHt - 1 <= _maxGroundHeight ? 0 : _random.Next(_maxGroundHeight, BufferHt - 1);
+						m.X = Rand() % BufferWi - 1;
+						m.Y = BufferHt - 1 <= _maxGroundHeight ? 0 : Rand(_maxGroundHeight, BufferHt - 1);
 					}
 				}
 				m.DeltaXOrig = m.DeltaX;
@@ -591,19 +590,19 @@ namespace VixenModules.Effect.Meteors
 				{
 					case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
 						m.Hsv =
-							SetRangeColor(HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
-								HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
+							SetRangeColor(HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
 						break;
 					case MeteorsColorType.Palette: //All colors are used
-						m.Hsv = HSV.FromRGB(Colors[rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
+						m.Hsv = HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
 						break;
 					case MeteorsColorType.Gradient:
-						m.Color = rand() % colorcnt;
+						m.Color = Rand() % colorcnt;
 						_gradientPosition = 100 / (double)tailLength / 100;
 						m.Hsv = HSV.FromRGB(Colors[m.Color].GetColorAt(0));
 						break;
 				}
-				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .20) + .20 : 1;
+				m.HsvBrightness = RandomBrightness ? RandDouble() * (1.0 - .20) + .20 : 1;
 				_meteors.Add(m);
 			}
 
@@ -634,7 +633,7 @@ namespace VixenModules.Effect.Meteors
 					switch (ColorType)
 					{
 						case MeteorsColorType.RainBow: //No user colors are used for Rainbow effect.
-							meteor.Hsv.H = (float) (rand()%1000)/1000.0f;
+							meteor.Hsv.H = (float) (Rand()%1000)/1000.0f;
 							meteor.Hsv.S = 1.0f;
 							meteor.Hsv.V = 1.0f;
 							break;
@@ -769,10 +768,9 @@ namespace VixenModules.Effect.Meteors
 		}
 
 		// generates a random number between Color num1 and and Color num2.
-		private static float RandomRange(float num1, float num2)
+		private float RandomRange(float num1, float num2)
 		{
 			double hi, lo;
-			InitRandom();
 
 			if (num1 < num2)
 			{
@@ -784,22 +782,11 @@ namespace VixenModules.Effect.Meteors
 				lo = num2;
 				hi = num1;
 			}
-			return (float)(_random.NextDouble() * (hi - lo) + lo);
-		}
-
-		private int rand()
-		{
-			return _random.Next();
-		}
-
-		private static void InitRandom()
-		{
-			if (_random == null)
-				_random = new Random();
+			return (float)(RandDouble() * (hi - lo) + lo);
 		}
 
 		//Use for Range type
-		public static HSV SetRangeColor(HSV hsv1, HSV hsv2)
+		public HSV SetRangeColor(HSV hsv1, HSV hsv2)
 		{
 			HSV newHsv = new HSV(RandomRange((float)hsv1.H, (float)hsv2.H),
 								 RandomRange((float)hsv1.S, (float)hsv2.S),

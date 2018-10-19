@@ -18,7 +18,6 @@ namespace VixenModules.Effect.Spirograph
 	public class Spirograph : PixelEffectBase
 	{
 		private SpirographData _data;
-		private Random _random = new Random();
 
 		public Spirograph()
 		{
@@ -306,7 +305,6 @@ namespace VixenModules.Effect.Spirograph
 			double rangeAdjust = CalculateRange(intervalPosFactor);
 			int i, x, y, xc, yc, ColorIdx;
 			int mod1440, d_mod;
-			srand(1);
 			double state = frame * CalculateSpeed(intervalPosFactor);
 			float R, r, d, d_orig, t;
 			double hyp, x2, y2;
@@ -345,7 +343,7 @@ namespace VixenModules.Effect.Spirograph
 					switch (Type)
 					{
 							case ColorType.Random:
-								ColorIdx = _random.Next(0, colorcnt);  // Select random numbers from 0 up to number of colors the user has added.
+								ColorIdx = Rand(0, colorcnt);  // Select random numbers from 0 up to number of colors the user has added.
 							break;
 							case ColorType.Rainbow:
 								ColorIdx = 1;
@@ -369,7 +367,7 @@ namespace VixenModules.Effect.Spirograph
 					}
 					else
 					{
-						HSV hsv = new HSV((float)(rand() % 1000) / 1000.0f, 1.0f, 1.0f * level);
+						HSV hsv = new HSV((float)(Rand() % 1000) / 1000.0f, 1.0f, 1.0f * level);
 						col = hsv.ToRGB();
 					}
 					frameBuffer.SetPixel(x, y, col);
@@ -402,16 +400,6 @@ namespace VixenModules.Effect.Spirograph
 		private double CalculateSpirographRange(double intervalPos)
 		{
 			return ScaleCurveToValue(SpirographRangeCurve.GetValue(intervalPos), 300, 1);
-		}
-
-		private void srand(int seed)
-		{
-			_random = new Random(seed);
-		}
-
-		private int rand()
-		{
-			return _random.Next();
 		}
 	}
 }

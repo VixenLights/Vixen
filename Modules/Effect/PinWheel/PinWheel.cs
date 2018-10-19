@@ -18,7 +18,6 @@ namespace VixenModules.Effect.PinWheel
 	public class PinWheel : PixelEffectBase
 	{
 		private PinWheelData _data;
-		private static readonly Random Random = new Random();
 		private List<ColorGradient> _newColors = new List<ColorGradient>();
 		
 		public PinWheel()
@@ -597,11 +596,6 @@ namespace VixenModules.Effect.PinWheel
 			}
 
 			return hsv;
-		}
-
-		private static double Rand()
-		{
-			return Random.NextDouble();
 		}
 	}
 }

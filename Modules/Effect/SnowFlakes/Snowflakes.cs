@@ -19,7 +19,6 @@ namespace VixenModules.Effect.Snowflakes
 		private SnowflakesData _data;
 
 		private List<SnowFlakeClass> _snowFlakes;
-		private static Random _random = new Random();
 		private int _increaseFlakeCount;
 		private int _snowfalakeCountAdjust;
 		
@@ -471,7 +470,7 @@ namespace VixenModules.Effect.Snowflakes
 			for (int i = 0; i < flakeCount; i++)
 			{
 				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount - _snowfalakeCountAdjust) break;
-				double position = (_random.NextDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
+				double position = (RandDouble() * ((maxSpeed + 1) - minSpeed) + minSpeed) / 5;
 				SnowFlakeClass m = new SnowFlakeClass();
 				if (SnowflakeEffect == SnowflakeEffect.RandomDirection)
 				{
@@ -481,7 +480,7 @@ namespace VixenModules.Effect.Snowflakes
 
 				int direction;
 				if (SnowflakeEffect == SnowflakeEffect.None)
-					direction = _random.Next(145, 215); //Set Range for standard Snowflakes as we don't want to just have them going straight down or two dirctions like the original Snowflake effect.
+					direction = Rand(145, 215); //Set Range for standard Snowflakes as we don't want to just have them going straight down or two dirctions like the original Snowflake effect.
 				else
 				{
 					//This is to generate random directions between the Min and Max values
@@ -489,8 +488,8 @@ namespace VixenModules.Effect.Snowflakes
 					//the new direction will be the inverserve of the Min and Max effectively changing
 					//the range from a downward motion to an upward motion, increasing the feature capability.
 					direction = maxDirection <= minDirection
-						? (_random.Next(1, 3) == 1 ? _random.Next(1, maxDirection) : _random.Next(minDirection, 360))
-						: _random.Next(minDirection, maxDirection);
+						? (Rand(1, 3) == 1 ? Rand(1, maxDirection) : Rand(minDirection, 360))
+						: Rand(minDirection, maxDirection);
 				}
 
 				//Moving (direction)
@@ -523,9 +522,9 @@ namespace VixenModules.Effect.Snowflakes
 				}
 				else
 				{
-					m.X = _random.Next() % BufferWi;
+					m.X = Rand() % BufferWi;
 					if (frame == 0)
-						m.Y = _random.Next() % BufferHt; //This is used so for the first lot of Snowflakes they will start in a random position and then fall from the edge.
+						m.Y = Rand() % BufferHt; //This is used so for the first lot of Snowflakes they will start in a random position and then fall from the edge.
 					else
 					{
 						m.Y = BufferHt;
@@ -540,20 +539,20 @@ namespace VixenModules.Effect.Snowflakes
 				switch (ColorType)
 				{
 					case SnowflakeColorType.Range: //Random two colors are selected from the list for each SnowFlake and then the color range between them are used.
-						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)),
-								HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)));
-						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)),
-								HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)));
+						m.OuterHsv = SetRangeColor(HSV.FromRGB(OutSideColor[Rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(OutSideColor[Rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100)));
+						m.InnerHsv = SetRangeColor(HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)),
+								HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100)));
 						break;
 					case SnowflakeColorType.Palette: //All user colors are used
-						m.OuterHsv = HSV.FromRGB(OutSideColor[rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100));
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+						m.OuterHsv = HSV.FromRGB(OutSideColor[Rand() % colorcntOutSide].GetColorAt((intervalPosFactor) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
 						break;
 					default:
-						m.InnerHsv = HSV.FromRGB(InnerColor[rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
+						m.InnerHsv = HSV.FromRGB(InnerColor[Rand() % colorcntInside].GetColorAt((intervalPosFactor) / 100));
 					break;
 				}
-				m.HsvBrightness = RandomBrightness ? _random.NextDouble() * (1.0 - .20) + .20 : 1; //Adds a random brightness to each Snowflake making it look more realistic
+				m.HsvBrightness = RandomBrightness ? RandDouble() * (1.0 - .20) + .20 : 1; //Adds a random brightness to each Snowflake making it look more realistic
 				m.BuildUp = false;
 				_snowFlakes.Add(m);
 			}
@@ -643,7 +642,7 @@ namespace VixenModules.Effect.Snowflakes
 						if (ColorType == SnowflakeColorType.RainBow && !snowFlakes.BuildUp)
 							//No user colors are used for Rainbow effect. Color selection for user will be hidden.
 						{
-							snowFlakes.OuterHsv.H = (float) (rand()%1000)/1000.0f;
+							snowFlakes.OuterHsv.H = (float) (Rand()%1000)/1000.0f;
 							snowFlakes.OuterHsv.S = 1.0f;
 							snowFlakes.OuterHsv.V = 1.0f;
 						}
@@ -718,7 +717,7 @@ namespace VixenModules.Effect.Snowflakes
 								case SnowflakeType.Three:
 									// 3 nodes
 									frameBuffer.SetPixel(colorX, colorY, outerColor); //Inner point of the Flake
-									if (rand()%100 > 50)
+									if (Rand()%100 > 50)
 									{
 										frameBuffer.SetPixel(colorX - 1, colorY, innerColor);
 										frameBuffer.SetPixel(colorX + 1, colorY, innerColor);
@@ -865,10 +864,9 @@ namespace VixenModules.Effect.Snowflakes
 
 
 		// generates a random number between Color num1 and and Color num2.
-		private static float RandomRange(float num1, float num2)
+		private float RandomRange(float num1, float num2)
 		{
 			double hi, lo;
-			InitRandom();
 
 			if (num1 < num2)
 			{
@@ -880,22 +878,11 @@ namespace VixenModules.Effect.Snowflakes
 				lo = num2;
 				hi = num1;
 			}
-			return (float)(_random.NextDouble() * (hi - lo) + lo);
-		}
-
-		private int rand()
-		{
-			return _random.Next();
-		}
-
-		private static void InitRandom()
-		{
-			if (_random == null)
-				_random = new Random();
+			return (float)(RandDouble() * (hi - lo) + lo);
 		}
 
 		//Use for Range type
-		public static HSV SetRangeColor(HSV hsv1, HSV hsv2)
+		public HSV SetRangeColor(HSV hsv1, HSV hsv2)
 		{
 			HSV newHsv = new HSV(RandomRange((float)hsv1.H, (float)hsv2.H),
 								 RandomRange((float)hsv1.S, (float)hsv2.S),
@@ -911,17 +898,12 @@ namespace VixenModules.Effect.Snowflakes
 			{
 				exclude45PtFlakes = false;
 				Array values = Enum.GetValues(typeof(T));
-				randomEnum = (T)values.GetValue(rand(values.Length));
+				randomEnum = (T)values.GetValue(Rand(0, values.Length));
 				if (!PointFlake45 && randomEnum.ToString() == "FortyFive")
 					exclude45PtFlakes = true;
 			} while (exclude45PtFlakes);
 			
 			return randomEnum;
-		}
-
-		private int rand(int seed)
-		{
-			return _random.Next(seed);
 		}
 	}
 }

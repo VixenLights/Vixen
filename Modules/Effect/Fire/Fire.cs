@@ -13,7 +13,6 @@ namespace VixenModules.Effect.Fire
 	{
 		private FireData _data;
 		private int[] _fireBuffer = new int[1];
-		private readonly Random _random = new Random();
 		
 		public Fire()
 		{
@@ -149,11 +148,6 @@ namespace VixenModules.Effect.Fire
 				return _fireBuffer[y * maxWi + x];
 			}
 			return -1;
-		}
-
-		private int Rand()
-		{
-			return _random.Next();
 		}
 
 		protected override void SetupRender()

@@ -17,7 +17,6 @@ namespace VixenModules.Effect.Life
 	{
 		private LifeData _data;
 		private long _lastLifeState = 0;
-		private Random random = new Random();
 		private List<List<Color>> _tempbuf;
 
 		public Life()
@@ -220,11 +219,6 @@ namespace VixenModules.Effect.Life
 			return cnt;
 		}
 
-		private int rand()
-		{
-			return random.Next();
-		}
-
 		// use tempbuf for calculations
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer) 
 		{
@@ -240,9 +234,9 @@ namespace VixenModules.Effect.Life
 				//ClearTempBuf();
 				for (i = 0; i < count; i++)
 				{
-					x = rand() % BufferWi;
-					y = rand() % BufferHt;
-					color = GetMultiColorBlend(rand01(), frame);
+					x = Rand() % BufferWi;
+					y = Rand() % BufferHt;
+					color = GetMultiColorBlend(RandDouble(), frame);
 					if (level < 1)
 					{
 						HSV hsv = HSV.FromRGB(color);
@@ -285,7 +279,7 @@ namespace VixenModules.Effect.Life
 							}
 							else if (!isLive && cnt == 3)
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
@@ -293,12 +287,12 @@ namespace VixenModules.Effect.Life
 							// B35/S236
 							if (isLive && (cnt == 2 || cnt == 3 || cnt == 6))
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							else if (!isLive && (cnt == 3 || cnt == 5))
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
@@ -310,7 +304,7 @@ namespace VixenModules.Effect.Life
 							}
 							else if (!isLive && (cnt == 3 || cnt == 5 || cnt == 7))
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
@@ -322,7 +316,7 @@ namespace VixenModules.Effect.Life
 							}
 							else if (!isLive && (cnt == 3 || cnt == 7 || cnt == 8))
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
@@ -334,7 +328,7 @@ namespace VixenModules.Effect.Life
 							}
 							else if (!isLive && (cnt == 2 || cnt >= 5))
 							{
-								color = GetMultiColorBlend(rand01(), frame);
+								color = GetMultiColorBlend(RandDouble(), frame);
 								SetFramePixel(frameBuffer, color, level, x, y);
 							}
 							break;
@@ -418,12 +412,6 @@ namespace VixenModules.Effect.Life
 					frameBuffer.SetPixel(x, y, _tempbuf[x][y]);
 				}
 			}
-		}
-
-		// return a random number between 0 and 1 inclusive
-		private double rand01()
-		{
-			return random.NextDouble();
 		}
 	}
 }
