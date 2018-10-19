@@ -303,5 +303,24 @@ namespace VixenModules.Effect.Effect
 		}
 
 		#endregion
+
+		#region Random
+
+		protected int Rand()
+		{
+			return ThreadSafeRandom.Instance.Next();
+		}
+
+		protected int Rand(int minValue, int maxValue)
+		{
+			return ThreadSafeRandom.Instance.Next(minValue, maxValue);
+		}
+
+		protected double RandDouble()
+		{
+			return ThreadSafeRandom.Instance.NextDouble();
+		}
+
+		#endregion
 	}
 }

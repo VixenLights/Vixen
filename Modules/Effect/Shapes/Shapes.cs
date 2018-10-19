@@ -25,7 +25,6 @@ namespace VixenModules.Effect.Shapes
 	public class Shapes : PixelEffectBase
 	{
 		private ShapesData _data;
-		private readonly Random _random = new Random();
 		private List<ShapesClass> _shapes;
 		private List<ShapesClass> _removeShapes;
 		private int _shapesCount;
@@ -1416,15 +1415,15 @@ namespace VixenModules.Effect.Shapes
 			ShapesClass m = new ShapesClass();
 
 			// Sets starting location of svg image
-			m.LocationX = _random.Next(0, BufferWi - 1);
-			m.LocationY = _random.Next(0, BufferHt - 1);
+			m.LocationX = Rand(0, BufferWi - 1);
+			m.LocationY = Rand(0, BufferHt - 1);
 
 			//Sets initial speed of svg image
-			double speed = _random.NextDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
-			double vx = _random.NextDouble() * speed;
-			double vy = _random.NextDouble() * speed;
-			if (_random.Next(0, 2) == 0) vx = -vx;
-			if (_random.Next(0, 2) == 0) vy = -vy;
+			double speed = RandDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
+			double vx = RandDouble() * speed;
+			double vy = RandDouble() * speed;
+			if (Rand(0, 2) == 0) vx = -vx;
+			if (Rand(0, 2) == 0) vy = -vy;
 			if (ShapeType != ShapeType.None)
 			{
 				m.VelocityX = vx;
@@ -1448,7 +1447,7 @@ namespace VixenModules.Effect.Shapes
 				case ShapeList.GeometricShapes:
 					enumValues = Enum.GetValues(typeof(GeometricShapesList));
 					m.Shape = GeometricShapesList == GeometricShapesList.Random
-						? ((GeometricShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						? ((GeometricShapesList) enumValues.GetValue(Rand(1, enumValues.Length))).ToString()
 						: GeometricShapesList.ToString();
 					int radius = _svgViewBoxSize / 2 - (StrokeWidth + 1);
 					switch (m.Shape)
@@ -1500,7 +1499,7 @@ namespace VixenModules.Effect.Shapes
 				case ShapeList.ChristmasShapes:
 					enumValues = Enum.GetValues(typeof(ChristmasShapesList));
 					m.Shape = ChristmasShapesList == ChristmasShapesList.Random
-						? ((ChristmasShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						? ((ChristmasShapesList) enumValues.GetValue(Rand(1, enumValues.Length))).ToString()
 						: ChristmasShapesList.ToString();
 					m.SvgImage = getXMLShape("Christmas." + m.Shape);
 					break;
@@ -1508,7 +1507,7 @@ namespace VixenModules.Effect.Shapes
 				case ShapeList.HalloweenShapes:
 					enumValues = Enum.GetValues(typeof(HalloweenShapesList));
 					m.Shape = HalloweenShapesList == HalloweenShapesList.Random
-						? ((HalloweenShapesList) enumValues.GetValue(_random.Next(1, enumValues.Length))).ToString()
+						? ((HalloweenShapesList) enumValues.GetValue(Rand(1, enumValues.Length))).ToString()
 						: HalloweenShapesList.ToString();
 					m.SvgImage = getXMLShape("Halloween." + m.Shape);
 					break;
@@ -1564,7 +1563,7 @@ namespace VixenModules.Effect.Shapes
 					m.SizeMode = "Out";
 					break;
 				case SizeMode.Random:
-					m.SizeMode = _random.Next(0, 2) == 0 ? "In" : "Out";
+					m.SizeMode = Rand(0, 2) == 0 ? "In" : "Out";
 					break;
 			}
 
@@ -1578,7 +1577,7 @@ namespace VixenModules.Effect.Shapes
 			{
 				m.FadeStep = 0.9f / _totalFrames;
 				m.Size = RandomSize
-					? _random.Next(minSize, maxSize)
+					? Rand(minSize, maxSize)
 					: CalculateSize(_intervalPosFactor,
 						m.LocationRatio1);
 			}
@@ -1592,8 +1591,8 @@ namespace VixenModules.Effect.Shapes
 				do
 				{
 					notCreated = false;
-					m.LocationX = _random.Next(0, BufferWi - 1);
-					m.LocationY = _random.Next(0, BufferHt - 1);
+					m.LocationX = Rand(0, BufferWi - 1);
+					m.LocationY = Rand(0, BufferHt - 1);
 					if (m.LocationX - locationOffset < 0 || m.LocationY - locationOffset < 0 ||
 					    m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= BufferHt) notCreated = true;
 					i++;
@@ -1601,13 +1600,13 @@ namespace VixenModules.Effect.Shapes
 			}
 
 			// Allocates Random Colors to the shape.
-			m.FirstFillColorIndex = _random.Next(0, FirstFillColors.Count);
-			m.SecondFillColorIndex = _random.Next(0, SecondFillColors.Count);
-			m.StrokeColorIndex = _random.Next(0, OutlineColors.Count);
+			m.FirstFillColorIndex = Rand(0, FirstFillColors.Count);
+			m.SecondFillColorIndex = Rand(0, SecondFillColors.Count);
+			m.StrokeColorIndex = Rand(0, OutlineColors.Count);
 
 			// Sets random starting angle and rotation direction
-			m.RotateAngle = RandomAngle ? _random.Next(0, 360) : 0;
-			m.RotateCW = _random.Next(0, 2);
+			m.RotateAngle = RandomAngle ? Rand(0, 360) : 0;
+			m.RotateCW = Rand(0, 2);
 			if (ShapeList != ShapeList.File)
 			{
 				switch (FadeType)
@@ -1621,7 +1620,7 @@ namespace VixenModules.Effect.Shapes
 						m.FadeType = "Out";
 						break;
 					case FadeType.Random:
-						if (_random.Next(0, 2) == 0)
+						if (Rand(0, 2) == 0)
 						{
 							m.FadeType = "In";
 							m.Fade = 0.05f;
@@ -1649,7 +1648,7 @@ namespace VixenModules.Effect.Shapes
 			while (_shapesCount < _shapes.Count - _removeShapes.Count)
 			{
 				// Removes random shape.
-				_shapes.Remove(_shapes[_random.Next(0, _shapes.Count)]);
+				_shapes.Remove(_shapes[Rand(0, _shapes.Count)]);
 			}
 
 			double angleStartSpeed = (maxAngleSpeed - minAngleSpeed) + minAngleSpeed;
@@ -1677,8 +1676,8 @@ namespace VixenModules.Effect.Shapes
 					}
 				}    
 
-				double angleSpeed = _random.NextDouble() * angleStartSpeed;
-				double sizeSpeed = _random.NextDouble() * sizeStartSpeed;
+				double angleSpeed = RandDouble() * angleStartSpeed;
+				double sizeSpeed = RandDouble() * sizeStartSpeed;
 				
 				var centerSize = CalculateCenterSize(_intervalPosFactor, shape.LocationRatio1);
 				var sizeVariation = CalculateSizeVariation(_intervalPosFactor, shape.LocationRatio1);

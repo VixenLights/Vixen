@@ -21,7 +21,6 @@ namespace VixenModules.Effect.Balls
 		private List<BallClass> _balls;
 		private List<BallClass> _removeBalls;
 		private int _ballCount;
-		private Random _random;
 		private int _minBuffer;
 		private int _maxBuffer;
 		private float _intervalPos;
@@ -352,14 +351,12 @@ namespace VixenModules.Effect.Balls
 			_maxBuffer = Math.Max(BufferHt, BufferWi);
 			_balls = new List<BallClass>(7);
 			_removeBalls = new List<BallClass>();
-			_random = new Random();
 		}
 
 		protected override void CleanUpRender()
 		{
 			_balls = null;
 			_removeBalls = null;
-			_random = null;
 		}
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
@@ -505,13 +502,13 @@ namespace VixenModules.Effect.Balls
 								var colorIndex = 0;
 								do
 								{
-									colorIndex = _random.Next(0, Colors.Count);
+									colorIndex = Rand(0, Colors.Count);
 								} while (ball.ColorIndex == colorIndex);
 								ball.ColorIndex = colorIndex;
 
 								do
 								{
-									colorIndex = _random.Next(0, Colors.Count);
+									colorIndex = Rand(0, Colors.Count);
 								} while (ball1.ColorIndex == colorIndex);
 								ball1.ColorIndex = colorIndex;
 							}
@@ -669,9 +666,9 @@ namespace VixenModules.Effect.Balls
 				BallClass m = new BallClass();
 
 				//Sets Radius size and Ball location
-				int radius = RandomRadius ? _random.Next(1, _radius + 1) : _radius;
-				m.LocationX = _random.Next(radius, BufferWi - radius);
-				m.LocationY = _random.Next(radius, BufferHt - radius);
+				int radius = RandomRadius ? Rand(1, _radius + 1) : _radius;
+				m.LocationX = Rand(radius, BufferWi - radius);
+				m.LocationY = Rand(radius, BufferHt - radius);
 
 				if (Collide)
 				{
@@ -683,16 +680,16 @@ namespace VixenModules.Effect.Balls
 					}
 				}
 
-				double speed = _random.NextDouble() * (maxSpeed - minSpeed) + minSpeed;
-				double vx = _random.NextDouble() * speed;
-				double vy = _random.NextDouble() * speed;
-				if (_random.Next(0, 2) == 0) vx = -vx;
-				if (_random.Next(0, 2) == 0) vy = -vy;
+				double speed = RandDouble() * (maxSpeed - minSpeed) + minSpeed;
+				double vx = RandDouble() * speed;
+				double vy = RandDouble() * speed;
+				if (Rand(0, 2) == 0) vx = -vx;
+				if (Rand(0, 2) == 0) vy = -vy;
 				m.VelocityX = vx;
 				m.VelocityY = vy;
 				m.Radius = radius;
 				m.BallGuid = Guid.NewGuid();
-				m.ColorIndex = _random.Next(0, Colors.Count);
+				m.ColorIndex = Rand(0, Colors.Count);
 				_balls.Add(m);
 			}
 		}

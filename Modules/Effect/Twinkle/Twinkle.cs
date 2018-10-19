@@ -23,7 +23,6 @@ namespace VixenModules.Effect.Twinkle
 {
 	public class Twinkle : BaseEffect
 	{
-		private static Random _random = new Random();
 		private static Logger Logging = LogManager.GetCurrentClassLogger();
 
 		private TwinkleData _data;
@@ -564,7 +563,7 @@ namespace VixenModules.Effect.Twinkle
 					break;
 
 				// generate a time length for it (all in ms)
-				int twinkleDurationMs = _random.Next(AveragePulseTime - maxDurationVariation,
+				int twinkleDurationMs = Rand(AveragePulseTime - maxDurationVariation,
 				                                     AveragePulseTime + maxDurationVariation + 1);
 				TimeSpan twinkleDuration = TimeSpan.FromMilliseconds(twinkleDurationMs);
 
@@ -583,7 +582,7 @@ namespace VixenModules.Effect.Twinkle
 				// generate the levels/curve for it
 				double minLevel = MinimumLevel;
 				int maxLevelVariation = (int) ((LevelVariation/100.0)*(MaximumLevel - MinimumLevel));
-				int reduction = _random.Next(maxLevelVariation);
+				int reduction = Rand(0, maxLevelVariation);
 				double maxLevel = MaximumLevel - reduction;
 
 				IndividualTwinkleDetails occurance = new IndividualTwinkleDetails();

@@ -33,7 +33,6 @@ namespace VixenModules.Effect.CountDown
 		private int _countDownNumberIteration;
 		private int _previousCountDownNumber;
 		private CountDownDirection _direction;
-		private static Random _random = new Random();
 		private int _sizeAdjust;
 
 		public CountDown()
@@ -745,7 +744,7 @@ namespace VixenModules.Effect.CountDown
 				_countDownNumberIteration++;
 				if (Direction == CountDownDirection.Random)
 				{
-					_direction = (CountDownDirection)_random.Next(0, 6);
+					_direction = (CountDownDirection)Rand(0, 6);
 				}
 				_sizeAdjust = 0;
 			}

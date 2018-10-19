@@ -23,7 +23,6 @@ namespace VixenModules.Effect.Dissolve
 		private DissolveData _data;
 		private IEnumerable<IMark> _marks = null;
 		private int _pixels;
-		private readonly Random _random = new Random();
 		private int _totalNodes;
 		private List<TempClass> _tempNodes;
 		private List<TempClass> _nodes;
@@ -683,7 +682,7 @@ namespace VixenModules.Effect.Dissolve
 				int currentNode;
 				if (RandomDissolve)
 				{
-					int currentIndex = _random.Next(0, elementIndex.Count);
+					int currentIndex = Rand(0, elementIndex.Count);
 					currentNode = elementIndex[currentIndex];
 					elementIndex.RemoveAt(currentIndex);
 				}
@@ -693,7 +692,7 @@ namespace VixenModules.Effect.Dissolve
 				}
 				
 				// Randomly or sequentially add color index to class and Element Index.
-				int colorIndex = RandomColor ? _random.Next(0, colorCount) : currentNode % colorCount;
+				int colorIndex = RandomColor ? Rand(0, colorCount) : currentNode % colorCount;
 				TempClass tc = new TempClass { ElementIndex = currentNode, ColorIndex = colorIndex };
 				_nodes.Add(tc);
 				startingNode++;

@@ -16,7 +16,6 @@ namespace VixenModules.Effect.Tree
 	public class Tree : PixelEffectBase
 	{
 		private TreeData _data;
-		private Random _random = new Random();
 		private int _treeWidth;
 		private int _xLimit;
 		private int _branchColor;
@@ -367,7 +366,7 @@ namespace VixenModules.Effect.Tree
 					switch (ColorType)
 					{
 						case TreeColorType.Twinkle:
-							_colorIdx = _random.Next(0, Colors.Count);
+							_colorIdx = Rand(0, Colors.Count);
 							break;
 						case TreeColorType.AlternatePixel:
 							_colorIdx = (x % Colors.Count);
