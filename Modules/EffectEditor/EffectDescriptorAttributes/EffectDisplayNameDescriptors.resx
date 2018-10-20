@@ -774,4 +774,10 @@
   <data name="TimingSource" xml:space="preserve">
     <value>Timing Source</value>
   </data>
+  <data name="BothDirections" xml:space="preserve">
+    <value>Both Directions</value>
+  </data>
+  <data name="DirectionsTogether" xml:space="preserve">
+    <value>Directions Together</value>
+  </data>
 </root>

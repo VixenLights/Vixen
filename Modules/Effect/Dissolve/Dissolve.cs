@@ -352,6 +352,40 @@ namespace VixenModules.Effect.Dissolve
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"BothDirections")]
+		[ProviderDescription(@"BothDirections")]
+		[PropertyOrder(8)]
+		public bool BothDirections
+		{
+			get { return _data.BothDirections; }
+			set
+			{
+				_data.BothDirections = value;
+				IsDirty = true;
+				UpdateDissolveModeAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"DirectionsTogether")]
+		[ProviderDescription(@"DirectionsTogether")]
+		[PropertyOrder(9)]
+		public bool DirectionsTogether
+		{
+			get { return _data.DirectionsTogether; }
+			set
+			{
+				_data.DirectionsTogether = value;
+				IsDirty = true;
+				UpdateDissolveModeAttributes();
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Depth
@@ -425,7 +459,9 @@ namespace VixenModules.Effect.Dissolve
 				{"DissolveCurve", DissolveMarkType == DissolveMarkType.PerMark || DissolveMode == DissolveMode.TimeInterval},
 				{"DissolveMarkType", DissolveMode == DissolveMode.MarkCollection},
 				{"DissolveFlip", !RandomDissolve},
-				{"StartingNode", !RandomDissolve}
+				{"StartingNode", !RandomDissolve},
+				{"BothDirections", !RandomDissolve},
+				{"DirectionsTogether", !RandomDissolve && BothDirections}
 			};
 
 			SetBrowsable(propertyStates);
@@ -473,6 +509,8 @@ namespace VixenModules.Effect.Dissolve
 			int intervals;
 			double interval = 1;
 			int totalPixelCount = 0;
+
+			int together = !DirectionsTogether && BothDirections ? 1 : 2; // Dissolves or Fills in both directions alternating = 1 or same time = 2.
 
 			if (DissolveMode == DissolveMode.MarkCollection)
 			{
@@ -533,35 +571,39 @@ namespace VixenModules.Effect.Dissolve
 						_pixels = (int)Math.Ceiling(pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
 					}
 
+					_pixels = _pixels / together;
 					if (_pixels >= 0)
 					{
 						// Adds Displayed Pixels.
 						for (int pixel = 0; pixel < _pixels; pixel++)
 						{
-							if (_nodes.Count <= 0) break;
-							totalPixelCount++;
+							for (int k = 0; k < together; k++)
+							{
+								if (_nodes.Count <= 0) break;
+								totalPixelCount++;
 
-							// Add element.
-							DissolveClass m = new DissolveClass
-							{
-								StartTime = startTime,
-								EndTime = endTime,
-								Duration = endTime - startTime,
-								ColorIndex = _nodes[0].ColorIndex,
-								ElementIndex = _nodes[0].ElementIndex
-							};
-							_elements.Add(m);
+								// Add element.
+								DissolveClass m = new DissolveClass
+								{
+									StartTime = startTime,
+									EndTime = endTime,
+									Duration = endTime - startTime,
+									ColorIndex = _nodes[0].ColorIndex,
+									ElementIndex = _nodes[0].ElementIndex
+								};
+								_elements.Add(m);
 
-							if (RandomDissolve)
-							{
-								_tempNodes.Add(_nodes[0]);
+								if (RandomDissolve)
+								{
+									_tempNodes.Add(_nodes[0]);
+								}
+								else
+								{
+									_tempNodes.Insert(0, _nodes[0]);
+								}
+
+								_nodes.RemoveAt(0);
 							}
-							else
-							{
-								_tempNodes.Insert(0, _nodes[0]);
-							}
-							
-							_nodes.RemoveAt(0);
 						}
 					}
 					else
@@ -569,39 +611,46 @@ namespace VixenModules.Effect.Dissolve
 						// Removes Displayed Pixels.
 						for (int pixel = 0; pixel < -_pixels; pixel++)
 						{
-							if (_tempNodes.Count <= 0) break;
-							totalPixelCount--;
+							for (int k = 0; k < together; k++)
+							{
+								if (_tempNodes.Count <= 0) break;
+								totalPixelCount--;
 
-							for (int ii = 0; ii < _elements.Count; ii++)
-							{
-								if (_elements[ii].ElementIndex == _tempNodes[0].ElementIndex && _elements[ii].StartTime + _elements[ii].Duration > startTime)
+								for (int ii = 0; ii < _elements.Count; ii++)
 								{
-									// Transfer the Element data to the RenderElement as we are finished with it.
-									// Element is then removed to save cycles.
-									// This saved a considerable amount of time as it will only loop through
-									// elements that have not be finalized.
-									DissolveClass m = new DissolveClass
+									if (_elements[ii].ElementIndex == _tempNodes[0].ElementIndex &&
+									    _elements[ii].StartTime + _elements[ii].Duration > startTime)
 									{
-										Duration = startTime - _elements[ii].StartTime - TimeSpan.FromMilliseconds(1),
-										StartTime = _elements[ii].StartTime,
-										EndTime = _elements[ii].EndTime,
-										ColorIndex = _elements[ii].ColorIndex,
-										ElementIndex = _elements[ii].ElementIndex
-									};
-									_renderElements.Add(m);
-									_elements.RemoveAt(ii);
-									break;
+										// Transfer the Element data to the RenderElement as we are finished with it.
+										// Element is then removed to save cycles.
+										// This saved a considerable amount of time as it will only loop through
+										// elements that have not be finalized.
+										DissolveClass m = new DissolveClass
+										{
+											Duration = startTime - _elements[ii].StartTime -
+											           TimeSpan.FromMilliseconds(1),
+											StartTime = _elements[ii].StartTime,
+											EndTime = _elements[ii].EndTime,
+											ColorIndex = _elements[ii].ColorIndex,
+											ElementIndex = _elements[ii].ElementIndex
+										};
+										_renderElements.Add(m);
+										_elements.RemoveAt(ii);
+										break;
+									}
 								}
+
+								if (RandomDissolve)
+								{
+									_nodes.Add(_tempNodes[0]);
+								}
+								else
+								{
+									_nodes.Insert(0, _tempNodes[0]);
+								}
+
+								_tempNodes.RemoveAt(0);
 							}
-							if (RandomDissolve)
-							{
-								_nodes.Add(_tempNodes[0]);
-							}
-							else
-							{
-								_nodes.Insert(0, _tempNodes[0]);
-							}
-							_tempNodes.RemoveAt(0);
 						}
 					}
 
@@ -669,9 +718,9 @@ namespace VixenModules.Effect.Dissolve
 			_tempNodes.Clear();
 			int colorCount = Colors.Count;
 			int startingNode = StartingNode - 1;
-			if (startingNode < 0) startingNode = 0;
+			int backwardsNode = startingNode - 1;
 			List<int> elementIndex = new List<int>();
-
+			
 			for (int node = 0; node < _totalNodes; node++)
 			{
 				elementIndex.Add(node);
@@ -688,14 +737,33 @@ namespace VixenModules.Effect.Dissolve
 				}
 				else
 				{
-					currentNode = startingNode % _totalNodes;
+					if (startingNode < 0) startingNode = 0;
+					if (backwardsNode < 0) backwardsNode = _totalNodes - 1;
+					if (BothDirections)
+					{
+						// Dissolves or Fills in both directions.
+						if (x % 2 == 0)
+						{
+							currentNode = backwardsNode % _totalNodes;
+							backwardsNode--;
+						}
+						else
+						{
+							currentNode = startingNode % _totalNodes;
+							startingNode++;
+						}
+					}
+					else
+					{
+						currentNode = startingNode % _totalNodes;
+						startingNode++;
+					}
 				}
-				
+
 				// Randomly or sequentially add color index to class and Element Index.
-				int colorIndex = RandomColor ? Rand(0, colorCount) : currentNode % colorCount;
-				TempClass tc = new TempClass { ElementIndex = currentNode, ColorIndex = colorIndex };
+				var colorIndex = RandomColor ? Rand(0, colorCount) : currentNode % colorCount;
+				TempClass tc = new TempClass {ElementIndex = currentNode, ColorIndex = colorIndex};
 				_nodes.Add(tc);
-				startingNode++;
 			}
 
 			if (!DissolveFlip) _nodes.Reverse();

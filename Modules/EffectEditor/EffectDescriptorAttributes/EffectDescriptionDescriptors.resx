@@ -777,4 +777,10 @@
   <data name="TimingSource" xml:space="preserve">
     <value>Selects what source is used to determine change.</value>
   </data>
+  <data name="BothDirections" xml:space="preserve">
+    <value>Dissolves or fills the element in both directions one after another.</value>
+  </data>
+  <data name="DirectionsTogether" xml:space="preserve">
+    <value>Dissolves or fills the element in both directions at the same time.</value>
+  </data>
 </root>
