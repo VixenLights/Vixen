@@ -1,5 +1,64 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.5u3 Release Build 
+
+** New Feature
+    * [VIX-2225] - Save Sequence
+    * [VIX-2231] - Option to add and remove main toolbar buttons
+    * [VIX-2452] - Parametric intensity curves
+    * [VIX-2566] - Create a Dissolve effect
+    * [VIX-2602] - Add Vixen YouTube Channel to the help menus
+
+** Improvement
+    * [VIX-2274] - Add Start/stop controllers to context menu
+    * [VIX-2549] - Add ability to reverse the order of a group of selected items in the patching order helper.
+    * [VIX-2556] - Add logic to utilize the face info in xModels to better map faces to groups.
+    * [VIX-2584] - Ignore punctuation in the new Lipsync labels when converting to Phonemes.
+    * [VIX-2592] - Create an option in the Dissolve effect to activate elements at marks
+    * [VIX-2598] - Add basic function to provide a wiring diagram for elements
+    * [VIX-2603] - Preview Net smart object does not display on initial load without opening preview setup in OpenGL preview.
+    * [VIX-2605] - Add Depth of Effect to the Dissolve Effect
+
+** Bug
+    * [VIX-2298] - Meteors Effect dissapears or become single color
+    * [VIX-2313] - Meteors Effect changing over time
+    * [VIX-2505] - Lipsync effect doesn't honor the string oriantation property.
+    * [VIX-2536] - Mark collection export crashes Vixen
+    * [VIX-2538] - Hard Crash when using word breakdown
+    * [VIX-2544] - On one of my computers the new Effects Toolbar ends up on the same row as the Main toolbar.
+    * [VIX-2545] - Creating element face mapping initially in the editor does not save correctly. 
+    * [VIX-2546] - The output evaluators can throw an error in some rare circumstances when poor timing leaves them with null values
+    * [VIX-2547] - Remove some verbose debug logging from the release versions.
+    * [VIX-2552] - Profile editor allows paths with trailing spaces
+    * [VIX-2553] - Lipsync causing Vixen to crash
+    * [VIX-2554] - Copy/Paste of Text Effect doesn't preserve Orientation
+    * [VIX-2557] - The export wizard does not select the proper output folder for Falcon Sequences
+    * [VIX-2558] - Export wizard bugs
+    * [VIX-2562] - VIX-2452 created a invalid dependency on the E131 module.
+    * [VIX-2563] - Development 716 not saving changes
+    * [VIX-2564] - The display setup does not calculate element / patching info correctly on duplicate elements in the same group..
+    * [VIX-2567] - Effect Toolbar lables are massive on my new laptop.
+    * [VIX-2568] - 3 elements will not turn on unless re patched each startup
+    * [VIX-2569] - Row Labels not being drawn all teh way to the bottom
+    * [VIX-2570] - Font scaling in any effect that uses Font is incorrect.
+    * [VIX-2572] - Scaling issue with the Element Link Form in Preview Setup.
+    * [VIX-2574] - Scaling issue with the Effect Icons in the sequence editor
+    * [VIX-2575] - Scaling issue with the Scheduler Show setup
+    * [VIX-2576] - Scaling issues with the Vixen Release notes and Check Updates form
+    * [VIX-2577] - Scaling issue with the Icons within the Preview setup
+    * [VIX-2578] - Scaling issue with the Beats and Bars form in the Sequence editor
+    * [VIX-2579] - Typing a uri into the export output folder in the export wizard can cause a crash.
+    * [VIX-2582] - Lipsync orientation doesn't honour the element orientation when move the effect between elements.
+    * [VIX-2583] - Countdown effect set to 60 minutes starts at 0:00 instead of 60:00
+    * [VIX-2591] - Profile crashes upon opening
+    * [VIX-2594] - Vixen Crash when close the preview at Windows Task
+    * [VIX-2597] - The pattern and replace rename functions in the Custom Prop Editor don't properly check for duplicate names.
+    * [VIX-2600] - Preview setup properties pane incorrectly displays with Pixel Grid Properties title
+    * [VIX-2606] - The token replacement dialog for custom props does not become the active window.
+    * [VIX-2607] - Effects that use the standard Random generation do not render correctly or at all when there is a high number of random numbers required across each effect.
+
+
+
 Release Notes - Vixen 3 - 3.5u2 Release Build 
 
 ** Bug
