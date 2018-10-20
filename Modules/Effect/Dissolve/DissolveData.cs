@@ -48,12 +48,18 @@ namespace VixenModules.Effect.Dissolve
 
 		[DataMember]
 		public bool RandomColor { get; set; }
-
+		
 		[DataMember]
 		public int DepthOfEffect { get; set; }
-
+		
 		[DataMember]
 		public bool EnableDepth { get; set; }
+
+		[DataMember]
+		public bool BothDirections { get; set; }
+
+		[DataMember]
+		public bool DirectionsTogether { get; set; }
 
 		public DissolveData()
 		{
@@ -68,6 +74,8 @@ namespace VixenModules.Effect.Dissolve
 			RandomColor = true;
 			DepthOfEffect = 1;
 			EnableDepth = false;
+			BothDirections = false;
+			DirectionsTogether = false;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -88,6 +96,8 @@ namespace VixenModules.Effect.Dissolve
 	            RandomColor = RandomColor,
 	            DepthOfEffect = DepthOfEffect,
 	            EnableDepth = EnableDepth,
+	            BothDirections = BothDirections,
+	            DirectionsTogether = DirectionsTogether
 			};
 			return result;
 		}

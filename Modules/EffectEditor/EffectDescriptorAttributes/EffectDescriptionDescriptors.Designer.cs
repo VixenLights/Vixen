@@ -269,6 +269,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dissolves or fills the element in both directions one after another..
+        /// </summary>
+        internal static string BothDirections {
+            get {
+                return ResourceManager.GetString("BothDirections", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust the Bottom Border Width..
         /// </summary>
         internal static string BottomBorderWidth {
@@ -562,6 +571,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string DirectionPerWord {
             get {
                 return ResourceManager.GetString("DirectionPerWord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dissolves or fills the element in both directions at the same time..
+        /// </summary>
+        internal static string DirectionsTogether {
+            get {
+                return ResourceManager.GetString("DirectionsTogether", resourceCulture);
             }
         }
         
