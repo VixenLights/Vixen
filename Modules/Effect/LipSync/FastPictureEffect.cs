@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Common.Controls.ColorManagement.ColorModels;
 using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
@@ -22,7 +23,15 @@ namespace VixenModules.Effect.LipSync
 
 		public int ScalePercent { get; set; }
 
+		public int StartFrame { get; set; }
+
+		public int TotalFrames { get; set; }
+
 		public bool ScaleToGrid { get; set; }
+
+		public Curve YOffsetCurve { get; set; }
+
+		public Curve XOffsetCurve { get; set; }
 
 		public Image Image { get; set; }
 
@@ -51,27 +60,41 @@ namespace VixenModules.Effect.LipSync
 		/// <inheritdoc />
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPos = GetEffectTimeIntervalPosition(frame);
-			var intervalPosFactor = intervalPos * 100;
+			var intervalPosFactor = ((double)100 / TotalFrames) * (StartFrame + frame);
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			var yOffsetAdjust = CalculateYOffset(intervalPosFactor);
+			var xOffsetAdjust = CalculateXOffset(intervalPosFactor);
 			if (_fp != null)
 			{
-				int yoffset = (BufferHt + _fp.Height) / 2;
-				int xoffset = (_fp.Width - BufferWi) / 2;
+				int yoffset = (int)(((double)(BufferHt + _fp.Height) / 2) + yOffsetAdjust);
+				int xoffset = (int)(xOffsetAdjust + ((double)BufferWi - _fp.Width) / 2);
 
 				for (int x = 0; x < _fp.Width; x++)
 				{
 					for (int y = 0; y < _fp.Height; y++)
 					{
 						var fpColor = _fp.GetPixel(x, y);
-						
-						var hsv = HSV.FromRGB(fpColor);
-						hsv.V = hsv.V * level;
-	
-						frameBuffer.SetPixel(x - xoffset, yoffset - y, hsv);
+
+						if (level < 1)
+						{
+							var hsv = HSV.FromRGB(fpColor);
+							hsv.V = hsv.V * level;
+							fpColor = hsv.ToRGB();
+						}
+						frameBuffer.SetPixel(x + xoffset, yoffset - y, fpColor);
 					}
-				}	
+				}
 			}
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), (int)(BufferHt / 2 + _fp.Height / 2), -(int)(BufferHt / 2 + _fp.Height / 2));
+		}
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), (int)(BufferWi/2 + _fp.Width / 2), -(int)(BufferWi / 2 + _fp.Width / 2));
 		}
 
 		/// <inheritdoc />
