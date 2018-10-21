@@ -258,10 +258,10 @@ namespace VixenModules.Effect.Text
 		[PropertyOrder(0)]
 		public Curve YOffsetCurve
 		{
-			get { return _data.YOffsetCurve; }
+			get { return _data.YOffSetCurve; }
 			set
 			{
-				_data.YOffsetCurve = value;
+				_data.YOffSetCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -881,7 +881,7 @@ namespace VixenModules.Effect.Text
 
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100);
+			return (int)ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), -100, 100);
 		}
 
 		private int CalculateAngle(double intervalPos)
