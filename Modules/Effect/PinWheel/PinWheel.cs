@@ -364,7 +364,7 @@ namespace VixenModules.Effect.PinWheel
 				_newColors = new List<ColorGradient>();
 				for (int newColr = 0; newColr < Arms; newColr++)
 				{
-					temphsv.H = Rand();
+					temphsv.H = RandDouble();
 					temphsv.S = 1.0f;
 					temphsv.V = 1.0f;
 					_newColors.Add(new ColorGradient(temphsv.ToRGB()));
@@ -583,7 +583,7 @@ namespace VixenModules.Effect.PinWheel
 			switch (ColorType)
 			{
 				case PinWheelColorType.Rainbow: //No user colors are used for Rainbow effect.
-					hsv.H = Rand();
+					hsv.H = RandDouble();
 					hsv.S = 1.0f;
 					hsv.V = 1.0f;
 					break;
