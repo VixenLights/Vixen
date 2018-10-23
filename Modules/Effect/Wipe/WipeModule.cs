@@ -266,7 +266,7 @@ namespace VixenModules.Effect.Wipe
 									}
 									else
 									{
-										double positionWithinGroup = effectTime.Ticks / (double)totalWipeTime.Ticks;
+										double positionWithinGroup = (effectTime.Ticks - (double)totalWipeTime.Ticks * count) / totalWipeTime.Ticks;
 										if (HasDiscreteColors)
 										{
 											List<Tuple<Color, float>> colorsAtPosition =
