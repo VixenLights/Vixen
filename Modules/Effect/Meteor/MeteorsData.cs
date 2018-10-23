@@ -25,7 +25,6 @@ namespace VixenModules.Effect.Meteors
 			MinDirection = 0;
 			MaxDirection = 360;
 			RandomBrightness = false;
-			RandomMeteorPosition = false;
 			EnableGroundLevel = false;
 			MeteorEffect = MeteorsEffect.None;
 			ColorType = MeteorsColorType.Palette;
@@ -34,6 +33,10 @@ namespace VixenModules.Effect.Meteors
 			LevelCurve = new Curve(CurveType.Flat100);
 			Orientation=StringOrientation.Vertical;
 			GroundColor = new ColorGradient(Color.ForestGreen);
+			MeteorPerString = false;
+			MeteorStartPosition = MeteorStartPosition.InitiallyRandom;
+			FlipDirection = false;
+			CountPerString = false;
 		}
 
 		[DataMember]
@@ -89,21 +92,33 @@ namespace VixenModules.Effect.Meteors
 
 		[DataMember]
 		public MeteorsEffect MeteorEffect { get; set; }
-
+		
 		[DataMember(EmitDefaultValue = false)]
 		public bool RandomSpeed { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public bool RandomMeteorPosition { get; set; }
+
+		[DataMember]
+		public MeteorStartPosition MeteorStartPosition { get; set; }
 
 		[DataMember]
 		public bool RandomBrightness { get; set; }
 
 		[DataMember]
 		public ColorGradient GroundColor { get; set; }
-
+		
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
+		
+		[DataMember]
+		public bool MeteorPerString { get; set; }
+
+		[DataMember]
+		public bool FlipDirection { get; set; }
+
+		[DataMember]
+		public bool CountPerString { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -164,13 +179,16 @@ namespace VixenModules.Effect.Meteors
 				MaxDirection = MaxDirection,
 				MeteorEffect = MeteorEffect,
 				PixelCountCurve = new Curve(PixelCountCurve),
-				RandomMeteorPosition = RandomMeteorPosition,
 				Orientation = Orientation,
 				Direction = Direction,
 				LevelCurve = new Curve(LevelCurve),
 				GroundLevelCurve = new Curve(GroundLevelCurve),
 				GroundColor = GroundColor,
-				EnableGroundLevel = EnableGroundLevel
+				EnableGroundLevel = EnableGroundLevel,
+				MeteorPerString = MeteorPerString,
+				MeteorStartPosition = MeteorStartPosition,
+				FlipDirection = FlipDirection,
+				CountPerString = CountPerString
 			};
 			return result;
 		}

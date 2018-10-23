@@ -187,15 +187,15 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"RandomPosition")]
-		[ProviderDescription(@"RandomPosition")]
+		[ProviderDisplayName(@"MeteorStartPosition")]
+		[ProviderDescription(@"MeteorStartPosition")]
 		[PropertyOrder(9)]
-		public bool RandomMeteorPosition
+		public MeteorStartPosition MeteorStartPosition
 		{
-			get { return _data.RandomMeteorPosition; }
+			get { return _data.MeteorStartPosition; }
 			set
 			{
-				_data.RandomMeteorPosition = value;
+				_data.MeteorStartPosition = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -230,6 +230,57 @@ namespace VixenModules.Effect.Meteors
 			{
 				_data.GroundLevelCurve = value;
 				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MeteorPerString")]
+		[ProviderDescription(@"MeteorPerString")]
+		[PropertyOrder(12)]
+		public bool MeteorPerString
+		{
+			get { return _data.MeteorPerString; }
+			set
+			{
+				_data.MeteorPerString = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"FlipDirection")]
+		[ProviderDescription(@"FlipDirection")]
+		[PropertyOrder(13)]
+		public bool FlipDirection
+		{
+			get { return _data.FlipDirection; }
+			set
+			{
+				_data.FlipDirection = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CountPerString")]
+		[ProviderDescription(@"CountPerString")]
+		[PropertyOrder(14)]
+		public bool CountPerString
+		{
+			get { return _data.CountPerString; }
+			set
+			{
+				_data.CountPerString = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
 				OnPropertyChanged();
 			}
 		}
@@ -360,10 +411,13 @@ namespace VixenModules.Effect.Meteors
 				direction = true;
 				variableDirection = true;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3);
-			propertyStates.Add("Direction", !direction);
-			propertyStates.Add("MinDirection", variableDirection);
-			propertyStates.Add("MaxDirection", variableDirection);
+			
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5);
+			propertyStates.Add("Direction", !direction && !MeteorPerString); 
+			propertyStates.Add("MinDirection", variableDirection && !MeteorPerString);
+			propertyStates.Add("MaxDirection", variableDirection && !MeteorPerString);
+			propertyStates.Add("FlipDirection", MeteorPerString);
+			propertyStates.Add("CountPerString", MeteorPerString);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
@@ -463,147 +517,207 @@ namespace VixenModules.Effect.Meteors
 			
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv;
-			int adjustedPixelCount = frame < pixelCount
-				? (!RandomMeteorPosition && frame > pixelCount ? 1 : (pixelCount < 10 ? pixelCount : pixelCount / 10))
-				: pixelCount;
+			int adjustedPixelCount;
+			if (frame < pixelCount)
+			{
+				if (MeteorStartPosition == MeteorStartPosition.InitiallyRandom && frame > pixelCount)
+				{
+					adjustedPixelCount = 1;
+				}
+				else if (MeteorStartPosition == MeteorStartPosition.ZeroPosition)
+				{
+					adjustedPixelCount = pixelCount;
+				}
+				else
+				{
+					adjustedPixelCount = pixelCount < 10 ? pixelCount : pixelCount / 10;
+				}
+			}
+			else
+			{
+				adjustedPixelCount = pixelCount;
+			}
+
+			int stringCount = 1;
+			if (CountPerString && MeteorPerString)
+			{
+				stringCount = BufferWi;
+			}
 
 			for (int i = 0; i < adjustedPixelCount; i++)
 			{
-				if (_meteors.Count >= pixelCount) break;
-				double position = (RandDouble() * ((maxSpeed+ 1) - minSpeed) + minSpeed)/20;
-				MeteorClass m = new MeteorClass();
-				if (MeteorEffect == MeteorsEffect.RandomDirection)
+				for (int j = 0; j < stringCount; j++)
 				{
-					minDirection = MinDirection;
-					maxDirection = MaxDirection;
-				}
+					if (_meteors.Count >= pixelCount * stringCount) break;
+					double position = (RandDouble() * ((maxSpeed) - minSpeed) + minSpeed) / 20;
+					MeteorClass m = new MeteorClass();
+					if (MeteorEffect == MeteorsEffect.RandomDirection)
+					{
+						minDirection = MinDirection;
+						maxDirection = MaxDirection;
+					}
 
-				int direction;
-				if (MeteorEffect == MeteorsEffect.None)
-					direction = Direction; //Set Range for standard Meteor as we don't want to just have them going straight down or two dirctions like the original Meteor effect.
-				else
-				{
-					//This is to generate random directions between the Min and Max values
-					//However if Someone makes the MaxDirection lower then the Min Direction then
-					//the new direction will be the inverserve of the Min and Max effectively changing
-					//the range from a downward motion to an upward motion, increasing the feature capability.
-					if (maxDirection <= minDirection)
-					{
-						//used for the Upward movement of the Meteor (added feature)
-						direction = Rand(1, 3) == 1 ? Rand(1, maxDirection) : Rand(minDirection, 360);
-					}
+					int direction;
+					if (MeteorEffect == MeteorsEffect.None)
+						direction =
+							Direction; //Set Range for standard Meteor as we don't want to just have them going straight down or two dirctions like the original Meteor effect.
 					else
 					{
-						//used for the downward movemnet of the Meteor (standard way)
-						direction = Rand(minDirection, maxDirection);
+						//This is to generate random directions between the Min and Max values
+						//However if Someone makes the MaxDirection lower then the Min Direction then
+						//the new direction will be the inverserve of the Min and Max effectively changing
+						//the range from a downward motion to an upward motion, increasing the feature capability.
+						if (maxDirection <= minDirection)
+						{
+							//used for the Upward movement of the Meteor (added feature)
+							direction = Rand(1, 3) == 1 ? Rand(1, maxDirection) : Rand(minDirection, 360);
+						}
+						else
+						{
+							//used for the downward movemnet of the Meteor (standard way)
+							direction = Rand(minDirection, maxDirection);
+						}
 					}
-				}
-				//Moving
-				m.X = Rand() % BufferWi;
-				m.Y = Rand() % BufferHt;
-				if (direction >= 0 && direction <= 90)
-				{
-					m.TailX = ((double)direction / 90);
-					m.DeltaX = m.TailX * position;
-					m.TailY = ((double)Math.Abs(direction - 90) / 90);
-					m.DeltaY = m.TailY * position;
-					if (RandDouble() >= (double)(90 - direction) / 100)
-					{
-						m.X = 0;
-						m.Y = Rand() % BufferHt;
-					}
-					else
-					{
-						m.X = Rand()%BufferWi;
-						m.Y = 0;
-					}
-				}
-				else if (direction > 90 && direction <= 180)
-				{
-					m.TailX = ((double)Math.Abs(direction - 180) / 90);
-					m.DeltaX = m.TailX * position;
-					m.TailY = -1 * ((double)Math.Abs(direction - 90) / 90);
-					m.DeltaY = m.TailY * position;
-					if (RandDouble() >= (double)(180 - direction) / 100)
-					{
-						m.X = Rand() % BufferWi;
-						m.Y = BufferHt;
-					}
-					else
-					{
-						m.X = 0;
-						m.Y = Rand() % BufferHt;
-					}
-				}
-				else if (direction > 180 && direction <= 270)
-				{
-					m.TailX = -1 * ((double)Math.Abs(direction - 180) / 90);
-					m.DeltaX = m.TailX * position;
-					m.TailY = -1 * ((double)Math.Abs(direction - 270) / 90);
-					m.DeltaY = m.TailY * position;
-					if (RandDouble() >= (double)(270 - direction) / 100)
-					{
-						m.X = BufferWi;
-						m.Y = Rand() % BufferHt;
-					}
-					else
-					{
-						m.X = Rand() % BufferWi;
-						m.Y = BufferHt;
-					}
-				}
-				else if (direction > 270 && direction <= 360)
-				{
-					m.TailX = -1 * ((double)Math.Abs(direction - 360) / 90);
-					m.DeltaX = m.TailX * position;
-					m.TailY = ((double)Math.Abs(270 - direction) / 90);
-					m.DeltaY = m.TailY * position;
-					if (RandDouble() >= (double)(360-direction)/100)
-					{
-						m.X = Rand() % BufferWi;
-						m.Y = 0;
-					}
-					else
-					{
-						m.X = BufferWi;
-						m.Y = Rand() % BufferHt;
-					}
-				}
 
-				if (MeteorEffect == MeteorsEffect.Explode)
-				{
-					m.X = ( BufferWi - 1 ) / 2;
-					m.Y = ( BufferHt - 1 ) / 2;
-				}
-				else
-				{
-					if (RandomMeteorPosition || frame < pixelCount)
+					//Moving
+					if (!CountPerString) m.X = Rand() % BufferWi;
+					m.Y = Rand() % BufferHt;
+					if (MeteorPerString)
 					{
-						m.X = Rand() % BufferWi - 1;
-						m.Y = BufferHt - 1 <= _maxGroundHeight ? 0 : Rand(_maxGroundHeight, BufferHt - 1);
-					}
-				}
-				m.DeltaXOrig = m.DeltaX;
-				m.DeltaYOrig = m.DeltaY;
+						m.TailY = FlipDirection ? 1 : -1;
 
-				switch (ColorType)
-				{
-					case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
-						m.Hsv =
-							SetRangeColor(HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
-								HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
-						break;
-					case MeteorsColorType.Palette: //All colors are used
-						m.Hsv = HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
-						break;
-					case MeteorsColorType.Gradient:
-						m.Color = Rand() % colorcnt;
-						_gradientPosition = 100 / (double)tailLength / 100;
-						m.Hsv = HSV.FromRGB(Colors[m.Color].GetColorAt(0));
-						break;
+						if (CountPerString)
+						{
+							var meteorExists = false;
+							foreach (var meteor in _meteors)
+							{
+								if (meteor.X == j)
+								{
+									meteorExists = true;
+									break;
+								}
+							}
+
+							if (meteorExists) continue;
+							m.X = j;
+						}
+
+						m.DeltaY = m.TailY * position;
+						m.Y = Rand() % BufferHt;
+					}
+					else if (direction >= 0 && direction <= 90)
+					{
+						m.TailX = ((double) direction / 90);
+						m.DeltaX = m.TailX * position;
+						m.TailY = ((double) Math.Abs(direction - 90) / 90);
+						m.DeltaY = m.TailY * position;
+						if (RandDouble() >= (double) (90 - direction) / 100)
+						{
+							m.X = 0;
+							m.Y = Rand() % BufferHt;
+						}
+						else
+						{
+							m.X = Rand() % BufferWi;
+							m.Y = 0;
+						}
+					}
+					else if (direction > 90 && direction <= 180)
+					{
+						m.TailX = ((double) Math.Abs(direction - 180) / 90);
+						m.DeltaX = m.TailX * position;
+						m.TailY = -1 * ((double) Math.Abs(direction - 90) / 90);
+						m.DeltaY = m.TailY * position;
+						if (RandDouble() >= (double) (180 - direction) / 100)
+						{
+							m.X = Rand() % BufferWi;
+							m.Y = BufferHt;
+						}
+						else
+						{
+							m.X = 0;
+							m.Y = Rand() % BufferHt;
+						}
+					}
+					else if (direction > 180 && direction <= 270)
+					{
+						m.TailX = -1 * ((double) Math.Abs(direction - 180) / 90);
+						m.DeltaX = m.TailX * position;
+						m.TailY = -1 * ((double) Math.Abs(direction - 270) / 90);
+						m.DeltaY = m.TailY * position;
+						if (RandDouble() >= (double) (270 - direction) / 100)
+						{
+							m.X = BufferWi;
+							m.Y = Rand() % BufferHt;
+						}
+						else
+						{
+							m.X = Rand() % BufferWi;
+							m.Y = BufferHt;
+						}
+					}
+					else if (direction > 270 && direction <= 360)
+					{
+						m.TailX = -1 * ((double) Math.Abs(direction - 360) / 90);
+						m.DeltaX = m.TailX * position;
+						m.TailY = ((double) Math.Abs(270 - direction) / 90);
+						m.DeltaY = m.TailY * position;
+						if (RandDouble() >= (double) (360 - direction) / 100)
+						{
+							m.X = Rand() % BufferWi;
+							m.Y = 0;
+						}
+						else
+						{
+							m.X = BufferWi;
+							m.Y = Rand() % BufferHt;
+						}
+					}
+
+					if (MeteorEffect == MeteorsEffect.Explode)
+					{
+						m.X = (BufferWi - 1) / 2;
+						m.Y = (BufferHt - 1) / 2;
+					}
+					else
+					{
+						if (MeteorStartPosition == MeteorStartPosition.ZeroPosition)
+						{
+							if (MeteorPerString) m.Y = FlipDirection ? 0 : BufferHt;
+
+						}
+						else if (MeteorStartPosition == MeteorStartPosition.Random || frame < pixelCount)
+						{
+							if (!MeteorPerString) m.X = Rand() % BufferWi - 1;
+							m.Y = BufferHt - 1 <= _maxGroundHeight ? 0 : Rand(_maxGroundHeight, BufferHt - 1);
+						}
+					}
+
+					m.DeltaXOrig = m.DeltaX;
+					m.DeltaYOrig = m.DeltaY;
+
+					switch (ColorType)
+					{
+						case MeteorsColorType.Range: //Random two colors are selected from the list for each meteor.
+							m.Hsv =
+								SetRangeColor(
+									HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)),
+									HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100)));
+							break;
+						case MeteorsColorType.Palette: //All colors are used
+							m.Hsv = HSV.FromRGB(Colors[Rand() % colorcnt].GetColorAt((intervalPosFactor) / 100));
+							break;
+						case MeteorsColorType.Gradient:
+							m.Color = Rand() % colorcnt;
+							_gradientPosition = 100 / (double) tailLength / 100;
+							m.Hsv = HSV.FromRGB(Colors[m.Color].GetColorAt(0));
+							break;
+					}
+
+					m.HsvBrightness = RandomBrightness ? RandDouble() * (1.0 - .20) + .20 : 1;
+					_meteors.Add(m);
+
 				}
-				m.HsvBrightness = RandomBrightness ? RandDouble() * (1.0 - .20) + .20 : 1;
-				_meteors.Add(m);
 			}
 
 			if (EnableGroundLevel)
@@ -642,7 +756,7 @@ namespace VixenModules.Effect.Meteors
 							break;
 					}
 					hsv = meteor.Hsv;
-					hsv.V *= meteor.HsvBrightness * (float) (1.0 - ((double) ph/tailLength)*0.75) * level;
+					hsv.V *= meteor.HsvBrightness * (float) (1.0 - (double) ph/tailLength) * level;
 					//var decPlaces = (int) (((decimal) (meteor.TailX*ph)%1)*100);
 					var decPlaces = (int)(meteor.TailX * ph % 1d * 100);
 					if (decPlaces <= 40 || decPlaces >= 60)
@@ -714,8 +828,8 @@ namespace VixenModules.Effect.Meteors
 
 		private double CalculateSpeedVariation(double intervalPos)
 		{
-			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 1);
-			if (value < 1) value = 1;
+			var value = ScaleCurveToValue(SpeedVariationCurve.GetValue(intervalPos), 200, 0);
+			if (value < 0) value = 0;
 
 			return value;
 		}

@@ -512,6 +512,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generates Meteors for each string..
+        /// </summary>
+        internal static string CountPerString {
+            get {
+                return ResourceManager.GetString("CountPerString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjuts the cross Height to Width ratio..
         /// </summary>
         internal static string CrossSizeRatio {
@@ -733,6 +742,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string FlickerPercent {
             get {
                 return ResourceManager.GetString("FlickerPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Will Flip the direction the Meteor moves..
+        /// </summary>
+        internal static string FlipDirection {
+            get {
+                return ResourceManager.GetString("FlipDirection", resourceCulture);
             }
         }
         
@@ -1057,6 +1075,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MaxShapeSize {
             get {
                 return ResourceManager.GetString("MaxShapeSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generates Meteors per string..
+        /// </summary>
+        internal static string MeteorPerString {
+            get {
+                return ResourceManager.GetString("MeteorPerString", resourceCulture);
             }
         }
         

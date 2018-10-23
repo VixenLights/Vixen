@@ -783,4 +783,13 @@
   <data name="DirectionsTogether" xml:space="preserve">
     <value>Dissolves or fills the element in both directions at the same time.</value>
   </data>
+  <data name="CountPerString" xml:space="preserve">
+    <value>Generates Meteors for each string.</value>
+  </data>
+  <data name="FlipDirection" xml:space="preserve">
+    <value>Will Flip the direction the Meteor moves.</value>
+  </data>
+  <data name="MeteorPerString" xml:space="preserve">
+    <value>Generates Meteors per string.</value>
+  </data>
 </root>
