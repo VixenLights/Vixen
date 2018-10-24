@@ -14,9 +14,9 @@ namespace VixenModules.LayerMixingFilter.MaskFill
 			ForeColor = ThemeColorTable.ForeColor;
 			BackColor = ThemeColorTable.BackgroundColor;
 			ThemeUpdateControls.UpdateControls(this);
-			ExcludeZeroValuesValues = excludeZeroValues;
-			RequireMixingPartner = requireMixingPartner;
-			chkExcludeZero.Checked = excludeZeroValues;
+			ExcludeZeroValuesValues = chkExcludeZero.Checked= excludeZeroValues;
+			RequireMixingPartner = chkRequireMixingPartner.Checked = requireMixingPartner;
+			
 		}
 
 		public bool ExcludeZeroValuesValues { get; private set; }
