@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -19,6 +20,8 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 	public class PropEditorViewModel : ViewModelBase
 	{
 		private bool _selectionChanging;
+		private string _lastSaveFolderPath = PropModelServices.Instance().ModelsFolder;
+		private string _lastOpenFolderPath = PropModelServices.Instance().ModelsFolder;
 		public PropEditorViewModel()
 		{
 			FilePath = String.Empty;
@@ -563,13 +566,15 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var dependencyResolver = this.GetDependencyResolver();
 			var openFileService = dependencyResolver.Resolve<IOpenFileService>();
 			openFileService.IsMultiSelect = false;
-			openFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			openFileService.InitialDirectory = _lastOpenFolderPath;
 			openFileService.Filter = "Prop Files(*.prp)|*.prp";
+			openFileService.FileName = string.Empty;
 			if (await openFileService.DetermineFileAsync())
 			{
 				string path = openFileService.FileNames.First();
 				if (!string.IsNullOrEmpty(path))
 				{
+					_lastOpenFolderPath = Path.GetDirectoryName(path);
 					Prop p = PropModelServices.Instance().LoadProp(path);
 					if (p != null)
 					{
@@ -642,10 +647,11 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var saveFileService = dependencyResolver.Resolve<ISaveFileService>();
 			saveFileService.Filter = "Prop Files(*.prp)|*.prp";
 			saveFileService.CheckPathExists = true;
-			saveFileService.InitialDirectory = PropModelServices.Instance().ModelsFolder;
+			saveFileService.InitialDirectory = _lastSaveFolderPath;
 			saveFileService.FileName = CleanseNameString(Prop.Name);
 			if (await saveFileService.DetermineFileAsync())
 			{
+				_lastSaveFolderPath = Path.GetDirectoryName(saveFileService.FileName);
 				// User selected a file
 				if (PropModelPersistenceService.SaveModel(Prop, saveFileService.FileName))
 				{
@@ -772,6 +778,7 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			get { return _newPropCommand ?? (_newPropCommand = new Command(NewProp)); }
 		}
 
+		private const string TokenPattern = @"{[0-9]+}";
 		/// <summary>
 		/// Method to invoke when the NewProp command is executed.
 		/// </summary>
@@ -781,7 +788,12 @@ namespace VixenModules.App.CustomPropEditor.ViewModels
 			var result = mbs.GetUserInput("Please enter the model name.", "Create Model", "New Prop");
 			if (result.Result == MessageResult.OK)
 			{
-				Prop = PropModelServices.Instance().CreateProp(result.Response);
+				var name = result.Response;
+				if (!Regex.IsMatch(name, TokenPattern))
+				{
+					name = $"{name} {{1}}";
+				}
+				Prop = PropModelServices.Instance().CreateProp(name);
 				FilePath = string.Empty;
 			}
 		}
