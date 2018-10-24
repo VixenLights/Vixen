@@ -554,6 +554,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
 			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction += PhonemeBreakdownAction;
+			_timeLineGlobalEventManager.PlayRangeAction += TimeLineGlobalEventManagerOnPlayRangeAction;
 
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
@@ -771,6 +772,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction -= PhonemeBreakdownAction;
+			_timeLineGlobalEventManager.PlayRangeAction -= TimeLineGlobalEventManagerOnPlayRangeAction;
 
 			if (_sequence != null && _sequence.LabeledMarkCollections != null)
 			{
@@ -2840,6 +2842,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 		}
 
+		private void TimeLineGlobalEventManagerOnPlayRangeAction(object sender, PlayRangeEventArgs e)
+		{
+			PlaySequenceBetween(e.StartTime, e.EndTime);
+		}
+
+
 		private void PhonemeBreakdownAction(object sender, PhonemeBreakdownEventArgs e)
 		{
 			Dictionary<IMark, IMarkCollection> undoMarks = new Dictionary<IMark, IMarkCollection>();
@@ -3268,6 +3276,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			_PlaySequence(start, end);
+		}
+
+		public void PlaySequenceBetween(TimeSpan startTime, TimeSpan endTime)
+		{
+			if (_context == null)
+			{
+				Logging.Error("TimedSequenceEditor: <PlaySequenceFrom> - attempt to Play with null _context!");
+				return;
+			}
+
+			if (_context.IsPaused)
+			{
+				StopSequence();
+			}
+
+			if (startTime < TimeSpan.Zero)
+			{
+				startTime = TimelineControl.PlaybackStartTime.GetValueOrDefault(TimeSpan.Zero);
+			}
+
+			if (endTime > TimelineControl.TotalTime)
+			{
+				endTime = TimelineControl.PlaybackEndTime.GetValueOrDefault(TimeSpan.MaxValue);
+			}
+			
+			_PlaySequence(startTime, endTime);
 		}
 
 		private void PauseSequence()

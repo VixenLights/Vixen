@@ -186,18 +186,21 @@ namespace Common.Controls.TimelineControl
 			{
 				_mouseDownMark = MarkAt(location);
 
-				if (e.Clicks == 2)
+				if (e.Clicks == 2 && _mouseDownMark != null)
 				{
-					if (_mouseDownMark != null)
+					if (AltPressed)
 					{
 						BeginMoveResizeMarks(location);
 						_mouseDownMark.Parent.FillGapTimes(_mouseDownMark);
 						FinishedResizeMoveMarks(ElementMoveType.Resize);
 						return;
 					}
-
+					
+					_timeLineGlobalEventManager.OnPlayRange(new PlayRangeEventArgs(_mouseDownMark.StartTime,
+						_mouseDownMark.EndTime));
+					return;
 				}
-
+				
 				if (!CtrlPressed && !ShiftPressed)
 				{
 					if (!_marksSelectionManager.IsSelected(_mouseDownMark))
