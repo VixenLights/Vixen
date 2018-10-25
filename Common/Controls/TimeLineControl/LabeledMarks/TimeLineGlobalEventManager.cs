@@ -13,6 +13,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
 		public event EventHandler<AlignmentEventArgs> AlignmentActivity;
 		public event EventHandler<PhonemeBreakdownEventArgs> PhonemeBreakdownAction;
+		public event EventHandler<PlayRangeEventArgs> PlayRangeAction;
 
 		private TimeLineGlobalEventManager()
 		{
@@ -54,6 +55,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public void OnPhonemeBreakdownAction(PhonemeBreakdownEventArgs e)
 		{
 			PhonemeBreakdownAction?.Invoke(this, e);
+		}
+
+		public void OnPlayRange(PlayRangeEventArgs e)
+		{
+			PlayRangeAction?.Invoke(this, e);
 		}
 
 	}

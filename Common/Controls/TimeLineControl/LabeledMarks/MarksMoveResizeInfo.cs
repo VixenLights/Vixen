@@ -12,7 +12,10 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 			OriginalMarks = new Dictionary<IMark, MarkTimeInfo>();
 			foreach (var mark in modifyingMarks)
 			{
-				OriginalMarks.Add(mark, new MarkTimeInfo(mark));
+				if (mark != null)
+				{
+					OriginalMarks.Add(mark, new MarkTimeInfo(mark));
+				}
 			}
 		}
 			
