@@ -25,7 +25,7 @@ namespace VixenModules.Effect.Text
 			Position = 0;
 			PositionX = 0;
 			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
-			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffSetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 			AngleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 }));
 			FontScaleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			ScaleText = 0;
@@ -84,8 +84,11 @@ namespace VixenModules.Effect.Text
 		[DataMember(EmitDefaultValue = false)]
 		public int Position { get; set; }
 
-		[DataMember]
+		[DataMember(EmitDefaultValue = false)]
 		public Curve YOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve YOffSetCurve { get; set; }
 
 		[DataMember(EmitDefaultValue = false)]
 		public int PositionX { get; set; }
@@ -177,6 +180,16 @@ namespace VixenModules.Effect.Text
 					Position = 0;
 				}
 			}
+
+			if (YOffSetCurve == null)
+			{
+				YOffSetCurve = new Curve(YOffsetCurve);
+				// Copy the old Y Offset curve and then Invert curve as this has been set the wrong way around so convert any existing curves.
+				foreach (var p in YOffSetCurve.Points)
+				{
+					p.Y = 100 - p.Y;
+				}
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -188,7 +201,7 @@ namespace VixenModules.Effect.Text
 				Speed = Speed,
 				CenterStop = CenterStop,
 				Orientation = Orientation,
-				YOffsetCurve = new Curve(YOffsetCurve),
+				YOffSetCurve = new Curve(YOffSetCurve),
 				XOffsetCurve = new Curve(XOffsetCurve),
 				AngleCurve = new Curve(AngleCurve),
 				Text = Text.ToList(),
