@@ -288,7 +288,7 @@ namespace VixenModules.Effect.LipSync
 							var restImage = mapData.ImageForPhoneme("REST");
 							if (restImage != null)
 							{
-								_thePic.StartFrame = (int)(mark.StartTime - StartTime - gapDuration).TotalMilliseconds / 50;
+								_thePic.StartTime = mark.StartTime - StartTime - gapDuration;
 								_thePic.Image = restImage;
 								_thePic.TimeSpan = gapDuration;
 								_thePic.MarkDirty();
@@ -304,7 +304,7 @@ namespace VixenModules.Effect.LipSync
 					var image = mapData.ImageForPhoneme(mark.Text);
 					if (image != null)
 					{
-						_thePic.StartFrame = (int)(mark.StartTime - StartTime).TotalMilliseconds / 50;
+						_thePic.StartTime = mark.StartTime - StartTime;
 						_thePic.Image = image;
 						_thePic.TimeSpan = mark.Duration;
 						_thePic.MarkDirty();
@@ -316,7 +316,7 @@ namespace VixenModules.Effect.LipSync
 
 				if (!AllowMarkGaps)
 				{
-					_thePic.StartFrame = (int)(lastMarkTime - StartTime).TotalMilliseconds / 50;
+					_thePic.StartTime = lastMarkTime - StartTime;
 					var gapDuration = StartTime + TimeSpan - lastMarkTime;
 					if (gapDuration.TotalMilliseconds > 10)
 					{
@@ -365,9 +365,8 @@ namespace VixenModules.Effect.LipSync
 			_thePic.YOffsetCurve = YOffsetCurve;
 			_thePic.XOffsetCurve = XOffsetCurve;
 			_thePic.TotalFrames = (int)TimeSpan.TotalMilliseconds / 50;
-
-			var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
-			_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve }));
+			_thePic.EffectEndTime = TimeSpan;
+			_thePic.Level = IntensityLevel;
 		}
 
 		private void TearDownPictureEffect()

@@ -19,13 +19,13 @@ namespace VixenModules.Effect.LipSync
 			EffectModuleData = new PictureData();
 		}
 
-		public Curve LevelCurve { get; set; }
+		public int Level { get; set; }
 
 		public int ScalePercent { get; set; }
 
-		public int StartFrame { get; set; }
-
 		public int TotalFrames { get; set; }
+
+		public TimeSpan EffectEndTime { get; set; }
 
 		public bool ScaleToGrid { get; set; }
 
@@ -60,8 +60,7 @@ namespace VixenModules.Effect.LipSync
 		/// <inheritdoc />
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			var intervalPosFactor = ((double)100 / TotalFrames) * (StartFrame + frame);
-			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			var intervalPosFactor = ((double)100 / EffectEndTime.TotalMilliseconds) * (StartTime.TotalMilliseconds + frame * 50);
 			var yOffsetAdjust = CalculateYOffset(intervalPosFactor);
 			var xOffsetAdjust = CalculateXOffset(intervalPosFactor);
 			if (_fp != null)
@@ -75,10 +74,10 @@ namespace VixenModules.Effect.LipSync
 					{
 						var fpColor = _fp.GetPixel(x, y);
 
-						if (level < 1)
+						if (Level < 100)
 						{
 							var hsv = HSV.FromRGB(fpColor);
-							hsv.V = hsv.V * level;
+							hsv.V = hsv.V * ((double)Level / 100);
 							fpColor = hsv.ToRGB();
 						}
 						frameBuffer.SetPixel(x + xoffset, yoffset - y, fpColor);
