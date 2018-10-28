@@ -341,7 +341,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 }
 
             }
-            newList.Add(new PapagayoPhoneme(coalescedPhoneme));
+
+	        if (coalescedPhoneme != null)
+	        {
+		        newList.Add(new PapagayoPhoneme(coalescedPhoneme));
+	        }
 
             m_phonemes = newList;
         }

@@ -381,7 +381,14 @@ namespace VixenModules.Effect.LipSync
 		private void SetupMarks()
 		{
 			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
-			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+			if (mc != null)
+			{
+				_marks = mc.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+			}
+			else
+			{
+				_marks = new List<IMark>();
+			}
 		}
 
 		#region Overrides of EffectModuleInstanceBase
