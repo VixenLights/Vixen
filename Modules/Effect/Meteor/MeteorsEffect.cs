@@ -11,4 +11,13 @@ namespace VixenModules.Effect.Meteors
 		[Description("Explode")]
 		Explode
 	}
+	public enum MeteorStartPosition
+	{
+		[Description("Random")]
+		Random,
+		[Description("Random then Zero Position")]
+		InitiallyRandom,
+		[Description("Zero Position")]
+		ZeroPosition
+	}
 }

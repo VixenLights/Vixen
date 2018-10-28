@@ -780,4 +780,16 @@
   <data name="DirectionsTogether" xml:space="preserve">
     <value>Directions Together</value>
   </data>
+  <data name="FlipDirection" xml:space="preserve">
+    <value>Flip Direction</value>
+  </data>
+  <data name="MeteorPerString" xml:space="preserve">
+    <value>Meteor Per String</value>
+  </data>
+  <data name="CountPerString" xml:space="preserve">
+    <value>Count Per String</value>
+  </data>
+  <data name="StartPosition" xml:space="preserve">
+    <value>Start Position</value>
+  </data>
 </root>

@@ -548,6 +548,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count Per String.
+        /// </summary>
+        internal static string CountPerString {
+            get {
+                return ResourceManager.GetString("CountPerString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Coverage.
         /// </summary>
         internal static string Coverage {
@@ -769,6 +778,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string FlickerPercent {
             get {
                 return ResourceManager.GetString("FlickerPercent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flip Direction.
+        /// </summary>
+        internal static string FlipDirection {
+            get {
+                return ResourceManager.GetString("FlipDirection", resourceCulture);
             }
         }
         
@@ -1129,6 +1147,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string MaxShapeSize {
             get {
                 return ResourceManager.GetString("MaxShapeSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Meteor Per String.
+        /// </summary>
+        internal static string MeteorPerString {
+            get {
+                return ResourceManager.GetString("MeteorPerString", resourceCulture);
             }
         }
         
@@ -1768,6 +1795,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StartingElement {
             get {
                 return ResourceManager.GetString("StartingElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Position.
+        /// </summary>
+        internal static string StartPosition {
+            get {
+                return ResourceManager.GetString("StartPosition", resourceCulture);
             }
         }
         
