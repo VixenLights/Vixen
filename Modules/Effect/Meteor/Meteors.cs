@@ -187,8 +187,8 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"MeteorStartPosition")]
-		[ProviderDescription(@"MeteorStartPosition")]
+		[ProviderDisplayName(@"StartPosition")]
+		[ProviderDescription(@"StartPosition")]
 		[PropertyOrder(9)]
 		public MeteorStartPosition MeteorStartPosition
 		{

@@ -1754,6 +1754,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Determines where the Meteors will start from..
+        /// </summary>
+        internal static string StartPosition {
+            get {
+                return ResourceManager.GetString("StartPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indicates the color is a static color..
         /// </summary>
         internal static string StaticColorIndicator {

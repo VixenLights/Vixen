@@ -792,4 +792,7 @@
   <data name="MeteorPerString" xml:space="preserve">
     <value>Generates Meteors per string.</value>
   </data>
+  <data name="StartPosition" xml:space="preserve">
+    <value>Determines where the Meteors will start from.</value>
+  </data>
 </root>

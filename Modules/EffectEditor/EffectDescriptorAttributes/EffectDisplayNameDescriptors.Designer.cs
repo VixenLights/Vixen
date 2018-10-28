@@ -1799,6 +1799,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Position.
+        /// </summary>
+        internal static string StartPosition {
+            get {
+                return ResourceManager.GetString("StartPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Static Effect.
         /// </summary>
         internal static string StaticEffect {
