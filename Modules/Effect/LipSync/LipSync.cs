@@ -288,6 +288,7 @@ namespace VixenModules.Effect.LipSync
 							var restImage = mapData.ImageForPhoneme("REST");
 							if (restImage != null)
 							{
+								_thePic.StartTime = mark.StartTime - StartTime - gapDuration;
 								_thePic.Image = restImage;
 								_thePic.TimeSpan = gapDuration;
 								_thePic.MarkDirty();
@@ -303,6 +304,7 @@ namespace VixenModules.Effect.LipSync
 					var image = mapData.ImageForPhoneme(mark.Text);
 					if (image != null)
 					{
+						_thePic.StartTime = mark.StartTime - StartTime;
 						_thePic.Image = image;
 						_thePic.TimeSpan = mark.Duration;
 						_thePic.MarkDirty();
@@ -314,6 +316,7 @@ namespace VixenModules.Effect.LipSync
 
 				if (!AllowMarkGaps)
 				{
+					_thePic.StartTime = lastMarkTime - StartTime;
 					var gapDuration = StartTime + TimeSpan - lastMarkTime;
 					if (gapDuration.TotalMilliseconds > 10)
 					{
@@ -359,10 +362,11 @@ namespace VixenModules.Effect.LipSync
 			_thePic.StringOrientation = Orientation;
 			_thePic.ScaleToGrid = ScaleToGrid;
 			_thePic.ScalePercent = ScalePercent;
-			//_thePic.TimeSpan = TimeSpan;
-
-			var intensityCurve = PixelEffectBase.ScaleValueToCurve(IntensityLevel, 100.0, 0.0);
-			_thePic.LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { intensityCurve, intensityCurve }));
+			_thePic.YOffsetCurve = YOffsetCurve;
+			_thePic.XOffsetCurve = XOffsetCurve;
+			_thePic.TotalFrames = (int)TimeSpan.TotalMilliseconds / 50;
+			_thePic.EffectEndTime = TimeSpan;
+			_thePic.Level = IntensityLevel;
 		}
 
 		private void TearDownPictureEffect()
@@ -435,7 +439,9 @@ namespace VixenModules.Effect.LipSync
 				{"ScalePercent", isMap && !ScaleToGrid },
 				{"IntensityLevel", isMap },
 				{"ShowOutline", !isMap },
-				{"EyeMode", !isMap }
+				{"EyeMode", !isMap },
+				{"YOffsetCurve", isMap },
+				{"XOffsetCurve", isMap }
 			};
 		
 			SetBrowsable(propertyStates);
@@ -592,7 +598,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory("Config", 2)]
 		[ProviderDisplayName(@"LyricData")]
 		[ProviderDescription(@"LyricData")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public String LyricData
 		{
 			get { return _data.LyricData; }
@@ -608,7 +614,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory("Config", 2)]
 		[ProviderDisplayName(@"StaticPhoneme")]
 		[ProviderDescription(@"StaticPhoneme")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public PhonemeType StaticPhoneme
 		{
 			get { return _data.StaticPhoneme; }
@@ -620,13 +626,43 @@ namespace VixenModules.Effect.LipSync
 			}
 		}
 
-		
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"XOffsetCurve")]
+		[ProviderDescription(@"XOffsetCurve")]
+		[PropertyOrder(7)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 2)]
+		[ProviderDisplayName(@"YOffsetCurve")]
+		[ProviderDescription(@"YOffsetCurve")]
+		[PropertyOrder(8)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 
 		[Value]
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"ScaleToGrid")]
 		[ProviderDescription(@"ScaleToGrid")]
-		[PropertyOrder(6)]
+		[PropertyOrder(9)]
 		public bool ScaleToGrid
 		{
 			get { return _data.ScaleToGrid; }
@@ -645,7 +681,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderDescription(@"ScalePercent")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(10)]
 		public int ScalePercent
 		{
 			get { return _data.ScalePercent; }
@@ -661,7 +697,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"EyeMode")]
 		[ProviderDescription(@"EyeMode")]
-		[PropertyOrder(8)]
+		[PropertyOrder(11)]
 		public EyeMode EyeMode
 		{
 			get { return _data.EyeMode; }
@@ -677,7 +713,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"ShowOutline")]
 		[ProviderDescription(@"ShowOutline")]
-		[PropertyOrder(9)]
+		[PropertyOrder(12)]
 		public bool ShowOutline
 		{
 			get { return _data.ShowOutline; }
@@ -693,7 +729,7 @@ namespace VixenModules.Effect.LipSync
 		[ProviderCategory(@"Config", 2)]
 		[ProviderDisplayName(@"AllowMarkGaps")]
 		[ProviderDescription(@"AllowMarkGaps")]
-		[PropertyOrder(10)]
+		[PropertyOrder(13)]
 		public bool AllowMarkGaps
 		{
 			get { return _data.AllowMarkGaps; }

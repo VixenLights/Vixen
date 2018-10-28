@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Effect.Effect;
+using ZedGraph;
 
 namespace VixenModules.Effect.LipSync
 {
@@ -31,6 +33,8 @@ namespace VixenModules.Effect.LipSync
 			Level = 100;
 			ShowOutline = false;
 			EyeMode = EyeMode.Off;
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}
 
 		[DataMember]
@@ -44,6 +48,12 @@ namespace VixenModules.Effect.LipSync
 
 		[DataMember]
 		public int ScalePercent { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
 
 		[DataMember]
 		public Guid MarkCollectionId { get; set; }
@@ -60,6 +70,16 @@ namespace VixenModules.Effect.LipSync
 		[DataMember]
 		public EyeMode EyeMode { get; set; }
 
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			if (XOffsetCurve == null)
+			{
+				YOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
+				XOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			LipSyncData result = new LipSyncData();
@@ -75,6 +95,8 @@ namespace VixenModules.Effect.LipSync
 			result.ShowOutline = ShowOutline;
 			result.EyeMode = EyeMode;
 			result.AllowMarkGaps = AllowMarkGaps;
+			result.YOffsetCurve = new Curve(YOffsetCurve);
+			result.XOffsetCurve = new Curve(XOffsetCurve);
 			return result;
 		}
 	}
