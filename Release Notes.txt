@@ -1,5 +1,23 @@
 Release Notes - Vixen 3
 
+Release Notes - Vixen 3 - 3.5u4 Release Build 
+
+** Improvement
+    * [VIX-2177] - Text positioning
+    * [VIX-2500] - Workflow improvements - improve starting name and file location handling
+    * [VIX-2539] - Add ability to add positioning to images in matrix lipsync effect
+    * [VIX-2609] - Play LipSync phrase/word
+    * [VIX-2613] - Add a color change layer mixing filter
+    * [VIX-2614] - Meteors doesn't work properly for linear display
+
+** Bug
+    * [VIX-2610] - The Random and Rainbow options only show red colors.
+    * [VIX-2611] - Gradient across items in Wipe effect not working correctly.
+    * [VIX-2612] - The Mask and Fill setup window does not properly initialize the current state of the requires mixing partner checkbox.
+    * [VIX-2616] - Vixen crashes on Papagayo import when file is incomplete
+
+
+
 Release Notes - Vixen 3 - 3.5u3 Release Build 
 
 ** New Feature
