@@ -792,4 +792,7 @@
   <data name="StartPosition" xml:space="preserve">
     <value>Start Position</value>
   </data>
+  <data name="OffsetPercentage" xml:space="preserve">
+    <value>Offset Percentage</value>
+  </data>
 </root>

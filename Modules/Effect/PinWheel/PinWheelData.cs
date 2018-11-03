@@ -32,6 +32,7 @@ namespace VixenModules.Effect.PinWheel
 			Orientation=StringOrientation.Vertical;
 			PinWheelBladeType = PinWheelBladeType.Flat; 
 			MovementType = MovementType.Iterations;
+			OffsetPercentage = true;
 		}
 
 		[DataMember]
@@ -103,6 +104,9 @@ namespace VixenModules.Effect.PinWheel
 		[DataMember]
 		public MovementType MovementType { get; set; }
 
+		[DataMember]
+		public bool OffsetPercentage { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -111,7 +115,6 @@ namespace VixenModules.Effect.PinWheel
 				PinWheelBladeType = PinWheelBladeType.ThreeD;
 				PinWheel3D = false;
 			}
-
 
 			//if one of them is null the others probably are, and if this one is not then they all should be good.
 			//Try to save some cycles on every load
@@ -158,6 +161,12 @@ namespace VixenModules.Effect.PinWheel
 					CenterStart = 0;
 				}
 			}
+
+			if (!OffsetPercentage)
+			{
+				Curve defaultCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
+				if (Equals(XOffsetCurve, defaultCurve) && Equals(YOffsetCurve, defaultCurve)) OffsetPercentage = true;
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -180,7 +189,8 @@ namespace VixenModules.Effect.PinWheel
 				SizeCurve = new Curve(SizeCurve),
 				LevelCurve = new Curve(LevelCurve),
 				MovementType = MovementType,
-				PinWheelBladeType = PinWheelBladeType
+				PinWheelBladeType = PinWheelBladeType,
+				OffsetPercentage = OffsetPercentage
 			};
 			return result;
 		}
