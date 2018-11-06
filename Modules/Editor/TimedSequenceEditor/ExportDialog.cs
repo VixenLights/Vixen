@@ -154,16 +154,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 	        if (outputFormatComboBox.SelectedItem.ToString().Contains("Falcon"))
 	        {
-		        if (_exportOps.CanWriteUniverseFile())
+		        if (!_exportOps.AllSelectedControllersSupportUniverses)
 		        {
-					//Silently generate the file if we can.
-			        string fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
-			                          Path.DirectorySeparatorChar +
-			                          Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
-			                          "_universe.txt";
-
-			        await _exportOps.WriteUniverseFile(fileName);
-				}
+			        var messageBox = new MessageBoxForm("Some of the selected controllers do not support universes\n" +
+			                                            "These controllers will not be included in the universes file.\n" +
+			                                            "Some manual FPP output configuration will be required.",
+														"Warning", MessageBoxButtons.OK, SystemIcons.Warning);
+			        messageBox.ShowDialog();
+		        }
+		        var fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
+			                        Path.DirectorySeparatorChar +
+			                        Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
+			                        "_universe.txt";
+			    await _exportOps.WriteUniverseFile(fileName);
 			}
 	        else
 	        {

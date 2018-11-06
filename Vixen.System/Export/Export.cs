@@ -39,8 +39,10 @@ namespace Vixen.Export
         public delegate void SequenceEventHandler(ExportNotifyType notify);
         public event SequenceEventHandler SequenceNotify;
 
-        #region Contructor
-        public Export()
+	    public bool AllSelectedControllersSupportUniverses => ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
+
+		#region Contructor
+		public Export()
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
@@ -168,25 +170,8 @@ namespace Vixen.Export
             return true;
         }
 
-	    public bool CanWriteUniverseFile()
+		public async Task WriteUniverseFile(string fileName)
 	    {
-		    /*if (ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport))
-		    {
-			    return true;
-		    }
-			MessageBox.Show("Some of the selected controllers do not support universes\nUniverse file will not be created.", "Warning", MessageBoxButtons.OK);
-			return false;*/
-		    return true;
-		    //return ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
-	    }
-
-	    public async Task WriteUniverseFile(string fileName)
-	    {
-		    /*if (!CanWriteUniverseFile())
-		    {
-				return;
-		    }*/
-		    
 		    using (var writer = new StreamWriter(fileName))
 		    {
 			    var fppStartChannel = 1;
