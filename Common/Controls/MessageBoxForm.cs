@@ -66,10 +66,6 @@ namespace Common.Controls
 			
 		}
 
-		public MessageBoxForm(string v1, string v2, MessageBoxButtons oK)
-		{
-		}
-
 		private void InitMessageBox(string messageBoxData, string messageBoxTitle)
 		{
 			Height = 0;
