@@ -79,8 +79,6 @@ namespace VixenModules.App.ExportWizard
 		[DataMember]
 		public List<Controller> Controllers { get; private set; }
 
-		public bool AllControllersSupportUniverses => Controllers.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
-
 		public bool IsFalconFormat => Format.Contains("Falcon");
 		
 		public bool IsFalconEffectFormat => Format.Equals("Falcon Player Effect");

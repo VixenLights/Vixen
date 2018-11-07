@@ -33,6 +33,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void ConfigureSummary()
 		{
+			_data.ConfigureExport(_data.ActiveProfile);
 			chkSaveConfig.Checked = false;
 			comboConfigName.Visible = false;
 			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
@@ -57,8 +58,8 @@ namespace VixenModules.App.ExportWizard
 			{
 				lblUniverseFolder.Visible = lblUniverse.Visible = false;
 			}
-			if(!_data.ActiveProfile.AllControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
-			{
+			if (!_data.Export.AllSelectedControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
+				{
 				lblUniverseFileWarning.Visible = true;
 				lblUniverseFileWarning.Text = "Not all controllers selected for export support universes.\n" +
 				                              "These controllers will not be included in the universes file.\n" +
@@ -141,9 +142,6 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
-
-			_data.ConfigureExport(_data.ActiveProfile);
-
 			var exportProgressStatus = new ExportProgressStatus();
 			var overallProgressSteps = _data.ActiveProfile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
 			var overallProgressStep = 0;
