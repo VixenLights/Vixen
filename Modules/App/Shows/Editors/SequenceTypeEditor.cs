@@ -51,10 +51,9 @@ namespace VixenModules.App.Shows
 			if (openFileDialog.ShowDialog() == DialogResult.OK)
 			{
 				textBoxSequence.Text = openFileDialog.FileName;
-				labelSequence.Text = Path.GetFileName(_showItem.SequencePath);
 				_showItem.SequencePath = openFileDialog.FileName;
-				_showItem.Name = "Run sequence: " + Path.GetFileName(_showItem.SequencePath);
-				FireChanged(_showItem.Name);
+				labelSequence.Text = Path.GetFileName(_showItem.SequencePath);
+				UpdateItemName();
 			}
 		}
 
@@ -62,7 +61,14 @@ namespace VixenModules.App.Shows
 		{
 			textBoxSequence.Text = _showItem.SequencePath;
 			labelSequence.Text = Path.GetFileName(_showItem.SequencePath);
+			UpdateItemName();
+
 		}
 
+		private void UpdateItemName()
+		{
+			_showItem.Name = Text = $@"Run sequence: {labelSequence.Text}";
+			FireChanged(_showItem.Name);
+		}
 	}
 }
