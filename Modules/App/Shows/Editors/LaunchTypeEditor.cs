@@ -32,6 +32,13 @@ namespace VixenModules.App.Shows
 			textBoxCommandLine.Text = _showItem.Launch_CommandLine;
 			checkBoxShowCommandWindow.Checked = _showItem.Launch_ShowCommandWindow;
 			checkBoxWaitForExit.Checked = _showItem.Launch_WaitForExit;
+			UpdateItemName();
+		}
+
+		private void UpdateItemName()
+		{
+			_showItem.Name = Text = $@"Launch: {_showItem.Launch_ProgramName}";
+			FireChanged(_showItem.Name);
 		}
 
 		private void buttonSelectProgram_Click(object sender, EventArgs e)
@@ -55,8 +62,7 @@ namespace VixenModules.App.Shows
 		private void textBoxProgram_TextChanged(object sender, EventArgs e)
 		{
 			_showItem.Launch_ProgramName = textBoxProgram.Text;
-			_showItem.Name = "Launch: " + _showItem.Launch_ProgramName;
-			FireChanged(_showItem.Name);
+			UpdateItemName();
 		}
 
 		private void textBoxCommandLine_TextChanged(object sender, EventArgs e)

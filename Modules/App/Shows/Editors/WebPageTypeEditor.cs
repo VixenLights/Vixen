@@ -37,12 +37,18 @@ namespace VixenModules.App.Shows
 		private void SequenceTypeEditor_Load(object sender, EventArgs e)
 		{
 			textBoxWebsite.Text = _showItem.Website_URL;
+			UpdateItemName();
 		}
 
 		private void textBoxWebsite_TextChanged(object sender, EventArgs e)
 		{
 			_showItem.Website_URL = textBoxWebsite.Text;
-			_showItem.Name = "Web page: " + _showItem.Website_URL;
+			UpdateItemName();
+		}
+
+		private void UpdateItemName()
+		{
+			_showItem.Name = Text = $@"Web page: {_showItem.Website_URL}" ;
 			FireChanged(_showItem.Name);
 		}
 

@@ -54,9 +54,6 @@ namespace VixenModules.App.Shows
 			tabControlShowItems.SelectedTabColor = ThemeColorTable.ComboBoxBackColor;
 			tabControlShowItems.TabColor = ThemeColorTable.ComboBoxHighlightColor;
 
-			
-
-
 			ShowData = show;
 		}
 
@@ -68,7 +65,7 @@ namespace VixenModules.App.Shows
 			textBoxShowName.Text = ShowData.Name;
 			LoadCurrentTab();
 			CheckButtons();
-
+			tabControlShowItems.SelectedIndex = 2;
 		}
 
 		public Show ShowData { get; set; }
@@ -163,6 +160,7 @@ namespace VixenModules.App.Shows
 				if (currentEditor != null)
 				{
 					groupBoxItemEdit.Controls.Remove(currentEditor);
+					currentEditor.OnTextChanged -= OnTextChanged;
 				}
 				if (SelectedShowItem != null)
 				{
@@ -187,7 +185,13 @@ namespace VixenModules.App.Shows
 		public void OnTextChanged(object sender, EventArgs e)
 		{
 			TypeEditorBase editor = sender as TypeEditorBase;
+			UpdateItemText(editor);
+		}
+
+		private void UpdateItemText(TypeEditorBase editor)
+		{
 			listViewShowItems.SelectedItems[0].SubItems[0].Text = editor.Text;
+			listViewShowItems.Columns[0].Width = -1;
 		}
 
 		private void PopulateActions()
@@ -280,6 +284,8 @@ namespace VixenModules.App.Shows
 				ShowItem item = lvItem.Tag as ShowItem;
 				item.ItemOrder = lvItem.Index;
 			}
+
+			listViewShowItems.Columns[0].Width = -1;
 		}
 
 		private void buttonAddItem_Click(object sender, EventArgs e)
@@ -318,10 +324,12 @@ namespace VixenModules.App.Shows
 
 		private void listViewShowItems_AfterLabelEdit(object sender, LabelEditEventArgs e)
 		{
-			if (e.Label != null && e.Label.Length > 0)
+			if (!string.IsNullOrEmpty(e.Label))
 			{
 				(listViewShowItems.Items[e.Item].Tag as ShowItem).Name = e.Label;
 			}
+
+			listViewShowItems.Columns[0].Width = -1;
 		}
 
 		private void listViewShowItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -443,6 +451,8 @@ namespace VixenModules.App.Shows
 				ShowItem item = e.Item.Tag as ShowItem;
 				e.Item.SubItems[0].Text = item.Name;
 			}
+
+			listViewShowItems.Columns[0].Width = -1;
 		}
 
 		private void buttonBackground_MouseHover(object sender, EventArgs e)
