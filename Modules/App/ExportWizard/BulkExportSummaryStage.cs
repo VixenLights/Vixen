@@ -33,6 +33,7 @@ namespace VixenModules.App.ExportWizard
 
 		private void ConfigureSummary()
 		{
+			_data.ConfigureExport(_data.ActiveProfile);
 			chkSaveConfig.Checked = false;
 			comboConfigName.Visible = false;
 			lblSequenceCount.Text = _data.ActiveProfile.SequenceFiles.Count().ToString();
@@ -56,6 +57,17 @@ namespace VixenModules.App.ExportWizard
 			else
 			{
 				lblUniverseFolder.Visible = lblUniverse.Visible = false;
+			}
+			if (!_data.Export.AllSelectedControllersSupportUniverses && _data.ActiveProfile.CreateUniverseFile)
+				{
+				lblUniverseFileWarning.Visible = true;
+				lblUniverseFileWarning.Text = "Not all controllers selected for export support universes.\n" +
+				                              "These controllers will not be included in the universes file.\n" +
+				                              "Some manual FPP output configuration will be required.";
+			}
+			else
+			{
+				lblUniverseFileWarning.Visible = false;
 			}
 		}
 
@@ -130,9 +142,6 @@ namespace VixenModules.App.ExportWizard
 
 		private async Task<bool> DoExport(IProgress<ExportProgressStatus> progress)
 		{
-
-			_data.ConfigureExport(_data.ActiveProfile);
-
 			var exportProgressStatus = new ExportProgressStatus();
 			var overallProgressSteps = _data.ActiveProfile.SequenceFiles.Count * 2d; //There are basically 2 steps for each. Render and export.
 			var overallProgressStep = 0;
@@ -188,20 +197,17 @@ namespace VixenModules.App.ExportWizard
 		{
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
-				if (_data.Export.CanWriteUniverseFile())
+				string fileName = _data.ActiveProfile.FalconOutputFolder +
+					                Path.DirectorySeparatorChar + "universes";
+
+				if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
 				{
-					string fileName = _data.ActiveProfile.FalconOutputFolder +
-					                  Path.DirectorySeparatorChar + "universes";
-
-					if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
-					{
-						var now = DateTime.Now;
-						var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
-						File.Move(fileName, newFile);
-					}
-
-					await _data.Export.WriteUniverseFile(fileName);
+					var now = DateTime.Now;
+					var newFile = $"{fileName}_{now.Month}{now.Day}{now.Year}-{now.Hour}{now.Minute}{now.Second}";
+					File.Move(fileName, newFile);
 				}
+
+				await _data.Export.WriteUniverseFile(fileName);
 			}
 		}
 
@@ -314,6 +320,16 @@ namespace VixenModules.App.ExportWizard
 		private void comboConfigName_TextUpdate(object sender, EventArgs e)
 		{
 			//Console.Out.WriteLine("TextUpdate");
+		}
+
+		private void mainLayoutPanel_Paint(object sender, PaintEventArgs e)
+		{
+
+		}
+
+		private void lblUniverseFolder_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

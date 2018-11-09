@@ -39,8 +39,10 @@ namespace Vixen.Export
         public delegate void SequenceEventHandler(ExportNotifyType notify);
         public event SequenceEventHandler SequenceNotify;
 
-        #region Contructor
-        public Export()
+	    public bool AllSelectedControllersSupportUniverses => ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
+
+		#region Contructor
+		public Export()
         {
             _exportFileTypes = new Dictionary<string, string>();
             _writers = new Dictionary<string, IExportWriter>();
@@ -168,40 +170,35 @@ namespace Vixen.Export
             return true;
         }
 
-	    public bool CanWriteUniverseFile()
+		public async Task WriteUniverseFile(string fileName)
 	    {
-		    return ControllerExportInfo.Where(x => x.IsActive).All(x => x.HasNetworkSupport);
-	    }
-
-	    public async Task WriteUniverseFile(string fileName)
-	    {
-		    if (!CanWriteUniverseFile())
-		    {
-			    return;
-		    }
-		    
 		    using (var writer = new StreamWriter(fileName))
 		    {
 			    var fppStartChannel = 1;
 			    foreach (var controller in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
 			    {
-				    var universes = controller.ControllerNetworkConfiguration.Universes;
-				    foreach (var uc in universes)
+				    if (controller.HasNetworkSupport)
 				    {
-					    string ip = string.Empty;
-					    if (!uc.IsMultiCast)
+					    var universes = controller.ControllerNetworkConfiguration.Universes;
+					    foreach (var uc in universes)
 					    {
-							//Validate ip address
-						    ip = uc.IpAddress?.Address.ToString();
-						    if (ip == null)
+						    string ip = string.Empty;
+						    if (!uc.IsMultiCast)
 						    {
-							    ip = string.Empty;
+							    //Validate ip address
+							    ip = uc.IpAddress?.Address.ToString();
+							    if (ip == null)
+							    {
+								    ip = string.Empty;
+							    }
 						    }
+						    var s =
+							    $"{(uc.Active ? "1" : "0")},{uc.Universe},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
+						    await writer.WriteAsync(s);
+						    fppStartChannel = fppStartChannel + uc.Size;
 					    }
-					    var s = $"{(uc.Active ? "1" : "0")},{uc.Universe},{fppStartChannel},{uc.Size},{(uc.IsMultiCast ? "0" : "1")},{ip},\n";
-					    await writer.WriteAsync(s);
-					    fppStartChannel = fppStartChannel + uc.Size;
 				    }
+				    fppStartChannel = fppStartChannel + controller.Channels;
 			    }
 
 			    await writer.FlushAsync();

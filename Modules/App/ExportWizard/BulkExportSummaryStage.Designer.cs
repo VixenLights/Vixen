@@ -50,6 +50,7 @@
 			this.comboConfigName = new System.Windows.Forms.ComboBox();
 			this.lblUniverse = new System.Windows.Forms.Label();
 			this.lblUniverseFolder = new System.Windows.Forms.Label();
+			this.lblUniverseFileWarning = new System.Windows.Forms.Label();
 			this.mainLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -99,23 +100,24 @@
 			this.mainLayoutPanel.Controls.Add(this.lblFormatName, 1, 3);
 			this.mainLayoutPanel.Controls.Add(this.lblSummary, 0, 0);
 			this.mainLayoutPanel.Controls.Add(this.lblSequences, 0, 2);
-			this.mainLayoutPanel.Controls.Add(this.lblTaskProgress, 0, 12);
-			this.mainLayoutPanel.Controls.Add(this.taskProgress, 0, 13);
+			this.mainLayoutPanel.Controls.Add(this.lblTaskProgress, 0, 13);
+			this.mainLayoutPanel.Controls.Add(this.taskProgress, 0, 14);
 			this.mainLayoutPanel.Controls.Add(this.lblFormat, 0, 3);
 			this.mainLayoutPanel.Controls.Add(this.lblTiming, 0, 4);
 			this.mainLayoutPanel.Controls.Add(this.lblDestination, 0, 5);
 			this.mainLayoutPanel.Controls.Add(this.lblAudio, 0, 6);
 			this.mainLayoutPanel.Controls.Add(this.lblAudioDestination, 0, 7);
-			this.mainLayoutPanel.Controls.Add(this.lblOverallProgress, 0, 14);
+			this.mainLayoutPanel.Controls.Add(this.lblOverallProgress, 0, 15);
 			this.mainLayoutPanel.Controls.Add(this.lblSequenceCount, 1, 2);
-			this.mainLayoutPanel.Controls.Add(this.overallProgress, 0, 16);
-			this.mainLayoutPanel.Controls.Add(this.chkSaveConfig, 0, 10);
-			this.mainLayoutPanel.Controls.Add(this.comboConfigName, 1, 10);
+			this.mainLayoutPanel.Controls.Add(this.overallProgress, 0, 17);
+			this.mainLayoutPanel.Controls.Add(this.chkSaveConfig, 0, 11);
+			this.mainLayoutPanel.Controls.Add(this.comboConfigName, 1, 11);
 			this.mainLayoutPanel.Controls.Add(this.lblUniverse, 0, 8);
 			this.mainLayoutPanel.Controls.Add(this.lblUniverseFolder, 1, 8);
+			this.mainLayoutPanel.Controls.Add(this.lblUniverseFileWarning, 1, 9);
 			this.mainLayoutPanel.Location = new System.Drawing.Point(3, 3);
 			this.mainLayoutPanel.Name = "mainLayoutPanel";
-			this.mainLayoutPanel.RowCount = 17;
+			this.mainLayoutPanel.RowCount = 18;
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -125,7 +127,8 @@
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -133,8 +136,10 @@
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.mainLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.mainLayoutPanel.Size = new System.Drawing.Size(613, 356);
 			this.mainLayoutPanel.TabIndex = 6;
+			this.mainLayoutPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainLayoutPanel_Paint);
 			// 
 			// lblAudioOutputFolder
 			// 
@@ -268,7 +273,7 @@
 			// 
 			this.chkSaveConfig.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.chkSaveConfig.AutoSize = true;
-			this.chkSaveConfig.Location = new System.Drawing.Point(3, 165);
+			this.chkSaveConfig.Location = new System.Drawing.Point(3, 182);
 			this.chkSaveConfig.Name = "chkSaveConfig";
 			this.chkSaveConfig.Size = new System.Drawing.Size(130, 19);
 			this.chkSaveConfig.TabIndex = 18;
@@ -280,7 +285,7 @@
 			// 
 			this.comboConfigName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
 			this.comboConfigName.FormattingEnabled = true;
-			this.comboConfigName.Location = new System.Drawing.Point(145, 163);
+			this.comboConfigName.Location = new System.Drawing.Point(145, 180);
 			this.comboConfigName.Name = "comboConfigName";
 			this.comboConfigName.Size = new System.Drawing.Size(332, 23);
 			this.comboConfigName.TabIndex = 19;
@@ -304,6 +309,18 @@
 			this.lblUniverseFolder.Size = new System.Drawing.Size(182, 15);
 			this.lblUniverseFolder.TabIndex = 21;
 			this.lblUniverseFolder.Text = "c:\\My Documents\\Vixen 3\\Export";
+			this.lblUniverseFolder.Click += new System.EventHandler(this.lblUniverseFolder_Click);
+			// 
+			// lblUniverseFileWarning
+			// 
+			this.lblUniverseFileWarning.AutoSize = true;
+			this.lblUniverseFileWarning.ForeColor = System.Drawing.Color.Yellow;
+			this.lblUniverseFileWarning.Location = new System.Drawing.Point(145, 140);
+			this.lblUniverseFileWarning.Name = "lblUniverseFileWarning";
+			this.lblUniverseFileWarning.Size = new System.Drawing.Size(100, 15);
+			this.lblUniverseFileWarning.TabIndex = 22;
+			this.lblUniverseFileWarning.Text = "Universe Warning";
+			this.lblUniverseFileWarning.Visible = false;
 			// 
 			// BulkExportSummaryStage
 			// 
@@ -343,5 +360,6 @@
 		private System.Windows.Forms.ComboBox comboConfigName;
 		private System.Windows.Forms.Label lblUniverse;
 		private System.Windows.Forms.Label lblUniverseFolder;
+		private System.Windows.Forms.Label lblUniverseFileWarning;
 	}
 }
