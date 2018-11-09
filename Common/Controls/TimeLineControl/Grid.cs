@@ -2448,13 +2448,25 @@ namespace Common.Controls.Timeline
 			if (width <= 0) return;
 			Size size = new Size(width, currentElement.DisplayHeight);
 
-			Bitmap elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration),redBorder);
-			if (elementImage == null) return;
 			Point finalDrawLocation = new Point((int)Math.Floor(timeToPixels(currentElement.StartTime>VisibleTimeStart?currentElement.StartTime:VisibleTimeStart)), currentElement.DisplayTop);
 			
 			Rectangle destRect = new Rectangle(finalDrawLocation.X, finalDrawLocation.Y, size.Width, currentElement.DisplayHeight);
 			currentElement.DisplayRect = destRect;
-			g.DrawImage(elementImage,destRect);
+
+			Bitmap elementImage = currentElement.Draw(size, g, VisibleTimeStart, VisibleTimeEnd, (int)timeToPixels(currentElement.Duration), redBorder);
+			if (elementImage == null) return;
+
+			try
+			{
+				lock (elementImage)
+				{
+					g.DrawImage(elementImage,destRect);
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "Unable to draw element image.");
+			}
 			
 		}
 
