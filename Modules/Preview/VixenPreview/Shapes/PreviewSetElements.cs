@@ -146,8 +146,9 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                     ElementNode channelNode = treeNode.Tag as ElementNode;
 
                     SetLinkedElementItems(item, channelNode);
+	                AdjustColumnWidths();
 
-                    if (item.Index == listLinkedElements.Items.Count - 1)
+					if (item.Index == listLinkedElements.Items.Count - 1)
                     {
                         return;
                     }
@@ -212,15 +213,20 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 
 				numericUpDownLightCount.Value = count>0?count:1;
 
-	            if (listLinkedElements.Columns.Count > 1)
-	            {
-		            listLinkedElements.Columns[0].Width = -1;
-					listLinkedElements.Columns[1].Width = -1;
-	            }
+	            AdjustColumnWidths();
             }
         }
 
-        private void comboStrings_SelectedIndexChanged(object sender, EventArgs e)
+	    private void AdjustColumnWidths()
+	    {
+		    if (listLinkedElements.Columns.Count > 1)
+		    {
+			    listLinkedElements.Columns[0].Width = -1;
+			    listLinkedElements.Columns[1].Width = -1;
+		    }
+	    }
+
+	    private void comboStrings_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Console.Write(comboStrings.SelectedIndex);
             UpdateListLinkedElements();
@@ -356,7 +362,8 @@ namespace VixenModules.Preview.VixenPreview.Shapes
                 {
                     SetLinkedElementItems(item, treeElements.SelectedNode.Tag as ElementNode);
                 }
-            }
+	            AdjustColumnWidths();
+			}
         }
 
         private void copyToAllElementsAllStringsToolStripMenuItem_Click(object sender, EventArgs e)
