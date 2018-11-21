@@ -425,8 +425,10 @@ namespace VixenModules.Effect.PinWheel
 			float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
 			var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
-
-			var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+			
+			var xc = OffsetPercentage
+				? BufferHt
+				: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 			var maxRadius = xc * armsize;
 
@@ -468,8 +470,10 @@ namespace VixenModules.Effect.PinWheel
 				float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
 				var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
-
-				var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+				
+				var xc = OffsetPercentage
+					? BufferHt
+					: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 				var maxRadius = xc * armsize;
 
