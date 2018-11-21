@@ -114,6 +114,7 @@ namespace VixenModules.Effect.Spin
 			result.PulseCurve = new Curve(PulseCurve);
 			result.ReverseSpin = ReverseSpin;
 			result.DepthOfEffect = DepthOfEffect;
+			result.EnableDefaultLevel = EnableDefaultLevel;
 			return result;
 		}
 	}
