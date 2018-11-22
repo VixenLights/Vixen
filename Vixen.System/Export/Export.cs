@@ -197,8 +197,12 @@ namespace Vixen.Export
 						    await writer.WriteAsync(s);
 						    fppStartChannel = fppStartChannel + uc.Size;
 					    }
-				    }
-				    fppStartChannel = fppStartChannel + controller.Channels;
+					}
+				    else
+				    {
+					    fppStartChannel = fppStartChannel + controller.Channels;
+					}
+				    
 			    }
 
 			    await writer.FlushAsync();
