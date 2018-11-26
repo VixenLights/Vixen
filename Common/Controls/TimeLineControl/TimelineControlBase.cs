@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 using System.ComponentModel;
+using NLog;
 
 namespace Common.Controls.Timeline
 {
@@ -15,6 +16,7 @@ namespace Common.Controls.Timeline
 	[System.ComponentModel.DesignerCategory("")] // Prevent this from showing up in designer.
 	public abstract class TimelineControlBase : UserControl
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		protected TimelineControlBase(TimeInfo timeinfo)
 		{
 			AutoScaleMode = AutoScaleMode.Font;
@@ -226,13 +228,21 @@ namespace Common.Controls.Timeline
 
 		private static Int16 HIWORD(IntPtr ptr)
 		{
+#if WIN64
+			Int64 val32 = ptr.ToInt64();
+#else
 			Int32 val32 = ptr.ToInt32();
+#endif
 			return (Int16) ((val32 >> 16) & 0xFFFF);
 		}
 
 		private static Int16 LOWORD(IntPtr ptr)
 		{
+#if WIN64
+			Int64 val32 = ptr.ToInt64();
+#else
 			Int32 val32 = ptr.ToInt32();
+#endif
 			return (Int16) (val32 & 0xFFFF);
 		}
 
@@ -253,7 +263,8 @@ namespace Common.Controls.Timeline
 						break;
 				}
 			}
-			catch {
+			catch (Exception e){
+				Logging.Error($"Exception in WndProc mouse handler: {e.Message}");
 				// This even fires when the grid is disposed and gives an error.
 				// Not entirely sure how to check for this so, try/catch
 			}
@@ -264,7 +275,7 @@ namespace Common.Controls.Timeline
 		private void mouseHWheelMsg(IntPtr wParam, IntPtr lParam)
 		{
 			Int32 tilt = HIWORD(wParam);
-			Int32 keys = LOWORD(wParam);
+			//Int32 keys = LOWORD(wParam);
 			Int32 x = LOWORD(lParam);
 			Int32 y = HIWORD(lParam);
 
@@ -284,6 +295,6 @@ namespace Common.Controls.Timeline
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }
