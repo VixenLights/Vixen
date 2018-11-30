@@ -32,6 +32,7 @@ namespace Common.Controls.TimelineControl
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly Font _textFont;
+		private List<IMark> _clipboard = new List<IMark>();
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
@@ -257,10 +258,12 @@ namespace Common.Controls.TimelineControl
 			Point location = TranslateLocation(e.Location);
 			if (e.Button == MouseButtons.Right)
 			{
+				ContextMenuStrip c = new ContextMenuStrip();
+				c.Renderer = new ThemeToolStripRenderer();
+
 				if (_mouseDownLocation == location && _mouseDownMark != null)
 				{
-					ContextMenuStrip c = new ContextMenuStrip();
-					c.Renderer = new ThemeToolStripRenderer();
+					
 					var delete = c.Items.Add("&Delete");
 					delete.Click += DeleteMark_Click;
 					var rename = c.Items.Add("&Rename");
@@ -292,6 +295,24 @@ namespace Common.Controls.TimelineControl
 						breakdownWord.Click += BreakdownWord_Click;
 					}
 
+					if (c.Items.Count > 0)
+					{
+						c.Items.Add(new ToolStripSeparator());
+					}
+					var copyMarks = c.Items.Add("Copy Selected");
+					copyMarks.Click += CopyMarksOnClick;
+					c.Items.Add(copyMarks);
+				}
+
+				if (_mouseDownLocation == location && _clipboard.Count > 0)
+				{
+					var pasteMarks = c.Items.Add("Paste Marks");
+					pasteMarks.Click += PasteMarks_Click;
+					c.Items.Add(pasteMarks);
+				}
+
+				if (c.Items.Count > 0)
+				{
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -321,7 +342,39 @@ namespace Common.Controls.TimelineControl
 			}
 
 		}
-		
+
+		private void PasteMarks_Click(object sender, EventArgs e)
+		{
+			var groupedMarks = _clipboard.GroupBy(m => m.Parent);
+			TimeSpan startTime = pixelsToTime(_mouseDownLocation.X);
+
+			var startRow = RowAt(_mouseDownLocation);
+			if (startRow == null) return;
+
+			foreach (IGrouping<IMarkCollection, IMark> groupedMark in groupedMarks)
+			{
+
+				var orderedMarks = groupedMark.OrderBy(m => m.StartTime);
+				var referenceTime = _clipboard.Min(m => m.StartTime);
+				var currentTime = startTime;
+				var newMarks = new List<IMark>();
+				foreach (var orderedMark in orderedMarks)
+				{
+					IMark mark = (IMark)orderedMark.Clone();
+					mark.StartTime = currentTime + (orderedMark.StartTime - referenceTime);
+					newMarks.Add(mark);
+				}
+
+				startRow.MarkCollection.AddMarks(newMarks);
+			}
+		}
+
+		private void CopyMarksOnClick(object sender, EventArgs e)
+		{
+			_clipboard.Clear();
+			_clipboard.AddRange(_marksSelectionManager.SelectedMarks);
+		}
+
 		#endregion
 
 		#region Mouse Move
