@@ -160,7 +160,10 @@ namespace VixenModules.Controller.E131
 				if (setupForm.ShowDialog() == DialogResult.OK)
 				{
 					running = false; //prevent updates
-					this.Stop();
+					if (running)
+					{
+						this.Stop();
+					}
 
 					_data.Warnings = setupForm.WarningsOption;
 					_data.Statistics = setupForm.StatisticsOption;
