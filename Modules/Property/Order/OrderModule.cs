@@ -5,6 +5,7 @@ using Vixen.Sys;
 namespace VixenModules.Property.Order {
 	public class OrderModule : PropertyModuleInstanceBase {
 
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private OrderData _data;
 
 		public OrderModule() {
@@ -48,6 +49,20 @@ namespace VixenModules.Property.Order {
 			}
 			
 			return p;
+		}
+
+		/// <inheritdoc />
+		public override void CloneValues(IProperty sourceProperty)
+		{
+			var source = sourceProperty as OrderModule;
+			if (source == null)
+			{
+				Logging.Error(
+					"OrderModule: trying to CloneValues from another property, but it's not a OrderModule!");
+				return;
+			}
+
+			_data.Order = source.Order;
 		}
 
 		#region Overrides of PropertyModuleInstanceBase

@@ -14,6 +14,7 @@ using Common.Resources.Properties;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Vixen.Data.Flow;
+using Vixen.Module;
 using Vixen.Module.Property;
 using Vixen.Rule;
 using Vixen.Services;
@@ -216,9 +217,9 @@ namespace VixenApplication.Setup
 							foreach (ElementNode elementNode in SelectedElements)
 							{
 								IPropertyModuleInstance p = elementNode.Properties.Get(property.TypeId);
-								if (p != null)
+								if (p != null && p.ModuleData != property.ModuleData)
 								{
-									p.ModuleData = property.ModuleData.Clone();
+									p.CloneValues(property);
 								}
 							}
 

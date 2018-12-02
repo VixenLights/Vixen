@@ -4,6 +4,7 @@ using Vixen.Sys;
 
 namespace VixenModules.Property.Orientation {
 	public class OrientationModule : PropertyModuleInstanceBase {
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private OrientationData _data;
 
 		public OrientationModule() {
@@ -40,6 +41,20 @@ namespace VixenModules.Property.Orientation {
 		}
 
 		#region Overrides of PropertyModuleInstanceBase
+
+		/// <inheritdoc />
+		public override void CloneValues(IProperty sourceProperty)
+		{
+			var source = sourceProperty as OrientationModule;
+			if (source == null)
+			{
+				Logging.Error(
+					"OrientationModule: trying to CloneValues from another property, but it's not a OrientationModule!");
+				return;
+			}
+
+			_data.Orientation = source.Orientation;
+		}
 
 		/// <inheritdoc />
 		public override bool HasSetup => true;
