@@ -160,13 +160,30 @@ namespace VixenModules.Effect.PinWheel
 				OnPropertyChanged();
 			}
 		}
-		
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"OffsetPercentage")]
+		[ProviderDescription(@"OffsetPercentage")]
+		[PropertyOrder(6)]
+		public bool OffsetPercentage
+		{
+			get { return _data.OffsetPercentage; }
+			set
+			{
+				_data.OffsetPercentage = value;
+				IsDirty = true;
+				UpdateOffsetAttribute();
+				OnPropertyChanged();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"XOffset")]
 		[ProviderDescription(@"XOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public Curve XOffsetCurve
 		{
 			get { return _data.XOffsetCurve; }
@@ -183,7 +200,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"YOffset")]
 		[ProviderDescription(@"YOffset")]
 		//[NumberRange(-100, 100, 1)]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public Curve YOffsetCurve
 		{
 			get { return _data.YOffsetCurve; }
@@ -200,7 +217,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderDisplayName(@"Center Hub")]
 		[ProviderDescription(@"CenterHub")]
 		//[NumberRange(0, 100, 1)]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public Curve CenterHubCurve
 		{
 			get { return _data.CenterHubCurve; }
@@ -216,7 +233,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"Direction")]
-		[PropertyOrder(9)]
+		[PropertyOrder(10)]
 		public RotationType Rotation
 		{
 			get { return _data.Rotation; }
@@ -232,7 +249,7 @@ namespace VixenModules.Effect.PinWheel
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"BladeType")]
 		[ProviderDescription(@"BladeType")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public PinWheelBladeType PinWheelBladeType
 		{
 			get { return _data.PinWheelBladeType; }
@@ -308,7 +325,20 @@ namespace VixenModules.Effect.PinWheel
 		{
 			UpdateColorAttribute(false);
 			UpdateStringOrientationAttributes(true);
+			UpdateOffsetAttribute(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
+		private void UpdateOffsetAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(1);
+			propertyStates.Add("OffsetPercentage", !OffsetPercentage);
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		//Used to hide Colors from user when Rainbow type is selected and unhides for the other types.
@@ -395,8 +425,10 @@ namespace VixenModules.Effect.PinWheel
 			float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
 			var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
-
-			var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+			
+			var xc = OffsetPercentage
+				? BufferHt
+				: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 			var maxRadius = xc * armsize;
 
@@ -438,8 +470,10 @@ namespace VixenModules.Effect.PinWheel
 				float armsize = (float)(CalculateSize(intervalPosFactor) / 100.0);
 
 				var origin = new Point(BufferWi / 2 + BufferWiOffset + CalculateXOffset(intervalPosFactor), BufferHt / 2 + BufferHtOffset + CalculateYOffset(intervalPosFactor));
-
-				var xc = DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
+				
+				var xc = OffsetPercentage
+					? BufferHt
+					: DistanceFromPoint(origin, new Point(BufferWiOffset + BufferWi, BufferHtOffset + BufferHt));
 
 				var maxRadius = xc * armsize;
 
@@ -456,12 +490,16 @@ namespace VixenModules.Effect.PinWheel
 
 		private int CalculateXOffset(double intervalPos)
 		{
-			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
+			return OffsetPercentage
+				? (int) Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), BufferWi, -BufferWi))
+				: (int) Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
 		private int CalculateYOffset(double intervalPos)
 		{
-			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
+			return OffsetPercentage
+				? (int) Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), -BufferHt, BufferHt))
+				: (int) Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
 		private double CalculateSpeed(double intervalPos)

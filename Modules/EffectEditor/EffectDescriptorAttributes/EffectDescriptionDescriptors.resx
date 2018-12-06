@@ -795,4 +795,7 @@
   <data name="StartPosition" xml:space="preserve">
     <value>Determines where the Meteors will start from.</value>
   </data>
+  <data name="OffsetPercentage" xml:space="preserve">
+    <value>When enabled will convert the Offsets to percentage of Buffer size. Once enabled the option will be hidden as this is the updated method.</value>
+  </data>
 </root>

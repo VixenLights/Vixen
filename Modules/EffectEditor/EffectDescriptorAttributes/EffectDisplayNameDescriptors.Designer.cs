@@ -1241,6 +1241,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Offset Percentage.
+        /// </summary>
+        internal static string OffsetPercentage {
+            get {
+                return ResourceManager.GetString("OffsetPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Orientation.
         /// </summary>
         internal static string Orientation {

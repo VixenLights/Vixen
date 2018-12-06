@@ -1169,6 +1169,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When enabled will convert the Offsets to percentage of Buffer size. Once enabled the option will be hidden as this is the updated method..
+        /// </summary>
+        internal static string OffsetPercentage {
+            get {
+                return ResourceManager.GetString("OffsetPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defines the direction of the strings and controls how the effect is oriented on the element..
         /// </summary>
         internal static string Orientation {
