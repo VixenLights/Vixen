@@ -65,7 +65,7 @@ namespace VixenModules.Effect.LipSync
 			var xOffsetAdjust = CalculateXOffset(intervalPosFactor);
 			if (_fp != null)
 			{
-				int yoffset = (int)(((double)(BufferHt + _fp.Height) / 2) + yOffsetAdjust);
+				int yoffset = (int)(((double)(BufferHt + _fp.Height) / 2) + yOffsetAdjust - 1);
 				int xoffset = (int)(xOffsetAdjust + ((double)BufferWi - _fp.Width) / 2);
 
 				for (int x = 0; x < _fp.Width; x++)

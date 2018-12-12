@@ -794,7 +794,7 @@ namespace VixenModules.Effect.Picture
 				_movementX += deltaX;
 				_movementY += deltaY;
 
-				_yoffset = (BufferHt + _imageHeight) / 2;
+				_yoffset = ((BufferHt + _imageHeight) / 2) - 1; //subtract 1 because we are zero based and inverting the y 
 				_xoffset = (_imageWidth - BufferWi) / 2;
 				_xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
 				_yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
