@@ -1129,50 +1129,62 @@ namespace VixenModules.Effect.Shapes
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			using (var bitmap = new Bitmap(BufferWi, BufferHt))
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
+			using (var bitmap = new Bitmap(bufferWi, bufferHt))
 			{
-				InitialRender(frame, bitmap);
+				InitialRender(frame, bitmap, bufferHt, bufferWi);
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				for(int x = 0; x < BufferWi; x++)
+				FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap);
+				fp.Lock();
+				for (int x = 0; x < bufferWi; x++)
 				{
-					for(int y = 0; y < BufferHt; y++)
+					for(int y = 0; y < bufferHt; y++)
 					{
-						CalculatePixel(x, y, bitmap, level, frameBuffer);
+						CalculatePixel(x, y, ref bufferHt, fp, level, frameBuffer);
 					}
 				}
+				fp.Unlock(false);
+				fp.Dispose();
 			}
 
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
-				using (var bitmap = new Bitmap(BufferWi, BufferHt))
+				using (var bitmap = new Bitmap(bufferWi, bufferHt))
 				{
-					InitialRender(frame, bitmap);
+					InitialRender(frame, bitmap, bufferHt, bufferWi);
+					FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap);
+					fp.Lock();
 					foreach (var elementLocation in frameBuffer.ElementLocations)
 					{
-						CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, level, frameBuffer);
+						CalculatePixel(elementLocation.X, elementLocation.Y, ref bufferHt, fp, level, frameBuffer);
 					}
+					fp.Unlock(false);
+					fp.Dispose();
 				}
 			}
 		}
 
-		private void CalculatePixel(int x, int y, Bitmap bitmap, double level, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, ref int bufferHt, FastPixel.FastPixel bitmap, double level, IPixelFrameBuffer frameBuffer)
 		{
 			int yCoord = y;
 			int xCoord = x;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Flip me over and offset my coordinates so I can act like the string version
-				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
+				y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
-			Color color = bitmap.GetPixel(x, BufferHt - y - 1);
+			Color color = bitmap.GetPixel(x, bufferHt - y - 1);
 
 			if (color.R != 0 || color.G != 0 || color.B != 0)
 			{
@@ -1190,7 +1202,7 @@ namespace VixenModules.Effect.Shapes
 
 		#region Pre Render
 
-		private void InitialRender(int frame, Bitmap bitmap)
+		private void InitialRender(int frame, Bitmap bitmap, int bufferHt, int bufferWi)
 		{
 			_intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 			_centerAngleSpeed = CalculateCenterAngleSpeed(_intervalPosFactor);
@@ -1235,7 +1247,7 @@ namespace VixenModules.Effect.Shapes
 					for (int i = 0; i < adjustedPixelCount; i++)
 					{
 						// Create new Shapes if shapes are below Shapecount.
-						if (_shapes.Count < _shapesCount) CreateShapes();
+						if (_shapes.Count < _shapesCount) CreateShapes(bufferHt, bufferWi);
 						else
 							break;
 					}
@@ -1246,7 +1258,7 @@ namespace VixenModules.Effect.Shapes
 					{
 						if (frame == shapeFrame)
 						{
-							CreateShapes();
+							CreateShapes(bufferHt, bufferWi);
 							_shapesCount = _shapes.Count;
 						}
 					}
@@ -1257,7 +1269,7 @@ namespace VixenModules.Effect.Shapes
 						// Create marks at frame 0 based on Shape count.
 						_shapesCount = ShapeCount;
 						for (int i = 0; i < ShapeCount; i++)
-							if (_shapes.Count < ShapeCount) CreateShapes();
+							if (_shapes.Count < ShapeCount) CreateShapes(bufferHt, bufferWi);
 							else
 								break;
 					}
@@ -1265,10 +1277,10 @@ namespace VixenModules.Effect.Shapes
 			}
 
 			// Update Shape properties like location, radius and speed.
-			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed);
+			UpdateShapes(minAngleSpeed, maxAngleSpeed, minSizeSpeed, maxSizeSpeed, bufferHt, bufferWi);
 
 			// Remove any shapes that have been added to the _removeShapes variable.
-			RemoveShapes(frame);
+			RemoveShapes(frame, bufferHt, bufferWi);
 
 			// Go through all used Shapes and adjust settings and then Draw SVG to Bitmap.
 			foreach (var shape in _shapes)
@@ -1372,8 +1384,8 @@ namespace VixenModules.Effect.Shapes
 				if (_shapes.Count == 1 && ShapeType == ShapeType.None && !ScaleToGrid)
 				{
 					// Shape is added to center of grid.
-					locationX = (double)BufferWi / 2;
-					locationY = (double)BufferHt / 2; 
+					locationX = (double)bufferWi / 2;
+					locationY = (double)bufferHt / 2; 
 				}
 				else
 				{
@@ -1410,13 +1422,13 @@ namespace VixenModules.Effect.Shapes
 
 		#region Create Shapes
 
-		private void CreateShapes()
+		private void CreateShapes(int bufferHt, int bufferWi)
 		{
 			ShapesClass m = new ShapesClass();
 
 			// Sets starting location of svg image
-			m.LocationX = Rand(0, BufferWi - 1);
-			m.LocationY = Rand(0, BufferHt - 1);
+			m.LocationX = Rand(0, bufferWi - 1);
+			m.LocationY = Rand(0, bufferHt - 1);
 
 			//Sets initial speed of svg image
 			double speed = RandDouble() * (_maxSpeed - _minSpeed) + _minSpeed;
@@ -1537,8 +1549,8 @@ namespace VixenModules.Effect.Shapes
 			}
 			else
 			{
-				m.SvgImage.Height = new SvgUnit(BufferHt);
-				m.SvgImage.Width = new SvgUnit(BufferWi);
+				m.SvgImage.Height = new SvgUnit(bufferHt);
+				m.SvgImage.Width = new SvgUnit(bufferWi);
 				m.SvgImage.AspectRatio = new SvgAspectRatio(SvgPreserveAspectRatio.none);
 				m.LocationRatio = m.LocationRatio1 = 1;
 				m.LocationX = m.LocationY = 0;
@@ -1591,10 +1603,10 @@ namespace VixenModules.Effect.Shapes
 				do
 				{
 					notCreated = false;
-					m.LocationX = Rand(0, BufferWi - 1);
-					m.LocationY = Rand(0, BufferHt - 1);
+					m.LocationX = Rand(0, bufferWi - 1);
+					m.LocationY = Rand(0, bufferHt - 1);
 					if (m.LocationX - locationOffset < 0 || m.LocationY - locationOffset < 0 ||
-					    m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= BufferHt) notCreated = true;
+					    m.LocationX + locationOffset >= BufferWi || m.LocationY + locationOffset >= bufferHt) notCreated = true;
 					i++;
 				} while (notCreated && i < 10000);
 			}
@@ -1642,7 +1654,7 @@ namespace VixenModules.Effect.Shapes
 
 		#region Update Shapes
 
-		private void UpdateShapes(double minAngleSpeed, double maxAngleSpeed, double minSizeSpeed, double maxSizeSpeed)
+		private void UpdateShapes(double minAngleSpeed, double maxAngleSpeed, double minSizeSpeed, double maxSizeSpeed, int bufferHt, int bufferWi)
 		{
 			// Remove shapes if the shape count has been reduced.
 			while (_shapesCount < _shapes.Count - _removeShapes.Count)
@@ -1769,7 +1781,7 @@ namespace VixenModules.Effect.Shapes
 							{
 								shape.VelocityX = -shape.VelocityX;
 							}
-							else if (shape.LocationX + locationOffset >= BufferWi)
+							else if (shape.LocationX + locationOffset >= bufferWi)
 							{
 								shape.VelocityX = -shape.VelocityX;
 							}
@@ -1777,7 +1789,7 @@ namespace VixenModules.Effect.Shapes
 							{
 								shape.VelocityY = -shape.VelocityY;
 							}
-							else if (shape.LocationY + locationOffset >= BufferHt)
+							else if (shape.LocationY + locationOffset >= bufferHt)
 							{
 								shape.VelocityY = -shape.VelocityY;
 							}
@@ -1787,17 +1799,17 @@ namespace VixenModules.Effect.Shapes
 
 							if (shape.LocationX + locationOffset < 0)
 							{
-								shape.LocationX = BufferWi + locationOffset;
+								shape.LocationX = bufferWi + locationOffset;
 							}
 							if (shape.LocationY + locationOffset < 0)
 							{
-								shape.LocationY = BufferHt + locationOffset;
+								shape.LocationY = bufferHt + locationOffset;
 							}
-							if (shape.LocationX - locationOffset > BufferWi)
+							if (shape.LocationX - locationOffset > bufferWi)
 							{
 								shape.LocationX = 0 - locationOffset;
 							}
-							if (shape.LocationY - locationOffset > BufferHt)
+							if (shape.LocationY - locationOffset > bufferHt)
 							{
 								shape.LocationY = 0 - locationOffset;
 							}
@@ -1823,7 +1835,7 @@ namespace VixenModules.Effect.Shapes
 			return SvgDocument.Open(xdoc);
 		}
 
-		private void RemoveShapes(int frame)
+		private void RemoveShapes(int frame, int bufferHt, int bufferWi)
 		{
 			if (ShapeMode == ShapeMode.RemoveShapesMarkCollection && _removeShapes.Count == 0)
 			{
@@ -1836,7 +1848,7 @@ namespace VixenModules.Effect.Shapes
 				foreach (var shape in _removeShapes)
 				{
 					_shapes.Remove(shape);
-					if (_shapes.Count < _shapesCount) CreateShapes();
+					if (_shapes.Count < _shapesCount) CreateShapes(bufferHt, bufferWi);
 				}
 				_removeShapes.Clear();
 			}
