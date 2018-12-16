@@ -476,6 +476,9 @@ namespace VixenModules.Effect.CountDown
 
 		protected override void SetupRender()
 		{
+			_countDownNumberIteration = -1;
+			_direction = Direction;
+			_sizeAdjust = 0;
 			if (TargetPositioning == TargetPositioningType.Locations)
 			{
 				// Adjust the font size for Location support, default will ensure when swicthing between string and location that the Font will be the same visual size.
@@ -488,9 +491,6 @@ namespace VixenModules.Effect.CountDown
 			double scaleFactor = ScalingTools.GetScaleFactor();
 			_font = new Font(Font.FontFamily, Font.Size / (float)scaleFactor, Font.Style);
 			_newFontSize = _font.Size;
-			_countDownNumberIteration = -1;
-			_direction = Direction;
-			_sizeAdjust = 0;
 		}
 
 		protected override void CleanUpRender()
