@@ -65,6 +65,7 @@ using Cursor = System.Windows.Forms.Cursor;
 using Cursors = System.Windows.Forms.Cursors;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -4328,6 +4329,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<GradientLevelPair> gradientLevelPairs = property.Descriptor.GetValue(element.EffectNode.Effect) as List<GradientLevelPair>;
 			if (gradientLevelPairs == null) return;
 
+			if (gradientLevelPairs.Count == 1)
+			{
+				var newGradientLevelPairs = gradientLevelPairs.ToList();
+				newGradientLevelPairs[0] = new GradientLevelPair(gradientLevelPairs[0].ColorGradient, curve);
+				elementValues.Add(element, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(element.EffectNode.Effect), property.Descriptor));
+				UpdateEffectProperty(property.Descriptor, element, newGradientLevelPairs);
+				return;
+			}
+
 			var parameterPickerControls = CreateGradientLevelPairPickerControls(property, gradientLevelPairs, false);
 
 			var parameterPicker = CreateParameterPicker(parameterPickerControls);
@@ -4503,6 +4513,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			List<GradientLevelPair> gradients = property.Descriptor.GetValue(element.EffectNode.Effect) as List<GradientLevelPair>;
 			if (gradients == null) return;
+
+			if (gradients.Count == 1)
+			{
+				var newGradients = gradients.ToList();
+				newGradients[0] = new GradientLevelPair(gradient, gradients[0].Curve);
+				elementValues.Add(element, new Tuple<object, PropertyDescriptor>(property.Descriptor.GetValue(element.EffectNode.Effect), property.Descriptor));
+				UpdateEffectProperty(property.Descriptor, element, newGradients);
+				return;
+			}
 
 			var parameterPickerControls = CreateGradientLevelPairPickerControls(property, gradients);
 
