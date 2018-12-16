@@ -678,45 +678,57 @@ namespace VixenModules.Effect.Text
 
 		protected override void RenderEffect(int frame, IPixelFrameBuffer frameBuffer)
 		{
-			using (var bitmap = new Bitmap(BufferWi, BufferHt))
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
+			using (var bitmap = new Bitmap(bufferWi, bufferHt))
 			{
-				InitialRender(frame, bitmap);
+				InitialRender(frame, bitmap, bufferHt, bufferWi);
 				if (_text.Count == 0 && !UseBaseColor) return;
 				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+				FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap);
+				fp.Lock();
 				// copy to frameBuffer
-				for (int x = 0; x < BufferWi; x++)
+				for (int x = 0; x < bufferWi; x++)
 				{
-					for (int y = 0; y < BufferHt; y++)
+					for (int y = 0; y < bufferHt; y++)
 					{
-						CalculatePixel(x, y, bitmap, frameBuffer);
+						CalculatePixel(x, y, ref bufferHt, fp, frameBuffer);
 					}
 				}
+				fp.Unlock(false);
+				fp.Dispose();
 			}
 		}
 
 		protected override void RenderEffectByLocation(int numFrames, PixelLocationFrameBuffer frameBuffer)
 		{
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
+			var bufferHt = BufferHt;
+			var bufferWi = BufferWi;
 			for (int frame = 0; frame < numFrames; frame++)
 			{
 				frameBuffer.CurrentFrame = frame;
 				_level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame)*100)/100;
 				using (var bitmap = new Bitmap(BufferWi, BufferHt))
 				{
-					InitialRender(frame, bitmap);
+					InitialRender(frame, bitmap, bufferHt, bufferWi);
+					FastPixel.FastPixel fp = new FastPixel.FastPixel(bitmap);
+					fp.Lock();
 					if (_text.Count == 0 && !UseBaseColor) continue;
 					foreach (IGrouping<int, ElementLocation> elementLocations in nodes)
 					{
 						foreach (var elementLocation in elementLocations)
 						{
-							CalculatePixel(elementLocation.X, elementLocation.Y, bitmap, frameBuffer);
+							CalculateLocationPixel(elementLocation.X, elementLocation.Y, ref bufferHt, fp, frameBuffer);
 						}
 					}
+					fp.Unlock(false);
+					fp.Dispose();
 				}
 			}
 		}
 
-		private void InitialRender(int frame, Bitmap bitmap)
+		private void InitialRender(int frame, Bitmap bitmap, int bufferHt, int bufferWi)
 		{
 			var intervalPos = GetEffectTimeIntervalPosition(frame);
 			var intervalPosFactor = intervalPos * 100;
@@ -777,44 +789,45 @@ namespace VixenModules.Effect.Text
 						yOffset = 0;
 						break;
 				}
-				int offsetLeft = (((BufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
-				int offsetTop = (((BufferHt - maxht) / 2) * 2 + yOffset) / 2;
+
+				int offsetLeft = (((bufferWi - _maxTextSize) / 2) * 2 + xOffset) / 2;
+				int offsetTop = (((bufferHt - maxht) / 2) * 2 + yOffset) / 2;
 				Point point;
 
 				switch (Direction)
 				{
 					case TextDirection.Left:
 						// left
-						int leftX = BufferWi - (int) (_directionPosition * (textsize.Width + BufferWi));
+						int leftX = bufferWi - (int) (_directionPosition * (textsize.Width + bufferWi));
 						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (BufferWi - (int) textsize.Width) / 2) : leftX),
+							new Point(Convert.ToInt32(CenterStop ? Math.Max(leftX, (bufferWi - (int) textsize.Width) / 2) : leftX),
 								offsetTop);
 						break;
 					case TextDirection.Right:
 						// right
-						int rightX = -_maxTextSize + (int) (_directionPosition * (_maxTextSize + BufferWi));
+						int rightX = -_maxTextSize + (int) (_directionPosition * (_maxTextSize + bufferWi));
 						point =
-							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (BufferWi - (int) textsize.Width) / 2) : rightX),
+							new Point(Convert.ToInt32(CenterStop ? Math.Min(rightX, (bufferWi - (int) textsize.Width) / 2) : rightX),
 								offsetTop);
 						break;
 					case TextDirection.Up:
 						// up
-						int upY = BufferHt - (int) (((textsize.Height * numberLines) + BufferHt) * _directionPosition);
+						int upY = bufferHt - (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
 						point = new Point(offsetLeft,
-							Convert.ToInt32(CenterStop ? Math.Max(upY, (BufferHt - (int) (textsize.Height * numberLines)) / 2) : upY));
+							Convert.ToInt32(CenterStop ? Math.Max(upY, (bufferHt - (int) (textsize.Height * numberLines)) / 2) : upY));
 						break;
 					case TextDirection.Down:
 						// down
 						int downY = -(int) (textsize.Height * numberLines) +
-						            (int) (((textsize.Height * numberLines) + BufferHt) * _directionPosition);
+						            (int) (((textsize.Height * numberLines) + bufferHt) * _directionPosition);
 						point = new Point(offsetLeft,
 							Convert.ToInt32(CenterStop
-								? Math.Min(downY, (BufferHt - (int) (textsize.Height * numberLines)) / 2)
+								? Math.Min(downY, (bufferHt - (int) (textsize.Height * numberLines)) / 2)
 								: downY));
 						break;
 					default:
 						// no movement - centered
-						point = new Point((BufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
+						point = new Point((bufferWi - _maxTextSize) / 2 + xOffset, offsetTop);
 						break;
 				}
 
@@ -894,24 +907,33 @@ namespace VixenModules.Effect.Text
 			return (float)ScaleCurveToValue(FontScaleCurve.GetValue(intervalPos), 100, 1);
 		}
 
-		private void CalculatePixel(int x, int y, Bitmap bitmap, IPixelFrameBuffer frameBuffer)
+		private void CalculatePixel(int x, int y, ref int bufferHt, FastPixel.FastPixel bitmap, IPixelFrameBuffer frameBuffer)
+		{
+			Color color = bitmap.GetPixel(x, bufferHt - y - 1);
+
+			if (!EmptyColor.Equals(color))
+			{
+				frameBuffer.SetPixel(x, y, color);
+			}
+		}
+
+		private void CalculateLocationPixel(int x, int y, ref int bufferHt, FastPixel.FastPixel bitmap, IPixelFrameBuffer frameBuffer)
 		{
 			int yCoord = y;
 			int xCoord = x;
-			if (TargetPositioning == TargetPositioningType.Locations)
-			{
-				//Flip me over so and offset my coordinates I can act like the string version
-				y = Math.Abs((BufferHtOffset - y) + (BufferHt - 1 + BufferHtOffset));
-				y = y - BufferHtOffset;
-				x = x - BufferWiOffset;
-			}
-			Color color = bitmap.GetPixel(x, BufferHt - y - 1);
+			
+			//Flip me over so and offset my coordinates I can act like the string version
+			y = Math.Abs((BufferHtOffset - y) + (bufferHt - 1 + BufferHtOffset));
+			y = y - BufferHtOffset;
+			x = x - BufferWiOffset;
+			
+			Color color = bitmap.GetPixel(x, bufferHt - y - 1);
 
 			if (!EmptyColor.Equals(color))
 			{
 				frameBuffer.SetPixel(xCoord, yCoord, color);
 			}
-			else if (TargetPositioning == TargetPositioningType.Locations)
+			else
 			{
 				//Set me to my base color or transparent
 				frameBuffer.SetPixel(xCoord, yCoord, UseBaseColor ? BaseColor : Color.Transparent);
