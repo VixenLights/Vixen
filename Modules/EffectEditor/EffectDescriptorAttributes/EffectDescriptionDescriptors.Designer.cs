@@ -539,6 +539,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The amount of time in milliseconds for one complete on and off cycle..
+        /// </summary>
+        internal static string CycleTime {
+            get {
+                return ResourceManager.GetString("CycleTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alters the cycle time as a percentage of the Cycle Time parameter above. Used to vary the strobe speed over time..
+        /// </summary>
+        internal static string CycleVariation {
+            get {
+                return ResourceManager.GetString("CycleVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust the density of the elements..
         /// </summary>
         internal static string Density {
@@ -1178,6 +1196,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The percentage of each on/off cycle that the effect is on..
+        /// </summary>
+        internal static string OnTime {
+            get {
+                return ResourceManager.GetString("OnTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Defines the direction of the strings and controls how the effect is oriented on the element..
         /// </summary>
         internal static string Orientation {
@@ -1813,6 +1840,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Mark Collection to adjust the strobe cycle time based on Mark label value or label duration. When Mark collection label value is selected the label must have a value or a default of 150ms will be used..
+        /// </summary>
+        internal static string StrobeMarkCollection {
+            get {
+                return ResourceManager.GetString("StrobeMarkCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enables Simple or Advanced Strobe control..
+        /// </summary>
+        internal static string StrobeMode {
+            get {
+                return ResourceManager.GetString("StrobeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selects what source is used to determine change..
+        /// </summary>
+        internal static string StrobeSource {
+            get {
+                return ResourceManager.GetString("StrobeSource", resourceCulture);
             }
         }
         

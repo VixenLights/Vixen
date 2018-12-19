@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Vixen.Attributes;
 using Vixen.Marks;
@@ -16,7 +14,6 @@ using VixenModules.App.Curves;
 using VixenModules.Effect.Effect;
 using VixenModules.Effect.Pulse;
 using VixenModules.EffectEditor.EffectDescriptorAttributes;
-using VixenModules.Property.Color;
 
 namespace VixenModules.Effect.Strobe
 {
@@ -25,6 +22,8 @@ namespace VixenModules.Effect.Strobe
 		private EffectIntents _elementData;
 		private StrobeData _data;
 		private IEnumerable<IMark> _marks = null;
+		private List<StrobeClass> _strobeClass;
+
 		public Strobe()
 		{
 			_data = new StrobeData();
@@ -102,6 +101,128 @@ namespace VixenModules.Effect.Strobe
 			get { return _data; }
 		}
 
+		#region Config
+
+		[Value]
+		[ProviderCategory("Config", 1)]
+		[ProviderDisplayName(@"TimingSource")]
+		[ProviderDescription(@"TimingSource")]
+		[PropertyOrder(0)]
+		public StrobeSource StrobeSource
+		{
+			get
+			{
+				return _data.StrobeSource;
+			}
+			set
+			{
+				if (_data.StrobeSource != value)
+				{
+					_data.StrobeSource = value;
+					UpdateStrobeModeAttributes();
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MarkCollection")]
+		[ProviderDescription(@"StrobeMarkCollection")]
+		[TypeConverter(typeof(IMarkCollectionNameConverter))]
+		[PropertyEditor("SelectionEditor")]
+		[PropertyOrder(1)]
+		public string MarkCollectionId
+		{
+			get
+			{
+				return MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId)?.Name;
+			}
+			set
+			{
+				var newMarkCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(value));
+				var id = newMarkCollection?.Id ?? Guid.Empty;
+				if (!id.Equals(_data.MarkCollectionId))
+				{
+					var oldMarkCollection = MarkCollections.FirstOrDefault(x => x.Id.Equals(_data.MarkCollectionId));
+					RemoveMarkCollectionListeners(oldMarkCollection);
+					_data.MarkCollectionId = id;
+					AddMarkCollectionListeners(newMarkCollection);
+					IsDirty = true;
+					OnPropertyChanged();
+				}
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CycleTime")]
+		[ProviderDescription(@"CycleTime")]
+		[NumberRange(0, 10000, 1, 0)]
+		[PropertyOrder(2)]
+		public int CycleTime
+		{
+			get { return _data.CycleTime; }
+			set
+			{
+				_data.CycleTime = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"StrobeMode")]
+		[ProviderDescription(@"StrobeMode")]
+		[PropertyOrder(3)]
+		public StrobeMode StrobeMode
+		{
+			get { return _data.StrobeMode; }
+			set
+			{
+				_data.StrobeMode = value;
+				UpdateStrobeModeAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"CycleVariation")]
+		[ProviderDescription(@"CycleVariation")]
+		[PropertyOrder(4)]
+		public Curve CycleVariationCurve
+		{
+			get { return _data.CycleVariationCurve; }
+			set
+			{
+				_data.CycleVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"OnTime")]
+		[ProviderDescription(@"OnTime")]
+		[PropertyOrder(5)]
+		public Curve OnTimeCurve
+		{
+			get { return _data.OnTimeCurve; }
+			set
+			{
+				_data.OnTimeCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+		
+		#endregion
+
 		#region Pulse
 
 		[Value]
@@ -138,65 +259,11 @@ namespace VixenModules.Effect.Strobe
 
 		#endregion
 
-		#region Config
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Max Interval")]
-		[ProviderDescription(@"MaxInterval")]
-		[NumberRange(0, 10000, 1, 0)]
-		[PropertyOrder(1)]
-		public int Interval
-		{
-			get { return _data.Interval; }
-			set
-			{
-				_data.Interval = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Cycle Interval")]
-		[ProviderDescription(@"CycleInterval")]
-		[PropertyOrder(2)]
-		public Curve IntervalCurve
-		{
-			get { return _data.IntervalCurve; }
-			set
-			{
-				_data.IntervalCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"On Percentage")]
-		[ProviderDescription(@"On Percentage")]
-		[PropertyOrder(3)]
-		public Curve CycleRatioCurve
-		{
-			get { return _data.CycleRatioCurve; }
-			set
-			{
-				_data.CycleRatioCurve = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-
-		#endregion
-
 		#region Information
 
 		public override string Information
 		{
-			get { return "Visit the Vixen Lights website for more information on this effect."; }
+			get { return "Due to inherent limitations within lighting protocols, fast strobing with short cycle times below 100ms may not be possible. \n\n\r Visit the Vixen Lights website for more information on this effect."; }
 		}
 
 		public override string InformationLink
@@ -210,7 +277,25 @@ namespace VixenModules.Effect.Strobe
 
 		private void InitAllAttributes()
 		{
+			UpdateStrobeModeAttributes(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateStrobeModeAttributes(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			{
+				{"MarkCollectionId", StrobeSource != StrobeSource.TimeInterval},
+				{"OnTimeCurve", StrobeMode == StrobeMode.Advanced},
+				{"CycleVariationCurve", StrobeMode == StrobeMode.Advanced & StrobeSource == StrobeSource.TimeInterval},
+				{"CycleTime", StrobeSource == StrobeSource.TimeInterval}
+			};
+			SetBrowsable(propertyStates);
+			
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		#endregion
@@ -233,31 +318,65 @@ namespace VixenModules.Effect.Strobe
 		// not a element, will recursively descend until we render its elements.
 		private EffectIntents RenderNode(List<ElementNode> elements)
 		{
+			_strobeClass = new List<StrobeClass>();
 			EffectIntents effectIntents = new EffectIntents();
 			var startTime = TimeSpan.Zero;
 			double intervalPos = GetEffectTimeIntervalPosition(startTime) * 100;
-			double interval = CalculateInterval(intervalPos);
-			double cycleRatio = CycleRatioCurve.GetValue(intervalPos) / 100;
-			TimeSpan intervalTime = TimeSpan.FromMilliseconds(interval);
-			TimeSpan onTime = TimeSpan.FromMilliseconds(interval * cycleRatio);
+			double interval;
+			int i = 0;
 
+			if (StrobeSource != StrobeSource.TimeInterval)
+			{
+				SetupMarks();
+				if (_marks == null || _strobeClass.Count == 0) return effectIntents;
+				interval = _strobeClass[i].CycleTime;
+			}
+			else
+			{
+				interval = StrobeMode == StrobeMode.Simple ? CycleTime : CalculateInterval(intervalPos);
+			}
+
+			TimeSpan intervalTime = TimeSpan.FromMilliseconds(interval);
+			TimeSpan onDuration = TimeSpan.FromMilliseconds(interval * (StrobeMode == StrobeMode.Simple ? 0.5 : OnTimeCurve.GetValue(intervalPos) / 100));
+			
+			// Continue until the intent start time is >= effect duration.
 			do
 			{
+				// Adjust the onDuration if intent end time is greater then the next marks start time.
+				if (StrobeSource != StrobeSource.TimeInterval && (onDuration + startTime).TotalMilliseconds >
+				    _strobeClass[i + 1].StartTime.TotalMilliseconds) onDuration = TimeSpan.FromMilliseconds((_strobeClass[i + 1].StartTime.TotalMilliseconds - 1 - startTime.TotalMilliseconds)/2);
+
 				foreach (ElementNode element in elements)
 				{
 					var glp = new GradientLevelPair(Colors, IntensityCurve);
-					RenderElement(glp, startTime, onTime.Subtract(TimeSpan.FromMilliseconds(1)), element,
+					RenderElement(glp, startTime, onDuration.Subtract(TimeSpan.FromMilliseconds(1)), element,
 						effectIntents);
 				}
 
 				startTime = startTime + intervalTime;
 				intervalPos = GetEffectTimeIntervalPosition(startTime) * 100;
-				interval = CalculateInterval(intervalPos);
-				cycleRatio = CycleRatioCurve.GetValue(intervalPos) / 100;
-				onTime = TimeSpan.FromMilliseconds(interval * cycleRatio);
+
+				// Get next Interval
+				if (StrobeSource != StrobeSource.TimeInterval)
+				{
+					if (_strobeClass[i+1].StartTime.TotalMilliseconds < startTime.TotalMilliseconds)
+					{
+						i++;
+						startTime = _strobeClass[i].StartTime;
+						if (i > _strobeClass.Count - 1) break;
+					}
+					interval = _strobeClass[i].CycleTime;
+				}
+				else
+				{
+					interval = StrobeMode == StrobeMode.Simple ? CycleTime : CalculateInterval(intervalPos);
+				}
+				
+				onDuration = TimeSpan.FromMilliseconds(interval * (StrobeMode == StrobeMode.Simple ? 0.5 : OnTimeCurve.GetValue(intervalPos) / 100));
 				intervalTime = TimeSpan.FromMilliseconds(interval);
 			} while (startTime.TotalMilliseconds < TimeSpan.TotalMilliseconds);
 
+			_strobeClass = null;
 			return effectIntents;
 		}
 
@@ -272,9 +391,77 @@ namespace VixenModules.Effect.Strobe
 
 		private double CalculateInterval(double intervalPosFactor)
 		{
-			double value = (int)ScaleCurveToValue(IntervalCurve.GetValue(intervalPosFactor), Interval, 1);
+			double value = (int)ScaleCurveToValue(CycleVariationCurve.GetValue(intervalPosFactor), CycleTime, 1);
 			if (value < 1) value = 1;
 			return value;
+		}
+
+		// Strobe Class
+		public class StrobeClass
+		{
+			public int CycleTime;
+			public TimeSpan StartTime;
+		}
+
+		private void SetupMarks()
+		{
+			IMarkCollection mc = MarkCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			_marks = mc?.MarksInclusiveOfTime(StartTime, StartTime + TimeSpan);
+			if (_marks == null) return;
+
+			bool firstMark = true;
+			StrobeClass t;
+
+			foreach (var mark in _marks)
+			{
+				if (firstMark && mark.StartTime > StartTime)
+				{
+					t = new StrobeClass {StartTime = TimeSpan.Zero, CycleTime = (int) (StrobeSource == StrobeSource.MarkCollectionLabelDuration ? mark.Duration.TotalMilliseconds : GetMarkLabelValue(mark.Text))};
+					_strobeClass.Add(t);
+					firstMark = false;
+				}
+
+				if (mark.StartTime < StartTime) continue;
+				t = new StrobeClass {CycleTime = (int)(StrobeSource == StrobeSource.MarkCollectionLabelDuration ? mark.Duration.TotalMilliseconds : GetMarkLabelValue(mark.Text)), StartTime = mark.StartTime - StartTime};
+				_strobeClass.Add(t);
+				firstMark = false;
+			}
+
+			if (_strobeClass.Count > 0)
+			{
+				t = new StrobeClass {CycleTime = _strobeClass.Last().CycleTime, StartTime = TimeSpan};
+				_strobeClass.Add(t);
+			}
+
+		}
+
+		private int GetMarkLabelValue(string markLabel)
+		{
+			bool parsed = Int32.TryParse(markLabel, out var cycleTime);
+			if (!parsed) cycleTime = 150;
+			return cycleTime;
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsChanged()
+		{
+			if (StrobeSource != StrobeSource.TimeInterval)
+			{
+				var markCollection = MarkCollections.FirstOrDefault(x => x.Name.Equals(MarkCollectionId));
+				InitializeMarkCollectionListeners(markCollection);
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void MarkCollectionsRemoved(IList<IMarkCollection> addedCollections)
+		{
+			var mc = addedCollections.FirstOrDefault(x => x.Id == _data.MarkCollectionId);
+			if (mc != null)
+			{
+				//Our collection is gone!!!!
+				RemoveMarkCollectionListeners(mc);
+				MarkCollectionId = String.Empty;
+			}
 		}
 	}
 

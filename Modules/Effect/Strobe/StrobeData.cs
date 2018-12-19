@@ -20,24 +20,35 @@ namespace VixenModules.Effect.Strobe
 		public Curve IntensityCurve { get; set; }
 
 		[DataMember]
-		public Curve CycleRatioCurve { get; set; }
+		public Curve OnTimeCurve { get; set; }
 
 		[DataMember]
-		public int Interval { get; set; }
+		public int CycleTime { get; set; }
 
 		[DataMember]
-		public Curve IntervalCurve { get; set; }
-
+		public Curve CycleVariationCurve { get; set; }
+		
 		[DataMember]
 		public int GroupLevel { get; set; }
+
+		[DataMember]
+		public StrobeSource StrobeSource { get; set; }
+
+		[DataMember]
+		public StrobeMode StrobeMode { get; set; }
+
+		[DataMember]
+		public Guid MarkCollectionId { get; set; }
 
 		public StrobeData()
 		{
 			Colors = new ColorGradient(Color.White);
 			IntensityCurve = new Curve(new PointPairList(new[] { 0.0, 50.0, 100.0 }, new[] { 0.0, 100.0, 0.0 }));
-			Interval = 1000;
-			IntervalCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
-			CycleRatioCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			CycleTime = 150;
+			CycleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			OnTimeCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			StrobeSource = StrobeSource.TimeInterval;
+			StrobeMode = StrobeMode.Simple;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -46,9 +57,13 @@ namespace VixenModules.Effect.Strobe
 			{
 				Colors = Colors,
 				IntensityCurve = IntensityCurve,
-				CycleRatioCurve = CycleRatioCurve,
-				Interval = Interval,
-				GroupLevel = GroupLevel
+				OnTimeCurve = OnTimeCurve,
+				CycleVariationCurve = CycleVariationCurve,
+				CycleTime = CycleTime,
+				GroupLevel = GroupLevel,
+				StrobeSource = StrobeSource,
+				MarkCollectionId = MarkCollectionId,
+				StrobeMode = StrobeMode
 			};
 			return result;
 		}

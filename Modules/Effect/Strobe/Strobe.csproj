@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StrobeMode.cs" />
     <Compile Include="StrobeData.cs" />
     <Compile Include="StrobeDescriptor.cs" />
     <Compile Include="Strobe.cs" />
