@@ -11,6 +11,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public event EventHandler<MarksMovedEventArgs> MarksMoved;
 		public event EventHandler<MarksMovingEventArgs> MarksMoving;
 		public event EventHandler<MarksDeletedEventArgs> DeleteMark;
+		public event EventHandler<MarksPastedEventArgs> MarksPasted;
 		public event EventHandler<AlignmentEventArgs> AlignmentActivity;
 		public event EventHandler<PhonemeBreakdownEventArgs> PhonemeBreakdownAction;
 		public event EventHandler<PlayRangeEventArgs> PlayRangeAction;
@@ -45,6 +46,11 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public void OnDeleteMark(MarksDeletedEventArgs e)
 		{
 			DeleteMark?.Invoke(this, e);
+		}
+
+		public void OnMarksPasted(MarksPastedEventArgs e)
+		{
+			MarksPasted?.Invoke(this, e);
 		}
 
 		public void OnMarksTextChanged(MarksTextChangedEventArgs e)

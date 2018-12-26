@@ -345,14 +345,33 @@ namespace Common.Controls.TimelineControl
 
 		private void PasteMarks_Click(object sender, EventArgs e)
 		{
-			var groupedMarks = _clipboard.GroupBy(m => m.Parent);
+			var groupedMarks = _clipboard.GroupBy(m => m.Parent).OrderBy(g => _markCollections.IndexOf(g.Key));
+			if (!groupedMarks.Any()) return;
 			TimeSpan startTime = pixelsToTime(_mouseDownLocation.X);
 
-			var startRow = RowAt(_mouseDownLocation);
-			if (startRow == null) return;
+			var startRowIndex = _rows.IndexOf(RowAt(_mouseDownLocation));
+			if (startRowIndex < 0) return;
+
+			List<IMark> pastedMarks = new List<IMark>();
+			var offset = _markCollections.IndexOf(groupedMarks.First().Key);
 
 			foreach (IGrouping<IMarkCollection, IMark> groupedMark in groupedMarks)
 			{
+				var previousIndex = _markCollections.IndexOf(groupedMark.Key);
+				var index = startRowIndex + previousIndex - offset;
+				if(index > _rows.Count-1) continue;
+				var insertRow = _rows[index];
+
+				if (groupedMark.Key.CollectionType != insertRow.MarkCollection.CollectionType)
+				{
+					var messageBox = new MessageBoxForm($@"Warning, {groupedMark.Key.Name} is of type {groupedMark.Key.CollectionType} and
+the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.CollectionType}. Proceed?", @"Warning", MessageBoxButtons.YesNo, SystemIcons.Warning);
+					var response = messageBox.ShowDialog();
+					if (response.Equals(DialogResult.No))
+					{
+						break;
+					}
+				}
 
 				var orderedMarks = groupedMark.OrderBy(m => m.StartTime);
 				var referenceTime = _clipboard.Min(m => m.StartTime);
@@ -365,7 +384,15 @@ namespace Common.Controls.TimelineControl
 					newMarks.Add(mark);
 				}
 
-				startRow.MarkCollection.AddMarks(newMarks);
+				insertRow.MarkCollection.AddMarks(newMarks);
+				pastedMarks.AddRange(newMarks);
+			}
+
+			if (pastedMarks.Any())
+			{
+				_timeLineGlobalEventManager.OnMarksPasted(new MarksPastedEventArgs(pastedMarks));
+				_marksSelectionManager.ClearSelected();
+				_marksSelectionManager.Select(pastedMarks);
 			}
 		}
 
@@ -1026,10 +1053,8 @@ namespace Common.Controls.TimelineControl
 			}
 			catch (Exception ex)
 			{
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Exception in Timeline.MarksBar.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace,
-					@"Error", false, false);
+					@"Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 			}
 		}
