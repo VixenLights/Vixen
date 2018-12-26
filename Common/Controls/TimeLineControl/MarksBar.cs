@@ -261,20 +261,49 @@ namespace Common.Controls.TimelineControl
 				ContextMenuStrip c = new ContextMenuStrip();
 				c.Renderer = new ThemeToolStripRenderer();
 
+				var rename = c.Items.Add("Edit Text");
+				rename.Enabled = _mouseDownLocation == location && _mouseDownMark != null;
+				rename.Click += Rename_Click;
+
+				var cutMarks = c.Items.Add("Cut");
+				cutMarks.Click += CutMarksOnClick;
+				cutMarks.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				c.Items.Add(cutMarks);
+
+				var copyMarks = c.Items.Add("Copy");
+				copyMarks.Click += CopyMarksOnClick;
+				copyMarks.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				c.Items.Add(copyMarks);
+
+				//var copy = c.Items.Add("Copy Text");
+				//copy.Click += Copy_Click;
+				//copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
+
+				var pasteMarks = c.Items.Add("Paste");
+				pasteMarks.Click += PasteMarks_Click;
+				pasteMarks.Enabled = _mouseDownLocation == location && _clipboard.Count > 0;
+				c.Items.Add(pasteMarks);
+				
+				//var paste = c.Items.Add("Paste Text");
+				//paste.Click += Paste_Click;
+				//paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
+
+				if (c.Items.Count > 0)
+				{
+					c.Items.Add(new ToolStripSeparator());
+				}
+
+				var delete = c.Items.Add("Delete");
+				delete.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				delete.Click += DeleteMark_Click;
+				
+				if (c.Items.Count > 0)
+				{
+					c.Items.Add(new ToolStripSeparator());
+				}
+
 				if (_mouseDownLocation == location && _mouseDownMark != null)
 				{
-					
-					var delete = c.Items.Add("&Delete");
-					delete.Click += DeleteMark_Click;
-					var rename = c.Items.Add("&Rename");
-					rename.Click += Rename_Click;
-					var copy = c.Items.Add("&Copy Text");
-					copy.Click += Copy_Click;
-					copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
-					var paste = c.Items.Add("&Paste Text");
-					paste.Click += Paste_Click;
-					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
-
 					if (_marksSelectionManager.SelectedMarks.All(x =>
 						x.Parent.CollectionType == MarkCollectionType.Phoneme))
 					{
@@ -294,22 +323,8 @@ namespace Common.Controls.TimelineControl
 						var breakdownWord = c.Items.Add("Breakdown Word");
 						breakdownWord.Click += BreakdownWord_Click;
 					}
-
-					if (c.Items.Count > 0)
-					{
-						c.Items.Add(new ToolStripSeparator());
-					}
-					var copyMarks = c.Items.Add("Copy Selected");
-					copyMarks.Click += CopyMarksOnClick;
-					c.Items.Add(copyMarks);
 				}
-
-				if (_mouseDownLocation == location && _clipboard.Count > 0)
-				{
-					var pasteMarks = c.Items.Add("Paste Marks");
-					pasteMarks.Click += PasteMarks_Click;
-					c.Items.Add(pasteMarks);
-				}
+				
 
 				if (c.Items.Count > 0)
 				{
@@ -400,6 +415,13 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 		{
 			_clipboard.Clear();
 			_clipboard.AddRange(_marksSelectionManager.SelectedMarks);
+		}
+
+		private void CutMarksOnClick(object sender, EventArgs e)
+		{
+			_clipboard.Clear();
+			_clipboard.AddRange(_marksSelectionManager.SelectedMarks);
+			DeleteSelectedMarks();
 		}
 
 		#endregion
@@ -845,7 +867,7 @@ the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.
 		private void Rename_Click(object sender, EventArgs e)
 		{
 			var single = _marksSelectionManager.SelectedMarks.Count == 1;
-			TextDialog td = new TextDialog("Enter the new name.", _marksSelectionManager.SelectedMarks.Count==1?"Rename Mark":"Rename Multiple Marks", single?_marksSelectionManager.SelectedMarks.First().Text:string.Empty, single);
+			TextDialog td = new TextDialog("Enter the new text.", _marksSelectionManager.SelectedMarks.Count==1?"Edit Mark":"Edit Multiple Marks", single?_marksSelectionManager.SelectedMarks.First().Text:string.Empty, single);
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{

@@ -34,7 +34,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 
 		public void Select(IMark mark)
 		{
-			if (!SelectedMarks.Contains(mark))
+			if (mark != null && !SelectedMarks.Contains(mark))
 			{
 				_selectedMarks.Add(mark);
 				OnSelectionChanged();
