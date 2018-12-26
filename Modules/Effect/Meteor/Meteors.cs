@@ -285,6 +285,40 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"XOffset")]
+		[ProviderDescription(@"XOffset")]
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(4)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"YOffset")]
+		[ProviderDescription(@"YOffset")]
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(5)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Color properties
@@ -514,7 +548,9 @@ namespace VixenModules.Effect.Meteors
 			if (maxSpeed > 200)
 				maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
-			
+			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
+			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
+
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv;
 			int adjustedPixelCount;
@@ -739,8 +775,8 @@ namespace VixenModules.Effect.Meteors
 			{
 				meteor.DeltaX += meteor.DeltaXOrig;
 				meteor.DeltaY += meteor.DeltaYOrig;
-				int colorX = meteor.X + (int)meteor.DeltaX - BufferWi / 100;
-				int colorY = meteor.Y + (int)meteor.DeltaY + BufferHt / 100;
+				int colorX = xOffsetAdj + meteor.X + (int)meteor.DeltaX - BufferWi / 100;
+				int colorY = yOffsetAdj + meteor.Y + (int)meteor.DeltaY + BufferHt / 100;
 
 				for (int ph = 0; ph < tailLength; ph++)
 				{
@@ -862,6 +898,16 @@ namespace VixenModules.Effect.Meteors
 		{
 			int maxGroundHeight = MeteorEffect == MeteorsEffect.Explode ? 0 : 6;
 			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt - maxGroundHeight, 0);
+		}
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 
 		// for Meteor effects

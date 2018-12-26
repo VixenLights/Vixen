@@ -37,6 +37,8 @@ namespace VixenModules.Effect.Meteors
 			MeteorStartPosition = MeteorStartPosition.InitiallyRandom;
 			FlipDirection = false;
 			CountPerString = false;
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}
 
 		[DataMember]
@@ -120,6 +122,12 @@ namespace VixenModules.Effect.Meteors
 		[DataMember]
 		public bool CountPerString { get; set; }
 
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -163,6 +171,16 @@ namespace VixenModules.Effect.Meteors
 					Length = 0;
 				}
 			}
+
+			if (XOffsetCurve == null)
+			{
+				XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+
+				if (YOffsetCurve == null)
+				{
+					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -188,7 +206,9 @@ namespace VixenModules.Effect.Meteors
 				MeteorPerString = MeteorPerString,
 				MeteorStartPosition = MeteorStartPosition,
 				FlipDirection = FlipDirection,
-				CountPerString = CountPerString
+				CountPerString = CountPerString,
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve)
 			};
 			return result;
 		}
