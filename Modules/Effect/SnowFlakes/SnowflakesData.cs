@@ -35,6 +35,8 @@ namespace VixenModules.Effect.Snowflakes
 			SnowBuildUp = false;
 			InitialBuildUp = 0;
 			BuildUpSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}
 
 		[DataMember]
@@ -106,6 +108,12 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -143,6 +151,16 @@ namespace VixenModules.Effect.Snowflakes
 					RandomSpeed = true;
 				}
 			}
+
+			if (XOffsetCurve == null)
+			{
+				XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+
+				if (YOffsetCurve == null)
+				{
+					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+			}
 		}
 
 
@@ -167,7 +185,9 @@ namespace VixenModules.Effect.Snowflakes
 				PixelCount = PixelCount,
 				SnowBuildUp = SnowBuildUp,
 				InitialBuildUp = InitialBuildUp,
-				BuildUpSpeedCurve = new Curve(BuildUpSpeedCurve)
+				BuildUpSpeedCurve = new Curve(BuildUpSpeedCurve),
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve)
 			};
 			return result;
 		}

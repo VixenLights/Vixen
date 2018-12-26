@@ -235,6 +235,43 @@ namespace VixenModules.Effect.Snowflakes
 
 		#endregion
 
+		#region Movement
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"XOffset")]
+		[ProviderDescription(@"XOffset")]
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(4)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 1)]
+		[ProviderDisplayName(@"YOffset")]
+		[ProviderDescription(@"YOffset")]
+		//[NumberRange(-100, 100, 1)]
+		[PropertyOrder(5)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+		#endregion
+
 		#region Color properties
 
 		[Value]
@@ -450,6 +487,8 @@ namespace VixenModules.Effect.Snowflakes
 			int maxDirection = 360;
 			var intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
+			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * BufferWi / 100;
+			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * BufferHt / 100;
 
 			// create new SnowFlakes and maintain maximum number as per users selection.
 			int flakeCount = (int) (SnowflakeEffect == SnowflakeEffect.Explode && frame < CalculateCount(intervalPosFactor) ? 1 : CalculateCount(intervalPosFactor));
@@ -609,8 +648,8 @@ namespace VixenModules.Effect.Snowflakes
 						//Skips the location processing part to not waste time as the Snowflake is no longer moving and sitting on the bottom.
 					{
 						//Sets the new position the SnowFlake is moving to
-						colorX = snowFlakes.X + (int)snowFlakes.DeltaX - BufferWi/100;
-						colorY = snowFlakes.Y + (int)snowFlakes.DeltaY + BufferHt/100;
+						colorX = xOffsetAdj + snowFlakes.X + (int)snowFlakes.DeltaX - BufferWi/100;
+						colorY = yOffsetAdj + snowFlakes.Y + (int)snowFlakes.DeltaY + BufferHt/100;
 
 						if (SnowflakeEffect != SnowflakeEffect.Explode)
 						{
@@ -860,7 +899,16 @@ namespace VixenModules.Effect.Snowflakes
 		{
 			return ScaleCurveToValue(BuildUpSpeedCurve.GetValue(intervalPos), 80, 1);
 		}
+		
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
+		}
 
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
+		}
 
 
 		// generates a random number between Color num1 and and Color num2.
