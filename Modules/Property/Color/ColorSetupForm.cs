@@ -32,7 +32,19 @@ namespace VixenModules.Property.Color
 			SelectRadioButton();
 
 			colorPanelSingleColor.Color = ColorModule.SingleColor;
+
+			colorPanelSingleColor.ColorChanged += colorPanelSingleColor_ColorChanged;
 		}
+
+		#region Overrides of Form
+
+		/// <inheritdoc />
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			colorPanelSingleColor.ColorChanged -= colorPanelSingleColor_ColorChanged;
+		}
+
+		#endregion
 
 		private void PopulateColorSetsComboBox()
 		{

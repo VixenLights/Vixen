@@ -9,6 +9,8 @@ using Vixen.Sys;
 
 namespace VixenModules.Property.Location {
 	public class LocationModule : PropertyModuleInstanceBase {
+
+		private static NLog.Logger Logging = NLog.LogManager.GetCurrentClassLogger();
 		private LocationData _data;
 
 		public LocationModule() {
@@ -34,6 +36,26 @@ namespace VixenModules.Property.Location {
 				_data = (LocationData)value;
 			}
 		}
+
+		#region Overrides of PropertyModuleInstanceBase
+
+		/// <inheritdoc />
+		public override void CloneValues(IProperty sourceProperty)
+		{
+			var source = sourceProperty as LocationModule;
+			if (source == null)
+			{
+				Logging.Error(
+					"LocationModule: trying to CloneValues from another property, but it's not a LocationModule!");
+				return;
+			}
+
+			_data.X = source._data.X;
+			_data.Y = source._data.Y;
+			_data.Z = source._data.Z;
+		}
+
+		#endregion
 
 		public static Point GetPositionForElement(ElementNode element)
 		{

@@ -91,7 +91,6 @@
 			this.colorPanelSingleColor.Name = "colorPanelSingleColor";
 			this.colorPanelSingleColor.Size = new System.Drawing.Size(70, 34);
 			this.colorPanelSingleColor.TabIndex = 6;
-			this.colorPanelSingleColor.ColorChanged += new System.EventHandler<VixenModules.Property.Color.ColorPanelEventArgs>(this.colorPanelSingleColor_ColorChanged);
 			// 
 			// buttonColorSetsSetup
 			// 
