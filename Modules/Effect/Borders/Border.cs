@@ -214,10 +214,42 @@ namespace VixenModules.Effect.Borders
 
 		#endregion
 
+		[Value]
+		[ProviderCategory(@"Movement", 3)]
+		[ProviderDisplayName(@"XOffset")]
+		[ProviderDescription(@"XOffset")]
+		[PropertyOrder(0)]
+		public Curve XOffsetCurve
+		{
+			get { return _data.XOffsetCurve; }
+			set
+			{
+				_data.XOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 3)]
+		[ProviderDisplayName(@"YOffset")]
+		[ProviderDescription(@"YOffset")]
+		[PropertyOrder(1)]
+		public Curve YOffsetCurve
+		{
+			get { return _data.YOffsetCurve; }
+			set
+			{
+				_data.YOffsetCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#region Color properties
 
 		[Value]
-		[ProviderCategory(@"Color", 3)]
+		[ProviderCategory(@"Color", 4)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
 		[PropertyOrder(1)]
@@ -233,7 +265,7 @@ namespace VixenModules.Effect.Borders
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 3)]
+		[ProviderCategory(@"Color", 4)]
 		[ProviderDisplayName(@"ColorGradient")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
@@ -253,7 +285,7 @@ namespace VixenModules.Effect.Borders
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 4)]
+		[ProviderCategory(@"Brightness", 5)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		public Curve LevelCurve
@@ -320,7 +352,9 @@ namespace VixenModules.Effect.Borders
 					{"RightThicknessCurve", false},
 					{"BorderSizeCurve", false},
 					{"BorderHeightCurve", false},
-					{"BorderType", false}
+					{"BorderType", false},
+					{"YOffsetCurve", false},
+					{"XOffsetCurve", false}
 				};
 				SetBrowsable(propertyStates);
 			}
@@ -336,7 +370,9 @@ namespace VixenModules.Effect.Borders
 					{"RightThicknessCurve", BorderType != BorderType.Single},
 					{"BorderSizeCurve", true},
 					{"BorderHeightCurve", true},
-					{"BorderType", true}
+					{"BorderType", true},
+					{"YOffsetCurve", true},
+					{"XOffsetCurve", true}
 				};
 				SetBrowsable(propertyStates);
 			}
@@ -366,12 +402,14 @@ namespace VixenModules.Effect.Borders
 
 			double level = LevelCurve.GetValue(intervalPosFactor) / 100;
 			int thickness = (int)Math.Round(CalculateBorderThickness(intervalPosFactor) / 2);
-			int topThickness = (int)Math.Round(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-			int bottomThickness = (int)Math.Round(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-			int leftThickness = (int)Math.Round(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
-			int rightThickness = (int)Math.Round(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+			int topThickness = (int)Math.Round(TopThicknessCurve.GetValue(intervalPosFactor) * bufferHt / 100);
+			int bottomThickness = (int)Math.Round(BottomThicknessCurve.GetValue(intervalPosFactor) * bufferHt / 100);
+			int leftThickness = (int)Math.Round(LeftThicknessCurve.GetValue(intervalPosFactor) * bufferWi / 100);
+			int rightThickness = (int)Math.Round(RightThicknessCurve.GetValue(intervalPosFactor) * bufferWi / 100);
 			int borderHeight = (int)CalculateBorderHeight(intervalPosFactor) / 2;
 			int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) / 2);
+			int xOffsetAdj = CalculateXOffset(intervalPosFactor) * (bufferWi - borderWidth) / 100;
+			int yOffsetAdj = CalculateYOffset(intervalPosFactor) * (bufferHt - borderHeight) / 100;
 			Color color = Color.GetColorAt(GetEffectTimeIntervalPosition(effectFrame));
 
 			if (BorderMode == BorderMode.Simple)
@@ -388,12 +426,12 @@ namespace VixenModules.Effect.Borders
 				bottomThickness = thickness;
 			}
 
-			for (int x = 0; x < BufferWi; x++)
+			for (int x = 0; x < bufferWi; x++)
 			{
-				for (int y = 0; y < BufferHt; y++)
+				for (int y = 0; y < bufferHt; y++)
 				{
 					CalculatePixel(x, y, frameBuffer, thickness, topThickness,
-						bottomThickness, leftThickness, rightThickness, level, borderWidth, borderHeight, color, ref bufferHt, ref bufferWi);
+						bottomThickness, leftThickness, rightThickness, level, borderWidth, borderHeight, color, xOffsetAdj, yOffsetAdj, ref bufferHt, ref bufferWi);
 				}
 			}
 		}
@@ -412,12 +450,14 @@ namespace VixenModules.Effect.Borders
 
 				double level = LevelCurve.GetValue(intervalPos);
 				int thickness = (int)Math.Round(CalculateBorderThickness(intervalPosFactor) / 2);
-				int topThickness = (int)(TopThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-				int bottomThickness = (int)(BottomThicknessCurve.GetValue(intervalPosFactor) * BufferHt / 100);
-				int leftThickness = (int)(LeftThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
-				int rightThickness = (int)(RightThicknessCurve.GetValue(intervalPosFactor) * BufferWi / 100);
+				int topThickness = (int)(TopThicknessCurve.GetValue(intervalPosFactor) * bufferHt / 100);
+				int bottomThickness = (int)(BottomThicknessCurve.GetValue(intervalPosFactor) * bufferHt / 100);
+				int leftThickness = (int)(LeftThicknessCurve.GetValue(intervalPosFactor) * bufferWi / 100);
+				int rightThickness = (int)(RightThicknessCurve.GetValue(intervalPosFactor) * bufferWi / 100);
 				int borderHeight = (int)CalculateBorderHeight(intervalPosFactor) / 2;
 				int borderWidth = (int)(CalculateBorderSize(intervalPosFactor) / 2);
+				int xOffsetAdj = CalculateXOffset(intervalPosFactor) * (bufferWi - borderWidth) / 100;
+				int yOffsetAdj = CalculateYOffset(intervalPosFactor) * (bufferHt - borderHeight) / 100;
 				Color color = Color.GetColorAt(GetEffectTimeIntervalPosition(effectFrame));
 
 				if (BorderMode == BorderMode.Simple)
@@ -425,6 +465,8 @@ namespace VixenModules.Effect.Borders
 					thickness = SimpleBorderWidth;
 					borderWidth = 0;
 					borderHeight = 0;
+					xOffsetAdj = 0;
+					yOffsetAdj = 0;
 				}
 				else if (BorderType == BorderType.Single)
 				{
@@ -438,12 +480,12 @@ namespace VixenModules.Effect.Borders
 				{
 					CalculatePixel(elementLocation.X, elementLocation.Y, frameBuffer, thickness,
 						topThickness, bottomThickness, leftThickness, rightThickness, level, borderWidth, borderHeight,
-						color, ref bufferHt, ref bufferWi);
+						color, xOffsetAdj, yOffsetAdj, ref bufferHt, ref bufferWi);
 				}
 			}
 		}
 
-		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int thickness, int topThickness, int bottomThickness, int leftThickness, int rightThickness, double level, int borderWidth, int borderHeight, Color color, ref int bufferHt, ref int bufferWi)
+		private void CalculatePixel(int x, int y, IPixelFrameBuffer frameBuffer, int thickness, int topThickness, int bottomThickness, int leftThickness, int rightThickness, double level, int borderWidth, int borderHeight, Color color, int xOffsetAdj, int yOffsetAdj, ref int bufferHt, ref int bufferWi)
 		{
 			int yCoord = y;
 			int xCoord = x;
@@ -454,6 +496,9 @@ namespace VixenModules.Effect.Borders
 				y = y - BufferHtOffset;
 				x = x - BufferWiOffset;
 			}
+
+			x -= xOffsetAdj;
+			y -= yOffsetAdj;
 
 			if (BorderType == BorderType.Single || BorderMode == BorderMode.Simple)//Single Border Control
 			{
@@ -520,6 +565,16 @@ namespace VixenModules.Effect.Borders
 		private double CalculateBorderHeight(double intervalPosFactor)
 		{
 			return ScaleCurveToValue(BorderHeightCurve.GetValue(intervalPosFactor), 0, BufferHt);
+		}
+
+		private int CalculateXOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(XOffsetCurve.GetValue(intervalPos), 100, -100));
+		}
+
+		private int CalculateYOffset(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(YOffsetCurve.GetValue(intervalPos), 100, -100));
 		}
 	}
 }

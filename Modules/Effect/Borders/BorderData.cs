@@ -31,6 +31,8 @@ namespace VixenModules.Effect.Borders
 			Orientation=StringOrientation.Vertical;
 			SimpleBorderWidth = 1;
 			BorderHeightCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
+			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 		}
 
 		[DataMember]
@@ -75,6 +77,12 @@ namespace VixenModules.Effect.Borders
 		[DataMember]
 		public Curve BorderHeightCurve { get; set; }
 
+		[DataMember]
+		public Curve XOffsetCurve { get; set; }
+
+		[DataMember]
+		public Curve YOffsetCurve { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -83,6 +91,16 @@ namespace VixenModules.Effect.Borders
 			if (BorderHeightCurve == null)
 			{
 				BorderHeightCurve = BorderSizeCurve;
+
+				if (XOffsetCurve == null)
+				{
+					XOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
+				}
+
+				if (YOffsetCurve == null)
+				{
+					YOffsetCurve = new Curve(new PointPairList(new[] {0.0, 100.0}, new[] {50.0, 50.0}));
+				}
 			}
 		}
 
@@ -103,7 +121,9 @@ namespace VixenModules.Effect.Borders
 				BorderMode = BorderMode,
 				SimpleBorderWidth = SimpleBorderWidth,
 				Gradient = Gradient,
-				BorderHeightCurve = new Curve(BorderHeightCurve)
+				BorderHeightCurve = new Curve(BorderHeightCurve),
+				YOffsetCurve = new Curve(YOffsetCurve),
+				XOffsetCurve = new Curve(XOffsetCurve)
 			};
 			return result;
 		}
