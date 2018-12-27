@@ -840,4 +840,9 @@
   <data name="MovementMode" xml:space="preserve">
     <value>Adjusts the type of movement.</value>
   </data>
-</root>
+  <data name="BorderHeight" xml:space="preserve">
+    <value>Adjust the Border height.</value>
+  </data>
+  <data name="BorderThickness" xml:space="preserve">
+    <value>Adjust the Thickness of the border.</value>
+  </data></root>

@@ -224,6 +224,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust the Border height..
+        /// </summary>
+        internal static string BorderHeight {
+            get {
+                return ResourceManager.GetString("BorderHeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enables Simple or Advanced border width control..
         /// </summary>
         internal static string BorderMode {
@@ -247,6 +256,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string BorderSize {
             get {
                 return ResourceManager.GetString("BorderSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust the Thickness of the border..
+        /// </summary>
+        internal static string BorderThickness {
+            get {
+                return ResourceManager.GetString("BorderThickness", resourceCulture);
             }
         }
         

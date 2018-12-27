@@ -30,6 +30,7 @@ namespace VixenModules.Effect.Borders
 			BorderMode = BorderMode.Simple;
 			Orientation=StringOrientation.Vertical;
 			SimpleBorderWidth = 1;
+			BorderHeightCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 		}
 
 		[DataMember]
@@ -71,6 +72,20 @@ namespace VixenModules.Effect.Borders
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Curve BorderHeightCurve { get; set; }
+
+		[OnDeserialized]
+		public void OnDeserialized(StreamingContext c)
+		{
+			//if one of them is null the others probably are, and if this one is not then they all should be good.
+			//Try to save some cycles on every load
+			if (BorderHeightCurve == null)
+			{
+				BorderHeightCurve = BorderSizeCurve;
+			}
+		}
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			BorderData result = new BorderData
@@ -87,7 +102,8 @@ namespace VixenModules.Effect.Borders
 				GradientMode = GradientMode,
 				BorderMode = BorderMode,
 				SimpleBorderWidth = SimpleBorderWidth,
-				Gradient = Gradient
+				Gradient = Gradient,
+				BorderHeightCurve = new Curve(BorderHeightCurve)
 			};
 			return result;
 		}

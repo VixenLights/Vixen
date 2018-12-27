@@ -831,4 +831,9 @@
   <data name="WobbleVariation" xml:space="preserve">
     <value>Wobble Variation</value>
   </data>
-</root>
+  <data name="BorderHeight" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="BorderThickness" xml:space="preserve">
+    <value>Thickness</value>
+  </data></root>
