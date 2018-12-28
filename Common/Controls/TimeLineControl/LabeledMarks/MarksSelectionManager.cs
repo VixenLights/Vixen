@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Vixen.Marks;
 using VixenModules.App.Marks;
 
@@ -33,9 +34,34 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 
 		public void Select(IMark mark)
 		{
-			if (!SelectedMarks.Contains(mark))
+			if (mark != null && !SelectedMarks.Contains(mark))
 			{
 				_selectedMarks.Add(mark);
+				OnSelectionChanged();
+			}
+		}
+
+		public void Select(List<IMark> marks)
+		{
+			if (!_selectedMarks.Any())
+			{
+				_selectedMarks.AddRange(marks);
+				OnSelectionChanged();
+				return;
+			}
+
+			var selectionChanged = false;
+			foreach (var mark in marks)
+			{
+				if (!SelectedMarks.Contains(mark))
+				{
+					_selectedMarks.Add(mark);
+					selectionChanged = true;
+				}
+			}
+
+			if (selectionChanged)
+			{
 				OnSelectionChanged();
 			}
 		}

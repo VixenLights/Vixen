@@ -553,6 +553,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_timeLineGlobalEventManager.MarksMoving += TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksMoved += TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark += TimeLineGlobalDeleted;
+			_timeLineGlobalEventManager.MarksPasted += TimeLineGlobalEventManagerOnMarksPasted;
 			_timeLineGlobalEventManager.MarksTextChanged += TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction += PhonemeBreakdownAction;
 			_timeLineGlobalEventManager.PlayRangeAction += TimeLineGlobalEventManagerOnPlayRangeAction;
@@ -770,6 +771,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.RulerTimeRangeDragged -= timelineControl_TimeRangeDragged;
 			_timeLineGlobalEventManager.MarksMoved -= TimeLineGlobalMoved;
 			_timeLineGlobalEventManager.DeleteMark -= TimeLineGlobalDeleted;
+			_timeLineGlobalEventManager.MarksPasted -= TimeLineGlobalEventManagerOnMarksPasted;
 			_timeLineGlobalEventManager.MarksMoving -= TimeLineGlobalMoving;
 			_timeLineGlobalEventManager.MarksTextChanged -= TimeLineGlobalTextChanged;
 			_timeLineGlobalEventManager.PhonemeBreakdownAction -= PhonemeBreakdownAction;
@@ -3088,6 +3090,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateGridSnapTimes();
 			SequenceModified();
 		}
+
+		private void TimeLineGlobalEventManagerOnMarksPasted(object sender, MarksPastedEventArgs e)
+		{
+			var marksPasted = new Dictionary<IMark, IMarkCollection>();
+			foreach (var mark in e.Marks)
+			{
+				marksPasted.Add(mark, mark.Parent);
+			}
+			var act = new MarksAddedUndoAction(this, marksPasted);
+			_undoMgr.AddUndoAction(act);
+			CheckAndRenderDirtyElementsAsync();
+			UpdateGridSnapTimes();
+			SequenceModified();
+		}
+
 
 		private void timelineControl_RulerBeginDragTimeRange(object sender, EventArgs e)
 		{

@@ -32,6 +32,7 @@ namespace Common.Controls.TimelineControl
 		private MarksMoveResizeInfo _marksMoveResizeInfo;
 		private ObservableCollection<IMarkCollection> _markCollections;
 		private readonly Font _textFont;
+		private List<IMark> _clipboard = new List<IMark>();
 
 		/// <inheritdoc />
 		public MarksBar(TimeInfo timeinfo) : base(timeinfo)
@@ -257,21 +258,52 @@ namespace Common.Controls.TimelineControl
 			Point location = TranslateLocation(e.Location);
 			if (e.Button == MouseButtons.Right)
 			{
+				ContextMenuStrip c = new ContextMenuStrip();
+				c.Renderer = new ThemeToolStripRenderer();
+
+				var rename = c.Items.Add("Edit Text");
+				rename.Enabled = _mouseDownLocation == location && _mouseDownMark != null;
+				rename.Click += Rename_Click;
+
+				var cutMarks = c.Items.Add("Cut");
+				cutMarks.Click += CutMarksOnClick;
+				cutMarks.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				c.Items.Add(cutMarks);
+
+				var copyMarks = c.Items.Add("Copy");
+				copyMarks.Click += CopyMarksOnClick;
+				copyMarks.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				c.Items.Add(copyMarks);
+
+				//var copy = c.Items.Add("Copy Text");
+				//copy.Click += Copy_Click;
+				//copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
+
+				var pasteMarks = c.Items.Add("Paste");
+				pasteMarks.Click += PasteMarks_Click;
+				pasteMarks.Enabled = _mouseDownLocation == location && _clipboard.Count > 0;
+				c.Items.Add(pasteMarks);
+				
+				//var paste = c.Items.Add("Paste Text");
+				//paste.Click += Paste_Click;
+				//paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
+
+				if (c.Items.Count > 0)
+				{
+					c.Items.Add(new ToolStripSeparator());
+				}
+
+				var delete = c.Items.Add("Delete");
+				delete.Enabled = _marksSelectionManager.SelectedMarks.Any();
+				delete.Click += DeleteMark_Click;
+				
+				if (c.Items.Count > 0)
+				{
+					c.Items.Add(new ToolStripSeparator());
+				}
+
 				if (_mouseDownLocation == location && _mouseDownMark != null)
 				{
-					ContextMenuStrip c = new ContextMenuStrip();
-					c.Renderer = new ThemeToolStripRenderer();
-					var delete = c.Items.Add("&Delete");
-					delete.Click += DeleteMark_Click;
-					var rename = c.Items.Add("&Rename");
-					rename.Click += Rename_Click;
-					var copy = c.Items.Add("&Copy Text");
-					copy.Click += Copy_Click;
-					copy.Enabled = _marksSelectionManager.SelectedMarks.Count == 1;
-					var paste = c.Items.Add("&Paste Text");
-					paste.Click += Paste_Click;
-					paste.Enabled = _marksSelectionManager.SelectedMarks.Any() && Clipboard.ContainsText();
-
 					if (_marksSelectionManager.SelectedMarks.All(x =>
 						x.Parent.CollectionType == MarkCollectionType.Phoneme))
 					{
@@ -291,7 +323,11 @@ namespace Common.Controls.TimelineControl
 						var breakdownWord = c.Items.Add("Breakdown Word");
 						breakdownWord.Click += BreakdownWord_Click;
 					}
+				}
+				
 
+				if (c.Items.Count > 0)
+				{
 					c.Show(this, new Point(e.X, e.Y));
 				}
 
@@ -321,7 +357,73 @@ namespace Common.Controls.TimelineControl
 			}
 
 		}
-		
+
+		private void PasteMarks_Click(object sender, EventArgs e)
+		{
+			var groupedMarks = _clipboard.GroupBy(m => m.Parent).OrderBy(g => _markCollections.IndexOf(g.Key));
+			if (!groupedMarks.Any()) return;
+			TimeSpan startTime = pixelsToTime(_mouseDownLocation.X);
+
+			var startRowIndex = _rows.IndexOf(RowAt(_mouseDownLocation));
+			if (startRowIndex < 0) return;
+
+			List<IMark> pastedMarks = new List<IMark>();
+			var offset = _markCollections.IndexOf(groupedMarks.First().Key);
+
+			foreach (IGrouping<IMarkCollection, IMark> groupedMark in groupedMarks)
+			{
+				var previousIndex = _markCollections.IndexOf(groupedMark.Key);
+				var index = startRowIndex + previousIndex - offset;
+				if(index > _rows.Count-1) continue;
+				var insertRow = _rows[index];
+
+				if (groupedMark.Key.CollectionType != insertRow.MarkCollection.CollectionType)
+				{
+					var messageBox = new MessageBoxForm($@"Warning, {groupedMark.Key.Name} is of type {groupedMark.Key.CollectionType} and
+the target {insertRow.MarkCollection.Name} is of type {insertRow.MarkCollection.CollectionType}. Proceed?", @"Warning", MessageBoxButtons.YesNo, SystemIcons.Warning);
+					var response = messageBox.ShowDialog();
+					if (response.Equals(DialogResult.No))
+					{
+						break;
+					}
+				}
+
+				var orderedMarks = groupedMark.OrderBy(m => m.StartTime);
+				var referenceTime = _clipboard.Min(m => m.StartTime);
+				var currentTime = startTime;
+				var newMarks = new List<IMark>();
+				foreach (var orderedMark in orderedMarks)
+				{
+					IMark mark = (IMark)orderedMark.Clone();
+					mark.StartTime = currentTime + (orderedMark.StartTime - referenceTime);
+					newMarks.Add(mark);
+				}
+
+				insertRow.MarkCollection.AddMarks(newMarks);
+				pastedMarks.AddRange(newMarks);
+			}
+
+			if (pastedMarks.Any())
+			{
+				_timeLineGlobalEventManager.OnMarksPasted(new MarksPastedEventArgs(pastedMarks));
+				_marksSelectionManager.ClearSelected();
+				_marksSelectionManager.Select(pastedMarks);
+			}
+		}
+
+		private void CopyMarksOnClick(object sender, EventArgs e)
+		{
+			_clipboard.Clear();
+			_clipboard.AddRange(_marksSelectionManager.SelectedMarks);
+		}
+
+		private void CutMarksOnClick(object sender, EventArgs e)
+		{
+			_clipboard.Clear();
+			_clipboard.AddRange(_marksSelectionManager.SelectedMarks);
+			DeleteSelectedMarks();
+		}
+
 		#endregion
 
 		#region Mouse Move
@@ -765,7 +867,7 @@ namespace Common.Controls.TimelineControl
 		private void Rename_Click(object sender, EventArgs e)
 		{
 			var single = _marksSelectionManager.SelectedMarks.Count == 1;
-			TextDialog td = new TextDialog("Enter the new name.", _marksSelectionManager.SelectedMarks.Count==1?"Rename Mark":"Rename Multiple Marks", single?_marksSelectionManager.SelectedMarks.First().Text:string.Empty, single);
+			TextDialog td = new TextDialog("Enter the new text.", _marksSelectionManager.SelectedMarks.Count==1?"Edit Mark":"Edit Multiple Marks", single?_marksSelectionManager.SelectedMarks.First().Text:string.Empty, single);
 			var result = td.ShowDialog(this);
 			if (result == DialogResult.OK)
 			{
@@ -973,10 +1075,8 @@ namespace Common.Controls.TimelineControl
 			}
 			catch (Exception ex)
 			{
-				//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
-				MessageBoxForm.msgIcon = SystemIcons.Error; //this is used if you want to add a system icon to the message form.
 				var messageBox = new MessageBoxForm("Exception in Timeline.MarksBar.OnPaint():\n\n\t" + ex.Message + "\n\nBacktrace:\n\n\t" + ex.StackTrace,
-					@"Error", false, false);
+					@"Error", MessageBoxButtons.OK, SystemIcons.Error);
 				messageBox.ShowDialog();
 			}
 		}
