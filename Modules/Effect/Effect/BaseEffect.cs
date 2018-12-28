@@ -146,6 +146,29 @@ namespace VixenModules.Effect.Effect
 		{
 			return IntentBuilder.CreateDiscreteIntent(color, startIntensity, endIntensity, duration);
 		}
+		private static double ConvertRange(double originalStart, double originalEnd, double newStart, double newEnd, double value) // value to convert
+		{
+			double scale = (newEnd - newStart) / (originalEnd - originalStart);
+			return newStart + (value - originalStart) * scale;
+		}
+
+		/// <summary>
+		/// Takes an arbitrary value greater than equal to 0 and less than equal to 100 and translates it to a corresponding minimum - maximum value 
+		/// suitable for use in a range 
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="maximum"></param>
+		/// <param name="minimum"></param>
+		/// <returns></returns>
+		protected static double ScaleCurveToValue(double value, double maximum, double minimum)
+		{
+			return ConvertRange(0, 100, minimum, maximum, value);
+		}
+
+		protected double GetEffectTimeIntervalPosition(TimeSpan startTime)
+		{
+			return startTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
+		}
 
 		#region Overrides of ModuleInstanceBase
 

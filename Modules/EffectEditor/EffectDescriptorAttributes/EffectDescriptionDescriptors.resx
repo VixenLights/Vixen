@@ -798,4 +798,22 @@
   <data name="OffsetPercentage" xml:space="preserve">
     <value>When enabled will convert the Offsets to percentage of Buffer size. Once enabled the option will be hidden as this is the updated method.</value>
   </data>
+  <data name="CycleTime" xml:space="preserve">
+    <value>The amount of time in milliseconds for one complete on and off cycle.</value>
+  </data>
+  <data name="CycleVariation" xml:space="preserve">
+    <value>Alters the cycle time as a percentage of the Cycle Time parameter above. Used to vary the strobe speed over time.</value>
+  </data>
+  <data name="OnTime" xml:space="preserve">
+    <value>The percentage of each on/off cycle that the effect is on.</value>
+  </data>
+  <data name="StrobeMarkCollection" xml:space="preserve">
+    <value>The Mark Collection to adjust the strobe cycle time based on Mark label value or label duration. When Mark collection label value is selected the label must have a value or a default of 150ms will be used.</value>
+  </data>
+  <data name="StrobeMode" xml:space="preserve">
+    <value>Enables Simple or Advanced Strobe control.</value>
+  </data>
+  <data name="StrobeSource" xml:space="preserve">
+    <value>Selects what source is used to determine change.</value>
+  </data>
 </root>

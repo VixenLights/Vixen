@@ -795,4 +795,19 @@
   <data name="OffsetPercentage" xml:space="preserve">
     <value>Offset Percentage</value>
   </data>
+  <data name="CycleTime" xml:space="preserve">
+    <value>Cycle Time</value>
+  </data>
+  <data name="CycleVariation" xml:space="preserve">
+    <value>Cycle Variation</value>
+  </data>
+  <data name="OnTime" xml:space="preserve">
+    <value>On Time</value>
+  </data>
+  <data name="StrobeMode" xml:space="preserve">
+    <value>Strobe Mode</value>
+  </data>
+  <data name="StrobeSource" xml:space="preserve">
+    <value>Strobe Source</value>
+  </data>
 </root>

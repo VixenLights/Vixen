@@ -584,6 +584,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cycle Time.
+        /// </summary>
+        internal static string CycleTime {
+            get {
+                return ResourceManager.GetString("CycleTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cycle Variation.
+        /// </summary>
+        internal static string CycleVariation {
+            get {
+                return ResourceManager.GetString("CycleVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data Type.
         /// </summary>
         internal static string DataType {
@@ -1250,6 +1268,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to On Time.
+        /// </summary>
+        internal static string OnTime {
+            get {
+                return ResourceManager.GetString("OnTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Orientation.
         /// </summary>
         internal static string Orientation {
@@ -1849,6 +1876,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string StringCount {
             get {
                 return ResourceManager.GetString("StringCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strobe Mode.
+        /// </summary>
+        internal static string StrobeMode {
+            get {
+                return ResourceManager.GetString("StrobeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Strobe Source.
+        /// </summary>
+        internal static string StrobeSource {
+            get {
+                return ResourceManager.GetString("StrobeSource", resourceCulture);
             }
         }
         
