@@ -577,7 +577,7 @@ namespace VixenModules.Effect.Text
 
 				{"TextFade", TextSource != TextSource.None},
 
-				{"Speed", TextSource == TextSource.None || !DirectionPerWord},
+				{"Speed", (TextSource == TextSource.None || !DirectionPerWord) && Direction < TextDirection.Rotate},
 
 				{"TextMode", TextSource == TextSource.None},
 
