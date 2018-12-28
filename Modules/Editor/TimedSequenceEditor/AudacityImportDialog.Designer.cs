@@ -158,6 +158,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.ControlBox = true;
 			this.MinimumSize = new System.Drawing.Size(268, 254);
 			this.Name = "AudacityImportDialog";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
