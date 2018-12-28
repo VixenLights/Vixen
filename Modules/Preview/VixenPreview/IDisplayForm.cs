@@ -13,5 +13,7 @@ namespace VixenModules.Preview.VixenPreview {
 		String DisplayName { get; set; }
 
 		Guid InstanceId { get; set; }
+
+		bool IsOnTopWhenPlaying { get; }
 	}
 }

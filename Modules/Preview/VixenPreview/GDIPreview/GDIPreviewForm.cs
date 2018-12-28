@@ -618,6 +618,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 		/// <inheritdoc />
 		public Guid InstanceId { get; set; }
 
+		/// <inheritdoc />
+		public bool IsOnTopWhenPlaying { get; }
+
 		public void UpdateDisplayName()
 		{
 			Text = _displayName;
