@@ -55,7 +55,6 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		private readonly ContextMenuStrip _contextMenuStrip = new ContextMenuStrip();
 		private bool _showStatus;
 		private bool _alwaysOnTop;
-		private bool _onTopWhenActive;
 		private bool _enableLightScaling = true;
 
 		private float _pointScaleFactor;
@@ -153,7 +152,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 				_alwaysOnTop = !_alwaysOnTop;
 				if (_alwaysOnTop)
 				{
-					_onTopWhenActive = false;
+					IsOnTopWhenPlaying = false;
 				}
 				ConfigureAlwaysOnTop();
 				SaveWindowState();
@@ -164,15 +163,15 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			item = new ToolStripMenuItem("Auto On Top");
 			item.ToolTipText = @"Enable/Disable bringing this preview on top and back automatically.";
 
-			if (_onTopWhenActive)
+			if (IsOnTopWhenPlaying)
 			{
 				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
 			}
 
 			item.Click += (sender, args) =>
 			{
-				_onTopWhenActive = !_onTopWhenActive;
-				if (_onTopWhenActive)
+				IsOnTopWhenPlaying = !IsOnTopWhenPlaying;
+				if (IsOnTopWhenPlaying)
 				{
 					_alwaysOnTop = false;
 					ConfigureAlwaysOnTop();
@@ -403,7 +402,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 		public Guid InstanceId { get; set; }
 
 		/// <inheritdoc />
-		public bool IsOnTopWhenPlaying => _onTopWhenActive;
+		public bool IsOnTopWhenPlaying { get; private set; }
 
 		public void UpdateDisplayName()
 		{
@@ -694,7 +693,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), _enableLightScaling);
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), _onTopWhenActive);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), IsOnTopWhenPlaying);
 		}
 
 		private void RestoreWindowState()
@@ -707,7 +706,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
 			_enableLightScaling = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), true);
-			_onTopWhenActive = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
+			IsOnTopWhenPlaying = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
 
 			ConfigureStatusBar();
 			ConfigureAlwaysOnTop();
