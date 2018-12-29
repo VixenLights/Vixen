@@ -1178,6 +1178,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the type of movement..
+        /// </summary>
+        internal static string MovementMode {
+            get {
+                return ResourceManager.GetString("MovementMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Meteor direction based on X and Y Speed curves..
+        /// </summary>
+        internal static string MovementSpeed {
+            get {
+                return ResourceManager.GetString("MovementSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls how the effect progresses across time between speed or iterations..
         /// </summary>
         internal static string MovementType {
@@ -2141,6 +2159,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Moves the Meteors from side to side..
+        /// </summary>
+        internal static string Wobble {
+            get {
+                return ResourceManager.GetString("Wobble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Wobble around the Wobble level by the amount of variation..
+        /// </summary>
+        internal static string WobbleVariation {
+            get {
+                return ResourceManager.GetString("WobbleVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can help to adjust the position of the effect. May not work in all cases..
         /// </summary>
         internal static string XOffset {
@@ -2150,11 +2186,47 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Horizontal Center Speed.
+        /// </summary>
+        internal static string XSpeed {
+            get {
+                return ResourceManager.GetString("XSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Speed around the center Speed by the amount of variation..
+        /// </summary>
+        internal static string XSpeedVariation {
+            get {
+                return ResourceManager.GetString("XSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can help to adjust the position of the effect. May not work in all cases..
         /// </summary>
         internal static string YOffset {
             get {
                 return ResourceManager.GetString("YOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal Center Speed.
+        /// </summary>
+        internal static string YSpeed {
+            get {
+                return ResourceManager.GetString("YSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomly adjust the Speed around the center Speed by the amount of variation..
+        /// </summary>
+        internal static string YSpeedVariation {
+            get {
+                return ResourceManager.GetString("YSpeedVariation", resourceCulture);
             }
         }
     }

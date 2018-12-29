@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeteorMovement.cs" />
     <Compile Include="MeteorsEffect.cs" />
     <Compile Include="MeteorsColorType.cs" />
     <Compile Include="MeteorsDescriptor.cs" />

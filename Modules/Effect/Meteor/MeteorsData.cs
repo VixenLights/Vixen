@@ -37,8 +37,14 @@ namespace VixenModules.Effect.Meteors
 			MeteorStartPosition = MeteorStartPosition.InitiallyRandom;
 			FlipDirection = false;
 			CountPerString = false;
-			XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
-			YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			XCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			XSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			YSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			MeteorMovement = MeteorMovement.None;
+			MeteorSpeedMovement = false;
+			WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 33.0, 66.0, 100.0 }, new[] { 30.0, 70.0, 30.0, 70.0 }));
+			WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 		}
 
 		[DataMember]
@@ -123,10 +129,28 @@ namespace VixenModules.Effect.Meteors
 		public bool CountPerString { get; set; }
 
 		[DataMember]
-		public Curve XOffsetCurve { get; set; }
+		public Curve XCenterSpeedCurve { get; set; }
 
 		[DataMember]
-		public Curve YOffsetCurve { get; set; }
+		public Curve YCenterSpeedCurve { get; set; }
+
+		[DataMember]
+		public Curve XSpeedVariationCurve { get; set; }
+
+		[DataMember]
+		public Curve YSpeedVariationCurve { get; set; }
+		
+		[DataMember]
+		public MeteorMovement MeteorMovement { get; set; }
+
+		[DataMember]
+		public bool MeteorSpeedMovement { get; set; }
+
+		[DataMember]
+		public Curve WobbleCurve { get; set; }
+
+		[DataMember]
+		public Curve WobbleVariationCurve { get; set; }
 
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
@@ -172,13 +196,35 @@ namespace VixenModules.Effect.Meteors
 				}
 			}
 
-			if (XOffsetCurve == null)
+			if (XCenterSpeedCurve == null)
 			{
-				XOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				XCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
 
-				if (YOffsetCurve == null)
+				if (YCenterSpeedCurve == null)
 				{
-					YOffsetCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+					YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+				if (YCenterSpeedCurve == null)
+				{
+					YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+				if (XSpeedVariationCurve == null)
+				{
+					XSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				}
+				if (YSpeedVariationCurve == null)
+				{
+					YSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				}
+
+				if (WobbleCurve == null)
+				{
+					WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 33.0, 66.0, 100.0 }, new[] { 30.0, 70.0, 30.0, 70.0 }));
+				}
+
+				if (WobbleVariationCurve == null)
+				{
+					WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 				}
 			}
 		}
@@ -207,8 +253,14 @@ namespace VixenModules.Effect.Meteors
 				MeteorStartPosition = MeteorStartPosition,
 				FlipDirection = FlipDirection,
 				CountPerString = CountPerString,
-				YOffsetCurve = new Curve(YOffsetCurve),
-				XOffsetCurve = new Curve(XOffsetCurve)
+				XCenterSpeedCurve = new Curve(XCenterSpeedCurve),
+				YCenterSpeedCurve = new Curve(YCenterSpeedCurve),
+				XSpeedVariationCurve = new Curve(XSpeedVariationCurve),
+				YSpeedVariationCurve = new Curve(YSpeedVariationCurve),
+				MeteorMovement = MeteorMovement,
+				MeteorSpeedMovement = MeteorSpeedMovement,
+				WobbleVariationCurve = new Curve(WobbleVariationCurve),
+				WobbleCurve = new Curve(WobbleCurve)
 			};
 			return result;
 		}

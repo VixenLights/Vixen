@@ -1250,6 +1250,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Movement Speed.
+        /// </summary>
+        internal static string MovementSpeed {
+            get {
+                return ResourceManager.GetString("MovementSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Motion.
         /// </summary>
         internal static string MovementType {
@@ -2114,6 +2123,24 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wobble.
+        /// </summary>
+        internal static string Wobble {
+            get {
+                return ResourceManager.GetString("Wobble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wobble Variation.
+        /// </summary>
+        internal static string WobbleVariation {
+            get {
+                return ResourceManager.GetString("WobbleVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to X Offset.
         /// </summary>
         internal static string XOffset {
@@ -2123,11 +2150,47 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Horizontal Center Speed.
+        /// </summary>
+        internal static string XSpeed {
+            get {
+                return ResourceManager.GetString("XSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizontal Speed Variation.
+        /// </summary>
+        internal static string XSpeedVariation {
+            get {
+                return ResourceManager.GetString("XSpeedVariation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Y Offset.
         /// </summary>
         internal static string YOffset {
             get {
                 return ResourceManager.GetString("YOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Center Speed.
+        /// </summary>
+        internal static string YSpeed {
+            get {
+                return ResourceManager.GetString("YSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Speed Variation.
+        /// </summary>
+        internal static string YSpeedVariation {
+            get {
+                return ResourceManager.GetString("YSpeedVariation", resourceCulture);
             }
         }
         
