@@ -426,6 +426,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorChange", "Modules\Laye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strobe", "Modules\Effect\Strobe\Strobe.csproj", "{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighestValue", "Modules\LayerCombiningFilter\HighestValueWins\HighestValue.csproj", "{01D6D526-9586-44BB-82F4-10ABACF58B61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2104,6 +2106,20 @@ Global
 		{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}.Release|x64.Build.0 = Release|x64
 		{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}.Release|x86.ActiveCfg = Release|x86
 		{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2}.Release|x86.Build.0 = Release|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|x64.ActiveCfg = Debug|x64
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|x64.Build.0 = Debug|x64
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|x86.ActiveCfg = Debug|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Debug|x86.Build.0 = Debug|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|Any CPU.ActiveCfg = Release|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|Mixed Platforms.Build.0 = Release|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|x64.ActiveCfg = Release|x64
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|x64.Build.0 = Release|x64
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|x86.ActiveCfg = Release|x86
+		{01D6D526-9586-44BB-82F4-10ABACF58B61}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2251,6 +2267,7 @@ Global
 		{FE86F615-E983-47E2-944E-14EE273F7530} = {E301917B-FF08-4275-A4E0-830E2BEC0635}
 		{4AA17571-2592-453E-9976-368D0E9E0A56} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 		{FBD9C6E2-9E33-4B5F-B2BF-0F4C22C259A2} = {0E86725B-55F2-43AB-96A9-2B9B89BE4473}
+		{01D6D526-9586-44BB-82F4-10ABACF58B61} = {1F565F1F-0815-4819-B72C-FE4CAE9DECD9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F55EB1-2643-454B-A1C2-8A326FFA78E6}
