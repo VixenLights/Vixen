@@ -70,7 +70,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
-		
+		private short _sideGap;
+		private short _topGap;
+
+		private bool ShiftPressed
+		{
+			get { return ModifierKeys.HasFlag(Keys.Shift); }
+		}
+
 		#endregion
 
 		#region Initialization
@@ -120,10 +127,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var t = (int)Math.Round(48 * _curveLibraryImageScale * ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t, t);
 			_newFontSize = new Font(Font.FontFamily.Name, (int)(7 * _curveLibraryTextScale), Font.Style);
-			short sideGap = (short)(_imageSize.Width + (5 * ScalingTools.GetScaleFactor()));
-			short topGap = (short)(_imageSize.Height + 5 + ScalingTools.MeasureHeight(_newFontSize, "Test") * 2);
+			_sideGap = (short)(_imageSize.Width + (5 * ScalingTools.GetScaleFactor()));
+			_topGap = (short)(_imageSize.Height + 5 + ScalingTools.MeasureHeight(_newFontSize, "Test") * 2);
 
-			ListViewItem_SetSpacing(listViewCurves, sideGap, topGap);
+			ListViewItem_SetSpacing(listViewCurves, _sideGap, _topGap);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -285,20 +292,36 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewCurves_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			//StartCurveDrag(this, e);
-			Curve newCurve = new Curve((Curve)listViewCurves.SelectedItems[0].Tag);
-			if (LinkCurves)
+			if (ShiftPressed)
 			{
-				newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
+				listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0], DragDropEffects.Move);
 			}
-			newCurve.IsCurrentLibraryCurve = false;
-			listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
+			else
+			{
+				//StartCurveDrag(this, e);
+				Curve newCurve = new Curve((Curve) listViewCurves.SelectedItems[0].Tag);
+				if (LinkCurves)
+				{
+					newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
+				}
+
+				newCurve.IsCurrentLibraryCurve = false;
+				listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
+			}
+			ImageSetup();
+			Populate_Curves();
 		}
 
 		private void listViewCurves_DragEnter(object sender, DragEventArgs e)
 		{
 			_dragX = e.X;
 			_dragY = e.Y;
+
+			if (e.Data.GetDataPresent(typeof(ListViewItem)))
+			{
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
 
 			if (e.Data.GetDataPresent(typeof(Curve)))
 			{
@@ -320,6 +343,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					Curve c = (Curve) e.Data.GetData(typeof (Curve));
 					AddCurveToLibrary(c, false);
+				}
+				else if (e.Effect == DragDropEffects.Move)
+				{
+					if (listViewCurves.SelectedItems.Count == 0)
+						return;
+					Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
+					ListViewItem movetoNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
+					if (movetoNewPosition == null) return;
+					ListViewItem dropToNewPosition =
+						(e.Data.GetData(typeof(ListViewItem)) as ListViewItem);
+					ListViewItem cloneToNew = (ListViewItem)dropToNewPosition.Clone();
+					int index = movetoNewPosition.Index;
+					listViewCurves.Items.Remove(dropToNewPosition);
+					listViewCurves.Items.Insert(index, cloneToNew);
+
+					_curveLibrary.Library.Clear();
+					foreach (ListViewItem curve in listViewCurves.Items)
+					{
+						_curveLibrary.AddCurve(curve.Text, (Curve)curve.Tag);
+					}
 				}
 			}
 		}
