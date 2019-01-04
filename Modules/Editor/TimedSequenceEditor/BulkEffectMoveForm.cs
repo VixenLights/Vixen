@@ -35,6 +35,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void BulkEffectMoveForm_Load(object sender, EventArgs e)
 		{
+			txtStartTime.Culture = txtEndTime.Culture = txtOffset.Culture = CultureInfo.InvariantCulture;
 			txtStartTime.Mask = txtEndTime.Mask = txtOffset.Mask = @"00:00.000";
 		}
 

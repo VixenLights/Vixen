@@ -183,7 +183,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		private void EffectDistributionDialog_Load(object sender, EventArgs e)
 		{
+			txtStartTime.Culture = txtEndTime.Culture = CultureInfo.InvariantCulture;
 			txtStartTime.Mask = txtEndTime.Mask = "0:00.000";
+			txtSpacedPlacementDuration.Culture = txtSpacedPlacementDuration.Culture =
+				txtEffectPlacementOverlap.Culture = CultureInfo.InvariantCulture;
 			txtSpecifiedEffectDuration.Mask = txtSpacedPlacementDuration.Mask = txtEffectPlacementOverlap.Mask = "0:00.000";
 			txtSpecifiedEffectDuration.Text = txtSpacedPlacementDuration.Text = txtEffectPlacementOverlap.Text = "0:00.100";
 
