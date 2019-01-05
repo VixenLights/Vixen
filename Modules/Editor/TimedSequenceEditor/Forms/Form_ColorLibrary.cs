@@ -481,7 +481,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void Form_ColorLibrary_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			var xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ColorLibraryScale", Name), _colorLibraryScale.ToString());
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ColorLibraryScale", Name), _colorLibraryScale.ToString(CultureInfo.InvariantCulture));
 		}
 
 	}
