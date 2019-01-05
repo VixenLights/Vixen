@@ -69,7 +69,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
-		
+
+		private bool ShiftPressed
+		{
+			get { return ModifierKeys.HasFlag(Keys.Shift); }
+		}
+
 		#endregion
 
 		#region Initialization
@@ -291,6 +296,26 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					ColorGradient c = (ColorGradient) e.Data.GetData(typeof (ColorGradient));
 					AddGradientToLibrary(c, false);
 				}
+				else if (e.Effect == DragDropEffects.Move)
+				{
+					if (listViewGradients.SelectedItems.Count == 0)
+						return;
+					Point p = listViewGradients.PointToClient(new Point(e.X, e.Y));
+					ListViewItem movetoNewPosition = listViewGradients.GetItemAt(p.X, p.Y);
+					if (movetoNewPosition == null) return;
+					ListViewItem dropToNewPosition =
+						(e.Data.GetData(typeof(ListViewItem)) as ListViewItem);
+					ListViewItem cloneToNew = (ListViewItem)dropToNewPosition.Clone();
+					int index = movetoNewPosition.Index;
+					listViewGradients.Items.Remove(dropToNewPosition);
+					listViewGradients.Items.Insert(index, cloneToNew);
+
+					_colorGradientLibrary.Library.Clear();
+					foreach (ListViewItem curve in listViewGradients.Items)
+					{
+						_colorGradientLibrary.AddColorGradient(curve.Text, (ColorGradient)curve.Tag);
+					}
+				}
 			}
 		}
 
@@ -298,6 +323,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			_dragX = e.X;
 			_dragY = e.Y;
+
+			if (e.Data.GetDataPresent(typeof(ListViewItem)))
+			{
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
 
 			if (e.Data.GetDataPresent(typeof(ColorGradient)))
 			{
@@ -313,15 +344,25 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewGradient_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			//StartGradientDrag(this, e);
-
-			ColorGradient newGradient = new ColorGradient((ColorGradient)listViewGradients.SelectedItems[0].Tag);
-			if (LinkGradients)
+			if (ShiftPressed)
 			{
-				newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
+				listViewGradients.DoDragDrop(listViewGradients.SelectedItems[0], DragDropEffects.Move);
 			}
-			newGradient.IsCurrentLibraryGradient = false;
-			listViewGradients.DoDragDrop(newGradient, DragDropEffects.Copy);
+			else
+			{
+				//StartGradientDrag(this, e);
+				ColorGradient newGradient = new ColorGradient((ColorGradient) listViewGradients.SelectedItems[0].Tag);
+				if (LinkGradients)
+				{
+					newGradient.LibraryReferenceName = listViewGradients.SelectedItems[0].Name;
+				}
+
+				newGradient.IsCurrentLibraryGradient = false;
+				listViewGradients.DoDragDrop(newGradient, DragDropEffects.Copy);
+			}
+
+			ImageSetup();
+			Populate_Gradients();
 		}
 
 		#endregion
