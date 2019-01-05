@@ -120,6 +120,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewCurves.BackColor = ThemeColorTable.BackgroundColor;
+
+			listViewCurves.Alignment = ListViewAlignment.Top;
 		}
 
 		private void ImageSetup()

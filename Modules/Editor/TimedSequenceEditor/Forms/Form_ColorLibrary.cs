@@ -108,6 +108,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
+			listViewColors.Alignment = ListViewAlignment.Top;
 		}
 
 		private void ImageSetup()
@@ -310,7 +311,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				//StartColorDrag(this, e);
 				listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
-			} 
+			}
+			ImageSetup();
+			PopulateColors();
 
 		}
 
@@ -333,15 +336,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						listViewColors.Items.Add(item);
 					}
-
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
+					
 					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 					Update_ColorOrder();
 
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
-					listViewColors.Alignment = ListViewAlignment.Default;
 					if (listViewColors.SelectedItems.Count == 0)
 						return;
 					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
@@ -353,8 +354,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					int index = movetoNewPosition.Index;
 					listViewColors.Items.Remove(dropToNewPosition);
 					listViewColors.Items.Insert(index, cloneToNew);
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 					Update_ColorOrder();
 				}
 			}
