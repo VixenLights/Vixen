@@ -64,7 +64,7 @@
 			this.toolStripButtonEditColor.Enabled = false;
 			this.toolStripButtonEditColor.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonEditColor.Name = "toolStripButtonEditColor";
-			this.toolStripButtonEditColor.Size = new System.Drawing.Size(79, 24);
+			this.toolStripButtonEditColor.Size = new System.Drawing.Size(63, 24);
 			this.toolStripButtonEditColor.Text = "Edit Color";
 			this.toolStripButtonEditColor.Click += new System.EventHandler(this.toolStripButtonEditColor_Click);
 			// 
@@ -73,7 +73,7 @@
 			this.toolStripButtonNewColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonNewColor.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonNewColor.Name = "toolStripButtonNewColor";
-			this.toolStripButtonNewColor.Size = new System.Drawing.Size(83, 24);
+			this.toolStripButtonNewColor.Size = new System.Drawing.Size(67, 24);
 			this.toolStripButtonNewColor.Text = "New Color";
 			this.toolStripButtonNewColor.Click += new System.EventHandler(this.toolStripButtonNewColor_Click);
 			// 
@@ -83,7 +83,7 @@
 			this.toolStripButtonDeleteColor.Enabled = false;
 			this.toolStripButtonDeleteColor.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonDeleteColor.Name = "toolStripButtonDeleteColor";
-			this.toolStripButtonDeleteColor.Size = new System.Drawing.Size(97, 24);
+			this.toolStripButtonDeleteColor.Size = new System.Drawing.Size(76, 24);
 			this.toolStripButtonDeleteColor.Text = "Delete Color";
 			this.toolStripButtonDeleteColor.Click += new System.EventHandler(this.toolStripButtonDeleteColor_Click);
 			// 
@@ -92,7 +92,7 @@
 			this.toolStripButtonExportColors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonExportColors.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonExportColors.Name = "toolStripButtonExportColors";
-			this.toolStripButtonExportColors.Size = new System.Drawing.Size(56, 24);
+			this.toolStripButtonExportColors.Size = new System.Drawing.Size(44, 24);
 			this.toolStripButtonExportColors.Text = "Export";
 			this.toolStripButtonExportColors.ToolTipText = "Export Favorite Colors";
 			this.toolStripButtonExportColors.Click += new System.EventHandler(this.toolStripButtonExportColors_Click);
@@ -102,7 +102,7 @@
 			this.toolStripButtonImportColors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonImportColors.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonImportColors.Name = "toolStripButtonImportColors";
-			this.toolStripButtonImportColors.Size = new System.Drawing.Size(58, 24);
+			this.toolStripButtonImportColors.Size = new System.Drawing.Size(47, 24);
 			this.toolStripButtonImportColors.Text = "Import";
 			this.toolStripButtonImportColors.ToolTipText = "Import Favorite Colors";
 			this.toolStripButtonImportColors.Click += new System.EventHandler(this.toolStripButtonImportColors_Click);
@@ -124,6 +124,7 @@
 			this.listViewColors.SelectedIndexChanged += new System.EventHandler(this.listViewColors_SelectedIndexChanged);
 			this.listViewColors.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragDrop);
 			this.listViewColors.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewColors_DragEnter);
+			this.listViewColors.DragLeave += new System.EventHandler(this.listViewColors_DragLeave);
 			this.listViewColors.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewColors_MouseDoubleClick);
 			// 
 			// panel1
@@ -137,7 +138,7 @@
 			// 
 			// Form_ColorLibrary
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(602, 419);

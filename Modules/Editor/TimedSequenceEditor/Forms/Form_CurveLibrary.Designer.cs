@@ -65,7 +65,7 @@
 			this.toolStripButtonEditCurve.Enabled = false;
 			this.toolStripButtonEditCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonEditCurve.Name = "toolStripButtonEditCurve";
-			this.toolStripButtonEditCurve.Size = new System.Drawing.Size(80, 24);
+			this.toolStripButtonEditCurve.Size = new System.Drawing.Size(65, 24);
 			this.toolStripButtonEditCurve.Text = "Edit Curve";
 			this.toolStripButtonEditCurve.Click += new System.EventHandler(this.toolStripButtonEditCurve_Click);
 			// 
@@ -74,7 +74,7 @@
 			this.toolStripButtonNewCurve.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonNewCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonNewCurve.Name = "toolStripButtonNewCurve";
-			this.toolStripButtonNewCurve.Size = new System.Drawing.Size(84, 24);
+			this.toolStripButtonNewCurve.Size = new System.Drawing.Size(69, 24);
 			this.toolStripButtonNewCurve.Text = "New Curve";
 			this.toolStripButtonNewCurve.Click += new System.EventHandler(this.toolStripButtonNewCurve_Click);
 			// 
@@ -84,7 +84,7 @@
 			this.toolStripButtonDeleteCurve.Enabled = false;
 			this.toolStripButtonDeleteCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonDeleteCurve.Name = "toolStripButtonDeleteCurve";
-			this.toolStripButtonDeleteCurve.Size = new System.Drawing.Size(98, 24);
+			this.toolStripButtonDeleteCurve.Size = new System.Drawing.Size(78, 24);
 			this.toolStripButtonDeleteCurve.Text = "Delete Curve";
 			this.toolStripButtonDeleteCurve.Click += new System.EventHandler(this.toolStripButtonDeleteCurve_Click);
 			// 
@@ -93,7 +93,7 @@
 			this.toolStripButtonExportCurves.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonExportCurves.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonExportCurves.Name = "toolStripButtonExportCurves";
-			this.toolStripButtonExportCurves.Size = new System.Drawing.Size(56, 24);
+			this.toolStripButtonExportCurves.Size = new System.Drawing.Size(44, 24);
 			this.toolStripButtonExportCurves.Text = "Export";
 			this.toolStripButtonExportCurves.ToolTipText = "Export Curve Library";
 			this.toolStripButtonExportCurves.Click += new System.EventHandler(this.toolStripButtonExportCurves_Click);
@@ -103,7 +103,7 @@
 			this.toolStripButtonImportCurves.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonImportCurves.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonImportCurves.Name = "toolStripButtonImportCurves";
-			this.toolStripButtonImportCurves.Size = new System.Drawing.Size(58, 24);
+			this.toolStripButtonImportCurves.Size = new System.Drawing.Size(47, 24);
 			this.toolStripButtonImportCurves.Text = "Import";
 			this.toolStripButtonImportCurves.ToolTipText = "Import Curve Library";
 			this.toolStripButtonImportCurves.Click += new System.EventHandler(this.toolStripButtonImportCurves_Click);
@@ -112,10 +112,10 @@
 			// 
 			this.checkBoxLinkCurves.AutoSize = true;
 			this.checkBoxLinkCurves.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.checkBoxLinkCurves.Location = new System.Drawing.Point(0, 398);
+			this.checkBoxLinkCurves.Location = new System.Drawing.Point(0, 402);
 			this.checkBoxLinkCurves.Margin = new System.Windows.Forms.Padding(6);
 			this.checkBoxLinkCurves.Name = "checkBoxLinkCurves";
-			this.checkBoxLinkCurves.Size = new System.Drawing.Size(602, 21);
+			this.checkBoxLinkCurves.Size = new System.Drawing.Size(602, 17);
 			this.checkBoxLinkCurves.TabIndex = 4;
 			this.checkBoxLinkCurves.Text = "Maintain Library Link";
 			this.checkBoxLinkCurves.UseVisualStyleBackColor = true;
@@ -128,13 +128,14 @@
 			this.listViewCurves.Location = new System.Drawing.Point(0, 0);
 			this.listViewCurves.Margin = new System.Windows.Forms.Padding(6);
 			this.listViewCurves.Name = "listViewCurves";
-			this.listViewCurves.Size = new System.Drawing.Size(602, 371);
+			this.listViewCurves.Size = new System.Drawing.Size(602, 375);
 			this.listViewCurves.TabIndex = 0;
 			this.listViewCurves.UseCompatibleStateImageBehavior = false;
 			this.listViewCurves.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewCurves_ItemDrag);
 			this.listViewCurves.SelectedIndexChanged += new System.EventHandler(this.listViewCurves_SelectedIndexChanged);
 			this.listViewCurves.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragDrop);
 			this.listViewCurves.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewCurves_DragEnter);
+			this.listViewCurves.DragLeave += new System.EventHandler(this.listViewCurves_DragLeave);
 			this.listViewCurves.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyDown);
 			this.listViewCurves.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewCurves_KeyUp);
 			this.listViewCurves.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCurves_MouseDoubleClick);
@@ -145,12 +146,12 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(602, 371);
+			this.panel1.Size = new System.Drawing.Size(602, 375);
 			this.panel1.TabIndex = 7;
 			// 
 			// Form_CurveLibrary
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(602, 419);

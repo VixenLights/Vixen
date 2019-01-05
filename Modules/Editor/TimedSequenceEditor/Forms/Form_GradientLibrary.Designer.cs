@@ -65,7 +65,7 @@
 			this.toolStripButtonEditGradient.Enabled = false;
 			this.toolStripButtonEditGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonEditGradient.Name = "toolStripButtonEditGradient";
-			this.toolStripButtonEditGradient.Size = new System.Drawing.Size(100, 24);
+			this.toolStripButtonEditGradient.Size = new System.Drawing.Size(79, 24);
 			this.toolStripButtonEditGradient.Text = "Edit Gradient";
 			this.toolStripButtonEditGradient.Click += new System.EventHandler(this.toolStripButtonEditGradient_Click);
 			// 
@@ -74,7 +74,7 @@
 			this.toolStripButtonNewGradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonNewGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonNewGradient.Name = "toolStripButtonNewGradient";
-			this.toolStripButtonNewGradient.Size = new System.Drawing.Size(104, 24);
+			this.toolStripButtonNewGradient.Size = new System.Drawing.Size(83, 24);
 			this.toolStripButtonNewGradient.Text = "New Gradient";
 			this.toolStripButtonNewGradient.Click += new System.EventHandler(this.toolStripButtonNewGradient_Click);
 			// 
@@ -84,7 +84,7 @@
 			this.toolStripButtonDeleteGradient.Enabled = false;
 			this.toolStripButtonDeleteGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonDeleteGradient.Name = "toolStripButtonDeleteGradient";
-			this.toolStripButtonDeleteGradient.Size = new System.Drawing.Size(118, 24);
+			this.toolStripButtonDeleteGradient.Size = new System.Drawing.Size(92, 24);
 			this.toolStripButtonDeleteGradient.Text = "Delete Gradient";
 			this.toolStripButtonDeleteGradient.Click += new System.EventHandler(this.toolStripButtonDeleteGradient_Click);
 			// 
@@ -93,7 +93,7 @@
 			this.toolStripButtonExportGradients.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonExportGradients.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonExportGradients.Name = "toolStripButtonExportGradients";
-			this.toolStripButtonExportGradients.Size = new System.Drawing.Size(56, 24);
+			this.toolStripButtonExportGradients.Size = new System.Drawing.Size(44, 24);
 			this.toolStripButtonExportGradients.Text = "Export";
 			this.toolStripButtonExportGradients.ToolTipText = "Export Gradient Library";
 			this.toolStripButtonExportGradients.Click += new System.EventHandler(this.toolStripButtonExportGradients_Click);
@@ -103,7 +103,7 @@
 			this.toolStripButtonImportGradients.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButtonImportGradients.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonImportGradients.Name = "toolStripButtonImportGradients";
-			this.toolStripButtonImportGradients.Size = new System.Drawing.Size(58, 24);
+			this.toolStripButtonImportGradients.Size = new System.Drawing.Size(47, 24);
 			this.toolStripButtonImportGradients.Text = "Import";
 			this.toolStripButtonImportGradients.ToolTipText = "Import Gradient Library";
 			this.toolStripButtonImportGradients.Click += new System.EventHandler(this.toolStripButtonImportGradients_Click);
@@ -113,10 +113,10 @@
 			this.checkBoxLinkGradients.AutoSize = true;
 			this.checkBoxLinkGradients.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.checkBoxLinkGradients.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.checkBoxLinkGradients.Location = new System.Drawing.Point(0, 398);
+			this.checkBoxLinkGradients.Location = new System.Drawing.Point(0, 402);
 			this.checkBoxLinkGradients.Margin = new System.Windows.Forms.Padding(6);
 			this.checkBoxLinkGradients.Name = "checkBoxLinkGradients";
-			this.checkBoxLinkGradients.Size = new System.Drawing.Size(602, 21);
+			this.checkBoxLinkGradients.Size = new System.Drawing.Size(602, 17);
 			this.checkBoxLinkGradients.TabIndex = 9;
 			this.checkBoxLinkGradients.Text = "Maintain Library Link";
 			this.checkBoxLinkGradients.UseVisualStyleBackColor = true;
@@ -129,13 +129,14 @@
 			this.listViewGradients.Location = new System.Drawing.Point(0, 0);
 			this.listViewGradients.Margin = new System.Windows.Forms.Padding(6);
 			this.listViewGradients.Name = "listViewGradients";
-			this.listViewGradients.Size = new System.Drawing.Size(602, 371);
+			this.listViewGradients.Size = new System.Drawing.Size(602, 375);
 			this.listViewGradients.TabIndex = 0;
 			this.listViewGradients.UseCompatibleStateImageBehavior = false;
 			this.listViewGradients.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listViewGradient_ItemDrag);
 			this.listViewGradients.SelectedIndexChanged += new System.EventHandler(this.listViewGradients_SelectedIndexChanged);
 			this.listViewGradients.DragDrop += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragDrop);
 			this.listViewGradients.DragEnter += new System.Windows.Forms.DragEventHandler(this.listViewGradients_DragEnter);
+			this.listViewGradients.DragLeave += new System.EventHandler(this.listViewGradients_DragLeave);
 			this.listViewGradients.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyDown);
 			this.listViewGradients.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listViewGradients_KeyUp);
 			this.listViewGradients.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewGradients_MouseDoubleClick);
@@ -146,12 +147,12 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 27);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(602, 371);
+			this.panel1.Size = new System.Drawing.Size(602, 375);
 			this.panel1.TabIndex = 11;
 			// 
 			// Form_GradientLibrary
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.ClientSize = new System.Drawing.Size(602, 419);

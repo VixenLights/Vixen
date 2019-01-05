@@ -65,11 +65,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private short _sideGap;
-
-		private bool ShiftPressed
-		{
-			get { return ModifierKeys.HasFlag(Keys.Shift); }
-		}
 		
 		#endregion
 
@@ -303,33 +298,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewColors_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (ShiftPressed)
-			{
-				listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
-			}
-			else
-			{
-				//StartColorDrag(this, e);
-				listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
-			}
-			ImageSetup();
-			PopulateColors();
+			listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
+		}
+		private void listViewColors_DragLeave(object sender, EventArgs e)
+		{
+			if (listViewColors.SelectedItems.Count == 0) return;
+			listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
+		}
 
+		private void listViewColors_DragEnter(object sender, DragEventArgs e)
+		{
+			_dragX = e.X;
+			_dragY = e.Y;
+
+			if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
+			{
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
+			if (e.Data.GetDataPresent(typeof(Color)))
+			{
+				e.Effect = DragDropEffects.Copy;
+				return;
+			}
+			e.Effect = DragDropEffects.None;
 		}
 
 		private void listViewColors_DragDrop(object sender, DragEventArgs e)
 		{
 			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
+				Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
+				ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
 				if (e.Effect == DragDropEffects.Copy)
 				{
 					Color c = (Color) e.Data.GetData(typeof (Color));
 					ListViewItem item = CreateColorListItem(c);
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem referenceItem = listViewColors.GetItemAt(p.X, p.Y);
-					if (referenceItem != null)
+					if (movetoNewPosition != null)
 					{
-						int index = referenceItem.Index;
+						int index = movetoNewPosition.Index;
 						listViewColors.Items.Insert(index, item);
 					}
 					else
@@ -343,39 +350,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
-					if (listViewColors.SelectedItems.Count == 0)
-						return;
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
-					if (movetoNewPosition == null) return;
-					ListViewItem dropToNewPosition =
-						(e.Data.GetData(typeof (ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-					ListViewItem cloneToNew = (ListViewItem) dropToNewPosition.Clone();
-					int index = movetoNewPosition.Index;
-					listViewColors.Items.Remove(dropToNewPosition);
-					listViewColors.Items.Insert(index, cloneToNew);
+					List<ListViewItem> listViewItems = listViewColors.SelectedItems.Cast<ListViewItem>().ToList();
+					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index < movetoNewPosition.Index) listViewItems.Reverse();
+					int index = movetoNewPosition?.Index ?? listViewColors.Items.Count - 1;
+					for (int i = listViewColors.SelectedItems.Count - 1; i >= 0; i--)
+					{
+						ListViewItem cloneToNew = (ListViewItem)listViewItems[i].Clone();
+						listViewColors.Items.Remove(listViewItems[i]);
+						listViewColors.Items.Insert(index, cloneToNew);
+					}
+
 					Update_ColorOrder();
 				}
+				ImageSetup();
+				PopulateColors();
 			}
-		}
-
-		private void listViewColors_DragEnter(object sender, DragEventArgs e)
-		{
-			_dragX = e.X;
-			_dragY = e.Y;
-
-			if (e.Data.GetDataPresent(typeof(ListView.SelectedListViewItemCollection)))
-			{
-				e.Effect = DragDropEffects.Move;
-				return;
-			}
-			if (e.Data.GetDataPresent(typeof (Color)))
-			{
-				e.Effect = DragDropEffects.Copy;
-				return;
-			}
-			e.Effect = DragDropEffects.None;
-			
 		}
 
 		#endregion

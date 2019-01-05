@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -16,6 +17,7 @@ using Vixen.Services;
 using Vixen.Module.App;
 using WeifenLuo.WinFormsUI.Docking;
 using System.Runtime.InteropServices;
+using Catel.Linq;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Resources;
@@ -70,13 +72,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private bool _scaleText;
-		private short _sideGap;
-		private short _topGap;
-
-		private bool ShiftPressed
-		{
-			get { return ModifierKeys.HasFlag(Keys.Shift); }
-		}
 
 		#endregion
 
@@ -129,10 +124,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var t = (int)Math.Round(48 * _curveLibraryImageScale * ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t, t);
 			_newFontSize = new Font(Font.FontFamily.Name, (int)(7 * _curveLibraryTextScale), Font.Style);
-			_sideGap = (short)(_imageSize.Width + (5 * ScalingTools.GetScaleFactor()));
-			_topGap = (short)(_imageSize.Height + 5 + ScalingTools.MeasureHeight(_newFontSize, "Test") * 2);
+			short sideGap = (short)(_imageSize.Width + (5 * ScalingTools.GetScaleFactor()));
+			short topGap = (short)(_imageSize.Height + 5 + ScalingTools.MeasureHeight(_newFontSize, "Test") * 2);
 
-			ListViewItem_SetSpacing(listViewCurves, _sideGap, _topGap);
+			ListViewItem_SetSpacing(listViewCurves, sideGap, topGap);
 		}
 
 		private void ColorPalette_Load(object sender, EventArgs e)
@@ -203,7 +198,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			AddCurveToLibrary(new Curve());
 		}
 
-		private void AddCurveToLibrary(Curve c, bool edit=true)
+		private bool AddCurveToLibrary(Curve c, bool edit=true)
 		{
 			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
 
@@ -228,14 +223,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						_curveLibrary.AddCurve(dialog.Response, c);
 						if (edit)
 						{
-							_curveLibrary.EditLibraryCurve(dialog.Response);	
+							_curveLibrary.EditLibraryCurve(dialog.Response);
 						}
-						break;
+						return false;
 					}
 
 					if (messageBox.DialogResult == DialogResult.Cancel)
 					{
-						break;
+						return true;
 					}
 				}
 				else
@@ -245,10 +240,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						_curveLibrary.EditLibraryCurve(dialog.Response);	
 					}
-					
-					break;
+
+					return false;
 				}
 			}
+			return true;
 		}
 
 		private void toolStripButtonDeleteCurve_Click(object sender, EventArgs e)
@@ -294,24 +290,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewCurves_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (ShiftPressed)
-			{
-				listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0], DragDropEffects.Move);
-			}
-			else
-			{
-				//StartCurveDrag(this, e);
-				Curve newCurve = new Curve((Curve) listViewCurves.SelectedItems[0].Tag);
-				if (LinkCurves)
-				{
-					newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
-				}
+			listViewCurves.DoDragDrop(listViewCurves.SelectedItems[0], DragDropEffects.Move);
+		}
 
-				newCurve.IsCurrentLibraryCurve = false;
-				listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
-			}
-			ImageSetup();
-			Populate_Curves();
+		private void listViewCurves_DragLeave(object sender, EventArgs e)
+		{
+			if (listViewCurves.SelectedItems.Count == 0) return;
+			Curve newCurve = new Curve((Curve) listViewCurves.SelectedItems[0].Tag);
+			if (LinkCurves) newCurve.LibraryReferenceName = listViewCurves.SelectedItems[0].Name;
+
+			newCurve.IsCurrentLibraryCurve = false;
+			listViewCurves.DoDragDrop(newCurve, DragDropEffects.Copy);
 		}
 
 		private void listViewCurves_DragEnter(object sender, DragEventArgs e)
@@ -341,31 +330,45 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
 			{
+				Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
+				ListViewItem movetoNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
 				if (e.Effect == DragDropEffects.Copy)
 				{
-					Curve c = (Curve) e.Data.GetData(typeof (Curve));
-					AddCurveToLibrary(c, false);
+					Curve c = (Curve) e.Data.GetData(typeof(Curve));
+					int index = movetoNewPosition?.Index ?? listViewCurves.Items.Count;
+					
+					if(AddCurveToLibrary(c, false)) return;
+					
+					Populate_Curves();
+
+					if (listViewCurves.Items.Count == _curveLibrary.Count())
+					{
+						ListViewItem cloneToNew =
+							(ListViewItem) listViewCurves.Items[listViewCurves.Items.Count - 1].Clone();
+						listViewCurves.Items.Remove(listViewCurves.Items[listViewCurves.Items.Count - 1]);
+						listViewCurves.Items.Insert(index, cloneToNew);
+					}
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
-					if (listViewCurves.SelectedItems.Count == 0)
-						return;
-					Point p = listViewCurves.PointToClient(new Point(e.X, e.Y));
-					ListViewItem movetoNewPosition = listViewCurves.GetItemAt(p.X, p.Y);
-					if (movetoNewPosition == null) return;
-					ListViewItem dropToNewPosition =
-						(e.Data.GetData(typeof(ListViewItem)) as ListViewItem);
-					ListViewItem cloneToNew = (ListViewItem)dropToNewPosition.Clone();
-					int index = movetoNewPosition.Index;
-					listViewCurves.Items.Remove(dropToNewPosition);
-					listViewCurves.Items.Insert(index, cloneToNew);
-
-					_curveLibrary.Library.Clear();
-					foreach (ListViewItem curve in listViewCurves.Items)
+					List<ListViewItem> listViewItems = listViewCurves.SelectedItems.Cast<ListViewItem>().ToList();
+					if (movetoNewPosition != null && listViewCurves.SelectedItems[0].Index < movetoNewPosition.Index) listViewItems.Reverse();
+					int index = movetoNewPosition?.Index ?? listViewCurves.Items.Count - 1;
+					for (int i = listViewCurves.SelectedItems.Count - 1; i >= 0; i--)
 					{
-						_curveLibrary.AddCurve(curve.Text, (Curve)curve.Tag);
+						ListViewItem cloneToNew = (ListViewItem)listViewItems[i].Clone();
+						listViewCurves.Items.Remove(listViewItems[i]);
+						listViewCurves.Items.Insert(index, cloneToNew);
 					}
 				}
+
+				_curveLibrary.Library.Clear();
+				foreach (ListViewItem curve in listViewCurves.Items)
+				{
+					_curveLibrary.AddCurve(curve.Text, (Curve)curve.Tag);
+				}
+				ImageSetup();
+				Populate_Curves();
 			}
 		}
 
