@@ -421,8 +421,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
 			}
 			var xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), _gradientLibraryTextScale.ToString());
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryImageScale", Name), _gradientLibraryImageScale.ToString());
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), _gradientLibraryTextScale.ToString(CultureInfo.InvariantCulture));
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryImageScale", Name), _gradientLibraryImageScale.ToString(CultureInfo.InvariantCulture));
 		}
 
 		protected override void OnMouseWheel(MouseEventArgs e)

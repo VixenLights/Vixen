@@ -421,8 +421,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
 			}
 			var xml = new XMLProfileSettings();
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryImageScale", Name), _curveLibraryImageScale.ToString());
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryTextScale", Name), _curveLibraryTextScale.ToString());
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryImageScale", Name), _curveLibraryImageScale.ToString(CultureInfo.InvariantCulture));
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryTextScale", Name), _curveLibraryTextScale.ToString(CultureInfo.InvariantCulture));
 
 		}
 
