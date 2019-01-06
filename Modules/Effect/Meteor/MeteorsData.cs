@@ -42,7 +42,6 @@ namespace VixenModules.Effect.Meteors
 			XSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			YSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
 			MeteorMovement = MeteorMovement.None;
-			MeteorSpeedMovement = false;
 			WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 33.0, 66.0, 100.0 }, new[] { 30.0, 70.0, 30.0, 70.0 }));
 			WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 		}
@@ -142,9 +141,6 @@ namespace VixenModules.Effect.Meteors
 		
 		[DataMember]
 		public MeteorMovement MeteorMovement { get; set; }
-
-		[DataMember]
-		public bool MeteorSpeedMovement { get; set; }
 
 		[DataMember]
 		public Curve WobbleCurve { get; set; }
@@ -258,7 +254,6 @@ namespace VixenModules.Effect.Meteors
 				XSpeedVariationCurve = new Curve(XSpeedVariationCurve),
 				YSpeedVariationCurve = new Curve(YSpeedVariationCurve),
 				MeteorMovement = MeteorMovement,
-				MeteorSpeedMovement = MeteorSpeedMovement,
 				WobbleVariationCurve = new Curve(WobbleVariationCurve),
 				WobbleCurve = new Curve(WobbleCurve)
 			};

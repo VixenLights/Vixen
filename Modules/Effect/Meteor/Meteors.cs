@@ -302,23 +302,6 @@ namespace VixenModules.Effect.Meteors
 			}
 		}
 
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"MovementSpeed")]
-		[ProviderDescription(@"MovementSpeed")]
-		[PropertyOrder(16)]
-		public bool MeteorSpeedMovement
-		{
-			get { return _data.MeteorSpeedMovement; }
-			set
-			{
-				_data.MeteorSpeedMovement = value;
-				IsDirty = true;
-				UpdateDirectionAttribute();
-				OnPropertyChanged();
-			}
-		}
-
 		#endregion
 
 		#region Movement
@@ -553,16 +536,19 @@ namespace VixenModules.Effect.Meteors
 			propertyStates.Add("FlipDirection", MeteorPerString);
 			propertyStates.Add("CountPerString", MeteorPerString);
 			propertyStates.Add("WobbleCurve", MeteorMovement >= MeteorMovement.Wobble);
-			propertyStates.Add("WobbleVariationCurve",MeteorMovement >= MeteorMovement.Wobble);
-			propertyStates.Add("XCenterSpeedCurve", MeteorSpeedMovement);
-			propertyStates.Add("YCenterSpeedCurve", MeteorSpeedMovement);
-			propertyStates.Add("XSpeedVariationCurve", MeteorSpeedMovement);
-			propertyStates.Add("YSpeedVariationCurve", MeteorSpeedMovement);
+			propertyStates.Add("WobbleVariationCurve", MeteorMovement >= MeteorMovement.Wobble);
+			propertyStates.Add("XCenterSpeedCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("YCenterSpeedCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("XSpeedVariationCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("YSpeedVariationCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("EnableGroundLevel", MeteorMovement == MeteorMovement.None);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
 			}
+
+			if (MeteorMovement != MeteorMovement.None) EnableGroundLevel = false;
 		}
 
 		private void UpdateGroundLevelAttribute(bool refresh = true)
@@ -668,48 +654,56 @@ namespace VixenModules.Effect.Meteors
 			int maxWobble = 1;
 			double wobbleRatio = 1;
 
-			if (MeteorSpeedMovement)
+			switch (MeteorMovement)
 			{
-				// Horizontal Speed Control
-				double xCenterSpeed = CalculateXCenterSpeed(intervalPosFactor);
-				double xSpreadSpeed = CalculateXSpeedVariation(intervalPosFactor);
-				minXSpeed = xCenterSpeed - (xSpreadSpeed / 2);
-				maxXSpeed = xCenterSpeed + (xSpreadSpeed / 2);
-				if (minXSpeed < -100) minXSpeed = -100;
-				if (maxXSpeed > 100) maxXSpeed = 100;
-				if (xCenterSpeed != 0)
+				case MeteorMovement.Speed:
 				{
-					if (frame != 0) xSpeedRatio = xCenterSpeed / _xSpeedAdjustment;
-					_xSpeedAdjustment = xCenterSpeed;
+					// Horizontal Speed Control
+					double xCenterSpeed = CalculateXCenterSpeed(intervalPosFactor);
+					double xSpreadSpeed = CalculateXSpeedVariation(intervalPosFactor);
+					minXSpeed = xCenterSpeed - (xSpreadSpeed / 2);
+					maxXSpeed = xCenterSpeed + (xSpreadSpeed / 2);
+					if (minXSpeed < -100) minXSpeed = -100;
+					if (maxXSpeed > 100) maxXSpeed = 100;
+					if (xCenterSpeed != 0)
+					{
+						if (frame != 0) xSpeedRatio = xCenterSpeed / _xSpeedAdjustment;
+						_xSpeedAdjustment = xCenterSpeed;
+					}
+
+					// Vertical Speed Control
+					double yCenterSpeed = CalculateYCenterSpeed(intervalPosFactor);
+					double ySpreadSpeed = CalculateYSpeedVariation(intervalPosFactor);
+					minYSpeed = yCenterSpeed - (ySpreadSpeed / 2);
+					maxYSpeed = yCenterSpeed + (ySpreadSpeed / 2);
+					if (minYSpeed < -100) minYSpeed = -100;
+					if (maxYSpeed > 100) maxYSpeed = 100;
+					if (yCenterSpeed != 0)
+					{
+						if (frame != 0) ySpeedRatio = yCenterSpeed / _ySpeedAdjustment;
+						_ySpeedAdjustment = yCenterSpeed;
+					}
+
+					break;
 				}
 
-				// Vertical Speed Control
-				double yCenterSpeed = CalculateYCenterSpeed(intervalPosFactor);
-				double ySpreadSpeed = CalculateYSpeedVariation(intervalPosFactor);
-				minYSpeed = yCenterSpeed - (ySpreadSpeed / 2);
-				maxYSpeed = yCenterSpeed + (ySpreadSpeed / 2);
-				if (minYSpeed < -100) minYSpeed = -100;
-				if (maxYSpeed > 100) maxYSpeed = 100;
-				if (yCenterSpeed != 0)
-				{
-					if (frame != 0) ySpeedRatio = yCenterSpeed / _ySpeedAdjustment;
-					_ySpeedAdjustment = yCenterSpeed;
-				}
-			}
+				// Wobble Control
+				case MeteorMovement.Wobble:
+				case MeteorMovement.Wobble2:
+					{
+					double wobbleCenterPosition = CalculateWobbleCenter(intervalPosFactor);
+					double wobbleSpreadPosition = CalculateWobbleVariation(intervalPosFactor);
+					minWobble = (int) (wobbleCenterPosition - (wobbleSpreadPosition / 2));
+					maxWobble = (int) (wobbleCenterPosition + (wobbleSpreadPosition / 2));
+					if (minWobble < -_maxBufferSize) minWobble = -_maxBufferSize;
+					if (maxWobble > _maxBufferSize) maxWobble = _maxBufferSize;
+					if (wobbleCenterPosition != 0)
+					{
+						if (frame != 0) wobbleRatio = wobbleCenterPosition / _wobbleAdjustment;
+						_wobbleAdjustment = (int) wobbleCenterPosition;
+					}
 
-			// Wobble Control
-			if (MeteorMovement >= MeteorMovement.Wobble)
-			{
-				double wobbleCenterPosition = CalculateWobbleCenter(intervalPosFactor);
-				double wobbleSpreadPosition = CalculateWobbleVariation(intervalPosFactor);
-				minWobble = (int) (wobbleCenterPosition - (wobbleSpreadPosition / 2));
-				maxWobble = (int) (wobbleCenterPosition + (wobbleSpreadPosition / 2));
-				if (minWobble < -_maxBufferSize) minWobble = -_maxBufferSize;
-				if (maxWobble > _maxBufferSize) maxWobble = _maxBufferSize;
-				if (wobbleCenterPosition != 0)
-				{
-					if (frame != 0) wobbleRatio = wobbleCenterPosition / _wobbleAdjustment;
-					_wobbleAdjustment = (int) wobbleCenterPosition;
+					break;
 				}
 			}
 
@@ -904,7 +898,7 @@ namespace VixenModules.Effect.Meteors
 					m.DeltaXOrig = m.DeltaX;
 					m.DeltaYOrig = m.DeltaY;
 
-					if (MeteorSpeedMovement)
+					if (MeteorMovement == MeteorMovement.Speed)
 					{
 						m.XSpeed = (RandDouble() * ((maxXSpeed) - minXSpeed) + minXSpeed);
 						m.YSpeed = (RandDouble() * ((maxYSpeed) - minYSpeed) + minYSpeed);
@@ -1049,6 +1043,7 @@ namespace VixenModules.Effect.Meteors
 
 				switch (MeteorMovement)
 				{
+					case MeteorMovement.Speed when meteor.Expired:
 					case MeteorMovement.Wobble when meteor.Expired:
 					case MeteorMovement.Wobble2 when meteor.Expired:
 					case MeteorMovement.Wrap when meteor.Expired:

@@ -10,6 +10,8 @@ namespace VixenModules.Effect.Meteors
 		Bounce,
 		[Description("Wrap")]
 		Wrap,
+		[Description("Speed")]
+		Speed,
 		[Description("Wobble")]
 		Wobble,
 		[Description("Wobble Both Directions")]
