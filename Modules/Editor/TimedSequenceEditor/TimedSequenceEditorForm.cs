@@ -12,16 +12,12 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Xml;
 using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
-using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -51,7 +47,6 @@ using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Marks;
 using VixenModules.Editor.EffectEditor;
-using VixenModules.Editor.TimedSequenceEditor.Forms;
 using VixenModules.Editor.TimedSequenceEditor.Undo;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
@@ -64,9 +59,9 @@ using ListViewItem = System.Windows.Forms.ListViewItem;
 using MarkCollection = VixenModules.App.Marks.MarkCollection;
 using Cursor = System.Windows.Forms.Cursor;
 using Cursors = System.Windows.Forms.Cursors;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 using PropertyDescriptor = System.ComponentModel.PropertyDescriptor;
+using Size = System.Drawing.Size;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -156,6 +151,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		//TODO Fix that stickyness so this can go away
 		private List<EffectNode> _removedNodes = new List<EffectNode>();
 
+		private int _iconSize;
+		private int _toolStripImageSize;
+		//SortedDictionary<int, string> _toolStripOperationsItemPosition = new SortedDictionary<int, string>();
+		List<ToolStripItem> _toolStripItems = new List<ToolStripItem>();
+
 		#endregion
 
 		#region Constructor / Initialization
@@ -167,9 +167,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			menuStrip.Renderer = new ThemeToolStripRenderer();
 			toolStripOperations.Renderer = new ThemeToolStripRenderer();
 			toolStripEffects.Renderer = new ThemeToolStripRenderer();
+			toolStripCustom.Renderer = new ThemeToolStripRenderer();
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripOperations.Renderer = new ThemeToolStripRenderer();
+			contextMenuStripCustom.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
 			statusStrip.Renderer = new ThemeToolStripRenderer();
@@ -183,8 +185,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dockPanel.Theme = theme;
 
 			Icon = Resources.Icon_Vixen3;
-			int iconSize = (int) (24*_scaleFactor);
-			toolStripOperations.ImageScalingSize = new Size(iconSize, iconSize);
+			_iconSize = (int) (28*_scaleFactor);
+			toolStripOperations.ImageScalingSize = new Size(_iconSize, _iconSize);
+			_toolStripImageSize = (int)(16 * _scaleFactor);
+			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripCustom.ImageScalingSize = new Size(_iconSize, _iconSize);
 			toolStripButton_Save.Image = Resources.Save;
 			toolStripButton_Save.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_SaveAs.Image = Resources.SaveAs;
@@ -244,6 +249,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripDropDownButton_AlignTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripDropDownButton_AlignTo.ShowDropDownArrow = false;
 
+			customToolStripButton_Start.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			customToolStripButton_Start.Image = Resources.alignStartMark;
+			customToolStripButton_End.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			customToolStripButton_End.Image = Resources.alignEndMark;
+			customToolStripButton_Both.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			customToolStripButton_Both.Image = Resources.alignBothMark;
+			customToolStripButton_Distribute.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			customToolStripButton_Distribute.Image = Resources.distribute;
+
+
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
@@ -276,6 +291,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			deviceToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			add_RemoveOperationsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			add_RemoveCustomToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
@@ -389,8 +405,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
 
+			// Custom Toolstrip settings
+			customToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CustomToolStrip/CustomToolStrip", Name), false);
+			
 			// Effect Toolstrip settings
 			effectToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name), false);
+
+			// Effect Toolstrip Label settings
 			string effectLabelPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectLabelIndex", Name), "2");
 			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
 			{
@@ -405,34 +426,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name), true));
 			deviceToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name), true));
 
-			// Populate Effect Toolstrip context menu
-			PopulateEffectGroupToolStrip();
-			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			InitializeToolBars();
+
+			// Set layout for all Toolbar. 
+			SuspendLayout();
+			for (int i = 0; i < 3; i++)
 			{
-				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
+				int toolStripLocationX = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripX{1}", Name, i), 0);
+				int toolStripLocationY = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripY{1}", Name, i), 0);
+				string toolStripName = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripName{1}", Name, i), "");
+
+				switch (toolStripName)
 				{
-					groupDropDownItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/{1}/{2}", Name, dropDownItem.Text, groupDropDownItem.Text.Replace(" ", "")), true));
+					case "toolStripEffects":
+						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
+					case "toolStripOperations":
+						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
+					case "toolStripCustom":
+						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
 				}
 			}
-
-			//Set scale size and populate Effect ToolStrip
-			int imageSize = (int)(20 * _scaleFactor);
-			toolStripEffects.ImageScalingSize = new Size(imageSize, imageSize);
-
-			PopulateToolStripEffects();
-
-			// Show/Hide Operations toolstrip items based on saved settings.
-			if (!xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/InitialLoad", Name), true))
-			{
-				foreach (ToolStripItem item in toolStripOperations.Items)
-				{
-					if (item.Tag != null) item.Visible = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings,
-							string.Format("{0}/OperationsToolStrip/{1}", Name, item.Tag.ToString().Replace(" ", "")), true);
-				}
-			}
-
-			// Populate the Operations toolstrip contextMenu.
-			PopulateOperationsGroupToolStrip();
+			SetToolStripStartPosition();
+			ResumeLayout();
+			PerformLayout();
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -620,9 +642,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 #if DEBUG
-			ToolStripButton b = new ToolStripButton("[Debug Break]");
-			b.Click += b_Click;
-			toolStripOperations.Items.Add(b);
+//ToolStripButton b = new ToolStripButton("[Debug Break]");
+//b.Click += b_Click;
+//toolStripOperations.Items.Add(b);
 #endif
 		}
 
@@ -838,6 +860,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			deviceToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			add_RemoveOperationsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			add_RemoveCustomToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -2606,6 +2629,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			//}
 			bool startAtLastElement = false;
 			var totalElements = TimelineControl.SelectedElements.Count();
+			if (totalElements == 0) return;
 			var startTime = TimelineControl.SelectedElements.First().StartTime;
 			var endTime = TimelineControl.SelectedElements.Last().EndTime;
 			if (TimelineControl.SelectedElements.First().StartTime > TimelineControl.SelectedElements.Last().StartTime)
@@ -5213,9 +5237,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), TimelineControl.ruler.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/SplitterDistance", Name), TimelineControl.splitContainer.SplitterDistance);
 
+			// Save Toolbar layout.
+			int i = 0;
+			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
+			{
+				foreach (var toolsStrip in row.Controls)
+				{
+					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripName{1}", Name, i), toolsStrip.Name);
+					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripX{1}", Name, i), toolsStrip.Location.X);
+					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripY{1}", Name, i), toolsStrip.Location.Y);
+					i++;
+				}
+			}
+
+			// Custom Toolstrip settings
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CustomToolStrip/CustomToolStrip", Name),
+				customToolStripToolStripMenuItem.Checked);
+
 			// Effect Toolstrip settings
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name),
 				effectToolStripToolStripMenuItem.Checked);
+
+			// Effect Toolstrip Label settings
 			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
 			{
 				if (subItem.Checked)
@@ -5238,16 +5281,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					xml.PutSetting(XMLProfileSettings.SettingType.AppSettings,
 						string.Format("{0}/{1}/{2}", Name, dropDownItem.Text, groupDropDownItem.Text.Replace(" ", "")),
 						groupDropDownItem.Checked);
+					int ii = 0;
+					foreach (ToolStripItem item in toolStripEffects.Items)
+					{
+						if (item.Text == groupDropDownItem.Text)
+						{
+							xml.PutSetting(XMLProfileSettings.SettingType.AppSettings,
+								string.Format("{0}/{1}/{2}", Name, dropDownItem.Text, groupDropDownItem.Text.Replace(" ", "") + 1), ii);
+							break;
+						}
+						ii++;
+					}
 				}
 			}
 
-			// Save visibility status of the Operations Toolstrip items.
-			foreach (ToolStripItem item in toolStripOperations.Items)
-			{
-				if (item.Tag != null) xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/{1}", Name, item.Tag.ToString().Replace(" ", "")), item.Visible);
-			}
-			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OperationsToolStrip/InitialLoad", Name), false);
-			
+			Save_ToolsStripItemsFile();
+
 			//This .Close is here because we need to save some of the settings from the form before it is closed.
 			ColorLibraryForm.Close();
 			GradientLibraryForm.Close();
