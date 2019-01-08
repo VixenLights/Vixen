@@ -6,12 +6,16 @@ using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Vixen.Cache.Sequence;
 using Vixen.Commands;
 using Vixen.Data.Flow;
+using Vixen.Export.FPP;
 using Vixen.Module.Controller;
 using Vixen.Sys;
 using Vixen.Sys.Output;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Vixen.Export
 {
@@ -170,7 +174,65 @@ namespace Vixen.Export
             return true;
         }
 
-		public async Task WriteUniverseFile(string fileName)
+	    public async Task Write2xUniverseFile(string fileName)
+	    {
+		    var fppStartChannel = 1;
+			FppOutputConfiguration config = new FppOutputConfiguration();
+			ChannelOutputs channelOutputs = new ChannelOutputs();
+			config.ChannelOutputs.Add(channelOutputs);
+		    foreach (var controller in ControllerExportInfo.Where(x => x.IsActive).OrderBy(x => x.Index))
+		    {
+			    if (controller.HasNetworkSupport)
+			    {
+				    var universes = controller.ControllerNetworkConfiguration.Universes;
+					foreach (var uc in universes)
+				    {
+						Universe u = new Universe();
+						channelOutputs.Universes.Add(u);
+					    string ip = string.Empty;
+					    if (!uc.IsMultiCast)
+					    {
+						    //Validate ip address
+						    ip = uc.IpAddress?.Address.ToString();
+						    if (ip == null)
+						    {
+							    ip = string.Empty;
+						    }
+
+						    u.Address = ip;
+					    }
+
+					    u.Description = controller.Name;
+					    u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
+					    u.Active = uc.Active;
+					    u.ChannelCount = uc.Size;
+					    u.StartChannel = fppStartChannel;
+					    u.UniverseId = uc.Universe;
+						fppStartChannel = fppStartChannel + uc.Size;
+				    }
+			    }
+			    else
+			    {
+				    fppStartChannel = fppStartChannel + controller.Channels;
+			    }
+		    }
+
+		    using (var writer = new StreamWriter(fileName))
+		    {
+			    DefaultContractResolver contractResolver = new DefaultContractResolver
+			    {
+				    NamingStrategy = new CamelCaseNamingStrategy()
+			    };
+				var s = JsonConvert.SerializeObject(config, Formatting.Indented, new JsonSerializerSettings
+				{
+					ContractResolver = contractResolver
+				});
+			    await writer.WriteAsync(s);
+				await writer.FlushAsync();
+			}
+	    }
+
+	    public async Task WriteUniverseFile(string fileName)
 	    {
 		    using (var writer = new StreamWriter(fileName))
 		    {

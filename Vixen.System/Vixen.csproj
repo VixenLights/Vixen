@@ -77,6 +77,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
       <Private>False</Private>
@@ -203,6 +207,13 @@
     <Compile Include="Export\ExportCommandHandler.cs" />
     <Compile Include="Export\ESEQWriter.cs" />
     <Compile Include="Export\ExportProgressStatus.cs" />
+    <Compile Include="Export\FPP\BoolConverter.cs" />
+    <Compile Include="Export\FPP\ChannelOutputs.cs" />
+    <Compile Include="Export\FPP\ConfigWriter.cs" />
+    <Compile Include="Export\FPP\FppOutputConfiguration.cs" />
+    <Compile Include="Export\FPP\OutputTypes.cs" />
+    <Compile Include="Export\FPP\Universe.cs" />
+    <Compile Include="Export\FPP\UniverseTypes.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
     <Compile Include="Export\Vir2Writer.cs" />

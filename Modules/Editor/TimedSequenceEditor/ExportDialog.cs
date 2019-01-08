@@ -165,8 +165,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		        var fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
 			                        Path.DirectorySeparatorChar +
 			                        Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
-			                        "_universe.txt";
-			    await _exportOps.WriteUniverseFile(fileName);
+			                        "-co-universes.json";
+			    await _exportOps.Write2xUniverseFile(fileName);
 			}
 	        else
 	        {
