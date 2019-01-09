@@ -41,6 +41,11 @@
             Renders the <see cref="T:Svg.SvgElement"/> and contents to the specified <see cref="T:System.Drawing.Graphics"/> object.
             </summary>
         </member>
+        <member name="T:Svg.SvgPathBasedElement">
+            <summary>
+            Represents an element that is using a GraphicsPath as rendering base.
+            </summary>
+        </member>
         <member name="T:Svg.SvgVisualElement">
             <summary>
             The class that all SVG elements should derive from when they are to be rendered.
@@ -84,7 +89,7 @@
         </member>
         <member name="M:Svg.SvgVisualElement.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="!:SvgGraphicsElement"/> class.
+            Initializes a new instance of the <see cref="T:Svg.SvgVisualElement"/> class.
             </summary>
         </member>
         <member name="M:Svg.SvgVisualElement.Render(Svg.ISvgRenderer)">
@@ -156,12 +161,6 @@
             </summary>
             <value>The center.</value>
         </member>
-        <member name="P:Svg.SvgCircle.Bounds">
-            <summary>
-            Gets the bounds of the circle.
-            </summary>
-            <value>The rectangular bounds of the circle.</value>
-        </member>
         <member name="M:Svg.SvgCircle.Path(Svg.ISvgRenderer)">
             <summary>
             Gets the <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> representing this element.
@@ -169,9 +168,9 @@
         </member>
         <member name="M:Svg.SvgCircle.Render(Svg.ISvgRenderer)">
             <summary>
-            Renders the circle to the specified <see cref="T:System.Drawing.Graphics"/> object.
+            Renders the circle using the specified <see cref="T:Svg.ISvgRenderer"/> object.
             </summary>
-            <param name="graphics">The graphics object.</param>
+            <param name="renderer">The renderer object.</param>
         </member>
         <member name="M:Svg.SvgCircle.#ctor">
             <summary>
@@ -183,12 +182,6 @@
             Represents and SVG ellipse element.
             </summary>
         </member>
-        <member name="P:Svg.SvgEllipse.Bounds">
-            <summary>
-            Gets the bounds of the element.
-            </summary>
-            <value>The bounds.</value>
-        </member>
         <member name="M:Svg.SvgEllipse.Path(Svg.ISvgRenderer)">
             <summary>
             Gets the <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> for this element.
@@ -197,9 +190,9 @@
         </member>
         <member name="M:Svg.SvgEllipse.Render(Svg.ISvgRenderer)">
             <summary>
-            Renders the <see cref="T:Svg.SvgElement"/> and contents to the specified <see cref="T:System.Drawing.Graphics"/> object.
+            Renders the <see cref="T:Svg.SvgElement"/> and contents using the specified <see cref="T:Svg.ISvgRenderer"/> object.
             </summary>
-            <param name="graphics">The <see cref="T:System.Drawing.Graphics"/> object to render to.</param>
+            <param name="renderer">The <see cref="T:Svg.ISvgRenderer"/> object used for rendering.</param>
         </member>
         <member name="M:Svg.SvgEllipse.#ctor">
             <summary>
@@ -361,13 +354,13 @@
             <summary>
             
             </summary>
-            <param name="region"></param>
+            <param name="path"></param>
             <param name="element"></param>
         </member>
         <member name="M:Svg.SvgClipPath.AddElement(Svg.SvgElement,System.Int32)">
             <summary>
             Called by the underlying <see cref="T:Svg.SvgElement"/> when an element has been added to the
-            <see cref="!:Children"/> collection.
+            'Children' collection.
             </summary>
             <param name="child">The <see cref="T:Svg.SvgElement"/> that has been added.</param>
             <param name="index">An <see cref="T:System.Int32"/> representing the index where the element was added to the collection.</param>
@@ -387,7 +380,7 @@
         </member>
         <member name="T:Svg.SvgPointCollection">
             <summary>
-            Represents a list of <see cref="!:SvgUnits"/> used with the <see cref="T:Svg.SvgPolyline"/> and <see cref="T:Svg.SvgPolygon"/>.
+            Represents a list of <see cref="T:Svg.SvgUnit"/> used with the <see cref="T:Svg.SvgPolyline"/> and <see cref="T:Svg.SvgPolygon"/>.
             </summary>
         </member>
         <member name="T:Svg.SvgPointCollectionConverter">
@@ -406,6 +399,24 @@
             An <see cref="T:System.Object"/> that represents the converted value.
             </returns>
             <exception cref="T:System.NotSupportedException">The conversion cannot be performed. </exception>
+        </member>
+        <member name="T:Svg.SvgTextTransformation">
+            <summary>This property describes transformations that are added to the text of an element.</summary>
+        </member>
+        <member name="F:Svg.SvgTextTransformation.Inherit">
+            <summary>The value is inherited from the parent element.</summary>
+        </member>
+        <member name="F:Svg.SvgTextTransformation.None">
+            <summary>The text is not transformed.</summary>
+        </member>
+        <member name="F:Svg.SvgTextTransformation.Capitalize">
+            <summary>First letter of each word of the text is converted to uppercase.</summary>
+        </member>
+        <member name="F:Svg.SvgTextTransformation.Uppercase">
+            <summary>The text is converted to uppercase.</summary>
+        </member>
+        <member name="F:Svg.SvgTextTransformation.Lowercase">
+            <summary>The text is converted to lowercase.</summary>
         </member>
         <member name="T:Svg.SvgTextDecoration">
             <summary>This property describes decorations that are added to the text of an element. Conforming SVG Viewers are not required to support the blink value.</summary>
@@ -478,7 +489,7 @@
         </member>
         <member name="M:Svg.Document_Structure.SvgSymbol.Path(Svg.ISvgRenderer)">
             <summary>
-            Gets the <see cref="!:GraphicsPath"/> for this element.
+            Gets the <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> for this element.
             </summary>
             <value></value>
         </member>
@@ -506,7 +517,13 @@
             Note: this is not used in calculations to bitmap - used only to allow for svg xml output
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:Svg.FilterEffects.SvgColourMatrix.Values" -->
+        <member name="P:Svg.FilterEffects.SvgColourMatrix.Values">
+            <summary>
+            list of numbers
+            The contents of ‘values’ depends on the value of attribute ‘type’: 
+            Note: this is not used in calculations to bitmap - used only to allow for svg xml output
+            </summary>
+        </member>
         <member name="T:Svg.FilterEffects.SvgOffset">
             <summary>
             Note: this is not used in calculations to bitmap - used only to allow for svg xml output
@@ -586,7 +603,15 @@
             A wrapper for a paint server has a fallback if the primary server doesn't work.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Svg.SvgShapeRendering" -->
+        <member name="T:Svg.SvgShapeRendering">
+            <summary>
+            The creator of SVG content might want to provide a hint about what tradeoffs to make as the browser renders 'path' element or basic shapes. The shape-rendering attribute provides these hints.
+            </summary>
+            <references>https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering</references>
+            <remarks>
+            Default is <see cref="F:Svg.SvgShapeRendering.Inherit"/>. That means the value comes from the parent element. If parents are also not set, then the value is <see cref="F:Svg.SvgShapeRendering.Auto"/>.
+            </remarks>
+        </member>
         <member name="F:Svg.SvgShapeRendering.Inherit">
             <summary>
             Indicates that the SVG shape rendering properties from the parent will be used.
@@ -683,11 +708,16 @@
         </member>
         <member name="P:Svg.SvgElement.IsPathDirty">
             <summary>
-            Gets or sets a value indicating whether this element's <see cref="!:Path"/> is dirty.
+            Gets or sets a value indicating whether this element's 'Path' is dirty.
             </summary>
             <value>
             	<c>true</c> if the path is dirty; otherwise, <c>false</c>.
             </value>
+        </member>
+        <member name="M:Svg.SvgElement.InvalidateChildPaths">
+            <summary>
+            Force recreation of the paths for the element and it's children.
+            </summary>
         </member>
         <member name="P:Svg.SvgElement.Fill">
             <summary>
@@ -730,6 +760,16 @@
             Refers to the AnitAlias rendering of shapes.
             </summary>
         </member>
+        <member name="P:Svg.SvgElement.TextAnchor">
+            <summary>
+            Gets or sets the text anchor.
+            </summary>
+        </member>
+        <member name="P:Svg.SvgElement.BaselineShift">
+            <summary>
+            Specifies dominant-baseline positioning of text.
+            </summary>
+        </member>
         <member name="P:Svg.SvgElement.FontFamily">
             <summary>
             Indicates which font family is to be used to render the text.
@@ -758,6 +798,11 @@
         <member name="P:Svg.SvgElement.FontWeight">
             <summary>
             Refers to the boldness of the font.
+            </summary>
+        </member>
+        <member name="P:Svg.SvgElement.TextTransformation">
+            <summary>
+            Refers to the text transformation.
             </summary>
         </member>
         <member name="P:Svg.SvgElement.Font">
@@ -798,7 +843,7 @@
         </member>
         <member name="P:Svg.SvgElement.Children">
             <summary>
-            Gets a collection of all child <see cref="!:SvgElements"/>.
+            Gets a collection of all child <see cref="T:Svg.SvgElement"/> objects.
             </summary>
         </member>
         <member name="M:Svg.SvgElement.HasChildren">
@@ -865,9 +910,9 @@
         </member>
         <member name="P:Svg.SvgElement.SpaceHandling">
             <summary>
-            Gets or sets the text anchor.
+            Gets or sets the space handling.
             </summary>
-            <value>The text anchor.</value>
+            <value>The space handling.</value>
         </member>
         <member name="M:Svg.SvgElement.ForceUniqueID(System.String)">
             <summary>
@@ -952,7 +997,7 @@
             Recursive method to add up the paths of all children
             </summary>
             <param name="elem"></param>
-            <param name="path"></param>
+            <param name="renderer"></param>
         </member>
         <member name="M:Svg.SvgElement.Clone">
             <summary>
@@ -1157,7 +1202,23 @@
         <member name="F:Svg.SvgFontWeight.W900">
             <summary></summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Svg.SvgOverflow" -->
+        <member name="T:Svg.SvgOverflow">
+            <summary>The ‘overflow’ property applies to elements that establish new viewports (e.g., ‘svg’ elements), ‘pattern’ elements and ‘marker’ elements. For all other elements, the property has no effect (i.e., a clipping rectangle is not created).</summary>
+            <remarks>
+                <para>The ‘overflow’ property has the same parameter values and has the same meaning as defined in CSS2 ([CSS2], section 11.1.1); however, the following additional points apply:</para>
+                <para>The ‘overflow’ property applies to elements that establish new viewports (e.g., ‘svg’ elements), ‘pattern’ elements and ‘marker’ elements. For all other elements, the property has no effect (i.e., a clipping rectangle is not created).</para>
+                <para>For those elements to which the ‘overflow’ property can apply, if the ‘overflow’ property has the value hidden or scroll, the effect is that a new clipping path in the shape of a rectangle is created. The result is equivalent to defining a ‘clipPath’ element whose content is a ‘rect’ element which defines the equivalent rectangle, and then specifying the 'uri' of this ‘clipPath’ element on the ‘clip-path’ property for the given element.</para>
+                <para>If the ‘overflow’ property has a value other than hidden or scroll, the property has no effect (i.e., a clipping rectangle is not created).</para>
+                <para>Within SVG content, the value auto is equivalent to the value visible.</para>
+                <para>When an outermost svg element is embedded inline within a parent XML grammar which uses CSS layout ([CSS2], chapter 9) or XSL formatting [XSL], if the ‘overflow’ property has the value hidden or scroll, then the user agent will establish an initial clipping path equal to the bounds of the initial viewport; otherwise, the initial clipping path is set according to the clipping rules as defined in CSS2 ([CSS2], section 11.1.1).</para>
+                <para>When an outermost svg element is stand-alone or embedded inline within a parent XML grammar which does not use CSS layout or XSL formatting, the ‘overflow’ property on the outermost svg element is ignored for the purposes of visual rendering and the initial clipping path is set to the bounds of the initial viewport.</para>
+                <para>The initial value for ‘overflow’ as defined in [CSS2-overflow] is 'visible', and this applies also to the root ‘svg’ element; however, for child elements of an SVG document, SVG's user agent style sheet overrides this initial value and sets the ‘overflow’ property on elements that establish new viewports (e.g., ‘svg’ elements), ‘pattern’ elements and ‘marker’ elements to the value 'hidden'.</para>
+                <para>As a result of the above, the default behavior of SVG user agents is to establish a clipping path to the bounds of the initial viewport and to establish a new clipping path for each element which establishes a new viewport and each ‘pattern’ and ‘marker’ element.</para>
+            </remarks>
+        </member>
+        <member name="F:Svg.SvgOverflow.Hidden">
+            <summary>Overflow is not rendered.</summary>
+        </member>
         <member name="F:Svg.SvgOverflow.Inherit">
             <summary>The value is inherited from the parent element.</summary>
         </member>
@@ -1167,15 +1228,12 @@
         <member name="F:Svg.SvgOverflow.Visible">
             <summary>Overflow is rendered.</summary>
         </member>
-        <member name="F:Svg.SvgOverflow.Hidden">
-            <summary>Overflow is not rendered.</summary>
-        </member>
         <member name="F:Svg.SvgOverflow.Scroll">
             <summary>Overflow causes a scrollbar to appear (horizontal, vertical or both).</summary>
         </member>
         <member name="T:Svg.SvgUnitCollection">
             <summary>
-            Represents a list of <see cref="!:SvgUnits"/>.
+            Represents a list of <see cref="T:Svg.SvgUnit"/>.
             </summary>
         </member>
         <member name="T:Svg.SvgUnitCollectionConverter">
@@ -1323,6 +1381,7 @@
             </summary>
             <param name="pRenderer"></param>
             <param name="pOwner"></param>
+            <param name="pRefPoint"></param>
             <param name="pMarkerPoint1"></param>
             <param name="pMarkerPoint2"></param>
         </member>
@@ -1332,6 +1391,7 @@
             </summary>
             <param name="pRenderer"></param>
             <param name="pOwner"></param>
+            <param name="pRefPoint"></param>
             <param name="pMarkerPoint1"></param>
             <param name="pMarkerPoint2"></param>
             <param name="pMarkerPoint3"></param>
@@ -1349,7 +1409,6 @@
             <summary>
             Create a pen that can be used to render this marker
             </summary>
-            <param name="pStroke"></param>
             <returns></returns>
         </member>
         <member name="M:Svg.SvgMarker.GetClone(Svg.SvgVisualElement)">
@@ -1369,7 +1428,7 @@
             <summary>
             Adjust the given value to account for the height of the viewbox in the viewport
             </summary>
-            <param name="fWidth"></param>
+            <param name="fHeight"></param>
             <returns></returns>
         </member>
         <member name="T:Svg.SvgDefinitionList">
@@ -1482,6 +1541,13 @@
             </summary>
             <value>The bounds.</value>
         </member>
+        <member name="M:Svg.SvgUse.HasRecursiveReference">
+            <summary>
+            Checks for any direct or indirect recursions in referenced elements, 
+            including recursions via groups.
+            </summary>
+            <returns>True if any recursions are found.</returns>
+        </member>
         <member name="M:Svg.SvgUse.PushTransforms(Svg.ISvgRenderer)">
             <summary>
             Applies the required transforms to <see cref="T:Svg.ISvgRenderer"/>.
@@ -1525,7 +1591,12 @@
             Checks whether the property value is the default value of the svg definition.
             </summary>
             <param name="attributeName">Name of the svg attribute</param>
-            <param name="propertyValue">.NET value of the attribute</param>
+            <param name="value">.NET value of the attribute</param>
+        </member>
+        <member name="P:Svg.NonSvgElement.Name">
+            <summary>
+            Publish the element name to be able to differentiate non-svg elements.
+            </summary>
         </member>
         <member name="T:Svg.SvgElementAttribute">
             <summary>
@@ -1646,7 +1717,7 @@
         <member name="M:Svg.SvgGradientServer.AddElement(Svg.SvgElement,System.Int32)">
             <summary>
             Called by the underlying <see cref="T:Svg.SvgElement"/> when an element has been added to the
-            <see cref="!:Children"/> collection.
+            'Children' collection.
             </summary>
             <param name="child">The <see cref="T:Svg.SvgElement"/> that has been added.</param>
             <param name="index">An <see cref="T:System.Int32"/> representing the index where the element was added to the collection.</param>
@@ -1654,7 +1725,7 @@
         <member name="M:Svg.SvgGradientServer.RemoveElement(Svg.SvgElement)">
             <summary>
             Called by the underlying <see cref="T:Svg.SvgElement"/> when an element has been removed from the
-            <see cref="!:Children"/> collection.
+            'Children' collection.
             </summary>
             <param name="child">The <see cref="T:Svg.SvgElement"/> that has been removed.</param>
         </member>
@@ -1682,8 +1753,9 @@
             <summary>
             Gets a <see cref="T:System.Drawing.Drawing2D.ColorBlend"/> representing the <see cref="T:Svg.SvgGradientServer"/>'s gradient stops.
             </summary>
-            <param name="owner">The parent <see cref="T:Svg.SvgVisualElement"/>.</param>
+            <param name="renderer">The renderer <see cref="T:Svg.ISvgRenderer"/>.</param>
             <param name="opacity">The opacity of the colour blend.</param>
+            <param name="radial">True if it's a radial gradiant.</param>
         </member>
         <member name="T:Svg.SvgGradientStop">
             <summary>
@@ -1732,7 +1804,9 @@
             A <see cref="T:Svg.SvgPaintServer"/> that should inherit from its parent.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Svg.SvgLinearGradientServer.LineF.Intersection(Svg.SvgLinearGradientServer.LineF)" -->
+        <member name="M:Svg.SvgLinearGradientServer.LineF.Intersection(Svg.SvgLinearGradientServer.LineF)">
+            <remarks>http://community.topcoder.com/tc?module=Static&amp;d1=tutorials&amp;d2=geometry2</remarks>
+        </member>
         <member name="T:Svg.SvgPaintServer">
             <summary>
             Represents the base class for all paint servers that are intended to be used as a fill or stroke.
@@ -1759,7 +1833,9 @@
             Gets a <see cref="T:System.Drawing.Brush"/> representing the current paint server.
             </summary>
             <param name="styleOwner">The owner <see cref="T:Svg.SvgVisualElement"/>.</param>
+            <param name="renderer">The renderer object.</param>
             <param name="opacity">The opacity of the brush.</param>
+            <param name="forStroke">Not used.</param>
         </member>
         <member name="M:Svg.SvgPaintServer.ToString">
             <summary>
@@ -1831,7 +1907,9 @@
             Gets a <see cref="T:System.Drawing.Brush"/> representing the current paint server.
             </summary>
             <param name="renderingElement">The owner <see cref="T:Svg.SvgVisualElement"/>.</param>
+            <param name="renderer">The renderer object.</param>
             <param name="opacity">The opacity of the brush.</param>
+            <param name="forStroke">Not used.</param>
         </member>
         <member name="M:Svg.SvgRadialGradientServer.CalcScale(System.Drawing.RectangleF,System.Drawing.Drawing2D.GraphicsPath,System.Drawing.Graphics)">
             <summary>
@@ -1839,6 +1917,7 @@
             </summary>
             <param name="bounds">Bounds that the path must contain</param>
             <param name="path">Path of the gradient</param>
+            <param name="graphics">Not used</param>
             <returns>Scale factor</returns>
             <remarks>
             This method continually transforms the rectangle (fewer points) until it is contained by the path
@@ -1977,12 +2056,6 @@
             Gets or sets a value to determine if anti-aliasing should occur when the element is being rendered.
             </summary>
         </member>
-        <member name="P:Svg.SvgRectangle.Bounds">
-            <summary>
-            Gets the bounds of the element.
-            </summary>
-            <value>The bounds.</value>
-        </member>
         <member name="M:Svg.SvgRectangle.Path(Svg.ISvgRenderer)">
             <summary>
             Gets the <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> for this element.
@@ -2104,6 +2177,14 @@
             Renders the <see cref="T:Svg.SvgDocument"/> to the specified <see cref="T:System.Drawing.Graphics"/>.
             </summary>
             <param name="graphics">The <see cref="T:System.Drawing.Graphics"/> to be rendered to.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="graphics"/> parameter cannot be <c>null</c>.</exception>
+        </member>
+        <member name="M:Svg.SvgDocument.Draw(System.Drawing.Graphics,System.Nullable{System.Drawing.SizeF})">
+            <summary>
+            Renders the <see cref="T:Svg.SvgDocument"/> to the specified <see cref="T:System.Drawing.Graphics"/>.
+            </summary>
+            <param name="graphics">The <see cref="T:System.Drawing.Graphics"/> to be rendered to.</param>
+            <param name="size">The <see cref="T:System.Drawing.SizeF"/> to render the document. If <c>null</c> document is rendered at the default document size.</param>
             <exception cref="T:System.ArgumentNullException">The <paramref name="graphics"/> parameter cannot be <c>null</c>.</exception>
         </member>
         <member name="M:Svg.SvgDocument.Draw">
@@ -2472,6 +2553,7 @@
             And can auto fix the ID if it already exists or it starts with a number.
             </summary>
             <param name="element">The <see cref="T:Svg.SvgElement"/> to be managed.</param>
+            <param name="sibling">Not used.</param>
             <param name="autoForceUniqueID">Pass true here, if you want the ID to be fixed</param>
             <param name="logElementOldIDNewID">If not null, the action is called before the id is fixed</param>
             <returns>true, if ID was altered</returns>
@@ -2538,14 +2620,13 @@
             <summary>
             Converts the current unit to one that can be used at render time.
             </summary>
-            <param name="boundable">The container element used as the basis for calculations</param>
             <returns>The representation of the current unit in a device value (usually pixels).</returns>
         </member>
         <member name="M:Svg.SvgUnit.ToPercentage">
             <summary>
             Converts the current unit to a percentage, if applicable.
             </summary>
-            <returns>An <see cref="T:Svg.SvgUnit"/> of type <see cref="!:SvgUnitType.Perscentage"/>.</returns>
+            <returns>An <see cref="T:Svg.SvgUnit"/> of type <see cref="F:Svg.SvgUnitType.Percentage"/>.</returns>
         </member>
         <member name="M:Svg.SvgUnit.op_Implicit(Svg.SvgUnit)~System.Single">
             <summary>
@@ -2710,12 +2791,6 @@
             Gets the <see cref="T:System.Drawing.Drawing2D.GraphicsPath"/> for this element.
             </summary>
         </member>
-        <member name="P:Svg.SvgGlyph.Bounds">
-            <summary>
-            Gets the bounds of the element.
-            </summary>
-            <value>The bounds.</value>
-        </member>
         <member name="M:Svg.SvgGlyph.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Svg.SvgGlyph"/> class.
@@ -2741,12 +2816,6 @@
             <summary>
             Gets or sets the text to be rendered.
             </summary>
-        </member>
-        <member name="P:Svg.SvgTextBase.TextAnchor">
-            <summary>
-            Gets or sets the text anchor.
-            </summary>
-            <value>The text anchor.</value>
         </member>
         <member name="P:Svg.SvgTextBase.X">
             <summary>
@@ -2804,7 +2873,7 @@
             Gets or sets the fill.
             </summary>
             <remarks>
-            <para>Unlike other <see cref="!:SvgGraphicsElement"/>s, <see cref="T:Svg.SvgText"/> has a default fill of black rather than transparent.</para>
+            <para>Unlike other <see cref="T:Svg.SvgVisualElement"/>s, <see cref="T:Svg.SvgText"/> has a default fill of black rather than transparent.</para>
             </remarks>
             <value>The fill.</value>
         </member>
@@ -2841,10 +2910,11 @@
             object to track the state of the drawing
             </summary>
             <param name="state">State of the drawing operation</param>
+            <param name="doMeasurements">If true, calculate and apply text length adjustments.</param>
         </member>
         <member name="M:Svg.SvgTextBase.PrepareText(System.String)">
             <summary>
-            Prepare the text according to the whitespace handling rules.  <see href="http://www.w3.org/TR/SVG/text.html">SVG Spec</see>.
+            Prepare the text according to the whitespace handling rules and text transformations.  <see href="http://www.w3.org/TR/SVG/text.html">SVG Spec</see>.
             </summary>
             <param name="value">Text to be prepared</param>
             <returns>Prepared text</returns>
