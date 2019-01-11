@@ -23,6 +23,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripOperations = new Common.Controls.ToolStripEx();
 			this.contextMenuStripOperations = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.add_RemoveOperationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.resetOperationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripButton_Save = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_SaveAs = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton_Start = new System.Windows.Forms.ToolStripButton();
@@ -184,6 +185,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripCustom = new System.Windows.Forms.ToolStrip();
 			this.contextMenuStripCustom = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.add_RemoveCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.resetCustomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.customToolStripButton_Start = new System.Windows.Forms.ToolStripButton();
 			this.customToolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.customToolStripButton_Both = new System.Windows.Forms.ToolStripButton();
@@ -206,7 +208,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			// toolStripOperations
 			// 
-			this.toolStripOperations.AllowItemReorder = true;
 			this.toolStripOperations.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.toolStripOperations.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
 			this.toolStripOperations.ClickThrough = true;
@@ -255,21 +256,28 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripOperations.TabIndex = 1;
 			this.toolStripOperations.Text = "Operations";
 			this.toolStripOperations.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
-			this.toolStripOperations.MouseEnter += new System.EventHandler(this.toolStripOperations_MouseEnter);
 			// 
 			// contextMenuStripOperations
 			// 
 			this.contextMenuStripOperations.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.contextMenuStripOperations.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.add_RemoveOperationsToolStripMenuItem});
+            this.add_RemoveOperationsToolStripMenuItem,
+            this.resetOperationsToolStripMenuItem});
 			this.contextMenuStripOperations.Name = "contextMenuStripEffect";
-			this.contextMenuStripOperations.Size = new System.Drawing.Size(227, 26);
+			this.contextMenuStripOperations.Size = new System.Drawing.Size(227, 48);
 			// 
 			// add_RemoveOperationsToolStripMenuItem
 			// 
 			this.add_RemoveOperationsToolStripMenuItem.Name = "add_RemoveOperationsToolStripMenuItem";
 			this.add_RemoveOperationsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
 			this.add_RemoveOperationsToolStripMenuItem.Text = "Add and Remove Operations";
+			// 
+			// resetOperationsToolStripMenuItem
+			// 
+			this.resetOperationsToolStripMenuItem.Name = "resetOperationsToolStripMenuItem";
+			this.resetOperationsToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+			this.resetOperationsToolStripMenuItem.Text = "Reset Toolbar";
+			this.resetOperationsToolStripMenuItem.Click += new System.EventHandler(this.resetOperationsToolStripMenuItem_Click);
 			// 
 			// toolStripButton_Save
 			// 
@@ -653,7 +661,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_CurveLibrary.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButton_CurveLibrary.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton_CurveLibrary.Name = "toolStripButton_CurveLibrary";
-			this.toolStripButton_CurveLibrary.Size = new System.Drawing.Size(81, 19);
+			this.toolStripButton_CurveLibrary.Size = new System.Drawing.Size(81, 24);
 			this.toolStripButton_CurveLibrary.Tag = "Curve Library";
 			this.toolStripButton_CurveLibrary.Text = "Curve Library";
 			this.toolStripButton_CurveLibrary.Visible = false;
@@ -664,7 +672,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_ColorLibrary.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButton_ColorLibrary.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton_ColorLibrary.Name = "toolStripButton_ColorLibrary";
-			this.toolStripButton_ColorLibrary.Size = new System.Drawing.Size(79, 19);
+			this.toolStripButton_ColorLibrary.Size = new System.Drawing.Size(79, 24);
 			this.toolStripButton_ColorLibrary.Tag = "Color Library";
 			this.toolStripButton_ColorLibrary.Text = "Color Library";
 			this.toolStripButton_ColorLibrary.Visible = false;
@@ -675,7 +683,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_ColorGradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButton_ColorGradient.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton_ColorGradient.Name = "toolStripButton_ColorGradient";
-			this.toolStripButton_ColorGradient.Size = new System.Drawing.Size(88, 19);
+			this.toolStripButton_ColorGradient.Size = new System.Drawing.Size(88, 24);
 			this.toolStripButton_ColorGradient.Tag = "Color Gradient";
 			this.toolStripButton_ColorGradient.Text = "Color Gradient";
 			this.toolStripButton_ColorGradient.ToolTipText = "Color Gradient Library";
@@ -687,7 +695,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripButton_LipSync.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripButton_LipSync.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton_LipSync.Name = "toolStripButton_LipSync";
-			this.toolStripButton_LipSync.Size = new System.Drawing.Size(102, 19);
+			this.toolStripButton_LipSync.Size = new System.Drawing.Size(102, 24);
 			this.toolStripButton_LipSync.Tag = "Lip Sync";
 			this.toolStripButton_LipSync.Text = "LipSync Edit Map";
 			this.toolStripButton_LipSync.ToolTipText = "Edit LipSync Map";
@@ -699,7 +707,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripLabel_TimingSpeedLabel.BackColor = System.Drawing.Color.Gray;
 			this.toolStripLabel_TimingSpeedLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripLabel_TimingSpeedLabel.Name = "toolStripLabel_TimingSpeedLabel";
-			this.toolStripLabel_TimingSpeedLabel.Size = new System.Drawing.Size(82, 15);
+			this.toolStripLabel_TimingSpeedLabel.Size = new System.Drawing.Size(82, 24);
 			this.toolStripLabel_TimingSpeedLabel.Tag = "Timing Speed";
 			this.toolStripLabel_TimingSpeedLabel.Text = "Timing speed:";
 			this.toolStripLabel_TimingSpeedLabel.ToolTipText = "Timing speed:";
@@ -708,7 +716,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripLabel_TimingSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripLabel_TimingSpeed.Name = "toolStripLabel_TimingSpeed";
-			this.toolStripLabel_TimingSpeed.Size = new System.Drawing.Size(35, 15);
+			this.toolStripLabel_TimingSpeed.Size = new System.Drawing.Size(35, 24);
 			this.toolStripLabel_TimingSpeed.Tag = "Timing Speed";
 			this.toolStripLabel_TimingSpeed.Text = "100%";
 			this.toolStripLabel_TimingSpeed.ToolTipText = "Timing speed:";
@@ -1632,7 +1640,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 561);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 536);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -1661,12 +1669,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(1348, 561);
+			this.dockPanel.Size = new System.Drawing.Size(1348, 536);
 			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripEffects
 			// 
-			this.toolStripEffects.AllowItemReorder = true;
 			this.toolStripEffects.Anchor = System.Windows.Forms.AnchorStyles.Left;
 			this.toolStripEffects.ContextMenuStrip = this.contextMenuStripEffect;
 			this.toolStripEffects.Dock = System.Windows.Forms.DockStyle.None;
@@ -1679,7 +1686,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripEffects.Text = "toolStrip";
 			this.toolStripEffects.Visible = false;
 			this.toolStripEffects.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
-			this.toolStripEffects.MouseEnter += new System.EventHandler(this.toolStripEffects_MouseEnter);
 			// 
 			// contextMenuStripEffect
 			// 
@@ -1775,7 +1781,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.resetEffectsToolStripMenuItem.Name = "resetEffectsToolStripMenuItem";
 			this.resetEffectsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.resetEffectsToolStripMenuItem.Text = "Reset Effects";
+			this.resetEffectsToolStripMenuItem.Text = "Reset Toolbar";
 			this.resetEffectsToolStripMenuItem.Click += new System.EventHandler(this.resetEffectsToolStripMenuItem_Click);
 			// 
 			// toolStripCustom
@@ -1791,28 +1797,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.customToolStripButton_Both,
             this.customToolStripButton_Distribute});
 			this.toolStripCustom.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripCustom.Location = new System.Drawing.Point(196, 27);
+			this.toolStripCustom.Location = new System.Drawing.Point(3, 27);
 			this.toolStripCustom.Name = "toolStripCustom";
 			this.toolStripCustom.Size = new System.Drawing.Size(301, 25);
 			this.toolStripCustom.TabIndex = 15;
 			this.toolStripCustom.Text = "Alignment";
-			this.toolStripCustom.Visible = false;
 			this.toolStripCustom.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
-			this.toolStripCustom.MouseEnter += new System.EventHandler(this.toolStripCustom_MouseEnter);
 			// 
 			// contextMenuStripCustom
 			// 
 			this.contextMenuStripCustom.ImageScalingSize = new System.Drawing.Size(20, 20);
 			this.contextMenuStripCustom.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.add_RemoveCustomToolStripMenuItem});
+            this.add_RemoveCustomToolStripMenuItem,
+            this.resetCustomToolStripMenuItem});
 			this.contextMenuStripCustom.Name = "contextMenuStripEffect";
-			this.contextMenuStripCustom.Size = new System.Drawing.Size(198, 26);
+			this.contextMenuStripCustom.Size = new System.Drawing.Size(198, 70);
 			// 
 			// add_RemoveCustomToolStripMenuItem
 			// 
 			this.add_RemoveCustomToolStripMenuItem.Name = "add_RemoveCustomToolStripMenuItem";
 			this.add_RemoveCustomToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
 			this.add_RemoveCustomToolStripMenuItem.Text = "Add and Remove Items";
+			// 
+			// resetCustomToolStripMenuItem
+			// 
+			this.resetCustomToolStripMenuItem.Name = "resetCustomToolStripMenuItem";
+			this.resetCustomToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			this.resetCustomToolStripMenuItem.Text = "Reset Toolbar";
+			this.resetCustomToolStripMenuItem.Click += new System.EventHandler(this.resetCustomToolStripMenuItem_Click);
 			// 
 			// customToolStripButton_Start
 			// 
@@ -2094,5 +2106,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripButton customToolStripButton_Distribute;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStripCustom;
 		private System.Windows.Forms.ToolStripMenuItem add_RemoveCustomToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem resetOperationsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem resetCustomToolStripMenuItem;
 	}
 }

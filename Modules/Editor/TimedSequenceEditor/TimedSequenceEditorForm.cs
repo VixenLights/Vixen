@@ -258,7 +258,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			customToolStripButton_Distribute.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			customToolStripButton_Distribute.Image = Resources.distribute;
 
-
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
 				var toolStripMenuItem = toolStripItem as ToolStripMenuItem;
@@ -405,56 +404,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
 
-			// Custom Toolstrip settings
-			customToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CustomToolStrip/CustomToolStrip", Name), false);
-			
-			// Effect Toolstrip settings
-			effectToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name), false);
-
-			// Effect Toolstrip Label settings
-			string effectLabelPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectLabelIndex", Name), "2");
-			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
-			{
-				if (subItem.Tag.ToString() == effectLabelPosition)
-				{
-					subItem.Checked = true;
-					break;
-				}
-			}
-
-			basicToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/BasicEffectToolStrip", Name), true));
-			pixelToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name), true));
-			deviceToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name), true));
-
+			// Setup Toolbars and Toolstrip context menus.
 			InitializeToolBars();
 
-			// Set layout for all Toolbar. 
-			SuspendLayout();
-			for (int i = 0; i < 3; i++)
-			{
-				int toolStripLocationX = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripX{1}", Name, i), 0);
-				int toolStripLocationY = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripY{1}", Name, i), 0);
-				string toolStripName = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripName{1}", Name, i), "");
-
-				switch (toolStripName)
-				{
-					case "toolStripEffects":
-						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						break;
-					case "toolStripOperations":
-						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						break;
-					case "toolStripCustom":
-						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
-						break;
-				}
-			}
-			SetToolStripStartPosition();
-			ResumeLayout();
-			PerformLayout();
 
 			foreach (ToolStripItem toolStripItem in toolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -640,6 +592,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_mPrevPlaybackStart = TimelineControl.PlaybackStartTime = _sequence.DefaultPlaybackStartTime;
 				_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime = _sequence.DefaultPlaybackEndTime;
 			}
+
+			// Adjusts Toolbars layout as per saved settings.
+			SetToolBarLayout();
 
 #if DEBUG
 //ToolStripButton b = new ToolStripButton("[Debug Break]");

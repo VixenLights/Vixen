@@ -19,82 +19,91 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _beginNewEffectDragDrop;
 		private List<AllToolStripItems> _allToolStripItems;
 		private readonly string _toolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripItemPositions.xml");
+		private List<bool> _defaultOperationsToolStrip;
+		private List<bool> _defaultCustomsToolStrip;
 
 		private void InitializeToolBars()
 		{
-			// Populate Effect Toolstrip Context Menu
-			PopulateEffectGroupToolStrip();
-			// Add Effects to Effects Toolstrip
-			PopulateToolStripEffects();
-			// Populate the Operations Context Menu. Don't need to add Operations to the Toolstrip as it is done during Compile time.
-			PopulateOperationsGroupToolStrip();
-			// Populate the Custom Context Menu. Don't need to add Custom Items to the Toolstrip as it is done during Compile time.
-			PopulateCustomGroupToolStrip();
+			int i = 0;
+			_defaultOperationsToolStrip = new List<bool>();
+			foreach (ToolStripItem tsi in toolStripOperations.Items)
+			{
+				_defaultOperationsToolStrip.Add(tsi.Visible);
+				i++;
+			}
+
+			_defaultCustomsToolStrip = new List<bool>();
+			foreach (ToolStripItem tsi in toolStripCustom.Items)
+			{
+				_defaultCustomsToolStrip.Add(tsi.Visible);
+			}
+
+			toolStripCustom.Visible = false;
+
+			XMLProfileSettings xml = new XMLProfileSettings();
+			// Custom Toolstrip View Menu setting.
+			customToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CustomToolStrip/CustomToolStrip", Name), false);
+			
+			// Effect Toolstrip View Menu setting.
+			effectToolStripToolStripMenuItem.Checked = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectToolStrip", Name), false);
+
+			// Effect Toolstrip Context menu Label setting.
+			string effectLabelPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/EffectLabelIndex", Name), "2");
+			foreach (ToolStripMenuItem subItem in toolStripMenuItemLabelPosition.DropDown.Items)
+			{
+				if (subItem.Tag.ToString() == effectLabelPosition)
+				{
+					subItem.Checked = true;
+					break;
+				}
+			}
+
+			// Effect context menu Groups.
+			basicToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/BasicEffectToolStrip", Name), true));
+			pixelToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name), true));
+			deviceToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name), true));
+
 			// Load ToolStrip Items form saved file.
 			Load_ToolsStripItemsFile();
 
-			// Uses the data from the saved file to change visibility of the ToolStrip items.
-			_toolStripItems.Clear();
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
-			{
-				foreach (Control toolsStripControl in row.Controls)
-				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						_toolStripItems.Add(item);
-					}
-					toolsStripItems.Items.Clear();
-				}
-			}
-			
-			// This will ensure any programmable Toolstrip items added later will be visible.
-			IEnumerable<ToolStripItem> newToolStripItems = _toolStripItems.Where(n => !_allToolStripItems.Select(n1 => n1.ItemName).Contains(n.ToolTipText));
-			foreach (var item in newToolStripItems)
-			{
-				AllToolStripItems ts = new AllToolStripItems();
-				if (item.Name.Contains("custom"))
-				{
-					ts.AssignedToolStrip = "toolStripCustom";
-				}
-				else if (item.Name.Contains("effects"))
-				{
-					ts.AssignedToolStrip = "toolStripEffect";
-				}
-				else if (item.Name.Contains("operations"))
-				{
-					ts.AssignedToolStrip = "toolStripOperations";
-				}
+			PopulateEffectsToolStrip_Context();
+			PopulateOperationsToolStrip_Context();
+			PopulateCustomToolStrip_Context();
+		}
 
-				ts.ItemName = item.ToolTipText;
-				ts.Position = 100;
-				ts.Visible = true;
-				_allToolStripItems.Add(ts);
-			}
+		private void SetToolBarLayout()
+		{
+			// Set layout and settings for all Toolbars.
+			XMLProfileSettings xml = new XMLProfileSettings();
 
-			foreach (ToolStripPanelRow row1 in toolStripContainer.TopToolStripPanel.Rows)
+			SuspendLayout();
+
+			for (int i = 0; i < 3; i++)
 			{
-				foreach (Control toolsStripControl in row1.Controls)
+				int toolStripLocationX = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripX{1}", Name, i), 0);
+				int toolStripLocationY = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripY{1}", Name, i), 0);
+				string toolStripName = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStripName{1}", Name, i), "");
+
+				switch (toolStripName)
 				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (AllToolStripItems it in _allToolStripItems)
-					{
-						foreach (ToolStripItem item in _toolStripItems)
-						{
-							if (item.ToolTipText == it.ItemName && toolsStripItems.Name == it.AssignedToolStrip)
-							{
-								item.Visible = it.Visible;
-								toolsStripItems.Items.Add(item);
-							}
-						}
-					}
+					case "toolStripEffects":
+						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripEffects.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
+					case "toolStripOperations":
+						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripOperations.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
+					case "toolStripCustom":
+						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripCustom.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						break;
 				}
 			}
 
-			// Set Toolstrips Display Style. 
-			ToolStripOperationsDisplayStyle(true);
-			ToolStripEffectsDisplayStyle(true);
-			ToolStripCustomDisplayStyle(true);
+			SetToolStripStartPosition();
+			ResumeLayout();
+			PerformLayout();
 		}
 
 		#region Main Operations ToolStrip
@@ -186,10 +195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (ToolStripMenuItem subItem in item.Owner.Items)
 				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
+					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
 				}
 				item.Checked = true;
 				PopulateSnapStrength(Convert.ToInt32(item.Tag));		
@@ -204,10 +210,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (ToolStripMenuItem subItem in item.Owner.Items)
 				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
+					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
 				}
 				item.Checked = true;
 				TimelineControl.grid.CloseGap_Threshold = item.Tag.ToString();
@@ -221,10 +224,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				foreach (ToolStripMenuItem subItem in item.Owner.Items)
 				{
-					if (!item.Equals(subItem) && subItem != null)
-					{
-						subItem.Checked = false;
-					}
+					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
 				}
 				item.Checked = true;
 				AlignTo_Threshold = item.ToString();
@@ -232,46 +232,75 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 		
 		// Populate the Operations toolstrip contextMenu.
-		private void PopulateOperationsGroupToolStrip()
+		private void PopulateOperationsToolStrip_Context()
 		{
 			foreach (ToolStripItem item in toolStripOperations.Items)
 			{
-				if (item.Tag != null && (item is ToolStripButton || item is UndoButton || item is ToolStripComboBox || (item is ToolStripDropDownButton && !item.ToString().Contains("DropDown"))))
+				//if (item.Tag != null && (item is ToolStripButton || item is UndoButton || item is ToolStripComboBox || (item is ToolStripDropDownButton && !item.ToString().Contains("DropDown"))))
+				//{
+				ToolStripMenuItem tsmi = new ToolStripMenuItem();
+				bool menuItemExists = false;
+				foreach (ToolStripMenuItem ddi in add_RemoveOperationsToolStripMenuItem.DropDownItems)
 				{
-					ToolStripMenuItem tsmi = new ToolStripMenuItem();
-					bool menuItemExists = false;
-					foreach (ToolStripMenuItem ddi in add_RemoveOperationsToolStripMenuItem.DropDownItems)
+					if (ddi.Text == item.ToolTipText)
 					{
-						if (ddi.Text == item.Tag.ToString())
-						{
-							menuItemExists = true;
-							break;
-						}
+						menuItemExists = true;
+						break;
 					}
-
-					if (menuItemExists) continue;
-					tsmi.Text = item.Tag.ToString();
-					tsmi.CheckOnClick = true;
-					tsmi.CheckState = CheckState.Checked;
-					tsmi.Checked = item.Visible;
-					tsmi.Click += ToolStripItem_Changed;
-					add_RemoveOperationsToolStripMenuItem.DropDownItems.Add(tsmi);
 				}
+
+				if (menuItemExists) continue;
+				tsmi.Text = item.ToolTipText;
+				tsmi.Tag = item;
+				tsmi.CheckOnClick = true;
+				tsmi.CheckState = CheckState.Checked;
+				foreach (AllToolStripItems it in _allToolStripItems)
+				{
+					if (tsmi.Text == it.ItemName)
+					{
+						item.Visible = it.Visible;;
+						tsmi.Checked = it.Visible;
+					}
+				}
+
+				tsmi.Click += ToolStripOperationItem_Changed;
+				add_RemoveOperationsToolStripMenuItem.DropDownItems.Add(tsmi);
 			}
-		}
 
-		private void toolStripOperations_MouseEnter(object sender, EventArgs e)
-		{
-			ToolStripOperationsDisplayStyle(false);
-		}
-
-		private void ToolStripOperationsDisplayStyle(bool initialLoad)
-		{
-			if (ModifierKeys == Keys.Alt || initialLoad)
+			toolStripOperations.SuspendLayout();
+			foreach (AllToolStripItems it in _allToolStripItems)
 			{
 				foreach (ToolStripItem item in toolStripOperations.Items)
 				{
-					if (item.DisplayStyle == ToolStripItemDisplayStyle.ImageAndText) item.DisplayStyle = ToolStripItemDisplayStyle.Image;
+					if (item.ToolTipText == it.ItemName) item.Visible = it.Visible;
+				}
+			}
+			toolStripOperations.ResumeLayout();
+		}
+
+		// Show/Hide selected Toolstrip item.
+		private void ToolStripOperationItem_Changed(object sender, EventArgs e)
+		{
+			ToolStripMenuItem tsi = sender as ToolStripMenuItem;
+			foreach (ToolStripItem item in toolStripOperations.Items)
+			{
+				if (item.ToolTipText != null && item.ToolTipText == tsi.Text || item.Tag != null && item.Tag.ToString() == tsi.Text) item.Visible = tsi.Checked;
+			}
+		}
+
+		private void resetOperationsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Resets all Custom Context menu items to checked.
+			for (var i = 0; i < _defaultOperationsToolStrip.Count; i++)
+			{
+				toolStripOperations.Items[i].Visible = _defaultOperationsToolStrip[i];
+				foreach (ToolStripMenuItem tsmi in add_RemoveOperationsToolStripMenuItem.DropDownItems)
+				{
+					if (tsmi.Text == toolStripOperations.Items[i].ToolTipText)
+					{
+						tsmi.Checked = _defaultOperationsToolStrip[i];
+						break;
+					}
 				}
 			}
 		}
@@ -280,91 +309,58 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Effect ToolStrip
 
-		// Populate the Effect groups context menu
-		private void PopulateEffectGroupToolStrip()
-		{
-			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
-			{
-				foreach (
-					IEffectModuleDescriptor effectDescriptor in ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
-				{
-					if (effectDescriptor.EffectName != "Nutcracker" && effectDescriptor.EffectGroup.ToString() == dropDownItem.Tag.ToString())
-					{
-						dropDownItem.DropDownItems.Add(effectDescriptor.EffectName);
-					}
-				}
-
-				foreach (ToolStripMenuItem items in dropDownItem.DropDownItems)
-				{
-					items.Checked = true;
-					items.CheckOnClick = true;
-					items.Checked = dropDownItem.Visible;
-					items.CheckState = CheckState.Checked;
-					items.Click += ToolStripItem_Changed;
-				}
-			}
-		}
-
 		private void resetEffectsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			// Resets all Effect Context menu items to checked.
 			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
 			{
 				dropDownItem.Checked = true;
-				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
-				{
-					groupDropDownItem.Checked = true;
-					ChangeToolStripItemVisibility(groupDropDownItem);
-				}
+				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems) groupDropDownItem.Checked = true;
 			}
 
-			PopulateToolStripEffects();
+			// Resets all Effect Toolstrip Items to visible.
+			foreach (ToolStripItem tsi in toolStripEffects.Items)tsi.Visible = true;
 		}
 
-		private void PopulateToolStripEffects()
+		private void PopulateEffectsToolStrip_Context()
 		{
-			toolStripEffects.SuspendLayout();
-			toolStripEffects.Items.Clear();
-
-			foreach (ToolStripMenuItem dropDownItem in effectGroupsToolStripMenuItem.DropDownItems)
+			foreach (ToolStripMenuItem groupItems in effectGroupsToolStripMenuItem.DropDownItems) groupItems.DropDownItems.Clear();
+			
+			foreach (
+				IEffectModuleDescriptor effectDescriptor in
+				ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
 			{
-				foreach (ToolStripMenuItem groupDropDownItem in dropDownItem.DropDownItems)
+				if (effectDescriptor.EffectName == "Nutcracker") continue;
+				switch (effectDescriptor.EffectGroup)
 				{
-					foreach (
-						IEffectModuleDescriptor effectDescriptor in
-						ApplicationServices.GetModuleDescriptors<IEffectModuleInstance>().Cast<IEffectModuleDescriptor>())
-					{
-						if (effectDescriptor.EffectName != "Nutcracker" &&
-						    effectDescriptor.EffectGroup.ToString() == dropDownItem.Tag.ToString() &&
-						    groupDropDownItem.Text == effectDescriptor.EffectName)
-						{
-							AddEffect(effectDescriptor, dropDownItem.Checked, groupDropDownItem.Checked);
-						}
-					}
+					case EffectGroups.Basic:
+						AddEffect(effectDescriptor, basicToolStripMenuItem);
+						break;
+					case EffectGroups.Pixel:
+						AddEffect(effectDescriptor, pixelToolStripMenuItem);
+						break;
+					case EffectGroups.Device:
+						AddEffect(effectDescriptor, deviceToolStripMenuItem);
+						break;
 				}
 			}
 
+			toolStripEffects.SuspendLayout();
+			toolStripEffects.Items.Clear();
+			foreach (ToolStripMenuItem groupItems in effectGroupsToolStripMenuItem.DropDownItems)
+			{
+				foreach (ToolStripMenuItem items in groupItems.DropDownItems)
+				{
+					toolStripEffects.Items.Add((ToolStripItem) items.Tag);
+				}
+			}
 			AlignText();
 			toolStripEffects.ResumeLayout();
 		}
-		
-		private void AddEffect(IEffectModuleDescriptor effectDescriptor, bool dropDownGroupChecked, bool dropDownItemChecked)
+
+		private void AddEffect(IEffectModuleDescriptor effectDescriptor, ToolStripMenuItem toolStripMenuItem)
 		{
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
-			{
-				foreach (Control toolsStripControl in row.Controls)
-				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						if (item.ToolTipText == effectDescriptor.EffectName)
-						{
-							return;
-						}
-					}
-				}
-			}
-		
-		ToolStripButton tsb = new ToolStripButton
+			ToolStripButton tsb = new ToolStripButton
 			{
 				ToolTipText = effectDescriptor.EffectName,
 				Tag = effectDescriptor.TypeId,
@@ -372,18 +368,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ImageKey = effectDescriptor.EffectName,
 				Image = effectDescriptor.GetRepresentativeImage(),
 				Text = effectDescriptor.EffectName,
-				Visible = dropDownGroupChecked && dropDownItemChecked
-		};
+				Visible = true,
+			};
 			tsb.MouseDown += tsb_MouseDown;
 			tsb.MouseMove += tsb_MouseMove;
-			toolStripEffects.Items.Add(tsb);
+			
+			ToolStripMenuItem tsmi = new ToolStripMenuItem();
+			tsmi.Text = effectDescriptor.EffectName;
+			tsmi.CheckState = CheckState.Checked;
+			tsmi.Checked = true;
+			tsmi.Click += ToolStripEffectItem_Changed;
+			foreach (AllToolStripItems it in _allToolStripItems)
+			{
+				if (tsmi.Text == it.ItemName)
+				{
+					tsmi.Checked = it.Visible;
+					if (!toolStripMenuItem.Checked) tsb.Visible = false;
+					else if (!tsmi.Checked) tsb.Visible = false;
+					break;
+				}
+			}
+			tsmi.Tag = tsb;
+			toolStripMenuItem.DropDownItems.Add(tsmi);
 		}
-		
+
 		private void SelectNodeForDrawing(ToolStripButton selectedButton)
 		{
-			//This is for when Drawing effects is enabled.
+			// This is for when Drawing effects is enabled.
 
-			if (selectedButton.Checked) //If button is already selected then deselect and remove GUID from grid selected effect.
+			if (selectedButton.Checked) // If button is already selected then deselect and remove GUID from grid selected effect.
 			{
 				TimelineControl.grid.SelectedEffect = Guid.Empty;
 				selectedButton.Checked = false;
@@ -391,12 +404,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else
 			{
 				TimelineControl.grid.SelectedEffect = (Guid)_mToolStripEffects.Tag;
-
 				foreach (ToolStripItem tsi in toolStripEffects.Items)
 				{
 					if (tsi != null && tsi.CanSelect) if (tsi is ToolStripButton tsb) tsb.Checked = false;
 				}
-				//Ensures the one selected to be drawn is Checked
+				// Ensures the one selected to be drawn is Checked.
 				selectedButton.Checked = true;
 			}
 		}
@@ -404,7 +416,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void AlignText()
 		{
 			//Adjusts location of the effect label.
-			toolStripEffects.SuspendLayout();
 			TextImageRelation alignText = TextImageRelation.ImageAboveText;
 			var newFontSize = new Font(Font.FontFamily.Name, Font.Size-2, Font.Style);
 			bool noText = false;
@@ -441,27 +452,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsi.TextImageRelation = alignText;
 					tsi.Text = tsi.ToolTipText;
 				}
-				else
-				{
-					tsi.Text = "";
-				}
+				else tsi.Text = "";
 				tsi.Font = newFontSize;
 			}
-			toolStripEffects.ResumeLayout();
 		}
 
-		private void toolStripEffects_MouseEnter(object sender, EventArgs e)
+		// Show/Hide selected Toolstrip item.
+		private void ToolStripEffectItem_Changed(object sender, EventArgs e)
 		{
-			ToolStripEffectsDisplayStyle(false);
-		}
+			ToolStripMenuItem tsi = sender as ToolStripMenuItem;
+			ToolStripMenuItem tso = tsi.OwnerItem as ToolStripMenuItem;
+			tso.Checked = true;
 
-		private void ToolStripEffectsDisplayStyle(bool initialLoad)
-		{
-			if (ModifierKeys == Keys.Alt || initialLoad)
+			foreach (ToolStripItem item in toolStripEffects.Items)
 			{
-				foreach (ToolStripItem item in toolStripEffects.Items) item.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
-				AlignText();
+				if (item.ToolTipText != null && item.ToolTipText == tsi.Text ||
+				    item.Tag != null && item.Tag.ToString() == tsi.Text)
+				{
+					tsi.Checked = !tsi.Checked;
+					item.Visible = tsi.Checked;
+					break;
+				}
 			}
+
+			toolStripMenuItemEffectGroup_Change(tso);
 		}
 
 		private void tsb_MouseDown(object sender, MouseEventArgs e)
@@ -475,14 +489,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				(_mToolStripEffects != null) &&
 				(e.Button == MouseButtons.Left && e.Clicks == 1);
 
-			if (toolStripButton_DrawMode.Checked)
-			{
-				SelectNodeForDrawing(selectedButton);
-			}
-			else
-			{
-				selectedButton.Checked = false;
-			}
+			if (toolStripButton_DrawMode.Checked) SelectNodeForDrawing(selectedButton);
+			else selectedButton.Checked = false;
 		}
 
 		private void tsb_MouseMove(object sender, MouseEventArgs e)
@@ -506,12 +514,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				item.Checked = true;
 			}
+
+			toolStripEffects.SuspendLayout();
 			AlignText();
+			toolStripEffects.ResumeLayout();
 		}
 
 		private void toolStripMenuItemEffectGroup_Click(object sender, EventArgs e)
 		{
 			ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+			toolStripMenuItemEffectGroup_Change(menuItem);
+		}
+
+		private void toolStripMenuItemEffectGroup_Change(ToolStripMenuItem menuItem)
+		{
 			foreach (ToolStripMenuItem ddi in menuItem.DropDownItems)
 			{
 				foreach (ToolStripItem item in toolStripEffects.Items)
@@ -540,35 +556,77 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Custom ToolStrip
 
-
-		// Populate the Operations toolstrip contextMenu.
-		private void PopulateCustomGroupToolStrip()
+		// Populate the Custom toolstrip context Menu.
+		private void PopulateCustomToolStrip_Context()
 		{
+			SortedDictionary<int, ToolStripItem> tempItems = new SortedDictionary<int, ToolStripItem>();
 			foreach (ToolStripItem item in toolStripCustom.Items)
 			{
-				if (item.Tag != null && (item is ToolStripButton || item is UndoButton || item is ToolStripComboBox || (item is ToolStripDropDownButton && !item.ToString().Contains("DropDown"))))
+				bool itemFound = false;
+				ToolStripMenuItem tsmi = new ToolStripMenuItem();
+				bool menuItemExists = false;
+				foreach (ToolStripMenuItem ddi in add_RemoveCustomToolStripMenuItem.DropDownItems)
 				{
-					ToolStripMenuItem tsmi = new ToolStripMenuItem();
-					bool menuItemExists = false;
-					foreach (ToolStripMenuItem ddi in add_RemoveCustomToolStripMenuItem.DropDownItems)
+					if (ddi.Text == item.ToolTipText)
 					{
-						if (ddi.Text == item.Tag.ToString())
-						{
-							menuItemExists = true;
-							break;
-						}
+						menuItemExists = true;
+						break;
 					}
+				}
 
-					if (menuItemExists) continue;
-					tsmi.Text = item.Tag.ToString();
-					tsmi.CheckOnClick = true;
-					tsmi.CheckState = CheckState.Checked;
-					tsmi.Checked = item.Visible;
-					tsmi.Click += ToolStripItem_Changed;
-					add_RemoveCustomToolStripMenuItem.DropDownItems.Add(tsmi);
+				if (menuItemExists) continue;
+				tsmi.Text = item.ToolTipText;
+				tsmi.Tag = item;
+				tsmi.CheckOnClick = true;
+				tsmi.CheckState = CheckState.Checked;
+				foreach (AllToolStripItems it in _allToolStripItems)
+				{
+					if (tsmi.Text == it.ItemName)
+					{
+						tsmi.Checked = it.Visible;
+						item.Visible = it.Visible;
+						tempItems.Add(it.Position, item);
+						itemFound = true;
+					}
+				}
+				tsmi.Click += ToolStripCustomItem_Changed;
+				add_RemoveCustomToolStripMenuItem.DropDownItems.Add(tsmi);
+				if (!itemFound) tempItems.Add(tempItems.Count, item);
+			}
+
+			toolStripCustom.SuspendLayout();
+			toolStripCustom.Items.Clear();
+			foreach (KeyValuePair<int, ToolStripItem> groupItem in tempItems) toolStripCustom.Items.Add(groupItem.Value);
+			toolStripCustom.ResumeLayout();
+		}
+
+		// Show/Hide selected Toolstrip item.
+		private void ToolStripCustomItem_Changed(object sender, EventArgs e)
+		{
+			var tsi = sender as ToolStripMenuItem;
+			foreach (ToolStripItem item in toolStripCustom.Items)
+			{
+				if (item.ToolTipText != null && item.ToolTipText == tsi.Text || item.Tag != null && item.Tag.ToString() == tsi.Text) item.Visible = tsi.Checked;
+			}
+		}
+
+		private void resetCustomToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Resets all Custom Context menu items to checked.
+			for (var i = 0; i < _defaultCustomsToolStrip.Count; i++)
+			{
+				toolStripCustom.Items[i].Visible = _defaultCustomsToolStrip[i];
+				foreach (ToolStripMenuItem tsmi in add_RemoveCustomToolStripMenuItem.DropDownItems)
+				{
+					if (tsmi.Text == toolStripCustom.Items[i].ToolTipText)
+					{
+						tsmi.Checked = _defaultCustomsToolStrip[i];
+						break;
+					}
 				}
 			}
 		}
+
 		private void customToolStripButton_Click(object sender, EventArgs e)
 		{
 			AlignEffectsToNearestMarks("Start");
@@ -587,25 +645,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void customToolStripButton_Distribute_Click(object sender, EventArgs e)
 		{
 			DistributeSelectedEffectsEqually();
-		}
-
-		private void toolStripCustom_MouseEnter(object sender, EventArgs e)
-		{
-			ToolStripCustomDisplayStyle(false);
-		}
-
-		private void ToolStripCustomDisplayStyle(bool initialLoad)
-		{
-			if (ModifierKeys == Keys.Alt || initialLoad)
-			{
-				foreach (ToolStripItem item in toolStripCustom.Items)
-				{
-					if (item.DisplayStyle == ToolStripItemDisplayStyle.ImageAndText)
-					{
-						item.DisplayStyle = ToolStripItemDisplayStyle.Image;
-					}
-				}
-			}
 		}
 
 		private void customToolStripMenuItem_Click(object sender, EventArgs e)
@@ -632,60 +671,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
 			{
 				foreach (var toolStrip in row.Controls) toolStrip.Location = new Point(3, toolStrip.Location.Y);
-			}
-		}
-
-		// Show/Hide selected Toolstrip item.
-		private void ToolStripItem_Changed(object sender, EventArgs e)
-		{
-			var tsi = sender as ToolStripMenuItem;
-			ChangeToolStripItemVisibility(tsi);
-		}
-
-		private void ChangeToolStripItemVisibility(ToolStripMenuItem tsi)
-		{
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
-			{
-				foreach (Control toolsStripControl in row.Controls)
-				{
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						if (item.ToolTipText != null && item.ToolTipText == tsi.Text || item.Tag != null && item.Tag.ToString() == tsi.Text)
-						{
-							item.Visible = tsi.Checked;
-						}
-					}
-				}
-			}
-		}
-		
-		private void PopulateToolStripClass(bool initialLoad)
-		{
-			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
-			{
-				foreach (Control toolsStripControl in row.Controls)
-				{
-					int i = 0;
-					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					foreach (ToolStripItem item in toolsStripItems.Items)
-					{
-						AllToolStripItems ts = new AllToolStripItems();
-						ts.ItemName = item.ToolTipText;
-						ts.Position = i;
-						if (initialLoad && toolsStripItems.Name != "toolStripOperations")
-						{
-							ts.Visible = true;
-						}
-						else
-						{
-							ts.Visible = item.Visible;
-						}
-						ts.AssignedToolStrip = toolsStripItems.Name;
-						_allToolStripItems.Add(ts);
-						i++;
-					}
-				}
 			}
 		}
 
@@ -723,13 +708,59 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			dataWriter.Close();
 		}
 
+		private void PopulateToolStripClass(bool initialLoad)
+		{
+			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
+			{
+				foreach (Control toolsStripControl in row.Controls)
+				{
+					int i = 0;
+					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
+					foreach (ToolStripItem item in toolsStripItems.Items)
+					{
+						AllToolStripItems ts = new AllToolStripItems();
+						ts.ItemName = item.ToolTipText;
+						ts.Position = i;
+						if (initialLoad && toolsStripItems.Name == "toolStripEffects")
+						{
+							ts.Visible = true;
+						}
+						else
+						{
+							switch (toolsStripItems.Name)
+							{
+								case "toolStripEffects":
+									foreach (ToolStripMenuItem group in effectGroupsToolStripMenuItem.DropDownItems)
+									{
+										foreach (ToolStripMenuItem menuItem in group.DropDownItems)
+										{
+											if (ts.ItemName == menuItem.Text)
+											{
+												ts.Visible = menuItem.Checked;
+												break;
+											}
+										}
+									}
+									break;
+								default:
+									ts.Visible = item.Visible;
+									break;
+							}
+
+						}
+						_allToolStripItems.Add(ts);
+						i++;
+					}
+				}
+			}
+		}
+
 		[Serializable]
 		internal class AllToolStripItems
 		{
 			public string ItemName;
 			public int Position;
 			public bool Visible;
-			public string AssignedToolStrip;
 		}
 
 		#endregion
