@@ -40,6 +40,28 @@ namespace Vixen.Module.Preview
 			}
 		}
 
+		/// <inheritdoc />
+		public void PlayerStarted()
+		{
+			if (IsRunning)
+			{
+				ThreadBehavior.BeginInvoke(PlayerActivatedImpl);
+			}
+		}
+
+		/// <inheritdoc />
+		public void PlayerEnded()
+		{
+			if (IsRunning)
+			{
+				ThreadBehavior.BeginInvoke(PlayerDeactivatedImpl);
+			}
+		}
+
+		protected abstract void PlayerActivatedImpl();
+
+		protected abstract void PlayerDeactivatedImpl();
+
 		protected abstract void Update();
 
 		#region Equality

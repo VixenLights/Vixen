@@ -32,7 +32,7 @@ namespace Vixen.Sys.Output
 
 		public void Update()
 		{
-			_PreviewModule.UpdateState();
+			PreviewModule.UpdateState();
 		}
 
 		public Guid Id { get; private set; }
@@ -116,7 +116,7 @@ namespace Vixen.Sys.Output
 			return Name;
 		}
 
-		private IPreview _PreviewModule
+		public IPreview PreviewModule
 		{
 			get { return _outputModuleConsumer.Module; }
 		}

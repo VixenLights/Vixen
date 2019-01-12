@@ -149,5 +149,8 @@ namespace VixenModules.Preview.VixenPreview {
 
 		/// <inheritdoc />
 		public Guid InstanceId { get; set; }
+
+		/// <inheritdoc />
+		public bool IsOnTopWhenPlaying { get; }
 	}
 }

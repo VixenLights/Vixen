@@ -8,5 +8,9 @@ namespace Vixen.Module.Preview
 	public interface IPreview
 	{
 		void UpdateState();
+
+		void PlayerStarted();
+
+		void PlayerEnded();
 	}
 }

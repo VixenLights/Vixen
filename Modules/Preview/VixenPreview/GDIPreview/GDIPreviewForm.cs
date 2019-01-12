@@ -255,6 +255,33 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 			_contextMenuStrip.Items.Add(item);
 
+			item = new ToolStripMenuItem("Auto On Top");
+			item.ToolTipText = @"Enable/Disable bringing this preview on top and back automatically.";
+
+			if (IsOnTopWhenPlaying)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				IsOnTopWhenPlaying = !IsOnTopWhenPlaying;
+				if (IsOnTopWhenPlaying)
+				{
+					_alwaysOnTop = false;
+					ConfigureAlwaysOnTop();
+				}
+				else if (TopMost)
+				{
+					TopMost = false;
+				}
+
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+
 			item = new ToolStripMenuItem("Reset Size");
 			item.ToolTipText = @"Resets the viewable size to match the background size.";
 
@@ -521,6 +548,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), _lockPosition);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), ZoomLevel);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), IsOnTopWhenPlaying);
 		}
 
 		private void GDIPreviewForm_Load(object sender, EventArgs e)
@@ -542,6 +570,7 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
 			_lockPosition = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/LockPosition", name), false);
 			ZoomLevel = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ZoomLevel", name), 1d);
+			IsOnTopWhenPlaying = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
 
 			ConfigureStatusBar();
 			ConfigureBorders();
@@ -617,6 +646,9 @@ namespace VixenModules.Preview.VixenPreview.GDIPreview
 
 		/// <inheritdoc />
 		public Guid InstanceId { get; set; }
+
+		/// <inheritdoc />
+		public bool IsOnTopWhenPlaying { get; private set; }
 
 		public void UpdateDisplayName()
 		{

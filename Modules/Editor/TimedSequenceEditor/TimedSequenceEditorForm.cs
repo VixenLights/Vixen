@@ -42,6 +42,7 @@ using VixenModules.Effect.LipSync;
 using Vixen.Module.Editor;
 using Vixen.Module.Effect;
 using Vixen.Module.Media;
+using Vixen.Module.Preview;
 using Vixen.Module.Timing;
 using Vixen.Services;
 using Vixen.Sys;
@@ -3389,6 +3390,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
 			EffectEditorForm.ResumePreview();
+			SetPreviewsTopMost(false);
 		}
 
 		protected void timerPlaying_Tick(object sender, EventArgs e)
@@ -5390,6 +5392,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void _PlaySequence(TimeSpan rangeStart, TimeSpan rangeEnd)
 		{
 			EffectEditorForm.PreviewStop();
+			SetPreviewsTopMost();
 			if (_context.IsRunning && _context.IsPaused)
 			{
 				_context.Resume();
@@ -5409,6 +5412,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			//_SetTimingSpeed(_timingSpeed);
+		}
+
+		private void SetPreviewsTopMost(bool activate = true)
+		{
+			foreach (var preview in VixenSystem.Previews)
+			{
+				var p = preview.PreviewModule;
+
+				if (activate)
+				{
+					p.PlayerStarted();
+				}
+				else
+				{
+					p.PlayerEnded();
+				}
+			}
 		}
 
 		private ITiming TimingSource

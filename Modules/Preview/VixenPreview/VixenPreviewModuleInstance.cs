@@ -176,7 +176,26 @@ namespace VixenModules.Preview.VixenPreview
 			
 			base.Dispose(disposing);
 		}
-		
+
+		/// <inheritdoc />
+		protected override void PlayerActivatedImpl()
+		{
+			if (_displayForm.IsOnTopWhenPlaying)
+			{
+				((Form) _displayForm).TopMost = true;
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void PlayerDeactivatedImpl()
+		{
+			if (_displayForm.IsOnTopWhenPlaying)
+			{
+				((Form)_displayForm).TopMost = false;
+				((Form)_displayForm).SendToBack();
+			}
+		}
+
 		protected override void Update()
 		{
 			var sw = Stopwatch.StartNew();

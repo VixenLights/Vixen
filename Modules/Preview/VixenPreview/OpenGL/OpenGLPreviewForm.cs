@@ -150,7 +150,37 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			item.Click += (sender, args) =>
 			{
 				_alwaysOnTop = !_alwaysOnTop;
+				if (_alwaysOnTop)
+				{
+					IsOnTopWhenPlaying = false;
+				}
 				ConfigureAlwaysOnTop();
+				SaveWindowState();
+			};
+
+			_contextMenuStrip.Items.Add(item);
+
+			item = new ToolStripMenuItem("Auto On Top");
+			item.ToolTipText = @"Enable/Disable bringing this preview on top and back automatically.";
+
+			if (IsOnTopWhenPlaying)
+			{
+				item.Image = Tools.GetIcon(Resources.check_mark, iconSize); ;
+			}
+
+			item.Click += (sender, args) =>
+			{
+				IsOnTopWhenPlaying = !IsOnTopWhenPlaying;
+				if (IsOnTopWhenPlaying)
+				{
+					_alwaysOnTop = false;
+					ConfigureAlwaysOnTop();
+				}
+				else if (TopMost)
+				{
+					TopMost = false;
+				}
+
 				SaveWindowState();
 			};
 
@@ -370,6 +400,9 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 
 		/// <inheritdoc />
 		public Guid InstanceId { get; set; }
+
+		/// <inheritdoc />
+		public bool IsOnTopWhenPlaying { get; private set; }
 
 		public void UpdateDisplayName()
 		{
@@ -660,6 +693,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), _showStatus);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), _alwaysOnTop);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), _enableLightScaling);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), IsOnTopWhenPlaying);
 		}
 
 		private void RestoreWindowState()
@@ -672,6 +706,7 @@ namespace VixenModules.Preview.VixenPreview.OpenGL
 			_showStatus = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ShowStatus", name), true);
 			_alwaysOnTop = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/AlwaysOnTop", name), false);
 			_enableLightScaling = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EnableLightScaling", name), true);
+			IsOnTopWhenPlaying = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/OnTopWhenActive", name), false);
 
 			ConfigureStatusBar();
 			ConfigureAlwaysOnTop();
