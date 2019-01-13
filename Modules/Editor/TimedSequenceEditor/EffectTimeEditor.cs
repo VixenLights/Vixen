@@ -99,12 +99,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void EffectTimeEditor_Load(object sender, EventArgs e)
 		{
+			txtStartTime.Culture = CultureInfo.InvariantCulture;
 			txtStartTime.Mask = txtStartTime.Mask = @"00:00.000";
 			txtStartTime.MaskInputRejected += new MaskInputRejectedEventHandler(txtStartTime_MaskInputRejected);
 			txtStartTime.KeyDown += new KeyEventHandler(txtStartTime_KeyDown);
 			txtDuration.MaskInputRejected += new MaskInputRejectedEventHandler(txtDuration_MaskInputRejected);
 			txtDuration.KeyDown += new KeyEventHandler(txtDuration_KeyDown);
+			txtDuration.Culture = CultureInfo.InvariantCulture;
 			txtDuration.Mask = txtDuration.Mask = @"00:00.000";
+			txtEndTime.Culture = CultureInfo.InvariantCulture;
 			txtEndTime.Mask = txtEndTime.Mask = @"00:00.000";
 			txtEndTime.MaskInputRejected += new MaskInputRejectedEventHandler(txtEndTime_MaskInputRejected);
 			txtEndTime.KeyDown += new KeyEventHandler(txtEndTime_KeyDown);

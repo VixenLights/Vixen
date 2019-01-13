@@ -107,6 +107,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Form_AddMultipleEffects_Load(object sender, EventArgs e)
 		{
+			txtStartTime.Culture = txtEndTime.Culture =
+				txtDuration.Culture = txtDurationBetween.Culture = CultureInfo.InvariantCulture;
 			txtStartTime.Mask = txtEndTime.Mask = txtDuration.Mask = txtDurationBetween.Mask = "0:00.000";
 			PopulateMarksList();
 			CalculatePossibleEffects();

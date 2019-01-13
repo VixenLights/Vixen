@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 
@@ -49,16 +50,18 @@ namespace ffmpeg
 		{
 			int maintainAspectValue = maintainAspect ? -1 : height;
 			//make arguements string
-			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r 20 \"{outputPath}\\%5d.bmp\"";
+			string args = $" -y -ss {startPosition} -i \"{_movieFile}\" -an -t {duration.ToString(CultureInfo.InvariantCulture)} -vf \"scale={width}:{maintainAspectValue}{cropVideo}, rotate={rotateVideo}*(PI/180)\" -r 20 \"{outputPath}\\%5d.bmp\"";
 			string ffmpegPath = AppDomain.CurrentDomain.BaseDirectory;
 			ffmpegPath += "Common\\ffmpeg.exe";
-			Console.Out.WriteLine(args);
+			
 			ProcessStartInfo psi = new ProcessStartInfo(ffmpegPath, args);
 			psi.UseShellExecute = false;
 			psi.CreateNoWindow = true;
 			Process process = new Process();
 			process.StartInfo = psi;
+			
 			process.Start();
+			
 			process.WaitForExit();
 		}
 
