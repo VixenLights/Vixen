@@ -198,7 +198,7 @@ namespace VixenModules.App.ExportWizard
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
 				string fileName = _data.ActiveProfile.FalconOutputFolder +
-					                Path.DirectorySeparatorChar + "universes";
+					                Path.DirectorySeparatorChar + "config" + Path.DirectorySeparatorChar + "co-universes.json";
 
 				if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
 				{
@@ -207,7 +207,7 @@ namespace VixenModules.App.ExportWizard
 					File.Move(fileName, newFile);
 				}
 
-				await _data.Export.WriteUniverseFile(fileName);
+				await _data.Export.Write2xUniverseFile(fileName);
 			}
 		}
 
