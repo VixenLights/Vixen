@@ -35,6 +35,13 @@ namespace VixenModules.Effect.Snowflakes
 			SnowBuildUp = false;
 			InitialBuildUp = 0;
 			BuildUpSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 15.0, 15.0 }));
+			XCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+			XSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			YSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+			SnowFlakeMovement = SnowFlakeMovement.None;
+			WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 33.0, 66.0, 100.0 }, new[] { 30.0, 70.0, 30.0, 70.0 }));
+			WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 10.0, 10.0 }));
 		}
 
 		[DataMember]
@@ -106,6 +113,27 @@ namespace VixenModules.Effect.Snowflakes
 		[DataMember]
 		public StringOrientation Orientation { get; set; }
 
+		[DataMember]
+		public Curve XCenterSpeedCurve { get; set; }
+
+		[DataMember]
+		public Curve YCenterSpeedCurve { get; set; }
+
+		[DataMember]
+		public Curve XSpeedVariationCurve { get; set; }
+
+		[DataMember]
+		public Curve YSpeedVariationCurve { get; set; }
+
+		[DataMember]
+		public SnowFlakeMovement SnowFlakeMovement { get; set; }
+
+		[DataMember]
+		public Curve WobbleCurve { get; set; }
+
+		[DataMember]
+		public Curve WobbleVariationCurve { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -143,6 +171,38 @@ namespace VixenModules.Effect.Snowflakes
 					RandomSpeed = true;
 				}
 			}
+
+			if (XCenterSpeedCurve == null)
+			{
+				XCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+
+				if (YCenterSpeedCurve == null)
+				{
+					YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+				if (YCenterSpeedCurve == null)
+				{
+					YCenterSpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+				if (XSpeedVariationCurve == null)
+				{
+					XSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				}
+				if (YSpeedVariationCurve == null)
+				{
+					YSpeedVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				}
+
+				if (WobbleCurve == null)
+				{
+					WobbleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 50.0, 50.0 }));
+				}
+
+				if (WobbleVariationCurve == null)
+				{
+					WobbleVariationCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 0.0 }));
+				}
+			}
 		}
 
 
@@ -167,7 +227,14 @@ namespace VixenModules.Effect.Snowflakes
 				PixelCount = PixelCount,
 				SnowBuildUp = SnowBuildUp,
 				InitialBuildUp = InitialBuildUp,
-				BuildUpSpeedCurve = new Curve(BuildUpSpeedCurve)
+				BuildUpSpeedCurve = new Curve(BuildUpSpeedCurve),
+				XCenterSpeedCurve = new Curve(XCenterSpeedCurve),
+				YCenterSpeedCurve = new Curve(YCenterSpeedCurve),
+				XSpeedVariationCurve = new Curve(XSpeedVariationCurve),
+				YSpeedVariationCurve = new Curve(YSpeedVariationCurve),
+				SnowFlakeMovement = SnowFlakeMovement,
+				WobbleVariationCurve = new Curve(WobbleVariationCurve),
+				WobbleCurve = new Curve(WobbleCurve)
 			};
 			return result;
 		}

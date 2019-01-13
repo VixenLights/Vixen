@@ -21,7 +21,11 @@ namespace VixenModules.Effect.Snowflakes
 		private List<SnowFlakeClass> _snowFlakes;
 		private int _increaseFlakeCount;
 		private int _snowfalakeCountAdjust;
-		
+		private double _xSpeedAdjustment;
+		private double _ySpeedAdjustment;
+		private int _wobbleAdjustment;
+		private int _maxBufferSize;
+
 		public Snowflakes()
 		{
 			_data = new SnowflakesData();
@@ -186,7 +190,6 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-//		[NumberRange(1, 60, 1)]
 		[PropertyOrder(8)]
 		public Curve CenterSpeedCurve
 		{
@@ -203,7 +206,6 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
-//		[NumberRange(2, 60, 1)]
 		[PropertyOrder(9)]
 		public Curve SpeedVariationCurve
 		{
@@ -220,7 +222,6 @@ namespace VixenModules.Effect.Snowflakes
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FlakeCount")]
 		[ProviderDescription(@"FlakeCount")]
-	//	[NumberRange(1, 100, 1)]
 		[PropertyOrder(10)]
 		public Curve FlakeCountCurve
 		{
@@ -233,12 +234,128 @@ namespace VixenModules.Effect.Snowflakes
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Movement")]
+		[ProviderDescription(@"MovementMode")]
+		[PropertyOrder(11)]
+		public SnowFlakeMovement SnowFlakeMovement
+		{
+			get { return _data.SnowFlakeMovement; }
+			set
+			{
+				_data.SnowFlakeMovement = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
+		#region Movement
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"Wobble")]
+		[ProviderDescription(@"Wobble")]
+		[PropertyOrder(0)]
+		public Curve WobbleCurve
+		{
+			get { return _data.WobbleCurve; }
+			set
+			{
+				_data.WobbleCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"WobbleVariation")]
+		[ProviderDescription(@"WobbleVariation")]
+		[PropertyOrder(1)]
+		public Curve WobbleVariationCurve
+		{
+			get { return _data.WobbleVariationCurve; }
+			set
+			{
+				_data.WobbleVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"XSpeed")]
+		[ProviderDescription(@"XSpeed")]
+		[PropertyOrder(2)]
+		public Curve XCenterSpeedCurve
+		{
+			get { return _data.XCenterSpeedCurve; }
+			set
+			{
+				_data.XCenterSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"XSpeedVariation")]
+		[ProviderDescription(@"XSpeedVariation")]
+		[PropertyOrder(3)]
+		public Curve XSpeedVariationCurve
+		{
+			get { return _data.XSpeedVariationCurve; }
+			set
+			{
+				_data.XSpeedVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"YSpeed")]
+		[ProviderDescription(@"YSpeed")]
+		[PropertyOrder(4)]
+		public Curve YCenterSpeedCurve
+		{
+			get { return _data.YCenterSpeedCurve; }
+			set
+			{
+				_data.YCenterSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"YSpeedVariation")]
+		[ProviderDescription(@"YSpeedVariation")]
+		[PropertyOrder(5)]
+		public Curve YSpeedVariationCurve
+		{
+			get { return _data.YSpeedVariationCurve; }
+			set
+			{
+				_data.YSpeedVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
 		#endregion
 
 		#region Color properties
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"ColorType")]
 		[ProviderDescription(@"ColorType")]
 		[PropertyOrder(0)]
@@ -255,7 +372,7 @@ namespace VixenModules.Effect.Snowflakes
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"CenterColor")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
@@ -271,7 +388,7 @@ namespace VixenModules.Effect.Snowflakes
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"OuterColor")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(2)]
@@ -291,7 +408,7 @@ namespace VixenModules.Effect.Snowflakes
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"RandomIntensity")]
 		[ProviderDescription(@"RandomIntensity")]
 		[PropertyOrder(0)]
@@ -307,7 +424,7 @@ namespace VixenModules.Effect.Snowflakes
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		[PropertyOrder(1)]
@@ -373,16 +490,24 @@ namespace VixenModules.Effect.Snowflakes
 				direction = true;
 				variableDirection = true;
 			}
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10);
 			propertyStates.Add("Direction", !direction);
 			propertyStates.Add("MinDirection", variableDirection);
 			propertyStates.Add("MaxDirection", variableDirection);
-			propertyStates.Add("SnowBuildUp", SnowflakeEffect != SnowflakeEffect.Explode);
+			propertyStates.Add("SnowBuildUp", SnowflakeEffect != SnowflakeEffect.Explode && SnowFlakeMovement == SnowFlakeMovement.None);
+			propertyStates.Add("WobbleCurve", SnowFlakeMovement >= SnowFlakeMovement.Wobble);
+			propertyStates.Add("WobbleVariationCurve", SnowFlakeMovement >= SnowFlakeMovement.Wobble);
+			propertyStates.Add("XCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed);
+			propertyStates.Add("YCenterSpeedCurve", SnowFlakeMovement == SnowFlakeMovement.Speed);
+			propertyStates.Add("XSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed);
+			propertyStates.Add("YSpeedVariationCurve", SnowFlakeMovement == SnowFlakeMovement.Speed);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
 			}
+
+			if (SnowFlakeMovement != SnowFlakeMovement.None) SnowBuildUp = false;
 			UpdateFlakeBuildUpAttribute();
 		}
 
@@ -435,6 +560,10 @@ namespace VixenModules.Effect.Snowflakes
 			_increaseFlakeCount = 0;
 			_snowfalakeCountAdjust = 0;
 			_snowFlakes = new List<SnowFlakeClass>();
+			_xSpeedAdjustment = 1;
+			_ySpeedAdjustment = 1;
+			_wobbleAdjustment = 1;
+			_maxBufferSize = Math.Max(BufferHt / 2, BufferWi / 2);
 		}
 
 		protected override void CleanUpRender()
@@ -462,11 +591,72 @@ namespace VixenModules.Effect.Snowflakes
 			var spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
 			var minSpeed = centerSpeed - (spreadSpeed / 2);
 			var maxSpeed = centerSpeed + (spreadSpeed / 2);
-			if (minSpeed < 1)
-				minSpeed = 1;
-			if (maxSpeed > 60)
-				maxSpeed = 60;
-			
+			if (minSpeed < 1) minSpeed = 1;
+			if (maxSpeed > 60) maxSpeed = 60;
+
+			double xSpeedRatio = 1;
+			double ySpeedRatio = 1;
+			double minXSpeed = 1;
+			double maxXSpeed = 1;
+			double minYSpeed = 1;
+			double maxYSpeed = 1;
+			int minWobble = 1;
+			int maxWobble = 1;
+			double wobbleRatio = 1;
+
+			switch (SnowFlakeMovement)
+			{
+				case SnowFlakeMovement.Speed:
+				{
+					// Horizontal Speed Control
+					double xCenterSpeed = CalculateXCenterSpeed(intervalPosFactor);
+					double xSpreadSpeed = CalculateXSpeedVariation(intervalPosFactor);
+					minXSpeed = xCenterSpeed - (xSpreadSpeed / 2);
+					maxXSpeed = xCenterSpeed + (xSpreadSpeed / 2);
+					if (minXSpeed < -100) minXSpeed = -100;
+					if (maxXSpeed > 100) maxXSpeed = 100;
+					if (xCenterSpeed != 0)
+					{
+						if (frame != 0) xSpeedRatio = xCenterSpeed / _xSpeedAdjustment;
+						_xSpeedAdjustment = xCenterSpeed;
+					}
+
+					// Vertical Speed Control
+					double yCenterSpeed = CalculateYCenterSpeed(intervalPosFactor);
+					double ySpreadSpeed = CalculateYSpeedVariation(intervalPosFactor);
+					minYSpeed = yCenterSpeed - (ySpreadSpeed / 2);
+					maxYSpeed = yCenterSpeed + (ySpreadSpeed / 2);
+					if (minYSpeed < -100) minYSpeed = -100;
+					if (maxYSpeed > 100) maxYSpeed = 100;
+					if (yCenterSpeed != 0)
+					{
+						if (frame != 0) ySpeedRatio = yCenterSpeed / _ySpeedAdjustment;
+						_ySpeedAdjustment = yCenterSpeed;
+					}
+
+					break;
+				}
+
+				// Wobble Control
+				case SnowFlakeMovement.Wobble:
+				case SnowFlakeMovement.Wobble2:
+				{
+					double wobbleCenterPosition = CalculateWobbleCenter(intervalPosFactor);
+					double wobbleSpreadPosition = CalculateWobbleVariation(intervalPosFactor);
+					minWobble = (int) (wobbleCenterPosition - (wobbleSpreadPosition / 2));
+					maxWobble = (int) (wobbleCenterPosition + (wobbleSpreadPosition / 2));
+					if (minWobble < -_maxBufferSize) minWobble = -_maxBufferSize;
+					if (maxWobble > _maxBufferSize) maxWobble = _maxBufferSize;
+					if (wobbleCenterPosition != 0)
+					{
+						if (frame != 0) wobbleRatio = wobbleCenterPosition / _wobbleAdjustment;
+						_wobbleAdjustment = (int) wobbleCenterPosition;
+					}
+
+					break;
+				}
+			}
+
 			for (int i = 0; i < flakeCount; i++)
 			{
 				if (_snowFlakes.Count >= CalculateCount(intervalPosFactor) + _increaseFlakeCount - _snowfalakeCountAdjust) break;
@@ -497,21 +687,69 @@ namespace VixenModules.Effect.Snowflakes
 				{
 					m.DeltaX = ((double)direction / 90) * position;
 					m.DeltaY = ((double)Math.Abs(direction - 90) / 90) * position;
+					m.WobbleX = ((double)Math.Abs(direction - 90) / 90);
+					m.WobbleY = -1 * ((double)Math.Abs(direction) / 90);
+					if (RandDouble() >= (double)(90 - direction) / 100)
+					{
+						m.X = 0;
+						m.Y = Rand() % BufferHt;
+					}
+					else
+					{
+						m.X = Rand() % BufferWi;
+						m.Y = 0;
+					}
 				}
 				else if (direction > 90 && direction <= 180)
 				{
 					m.DeltaX = ((double)Math.Abs(direction - 180) / 90) * position;
 					m.DeltaY = (-1 * ((double)Math.Abs(direction - 90) / 90)) * position;
+					m.WobbleX = -1 * ((double)Math.Abs(direction - 90) / 90);
+					m.WobbleY = -1 * ((double)Math.Abs(direction - 180) / 90);
+					if (RandDouble() >= (double)(180 - direction) / 100)
+					{
+						m.X = Rand() % BufferWi;
+						m.Y = BufferHt;
+					}
+					else
+					{
+						m.X = 0;
+						m.Y = Rand() % BufferHt;
+					}
 				}
 				else if (direction > 180 && direction <= 270)
 				{
 					m.DeltaX = (-1 * ((double)Math.Abs(direction - 180) / 90)) * position;
 					m.DeltaY = (-1 * ((double)Math.Abs(direction - 270) / 90)) * position;
+					m.WobbleX = ((double)Math.Abs(direction - 90) / 90);
+					m.WobbleY = -1 * ((double)Math.Abs(direction - 180) / 90);
+					if (RandDouble() >= (double)(270 - direction) / 100)
+					{
+						m.X = BufferWi;
+						m.Y = Rand() % BufferHt;
+					}
+					else
+					{
+						m.X = Rand() % BufferWi;
+						m.Y = BufferHt;
+					}
 				}
 				else if (direction > 270 && direction <= 360)
 				{
 					m.DeltaX = (-1 * ((double)Math.Abs(direction - 360) / 90)) * position;
 					m.DeltaY = ((double)Math.Abs(270 - direction) / 90) * position;
+					m.WobbleX = -1 * ((double)Math.Abs(direction - 270) / 90);
+					m.WobbleY = -1 * ((double)Math.Abs(direction - 360) / 90);
+					if (RandDouble() >= (double)(360 - direction) / 100)
+					{
+						m.X = Rand() % BufferWi;
+						m.Y = 0;
+					}
+					else
+					{
+						m.X = BufferWi;
+						m.Y = Rand() % BufferHt;
+					}
 				}
 
 				//Start position for Snowflake
@@ -520,18 +758,30 @@ namespace VixenModules.Effect.Snowflakes
 					m.X = BufferWi / 2;
 					m.Y = BufferHt / 2;
 				}
-				else
+
+				if (frame == 0)
 				{
-					m.X = Rand() % BufferWi;
-					if (frame == 0)
-						m.Y = Rand() % BufferHt; //This is used so for the first lot of Snowflakes they will start in a random position and then fall from the edge.
-					else
-					{
-						m.Y = BufferHt;
-					}
+					m.X = Rand() % BufferWi - 1;
+					m.Y = Rand(0, BufferHt - 1);
 				}
+
+				if (frame == 0)
+				{
+					m.X = Rand(0, BufferWi);
+					m.Y = Rand(0, BufferHt);
+				}
+
 				m.DeltaXOrig = m.DeltaX;
 				m.DeltaYOrig = m.DeltaY;
+
+				if (SnowFlakeMovement == SnowFlakeMovement.Speed)
+				{
+					m.XSpeed = (RandDouble() * ((maxXSpeed) - minXSpeed) + minXSpeed);
+					m.YSpeed = (RandDouble() * ((maxYSpeed) - minYSpeed) + minYSpeed);
+				}
+
+				m.Wobble = Rand(minWobble, maxWobble);
+				if (Rand(0, 2) == 1 && SnowFlakeMovement == SnowFlakeMovement.Wobble2) m.Wobble = -m.Wobble;
 
 				m.Type = SnowflakeType == SnowflakeType.Random ? RandomFlakeType<SnowflakeType>() : SnowflakeType;
 
@@ -559,7 +809,7 @@ namespace VixenModules.Effect.Snowflakes
 
 			if (SnowBuildUp)
 			{
-				//Renders the Snow on the ground based off the cuurrent height.
+				//Renders the Snow on the ground based off the current height.
 				Color col = OutSideColor[0].GetColorAt((intervalPosFactor) / 100);
 				if (level < 1)
 				{
@@ -581,8 +831,16 @@ namespace VixenModules.Effect.Snowflakes
 			// render all SnowFlakes
 			foreach (SnowFlakeClass snowFlakes in _snowFlakes)
 			{
-				snowFlakes.DeltaX += snowFlakes.DeltaXOrig;
-				snowFlakes.DeltaY += snowFlakes.DeltaYOrig;
+				int xOffsetAdj = 0;
+				int yOffsetAdj = 0;
+				if (SnowFlakeMovement >= SnowFlakeMovement.Wobble)
+				{
+					xOffsetAdj = (int)(snowFlakes.WobbleX * snowFlakes.Wobble);
+					yOffsetAdj = (int)(snowFlakes.WobbleY * snowFlakes.Wobble);
+				}
+
+				snowFlakes.DeltaX += snowFlakes.DeltaXOrig + snowFlakes.XSpeed;
+				snowFlakes.DeltaY += snowFlakes.DeltaYOrig + snowFlakes.YSpeed;
 
 				switch (snowFlakes.Type)
 				{
@@ -609,14 +867,22 @@ namespace VixenModules.Effect.Snowflakes
 						//Skips the location processing part to not waste time as the Snowflake is no longer moving and sitting on the bottom.
 					{
 						//Sets the new position the SnowFlake is moving to
-						colorX = snowFlakes.X + (int)snowFlakes.DeltaX - BufferWi/100;
-						colorY = snowFlakes.Y + (int)snowFlakes.DeltaY + BufferHt/100;
+						colorX = xOffsetAdj + snowFlakes.X + (int) snowFlakes.DeltaX;// - BufferWi/100;
+						colorY = yOffsetAdj + snowFlakes.Y + (int) snowFlakes.DeltaY;// + BufferHt/100;
 
 						if (SnowflakeEffect != SnowflakeEffect.Explode)
 						{
 							//Modifies the colorX and colorY when the Explode effect is not used.
-							colorX = colorX%BufferWi;
-							colorY = colorY%BufferHt;
+							//colorX = colorX%BufferWi;
+							//colorY = colorY%BufferHt;
+
+							if (SnowFlakeMovement >= SnowFlakeMovement.Wobble)
+							{
+								if (colorX < 0) colorX = BufferWi + colorX;
+								if (colorY < 0) colorY = BufferHt + colorY;
+								if (colorX > BufferWi) colorX = colorX - BufferWi;
+								if (colorY > BufferHt) colorY = colorY - BufferHt;
+							}
 
 							if (SnowBuildUp) //Will detect snowflake hits up to 3 pixels wide
 							{
@@ -666,7 +932,6 @@ namespace VixenModules.Effect.Snowflakes
 								if (!snowFlakes.BuildUp)
 									snowFlakes.Expired = true;
 							}
-							break;
 						}
 					}
 					else
@@ -790,20 +1055,96 @@ namespace VixenModules.Effect.Snowflakes
 							}
 						}
 					}
+
+					snowFlakes.XSpeed = snowFlakes.XSpeed * xSpeedRatio;
+					snowFlakes.YSpeed = snowFlakes.YSpeed * ySpeedRatio;
+					snowFlakes.Wobble = snowFlakes.Wobble * wobbleRatio;
+
+					switch (SnowFlakeMovement)
+					{
+						case SnowFlakeMovement.Speed when snowFlakes.Expired:
+						case SnowFlakeMovement.Wobble when snowFlakes.Expired:
+						case SnowFlakeMovement.Wobble2 when snowFlakes.Expired:
+						case SnowFlakeMovement.Wrap when snowFlakes.Expired:
+						{
+							if (colorX < 0)
+							{
+								snowFlakes.DeltaX = 0;
+								snowFlakes.X = BufferWi;
+							}
+							if (colorY < 0)
+							{
+								snowFlakes.DeltaY = 0;
+								snowFlakes.Y = BufferHt;
+							}
+							if (colorX > BufferWi)
+							{
+								snowFlakes.DeltaX = 0;
+								snowFlakes.X = 0;
+							}
+							if (colorY > BufferHt)
+							{
+								snowFlakes.DeltaY = 0;
+								snowFlakes.Y = 0;
+							}
+							snowFlakes.Expired = false;
+							break;
+						}
+						case SnowFlakeMovement.Bounce:
+						{
+							if (colorX < 0)
+							{
+								snowFlakes.X = 0;
+								snowFlakes.DeltaX = 0;
+								snowFlakes.DeltaXOrig = -snowFlakes.DeltaXOrig;
+								snowFlakes.XSpeed = -snowFlakes.XSpeed;
+							}
+
+							if (colorY < 0)
+							{
+								snowFlakes.Y = 0;
+								snowFlakes.DeltaY = 0;
+								snowFlakes.DeltaYOrig = -snowFlakes.DeltaYOrig;
+								snowFlakes.YSpeed = -snowFlakes.YSpeed;
+							}
+
+							if (colorX >= BufferWi)
+							{
+								snowFlakes.X = BufferWi;
+								snowFlakes.DeltaX = 0;
+								snowFlakes.DeltaXOrig = -snowFlakes.DeltaXOrig;
+								snowFlakes.XSpeed = -snowFlakes.XSpeed;
+							}
+							if (colorY >= BufferHt)
+							{
+								snowFlakes.Y = BufferHt;
+								snowFlakes.DeltaY = 0;
+								snowFlakes.DeltaYOrig = -snowFlakes.DeltaYOrig;
+								snowFlakes.YSpeed = -snowFlakes.YSpeed;
+							}
+							
+							snowFlakes.Expired = false;
+							break;
+						}
+					}
 				}
 			}
 
-			// Deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
-				int snowFlakeNum = 0;
-			while (snowFlakeNum < _snowFlakes.Count)
+
+			if (SnowFlakeMovement == SnowFlakeMovement.None)
 			{
-				if (_snowFlakes[snowFlakeNum].Expired)
+				// Deletes SnowFlakes that have expired when reaching the edge of the grid, allowing new Snowflakes to be created.
+				int snowFlakeNum = 0;
+				while (snowFlakeNum < _snowFlakes.Count)
 				{
-					_snowFlakes.RemoveAt(snowFlakeNum);
-				}
-				else
-				{
-					snowFlakeNum++;
+					if (_snowFlakes[snowFlakeNum].Expired)
+					{
+						_snowFlakes.RemoveAt(snowFlakeNum);
+					}
+					else
+					{
+						snowFlakeNum++;
+					}
 				}
 			}
 		}
@@ -825,6 +1166,11 @@ namespace VixenModules.Effect.Snowflakes
 			public bool BuildUp;
 			public int BuildUpX;
 			public int BuildUpY;
+			public double XSpeed;
+			public double YSpeed;
+			public double WobbleX;
+			public double WobbleY;
+			public double Wobble;
 		}
 
 		private double CalculateCount(double intervalPos)
@@ -861,6 +1207,35 @@ namespace VixenModules.Effect.Snowflakes
 			return ScaleCurveToValue(BuildUpSpeedCurve.GetValue(intervalPos), 80, 1);
 		}
 
+		private double CalculateXCenterSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(XCenterSpeedCurve.GetValue(intervalPos), 5, -5);
+		}
+
+		private double CalculateXSpeedVariation(double intervalPos)
+		{
+			return ScaleCurveToValue(XSpeedVariationCurve.GetValue(intervalPos), 10, 0);
+		}
+
+		private double CalculateYCenterSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(YCenterSpeedCurve.GetValue(intervalPos), 5, -5);
+		}
+
+		private double CalculateYSpeedVariation(double intervalPos)
+		{
+			return ScaleCurveToValue(YSpeedVariationCurve.GetValue(intervalPos), 10, 0);
+		}
+
+		private double CalculateWobbleCenter(double intervalPos)
+		{
+			return Math.Round(ScaleCurveToValue(WobbleCurve.GetValue(intervalPos), _maxBufferSize, -_maxBufferSize));
+		}
+
+		private int CalculateWobbleVariation(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(WobbleVariationCurve.GetValue(intervalPos), _maxBufferSize, 0));
+		}
 
 
 		// generates a random number between Color num1 and and Color num2.

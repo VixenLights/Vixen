@@ -19,4 +19,20 @@ namespace VixenModules.Effect.Snowflakes
 		[Description("45 Point")]
 		FortyFive
 	}
+
+	public enum SnowFlakeMovement
+	{
+		[Description("None")]
+		None,
+		[Description("Bounce")]
+		Bounce,
+		[Description("Wrap")]
+		Wrap,
+		[Description("Speed")]
+		Speed,
+		[Description("Wobble")]
+		Wobble,
+		[Description("Wobble Both Directions")]
+		Wobble2
+	}
 }
