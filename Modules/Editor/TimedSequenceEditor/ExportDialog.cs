@@ -83,8 +83,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
             outputFormatComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), exportTypeDefault);
             resolutionComboBox.SelectedIndex = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), exportResolutionDefault);
+			chkGenerateControllerInfo.Checked = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/GenerateUniverse", false);
+			radio2x.Checked = _profile.GetSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Universe2x", true);
+	        radio1x.Checked = !radio2x.Checked;
 
-            buttonStop.Enabled = false;
+			buttonStop.Enabled = false;
 	        UpdateNetworkList();
 
 			networkListView.DragDrop += networkListView_DragDrop;
@@ -162,13 +165,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 														"Warning", MessageBoxButtons.OK, SystemIcons.Warning);
 			        messageBox.ShowDialog();
 		        }
-		        var fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
-			                        Path.DirectorySeparatorChar +
-			                        Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
-			                        "-co-universes.json";
-			    await _exportOps.Write2xUniverseFile(fileName);
+
+		        if (chkGenerateControllerInfo.Enabled && chkGenerateControllerInfo.Checked)
+		        {
+			        if (radio2x.Checked)
+			        {
+				        var fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
+				                       Path.DirectorySeparatorChar +
+				                       Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
+				                       "-co-universes.json";
+				        await _exportOps.Write2xUniverseFile(fileName);
+					}
+			        else
+			        {
+				        var fileName = Path.GetDirectoryName(_exportOps.OutFileName) +
+				                       Path.DirectorySeparatorChar +
+				                       Path.GetFileNameWithoutExtension(_exportOps.OutFileName) +
+				                       "-universes";
+				        await _exportOps.WriteUniverseFile(fileName);
+					}
+		        }
+		        
 			}
-	        else
+	        else if(chkGenerateControllerInfo.Checked)
 	        {
 		        _exportOps.WriteControllerInfo(_sequence);
 			}
@@ -424,13 +443,46 @@ namespace VixenModules.Editor.TimedSequenceEditor
         {
             ComboBox comboBox = (ComboBox)sender;
             _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportFormat", Name), (int)comboBox.SelectedIndex);
+
+			SetUniverseVersionEnabled();
         }
 
-        private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+	    private void SetUniverseVersionEnabled()
+	    {
+		    if (chkGenerateControllerInfo.Checked)
+		    {
+			    if (outputFormatComboBox.SelectedItem.ToString().StartsWith("Falcon")) //Ewww...
+			    {
+				    radio2x.Enabled = radio1x.Enabled = true;
+			    }
+			    else
+			    {
+				    radio2x.Enabled = radio1x.Enabled = false;
+			    }
+			}
+		    else
+		    {
+			    radio2x.Enabled = radio1x.Enabled = false;
+			}
+		    
+	    }
+
+	    private void resolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
             ComboBox comboBox = (ComboBox)sender;
             _profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ExportResolution", Name), (int)comboBox.SelectedIndex);
         }
+
+		private void chkGenerateControllerInfo_CheckedChanged(object sender, EventArgs e)
+		{
+			_profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/GenerateUniverse", chkGenerateControllerInfo.Checked);
+			SetUniverseVersionEnabled();
+		}
+
+		private void radio2x_CheckedChanged(object sender, EventArgs e)
+		{
+			_profile.PutSetting(XMLProfileSettings.SettingType.AppSettings, $"{Name}/Universe2x", radio2x.Checked);
+		}
 	}
 }

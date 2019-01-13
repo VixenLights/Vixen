@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-			System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Test");
+			System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Test");
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.outputFormatComboBox = new System.Windows.Forms.ComboBox();
@@ -49,9 +49,17 @@
 			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.btnUserCancel = new System.Windows.Forms.Button();
+			this.chkGenerateControllerInfo = new System.Windows.Forms.CheckBox();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.radio1x = new System.Windows.Forms.RadioButton();
+			this.radio2x = new System.Windows.Forms.RadioButton();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupBox1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.tableLayoutPanel1.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -236,9 +244,9 @@
             this.endColumn});
 			this.networkListView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.networkListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			listViewItem4.StateImageIndex = 0;
+			listViewItem2.StateImageIndex = 0;
 			this.networkListView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem4});
+            listViewItem2});
 			this.networkListView.Location = new System.Drawing.Point(7, 22);
 			this.networkListView.MultiSelect = false;
 			this.networkListView.Name = "networkListView";
@@ -307,6 +315,75 @@
 			this.btnUserCancel.MouseLeave += new System.EventHandler(this.buttonBackground_MouseLeave);
 			this.btnUserCancel.MouseHover += new System.EventHandler(this.buttonBackground_MouseHover);
 			// 
+			// chkGenerateControllerInfo
+			// 
+			this.chkGenerateControllerInfo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.chkGenerateControllerInfo.AutoSize = true;
+			this.chkGenerateControllerInfo.Location = new System.Drawing.Point(3, 6);
+			this.chkGenerateControllerInfo.Name = "chkGenerateControllerInfo";
+			this.chkGenerateControllerInfo.Size = new System.Drawing.Size(150, 19);
+			this.chkGenerateControllerInfo.TabIndex = 19;
+			this.chkGenerateControllerInfo.Text = "Generate Controller File";
+			this.chkGenerateControllerInfo.UseVisualStyleBackColor = true;
+			this.chkGenerateControllerInfo.CheckedChanged += new System.EventHandler(this.chkGenerateControllerInfo_CheckedChanged);
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Location = new System.Drawing.Point(0, 0);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(94, 19);
+			this.radioButton1.TabIndex = 20;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "radioButton1";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// radio1x
+			// 
+			this.radio1x.AutoSize = true;
+			this.radio1x.Location = new System.Drawing.Point(3, 3);
+			this.radio1x.Name = "radio1x";
+			this.radio1x.Size = new System.Drawing.Size(62, 19);
+			this.radio1x.TabIndex = 21;
+			this.radio1x.Text = "FPP 1.x";
+			this.radio1x.UseVisualStyleBackColor = true;
+			// 
+			// radio2x
+			// 
+			this.radio2x.AutoSize = true;
+			this.radio2x.Checked = true;
+			this.radio2x.Location = new System.Drawing.Point(71, 3);
+			this.radio2x.Name = "radio2x";
+			this.radio2x.Size = new System.Drawing.Size(62, 19);
+			this.radio2x.TabIndex = 22;
+			this.radio2x.TabStop = true;
+			this.radio2x.Text = "FPP 2.x";
+			this.radio2x.UseVisualStyleBackColor = true;
+			this.radio2x.CheckedChanged += new System.EventHandler(this.radio2x_CheckedChanged);
+			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Controls.Add(this.chkGenerateControllerInfo, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(19, 400);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 1;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(481, 32);
+			this.tableLayoutPanel1.TabIndex = 23;
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.radio1x);
+			this.panel1.Controls.Add(this.radio2x);
+			this.panel1.Location = new System.Drawing.Point(159, 3);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(314, 26);
+			this.panel1.TabIndex = 20;
+			// 
 			// ExportDialog
 			// 
 			this.AcceptButton = this.buttonStart;
@@ -316,6 +393,8 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.CancelButton = this.btnUserCancel;
 			this.ClientSize = new System.Drawing.Size(516, 522);
+			this.Controls.Add(this.tableLayoutPanel1);
+			this.Controls.Add(this.radioButton1);
 			this.Controls.Add(this.btnUserCancel);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.groupBox2);
@@ -335,6 +414,10 @@
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -362,5 +445,11 @@
 		private System.Windows.Forms.ColumnHeader startColumn;
 		private System.Windows.Forms.Button btnUserCancel;
 		private System.Windows.Forms.ColumnHeader endColumn;
+		private System.Windows.Forms.CheckBox chkGenerateControllerInfo;
+		private System.Windows.Forms.RadioButton radioButton1;
+		private System.Windows.Forms.RadioButton radio1x;
+		private System.Windows.Forms.RadioButton radio2x;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.Panel panel1;
 	}
 }
