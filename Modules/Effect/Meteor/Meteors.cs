@@ -23,6 +23,10 @@ namespace VixenModules.Effect.Meteors
 		private double _gradientPosition = 0;
 		private IPixelFrameBuffer _tempBuffer;
 		private int _maxGroundHeight;
+		private double _xSpeedAdjustment;
+		private double _ySpeedAdjustment;
+		private int _wobbleAdjustment;
+		private int _maxBufferSize;
 
 		public Meteors()
 		{
@@ -121,7 +125,6 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Speed")]
 		[ProviderDescription(@"Speed")]
-		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(5)]
 		public Curve CenterSpeedCurve
 		{
@@ -138,7 +141,6 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"SpeedVariation")]
 		[ProviderDescription(@"SpeedVariation")]
-		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(6)]
 		public Curve SpeedVariationCurve
 		{
@@ -155,7 +157,6 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Count")]
 		[ProviderDescription(@"Count")]
-		//[NumberRange(1, 200, 1)]
 		[PropertyOrder(7)]
 		public Curve PixelCountCurve
 		{
@@ -172,7 +173,6 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"TailLength")]
 		[ProviderDescription(@"TailLength")]
-		//[NumberRange(1, 100, 1)]
 		[PropertyOrder(8)]
 		public Curve LengthCurve
 		{
@@ -203,9 +203,26 @@ namespace VixenModules.Effect.Meteors
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Movement")]
+		[ProviderDescription(@"MovementMode")]
+		[PropertyOrder(10)]
+		public MeteorMovement MeteorMovement
+		{
+			get { return _data.MeteorMovement; }
+			set
+			{
+				_data.MeteorMovement = value;
+				IsDirty = true;
+				UpdateDirectionAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"EnableGroundLevel")]
 		[ProviderDescription(@"EnableGroundLevel")]
-		[PropertyOrder(10)]
+		[PropertyOrder(11)]
 		public bool EnableGroundLevel
 		{
 			get { return _data.EnableGroundLevel; }
@@ -222,7 +239,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"GroundLevel")]
 		[ProviderDescription(@"GroundLevel")]
-		[PropertyOrder(11)]
+		[PropertyOrder(12)]
 		public Curve GroundLevelCurve
 		{
 			get { return _data.GroundLevelCurve; }
@@ -238,7 +255,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"MeteorPerString")]
 		[ProviderDescription(@"MeteorPerString")]
-		[PropertyOrder(12)]
+		[PropertyOrder(13)]
 		public bool MeteorPerString
 		{
 			get { return _data.MeteorPerString; }
@@ -255,7 +272,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"FlipDirection")]
 		[ProviderDescription(@"FlipDirection")]
-		[PropertyOrder(13)]
+		[PropertyOrder(14)]
 		public bool FlipDirection
 		{
 			get { return _data.FlipDirection; }
@@ -272,7 +289,7 @@ namespace VixenModules.Effect.Meteors
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"CountPerString")]
 		[ProviderDescription(@"CountPerString")]
-		[PropertyOrder(14)]
+		[PropertyOrder(15)]
 		public bool CountPerString
 		{
 			get { return _data.CountPerString; }
@@ -287,10 +304,110 @@ namespace VixenModules.Effect.Meteors
 
 		#endregion
 
+		#region Movement
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"Wobble")]
+		[ProviderDescription(@"Wobble")]
+		[PropertyOrder(0)]
+		public Curve WobbleCurve
+		{
+			get { return _data.WobbleCurve; }
+			set
+			{
+				_data.WobbleCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"WobbleVariation")]
+		[ProviderDescription(@"WobbleVariation")]
+		[PropertyOrder(1)]
+		public Curve WobbleVariationCurve
+		{
+			get { return _data.WobbleVariationCurve; }
+			set
+			{
+				_data.WobbleVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"XSpeed")]
+		[ProviderDescription(@"XSpeed")]
+		[PropertyOrder(2)]
+		public Curve XCenterSpeedCurve
+		{
+			get { return _data.XCenterSpeedCurve; }
+			set
+			{
+				_data.XCenterSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"XSpeedVariation")]
+		[ProviderDescription(@"XSpeedVariation")]
+		[PropertyOrder(3)]
+		public Curve XSpeedVariationCurve
+		{
+			get { return _data.XSpeedVariationCurve; }
+			set
+			{
+				_data.XSpeedVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"YSpeed")]
+		[ProviderDescription(@"YSpeed")]
+		[PropertyOrder(4)]
+		public Curve YCenterSpeedCurve
+		{
+			get { return _data.YCenterSpeedCurve; }
+			set
+			{
+				_data.YCenterSpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Movement", 2)]
+		[ProviderDisplayName(@"YSpeedVariation")]
+		[ProviderDescription(@"YSpeedVariation")]
+		[PropertyOrder(5)]
+		public Curve YSpeedVariationCurve
+		{
+			get { return _data.YSpeedVariationCurve; }
+			set
+			{
+				_data.YSpeedVariationCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		#endregion
+
 		#region Color properties
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"ColorType")]
 		[ProviderDescription(@"ColorType")]
 		[PropertyOrder(0)]
@@ -307,7 +424,7 @@ namespace VixenModules.Effect.Meteors
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"ColorGradients")]
 		[ProviderDescription(@"Color")]
 		[PropertyOrder(1)]
@@ -323,7 +440,7 @@ namespace VixenModules.Effect.Meteors
 		}
 
 		[Value]
-		[ProviderCategory(@"Color", 2)]
+		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GroundColor")]
 		[ProviderDescription(@"GroundColor")]
 		[PropertyOrder(2)]
@@ -343,7 +460,7 @@ namespace VixenModules.Effect.Meteors
 		#region Level properties
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"RandomIntensity")]
 		[ProviderDescription(@"RandomIntensity")]
 		[PropertyOrder(0)]
@@ -359,7 +476,7 @@ namespace VixenModules.Effect.Meteors
 		}
 
 		[Value]
-		[ProviderCategory(@"Brightness", 3)]
+		[ProviderCategory(@"Brightness", 4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
 		[PropertyOrder(1)]
@@ -412,17 +529,26 @@ namespace VixenModules.Effect.Meteors
 				variableDirection = true;
 			}
 			
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5);
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(11);
 			propertyStates.Add("Direction", !direction && !MeteorPerString); 
 			propertyStates.Add("MinDirection", variableDirection && !MeteorPerString);
 			propertyStates.Add("MaxDirection", variableDirection && !MeteorPerString);
 			propertyStates.Add("FlipDirection", MeteorPerString);
 			propertyStates.Add("CountPerString", MeteorPerString);
+			propertyStates.Add("WobbleCurve", MeteorMovement >= MeteorMovement.Wobble);
+			propertyStates.Add("WobbleVariationCurve", MeteorMovement >= MeteorMovement.Wobble);
+			propertyStates.Add("XCenterSpeedCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("YCenterSpeedCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("XSpeedVariationCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("YSpeedVariationCurve", MeteorMovement == MeteorMovement.Speed);
+			propertyStates.Add("EnableGroundLevel", MeteorMovement == MeteorMovement.None);
 			SetBrowsable(propertyStates);
 			if (refresh)
 			{
 				TypeDescriptor.Refresh(this);
 			}
+
+			if (MeteorMovement != MeteorMovement.None) EnableGroundLevel = false;
 		}
 
 		private void UpdateGroundLevelAttribute(bool refresh = true)
@@ -472,6 +598,10 @@ namespace VixenModules.Effect.Meteors
 		protected override void SetupRender()
 		{
 			_maxGroundHeight = 0;
+			_xSpeedAdjustment = 1;
+			_ySpeedAdjustment = 1;
+			_wobbleAdjustment = 1;
+
 			if (EnableGroundLevel)
 			{
 				_tempBuffer = new PixelFrameBuffer(BufferWi + 10, BufferHt + 10);
@@ -488,6 +618,7 @@ namespace VixenModules.Effect.Meteors
 			}
 
 			_meteors = new List<MeteorClass>(32);
+			_maxBufferSize = Math.Max(BufferHt / 2, BufferWi / 2);
 		}
 
 		protected override void CleanUpRender()
@@ -509,12 +640,73 @@ namespace VixenModules.Effect.Meteors
 			double spreadSpeed = CalculateSpeedVariation(intervalPosFactor);
 			double minSpeed = centerSpeed - (spreadSpeed / 2);
 			double maxSpeed = centerSpeed + (spreadSpeed / 2);
-			if (minSpeed < 1)
-				minSpeed = 1;
-			if (maxSpeed > 200)
-				maxSpeed = 200;
+			if (minSpeed < 1) minSpeed = 1;
+			if (maxSpeed > 200) maxSpeed = 200;
 			if (tailLength < 1) tailLength = 1;
-			
+
+			double xSpeedRatio = 1;
+			double ySpeedRatio = 1;
+			double minXSpeed = 1;
+			double maxXSpeed = 1;
+			double minYSpeed = 1;
+			double maxYSpeed = 1;
+			int minWobble = 1;
+			int maxWobble = 1;
+			double wobbleRatio = 1;
+
+			switch (MeteorMovement)
+			{
+				case MeteorMovement.Speed:
+				{
+					// Horizontal Speed Control
+					double xCenterSpeed = CalculateXCenterSpeed(intervalPosFactor);
+					double xSpreadSpeed = CalculateXSpeedVariation(intervalPosFactor);
+					minXSpeed = xCenterSpeed - (xSpreadSpeed / 2);
+					maxXSpeed = xCenterSpeed + (xSpreadSpeed / 2);
+					if (minXSpeed < -100) minXSpeed = -100;
+					if (maxXSpeed > 100) maxXSpeed = 100;
+					if (xCenterSpeed != 0)
+					{
+						if (frame != 0) xSpeedRatio = xCenterSpeed / _xSpeedAdjustment;
+						_xSpeedAdjustment = xCenterSpeed;
+					}
+
+					// Vertical Speed Control
+					double yCenterSpeed = CalculateYCenterSpeed(intervalPosFactor);
+					double ySpreadSpeed = CalculateYSpeedVariation(intervalPosFactor);
+					minYSpeed = yCenterSpeed - (ySpreadSpeed / 2);
+					maxYSpeed = yCenterSpeed + (ySpreadSpeed / 2);
+					if (minYSpeed < -100) minYSpeed = -100;
+					if (maxYSpeed > 100) maxYSpeed = 100;
+					if (yCenterSpeed != 0)
+					{
+						if (frame != 0) ySpeedRatio = yCenterSpeed / _ySpeedAdjustment;
+						_ySpeedAdjustment = yCenterSpeed;
+					}
+
+					break;
+				}
+
+				// Wobble Control
+				case MeteorMovement.Wobble:
+				case MeteorMovement.Wobble2:
+					{
+					double wobbleCenterPosition = CalculateWobbleCenter(intervalPosFactor);
+					double wobbleSpreadPosition = CalculateWobbleVariation(intervalPosFactor);
+					minWobble = (int) (wobbleCenterPosition - (wobbleSpreadPosition / 2));
+					maxWobble = (int) (wobbleCenterPosition + (wobbleSpreadPosition / 2));
+					if (minWobble < -_maxBufferSize) minWobble = -_maxBufferSize;
+					if (maxWobble > _maxBufferSize) maxWobble = _maxBufferSize;
+					if (wobbleCenterPosition != 0)
+					{
+						if (frame != 0) wobbleRatio = wobbleCenterPosition / _wobbleAdjustment;
+						_wobbleAdjustment = (int) wobbleCenterPosition;
+					}
+
+					break;
+				}
+			}
+
 			// create new meteors and maintain maximum number as per users selection.
 			HSV hsv;
 			int adjustedPixelCount;
@@ -530,7 +722,7 @@ namespace VixenModules.Effect.Meteors
 				}
 				else
 				{
-					adjustedPixelCount = pixelCount < 10 ? pixelCount : pixelCount / 10;
+					adjustedPixelCount = pixelCount < 10 || MeteorMovement >= MeteorMovement.Wobble ? pixelCount : pixelCount / 10;
 				}
 			}
 			else
@@ -560,12 +752,12 @@ namespace VixenModules.Effect.Meteors
 					int direction;
 					if (MeteorEffect == MeteorsEffect.None)
 						direction =
-							Direction; //Set Range for standard Meteor as we don't want to just have them going straight down or two dirctions like the original Meteor effect.
+							Direction; //Set Range for standard Meteor as we don't want to just have them going straight down or two directions like the original Meteor effect.
 					else
 					{
 						//This is to generate random directions between the Min and Max values
 						//However if Someone makes the MaxDirection lower then the Min Direction then
-						//the new direction will be the inverserve of the Min and Max effectively changing
+						//the new direction will be the inverse of the Min and Max effectively changing
 						//the range from a downward motion to an upward motion, increasing the feature capability.
 						if (maxDirection <= minDirection)
 						{
@@ -574,7 +766,7 @@ namespace VixenModules.Effect.Meteors
 						}
 						else
 						{
-							//used for the downward movemnet of the Meteor (standard way)
+							//used for the downward movement of the Meteor (standard way)
 							direction = Rand(minDirection, maxDirection);
 						}
 					}
@@ -604,6 +796,8 @@ namespace VixenModules.Effect.Meteors
 
 						m.DeltaY = m.TailY * position;
 						m.Y = Rand() % BufferHt;
+						m.WobbleX = -1 * ((double)Math.Abs(direction - 270) / 90);
+						m.WobbleY = -1 * ((double)Math.Abs(direction - 360) / 90);
 					}
 					else if (direction >= 0 && direction <= 90)
 					{
@@ -621,6 +815,8 @@ namespace VixenModules.Effect.Meteors
 							m.X = Rand() % BufferWi;
 							m.Y = 0;
 						}
+						m.WobbleX = ((double)Math.Abs(direction - 90) / 90);
+						m.WobbleY = -1 * ((double)Math.Abs(direction ) / 90);
 					}
 					else if (direction > 90 && direction <= 180)
 					{
@@ -638,6 +834,8 @@ namespace VixenModules.Effect.Meteors
 							m.X = 0;
 							m.Y = Rand() % BufferHt;
 						}
+						m.WobbleX = -1 * ((double)Math.Abs(direction - 90) / 90);
+						m.WobbleY = -1 * ((double)Math.Abs(direction - 180) / 90);
 					}
 					else if (direction > 180 && direction <= 270)
 					{
@@ -655,6 +853,8 @@ namespace VixenModules.Effect.Meteors
 							m.X = Rand() % BufferWi;
 							m.Y = BufferHt;
 						}
+						m.WobbleX = ((double)Math.Abs(direction - 90) / 90);
+						m.WobbleY = -1 * ((double)Math.Abs(direction - 180) / 90);
 					}
 					else if (direction > 270 && direction <= 360)
 					{
@@ -672,6 +872,8 @@ namespace VixenModules.Effect.Meteors
 							m.X = BufferWi;
 							m.Y = Rand() % BufferHt;
 						}
+						m.WobbleX = -1 * ((double)Math.Abs(direction - 270) / 90);
+						m.WobbleY = -1 * ((double)Math.Abs(direction - 360) / 90);
 					}
 
 					if (MeteorEffect == MeteorsEffect.Explode)
@@ -695,6 +897,15 @@ namespace VixenModules.Effect.Meteors
 
 					m.DeltaXOrig = m.DeltaX;
 					m.DeltaYOrig = m.DeltaY;
+
+					if (MeteorMovement == MeteorMovement.Speed)
+					{
+						m.XSpeed = (RandDouble() * ((maxXSpeed) - minXSpeed) + minXSpeed);
+						m.YSpeed = (RandDouble() * ((maxYSpeed) - minYSpeed) + minYSpeed);
+					}
+					
+					m.Wobble = Rand(minWobble, maxWobble);
+					if (Rand(0, 2) == 1 && MeteorMovement == MeteorMovement.Wobble2) m.Wobble = -m.Wobble;
 
 					switch (ColorType)
 					{
@@ -737,10 +948,26 @@ namespace VixenModules.Effect.Meteors
 			// render meteors
 			foreach (MeteorClass meteor in _meteors)
 			{
-				meteor.DeltaX += meteor.DeltaXOrig;
-				meteor.DeltaY += meteor.DeltaYOrig;
-				int colorX = meteor.X + (int)meteor.DeltaX - BufferWi / 100;
-				int colorY = meteor.Y + (int)meteor.DeltaY + BufferHt / 100;
+				int xOffsetAdj = 0;
+				int yOffsetAdj = 0;
+				if (MeteorMovement >= MeteorMovement.Wobble)
+				{
+					xOffsetAdj = (int) (meteor.WobbleX * meteor.Wobble);
+					yOffsetAdj = (int) (meteor.WobbleY * meteor.Wobble);
+				}
+
+				meteor.DeltaX += meteor.DeltaXOrig + meteor.XSpeed;
+				meteor.DeltaY += meteor.DeltaYOrig + meteor.YSpeed;
+				int colorX = xOffsetAdj + meteor.X + (int)meteor.DeltaX - BufferWi / 100;
+				int colorY = yOffsetAdj + meteor.Y + (int)meteor.DeltaY + BufferHt / 100;
+
+				if (MeteorMovement >= MeteorMovement.Wobble)
+				{
+					if (colorX < 0) colorX = BufferWi + colorX;
+					if (colorY < 0)colorY = BufferHt + colorY;
+					if (colorX > BufferWi) colorX = colorX - BufferWi;
+					if (colorY > BufferHt) colorY = colorY - BufferHt;
+				}
 
 				for (int ph = 0; ph < tailLength; ph++)
 				{
@@ -809,19 +1036,100 @@ namespace VixenModules.Effect.Meteors
 					meteor.Expired = true; //flags Meteors that have reached the end of the grid as expiried.
 					//	break;
 				}
+
+				meteor.XSpeed = meteor.XSpeed * xSpeedRatio;
+				meteor.YSpeed = meteor.YSpeed * ySpeedRatio;
+				meteor.Wobble = meteor.Wobble * wobbleRatio;
+
+				switch (MeteorMovement)
+				{
+					case MeteorMovement.Speed when meteor.Expired:
+					case MeteorMovement.Wobble when meteor.Expired:
+					case MeteorMovement.Wobble2 when meteor.Expired:
+					case MeteorMovement.Wrap when meteor.Expired:
+					{
+						if (colorX < 0)
+						{
+							meteor.DeltaX = 0;
+							meteor.X = BufferWi;
+						}
+						if (colorY < 0)
+						{
+							meteor.DeltaY = 0;
+							meteor.Y = BufferHt;
+						}
+						if (colorX > BufferWi)
+						{
+							meteor.DeltaX = 0;
+							meteor.X = 0;
+						}
+						if (colorY > BufferHt)
+						{
+							meteor.DeltaY = 0;
+							meteor.Y = 0;
+						}
+						meteor.Expired = false;
+						break;
+					}
+					case MeteorMovement.Bounce when meteor.Expired:
+					{
+						if (colorX < 0)
+						{
+							meteor.X = 0;
+							meteor.DeltaX = 0;
+							meteor.DeltaXOrig = -meteor.DeltaXOrig;
+							meteor.TailX = -meteor.TailX;
+							meteor.XSpeed = -meteor.XSpeed;
+							}
+
+						if (colorY < 0)
+						{
+							meteor.Y = 0;
+							meteor.DeltaY = 0;
+							meteor.DeltaYOrig = -meteor.DeltaYOrig;
+							meteor.TailY = -meteor.TailY;
+							meteor.YSpeed = -meteor.YSpeed;
+							}
+
+						if (colorX > BufferWi)
+						{
+							meteor.X = BufferWi;
+							meteor.DeltaX = 0;
+							meteor.DeltaXOrig = -meteor.DeltaXOrig;
+							meteor.TailX = -meteor.TailX;
+							meteor.XSpeed = -meteor.XSpeed;
+						}
+						if (colorY > BufferHt)
+						{
+							meteor.Y = BufferHt;
+							meteor.DeltaY = 0;
+							meteor.DeltaYOrig = -meteor.DeltaYOrig;
+							meteor.TailY = -meteor.TailY;
+							meteor.YSpeed = -meteor.YSpeed;
+							}
+
+						
+							meteor.Expired = false;
+						break;
+					}
+				}
 			}
 
-			// delete old meteors
-			int meteorNum = 0;
-			while (meteorNum < _meteors.Count)
+			if (MeteorMovement == MeteorMovement.None)
 			{
-				if (_meteors[meteorNum].Expired)
+				// delete old meteors
+				int meteorNum = 0;
+				while (meteorNum < _meteors.Count)
 				{
-					_meteors.RemoveAt(meteorNum);
-				}
-				else
-				{
-					meteorNum++;
+
+					if (_meteors[meteorNum].Expired)
+					{
+						_meteors.RemoveAt(meteorNum);
+					}
+					else
+					{
+						meteorNum++;
+					}
 				}
 			}
 		}
@@ -864,6 +1172,36 @@ namespace VixenModules.Effect.Meteors
 			return ScaleCurveToValue(GroundLevelCurve.GetValue(intervalPos), BufferHt - maxGroundHeight, 0);
 		}
 
+		private double CalculateXCenterSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(XCenterSpeedCurve.GetValue(intervalPos), 5, -5);
+		}
+
+		private double CalculateXSpeedVariation(double intervalPos)
+		{
+			return ScaleCurveToValue(XSpeedVariationCurve.GetValue(intervalPos), 10, 0);
+		}
+
+		private double CalculateYCenterSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(YCenterSpeedCurve.GetValue(intervalPos), 5, -5);
+		}
+
+		private double CalculateYSpeedVariation(double intervalPos)
+		{
+			return ScaleCurveToValue(YSpeedVariationCurve.GetValue(intervalPos), 10, 0);
+		}
+
+		private double CalculateWobbleCenter(double intervalPos)
+		{
+			return Math.Round(ScaleCurveToValue(WobbleCurve.GetValue(intervalPos), _maxBufferSize, -_maxBufferSize));
+		}
+
+		private int CalculateWobbleVariation(double intervalPos)
+		{
+			return (int)Math.Round(ScaleCurveToValue(WobbleVariationCurve.GetValue(intervalPos), _maxBufferSize, 0));
+		}
+
 		// for Meteor effects
 		public class MeteorClass
 		{
@@ -879,6 +1217,11 @@ namespace VixenModules.Effect.Meteors
 			public bool Expired = false;
 			public int Color;
 			public double HsvBrightness;
+			public double XSpeed;
+			public double YSpeed;
+			public double WobbleX;
+			public double WobbleY;
+			public double Wobble;
 		}
 
 		// generates a random number between Color num1 and and Color num2.

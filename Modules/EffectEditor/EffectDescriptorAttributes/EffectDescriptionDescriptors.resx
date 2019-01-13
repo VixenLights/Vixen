@@ -816,4 +816,28 @@
   <data name="StrobeSource" xml:space="preserve">
     <value>Selects what source is used to determine change.</value>
   </data>
+  <data name="XSpeed" xml:space="preserve">
+    <value>Horizontal Center Speed</value>
+  </data>
+  <data name="XSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
+  </data>
+  <data name="YSpeed" xml:space="preserve">
+    <value>Horizontal Center Speed</value>
+  </data>
+  <data name="YSpeedVariation" xml:space="preserve">
+    <value>Randomly adjust the Speed around the center Speed by the amount of variation.</value>
+  </data>
+  <data name="MovementSpeed" xml:space="preserve">
+    <value>Adjusts the Meteor direction based on X and Y Speed curves.</value>
+  </data>
+  <data name="Wobble" xml:space="preserve">
+    <value>Moves the Meteors from side to side.</value>
+  </data>
+  <data name="WobbleVariation" xml:space="preserve">
+    <value>Randomly adjust the Wobble around the Wobble level by the amount of variation.</value>
+  </data>
+  <data name="MovementMode" xml:space="preserve">
+    <value>Adjusts the type of movement.</value>
+  </data>
 </root>

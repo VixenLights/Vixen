@@ -810,4 +810,25 @@
   <data name="StrobeSource" xml:space="preserve">
     <value>Strobe Source</value>
   </data>
+  <data name="XSpeed" xml:space="preserve">
+    <value>Horizontal Center Speed</value>
+  </data>
+  <data name="XSpeedVariation" xml:space="preserve">
+    <value>Horizontal Speed Variation</value>
+  </data>
+  <data name="YSpeed" xml:space="preserve">
+    <value>Vertical Center Speed</value>
+  </data>
+  <data name="YSpeedVariation" xml:space="preserve">
+    <value>Vertical Speed Variation</value>
+  </data>
+  <data name="MovementSpeed" xml:space="preserve">
+    <value>Movement Speed</value>
+  </data>
+  <data name="Wobble" xml:space="preserve">
+    <value>Wobble</value>
+  </data>
+  <data name="WobbleVariation" xml:space="preserve">
+    <value>Wobble Variation</value>
+  </data>
 </root>
