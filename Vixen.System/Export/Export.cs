@@ -174,6 +174,11 @@ namespace Vixen.Export
             return true;
         }
 
+		/// <summary>
+		/// Writes FPP Universe file in 2.x json format
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 	    public async Task Write2xUniverseFile(string fileName)
 	    {
 		    var fppStartChannel = 1;
@@ -232,6 +237,11 @@ namespace Vixen.Export
 			}
 	    }
 
+		/// <summary>
+		/// Writes FPP universe file in 1.x format
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 	    public async Task WriteUniverseFile(string fileName)
 	    {
 		    using (var writer = new StreamWriter(fileName))
