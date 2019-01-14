@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using Vixen.Execution.Context;
 using Vixen.Module.Controller;
 using Vixen.Module.Timing;
 using Vixen.Sys;
+using Zstandard.Net;
 
 namespace Vixen.Export
 {
@@ -29,6 +31,9 @@ namespace Vixen.Export
         private UInt32 _fileNamePadding = 0;
         private UInt32 _fileNameFieldLen = 0;
 
+	    private int _periods = 0;
+
+	    private ZstandardStream _zstdOutStream;
         private FileStream _outfs = null;
         private BinaryWriter _dataOut = null;
 
@@ -44,6 +49,8 @@ namespace Vixen.Export
 
 
         public int SeqPeriodTime { get; set; }
+
+	    public bool Compress { get; set; }
 
         public void WriteFileHeader()
         {
@@ -127,7 +134,8 @@ namespace Vixen.Export
 
         public void OpenSession(SequenceSessionData data)
         {
-            SeqPeriodTime = data.PeriodMS;
+	        _dataOffset = _fixedHeaderLength;
+			SeqPeriodTime = data.PeriodMS;
             _audioFileName = Path.GetFileName(data.AudioFileName);
             _fileNameFieldLen = (UInt32)_audioFileName.Length + 5;
             _dataOffset += _fileNameFieldLen;
@@ -142,8 +150,22 @@ namespace Vixen.Export
             try
             {
                 _outfs = File.Create(fileName, numChannels * 2, FileOptions.None);
-                _dataOut = new BinaryWriter(_outfs);
-                _dataOut.Write(new Byte[_dataOffset]);
+	            if (Compress)
+	            {
+		            _zstdOutStream = new ZstandardStream(_outfs, CompressionMode.Compress)
+		            {
+			            CompressionLevel = 10, // optional!!
+			            //CompressionDictionary = dictionary;  // optional!!
+		            };
+		            _dataOut = new BinaryWriter(_zstdOutStream);
+				}
+	            else
+	            {
+					_dataOut = new BinaryWriter(_outfs);
+	            }
+
+	           
+				//_dataOut.Write(new Byte[_dataOffset]);
                 _seqNumChannels = numChannels;
                 _seqNumPeriods = 0;
                 if ((_seqNumChannels % 4) != 0)
@@ -155,7 +177,16 @@ namespace Vixen.Export
                 {
                     _padding = null;
                 }
-            }
+
+	            _seqNumPeriods = (uint)numPeriods;
+
+	            _periods = numPeriods;
+
+	            WriteFileHeader();
+
+	            _seqNumPeriods = 0;
+
+			}
             catch (Exception e)
             {
                 _outfs = null;
@@ -195,13 +226,17 @@ namespace Vixen.Export
             {
                 try
                 {
-                    _dataOut.Seek(0, SeekOrigin.Begin);
-                    WriteFileHeader();
+                   // _dataOut.Seek(0, SeekOrigin.Begin);
+                   // WriteFileHeader();
+					Console.Out.WriteLine($" Periods {_seqNumPeriods} counted vs projected {_periods}");
                     _dataOut.Flush();
                     _dataOut.Close();
                     _dataOut = null;
-                    _outfs.Close();
-                    _outfs.Close();
+	                if (Compress)
+	                {
+		                _zstdOutStream.Close();
+	                }
+	                _outfs.Close();
                     _outfs = null;
 
                 }

@@ -32,6 +32,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>$(SolutionDir)\Release\</OutputPath>
@@ -88,6 +90,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -104,6 +109,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Zstandard.Net, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Zstandard.Net.1.1.5\lib\net45\Zstandard.Net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\BoolDescriptionAttribute.cs" />
@@ -951,6 +960,13 @@
     <PostBuildEvent>copy "$(SolutionDir)\Release Notes.txt" "$(OutDir)"
 copy "$(SolutionDir)\License.txt" "$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets" Condition="Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Zstandard.Net.1.1.5\build\Zstandard.Net.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
