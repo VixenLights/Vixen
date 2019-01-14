@@ -59,7 +59,7 @@ namespace Vixen.Export
             foreach (Type theType in types.ToArray())
             {
                 exportWriter = (IExportWriter)Activator.CreateInstance(theType);
-                _writers[exportWriter.FileType] = exportWriter;
+                _writers[exportWriter.FileTypeDescr] = exportWriter;
                 _exportFileTypes[exportWriter.FileTypeDescr] = exportWriter.FileType;
             }
 
@@ -324,7 +324,7 @@ namespace Vixen.Export
 
             if ((sequence != null) && (_exportFileTypes.TryGetValue(outFormat,out fileType)))
             {
-                if (_writers.TryGetValue(fileType, out _output))
+                if (_writers.TryGetValue(outFormat, out _output))
                 {
 					_generator = new SequenceIntervalGenerator(UpdateInterval, sequence);
                     //WriteControllerInfo(sequence);

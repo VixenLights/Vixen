@@ -257,7 +257,7 @@ namespace Vixen.Export
             }
         }
 
-        public string FileTypeDescr
+        public virtual string FileTypeDescr
         {
             get
             {

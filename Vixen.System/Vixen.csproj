@@ -223,6 +223,7 @@
     <Compile Include="Export\FPP\OutputTypes.cs" />
     <Compile Include="Export\FPP\Universe.cs" />
     <Compile Include="Export\FPP\UniverseTypes.cs" />
+    <Compile Include="Export\FSEQCompressedWriter.cs" />
     <Compile Include="Export\FSEQWriter.cs" />
     <Compile Include="Export\IExport.cs" />
     <Compile Include="Export\Vir2Writer.cs" />
