@@ -25,7 +25,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ToolStripItem _mToolStripEffects;
 		private bool _beginNewEffectDragDrop;
 		private List<AllToolStripItems> _allToolStripItems;
-		private readonly string _toolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripItemPositions.xml");
+		private readonly string _toolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripLocationSettings.xml");
 
 		#endregion
 
@@ -201,8 +201,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			// Set layout and settings for all Toolbars.
 			XMLProfileSettings xml = new XMLProfileSettings();
-
-			//SuspendLayout();
+			
 			toolStripContainer.SuspendLayout();
 			
 			// Custom Toolstrip View Menu setting.
@@ -273,11 +272,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 
 			SetToolStripStartPosition();
-			//ResumeLayout();
 
 			toolStripContainer.ResumeLayout();
 			toolStripContainer.PerformLayout();
-			//PerformLayout();
 
 			// Add Theme to all ToolStrips.
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
@@ -295,7 +292,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsmi.Tag = toolsStripControl;
 					tsmi.CheckState = CheckState.Checked;
 					tsmi.Checked = toolsStripItems.Visible;
-					tsmi.Click += toolstripToolStripMenuItem_Click;
 					tsmi.CheckedChanged += toolstripToolStripMenuItem_CheckedChanged;
 					toolbarToolStripMenuItem.DropDownItems.Add(tsmi);
 				}
@@ -393,7 +389,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsmi.Tag = toolsStripControl;
 					tsmi.CheckState = CheckState.Checked;
 					tsmi.Checked = toolsStripItems.Visible;
-					tsmi.Click += toolstripToolStripMenuItem_Click;
 					tsmi.CheckedChanged += toolstripToolStripMenuItem_CheckedChanged;
 					toolbarToolStripMenuItem.DropDownItems.Add(tsmi);
 				}
@@ -763,7 +758,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private Bitmap SpeedVisualisation()
 		{
 			// Set Color based on Speed value.
-			HSBColor mainColor = new HSBColor(120 - (int)(20.0f / 4.0f * _timingSpeed * 6), 255, 255);
+			HSBColor mainColor;
+			mainColor = _timingSpeed >= 1 ? new HSBColor(120 - (int)(30.0f / 4 * _timingSpeed * 4), 255, 255) : new HSBColor((int)(10.0f / 4.0f * _timingSpeed * 60) - 20, 255, 255);
+			
+			// Set bitmap size. This is the same as the standard icons that we bring in as the Toolstrip wil autosize based on scaling, so 32 is a good size.
+			int bitmapSize = 32;
 
 			// Set Colors to use.
 			Pen line = new Pen(ThemeColorTable.ForeColor, 3);
@@ -772,37 +771,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// Create points that define the line start and end location.
 			int needleLength = 19;
-			double needleAngle = (Math.PI / 180) * (350 - (160 - (int)(20.0f / 4.0f * _timingSpeed * 8)));
-			Point point1 = new Point(16, 32);
-			Point point2 = new Point((int)(16 + Math.Cos(needleAngle) * needleLength), (int)(32 + Math.Sin(needleAngle) * needleLength));
+			double needleAngle = (Math.PI / 180) * (350 - (160 - (int)(40.0f / 4.0f * _timingSpeed * 4)));
+			Point point1 = new Point(bitmapSize / 2, bitmapSize);
+			Point point2 = new Point((int)(bitmapSize / 2 + Math.Cos(needleAngle) * needleLength), (int)(bitmapSize + Math.Sin(needleAngle) * needleLength));
 			
 			// Create Bitmap and draw the image.
-			Bitmap bmp = new Bitmap(32, 32);
+			Bitmap bmp = new Bitmap(bitmapSize, bitmapSize);
 			using (var graphics = Graphics.FromImage(bmp))
 			{
 				// Draw Speed value.
 				using (Font arialFont = new Font("Arial", 10, FontStyle.Bold))
 				{
 					int speedValueXLocation = _timingSpeed >= 0.97f ? 3 : 6; // Adjust the start location of the Speed text if over 100 as the text is longer then values under 100.
-					string speedText = ((int)((float)Math.Round(_timingSpeed, 1) * 100)).ToString();
-					switch (_timingSpeed)
-					{
-						case 0.2f:
-							speedText = "MIN";
-							speedValueXLocation = 2;
-							break;
-						case 4.0f:
-							speedText = "MAX";
-							speedValueXLocation = 0;
-							break;
-					}
-
-					graphics.DrawString(speedText, arialFont, brush,
+					graphics.DrawString(((int)((float)Math.Round(_timingSpeed, 1) * 100)).ToString(), arialFont, brush,
 						new PointF(speedValueXLocation, 0));
 				}
 
 				// Draw arc.
-				Rectangle rect = new Rectangle(3, 16, 25, 28);
+				Rectangle rect = new Rectangle(3, bitmapSize / 2, bitmapSize - 6, bitmapSize - 3);
 				float startAngle = 180.0F;
 				float sweepAngle = 180.0F;
 				graphics.DrawArc(arch, rect, startAngle, sweepAngle);
@@ -823,6 +809,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// the Timing Button and if it is then change the Timing Speed.
 			ToolStrip tsmi = sender as ToolStrip;
 			tsmi.SuspendLayout();
+			
 			int toolStripItemXLocation = tsmi.DisplayRectangle.X;
 			foreach (ToolStripItem item in tsmi.Items)
 			{
@@ -941,12 +928,62 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		#region ToolStrip Helpers
-		private void toolstripToolStripMenuItem_Click(object sender, EventArgs e)
+		#region Mode Toolstrip Events
+		
+		private void toolStripButton_DrawMode_Click(object sender, EventArgs e)
 		{
-			//ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
-			//menuItem.Checked = !menuItem.Checked;
+			TimelineControl.grid.EnableDrawMode = true;
+			modeToolStripButton_DrawMode.Checked = true;
+			modeToolStripButton_SelectionMode.Checked = false;
 		}
+
+		private void toolStripButton_SelectionMode_Click(object sender, EventArgs e)
+		{
+			TimelineControl.grid.EnableDrawMode = false;
+			modeToolStripButton_SelectionMode.Checked = true;
+			modeToolStripButton_DrawMode.Checked = false;
+
+			// Ensure any Effect buttons in the toolstrip do not have the selected box around it.
+			foreach (ToolStripItem effectButton in toolStripEffects.Items)
+			{
+				if (effectButton is ToolStripButton) ((ToolStripButton)effectButton).Checked = false;
+			}
+		}
+
+		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
+		{
+			TimelineControl.grid.DragBoxFilterEnabled = modeToolStripButton_DragBoxFilter.Checked;
+		}
+
+		private void toolStripSplitButton_CloseGaps_ButtonClick(object sender, EventArgs e)
+		{
+			TimelineControl.grid.CloseGapsBetweenElements();
+		}
+
+		private void toolStripButton_SnapTo_CheckedChanged(object sender, EventArgs e)
+		{
+			toolStripMenuItem_SnapTo.Checked = modeToolStripButton_SnapTo.Checked;
+			TimelineControl.grid.EnableSnapTo = modeToolStripButton_SnapTo.Checked;
+		}
+
+		private void toolStripButtonSnapToStrength_MenuItem_Click(object sender, EventArgs e)
+		{
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
+			if (item != null && !item.Checked)
+			{
+				foreach (ToolStripMenuItem subItem in item.Owner.Items)
+				{
+					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
+				}
+				item.Checked = true;
+				PopulateSnapStrength(Convert.ToInt32(item.Tag));
+			}
+			// clicking the currently checked one--do not uncheck it			
+		}
+
+		#endregion
+
+		#region ToolStrip Helpers
 
 		private void toolstripToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
@@ -1137,56 +1174,5 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		#endregion
-
-		private void toolStripButton_DrawMode_Click(object sender, EventArgs e)
-		{
-			TimelineControl.grid.EnableDrawMode = true;
-			modeToolStripButton_DrawMode.Checked = true;
-			modeToolStripButton_SelectionMode.Checked = false;
-		}
-
-		private void toolStripButton_SelectionMode_Click(object sender, EventArgs e)
-		{
-			TimelineControl.grid.EnableDrawMode = false;
-			modeToolStripButton_SelectionMode.Checked = true;
-			modeToolStripButton_DrawMode.Checked = false;
-
-			// Ensure any Effect buttons in the toolstrip do not have the selected box around it.
-			foreach (ToolStripItem effectButton in toolStripEffects.Items)
-			{
-				if (effectButton is ToolStripButton) ((ToolStripButton)effectButton).Checked = false;
-			}
-		}
-
-		private void toolStripButton_DragBoxFilter_CheckedChanged(object sender, EventArgs e)
-		{
-			TimelineControl.grid.DragBoxFilterEnabled = modeToolStripButton_DragBoxFilter.Checked;
-		}
-
-		private void toolStripSplitButton_CloseGaps_ButtonClick(object sender, EventArgs e)
-		{
-			TimelineControl.grid.CloseGapsBetweenElements();
-		}
-
-		private void toolStripButton_SnapTo_CheckedChanged(object sender, EventArgs e)
-		{
-			toolStripMenuItem_SnapTo.Checked = modeToolStripButton_SnapTo.Checked;
-			TimelineControl.grid.EnableSnapTo = modeToolStripButton_SnapTo.Checked;
-		}
-
-		private void toolStripButtonSnapToStrength_MenuItem_Click(object sender, EventArgs e)
-		{
-			ToolStripMenuItem item = sender as ToolStripMenuItem;
-			if (item != null && !item.Checked)
-			{
-				foreach (ToolStripMenuItem subItem in item.Owner.Items)
-				{
-					if (!item.Equals(subItem) && subItem != null) subItem.Checked = false;
-				}
-				item.Checked = true;
-				PopulateSnapStrength(Convert.ToInt32(item.Tag));
-			}
-			// clicking the currently checked one--do not uncheck it			
-		}
 	}
 }

@@ -114,7 +114,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private float _timingSpeed = 1;
 
-		private float _timingChangeDelta = 0.2f;
+		private float _timingChangeDelta = 0.1f;
 
 		private static readonly DataFormats.Format ClipboardFormatName =
 			DataFormats.GetFormat(typeof (TimelineElementsClipboardData).FullName);
@@ -155,8 +155,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private int _iconSize;
 		private int _toolStripImageSize;
-		//SortedDictionary<int, string> _toolStripOperationsItemPosition = new SortedDictionary<int, string>();
-		List<ToolStripItem> _toolStripItems = new List<ToolStripItem>();
 
 		#endregion
 
@@ -337,7 +335,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			// Setup Toolbars and Toolstrip context menus.
 			InitializeToolBars();
-
 
 			foreach (ToolStripItem toolStripItem in modeToolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -5237,9 +5234,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 	
 		private void _SetTimingSpeed(float speed)
 		{
-			if (speed <= 0.20)
+			if (speed <= 0.10)
 			{
-				_timingSpeed = 0.20f;
+				_timingSpeed = 0.10f;
 				return;
 			}
 
