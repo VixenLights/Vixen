@@ -194,19 +194,11 @@ namespace Vixen.Export
 				    {
 						Universe u = new Universe();
 						channelOutputs.Universes.Add(u);
-					    string ip = string.Empty;
-					    if (!uc.IsMultiCast)
-					    {
-						    //Validate ip address
-						    ip = uc.IpAddress?.Address.ToString();
-						    if (ip == null)
-						    {
-							    ip = string.Empty;
-						    }
+					    string ip = uc.IpAddress?.Address.ToString();
 
-						    u.Address = ip;
-					    }
+						if (ip == null) ip = string.Empty;
 
+						u.Address = ip;
 					    u.Description = controller.Name;
 					    u.UniverseType = uc.IsMultiCast?UniverseTypes.E131_Multicast:UniverseTypes.E131_Unicast;
 					    u.Active = uc.Active;
