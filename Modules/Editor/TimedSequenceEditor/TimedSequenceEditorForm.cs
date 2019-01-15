@@ -114,7 +114,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private float _timingSpeed = 1;
 
-		private float _timingChangeDelta = 0.25f;
+		private float _timingChangeDelta = 0.2f;
 
 		private static readonly DataFormats.Format ClipboardFormatName =
 			DataFormats.GetFormat(typeof (TimelineElementsClipboardData).FullName);

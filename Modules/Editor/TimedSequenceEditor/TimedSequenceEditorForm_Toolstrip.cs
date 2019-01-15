@@ -784,7 +784,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (Font arialFont = new Font("Arial", 10, FontStyle.Bold))
 				{
 					int speedValueXLocation = _timingSpeed >= 0.97f ? 3 : 6; // Adjust the start location of the Speed text if over 100 as the text is longer then values under 100.
-					graphics.DrawString(((int)((float)Math.Round(_timingSpeed, 1) * 100)).ToString(), arialFont, brush,
+					string speedText = ((int)((float)Math.Round(_timingSpeed, 1) * 100)).ToString();
+					switch (_timingSpeed)
+					{
+						case 0.2f:
+							speedText = "MIN";
+							speedValueXLocation = 2;
+							break;
+						case 4.0f:
+							speedText = "MAX";
+							speedValueXLocation = 0;
+							break;
+					}
+
+					graphics.DrawString(speedText, arialFont, brush,
 						new PointF(speedValueXLocation, 0));
 				}
 
@@ -817,11 +830,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				{
 					if (e.Delta > 0)
 					{
-						_SetTimingSpeed((float)Math.Round(_timingSpeed, 1) + 0.2f);
+						_SetTimingSpeed((float)Math.Round(_timingSpeed, 1) + _timingChangeDelta);
 					}
 					else
 					{
-						_SetTimingSpeed((float)Math.Round(_timingSpeed, 1) - 0.2f);
+						_SetTimingSpeed((float)Math.Round(_timingSpeed, 1) - _timingChangeDelta);
 					}
 
 					break;
