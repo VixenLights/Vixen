@@ -295,6 +295,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.audioToolStripLabel_TimingSpeed.Tag = "Timing Speed: 100%";
 			this.audioToolStripLabel_TimingSpeed.Text = "Timing Speed: 100%";
 			this.audioToolStripLabel_TimingSpeed.ToolTipText = "Timing speed";
+			this.audioToolStripLabel_TimingSpeed.MouseEnter += new System.EventHandler(this.audioToolStripLabel_TimingSpeed_MouseEnter);
+			this.audioToolStripLabel_TimingSpeed.MouseLeave += new System.EventHandler(this.audioToolStripLabel_TimingSpeed_MouseLeave);
 			// 
 			// toolStripButton_IncreaseTimingSpeed
 			// 

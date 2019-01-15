@@ -832,6 +832,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			tsmi.ResumeLayout();
 		}
 
+		private void audioToolStripLabel_TimingSpeed_MouseLeave(object sender, EventArgs e)
+		{
+			TimelineControl.Focus();
+		}
+
+		private void audioToolStripLabel_TimingSpeed_MouseEnter(object sender, EventArgs e)
+		{
+			toolStripAudio.Focus();
+		}
+
 		private void toolStripButton_IncreaseTimingSpeed_Click(object sender, EventArgs e)
 		{
 			_SetTimingSpeed(_timingSpeed + _timingChangeDelta);
