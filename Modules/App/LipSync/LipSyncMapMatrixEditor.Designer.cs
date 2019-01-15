@@ -53,14 +53,12 @@
 			// 
 			// nameTextBox
 			// 
-			this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.nameTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.nameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.nameTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.nameTextBox.Location = new System.Drawing.Point(59, 28);
 			this.nameTextBox.Name = "nameTextBox";
-			this.nameTextBox.Size = new System.Drawing.Size(152, 23);
+			this.nameTextBox.Size = new System.Drawing.Size(177, 23);
 			this.nameTextBox.TabIndex = 42;
 			// 
 			// nameLabel
@@ -77,7 +75,7 @@
 			// 
 			this.phonemeLabel.AutoSize = true;
 			this.phonemeLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.phonemeLabel.Location = new System.Drawing.Point(90, 62);
+			this.phonemeLabel.Location = new System.Drawing.Point(105, 62);
 			this.phonemeLabel.Name = "phonemeLabel";
 			this.phonemeLabel.Size = new System.Drawing.Size(58, 15);
 			this.phonemeLabel.TabIndex = 46;
@@ -89,7 +87,7 @@
 			this.nextPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.nextPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.nextPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.nextPhonemeButton.Location = new System.Drawing.Point(152, 100);
+			this.nextPhonemeButton.Location = new System.Drawing.Point(167, 100);
 			this.nextPhonemeButton.Name = "nextPhonemeButton";
 			this.nextPhonemeButton.Size = new System.Drawing.Size(42, 27);
 			this.nextPhonemeButton.TabIndex = 45;
@@ -102,7 +100,7 @@
 			this.prevPhonemeButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
 			this.prevPhonemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.prevPhonemeButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.prevPhonemeButton.Location = new System.Drawing.Point(40, 100);
+			this.prevPhonemeButton.Location = new System.Drawing.Point(55, 100);
 			this.prevPhonemeButton.Name = "prevPhonemeButton";
 			this.prevPhonemeButton.Size = new System.Drawing.Size(42, 27);
 			this.prevPhonemeButton.TabIndex = 44;
@@ -112,7 +110,7 @@
 			// 
 			// phonemeIcon
 			// 
-			this.phonemeIcon.Location = new System.Drawing.Point(89, 84);
+			this.phonemeIcon.Location = new System.Drawing.Point(104, 84);
 			this.phonemeIcon.Name = "phonemeIcon";
 			this.phonemeIcon.Size = new System.Drawing.Size(56, 55);
 			this.phonemeIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -129,7 +127,7 @@
 			this.buttonCancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonCancel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonCancel.Location = new System.Drawing.Point(114, 342);
+			this.buttonCancel.Location = new System.Drawing.Point(149, 342);
 			this.buttonCancel.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(87, 29);
@@ -149,7 +147,7 @@
 			this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
 			this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.buttonOK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
-			this.buttonOK.Location = new System.Drawing.Point(17, 342);
+			this.buttonOK.Location = new System.Drawing.Point(52, 342);
 			this.buttonOK.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(86, 29);
@@ -168,7 +166,7 @@
 			this.flowLayoutImportExportButtons.Controls.Add(this.clearButton);
 			this.flowLayoutImportExportButtons.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flowLayoutImportExportButtons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-			this.flowLayoutImportExportButtons.Location = new System.Drawing.Point(107, 3);
+			this.flowLayoutImportExportButtons.Location = new System.Drawing.Point(105, 3);
 			this.flowLayoutImportExportButtons.Name = "flowLayoutImportExportButtons";
 			this.flowLayoutImportExportButtons.Size = new System.Drawing.Size(54, 95);
 			this.flowLayoutImportExportButtons.TabIndex = 0;
@@ -214,20 +212,17 @@
 			// 
 			// tableLayoutGridArea
 			// 
-			this.tableLayoutGridArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tableLayoutGridArea.ColumnCount = 2;
 			this.tableLayoutGridArea.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutGridArea.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
 			this.tableLayoutGridArea.Controls.Add(this.flowLayoutImportExportButtons, 1, 0);
 			this.tableLayoutGridArea.Controls.Add(this.renderedPicture, 0, 0);
-			this.tableLayoutGridArea.Location = new System.Drawing.Point(40, 149);
+			this.tableLayoutGridArea.Location = new System.Drawing.Point(50, 149);
 			this.tableLayoutGridArea.Name = "tableLayoutGridArea";
 			this.tableLayoutGridArea.RowCount = 1;
 			this.tableLayoutGridArea.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutGridArea.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 101F));
-			this.tableLayoutGridArea.Size = new System.Drawing.Size(164, 101);
+			this.tableLayoutGridArea.Size = new System.Drawing.Size(162, 101);
 			this.tableLayoutGridArea.TabIndex = 47;
 			// 
 			// renderedPicture
@@ -244,7 +239,6 @@
 			// 
 			// notesLabel
 			// 
-			this.notesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.notesLabel.AutoSize = true;
 			this.notesLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.notesLabel.Location = new System.Drawing.Point(14, 272);
@@ -255,15 +249,13 @@
 			// 
 			// notesTextBox
 			// 
-			this.notesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.notesTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(90)))), ((int)(((byte)(90)))));
 			this.notesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.notesTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.notesTextBox.Location = new System.Drawing.Point(59, 270);
 			this.notesTextBox.Multiline = true;
 			this.notesTextBox.Name = "notesTextBox";
-			this.notesTextBox.Size = new System.Drawing.Size(142, 55);
+			this.notesTextBox.Size = new System.Drawing.Size(177, 55);
 			this.notesTextBox.TabIndex = 49;
 			// 
 			// LipSyncMapMatrixEditor
@@ -275,7 +267,7 @@
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(223, 384);
+			this.ClientSize = new System.Drawing.Size(258, 384);
 			this.Controls.Add(this.notesTextBox);
 			this.Controls.Add(this.notesLabel);
 			this.Controls.Add(this.buttonOK);
@@ -289,14 +281,11 @@
 			this.Controls.Add(this.nameLabel);
 			this.DoubleBuffered = true;
 			this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.MaximumSize = new System.Drawing.Size(591, 706);
 			this.MinimumSize = new System.Drawing.Size(239, 422);
 			this.Name = "LipSyncMapMatrixEditor";
-			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
-			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "LipSync Image Editor";
+			this.Text = "Image Map";
 			this.Load += new System.EventHandler(this.OnLoad);
 			this.ResizeEnd += new System.EventHandler(this.OnResizeEnd);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
