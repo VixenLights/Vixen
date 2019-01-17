@@ -1,0 +1,383 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Media.Animation;
+using Zstandard.Net;
+using static System.String;
+
+namespace Vixen.Export
+{
+	public class FSEQCompressedWriter : IExportWriter
+	{
+		//Constants
+		private const byte VMinor = 0;
+		private const byte VMajor = 2;
+		private const ushort FixedHeaderLength = 32;
+
+		//Working fields
+		private uint _offsetToChannelData = 0;
+		private uint _channelsPerFrame = 0;
+		private uint _numberFrames = 0;
+		private uint _framesPerBlock = 0;
+		private string _audioFileName = "";
+		private uint _fileNamePadding = 0;
+		private uint _fileNameFieldLen = 0;
+		private byte _numberCompressionBlocks;
+		private byte _numberSparseRanges = 0;
+		private uint _currentFrame = 0;
+		private ushort _currentFrameInBlock = 0;
+		private ushort _currentBlock = 0;
+		private uint _blockStartFrame = 0;
+
+
+		private FileStream _outfs = null;
+		private MemoryStream _memoryStream;
+		private ZstandardStream _zStdStream;
+		private BinaryWriter _dataOut = null;
+
+		private byte[] _padding;
+
+		private readonly Dictionary<uint, uint> _compressBlockMap;
+		private readonly Dictionary<uint, uint> _sparseRangeBlocks;
+
+		public FSEQCompressedWriter()
+		{
+			Compress = true;
+			_compressBlockMap = new Dictionary<uint, uint>();
+			_sparseRangeBlocks = new Dictionary<uint, uint>();
+		}
+
+		private void Reset()
+		{
+			_currentBlock = 0;
+			_currentFrame = 0;
+			_currentBlock = 0;
+			_currentFrameInBlock = 0;
+			_blockStartFrame = 0;
+			_fileNameFieldLen = 0;
+			_fileNamePadding = 0;
+			_compressBlockMap.Clear();
+			_sparseRangeBlocks.Clear();
+		}
+
+		public int SeqPeriodTime { get; set; }
+
+		/// <inheritdoc />
+		public string FileType => "fseq";
+
+		public bool Compress { get; set; }
+
+		public string FileTypeDescr => "Falcon Player Sequence 2.6+";
+
+		public void WriteFileHeader(BinaryWriter writer)
+		{
+			var header = new byte[FixedHeaderLength];
+
+			var length = FixedHeaderLength + _compressBlockMap.Count * 8 + _sparseRangeBlocks.Count * 6;
+
+			
+			// Header Information
+			// Format Identifier
+			header[0] = (byte)'P'; //Byte 0
+			header[1] = (byte)'S'; //Byte 1
+			header[2] = (byte)'E'; //Byte 2
+			header[3] = (byte)'Q'; //Byte 3
+
+			// Offset to start of channel data Byte 4, 5 
+			header[4] = (byte)(_offsetToChannelData & 0xFF);
+			header[5] = (byte)((_offsetToChannelData >> 8) & 0xFF);
+
+			// Version info Byte 6, 7
+			header[6] =VMinor;
+			header[7] =VMajor;
+
+			// Index offset to variable header  Byte 8, 9
+			header[8] = (byte) (length & 0xFF);
+			header[9] = (byte) ((length >> 8) & 0xFF);
+
+			// Channels per frame 4 Byte value Bytes 10,11,12,13
+			header[10] = (byte) (_channelsPerFrame & 0xFF);
+			header[11] = (byte) ((_channelsPerFrame >> 8) & 0xFF);
+			header[12] = (byte) ((_channelsPerFrame >> 16) & 0xFF);
+			header[13] = (byte) ((_channelsPerFrame >> 24) & 0xFF);
+
+			// Number of Frames Bytes 14,15,16,17
+			header[14] = (byte) (_numberFrames & 0xFF);
+			header[15] = (byte) ((_numberFrames >> 8) & 0xFF);
+			header[16] = (byte) ((_numberFrames >> 16) & 0xFF);
+			header[17] = (byte) ((_numberFrames >> 24) & 0xFF);
+
+			// Step time in ms  Byte 18
+			header[18] = (byte) (SeqPeriodTime & 0xFF);
+
+			// bit flags/reserved should be 0  Byte 19
+			header[19] = byte.MinValue;
+
+			//Compression flag 0 for uncompressed, 1 for zstd, 2 for libz/gzip Byte 20
+			header[20] = Compress ? (byte) 1 : byte.MinValue;
+
+			//number of compression blocks, 0 if uncompressed Byte 21
+			header[21] = _numberCompressionBlocks;
+
+			//number of sparse ranges, 0  if none Byte 22
+			header[22] = _numberSparseRanges;
+
+			// bit flags/reserved, unused right now, should be 0  Byte 23
+			header[23] = byte.MinValue;
+
+			// 64bit unique identifier, likely a timestamp or uuid Bytes 24-31 
+			var id = DateTime.Now.Ticks;
+			header[24] = (byte) (id & 0xFF);
+			header[25] = (byte) ((id >> 8) & 0xFF);
+			header[26] = (byte) ((id >> 16) & 0xFF);
+			header[27] = (byte) ((id >> 24) & 0xFF);
+			header[28] = (byte) ((id >> 30) & 0xFF);
+			header[29] = (byte) ((id >> 38) & 0xFF);
+			header[30] = (byte) ((id >> 46) & 0xFF);
+			header[31] = (byte)((id >> 54) & 0xFF);
+
+			writer.Write(header);
+
+			foreach (var keyValuePair in _compressBlockMap)
+			{
+				// frame number
+				writer.Write((byte)(keyValuePair.Key & 0xFF));
+				writer.Write((byte)((keyValuePair.Key >> 8) & 0xFF));
+				writer.Write((byte)((keyValuePair.Key >> 16) & 0xFF));
+				writer.Write((byte)((keyValuePair.Key >> 24) & 0xFF));
+
+				// length of block in bytes
+				writer.Write((byte)(keyValuePair.Value & 0xFF));
+				writer.Write((byte)((keyValuePair.Value >> 8) & 0xFF));
+				writer.Write((byte)((keyValuePair.Value >> 16) & 0xFF));
+				writer.Write((byte)((keyValuePair.Value >> 24) & 0xFF));
+			}
+
+			foreach (var keyValuePair in _sparseRangeBlocks)
+			{
+				// start channel number
+				writer.Write((byte)(keyValuePair.Key & 0xFF));
+				writer.Write((byte)((keyValuePair.Key >> 8) & 0xFF));
+				writer.Write((byte)((keyValuePair.Key >> 16) & 0xFF));
+				
+				// number of channels
+				writer.Write((byte)(keyValuePair.Value & 0xFF));
+				writer.Write((byte)((keyValuePair.Value >> 8) & 0xFF));
+				writer.Write((byte)((keyValuePair.Value >> 16) & 0xFF));
+				
+			}
+			
+			//Write the media filename as variable header
+			if (_audioFileName.Length > 0)
+			{
+				writer.Write((byte)(_fileNameFieldLen & 0xFF));
+				writer.Write((byte)((_fileNameFieldLen >> 8) & 0xFF));
+				writer.Write('m');
+				writer.Write('f');
+				writer.Write(_audioFileName);
+
+				if (_fileNamePadding > 0)
+				{
+					byte[] padding = Enumerable.Repeat((byte)0, (int)_fileNamePadding).ToArray();
+					writer.Write(padding);
+				}
+			}
+			
+		}
+
+		
+		/// <inheritdoc />
+		public void OpenSession(SequenceSessionData data)
+		{
+			Reset();
+			SeqPeriodTime = data.PeriodMS;
+			_numberFrames = (uint)data.NumPeriods;
+			_channelsPerFrame = (uint)data.ChannelNames.Count();
+			if (!IsNullOrEmpty(data.AudioFileName))
+			{
+				_audioFileName = Path.GetFileName(data.AudioFileName);
+				_fileNameFieldLen = (uint)_audioFileName.Length + 4;
+			}
+
+			var blockCount = ComputeMaxBlockCount();
+			_numberCompressionBlocks = (byte) blockCount;
+
+			_offsetToChannelData = FixedHeaderLength + blockCount * 8; //need to add for sparse if we do that
+
+			_offsetToChannelData += _fileNameFieldLen;
+			_fileNamePadding = (4 - (_offsetToChannelData % 4)) % 4;
+			_offsetToChannelData += _fileNamePadding;
+
+
+			Console.Out.WriteLine($"Total frames count {_numberFrames}");
+			Console.Out.WriteLine($"Block count {blockCount}");
+			Console.Out.WriteLine($"Frames per block count {_framesPerBlock}");
+			Console.Out.WriteLine($"Total header length {_offsetToChannelData}");
+
+			OpenSession(data.OutFileName, _offsetToChannelData, data.ChannelNames.Count());
+		}
+
+		private void OpenSession(string fileName, uint headerLength, Int32 numChannels)
+		{
+			try
+			{
+				_outfs = File.Create(fileName, numChannels * 2, FileOptions.None);
+				_dataOut = new BinaryWriter(_outfs);
+				_dataOut.Write(new Byte[headerLength]);
+				InitStream();
+
+				//_seqNumChannels = numChannels;
+				//_seqNumPeriods = 0;
+				//if ((_seqNumChannels % 4) != 0)
+				//{
+				//	_padding = Enumerable.Repeat((Byte)0, 4 - (_seqNumChannels % 4)).ToArray();
+				//	_seqNumChannels += _padding.Length;
+				//}
+				//else
+				//{
+				//	_padding = null;
+				//}
+			}
+			catch (Exception e)
+			{
+				_outfs = null;
+				_dataOut = null;
+				throw e;
+			}
+		}
+
+		private void InitStream()
+		{
+			_memoryStream = new MemoryStream();
+			if (Compress)
+			{
+				_zStdStream = new ZstandardStream(_memoryStream, 10);
+			}
+		}
+
+		private void WriteData(byte[] data)
+		{
+			if (Compress)
+			{
+				_zStdStream.Write(data, 0, data.Length);
+			}
+			else
+			{
+				_memoryStream.Write(data, 0, data.Length);
+			}
+		}
+
+		private int FinalizeBlock()
+		{
+			if (Compress)
+			{
+				_zStdStream.Flush();
+				//_zStdStream.Close();
+			}
+
+			var data = _memoryStream.ToArray();
+			_dataOut.Write(data);
+			_memoryStream.SetLength(0);
+			return data.Length;
+		}
+		/// <inheritdoc />
+		public void WriteNextPeriodData(List<byte> periodData)
+		{
+			if (_currentBlock < 1 && _currentFrameInBlock >= 10)
+			{
+				ChangeBlock();
+			}
+			else if(_currentFrameInBlock >= _framesPerBlock)
+			{
+				ChangeBlock();
+			}
+
+			_currentFrameInBlock++;
+			_currentFrame++;
+			WriteData(periodData.ToArray());
+		}
+
+		private void ChangeBlock()
+		{
+			var length = FinalizeBlock();
+			Console.Out.WriteLine($"Block {_currentBlock}, Start Frame {_blockStartFrame}, Bytes {length}, Frames {_currentFrameInBlock}, Processed Frame count {_currentFrame}");
+			_compressBlockMap.Add(_blockStartFrame, (uint) length);
+			_blockStartFrame = _currentFrame;
+			_currentBlock++;
+			_currentFrameInBlock = 0;
+		}
+
+		/// <inheritdoc />
+		public void CloseSession()
+		{
+			ChangeBlock();
+			try
+			{
+				if (Compress)
+				{
+					_zStdStream.Close();
+					_zStdStream.Dispose();
+				}
+
+				_memoryStream.Close();
+				_memoryStream.Dispose();
+				_dataOut.Seek(0, SeekOrigin.Begin);
+				WriteFileHeader(_dataOut);
+				_dataOut.Flush();
+				_dataOut.Close();
+				_dataOut = null;
+				_outfs.Close();
+				_outfs.Close();
+				_outfs = null;
+
+			}
+			catch (Exception e)
+			{
+				_dataOut = null;
+				_outfs = null;
+				throw e;
+			}
+
+		}
+
+		private uint ComputeMaxBlockCount()
+		{
+			ulong size = (ulong) (_channelsPerFrame * _numberFrames);
+			var numberBlocks = size;
+			numberBlocks /= (64 * 2014);
+			if (numberBlocks > 255)
+			{
+				numberBlocks = 255;
+			}
+			else if(numberBlocks < 1)
+			{
+				numberBlocks = 1;
+			}
+
+			_framesPerBlock = (uint) (_numberFrames / numberBlocks);
+
+			if (_framesPerBlock < 10)
+			{
+				_framesPerBlock = 10;
+			}
+
+			var frameCount = _numberFrames - 10;  //peel off ten frames that we will put in the first block
+			numberBlocks = frameCount / _framesPerBlock + 1;
+
+			while (numberBlocks > 254)
+			{
+				_framesPerBlock++;
+				numberBlocks = frameCount / _framesPerBlock + 1;
+			}
+
+			// first block is going to be smaller and special so add one for it
+			if(numberBlocks < 255)
+			{
+				numberBlocks++;
+			}
+
+			return (uint)numberBlocks;
+		}
+	}
+}

@@ -127,7 +127,8 @@ namespace Vixen.Export
 
         public void OpenSession(SequenceSessionData data)
         {
-            SeqPeriodTime = data.PeriodMS;
+	        _dataOffset = _fixedHeaderLength;
+			SeqPeriodTime = data.PeriodMS;
             _audioFileName = Path.GetFileName(data.AudioFileName);
             _fileNameFieldLen = (UInt32)_audioFileName.Length + 5;
             _dataOffset += _fileNameFieldLen;
