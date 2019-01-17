@@ -600,12 +600,6 @@ namespace Common.Controls.Timeline
 			remove { if (grid != null) grid.ElementsFinishedMoving -= value; }
 		}
 
-		public event EventHandler<TimeSpanEventArgs> CursorMoved
-		{
-			add { grid.CursorMoved += value; }
-			remove { if (grid != null) grid.CursorMoved -= value; }
-		}
-
 		public event EventHandler VerticalOffsetChanged
 		{
 			add { grid.VerticalOffsetChanged += value; }

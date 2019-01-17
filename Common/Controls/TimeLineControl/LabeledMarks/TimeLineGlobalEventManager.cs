@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Common.Controls.Timeline;
 
 namespace Common.Controls.TimelineControl.LabeledMarks
 {
@@ -15,6 +16,7 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		public event EventHandler<AlignmentEventArgs> AlignmentActivity;
 		public event EventHandler<PhonemeBreakdownEventArgs> PhonemeBreakdownAction;
 		public event EventHandler<PlayRangeEventArgs> PlayRangeAction;
+		public event EventHandler<TimeSpanEventArgs> CursorMoved;
 
 		private TimeLineGlobalEventManager()
 		{
@@ -67,6 +69,14 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 		{
 			PlayRangeAction?.Invoke(this, e);
 		}
+
+		public void OnCursorMoved(TimeSpan t)
+		{
+			CursorPosition = t;
+			CursorMoved?.Invoke(this, new TimeSpanEventArgs(t));
+		}
+
+		public TimeSpan CursorPosition { get; set; }
 
 	}
 }
