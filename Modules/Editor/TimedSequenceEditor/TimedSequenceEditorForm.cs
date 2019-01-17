@@ -1244,7 +1244,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					if (destination != null)
 					{
 						AddNewEffectById((Guid) menuItem.Tag, destination, TimelineControl.CursorPosition,
-							TimeSpan.FromSeconds(2), true); // TODO: get a proper time
+							GetDefaultEffectDuration(TimelineControl.CursorPosition), true); // TODO: get a proper time
 					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -3989,7 +3989,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			//Modified 12-3-2014 to allow Control-Drop of effects to replace selected effects
 			
-			TimeSpan duration = TimeSpan.FromSeconds(2.0); // TODO: need a default value here. I suggest a per-effect default.
 			//TimeSpan startTime = Util.Min(TimelineControl.PixelsToTime(location.X), (_sequence.Length - duration)); // Ensure the element is inside the grid.
 
 			if (ModifierKeys.HasFlag(Keys.Control) && TimelineControl.SelectedElements.Any())
@@ -4018,7 +4017,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			else
 			{
-				AddNewEffectById(effectGuid, row, startTime, duration, true);
+				AddNewEffectById(effectGuid, row, startTime, GetDefaultEffectDuration(startTime), true);
 			}
 		}
 
@@ -4687,7 +4686,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						}
 					}
 
-					AddEffectInstance(effect, TimelineControl.grid.RowAtPosition(_mouseOriginalPoint), TimelineControl.grid.TimeAtPosition(_mouseOriginalPoint) + TimeSpan.FromTicks(20000000 * i), TimeSpan.FromSeconds(2.0), true);
+					AddEffectInstance(effect, TimelineControl.grid.RowAtPosition(_mouseOriginalPoint), TimelineControl.grid.TimeAtPosition(_mouseOriginalPoint) + TimeSpan.FromTicks(20000000 * i), GetDefaultEffectDuration(TimelineControl.grid.TimeAtPosition(_mouseOriginalPoint) + TimeSpan.FromTicks(20000000 * i)), true);
 				}
 				i++;
 			}
@@ -5760,6 +5759,29 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			return result;
+		}
+		/// <summary>
+		/// Returns the default new effect duration.
+		/// If visibileDuration is true it will scale so that the whole effect is visible while zoomed in.
+		/// </summary>
+		public TimeSpan GetDefaultEffectDuration(TimeSpan startTime,bool visibleDuration = true)
+		{
+			// The default length of a newly created effect is 2 seconds
+			TimeSpan defaultEffectDuration = TimeSpan.FromSeconds(2);
+			if (visibleDuration)
+			{
+				// Adjust the timeSpan to 80% to keep the new effects end visible when zoomed in a lot
+				if ((TimelineControl.VisibleTimeEnd.Seconds - startTime.Seconds) <= defaultEffectDuration.Seconds)
+				{
+					defaultEffectDuration = (TimelineControl.VisibleTimeEnd - startTime).Scale(0.8);
+				}
+				// Don't make an effect shorter than 250 milliseconds.
+				if (defaultEffectDuration.TotalMilliseconds <= 250)
+				{
+					defaultEffectDuration = TimeSpan.FromMilliseconds(250);
+				}
+			}
+			return defaultEffectDuration;
 		}
 	}
 

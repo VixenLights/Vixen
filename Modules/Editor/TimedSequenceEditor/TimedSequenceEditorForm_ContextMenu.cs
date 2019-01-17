@@ -98,7 +98,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							AddMultipleEffects(e.GridTime, effectDesriptor.EffectName, (Guid) contextMenuItemEffect.Tag, e.Row);
 						}
 						else //add single
-							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, TimeSpan.FromSeconds(2), true);
+							AddNewEffectById((Guid) contextMenuItemEffect.Tag, e.Row, e.GridTime, GetDefaultEffectDuration(e.GridTime), true);
 					}
 				};
 
