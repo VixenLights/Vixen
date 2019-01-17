@@ -234,7 +234,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.audioToolStripButton_Audio_Devices});
 			this.toolStripAudio.Location = new System.Drawing.Point(3, 0);
 			this.toolStripAudio.Name = "toolStripAudio";
-			this.toolStripAudio.Size = new System.Drawing.Size(590, 25);
+			this.toolStripAudio.Size = new System.Drawing.Size(621, 25);
 			this.toolStripAudio.TabIndex = 1;
 			this.toolStripAudio.Text = "Audio";
 			this.toolStripAudio.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
@@ -295,6 +295,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.audioToolStripLabel_TimingSpeed.Tag = "Timing Speed: 100%";
 			this.audioToolStripLabel_TimingSpeed.Text = "Timing Speed: 100%";
 			this.audioToolStripLabel_TimingSpeed.ToolTipText = "Timing speed";
+			this.audioToolStripLabel_TimingSpeed.Click += new System.EventHandler(this.audioToolStripLabel_TimingSpeed_Click);
 			this.audioToolStripLabel_TimingSpeed.MouseEnter += new System.EventHandler(this.audioToolStripLabel_TimingSpeed_MouseEnter);
 			this.audioToolStripLabel_TimingSpeed.MouseLeave += new System.EventHandler(this.audioToolStripLabel_TimingSpeed_MouseLeave);
 			// 

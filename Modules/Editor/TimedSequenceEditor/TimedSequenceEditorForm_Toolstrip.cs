@@ -754,12 +754,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Audio Toolstrip Events
+		
+		private void audioToolStripLabel_TimingSpeed_Click(object sender, EventArgs e)
+		{
+			_SetTimingSpeed(1.0f);
+		}
 
 		private Bitmap SpeedVisualisation()
 		{
 			// Set Color based on Speed value.
-			HSBColor mainColor;
-			mainColor = _timingSpeed >= 1 ? new HSBColor(120 - (int)(30.0f / 4 * _timingSpeed * 4), 255, 255) : new HSBColor((int)(10.0f / 4.0f * _timingSpeed * 60) - 20, 255, 255);
+			HSBColor mainColor = _timingSpeed >= 1 ? new HSBColor(120 - (int)(30.0f / 4 * _timingSpeed * 4), 255, 255) : new HSBColor((int)(10.0f / 4.0f * _timingSpeed * 60) - 20, 255, 255);
 			
 			// Set bitmap size. This is the same as the standard icons that we bring in as the Toolstrip wil autosize based on scaling, so 32 is a good size.
 			int bitmapSize = 32;
@@ -783,7 +787,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				using (Font arialFont = new Font("Arial", 10, FontStyle.Bold))
 				{
 					int speedValueXLocation = _timingSpeed >= 0.97f ? 3 : 6; // Adjust the start location of the Speed text if over 100 as the text is longer then values under 100.
-					graphics.DrawString(((int)((float)Math.Round(_timingSpeed, 1) * 100)).ToString(), arialFont, brush,
+					graphics.DrawString(((float)Math.Round(_timingSpeed, 1) * 100).ToString(), arialFont, brush,
 						new PointF(speedValueXLocation, 0));
 				}
 
