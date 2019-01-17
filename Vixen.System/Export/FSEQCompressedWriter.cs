@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Windows.Media.Animation;
+using NLog;
 using Zstandard.Net;
 using static System.String;
 
@@ -10,6 +12,8 @@ namespace Vixen.Export
 {
 	public class FSEQCompressedWriter : IExportWriter
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
+
 		//Constants
 		private const byte VMinor = 0;
 		private const byte VMajor = 2;
@@ -209,12 +213,13 @@ namespace Vixen.Export
 			_fileNamePadding = (4 - (_offsetToChannelData % 4)) % 4;
 			_offsetToChannelData += _fileNamePadding;
 
-
-			Console.Out.WriteLine($"Total frames count {_numberFrames}");
-			Console.Out.WriteLine($"Block count {blockCount}");
-			Console.Out.WriteLine($"Frames per block count {_framesPerBlock}");
-			Console.Out.WriteLine($"Total header length {_offsetToChannelData}");
-
+#if DEBUG
+			Logging.Info($"Total frames count {_numberFrames}");
+			Logging.Info($"Block count {blockCount}");
+			Logging.Info($"Frames per block count {_framesPerBlock}");
+			Logging.Info($"Offset to channel data {_offsetToChannelData}");
+#endif
+			
 			OpenSession(data.OutFileName, _offsetToChannelData, data.ChannelNames.Count());
 		}
 
@@ -226,23 +231,12 @@ namespace Vixen.Export
 				_dataOut = new BinaryWriter(_outfs);
 				_dataOut.Write(new Byte[headerLength]);
 				InitStream();
-
-				//_seqNumChannels = numChannels;
-				//_seqNumPeriods = 0;
-				//if ((_seqNumChannels % 4) != 0)
-				//{
-				//	_padding = Enumerable.Repeat((Byte)0, 4 - (_seqNumChannels % 4)).ToArray();
-				//	_seqNumChannels += _padding.Length;
-				//}
-				//else
-				//{
-				//	_padding = null;
-				//}
 			}
 			catch (Exception e)
 			{
 				_outfs = null;
 				_dataOut = null;
+				Logging.Error(e, "An error occured opening the filestreams for export.");
 				throw e;
 			}
 		}
@@ -268,17 +262,38 @@ namespace Vixen.Export
 			}
 		}
 
-		private int FinalizeBlock()
+		private int FinalizeBlock(bool last=false)
 		{
+			
 			if (Compress)
 			{
 				_zStdStream.Flush();
-				//_zStdStream.Close();
 			}
 
 			var data = _memoryStream.ToArray();
 			_dataOut.Write(data);
-			_memoryStream.SetLength(0);
+
+			if (Compress)
+			{
+				_zStdStream.Dispose();
+			}
+
+			_memoryStream.Dispose();
+
+			if (!last)
+			{
+				_memoryStream = new MemoryStream();
+
+				if (Compress)
+				{
+					_zStdStream = new ZstandardStream(_memoryStream, 10);
+				}
+			}
+
+			//if (Compress)
+			//{
+			//	Decompress(data);
+			//}
 			return data.Length;
 		}
 		/// <inheritdoc />
@@ -298,10 +313,12 @@ namespace Vixen.Export
 			WriteData(periodData.ToArray());
 		}
 
-		private void ChangeBlock()
+		private void ChangeBlock(bool last = false)
 		{
-			var length = FinalizeBlock();
-			Console.Out.WriteLine($"Block {_currentBlock}, Start Frame {_blockStartFrame}, Bytes {length}, Frames {_currentFrameInBlock}, Processed Frame count {_currentFrame}");
+			var length = FinalizeBlock(last);
+#if DEBUG
+			Logging.Info($"Block {_currentBlock}, Start Frame {_blockStartFrame}, Bytes {length}, Frames {_currentFrameInBlock}, Processed Frame count {_currentFrame}");
+#endif
 			_compressBlockMap.Add(_blockStartFrame, (uint) length);
 			_blockStartFrame = _currentFrame;
 			_currentBlock++;
@@ -314,14 +331,6 @@ namespace Vixen.Export
 			ChangeBlock();
 			try
 			{
-				if (Compress)
-				{
-					_zStdStream.Close();
-					_zStdStream.Dispose();
-				}
-
-				_memoryStream.Close();
-				_memoryStream.Dispose();
 				_dataOut.Seek(0, SeekOrigin.Begin);
 				WriteFileHeader(_dataOut);
 				_dataOut.Flush();
@@ -336,9 +345,33 @@ namespace Vixen.Export
 			{
 				_dataOut = null;
 				_outfs = null;
+				Logging.Error(e, "An error occuring closing the export session.");
 				throw e;
 			}
 
+		}
+
+		private void Decompress(byte[] data)
+		{
+			try
+			{
+				using (var memoryStream = new MemoryStream(data))
+				using (var compressionStream = new ZstandardStream(memoryStream, CompressionMode.Decompress))
+				using (var temp = new MemoryStream())
+				{
+					compressionStream.CopyTo(temp);
+					var output = temp.ToArray();
+					foreach (var b in output)
+					{
+						Console.Out.Write($"{b} ");
+					}
+					Console.WriteLine();
+				}
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, "An error occured decompressing block.");
+			}
 		}
 
 		private uint ComputeMaxBlockCount()
