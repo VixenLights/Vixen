@@ -44,7 +44,6 @@ namespace VixenModules.Editor.EffectEditor
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.HideFilter, OnHideFilterCommand));
 			CommandBindings.Add(new CommandBinding(PropertyGridCommands.ToggleFilter, OnToggleFilterCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowDialogEditor, OnShowDialogEditor));
-			CommandBindings.Add(new CommandBinding(PropertyGridCommands.TogglePreview, OnTogglePreviewCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.AddCollectionItem, OnAddCollectionItemCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelCurveEditor, OnShowGradientLevelCurveCommand));
 			CommandBindings.Add(new CommandBinding(PropertyEditorCommands.ShowGradientLevelGradientEditor, OnShowGradientLevelGradientCommand));
@@ -209,12 +208,6 @@ namespace VixenModules.Editor.EffectEditor
 			
 			value.Value = editor.ShowDialog(value.ParentProperty, value.Value, this);
 			
-		}
-
-		
-		private void OnTogglePreviewCommand(object sender, ExecutedRoutedEventArgs e)
-		{
-			OnPreviewStateChanged((bool) e.Parameter);
 		}
 
 		#endregion

@@ -26,29 +26,10 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type local:EffectPropertyEditorGrid}">
-					
-					<DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
-						
-						<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-							<Label Content="Effect Preview" VerticalAlignment="Center"/>
-							<controls:ToggleSwitch 
-								Command="input:PropertyGridCommands.TogglePreview"
-								CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-								CheckedText="On"
-								Height="20"
-								HorizontalAlignment="Left"
-								Margin="10,10,10,10"
-								x:Name="previewToggleSwitch"
-								Padding="0"
-								UncheckedText="Off"
-								VerticalAlignment="Top"
-								Width="50">
-							</controls:ToggleSwitch>
-						</StackPanel>
-						
-						<ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>
-						
-					</DockPanel>
+
+                    <DockPanel LastChildFill="True" Background="{TemplateBinding Background}">
+                        <ContentPresenter FocusManager.IsFocusScope="True" ContentSource="Layout"/>
+                    </DockPanel>
 					
 				</ControlTemplate>
 			</Setter.Value>

@@ -169,6 +169,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.fileToolStripButton_AutoSave = new System.Windows.Forms.ToolStripButton();
 			this.fileToolStripButton_Export = new System.Windows.Forms.ToolStripButton();
 			this.fileToolStripButton_Close = new System.Windows.Forms.ToolStripButton();
+			this.toolStripPreview = new System.Windows.Forms.ToolStrip();
+			this.previewToolStripButton_Preview = new System.Windows.Forms.ToolStripButton();
 			this.toolStripEdit = new System.Windows.Forms.ToolStrip();
 			this.editToolStripButton_Undo = new Common.Controls.UndoButton();
 			this.editToolStripButton_Redo = new Common.Controls.UndoButton();
@@ -226,6 +228,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripAlignment.SuspendLayout();
 			this.toolStripView.SuspendLayout();
 			this.toolStripFile.SuspendLayout();
+			this.toolStripPreview.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			this.toolStripMode.SuspendLayout();
 			this.toolStripTools.SuspendLayout();
@@ -1229,6 +1232,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripAlignment);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripView);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripFile);
+			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripPreview);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEdit);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripMode);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTools);
@@ -1700,6 +1704,34 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.fileToolStripButton_Close.Text = "Close";
 			this.fileToolStripButton_Close.Click += new System.EventHandler(this.toolStripMenuItem_Close_Click);
 			// 
+			// toolStripPreview
+			// 
+			this.toolStripPreview.ContextMenuStrip = this.contextMenuStripAll;
+			this.toolStripPreview.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolStripPreview.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.toolStripPreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.previewToolStripButton_Preview});
+			this.toolStripPreview.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+			this.toolStripPreview.Location = new System.Drawing.Point(4, 50);
+			this.toolStripPreview.Name = "toolStripPreview";
+			this.toolStripPreview.Size = new System.Drawing.Size(102, 25);
+			this.toolStripPreview.TabIndex = 20;
+			this.toolStripPreview.Text = "Preview";
+			this.toolStripPreview.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
+			// 
+			// previewToolStripButton_Preview
+			// 
+			this.previewToolStripButton_Preview.CheckOnClick = true;
+			this.previewToolStripButton_Preview.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.previewToolStripButton_Preview.ForeColor = System.Drawing.Color.Black;
+			this.previewToolStripButton_Preview.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.previewToolStripButton_Preview.Name = "previewToolStripButton_Preview";
+			this.previewToolStripButton_Preview.Size = new System.Drawing.Size(90, 22);
+			this.previewToolStripButton_Preview.Tag = "Effects Preview";
+			this.previewToolStripButton_Preview.Text = "Effects Preview";
+			this.previewToolStripButton_Preview.ToolTipText = "Effects Preview";
+			this.previewToolStripButton_Preview.Click += new System.EventHandler(this.toolStripButtonPreview_Click);
+			// 
 			// toolStripEdit
 			// 
 			this.toolStripEdit.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -1713,7 +1745,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.editToolStripButton_Copy,
             this.editToolStripButton_Paste});
 			this.toolStripEdit.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripEdit.Location = new System.Drawing.Point(3, 50);
+			this.toolStripEdit.Location = new System.Drawing.Point(3, 75);
 			this.toolStripEdit.Name = "toolStripEdit";
 			this.toolStripEdit.Size = new System.Drawing.Size(222, 25);
 			this.toolStripEdit.TabIndex = 17;
@@ -1790,7 +1822,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.modeToolStripButton_DragBoxFilter,
             this.modeToolStripDropDownButton_DragBoxFilter});
 			this.toolStripMode.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripMode.Location = new System.Drawing.Point(3, 75);
+			this.toolStripMode.Location = new System.Drawing.Point(3, 100);
 			this.toolStripMode.Name = "toolStripMode";
 			this.toolStripMode.Size = new System.Drawing.Size(343, 25);
 			this.toolStripMode.TabIndex = 20;
@@ -1981,7 +2013,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.playBackToolStripButton_End,
             this.playBackToolStripButton_Loop});
 			this.toolStripPlayBack.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripPlayBack.Location = new System.Drawing.Point(3, 100);
+			this.toolStripPlayBack.Location = new System.Drawing.Point(3, 125);
 			this.toolStripPlayBack.Name = "toolStripPlayBack";
 			this.toolStripPlayBack.Size = new System.Drawing.Size(226, 25);
 			this.toolStripPlayBack.TabIndex = 16;
@@ -2260,6 +2292,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripView.PerformLayout();
 			this.toolStripFile.ResumeLayout(false);
 			this.toolStripFile.PerformLayout();
+			this.toolStripPreview.ResumeLayout(false);
+			this.toolStripPreview.PerformLayout();
 			this.toolStripEdit.ResumeLayout(false);
 			this.toolStripEdit.PerformLayout();
 			this.toolStripMode.ResumeLayout(false);
@@ -2471,5 +2505,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem add_RemoveLibraryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem resetLibraryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem imageSizeToolStripMenuItem;
+		private System.Windows.Forms.ToolStrip toolStripPreview;
+		private System.Windows.Forms.ToolStripButton previewToolStripButton_Preview;
 	}
 }

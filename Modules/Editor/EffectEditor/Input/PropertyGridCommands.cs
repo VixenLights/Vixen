@@ -59,9 +59,6 @@ namespace VixenModules.Editor.EffectEditor.Input
 		private static readonly RoutedUICommand _ClosePropertyTab = new RoutedUICommand("Close Property Tab",
 			"ClosePropertyTabCommand", ThisType);
 
-		private static readonly RoutedUICommand _TogglePreview = new RoutedUICommand("Toggle Preview", "TogglePreviewCommand",
-			ThisType);
-
 		/// <summary>
 		/// Represents a command for the control to show property filter box.
 		/// </summary>
@@ -156,14 +153,6 @@ namespace VixenModules.Editor.EffectEditor.Input
 		public static RoutedUICommand ClosePropertyTab
 		{
 			get { return _ClosePropertyTab; }
-		}
-
-		/// <summary>
-		/// Represents a command for the control to toggle the preview.
-		/// </summary>
-		public static RoutedUICommand TogglePreview
-		{
-			get { return _TogglePreview; }
 		}
 
 		#endregion

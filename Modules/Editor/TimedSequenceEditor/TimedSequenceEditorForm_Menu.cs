@@ -130,10 +130,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void exportToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			EffectEditorForm.PreviewStop();
+			PreviewStop();
 			ExportDialog ed = new ExportDialog(Sequence);
 			ed.ShowDialog();
-			EffectEditorForm.ResumePreview();
+			ResumePreview();
 		}
 
 		#endregion

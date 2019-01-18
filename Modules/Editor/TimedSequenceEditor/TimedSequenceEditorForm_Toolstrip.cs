@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Timers;
 using System.Windows.Forms;
 using System.Xml;
 using Common.Controls;
@@ -13,13 +14,16 @@ using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
 using Vixen.Module.App;
+using Vixen.Execution.Context;
 using Vixen.Module.Effect;
 using Vixen.Services;
+using Vixen.Sys;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using ZedGraph;
 using Size = System.Drawing.Size;
+using Timer = System.Timers.Timer;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -33,6 +37,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private List<AllToolStripItems> _allToolStripItems;
 		private readonly string _toolStripFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ToolStripLocationSettings.xml");
 		private bool _mouseDown;
+		private bool _previewState;
+		private PreviewContext _previewContext;
+		private Timer _previewLoopTimer = new Timer();
 
 		// Libraries
 		private readonly string _colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
@@ -67,6 +74,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ToolsToolStripSetup();
 			// Mode Toolstrip Settings
 			ModeToolStripSetup();
+			// Preview Toolstrip Settings
+			PreviewToolStripSetup();
 			
 			XMLProfileSettings xml = new XMLProfileSettings();
 
@@ -242,6 +251,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			modeToolStripButton_DragBoxFilter.DisplayStyle = ToolStripItemDisplayStyle.Image;
 		}
 
+		private void PreviewToolStripSetup()
+		{
+			toolStripPreview.ImageScalingSize = new Size(_iconSize, _iconSize);
+			previewToolStripButton_Preview.Image = Resources.Binoculars;
+			previewToolStripButton_Preview.DisplayStyle = ToolStripItemDisplayStyle.Image;
+		}
+
 		private void SetToolBarLayout()
 		{
 			// Set layout and settings for all Toolbars.
@@ -309,11 +325,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						toolStripGradientLibrary.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
 						toolStripGradientLibrary.Visible = toolStripVisible;
 						break;
+					case "toolStripPreview":
+						toolStripPreview.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripPreview.Visible = toolStripVisible;
+						break;
 				}
 				SetToolStripStartPosition();
 			}
 
-			// Will only go hear when the user first loads the new Toolstrip management or when all Toolstrips are hidden.
+			// Will only go here when the user first loads the new Toolstrip management or when all Toolstrips are hidden.
 			if (toolStripCount == 0)
 			{
 				toolStripPlayBack.Location = new Point(3, 0 + 5);
@@ -326,6 +346,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripView.Location = new Point(toolStripMode.Location.X + toolStripMode.Width, 5);
 				toolStripAudio.Location = new Point(toolStripView.Location.X + toolStripView.Width, 5);
 				toolStripAudio.Location = new Point(toolStripView.Location.X + toolStripView.Width, 5);
+				toolStripPreview.Location = new Point(toolStripAudio.Location.X + toolStripAudio.Width, 5);
+				toolStripPreview.Location = new Point(toolStripAudio.Location.X + toolStripAudio.Width, 5);
 			}
 
 			SetToolStripStartPosition();
@@ -2166,6 +2188,86 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				PopulateSnapStrength(Convert.ToInt32(item.Tag));
 			}
 			// clicking the currently checked one--do not uncheck it			
+		}
+
+		#endregion
+
+		#region Preview Toolstrip Events
+		
+		private void toolStripButtonPreview_Click(object sender, EventArgs e)
+		{
+			_previewState = previewToolStripButton_Preview.Checked;
+			TogglePreviewState();
+		}
+
+		private void PreviewLoopTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+		{
+			if (InvokeRequired)
+			{
+				if (_previewState && TimelineControl.SelectedElements.Any()) BeginInvoke(new Action(PreviewPlay));
+			}
+		}
+
+		private void PreviewPlay()
+		{
+			if (_previewContext == null)
+			{
+				_previewContext = VixenSystem.Contexts.CreatePreviewContext("Effect Preview");
+				_previewContext.Sequence = Sequence;
+				_previewContext.Start();
+
+			}
+			else if (!_previewContext.IsRunning)
+			{
+				Logging.Warn("Preview context was not running!");
+				_previewContext.Start();
+			}
+			IEnumerable<EffectNode> orderedNodes = TimelineControl.SelectedElements.Select(x => x.EffectNode).OrderBy(x => x.StartTime).ToList();
+			if (orderedNodes.Any())
+			{
+				TimeSpan startOffset = orderedNodes.First().StartTime;
+				TimeSpan duration = orderedNodes.Last().EndTime - startOffset;
+				List<EffectNode> nodesToPlay =
+					orderedNodes.Select(effectNode => new EffectNode(effectNode.Effect, effectNode.StartTime - startOffset)).ToList();
+				_previewContext.Execute(nodesToPlay);
+				_previewLoopTimer.Interval = (int) duration.TotalMilliseconds;
+				_previewLoopTimer.Start();
+			}
+		}
+
+		public void PreviewStop()
+		{
+			_previewLoopTimer.Stop();
+			if (_previewContext != null)
+			{
+				if (_previewContext.IsRunning && !_previewContext.IsPaused)
+				{
+					_previewContext.Clear();
+				}
+				else
+				{
+					Logging.Warn("Preview context is not running or is paused.");
+					_previewContext.Clear(false);
+				}
+			}
+		}
+
+		public void ResumePreview()
+		{
+			TogglePreviewState();
+		}
+
+		private void TogglePreviewState()
+		{
+			if (_previewState)
+			{
+				if (TimelineControl.SelectedElements.Any())
+				{
+					PreviewPlay();
+					return;
+				}
+			}
+			PreviewStop();
 		}
 
 		#endregion

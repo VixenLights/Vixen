@@ -224,6 +224,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 
+			// Preview
+			_previewLoopTimer.Elapsed += PreviewLoopTimerOnElapsed;
+
 			PerformAutoScale();
 			Execution.ExecutionStateChanged += OnExecutionStateChanged;
 			_autoSaveTimer.Tick += AutoSaveEventProcessor;
@@ -726,6 +729,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_findEffects.Dispose();
 			}
+
+			// Dispose Preview
+			if (_previewContext != null)
+			{
+				VixenSystem.Contexts.ReleaseContext(_previewContext);
+			}
+			_previewLoopTimer.Elapsed -= PreviewLoopTimerOnElapsed;
 
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
@@ -2096,6 +2106,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			editToolStripButton_Copy.Enabled = editToolStripButton_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_Copy.Enabled = toolStripMenuItem_Cut.Enabled = TimelineControl.SelectedElements.Any();
 			toolStripMenuItem_deleteElements.Enabled = TimelineControl.SelectedElements.Any();
+			TogglePreviewState();
 		}
 
 		private void TimelineControl_MouseDown(object sender, MouseEventArgs e)
@@ -3315,7 +3326,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.PlaybackStartTime = _mPrevPlaybackStart;
 			TimelineControl.PlaybackEndTime = _mPrevPlaybackEnd;
 			TimelineControl.PlaybackCurrentTime = null;
-			EffectEditorForm.ResumePreview();
+			ResumePreview();
 			SetPreviewsTopMost(false);
 		}
 
@@ -5294,7 +5305,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void _PlaySequence(TimeSpan rangeStart, TimeSpan rangeEnd)
 		{
-			EffectEditorForm.PreviewStop();
+			PreviewStop();
 			SetPreviewsTopMost();
 			if (_context.IsRunning && _context.IsPaused)
 			{
