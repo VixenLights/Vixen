@@ -145,6 +145,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colors = (List<Color>)ser.ReadObject(reader);
 				}
 			}
+			_SelectionChanged();
 		}
 
 		public void Save_ColorPaletteFile()
@@ -159,9 +160,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			var dataWriter = XmlWriter.Create(_colorFilePath, xmlsettings);
 			dataSer.WriteObject(dataWriter, _colors);
 			dataWriter.Close();
+			_SelectionChanged();
 		}
 
-		private void PopulateColors()
+		public void PopulateColors()
 		{
 			listViewColors.BeginUpdate();
 			listViewColors.Items.Clear();
@@ -177,6 +179,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			}
 			listViewColors.EndUpdate();
 			toolStripButtonEditColor.Enabled = toolStripButtonDeleteColor.Enabled = false;
+			_SelectionChanged();
 		}
 
 		private ListViewItem CreateColorListItem(Color colorItem)
@@ -290,6 +293,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (listViewColors.SelectedItems.Count == 1)
 				toolStripButtonEditColor.PerformClick();
+		}
+
+		public event EventHandler SelectionChanged;
+
+		private void _SelectionChanged()
+		{
+			if (SelectionChanged != null)
+				SelectionChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

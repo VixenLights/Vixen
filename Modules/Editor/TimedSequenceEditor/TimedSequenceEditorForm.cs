@@ -168,6 +168,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
+			contextMenuStripLibraries.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripAll.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
@@ -183,6 +184,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_iconSize = (int) (28*_scaleFactor);
 			_toolStripImageSize = (int)(16 * _scaleFactor);
 			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripColorLibrary.ImageScalingSize = new Size(_iconSize, _iconSize);
 
 			foreach (ToolStripItem toolStripItem in modeToolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -496,6 +498,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdateButtonStates();
 			UpdatePasteMenuStates();
 			LoadColorCollections();
+			
+			ColorLibraryForm.SelectionChanged += PopulateColors;
+			toolBarsToolStripMenuItemLibraries.DropDown.Closing += toolStripMenuItem_Closing;
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
@@ -738,6 +743,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			ColorLibraryForm.SelectionChanged -= PopulateColors;
+			toolBarsToolStripMenuItemLibraries.DropDown.Closing -= toolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
