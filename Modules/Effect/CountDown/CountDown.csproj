@@ -93,6 +93,7 @@
     <Compile Include="CountDownData.cs" />
     <Compile Include="CountDownDescriptor.cs" />
     <Compile Include="CountDownDirection.cs" />
+    <Compile Include="SpinnerGradientMode.cs" />
     <Compile Include="TimeFormat.cs" />
   </ItemGroup>
   <ItemGroup>

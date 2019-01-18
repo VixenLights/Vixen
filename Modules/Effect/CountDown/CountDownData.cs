@@ -18,6 +18,7 @@ namespace VixenModules.Effect.CountDown
 		public CountDownData()
 		{
 			GradientColors = new List<ColorGradient> { new ColorGradient(Color.Red) };
+			SpinnerColors = new List<ColorGradient> { new ColorGradient(Color.LightSalmon) };
 			Direction = CountDownDirection.None;
 			Speed = 1;
 			Fade = true;
@@ -27,6 +28,7 @@ namespace VixenModules.Effect.CountDown
 			FontScaleCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			CenterStop = false;
 			GradientMode = GradientMode.AcrossElement;
+			SpinnerGradientMode = SpinnerGradientMode.Horizontal;
 			Orientation=StringOrientation.Vertical;
 			Font = new SerializableFont(new Font("Arial", 20));
 			LevelCurve = new Curve(CurveType.Flat100);
@@ -36,6 +38,7 @@ namespace VixenModules.Effect.CountDown
 			CountDownTime = "10";
 			PerIteration = false;
 			SizeMode = SizeMode.None;
+			Spinner = false;
 		}
 
 		[DataMember(EmitDefaultValue = false)]
@@ -43,6 +46,9 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public List<ColorGradient> GradientColors { get; set; }
+
+		[DataMember]
+		public List<ColorGradient> SpinnerColors { get; set; }
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
@@ -70,6 +76,9 @@ namespace VixenModules.Effect.CountDown
 
 		[DataMember]
 		public GradientMode GradientMode { get; set; }
+
+		[DataMember]
+		public SpinnerGradientMode SpinnerGradientMode { get; set; }
 
 		[DataMember]
 		public TimeFormat TextMode { get; set; }
@@ -101,6 +110,9 @@ namespace VixenModules.Effect.CountDown
 		[DataMember]
 		public SizeMode SizeMode { get; set; }
 
+		[DataMember]
+		public bool Spinner { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -109,13 +121,19 @@ namespace VixenModules.Effect.CountDown
 			{
 				GradientColors = new List<ColorGradient> { Colors };
 			}
-		}
+
+			if (SpinnerColors == null)
+			{
+				SpinnerColors = new List<ColorGradient> { Colors };
+			}
+		  }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			CountDownData result = new CountDownData
 			{
 				GradientColors = GradientColors.ToList(),
+				SpinnerColors = SpinnerColors.ToList(),
 				Direction = Direction,
 				Speed = Speed,
 				CenterStop = CenterStop,
@@ -124,6 +142,7 @@ namespace VixenModules.Effect.CountDown
 				XOffsetCurve = new Curve(XOffsetCurve),
 				AngleCurve = new Curve(AngleCurve),
 				GradientMode = GradientMode,
+				SpinnerGradientMode = SpinnerGradientMode,
 				Font = new SerializableFont(Font.FontValue),
 				LevelCurve = LevelCurve,
 				FontScaleCurve = new Curve(FontScaleCurve),
@@ -133,8 +152,9 @@ namespace VixenModules.Effect.CountDown
 				CountDownFade = CountDownFade,
 				CountDownTime = CountDownTime,
 				PerIteration = PerIteration,
-				SizeMode = SizeMode
-			};
+				SizeMode = SizeMode,
+				Spinner = Spinner
+		};
 			return result;
 		}
 	}
