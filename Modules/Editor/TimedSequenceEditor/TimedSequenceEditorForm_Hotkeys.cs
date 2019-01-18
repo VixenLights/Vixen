@@ -140,8 +140,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						return;
 					EffectsForm.DeselectAllNodes();
 					TimelineControl.grid.EnableDrawMode = false;
-					toolStripButton_DrawMode.Checked = false;
-					toolStripButton_SelectionMode.Checked = true;
+					modeToolStripButton_DrawMode.Checked = false;
+					modeToolStripButton_SelectionMode.Checked = true;
 					break;
 
 				case Keys.OemMinus:
