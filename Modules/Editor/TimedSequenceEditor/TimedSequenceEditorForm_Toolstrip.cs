@@ -583,15 +583,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				case 0:
 					noText = true;
-					toolStripEffects.ImageScalingSize = new Size(_iconSize, _iconSize);
 					break;
 				case 1:
 					alignText = TextImageRelation.TextAboveImage;
-					toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 					break;
 				case 2:
 					alignText = TextImageRelation.ImageAboveText;
-					toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 					break;
 			}
 
