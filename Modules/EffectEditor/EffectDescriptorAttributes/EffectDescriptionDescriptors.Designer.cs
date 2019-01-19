@@ -719,6 +719,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adds a film spinner around the number..
+        /// </summary>
+        internal static string FilmSpinner {
+            get {
+                return ResourceManager.GetString("FilmSpinner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls the swipe color of the film spinner..
+        /// </summary>
+        internal static string FilmSpinnerColors {
+            get {
+                return ResourceManager.GetString("FilmSpinnerColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls how the gradient is applied to the swipe color of the film spinner..
+        /// </summary>
+        internal static string FilmSpinnerGradientMode {
+            get {
+                return ResourceManager.GetString("FilmSpinnerGradientMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selects what source is used to determine explosions..
         /// </summary>
         internal static string FireworksSource {

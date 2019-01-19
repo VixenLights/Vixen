@@ -196,6 +196,23 @@ namespace VixenModules.Effect.CountDown
 			}
 		}
 
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"FilmSpinner")]
+		[ProviderDescription(@"FilmSpinner")]
+		[PropertyOrder(7)]
+		public bool Spinner
+		{
+			get { return _data.Spinner; }
+			set
+			{
+				_data.Spinner = value;
+				UpdateFilmSpinnerAttributes();
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		#endregion
 
 		#region Movement properties
@@ -334,24 +351,8 @@ namespace VixenModules.Effect.CountDown
 				OnPropertyChanged();
 			}
 		}
-
+		
 		[Value]
-		[ProviderCategory(@"Color", 3)]
-		[ProviderDisplayName(@"Film Spinner Colors")]
-		[ProviderDescription(@"Color")]
-		[PropertyOrder(2)]
-		public List<ColorGradient> SpinnerColors
-		{
-			get { return _data.SpinnerColors; }
-			set
-			{
-				_data.SpinnerColors = value;
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-		  [Value]
 		[ProviderCategory(@"Color", 3)]
 		[ProviderDisplayName(@"GradientMode")]
 		[ProviderDescription(@"GradientMode")]
@@ -369,8 +370,24 @@ namespace VixenModules.Effect.CountDown
 
 		[Value]
 		[ProviderCategory(@"Color", 3)]
-		[ProviderDisplayName(@"Film Spinner Gradient Mode")]
-		[ProviderDescription(@"SpinnerGradientMode")]
+		[ProviderDisplayName(@"FilmSpinnerColors")]
+		[ProviderDescription(@"FilmSpinnerColors")]
+		[PropertyOrder(2)]
+		public List<ColorGradient> SpinnerColors
+		{
+			get { return _data.SpinnerColors; }
+			set
+			{
+				_data.SpinnerColors = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 3)]
+		[ProviderDisplayName(@"FilmSpinnerGradientMode")]
+		[ProviderDescription(@"FilmSpinnerGradientMode")]
 		[PropertyOrder(3)]
 		public SpinnerGradientMode SpinnerGradientMode
 		{
@@ -404,29 +421,8 @@ namespace VixenModules.Effect.CountDown
 		}
 
 		#endregion
-
-		#region Film Spinner Properties
-
-		[Value]
-		[ProviderCategory(@"Config", 1)]
-		[ProviderDisplayName(@"Film Spinner")]
-		[ProviderDescription(@"Spinner")]
-		[PropertyOrder(7)]
-		public bool Spinner
-		{
-			get { return _data.Spinner; }
-			set
-			{
-				_data.Spinner = value;
-				UpdateFilmSpinnerAttributes();
-				IsDirty = true;
-				OnPropertyChanged();
-			}
-		}
-
-        #endregion
-
-        public override IModuleDataModel ModuleData
+				
+      public override IModuleDataModel ModuleData
 		{
 			get { return _data; }
 			set
@@ -634,7 +630,7 @@ namespace VixenModules.Effect.CountDown
 				switch (SizeMode)
 				{
 					case SizeMode.Grow:
-						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust;
+						_newFontSize = _font.SizeInPoints / 20 * _sizeAdjust; 
 						break;
 					case SizeMode.Shrink:
 						_newFontSize = _font.SizeInPoints / 20 * (21 - _sizeAdjust);
@@ -720,13 +716,10 @@ namespace VixenModules.Effect.CountDown
 				int filmSpinnerRadialLineAngleInDegrees = 0;
 
 				if (Spinner)
-				{
-					if (_direction != CountDownDirection.None)
-					{
-						movementXOffset = centerOfText.X - (bufferWi / 2);
-						movementYOffset = centerOfText.Y - (bufferHt / 2);
-					}
-
+				{									
+					movementXOffset = centerOfText.X - (bufferWi / 2);
+					movementYOffset = centerOfText.Y - (bufferHt / 2);
+					
 					filmSpinnerRadialLineAngleInDegrees = GetFilmSpinnerRadialLineAngle(frame);
 
 					// Drawing the spinner swipe needs to be done before the transformation below otherwise the 
@@ -1227,12 +1220,13 @@ namespace VixenModules.Effect.CountDown
 		private int GetCrossHashWidth(int bufferHt, int bufferWi)
 		{
 			int maxCrossHashWidth = GetMaxCrossHashWidth(bufferHt, bufferWi);
-
-			// Attempt to create 20 Pixels differece between minimum and maximum cross hash size
+					
+			// Attempt to create 20 Pixels differece between minimum and maximum cross hash size			
 			int minCrossHashWidth = maxCrossHashWidth - 20;
+
 			if (minCrossHashWidth < 0)
 			{
-				minCrossHashWidth = 0;
+				minCrossHashWidth = 1;
 			}
 
 			int crossHashWidth = 0;
@@ -1243,14 +1237,14 @@ namespace VixenModules.Effect.CountDown
 					crossHashWidth = minCrossHashWidth + _sizeAdjust;
 					break;
 				case SizeMode.Shrink:
-					crossHashWidth = crossHashWidth - _sizeAdjust;
+					crossHashWidth = maxCrossHashWidth - _sizeAdjust; 
 					break;
 				case SizeMode.None:
 				default:
 					crossHashWidth = maxCrossHashWidth;
 					break;
 			}
-
+			
 			return crossHashWidth;
 		}
 
@@ -1301,7 +1295,7 @@ namespace VixenModules.Effect.CountDown
 			switch (SpinnerGradientMode)
 			{
 				case SpinnerGradientMode.Horizontal:
-					brush = CreateGradientBrushForRectangle(LinearGradientMode.Horizontal, SpinnerColors, swipeRect);
+					brush = CreateGradientBrushForRectangle(LinearGradientMode.Horizontal, SpinnerColors, swipeRect); 
 					break;
 				case SpinnerGradientMode.Vertical:
 					brush = CreateGradientBrushForRectangle(LinearGradientMode.Vertical, SpinnerColors, swipeRect);

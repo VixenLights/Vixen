@@ -836,4 +836,14 @@
   </data>
   <data name="BorderThickness" xml:space="preserve">
     <value>Thickness</value>
-  </data></root>
+  </data>
+  <data name="FilmSpinner" xml:space="preserve">
+    <value>Film Spinner</value>
+  </data>
+  <data name="FilmSpinnerColors" xml:space="preserve">
+    <value>Film Spinner Colors</value>
+  </data>
+  <data name="FilmSpinnerGradientMode" xml:space="preserve">
+    <value>Film Spinner Gradient Mode</value>
+  </data>
+</root>
