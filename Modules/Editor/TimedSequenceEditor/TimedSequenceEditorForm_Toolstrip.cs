@@ -84,6 +84,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/PixelEffectToolStrip", Name), true));
 			deviceToolStripMenuItem.Checked = (xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/EffectToolStrip/DeviceEffectToolStrip", Name), true));
 
+			// Adjust Library Size
+			int imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/ColorLibrary", Name), _toolStripImageSize);
+			ChangeLibraryImageSize(toolStripColorLibrary, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/GradientLibrary", Name), _toolStripImageSize);
+			ChangeLibraryImageSize(toolStripGradientLibrary, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/CurveLibrary", Name), _toolStripImageSize);
+			ChangeLibraryImageSize(toolStripCurveLibrary, imageSize);
+			
 			// Load ToolStrip Items form saved file.
 			Load_ToolsStripItemsFile();
 
@@ -605,7 +613,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdateCurrentLibrary()
 		{
-			switch (_currentToolStrip.Name)
+			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
 					UpdateColorSettings();
@@ -1100,6 +1108,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_invokeUpdate = false;
 		}
 
+		private void imageSizeToolStripMenuItemLibraries_Click(object sender, EventArgs e)
+		{
+			ChangeLibraryImageSize(_contextToolStrip, _iconSize);
+		}
+
+		private void ChangeLibraryImageSize(ToolStrip contextToolStrip, int imageSize)
+		{
+			TextImageRelation imagePosition;
+			if (contextToolStrip.ImageScalingSize.Height != imageSize)
+			{
+				contextToolStrip.ImageScalingSize = new Size(_iconSize, _iconSize);
+				imagePosition = TextImageRelation.ImageBeforeText;
+			}
+			else
+			{
+				contextToolStrip.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+				imagePosition = TextImageRelation.TextBeforeImage;
+			}
+
+			contextToolStrip.SuspendLayout();
+			foreach (ToolStripItem tsi in contextToolStrip.Items) tsi.TextImageRelation = imagePosition;
+			contextToolStrip.ResumeLayout();
+		}
+
 		#endregion
 
 		#region Color Library Toolstrip Initialization
@@ -1124,7 +1156,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						ToolTipText = string.Format("R: {0} G: {1} B: {2}", colorItem.R, colorItem.G, colorItem.B),
 						Tag = colorItem,
-						Image = CreateColorListItem(colorItem)
+						Image = CreateColorListItem(colorItem),
+						TextImageRelation = TextImageRelation.ImageAboveText
 					};
 
 					tsb.MouseDown += toolStripLibraries_MouseDown;
@@ -1282,7 +1315,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							Tag = c,
 							Name = name,
 							ImageKey = name,
-							Image = result
+							Image = result,
+							TextImageRelation = TextImageRelation.ImageAboveText
 						};
 
 						tsb.MouseDown += toolStripLibraries_MouseDown;
@@ -1422,7 +1456,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							Tag = gradient,
 							Name = name,
 							ImageKey = name,
-							Image = result
+							Image = result,
+							TextImageRelation = TextImageRelation.ImageAboveText
 						};
 
 						tsb.MouseDown += toolStripLibraries_MouseDown;
@@ -2166,6 +2201,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 				}
 			}
+
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/ColorLibrary", Name),
+				toolStripColorLibrary.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/GradientLibrary", Name),
+				toolStripGradientLibrary.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/CurveLibrary", Name),
+				toolStripCurveLibrary.ImageScalingSize.Height);
 
 			// Save each Toolstrip settings
 			_allToolStripItems.Clear();
