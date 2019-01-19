@@ -12,12 +12,14 @@ using Common.Controls.ColorManagement.ColorModels;
 using Common.Controls.ColorManagement.ColorPicker;
 using Common.Controls.Theme;
 using Common.Resources.Properties;
+using Vixen.Module.App;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using ZedGraph;
+using Size = System.Drawing.Size;
 
 namespace VixenModules.Editor.TimedSequenceEditor
 {
@@ -43,7 +45,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private bool _toolStripButtonAlreadyChecked;
 		private ToolStrip _contextToolStrip;
 		private string _lastFolder;
-
+		
 		#endregion
 
 		#region Initial Sequence Editor Load
@@ -90,6 +92,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			PopulateEffectsToolStrip_Context();
 			PopulateColorLibraryToolStrip_Context();
+			PopulateCuveLibraryToolStrip_Context();
 			PopulateAllToolStrips();
 			
 		}
@@ -273,6 +276,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					case "toolStripColorLibrary":
 						toolStripColorLibrary.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
 						toolStripColorLibrary.Visible = toolStripVisible;
+						break;
+					case "toolStripCurveLibrary":
+						toolStripCurveLibrary.Location = new Point(toolStripLocationX, toolStripLocationY + 5);
+						toolStripCurveLibrary.Visible = toolStripVisible;
 						break;
 				}
 				SetToolStripStartPosition();
@@ -551,8 +558,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					item.Checked = false;
 				}
 				_selectedButton.Checked = true;
-				toolStripColorLibrary.AllowDrop = false;
-				toolStripColorLibrary.AllowItemReorder = true;
+				_contextToolStrip.AllowDrop = false;
+				_contextToolStrip.AllowItemReorder = true;
 			}
 		}
 
@@ -564,6 +571,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				case "toolStripColorLibrary":
 					UpdateColorSettings();
+					break;
+				case "toolStripCurveLibrary":
+					_curveLibrary.Library.Clear();
+					foreach (ToolStripButton tsb in toolStripCurveLibrary.Items)
+					{
+						_curveLibrary.Library.Add(tsb.Name, (Curve)tsb.Tag);
+					}
+					CurveLibraryForm.Populate_Curves();
 					break;
 			}
 		}
@@ -892,33 +907,33 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						UpdateColorSettings();
 					}
 					break;
-					//case "toolStripCurveLibrary":
-					//	if (!dragDrop)
-					//	{
-					//		newButtonName = AddCurveToLibrary(new Curve());
-					//	}
-					//	foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
-					//	{
-					//		if (kvp.Key == newButtonName)
-					//		{
-					//			var curveImage = kvp.Value.GenerateGenericCurveImage(_imageSize);
+				case "toolStripCurveLibrary":
+					if (!dragDrop)
+					{
+						newButtonName = AddCurveToLibrary(new Curve());
+					}
+					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+					{
+						if (kvp.Key == newButtonName)
+						{
+							var curveImage = kvp.Value.GenerateGenericCurveImage(new Size(_iconSize, _iconSize));
 
-					//			curveImage = DrawButtonBorder(curveImage);
-					//			string curveName = kvp.Key;
+							curveImage = DrawButtonBorder(curveImage);
+							string curveName = kvp.Key;
 
-					//			tsb = new ToolStripButton
-					//			{
-					//				ToolTipText = curveName,
-					//				Tag = kvp.Value,
-					//				Name = curveName,
-					//				ImageKey = curveName,
-					//				Image = curveImage
-					//			};
+							tsb = new ToolStripButton
+							{
+								ToolTipText = curveName,
+								Tag = kvp.Value,
+								Name = curveName,
+								ImageKey = curveName,
+								Image = curveImage
+							};
 
-					//			toolStripCurveLibrary.Items.Add(tsb);
-					//		}
-					//	}
-					//	break;
+							toolStripCurveLibrary.Items.Add(tsb);
+						}
+					}
+					break;
 					//case "toolStripGradientLibrary":
 					//	if (!dragDrop)
 					//	{
@@ -979,23 +994,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						UpdateColorSettings();
 					}
 					break;
-					//case "toolStripCurveLibrary":
-					//	_curveLibrary.EditLibraryCurve(_selectedButton.Name);
+				case "toolStripCurveLibrary":
+					_curveLibrary.EditLibraryCurve(_selectedButton.Name);
 
-					//	foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
-					//	{
-					//		if (kvp.Key == _selectedButton.Name)
-					//		{
-					//			Curve curve = kvp.Value;
-					//			var curveImage = curve.GenerateGenericCurveImage(_imageSize);
+					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+					{
+						if (kvp.Key == _selectedButton.Name)
+						{
+							Curve curve = kvp.Value;
+							var curveImage = curve.GenerateGenericCurveImage(new Size(_iconSize, _iconSize));
 
-					//			curveImage = DrawButtonBorder(curveImage);
-					//			_selectedButton.Tag = curve;
-					//			_selectedButton.Image = curveImage;
-					//			break;
-					//		}
-					//	}
-					//	break;
+							curveImage = DrawButtonBorder(curveImage);
+							_selectedButton.Tag = curve;
+							_selectedButton.Image = curveImage;
+							break;
+						}
+					}
+					break;
 					//case "toolStripGradientLibrary":
 					//	_colorGradientLibrary.EditLibraryItem(_selectedButton.Name);
 
@@ -1040,20 +1055,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					UpdateColorSettings();
 					break;
-					//case "toolStripCurveLibrary":
-					//	foreach (ToolStripButton tsb in toolStripCurveLibrary.Items)
-					//	{
-					//		if (tsb.Checked)
-					//		{
-					//			_curveLibrary.RemoveCurve(tsb.Name);
-					//			removeButtons.Add(tsb);
-					//		}
-					//	}
-					//	foreach (ToolStripButton tsb in removeButtons)
-					//	{
-					//		toolStripCurveLibrary.Items.Remove(tsb);
-					//	}
-					//	break;
+				case "toolStripCurveLibrary":
+					foreach (ToolStripButton tsb in toolStripCurveLibrary.Items)
+					{
+						if (tsb.Checked)
+						{
+							_curveLibrary.RemoveCurve(tsb.Name);
+							removeButtons.Add(tsb);
+						}
+					}
+					foreach (ToolStripButton tsb in removeButtons)
+					{
+						toolStripCurveLibrary.Items.Remove(tsb);
+					}
+					break;
 					//case "toolStripGradientLibrary":
 					//	foreach (ToolStripButton tsb in toolStripGradientLibrary.Items)
 					//	{
@@ -1180,11 +1195,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#endregion
 
-		#region Curve Library Toolstrip Initialization
-
-
-		#endregion
-
 		#region Color Library Toolstrip Enter and Drop
 
 		private void toolStripColorLibrary_DragEnter(object sender, DragEventArgs e)
@@ -1218,6 +1228,150 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				UpdateColorSettings();
 			}
 		}
+
+		#endregion
+
+		#region Curve Library Toolstrip Initialization
+		
+		private void PopulateCuveLibraryToolStrip_Context()
+		{
+			if (_curveLibrary != null)
+			{
+				Populate_Curves();
+				_curveLibrary.CurveChanged += CurveLibrary_Changed;
+			}
+		}
+
+		private void Populate_Curves()
+		{
+			if (_currentToolStrip == null && !_invokeUpdate)
+			{
+				toolStripCurveLibrary.Items.Clear();
+				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
+				{
+					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+					{
+						Curve c = kvp.Value;
+						string name = kvp.Key;
+
+						var result = c.GenerateGenericCurveImage(new Size(_iconSize, _iconSize));
+						Graphics gfx = Graphics.FromImage(result);
+						gfx.DrawRectangle(p, 0, 0, result.Width, result.Height);
+						gfx.Dispose();
+
+						ToolStripButton tsb = new ToolStripButton
+						{
+							ToolTipText = name,
+							Tag = c,
+							Name = name,
+							ImageKey = name,
+							Image = result
+						};
+
+						tsb.MouseDown += toolStripLibraries_MouseDown;
+						tsb.MouseEnter += toolStripLibraries_MouseEnter;
+						tsb.MouseLeave += toolStripLibraries_MouseLeave;
+						toolStripCurveLibrary.Items.Add(tsb);
+					}
+				}
+			}
+		}
+
+		private string AddCurveToLibrary(Curve c, bool edit = true)
+		{
+			Common.Controls.TextDialog dialog = new Common.Controls.TextDialog("Curve name?");
+
+			while (dialog.ShowDialog() == DialogResult.OK)
+			{
+				if (dialog.Response == string.Empty)
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					var messageBox = new MessageBoxForm("Please enter a name.", "Curve Name", false, false);
+					messageBox.ShowDialog();
+					continue;
+				}
+
+				if (_curveLibrary.Contains(dialog.Response))
+				{
+					//messageBox Arguments are (Text, Title, No Button Visible, Cancel Button Visible)
+					MessageBoxForm.msgIcon = SystemIcons.Question; //this is used if you want to add a system icon to the message form.
+					var messageBox = new MessageBoxForm("There is already a curve with that name. Do you want to overwrite it?", "Overwrite curve?", true, true);
+					messageBox.ShowDialog();
+					if (messageBox.DialogResult == DialogResult.OK)
+					{
+						_curveLibrary.AddCurve(dialog.Response, c);
+						if (edit) _curveLibrary.EditLibraryCurve(dialog.Response);
+						break;
+					}
+
+					if (messageBox.DialogResult == DialogResult.Cancel) break;
+				}
+				else
+				{
+					_curveLibrary.AddCurve(dialog.Response, c);
+					if (edit) _curveLibrary.EditLibraryCurve(dialog.Response);
+
+					break;
+				}
+			}
+			return dialog.Response;
+		}
+
+		private Bitmap DrawButtonBorder(Bitmap image)
+		{
+			using (var p = new Pen(ThemeColorTable.BorderColor, 2))
+			{
+				Graphics gfx = Graphics.FromImage(image);
+				gfx.DrawRectangle(p, 0, 0, image.Width, image.Height);
+				gfx.Dispose();
+				return image;
+			}
+		}
+
+		public void CurveLibrary_Changed(object sender, EventArgs e)
+		{
+			Populate_Curves();
+		}
+
+		#endregion
+
+		#region Curve Library Toolstrip Enter and Drop
+
+		private void toolStripCurveLibrary_DragDrop(object sender, DragEventArgs e)
+		{
+			ToolStrip selectedToolStrip = sender as ToolStrip;
+			if (selectedToolStrip != null) _contextToolStrip = selectedToolStrip;
+			if (e.Effect == DragDropEffects.Copy)
+			{
+				_invokeUpdate = true;
+				_currentToolStrip = null;
+				Curve c = (Curve)e.Data.GetData(typeof(Curve));
+				string newButtonName = AddCurveToLibrary(c, false);
+
+				ToolStripMenu(true, newButtonName);
+				_currentToolStrip = selectedToolStrip;
+			}
+		}
+
+		private void toolStripCurveLibrary_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(typeof(Curve)) && !_invokeUpdate)
+			{
+				Curve c = (Curve)e.Data.GetData(typeof(Curve));
+				if (!c.IsLibraryReference)
+				{
+					e.Effect = DragDropEffects.Copy;
+					return;
+				}
+			}
+			e.Effect = DragDropEffects.None;
+		}
+
+		#endregion
+
+
+
+		#region Gradient Library Toolstrip Initialization
 
 		#endregion
 

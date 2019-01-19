@@ -185,6 +185,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.modeToolStripMenuItem_SnapStrength_4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.modeToolStripButton_DragBoxFilter = new System.Windows.Forms.ToolStripButton();
 			this.modeToolStripDropDownButton_DragBoxFilter = new System.Windows.Forms.ToolStripDropDownButton();
+			this.toolStripCurveLibrary = new System.Windows.Forms.ToolStrip();
+			this.contextMenuStripLibraries = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.newToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.editToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.importToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolBarsToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripTools = new System.Windows.Forms.ToolStrip();
 			this.toolsToolStripButton_LipSync = new System.Windows.Forms.ToolStripButton();
 			this.toolsToolStripButton_CurveLibrary = new System.Windows.Forms.ToolStripButton();
@@ -198,13 +206,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.playBackToolStripButton_End = new System.Windows.Forms.ToolStripButton();
 			this.playBackToolStripButton_Loop = new System.Windows.Forms.ToolStripButton();
 			this.toolStripColorLibrary = new System.Windows.Forms.ToolStrip();
-			this.contextMenuStripLibraries = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.newToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.editToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.importToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.exportToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolBarsToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this.contextMenuStripElementSelection = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.timerPostponePlay = new System.Windows.Forms.Timer(this.components);
@@ -222,9 +223,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripFile.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			this.toolStripMode.SuspendLayout();
+			this.contextMenuStripLibraries.SuspendLayout();
 			this.toolStripTools.SuspendLayout();
 			this.toolStripPlayBack.SuspendLayout();
-			this.contextMenuStripLibraries.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripAudio
@@ -1194,7 +1195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 463);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 438);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -1215,6 +1216,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripFile);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripEdit);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripMode);
+			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripCurveLibrary);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripTools);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripPlayBack);
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripColorLibrary);
@@ -1231,7 +1233,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(1348, 463);
+			this.dockPanel.Size = new System.Drawing.Size(1348, 438);
 			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripEffects
@@ -1884,6 +1886,84 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.modeToolStripDropDownButton_DragBoxFilter.Text = "Drag Box Filter";
 			this.modeToolStripDropDownButton_DragBoxFilter.ToolTipText = "Drag Box Filter";
 			// 
+			// toolStripCurveLibrary
+			// 
+			this.toolStripCurveLibrary.AllowDrop = true;
+			this.toolStripCurveLibrary.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.toolStripCurveLibrary.ContextMenuStrip = this.contextMenuStripLibraries;
+			this.toolStripCurveLibrary.Dock = System.Windows.Forms.DockStyle.None;
+			this.toolStripCurveLibrary.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.toolStripCurveLibrary.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+			this.toolStripCurveLibrary.Location = new System.Drawing.Point(403, 100);
+			this.toolStripCurveLibrary.Name = "toolStripCurveLibrary";
+			this.toolStripCurveLibrary.Size = new System.Drawing.Size(43, 25);
+			this.toolStripCurveLibrary.TabIndex = 16;
+			this.toolStripCurveLibrary.Text = "Library Curve";
+			this.toolStripCurveLibrary.Visible = false;
+			this.toolStripCurveLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
+			this.toolStripCurveLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragDrop);
+			this.toolStripCurveLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragEnter);
+			this.toolStripCurveLibrary.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyDown);
+			this.toolStripCurveLibrary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyUp);
+			this.toolStripCurveLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
+			this.toolStripCurveLibrary.MouseLeave += new System.EventHandler(this.toolStrips_MouseLeave);
+			// 
+			// contextMenuStripLibraries
+			// 
+			this.contextMenuStripLibraries.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.contextMenuStripLibraries.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItemLibraries,
+            this.editToolStripMenuItemLibraries,
+            this.deleteToolStripMenuItemLibraries,
+            this.importToolStripMenuItemLibraries,
+            this.exportToolStripMenuItemLibraries,
+            this.toolBarsToolStripMenuItemLibraries});
+			this.contextMenuStripLibraries.Name = "contextMenuStripEffect";
+			this.contextMenuStripLibraries.Size = new System.Drawing.Size(120, 136);
+			this.contextMenuStripLibraries.Text = "Libraries";
+			this.contextMenuStripLibraries.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripLibraries_Opening);
+			// 
+			// newToolStripMenuItemLibraries
+			// 
+			this.newToolStripMenuItemLibraries.Name = "newToolStripMenuItemLibraries";
+			this.newToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.newToolStripMenuItemLibraries.Text = "New";
+			this.newToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemNewItem_Click);
+			// 
+			// editToolStripMenuItemLibraries
+			// 
+			this.editToolStripMenuItemLibraries.Name = "editToolStripMenuItemLibraries";
+			this.editToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.editToolStripMenuItemLibraries.Text = "Edit";
+			this.editToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemEditItem_Click);
+			// 
+			// deleteToolStripMenuItemLibraries
+			// 
+			this.deleteToolStripMenuItemLibraries.Name = "deleteToolStripMenuItemLibraries";
+			this.deleteToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.deleteToolStripMenuItemLibraries.Text = "Delete";
+			this.deleteToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
+			// 
+			// importToolStripMenuItemLibraries
+			// 
+			this.importToolStripMenuItemLibraries.Name = "importToolStripMenuItemLibraries";
+			this.importToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.importToolStripMenuItemLibraries.Text = "Import";
+			this.importToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemImport_Click);
+			// 
+			// exportToolStripMenuItemLibraries
+			// 
+			this.exportToolStripMenuItemLibraries.Name = "exportToolStripMenuItemLibraries";
+			this.exportToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.exportToolStripMenuItemLibraries.Text = "Export";
+			this.exportToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemExport_Click);
+			// 
+			// toolBarsToolStripMenuItemLibraries
+			// 
+			this.toolBarsToolStripMenuItemLibraries.Name = "toolBarsToolStripMenuItemLibraries";
+			this.toolBarsToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
+			this.toolBarsToolStripMenuItemLibraries.Text = "Toolbars";
+			// 
 			// toolStripTools
 			// 
 			this.toolStripTools.ContextMenuStrip = this.contextMenuStripAll;
@@ -1962,7 +2042,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.playBackToolStripButton_End,
             this.playBackToolStripButton_Loop});
 			this.toolStripPlayBack.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			this.toolStripPlayBack.Location = new System.Drawing.Point(3, 100);
+			this.toolStripPlayBack.Location = new System.Drawing.Point(3, 125);
 			this.toolStripPlayBack.Name = "toolStripPlayBack";
 			this.toolStripPlayBack.Size = new System.Drawing.Size(226, 25);
 			this.toolStripPlayBack.TabIndex = 16;
@@ -2050,7 +2130,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripColorLibrary.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripColorLibrary.Location = new System.Drawing.Point(6, 125);
 			this.toolStripColorLibrary.Name = "toolStripColorLibrary";
-			this.toolStripColorLibrary.Size = new System.Drawing.Size(111, 25);
+			this.toolStripColorLibrary.Size = new System.Drawing.Size(43, 25);
 			this.toolStripColorLibrary.TabIndex = 15;
 			this.toolStripColorLibrary.Text = "Library Color";
 			this.toolStripColorLibrary.Visible = false;
@@ -2061,62 +2141,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripColorLibrary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyUp);
 			this.toolStripColorLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
 			this.toolStripColorLibrary.MouseLeave += new System.EventHandler(this.toolStrips_MouseLeave);
-			// 
-			// contextMenuStripLibraries
-			// 
-			this.contextMenuStripLibraries.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.contextMenuStripLibraries.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItemLibraries,
-            this.editToolStripMenuItemLibraries,
-            this.deleteToolStripMenuItemLibraries,
-            this.importToolStripMenuItemLibraries,
-            this.exportToolStripMenuItemLibraries,
-            this.toolBarsToolStripMenuItemLibraries});
-			this.contextMenuStripLibraries.Name = "contextMenuStripEffect";
-			this.contextMenuStripLibraries.Size = new System.Drawing.Size(120, 136);
-			this.contextMenuStripLibraries.Text = "Libraries";
-			this.contextMenuStripLibraries.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripLibraries_Opening);
-			// 
-			// newToolStripMenuItemLibraries
-			// 
-			this.newToolStripMenuItemLibraries.Name = "newToolStripMenuItemLibraries";
-			this.newToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.newToolStripMenuItemLibraries.Text = "New";
-			this.newToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemNewItem_Click);
-			// 
-			// editToolStripMenuItemLibraries
-			// 
-			this.editToolStripMenuItemLibraries.Name = "editToolStripMenuItemLibraries";
-			this.editToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.editToolStripMenuItemLibraries.Text = "Edit";
-			this.editToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemEditItem_Click);
-			// 
-			// deleteToolStripMenuItemLibraries
-			// 
-			this.deleteToolStripMenuItemLibraries.Name = "deleteToolStripMenuItemLibraries";
-			this.deleteToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.deleteToolStripMenuItemLibraries.Text = "Delete";
-			this.deleteToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
-			// 
-			// importToolStripMenuItemLibraries
-			// 
-			this.importToolStripMenuItemLibraries.Name = "importToolStripMenuItemLibraries";
-			this.importToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.importToolStripMenuItemLibraries.Text = "Import";
-			this.importToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemImport_Click);
-			// 
-			// exportToolStripMenuItemLibraries
-			// 
-			this.exportToolStripMenuItemLibraries.Name = "exportToolStripMenuItemLibraries";
-			this.exportToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.exportToolStripMenuItemLibraries.Text = "Export";
-			this.exportToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemExport_Click);
-			// 
-			// toolBarsToolStripMenuItemLibraries
-			// 
-			this.toolBarsToolStripMenuItemLibraries.Name = "toolBarsToolStripMenuItemLibraries";
-			this.toolBarsToolStripMenuItemLibraries.Size = new System.Drawing.Size(119, 22);
-			this.toolBarsToolStripMenuItemLibraries.Text = "Toolbars";
 			// 
 			// saveFileDialog
 			// 
@@ -2179,11 +2203,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripEdit.PerformLayout();
 			this.toolStripMode.ResumeLayout(false);
 			this.toolStripMode.PerformLayout();
+			this.contextMenuStripLibraries.ResumeLayout(false);
 			this.toolStripTools.ResumeLayout(false);
 			this.toolStripTools.PerformLayout();
 			this.toolStripPlayBack.ResumeLayout(false);
 			this.toolStripPlayBack.PerformLayout();
-			this.contextMenuStripLibraries.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -2380,5 +2404,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItemLibraries;
 		private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItemLibraries;
 		private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItemLibraries;
+		private System.Windows.Forms.ToolStrip toolStripCurveLibrary;
 	}
 }

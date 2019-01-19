@@ -164,7 +164,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			_scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
-
 			
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
@@ -184,7 +183,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_iconSize = (int) (28*_scaleFactor);
 			_toolStripImageSize = (int)(16 * _scaleFactor);
 			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
-			toolStripColorLibrary.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripColorLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripCurveLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 
 			foreach (ToolStripItem toolStripItem in modeToolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -334,6 +334,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
+			
+			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
+			}
+
+			_colorGradientLibrary =
+				ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;
+			}
 
 			// Setup Toolbars and Toolstrip context menus.
 			InitializeToolBars();
@@ -478,19 +491,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragEnter += TimelineControlGrid_DragEnter;
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
-
-			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
-			if (_curveLibrary != null)
-			{
-				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
-			}
-
-			_colorGradientLibrary =
-				ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
-			if (_colorGradientLibrary != null)
-			{
-				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;
-			}
 
 			LoadAvailableEffects();
 			PopulateDragBoxFilterDropDown();

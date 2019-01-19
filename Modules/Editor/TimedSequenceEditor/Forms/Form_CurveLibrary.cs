@@ -144,7 +144,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Private Methods
-		private void Populate_Curves()
+		public void Populate_Curves()
 		{
 			listViewCurves.BeginUpdate();
 			listViewCurves.Items.Clear();
@@ -282,6 +282,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 				Populate_Curves();
 		}
+
+		//public event EventHandler SelectionChanged;
+
+		//private void _SelectionChanged()
+		//{
+		//	if (SelectionChanged != null)
+		//		SelectionChanged(this, EventArgs.Empty);
+		//}
 
 		#endregion
 
