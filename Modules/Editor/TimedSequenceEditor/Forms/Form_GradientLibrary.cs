@@ -127,13 +127,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
+			Load_Gradients();
+		}
+
+		public void Load_Gradients()
+		{
 			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();
 				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
 			}
-			
 		}
 
 		#endregion

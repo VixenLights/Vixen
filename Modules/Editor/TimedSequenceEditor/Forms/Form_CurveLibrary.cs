@@ -132,7 +132,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
+			Load_Curves();
+		}
 
+		public void Load_Curves()
+		{
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
@@ -144,7 +148,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		#endregion
 
 		#region Private Methods
-		public void Populate_Curves()
+		private void Populate_Curves()
 		{
 			listViewCurves.BeginUpdate();
 			listViewCurves.Items.Clear();

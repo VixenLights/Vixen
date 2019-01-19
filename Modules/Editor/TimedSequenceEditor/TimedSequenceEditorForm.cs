@@ -185,6 +185,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			toolStripColorLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			toolStripCurveLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripGradientLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 
 			foreach (ToolStripItem toolStripItem in modeToolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
