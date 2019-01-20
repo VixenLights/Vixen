@@ -455,6 +455,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsmi.CheckState = CheckState.Checked;
 					tsmi.Click += ToolStripAllItem_Changed;
 					tsmi.Checked = tsi.Visible;
+					tsmi.Image = tsi.Image;
 					add_RemoveContextToolStripMenuItem.DropDownItems.Add(tsmi);
 				}
 
@@ -1643,11 +1644,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			};
 			tsb.MouseDown += tsb_MouseDown;
 			tsb.MouseMove += tsb_MouseMove;
-			
+
 			ToolStripMenuItem tsmi = new ToolStripMenuItem();
 			tsmi.Text = effectDescriptor.EffectName;
 			tsmi.CheckState = CheckState.Checked;
 			tsmi.Checked = true;
+			tsmi.CheckOnClick = true;
+			tsmi.Image = tsb.Image;
 			tsmi.Click += ToolStripEffectItem_Changed;
 			foreach (AllToolStripItems it in _allToolStripItems)
 			{
@@ -1763,7 +1766,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (item.ToolTipText != null && item.ToolTipText == tsi.Text ||
 				    item.Tag != null && item.Tag.ToString() == tsi.Text)
 				{
-					tsi.Checked = !tsi.Checked;
 					item.Visible = tsi.Checked;
 					break;
 				}
