@@ -773,7 +773,7 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Film Spinner Colors.
+        ///   Looks up a localized string similar to Film Spinner Gradients.
         /// </summary>
         internal static string FilmSpinnerColors {
             get {
