@@ -845,4 +845,14 @@
   </data>
   <data name="BorderThickness" xml:space="preserve">
     <value>Adjust the Thickness of the border.</value>
-  </data></root>
+  </data>
+  <data name="FilmSpinner" xml:space="preserve">
+    <value>Adds a film spinner around the number.</value>
+  </data>
+  <data name="FilmSpinnerColors" xml:space="preserve">
+    <value>Controls the swipe color of the film spinner.</value>
+  </data>
+  <data name="FilmSpinnerGradientMode" xml:space="preserve">
+    <value>Controls how the gradient is applied to the swipe color of the film spinner.</value>
+  </data>
+</root>

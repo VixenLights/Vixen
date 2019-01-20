@@ -764,6 +764,33 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Film Spinner.
+        /// </summary>
+        internal static string FilmSpinner {
+            get {
+                return ResourceManager.GetString("FilmSpinner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Film Spinner Gradients.
+        /// </summary>
+        internal static string FilmSpinnerColors {
+            get {
+                return ResourceManager.GetString("FilmSpinnerColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Film Spinner Gradient Mode.
+        /// </summary>
+        internal static string FilmSpinnerGradientMode {
+            get {
+                return ResourceManager.GetString("FilmSpinnerGradientMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fireworks Source.
         /// </summary>
         internal static string FireworksSource {
