@@ -219,6 +219,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			deviceToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			add_RemoveContextToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			add_RemoveLibraryToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
@@ -741,6 +742,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
 			deviceToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			add_RemoveContextToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			add_RemoveLibraryToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;

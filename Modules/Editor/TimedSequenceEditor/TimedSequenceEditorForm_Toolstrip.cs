@@ -206,7 +206,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripButton_DecreaseTimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			audioToolStripButton_Audio_Devices.Image = Resources.Audio_Devices;
 			audioToolStripButton_Audio_Devices.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			audioToolStripLabel_TimingSpeed.Image = SpeedVisualisation();
+			audioToolStripLabel_TimingSpeed.Image  = (Image)SpeedVisualisation();
 			audioToolStripLabel_TimingSpeed.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripAudio.MouseWheel += toolStripAudio_MouseWheel;
 		}
@@ -315,11 +315,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripContainer.ResumeLayout();
 			toolStripContainer.PerformLayout();
 
-			// Add Theme to all ToolStrips.
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
 			{
 				foreach (Control toolsStripControl in row.Controls)
 				{
+					// Add Theme to all ToolStrips.
 					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
 					toolsStripItems.Renderer = new ThemeToolStripRenderer();
 
@@ -350,7 +350,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (Control toolsStripControl in row.Controls)
 				{
 					ToolStrip toolsStripItems = toolsStripControl as ToolStrip;
-					if (toolsStripItems.Name == "toolStripEffects" || toolsStripItems.Name.Contains("Library")) continue; // Skip the Effects Toolstrip
+					if (toolsStripItems.Name == "toolStripEffects") continue; // || toolsStripItems.Name.Contains("Library")) continue; // Skip the Effects Toolstrip
 					foreach (ToolStripItem item in toolsStripItems.Items)
 					{
 						foreach (AllToolStripItems it in _allToolStripItems)
@@ -503,6 +503,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void contextMenuStripLibraries_Opening(object sender, CancelEventArgs e)
 		{
+			ContextMenuStrip tsm = sender as ContextMenuStrip;
+			add_RemoveLibraryToolStripMenuItem.DropDownItems.Clear();
+			ToolStrip ts = tsm.SourceControl as ToolStrip;
+			foreach (ToolStripItem tsi in ts.Items)
+			{
+				ToolStripMenuItem tsmi = new ToolStripMenuItem();
+				tsmi.Text = tsi.ToolTipText;
+				tsmi.CheckOnClick = true;
+				tsmi.CheckState = CheckState.Checked;
+				tsmi.Click += ToolStripAllItem_Changed;
+				tsmi.Checked = tsi.Visible;
+				tsmi.Image = tsi.Image;
+				add_RemoveLibraryToolStripMenuItem.DropDownItems.Add(tsmi);
+			}
+
+			resetLibraryToolStripMenuItem.Tag = ts;
 			// Add Toolbar list to Context menu
 			toolBarsToolStripMenuItemLibraries.DropDownItems.Clear();
 			foreach (var row in toolStripContainer.TopToolStripPanel.Rows)
@@ -1165,6 +1181,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsb.MouseLeave += toolStripLibraries_MouseLeave;
 					toolStripColorLibrary.Items.Add(tsb);
 				}
+
 			}
 		}
 
