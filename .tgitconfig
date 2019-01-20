@@ -1,0 +1,4 @@
+[bugtraq]
+	url = https://bugs.vixenlights.com/browse/%BUGID%
+	logregex = (VIX-\\d+)
+	warnifnoissue = true
