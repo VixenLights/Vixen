@@ -190,6 +190,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
+			_SelectionChanged();
 		}
 
 		private void toolStripButtonNewGradient_Click(object sender, EventArgs e)
@@ -223,8 +224,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 						if (edit)
 						{
-							_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+							_colorGradientLibrary.EditLibraryItem(dialog.Response);
 						}
+						_SelectionChanged();
 						return false;
 					}
 
@@ -238,8 +240,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 					if (edit)
 					{
-						_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+						_colorGradientLibrary.EditLibraryItem(dialog.Response);
 					}
+					_SelectionChanged();
 					return false;
 				}
 			}
@@ -262,6 +265,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_colorGradientLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewGradients.SelectedItems) _colorGradientLibrary.RemoveColorGradient(item.Name);
 				_colorGradientLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 		}
 
@@ -280,6 +284,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		public void GradientLibrary_GradientChanged(object sender, EventArgs e)
 		{
 				Populate_Gradients();
+		}
+
+		public event EventHandler SelectionChanged;
+
+		private void _SelectionChanged()
+		{
+			if (SelectionChanged != null)
+				SelectionChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -368,6 +380,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (ListViewItem gradient in listViewGradients.Items) _colorGradientLibrary.Library[gradient.Text] = (ColorGradient)gradient.Tag;
 				_colorGradientLibrary.EndBulkUpdate();
 				ImageSetup();
+
+				_SelectionChanged();
 			}
 		}
 
@@ -450,6 +464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
 				}
 				_colorGradientLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 			catch (Exception ex)
 			{

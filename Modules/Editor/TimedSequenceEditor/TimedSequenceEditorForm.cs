@@ -501,7 +501,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdatePasteMenuStates();
 			LoadColorCollections();
 			
-			ColorLibraryForm.SelectionChanged += PopulateColors;
+			ColorLibraryForm.SelectionChanged += Populate_Colors;
+			CurveLibraryForm.SelectionChanged += Populate_Curves;
+			GradientLibraryForm.SelectionChanged += Populate_Gradients;
 			toolBarsToolStripMenuItemLibraries.DropDown.Closing += toolStripMenuItem_Closing;
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
@@ -746,7 +748,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolbarsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
-			ColorLibraryForm.SelectionChanged -= PopulateColors;
+			ColorLibraryForm.SelectionChanged -= Populate_Colors;
+			CurveLibraryForm.SelectionChanged -= Populate_Curves;
+			GradientLibraryForm.SelectionChanged -= Populate_Gradients;
 			toolBarsToolStripMenuItemLibraries.DropDown.Closing -= toolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
@@ -1950,12 +1954,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			CheckAndRenderDirtyElementsAsync();
+			if (TimelineControl.Rows.SelectMany(row => row).Distinct().Any()) CheckAndRenderDirtyElementsAsync();
 		}
 
 		private void ColorGradientLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			CheckAndRenderDirtyElementsAsync();
+			if (TimelineControl.Rows.SelectMany(row => row).Distinct().Any()) CheckAndRenderDirtyElementsAsync();
 		}
 
 		private void AutoSaveEventProcessor(object sender, EventArgs e)
