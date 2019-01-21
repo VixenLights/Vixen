@@ -346,16 +346,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
+					listViewGradients.BeginUpdate();
+					listViewGradients.Alignment = ListViewAlignment.Default;
 					List<ListViewItem> listViewItems = listViewGradients.SelectedItems.Cast<ListViewItem>().ToList();
-					if (movetoNewPosition != null && listViewGradients.SelectedItems[0].Index < movetoNewPosition.Index) listViewItems.Reverse();
+					if (movetoNewPosition != null && listViewGradients.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
 					int index = movetoNewPosition?.Index ?? listViewGradients.Items.Count - 1;
-					for (int i = listViewGradients.SelectedItems.Count - 1; i >= 0; i--)
+					foreach (ListViewItem item in listViewItems)
 					{
-						ListViewItem cloneToNew = (ListViewItem)listViewItems[i].Clone();
-						listViewGradients.Items.Remove(listViewItems[i]);
-						listViewGradients.Items.Insert(index, cloneToNew);
+						listViewGradients.Items.Remove(item);
+						listViewGradients.Items.Insert(index, item);
 					}
-
+					listViewGradients.Alignment = ListViewAlignment.Top;
+					listViewGradients.EndUpdate();
 				}
 
 				_colorGradientLibrary.Library.Clear();
@@ -365,7 +367,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				ImageSetup();
-				Populate_Gradients();
 			}
 		}
 

@@ -351,15 +351,18 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
+					listViewCurves.BeginUpdate();
+					listViewCurves.Alignment = ListViewAlignment.Default;
 					List<ListViewItem> listViewItems = listViewCurves.SelectedItems.Cast<ListViewItem>().ToList();
-					if (movetoNewPosition != null && listViewCurves.SelectedItems[0].Index < movetoNewPosition.Index) listViewItems.Reverse();
+					if (movetoNewPosition != null && listViewCurves.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
 					int index = movetoNewPosition?.Index ?? listViewCurves.Items.Count - 1;
-					for (int i = listViewCurves.SelectedItems.Count - 1; i >= 0; i--)
+					foreach (ListViewItem item in listViewItems)
 					{
-						ListViewItem cloneToNew = (ListViewItem)listViewItems[i].Clone();
-						listViewCurves.Items.Remove(listViewItems[i]);
-						listViewCurves.Items.Insert(index, cloneToNew);
+						listViewCurves.Items.Remove(item);
+						listViewCurves.Items.Insert(index, item);
 					}
+					listViewCurves.Alignment = ListViewAlignment.Top;
+					listViewCurves.EndUpdate();
 				}
 
 				_curveLibrary.Library.Clear();
@@ -368,7 +371,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_curveLibrary.AddCurve(curve.Text, (Curve)curve.Tag);
 				}
 				ImageSetup();
-				Populate_Curves();
 			}
 		}
 

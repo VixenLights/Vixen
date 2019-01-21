@@ -110,7 +110,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			var t = (int)Math.Round(48 * _colorLibraryScale * ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t, t);
-			_sideGap = (short)(_imageSize.Width + (7 * ScalingTools.GetScaleFactor()));
+			_sideGap = (short)(_imageSize.Width + (10 * ScalingTools.GetScaleFactor()));
 
 			ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 		}
@@ -350,20 +350,22 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else if (e.Effect == DragDropEffects.Move)
 				{
+					listViewColors.BeginUpdate();
+					listViewColors.Alignment = ListViewAlignment.Default;
 					List<ListViewItem> listViewItems = listViewColors.SelectedItems.Cast<ListViewItem>().ToList();
-					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index < movetoNewPosition.Index) listViewItems.Reverse();
+					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
 					int index = movetoNewPosition?.Index ?? listViewColors.Items.Count - 1;
-					for (int i = listViewColors.SelectedItems.Count - 1; i >= 0; i--)
+					foreach (ListViewItem item in listViewItems)
 					{
-						ListViewItem cloneToNew = (ListViewItem)listViewItems[i].Clone();
-						listViewColors.Items.Remove(listViewItems[i]);
-						listViewColors.Items.Insert(index, cloneToNew);
+						listViewColors.Items.Remove(item);
+						listViewColors.Items.Insert(index, item);
 					}
 
+					listViewColors.Alignment = ListViewAlignment.Top;
+					listViewColors.EndUpdate();
 					Update_ColorOrder();
 				}
 				ImageSetup();
-				PopulateColors();
 			}
 		}
 
