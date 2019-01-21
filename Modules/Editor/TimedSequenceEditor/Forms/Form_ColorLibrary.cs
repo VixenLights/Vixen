@@ -65,11 +65,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private int _dragX;
 		private int _dragY;
 		private short _sideGap;
-
-		private bool ShiftPressed
-		{
-			get { return ModifierKeys.HasFlag(Keys.Shift); }
-		}
 		
 		#endregion
 
@@ -108,13 +103,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ThemeUpdateControls.UpdateControls(this);
 			//Over-ride the auto theme listview back color
 			listViewColors.BackColor = ThemeColorTable.BackgroundColor;
+			listViewColors.Alignment = ListViewAlignment.Top;
 		}
 
 		private void ImageSetup()
 		{
 			var t = (int)Math.Round(48 * _colorLibraryScale * ScalingTools.GetScaleFactor());
 			_imageSize = new Size(t, t);
-			_sideGap = (short)(_imageSize.Width + (7 * ScalingTools.GetScaleFactor()));
+			_sideGap = (short)(_imageSize.Width + (10 * ScalingTools.GetScaleFactor()));
 
 			ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
 		}
@@ -302,62 +298,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void listViewColors_ItemDrag(object sender, ItemDragEventArgs e)
 		{
-			if (ShiftPressed)
-			{
-				listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
-			}
-			else
-			{
-				//StartColorDrag(this, e);
-				listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
-			} 
-
+			listViewColors.DoDragDrop(listViewColors.SelectedItems, DragDropEffects.Move);
 		}
-
-		private void listViewColors_DragDrop(object sender, DragEventArgs e)
+		private void listViewColors_DragLeave(object sender, EventArgs e)
 		{
-			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
-			{
-				if (e.Effect == DragDropEffects.Copy)
-				{
-					Color c = (Color) e.Data.GetData(typeof (Color));
-					ListViewItem item = CreateColorListItem(c);
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem referenceItem = listViewColors.GetItemAt(p.X, p.Y);
-					if (referenceItem != null)
-					{
-						int index = referenceItem.Index;
-						listViewColors.Items.Insert(index, item);
-					}
-					else
-					{
-						listViewColors.Items.Add(item);
-					}
-
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
-					Update_ColorOrder();
-
-				}
-				else if (e.Effect == DragDropEffects.Move)
-				{
-					listViewColors.Alignment = ListViewAlignment.Default;
-					if (listViewColors.SelectedItems.Count == 0)
-						return;
-					Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
-					ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
-					if (movetoNewPosition == null) return;
-					ListViewItem dropToNewPosition =
-						(e.Data.GetData(typeof (ListView.SelectedListViewItemCollection)) as ListView.SelectedListViewItemCollection)[0];
-					ListViewItem cloneToNew = (ListViewItem) dropToNewPosition.Clone();
-					int index = movetoNewPosition.Index;
-					listViewColors.Items.Remove(dropToNewPosition);
-					listViewColors.Items.Insert(index, cloneToNew);
-					listViewColors.Alignment = ListViewAlignment.SnapToGrid;
-					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
-					Update_ColorOrder();
-				}
-			}
+			if (listViewColors.SelectedItems.Count == 0) return;
+			listViewColors.DoDragDrop(listViewColors.SelectedItems[0].Tag, DragDropEffects.Copy);
 		}
 
 		private void listViewColors_DragEnter(object sender, DragEventArgs e)
@@ -370,13 +316,57 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				e.Effect = DragDropEffects.Move;
 				return;
 			}
-			if (e.Data.GetDataPresent(typeof (Color)))
+			if (e.Data.GetDataPresent(typeof(Color)))
 			{
 				e.Effect = DragDropEffects.Copy;
 				return;
 			}
 			e.Effect = DragDropEffects.None;
-			
+		}
+
+		private void listViewColors_DragDrop(object sender, DragEventArgs e)
+		{
+			if (_dragX + 10 < e.X || _dragY + 10 < e.Y || _dragX - 10 > e.X || _dragY - 10 > e.Y)
+			{
+				Point p = listViewColors.PointToClient(new Point(e.X, e.Y));
+				ListViewItem movetoNewPosition = listViewColors.GetItemAt(p.X, p.Y);
+				if (e.Effect == DragDropEffects.Copy)
+				{
+					Color c = (Color) e.Data.GetData(typeof (Color));
+					ListViewItem item = CreateColorListItem(c);
+					if (movetoNewPosition != null)
+					{
+						int index = movetoNewPosition.Index;
+						listViewColors.Items.Insert(index, item);
+					}
+					else
+					{
+						listViewColors.Items.Add(item);
+					}
+					
+					ListViewItem_SetSpacing(listViewColors, _sideGap, _sideGap);
+					Update_ColorOrder();
+
+				}
+				else if (e.Effect == DragDropEffects.Move)
+				{
+					listViewColors.BeginUpdate();
+					listViewColors.Alignment = ListViewAlignment.Default;
+					List<ListViewItem> listViewItems = listViewColors.SelectedItems.Cast<ListViewItem>().ToList();
+					if (movetoNewPosition != null && listViewColors.SelectedItems[0].Index > movetoNewPosition.Index) listViewItems.Reverse();
+					int index = movetoNewPosition?.Index ?? listViewColors.Items.Count - 1;
+					foreach (ListViewItem item in listViewItems)
+					{
+						listViewColors.Items.Remove(item);
+						listViewColors.Items.Insert(index, item);
+					}
+
+					listViewColors.Alignment = ListViewAlignment.Top;
+					listViewColors.EndUpdate();
+					Update_ColorOrder();
+				}
+				ImageSetup();
+			}
 		}
 
 		#endregion
