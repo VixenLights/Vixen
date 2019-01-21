@@ -260,10 +260,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				foreach (ListViewItem item in listViewCurves.SelectedItems)
-				{
-					_curveLibrary.RemoveCurve(item.Name);
-				}
+				_curveLibrary.BeginBulkUpdate();
+				foreach (ListViewItem item in listViewCurves.SelectedItems) _curveLibrary.RemoveCurve(item.Name);
+				_curveLibrary.EndBulkUpdate();
 			}
 		}
 
@@ -365,11 +364,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					listViewCurves.EndUpdate();
 				}
 
+				_curveLibrary.BeginBulkUpdate();
 				_curveLibrary.Library.Clear();
-				foreach (ListViewItem curve in listViewCurves.Items)
-				{
-					_curveLibrary.AddCurve(curve.Text, (Curve)curve.Tag);
-				}
+				foreach (ListViewItem curve in listViewCurves.Items) _curveLibrary.Library[curve.Text] = (Curve)curve.Tag;
+				_curveLibrary.EndBulkUpdate();
 				ImageSetup();
 			}
 		}
@@ -436,6 +434,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					curves = (Dictionary<string, Curve>)ser.ReadObject(reader);
 				}
 
+				_curveLibrary.BeginBulkUpdate();
 				foreach (KeyValuePair<string, Curve> curve in curves)
 				{
 					//This was just easier than prompting for a rename
@@ -450,6 +449,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					_curveLibrary.AddCurve(curveName, curve.Value);
 				}
+				_curveLibrary.EndBulkUpdate();
 			}
 			catch (Exception ex)
 			{

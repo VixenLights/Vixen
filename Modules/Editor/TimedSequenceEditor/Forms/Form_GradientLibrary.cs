@@ -255,10 +255,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (messageBox.DialogResult == DialogResult.OK)
 			{
-				foreach (ListViewItem item in listViewGradients.SelectedItems)
-				{
-					_colorGradientLibrary.RemoveColorGradient(item.Name);
-				}
+				_colorGradientLibrary.BeginBulkUpdate();
+				foreach (ListViewItem item in listViewGradients.SelectedItems) _colorGradientLibrary.RemoveColorGradient(item.Name);
+				_colorGradientLibrary.EndBulkUpdate();
 			}
 		}
 
@@ -360,12 +359,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					listViewGradients.EndUpdate();
 				}
 
+				_colorGradientLibrary.BeginBulkUpdate();
 				_colorGradientLibrary.Library.Clear();
-				foreach (ListViewItem gradient in listViewGradients.Items)
-				{
-					_colorGradientLibrary.AddColorGradient(gradient.Text, (ColorGradient)gradient.Tag);
-				}
-
+				foreach (ListViewItem gradient in listViewGradients.Items) _colorGradientLibrary.Library[gradient.Text] = (ColorGradient)gradient.Tag;
+				_colorGradientLibrary.EndBulkUpdate();
 				ImageSetup();
 			}
 		}
@@ -433,6 +430,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					gradients = (Dictionary<string, ColorGradient>)ser.ReadObject(reader);
 				}
 
+				_colorGradientLibrary.BeginBulkUpdate();
 				foreach (KeyValuePair<string, ColorGradient> gradient in gradients)
 				{
 					//This was just easier than prompting for a rename
@@ -447,6 +445,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
 				}
+				_colorGradientLibrary.EndBulkUpdate();
 			}
 			catch (Exception ex)
 			{
