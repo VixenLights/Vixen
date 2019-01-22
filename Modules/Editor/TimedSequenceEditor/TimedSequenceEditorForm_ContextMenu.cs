@@ -244,7 +244,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignEndToMark);
 			contextMenuItemAlignment.DropDown.Items.Add(contextMenuItemAlignBothToMark);
 
-			if (TimelineControl.SelectedElements.Count() > 1 || (TimelineControl.SelectedElements.Any() && !element.Selected))
+			if (TimelineControl.SelectedElements.Count() > 1 || TimelineControl.SelectedElements.Any() && element != null && !element.Selected)
 			{
 				contextMenuItemDistributeEqually.Enabled = true;
 				contextMenuItemDistDialog.Enabled = true;
