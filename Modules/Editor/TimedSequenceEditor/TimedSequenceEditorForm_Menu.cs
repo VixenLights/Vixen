@@ -345,8 +345,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void gridWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			HandleDockContentToolStripMenuClick(GridForm, DockState.Document);
+			//Gridform or the main timeline should not be closed.
+			if (!GridForm.IsDisposed)
+			{
+				if (GridForm.IsHidden || GridForm.DockState == DockState.Unknown)
+				{
+					GridForm.Show(dockPanel, DockState.Document);
+				}
 			}
+		}
 			
 		private void effectEditorWindowToolStripMenuItem_Click(object sender, EventArgs e)
 		{

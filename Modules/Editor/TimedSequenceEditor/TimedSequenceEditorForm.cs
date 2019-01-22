@@ -5370,7 +5370,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			toolStripMenuItemColorLibrary.Checked = !(_colorLibraryForm == null || _colorLibraryForm.DockState == DockState.Unknown);
 			toolStripMenuItemGradientLibrary.Checked = !(_gradientLibraryForm == null || _gradientLibraryForm.DockState == DockState.Unknown);
 			toolStripMenuItemCurveLibrary.Checked = !(_curveLibraryForm == null || _curveLibraryForm.DockState == DockState.Unknown);
-			gridWindowToolStripMenuItem.Checked = !GridForm.IsHidden;
+			gridWindowToolStripMenuItem.Checked = !(GridForm.IsHidden || GridForm.DockState == DockState.Unknown);
 			effectEditorWindowToolStripMenuItem.Checked =
 				!(_effectEditorForm == null || EffectEditorForm.DockState == DockState.Unknown);
 		}
