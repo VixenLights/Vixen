@@ -313,13 +313,12 @@ namespace Common.Controls.Timeline
 			get { return rowAt(new Point(0, VerticalOffset + ClientRectangle.Height)); }
 		}
 
-		public TimeSpan CursorPosition
+		private TimeSpan CursorPosition
 		{
-			get { return m_cursorPosition; }
+			get => TimeLineGlobalStateManager.Manager.CursorPosition;
 			set
 			{
-				m_cursorPosition = value;
-				TimeLineGlobalEventManager.Manager.OnCursorMoved(value);
+				TimeLineGlobalStateManager.Manager.CursorPosition = value;
 				Invalidate();
 			}
 		}

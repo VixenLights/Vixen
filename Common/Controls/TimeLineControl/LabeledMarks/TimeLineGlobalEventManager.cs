@@ -72,11 +72,8 @@ namespace Common.Controls.TimelineControl.LabeledMarks
 
 		public void OnCursorMoved(TimeSpan t)
 		{
-			CursorPosition = t;
 			CursorMoved?.Invoke(this, new TimeSpanEventArgs(t));
 		}
-
-		public TimeSpan CursorPosition { get; set; }
-
+		
 	}
 }

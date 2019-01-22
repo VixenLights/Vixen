@@ -246,6 +246,7 @@
     <Compile Include="TimelineControl\LabeledMarks\MarksMoveResizeInfo.cs" />
     <Compile Include="TimelineControl\LabeledMarks\MarkTimeInfo.cs" />
     <Compile Include="TimelineControl\ResizeZone.cs" />
+    <Compile Include="TimelineControl\TimeLineGlobalStateManager.cs" />
     <Compile Include="Undo\AddToListUndoAction.cs" />
     <Compile Include="Undo\ModifyItemUndoAction.cs" />
     <Compile Include="Wizard\Wizard.cs" />

@@ -226,7 +226,7 @@ namespace Common.Controls.Timeline
 		{
 			using (Pen p = new Pen(Color.Blue, 1))
 			{
-				var curPos = timeToPixels(_timeLineGlobalEventManager.CursorPosition);
+				var curPos = timeToPixels(TimeLineGlobalStateManager.Manager.CursorPosition);
 				g.DrawLine(p, curPos, 0, curPos, Height);
 			}
 		}

@@ -256,13 +256,6 @@ namespace Common.Controls.Timeline
 		}
 
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public TimeSpan CursorPosition
-		{
-			get { return grid.CursorPosition; }
-			set { grid.CursorPosition = value; }
-		}
-
-		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public override TimeSpan VisibleTimeSpan
 		{
 			get { return grid.VisibleTimeSpan; }
