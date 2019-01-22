@@ -340,7 +340,7 @@ namespace Common.Controls.Timeline
 		{
 			if (!IsRendered)
 			{
-				EffectNode.Effect.Render();
+				EffectNode.Effect.PreRender();
 				if (_cachedImage != null)
 				{
 					_cachedImage.Dispose();

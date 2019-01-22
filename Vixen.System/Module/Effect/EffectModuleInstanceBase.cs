@@ -113,18 +113,13 @@ namespace Vixen.Module.Effect
 
 		public void PreRender(CancellationTokenSource cancellationToken = null)
 		{
-			_PreRender();
-			IsDirty = false;
-		}
-
-		public EffectIntents Render()
-		{
 			if (IsDirty && !IsRendering)
 			{
-				IsRendering = true;
 				try
 				{
-					PreRender();
+					IsRendering = true;
+					_PreRender();
+					IsDirty = false;
 				}
 				catch (Exception e)
 				{
@@ -145,6 +140,15 @@ namespace Vixen.Module.Effect
 				{
 					Thread.Sleep(1);
 				}
+			}
+
+		}
+
+		public EffectIntents Render()
+		{
+			if (IsDirty)
+			{
+				PreRender();
 			}
 
 			return _Render();
