@@ -18,6 +18,7 @@ using Common.Controls;
 using Common.Controls.Scaling;
 using Common.Controls.Theme;
 using Common.Controls.Timeline;
+using Common.Controls.TimelineControl;
 using Common.Controls.TimelineControl.LabeledMarks;
 using Common.Resources;
 using Common.Resources.Properties;
@@ -144,6 +145,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		IntPtr _clipboardViewerNext;
 		
 		private readonly TimeLineGlobalEventManager _timeLineGlobalEventManager;
+		private readonly TimeLineGlobalStateManager _timeLineGlobalStateManager;
 
 		//List to hold removed nodes so we can clean them up later. Due to how the undo works, nodes are sticky and 
 		//live on past removal so they can can be added back
@@ -224,6 +226,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			//So we can be aware of mark changes.
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
+			_timeLineGlobalStateManager = TimeLineGlobalStateManager.Manager;
 		}
 
 		private IDockContent DockingPanels_GetContentFromPersistString(string persistString)
@@ -461,7 +464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown += TimelineControl_MouseDown;
 			TimeLineSequenceClipboardContentsChanged += TimelineSequenceTimeLineSequenceClipboardContentsChanged;
-			TimelineControl.CursorMoved += CursorMovedHandler;
+			_timeLineGlobalEventManager.CursorMoved += CursorMovedHandler;
 			TimelineControl.ElementsSelected += timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected += timelineControl_ContextSelected;
 			TimelineControl.SequenceLoading = false;
@@ -721,7 +724,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
 			TimelineControl.grid.MouseDown -= TimelineControl_MouseDown;
 			TimeLineSequenceClipboardContentsChanged -= TimelineSequenceTimeLineSequenceClipboardContentsChanged;
-			TimelineControl.CursorMoved -= CursorMovedHandler;
+			_timeLineGlobalEventManager.CursorMoved -= CursorMovedHandler;
 			TimelineControl.ElementsSelected -= timelineControl_ElementsSelected;
 			TimelineControl.ContextSelected -= timelineControl_ContextSelected;
 			TimelineControl.TimePerPixelChanged -= TimelineControl_TimePerPixelChanged;
@@ -1140,8 +1143,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					Row destination = TimelineControl.ActiveRow ?? TimelineControl.SelectedRow;
 					if (destination != null)
 					{
-						AddNewEffectById((Guid) menuItem.Tag, destination, TimelineControl.CursorPosition,
-							GetDefaultEffectDuration(TimelineControl.CursorPosition), true); // TODO: get a proper time
+						AddNewEffectById((Guid) menuItem.Tag, destination, _timeLineGlobalStateManager.CursorPosition,
+							GetDefaultEffectDuration(_timeLineGlobalStateManager.CursorPosition), true); // TODO: get a proper time
 					}
 				};
 				addEffectToolStripMenuItem.DropDownItems.Add(menuItem);
@@ -2746,7 +2749,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 				else
 				{
-					TimelineControl.CursorPosition = e.Time;
+					_timeLineGlobalStateManager.CursorPosition = e.Time;
 				}
 			}
 			else if (e.Button == MouseButtons.Right)
@@ -5449,7 +5452,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                 int pasted = 0;
                 if (args.Placement == TranslatePlacement.Cursor)
                 {
-                    args.FirstMark += TimelineControl.grid.CursorPosition;
+                    args.FirstMark += _timeLineGlobalStateManager.CursorPosition;
                 }
                 if (args.Placement != TranslatePlacement.Clipboard)
                 {

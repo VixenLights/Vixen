@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Timeline;
+using Common.Controls.TimelineControl;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Media.Audio;
@@ -152,7 +153,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
 		{
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : TimelineControl.CursorPosition);
+			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -588,7 +589,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void bulkEffectMoveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
-			var dialog = new BulkEffectMoveForm(TimelineControl.grid.CursorPosition);
+			var dialog = new BulkEffectMoveForm(_timeLineGlobalStateManager.CursorPosition);
 			using (dialog)
 			{
 				if (dialog.ShowDialog() == DialogResult.OK)

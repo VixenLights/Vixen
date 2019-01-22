@@ -313,13 +313,12 @@ namespace Common.Controls.Timeline
 			get { return rowAt(new Point(0, VerticalOffset + ClientRectangle.Height)); }
 		}
 
-		public TimeSpan CursorPosition
+		private TimeSpan CursorPosition
 		{
-			get { return m_cursorPosition; }
+			get => TimeLineGlobalStateManager.Manager.CursorPosition;
 			set
 			{
-				m_cursorPosition = value;
-				_CursorMoved(value);
+				TimeLineGlobalStateManager.Manager.CursorPosition = value;
 				Invalidate();
 			}
 		}
@@ -343,8 +342,8 @@ namespace Common.Controls.Timeline
 		public Color SelectionBorder { get; set; }
 		public Color DrawColor { get; set; }
 		public Color DrawBorder { get; set; }
-		public Color CursorColor { get; set; }
-		public Single CursorWidth { get; set; }
+		public static Color CursorColor { get; set; }
+		public static Single CursorWidth { get; set; }
 
 		// private properties
 		private bool CtrlPressed
@@ -376,7 +375,7 @@ namespace Common.Controls.Timeline
 		public event EventHandler SelectionChanged;
 		public event EventHandler<ElementEventArgs> ElementDoubleClicked;
 		public event EventHandler<MultiElementEventArgs> ElementsFinishedMoving;
-		public event EventHandler<TimeSpanEventArgs> CursorMoved;
+		
 		public event EventHandler VerticalOffsetChanged;
 		public event EventHandler<ElementRowChangeEventArgs> ElementChangedRows;
 		public event EventHandler<ElementsSelectedEventArgs> ElementsSelected;
@@ -400,12 +399,6 @@ namespace Common.Controls.Timeline
 		{
 			if (ElementsFinishedMoving != null)
 				ElementsFinishedMoving(this, args);
-		}
-
-		private void _CursorMoved(TimeSpan t)
-		{
-			if (CursorMoved != null)
-				CursorMoved(this, new TimeSpanEventArgs(t));
 		}
 
 		private void _VerticalOffsetChanged()

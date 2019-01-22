@@ -45,6 +45,12 @@ namespace Common.Controls.Timeline
 			Visible = false;
 			_timeLineGlobalEventManager = TimeLineGlobalEventManager.Manager;
 			_timeLineGlobalEventManager.AlignmentActivity += WaveFormSelectedTimeLineGlobalMove;
+			_timeLineGlobalEventManager.CursorMoved += CursorMoved;
+		}
+
+		private void CursorMoved(object sender, TimeSpanEventArgs e)
+		{
+			Invalidate();
 		}
 
 		private void WaveFormSelectedTimeLineGlobalMove(object sender, AlignmentEventArgs e)
@@ -238,6 +244,8 @@ namespace Common.Controls.Timeline
 						p.Dispose();
 					}
 
+					
+
 					//Draws Waveform
 					e.Graphics.TranslateTransform(-timeToPixels(VisibleTimeStart), 0);
 					float maxSample = Math.Max(Math.Abs(ClampValue(samples.Low)), samples.High);
@@ -258,7 +266,8 @@ namespace Common.Controls.Timeline
 							e.Graphics.DrawLine(Pens.Black, x, workingHeight*lowPercent, x, workingHeight*highPercent);
 						}
 					}
-					
+
+					DrawCursor(e.Graphics);
 				}
 				else
 				{
@@ -273,6 +282,15 @@ namespace Common.Controls.Timeline
 			}
 
 			base.OnPaint(e);
+		}
+
+		private void DrawCursor(Graphics g)
+		{
+			using (Pen p = new Pen(Color.Blue, 1))
+			{
+				var curPos = timeToPixels(TimeLineGlobalStateManager.Manager.CursorPosition);
+				g.DrawLine(p, curPos, 0, curPos, Height);
+			}
 		}
 
 		private int ClampValue(int value)
