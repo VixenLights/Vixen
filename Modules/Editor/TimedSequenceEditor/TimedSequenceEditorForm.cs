@@ -5443,7 +5443,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
                     result.EffectModelCandidates.Add(modelCandidate, 0);
                     if (data.StartOffset < result.EarliestStartTime)
                         result.EarliestStartTime = data.StartOffset;
-                    effect.Render();
+                    effect.PreRender();
                 }
                 IDataObject dataObject = new DataObject(ClipboardFormatName);
                 dataObject.SetData(result);
