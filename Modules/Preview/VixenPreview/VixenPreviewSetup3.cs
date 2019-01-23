@@ -177,6 +177,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private void VixenPreviewSetup3_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			previewForm.Preview.ZoomLevel = 1;
 			PreviewItemsAlignNew -= vixenpreviewControl_PreviewItemsAlignNew;
 			previewForm.Preview.OnSelectDisplayItem -= OnSelectDisplayItem;
 			previewForm.Preview.OnDeSelectDisplayItem -= OnDeSelectDisplayItem;
