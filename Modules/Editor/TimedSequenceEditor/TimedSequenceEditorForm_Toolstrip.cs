@@ -103,6 +103,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			ChangeToolStripImageSize(toolStripCurveLibrary, imageSize);
 			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/PlayBack", Name), _iconSize);
 			ChangeToolStripImageSize(toolStripPlayBack, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Alignment", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripAlignment, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Audio", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripAudio, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Edit", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripEdit, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Mode", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripMode, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/View", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripView, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/File", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripFile, imageSize);
+			imageSize = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Tools", Name), _iconSize);
+			ChangeToolStripImageSize(toolStripTools, imageSize);
 
 		}
 
@@ -125,7 +139,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void EditToolStripSetup()
 		{
-			toolStripEdit.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripEdit.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			editToolStripButton_Undo.Image = Resources.arrow_undo;
 			editToolStripButton_Undo.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			editToolStripButton_Redo.Image = Resources.arrow_redo;
@@ -141,7 +155,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AlignmentToolStripSetup()
 		{
-			toolStripAlignment.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripAlignment.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			alignmentToolStripButton_CloseGaps.Image = Resources.fill_gaps;
 			alignmentToolStripButton_CloseGaps.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			alignmentToolStripDropDownButton_AlignTo.Image = Resources.alignment;
@@ -159,7 +173,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void FileToolStripSetup()
 		{
-			toolStripFile.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripFile.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			fileToolStripButton_Close.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			fileToolStripButton_Close.Image = Resources.Exit;
 			fileToolStripButton_AutoSave.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -174,7 +188,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ViewToolStripSetup()
 		{
-			toolStripView.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripView.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			viewToolStripButton_ZoomTimeIn.Image = Resources.zoom_time_in;
 			viewToolStripButton_ZoomTimeIn.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			viewToolStripButton_ZoomTimeOut.Image = Resources.zoom_time_out;
@@ -187,7 +201,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ToolsToolStripSetup()
 		{
-			toolStripTools.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripTools.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			toolsToolStripButton_LipSync.Image = Resources.Lipsync;
 			toolsToolStripButton_LipSync.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolsToolStripButton_CurveLibrary.Image = Resources.Curve;
@@ -200,7 +214,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void AudioToolStripSetup()
 		{
-			toolStripAudio.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripAudio.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			toolStripButton_AssociateAudio.Image = Resources.music;
 			toolStripButton_AssociateAudio.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			toolStripButton_IncreaseTimingSpeed.Image = Resources.plus;
@@ -216,7 +230,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ModeToolStripSetup()
 		{
-			toolStripMode.ImageScalingSize = new Size(_iconSize, _iconSize);
+			toolStripMode.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 			modeToolStripButton_SnapTo.Image = Resources.magnet;
 			modeToolStripButton_SnapTo.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			modeToolStripButton_DrawMode.Image = Resources.pencil;
@@ -439,6 +453,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// Add Toolstrip items to Context menu
 			resetToolStripMenuItem.Visible = true;
 			add_RemoveContextToolStripMenuItem.Visible = true;
+			imageSizeToolStripMenuItem.Visible = true;
 
 			if (_contextToolStrip != null && _contextToolStrip.Parent.Name != "toolStripContainer")
 			{
@@ -451,6 +466,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				resetToolStripMenuItem.Visible = false;
 				add_RemoveContextToolStripMenuItem.Visible = false;
+				imageSizeToolStripMenuItem.Visible = false;
 			}
 
 			// Add Toolbar list to Context menu
@@ -1140,7 +1156,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (toolStrip.ImageScalingSize.Height != imageSize)
 			{
 				toolStrip.ImageScalingSize = new Size(_iconSize, _iconSize);
-				imagePosition = TextImageRelation.ImageBeforeText;
+				imagePosition = TextImageRelation.ImageAboveText;
 			}
 			else
 			{
@@ -2253,6 +2269,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripCurveLibrary.ImageScalingSize.Height);
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/PlayBack", Name),
 				toolStripPlayBack.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Edit", Name),
+				toolStripEdit.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Audio", Name),
+				toolStripAudio.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/View", Name),
+				toolStripView.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Tools", Name),
+				toolStripTools.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/File", Name),
+				toolStripFile.ImageScalingSize.Height); 
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Mode", Name),
+				toolStripMode.ImageScalingSize.Height);
+			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/ToolStrip/Alignment", Name),
+				toolStripAlignment.ImageScalingSize.Height);
 
 			// Save each Toolstrip settings
 			_allToolStripItems.Clear();
