@@ -388,31 +388,33 @@ namespace VixenModules.Preview.VixenPreview.Shapes
 					int width = _bottomRight.X - _topLeft.X;
 					int height = _bottomRight.Y - _topLeft.Y;
 					double stringXSpacing = (double)width / (double)(StringCount - 1);
-					int x = _topLeft.X;
+					double x = _topLeft.X;
 					int y = _topLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(x, y + height);
-						line.SetPoint1(x, y);
+						var x1 = (int)Math.Round(x, MidpointRounding.AwayFromZero);
+						line.SetPoint0(x1, y + height);
+						line.SetPoint1(x1, y);
 						line.Layout();
-						x += (int)stringXSpacing;
+						x += stringXSpacing;
 					}
 				}
 				else
 				{
 					int width = _bottomRight.X - _bottomLeft.X;
 					int height = _bottomLeft.Y - _topLeft.Y;
-					double stringYSpacing = (double)height / (double)(StringCount - 1);
+					double stringYSpacing = height / (double)(StringCount - 1);
 					int x = _bottomLeft.X;
-					int y = _bottomLeft.Y;
+					double y = _bottomLeft.Y;
 					for (int stringNum = 0; stringNum < StringCount; stringNum++)
 					{
 						PreviewLine line = _strings[stringNum] as PreviewLine;
-						line.SetPoint0(x, y);
-						line.SetPoint1(x + width, y);
+						var y1 = (int)Math.Round(y, MidpointRounding.AwayFromZero);
+						line.SetPoint0(x, y1);
+						line.SetPoint1((x + width), y1);
 						line.Layout();
-						y -= (int)stringYSpacing;
+						y -= stringYSpacing;
 					}
 				}
 				SetPixelZoom();
