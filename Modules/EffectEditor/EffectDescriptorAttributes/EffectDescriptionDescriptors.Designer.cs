@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When enabled the color will change for each Step variation..
+        /// </summary>
+        internal static string ColorPerStep {
+            get {
+                return ResourceManager.GetString("ColorPerStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls the color scheme..
         /// </summary>
         internal static string ColorScheme {

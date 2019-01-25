@@ -849,4 +849,7 @@
   <data name="IntensityPerIteration" xml:space="preserve">
     <value>Intensity Per Iteration</value>
   </data>
+  <data name="ColorPerStep" xml:space="preserve">
+    <value>Color Per Step</value>
+  </data>
 </root>

@@ -47,11 +47,40 @@ namespace VixenModules.Effect.Dissolve
 		protected override void _PreRender(CancellationTokenSource cancellationToken = null)
 		{
 			_elementData = new EffectIntents();
+			IEnumerable<IGrouping<int, ElementNode>> elements;
+			IEnumerable<ElementNode> renderNodes = GetNodesToRenderOn();
+			switch (DissolveMode)
+			{
+				case DissolveMode.MarkCollection:
+				{
+					SetupMarks();
+					if ((DissolveMarkType == DissolveMarkType.PerMarkFill ||
+					    DissolveMarkType == DissolveMarkType.PerMarkDissolve) && ColorPerStep)
+					{
+						int nodeCount = renderNodes.Count();
+						int nodesPerGroup = DirectionsTogether && BothDirections
+							? nodeCount / (_marks.Count() - 1) / 2
+							: nodeCount / (_marks.Count() - 1);
+						elements = renderNodes.Select((x, index) => new { x, index })
+							.GroupBy(x => x.index / nodesPerGroup, y => y.x);
+					}
+					else
+					{
+						elements = renderNodes.Select((x, index) => new { x, index })
+							.GroupBy(x => x.index / GroupLevel, y => y.x);
+					}
 
-			var elements = GetNodesToRenderOn().Select((x, index) => new { x, index })
-				.GroupBy(x => x.index / GroupLevel, y => y.x);
-			var renderNodes = elements as IGrouping<int, ElementNode>[] ?? elements.ToArray();
-			_totalNodes = renderNodes.Count();
+					break;
+				}
+				default:
+					elements = renderNodes.Select((x, index) => new { x, index })
+						.GroupBy(x => x.index / GroupLevel, y => y.x);
+					break;
+			}
+
+			
+			var renderNodes1 = elements as IGrouping<int, ElementNode>[] ?? elements.ToArray();
+			_totalNodes = renderNodes1.Count();
 
 			_pixels = 0;
 
@@ -60,9 +89,9 @@ namespace VixenModules.Effect.Dissolve
 			_elements = new List<DissolveClass>();
 			_renderElements = new List<DissolveClass>();
 
-			InitializeDissolveClasses();
+			InitializeDissolveClasses(1);
 
-			_elementData.Add(RenderNode(renderNodes));
+			_elementData.Add(RenderNode(renderNodes1));
 
 			_nodes = null;
 			_tempNodes = null;
@@ -164,9 +193,26 @@ namespace VixenModules.Effect.Dissolve
 
 		[Value]
 		[ProviderCategory(@"Color", 2)]
+		[ProviderDisplayName(@"ColorPerStep")]
+		[ProviderDescription(@"ColorPerStep")]
+		[PropertyOrder(1)]
+		public bool ColorPerStep
+		{
+			get { return _data.ColorPerStep; }
+			set
+			{
+				_data.ColorPerStep = value;
+				IsDirty = true;
+				UpdateDissolveModeAttributes();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"RandomColorOrder")]
 		[ProviderDescription(@"RandomColorOrder")]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public bool RandomColor
 		{
 			get { return _data.RandomColor; }
@@ -183,7 +229,7 @@ namespace VixenModules.Effect.Dissolve
 		[ProviderCategory(@"Color", 2)]
 		[ProviderDisplayName(@"GroupColors")]
 		[ProviderDescription(@"GroupColors")]
-		[PropertyOrder(2)]
+		[PropertyOrder(3)]
 		public bool GroupColors
 		{
 			get { return _data.GroupColors; }
@@ -453,7 +499,7 @@ namespace VixenModules.Effect.Dissolve
 
 		private void UpdateDissolveModeAttributes(bool refresh = true)
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(5)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(10)
 			{
 				{"MarkCollectionId", DissolveMode == DissolveMode.MarkCollection},
 				{"DissolveCurve", DissolveMarkType == DissolveMarkType.PerMark || DissolveMode == DissolveMode.TimeInterval},
@@ -461,7 +507,10 @@ namespace VixenModules.Effect.Dissolve
 				{"DissolveFlip", !RandomDissolve},
 				{"StartingNode", !RandomDissolve},
 				{"BothDirections", !RandomDissolve},
-				{"DirectionsTogether", !RandomDissolve && BothDirections}
+				{"DirectionsTogether", !RandomDissolve && BothDirections},
+				{"ColorPerMark", (!BothDirections && DissolveMode == DissolveMode.TimeInterval) || (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType <= (DissolveMarkType)2 )},
+				{"GroupLevel", DissolveMode != DissolveMode.MarkCollection || !ColorPerStep || (DissolveMarkType != DissolveMarkType.PerMarkFill && DissolveMarkType != DissolveMarkType.PerMarkDissolve)},
+				{"EnableDepth", !ColorPerStep || (DissolveMarkType != DissolveMarkType.PerMarkFill && DissolveMarkType != DissolveMarkType.PerMarkDissolve)}
 			};
 
 			SetBrowsable(propertyStates);
@@ -510,11 +559,8 @@ namespace VixenModules.Effect.Dissolve
 			double interval = 1;
 			int totalPixelCount = 0;
 
-			int together = !DirectionsTogether && BothDirections ? 1 : 2; // Dissolves or Fills in both directions alternating = 1 or same time = 2.
-
 			if (DissolveMode == DissolveMode.MarkCollection)
 			{
-				SetupMarks();
 				if (_marks != null)
 				{
 					markInterval.AddRange(_marks.Select(mark => mark.StartTime - StartTime));
@@ -559,10 +605,22 @@ namespace VixenModules.Effect.Dissolve
 								_pixels = (int)Math.Ceiling((double)pixels) - totalPixelCount;
 								break;
 							case DissolveMarkType.PerMarkFill:
-								_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (i + 1)) - totalPixelCount;
+								_pixels = !ColorPerStep
+									? (int) Math.Ceiling((double) pixelCount / (intervals - 1) * (i + 1)) -
+									  totalPixelCount
+									: 1;
 								break;
 							case DissolveMarkType.PerMarkDissolve:
-								_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (intervals - i - 1)) - totalPixelCount;
+								if (ColorPerStep)
+								{
+									_pixels = i == 0 ? !ColorPerStep ? pixelCount :
+										_marks.Count() - 1 :
+										!ColorPerStep ? -Colors.Count : -1;
+								}
+								else
+								{
+									_pixels = (int)Math.Ceiling((double)pixelCount / (intervals - 1) * (intervals - i - 1)) - totalPixelCount;
+								}
 								break;
 						}
 					}
@@ -571,13 +629,56 @@ namespace VixenModules.Effect.Dissolve
 						_pixels = (int)Math.Ceiling(pixelCount * DissolveCurve.GetValue(position) / 100) - totalPixelCount;
 					}
 
-					_pixels = _pixels / together;
+					int together = 1;
+					int bothTogether = 1;
+					if (ColorPerStep)
+					{
+						switch (DissolveMode)
+						{
+							case DissolveMode.MarkCollection:
+								switch (DissolveMarkType)
+								{
+									case DissolveMarkType.PerMark when BothDirections && DirectionsTogether:
+										together = 2;
+										bothTogether = 2;
+										break;
+									case DissolveMarkType.PerMarkFill:
+									case DissolveMarkType.PerMarkDissolve:
+										together = 1;
+										bothTogether = BothDirections && !RandomDissolve && DirectionsTogether ? 2 : together;
+										break;
+								}
+								_pixels = _pixels / together;
+								break;
+							default:
+								if (!BothDirections)
+								{
+									together = 1;
+									bothTogether = together;
+									_pixels = _pixels / together;
+								}
+								else
+								{
+									together = !DirectionsTogether && BothDirections ? 1 : 2;
+									bothTogether = together;
+									_pixels = _pixels / together;
+								}
+								break;
+						}
+					}
+					else
+					{
+						together = !DirectionsTogether && BothDirections ? 1 : 2;
+						bothTogether = together;
+						_pixels = _pixels / together;
+					}
+
 					if (_pixels >= 0)
 					{
 						// Adds Displayed Pixels.
 						for (int pixel = 0; pixel < _pixels; pixel++)
 						{
-							for (int k = 0; k < together; k++)
+							for (int k = 0; k < bothTogether; k++)
 							{
 								if (_nodes.Count <= 0) break;
 								totalPixelCount++;
@@ -611,7 +712,7 @@ namespace VixenModules.Effect.Dissolve
 						// Removes Displayed Pixels.
 						for (int pixel = 0; pixel < -_pixels; pixel++)
 						{
-							for (int k = 0; k < together; k++)
+							for (int k = 0; k < bothTogether; k++)
 							{
 								if (_tempNodes.Count <= 0) break;
 								totalPixelCount--;
@@ -662,7 +763,7 @@ namespace VixenModules.Effect.Dissolve
 
 				if (DissolveMode == DissolveMode.MarkCollection && DissolveMarkType == DissolveMarkType.PerMark)
 				{
-					InitializeDissolveClasses();
+					InitializeDissolveClasses(i);
 					totalPixelCount = 0;
 					// Copies Elements to be rendered. This will be done per Mark.
 					CopyElements();
@@ -712,7 +813,7 @@ namespace VixenModules.Effect.Dissolve
 			_elements.Clear();
 		}
 
-		private void InitializeDissolveClasses()
+		private void InitializeDissolveClasses(int intervals)
 		{
 			_nodes.Clear();
 			_tempNodes.Clear();
@@ -726,6 +827,8 @@ namespace VixenModules.Effect.Dissolve
 				elementIndex.Add(node);
 			}
 
+			int i = 0;
+			int colorIndex = 0;
 			for (int x = 0; x < _totalNodes; x++)
 			{
 				int currentNode;
@@ -761,7 +864,23 @@ namespace VixenModules.Effect.Dissolve
 				}
 
 				// Randomly or sequentially add color index to class and Element Index.
-				var colorIndex = RandomColor ? Rand(0, colorCount) : currentNode % colorCount;
+				switch (DissolveMarkType)
+				{
+					case DissolveMarkType.PerMark when ColorPerStep && DissolveMode == DissolveMode.MarkCollection:
+						if (RandomColor)
+						{
+							if (x == 0) colorIndex = Rand(0, colorCount);
+						}
+						else
+						{
+							colorIndex = intervals % colorCount;
+						}
+						break;
+					default:
+						colorIndex = RandomColor ? Rand(0, colorCount) : currentNode % colorCount;
+						break;
+				}
+				
 				TempClass tc = new TempClass {ElementIndex = currentNode, ColorIndex = colorIndex};
 				_nodes.Add(tc);
 			}
