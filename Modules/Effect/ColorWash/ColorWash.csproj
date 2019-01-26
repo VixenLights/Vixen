@@ -66,6 +66,7 @@
     <Compile Include="ColorWashDescriptor.cs" />
     <Compile Include="ColorWashData.cs" />
     <Compile Include="ColorWash.cs" />
+    <Compile Include="MovementType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
