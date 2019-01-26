@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Common.Controls.ColorManagement.ColorModels;
 using Vixen.Attributes;
@@ -17,6 +19,8 @@ namespace VixenModules.Effect.ColorWash
 		private ColorWashData _data;
 		private double _halfHt;
 		private double _halfWi;
+		private double _position;
+		private bool _negPosition;
 
 		public ColorWash()
 		{
@@ -61,17 +65,50 @@ namespace VixenModules.Effect.ColorWash
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
+		[PropertyOrder(1)]
+		public MovementType MovementType
+		{
+			get { return _data.MovementType; }
+			set
+			{
+				_data.MovementType = value;
+				IsDirty = true;
+				UpdateMovementTypeAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Iterations")]
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(2)]
 		public int Iterations
 		{
 			get { return _data.Iterations; }
 			set
 			{
 				_data.Iterations = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		[PropertyOrder(3)]
+		public Curve SpeedCurve
+		{
+			get { return _data.SpeedCurve; }
+			set
+			{
+				_data.SpeedCurve = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -97,7 +134,7 @@ namespace VixenModules.Effect.ColorWash
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Vertical Fade")]
 		[ProviderDescription(@"Vertical Fade")]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public bool VerticalFade
 		{
 			get { return _data.VerticalFade; }
@@ -113,7 +150,7 @@ namespace VixenModules.Effect.ColorWash
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Shimmer")]
 		[ProviderDescription(@"Shimmer")]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public bool Shimmer
 		{
 			get { return _data.Shimmer; }
@@ -194,12 +231,28 @@ namespace VixenModules.Effect.ColorWash
 
 		private void InitAllAttributes()
 		{
-			UpdateStringOrientationAttributes(true);
+			UpdateStringOrientationAttributes();
+			UpdateMovementTypeAttribute(false);
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
 		{
 			get { return _data; }
+		}
+
+		private void UpdateMovementTypeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{ "SpeedCurve", MovementType == MovementType.Speed},
+				{ "Iterations", MovementType != MovementType.Speed}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		protected override void SetupRender()
@@ -222,8 +275,28 @@ namespace VixenModules.Effect.ColorWash
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 			int totalFrames = GetNumberFrames();
 			var iterationFrame = frame*Iterations%(totalFrames);
-			double position = GetEffectTimeIntervalPosition(iterationFrame);
-			HSV hsv = HSV.FromRGB(Color.GetColorAt(position));
+			double position;
+
+			double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+
+			if (MovementType == MovementType.Iterations)
+			{
+				position = GetEffectTimeIntervalPosition(iterationFrame);
+			}
+			else
+			{
+				if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
+				_position += CalculateSpeed(intervalPosFactor) / 100;
+				position = _position % 1;
+				if (_position < 0)
+				{
+					_negPosition = true;
+					_position = -_position;
+				}
+			}
+			
+			HSV hsv = HSV.FromRGB(position < 0 ? Color.GetColorAt(1 + position) : Color.GetColorAt(position));
+
 			for (int x = 0; x < BufferWi; x++)
 			{
 				for (int y = 0; y < BufferHt; y++)
@@ -246,9 +319,27 @@ namespace VixenModules.Effect.ColorWash
 				frameBuffer.CurrentFrame = frame;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
 				var iterationFrame = frame * Iterations % (numFrames);
-				double position = GetEffectTimeIntervalPosition(iterationFrame);
+				double position;
 
-				HSV hsv = HSV.FromRGB(Color.GetColorAt(position));
+				double intervalPosFactor = GetEffectTimeIntervalPosition(frame) * 100;
+
+				if (MovementType == MovementType.Iterations)
+				{
+					position = GetEffectTimeIntervalPosition(iterationFrame);
+				}
+				else
+				{
+					if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
+					_position += CalculateSpeed(intervalPosFactor) / 100;
+					position = _position % 1;
+					if (_position < 0)
+					{
+						_negPosition = true;
+						_position = -_position;
+					}
+				}
+
+				HSV hsv = HSV.FromRGB(position < 0 ? Color.GetColorAt(1 + position) : Color.GetColorAt(position));
 				if (Shimmer && frame % 2 != 0)
 				{
 					hsv.V = 0;
@@ -309,6 +400,10 @@ namespace VixenModules.Effect.ColorWash
 			return v;
 		}
 
+		private double CalculateSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 30, -30);
+		}
 		
 	}
 }
