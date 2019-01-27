@@ -27,7 +27,7 @@ namespace VixenModules.Effect.Butterfly
 			Direction = Direction.Forward;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
-			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
 			MovementType = MovementType.Iterations;
 		}
 
@@ -74,7 +74,7 @@ namespace VixenModules.Effect.Butterfly
 			//Try to save some cycles on every load
 			if (SpeedCurve == null)
 			{
-				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
 			}
 		}
 

@@ -310,7 +310,7 @@ namespace VixenModules.Effect.Butterfly
 
 		protected override void SetupRender()
 		{
-			//Not required
+			_position = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -323,30 +323,49 @@ namespace VixenModules.Effect.Butterfly
 			
 			int repeat = ConfigureRepeat();
 			int maxframe=BufferHt;
+			double position;
 			double intervalPosFactor = GetEffectTimeIntervalPosition(effectFrame) * 100;
 
 			if (MovementType == MovementType.Iterations)
 			{
-				_position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+				position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
 			}
 			else
 			{
-				if (effectFrame == 0) _position = CalculateSpeed(intervalPosFactor);
-				_position += CalculateSpeed(intervalPosFactor) / 100;
+				_position += CalculateSpeed(intervalPosFactor) / 200;
 				if (_position < 0)
 				{
 					_negPosition = true;
-					_position = -_position;
+					position = -_position % 1;
+				}
+				else
+				{
+					_negPosition = false;
+					position = _position % 1;
 				}
 			}
 			
-			int curState = (int)(TimeSpan.TotalMilliseconds* _position * repeat);
+			int curState = (int)(TimeSpan.TotalMilliseconds* position * repeat);
 			int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 			double offset=curState/TimeSpan.TotalMilliseconds;
 			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
-
-
-			if (Direction==Direction.Forward || MovementType == MovementType.Speed) offset = -offset;
+			
+			switch (MovementType)
+			{
+				case MovementType.Speed:
+				{
+					if (!_negPosition) offset = -offset;
+					break;
+				}
+				default:
+				{
+					if (Direction == Direction.Forward)
+					{
+						offset = -offset;
+					}
+					break;
+				}
+			}
 
 			int bufferDim = 0;
 			if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
@@ -370,6 +389,7 @@ namespace VixenModules.Effect.Butterfly
 		{
 			int repeat = ConfigureRepeat();
 			int maxframe = BufferHt;
+			double position;
 
 			var nodes = frameBuffer.ElementLocations.OrderBy(x => x.X).ThenBy(x => x.Y).GroupBy(x => x.X);
 
@@ -381,26 +401,44 @@ namespace VixenModules.Effect.Butterfly
 
 				if (MovementType == MovementType.Iterations)
 				{
-					_position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
+					position = (GetEffectTimeIntervalPosition(effectFrame) * Iterations) % 1;
 				}
 				else
 				{
-					if (effectFrame == 0) _position = CalculateSpeed(intervalPosFactor);
-					_position += CalculateSpeed(intervalPosFactor) / 100;
+					_position += CalculateSpeed(intervalPosFactor) / 200;
 					if (_position < 0)
 					{
 						_negPosition = true;
-						_position = -_position;
+						position = -_position % 1;
+					}
+					else
+					{
+						_negPosition = false;
+						position = _position % 1;
 					}
 				}
 
-				int curState = (int)(TimeSpan.TotalMilliseconds * _position * repeat);
+				int curState = (int)(TimeSpan.TotalMilliseconds * position * repeat);
 				int frame = (BufferHt * curState / (int)TimeSpan.TotalMilliseconds) % maxframe;
 				double offset = curState / TimeSpan.TotalMilliseconds;
 				double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(effectFrame) * 100) / 100;
 
-
-				if (Direction == Direction.Forward || MovementType == MovementType.Speed) offset = -offset;
+				switch (MovementType)
+				{
+					case MovementType.Speed:
+					{
+						if (!_negPosition) offset = -offset;
+						break;
+					}
+					default:
+					{
+						if (Direction == Direction.Forward)
+						{
+							offset = -offset;
+						}
+						break;
+					}
+				}
 
 				int bufferDim = 0;
 				if (ButterflyType == ButterflyType.Type1 || ButterflyType == ButterflyType.Type4)
@@ -584,7 +622,7 @@ namespace VixenModules.Effect.Butterfly
 
 		private double CalculateSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 30, -30);
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80);
 		}
 	}
 }
