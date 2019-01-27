@@ -24,7 +24,7 @@ namespace VixenModules.Effect.ColorWash
 			HorizontalFade = false;
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
-			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
 			MovementType = MovementType.Iterations;
 		}
 
@@ -65,7 +65,7 @@ namespace VixenModules.Effect.ColorWash
 			//Try to save some cycles on every load
 			if (SpeedCurve == null)
 			{
-				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 23.0, 23.0 }));
 			}
 		}
 

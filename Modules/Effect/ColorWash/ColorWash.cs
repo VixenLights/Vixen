@@ -20,7 +20,6 @@ namespace VixenModules.Effect.ColorWash
 		private double _halfHt;
 		private double _halfWi;
 		private double _position;
-		private bool _negPosition;
 
 		public ColorWash()
 		{
@@ -259,6 +258,7 @@ namespace VixenModules.Effect.ColorWash
 		{
 			_halfHt = (BufferHt - 1) / 2.0;
 			_halfWi = (BufferWi - 1) / 2.0;
+			_position = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -285,14 +285,8 @@ namespace VixenModules.Effect.ColorWash
 			}
 			else
 			{
-				if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
-				_position += CalculateSpeed(intervalPosFactor) / 100;
+				_position += CalculateSpeed(intervalPosFactor) / 1000;
 				position = _position % 1;
-				if (_position < 0)
-				{
-					_negPosition = true;
-					_position = -_position;
-				}
 			}
 			
 			HSV hsv = HSV.FromRGB(position < 0 ? Color.GetColorAt(1 + position) : Color.GetColorAt(position));
@@ -329,14 +323,8 @@ namespace VixenModules.Effect.ColorWash
 				}
 				else
 				{
-					if (frame == 0) _position = CalculateSpeed(intervalPosFactor);
-					_position += CalculateSpeed(intervalPosFactor) / 100;
+					_position += CalculateSpeed(intervalPosFactor) / 1000;
 					position = _position % 1;
-					if (_position < 0)
-					{
-						_negPosition = true;
-						_position = -_position;
-					}
 				}
 
 				HSV hsv = HSV.FromRGB(position < 0 ? Color.GetColorAt(1 + position) : Color.GetColorAt(position));
@@ -402,7 +390,7 @@ namespace VixenModules.Effect.ColorWash
 
 		private double CalculateSpeed(double intervalPos)
 		{
-			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 30, -30);
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 100, 0);
 		}
 		
 	}
