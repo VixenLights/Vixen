@@ -24,6 +24,8 @@ namespace VixenModules.Effect.Spiral
 			ThicknessCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 60.0, 60.0 }));
 			LevelCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 100.0, 100.0 }));
 			Orientation=StringOrientation.Vertical;
+			SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			MovementType = MovementType.Iterations;
 		}
 
 		[DataMember]
@@ -67,6 +69,13 @@ namespace VixenModules.Effect.Spiral
 
 		[DataMember]
 		public Curve LevelCurve { get; set; }
+
+		[DataMember]
+		public MovementType MovementType { get; set; }
+
+		[DataMember]
+		public Curve SpeedCurve { get; set; }
+
 		[OnDeserialized]
 		public void OnDeserialized(StreamingContext c)
 		{
@@ -85,6 +94,11 @@ namespace VixenModules.Effect.Spiral
 					Thickness = 0;
 				}
 			}
+
+			if (SpeedCurve == null)
+			{
+				SpeedCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 70.0, 70.0 }));
+			}
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -102,7 +116,9 @@ namespace VixenModules.Effect.Spiral
 				Blend = Blend,
 				LevelCurve = new Curve(LevelCurve),
 				Grow = Grow,
-				Shrink = Shrink
+				Shrink = Shrink,
+				SpeedCurve = new Curve(SpeedCurve),
+				MovementType = MovementType
 			};
 			return result;
 		}

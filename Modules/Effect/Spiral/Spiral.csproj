@@ -56,6 +56,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MovementType.cs" />
     <Compile Include="Spiral.cs" />
     <Compile Include="SpiralData.cs" />
     <Compile Include="SpiralDescriptor.cs" />

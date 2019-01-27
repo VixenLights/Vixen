@@ -17,7 +17,9 @@ namespace VixenModules.Effect.Spiral
 	public class Spiral:PixelEffectBase
 	{
 		private SpiralData _data;
-		
+		private double _position;
+		private bool _negPosition;
+
 		public Spiral()
 		{
 			_data = new SpiralData();
@@ -73,14 +75,47 @@ namespace VixenModules.Effect.Spiral
 				OnPropertyChanged();
 			}
 		}
-		
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
+		[PropertyOrder(1)]
+		public MovementType MovementType
+		{
+			get { return _data.MovementType; }
+			set
+			{
+				_data.MovementType = value;
+				IsDirty = true;
+				UpdateMovementTypeAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Speed")]
+		[ProviderDescription(@"Speed")]
+		[PropertyOrder(2)]
+		public Curve SpeedCurve
+		{
+			get { return _data.SpeedCurve; }
+			set
+			{
+				_data.SpeedCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
 		[Value]
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Iterations")]
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1,20,1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -98,7 +133,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderDescription(@"Repeat")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 5, 1)]
-		[PropertyOrder(2)]
+		[PropertyOrder(4)]
 		public int Repeat
 		{
 			get { return _data.Repeat; }
@@ -114,8 +149,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Thickness")]
 		[ProviderDescription(@"Thickness")]
-		//[NumberRange(1, 100, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public Curve ThicknessCurve
 		{
 			get { return _data.ThicknessCurve; }
@@ -131,8 +165,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Rotation")]
 		[ProviderDescription(@"Rotation")]
-		//[NumberRange(-50, 50, 1)]
-		[PropertyOrder(5)]
+		[PropertyOrder(6)]
 		public Curve RotationCurve
 		{
 			get { return _data.RotationCurve; }
@@ -148,7 +181,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Show3D")]
 		[ProviderDescription(@"Show3D")]
-		[PropertyOrder(6)]
+		[PropertyOrder(7)]
 		public bool Show3D
 		{
 			get { return _data.Show3D; }
@@ -164,7 +197,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Grow")]
 		[ProviderDescription(@"Grow")]
-		[PropertyOrder(7)]
+		[PropertyOrder(8)]
 		public bool Grow
 		{
 			get { return _data.Grow; }
@@ -180,7 +213,7 @@ namespace VixenModules.Effect.Spiral
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Shrink")]
 		[ProviderDescription(@"Shrink")]
-		[PropertyOrder(8)]
+		[PropertyOrder(9)]
 		public bool Shrink
 		{
 			get { return _data.Shrink; }
@@ -269,7 +302,23 @@ namespace VixenModules.Effect.Spiral
 		{
 			UpdateStringOrientationAttributes(true);
 			UpdateDirectionAttribute(false);
+			UpdateMovementTypeAttribute(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateMovementTypeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(2)
+			{
+				{ "SpeedCurve", MovementType == MovementType.Speed},
+				{ "Speed", MovementType != MovementType.Speed},
+				{ "Direction", MovementType != MovementType.Speed}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		private void UpdateDirectionAttribute(bool refresh = true)
@@ -303,7 +352,7 @@ namespace VixenModules.Effect.Spiral
 
 		protected override void SetupRender()
 		{
-			//Nothing to setup
+			_position = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -322,17 +371,45 @@ namespace VixenModules.Effect.Spiral
 			double adjustRotation = CalculateRotation(intervalPosFactor);
 			int spiralGap = deltaStrands - spiralThickness;
 			int thicknessState = 0;
-			int spiralState = 0;
-			double position = (intervalPos * Speed) % 1;
+			double position;
 
-			switch (Direction)
+			if (MovementType == MovementType.Iterations)
 			{
-				case SpiralDirection.Forward:
-					spiralState = (int)(position*BufferWi*10);
+				position = (intervalPos * Speed) % 1;
+			}
+			else
+			{
+				_position += CalculateSpeed(intervalPosFactor) / 1000;
+				if (_position < 0)
+				{
+					_negPosition = true;
+					position = -_position;
+				}
+				else
+				{
+					_negPosition = false;
+					position = _position;
+				}
+			}
+
+			int spiralState = (int)(position * BufferWi * 10);
+			switch (MovementType)
+			{
+				case MovementType.Speed:
+				{
+					if(_negPosition) spiralState = -spiralState;
 					break;
-				case SpiralDirection.Backwards:
-					spiralState = (int)(position * BufferWi * -10);
+				}
+				default:
+				{
+					if (Direction == SpiralDirection.Backwards)
+					{
+						spiralState = -spiralState;
+					}
+					else if (Direction == SpiralDirection.None) spiralState = 0;
+
 					break;
+				}
 			}
 
 			if (Grow && Shrink)
@@ -409,6 +486,11 @@ namespace VixenModules.Effect.Spiral
 		{
 			return ScaleCurveToValue(RotationCurve.GetValue(intervalPos), 150, -150);
 		}
-		
+
+		private double CalculateSpeed(double intervalPos)
+		{
+			return ScaleCurveToValue(SpeedCurve.GetValue(intervalPos), 80, -80);
+		}
+
 	}
 }
