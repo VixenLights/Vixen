@@ -74,6 +74,7 @@
     <Compile Include="CurtainDescriptor.cs" />
     <Compile Include="CurtainData.cs" />
     <Compile Include="Curtain.cs" />
+    <Compile Include="MovementType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -855,4 +855,7 @@
   <data name="FilmSpinnerGradientMode" xml:space="preserve">
     <value>Controls how the gradient is applied to the swipe color of the film spinner.</value>
   </data>
+  <data name="IntensityPerIteration" xml:space="preserve">
+    <value>Adjusts the Intensity over each iteration.</value>
+  </data>
 </root>
