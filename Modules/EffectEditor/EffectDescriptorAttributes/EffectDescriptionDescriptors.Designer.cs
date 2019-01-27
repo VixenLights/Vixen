@@ -989,6 +989,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjusts the Intensity over each iteration..
+        /// </summary>
+        internal static string IntensityPerIteration {
+            get {
+                return ResourceManager.GetString("IntensityPerIteration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specifies how often the effect should switch in milliseconds..
         /// </summary>
         internal static string Interval {

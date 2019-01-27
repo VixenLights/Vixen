@@ -846,4 +846,7 @@
   <data name="FilmSpinnerGradientMode" xml:space="preserve">
     <value>Film Spinner Gradient Mode</value>
   </data>
+  <data name="IntensityPerIteration" xml:space="preserve">
+    <value>Intensity Per Iteration</value>
+  </data>
 </root>

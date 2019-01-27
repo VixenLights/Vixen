@@ -20,6 +20,7 @@ namespace VixenModules.Effect.Curtain
 		private CurtainData _data;
 		private int _lastCurtainDir;
 		private int _lastCurtainLimit;
+		private double _position;
 
 		public Curtain()
 		{
@@ -64,11 +65,44 @@ namespace VixenModules.Effect.Curtain
 
 		[Value]
 		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"MovementType")]
+		[ProviderDescription(@"MovementType")]
+		[PropertyOrder(1)]
+		public MovementType MovementType
+		{
+			get { return _data.MovementType; }
+			set
+			{
+				_data.MovementType = value;
+				IsDirty = true;
+				UpdateMovementTypeAttribute();
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
+		[ProviderDisplayName(@"Position")]
+		[ProviderDescription(@"Position")]
+		[PropertyOrder(2)]
+		public Curve PositionCurve
+		{
+			get { return _data.PositionCurve; }
+			set
+			{
+				_data.PositionCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Iterations")]
 		[ProviderDescription(@"Iterations")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(1, 20, 1)]
-		[PropertyOrder(1)]
+		[PropertyOrder(3)]
 		public int Speed
 		{
 			get { return _data.Speed; }
@@ -84,7 +118,7 @@ namespace VixenModules.Effect.Curtain
 		[ProviderCategory(@"Config", 1)]
 		[ProviderDisplayName(@"Edge")]
 		[ProviderDescription(@"Edge")]
-		[PropertyOrder(3)]
+		[PropertyOrder(4)]
 		public CurtainEdge Edge
 		{
 			get { return _data.Edge; }
@@ -102,7 +136,7 @@ namespace VixenModules.Effect.Curtain
 		[ProviderDescription(@"Swag")]
 		[PropertyEditor("SliderEditor")]
 		[NumberRange(0, 10, 1)]
-		[PropertyOrder(4)]
+		[PropertyOrder(5)]
 		public int Swag
 		{
 			get { return _data.Swag; }
@@ -142,12 +176,29 @@ namespace VixenModules.Effect.Curtain
 		[ProviderCategory(@"Brightness", 3)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"Brightness")]
+		[PropertyOrder(0)]
 		public Curve LevelCurve
 		{
 			get { return _data.LevelCurve; }
 			set
 			{
 				_data.LevelCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Brightness", 3)]
+		[ProviderDisplayName(@"IntensityPerIteration")]
+		[ProviderDescription(@"IntensityPerIteration")]
+		[PropertyOrder(1)]
+		public bool IntensityPerIteration
+		{
+			get { return _data.IntensityPerIteration; }
+			set
+			{
+				_data.IntensityPerIteration = value;
 				IsDirty = true;
 				OnPropertyChanged();
 			}
@@ -172,7 +223,23 @@ namespace VixenModules.Effect.Curtain
 		private void InitAllAttributes()
 		{
 			UpdateStringOrientationAttributes(true);
+			UpdateMovementTypeAttribute(false);
 			TypeDescriptor.Refresh(this);
+		}
+
+		private void UpdateMovementTypeAttribute(bool refresh = true)
+		{
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(3)
+			{
+				{ "PositionCurve", MovementType == MovementType.Position},
+				{ "Iterations", MovementType != MovementType.Position},
+				{ "Direction", MovementType != MovementType.Position}
+			};
+			SetBrowsable(propertyStates);
+			if (refresh)
+			{
+				TypeDescriptor.Refresh(this);
+			}
 		}
 
 		public override IModuleDataModel ModuleData
@@ -193,7 +260,7 @@ namespace VixenModules.Effect.Curtain
 
 		protected override void SetupRender()
 		{
-			if (Direction == CurtainDirection.CurtainOpen || Direction == CurtainDirection.CurtainOpenClose)
+			if (Direction == CurtainDirection.CurtainOpen || Direction == CurtainDirection.CurtainOpenClose || MovementType == MovementType.Position)
 			{
 				_lastCurtainDir = 0;
 			}
@@ -203,6 +270,7 @@ namespace VixenModules.Effect.Curtain
 			}
 
 			_lastCurtainLimit = 0;
+			_position = 0;
 		}
 
 		protected override void CleanUpRender()
@@ -215,8 +283,17 @@ namespace VixenModules.Effect.Curtain
 			var swagArray = new List<int>();
 			int curtainDir, xlimit, middle, ylimit;
 			int swaglen = BufferHt > 1 ? Swag*BufferWi/40 : 0;
-			double position = (GetEffectTimeIntervalPosition(frame)*Speed)%1;
-			double level = LevelCurve.GetValue(GetEffectTimeIntervalPosition(frame) * 100) / 100;
+
+			var timeIntervalPosition = GetEffectTimeIntervalPosition(frame);
+			double intervalPosFactor = GetEffectTimeIntervalPosition((frame * Speed) % GetNumberFrames()) * 100;
+
+			_position = MovementType == MovementType.Iterations
+				? (timeIntervalPosition * Speed) % 1
+				: CalculatePosition(intervalPosFactor) / 100;
+			
+			double level = IntensityPerIteration
+				? LevelCurve.GetValue(GetEffectTimeIntervalPosition((frame * Speed) % GetNumberFrames()) * 100) / 100
+				: LevelCurve.GetValue(timeIntervalPosition * 100) / 100;
 
 			if (swaglen > 0)
 			{
@@ -226,33 +303,50 @@ namespace VixenModules.Effect.Curtain
 					swagArray.Add((int) (a*x*x));
 				}
 			}
-			if (Direction < CurtainDirection.CurtainOpenClose)
+			if(MovementType == MovementType.Position)
 			{
-				if (Direction == CurtainDirection.CurtainOpen)
-				{
-					xlimit = (int)((position * BufferWi) + (swaglen * position * 2));
-					ylimit = (int)((position * BufferHt) + (swaglen * position * 2));
-				}
-				else
-				{
-					xlimit = (int)((position * BufferWi) - (swaglen * (1 - position) * 2));
-					ylimit = (int)((position * BufferHt) - (swaglen * (1 - position) * 2));
-				}
+				xlimit = (int)((_position * BufferWi) + (swaglen * _position * 2));
+				ylimit = (int)((_position * BufferHt) + (swaglen * _position * 2));
 			}
 			else
 			{
-				if (Direction == CurtainDirection.CurtainOpenClose)
+				if (Direction < CurtainDirection.CurtainOpenClose)
 				{
-					xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) + (swaglen * position * 4) : ((position - .5) * 2 * BufferWi) - (swaglen * (1 - position) * 4));
-					ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) + (swaglen * position * 4) : ((position - .5) * 2 * BufferHt) - (swaglen * (1 - position) * 4));
+					if (Direction == CurtainDirection.CurtainOpen)
+					{
+						xlimit = (int) ((_position * BufferWi) + (swaglen * _position * 2));
+						ylimit = (int) ((_position * BufferHt) + (swaglen * _position * 2));
+					}
+					else
+					{
+						xlimit = (int) ((_position * BufferWi) - (swaglen * (1 - _position) * 2));
+						ylimit = (int) ((_position * BufferHt) - (swaglen * (1 - _position) * 2));
+					}
 				}
 				else
 				{
-					xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferWi) + (swaglen * position * 2));
-					ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferHt) + (swaglen * position * 2));
+					if (Direction == CurtainDirection.CurtainOpenClose)
+					{
+						xlimit = (int) (_position <= .5
+							? (_position * 2 * BufferWi) + (swaglen * _position * 4)
+							: ((_position - .5) * 2 * BufferWi) - (swaglen * (1 - _position) * 4));
+						ylimit = (int) (_position <= .5
+							? (_position * 2 * BufferHt) + (swaglen * _position * 4)
+							: ((_position - .5) * 2 * BufferHt) - (swaglen * (1 - _position) * 4));
+					}
+					else
+					{
+						xlimit = (int) (_position <= .5
+							? (_position * 2 * BufferWi) - (swaglen * (0.5 - _position) * 4)
+							: ((_position - .5) * 2 * BufferWi) + (swaglen * _position * 2));
+						ylimit = (int) (_position <= .5
+							? (_position * 2 * BufferHt) - (swaglen * (0.5 - _position) * 4)
+							: ((_position - .5) * 2 * BufferHt) + (swaglen * _position * 2));
+					}
 				}
 			}
-			if (Direction < CurtainDirection.CurtainOpenClose)
+
+			if (Direction < CurtainDirection.CurtainOpenClose || MovementType == MovementType.Position)
 			{
 				curtainDir = (int)Direction % 2;
 			}
@@ -326,8 +420,16 @@ namespace VixenModules.Effect.Curtain
 			{
 				frameBuffer.CurrentFrame = effectFrame;
 				var timeIntervalPosition = GetEffectTimeIntervalPosition(effectFrame);
-				double position = (timeIntervalPosition * Speed) % 1;
-				double level = LevelCurve.GetValue(timeIntervalPosition * 100) / 100;
+
+				double intervalPosFactor = GetEffectTimeIntervalPosition((effectFrame * Speed) % GetNumberFrames()) * 100;
+
+				_position = MovementType == MovementType.Iterations
+					? (timeIntervalPosition * Speed) % 1
+					: CalculatePosition(intervalPosFactor) / 100;
+
+				double level = IntensityPerIteration
+					? LevelCurve.GetValue(GetEffectTimeIntervalPosition((effectFrame * Speed) % GetNumberFrames()) * 100) / 100
+					: LevelCurve.GetValue(timeIntervalPosition * 100) / 100;
 
 				if (swaglen > 0)
 				{
@@ -340,34 +442,51 @@ namespace VixenModules.Effect.Curtain
 				}
 				int xlimit;
 				int ylimit;
-				if (Direction < CurtainDirection.CurtainOpenClose)
+				if (MovementType == MovementType.Position)
 				{
-					if (Direction == CurtainDirection.CurtainOpen)
-					{
-						xlimit = (int)((position * BufferWi) + (swaglen * position * 2));
-						ylimit = (int)((position * BufferHt) + (swaglen * position * 2));
-					}
-					else
-					{
-						xlimit = (int)((position * BufferWi) - (swaglen * (1 - position) * 2));
-						ylimit = (int)((position * BufferHt) - (swaglen * (1 - position) * 2));
-					}
+					xlimit = (int)((_position * BufferWi) + (swaglen * _position * 2));
+					ylimit = (int)((_position * BufferHt) + (swaglen * _position * 2));
 				}
 				else
 				{
-					if (Direction == CurtainDirection.CurtainOpenClose)
+					if (Direction < CurtainDirection.CurtainOpenClose)
 					{
-						xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) + (swaglen * position * 4) : ((position - .5) * 2 * BufferWi) - (swaglen * (1 - position) * 4));
-						ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) + (swaglen * position * 4) : ((position - .5) * 2 * BufferHt) - (swaglen * (1 - position) * 4));
+						if (Direction == CurtainDirection.CurtainOpen)
+						{
+							xlimit = (int) ((_position * BufferWi) + (swaglen * _position * 2));
+							ylimit = (int) ((_position * BufferHt) + (swaglen * _position * 2));
+						}
+						else
+						{
+							xlimit = (int) ((_position * BufferWi) - (swaglen * (1 - _position) * 2));
+							ylimit = (int) ((_position * BufferHt) - (swaglen * (1 - _position) * 2));
+						}
 					}
 					else
 					{
-						xlimit = (int)(position <= .5 ? (position * 2 * BufferWi) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferWi) + (swaglen * position * 2));
-						ylimit = (int)(position <= .5 ? (position * 2 * BufferHt) - (swaglen * (0.5 - position) * 4) : ((position - .5) * 2 * BufferHt) + (swaglen * position * 2));
+						if (Direction == CurtainDirection.CurtainOpenClose)
+						{
+							xlimit = (int) (_position <= .5
+								? (_position * 2 * BufferWi) + (swaglen * _position * 4)
+								: ((_position - .5) * 2 * BufferWi) - (swaglen * (1 - _position) * 4));
+							ylimit = (int) (_position <= .5
+								? (_position * 2 * BufferHt) + (swaglen * _position * 4)
+								: ((_position - .5) * 2 * BufferHt) - (swaglen * (1 - _position) * 4));
+						}
+						else
+						{
+							xlimit = (int) (_position <= .5
+								? (_position * 2 * BufferWi) - (swaglen * (0.5 - _position) * 4)
+								: ((_position - .5) * 2 * BufferWi) + (swaglen * _position * 2));
+							ylimit = (int) (_position <= .5
+								? (_position * 2 * BufferHt) - (swaglen * (0.5 - _position) * 4)
+								: ((_position - .5) * 2 * BufferHt) + (swaglen * _position * 2));
+						}
 					}
 				}
+
 				int curtainDir;
-				if (Direction < CurtainDirection.CurtainOpenClose)
+				if (Direction < CurtainDirection.CurtainOpenClose || MovementType == MovementType.Position)
 				{
 					curtainDir = (int)Direction % 2;
 				}
@@ -630,6 +749,11 @@ namespace VixenModules.Effect.Curtain
 					frameBuffer.SetPixel(x, y, col);
 				}
 			}
+		}
+
+		private double CalculatePosition(double intervalPos)
+		{
+			return ScaleCurveToValue(PositionCurve.GetValue(intervalPos), 0, 100);
 		}
 	}
 }
