@@ -581,7 +581,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStrips_MouseLeave(object sender, EventArgs e)
 		{
 			if (_mouseDown) return;
-			UpdateCurrentLibrary();
 			_currentToolStrip = null;
 			TimelineControl.Focus();
 		}
