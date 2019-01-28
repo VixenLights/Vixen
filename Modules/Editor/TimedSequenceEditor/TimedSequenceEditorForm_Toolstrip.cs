@@ -496,8 +496,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					UpdateColorSettings();
 					break;
 				case "toolStripCurveLibrary":
+					//This is just plain wrong. We should keep track of what moved and do proper reordering.
+					//In order for this to happen, the library needs to have support for ordering added
+					//or the containers that use them need to maintain order.
 					_curveLibrary.BeginBulkUpdate();
-					_curveLibrary.Library.Clear();
+					_curveLibrary.Library.Clear();  
 					foreach (ToolStripButton tsb in toolStripCurveLibrary.Items)
 					{
 						_curveLibrary.AddCurve(tsb.Name, (Curve)tsb.Tag);
@@ -505,6 +508,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_curveLibrary.EndBulkUpdate();
 					break;
 				case "toolStripGradientLibrary":
+					//This is just plain wrong. We should keep track of what moved and do proper reordering.
+					//In order for this to happen, the library needs to have support for ordering added
+					//or the containers that use them need to maintain order.
 					_colorGradientLibrary.BeginBulkUpdate();
 					_colorGradientLibrary.Library.Clear();
 					foreach (ToolStripButton tsb in toolStripGradientLibrary.Items)
@@ -1047,30 +1053,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 				case "toolStripCurveLibrary":
-					_curveLibrary.EditLibraryCurve(_selectedButton.Name);
-
-					foreach (KeyValuePair<string, Curve> kvp in _curveLibrary)
+					if (_curveLibrary.EditLibraryCurve(_selectedButton.Name))
 					{
-						if (kvp.Key == _selectedButton.Name)
+						var curve = _curveLibrary.GetCurve(_selectedButton.Name); //Get the edited curve from the library.
+						if (curve != null)
 						{
-							Curve curve = kvp.Value;
 							var curveImage = curve.GenerateGenericCurveImage(new Size(_iconSize - 1, _iconSize - 1));
-
 							curveImage = DrawButtonBorder(curveImage);
 							_selectedButton.Tag = curve;
 							_selectedButton.Image = curveImage;
-							break;
 						}
 					}
 					break;
 				case "toolStripGradientLibrary":
-					_colorGradientLibrary.EditLibraryItem(_selectedButton.Name);
-					
-					foreach (KeyValuePair<string, ColorGradient> kvp in _colorGradientLibrary)
+					if (_colorGradientLibrary.EditLibraryItem(_selectedButton.Name))
 					{
-						if (kvp.Key == _selectedButton.Name)
+						ColorGradient gradient = _colorGradientLibrary.GetColorGradient(_selectedButton.Name); //Get the edited curve from the library
+						if (gradient != null)
 						{
-							ColorGradient gradient = kvp.Value;
 							var gradientImage = new Bitmap(gradient.GenerateColorGradientImage(new Size(_iconSize - 1, _iconSize - 1), false),
 								_iconSize,
 								_iconSize);
@@ -1078,7 +1078,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 							gradientImage = DrawButtonBorder(gradientImage);
 							_selectedButton.Tag = gradient;
 							_selectedButton.Image = gradientImage;
-							break;
 						}
 					}
 					break;
@@ -2350,8 +2349,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 			}
 			toolStripContainer.ResumeLayout();
-			_colorGradientLibrary.EndBulkUpdate();
-			_curveLibrary.EndBulkUpdate();
 		}
 
 		[Serializable]
