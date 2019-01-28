@@ -136,7 +136,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();
-				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged += GradientsLibrary_GradientsChanged;
 			}
 		}
 
@@ -281,7 +281,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditGradient.PerformClick();
 		}
 
-		public void GradientLibrary_GradientChanged(object sender, EventArgs e)
+		public void GradientsLibrary_GradientsChanged(object sender, EventArgs e)
 		{
 				Populate_Gradients();
 		}
@@ -482,7 +482,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged -= GradientsLibrary_GradientsChanged;
 			}
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), _gradientLibraryTextScale.ToString(CultureInfo.InvariantCulture));

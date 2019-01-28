@@ -12,7 +12,8 @@ namespace VixenModules.App.Curves
 	{
 		private CurveLibraryStaticData _data;
 		private bool _bulkUpdating;
-		public event EventHandler CurveChanged;
+		public event EventHandler CurvesChanged;
+		private HashSet<string> _bulkCurveChangeNames;
 
 		public override void Loading()
 		{
@@ -63,10 +64,15 @@ namespace VixenModules.App.Curves
 			curve.IsCurrentLibraryCurve = true;
 			curve.LibraryReferenceName = string.Empty;
 			Library[name] = curve;
-			_CurveChanged(name);
+			
 			if (!_bulkUpdating)
 			{
+				_CurvesChanged(new []{name});
 				VixenSystem.SaveModuleConfigAsync();
+			}
+			else
+			{
+				_bulkCurveChangeNames.Add(name);
 			}
 			return inLibrary;
 		}
@@ -76,10 +82,14 @@ namespace VixenModules.App.Curves
 			bool removed = _RemoveCurve(name);
 			if (removed)
 			{
-				_CurveChanged(name);
 				if (!_bulkUpdating)
 				{
+					_CurvesChanged(new[] { name });
 					VixenSystem.SaveModuleConfigAsync();
+				}
+				else
+				{
+					_bulkCurveChangeNames.Add(name);
 				}
 			}
 			return removed;
@@ -123,10 +133,9 @@ namespace VixenModules.App.Curves
 			return Library.GetEnumerator();
 		}
 
-		private void _CurveChanged(string name)
+		private void _CurvesChanged(IEnumerable<string> names)
 		{
-			if (CurveChanged != null)
-				CurveChanged(this, new CurveLibraryEventArgs(name));
+			CurvesChanged?.Invoke(this, new CurveLibraryEventArgs(names));
 		}
 
 		/// <summary>
@@ -135,6 +144,7 @@ namespace VixenModules.App.Curves
 		public void BeginBulkUpdate()
 		{
 			_bulkUpdating = true;
+			_bulkCurveChangeNames = new HashSet<string>();
 		}
 
 		/// <summary>
@@ -143,17 +153,19 @@ namespace VixenModules.App.Curves
 		public async void EndBulkUpdate()
 		{
 			_bulkUpdating = false;
+			_CurvesChanged(_bulkCurveChangeNames);
+			_bulkCurveChangeNames = null;
 			await VixenSystem.SaveModuleConfigAsync();
 		}
 	}
 
 	public class CurveLibraryEventArgs : EventArgs
 	{
-		public CurveLibraryEventArgs(string name)
+		public CurveLibraryEventArgs(IEnumerable<string> names)
 		{
-			Name = name;
+			Names = names;
 		}
 
-		public string Name { get; private set; }
+		public IEnumerable<string> Names { get; private set; }
 	}
 }

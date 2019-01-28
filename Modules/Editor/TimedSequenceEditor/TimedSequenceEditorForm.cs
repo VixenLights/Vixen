@@ -340,14 +340,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
-				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged += CurveLibrary_CurvesChanged;
 			}
 
 			_colorGradientLibrary =
 				ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;
+				_colorGradientLibrary.GradientsChanged += ColorGradientsLibrary_CurveChanged;
 			}
 
 			// Setup Toolbars and Toolstrip context menus.
@@ -760,12 +760,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_curveLibrary != null)
 			{
-				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged -= CurveLibrary_CurvesChanged;
 			}
 
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
+				_colorGradientLibrary.GradientsChanged -= ColorGradientsLibrary_CurveChanged;
 			}
 
 			//GRRR - make the color collections a library at some mouseLocation
@@ -1952,14 +1952,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
-		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
+		private void CurveLibrary_CurvesChanged(object sender, EventArgs e)
 		{
-			if (TimelineControl.Rows.SelectMany(row => row).Distinct().Any()) CheckAndRenderDirtyElementsAsync();
+			CheckAndRenderDirtyElementsAsync();
 		}
 
-		private void ColorGradientLibrary_CurveChanged(object sender, EventArgs e)
+		private void ColorGradientsLibrary_CurveChanged(object sender, EventArgs e)
 		{
-			if (TimelineControl.Rows.SelectMany(row => row).Distinct().Any()) CheckAndRenderDirtyElementsAsync();
+			CheckAndRenderDirtyElementsAsync();
 		}
 
 		private void AutoSaveEventProcessor(object sender, EventArgs e)

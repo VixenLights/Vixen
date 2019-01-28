@@ -141,7 +141,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (_curveLibrary != null)
 			{
 				Populate_Curves();
-				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged += CurveLibrary_CurvesChanged;
 			}
 		}
 
@@ -285,7 +285,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditCurve.PerformClick();
 		}
 
-		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
+		private void CurveLibrary_CurvesChanged(object sender, EventArgs e)
 		{
 				Populate_Curves();
 		}
@@ -485,7 +485,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_curveLibrary != null)
 			{
-				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged -= CurveLibrary_CurvesChanged;
 			}
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryImageScale", Name), _curveLibraryImageScale.ToString(CultureInfo.InvariantCulture));
