@@ -501,9 +501,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			UpdatePasteMenuStates();
 			LoadColorCollections();
 			
-			ColorLibraryForm.SelectionChanged += Populate_Colors;
-			CurveLibraryForm.SelectionChanged += Populate_Curves;
-			GradientLibraryForm.SelectionChanged += Populate_Gradients;
 			toolBarsToolStripMenuItemLibraries.DropDown.Closing += toolStripMenuItem_Closing;
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
@@ -1001,6 +998,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				_colorLibraryForm = new Form_ColorLibrary(TimelineControl);
+				ColorLibraryForm.SelectionChanged += Populate_Colors;
 				return _colorLibraryForm;
 			}
 		}
@@ -1017,6 +1015,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				_curveLibraryForm = new Form_CurveLibrary(TimelineControl);
+				CurveLibraryForm.SelectionChanged += Populate_Curves;
 				return _curveLibraryForm;
 			}
 		}
@@ -1033,6 +1032,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				}
 
 				_gradientLibraryForm = new Form_GradientLibrary(TimelineControl);
+				GradientLibraryForm.SelectionChanged += Populate_Gradients;
 				return _gradientLibraryForm;
 			}
 		}

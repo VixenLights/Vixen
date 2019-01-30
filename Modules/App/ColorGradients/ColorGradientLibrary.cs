@@ -156,10 +156,10 @@ namespace VixenModules.App.ColorGradients
 		/// </summary>
 		public async void EndBulkUpdate()
 		{
+			_bulkUpdating = false;
 			_GradientsChanged(_bulkGradientChangeNames);
 			_bulkGradientChangeNames = null;
 			await VixenSystem.SaveModuleConfigAsync();
-			_bulkUpdating = false;
 		}
 
 	}

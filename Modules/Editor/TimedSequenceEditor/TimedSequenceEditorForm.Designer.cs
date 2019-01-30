@@ -205,9 +205,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.deleteToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.importToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
-			this.imageSizeToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.add_RemoveLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolBarsToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageSizeToolStripMenuItemLibraries = new System.Windows.Forms.ToolStripMenuItem();
 			this.resetLibraryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripCurveLibrary = new System.Windows.Forms.ToolStrip();
 			this.toolStripGradientLibrary = new System.Windows.Forms.ToolStrip();
@@ -263,32 +263,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.imageSizeToolStripMenuItem,
             this.resetToolStripMenuItem});
 			this.contextMenuStripAll.Name = "contextMenuStripEffect";
-			this.contextMenuStripAll.Size = new System.Drawing.Size(181, 114);
+			this.contextMenuStripAll.Size = new System.Drawing.Size(170, 92);
 			this.contextMenuStripAll.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripAll_Opening);
 			// 
 			// add_RemoveContextToolStripMenuItem
 			// 
 			this.add_RemoveContextToolStripMenuItem.Name = "add_RemoveContextToolStripMenuItem";
-			this.add_RemoveContextToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.add_RemoveContextToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.add_RemoveContextToolStripMenuItem.Text = "Show/Hide Items";
 			// 
 			// toolbarsToolStripMenuItem
 			// 
 			this.toolbarsToolStripMenuItem.Name = "toolbarsToolStripMenuItem";
-			this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.toolbarsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.toolbarsToolStripMenuItem.Text = "Toolbars";
 			// 
 			// imageSizeToolStripMenuItem
 			// 
 			this.imageSizeToolStripMenuItem.Name = "imageSizeToolStripMenuItem";
-			this.imageSizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.imageSizeToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.imageSizeToolStripMenuItem.Text = "Toggle Image Size";
 			this.imageSizeToolStripMenuItem.Click += new System.EventHandler(this.imageSizeToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.resetToolStripMenuItem.Text = "Reset Toolbar";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
@@ -1210,7 +1210,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 463);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 438);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -1238,6 +1238,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripContainer.TopToolStripPanel.Controls.Add(this.toolStripGradientLibrary);
 			this.toolStripContainer.TopToolStripPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(221)))), ((int)(((byte)(221)))));
 			this.toolStripContainer.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStripContainer.TopToolStripPanel.Leave += new System.EventHandler(this.toolStripLibrary_Leave);
 			// 
 			// dockPanel
 			// 
@@ -1249,7 +1250,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(1348, 463);
+			this.dockPanel.Size = new System.Drawing.Size(1348, 438);
 			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripEffects
@@ -2076,10 +2077,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripColorLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripColorLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripColorLibrary_DragDrop);
 			this.toolStripColorLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripColorLibrary_DragEnter);
-			this.toolStripColorLibrary.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyDown);
-			this.toolStripColorLibrary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyUp);
+			this.toolStripColorLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
 			this.toolStripColorLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
-			this.toolStripColorLibrary.MouseLeave += new System.EventHandler(this.toolStrips_MouseLeave);
 			// 
 			// contextMenuStripLibraries
 			// 
@@ -2135,13 +2134,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.exportToolStripMenuItemLibraries.Text = "Export";
 			this.exportToolStripMenuItemLibraries.Click += new System.EventHandler(this.toolStripMenuItemExport_Click);
 			// 
-			// imageSizeToolStripMenuItemLibraries
-			// 
-			this.imageSizeToolStripMenuItemLibraries.Name = "imageSizeToolStripMenuItemLibraries";
-			this.imageSizeToolStripMenuItemLibraries.Size = new System.Drawing.Size(169, 22);
-			this.imageSizeToolStripMenuItemLibraries.Text = "Toggle Image Size";
-			this.imageSizeToolStripMenuItemLibraries.Click += new System.EventHandler(this.imageSizeToolStripMenuItem_Click);
-			// 
 			// add_RemoveLibraryToolStripMenuItem
 			// 
 			this.add_RemoveLibraryToolStripMenuItem.Name = "add_RemoveLibraryToolStripMenuItem";
@@ -2153,6 +2145,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolBarsToolStripMenuItemLibraries.Name = "toolBarsToolStripMenuItemLibraries";
 			this.toolBarsToolStripMenuItemLibraries.Size = new System.Drawing.Size(169, 22);
 			this.toolBarsToolStripMenuItemLibraries.Text = "Toolbars";
+			// 
+			// imageSizeToolStripMenuItemLibraries
+			// 
+			this.imageSizeToolStripMenuItemLibraries.Name = "imageSizeToolStripMenuItemLibraries";
+			this.imageSizeToolStripMenuItemLibraries.Size = new System.Drawing.Size(169, 22);
+			this.imageSizeToolStripMenuItemLibraries.Text = "Toggle Image Size";
+			this.imageSizeToolStripMenuItemLibraries.Click += new System.EventHandler(this.imageSizeToolStripMenuItem_Click);
 			// 
 			// resetLibraryToolStripMenuItem
 			// 
@@ -2172,17 +2171,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripCurveLibrary.Location = new System.Drawing.Point(403, 125);
 			this.toolStripCurveLibrary.Name = "toolStripCurveLibrary";
 			this.toolStripCurveLibrary.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStripCurveLibrary.Size = new System.Drawing.Size(111, 25);
+			this.toolStripCurveLibrary.Size = new System.Drawing.Size(42, 25);
 			this.toolStripCurveLibrary.TabIndex = 16;
 			this.toolStripCurveLibrary.Text = "Library Curve";
 			this.toolStripCurveLibrary.Visible = false;
 			this.toolStripCurveLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripCurveLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragDrop);
 			this.toolStripCurveLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripCurveLibrary_DragEnter);
-			this.toolStripCurveLibrary.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyDown);
-			this.toolStripCurveLibrary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyUp);
+			this.toolStripCurveLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
+			this.toolStripCurveLibrary.Leave += new System.EventHandler(this.toolStripLibrary_Leave);
 			this.toolStripCurveLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
-			this.toolStripCurveLibrary.MouseLeave += new System.EventHandler(this.toolStrips_MouseLeave);
 			// 
 			// toolStripGradientLibrary
 			// 
@@ -2195,17 +2193,15 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripGradientLibrary.Location = new System.Drawing.Point(441, 125);
 			this.toolStripGradientLibrary.Name = "toolStripGradientLibrary";
 			this.toolStripGradientLibrary.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStripGradientLibrary.Size = new System.Drawing.Size(111, 25);
+			this.toolStripGradientLibrary.Size = new System.Drawing.Size(42, 25);
 			this.toolStripGradientLibrary.TabIndex = 17;
 			this.toolStripGradientLibrary.Text = "Library Gradient";
 			this.toolStripGradientLibrary.Visible = false;
 			this.toolStripGradientLibrary.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
 			this.toolStripGradientLibrary.DragDrop += new System.Windows.Forms.DragEventHandler(this.toolStripGradientLibrary_DragDrop);
 			this.toolStripGradientLibrary.DragEnter += new System.Windows.Forms.DragEventHandler(this.toolStripGradientLibrary_DragEnter);
-			this.toolStripGradientLibrary.KeyDown += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyDown);
-			this.toolStripGradientLibrary.KeyUp += new System.Windows.Forms.KeyEventHandler(this.toolStripLibraries_KeyUp);
+			this.toolStripGradientLibrary.DragLeave += new System.EventHandler(this.toolStripLibrary_DragLeave);
 			this.toolStripGradientLibrary.MouseEnter += new System.EventHandler(this.toolStrips_MouseEnter);
-			this.toolStripGradientLibrary.MouseLeave += new System.EventHandler(this.toolStrips_MouseLeave);
 			// 
 			// saveFileDialog
 			// 

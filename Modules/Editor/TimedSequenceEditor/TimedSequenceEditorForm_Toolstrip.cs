@@ -38,12 +38,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private readonly string _colorFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vixen", "ColorPalette.xml");
 		private List<Color> _colors = new List<Color>();
 		private ToolStrip _currentToolStrip = null;
-		private bool _invokeUpdate;
 		private ToolStripButton _selectedButton;
 		private bool _toolStripButtonAlreadyChecked;
 		private ToolStrip _contextToolStrip;
 		private string _lastFolder;
-		
+		private bool _itemMove;
+
 		#endregion
 
 		#region Initial Sequence Editor Load
@@ -584,13 +584,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_contextToolStrip.Focus();
 		}
 
-		private void toolStrips_MouseLeave(object sender, EventArgs e)
-		{
-			if (_mouseDown) return;
-			_currentToolStrip = null;
-			TimelineControl.Focus();
-		}
-
 		private void toolStripLibraries_MouseLeave(object sender, EventArgs e)
 		{
 			_selectedButton = sender as ToolStripButton;
@@ -600,27 +593,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_selectedButton.Checked = false;
 			}
 		}
-		
-		private void toolStripLibraries_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (ModifierKeys == Keys.Alt)
-			{
-				if (_currentToolStrip == null) return;
-				foreach (ToolStripButton item in _currentToolStrip.Items)
-				{
-					item.Checked = false;
-				}
-				_selectedButton.Checked = true;
-				_contextToolStrip.AllowDrop = false;
-				_contextToolStrip.AllowItemReorder = true;
-			}
-		}
 
-		private void toolStripLibraries_KeyUp(object sender, KeyEventArgs e)
+		private void toolStripLibrary_Leave(object sender, EventArgs e)
 		{
-			_selectedButton.Owner.AllowItemReorder = false;
-			_selectedButton.Owner.AllowDrop = true;
-			UpdateCurrentLibrary();
+			if (_mouseDown) return;
+			_currentToolStrip = null;
+			TimelineControl.Focus();
 		}
 
 		void toolStripLibraries_MouseDown(object sender, MouseEventArgs e)
@@ -642,36 +620,65 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			else 
 			{
 				SelectNodeForDrawing();
-				if (ModifierKeys != Keys.Alt)
-				{
-					_selectedButton.Owner.AllowItemReorder = false;
-					_selectedButton.Owner.AllowDrop = false;
-					_invokeUpdate = true;
-					bool link = ModifierKeys == Keys.Control;
-
-					switch (_contextToolStrip.Name)
-					{
-						case "toolStripColorLibrary":
-							_selectedButton.Owner.DoDragDrop(_selectedButton.Tag, DragDropEffects.Copy);
-							break;
-						case "toolStripCurveLibrary":
-							Curve newCrve = new Curve((Curve)_selectedButton.Tag);
-							if (link) newCrve.LibraryReferenceName = _selectedButton.Name;
-							newCrve.IsCurrentLibraryCurve = false;
-							_selectedButton.Owner.DoDragDrop(newCrve, DragDropEffects.Copy);
-							break;
-						case "toolStripGradientLibrary":
-							ColorGradient newGradient = new ColorGradient((ColorGradient)_selectedButton.Tag);
-							if (link) newGradient.LibraryReferenceName = _selectedButton.Name;
-							newGradient.IsCurrentLibraryGradient = false;
-							_selectedButton.Owner.DoDragDrop(newGradient, DragDropEffects.Copy);
-							break;
-					}
-					_invokeUpdate = false;
-					_selectedButton.Owner.AllowDrop = true;
-				}
-
+				// Move a toolstrip item within the same toolstrip.
+				_itemMove = true;
+				_contextToolStrip.DoDragDrop(_selectedButton.Tag, DragDropEffects.Move);
 			}
+		}
+
+		private void toolStripLibrary_DragLeave(object sender, EventArgs e)
+		{
+			// Copy the Curve/Gradient/Color to an Effect.
+			_itemMove = false;
+			bool link = ModifierKeys == Keys.Control;
+
+			switch (_contextToolStrip.Name)
+			{
+				case "toolStripColorLibrary":
+					_selectedButton.Owner.DoDragDrop(_selectedButton.Tag, DragDropEffects.Copy);
+					break;
+				case "toolStripCurveLibrary":
+					Curve newCrve = new Curve((Curve)_selectedButton.Tag);
+					if (link) newCrve.LibraryReferenceName = _selectedButton.Name;
+					newCrve.IsCurrentLibraryCurve = false;
+					_selectedButton.Owner.DoDragDrop(newCrve, DragDropEffects.Copy);
+					break;
+				case "toolStripGradientLibrary":
+					ColorGradient newGradient = new ColorGradient((ColorGradient)_selectedButton.Tag);
+					if (link) newGradient.LibraryReferenceName = _selectedButton.Name;
+					newGradient.IsCurrentLibraryGradient = false;
+					_selectedButton.Owner.DoDragDrop(newGradient, DragDropEffects.Copy);
+					break;
+			}
+		}
+
+		private void ToolStripItem_Move(DragEventArgs e)
+		{
+			// Get destination Item index
+			int destinationIndex = GetItemIndex(e.X + _selectedButton.Width) - 1;
+			
+			if (destinationIndex < 0) destinationIndex = 0;
+			_contextToolStrip.Items.Remove(_selectedButton);
+			_contextToolStrip.Items.Insert(destinationIndex, _selectedButton);
+			UpdateCurrentLibrary();
+			_itemMove = false;
+		}
+		
+		private int GetItemIndex(int X)
+		{
+			int index = 0;
+			int selectedItemLocation = _contextToolStrip.DisplayRectangle.X + _contextToolStrip.Location.X;
+			foreach (ToolStripItem item in _contextToolStrip.Items)
+			{
+				if (selectedItemLocation < X &&
+				    selectedItemLocation + item.Size.Width > X)
+				{
+					break;
+				}
+				if (item.Visible) selectedItemLocation += item.Size.Width;
+				index++;
+			}
+			return index;
 		}
 
 		#endregion
@@ -922,7 +929,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ToolStripMenu(bool dragDrop, string newButtonName)
 		{
-			_invokeUpdate = true;
 			ToolStripButton tsb = new ToolStripButton();
 			switch (_contextToolStrip.Name)
 			{
@@ -955,7 +961,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (item.Name == newButtonName)
 						{
-							_invokeUpdate = false;
 							Populate_Curves();
 							return;
 						}
@@ -991,7 +996,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					{
 						if (item.Name == newButtonName)
 						{
-							_invokeUpdate = false;
 							Populate_Gradients();
 							return;
 						}
@@ -1027,12 +1031,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			tsb.MouseDown += toolStripLibraries_MouseDown;
 			tsb.MouseEnter += toolStripLibraries_MouseEnter;
 			tsb.MouseLeave += toolStripLibraries_MouseLeave;
-			_invokeUpdate = false;
 		}
 
 		private void toolStripMenuItemEditItem_Click(object sender, EventArgs e)
 		{
-			_invokeUpdate = true;
 			switch (_contextToolStrip.Name)
 			{
 				case "toolStripColorLibrary":
@@ -1082,12 +1084,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 					break;
 			}
-			_invokeUpdate = false;
 		}
 
 		private void toolStripMenuItemDeleteItem_Click(object sender, EventArgs e)
 		{
-			_invokeUpdate = true;
 			List<ToolStripButton> removeButtons = new List<ToolStripButton>();
 			switch (_contextToolStrip.Name)
 			{
@@ -1140,7 +1140,6 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.EndBulkUpdate();
 					break;
 			}
-			_invokeUpdate = false;
 		}
 		
 		private void imageSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1184,6 +1183,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Populate_Colors(object sender, EventArgs e)
 		{
+			_currentToolStrip = null;
 			PopulateColorLibraryToolStrip_Context();
 		}
 
@@ -1198,8 +1198,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		public void PopulateColors()
 		{
-			if (_currentToolStrip == null && !_invokeUpdate)
+			if (_currentToolStrip == null)
 			{
+				toolStripColorLibrary.SuspendLayout();
 				toolStripColorLibrary.Items.Clear();
 				foreach (Color colorItem in _colors)
 				{
@@ -1216,7 +1217,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					tsb.MouseLeave += toolStripLibraries_MouseLeave;
 					toolStripColorLibrary.Items.Add(tsb);
 				}
-
+				toolStripColorLibrary.ResumeLayout();
 			}
 		}
 
@@ -1292,7 +1293,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripColorLibrary_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(typeof(Color)) && !_invokeUpdate) e.Effect = DragDropEffects.Copy;
+			if (e.Data.GetDataPresent(typeof(Color)) && _itemMove)
+			{
+				// Move a toolstrip item within the same toolstrip.
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
+
+			if (e.Data.GetDataPresent(typeof(Color)))
+			{
+				Color col = (Color)e.Data.GetData(typeof(Color));
+				_selectedButton.Tag = col;
+				e.Effect = DragDropEffects.Copy;
+			}
 		}
 
 		private void toolStripColorLibrary_DragDrop(object sender, DragEventArgs e)
@@ -1317,6 +1330,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 				UpdateColorSettings();
 			}
+			else if (e.Effect == DragDropEffects.Move)
+			{
+				// Move a toolstrip item within the same toolstrip.
+				ToolStripItem_Move(e);
+			}
 		}
 
 		#endregion
@@ -1325,6 +1343,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Populate_Curves(object sender, EventArgs e)
 		{
+			_currentToolStrip = null;
 			PopulateCurveLibraryToolStrip_Context();
 		}
 
@@ -1335,8 +1354,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Populate_Curves()
 		{
-			if (_currentToolStrip == null && !_invokeUpdate)
+			if (_currentToolStrip == null)
 			{
+				toolStripCurveLibrary.SuspendLayout();
 				toolStripCurveLibrary.Items.Clear();
 				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
@@ -1379,6 +1399,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 
 				}
+				toolStripCurveLibrary.ResumeLayout();
 			}
 		}
 
@@ -1427,7 +1448,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (selectedToolStrip != null) _contextToolStrip = selectedToolStrip;
 			if (e.Effect == DragDropEffects.Copy)
 			{
-				_invokeUpdate = true;
+				// Copy the Curve to an Effect.
 				_currentToolStrip = null;
 				Curve c = (Curve)e.Data.GetData(typeof(Curve));
 				string newButtonName = AddCurveToLibrary(c, false);
@@ -1435,15 +1456,30 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenu(true, newButtonName);
 				_currentToolStrip = selectedToolStrip;
 			}
+			else if (e.Effect == DragDropEffects.Move)
+			{
+				// Move a toolstrip item within the same toolstrip.
+				ToolStripItem_Move(e);
+			}
 		}
 
 		private void toolStripCurveLibrary_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(typeof(Curve)) && !_invokeUpdate)
+			_contextToolStrip = sender as ToolStrip;
+
+			if (e.Data.GetDataPresent(typeof(Curve)) && _itemMove)
 			{
+				// Move a toolstrip item within the same toolstrip.
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
+			if (e.Data.GetDataPresent(typeof(Curve)))
+			{
+				// Copy the Curve to an Effect.
 				Curve c = (Curve)e.Data.GetData(typeof(Curve));
 				if (!c.IsLibraryReference)
 				{
+					_selectedButton.Tag = c;
 					e.Effect = DragDropEffects.Copy;
 					return;
 				}
@@ -1457,6 +1493,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Populate_Gradients(object sender, EventArgs e)
 		{
+			_currentToolStrip = null;
 			PopulateGradientLibraryToolStrip_Context();
 		}
 
@@ -1467,8 +1504,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void Populate_Gradients()
 		{
-			if (_currentToolStrip == null && !_invokeUpdate)
+			if (_currentToolStrip == null)
 			{
+				toolStripGradientLibrary.SuspendLayout();
 				toolStripGradientLibrary.Items.Clear();
 				using (var p = new Pen(ThemeColorTable.BorderColor, 2))
 				{
@@ -1511,6 +1549,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					}
 
 				}
+				toolStripGradientLibrary.ResumeLayout();
 			}
 		}
 
@@ -1559,7 +1598,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (selectedToolStrip != null) _contextToolStrip = selectedToolStrip;
 			if (e.Effect == DragDropEffects.Copy)
 			{
-				_invokeUpdate = true;
+				// Copy the Gradient to an Effect.
 				_currentToolStrip = null;
 				ColorGradient c = (ColorGradient)e.Data.GetData(typeof(ColorGradient));
 				string newButtonName = AddGradientToLibrary(c, false);
@@ -1567,15 +1606,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ToolStripMenu(true, newButtonName);
 				_currentToolStrip = selectedToolStrip;
 			}
+			else if (e.Effect == DragDropEffects.Move)
+			{
+				// Move a toolstrip item within the same toolstrip.
+				ToolStripItem_Move(e);
+			}
 		}
 
 		private void toolStripGradientLibrary_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(typeof(ColorGradient)) && !_invokeUpdate)
+			if (e.Data.GetDataPresent(typeof(ColorGradient)) && _itemMove)
+			{
+				// Move a toolstrip item within the same toolstrip.
+				e.Effect = DragDropEffects.Move;
+				return;
+			}
+			if (e.Data.GetDataPresent(typeof(ColorGradient)))
 			{
 				ColorGradient cg = (ColorGradient)e.Data.GetData(typeof(ColorGradient));
 				if (!cg.IsLibraryReference)
 				{
+					_selectedButton.Tag = cg;
 					e.Effect = DragDropEffects.Copy;
 					return;
 				}
