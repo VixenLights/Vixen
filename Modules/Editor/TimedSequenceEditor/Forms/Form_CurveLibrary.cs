@@ -132,12 +132,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
+			Load_Curves();
+		}
 
+		public void Load_Curves()
+		{
 			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
 			if (_curveLibrary != null)
 			{
 				Populate_Curves();
-				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged += CurveLibrary_CurvesChanged;
 			}
 		}
 
@@ -191,6 +195,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			_curveLibrary.EditLibraryCurve(listViewCurves.SelectedItems[0].Name);
+			_SelectionChanged();
 		}
 
 		private void toolStripButtonNewCurve_Click(object sender, EventArgs e)
@@ -225,6 +230,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						{
 							_curveLibrary.EditLibraryCurve(dialog.Response);
 						}
+						_SelectionChanged();
 						return false;
 					}
 
@@ -238,9 +244,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_curveLibrary.AddCurve(dialog.Response, c);
 					if (edit)
 					{
-						_curveLibrary.EditLibraryCurve(dialog.Response);	
+						_curveLibrary.EditLibraryCurve(dialog.Response);
 					}
-
+					_SelectionChanged();
 					return false;
 				}
 			}
@@ -263,6 +269,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_curveLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewCurves.SelectedItems) _curveLibrary.RemoveCurve(item.Name);
 				_curveLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 		}
 
@@ -278,9 +285,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditCurve.PerformClick();
 		}
 
-		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
+		private void CurveLibrary_CurvesChanged(object sender, EventArgs e)
 		{
 				Populate_Curves();
+		}
+
+		public event EventHandler SelectionChanged;
+
+		private void _SelectionChanged()
+		{
+			if (SelectionChanged != null)
+				SelectionChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -369,6 +384,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (ListViewItem curve in listViewCurves.Items) _curveLibrary.Library[curve.Text] = (Curve)curve.Tag;
 				_curveLibrary.EndBulkUpdate();
 				ImageSetup();
+				_SelectionChanged();
 			}
 		}
 
@@ -450,6 +466,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_curveLibrary.AddCurve(curveName, curve.Value);
 				}
 				_curveLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 			catch (Exception ex)
 			{
@@ -468,7 +485,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_curveLibrary != null)
 			{
-				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged -= CurveLibrary_CurvesChanged;
 			}
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/CurveLibraryImageScale", Name), _curveLibraryImageScale.ToString(CultureInfo.InvariantCulture));

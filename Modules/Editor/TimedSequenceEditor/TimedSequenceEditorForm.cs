@@ -164,10 +164,10 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			InitializeComponent();
 			_scaleFactor = ScalingTools.GetScaleFactor();
 			menuStrip.Renderer = new ThemeToolStripRenderer();
-
 			
 			_contextMenuStrip.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripEffect.Renderer = new ThemeToolStripRenderer();
+			contextMenuStripLibraries.Renderer = new ThemeToolStripRenderer();
 			contextMenuStripAll.Renderer = new ThemeToolStripRenderer();
 			int imageSize = (int)(16 * _scaleFactor);
 			_contextMenuStrip.ImageScalingSize = new Size(imageSize, imageSize);
@@ -183,6 +183,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			_iconSize = (int) (28*_scaleFactor);
 			_toolStripImageSize = (int)(16 * _scaleFactor);
 			toolStripEffects.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripColorLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripCurveLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
+			toolStripGradientLibrary.ImageScalingSize = new Size(_toolStripImageSize, _toolStripImageSize);
 
 			foreach (ToolStripItem toolStripItem in modeToolStripDropDownButton_SnapToStrength.DropDownItems)
 			{
@@ -216,6 +219,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			deviceToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			add_RemoveContextToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
+			add_RemoveLibraryToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing += toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing += toolStripMenuItem_Closing;
@@ -332,6 +336,19 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.waveform.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/WaveFormHeight", Name), 50);
 			TimelineControl.ruler.Height = xml.GetSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/RulerHeight", Name), 50);
 			TimelineControl.AddMarks(_sequence.LabeledMarkCollections);
+			
+			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
+			if (_curveLibrary != null)
+			{
+				_curveLibrary.CurvesChanged += CurveLibrary_CurvesChanged;
+			}
+
+			_colorGradientLibrary =
+				ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
+			if (_colorGradientLibrary != null)
+			{
+				_colorGradientLibrary.GradientsChanged += ColorGradientsLibrary_CurveChanged;
+			}
 
 			// Setup Toolbars and Toolstrip context menus.
 			InitializeToolBars();
@@ -477,25 +494,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			TimelineControl.grid.DragDrop += TimelineControlGrid_DragDrop;
 			Row.RowHeightChanged += TimeLineControl_Row_RowHeightChanged;
 
-			_curveLibrary = ApplicationServices.Get<IAppModuleInstance>(CurveLibraryDescriptor.ModuleID) as CurveLibrary;
-			if (_curveLibrary != null)
-			{
-				_curveLibrary.CurveChanged += CurveLibrary_CurveChanged;
-			}
-
-			_colorGradientLibrary =
-				ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
-			if (_colorGradientLibrary != null)
-			{
-				_colorGradientLibrary.GradientChanged += ColorGradientLibrary_CurveChanged;
-			}
-
 			LoadAvailableEffects();
 			PopulateDragBoxFilterDropDown();
 			InitUndo();
 			UpdateButtonStates();
 			UpdatePasteMenuStates();
 			LoadColorCollections();
+			
+			ColorLibraryForm.SelectionChanged += Populate_Colors;
+			CurveLibraryForm.SelectionChanged += Populate_Curves;
+			GradientLibraryForm.SelectionChanged += Populate_Gradients;
+			toolBarsToolStripMenuItemLibraries.DropDown.Closing += toolStripMenuItem_Closing;
 
 			_library = ApplicationServices.Get<IAppModuleInstance>(LipSyncMapDescriptor.ModuleID) as LipSyncMapLibrary;
 			Cursor.Current = Cursors.Default;
@@ -735,9 +744,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			pixelToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing; 
 			deviceToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			add_RemoveContextToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			add_RemoveLibraryToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarsToolStripMenuItem_Effect.DropDown.Closing -= toolStripMenuItem_Closing;
 			toolbarToolStripMenuItem.DropDown.Closing -= toolStripMenuItem_Closing;
+			ColorLibraryForm.SelectionChanged -= Populate_Colors;
+			CurveLibraryForm.SelectionChanged -= Populate_Curves;
+			GradientLibraryForm.SelectionChanged -= Populate_Gradients;
+			toolBarsToolStripMenuItemLibraries.DropDown.Closing -= toolStripMenuItem_Closing;
 			//TimelineControl.DataDropped -= timelineControl_DataDropped;
 
 			Execution.ExecutionStateChanged -= OnExecutionStateChanged;
@@ -746,12 +760,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 			if (_curveLibrary != null)
 			{
-				_curveLibrary.CurveChanged -= CurveLibrary_CurveChanged;
+				_curveLibrary.CurvesChanged -= CurveLibrary_CurvesChanged;
 			}
 
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged -= ColorGradientLibrary_CurveChanged;
+				_colorGradientLibrary.GradientsChanged -= ColorGradientsLibrary_CurveChanged;
 			}
 
 			//GRRR - make the color collections a library at some mouseLocation
@@ -1938,12 +1952,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		#region Event Handlers
 
-		private void CurveLibrary_CurveChanged(object sender, EventArgs e)
+		private void CurveLibrary_CurvesChanged(object sender, EventArgs e)
 		{
 			CheckAndRenderDirtyElementsAsync();
 		}
 
-		private void ColorGradientLibrary_CurveChanged(object sender, EventArgs e)
+		private void ColorGradientsLibrary_CurveChanged(object sender, EventArgs e)
 		{
 			CheckAndRenderDirtyElementsAsync();
 		}
