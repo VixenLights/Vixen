@@ -43,6 +43,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private ToolStrip _contextToolStrip;
 		private string _lastFolder;
 		private bool _itemMove;
+		private bool _dragValid;
 
 		#endregion
 
@@ -622,6 +623,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				SelectNodeForDrawing();
 				// Move a toolstrip item within the same toolstrip.
 				_itemMove = true;
+				_dragValid = true;
 				_contextToolStrip.DoDragDrop(_selectedButton.Tag, DragDropEffects.Move);
 			}
 		}
@@ -629,6 +631,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripLibrary_DragLeave(object sender, EventArgs e)
 		{
 			// Copy the Curve/Gradient/Color to an Effect.
+			if (!_dragValid) return;
 			_itemMove = false;
 			bool link = ModifierKeys == Keys.Control;
 
@@ -1296,16 +1299,21 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (e.Data.GetDataPresent(typeof(Color)) && _itemMove)
 			{
 				// Move a toolstrip item within the same toolstrip.
+				_dragValid = true;
 				e.Effect = DragDropEffects.Move;
 				return;
 			}
 
 			if (e.Data.GetDataPresent(typeof(Color)))
 			{
+				_dragValid = true;
 				Color col = (Color)e.Data.GetData(typeof(Color));
 				_selectedButton.Tag = col;
 				e.Effect = DragDropEffects.Copy;
 			}
+
+			_dragValid = false;
+			e.Effect = DragDropEffects.None;
 		}
 
 		private void toolStripColorLibrary_DragDrop(object sender, DragEventArgs e)
@@ -1470,6 +1478,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			if (e.Data.GetDataPresent(typeof(Curve)) && _itemMove)
 			{
 				// Move a toolstrip item within the same toolstrip.
+				_dragValid = true;
 				e.Effect = DragDropEffects.Move;
 				return;
 			}
@@ -1479,11 +1488,14 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Curve c = (Curve)e.Data.GetData(typeof(Curve));
 				if (!c.IsLibraryReference)
 				{
+					_dragValid = true;
 					_selectedButton.Tag = c;
 					e.Effect = DragDropEffects.Copy;
 					return;
 				}
 			}
+
+			_dragValid = false;
 			e.Effect = DragDropEffects.None;
 		}
 
@@ -1627,10 +1639,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (!cg.IsLibraryReference)
 				{
 					_selectedButton.Tag = cg;
+					_dragValid = true;
 					e.Effect = DragDropEffects.Copy;
 					return;
 				}
 			}
+
+			_dragValid = false;
 			e.Effect = DragDropEffects.None;
 		}
 
