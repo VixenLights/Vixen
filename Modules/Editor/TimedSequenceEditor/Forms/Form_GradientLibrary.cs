@@ -127,13 +127,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void ColorPalette_Load(object sender, EventArgs e)
 		{
+			Load_Gradients();
+		}
+
+		public void Load_Gradients()
+		{
 			_colorGradientLibrary = ApplicationServices.Get<IAppModuleInstance>(ColorGradientLibraryDescriptor.ModuleID) as ColorGradientLibrary;
 			if (_colorGradientLibrary != null)
 			{
 				Populate_Gradients();
-				_colorGradientLibrary.GradientChanged += GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged += GradientsLibrary_GradientsChanged;
 			}
-			
 		}
 
 		#endregion
@@ -186,6 +190,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				return;
 
 			_colorGradientLibrary.EditLibraryItem(listViewGradients.SelectedItems[0].Name);
+			_SelectionChanged();
 		}
 
 		private void toolStripButtonNewGradient_Click(object sender, EventArgs e)
@@ -219,8 +224,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 						_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 						if (edit)
 						{
-							_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+							_colorGradientLibrary.EditLibraryItem(dialog.Response);
 						}
+						_SelectionChanged();
 						return false;
 					}
 
@@ -234,8 +240,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.AddColorGradient(dialog.Response, cg);
 					if (edit)
 					{
-						_colorGradientLibrary.EditLibraryItem(dialog.Response);	
+						_colorGradientLibrary.EditLibraryItem(dialog.Response);
 					}
+					_SelectionChanged();
 					return false;
 				}
 			}
@@ -258,6 +265,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_colorGradientLibrary.BeginBulkUpdate();
 				foreach (ListViewItem item in listViewGradients.SelectedItems) _colorGradientLibrary.RemoveColorGradient(item.Name);
 				_colorGradientLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 		}
 
@@ -273,9 +281,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				toolStripButtonEditGradient.PerformClick();
 		}
 
-		public void GradientLibrary_GradientChanged(object sender, EventArgs e)
+		public void GradientsLibrary_GradientsChanged(object sender, EventArgs e)
 		{
 				Populate_Gradients();
+		}
+
+		public event EventHandler SelectionChanged;
+
+		private void _SelectionChanged()
+		{
+			if (SelectionChanged != null)
+				SelectionChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
@@ -364,6 +380,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				foreach (ListViewItem gradient in listViewGradients.Items) _colorGradientLibrary.Library[gradient.Text] = (ColorGradient)gradient.Tag;
 				_colorGradientLibrary.EndBulkUpdate();
 				ImageSetup();
+
+				_SelectionChanged();
 			}
 		}
 
@@ -446,6 +464,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					_colorGradientLibrary.AddColorGradient(gradientName, gradient.Value);
 				}
 				_colorGradientLibrary.EndBulkUpdate();
+				_SelectionChanged();
 			}
 			catch (Exception ex)
 			{
@@ -463,7 +482,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		{
 			if (_colorGradientLibrary != null)
 			{
-				_colorGradientLibrary.GradientChanged -= GradientLibrary_GradientChanged;
+				_colorGradientLibrary.GradientsChanged -= GradientsLibrary_GradientsChanged;
 			}
 			var xml = new XMLProfileSettings();
 			xml.PutSetting(XMLProfileSettings.SettingType.AppSettings, string.Format("{0}/GradientLibraryTextScale", Name), _gradientLibraryTextScale.ToString(CultureInfo.InvariantCulture));
