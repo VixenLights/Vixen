@@ -22,6 +22,7 @@ using Vixen.Sys.State;
 using VixenModules.App.ColorGradients;
 using VixenModules.App.Curves;
 using ZedGraph;
+using Action = System.Action;
 using Size = System.Drawing.Size;
 using Timer = System.Timers.Timer;
 
