@@ -494,6 +494,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color Per Step.
+        /// </summary>
+        internal static string ColorPerStep {
+            get {
+                return ResourceManager.GetString("ColorPerStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Colors.
         /// </summary>
         internal static string Colors {

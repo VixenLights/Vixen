@@ -61,6 +61,9 @@ namespace VixenModules.Effect.Dissolve
 		[DataMember]
 		public bool DirectionsTogether { get; set; }
 
+		[DataMember]
+		public bool ColorPerStep { get; set; }
+
 		public DissolveData()
 		{
 			Colors = new List<GradientLevelPair> {new GradientLevelPair(Color.White,CurveType.Flat100) };
@@ -76,6 +79,7 @@ namespace VixenModules.Effect.Dissolve
 			EnableDepth = false;
 			BothDirections = false;
 			DirectionsTogether = false;
+			ColorPerStep = true;
 		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
@@ -97,7 +101,8 @@ namespace VixenModules.Effect.Dissolve
 	            DepthOfEffect = DepthOfEffect,
 	            EnableDepth = EnableDepth,
 	            BothDirections = BothDirections,
-	            DirectionsTogether = DirectionsTogether
+	            DirectionsTogether = DirectionsTogether,
+	            ColorPerStep = ColorPerStep
 			};
 			return result;
 		}
