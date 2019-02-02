@@ -2333,9 +2333,39 @@ namespace Common.Resources.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap paste_invert {
+            get {
+                object obj = ResourceManager.GetObject("paste_invert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap paste_marks {
+            get {
+                object obj = ResourceManager.GetObject("paste_marks", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap paste_plain {
             get {
                 object obj = ResourceManager.GetObject("paste_plain", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap paste_special {
+            get {
+                object obj = ResourceManager.GetObject("paste_special", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

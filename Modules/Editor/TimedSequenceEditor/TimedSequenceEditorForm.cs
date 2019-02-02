@@ -3068,6 +3068,17 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				_mPrevPlaybackEnd = TimelineControl.PlaybackEndTime;
 			}
 		}
+
+		private void editToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		{
+			UpdatePasteMenuStates();
+		}
+
+		private void toolStripEdit_MouseEnter(object sender, EventArgs e)
+		{
+			UpdatePasteMenuStates();
+		}
+
 		#endregion
 
 		#region Events
@@ -3348,13 +3359,48 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void UpdatePasteMenuStates()
 		{
-			editToolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = ClipboardHasData();
+			editToolStripButton_Paste.Enabled = toolStripMenuItem_Paste.Enabled = GetClipboardCount() > 0;
+			editToolStripButton_PasteVisibleMarks.Visible = toolStripMenuItem_PasteToMarks.Enabled = GetMarksPresent() && GetClipboardCount() > 0;
+			editToolStripButton_PasteInvert.Visible = toolStripMenuItem_PasteInvert.Enabled = GetClipboardCount() > 1;
+			editToolStripButton_PasteDropDown.Enabled = toolStripMenuItem_PasteSpecial.Enabled =
+			toolStripMenuItem_PasteToMarks.Enabled || toolStripMenuItem_PasteInvert.Enabled;
 		}
 
 		private bool ClipboardHasData()
 		{
 			IDataObject dataObject = Clipboard.GetDataObject();
 			return dataObject != null && dataObject.GetDataPresent(ClipboardFormatName.Name);
+		}
+
+		private int GetClipboardCount()
+		{
+			// Gets number of Effects on the clipboard, used to determine which paste options will be enabled.
+			IDataObject dataObject = Clipboard.GetDataObject();
+			if (dataObject.GetDataPresent(ClipboardFormatName.Name))
+			{
+				if (dataObject.GetData(ClipboardFormatName.Name) is TimelineElementsClipboardData data)
+					return data.EffectModelCandidates.Count;
+			}
+			return 0;
+		}
+
+		private bool GetMarksPresent()
+		{
+			// Checks if there are any visible marks that are past the mouse click position.
+			bool visibleMarks = false;
+			TimeSpan pasteTime = _timeLineGlobalStateManager.CursorPosition;
+			foreach (var mc in _sequence.LabeledMarkCollections)
+			{
+				// Only continue processing visible Mark collections while no mark is found after the mouse click position.
+				if (!mc.IsVisible || visibleMarks) continue;
+				foreach (IMark mark in mc.Marks)
+				{
+					if (pasteTime > mark.StartTime) continue;
+					visibleMarks = true;
+					break; // We only need at least one mark past the mouse pointer to continue looping so break to save time.
+				}
+			}
+			return visibleMarks;
 		}
 
 		private void UpdateButtonStates()
@@ -4768,7 +4814,8 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				data = dataObject.GetData(ClipboardFormatName.Name) as TimelineElementsClipboardData;
 			}
-			
+
+			List<int> index = new List<int>();
 			List<TimeSpan> markStartTimes = new List<TimeSpan>();
 			List<KeyValuePair<EffectModelCandidate, int>> effects;
 			switch (PastingMode)
@@ -4807,6 +4854,13 @@ namespace VixenModules.Editor.TimedSequenceEditor
 					markStartTimes.Sort();
 					break;
 				}
+				case PastingMode.Invert:
+					foreach (KeyValuePair<EffectModelCandidate, int> order in data.EffectModelCandidates)
+					{
+						index.Add(data.EffectModelCandidates.Last().Value - order.Value);
+					}
+					effects = data.EffectModelCandidates.ToList();
+					break;
 				default:
 					// This is the standard paste
 					effects = data.EffectModelCandidates.ToList();
@@ -4822,18 +4876,23 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			List<EffectNode> nodesToAdd = new List<EffectNode>();
 			foreach (KeyValuePair<EffectModelCandidate, int> kvp in effects)
 			{
-				if (PastingMode == PastingMode.VisibleMarks)
-				{
-					// now grab the start time of the next mark.
-					if (result == markStartTimes.Count) break; // will break if there are more effects then there are marks.
-					pasteTime = markStartTimes[result];
-				}
-
 				EffectModelCandidate effectModelCandidate = kvp.Key;
 				int relativeRow = kvp.Value;
+				TimeSpan targetTime = effectModelCandidate.StartTime - offset + pasteTime;
+				switch (PastingMode)
+				{
+					case PastingMode.VisibleMarks:
+						// now grab the start time of the next mark.
+						if (result >= markStartTimes.Count) break; // will break if there are more effects then there are marks.
+						targetTime = markStartTimes[result];
+						break;
+					case PastingMode.Invert:
+						relativeRow = index[result];
+						break;
+				}
+				if (PastingMode == PastingMode.VisibleMarks && result >= markStartTimes.Count) break;
 
 				int targetRowIndex = topTargetRoxIndex + relativeRow;
-				TimeSpan targetTime = PastingMode != PastingMode.Default ? pasteTime : effectModelCandidate.StartTime - offset + pasteTime;
 				if (targetTime > TimelineControl.grid.TotalTime)
 				{
 					continue;

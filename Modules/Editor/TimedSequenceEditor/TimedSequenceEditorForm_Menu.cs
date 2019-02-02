@@ -154,16 +154,27 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
 		{
 			PastingMode = PastingMode.Default;
-			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);
+			PasteEffects();
+		}
+
+		private void toolStripMenuItem_PasteInvert_Click(object sender, EventArgs e)
+		{
+			PastingMode = PastingMode.Invert;
+			PasteEffects();
 		}
 
 		private void toolStripMenuItem_PasteToMarks_Click(object sender, EventArgs e)
 		{
 			PastingMode = PastingMode.VisibleMarks;
-			ClipboardPaste(_timeLineGlobalStateManager.CursorPosition);
+			PasteEffects();
 		}
-		
+
+		private void PasteEffects()
+		{
+			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
+			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);
+		}
+
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (_undoMgr.NumUndoable > 0)

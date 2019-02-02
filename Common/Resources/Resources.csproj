@@ -380,6 +380,9 @@
     <None Include="Resources\TimingSpeed_350.png" />
     <None Include="Resources\TimingSpeed_250.png" />
     <None Include="Resources\TimingSpeed.png" />
+    <None Include="Resources\paste_invert.png" />
+    <None Include="Resources\paste_special.png" />
+    <None Include="Resources\paste_marks.png" />
     <Content Include="table_chart_left.png" />
     <Resource Include="folder_open.png" />
     <None Include="hourglass_link.png" />

@@ -59,6 +59,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem_Paste = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_PasteSpecial = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_PasteInvert = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem_PasteToMarks = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -175,6 +178,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.editToolStripButton_Cut = new System.Windows.Forms.ToolStripButton();
 			this.editToolStripButton_Copy = new System.Windows.Forms.ToolStripButton();
 			this.editToolStripButton_Paste = new System.Windows.Forms.ToolStripButton();
+			this.editToolStripButton_PasteDropDown = new System.Windows.Forms.ToolStripDropDownButton();
+			this.editToolStripButton_PasteInvert = new System.Windows.Forms.ToolStripMenuItem();
+			this.editToolStripButton_PasteVisibleMarks = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMode = new System.Windows.Forms.ToolStrip();
 			this.modeToolStripButton_DrawMode = new System.Windows.Forms.ToolStripButton();
 			this.modeToolStripButton_SelectionMode = new System.Windows.Forms.ToolStripButton();
@@ -553,6 +559,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.toolStripMenuItem_Cut,
             this.toolStripMenuItem_Copy,
             this.toolStripMenuItem_Paste,
+            this.toolStripMenuItem_PasteSpecial,
             this.toolStripSeparator8,
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
@@ -567,6 +574,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
+			this.editToolStripMenuItem.DropDownOpening += new System.EventHandler(this.editToolStripMenuItem_DropDownOpening);
 			// 
 			// addEffectToolStripMenuItem
 			// 
@@ -610,6 +618,32 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripMenuItem_Paste.Size = new System.Drawing.Size(215, 22);
 			this.toolStripMenuItem_Paste.Text = "Paste";
 			this.toolStripMenuItem_Paste.Click += new System.EventHandler(this.toolStripMenuItem_Paste_Click);
+			// 
+			// toolStripMenuItem_PasteSpecial
+			// 
+			this.toolStripMenuItem_PasteSpecial.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_PasteInvert,
+            this.toolStripMenuItem_PasteToMarks});
+			this.toolStripMenuItem_PasteSpecial.Enabled = false;
+			this.toolStripMenuItem_PasteSpecial.Name = "toolStripMenuItem_PasteSpecial";
+			this.toolStripMenuItem_PasteSpecial.Size = new System.Drawing.Size(215, 22);
+			this.toolStripMenuItem_PasteSpecial.Text = "Paste Special";
+			// 
+			// toolStripMenuItem_PasteInvert
+			// 
+			this.toolStripMenuItem_PasteInvert.Enabled = false;
+			this.toolStripMenuItem_PasteInvert.Name = "toolStripMenuItem_PasteInvert";
+			this.toolStripMenuItem_PasteInvert.Size = new System.Drawing.Size(143, 22);
+			this.toolStripMenuItem_PasteInvert.Text = "Invert";
+			this.toolStripMenuItem_PasteInvert.Click += new System.EventHandler(this.toolStripMenuItem_PasteInvert_Click);
+			// 
+			// toolStripMenuItem_PasteToMarks
+			// 
+			this.toolStripMenuItem_PasteToMarks.Enabled = false;
+			this.toolStripMenuItem_PasteToMarks.Name = "toolStripMenuItem_PasteToMarks";
+			this.toolStripMenuItem_PasteToMarks.Size = new System.Drawing.Size(143, 22);
+			this.toolStripMenuItem_PasteToMarks.Text = "Visible Marks";
+			this.toolStripMenuItem_PasteToMarks.Click += new System.EventHandler(this.toolStripMenuItem_PasteToMarks_Click);
 			// 
 			// toolStripSeparator8
 			// 
@@ -1210,7 +1244,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			// 
 			this.toolStripContainer.ContentPanel.Controls.Add(this.dockPanel);
 			this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(4);
-			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 438);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(1348, 463);
 			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer.LeftToolStripPanelVisible = false;
 			this.toolStripContainer.Location = new System.Drawing.Point(0, 24);
@@ -1250,7 +1284,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.dockPanel.Location = new System.Drawing.Point(0, 0);
 			this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
 			this.dockPanel.Name = "dockPanel";
-			this.dockPanel.Size = new System.Drawing.Size(1348, 438);
+			this.dockPanel.Size = new System.Drawing.Size(1348, 463);
 			this.dockPanel.TabIndex = 13;
 			// 
 			// toolStripEffects
@@ -1711,14 +1745,16 @@ namespace VixenModules.Editor.TimedSequenceEditor
             this.editToolStripButton_Redo,
             this.editToolStripButton_Cut,
             this.editToolStripButton_Copy,
-            this.editToolStripButton_Paste});
+            this.editToolStripButton_Paste,
+            this.editToolStripButton_PasteDropDown});
 			this.toolStripEdit.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 			this.toolStripEdit.Location = new System.Drawing.Point(3, 50);
 			this.toolStripEdit.Name = "toolStripEdit";
-			this.toolStripEdit.Size = new System.Drawing.Size(222, 25);
+			this.toolStripEdit.Size = new System.Drawing.Size(266, 25);
 			this.toolStripEdit.TabIndex = 17;
 			this.toolStripEdit.Text = "Edit";
 			this.toolStripEdit.EndDrag += new System.EventHandler(this.toolStrip_EndDrag);
+			this.toolStripEdit.MouseEnter += new System.EventHandler(this.toolStripEdit_MouseEnter);
 			// 
 			// editToolStripButton_Undo
 			// 
@@ -1776,6 +1812,35 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.editToolStripButton_Paste.Tag = "Paste";
 			this.editToolStripButton_Paste.Text = "Paste";
 			this.editToolStripButton_Paste.Click += new System.EventHandler(this.toolStripMenuItem_Paste_Click);
+			// 
+			// editToolStripButton_PasteDropDown
+			// 
+			this.editToolStripButton_PasteDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.editToolStripButton_PasteDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripButton_PasteInvert,
+            this.editToolStripButton_PasteVisibleMarks});
+			this.editToolStripButton_PasteDropDown.Enabled = false;
+			this.editToolStripButton_PasteDropDown.Image = ((System.Drawing.Image)(resources.GetObject("editToolStripButton_PasteDropDown.Image")));
+			this.editToolStripButton_PasteDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.editToolStripButton_PasteDropDown.Name = "editToolStripButton_PasteDropDown";
+			this.editToolStripButton_PasteDropDown.Size = new System.Drawing.Size(13, 22);
+			this.editToolStripButton_PasteDropDown.Tag = "Paste";
+			this.editToolStripButton_PasteDropDown.ToolTipText = "Paste Special";
+			this.editToolStripButton_PasteDropDown.DropDownOpened += new System.EventHandler(this.editToolStripMenuItem_DropDownOpening);
+			// 
+			// editToolStripButton_PasteInvert
+			// 
+			this.editToolStripButton_PasteInvert.Name = "editToolStripButton_PasteInvert";
+			this.editToolStripButton_PasteInvert.Size = new System.Drawing.Size(187, 22);
+			this.editToolStripButton_PasteInvert.Text = "Paste - Invert";
+			this.editToolStripButton_PasteInvert.Click += new System.EventHandler(this.toolStripMenuItem_PasteInvert_Click);
+			// 
+			// editToolStripButton_PasteVisibleMarks
+			// 
+			this.editToolStripButton_PasteVisibleMarks.Name = "editToolStripButton_PasteVisibleMarks";
+			this.editToolStripButton_PasteVisibleMarks.Size = new System.Drawing.Size(187, 22);
+			this.editToolStripButton_PasteVisibleMarks.Text = "Paste - Visible Mark/s";
+			this.editToolStripButton_PasteVisibleMarks.Click += new System.EventHandler(this.toolStripMenuItem_PasteToMarks_Click);
 			// 
 			// toolStripMode
 			// 
@@ -2070,7 +2135,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripColorLibrary.Location = new System.Drawing.Point(6, 125);
 			this.toolStripColorLibrary.Name = "toolStripColorLibrary";
 			this.toolStripColorLibrary.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStripColorLibrary.Size = new System.Drawing.Size(42, 25);
+			this.toolStripColorLibrary.Size = new System.Drawing.Size(111, 25);
 			this.toolStripColorLibrary.TabIndex = 15;
 			this.toolStripColorLibrary.Text = "Library Color";
 			this.toolStripColorLibrary.Visible = false;
@@ -2171,7 +2236,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripCurveLibrary.Location = new System.Drawing.Point(403, 125);
 			this.toolStripCurveLibrary.Name = "toolStripCurveLibrary";
 			this.toolStripCurveLibrary.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStripCurveLibrary.Size = new System.Drawing.Size(42, 25);
+			this.toolStripCurveLibrary.Size = new System.Drawing.Size(111, 25);
 			this.toolStripCurveLibrary.TabIndex = 16;
 			this.toolStripCurveLibrary.Text = "Library Curve";
 			this.toolStripCurveLibrary.Visible = false;
@@ -2193,7 +2258,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			this.toolStripGradientLibrary.Location = new System.Drawing.Point(441, 125);
 			this.toolStripGradientLibrary.Name = "toolStripGradientLibrary";
 			this.toolStripGradientLibrary.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStripGradientLibrary.Size = new System.Drawing.Size(42, 25);
+			this.toolStripGradientLibrary.Size = new System.Drawing.Size(111, 25);
 			this.toolStripGradientLibrary.TabIndex = 17;
 			this.toolStripGradientLibrary.Text = "Library Gradient";
 			this.toolStripGradientLibrary.Visible = false;
@@ -2471,5 +2536,11 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		private System.Windows.Forms.ToolStripMenuItem add_RemoveLibraryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem resetLibraryToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem imageSizeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_PasteSpecial;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_PasteInvert;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_PasteToMarks;
+		private System.Windows.Forms.ToolStripDropDownButton editToolStripButton_PasteDropDown;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteInvert;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripButton_PasteVisibleMarks;
 	}
 }
