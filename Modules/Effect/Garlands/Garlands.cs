@@ -26,6 +26,7 @@ namespace VixenModules.Effect.Garlands
 		{
 			EnableTargetPositioning(true, true);
 			_data = new GarlandsData();
+			InitAllAttributes();
 		}
 
 		public override bool IsDirty
@@ -234,6 +235,13 @@ namespace VixenModules.Effect.Garlands
 				UpdateAttributes();
 				IsDirty = true;
 			}
+		}
+
+		private void InitAllAttributes()
+		{
+			UpdateStringOrientationAttributes(true);
+			UpdateMovementTypeAttribute(false);
+			TypeDescriptor.Refresh(this);
 		}
 
 		protected override EffectTypeModuleData EffectModuleData
