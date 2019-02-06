@@ -18,6 +18,7 @@ using Vixen.Services;
 using Vixen.Sys;
 using VixenModules.Analysis.BeatsAndBars;
 using VixenModules.App.ColorGradients;
+using VixenModules.Editor.EffectEditor.Controls;
 using VixenModules.Property.Face;
 using VixenModules.Sequence.Timed;
 using WeifenLuo.WinFormsUI.Docking;
@@ -143,12 +144,20 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void toolStripMenuItem_Cut_Click(object sender, EventArgs e)
 		{
-			ClipboardCut();
+			if (!InLineCurveGradient.EffectEditorCopyPaste)
+			{
+				ClipboardCut();
+			}
+			InLineCurveGradient.EffectEditorCopyPaste = false;
 		}
 
 		private void toolStripMenuItem_Copy_Click(object sender, EventArgs e)
 		{
-			ClipboardCopy();
+			if (!InLineCurveGradient.EffectEditorCopyPaste)
+			{
+				ClipboardCopy();
+			}
+			InLineCurveGradient.EffectEditorCopyPaste = false;
 		}
 
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
@@ -171,8 +180,12 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		private void PasteEffects()
 		{
-			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
-			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);
+			if (!InLineCurveGradient.EffectEditorCopyPaste)
+			{
+				Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
+				ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);
+			}
+			InLineCurveGradient.EffectEditorCopyPaste = false;
 		}
 
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
