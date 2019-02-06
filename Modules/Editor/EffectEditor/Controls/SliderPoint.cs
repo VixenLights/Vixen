@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using VixenModules.App.Curves;
+using ZedGraph;
 
 namespace VixenModules.Editor.EffectEditor.Controls
 {
@@ -351,5 +353,12 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 			return 0;
 		}
+	}
+
+	public abstract class InLineCurveGradient
+	{
+		public static PointPair CurvePointCopyPaste;
+		public static Curve CurveCopyPaste;
+		public static bool EffectEditorCopyPaste;
 	}
 }

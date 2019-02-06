@@ -28,6 +28,10 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private bool _isMouseDown;
 		private Curve _holdValue;
+		private PointPair _curvePoint;
+		private Curve _curve;
+		private int _curveIndex;
+
 
 		private const double DragTolerance = 2.0;
 		private const double DistanceTolerance = 8.0;
@@ -201,12 +205,72 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		#region Base Class Overrides
 
+		protected override void OnKeyDown( KeyEventArgs e)
+		{
+			// Used for copy and pasting of Curves and Curve nodes.
+			base.OnKeyDown(e);
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+			{
+				switch (e.Key)
+				{
+					case Key.C:
+						if (Cursor == Cursors.Cross)
+						{
+							// Copies the node that the user is hovering over.
+							InLineCurveGradient.CurvePointCopyPaste = _curvePoint;
+							InLineCurveGradient.CurveCopyPaste = null;
+						}
+						else
+						{
+							// Copies the entire Curve if mouse is not over a Curve node.
+							InLineCurveGradient.CurveCopyPaste = _curve;
+							InLineCurveGradient.CurvePointCopyPaste = null;
+						}
+						// Ensures the Timeline Copy and Paste is not done due to using the Ctrl + C or V.
+						InLineCurveGradient.EffectEditorCopyPaste = true;
+						break;
+					case Key.V:
+						if (InLineCurveGradient.CurveCopyPaste == null)
+						{
+							Curve curve = GetCurveValue();
+							if (Cursor == Cursors.Cross)
+							{
+								// If mouse is over a node then only paste the Y point so it will adjust the selected points height value.
+								curve.Points[_curveIndex].Y = InLineCurveGradient.CurvePointCopyPaste.Y;
+								UpdateImage(curve);
+							}
+							else
+							{
+								// If mouse is not over a Node then create a new node based on copied Point (X and Y).
+								// Only do this if there is no node already in the destination position.
+								foreach (PointPair point in curve.Points)
+								{
+									if (Dist(InLineCurveGradient.CurvePointCopyPaste, point) < DistanceTolerance - 3) return;
+								}
+								AddPoint(InLineCurveGradient.CurvePointCopyPaste);
+								SetCurveValue(_holdValue);
+							}
+						}
+						else
+						{
+							// This will paste the entire copied curve.
+							SetCurveValue(InLineCurveGradient.CurveCopyPaste);
+						}
+						// Ensures the Timeline Copy and Paste is not done due to using the Ctrl + C or V.
+						InLineCurveGradient.EffectEditorCopyPaste = true;
+						break;
+				}
+			}
+
+		}
+
 		protected override void OnMouseEnter(MouseEventArgs e)
 		{
 			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0 && !GetCurveValue().IsLibraryReference)
 			{
 				Canvas.Visibility = Visibility.Visible;
 			}
+			Focus();
 		}
 
 		protected override void OnMouseLeave(MouseEventArgs e)
@@ -252,6 +316,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 		{
 			base.OnMouseMove(e);
 			var curve = GetCurveValue();
+			_curve = curve;
 			if (curve == null || curve.IsLibraryReference) return;
 
 			if ((Keyboard.Modifiers & (ModifierKeys.Shift)) != 0)
@@ -263,7 +328,7 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				Canvas.Visibility = Visibility.Collapsed;
 			}
 
-			Point position = e.GetPosition(this);
+			var position = e.GetPosition(this);
 			Vector vector = position - _dragStartPoint;
 
 			if (_isMouseDown)
@@ -310,6 +375,9 @@ namespace VixenModules.Editor.EffectEditor.Controls
 				}
 				else if (Dist(point, curve.Points[index]) < DistanceTolerance)
 				{
+					_curveIndex = index;
+					_curvePoint = curve.Points[index];
+					_curve = curve;
 					Cursor = Cursors.Cross;
 				}
 				else
@@ -504,8 +572,16 @@ namespace VixenModules.Editor.EffectEditor.Controls
 
 		private void AddPoint(Point mousePosition)
 		{
-			var point = TranslateMouseLocation(mousePosition);
+			CreatePoint(TranslateMouseLocation(mousePosition));
+		}
 
+		private void AddPoint(PointPair pastePosition)
+		{
+			CreatePoint(pastePosition);
+		}
+
+		private void CreatePoint(PointPair point)
+		{
 			var points = GetCurveValue().Points.Clone();
 
 			points.Add(EnforcePointBounds(point));
