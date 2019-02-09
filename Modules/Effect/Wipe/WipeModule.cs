@@ -498,6 +498,23 @@ namespace VixenModules.Effect.Wipe
 									result.OffsetAllCommandsByTime(effectTime);
 									//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
 									//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
+
+									if (WipeOff && count == 0)
+									{
+										foreach (var effectIntent in result.FirstOrDefault().Value)
+										{
+											_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors));
+										}
+									}
+
+									if (WipeOn && count == PassCount - 1)
+									{
+										foreach (var effectIntent in result.FirstOrDefault().Value)
+										{
+											_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors));
+										}
+									}
+
 									_elementData.Add(result);
 								}
 							}
