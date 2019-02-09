@@ -51,7 +51,7 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public bool WipeOff { get; set; }
-		
+
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
 			return (WipeData)MemberwiseClone();

@@ -84,7 +84,7 @@ namespace VixenModules.Effect.Wipe
 								return 1;
 						})
 						.Distinct();
-					RenderNonBurst(tokenSource, renderNodes);
+					RenderBasicDirection(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Down:
 
@@ -120,7 +120,7 @@ namespace VixenModules.Effect.Wipe
 								return 1;
 						})
 						.Distinct();
-					RenderNonBurst(tokenSource, renderNodes);
+					RenderBasicDirection(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Right:
 
@@ -156,7 +156,7 @@ namespace VixenModules.Effect.Wipe
 								return 1;
 						})
 						.Distinct();
-					RenderNonBurst(tokenSource, renderNodes);
+					RenderBasicDirection(tokenSource, renderNodes);
 					break;
 				case WipeDirection.Left:
 
@@ -189,16 +189,15 @@ namespace VixenModules.Effect.Wipe
 							return 1;
 						})
 						.Distinct();
-					RenderNonBurst(tokenSource, renderNodes);
+					RenderBasicDirection(tokenSource, renderNodes);
 					break;
-				case WipeDirection.Out:
-				case WipeDirection.In:
-					RenderBurst(tokenSource, _data.Direction);
+				default:
+					RenderAdvancedDirection(tokenSource);
 					break;
 			}
 		}
 
-		private void RenderNonBurst(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
+		private void RenderBasicDirection(CancellationTokenSource tokenSource, IEnumerable<IGrouping<int, ElementNode>> renderNodes)
 		{
 			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
@@ -376,32 +375,25 @@ namespace VixenModules.Effect.Wipe
 			}
 		}
 
-		private void RenderBurst(CancellationTokenSource tokenSource, WipeDirection direction)
+		private void RenderAdvancedDirection(CancellationTokenSource tokenSource)
 		{
-			switch (direction)
-			{
+			List<Tuple<ElementNode, int, int, int>> burstNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
+				.Select(s =>
+				{
+					var prop = s.Properties.Get(LocationDescriptor._typeId);
+					if (prop != null)
+					{
+						return new Tuple<ElementNode, int, int, int>(s, ((LocationData) prop.ModuleData).X,
+							((LocationData) prop.ModuleData).Y, ((LocationData) prop.ModuleData).Z);
 
-				case WipeDirection.In:
-				case WipeDirection.Out:
-					break;
-				default:
-					throw new InvalidOperationException("the RenderBurst method should only be called for Wipe Directions In and Out");
-					break;
-			}
-			var burstNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-													   .Select(s =>
-													   {
-														   var prop = s.Properties.Get(LocationDescriptor._typeId);
-														   if (prop != null)
-														   {
-															   return new Tuple<ElementNode, int, int, int>(s, ((LocationData)prop.ModuleData).X, ((LocationData)prop.ModuleData).Y, ((LocationData)prop.ModuleData).Z);
+					}
 
-														   }
-														   return new Tuple<ElementNode, int, int, int>(null, -1, -1, -1);
-														   //return null
-													   })
-													   .Where(s => s.Item2 > 0) // Ignore the pseudo null values
-													   .ToList();
+					return new Tuple<ElementNode, int, int, int>(null, -1, -1, -1);
+					//return null
+				})
+				.Where(s => s.Item2 > 0) // Ignore the pseudo null values
+				.ToList();
+
 			if (!burstNodes.Any()) return;
 			var maxX = burstNodes.Max(m => m.Item2);
 			var maxY = burstNodes.Max(m => m.Item3);
@@ -409,56 +401,140 @@ namespace VixenModules.Effect.Wipe
 			var minX = burstNodes.Min(m => m.Item2);
 			var minY = burstNodes.Min(m => m.Item3);
 
-			var Steps = (int)(Math.Max(maxX - minX, maxY - minY) / 2);
+			int xMid = (maxX - minX) / 2;
+			int yMid = (maxY - minY) / 2;
+
+			Point centerPoint = new Point((maxX - minX) / 2 + minX, (maxY - minY) / 2 + minY);
+
+			int steps;
+			switch (Direction)
+			{
+				case WipeDirection.CircleIn:
+				case WipeDirection.CircleOut:
+				case WipeDirection.DiagonalIn:
+				case WipeDirection.DiagonalOut:
+					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) / 1.4);
+					break;
+				case WipeDirection.DownRight:
+				case WipeDirection.DownLeft:
+				case WipeDirection.UpRight:
+				case WipeDirection.UpLeft:
+					steps = (int) (DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) * 2);
+					break;
+				default:
+					steps = (int) (Math.Max(maxX - minX, maxY - minY) / 2);
+					break;
+			}
 
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
 
-			for (int i = 0; i < Steps; i++)
+			for (int i = 0; i < steps; i++)
 			{
 				List<ElementNode> elements = new List<ElementNode>();
-
-				var xNodes = burstNodes.Where(x =>
-						  (x.Item2 == minX + i || x.Item2 == maxX - i)
-						  )
-						  .Select(s => s.Item1).ToList();
-
-				var yNodes = burstNodes.Where(x =>
-						 (
-						 x.Item3 == minY + i ||
-						 x.Item3 == maxY - i)
-						 )
-						 .Select(s => s.Item1).ToList();
-				yNodes.RemoveAll(s =>
+				switch (Direction)
 				{
-					var prop = s.Properties.Get(LocationDescriptor._typeId);
-					if (prop != null)
-					{
-						return ((LocationData)prop.ModuleData).X < minX + i || ((LocationData)prop.ModuleData).X > maxX - i;
-					}
-					return false;
-				});
-				xNodes.RemoveAll(s =>
-				{
-					var prop = s.Properties.Get(LocationDescriptor._typeId);
-					if (prop != null)
-					{
-						return ((LocationData)prop.ModuleData).Y < minY + i || ((LocationData)prop.ModuleData).Y > maxY - i;
-					}
-					return false;
-				});
-				elements.AddRange(yNodes);
-				elements.AddRange(xNodes);
+					case WipeDirection.CircleIn:
+					case WipeDirection.CircleOut:
+						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+						{
+							int nodeLocation = (int) DistanceFromPoint(centerPoint, new Point(node.Item2, node.Item3));
+							if (nodeLocation == i) elements.Add(node.Item1);
+						}
+
+						break;
+					case WipeDirection.DownRight:
+					case WipeDirection.UpLeft:
+						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+						{
+							if (node.Item2 - minX + node.Item3 - minY == i) {elements.Add(node.Item1);}
+						}
+
+						break;
+					case WipeDirection.DownLeft:
+					case WipeDirection.UpRight:
+						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+						{
+							if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i) elements.Add(node.Item1);
+						}
+						
+						break;
+					case WipeDirection.DiagonalIn:
+					case WipeDirection.DiagonalOut:
+						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+						{
+							// Do the Down/Left and Up/Right directions
+							int nodeLocation = (node.Item3 - minY) - (node.Item2 - minX) + ((maxX-minX) - (maxY-minY)) / 2;
+							if (nodeLocation < 0) nodeLocation = -nodeLocation;
+							if (nodeLocation == i && ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) && (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+							{
+								elements.Add(node.Item1);
+							}
+							// Do the Down/Right and Up/Left directions
+							nodeLocation = (node.Item2 - minX + node.Item3 - minY) - ((maxX - minX) + (maxY - minY)) / 2;
+							if (nodeLocation < 0) nodeLocation = -nodeLocation;
+							if (nodeLocation == i && ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) && (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+							{
+								elements.Add(node.Item1);
+							}
+						}
+						break;
+					default:
+						var xNodes = burstNodes.Where(x =>
+								(x.Item2 == minX + i || x.Item2 == maxX - i)
+							)
+							.Select(s => s.Item1).ToList();
+
+						var yNodes = burstNodes.Where(x =>
+								(
+									x.Item3 == minY + i ||
+									x.Item3 == maxY - i)
+							)
+							.Select(s => s.Item1).ToList();
+						yNodes.RemoveAll(s =>
+						{
+							var prop = s.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).X < minX + i ||
+								       ((LocationData) prop.ModuleData).X > maxX - i;
+							}
+
+							return false;
+						});
+						xNodes.RemoveAll(s =>
+						{
+							var prop = s.Properties.Get(LocationDescriptor._typeId);
+							if (prop != null)
+							{
+								return ((LocationData) prop.ModuleData).Y < minY + i ||
+								       ((LocationData) prop.ModuleData).Y > maxY - i;
+							}
+
+							return false;
+						});
+						elements.AddRange(yNodes);
+						elements.AddRange(xNodes);
+						break;
+				}
 
 				groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
 			}
-			List<ElementNode[]> renderNodes = new List<ElementNode[]>();
-			switch (direction)
-			{
 
+			List<ElementNode[]> renderNodes = new List<ElementNode[]>();
+			switch (Direction)
+			{
+				case WipeDirection.CircleOut:
 				case WipeDirection.In:
+				case WipeDirection.DownRight:
+				case WipeDirection.DownLeft:
+				case WipeDirection.DiagonalOut:
 					renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
 					break;
+				case WipeDirection.CircleIn:
 				case WipeDirection.Out:
+				case WipeDirection.UpLeft:
+				case WipeDirection.UpRight:
+				case WipeDirection.DiagonalIn:
 					renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
 					break;
 			}
@@ -649,6 +725,7 @@ namespace VixenModules.Effect.Wipe
 		[ProviderCategory(@"Direction",2)]
 		[DisplayName(@"Direction")]
 		[ProviderDescription(@"Direction")]
+		[PropertyOrder(0)]
 		public WipeDirection Direction
 		{
 			get { return _data.Direction; }

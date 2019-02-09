@@ -170,6 +170,11 @@ namespace VixenModules.Effect.Effect
 			return startTime.TotalMilliseconds / TimeSpan.TotalMilliseconds;
 		}
 
+		protected static double DistanceFromPoint(Point origin, Point point)
+		{
+			return Math.Sqrt(Math.Pow((point.X - origin.X), 2) + Math.Pow((point.Y - origin.Y), 2));
+		}
+
 		#region Overrides of ModuleInstanceBase
 
 		/// <inheritdoc />

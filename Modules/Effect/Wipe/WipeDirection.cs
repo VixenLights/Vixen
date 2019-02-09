@@ -15,6 +15,22 @@ namespace VixenModules.Effect.Wipe {
 		[Description("Burst In")]
 		In = 4,
 		[Description("Burst Out")]
-		Out = 5
+		Out = 5,
+		[Description("Circle Burst In")]
+		CircleIn = 6,
+		[Description("Circle Burst Out")]
+		CircleOut = 7,
+		[Description("Diagonal Burst In")]
+		DiagonalIn = 8,
+		[Description("Diagonal Burst Out")]
+		DiagonalOut = 9,
+		[Description("Wipe Down/Right")]
+		DownRight = 10,
+		[Description("Wipe Down/Left")]
+		DownLeft = 11,
+		[Description("Wipe Up/Right")]
+		UpRight = 12,
+		[Description("Wipe Up/Left")]
+		UpLeft = 13
 	}
 }
