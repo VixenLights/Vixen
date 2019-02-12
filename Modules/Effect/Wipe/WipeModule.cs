@@ -31,6 +31,8 @@ namespace VixenModules.Effect.Wipe
 
 		private WipeData _data; 
 		private EffectIntents _elementData = null;
+		private List<WipeClass> _renderElements;
+		private readonly int _timeInterval = 50;
 
 		protected override void TargetNodesChanged()
 		{
@@ -50,146 +52,151 @@ namespace VixenModules.Effect.Wipe
 
 			switch (_data.Direction)
 			{
-				case WipeDirection.Up:
-					renderNodes = TargetNodes
-						.SelectMany(x => x.GetLeafEnumerator())
-						.OrderByDescending(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+				case WipeDirection.Vertical:
+					if (!ReverseDirection)
+					{
+						renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
+							.OrderBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							else
-								return 1;
-						})
-						.ThenBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).Y;
+								}
+								else
+									return 1;
+							})
+							.ThenBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							else
-								return 1;
-						})
-						.GroupBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).X;
+								}
+								else
+									return 1;
+							})
+							.GroupBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							else
-								return 1;
-						})
-						.Distinct();
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).Y;
+								}
+								else
+									return 1;
+							})
+							.Distinct();
+					}
+					else
+					{
+						renderNodes = TargetNodes
+							.SelectMany(x => x.GetLeafEnumerator())
+							.OrderByDescending(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).Y;
+								}
+								else
+									return 1;
+							})
+							.ThenBy(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).X;
+								}
+								else
+									return 1;
+							})
+							.GroupBy(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).Y;
+								}
+								else
+									return 1;
+							})
+							.Distinct();
+					}
 					RenderBasicDirection(tokenSource, renderNodes);
-					break;
-				case WipeDirection.Down:
 
-					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							else
-								return 1;
-						})
-						.ThenBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							else
-								return 1;
-						})
-						.GroupBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							else
-								return 1;
-						})
-						.Distinct();
-					RenderBasicDirection(tokenSource, renderNodes);
 					break;
-				case WipeDirection.Right:
-
-					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+				case WipeDirection.Horizontal:
+					if (!ReverseDirection)
+					{
+						renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
+							.OrderBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							else
-								return 1;
-						})
-						.ThenBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData) prop.ModuleData).X;
+								}
+								else
+									return 1;
+							})
+							.ThenBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							else
-								return 1;
-						})
-						.GroupBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData) prop.ModuleData).Y;
+								}
+								else
+									return 1;
+							})
+							.GroupBy(x =>
 							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							else
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData) prop.ModuleData).X;
+								}
+								else
+									return 1;
+							})
+							.Distinct();
+					}
+					else
+					{
+						renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
+							.OrderByDescending(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).X;
+								}
 								return 1;
-						})
-						.Distinct();
+							})
+							.ThenBy(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).Y;
+								}
+								return 1;
+							})
+							.GroupBy(x =>
+							{
+								var prop = x.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData)prop.ModuleData).X;
+								}
+								return 1;
+							})
+							.Distinct();
+					}
 					RenderBasicDirection(tokenSource, renderNodes);
-					break;
-				case WipeDirection.Left:
 
-					renderNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
-						.OrderByDescending(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							return 1;
-						})
-						.ThenBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).Y;
-							}
-							return 1;
-						})
-						.GroupBy(x =>
-						{
-							var prop = x.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
-							{
-								return ((LocationData) prop.ModuleData).X;
-							}
-							return 1;
-						})
-						.Distinct();
-					RenderBasicDirection(tokenSource, renderNodes);
 					break;
 				default:
 					RenderAdvancedDirection(tokenSource);
@@ -203,7 +210,7 @@ namespace VixenModules.Effect.Wipe
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
-				if (WipeByCount)
+				if (WipeMovement == WipeMovement.Count)
 				{
 					int count = 0;
 					double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
@@ -221,15 +228,13 @@ namespace VixenModules.Effect.Wipe
 						{
 							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 
-							switch (Direction)
+							if (!ReverseDirection)
 							{
-								case WipeDirection.Left:
-								case WipeDirection.Up:
-									effectTime = TimeSpan.FromTicks((long) (totalWipeTime.Ticks * (1 - (item.Key - minKey) / adjustedMax) + count * totalWipeTime.Ticks));
-									break;
-								default:
-									effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (item.Key - minKey) / adjustedMax + count * totalWipeTime.Ticks));
-									break;
+								effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (item.Key - minKey) / adjustedMax + count * totalWipeTime.Ticks));
+							}
+							else
+							{
+								effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (1 - (item.Key - minKey) / adjustedMax) + count * totalWipeTime.Ticks));
 							}
 
 							foreach (ElementNode element in item)
@@ -334,7 +339,7 @@ namespace VixenModules.Effect.Wipe
 
 					}
 				}
-				else
+				else if(WipeMovement == WipeMovement.PulseLength)
 				{
 					double intervals = (double)PulseTime / (double)renderNodes.Count();
 					var intervalTime = TimeSpan.FromMilliseconds(intervals);
@@ -377,6 +382,7 @@ namespace VixenModules.Effect.Wipe
 
 		private void RenderAdvancedDirection(CancellationTokenSource tokenSource)
 		{
+			_renderElements = new List<WipeClass>();
 			List<Tuple<ElementNode, int, int, int>> burstNodes = TargetNodes.SelectMany(x => x.GetLeafEnumerator())
 				.Select(s =>
 				{
@@ -409,16 +415,12 @@ namespace VixenModules.Effect.Wipe
 			int steps;
 			switch (Direction)
 			{
-				case WipeDirection.CircleIn:
-				case WipeDirection.CircleOut:
-				case WipeDirection.DiagonalIn:
-				case WipeDirection.DiagonalOut:
-					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) / 1.4);
+				case WipeDirection.Circle:
+				case WipeDirection.Diagonal:
+					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY))/ 2);
 					break;
 				case WipeDirection.DownRight:
-				case WipeDirection.DownLeft:
 				case WipeDirection.UpRight:
-				case WipeDirection.UpLeft:
 					steps = (int) (DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) * 2);
 					break;
 				default:
@@ -426,228 +428,282 @@ namespace VixenModules.Effect.Wipe
 					break;
 			}
 
+			if (WipeMovement == WipeMovement.Movement) steps += (int)PulsePercent;
+
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
 
 			for (int i = 0; i < steps; i++)
 			{
-				List<ElementNode> elements = new List<ElementNode>();
-				switch (Direction)
-				{
-					case WipeDirection.CircleIn:
-					case WipeDirection.CircleOut:
-						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
-						{
-							int nodeLocation = (int) DistanceFromPoint(centerPoint, new Point(node.Item2, node.Item3));
-							if (nodeLocation == i) elements.Add(node.Item1);
-						}
+					List<ElementNode> elements = new List<ElementNode>();
 
-						break;
-					case WipeDirection.DownRight:
-					case WipeDirection.UpLeft:
-						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
-						{
-							if (node.Item2 - minX + node.Item3 - minY == i) {elements.Add(node.Item1);}
-						}
+					switch (Direction)
+					{
+						case WipeDirection.Circle:
+							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+							{
+								int nodeLocation = (int) DistanceFromPoint(centerPoint, new Point(node.Item2, node.Item3));
+								if (nodeLocation == i) elements.Add(node.Item1);
+							}
 
-						break;
-					case WipeDirection.DownLeft:
-					case WipeDirection.UpRight:
-						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
-						{
-							if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i) elements.Add(node.Item1);
-						}
-						
-						break;
-					case WipeDirection.DiagonalIn:
-					case WipeDirection.DiagonalOut:
-						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
-						{
-							// Do the Down/Left and Up/Right directions
-							int nodeLocation = (node.Item3 - minY) - (node.Item2 - minX) + ((maxX-minX) - (maxY-minY)) / 2;
-							if (nodeLocation < 0) nodeLocation = -nodeLocation;
-							if (nodeLocation == i && ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) && (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+							break;
+						case WipeDirection.DownRight:
+							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
-								elements.Add(node.Item1);
+								if (node.Item2 - minX + node.Item3 - minY == i)
+								{
+									elements.Add(node.Item1);
+								}
 							}
-							// Do the Down/Right and Up/Left directions
-							nodeLocation = (node.Item2 - minX + node.Item3 - minY) - ((maxX - minX) + (maxY - minY)) / 2;
-							if (nodeLocation < 0) nodeLocation = -nodeLocation;
-							if (nodeLocation == i && ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) && (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+
+							break;
+						case WipeDirection.UpRight:
+							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
-								elements.Add(node.Item1);
+								if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i)
+									elements.Add(node.Item1);
 							}
-						}
-						break;
-					default:
+
+							break;
+						case WipeDirection.Diagonal:
+							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+							{
+								// Do the Down/Left or Up/Right directions
+								int nodeLocation = (node.Item3 - minY) - (node.Item2 - minX) +
+								                   ((maxX - minX) - (maxY - minY)) / 2;
+								if (nodeLocation < 0) nodeLocation = -nodeLocation;
+								if (nodeLocation == i &&
+								    ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) &&
+								    (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+								{
+									elements.Add(node.Item1);
+								}
+
+								// Do the Down/Right or Up/Left directions
+								nodeLocation = (node.Item2 - minX + node.Item3 - minY) -
+								               ((maxX - minX) + (maxY - minY)) / 2;
+								if (nodeLocation < 0) nodeLocation = -nodeLocation;
+								if (nodeLocation == i &&
+								    ((maxY - yMid - node.Item3) <= i && (maxX - xMid - node.Item2) <= i) &&
+								    (node.Item3 - minY - yMid) <= i && (node.Item2 - minX - xMid) <= i)
+								{
+									elements.Add(node.Item1);
+								}
+							}
+
+							break;
+						default:
 						var xNodes = burstNodes.Where(x =>
-								(x.Item2 == minX + i || x.Item2 == maxX - i)
-							)
-							.Select(s => s.Item1).ToList();
+									(x.Item2 == minX + i || x.Item2 == maxX - i)
+								)
+								.Select(s => s.Item1).ToList();
 
-						var yNodes = burstNodes.Where(x =>
-								(
-									x.Item3 == minY + i ||
-									x.Item3 == maxY - i)
-							)
-							.Select(s => s.Item1).ToList();
-						yNodes.RemoveAll(s =>
-						{
-							var prop = s.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+							var yNodes = burstNodes.Where(x =>
+									(
+										x.Item3 == minY + i ||
+										x.Item3 == maxY - i)
+								)
+								.Select(s => s.Item1).ToList();
+							yNodes.RemoveAll(s =>
 							{
-								return ((LocationData) prop.ModuleData).X < minX + i ||
-								       ((LocationData) prop.ModuleData).X > maxX - i;
-							}
+								var prop = s.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData) prop.ModuleData).X < minX + i ||
+									       ((LocationData) prop.ModuleData).X > maxX - i;
+								}
 
-							return false;
-						});
-						xNodes.RemoveAll(s =>
-						{
-							var prop = s.Properties.Get(LocationDescriptor._typeId);
-							if (prop != null)
+								return false;
+							});
+							xNodes.RemoveAll(s =>
 							{
-								return ((LocationData) prop.ModuleData).Y < minY + i ||
-								       ((LocationData) prop.ModuleData).Y > maxY - i;
-							}
+								var prop = s.Properties.Get(LocationDescriptor._typeId);
+								if (prop != null)
+								{
+									return ((LocationData) prop.ModuleData).Y < minY + i ||
+									       ((LocationData) prop.ModuleData).Y > maxY - i;
+								}
 
-							return false;
-						});
-						elements.AddRange(yNodes);
-						elements.AddRange(xNodes);
-						break;
-				}
-
-				groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
+								return false;
+							});
+							elements.AddRange(yNodes);
+							elements.AddRange(xNodes);
+							break;
+					}
+					groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
 			}
 
 			List<ElementNode[]> renderNodes = new List<ElementNode[]>();
-			switch (Direction)
+			if (ReverseDirection && WipeMovement != WipeMovement.Movement)
 			{
-				case WipeDirection.CircleOut:
-				case WipeDirection.In:
-				case WipeDirection.DownRight:
-				case WipeDirection.DownLeft:
-				case WipeDirection.DiagonalOut:
-					renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
-					break;
-				case WipeDirection.CircleIn:
-				case WipeDirection.Out:
-				case WipeDirection.UpLeft:
-				case WipeDirection.UpRight:
-				case WipeDirection.DiagonalIn:
-					renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
-					break;
+				renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
 			}
+			else
+			{
+				renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
+			}
+			if(Direction == WipeDirection.Burst && ReverseDirection && WipeMovement != WipeMovement.Movement) renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
 
-			//var pulse = new Pulse.Pulse();
 			if (renderNodes != null && renderNodes.Any())
 			{
-				TimeSpan effectTime = TimeSpan.Zero;
-				if (WipeByCount)
+				switch (WipeMovement)
 				{
-					
-					int count = 0;
-					double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
-					TimeSpan intervalTime = TimeSpan.FromTicks((long)((TimeSpan.Ticks - pulseSegment) / (renderNodes.Count() * PassCount)));
-					TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
-
-					while (count < PassCount)
-					{
-						foreach (var item in renderNodes)
-						{
-							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
-							EffectIntents result;
-
-							foreach (ElementNode element in item)
-							{
-
-								if (tokenSource != null && tokenSource.IsCancellationRequested)
-									return;
-								if (element != null)
-								{
-									//pulse.TimeSpan = segmentPulse;
-									//pulse.ColorGradient = _data.ColorGradient;
-									//pulse.LevelCurve = _data.Curve;
-									//pulse.TargetNodes = new ElementNode[] { element };
-									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
-									result.OffsetAllCommandsByTime(effectTime);
-									//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
-									//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
-
-									if (WipeOff && count == 0)
-									{
-										foreach (var effectIntent in result.FirstOrDefault().Value)
-										{
-											_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors));
-										}
-									}
-
-									if (WipeOn && count == PassCount - 1)
-									{
-										foreach (var effectIntent in result.FirstOrDefault().Value)
-										{
-											_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors));
-										}
-									}
-
-									_elementData.Add(result);
-								}
-							}
-							effectTime += intervalTime;
-
-						}
-						count++;
-
-					}
+					case WipeMovement.PulseLength:
+						RenderPulseLength(renderNodes, tokenSource);
+						break;
+					case WipeMovement.Count:
+						RenderCount(renderNodes, tokenSource);
+						break;
+					case WipeMovement.Movement:
+						RenderMovement(renderNodes, tokenSource);
+						break;
 				}
-				else
+			}
+			
+			_renderElements = null;
+
+		}
+
+		private void RenderPulseLength(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource)
+		{
+			TimeSpan effectTime = TimeSpan.Zero;
+			double intervals = (double)PulseTime / (double)renderNodes.Count();
+			var intervalTime = TimeSpan.FromMilliseconds(intervals);
+			// the calculation above blows up render time/memory as count goes up, try this.. 
+			// also fails if intervals is less than half a ms and intervalTime then gets 0
+			intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 5));
+			TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
+			while (effectTime < TimeSpan)
+			{
+				foreach (var item in renderNodes)
 				{
-					double intervals = (double)PulseTime / (double)renderNodes.Count();
-					var intervalTime = TimeSpan.FromMilliseconds(intervals);
-					// the calculation above blows up render time/memory as count goes up, try this.. 
-					// also fails if intervals is less than half a ms and intervalTime then gets 0
-					intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 5));
-					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
-					while (effectTime < TimeSpan)
+					EffectIntents result;
+
+					if (tokenSource != null && tokenSource.IsCancellationRequested)
+						return;
+					foreach (ElementNode element in item)
 					{
-						foreach (var item in renderNodes)
+						if (element != null)
 						{
-							EffectIntents result;
 
 							if (tokenSource != null && tokenSource.IsCancellationRequested)
 								return;
-							foreach (ElementNode element in item)
-							{
-								if (element != null)
-								{
+							result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
+							result.OffsetAllCommandsByTime(effectTime);
+							_elementData.Add(result);
+						}
+					}
+					effectTime += intervalTime;
+					if (effectTime >= TimeSpan)
+						return;
+				}
+			}
 
-									if (tokenSource != null && tokenSource.IsCancellationRequested)
-										return;
-									
-									//pulse.TimeSpan = segmentPulse;
-									//pulse.ColorGradient = _data.ColorGradient;
-									//pulse.LevelCurve = _data.Curve;
-									//pulse.TargetNodes = new ElementNode[] { element };
-									//result = pulse.Render();
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
-									result.OffsetAllCommandsByTime(effectTime);
-									//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
-									//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
-									_elementData.Add(result);
-								}
-							}
-							effectTime += intervalTime;
-							if (effectTime >= TimeSpan)
+		}
+
+		private void RenderCount(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource)
+		{
+			TimeSpan effectTime = TimeSpan.Zero;
+			int count = 0;
+			double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
+			TimeSpan intervalTime = TimeSpan.FromTicks((long)((TimeSpan.Ticks - pulseSegment) / (renderNodes.Count() * PassCount)));
+			TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
+
+			while (count < PassCount)
+			{
+				foreach (ElementNode[] item in renderNodes)
+				{
+					if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+					EffectIntents result;
+
+					foreach (ElementNode element in item)
+					{
+						if (tokenSource != null && tokenSource.IsCancellationRequested)
+							return;
+						if (element != null)
+						{
+							result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
+							result.OffsetAllCommandsByTime(effectTime);
+							_elementData.Add(result);
+						}
+					}
+					effectTime += intervalTime;
+
+				}
+				count++;
+			}
+		}
+
+		private void RenderMovement(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource)
+		{
+			TimeSpan effectTime = TimeSpan.Zero;
+			double previousMovement = 2.0;
+			TimeSpan intervalTime = TimeSpan;
+			TimeSpan startTime = TimeSpan.Zero;
+			TimeSpan timeInterval = TimeSpan.FromMilliseconds(_timeInterval);
+			int intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds / _timeInterval));
+			if (intervals >= 1) intervalTime = timeInterval;
+
+			for (int i = 0; i < intervals; i++)
+			{
+				double position = (double)100 / intervals * i;
+				double movement = MovementCurve.GetValue(position) / 100;
+				if (_renderElements.Count > 0) _renderElements.Last().Duration = startTime - _renderElements.Last().StartTime;
+
+				if (previousMovement != movement)
+				{
+					WipeClass wc = new WipeClass
+					{
+						ElementIndex = (int)((renderNodes.Count - 1) * movement),
+						StartTime = startTime,
+						Duration = TimeSpan - startTime
+
+					};
+					_renderElements.Add(wc);
+				}
+
+				previousMovement = movement;
+				startTime += timeInterval;
+			}
+
+			// Now render element
+			for (var index = 0; index < _renderElements.Count; index++)
+			{
+				WipeClass wipeNode = _renderElements[index];
+				for (int i = 0; i < (int)PulsePercent; i++)
+				{
+					Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)PulsePercent) * (i + 1) / 100);
+					ColorGradient colorGradient = new ColorGradient(color);
+					double curveValue = _data.Curve.GetValue(((double)100 / (int)PulsePercent) * (i + 1));
+					Curve curve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
+					if (wipeNode.ElementIndex - i > 0)
+					{
+						ElementNode[] elementGroup = renderNodes[wipeNode.ElementIndex - i];
+						if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+						EffectIntents result;
+
+						foreach (var item in elementGroup)
+						{
+							if (tokenSource != null && tokenSource.IsCancellationRequested)
 								return;
+							if (item != null)
+							{
+								result = PulseRenderer.RenderNode(item, curve, colorGradient,
+									wipeNode.Duration, HasDiscreteColors);
+								result.OffsetAllCommandsByTime(effectTime);
+								_elementData.Add(result);
+							}
 						}
 					}
 				}
-
+				effectTime += intervalTime;
 			}
+		}
 
-
-
+		private class WipeClass
+		{
+			public int ElementIndex;
+			public TimeSpan StartTime;
+			public TimeSpan Duration;
 		}
 
 		protected override EffectIntents _Render()
@@ -741,6 +797,44 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
+		[ProviderCategory(@"Direction", 2)]
+		[DisplayName(@"ReverseDirection")]
+		[ProviderDescription(@"ReverseDirection")]
+		[PropertyOrder(1)]
+		public bool ReverseDirection
+		{
+			get { return _data.ReverseDirection; }
+			set
+			{
+				_data.ReverseDirection = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateAttributes();
+				TypeDescriptor.Refresh(this);
+
+			}
+		}
+
+		[Value]
+		[ProviderCategory(@"Direction", 2)]
+		[DisplayName(@"Movement")]
+		[ProviderDescription(@"Movement")]
+		[PropertyOrder(2)]
+		public Curve MovementCurve
+		{
+			get { return _data.MovementCurve; }
+			set
+			{
+				_data.MovementCurve = value;
+				IsDirty = true;
+				OnPropertyChanged();
+				UpdateAttributes();
+				TypeDescriptor.Refresh(this);
+
+			}
+		}
+
+		[Value]
 		[ProviderCategory(@"Brightness",4)]
 		[ProviderDisplayName(@"Brightness")]
 		[ProviderDescription(@"PulseShape")]
@@ -771,22 +865,21 @@ namespace VixenModules.Effect.Wipe
 		}
 
 		[Value]
-		[ProviderCategory(@"Type",1)]
-		[ProviderDisplayName(@"Type")]
-		[ProviderDescription(@"WipeType")]
-		[TypeConverter(typeof(BooleanStringTypeConverter))]
-		[BoolDescription("Count", "Pulse Length")]
-		[PropertyEditor("SelectionEditor")]
-		public bool WipeByCount
+		[ProviderCategory(@"Type", 1)]
+		[DisplayName(@"Movement")]
+		[ProviderDescription(@"Movement")]
+		[PropertyOrder(0)]
+		public WipeMovement WipeMovement
 		{
-			get { return _data.WipeByCount; }
+			get { return _data.WipeMovement; }
 			set
 			{
-				_data.WipeByCount = value;
+				_data.WipeMovement = value;
 				IsDirty = true;
 				OnPropertyChanged();
 				UpdateAttributes();
 				TypeDescriptor.Refresh(this);
+
 			}
 		}
 
@@ -794,6 +887,7 @@ namespace VixenModules.Effect.Wipe
 		[ProviderCategory(@"Type",1)]
 		[ProviderDisplayName(@"WipeCount")]
 		[ProviderDescription(@"WipeCount")]
+		[PropertyOrder(1)]
 		public int PassCount
 		{
 			get { return _data.PassCount; }
@@ -809,6 +903,7 @@ namespace VixenModules.Effect.Wipe
 		[ProviderCategory(@"Type", 1)]
 		[ProviderDisplayName(@"WipeOn")]
 		[ProviderDescription(@"ExtendPulseEnd")]
+		[PropertyOrder(2)]
 		public bool WipeOn
 		{
 			get { return _data.WipeOn; }
@@ -824,6 +919,7 @@ namespace VixenModules.Effect.Wipe
 		[ProviderCategory(@"Type", 1)]
 		[ProviderDisplayName(@"WipeOff")]
 		[ProviderDescription(@"ExtendPulseStart")]
+		[PropertyOrder(3)]
 		public bool WipeOff
 		{
 			get { return _data.WipeOff; }
@@ -869,14 +965,16 @@ namespace VixenModules.Effect.Wipe
 
 		private void UpdateAttributes()
 		{
-			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(4)
+			Dictionary<string, bool> propertyStates = new Dictionary<string, bool>(9)
 			{
-				{"PassCount", WipeByCount},
-				{"PulsePercent", WipeByCount},
-				{"WipeOn", WipeByCount},
-				{"WipeOff", WipeByCount},
-				{"PulseTime", !WipeByCount},
-				{"ColorHandling", Direction != WipeDirection.In && Direction != WipeDirection.Out }
+				{"PassCount", WipeMovement == WipeMovement.Count},
+				{"PulsePercent", WipeMovement != WipeMovement.PulseLength},
+				{"WipeOn", WipeMovement == WipeMovement.Count},
+				{"WipeOff", WipeMovement == WipeMovement.Count},
+				{"PulseTime", WipeMovement == WipeMovement.PulseLength},
+				{"ColorHandling", Direction != WipeDirection.Burst && WipeMovement != WipeMovement.Movement},
+				{"WipeMovementDirection", WipeMovement == WipeMovement.Movement },
+				{"MovementCurve", WipeMovement == WipeMovement.Movement }
 			};
 			SetBrowsable(propertyStates);
 		}
