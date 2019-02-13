@@ -9,7 +9,7 @@ namespace VixenModules.Effect.Wipe
 		Count,
 		[Description("Pulse Length")]
 		PulseLength,
-		[Description("Movement curve")]
+		[Description("Movement")]
 		Movement
 	}
 }

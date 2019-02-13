@@ -8,7 +8,7 @@ using ZedGraph;
 namespace VixenModules.Effect.Wipe {
 	[DataContract]
 	public class WipeData : EffectTypeModuleData {
-
+		
 		public WipeData() {
 			Curve = new Curve();
 			Curve.Points.Clear();
@@ -19,12 +19,15 @@ namespace VixenModules.Effect.Wipe {
 			Direction = WipeDirection.Horizontal;
 			ColorGradient = new ColorGradient(Color.White);
 			PulseTime = 1000;
-			//WipeByCount = true;
 			PassCount = 1;
 			PulsePercent = 33;
 			MovementCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 }));
 			WipeMovement = WipeMovement.Count;
 			ReverseDirection = false;
+			ColorHandling = ColorHandling.GradientThroughWholeEffect;
+			WipeOn = false;
+			WipeOff = false;
+			
 		}
 		[DataMember]
 		public ColorHandling ColorHandling { get; set; }
@@ -40,9 +43,6 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public int PulseTime { get; set; }
-
-		[DataMember(EmitDefaultValue = false)]
-		public bool WipeByCount { get; set; }
 
 		[DataMember]
 		public int PassCount { get; set; }
@@ -64,22 +64,6 @@ namespace VixenModules.Effect.Wipe {
 
 		[DataMember]
 		public bool ReverseDirection { get; set; }
-
-		[OnDeserialized]
-		public void OnDeserialized(StreamingContext c)
-		{
-			//Ensure defaults for new fields that might not be in older effects.
-			if (MovementCurve == null)
-			{
-				MovementCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 }));
-
-			}
-			if (!WipeByCount)
-			{
-				WipeMovement = WipeMovement.PulseLength;
-				WipeByCount = true;
-			}
-		}
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{
