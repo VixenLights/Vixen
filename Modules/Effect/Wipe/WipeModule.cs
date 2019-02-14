@@ -210,106 +210,46 @@ namespace VixenModules.Effect.Wipe
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
-				if (WipeMovement == WipeMovement.Count)
+				switch (WipeMovement)
 				{
-					int count = 0;
-					double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
-
-					var maxKey = renderNodes.Select(x => x.Key).Max();
-					var minKey = renderNodes.Select(x => x.Key).Min();
-					double adjustedMax = maxKey - minKey;
-
-					TimeSpan totalWipeTime = TimeSpan.FromTicks( (long) ( (TimeSpan.Ticks - pulseSegment) / PassCount));
-					TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
-
-					while (count < PassCount)
+					case WipeMovement.Count:
 					{
-						foreach (var item in renderNodes)
+						int count = 0;
+						double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
+
+						var maxKey = renderNodes.Select(x => x.Key).Max();
+						var minKey = renderNodes.Select(x => x.Key).Min();
+						double adjustedMax = maxKey - minKey;
+
+						TimeSpan totalWipeTime = TimeSpan.FromTicks( (long) ( (TimeSpan.Ticks - pulseSegment) / PassCount));
+						TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
+
+						while (count < PassCount)
 						{
-							if (tokenSource != null && tokenSource.IsCancellationRequested) return;
-
-							if (!ReverseDirection)
+							foreach (var item in renderNodes)
 							{
-								effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (item.Key - minKey) / adjustedMax + count * totalWipeTime.Ticks));
-							}
-							else
-							{
-								effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (1 - (item.Key - minKey) / adjustedMax) + count * totalWipeTime.Ticks));
-							}
+								if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 
-							foreach (ElementNode element in item)
-							{
-
-								if (tokenSource != null && tokenSource.IsCancellationRequested)
-									return;
-								if (element != null)
+								if (!ReverseDirection)
 								{
-									EffectIntents result;
-									if (ColorHandling == ColorHandling.GradientThroughWholeEffect)
+									effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (item.Key - minKey) / adjustedMax + count * totalWipeTime.Ticks));
+								}
+								else
+								{
+									effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (1 - (item.Key - minKey) / adjustedMax) + count * totalWipeTime.Ticks));
+								}
+
+								foreach (ElementNode element in item)
+								{
+
+									if (tokenSource != null && tokenSource.IsCancellationRequested)
+										return;
+									if (element != null)
 									{
-										result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
-										result.OffsetAllCommandsByTime(effectTime);
-
-										if (WipeOff && count == 0)
+										EffectIntents result;
+										if (ColorHandling == ColorHandling.GradientThroughWholeEffect)
 										{
-											foreach (var effectIntent in result.FirstOrDefault().Value)
-											{
-												_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors));
-											}
-										}
-
-										_elementData.Add(result);
-
-										if (WipeOn && count == PassCount - 1)
-										{
-											foreach (var effectIntent in result.FirstOrDefault().Value)
-											{
-												_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors));
-											}
-										}
-									}
-									else
-									{
-										double positionWithinGroup = (effectTime.Ticks - (double)totalWipeTime.Ticks * count) / totalWipeTime.Ticks;
-										if (HasDiscreteColors)
-										{
-											List<Tuple<Color, float>> colorsAtPosition =
-												ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
-											foreach (Tuple<Color, float> colorProportion in colorsAtPosition)
-											{
-												float proportion = colorProportion.Item2;
-												// scale all levels of the pulse curve by the proportion that is applicable to this color
-												Curve newCurve = new Curve(Curve.Points);
-												foreach (PointPair pointPair in newCurve.Points)
-												{
-													pointPair.Y *= proportion;
-												}
-												result = PulseRenderer.RenderNode(element, newCurve, new ColorGradient(colorProportion.Item1), segmentPulse, HasDiscreteColors);
-												result.OffsetAllCommandsByTime(effectTime);
-
-												if (WipeOff && count == 0)
-												{
-													foreach (var effectIntent in result.FirstOrDefault().Value)
-													{
-														_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
-													}
-												}
-
-												if (result.Count > 0) _elementData.Add(result);
-
-												if (WipeOn && count == PassCount - 1)
-												{
-													foreach (var effectIntent in result.FirstOrDefault().Value)
-													{
-														_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
-													}
-												}
-											}
-										}
-										else
-										{
-											result = PulseRenderer.RenderNode(element, _data.Curve,
-												new ColorGradient(_data.ColorGradient.GetColorAt(positionWithinGroup)), segmentPulse, HasDiscreteColors);
+											result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 											result.OffsetAllCommandsByTime(effectTime);
 
 											if (WipeOff && count == 0)
@@ -330,53 +270,183 @@ namespace VixenModules.Effect.Wipe
 												}
 											}
 										}
+										else
+										{
+											double positionWithinGroup = (effectTime.Ticks - (double)totalWipeTime.Ticks * count) / totalWipeTime.Ticks;
+											if (HasDiscreteColors)
+											{
+												List<Tuple<Color, float>> colorsAtPosition =
+													ColorGradient.GetDiscreteColorsAndProportionsAt(positionWithinGroup);
+												foreach (Tuple<Color, float> colorProportion in colorsAtPosition)
+												{
+													float proportion = colorProportion.Item2;
+													// scale all levels of the pulse curve by the proportion that is applicable to this color
+													Curve newCurve = new Curve(Curve.Points);
+													foreach (PointPair pointPair in newCurve.Points)
+													{
+														pointPair.Y *= proportion;
+													}
+													result = PulseRenderer.RenderNode(element, newCurve, new ColorGradient(colorProportion.Item1), segmentPulse, HasDiscreteColors);
+													result.OffsetAllCommandsByTime(effectTime);
+
+													if (WipeOff && count == 0)
+													{
+														foreach (var effectIntent in result.FirstOrDefault().Value)
+														{
+															_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
+														}
+													}
+
+													if (result.Count > 0) _elementData.Add(result);
+
+													if (WipeOn && count == PassCount - 1)
+													{
+														foreach (var effectIntent in result.FirstOrDefault().Value)
+														{
+															_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors, new ColorGradient(colorProportion.Item1)));
+														}
+													}
+												}
+											}
+											else
+											{
+												result = PulseRenderer.RenderNode(element, _data.Curve,
+													new ColorGradient(_data.ColorGradient.GetColorAt(positionWithinGroup)), segmentPulse, HasDiscreteColors);
+												result.OffsetAllCommandsByTime(effectTime);
+
+												if (WipeOff && count == 0)
+												{
+													foreach (var effectIntent in result.FirstOrDefault().Value)
+													{
+														_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors));
+													}
+												}
+
+												_elementData.Add(result);
+
+												if (WipeOn && count == PassCount - 1)
+												{
+													foreach (var effectIntent in result.FirstOrDefault().Value)
+													{
+														_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors));
+													}
+												}
+											}
+										}
 									}
 								}
+
 							}
+							count++;
 
 						}
-						count++;
 
+						break;
 					}
-				}
-				else if(WipeMovement == WipeMovement.PulseLength)
-				{
-					double intervals = (double)PulseTime / (double)renderNodes.Count();
-					var intervalTime = TimeSpan.FromMilliseconds(intervals);
-					// the calculation above blows up render time/memory as count goes up, try this.. 
-					// also fails if intervals is less than half a ms and intervalTime then gets 0
-					intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 5));
-					TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
-					while (effectTime < TimeSpan)
+					case WipeMovement.PulseLength:
 					{
-						foreach (var item in renderNodes)
+						double intervals = (double)PulseTime / (double)renderNodes.Count();
+						var intervalTime = TimeSpan.FromMilliseconds(intervals);
+						// the calculation above blows up render time/memory as count goes up, try this.. 
+						// also fails if intervals is less than half a ms and intervalTime then gets 0
+						intervalTime = TimeSpan.FromMilliseconds(Math.Max(intervalTime.TotalMilliseconds, 5));
+						TimeSpan segmentPulse = TimeSpan.FromMilliseconds(PulseTime);
+						while (effectTime < TimeSpan)
 						{
-							EffectIntents result;
-
-							if (tokenSource != null && tokenSource.IsCancellationRequested)
-								return;
-
-							foreach (ElementNode element in item)
+							foreach (var item in renderNodes)
 							{
-								if (element != null)
-								{
+								EffectIntents result;
 
-									if (tokenSource != null && tokenSource.IsCancellationRequested)
-										return;
-									result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
-									result.OffsetAllCommandsByTime(effectTime);
-									//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
-									//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
-									_elementData.Add(result);
+								if (tokenSource != null && tokenSource.IsCancellationRequested)
+									return;
+
+								foreach (ElementNode element in item)
+								{
+									if (element != null)
+									{
+
+										if (tokenSource != null && tokenSource.IsCancellationRequested)
+											return;
+										result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
+										result.OffsetAllCommandsByTime(effectTime);
+										//bool discreteElement = HasDiscreteColors && ColorModule.isElementNodeDiscreteColored(element);
+										//_elementData.Add(IntentBuilder.ConvertToStaticArrayIntents(result, TimeSpan, discreteElement));
+										_elementData.Add(result);
+									}
 								}
+								effectTime += intervalTime;
+								if (effectTime >= TimeSpan)
+									return;
 							}
-							effectTime += intervalTime;
-							if (effectTime >= TimeSpan)
-								return;
 						}
+
+						break;
+					}
+					case WipeMovement.Movement:
+					{
+						var enumerable = renderNodes.ToList();
+							_renderElements = new List<WipeClass>();
+							double previousMovement = 2.0;
+							TimeSpan startTime = TimeSpan.Zero;
+							TimeSpan timeInterval = TimeSpan.FromMilliseconds(_timeInterval);
+							int intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds / _timeInterval));
+
+							for (int i = 0; i < intervals; i++)
+							{
+								double position = (double)100 / intervals * i;
+								double movement = MovementCurve.GetValue(position) / 100;
+								if (previousMovement != movement)
+								{
+									if (_renderElements.Count > 0) _renderElements.Last().Duration = startTime - _renderElements.Last().StartTime;
+
+									WipeClass wc = new WipeClass
+									{
+										ElementIndex = (int)((enumerable.Count - 1) * movement),
+										StartTime = startTime,
+										Duration = TimeSpan - startTime
+
+									};
+									_renderElements.Add(wc);
+								}
+
+								previousMovement = movement;
+								startTime += timeInterval;
+							}
+
+							// Now render element
+							foreach (var wipeNode in _renderElements)
+							{
+								for (int i = 0; i < (int)PulsePercent; i++)
+								{
+									Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)PulsePercent) * (i + 1) / 100);
+									ColorGradient colorGradient = new ColorGradient(color);
+									double curveValue = _data.Curve.GetValue(((double)100 / (int)PulsePercent) * (i + 1));
+									Curve curve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
+									if (wipeNode.ElementIndex - i > 0)
+									{
+										IGrouping<int, ElementNode> elementGroup = enumerable[wipeNode.ElementIndex - i];
+										if (tokenSource != null && tokenSource.IsCancellationRequested) return;
+										EffectIntents result;
+
+										foreach (var item in elementGroup)
+										{
+											if (tokenSource != null && tokenSource.IsCancellationRequested)
+												return;
+											if (item != null)
+											{
+												result = PulseRenderer.RenderNode(item, curve, colorGradient,
+													wipeNode.Duration, HasDiscreteColors);
+												result.OffsetAllCommandsByTime(wipeNode.StartTime);
+												_elementData.Add(result);
+											}
+										}
+									}
+								}
+								_renderElements = null;
+							}
+							break;
 					}
 				}
-
 			}
 		}
 
@@ -416,18 +486,18 @@ namespace VixenModules.Effect.Wipe
 			switch (Direction)
 			{
 				case WipeDirection.Circle:
-				case WipeDirection.Diagonal:
+				case WipeDirection.Dimaond:
 					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY))/ 2);
 					break;
-				case WipeDirection.DownRight:
-				case WipeDirection.UpRight:
+				case WipeDirection.DiagonalUp:
+				case WipeDirection.DiagonalDown:
 					steps = (int) (DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) * 2);
 					break;
 				default:
 					steps = (int) (Math.Max(maxX - minX, maxY - minY) / 2);
 					break;
 			}
-
+			
 			if (WipeMovement == WipeMovement.Movement) steps += (int)PulsePercent;
 
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
@@ -446,25 +516,39 @@ namespace VixenModules.Effect.Wipe
 							}
 
 							break;
-						case WipeDirection.DownRight:
-							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
+						case WipeDirection.DiagonalUp:
+						foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
-								if (node.Item2 - minX + node.Item3 - minY == i)
+								if (ReverseDirection)
 								{
-									elements.Add(node.Item1);
+									if (node.Item2 - minX + node.Item3 - minY == i) elements.Add(node.Item1);
 								}
+								else
+								{
+									if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i)
+										elements.Add(node.Item1);
+								}
+
 							}
 
 							break;
-						case WipeDirection.UpRight:
+						case WipeDirection.DiagonalDown:
 							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
-								if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i)
-									elements.Add(node.Item1);
+								if (ReverseDirection)
+								{
+									if ((node.Item3 - minY) - (node.Item2 - minX) + steps / 2 == i)
+										elements.Add(node.Item1);
+								}
+								else
+								{
+									if (node.Item2 - minX + node.Item3 - minY == i) elements.Add(node.Item1);
+								}
+
 							}
 
 							break;
-						case WipeDirection.Diagonal:
+					case WipeDirection.Dimaond:
 							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
 								// Do the Down/Left or Up/Right directions
@@ -492,57 +576,49 @@ namespace VixenModules.Effect.Wipe
 
 							break;
 						default:
-						var xNodes = burstNodes.Where(x =>
-									(x.Item2 == minX + i || x.Item2 == maxX - i)
-								)
-								.Select(s => s.Item1).ToList();
 
-							var yNodes = burstNodes.Where(x =>
-									(
-										x.Item3 == minY + i ||
-										x.Item3 == maxY - i)
-								)
-								.Select(s => s.Item1).ToList();
-							yNodes.RemoveAll(s =>
+							foreach (Tuple<ElementNode, int, int, int> node in burstNodes)
 							{
-								var prop = s.Properties.Get(LocationDescriptor._typeId);
-								if (prop != null)
-								{
-									return ((LocationData) prop.ModuleData).X < minX + i ||
-									       ((LocationData) prop.ModuleData).X > maxX - i;
-								}
+								// Sets Left and Right side of burst
+								if (maxY - yMid - node.Item3 <= i && maxY - yMid - node.Item3 >= -i &&
+								    (maxX - xMid - node.Item2 == i || maxX - xMid - node.Item2 == -i))
+									elements.Add(node.Item1);
 
-								return false;
-							});
-							xNodes.RemoveAll(s =>
-							{
-								var prop = s.Properties.Get(LocationDescriptor._typeId);
-								if (prop != null)
-								{
-									return ((LocationData) prop.ModuleData).Y < minY + i ||
-									       ((LocationData) prop.ModuleData).Y > maxY - i;
-								}
+								// Sets Top and Bottom side of burst
+							if (maxX - xMid - node.Item2 <= i && maxX - xMid - node.Item2 >= -i &&
+								    (maxY - yMid - node.Item3 == i || maxY - yMid - node.Item3 == -i))
+									elements.Add(node.Item1);
+							}
 
-								return false;
-							});
-							elements.AddRange(yNodes);
-							elements.AddRange(xNodes);
 							break;
 					}
 					groups.Add(new Tuple<int, ElementNode[]>(i, elements.ToArray()));
 			}
 
 			List<ElementNode[]> renderNodes = new List<ElementNode[]>();
-			if (ReverseDirection && WipeMovement != WipeMovement.Movement)
-			{
-				renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
-			}
-			else
-			{
-				renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
-			}
-			if(Direction == WipeDirection.Burst && ReverseDirection && WipeMovement != WipeMovement.Movement) renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
 
+			switch (Direction)
+			{
+				case WipeDirection.Circle:
+				case WipeDirection.Dimaond:
+				case WipeDirection.Burst:
+					renderNodes = !ReverseDirection || WipeMovement == WipeMovement.Movement
+						? groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList()
+						: groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+				case WipeDirection.DiagonalUp:
+					renderNodes = groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+				case WipeDirection.DiagonalDown:
+					renderNodes = groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+				default:
+					renderNodes = ReverseDirection
+						? groups.OrderBy(o => o.Item1).Select(s => s.Item2).ToList()
+						: groups.OrderByDescending(o => o.Item1).Select(s => s.Item2).ToList();
+					break;
+			}
+	
 			if (renderNodes != null && renderNodes.Any())
 			{
 				switch (WipeMovement)
@@ -623,6 +699,22 @@ namespace VixenModules.Effect.Wipe
 						{
 							result = PulseRenderer.RenderNode(element, _data.Curve, _data.ColorGradient, segmentPulse, HasDiscreteColors);
 							result.OffsetAllCommandsByTime(effectTime);
+							if (WipeOff && count == 0)
+							{
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateStartingStaticPulse(element, effectIntent, HasDiscreteColors));
+								}
+							}
+
+							if (WipeOn && count == PassCount - 1)
+							{
+								foreach (var effectIntent in result.FirstOrDefault().Value)
+								{
+									_elementData.Add(PulseRenderer.GenerateExtendedStaticPulse(element, effectIntent, TimeSpan, HasDiscreteColors));
+								}
+							}
+
 							_elementData.Add(result);
 						}
 					}
@@ -635,22 +727,19 @@ namespace VixenModules.Effect.Wipe
 
 		private void RenderMovement(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource)
 		{
-			TimeSpan effectTime = TimeSpan.Zero;
 			double previousMovement = 2.0;
-			TimeSpan intervalTime = TimeSpan;
 			TimeSpan startTime = TimeSpan.Zero;
 			TimeSpan timeInterval = TimeSpan.FromMilliseconds(_timeInterval);
 			int intervals = Convert.ToInt32(Math.Ceiling(TimeSpan.TotalMilliseconds / _timeInterval));
-			if (intervals >= 1) intervalTime = timeInterval;
 
 			for (int i = 0; i < intervals; i++)
 			{
 				double position = (double)100 / intervals * i;
 				double movement = MovementCurve.GetValue(position) / 100;
-				if (_renderElements.Count > 0) _renderElements.Last().Duration = startTime - _renderElements.Last().StartTime;
-
 				if (previousMovement != movement)
 				{
+					if (_renderElements.Count > 0) _renderElements.Last().Duration = startTime - _renderElements.Last().StartTime;
+
 					WipeClass wc = new WipeClass
 					{
 						ElementIndex = (int)((renderNodes.Count - 1) * movement),
@@ -666,9 +755,8 @@ namespace VixenModules.Effect.Wipe
 			}
 
 			// Now render element
-			for (var index = 0; index < _renderElements.Count; index++)
+			foreach (var wipeNode in _renderElements)
 			{
-				WipeClass wipeNode = _renderElements[index];
 				for (int i = 0; i < (int)PulsePercent; i++)
 				{
 					Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)PulsePercent) * (i + 1) / 100);
@@ -689,13 +777,12 @@ namespace VixenModules.Effect.Wipe
 							{
 								result = PulseRenderer.RenderNode(item, curve, colorGradient,
 									wipeNode.Duration, HasDiscreteColors);
-								result.OffsetAllCommandsByTime(effectTime);
+								result.OffsetAllCommandsByTime(wipeNode.StartTime);
 								_elementData.Add(result);
 							}
 						}
 					}
 				}
-				effectTime += intervalTime;
 			}
 		}
 
@@ -974,7 +1061,8 @@ namespace VixenModules.Effect.Wipe
 				{"PulseTime", WipeMovement == WipeMovement.PulseLength},
 				{"ColorHandling", Direction != WipeDirection.Burst && WipeMovement != WipeMovement.Movement},
 				{"WipeMovementDirection", WipeMovement == WipeMovement.Movement },
-				{"MovementCurve", WipeMovement == WipeMovement.Movement }
+				{"MovementCurve", WipeMovement == WipeMovement.Movement },
+				{"ReverseDirection", WipeMovement != WipeMovement.Movement }
 			};
 			SetBrowsable(propertyStates);
 		}

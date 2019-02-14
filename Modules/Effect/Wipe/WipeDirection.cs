@@ -8,15 +8,15 @@ namespace VixenModules.Effect.Wipe {
 		Vertical,
 		[Description("Wipe Horizontal")]
 		Horizontal,
-		[Description("Wipe Down/Right")]
-		DownRight,
-		[Description("Wipe Up/Right")]
-		UpRight,
+		[Description("Wipe Diagonal Up")]
+		DiagonalUp,
+		[Description("Wipe Diagonal Down")]
+		DiagonalDown,
 		[Description("Burst")]
 		Burst,
 		[Description("Circle Burst")]
 		Circle,
-		[Description("Diagonal Burst")]
-		Diagonal
+		[Description("Dimaond Burst")]
+		Dimaond
 	}
 }
