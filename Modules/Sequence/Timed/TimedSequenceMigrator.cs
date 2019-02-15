@@ -732,8 +732,24 @@ namespace VixenModules.Sequence.Timed
 
 				switch (direction.Value)
 				{
+					case "Up":
+						dataDirection = WipeDirection.Vertical;
+						dataReverseDirection = true;
+						break;
 					case "Down":
 						dataDirection = WipeDirection.Vertical;
+						dataReverseDirection = false;
+						break;
+					case "Right":
+						dataDirection = WipeDirection.Horizontal;
+						dataReverseDirection = true;
+						break;
+					case "Left":
+						dataDirection = WipeDirection.Horizontal;
+						dataReverseDirection = false;
+						break;
+					case "In":
+						dataDirection = WipeDirection.Burst;
 						dataReverseDirection = false;
 						break;
 					case "Out":
