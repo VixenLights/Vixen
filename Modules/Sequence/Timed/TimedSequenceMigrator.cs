@@ -742,19 +742,19 @@ namespace VixenModules.Sequence.Timed
 						break;
 					case "Right":
 						dataDirection = WipeDirection.Horizontal;
-						dataReverseDirection = true;
+						dataReverseDirection = false;
 						break;
 					case "Left":
 						dataDirection = WipeDirection.Horizontal;
-						dataReverseDirection = false;
+						dataReverseDirection = true;
 						break;
 					case "In":
 						dataDirection = WipeDirection.Burst;
-						dataReverseDirection = false;
+						dataReverseDirection = true;
 						break;
 					case "Out":
 						dataDirection = WipeDirection.Burst;
-						dataReverseDirection = true;
+						dataReverseDirection = false;
 						break;
 				}
 

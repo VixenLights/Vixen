@@ -210,6 +210,9 @@ namespace VixenModules.Effect.Wipe
 			if (renderNodes != null && renderNodes.Any())
 			{
 				TimeSpan effectTime = TimeSpan.Zero;
+				var maxKey = renderNodes.Select(x => x.Key).Max();
+				var minKey = renderNodes.Select(x => x.Key).Min();
+				double adjustedMax = maxKey - minKey;
 				switch (WipeMovement)
 				{
 					case WipeMovement.Count:
@@ -217,9 +220,6 @@ namespace VixenModules.Effect.Wipe
 						int count = 0;
 						double pulseSegment = TimeSpan.Ticks / (double)PassCount * (PulsePercent / 100);
 
-						var maxKey = renderNodes.Select(x => x.Key).Max();
-						var minKey = renderNodes.Select(x => x.Key).Min();
-						double adjustedMax = maxKey - minKey;
 
 						TimeSpan totalWipeTime = TimeSpan.FromTicks( (long) ( (TimeSpan.Ticks - pulseSegment) / PassCount));
 						TimeSpan segmentPulse = TimeSpan.FromTicks((long)pulseSegment);
@@ -229,7 +229,6 @@ namespace VixenModules.Effect.Wipe
 							foreach (var item in renderNodes)
 							{
 								if (tokenSource != null && tokenSource.IsCancellationRequested) return;
-
 								if (!ReverseDirection)
 								{
 									effectTime = TimeSpan.FromTicks((long)(totalWipeTime.Ticks * (item.Key - minKey) / adjustedMax + count * totalWipeTime.Ticks));
@@ -242,7 +241,8 @@ namespace VixenModules.Effect.Wipe
 								foreach (ElementNode element in item)
 								{
 
-									if (tokenSource != null && tokenSource.IsCancellationRequested)
+									var test = item.Count();
+										if (tokenSource != null && tokenSource.IsCancellationRequested)
 										return;
 									if (element != null)
 									{
@@ -384,7 +384,9 @@ namespace VixenModules.Effect.Wipe
 					}
 					case WipeMovement.Movement:
 					{
+						int pulsePercent = (int) (adjustedMax * (PulsePercent / 100));
 						var enumerable = renderNodes.ToList();
+						if (Direction == WipeDirection.Vertical) enumerable.Reverse();
 							_renderElements = new List<WipeClass>();
 							double previousMovement = 2.0;
 							TimeSpan startTime = TimeSpan.Zero;
@@ -413,14 +415,13 @@ namespace VixenModules.Effect.Wipe
 								startTime += timeInterval;
 							}
 
+						List<Color> validColor = new List<Color>();
 							// Now render element
 							foreach (var wipeNode in _renderElements)
 							{
-								for (int i = 0; i < (int)PulsePercent; i++)
+								for (int i = 0; i < (int)pulsePercent; i++)
 								{
-									Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)PulsePercent) * (i + 1) / 100);
-									ColorGradient colorGradient = new ColorGradient(color);
-									double curveValue = _data.Curve.GetValue(((double)100 / (int)PulsePercent) * (i + 1));
+									double curveValue = _data.Curve.GetValue(((double)100 / (int)pulsePercent) * (i + 1));
 									Curve curve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
 									if (wipeNode.ElementIndex - i > 0)
 									{
@@ -428,8 +429,31 @@ namespace VixenModules.Effect.Wipe
 										if (tokenSource != null && tokenSource.IsCancellationRequested) return;
 										EffectIntents result;
 
-										foreach (var item in elementGroup)
+										ColorGradient colorGradient = new ColorGradient(Color.Black);
+										Color color = new Color();
+										foreach (ElementNode item in elementGroup)
 										{
+											var tests = elementGroup.Count();
+											validColor = ColorModule.getValidColorsForElementNode(item, false).ToList();
+											if (validColor.Any())
+											{
+												foreach (ColorPoint color1 in _data.ColorGradient.Colors)
+												{
+													if (color1.Color.ToRGB().ToArgb() == validColor[0])
+													{
+														colorGradient = new ColorGradient(validColor[0]);
+														HasDiscreteColors = true;
+														break;
+													}
+												}
+											}
+											else
+											{
+												color = _data.ColorGradient.GetColorAt((((double)100 / (int)pulsePercent) * (i + 1) / 100));
+												colorGradient = new ColorGradient(color);
+												HasDiscreteColors = false;
+											}
+
 											if (tokenSource != null && tokenSource.IsCancellationRequested)
 												return;
 											if (item != null)
@@ -486,8 +510,10 @@ namespace VixenModules.Effect.Wipe
 			switch (Direction)
 			{
 				case WipeDirection.Circle:
+					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY)) / 2);
+					break;
 				case WipeDirection.Dimaond:
-					steps = (int)(DistanceFromPoint(new Point(maxX, maxY), new Point(minX, minY))/ 2);
+					steps = (int)( Math.Sqrt(Math.Pow(maxX - minX, 2) + Math.Pow(maxY - minY, 2)) / 1.5);
 					break;
 				case WipeDirection.DiagonalUp:
 				case WipeDirection.DiagonalDown:
@@ -497,8 +523,9 @@ namespace VixenModules.Effect.Wipe
 					steps = (int) (Math.Max(maxX - minX, maxY - minY) / 2);
 					break;
 			}
-			
-			if (WipeMovement == WipeMovement.Movement) steps += (int)PulsePercent;
+
+			int pulsePercent = (int)((maxX- minX) * (PulsePercent / 100));
+			if (WipeMovement == WipeMovement.Movement) steps += (int)pulsePercent;
 
 			List<Tuple<int, ElementNode[]>> groups = new List<Tuple<int, ElementNode[]>>();
 
@@ -630,7 +657,7 @@ namespace VixenModules.Effect.Wipe
 						RenderCount(renderNodes, tokenSource);
 						break;
 					case WipeMovement.Movement:
-						RenderMovement(renderNodes, tokenSource);
+						RenderMovement(renderNodes, tokenSource, pulsePercent);
 						break;
 				}
 			}
@@ -724,8 +751,8 @@ namespace VixenModules.Effect.Wipe
 				count++;
 			}
 		}
-
-		private void RenderMovement(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource)
+		
+		private void RenderMovement(List<ElementNode[]> renderNodes, CancellationTokenSource tokenSource, int pulsePercent)
 		{
 			double previousMovement = 2.0;
 			TimeSpan startTime = TimeSpan.Zero;
@@ -757,11 +784,11 @@ namespace VixenModules.Effect.Wipe
 			// Now render element
 			foreach (var wipeNode in _renderElements)
 			{
-				for (int i = 0; i < (int)PulsePercent; i++)
+				for (int i = 0; i < (int)pulsePercent; i++)
 				{
-					Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)PulsePercent) * (i + 1) / 100);
+					Color color = _data.ColorGradient.GetColorAt(((double)100 / (int)pulsePercent) * (i + 1) / 100);
 					ColorGradient colorGradient = new ColorGradient(color);
-					double curveValue = _data.Curve.GetValue(((double)100 / (int)PulsePercent) * (i + 1));
+					double curveValue = _data.Curve.GetValue(((double)100 / (int)pulsePercent) * (i + 1));
 					Curve curve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
 					if (wipeNode.ElementIndex - i > 0)
 					{
