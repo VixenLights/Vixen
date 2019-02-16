@@ -1308,8 +1308,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			{
 				_dragValid = true;
 				Color col = (Color)e.Data.GetData(typeof(Color));
-				_selectedButton.Tag = col;
+				if (_selectedButton != null) _selectedButton.Tag = col;
 				e.Effect = DragDropEffects.Copy;
+				return;
 			}
 
 			_dragValid = false;
@@ -1489,7 +1490,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				if (!c.IsLibraryReference)
 				{
 					_dragValid = true;
-					_selectedButton.Tag = c;
+					if (_selectedButton != null) _selectedButton.Tag = c;
 					e.Effect = DragDropEffects.Copy;
 					return;
 				}
@@ -1638,7 +1639,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				ColorGradient cg = (ColorGradient)e.Data.GetData(typeof(ColorGradient));
 				if (!cg.IsLibraryReference)
 				{
-					_selectedButton.Tag = cg;
+					if (_selectedButton != null) _selectedButton.Tag = cg;
 					_dragValid = true;
 					e.Effect = DragDropEffects.Copy;
 					return;
