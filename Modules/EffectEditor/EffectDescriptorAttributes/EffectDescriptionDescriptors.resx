@@ -861,4 +861,10 @@
   <data name="ColorPerStep" xml:space="preserve">
     <value>When enabled the color will change for each Step variation.</value>
   </data>
+  <data name="ColorPerCount" xml:space="preserve">
+    <value>Spreads the Color across each count or entire length of the effect.</value>
+  </data>
+  <data name="ReverseColorCurve" xml:space="preserve">
+    <value>Reverses the Color and Curve depending on direction of Movement curve.</value>
+  </data>
 </root>

@@ -852,4 +852,10 @@
   <data name="ColorPerStep" xml:space="preserve">
     <value>Color Per Step</value>
   </data>
+  <data name="ColorPerCount" xml:space="preserve">
+    <value>Color Per Count</value>
+  </data>
+  <data name="ReverseColorCurve" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
 </root>

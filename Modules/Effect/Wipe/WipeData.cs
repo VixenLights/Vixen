@@ -10,12 +10,7 @@ namespace VixenModules.Effect.Wipe {
 	public class WipeData : EffectTypeModuleData {
 		
 		public WipeData() {
-			Curve = new Curve();
-			Curve.Points.Clear();
-			Curve.Points.Add(0, 0);
-		 	Curve.Points.Add(50, 100);
-			Curve.Points.Add(100, 0);
-		 			
+			Curve = new Curve(new PointPairList(new[] { 0.0, 50.0, 100.0 }, new[] { 0.0, 100.0, 0.0 }));
 			Direction = WipeDirection.Horizontal;
 			ColorGradient = new ColorGradient(Color.White);
 			PulseTime = 1000;
@@ -27,7 +22,8 @@ namespace VixenModules.Effect.Wipe {
 			ColorHandling = ColorHandling.GradientThroughWholeEffect;
 			WipeOn = false;
 			WipeOff = false;
-			
+			ColorAcrossItemPerCount = true;
+			ReverseColorDirection = true;
 		}
 		[DataMember]
 		public ColorHandling ColorHandling { get; set; }
@@ -62,8 +58,14 @@ namespace VixenModules.Effect.Wipe {
 		[DataMember]
 		public WipeMovement WipeMovement { get; set; }
 
-		[DataMember]
+		[DataMember] 
 		public bool ReverseDirection { get; set; }
+
+		[DataMember]
+		public bool ColorAcrossItemPerCount { get; set; }
+
+		[DataMember]
+		public bool ReverseColorDirection { get; set; }
 
 		protected override EffectTypeModuleData CreateInstanceForClone()
 		{

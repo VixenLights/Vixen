@@ -770,6 +770,8 @@ namespace VixenModules.Sequence.Timed
 
 					WipeOn = DeSerializer<bool>(wipeOn),
 					WipeOff = DeSerializer<bool>(wipeOff),
+					ColorAcrossItemPerCount = true,
+					ReverseColorDirection = true,
 					Curve = DeSerializer<Curve>(curve),
 					MovementCurve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { 0.0, 100.0 })),
 					Direction = dataDirection,

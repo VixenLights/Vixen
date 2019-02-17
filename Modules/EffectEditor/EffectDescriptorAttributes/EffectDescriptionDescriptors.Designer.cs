@@ -476,6 +476,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spreads the Color across each count or entire length of the effect..
+        /// </summary>
+        internal static string ColorPerCount {
+            get {
+                return ResourceManager.GetString("ColorPerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When enabled the color will change for each Step variation..
         /// </summary>
         internal static string ColorPerStep {
@@ -1552,6 +1561,15 @@ namespace VixenModules.EffectEditor.EffectDescriptorAttributes {
         internal static string RepeatText {
             get {
                 return ResourceManager.GetString("RepeatText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverses the Color and Curve depending on direction of Movement curve..
+        /// </summary>
+        internal static string ReverseColorCurve {
+            get {
+                return ResourceManager.GetString("ReverseColorCurve", resourceCulture);
             }
         }
         
