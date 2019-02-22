@@ -88,6 +88,7 @@ namespace VixenModules.Preview.VixenPreview
 
 		private string TokenizeName(string name)
 		{
+			if (name == null) return string.Empty;
 			var returnValue = name;
 			var match = Regex.Match(name);
 			while (match.Success)
@@ -120,6 +121,11 @@ namespace VixenModules.Preview.VixenPreview
 			ElementNode node;
 			if (!_elementModelMap.TryGetValue(elementModel.Id, out node))
 			{
+				//Validate we have a name
+				if (string.IsNullOrEmpty(elementModel.Name))
+				{
+					elementModel.Name = @"Unnamed";
+				}
 				//We have not created our element yet
 				node = ElementNodeService.Instance.CreateSingle(parentNode,
 					NamingUtilities.Uniquify(_elementNames, TokenizeName(elementModel.Name)));
