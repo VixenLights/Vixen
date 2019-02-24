@@ -152,6 +152,9 @@ namespace VixenModules.Editor.TimedSequenceEditor
 			editToolStripButton_Copy.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			editToolStripButton_Paste.Image = Resources.page_white_paste;
 			editToolStripButton_Paste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			editToolStripButton_PasteVisibleMarks.Image = Resources.paste_marks;
+			editToolStripButton_PasteInvert.Image = Resources.paste_invert;
+			editToolStripButton_PasteDropDown.Image = Resources.paste_special;
 		}
 
 		private void AlignmentToolStripSetup()

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Controls.TimelineControl;
+using Common.Controls.TimelineControl.LabeledMarks;
 using VixenModules.App.Curves;
 using VixenModules.App.LipSyncApp;
 using VixenModules.Media.Audio;
@@ -151,6 +152,24 @@ namespace VixenModules.Editor.TimedSequenceEditor
 		}
 
 		private void toolStripMenuItem_Paste_Click(object sender, EventArgs e)
+		{
+			PastingMode = PastingMode.Default;
+			PasteEffects();
+		}
+
+		private void toolStripMenuItem_PasteInvert_Click(object sender, EventArgs e)
+		{
+			PastingMode = PastingMode.Invert;
+			PasteEffects();
+		}
+
+		private void toolStripMenuItem_PasteToMarks_Click(object sender, EventArgs e)
+		{
+			PastingMode = PastingMode.VisibleMarks;
+			PasteEffects();
+		}
+
+		private void PasteEffects()
 		{
 			Row targetRow = TimelineControl.SelectedRow ?? TimelineControl.ActiveRow ?? TimelineControl.TopVisibleRow;
 			ClipboardPaste(targetRow.Selected ? TimeSpan.Zero : _timeLineGlobalStateManager.CursorPosition);

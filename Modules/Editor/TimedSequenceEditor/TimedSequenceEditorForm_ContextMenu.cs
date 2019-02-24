@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Common.Controls;
 using Common.Controls.Timeline;
 using Common.Resources.Properties;
+using Vixen.Marks;
 using Vixen.Module.Effect;
 using Vixen.Services;
 using VixenModules.Sequence.Timed;
@@ -408,13 +409,52 @@ namespace VixenModules.Editor.TimedSequenceEditor
 				Image = Resources.cut
 			};
 			contextMenuItemCopy.Enabled = contextMenuItemCut.Enabled = TimelineControl.SelectedElements.Any();
+
+			// Gets Clipboard Count to be used with some of the Pasting options.
+			int clipboardCount = GetClipboardCount();
 			ToolStripMenuItem contextMenuItemPaste = new ToolStripMenuItem("Paste", null, toolStripMenuItem_Paste_Click)
 			{
 				ShortcutKeyDisplayString = @"Ctrl+V", Image = Resources.page_white_paste,
-				Enabled = ClipboardHasData()
+				Enabled = clipboardCount > 0
+			};
+			
+			// Checks if there are any visible marks that are past the mouse click position.
+			bool visibleMarks = GetMarksPresent();
+
+			ToolStripMenuItem contextMenuItemPasteToMarks = new ToolStripMenuItem("Paste - Visible Mark/s", null, toolStripMenuItem_PasteToMarks_Click)
+			{
+				Image = Resources.paste_marks,
+				Enabled = visibleMarks && clipboardCount > 0
 			};
 
-			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCut, contextMenuItemCopy,  contextMenuItemPaste});
+			ToolStripMenuItem contextMenuItemPasteInvert = new ToolStripMenuItem("Paste - Invert", null, toolStripMenuItem_PasteInvert_Click)
+			{
+				Image = Resources.paste_invert,
+				Enabled = clipboardCount > 1
+			};
+
+			_contextMenuStrip.Items.AddRange(new ToolStripItem[] {contextMenuItemCut, contextMenuItemCopy, contextMenuItemPaste});
+
+			bool pasteSpecialSubMenu = clipboardCount > 1 && visibleMarks;
+
+			if (pasteSpecialSubMenu)
+			{
+				ToolStripMenuItem contextMenuItemPasteSpecial = new ToolStripMenuItem("Paste Special")
+				{
+					Image = Resources.paste_special,
+					Enabled = true
+				};
+				_contextMenuStrip.Items.Add(contextMenuItemPasteSpecial);
+				contextMenuItemPasteSpecial.DropDownItems.AddRange(new ToolStripItem[] { contextMenuItemPasteInvert, contextMenuItemPasteToMarks });
+			}
+			else if (visibleMarks && clipboardCount > 0)
+			{
+				_contextMenuStrip.Items.AddRange(new ToolStripItem[] { contextMenuItemPasteToMarks });
+			}
+			else if (clipboardCount > 1)
+			{
+				_contextMenuStrip.Items.AddRange(new ToolStripItem[] { contextMenuItemPasteInvert });
+			}
 
 			if (TimelineControl.SelectedElements.Any())
 			{
