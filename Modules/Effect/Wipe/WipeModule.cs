@@ -533,18 +533,16 @@ namespace VixenModules.Effect.Wipe
 				previousMovement = movement;
 				startTime += timeInterval;
 			}
-
+			double pos = ((double)100 / _pulsePercent) / 100;
 			// Now render element
 			foreach (var wipeNode in renderElements)
 			{
 				for (int i = 0; i < _pulsePercent; i++)
 				{
-					double position = wipeNode.ReverseColorDirection - (((double) 100 / _pulsePercent) * (i + 1) / 100);
-					if (position < 0) position  = -position;
+					double position = wipeNode.ReverseColorDirection - pos * i;
+					if (position < 0) position = -position;
 					Color color = _data.ColorGradient.GetColorAt(position);
-					ColorGradient colorGradient = new ColorGradient(color);
-					double curveValue = _data.Curve.GetValue(position * 100);
-					Curve curve = new Curve(new PointPairList(new[] { 0.0, 100.0 }, new[] { curveValue, curveValue }));
+					double curveValue = _data.Curve.GetValue(position * 100) / 100;
 
 					if (wipeNode.ElementIndex - i > 0 && wipeNode.ElementIndex - i + burst < renderNodes.Count)
 					{
@@ -557,8 +555,7 @@ namespace VixenModules.Effect.Wipe
 								return;
 							if (item != null)
 							{
-								var result = PulseRenderer.RenderNode(item, curve, colorGradient,
-									wipeNode.Duration, HasDiscreteColors);
+								var result = PulseRenderer.RenderNode(item, curveValue, color, wipeNode.Duration);
 								result.OffsetAllCommandsByTime(wipeNode.StartTime);
 								_elementData.Add(result);
 							}
