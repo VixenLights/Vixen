@@ -170,6 +170,7 @@
 			this.txtOutputFolder.ReadOnly = true;
 			this.txtOutputFolder.Size = new System.Drawing.Size(438, 23);
 			this.txtOutputFolder.TabIndex = 9;
+			this.txtOutputFolder.Leave += new System.EventHandler(this.txtOutputFolder_Leave);
 			// 
 			// label2
 			// 
@@ -226,6 +227,7 @@
 			this.txtAudioOutputFolder.ReadOnly = true;
 			this.txtAudioOutputFolder.Size = new System.Drawing.Size(437, 23);
 			this.txtAudioOutputFolder.TabIndex = 12;
+			this.txtAudioOutputFolder.Leave += new System.EventHandler(this.txtAudioOutputFolder_Leave);
 			// 
 			// lblAudioExportPath
 			// 
@@ -333,6 +335,7 @@
 			// 
 			// tableLayoutPanel1
 			// 
+			this.tableLayoutPanel1.AutoSize = true;
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.Controls.Add(this.lblChooseOutputFormat, 0, 0);
@@ -349,7 +352,7 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 505);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 510);
 			this.tableLayoutPanel1.TabIndex = 24;
 			// 
 			// BulkExportOutputFormatStage
@@ -359,7 +362,7 @@
 			this.AutoSize = true;
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "BulkExportOutputFormatStage";
-			this.Size = new System.Drawing.Size(509, 505);
+			this.Size = new System.Drawing.Size(509, 510);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.grpSequence.ResumeLayout(false);
@@ -371,6 +374,7 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 

@@ -1103,7 +1103,7 @@ namespace VixenModules.Editor.TimedSequenceEditor
 
 		internal TimelineControl TimelineControl
 		{
-			get { return _gridForm.TimelineControl; }
+			get { return _gridForm?.TimelineControl; }
 		}
 
 		private void PopulateDragBoxFilterDropDown()
