@@ -120,11 +120,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\ElementController.cs" />
     <Compile Include="Controllers\PlayController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Filter\ArgumentExceptionFilterAttribute.cs" />
     <Compile Include="Hubs\ContextHub.cs" />
+    <Compile Include="Model\Controller.cs" />
+    <Compile Include="Model\ControllerState.cs" />
     <Compile Include="Model\ElementState.cs" />
     <Compile Include="Model\ContextStatus.cs" />
     <Compile Include="RequestLogger.cs" />
@@ -135,6 +138,7 @@
     <Compile Include="Service\ElementsHelper.cs" />
     <Compile Include="Service\SequenceHelper.cs" />
     <Compile Include="Service\ContextStateFeeder.cs" />
+    <Compile Include="Service\SystemHelper.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebSettingsEventArgs.cs" />
     <Compile Include="Module.cs" />
