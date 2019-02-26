@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common.Controls.Wizard;
+using NLog;
 using Vixen.Export;
 using Vixen.Module.Media;
 using Vixen.Services;
@@ -15,6 +16,7 @@ namespace VixenModules.App.ExportWizard
 {
 	public partial class BulkExportSummaryStage : WizardStage
 	{
+		private static readonly Logger Logging = LogManager.GetCurrentClassLogger();
 		private readonly BulkExportWizardData _data;
 		private bool _cancelled;
 		private AutoCompleteStringCollection namesCollection = new AutoCompleteStringCollection();
@@ -197,8 +199,13 @@ namespace VixenModules.App.ExportWizard
 		{
 			if (_data.ActiveProfile.IsFalconFormat)
 			{
-				string fileName = _data.ActiveProfile.FalconOutputFolder +
-					                Path.DirectorySeparatorChar + "config" + Path.DirectorySeparatorChar + "co-universes.json";
+				var path = Path.Combine(_data.ActiveProfile.FalconOutputFolder, "config");
+				if (!Directory.Exists(path))
+				{
+					CreateDirectory(path);
+				}
+
+				string fileName = Path.Combine(path, "co-universes.json");
 
 				if (_data.ActiveProfile.BackupUniverseFile && File.Exists(fileName))
 				{
@@ -245,15 +252,51 @@ namespace VixenModules.App.ExportWizard
 				_data.Export.AudioFilename = String.Empty;
 			}
 
-			if (_data.ActiveProfile.IncludeAudio && _data.Export.AudioFilename != String.Empty)
+			bool canOutput = true;
+			if (_data.ActiveProfile.IncludeAudio && _data.Export.AudioFilename != string.Empty)
 			{
-				string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
-					_data.ActiveProfile.RenameAudio? sequence.Name + Path.GetExtension(_data.Export.AudioFilename): Path.GetFileName(_data.Export.AudioFilename));
-				File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+				if (!Directory.Exists(_data.ActiveProfile.AudioOutputFolder))
+				{
+					canOutput = CreateDirectory(_data.ActiveProfile.AudioOutputFolder);
+				}
+
+				if (canOutput)
+				{
+					string audioOutputPath = Path.Combine(_data.ActiveProfile.AudioOutputFolder,
+						_data.ActiveProfile.RenameAudio
+							? sequence.Name + Path.GetExtension(_data.Export.AudioFilename)
+							: Path.GetFileName(_data.Export.AudioFilename));
+					File.Copy(_data.Export.AudioFilename, audioOutputPath, true);
+				}
 			}
 
-			_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder,sequence.Name+"."+ _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
-			await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress);
+			if (!Directory.Exists(_data.ActiveProfile.OutputFolder))
+			{
+				canOutput = CreateDirectory(_data.ActiveProfile.OutputFolder);
+			}
+
+			if (canOutput)
+			{
+				_data.Export.OutFileName = Path.Combine(_data.ActiveProfile.OutputFolder, sequence.Name + "." + _data.Export.ExportFileTypes[_data.ActiveProfile.Format]);
+				await _data.Export.DoExport(sequence, _data.ActiveProfile.Format, progress);
+			}
+			
+		}
+
+		private bool CreateDirectory(string path)
+		{
+			bool success = false;
+			try
+			{
+				Directory.CreateDirectory(path);
+				success = true;
+			}
+			catch (Exception e)
+			{
+				Logging.Error(e, $"An error occured trying to create the export directory structure {path}");
+			}
+
+			return success;
 		}
 
 		private void LoadMedia(ISequence sequence)

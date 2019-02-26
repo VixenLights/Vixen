@@ -94,6 +94,14 @@ namespace VixenModules.App.ExportWizard
 
 		}
 
+		private void txtOutputFolder_Leave(object sender, EventArgs e)
+		{
+			_data.ActiveProfile.OutputFolder = txtOutputFolder.Text;
+			ValidatePath(_data.ActiveProfile.OutputFolder);
+			_WizardStageChanged();
+		}
+
+
 		private void btnAudioOutputFolder_Click(object sender, EventArgs e)
 		{
 			var folderBrowserDialog = new FolderBrowserDialog();
@@ -108,6 +116,13 @@ namespace VixenModules.App.ExportWizard
 				txtAudioOutputFolder.Text = _data.ActiveProfile.AudioOutputFolder;
 				_WizardStageChanged();
 			}
+		}
+
+		private void txtAudioOutputFolder_Leave(object sender, EventArgs e)
+		{
+			_data.ActiveProfile.OutputFolder = txtAudioOutputFolder.Text;
+			ValidatePath(_data.ActiveProfile.AudioOutputFolder);
+			_WizardStageChanged();
 		}
 
 		private void btnFalconOutputFolder_Click(object sender, EventArgs e)
@@ -145,45 +160,28 @@ namespace VixenModules.App.ExportWizard
 			if (CanTestPath() && Directory.Exists(path))
 			{
 				_data.ActiveProfile.FalconOutputFolder = path;
-				var sequencePath = _data.ActiveProfile.OutputFolder;
-				var musicPath = _data.ActiveProfile.AudioOutputFolder;
-				if (!Directory.Exists(sequencePath) || !Directory.Exists(musicPath))
+				return true;
+			}
+		
+			var messageBox =
+				new MessageBoxForm("The selected output path does not exist. Do you want to create it?",
+					"Invalid output path", MessageBoxButtons.OKCancel, SystemIcons.Error);
+			var response = messageBox.ShowDialog(this);
+			if (response == DialogResult.OK)
+			{
+				try
 				{
-					var messageBox =
-						new MessageBoxForm(
-							"Some of the Falcon path structure does not exist at the location specified. Do you want to create it?",
-							"Create Falcon structure?", MessageBoxButtons.OKCancel, SystemIcons.Question);
-					var result = messageBox.ShowDialog(this);
-					if (result == DialogResult.OK)
-					{
-						try
-						{
-							Directory.CreateDirectory(sequencePath);
-							Directory.CreateDirectory(musicPath);
-							_WizardStageChanged();
-							return true;
-						}
-						catch (Exception e)
-						{
-							messageBox = new MessageBoxForm($"Unable to create the directory structure.\n{e.Message}",
-								"Error creating Falcon structure.", MessageBoxButtons.OK, SystemIcons.Error);
-							messageBox.ShowDialog(this);
-							Logging.Error(e, "An error occured trying to create the Falcon directory structure.");
-						}
-					}
-				}
-				else
-				{
+					Directory.CreateDirectory(path);
+					_WizardStageChanged();
 					return true;
 				}
-			}
-			else
-			{
-				var messageBox =
-					new MessageBoxForm(
-						"The Falcon output path does not seem correct. Please verify.",
-						"Invalid output path", MessageBoxButtons.OK, SystemIcons.Error);
-				messageBox.ShowDialog(this);
+				catch (Exception e)
+				{
+					messageBox = new MessageBoxForm($"Unable to create the target directory.\n{e.Message}",
+						"Error creating directory.", MessageBoxButtons.OK, SystemIcons.Error);
+					messageBox.ShowDialog(this);
+					Logging.Error(e, "An error occured trying to create the Falcon target directory structure.");
+				}
 			}
 
 			return false;
@@ -195,14 +193,8 @@ namespace VixenModules.App.ExportWizard
 			{
 				if (_data.ActiveProfile.IsFalconFormat)
 				{
-					if (CanTestPath() && Directory.Exists(_data.ActiveProfile.FalconOutputFolder)
-					    && Directory.Exists(_data.ActiveProfile.OutputFolder))
+					if (CanTestPath() && Directory.Exists(_data.ActiveProfile.FalconOutputFolder))
 					{
-						if (_data.ActiveProfile.IncludeAudio)
-						{
-							return Directory.Exists(_data.ActiveProfile.AudioOutputFolder);
-						}
-
 						return true;
 					}
 
@@ -216,6 +208,32 @@ namespace VixenModules.App.ExportWizard
 				}
 
 				return ok;
+			}
+		}
+
+		private void ValidatePath(string path)
+		{
+			if (!Directory.Exists(path))
+			{
+				var messageBox =
+					new MessageBoxForm("The selected output path does not exist. Do you want to create it?",
+						"Invalid output path", MessageBoxButtons.OKCancel, SystemIcons.Error);
+				var response = messageBox.ShowDialog(this);
+				if (response == DialogResult.OK)
+				{
+					try
+					{
+						Directory.CreateDirectory(path);
+						_WizardStageChanged();
+					}
+					catch (Exception e)
+					{
+						messageBox = new MessageBoxForm($"Unable to create the target directory.\n{e.Message}",
+							"Error creating directory.", MessageBoxButtons.OK, SystemIcons.Error);
+						messageBox.ShowDialog(this);
+						Logging.Error(e, "An error occured trying to create the Falcon target directory structure.");
+					}
+				}
 			}
 		}
 
