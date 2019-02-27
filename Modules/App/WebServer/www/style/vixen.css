@@ -16,8 +16,12 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	list-style-image: url(data:0);
 }
 
-#Elements, #Sequences {
+#Elements, #Sequences{
 	padding-top: 70px;
+}
+
+#Elements {
+	min-height: 400px;
 }
 
 #ContextStatus {
@@ -32,10 +36,25 @@ html[data-useragent*='rv:11.0'] .ui-navbar li {
 	
 }
 
-@media (max-device-width: 480px) {
+.margin-top-sm {
+	margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+	#Elements {
+		min-height: 0px;
+	}
+
+	#Sequences{
+		padding-top: 0px;
+	}
+}
+
+@media (max-width: 480px) {
+	
 	#NowPlaying {
 		/*padding-top: 70px;*/
-		height: 600px;
+		/*height: 600px; */
 	}
 
 	#Sequences {
@@ -149,6 +168,8 @@ span.glyphicon-lg {
 
 span.glyphicon-small {
     font-size: .75em;
+	margin-right: 4px;
+	margin-top: 1px;
 }
 
 span.glyphicon-addon {

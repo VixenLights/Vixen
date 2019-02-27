@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using NLog;
 using Vixen.Sys;
 using VixenModules.App.WebServer.Model;
 
@@ -16,7 +14,7 @@ namespace VixenModules.App.WebServer.Service
 			return controllers;
 		}
 
-		public bool SetState(Guid id, bool on)
+		public bool SetControllerState(Guid id, bool on)
 		{
 			bool success = false;
 			var c = VixenSystem.OutputControllers.Get(id);
@@ -43,7 +41,27 @@ namespace VixenModules.App.WebServer.Service
 			return success;
 		}
 
-		public Controller Get(Guid id)
+		public bool SetAllControllersState(bool on)
+		{
+			if (on)
+			{
+				foreach (var outputController in VixenSystem.OutputControllers)
+				{
+					outputController.Start();
+				}
+			}
+			else
+			{
+				foreach (var outputController in VixenSystem.OutputControllers)
+				{
+					outputController.Stop();
+				}
+			}
+
+			return true;
+		}
+
+		public Controller GetController(Guid id)
 		{
 			var c = VixenSystem.OutputControllers.Get(id);
 			if (c != null)

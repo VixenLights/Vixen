@@ -18,11 +18,11 @@ namespace VixenModules.App.WebServer.Controllers
 		public Controller Get(Guid id)
 		{
 			var helper = new SystemHelper();
-			return helper.Get(id);
+			return helper.GetController(id);
 		}
 
 		[HttpPost]
-		public Status SetState(ControllerState state)
+		public Status SetControllerState(ControllerState state)
 		{
 			if (state == null)
 			{
@@ -30,11 +30,11 @@ namespace VixenModules.App.WebServer.Controllers
 			}
 			var s = new Status();
 			var helper = new SystemHelper();
-			var c = helper.Get(state.Id);
+			var c = helper.GetController(state.Id);
 
 			if (c != null)
 			{
-				s.IsSuccessful = helper.SetState(state.Id, state.IsRunning);
+				s.IsSuccessful = helper.SetControllerState(state.Id, state.IsRunning);
 				s.Message = $"{c.Name} state {(s.IsSuccessful?"Changed":"Not Changed")}.";
 			}
 			else
@@ -43,6 +43,16 @@ namespace VixenModules.App.WebServer.Controllers
 				s.IsSuccessful = false;
 			}
 
+			return s;
+		}
+
+		[HttpPost]
+		public Status SetAllControllersState(ControllerState state)
+		{
+			var s = new Status();
+			var helper = new SystemHelper();
+			s.IsSuccessful = helper.SetAllControllersState(state.IsRunning);
+			s.Message = $"All controllers state {(s.IsSuccessful ? "Changed" : "Not Changed")}.";
 			return s;
 		}
 	}
